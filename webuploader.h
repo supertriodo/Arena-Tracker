@@ -1,0 +1,82 @@
+#ifndef WEBUPLOADER_H
+#define WEBUPLOADER_H
+
+#include "gamewatcher.h"
+#include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QString>
+#include <QUrl>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+    #include <QUrlQuery>
+    #define QURL QUrlQuery
+#else
+    #define QURL QUrl
+#endif
+
+
+
+#define WEB_URL QString("http://www.arenamastery.com/")
+
+class GameResultPost
+{
+public:
+    QURL postData;
+    QNetworkRequest request;
+};
+
+
+class WebUploader : public QObject
+{
+    Q_OBJECT
+public:
+    explicit WebUploader(QObject *parent = 0);
+    ~WebUploader();
+
+    enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
+                    createArena, checkArenaCurrentReload1, checkArenaCurrentReload2,
+                    reloadArenaCurrent1, reloadArenaCurrent2, complete };
+
+//Variables
+private:
+    QNetworkAccessManager *networkManager;
+    WebState webState;
+    int arenaCurrentID;
+    QString arenaCurrentHero;
+    QList<GameResultPost> *gameResultPostList;
+    GameResultPost *rewardsPost;
+    QRegularExpressionMatch *match;
+
+//Metodos
+private:
+    void connectWeb();
+    void readSettings(QString &playerEmail, QString &password);
+    void askLoginData(QString &playerEmail, QString &password);
+    QString heroToLogNumber(const QString &hero);
+    QString heroToWebNumber(const QString &hero);
+    GameResult createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero);
+    bool getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list);
+    void uploadNext();
+    void postRequest(QNetworkRequest request, QURL postData);
+
+public:
+    bool uploadArenaRewards(ArenaRewards &arenaRewards);
+    bool uploadNewGameResult(GameResult &gameresult);
+    bool uploadNewArena(const QString &hero);
+    void checkArenaCurrentReload();
+
+signals:
+    void loadedGameResult(GameResult gameResult);
+    void loadedArena(QString hero);
+    void reloadedGameResult(GameResult gameResult);
+    void reloadedArena(QString hero);
+    void synchronized();
+    void noArenaFound();
+
+public slots:
+    void replyFinished(QNetworkReply *reply);
+
+};
+
+#endif // WEBUPLOADER_H

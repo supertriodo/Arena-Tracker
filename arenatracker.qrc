@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/lose.png</file>
+        <file>Images/win.png</file>
+        <file>Images/coin.png</file>
+        <file>Images/first.png</file>
+        <file>Images/arcanedust.png</file>
+        <file>Images/gold.png</file>
+        <file>Images/boosterpack.png</file>
+        <file>Images/cardgold.png</file>
+        <file>Images/cardplain.png</file>
+        <file>Images/hero01.gif</file>
+        <file>Images/hero02.gif</file>
+        <file>Images/hero03.gif</file>
+        <file>Images/hero04.gif</file>
+        <file>Images/hero05.gif</file>
+        <file>Images/hero06.gif</file>
+        <file>Images/hero07.gif</file>
+        <file>Images/hero08.gif</file>
+        <file>Images/hero09.gif</file>
+        <file>Images/hero01.png</file>
+        <file>Images/hero02.png</file>
+        <file>Images/hero03.png</file>
+        <file>Images/hero04.png</file>
+        <file>Images/hero05.png</file>
+        <file>Images/hero06.png</file>
+        <file>Images/hero07.png</file>
+        <file>Images/hero08.png</file>
+        <file>Images/hero09.png</file>
+        <file>Images/upload32.png</file>
+        <file>Images/refresh64.png</file>
+        <file>Images/upload64.png</file>
+    </qresource>
+</RCC>
