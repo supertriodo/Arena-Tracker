@@ -40,6 +40,8 @@ void MainWindow::createLogLoader()
             this, SLOT(createWebUploader()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
+    connect(logLoader, SIGNAL(sendLog(QString)),
+            this, SLOT(writeLog(QString)));
     //GameWatcher signals reemit
     connect(logLoader, SIGNAL(newGameResult(GameResult)),
             this, SLOT(newGameResult(GameResult)));
@@ -179,10 +181,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void MainWindow::appendLogLine(QString &line)
+void MainWindow::writeLog(QString line)
 {
     ui->textEdit->append(line);
-
+    ui->textEdit->append("line");
+}
 
 
 //    if(line.startsWith("(Filename:"))   return;
@@ -215,7 +218,6 @@ void MainWindow::appendLogLine(QString &line)
 //    {
 //        ui->textEdit->append(match->captured(1) + " WON");
 //    }
-}
 
 
 void MainWindow::setStatusBarMessage(const QString &message, int timeout)
@@ -589,7 +591,7 @@ void MainWindow::updateArenaFromWeb()
 
 void MainWindow::uploadOldLog()
 {
-    qDebug() << "MainWindow: " << "Uploading old log:";
+    qDebug() << "MainWindow: " << "Uploading old log...";
 //    for(int i=0; i<arenaLogList.count(); i++)
 //    {
 //        ArenaResult arena = arenaLogList.at(i);

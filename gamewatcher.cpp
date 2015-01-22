@@ -56,7 +56,10 @@ void GameWatcher::processLogLine(QString &line)
             }
             else
             {
-                arenaMode = true;//Cambiar
+                arenaMode = false;
+#ifdef QT_DEBUG
+                arenaMode = true;//Testing
+#endif
 //                qDebug() << "GameWatcher: "<< "Fuera de arena.";
             }
         }

@@ -47,7 +47,6 @@ private:
     void newArenaRewards(ArenaRewards arenaRewards);
     bool newArenaUploadButton(QString &hero);
     void setStatusBarMessage(const QString &message, int timeout=0);
-    void appendLogLine(QString &line);
 
 //Override events
 protected:
@@ -77,6 +76,7 @@ public slots:
     void updateArenaFromWeb();
     void uploadOldLog();
 
+    void writeLog(QString line);
 };
 
 #endif // MAINWINDOW_H

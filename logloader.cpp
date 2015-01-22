@@ -55,19 +55,18 @@ LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
 
 void LogLoader::readSettings()
 {
-    QString initDir;
-#ifdef Q_OS_WIN32
-    initDir = "c:";
-#endif
-#ifdef Q_OS_LINUX
-    initDir = "/home";
-#endif
-
     QSettings settings("Arena Tracker", "Arena Tracker");
     logPath = settings.value("logPath", "").toString();
 
     if(logPath.isEmpty() || getLogFileSize()==-1)
     {
+        QString initDir;
+#ifdef Q_OS_WIN32
+        initDir = QDir::toNativeSeparators("C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt");
+#endif
+#ifdef Q_OS_LINUX
+        initDir = QDir::homePath();
+#endif
         logPath = QFileDialog::getOpenFileName(0,
             tr("Find Hearthstone log (output_log.txt)"), initDir,
             tr("Hearthstone log (output_log.txt)"));
@@ -81,14 +80,22 @@ void LogLoader::readSettings()
 
     if(logConfig.isEmpty())
     {
+        QString initDir;
+#ifdef Q_OS_WIN32
+        initDir = QDir::toNativeSeparators(QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config");
+#endif
+#ifdef Q_OS_LINUX
+        initDir = QDir::homePath();
+#endif
         logConfig = QFileDialog::getOpenFileName(0,
             tr("Find Hearthstone config log (log.config)"), initDir,
             tr("Hearthstone log (log.config)"));
         settings.setValue("logConfig", logConfig);
     }
     if(!logConfig.isNull()) checkLogConfig(logConfig);
-    qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
+
     qDebug() << "LogLoader: " << "Path log.config " << logConfig;
+    qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
 }
 
 

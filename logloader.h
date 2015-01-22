@@ -41,6 +41,7 @@ private:
 //Signals
 signals:
     void seekChanged(qint64 logSeek);
+    void sendLog(QString line);
     void synchronized();
 
     //GameWatcher signals reemit
