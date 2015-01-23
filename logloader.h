@@ -63,6 +63,7 @@ private slots:
     void emitNewArena(QString hero);
     void emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void emitArenaRewardsComplete();
+    void emitSendLog(QString line);
 };
 
 #endif // LOGLOADER_H

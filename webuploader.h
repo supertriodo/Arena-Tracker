@@ -73,6 +73,7 @@ signals:
     void reloadedArena(QString hero);
     void synchronized();
     void noArenaFound();
+    void sendLog(QString line);
 
 public slots:
     void replyFinished(QNetworkReply *reply);

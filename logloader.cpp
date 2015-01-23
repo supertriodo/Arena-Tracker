@@ -17,6 +17,7 @@ LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
     while(logSize == 0)
     {
         qDebug() << "LogLoader: "<< "Esperando a log accesible...";
+        emit sendLog(tr("Log: WARNING:Cannot access log..."));
         QThread::sleep(1);
         logSize = getLogFileSize();
     }
@@ -44,6 +45,8 @@ LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
                 this, SLOT(emitNewArenaReward(int,int,bool,bool,bool)));
         connect(gameWatcher, SIGNAL(arenaRewardsComplete()),
                 this, SLOT(emitArenaRewardsComplete()));
+        connect(gameWatcher, SIGNAL(sendLog(QString)),
+                this, SLOT(emitSendLog(QString)));
 
 
 
@@ -73,8 +76,9 @@ void LogLoader::readSettings()
         settings.setValue("logPath", logPath);
     }
 
+#ifdef QT_DEBUG
 //   logPath = QString("/home/triodo/.Hearthstone/arena2.txt");
-//   logPath = QString("/home/triodo/.PlayOnLinux/wineprefix/Hearthstone/drive_c/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt");
+#endif
 
     QString logConfig = settings.value("logConfig", "").toString();
 
@@ -107,6 +111,7 @@ void LogLoader::checkLogConfig(QString logConfig)
     if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "LogLoader: "<< "ERROR: No se puede acceder a log.config.";
+        emit sendLog(tr("Log: ERROR:Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
         return;
@@ -127,6 +132,7 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
     if(!data.contains(option))
     {
         qDebug() << "LogLoader: " << "Configurando log.config";
+        emit sendLog(tr("Log: Setting log.config"));
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
@@ -245,6 +251,7 @@ bool LogLoader::isLogReset()
     {
         //Log se ha reiniciado
         qDebug() << "LogLoader: "<< "Log reiniciado. FileSize: " << newSize << " < " << logSize;
+        emit sendLog(tr("Log: Hearthstone started. Log reset."));
         waitLogExists();
 
         logWorker->resetSeek();
@@ -279,3 +286,4 @@ void LogLoader::emitNewArena(QString hero){emit newArena(hero);}
 void LogLoader::emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard)
 {emit newArenaReward(gold, dust, pack, goldCard, plainCard);}
 void LogLoader::emitArenaRewardsComplete(){emit arenaRewardsComplete();}
+void LogLoader::emitSendLog(QString line){emit sendLog(line);}

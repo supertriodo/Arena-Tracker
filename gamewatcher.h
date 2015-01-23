@@ -62,6 +62,7 @@ signals:
     void newArena(QString hero);
     void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void arenaRewardsComplete();
+    void sendLog(QString line);
 
 public slots:
 };

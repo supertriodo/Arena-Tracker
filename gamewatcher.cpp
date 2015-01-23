@@ -36,6 +36,7 @@ void GameWatcher::processLogLine(QString &line)
                 {
                     gameState = noGame;
                     qDebug() << "GameWatcher: "<< "Rewards completos.";
+                    emit sendLog(tr("Log: New rewards."));
                     emit arenaRewardsComplete();
                 }
             }
@@ -51,6 +52,7 @@ void GameWatcher::processLogLine(QString &line)
                 if(gameState != noGame)
                 {
                     qDebug() << "GameWatcher: "<< "ERROR: Juego incompleto.";
+                    emit sendLog(tr("Log: WARNING:Discard game, info missing in log."));
                     gameState = noGame;
                 }
             }
@@ -106,6 +108,7 @@ void GameWatcher::processLogLine(QString &line)
         {
             QString hero = match->captured(1);
             qDebug() << "GameWatcher: "<< "Nueva arena.";
+            emit sendLog(tr("Log: New arena."));
             emit newArena(hero);
         }
     }
@@ -230,6 +233,7 @@ void GameWatcher::createGameResult()
     gameResult.isWinner = (winnerPlayer == playerTag);
 
     qDebug() << "GameWatcher: "<< "Nuevo juego de arena.";
+    emit sendLog(tr("Log: New game."));
 
     emit newGameResult(gameResult);
 }

@@ -75,6 +75,8 @@ void MainWindow::createWebUploader()
             this, SLOT(enableButtons()));
     connect(webUploader, SIGNAL(noArenaFound()),
             this, SLOT(showNoArena()));
+    connect(webUploader, SIGNAL(sendLog(QString)),
+            this, SLOT(writeLog(QString)));
     ui->progressBar->setVisible(false);
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
 }
@@ -184,7 +186,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::writeLog(QString line)
 {
     ui->textEdit->append(line);
-    ui->textEdit->append("line");
 }
 
 
@@ -282,7 +283,7 @@ QTreeWidgetItem *MainWindow::showGameResult(GameResult gameResult)
     item->setIcon(0, QIcon(":Images/hero" + gameResult.playerHero + ".png"));
     item->setText(0, "vs");
     item->setTextAlignment(0, Qt::AlignHCenter|Qt::AlignVCenter);
-    item->setIcon(1, QIcon(":Images/hero" + gameResult.enemyHero + ".gif"));
+    item->setIcon(1, QIcon(":Images/hero" + gameResult.enemyHero + ".png"));
     item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
