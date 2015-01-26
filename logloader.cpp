@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QTimer>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QSettings>
 
 LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
@@ -63,6 +64,13 @@ void LogLoader::readSettings()
 
     if(logPath.isEmpty() || getLogFileSize()==-1)
     {
+        QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
+                                    "1) output_log.txt location.\n"
+                                    "2) log.config location.\n"
+                                    "3) Your Arena Mastery user/password.\n\n"
+                                    "After your first game:\n"
+                                    "4) Your Hearthstone name."));
+
         QString initDir;
 #ifdef Q_OS_WIN32
         initDir = QDir::toNativeSeparators("C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt");
@@ -98,8 +106,8 @@ void LogLoader::readSettings()
     }
     if(!logConfig.isNull()) checkLogConfig(logConfig);
 
-    qDebug() << "LogLoader: " << "Path log.config " << logConfig;
     qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
+    qDebug() << "LogLoader: " << "Path log.config " << logConfig;
 }
 
 

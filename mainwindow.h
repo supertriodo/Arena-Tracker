@@ -75,6 +75,7 @@ public slots:
     //Buttons
     void updateArenaFromWeb();
     void uploadOldLog();
+    void enableRefreshButton();
 
     void writeLog(QString line);
 };

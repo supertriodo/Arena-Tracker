@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "logloader.h"
-#include <QtWidgets>
+#include <QSettings>
+#include <QCloseEvent>
+#include <QTimer>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -88,6 +90,7 @@ void MainWindow::completeUI()
 
     ui->tabWidget->setTabText(0, "Arena");
     ui->tabWidget->setTabText(1, "Log");
+    ui->tabWidget->setCurrentIndex(0);
     ui->uploadButton->setEnabled(false);
     ui->updateButton->setEnabled(false);
 
@@ -587,6 +590,17 @@ void MainWindow::updateArenaFromWeb()
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
     webUploader->checkArenaCurrentReload();
     ui->updateButton->setEnabled(false);
+    QTimer::singleShot(5000, this, SLOT(enableRefreshButton()));
+}
+
+
+void MainWindow::enableRefreshButton()
+{
+    if(!ui->updateButton->isEnabled())
+    {
+        setStatusBarMessage(tr("No internet access to Arena Mastery"));
+        ui->updateButton->setEnabled(true);
+    }
 }
 
 

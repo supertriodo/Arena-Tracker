@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -43,7 +43,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Upload</string>
+             <string> Upload</string>
             </property>
             <property name="icon">
              <iconset resource="arenatracker.qrc">
@@ -73,7 +73,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Refresh</string>
+             <string> Refresh</string>
             </property>
             <property name="icon">
              <iconset resource="arenatracker.qrc">
@@ -179,7 +179,7 @@
      <x>0</x>
      <y>0</y>
      <width>497</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
