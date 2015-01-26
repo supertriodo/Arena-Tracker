@@ -21,5 +21,6 @@
         <file>Images/upload32.png</file>
         <file>Images/refresh64.png</file>
         <file>Images/upload64.png</file>
+        <file>Images/donate.gif</file>
     </qresource>
 </RCC>

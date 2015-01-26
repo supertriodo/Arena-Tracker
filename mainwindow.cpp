@@ -4,6 +4,7 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QTimer>
+#include <QDesktopServices>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -98,6 +99,8 @@ void MainWindow::completeUI()
             this, SLOT(uploadOldLog()));
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(updateArenaFromWeb()));
+    connect(ui->donateButton, SIGNAL(clicked()),
+            this, SLOT(openDonateWeb()));
 }
 
 
@@ -673,4 +676,13 @@ void MainWindow::uploadOldLog()
             if(child->icon(4).isNull()) child->setIcon(4, QIcon(":Images/upload32.png"));
         }
     }
+}
+
+
+void MainWindow::openDonateWeb()
+{
+    QDesktopServices::openUrl(QUrl(
+        "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&"
+        "item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
+        ));
 }
