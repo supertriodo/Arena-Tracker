@@ -38,7 +38,7 @@ void MainWindow::createLogLoader()
 {
     if(logLoader != NULL)   return;
     qint64 logSize;
-    logLoader = new LogLoader(this, logSize);
+    logLoader = new LogLoader(this);
     connect(logLoader, SIGNAL(synchronized()),
             this, SLOT(createWebUploader()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
@@ -54,6 +54,7 @@ void MainWindow::createLogLoader()
             this, SLOT(showArenaReward(int,int,bool,bool,bool)));
     connect(logLoader, SIGNAL(arenaRewardsComplete()),
             this, SLOT(uploadCurrentArenaRewards()));
+    logLoader->init(logSize);
 
     ui->progressBar->setMaximum(logSize/1000);
     ui->progressBar->setMinimum(0);

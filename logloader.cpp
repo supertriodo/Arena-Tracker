@@ -7,12 +7,16 @@
 #include <QMessageBox>
 #include <QSettings>
 
-LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
+LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
     fileWatcher = NULL;
     logWorker = NULL;
     gameWatcher = NULL;
+}
 
+
+void LogLoader::init(qint64 &logSize)
+{
     readSettings();
     logSize = getLogFileSize();
     while(logSize == 0)
@@ -25,6 +29,7 @@ LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
 
     if(logSize > 0)
     {
+        emit sendLog(tr("Log: Linked to log."));
         this->logSize = logSize;
         workerRunning = false;
         firstRun = true;
@@ -49,10 +54,12 @@ LogLoader::LogLoader(QObject *parent, qint64 &logSize) : QObject(parent)
         connect(gameWatcher, SIGNAL(sendLog(QString)),
                 this, SLOT(emitSendLog(QString)));
 
-
-
         createFileWatcher();
         prepareLogWorker(logPath);
+    }
+    else
+    {
+        emit sendLog(tr("Log: Log not found."));
     }
 }
 
@@ -85,7 +92,7 @@ void LogLoader::readSettings()
     }
 
 #ifdef QT_DEBUG
-//   logPath = QString("/home/triodo/.Hearthstone/arena2.txt");
+//   logPath = QString("/home/triodo/arena2.txt");
 #endif
 
     QString logConfig = settings.value("logConfig", "").toString();
@@ -94,7 +101,8 @@ void LogLoader::readSettings()
     {
         QString initDir;
 #ifdef Q_OS_WIN32
-        initDir = QDir::toNativeSeparators(QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config");
+        //initDir = QDir::toNativeSeparators(QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config");
+        initDir = QDir::toNativeSeparators(QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config");
 #endif
 #ifdef Q_OS_LINUX
         initDir = QDir::homePath();
@@ -132,6 +140,8 @@ void LogLoader::checkLogConfig(QString logConfig)
     checkLogConfigOption("[Power]", data, stream);
     checkLogConfigOption("[Rachelle]", data, stream);
     checkLogConfigOption("[Zone]", data, stream);
+
+    file->close();
 }
 
 

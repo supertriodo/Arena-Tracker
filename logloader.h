@@ -14,7 +14,7 @@ class LogLoader : public QObject
 
 //Constructor
 public:
-    LogLoader(QObject *parent, qint64 &logSize);
+    LogLoader(QObject *parent);
     ~LogLoader();
 
 //Variables
@@ -37,6 +37,9 @@ private:
     void readSettings();
     void checkLogConfig(QString logConfig);
     void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
+
+public:
+    void init(qint64 &logSize);
 
 //Signals
 signals:
