@@ -1,5 +1,6 @@
 # Arena-Tracker
-Track your Hearthstone arenas and keep your Arena Mastery account updated.
+Arena Tracker reads the Hearthstone log to keep track of your arena games and rewards.
+It connects to www.arenamastery.com and automatically upload them to your account.
 
 ## Windows First Run
 The first time you run Arena Tracker you will be asked for:
