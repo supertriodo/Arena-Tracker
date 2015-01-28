@@ -26,4 +26,5 @@ The first time you run Arena Tracker you will be asked for:
 * In the botton left set the build to Release and Run.
  * From now on you can just run the created executable without Qt Creator.
  
-If you find anything is missing or wrong please say it.
+If you find anything is missing or wrong please share it.  
+http://www.reddit.com/r/ArenaTracker/
