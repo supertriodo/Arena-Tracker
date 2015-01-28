@@ -16,3 +16,14 @@ The first time you run Arena Tracker you will be asked for:
 * After your first game:
 * 4) Your Hearthstone name.
  * A pop up message will appear asking your name.
+
+## Build from source (Linux, Windows & Mac)
+* Download & install QT Community.
+ * http://www.qt.io/download-open-source/
+* Download or clone Arena Tracker source code.
+* Open Qt Creator and open Arena Tracker project.
+ * Open File or project... Look for ArenaTracker.pro
+* In the botton left set the build to Release and Run.
+ * From now on you can just run the created executable without Qt Creator.
+ 
+If you find anything is missing or wrong please say it.
