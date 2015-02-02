@@ -5,6 +5,11 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
     arenaMode = false;
+    deckRead = false;
+    synchronized = false;
+#ifdef QT_DEBUG
+    synchronized = true;//Testing
+#endif
     match = new QRegularExpressionMatch();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -55,6 +60,10 @@ void GameWatcher::processLogLine(QString &line)
                     emit sendLog(tr("Log: WARNING:Discard game, info missing in log."));
                     gameState = noGame;
                 }
+                if(arenaMode && synchronized)//Nos ahorramos resetear el deck entre partidas del old log
+                {
+                    emit endGame();
+                }
             }
             else
             {
@@ -63,6 +72,14 @@ void GameWatcher::processLogLine(QString &line)
                 arenaMode = true;//Testing
 #endif
 //                qDebug() << "GameWatcher: "<< "Fuera de arena.";
+            }
+
+            if(gameState == readingDeck)
+            {
+                deckRead = true;
+                gameState = noGame;
+                qDebug() << "GameWatcher: "<< "Final leer deck.";
+                emit sendLog(tr("Log: Active deck read."));
             }
         }
     }
@@ -110,11 +127,59 @@ void GameWatcher::processLogLine(QString &line)
             qDebug() << "GameWatcher: "<< "Nueva arena.";
             emit sendLog(tr("Log: New arena."));
             emit newArena(hero);
+            deckRead = false;
         }
     }
     else if(line.startsWith("[Power]"))
     {
         processGameLine(line);
+    }
+    else if(line.startsWith("[Zone]"))
+    {
+        if(synchronized && gameState == winnerState)
+        {
+            if(line.contains(QRegularExpression(
+                "\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=0 cardId=(\\w+) player=\\d+\\] zone from FRIENDLY DECK ->"
+                ), match))
+            {
+                if(match->captured(2) != "DECK")
+                {
+                    qDebug() << "GameWatcher: " << "Carta robada: " << match->captured(3) << " - " << match->captured(1);
+                    emit cardDrawn(match->captured(3));
+                }
+            }
+
+        }
+    }
+    else
+    {
+        if(!deckRead)
+        {
+            if(line.startsWith("[Ben]"))
+            {
+                if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
+                {
+                    gameState = readingDeck;
+                    qDebug() << "GameWatcher: "<< "Inicio leer deck.";
+                }
+            }
+            else if(line.startsWith("[Asset]"))
+            {
+                if(gameState == readingDeck)
+                {
+                    if(line.contains(QRegularExpression(
+                            "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+                    {
+                        QString card = match->captured(1);
+                        if(!card.contains("HERO"))
+                        {
+                            qDebug() << "GameWatcher: "<< "Nueva carta.";
+                            emit newDeckCard(card);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -123,12 +188,22 @@ void GameWatcher::processGameLine(QString &line)
 {
     switch(gameState)
     {
+        case readingDeck:
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
+                if(gameState == readingDeck)
+                {
+                    deckRead = true;
+                    gameState = noGame;
+                    qDebug() << "GameWatcher: "<< "Final leer deck.";
+                    emit sendLog(tr("Log: Active deck read."));
+                }
+
                 if(arenaMode)
                 {
                     gameState = heroType1State;
+                    if(synchronized)    emit startGame();
                 }
             }
             break;
@@ -175,6 +250,13 @@ void GameWatcher::processGameLine(QString &line)
                 gameState = noGame;
                 createGameResult();
             }
+            else if(synchronized && line.contains(QRegularExpression(
+                    "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
+                    ), match))
+            {
+                qDebug() << "GameWatcher: " << "Carta Inicial robada: " << match->captured(1);
+                emit cardDrawn(match->captured(1));
+            }
             break;
         case inRewards:
             break;
@@ -189,6 +271,7 @@ QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
     msgBox.setWindowTitle(tr("Player Tag"));
     QPushButton *button1 = msgBox.addButton(playerName1, QMessageBox::ActionRole);
     QPushButton *button2 = msgBox.addButton(playerName2, QMessageBox::ActionRole);
+    QPushButton *button3 = msgBox.addButton("None", QMessageBox::ActionRole);
 
     msgBox.exec();
 
@@ -202,6 +285,7 @@ QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
     }
     else
     {
+        (void)button3;
         return playerTag;
     }
 }
@@ -223,10 +307,16 @@ void GameWatcher::createGameResult()
         gameResult.playerHero = hero1;
         gameResult.enemyHero = hero2;
     }
-    else
+    else if(name2 == playerTag)
     {
         gameResult.playerHero = hero2;
         gameResult.enemyHero = hero1;
+    }
+    else
+    {
+        qDebug() << "GameWatcher: "<< "ERROR: PlayerTag no jugo en esta partida.";
+        emit sendLog(tr("Log: WARNING:Registered game played without you.") + "" + playerTag);
+        return;
     }
 
     gameResult.isFirst = (firstPlayer == playerTag);
@@ -236,4 +326,14 @@ void GameWatcher::createGameResult()
     emit sendLog(tr("Log: New game."));
 
     emit newGameResult(gameResult);
+}
+
+
+void GameWatcher::setSynchronized()
+{
+    this->synchronized = true;
+    if(gameState == winnerState) //Para el caso que Arena Tracker arranque en mitad de una partida
+    {
+        emit startGame();
+    }
 }

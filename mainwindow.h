@@ -5,6 +5,9 @@
 #include "webuploader.h"
 #include <QMainWindow>
 #include <QTreeWidgetItem>
+#include <QListWidgetItem>
+#include <QMap>
+#include <QJsonObject>
 
 #define GREEN QColor(200,250,200)
 #define RED QColor(Qt::red)
@@ -14,6 +17,19 @@
 namespace Ui {
 class MainWindow;
 }
+
+
+class DeckCard
+{
+public:
+    DeckCard(){listItem = NULL; total=remaining=1;}
+    QListWidgetItem *listItem;
+    QString code;
+    int cost;
+    uint total;
+    uint remaining;
+};
+
 
 class MainWindow : public QMainWindow
 {
@@ -34,6 +50,9 @@ private:
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<ArenaResult> arenaLogList;
     bool noArena;
+    QList<DeckCard> deckCardList;
+    QMap<QString, QJsonObject> cardsJson;
+    int remainingCards;
 
 //Metodos
 private:
@@ -47,6 +66,10 @@ private:
     void newArenaRewards(ArenaRewards arenaRewards);
     bool newArenaUploadButton(QString &hero);
     void setStatusBarMessage(const QString &message, int timeout=0);
+    void resetDeckCardList();
+    void initCardsJson();
+    void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
+    void insertDeckCard(DeckCard deckCard);
 
 //Override events
 protected:
@@ -59,6 +82,7 @@ public slots:
     bool newArena(QString hero);
     void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void uploadCurrentArenaRewards();
+    void newDeckCard(QString card);
 
     //LogLoader
     void createWebUploader();
@@ -77,8 +101,14 @@ public slots:
     void uploadOldLog();
     void enableRefreshButton();
     void openDonateWeb();
+    void enableDeckButtons();
+    void cardTotalMin();
+    void cardTotalPlus();
 
     void writeLog(QString line);
+    void lockDeckInterface();
+    void unlockDeckInterface();
+    void showCardDrawn(QString code);
 };
 
 #endif // MAINWINDOW_H

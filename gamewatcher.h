@@ -38,7 +38,8 @@ public:
     ~GameWatcher();
 
 private:
-    enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State, winnerState, inRewards };
+    enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
+                     winnerState, inRewards, readingDeck };
 
 //Variables
 private:
@@ -46,7 +47,9 @@ private:
     GameState gameState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
     bool arenaMode;
+    bool deckRead;
     QRegularExpressionMatch *match;
+    bool synchronized; //Ahorra buscar ciertas lineas al leer old log
 
 //Metodos
 private:
@@ -56,13 +59,18 @@ private:
 
 public:
     void processLogLine(QString &line);
+    void setSynchronized();
 
 signals:
     void newGameResult(GameResult gameResult);
     void newArena(QString hero);
     void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void arenaRewardsComplete();
+    void newDeckCard(QString card);
     void sendLog(QString line);
+    void startGame();
+    void endGame();
+    void cardDrawn(QString code);
 
 public slots:
 };

@@ -52,6 +52,10 @@ signals:
     void newArena(QString hero);
     void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void arenaRewardsComplete();
+    void newDeckCard(QString card);
+    void startGame();
+    void endGame();
+    void cardDrawn(QString code);
 
 //Slots
 private slots:
@@ -66,7 +70,11 @@ private slots:
     void emitNewArena(QString hero);
     void emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void emitArenaRewardsComplete();
+    void emitNewDeckCard(QString card);
     void emitSendLog(QString line);
+    void emitStartGame();
+    void emitEndGame();
+    void emitCardDrawn(QString code);
 };
 
 #endif // LOGLOADER_H

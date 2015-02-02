@@ -51,8 +51,16 @@ void LogLoader::init(qint64 &logSize)
                 this, SLOT(emitNewArenaReward(int,int,bool,bool,bool)));
         connect(gameWatcher, SIGNAL(arenaRewardsComplete()),
                 this, SLOT(emitArenaRewardsComplete()));
+        connect(gameWatcher, SIGNAL(newDeckCard(QString)),
+                this, SLOT(emitNewDeckCard(QString)));
         connect(gameWatcher, SIGNAL(sendLog(QString)),
                 this, SLOT(emitSendLog(QString)));
+        connect(gameWatcher, SIGNAL(startGame()),
+                this, SLOT(emitStartGame()));
+        connect(gameWatcher, SIGNAL(endGame()),
+                this, SLOT(emitEndGame()));
+        connect(gameWatcher, SIGNAL(cardDrawn(QString)),
+                this, SLOT(emitCardDrawn(QString)));
 
         createFileWatcher();
         prepareLogWorker(logPath);
@@ -92,7 +100,7 @@ void LogLoader::readSettings()
     }
 
 #ifdef QT_DEBUG
-//   logPath = QString("/home/triodo/arena2.txt");
+//    logPath = QString("/home/triodo/Documentos/arena_FULLLOG_part3.txt");
 #endif
 
     QString logConfig = settings.value("logConfig", "").toString();
@@ -226,7 +234,7 @@ void LogLoader::prepareLogWorker(QString path)
 
 void LogLoader::sendLogWorker()
 {
-    qDebug() << "LogLoader: "<< "Fichero cambiado.";
+//    qDebug() << "LogLoader: "<< "Fichero cambiado.";
     if(isLogReset())
     {
         qDebug() << "LogLoader: "<< "Worker esperando (log reiniciado).";
@@ -235,7 +243,7 @@ void LogLoader::sendLogWorker()
     }
     else
     {
-        qDebug() << "LogLoader: "<< "Worker enviado.";
+//        qDebug() << "LogLoader: "<< "Worker enviado.";
         logWorker->readLog();
     }
 }
@@ -243,7 +251,7 @@ void LogLoader::sendLogWorker()
 
 void LogLoader::setWorkerFinished()
 {
-    qDebug() << "LogLoader: "<< "Worker libre.";
+//    qDebug() << "LogLoader: "<< "Worker libre.";
     workerRunning = false;
     checkFirstRun();
 }
@@ -255,6 +263,7 @@ void LogLoader::checkFirstRun()
     {
         firstRun = false;
         emit synchronized();
+        gameWatcher->setSynchronized();
     }
 }
 
@@ -304,4 +313,13 @@ void LogLoader::emitNewArena(QString hero){emit newArena(hero);}
 void LogLoader::emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard)
 {emit newArenaReward(gold, dust, pack, goldCard, plainCard);}
 void LogLoader::emitArenaRewardsComplete(){emit arenaRewardsComplete();}
+void LogLoader::emitNewDeckCard(QString card){emit newDeckCard(card);}
 void LogLoader::emitSendLog(QString line){emit sendLog(line);}
+void LogLoader::emitStartGame(){emit startGame();}
+void LogLoader::emitEndGame(){emit endGame();}
+void LogLoader::emitCardDrawn(QString code){emit cardDrawn(code);}
+
+
+
+
+

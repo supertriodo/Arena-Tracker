@@ -5,6 +5,11 @@
 #include <QCloseEvent>
 #include <QTimer>
 #include <QDesktopServices>
+#include <QPixmap>
+#include <QPaintEngine>
+#include <QFontDatabase>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //Iniciamos la loglist con la arena huerfana
     arenaLogList.append(ArenaResult());
 
+    //Iniciamos deckCardList con 30 cartas desconocidas
+    initCardsJson();
+    resetDeckCardList();
+
     logLoader = NULL;
     webUploader = NULL;
 
@@ -31,6 +40,42 @@ MainWindow::~MainWindow()
     if(logLoader != NULL)   delete logLoader;
     delete webUploader;
     delete ui;
+    ui->listWidget->clear();
+    deckCardList.clear();
+}
+
+
+void MainWindow::resetDeckCardList()
+{
+    ui->listWidget->clear();
+    deckCardList.clear();
+
+
+    DeckCard deckCard;
+    deckCard.code = "";
+    deckCard.cost = -1;
+    deckCard.total = 30;
+    deckCard.listItem = new QListWidgetItem();
+    drawListWidgetItem(deckCard);
+    insertDeckCard(deckCard);
+}
+
+
+void MainWindow::initCardsJson()
+{
+    QFile jsonFile(":Json/AllSets.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    QJsonObject jsonAllSets = jsonDoc.object();
+    for(QJsonObject::const_iterator it=jsonAllSets.constBegin(); it!=jsonAllSets.constEnd(); it++)
+    {
+        QJsonArray array = it.value().toArray();
+        for(QJsonArray::const_iterator it2=array.constBegin(); it2!=array.constEnd(); it2++)
+        {
+            cardsJson[(*it2).toObject().value("id").toString()] = (*it2).toObject();
+        }
+    }
 }
 
 
@@ -54,6 +99,14 @@ void MainWindow::createLogLoader()
             this, SLOT(showArenaReward(int,int,bool,bool,bool)));
     connect(logLoader, SIGNAL(arenaRewardsComplete()),
             this, SLOT(uploadCurrentArenaRewards()));
+    connect(logLoader, SIGNAL(newDeckCard(QString)),
+            this, SLOT(newDeckCard(QString)));
+    connect(logLoader, SIGNAL(startGame()),
+            this, SLOT(lockDeckInterface()));
+    connect(logLoader, SIGNAL(endGame()),
+            this, SLOT(unlockDeckInterface()));
+    connect(logLoader, SIGNAL(cardDrawn(QString)),
+            this, SLOT(showCardDrawn(QString)));
     logLoader->init(logSize);
 
     ui->progressBar->setMaximum(logSize/1000);
@@ -90,18 +143,29 @@ void MainWindow::completeUI()
 {
     createTreeWidget();
 
-    ui->tabWidget->setTabText(0, "Arena");
-    ui->tabWidget->setTabText(1, "Log");
     ui->tabWidget->setCurrentIndex(0);
     ui->uploadButton->setEnabled(false);
     ui->updateButton->setEnabled(false);
+    ui->deckButtonMin->setEnabled(false);
+    ui->deckButtonPlus->setEnabled(false);
+    ui->listWidget->setIconSize(QSize(218,35));
 
+#ifndef Q_OS_LINUX
+    QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
+    ui->listWidget->setFont(QFont(":Fonts/hsFont.ttf"));
+#endif
     connect(ui->uploadButton, SIGNAL(clicked()),
             this, SLOT(uploadOldLog()));
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(updateArenaFromWeb()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
+    connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
+            this, SLOT(enableDeckButtons()));
+    connect(ui->deckButtonMin, SIGNAL(clicked()),
+            this, SLOT(cardTotalMin()));
+    connect(ui->deckButtonPlus, SIGNAL(clicked()),
+            this, SLOT(cardTotalPlus()));
 }
 
 
@@ -354,6 +418,7 @@ bool MainWindow::newArenaUploadButton(QString &hero)
 
 bool MainWindow::newArena(QString hero)
 {
+    resetDeckCardList();
     showArena(hero);
 
     if(webUploader==NULL)
@@ -611,18 +676,6 @@ void MainWindow::enableRefreshButton()
 void MainWindow::uploadOldLog()
 {
     qDebug() << "MainWindow: " << "Uploading old log...";
-//    for(int i=0; i<arenaLogList.count(); i++)
-//    {
-//        ArenaResult arena = arenaLogList.at(i);
-//        qDebug() << arena.playerHero;
-
-//        for(int j=0; j<arena.gameResultList.count(); j++)
-//        {
-//            qDebug() << arena.gameResultList.at(j).playerHero << arena.gameResultList.at(j).enemyHero;
-//        }
-//        qDebug() << arena.arenaRewards.gold << arena.arenaRewards.dust << arena.arenaRewards.packs
-//                     << arena.arenaRewards.plainCards << arena.arenaRewards.goldCards;
-//    }
 
     setStatusBarMessage(tr("Uploading to Arena Mastery..."), 3000);
 
@@ -686,4 +739,244 @@ void MainWindow::openDonateWeb()
         "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&"
         "item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
         ));
+}
+
+
+void MainWindow::newDeckCard(QString card)
+{
+    DeckCard deckCard;
+    deckCard.code = card;
+    deckCard.cost = cardsJson[card].value("cost").toInt();
+    deckCard.listItem = new QListWidgetItem();
+    drawListWidgetItem(deckCard);
+    insertDeckCard(deckCard);
+
+    deckCardList[0].total--;
+    drawListWidgetItem(deckCardList[0]);
+}
+
+
+void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
+{
+    QListWidgetItem * item = deckCard.listItem;
+    QString code = deckCard.code;
+    uint total = drawTotal?deckCard.total:deckCard.remaining;
+    QString type = cardsJson[code].value("type").toString();
+    QString name = cardsJson[code].value("name").toString();
+    int cost = deckCard.cost;
+    if(code=="")    code = "unknown";
+    QFont font("Belwe Bd BT");
+
+    QPixmap canvas(218,35);
+    QPainter painter;
+    painter.begin(&canvas);
+        //Card
+        painter.fillRect(canvas.rect(), Qt::white);
+        QRectF target;
+        QRectF source;
+        if(code == "unknown")               source = QRectF(63,18,100,25);
+        else if(type==QString("Minion"))    source = QRectF(48,72,100,25);
+        else                                source = QRectF(48,98,100,25);
+        if(total > 1)                       target = QRectF(100,6,100,25);
+        else                                target = QRectF(113,6,100,25);
+        painter.drawPixmap(target, QPixmap(":Images/HSCards/" + code + ".png"), source);
+
+        //Background and #cards
+        if(total == 1)  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
+        else
+        {
+            painter.drawPixmap(0,0,QPixmap(":Images/bgCard2.png"));
+
+            font.setPointSize(16);
+            painter.setFont(font);
+            painter.setPen(QPen(YELLOW));
+            painter.drawText(QRectF(190,6,26,24), Qt::AlignCenter, QString::number(total));
+        }
+
+        //Name
+        font.setPointSize(10);
+        painter.setFont(font);
+        painter.setPen(QPen(WHITE));
+        if(name=="")
+        {
+            painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, "Unknown");
+        }
+        else
+        {
+            painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
+
+            //Mana cost
+            font.setPointSize(16);
+            font.setBold(true);
+            painter.setFont(font);
+            painter.setPen(QPen(QColor(Qt::black)));
+            painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
+            font.setBold(false);
+            painter.setFont(font);
+            painter.setPen(QPen(WHITE));
+            painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
+        }
+    painter.end();
+
+    item->setIcon(QIcon(canvas));
+    item->setToolTip("<html><img src=:Images/HSCards/" + code + ".png/></html>");
+}
+
+
+void MainWindow::insertDeckCard(DeckCard deckCard)
+{
+    for(int i=0; i<deckCardList.length(); i++)
+    {
+        if(deckCard.cost<deckCardList[i].cost)
+        {
+            deckCardList.insert(i, deckCard);
+            ui->listWidget->insertItem(i, deckCard.listItem);
+            return;
+        }
+    }
+    deckCardList.append(deckCard);
+    ui->listWidget->addItem(deckCard.listItem);
+}
+
+
+void MainWindow::enableDeckButtons()
+{
+    int index = ui->listWidget->currentRow();
+
+    if(index>0 && deckCardList[index].total > 1)
+                                        ui->deckButtonMin->setEnabled(true);
+    else                                ui->deckButtonMin->setEnabled(false);
+    if(index>0 && deckCardList.first().total > 0)
+                                        ui->deckButtonPlus->setEnabled(true);
+    else                                ui->deckButtonPlus->setEnabled(false);
+}
+
+
+void MainWindow::cardTotalMin()
+{
+    int index = ui->listWidget->currentRow();
+    deckCardList[index].total--;
+    deckCardList[0].total++;
+
+    drawListWidgetItem(deckCardList[index]);
+    if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
+    drawListWidgetItem(deckCardList[0]);
+    enableDeckButtons();
+}
+
+
+void MainWindow::cardTotalPlus()
+{
+    int index = ui->listWidget->currentRow();
+    deckCardList[index].total++;
+    deckCardList[0].total--;
+
+    drawListWidgetItem(deckCardList[index]);
+    if(deckCardList[0].total==0)    deckCardList[0].listItem->setHidden(true);
+    else                            drawListWidgetItem(deckCardList[0]);
+    enableDeckButtons();
+}
+
+
+void MainWindow::lockDeckInterface()
+{
+    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    {
+        it->remaining = it->total;
+    }
+
+    ui->listWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->listWidget->selectionModel()->reset();
+    ui->deckButtonMin->setHidden(true);
+    ui->deckButtonPlus->setHidden(true);
+
+    remainingCards = 30;
+    setStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
+}
+
+
+void MainWindow::unlockDeckInterface()
+{
+    for (QList<DeckCard>::const_iterator it = deckCardList.constBegin(); it != deckCardList.constEnd(); it++)
+    {
+        if(it->total>0)
+        {
+            drawListWidgetItem(*it);
+            it->listItem->setHidden(false);
+        }
+        else    it->listItem->setHidden(true);
+    }
+
+    ui->listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->deckButtonMin->setHidden(false);
+    ui->deckButtonPlus->setHidden(false);
+    ui->deckButtonMin->setEnabled(false);
+    ui->deckButtonPlus->setEnabled(false);
+
+    setStatusBarMessage(tr("Game over"), 3000);
+}
+
+
+void MainWindow::showCardDrawn(QString code)
+{    
+    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    {
+        if(it->code == code)
+        {
+            if(it->remaining>1)
+            {
+                it->remaining--;
+                drawListWidgetItem(*it, false);
+                emit writeLog(tr("Log: Card drawn: ") +
+                              cardsJson[code].value("name").toString());
+                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+            }
+            else if(it->remaining == 1)
+            {
+                it->remaining--;
+                it->listItem->setHidden(true);
+                emit writeLog(tr("Log: Card drawn: ") +
+                              cardsJson[code].value("name").toString());
+                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+            }
+            //it->remaining == 0
+            //MALORNE
+            else if(code == "GVG_035")  return;
+            //Reajustamos el mazo si tiene unknown cards
+            else if(deckCardList[0].total>0)
+            {
+                deckCardList[0].total--;
+                if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+                else                            drawListWidgetItem(deckCardList[0]);
+                it->total++;
+
+                qDebug() << "MainWindow: " << "Nueva copia de carta " <<
+                            cardsJson[code].value("name").toString() <<
+                            " robada, completando mazo.";
+                emit writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
+                              cardsJson[code].value("name").toString());
+                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+            }
+            else
+            {
+                qDebug() << "MainWindow: " << "WARNING: Nueva copia de carta robada " <<
+                            cardsJson[code].value("name").toString() <<
+                            " pero el mazo esta completo.";
+                emit writeLog(tr("Log: WARNING: Extra card drawn but no more unknown cards in deck. Is the deck right? ") +
+                              cardsJson[code].value("name").toString());
+            }
+            return;
+        }
+    }
+
+    qDebug() << "MainWindow: " << "WARNING: Robada carta que no esta en el mazo " <<
+                cardsJson[code].value("name").toString();
+    emit writeLog(tr("Log: WARNING: Drawn card that is not part of your arena deck. ") +
+                  cardsJson[code].value("name").toString());
+
+//    //Testing
+//#ifdef QT_DEBUG
+//    newDeckCard(code);
+//    setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+//#endif
 }
