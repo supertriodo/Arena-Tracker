@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     completeUI();
 
+#ifdef QT_DEBUG
+    writeLog(tr("MODO DEBUG"));
+#endif
+
     readSettings();
 
     //Iniciamos la loglist con la arena huerfana
@@ -927,7 +931,7 @@ void MainWindow::showCardDrawn(QString code)
             {
                 it->remaining--;
                 drawListWidgetItem(*it, false);
-                emit writeLog(tr("Log: Card drawn: ") +
+                writeLog(tr("Log: Card drawn: ") +
                               cardsJson[code].value("name").toString());
                 setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
             }
@@ -935,7 +939,7 @@ void MainWindow::showCardDrawn(QString code)
             {
                 it->remaining--;
                 it->listItem->setHidden(true);
-                emit writeLog(tr("Log: Card drawn: ") +
+                writeLog(tr("Log: Card drawn: ") +
                               cardsJson[code].value("name").toString());
                 setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
             }
@@ -953,7 +957,7 @@ void MainWindow::showCardDrawn(QString code)
                 qDebug() << "MainWindow: " << "Nueva copia de carta " <<
                             cardsJson[code].value("name").toString() <<
                             " robada, completando mazo.";
-                emit writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
+                writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
                               cardsJson[code].value("name").toString());
                 setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
             }
@@ -962,7 +966,7 @@ void MainWindow::showCardDrawn(QString code)
                 qDebug() << "MainWindow: " << "WARNING: Nueva copia de carta robada " <<
                             cardsJson[code].value("name").toString() <<
                             " pero el mazo esta completo.";
-                emit writeLog(tr("Log: WARNING: Extra card drawn but no more unknown cards in deck. Is the deck right? ") +
+                writeLog(tr("Log: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
                               cardsJson[code].value("name").toString());
             }
             return;
@@ -971,12 +975,15 @@ void MainWindow::showCardDrawn(QString code)
 
     qDebug() << "MainWindow: " << "WARNING: Robada carta que no esta en el mazo " <<
                 cardsJson[code].value("name").toString();
-    emit writeLog(tr("Log: WARNING: Drawn card that is not part of your arena deck. ") +
+    writeLog(tr("Log: WARNING: Drawn card not in your deck. ") +
                   cardsJson[code].value("name").toString());
 
-//    //Testing
-//#ifdef QT_DEBUG
-//    newDeckCard(code);
-//    setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
-//#endif
+    //Testing
+#ifdef QT_DEBUG
+    if(deckCardList[0].total>0)
+    {
+        newDeckCard(code);
+        showCardDrawn(code);
+    }
+#endif
 }

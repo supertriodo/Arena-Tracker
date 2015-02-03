@@ -117,7 +117,7 @@ void LogLoader::readSettings()
 #endif
         logConfig = QFileDialog::getOpenFileName(0,
             tr("Find Hearthstone config log (log.config)"), initDir,
-            tr("Hearthstone log (log.config)"));
+            tr("(*.*)"));
         settings.setValue("logConfig", logConfig);
     }
     if(!logConfig.isNull()) checkLogConfig(logConfig);
@@ -148,6 +148,8 @@ void LogLoader::checkLogConfig(QString logConfig)
     checkLogConfigOption("[Power]", data, stream);
     checkLogConfigOption("[Rachelle]", data, stream);
     checkLogConfigOption("[Zone]", data, stream);
+    checkLogConfigOption("[Ben]", data, stream);
+    checkLogConfigOption("[Asset]", data, stream);
 
     file->close();
 }
@@ -223,7 +225,10 @@ void LogLoader::createFileWatcher()
 
 void LogLoader::prepareLogWorker(QString path)
 {
-    (void)path;
+    if (!fileWatcher->files().contains(path))
+    {
+        fileWatcher->addPath(path);
+    }
     if(workerRunning)    return;
 
     workerRunning = true;
