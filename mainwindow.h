@@ -3,10 +3,11 @@
 
 #include "logloader.h"
 #include "webuploader.h"
+#include "deckcard.h"
+#include "hscarddownloader.h"
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QListWidgetItem>
-#include <QMap>
 #include <QJsonObject>
 
 #define GREEN QColor(200,250,200)
@@ -17,18 +18,6 @@
 namespace Ui {
 class MainWindow;
 }
-
-
-class DeckCard
-{
-public:
-    DeckCard(){listItem = NULL; total=remaining=1;}
-    QListWidgetItem *listItem;
-    QString code;
-    int cost;
-    uint total;
-    uint remaining;
-};
 
 
 class MainWindow : public QMainWindow
@@ -45,6 +34,7 @@ private:
     Ui::MainWindow *ui;
     LogLoader *logLoader;
     WebUploader *webUploader;
+    HSCardDownloader *cardDownloader;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
@@ -54,22 +44,24 @@ private:
     QMap<QString, QJsonObject> cardsJson;
     int remainingCards;
 
+
 //Metodos
 private:
     void createLogLoader();
+    void createCardDownloader();
     void readSettings();
     void writeSettings();
     void completeUI();
     void createTreeWidget();
     void setRowColor(QTreeWidgetItem *item, QColor color);
     bool isRowOk(QTreeWidgetItem *item);
-    void newArenaRewards(ArenaRewards arenaRewards);
+    void newArenaRewards(ArenaRewards &arenaRewards);
     bool newArenaUploadButton(QString &hero);
     void setStatusBarMessage(const QString &message, int timeout=0);
     void resetDeckCardList();
     void initCardsJson();
-    void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
-    void insertDeckCard(DeckCard deckCard);
+    void insertDeckCard(DeckCard &deckCard);
+    void checkCardImage(DeckCard &deckCard);
 
 //Override events
 protected:
@@ -109,6 +101,7 @@ public slots:
     void lockDeckInterface();
     void unlockDeckInterface();
     void showCardDrawn(QString code);
+    void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
 };
 
 #endif // MAINWINDOW_H

@@ -10,6 +10,7 @@
 #include <QFontDatabase>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QFileInfo>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     completeUI();
 
 #ifdef QT_DEBUG
-    writeLog(tr("MODO DEBUG"));
+    writeLog(tr("MODE DEBUG"));
 #endif
 
     readSettings();
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     logLoader = NULL;
     webUploader = NULL;
 
+    createCardDownloader();
     createLogLoader();
 }
 
@@ -43,6 +45,7 @@ MainWindow::~MainWindow()
 {
     if(logLoader != NULL)   delete logLoader;
     delete webUploader;
+    delete cardDownloader;
     delete ui;
     ui->listWidget->clear();
     deckCardList.clear();
@@ -80,6 +83,16 @@ void MainWindow::initCardsJson()
             cardsJson[(*it2).toObject().value("id").toString()] = (*it2).toObject();
         }
     }
+}
+
+
+void MainWindow::createCardDownloader()
+{
+    cardDownloader = new HSCardDownloader();
+    connect(cardDownloader, SIGNAL(downloaded(DeckCard)),
+            this, SLOT(drawListWidgetItem(DeckCard)));
+    connect(cardDownloader, SIGNAL(sendLog(QString)),
+            this, SLOT(writeLog(QString)));
 }
 
 
@@ -603,7 +616,7 @@ void MainWindow::showArenaReward(int gold, int dust, bool pack, bool goldCard, b
 
 
 //Se usa para upload del old log
-void MainWindow::newArenaRewards(ArenaRewards arenaRewards)
+void MainWindow::newArenaRewards(ArenaRewards &arenaRewards)
 {
     if(arenaCurrent == NULL && !noArena)
     {
@@ -757,7 +770,22 @@ void MainWindow::newDeckCard(QString card)
 
     deckCardList[0].total--;
     drawListWidgetItem(deckCardList[0]);
+
+    checkCardImage(deckCard);
 }
+
+
+void MainWindow::checkCardImage(DeckCard &deckCard)
+{
+    QFileInfo *cardFile = new QFileInfo("./HSCards/" + deckCard.code + ".png");
+
+    if(!cardFile->exists())
+    {
+        //La bajamos de HearthHead
+        cardDownloader->downloadWebImage(deckCard);
+    }
+}
+
 
 
 void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
@@ -783,7 +811,7 @@ void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
         else                                source = QRectF(48,98,100,25);
         if(total > 1)                       target = QRectF(100,6,100,25);
         else                                target = QRectF(113,6,100,25);
-        painter.drawPixmap(target, QPixmap(":Images/HSCards/" + code + ".png"), source);
+        painter.drawPixmap(target, QPixmap("./HSCards/" + code + ".png"), source);
 
         //Background and #cards
         if(total == 1)  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
@@ -823,11 +851,11 @@ void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
     painter.end();
 
     item->setIcon(QIcon(canvas));
-    item->setToolTip("<html><img src=:Images/HSCards/" + code + ".png/></html>");
+    item->setToolTip("<html><img src=./HSCards/" + code + ".png/></html>");
 }
 
 
-void MainWindow::insertDeckCard(DeckCard deckCard)
+void MainWindow::insertDeckCard(DeckCard &deckCard)
 {
     for(int i=0; i<deckCardList.length(); i++)
     {

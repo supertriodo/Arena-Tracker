@@ -17,13 +17,16 @@ SOURCES += main.cpp\
     logloader.cpp \
     logworker.cpp \
     gamewatcher.cpp \
-    webuploader.cpp
+    webuploader.cpp \
+    hscarddownloader.cpp
 
 HEADERS  += mainwindow.h \
     logloader.h \
     logworker.h \
     gamewatcher.h \
-    webuploader.h
+    webuploader.h \
+    hscarddownloader.h \
+    deckcard.h
 
 FORMS    += mainwindow.ui
 
