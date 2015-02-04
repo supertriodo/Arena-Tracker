@@ -59,7 +59,7 @@ void LogLoader::init(qint64 &logSize)
         connect(gameWatcher, SIGNAL(cardDrawn(QString)),
                 this, SLOT(emitCardDrawn(QString)));
 
-        sendLogWorker();
+        QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     }
     else
     {
@@ -98,7 +98,7 @@ void LogLoader::readSettings()
     }
 
 #ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/Documentos/arena_FULLLOG_part3.txt");
+//    logPath = QString("/home/triodo/Documentos/arenaMagoFull.txt");
 #endif
 
     QString logConfig = settings.value("logConfig", "").toString();
