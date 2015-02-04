@@ -4,9 +4,7 @@
 #include "logworker.h"
 #include "gamewatcher.h"
 #include <QObject>
-#include <QFileSystemWatcher>
 #include <QTextStream>
-
 
 class LogLoader : public QObject
 {
@@ -21,11 +19,10 @@ public:
 private:
     QString logPath;
     qint64 logSize;
-    QFileSystemWatcher * fileWatcher;
     GameWatcher *gameWatcher;
     LogWorker *logWorker;
-    bool workerRunning;
     bool firstRun;
+    int updateTime;
 
 //Metodos
 private:
@@ -37,6 +34,7 @@ private:
     void readSettings();
     void checkLogConfig(QString logConfig);
     void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
+    void workerFinished();
 
 public:
     void init(qint64 &logSize);
@@ -59,11 +57,9 @@ signals:
 
 //Slots
 private slots:
-    void prepareLogWorker(QString path);
-    void sendLogWorker();
-    void setWorkerFinished();
     void updateSeek(qint64 logSeek);
     void processLogLine(QString line);
+    void sendLogWorker();
 
     //GameWatcher signals reemit
     void emitNewGameResult(GameResult gameResult);

@@ -9,7 +9,6 @@
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
-    fileWatcher = NULL;
     logWorker = NULL;
     gameWatcher = NULL;
 }
@@ -31,12 +30,10 @@ void LogLoader::init(qint64 &logSize)
     {
         emit sendLog(tr("Log: Linked to log."));
         this->logSize = logSize;
-        workerRunning = false;
         firstRun = true;
+        updateTime = 1000;
 
         logWorker = new LogWorker(this, logPath);
-        connect(logWorker, SIGNAL(synchronized()),
-                this, SLOT(setWorkerFinished()));
         connect(logWorker, SIGNAL(newLogLineRead(QString)),
                 this, SLOT(processLogLine(QString)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
@@ -62,11 +59,12 @@ void LogLoader::init(qint64 &logSize)
         connect(gameWatcher, SIGNAL(cardDrawn(QString)),
                 this, SLOT(emitCardDrawn(QString)));
 
-        createFileWatcher();
-        prepareLogWorker(logPath);
+        sendLogWorker();
     }
     else
     {
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        settings.setValue("logPath", "");
         emit sendLog(tr("Log: Log not found."));
     }
 }
@@ -201,64 +199,30 @@ void LogLoader::waitLogExists()
 LogLoader::~LogLoader()
 {
     if(logWorker != NULL)   delete logWorker;
-    if(fileWatcher != NULL) delete fileWatcher;
     if(gameWatcher != NULL) delete gameWatcher;
-}
-
-
-void LogLoader::createFileWatcher()
-{
-    qDebug() << "LogLoader: "<< "Creando FileWatcher.";
-
-    if(fileWatcher != NULL) delete fileWatcher;
-
-    fileWatcher = new QFileSystemWatcher(this);
-    connect(fileWatcher, SIGNAL(fileChanged(QString)),
-            this, SLOT(prepareLogWorker(QString)));
-
-    if(fileWatcher->addPath(logPath))
-    {
-        qDebug() << "LogLoader: "<< "FileWatcher enlazado.";
-    }
-}
-
-
-void LogLoader::prepareLogWorker(QString path)
-{
-    if (!fileWatcher->files().contains(path))
-    {
-        fileWatcher->addPath(path);
-    }
-    if(workerRunning)    return;
-
-    workerRunning = true;
-
-    QTimer::singleShot(1000, this, SLOT(sendLogWorker()));
 }
 
 
 void LogLoader::sendLogWorker()
 {
-//    qDebug() << "LogLoader: "<< "Fichero cambiado.";
     if(isLogReset())
     {
-        qDebug() << "LogLoader: "<< "Worker esperando (log reiniciado).";
-        workerRunning = false;
-        checkFirstRun();
+        waitLogExists();
     }
-    else
-    {
-//        qDebug() << "LogLoader: "<< "Worker enviado.";
-        logWorker->readLog();
-    }
+
+//    qDebug() << "LogLoader: "<< "Worker enviado: " << updateTime;
+    logWorker->readLog();
+    workerFinished();
+//    qDebug() << "LogLoader: "<< "Worker libre.";
 }
 
 
-void LogLoader::setWorkerFinished()
+void LogLoader::workerFinished()
 {
-//    qDebug() << "LogLoader: "<< "Worker libre.";
-    workerRunning = false;
     checkFirstRun();
+    QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
+
+    if(updateTime < 4000) updateTime += 500;
 }
 
 
@@ -284,12 +248,8 @@ bool LogLoader::isLogReset()
         //Log se ha reiniciado
         qDebug() << "LogLoader: "<< "Log reiniciado. FileSize: " << newSize << " < " << logSize;
         emit sendLog(tr("Log: Hearthstone started. Log reset."));
-        waitLogExists();
-
         logWorker->resetSeek();
         logSize = 0;
-
-        createFileWatcher();
         return true;
     }
     else
@@ -308,6 +268,7 @@ void LogLoader::updateSeek(qint64 logSeek)
 
 void LogLoader::processLogLine(QString line)
 {
+    updateTime = 500;
     gameWatcher->processLogLine(line);
 }
 
