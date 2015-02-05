@@ -926,7 +926,10 @@ void MainWindow::lockDeckInterface()
     ui->deckButtonPlus->setHidden(true);
 
     remainingCards = 30;
-    setStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
+    if(webUploader != NULL)
+    {
+        setStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
+    }
 }
 
 
@@ -948,7 +951,10 @@ void MainWindow::unlockDeckInterface()
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
 
-    setStatusBarMessage(tr("Game over"), 3000);
+    if(webUploader != NULL)
+    {
+        setStatusBarMessage(tr("Game over"), 3000);
+    }
 }
 
 
@@ -962,17 +968,23 @@ void MainWindow::showCardDrawn(QString code)
             {
                 it->remaining--;
                 drawListWidgetItem(*it, false);
-                writeLog(tr("Log: Card drawn: ") +
-                              cardsJson[code].value("name").toString());
-                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                if(webUploader != NULL)
+                {
+                    writeLog(tr("Log: Card drawn: ") +
+                                  cardsJson[code].value("name").toString());
+                    setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                }
             }
             else if(it->remaining == 1)
             {
                 it->remaining--;
                 it->listItem->setHidden(true);
-                writeLog(tr("Log: Card drawn: ") +
-                              cardsJson[code].value("name").toString());
-                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                if(webUploader != NULL)
+                {
+                    writeLog(tr("Log: Card drawn: ") +
+                                  cardsJson[code].value("name").toString());
+                    setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                }
             }
             //it->remaining == 0
             //MALORNE
@@ -988,17 +1000,23 @@ void MainWindow::showCardDrawn(QString code)
                 qDebug() << "MainWindow: " << "Nueva copia de carta " <<
                             cardsJson[code].value("name").toString() <<
                             " robada, completando mazo.";
-                writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
-                              cardsJson[code].value("name").toString());
-                setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                if(webUploader != NULL)
+                {
+                    writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
+                                  cardsJson[code].value("name").toString());
+                    setStatusBarMessage(tr("Cards in deck: ") + QString::number(--remainingCards));
+                }
             }
             else
             {
                 qDebug() << "MainWindow: " << "WARNING: Nueva copia de carta robada " <<
                             cardsJson[code].value("name").toString() <<
                             " pero el mazo esta completo.";
-                writeLog(tr("Log: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
-                              cardsJson[code].value("name").toString());
+                if(webUploader != NULL)
+                {
+                    writeLog(tr("Log: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
+                                  cardsJson[code].value("name").toString());
+                }
             }
             return;
         }
@@ -1006,8 +1024,11 @@ void MainWindow::showCardDrawn(QString code)
 
     qDebug() << "MainWindow: " << "WARNING: Robada carta que no esta en el mazo " <<
                 cardsJson[code].value("name").toString();
-    writeLog(tr("Log: WARNING: Drawn card not in your deck. ") +
-                  cardsJson[code].value("name").toString());
+    if(webUploader != NULL)
+    {
+        writeLog(tr("Log: WARNING: Drawn card not in your deck. ") +
+                      cardsJson[code].value("name").toString());
+    }
 
     //Testing
 #ifdef QT_DEBUG
