@@ -6,10 +6,6 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     gameState = noGame;
     arenaMode = false;
     deckRead = false;
-    synchronized = false;
-#ifdef QT_DEBUG
-    synchronized = true;//Testing
-#endif
     match = new QRegularExpressionMatch();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -60,7 +56,7 @@ void GameWatcher::processLogLine(QString &line)
                     emit sendLog(tr("Log: WARNING:Discard game, info missing in log."));
                     gameState = noGame;
                 }
-                if(arenaMode && synchronized)//Nos ahorramos resetear el deck entre partidas del old log
+                if(arenaMode)
                 {
                     emit endGame();
                 }
@@ -136,7 +132,7 @@ void GameWatcher::processLogLine(QString &line)
     }
     else if(line.startsWith("[Zone]"))
     {
-        if(synchronized && gameState == winnerState)
+        if(gameState == winnerState)
         {
             if(line.contains(QRegularExpression(
                 "\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=0 cardId=(\\w+) player=\\d+\\] zone from FRIENDLY DECK ->"
@@ -203,7 +199,7 @@ void GameWatcher::processGameLine(QString &line)
                 if(arenaMode)
                 {
                     gameState = heroType1State;
-                    if(synchronized)    emit startGame();
+                    emit startGame();
                 }
             }
             break;
@@ -250,7 +246,7 @@ void GameWatcher::processGameLine(QString &line)
                 gameState = noGame;
                 createGameResult();
             }
-            else if(synchronized && line.contains(QRegularExpression(
+            else if(line.contains(QRegularExpression(
                     "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
                     ), match))
             {
@@ -326,14 +322,4 @@ void GameWatcher::createGameResult()
     emit sendLog(tr("Log: New game."));
 
     emit newGameResult(gameResult);
-}
-
-
-void GameWatcher::setSynchronized()
-{
-    this->synchronized = true;
-    if(gameState == winnerState) //Para el caso que Arena Tracker arranque en mitad de una partida
-    {
-        emit startGame();
-    }
 }

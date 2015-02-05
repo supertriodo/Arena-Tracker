@@ -232,7 +232,6 @@ void LogLoader::checkFirstRun()
     {
         firstRun = false;
         emit synchronized();
-        gameWatcher->setSynchronized();
     }
 }
 

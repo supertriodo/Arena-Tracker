@@ -49,7 +49,6 @@ private:
     bool arenaMode;
     bool deckRead;
     QRegularExpressionMatch *match;
-    bool synchronized; //Ahorra buscar ciertas lineas al leer old log
 
 //Metodos
 private:
@@ -59,7 +58,6 @@ private:
 
 public:
     void processLogLine(QString &line);
-    void setSynchronized();
 
 signals:
     void newGameResult(GameResult gameResult);

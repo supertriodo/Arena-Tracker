@@ -835,17 +835,20 @@ void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
         }
         else
         {
+            if(type!=QString("Minion"))     painter.setPen(QPen(QColor(Qt::yellow)));
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
 
             //Mana cost
-            font.setPointSize(16);
+            font.setPointSize(14+cost);
             font.setBold(true);
             painter.setFont(font);
             painter.setPen(QPen(QColor(Qt::black)));
-            painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
+            painter.drawText(QRectF(0,6,26,24), Qt::AlignCenter, QString::number(cost));
+            font.setPointSize(12+cost);
             font.setBold(false);
             painter.setFont(font);
-            painter.setPen(QPen(WHITE));
+            if(type!=QString("Minion"))     painter.setPen(QPen(QColor(Qt::yellow)));
+            else                            painter.setPen(QPen(WHITE));
             painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
         }
     painter.end();
