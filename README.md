@@ -1,6 +1,7 @@
 # Arena-Tracker
 Arena Tracker reads the Hearthstone log to keep track of your arena games and rewards.
 It connects to www.arenamastery.com and automatically upload them to your account.
+Watch the remaining cards of your arena deck while you play.
 
 ## First Run
 The first time you run Arena Tracker you will be asked for:
@@ -24,7 +25,7 @@ The first time you run Arena Tracker you will be asked for:
 * Open Qt Creator and open Arena Tracker project.
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
- * From now on you can just run the created executable without Qt Creator.
- 
+* Move HSCards directory to the build dir.
+
 If you find anything is missing or wrong please share it.  
 http://www.reddit.com/r/ArenaTracker/
