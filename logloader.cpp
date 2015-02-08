@@ -1,11 +1,5 @@
 #include "logloader.h"
-#include <QDebug>
-#include <QThread>
-#include <QFileInfo>
-#include <QTimer>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QSettings>
+#include <QtWidgets>
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
@@ -247,7 +241,9 @@ bool LogLoader::isLogReset()
         //Log se ha reiniciado
         qDebug() << "LogLoader: "<< "Log reiniciado. FileSize: " << newSize << " < " << logSize;
         emit sendLog(tr("Log: Hearthstone started. Log reset."));
+        emit seekChanged(0);
         logWorker->resetSeek();
+        gameWatcher->reset();
         logSize = 0;
         return true;
     }

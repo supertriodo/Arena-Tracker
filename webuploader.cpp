@@ -2,10 +2,8 @@
 #include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QRegularExpressionMatch>
-#include <QSettings>
-#include <QLineEdit>
-#include <QInputDialog>
+#include <QtWidgets>
+
 
 WebUploader::WebUploader(QObject *parent) : QObject(parent)
 {

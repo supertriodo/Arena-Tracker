@@ -5,6 +5,7 @@
 #include "webuploader.h"
 #include "deckcard.h"
 #include "hscarddownloader.h"
+#include "resizebutton.h"
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QListWidgetItem>
@@ -14,6 +15,7 @@
 #define RED QColor(Qt::red)
 #define YELLOW QColor(Qt::yellow)
 #define WHITE QColor(Qt::white)
+#define CARD_SIZE QSize(218,35)
 
 namespace Ui {
 class MainWindow;
@@ -43,6 +45,7 @@ private:
     QList<DeckCard> deckCardList;
     QMap<QString, QJsonObject> cardsJson;
     int remainingCards;
+    QPoint dragPosition;
 
 
 //Metodos
@@ -62,10 +65,15 @@ private:
     void initCardsJson();
     void insertDeckCard(DeckCard &deckCard);
     void checkCardImage(DeckCard &deckCard);
+    void resizeButtonsText();
+    ResizeButton *resizeButton;
 
 //Override events
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:
@@ -102,6 +110,7 @@ public slots:
     void unlockDeckInterface();
     void showCardDrawn(QString code);
     void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
+    void resizeSlot(QSize size);
 };
 
 #endif // MAINWINDOW_H

@@ -58,6 +58,7 @@ private:
 
 public:
     void processLogLine(QString &line);
+    void reset();
 
 signals:
     void newGameResult(GameResult gameResult);

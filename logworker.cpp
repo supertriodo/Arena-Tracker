@@ -1,7 +1,5 @@
 #include "logworker.h"
-#include <QFile>
-#include <QDebug>
-#include <QThread>
+#include <QtWidgets>
 
 LogWorker::LogWorker(QObject *parent, const QString &logPath) : QObject(parent)
 {

@@ -1,6 +1,5 @@
 #include "hscarddownloader.h"
-#include <QUrl>
-#include <QNetworkRequest>
+#include <QtWidgets>
 
 HSCardDownloader::HSCardDownloader(QObject *parent) : QObject(parent)
 {

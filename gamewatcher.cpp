@@ -19,6 +19,13 @@ GameWatcher::~GameWatcher()
 }
 
 
+void GameWatcher::reset()
+{
+    gameState = noGame;
+    arenaMode = false;
+}
+
+
 void GameWatcher::processLogLine(QString &line)
 {
     if(line.startsWith("[Bob]"))
