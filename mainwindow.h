@@ -66,6 +66,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void checkCardImage(DeckCard &deckCard);
     void resizeButtonsText();
+    void resetDeckCardList();
 
 //Override events
 protected:
@@ -110,7 +111,7 @@ public slots:
     void showCardDrawn(QString code);
     void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
     void resizeSlot(QSize size);
-    void resetDeckCardList();
+    void resetDeckFromWeb();
 };
 
 #endif // MAINWINDOW_H

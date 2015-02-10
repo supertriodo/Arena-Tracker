@@ -330,3 +330,9 @@ void GameWatcher::createGameResult()
 
     emit newGameResult(gameResult);
 }
+
+
+void GameWatcher::setDeckRead()
+{
+    deckRead = true;
+}

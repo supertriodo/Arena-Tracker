@@ -272,6 +272,12 @@ void LogLoader::processLogLine(QString line)
 }
 
 
+void LogLoader::setDeckRead()
+{
+    gameWatcher->setDeckRead();
+}
+
+
 //GameWatcher signals reemit
 void LogLoader::emitNewGameResult(GameResult gameResult){emit newGameResult(gameResult);}
 void LogLoader::emitNewArena(QString hero){emit newArena(hero);}

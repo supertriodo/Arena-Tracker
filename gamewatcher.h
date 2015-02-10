@@ -58,7 +58,8 @@ private:
 
 public:
     void processLogLine(QString &line);
-    void reset();
+    void reset();    
+    void setDeckRead();
 
 signals:
     void newGameResult(GameResult gameResult);

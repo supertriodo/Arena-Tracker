@@ -43,8 +43,17 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::resetDeckFromWeb()
+{
+    logLoader->setDeckRead();
+    resetDeckCardList();
+}
+
+
 void MainWindow::resetDeckCardList()
 {
+
+
     ui->listWidget->clear();
     deckCardList.clear();
 
@@ -146,8 +155,8 @@ void MainWindow::createWebUploader()
             this, SLOT(writeLog(QString)));
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             this, SLOT(newDeckCard(QString,int)));
-    connect(webUploader, SIGNAL(resetDeckCardList()),
-            this, SLOT(resetDeckCardList()));
+    connect(webUploader, SIGNAL(newWebDeckCardList()),
+            this, SLOT(resetDeckFromWeb()));
     ui->progressBar->setVisible(false);
     resizeButtonsText();
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);

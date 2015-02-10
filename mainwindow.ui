@@ -277,14 +277,14 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>24</width>
-          <height>24</height>
+          <width>26</width>
+          <height>26</height>
          </size>
         </property>
         <property name="baseSize">
          <size>
-          <width>24</width>
-          <height>24</height>
+          <width>26</width>
+          <height>26</height>
          </size>
         </property>
         <property name="text">
@@ -294,8 +294,14 @@
          <iconset resource="arenatracker.qrc">
           <normaloff>:/Images/close.png</normaloff>:/Images/close.png</iconset>
         </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
         <property name="flat">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -309,8 +315,8 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>24</width>
-          <height>24</height>
+          <width>26</width>
+          <height>26</height>
          </size>
         </property>
         <property name="text">
@@ -320,8 +326,14 @@
          <iconset resource="arenatracker.qrc">
           <normaloff>:/Images/minimize.png</normaloff>:/Images/minimize.png</iconset>
         </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
         <property name="flat">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>

@@ -38,6 +38,7 @@ private:
 
 public:
     void init(qint64 &logSize);
+    void setDeckRead();
 
 //Signals
 signals:

@@ -506,7 +506,7 @@ void WebUploader::GetArenaCards(QString &html)
     if(html.contains("<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>"))
     {
         deckInWeb = true;
-        emit resetDeckCardList();
+        emit newWebDeckCardList();
         qDebug() << "WebUploader: "<< "Inicio leer deck.";
 
         //Ejemplo html carta

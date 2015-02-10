@@ -83,7 +83,7 @@ signals:
     void noArenaFound();
     void sendLog(QString line);
     void newDeckCard(QString card, int total);
-    void resetDeckCardList();
+    void newWebDeckCardList();
 
 public slots:
     void replyFinished(QNetworkReply *reply);
