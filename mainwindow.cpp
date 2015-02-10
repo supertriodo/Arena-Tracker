@@ -170,6 +170,8 @@ void MainWindow::completeUI()
     ui->tabWidget->setCurrentIndex(0);
     ui->uploadButton->setEnabled(false);
     ui->updateButton->setEnabled(false);
+    ui->uploadButton->setToolTip(tr("Upload"));
+    ui->updateButton->setToolTip(tr("Refresh"));
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
     ui->listWidget->setIconSize(QSize(218,35));
