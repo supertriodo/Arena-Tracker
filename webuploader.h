@@ -2,6 +2,7 @@
 #define WEBUPLOADER_H
 
 #include "gamewatcher.h"
+#include "deckcard.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -31,7 +32,7 @@ class WebUploader : public QObject
 {
     Q_OBJECT
 public:
-    explicit WebUploader(QObject *parent = 0);
+    WebUploader(QObject *parent, QMap<QString, QJsonObject> *cardsJson);
     ~WebUploader();
 
     enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
@@ -47,6 +48,9 @@ private:
     QList<GameResultPost> *gameResultPostList;
     GameResultPost *rewardsPost;
     QRegularExpressionMatch *match;
+    bool deckInWeb;
+    QString arenaCards;
+    QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 private:
@@ -56,15 +60,19 @@ private:
     QString heroToLogNumber(const QString &hero);
     QString heroToWebNumber(const QString &hero);
     GameResult createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero);
-    bool getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list);
+    bool getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards=false);
     void uploadNext();
     void postRequest(QNetworkRequest request, QURL postData);
+    void createArenaCards(QList<DeckCard> &deckCardList);
+    QString codeFromName(QString name);
+    void GetArenaCards(QString &html);
 
 public:
     bool uploadArenaRewards(ArenaRewards &arenaRewards);
-    bool uploadNewGameResult(GameResult &gameresult);
+    bool uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList=NULL);
     bool uploadNewArena(const QString &hero);
     void checkArenaCurrentReload();
+    void uploadArenaCards();
 
 signals:
     void loadedGameResult(GameResult gameResult);
@@ -74,6 +82,8 @@ signals:
     void synchronized();
     void noArenaFound();
     void sendLog(QString line);
+    void newDeckCard(QString card, int total);
+    void resetDeckCardList();
 
 public slots:
     void replyFinished(QNetworkReply *reply);

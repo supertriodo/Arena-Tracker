@@ -23,6 +23,7 @@ public:
 signals:
     void newLogLineRead(QString line);
     void seekChanged(qint64 logSeek);
+    void sendLog(QString line);
 };
 
 #endif // LOGWORKER_H

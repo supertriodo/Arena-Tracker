@@ -46,6 +46,7 @@ private:
     QMap<QString, QJsonObject> cardsJson;
     int remainingCards;
     QPoint dragPosition;
+    ResizeButton *resizeButton;
 
 
 //Metodos
@@ -61,12 +62,10 @@ private:
     void newArenaRewards(ArenaRewards &arenaRewards);
     bool newArenaUploadButton(QString &hero);
     void setStatusBarMessage(const QString &message, int timeout=0);
-    void resetDeckCardList();
     void initCardsJson();
     void insertDeckCard(DeckCard &deckCard);
     void checkCardImage(DeckCard &deckCard);
     void resizeButtonsText();
-    ResizeButton *resizeButton;
 
 //Override events
 protected:
@@ -82,7 +81,7 @@ public slots:
     bool newArena(QString hero);
     void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void uploadCurrentArenaRewards();
-    void newDeckCard(QString card);
+    void newDeckCard(QString card, int total=1);
 
     //LogLoader
     void createWebUploader();
@@ -111,6 +110,7 @@ public slots:
     void showCardDrawn(QString code);
     void drawListWidgetItem(DeckCard deckCard, bool drawTotal=true);
     void resizeSlot(QSize size);
+    void resetDeckCardList();
 };
 
 #endif // MAINWINDOW_H

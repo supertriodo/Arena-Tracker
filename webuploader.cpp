@@ -5,13 +5,15 @@
 #include <QtWidgets>
 
 
-WebUploader::WebUploader(QObject *parent) : QObject(parent)
+WebUploader::WebUploader(QObject *parent, QMap<QString, QJsonObject> *cardsJson) : QObject(parent)
 {
     match = new QRegularExpressionMatch();
     webState = signup;
     arenaCurrentID = 0;
+    deckInWeb = false;
     gameResultPostList = new QList<GameResultPost>();
     rewardsPost = NULL;
+    this->cardsJson = cardsJson;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
@@ -84,7 +86,7 @@ void WebUploader::askLoginData(QString &playerEmail, QString &password)
 }
 
 
-bool WebUploader::uploadNewGameResult(GameResult &gameresult)
+bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList)
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
@@ -128,7 +130,27 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult)
     gameResultPostList->append(gamePost);
     qDebug() << "WebUploader: " << "Juego nuevo esperando para upload.";
 
+    if(!deckInWeb && arenaCards.isEmpty() && !deckCardList->isEmpty())
+    {
+        createArenaCards(*deckCardList);
+    }
+
     return true;
+}
+
+
+void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
+{
+    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
+    {
+        if(it->total > 0)
+        {
+            QString name = (*cardsJson)[it->code].value("name").toString();
+            arenaCards.append(QString::number(it->total) + " " + name + "\n");
+        }
+    }
+
+    qDebug() << "Building Deck string: "<< endl << arenaCards;
 }
 
 
@@ -228,6 +250,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
                 ), match))
             {
                 arenaCurrentID = match->captured(1).toInt();
+                deckInWeb = false;
                 networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
                 qDebug() << "WebUploader: " << "Arena nueva uploaded(" << match->captured(1) << "). Heroe: " << arenaCurrentHero;
                 emit sendLog(tr("Web: New arena uploaded."));
@@ -276,6 +299,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         else
         {
             qDebug() << "WebUploader: " << "Ninguna arena en progreso.";
+            arenaCurrentID = 0;
             webState = complete;
             emit synchronized();
             emit noArenaFound();
@@ -284,7 +308,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == loadArenaCurrent)
     {
         QList<GameResult> list;
-        if(getArenaCurrentAndGames(reply, list))
+        if(getArenaCurrentAndGames(reply, list, true))
         {
             emit loadedArena(arenaCurrentHero);
 
@@ -391,6 +415,29 @@ void WebUploader::uploadNext()
         delete rewardsPost;
         rewardsPost = NULL;
     }
+    else if(!arenaCards.isEmpty())
+    {
+        uploadArenaCards();
+    }
+}
+
+
+void WebUploader::uploadArenaCards()
+{
+    QURL postData;
+    postData.addQueryItem("batchImportPwn", "1");
+    postData.addQueryItem("importReviewed", "1");
+    postData.addQueryItem("importDataBlock", arenaCards);
+
+    QNetworkRequest request(QUrl(WEB_URL + "import_cards.php?arena=" + QString::number(arenaCurrentID)));
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+    postRequest(request, postData);
+
+    arenaCards = "";
+    deckInWeb = true;
+    qDebug() << "WebUploader: " << "Complete deck uploaded.";
+    emit sendLog(tr("Web: Complete deck uploaded."));
 }
 
 
@@ -401,7 +448,7 @@ void WebUploader::checkArenaCurrentReload()
     webState = checkArenaCurrentReload2;
 }
 
-bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list)
+bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards)
 {
     //Ejemplo html
     //<div class='col-md-5' id='nameDate'>
@@ -437,12 +484,65 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
         }
         qDebug() << "WebUploader: " << "Leida arena en progreso: " << QString(match->captured(1)) <<
                     " con " << QString::number(list.count()) << " juegos";
+
+        if(getCards)
+        {
+            GetArenaCards(html);
+        }
         return true;
     }
     else
     {
         return false;
     }
+}
+
+
+void WebUploader::GetArenaCards(QString &html)
+{
+    //Ejemplo html
+    //<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>
+
+    if(html.contains("<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>"))
+    {
+        deckInWeb = true;
+        emit resetDeckCardList();
+        qDebug() << "WebUploader: "<< "Inicio leer deck.";
+
+        //Ejemplo html carta
+        //<li id='374' class='list-group-item' data-name='1' data-cost='3' data-total='1' data-remaining='1' data-any='1'>
+        //<span style='display: inline-block;'>(3) <a href='http://www.hearthpwn.com/cards/428' onClick='return false;'>Acolyte of Pain</a>
+        //</span> (<span id='remaining-374' style='font-weight:bold;'>1</span> copy)</li>
+        QRegularExpression re(
+            "<li id='\\d+' class='list-group-item' data-name='\\d+' data-cost='\\d+' data-total='(\\d+)' data-remaining='\\d+' data-any='\\d+'>"
+            "<span style='display: inline-block;'>.*<a href=.*onClick=.*>(.+)</a> "
+            "</span>.*</li>");
+        QRegularExpressionMatchIterator reIterator = re.globalMatch(html);
+
+        while (reIterator.hasNext())
+        {
+            QRegularExpressionMatch match = reIterator.next();
+            emit newDeckCard(codeFromName(match.captured(2)), match.captured(1).toInt());
+            qDebug() << "WebUploader: "<< "Nueva carta:" << match.captured(1) << match.captured(2);
+        }
+        qDebug() << "WebUploader: "<< "Final leer deck.";
+        emit sendLog(tr("Web: Active deck read."));
+    }
+}
+
+
+QString WebUploader::codeFromName(QString name)
+{
+    for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
+    {
+        if(it->value("name").toString() == name)
+        {
+            return it.key();
+        }
+    }
+    qDebug() << "WebUploader: " << "ERROR: No se encuentra en Json codigo de carta: " << name;
+    emit sendLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
+    return "";
 }
 
 

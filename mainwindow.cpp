@@ -56,6 +56,8 @@ void MainWindow::resetDeckCardList()
     deckCard.listItem = new QListWidgetItem();
     drawListWidgetItem(deckCard);
     insertDeckCard(deckCard);
+
+    qDebug() << "MainWindow: " << "Deck List cleared.";
 }
 
 
@@ -127,7 +129,7 @@ void MainWindow::createLogLoader()
 void MainWindow::createWebUploader()
 {
     if(webUploader != NULL)   return;
-    webUploader = new WebUploader(this);
+    webUploader = new WebUploader(this, &cardsJson);
     connect(webUploader, SIGNAL(loadedGameResult(GameResult)),
             this, SLOT(showGameResult(GameResult)));
     connect(webUploader, SIGNAL(loadedArena(QString)),
@@ -142,6 +144,10 @@ void MainWindow::createWebUploader()
             this, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
+    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
+            this, SLOT(newDeckCard(QString,int)));
+    connect(webUploader, SIGNAL(resetDeckCardList()),
+            this, SLOT(resetDeckCardList()));
     ui->progressBar->setVisible(false);
     resizeButtonsText();
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
@@ -335,9 +341,16 @@ void MainWindow::newGameResult(GameResult gameResult)
             arenaLogList.last().gameResultList.append(gameResult);
         }
     }
-    else if(!webUploader->uploadNewGameResult(gameResult))
+    else
     {
-        setRowColor(item, RED);
+        bool uploadSuccess;
+        if(deckCardList[0].total==0)    uploadSuccess=webUploader->uploadNewGameResult(gameResult,&deckCardList);
+        else                            uploadSuccess=webUploader->uploadNewGameResult(gameResult);
+
+        if(!uploadSuccess)
+        {
+            setRowColor(item, RED);
+        }
     }
 }
 
@@ -757,17 +770,21 @@ void MainWindow::openDonateWeb()
 }
 
 
-void MainWindow::newDeckCard(QString card)
+void MainWindow::newDeckCard(QString code, int total)
 {
+    if(code.isEmpty())  return;
+
     DeckCard deckCard;
-    deckCard.code = card;
-    deckCard.cost = cardsJson[card].value("cost").toInt();
+    deckCard.code = code;
+    deckCard.cost = cardsJson[code].value("cost").toInt();
+    deckCard.total = total;
     deckCard.listItem = new QListWidgetItem();
     drawListWidgetItem(deckCard);
     insertDeckCard(deckCard);
 
-    deckCardList[0].total--;
+    deckCardList[0].total-=total;
     drawListWidgetItem(deckCardList[0]);
+    if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
     checkCardImage(deckCard);
 }
@@ -1090,4 +1107,3 @@ void MainWindow::resizeSlot(QSize size)
 
 
 //TODO
-//Enviar mazo a arena mastery

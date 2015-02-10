@@ -12,17 +12,18 @@ void LogLoader::init(qint64 &logSize)
 {
     readSettings();
     logSize = getLogFileSize();
-    while(logSize == 0)
-    {
-        qDebug() << "LogLoader: "<< "Esperando a log accesible...";
-        emit sendLog(tr("Log: WARNING:Cannot access log..."));
-        QThread::sleep(1);
-        logSize = getLogFileSize();
-    }
 
-    if(logSize > 0)
+    if(logSize >= 0)
     {
-        emit sendLog(tr("Log: Linked to log."));
+        qDebug() << "LogLoader: Log encontrado.";
+        emit sendLog(tr("Log: Log found."));
+
+        if(logSize == 0)
+        {
+            qDebug() << "LogLoader: Log vacio.";
+            emit sendLog(tr("Log: Log is empty."));
+        }
+
         this->logSize = logSize;
         firstRun = true;
         updateTime = 1000;
@@ -32,6 +33,8 @@ void LogLoader::init(qint64 &logSize)
                 this, SLOT(processLogLine(QString)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
                 this, SLOT(updateSeek(qint64)));
+        connect(logWorker, SIGNAL(sendLog(QString)),
+                this, SLOT(emitSendLog(QString)));
 
         gameWatcher = new GameWatcher(this);
         connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
@@ -59,7 +62,8 @@ void LogLoader::init(qint64 &logSize)
     {
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logPath", "");
-        emit sendLog(tr("Log: Log not found."));
+        qDebug() << "LogLoader: Log no encontrado.";
+        emit sendLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
     }
 }
 
@@ -279,7 +283,6 @@ void LogLoader::emitSendLog(QString line){emit sendLog(line);}
 void LogLoader::emitStartGame(){emit startGame();}
 void LogLoader::emitEndGame(){emit endGame();}
 void LogLoader::emitCardDrawn(QString code){emit cardDrawn(code);}
-
 
 
 

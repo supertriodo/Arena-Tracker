@@ -173,11 +173,11 @@ void GameWatcher::processLogLine(QString &line)
                     if(line.contains(QRegularExpression(
                             "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
                     {
-                        QString card = match->captured(1);
-                        if(!card.contains("HERO"))
+                        QString code = match->captured(1);
+                        if(!code.contains("HERO"))
                         {
-                            qDebug() << "GameWatcher: "<< "Nueva carta.";
-                            emit newDeckCard(card);
+                            qDebug() << "GameWatcher: "<< "Nueva carta: " << code;
+                            emit newDeckCard(code);
                         }
                     }
                 }

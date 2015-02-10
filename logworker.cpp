@@ -15,20 +15,20 @@ LogWorker::~LogWorker()
 
 void LogWorker::readLog()
 {
-    QFile *logFile = new QFile(logPath);
-    if(!logFile->open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile logFile(logPath);
+    if(!logFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "LogWorker: "<< "Esperando a log accesible...";
-        delete logFile;
+        emit sendLog(tr("Log: ERROR:Cannot open log..."));
         return;
     }
 
-    logFile->seek(logSeek);
+    logFile.seek(logSeek);
 
     char line[2048];
     int lineLenght;
 
-    while((lineLenght = logFile->readLine(line, sizeof(line))) > 0)
+    while((lineLenght = logFile.readLine(line, sizeof(line))) > 0)
     {
         if((line[lineLenght-1] != '\n') &&
                 lineLenght<((int)sizeof(line)-1))
@@ -43,8 +43,7 @@ void LogWorker::readLog()
         emit seekChanged(logSeek);
     }
 
-    logFile->close();
-    delete logFile;
+    logFile.close();
 }
 
 
