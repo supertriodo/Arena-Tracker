@@ -196,10 +196,12 @@ void MainWindow::completeUI()
             this, SLOT(resizeSlot(QSize)));
 
 
-#ifndef Q_OS_LINUX
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
-    ui->statusBar->setFont(QFont(":Fonts/hsFont.ttf"));
-#endif
+    QFont font("Belwe Bd BT");
+    font.setPointSize(12);
+    ui->statusBar->setFont(font);
+
+
     connect(ui->uploadButton, SIGNAL(clicked()),
             this, SLOT(uploadOldLog()));
     connect(ui->updateButton, SIGNAL(clicked()),
@@ -315,8 +317,8 @@ void MainWindow::resizeButtonsText()
 {
     if(this->width() > 400)
     {
-        ui->updateButton->setText(" Refresh");
-        ui->uploadButton->setText(" Upload");
+        ui->updateButton->setText("Refresh");
+        ui->uploadButton->setText("Upload");
     }
     else
     {
