@@ -31,5 +31,6 @@
         <file>Images/minimize.png</file>
         <file>Images/handCard1.png</file>
         <file>Images/handCard2.png</file>
+        <file>Images/icon.png</file>
     </qresource>
 </RCC>

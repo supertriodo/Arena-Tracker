@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Arena Tracker</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="arenatracker.qrc">
+    <normaloff>:/Images/icon.png</normaloff>:/Images/icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -279,6 +283,9 @@
       </property>
       <property name="value">
        <number>24</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
