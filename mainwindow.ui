@@ -238,6 +238,9 @@
             <pointsize>14</pointsize>
            </font>
           </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
+          </property>
          </widget>
         </item>
        </layout>
