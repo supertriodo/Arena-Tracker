@@ -39,7 +39,7 @@ public:
 
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     winnerState, inRewards, readingDeck };
+                     inGameState, inRewards, readingDeck };
 
 //Variables
 private:
@@ -49,6 +49,8 @@ private:
     bool arenaMode;
     bool deckRead;
     QRegularExpressionMatch *match;
+    int turn;
+    bool mulliganEnemyDone;
 
 //Metodos
 private:
@@ -70,7 +72,10 @@ signals:
     void sendLog(QString line);
     void startGame();
     void endGame();
-    void cardDrawn(QString code);
+    void playerCardDraw(QString code);
+    void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
+    void enemyCardPlayed(int id, QString code="");
+    void lastHandCardIsCoin();
 
 public slots:
 };

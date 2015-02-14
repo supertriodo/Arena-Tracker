@@ -53,8 +53,14 @@ void LogLoader::init(qint64 &logSize)
                 this, SLOT(emitStartGame()));
         connect(gameWatcher, SIGNAL(endGame()),
                 this, SLOT(emitEndGame()));
-        connect(gameWatcher, SIGNAL(cardDrawn(QString)),
-                this, SLOT(emitCardDrawn(QString)));
+        connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
+                this, SLOT(emitPlayerCardDraw(QString)));
+        connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
+                this, SLOT(emitEnemyCardDraw(int,int,bool,QString)));
+        connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
+                this, SLOT(emitEnemyCardPlayed(int,QString)));
+        connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
+                this, SLOT(emitlastHandCardIsCoin()));
 
         QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     }
@@ -288,8 +294,8 @@ void LogLoader::emitNewDeckCard(QString card){emit newDeckCard(card);}
 void LogLoader::emitSendLog(QString line){emit sendLog(line);}
 void LogLoader::emitStartGame(){emit startGame();}
 void LogLoader::emitEndGame(){emit endGame();}
-void LogLoader::emitCardDrawn(QString code){emit cardDrawn(code);}
-
-
-
+void LogLoader::emitPlayerCardDraw(QString code){emit playerCardDraw(code);}
+void LogLoader::emitEnemyCardDraw(int id, int turn, bool special, QString code){emit enemyCardDraw(id,turn,special,code);}
+void LogLoader::emitEnemyCardPlayed(int id, QString code){emit enemyCardPlayed(id,code);}
+void LogLoader::emitlastHandCardIsCoin(){emit lastHandCardIsCoin();}
 

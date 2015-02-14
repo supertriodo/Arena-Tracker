@@ -54,7 +54,10 @@ signals:
     void newDeckCard(QString card);
     void startGame();
     void endGame();
-    void cardDrawn(QString code);
+    void playerCardDraw(QString code);
+    void enemyCardDraw(int id, int turn, bool special, QString code);
+    void enemyCardPlayed(int id, QString code);
+    void lastHandCardIsCoin();
 
 //Slots
 private slots:
@@ -71,7 +74,10 @@ private slots:
     void emitSendLog(QString line);
     void emitStartGame();
     void emitEndGame();
-    void emitCardDrawn(QString code);
+    void emitPlayerCardDraw(QString code);
+    void emitEnemyCardDraw(int id, int turn, bool special, QString code);
+    void emitEnemyCardPlayed(int id, QString code);
+    void emitlastHandCardIsCoin();
 };
 
 #endif // LOGLOADER_H

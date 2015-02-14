@@ -29,5 +29,7 @@
         <file>Images/resize.png</file>
         <file>Images/close.png</file>
         <file>Images/minimize.png</file>
+        <file>Images/handCard1.png</file>
+        <file>Images/handCard2.png</file>
     </qresource>
 </RCC>

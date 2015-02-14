@@ -1,7 +1,6 @@
 #ifndef HSCARDDOWNLOADER_H
 #define HSCARDDOWNLOADER_H
 
-#include "deckcard.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -20,17 +19,17 @@ public:
 //Variables
 private:
     QNetworkAccessManager *networkManager;
-    QMap<QNetworkReply *, DeckCard> gettingWebCards;
+    QMap<QNetworkReply *, QString> gettingWebCards;
 
 
 //Metodos
 private:
 
 public:
-    void downloadWebImage(DeckCard &deckCard);
+    void downloadWebImage(QString code);
 
 signals:
-    void downloaded(DeckCard deckCard);
+    void downloaded(QString code);
     void sendLog(QString line);
 
 public slots:

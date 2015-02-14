@@ -37,8 +37,10 @@ MainWindow::~MainWindow()
     delete webUploader;
     delete cardDownloader;
     delete ui;
-    ui->listWidget->clear();
+    ui->deckListWidget->clear();
     deckCardList.clear();
+    ui->enemyHandListWidget->clear();
+    enemyHandList.clear();
     delete resizeButton;
 }
 
@@ -52,9 +54,7 @@ void MainWindow::resetDeckFromWeb()
 
 void MainWindow::resetDeckCardList()
 {
-
-
-    ui->listWidget->clear();
+    ui->deckListWidget->clear();
     deckCardList.clear();
 
 
@@ -63,7 +63,7 @@ void MainWindow::resetDeckCardList()
     deckCard.cost = -1;
     deckCard.total = 30;
     deckCard.listItem = new QListWidgetItem();
-    drawListWidgetItem(deckCard);
+    drawDeckCardItem(deckCard);
     insertDeckCard(deckCard);
 
     qDebug() << "MainWindow: " << "Deck List cleared.";
@@ -91,8 +91,8 @@ void MainWindow::initCardsJson()
 void MainWindow::createCardDownloader()
 {
     cardDownloader = new HSCardDownloader();
-    connect(cardDownloader, SIGNAL(downloaded(DeckCard)),
-            this, SLOT(drawListWidgetItem(DeckCard)));
+    connect(cardDownloader, SIGNAL(downloaded(QString)),
+            this, SLOT(redrawDownloadedCardImage(QString)));
     connect(cardDownloader, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
 }
@@ -124,8 +124,14 @@ void MainWindow::createLogLoader()
             this, SLOT(lockDeckInterface()));
     connect(logLoader, SIGNAL(endGame()),
             this, SLOT(unlockDeckInterface()));
-    connect(logLoader, SIGNAL(cardDrawn(QString)),
-            this, SLOT(showCardDrawn(QString)));
+    connect(logLoader, SIGNAL(playerCardDraw(QString)),
+            this, SLOT(showPlayerCardDraw(QString)));
+    connect(logLoader, SIGNAL(enemyCardDraw(int,int,bool,QString)),
+            this, SLOT(showEnemyCardDraw(int,int,bool,QString)));
+    connect(logLoader, SIGNAL(enemyCardPlayed(int,QString)),
+            this, SLOT(showEnemyCardPlayed(int,QString)));
+    connect(logLoader, SIGNAL(lastHandCardIsCoin()),
+            this, SLOT(lastHandCardIsCoin()));
     logLoader->init(logSize);
 
     ui->progressBar->setMaximum(logSize/1000);
@@ -153,10 +159,12 @@ void MainWindow::createWebUploader()
             this, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
+#ifndef QT_DEBUG //Si tenemos una arena en web podemos seguir testeando deck en construido
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             this, SLOT(newDeckCard(QString,int)));
     connect(webUploader, SIGNAL(newWebDeckCardList()),
             this, SLOT(resetDeckFromWeb()));
+#endif
     ui->progressBar->setVisible(false);
     resizeButtonsText();
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
@@ -174,8 +182,10 @@ void MainWindow::completeUI()
     ui->updateButton->setToolTip(tr("Refresh"));
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
-    ui->listWidget->setIconSize(QSize(218,35));
-    ui->listWidget->setStyleSheet("background-color: transparent;");
+    ui->deckListWidget->setIconSize(QSize(218,35));
+    ui->deckListWidget->setStyleSheet("background-color: transparent;");
+    ui->enemyHandListWidget->setIconSize(QSize(218,35));
+    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
     QPalette palette;
     palette.setColor( QPalette::WindowText, Qt::white );
     ui->statusBar->setPalette( palette );
@@ -188,7 +198,6 @@ void MainWindow::completeUI()
 
 #ifndef Q_OS_LINUX
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
-    ui->listWidget->setFont(QFont(":Fonts/hsFont.ttf"));
     ui->statusBar->setFont(QFont(":Fonts/hsFont.ttf"));
 #endif
     connect(ui->uploadButton, SIGNAL(clicked()),
@@ -197,7 +206,7 @@ void MainWindow::completeUI()
             this, SLOT(updateArenaFromWeb()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
-    connect(ui->listWidget, SIGNAL(itemSelectionChanged()),
+    connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
             this, SLOT(cardTotalMin()));
@@ -790,38 +799,52 @@ void MainWindow::newDeckCard(QString code, int total)
     deckCard.cost = cardsJson[code].value("cost").toInt();
     deckCard.total = total;
     deckCard.listItem = new QListWidgetItem();
-    drawListWidgetItem(deckCard);
+    drawDeckCardItem(deckCard);
     insertDeckCard(deckCard);
 
     deckCardList[0].total-=total;
-    drawListWidgetItem(deckCardList[0]);
+    drawDeckCardItem(deckCardList[0]);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
-    checkCardImage(deckCard);
+    checkCardImage(deckCard.code);
 }
 
 
-void MainWindow::checkCardImage(DeckCard &deckCard)
+void MainWindow::checkCardImage(QString code)
 {
-    QFileInfo *cardFile = new QFileInfo("./HSCards/" + deckCard.code + ".png");
+    QFileInfo *cardFile = new QFileInfo("./HSCards/" + code + ".png");
 
     if(!cardFile->exists())
     {
         //La bajamos de HearthHead
-        cardDownloader->downloadWebImage(deckCard);
+        cardDownloader->downloadWebImage(code);
     }
 }
 
 
-
-void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
+void MainWindow::redrawDownloadedCardImage(QString code)
 {
-    QListWidgetItem * item = deckCard.listItem;
-    QString code = deckCard.code;
-    uint total = drawTotal?deckCard.total:deckCard.remaining;
+    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
+    {
+        if(it->code == code)    drawDeckCardItem(*it);
+    }
+    for (QList<HandCard>::const_iterator it = enemyHandList.cbegin(); it != enemyHandList.cend(); it++)
+    {
+        if(it->code == code)    drawCardItem(it->listItem, it->code, 1);
+    }
+}
+
+
+void MainWindow::drawDeckCardItem(DeckCard deckCard, bool drawTotal)
+{
+    drawCardItem(deckCard.listItem, deckCard.code, drawTotal?deckCard.total:deckCard.remaining);
+}
+void MainWindow::drawCardItem(QListWidgetItem * item, QString code, uint total)
+{
     QString type = cardsJson[code].value("type").toString();
     QString name = cardsJson[code].value("name").toString();
-    int cost = deckCard.cost;
+    int cost = cardsJson[code].value("cost").toInt();
+
     if(code=="")
     {
         code = "unknown";
@@ -861,7 +884,7 @@ void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
         painter.setFont(font);
         if(name=="")
         {
-            painter.setPen(QPen(QColor(Qt::black)));
+            painter.setPen(QPen(BLACK));
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, "Unknown");
         }
         else
@@ -869,12 +892,13 @@ void MainWindow::drawListWidgetItem(DeckCard deckCard, bool drawTotal)
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
 
             //Mana cost
-            font.setPointSize(14+cost);
+            int manaSize = cost>9?6:cost;
+            font.setPointSize(14+manaSize);
             font.setBold(true);
             painter.setFont(font);
-            painter.setPen(QPen(QColor(Qt::black)));
+            painter.setPen(QPen(BLACK));
             painter.drawText(QRectF(0,6,26,24), Qt::AlignCenter, QString::number(cost));
-            font.setPointSize(12+cost);
+            font.setPointSize(12+manaSize);
             font.setBold(false);
             painter.setFont(font);
             if(type!=QString("Minion"))     painter.setPen(QPen(YELLOW));
@@ -895,18 +919,18 @@ void MainWindow::insertDeckCard(DeckCard &deckCard)
         if(deckCard.cost<deckCardList[i].cost)
         {
             deckCardList.insert(i, deckCard);
-            ui->listWidget->insertItem(i, deckCard.listItem);
+            ui->deckListWidget->insertItem(i, deckCard.listItem);
             return;
         }
     }
     deckCardList.append(deckCard);
-    ui->listWidget->addItem(deckCard.listItem);
+    ui->deckListWidget->addItem(deckCard.listItem);
 }
 
 
 void MainWindow::enableDeckButtons()
 {
-    int index = ui->listWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
 
     if(index>0 && deckCardList[index].total > 1)
                                         ui->deckButtonMin->setEnabled(true);
@@ -919,26 +943,26 @@ void MainWindow::enableDeckButtons()
 
 void MainWindow::cardTotalMin()
 {
-    int index = ui->listWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
     deckCardList[index].total--;
     deckCardList[0].total++;
 
-    drawListWidgetItem(deckCardList[index]);
+    drawDeckCardItem(deckCardList[index]);
     if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
-    drawListWidgetItem(deckCardList[0]);
+    drawDeckCardItem(deckCardList[0]);
     enableDeckButtons();
 }
 
 
 void MainWindow::cardTotalPlus()
 {
-    int index = ui->listWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
     deckCardList[index].total++;
     deckCardList[0].total--;
 
-    drawListWidgetItem(deckCardList[index]);
+    drawDeckCardItem(deckCardList[index]);
     if(deckCardList[0].total==0)    deckCardList[0].listItem->setHidden(true);
-    else                            drawListWidgetItem(deckCardList[0]);
+    else                            drawDeckCardItem(deckCardList[0]);
     enableDeckButtons();
 }
 
@@ -950,19 +974,21 @@ void MainWindow::lockDeckInterface()
         it->remaining = it->total;
     }
 
-    ui->listWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->listWidget->selectionModel()->reset();
+    ui->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->deckListWidget->selectionModel()->reset();
     ui->deckButtonMin->setHidden(true);
     ui->deckButtonPlus->setHidden(true);
 
     ui->tabDeck->setAttribute(Qt::WA_NoBackground);
     ui->tabDeck->repaint();
+    ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
+    ui->tabEnemy->repaint();
+
+    //Reiniciamos enemy hand
+    ui->enemyHandListWidget->clear();
+    enemyHandList.clear();
 
     remainingCards = 30;
-    if(webUploader != NULL)
-    {
-        setStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
-    }
 }
 
 
@@ -972,13 +998,13 @@ void MainWindow::unlockDeckInterface()
     {
         if(it->total>0)
         {
-            drawListWidgetItem(*it);
+            drawDeckCardItem(*it);
             it->listItem->setHidden(false);
         }
         else    it->listItem->setHidden(true);
     }
 
-    ui->listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->deckButtonMin->setHidden(false);
     ui->deckButtonPlus->setHidden(false);
     ui->deckButtonMin->setEnabled(false);
@@ -986,6 +1012,8 @@ void MainWindow::unlockDeckInterface()
 
     ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
     ui->tabDeck->repaint();
+    ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
+    ui->tabEnemy->repaint();
 
     if(webUploader != NULL)
     {
@@ -994,7 +1022,7 @@ void MainWindow::unlockDeckInterface()
 }
 
 
-void MainWindow::showCardDrawn(QString code)
+void MainWindow::showPlayerCardDraw(QString code)
 {    
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
@@ -1005,19 +1033,20 @@ void MainWindow::showCardDrawn(QString code)
             {
                 it->remaining--;
                 remainingCards--;
-                drawListWidgetItem(*it, false);
+                drawDeckCardItem(*it, false);
                 if(webUploader != NULL)
                 {
                     writeLog(tr("Log: Card drawn: ") +
                                   cardsJson[code].value("name").toString());
-                    setStatusBarMessage(message + QString::number(remainingCards));
+
+                    if(ui->tabWidget->currentIndex()==tabDeck)    setStatusBarMessage(message + QString::number(remainingCards));
                 }
             }
             else if(it->remaining == 1)
             {
                 it->remaining--;
                 remainingCards--;
-                if(it->total > 1)   drawListWidgetItem(*it);
+                if(it->total > 1)   drawDeckCardItem(*it);
 
 
 
@@ -1028,22 +1057,22 @@ void MainWindow::showCardDrawn(QString code)
                 {
                     writeLog(tr("Log: Card drawn: ") +
                                   cardsJson[code].value("name").toString());
-                    setStatusBarMessage(message + QString::number(remainingCards));
+                    if(ui->tabWidget->currentIndex()==tabDeck)    setStatusBarMessage(message + QString::number(remainingCards));
                 }
             }
             //it->remaining == 0
             //MALORNE
-            else if(code == "GVG_035")  return;
+            else if(code == MALORNE)  return;
             //Reajustamos el mazo si tiene unknown cards
             else if(deckCardList[0].total>0)
             {
                 deckCardList[0].total--;
                 if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
-                else                            drawListWidgetItem(deckCardList[0]);
+                else                            drawDeckCardItem(deckCardList[0]);
                 it->total++;
                 remainingCards--;
 
-                drawListWidgetItem(*it);
+                drawDeckCardItem(*it);
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
@@ -1054,7 +1083,7 @@ void MainWindow::showCardDrawn(QString code)
                 {
                     writeLog(tr("Log: Discovered unknown card. Adding to deck: ") +
                                   cardsJson[code].value("name").toString());
-                    setStatusBarMessage(message + QString::number(remainingCards));
+                    if(ui->tabWidget->currentIndex()==tabDeck)    setStatusBarMessage(message + QString::number(remainingCards));
                 }
             }
             else
@@ -1085,7 +1114,7 @@ void MainWindow::showCardDrawn(QString code)
     if(deckCardList[0].total>0)
     {
         newDeckCard(code);
-        showCardDrawn(code);
+        showPlayerCardDraw(code);
     }
 #endif
 }
@@ -1116,5 +1145,88 @@ void MainWindow::resizeSlot(QSize size)
 }
 
 
+void MainWindow::showEnemyCardDraw(int id, int turn, bool special, QString code)
+{
+    HandCard handCard;
+    handCard.id = id;
+    handCard.turn = turn;
+    handCard.special = special;
+    handCard.code = code;
+    handCard.listItem = new QListWidgetItem();
+    ui->enemyHandListWidget->addItem(handCard.listItem);
+
+    drawHandCardItem(handCard);
+    enemyHandList.append(handCard);
+
+    if(webUploader != NULL && ui->tabWidget->currentIndex()==tabEnemy)
+    {
+        setStatusBarMessage(tr("Enemy hand: ") + QString::number(enemyHandList.count()));
+    }
+}
+
+
+void MainWindow::drawHandCardItem(HandCard handCard)
+{
+    if(handCard.code != "")
+    {
+        drawCardItem(handCard.listItem, handCard.code, 1);
+        checkCardImage(handCard.code);
+    }
+    else
+    {
+        QFont font("Belwe Bd BT");
+        QPixmap canvas(CARD_SIZE);
+        QPainter painter;
+        painter.begin(&canvas);
+            painter.fillRect(canvas.rect(), Qt::black);
+            painter.drawPixmap(0,0,QPixmap(handCard.special?":Images/handCard2.png":":Images/handCard1.png"));
+
+            font.setPointSize(18);
+            font.setBold(true);
+            painter.setFont(font);
+            painter.setPen(QPen(BLACK));
+            painter.drawText(QRectF(154,6,40,22), Qt::AlignCenter, "T"+QString::number((handCard.turn+1)/2));
+
+            font.setPointSize(16);
+            font.setBold(false);
+            painter.setFont(font);
+            painter.setPen(QPen(WHITE));
+            painter.drawText(QRectF(155,6,40,22), Qt::AlignCenter, "T"+QString::number((handCard.turn+1)/2));
+        painter.end();
+
+        handCard.listItem->setIcon(QIcon(canvas));
+    }
+}
+
+
+void MainWindow::lastHandCardIsCoin()
+{
+    enemyHandList.last().code = COIN;
+    drawHandCardItem(enemyHandList.last());
+}
+
+
+void MainWindow::showEnemyCardPlayed(int id, QString code)
+{
+    (void)code;
+    int i=0;
+    for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++, i++)
+    {
+        if(it->id == id)
+        {
+            delete it->listItem;
+            enemyHandList.removeAt(i);
+
+            if(webUploader != NULL && ui->tabWidget->currentIndex()==tabEnemy)
+            {
+                setStatusBarMessage(tr("Enemy hand: ") + QString::number(enemyHandList.count()));
+            }
+
+            return;
+        }
+    }
+}
+
 
 //TODO
+//Test windows flag en windows

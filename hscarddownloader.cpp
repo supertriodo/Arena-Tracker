@@ -14,10 +14,10 @@ HSCardDownloader::~HSCardDownloader()
 }
 
 
-void HSCardDownloader::downloadWebImage(DeckCard &deckCard)
+void HSCardDownloader::downloadWebImage(QString code)
 {
-    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + deckCard.code + ".png"))));
-    gettingWebCards[reply] = deckCard;
+    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + code + ".png"))));
+    gettingWebCards[reply] = code;
     qDebug() << "HSCardDownloader: Web Cards pendientes(+1): " << gettingWebCards.count();
 }
 
@@ -26,25 +26,25 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 {
     reply->deleteLater();
 
-    DeckCard deckCard = gettingWebCards[reply];
+    QString code = gettingWebCards[reply];
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al descargar: " << deckCard.code;
+        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al descargar: " << code;
         emit sendLog(tr("Web: Failed to download card image."));
         return;
     }
     QImage webImage;
     webImage.loadFromData(reply->readAll());
 
-    if(!webImage.save("./HSCards/" + deckCard.code + ".png", "png"))
+    if(!webImage.save("./HSCards/" + code + ".png", "png"))
     {
-        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al guardar en disco: " << deckCard.code;
+        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al guardar en disco: " << code;
         emit sendLog(tr("File: ERROR:Saving card image to disk. Did you remove HSCards dir?"));
         return;
     }
 
-    emit downloaded(deckCard);
+    emit downloaded(code);
     gettingWebCards.remove(reply);
     qDebug() << "HSCardDownloader: Web Cards pendientes(-1): " << gettingWebCards.count();
     emit sendLog(tr("Web: New card image downloaded."));

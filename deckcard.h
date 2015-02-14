@@ -15,4 +15,16 @@ public:
     uint remaining;
 };
 
+
+class HandCard
+{
+public:
+    HandCard(){listItem = NULL; id=turn=0; special=false; code="";}
+    QListWidgetItem *listItem;
+    int id;
+    int turn;
+    bool special;
+    QString code;
+};
+
 #endif // DECKCARD_H

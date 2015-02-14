@@ -18,9 +18,9 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tabArena">
        <attribute name="title">
         <string>Arena</string>
        </attribute>
@@ -207,7 +207,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidget">
+         <widget class="QListWidget" name="deckListWidget">
           <property name="font">
            <font>
             <family>Belwe Bd BT</family>
@@ -221,7 +221,24 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tabEnemy">
+       <attribute name="title">
+        <string>Enemy</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QListWidget" name="enemyHandListWidget">
+          <property name="font">
+           <font>
+            <family>Belwe Bd BT</family>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabLog">
        <attribute name="title">
         <string>Log</string>
        </attribute>
