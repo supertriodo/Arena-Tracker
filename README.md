@@ -2,6 +2,7 @@
 Arena Tracker reads the Hearthstone log to keep track of your arena games and rewards.
 It connects to www.arenamastery.com and automatically upload them to your account.
 Watch the remaining cards of your arena deck while you play.
+Watch what is in your enemy hand. Cards sent back from the board, spare parts or the coin.
 
 
 ## First Run
