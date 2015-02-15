@@ -1,8 +1,8 @@
 # Arena-Tracker
-Arena Tracker reads the Hearthstone log to keep track of your arena games and rewards.
-It connects to www.arenamastery.com and automatically upload them to your account.
-Watch the remaining cards of your arena deck while you play.
-Watch what is in your enemy hand. Cards sent back from the board, spare parts or the coin.
+Arena Tracker reads the Hearthstone log to keep track of your arena deck, games and rewards.
+* It connects to www.arenamastery.com and automatically upload them to your account.
+* Watch the remaining cards of your arena deck while you play.
+* Watch what is in your enemy hand. Cards sent back from the board, spare parts or the coin (among others).
 
 
 ## First Run
@@ -35,3 +35,9 @@ or on email: triodo@gmail.com
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
+
+
+## More info:
+* https://github.com/supertriodo/Arena-Tracker
+* http://www.reddit.com/r/ArenaTracker/
+* http://www.arenamastery.com/
