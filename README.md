@@ -3,6 +3,7 @@ Arena Tracker reads the Hearthstone log to keep track of your arena games and re
 It connects to www.arenamastery.com and automatically upload them to your account.
 Watch the remaining cards of your arena deck while you play.
 
+
 ## First Run
 The first time you run Arena Tracker you will be asked for:
 
@@ -20,6 +21,11 @@ After your first game:
 * 5) Your Hearthstone name.
  * A pop up message will appear asking your name.
 
+If you have problems installing it or using it I'm happy to help you on:
+http://www.reddit.com/r/ArenaTracker/
+or by e-mail: triodo@gmail.com
+
+
 ## Build from source (Linux, Windows & Mac)
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
@@ -28,6 +34,3 @@ After your first game:
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
-
-If you have problems installing it or using it I'm happy to help you on:
-http://www.reddit.com/r/ArenaTracker/
