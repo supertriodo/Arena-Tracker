@@ -23,7 +23,8 @@ After your first game:
 
 If you have problems installing it or using it I'm happy to help you on:
 http://www.reddit.com/r/ArenaTracker/
-or by e-mail: triodo@gmail.com
+
+or on e-mail: triodo@gmail.com
 
 
 ## Build from source (Linux, Windows & Mac)
