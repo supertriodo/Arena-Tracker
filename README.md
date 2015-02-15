@@ -36,6 +36,8 @@ or on email: triodo@gmail.com
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
 
+## Video examples
+* v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 
 ## More info:
 * https://github.com/supertriodo/Arena-Tracker
