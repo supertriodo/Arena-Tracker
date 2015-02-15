@@ -21,10 +21,9 @@ After your first game:
 * 5) Your Hearthstone name.
  * A pop up message will appear asking your name.
 
-If you have problems installing it or using it I'm happy to help you on:
+If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
-
-or on e-mail: triodo@gmail.com
+or on email: triodo@gmail.com
 
 
 ## Build from source (Linux, Windows & Mac)
