@@ -14,8 +14,10 @@ The first time you run Arena Tracker you will be asked for:
  * If the file doesn't exist create an empty log.config in that dir.
 * 3) Your Arena Mastery user/password.
  * If you don't have one. Go to www.arenamastery.com and create one. 
-* After your first game:
-* 4) Your Hearthstone name.
+* 4) Restart Hearthstone (if you have it opened).
+
+After your first game:
+* 5) Your Hearthstone name.
  * A pop up message will appear asking your name.
 
 ## Build from source (Linux, Windows & Mac)
@@ -27,5 +29,5 @@ The first time you run Arena Tracker you will be asked for:
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
 
-If you find anything is missing or wrong please share it.  
+If you have problems installing it or using it I'm happy to help you on:
 http://www.reddit.com/r/ArenaTracker/
