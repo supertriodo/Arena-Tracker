@@ -38,6 +38,7 @@ or on email: triodo@gmail.com
 
 ## Video examples
 * v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
+* v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
 
 ## More info:
 * https://github.com/supertriodo/Arena-Tracker
