@@ -1,7 +1,9 @@
 # Arena-Tracker
-Arena Tracker reads the Hearthstone log to keep track of your arena games and rewards.
-It connects to www.arenamastery.com and automatically upload them to your account.
-Watch the remaining cards of your arena deck while you play.
+Arena Tracker reads the Hearthstone log to keep track of your arena deck, games and rewards.
+* It connects to www.arenamastery.com and automatically upload them to your account.
+* Watch the remaining cards of your arena deck while you play.
+* Watch what is in your enemy hand. Cards sent back from the board, spare parts or the coin (among others).
+
 
 ## First Run
 The first time you run Arena Tracker you will be asked for:
@@ -14,9 +16,16 @@ The first time you run Arena Tracker you will be asked for:
  * If the file doesn't exist create an empty log.config in that dir.
 * 3) Your Arena Mastery user/password.
  * If you don't have one. Go to www.arenamastery.com and create one. 
-* After your first game:
-* 4) Your Hearthstone name.
+* 4) Restart Hearthstone (if you have it opened).
+
+After your first game:
+* 5) Your Hearthstone name.
  * A pop up message will appear asking your name.
+
+If you have problems installing it or using it I'm happy to help you on
+http://www.reddit.com/r/ArenaTracker/
+or on email: triodo@gmail.com
+
 
 ## Build from source (Linux, Windows & Mac)
 * Download & install QT Community.
@@ -27,5 +36,11 @@ The first time you run Arena Tracker you will be asked for:
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
 
-If you find anything is missing or wrong please share it.  
-http://www.reddit.com/r/ArenaTracker/
+## Video examples
+* v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
+* v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
+
+## More info:
+* https://github.com/supertriodo/Arena-Tracker
+* http://www.reddit.com/r/ArenaTracker/
+* http://www.arenamastery.com/
