@@ -1147,6 +1147,37 @@ void MainWindow::resizeSlot(QSize size)
 }
 
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() != Qt::Key_Alt && event->key() != Qt::Key_Control)
+    {
+        if(event->modifiers()&Qt::AltModifier && event->modifiers()&Qt::ControlModifier)
+        {
+            if(event->key() == Qt::Key_R)   resetSettings();
+        }
+    }
+}
+
+
+void MainWindow::resetSettings()
+{
+    int ret = QMessageBox::warning(this, tr("Reset settings"),
+                                   tr("Do you want to reset Arena Tracker settings?"),
+                                   QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(ret == QMessageBox::Ok)
+    {
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        settings.setValue("logPath", "");
+        settings.setValue("logConfig", "");
+        settings.setValue("playerTag", "");
+        settings.setValue("playerEmail", "");
+        settings.setValue("password", "");
+        this->close();
+    }
+}
+
+
 void MainWindow::showEnemyCardDraw(int id, int turn, bool special, QString code)
 {
     HandCard handCard;
@@ -1203,6 +1234,7 @@ void MainWindow::drawHandCardItem(HandCard handCard)
 
 void MainWindow::lastHandCardIsCoin()
 {
+    if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
     enemyHandList.last().code = COIN;
     drawHandCardItem(enemyHandList.last());
 }

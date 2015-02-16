@@ -77,6 +77,7 @@ private:
     void drawCardItem(QListWidgetItem * item, QString code, uint total);
     void drawDeckCardItem(DeckCard deckCard, bool drawTotal=true);
     void drawHandCardItem(HandCard handCard);
+    void resetSettings();
 
 //Override events
 protected:
@@ -84,6 +85,7 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:

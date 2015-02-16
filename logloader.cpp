@@ -76,28 +76,45 @@ void LogLoader::init(qint64 &logSize)
 
 void LogLoader::readSettings()
 {
+    readLogPath();
+    readLogConfigPath();
+}
+
+
+void LogLoader::readLogPath()
+{
     QSettings settings("Arena Tracker", "Arena Tracker");
     logPath = settings.value("logPath", "").toString();
 
     if(logPath.isEmpty() || getLogFileSize()==-1)
     {
         QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
-                                    "1) output_log.txt location.\n"
-                                    "2) log.config location.\n"
-                                    "3) Your Arena Mastery user/password.\n\n"
+                                    "1) output_log.txt location (If not default).\n"
+                                    "2) log.config location (If not default).\n"
+                                    "3) Your Arena Mastery user/password.\n"
+                                    "4) Restart Hearthstone (if running).\n\n"
                                     "After your first game:\n"
-                                    "4) Your Hearthstone name."));
+                                    "5) Your Hearthstone name."));
 
         QString initDir;
 #ifdef Q_OS_WIN32
-        initDir = QDir::toNativeSeparators("C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt");
+        initDir = "C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt";
+        QFileInfo logFI(initDir);
+        if(logFI.exists())
+        {
+            logPath = initDir;
+        }
 #endif
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WIN32
         initDir = QDir::homePath();
 #endif
-        logPath = QFileDialog::getOpenFileName(0,
-            tr("Find Hearthstone log (output_log.txt)"), initDir,
-            tr("Hearthstone log (output_log.txt)"));
+        if(logPath.isEmpty())
+        {
+            logPath = QFileDialog::getOpenFileName(0,
+                tr("Find Hearthstone log (output_log.txt)"), initDir,
+                tr("Hearthstone log (output_log.txt)"));
+        }
+
         settings.setValue("logPath", logPath);
     }
 
@@ -105,27 +122,63 @@ void LogLoader::readSettings()
 //    logPath = QString("/home/triodo/Documentos/arenaMagoFull.txt");
 #endif
 
+    qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
+    emit sendLog(tr("Settings: Path output_log.txt: ") + logPath);
+}
+
+
+void LogLoader::readLogConfigPath()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
     QString logConfig = settings.value("logConfig", "").toString();
 
     if(logConfig.isEmpty())
     {
         QString initDir;
 #ifdef Q_OS_WIN32
-        //initDir = QDir::toNativeSeparators(QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config");
-        initDir = QDir::toNativeSeparators(QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config");
+        //initDir = QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config";
+        initDir = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
+        QFileInfo logConfigFI(initDir);
+        if(logConfigFI.exists())
+        {
+            logConfig = initDir;
+        }
+        else
+        {
+            QString hsDir = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone";
+            logConfigFI = QFileInfo(hsDir);
+            if(logConfigFI.exists() && logConfigFI.isDir())
+            {
+                //Creamos log.config
+                QFile logConfigFile(initDir);
+                if(!logConfigFile.open(QIODevice::WriteOnly | QIODevice::Text))
+                {
+                    qDebug() << "LogLoader: "<< "ERROR: No se puede crear default log.config.";
+                    emit sendLog(tr("Log: ERROR: Cannot create default log.config"));
+                    settings.setValue("logConfig", "");
+                    return;
+                }
+                logConfigFile.close();
+                logConfig = initDir;
+            }
+        }
 #endif
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WIN32
         initDir = QDir::homePath();
 #endif
-        logConfig = QFileDialog::getOpenFileName(0,
-            tr("Find Hearthstone config log (log.config)"), initDir,
-            tr("(*.*)"));
+        if(logConfig.isEmpty())
+        {
+            logConfig = QFileDialog::getOpenFileName(0,
+                tr("Find Hearthstone config log (log.config)"), initDir,
+                tr("log.config (log.config)"));
+        }
         settings.setValue("logConfig", logConfig);
     }
-    if(!logConfig.isNull()) checkLogConfig(logConfig);
 
-    qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
+    if(!logConfig.isEmpty()) checkLogConfig(logConfig);
+
     qDebug() << "LogLoader: " << "Path log.config " << logConfig;
+    emit sendLog(tr("Settings: Path log.config: ") + logConfig);
 }
 
 
@@ -133,18 +186,18 @@ void LogLoader::checkLogConfig(QString logConfig)
 {
     qDebug() << "LogLoader: " << "Verificando log.config";
 
-    QFile *file = new QFile(logConfig);
-    if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
+    QFile file(logConfig);
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "LogLoader: "<< "ERROR: No se puede acceder a log.config.";
-        emit sendLog(tr("Log: ERROR:Cannot access log.config"));
+        emit sendLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
         return;
     }
 
-    QString data = QString(file->readAll());
-    QTextStream stream(file);
+    QString data = QString(file.readAll());
+    QTextStream stream(&file);
 
     checkLogConfigOption("[Bob]", data, stream);
     checkLogConfigOption("[Power]", data, stream);
@@ -153,7 +206,7 @@ void LogLoader::checkLogConfig(QString logConfig)
     checkLogConfigOption("[Ben]", data, stream);
     checkLogConfigOption("[Asset]", data, stream);
 
-    file->close();
+    file.close();
 }
 
 
@@ -178,25 +231,12 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
  */
 qint64 LogLoader::getLogFileSize()
 {
-    QFileInfo *log = new QFileInfo(logPath);
-    if(log->exists())
+    QFileInfo log(logPath);
+    if(log.exists())
     {
-        return log->size();
+        return log.size();
     }
     return -1;
-}
-
-
-
-void LogLoader::waitLogExists()
-{
-    QFileInfo *log = new QFileInfo(logPath);
-
-    while(!log->exists())
-    {
-        qDebug() << "LogLoader: "<< "Esperando a log creado...";
-        QThread::sleep(1);
-    }
 }
 
 
@@ -209,15 +249,12 @@ LogLoader::~LogLoader()
 
 void LogLoader::sendLogWorker()
 {
-    if(isLogReset())
+    if(!isLogReset())
     {
-        waitLogExists();
+        logWorker->readLog();
     }
 
-//    qDebug() << "LogLoader: "<< "Worker enviado: " << updateTime;
-    logWorker->readLog();
     workerFinished();
-//    qDebug() << "LogLoader: "<< "Worker libre.";
 }
 
 

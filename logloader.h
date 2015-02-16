@@ -27,11 +27,12 @@ private:
 //Metodos
 private:
     qint64 getLogFileSize();
-    void waitLogExists();
     bool isLogReset();
     void checkFirstRun();
     void createFileWatcher();
     void readSettings();
+    void readLogPath();
+    void readLogConfigPath();
     void checkLogConfig(QString logConfig);
     void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
     void workerFinished();
