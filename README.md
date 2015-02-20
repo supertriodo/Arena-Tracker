@@ -8,9 +8,9 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 ## First Run
 The first time you run Arena Tracker you will be asked for:
 
-* 1) output_log.txt location.
+* 1) output_log.txt location (If not default).
  * Default (Win): C:\Program Files (x86)\Hearthstone\Hearthstone_Data\output_log.txt
-* 2) log.config location.
+* 2) log.config location (If not default).
  * Default (Win 8): USER\AppData\Local\Blizzard\Hearthstone\log.config
  * Default (Win XP): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
  * If the file doesn't exist create an empty log.config in that dir.
@@ -27,6 +27,13 @@ http://www.reddit.com/r/ArenaTracker/
 or on email: triodo@gmail.com
 
 
+## FAQ
+* How do I reset the app so I can set the config info again?
+ * With the app selected press ctrl+alt+r
+* I setup the app but didn't upload my arena game.
+ * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
+
+
 ## Build from source (Linux, Windows & Mac)
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
@@ -36,9 +43,11 @@ or on email: triodo@gmail.com
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
 
+
 ## Video examples
 * v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 * v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
+
 
 ## More info:
 * https://github.com/supertriodo/Arena-Tracker
