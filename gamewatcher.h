@@ -46,17 +46,23 @@ private:
     QString playerTag;
     GameState gameState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
+    int playerID;
     bool arenaMode;
     bool deckRead;
     QRegularExpressionMatch *match;
-    int turn;
+    //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
+    //no aparezcan como parte del nuevo turno
+    int turn, turnReal;
     bool mulliganEnemyDone;
 
 //Metodos
 private:
     void createGameResult();
-    void processGameLine(QString &line);
+    void processPower(QString &line);
+    void processPowerInGame(QString &line);
+    void processZone(QString &line);
     QString askPlayerTag(QString &playerName1, QString &playerName2);
+    void advanceTurn(bool playerDraw);
 
 public:
     void processLogLine(QString &line);

@@ -1263,4 +1263,10 @@ void MainWindow::showEnemyCardPlayed(int id, QString code)
 
 
 //TODO
-//Test windows flag en windows
+//Secretos
+//Invocar esbirro
+//Ataque a esbirro (desde esbirro o heroe)
+//Ataque a cabeza (desde esbirro o heroe)
+//Muerte esbirro enemigo
+//Lanzar hechizo (con o sin objetivo)
+//Iceblock

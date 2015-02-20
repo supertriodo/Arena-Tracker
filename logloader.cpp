@@ -92,7 +92,7 @@ void LogLoader::readLogPath()
                                     "1) output_log.txt location (If not default).\n"
                                     "2) log.config location (If not default).\n"
                                     "3) Your Arena Mastery user/password.\n"
-                                    "4) Restart Hearthstone (if running).\n\n"
+                                    "4) Restart Hearthstone (If running).\n\n"
                                     "After your first game:\n"
                                     "5) Your Hearthstone name."));
 
