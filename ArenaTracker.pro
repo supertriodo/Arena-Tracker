@@ -19,7 +19,11 @@ SOURCES += main.cpp\
     gamewatcher.cpp \
     webuploader.cpp \
     hscarddownloader.cpp \
-    resizebutton.cpp
+    resizebutton.cpp \
+    deckhandler.cpp \
+    deckcard.cpp \
+    handcard.cpp \
+    enemyhandhandler.cpp
 
 HEADERS  += mainwindow.h \
     logloader.h \
@@ -28,7 +32,10 @@ HEADERS  += mainwindow.h \
     webuploader.h \
     hscarddownloader.h \
     deckcard.h \
-    resizebutton.h
+    resizebutton.h \
+    deckhandler.h \
+    handcard.h \
+    enemyhandhandler.h
 
 FORMS    += mainwindow.ui
 

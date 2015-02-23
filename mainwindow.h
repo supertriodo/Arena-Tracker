@@ -2,23 +2,18 @@
 #define MAINWINDOW_H
 
 #include "logloader.h"
+#include "gamewatcher.h"
 #include "webuploader.h"
 #include "deckcard.h"
 #include "hscarddownloader.h"
 #include "resizebutton.h"
+#include "deckhandler.h"
+#include "enemyhandhandler.h"
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QListWidgetItem>
 #include <QJsonObject>
 
-#define GREEN QColor(200,250,200)
-#define RED QColor(Qt::red)
-#define YELLOW QColor(Qt::yellow)
-#define WHITE QColor(Qt::white)
-#define BLACK QColor(Qt::black)
-#define CARD_SIZE QSize(218,35)
-#define COIN QString("GAME_005")
-#define MALORNE QString("GVG_035")
 
 namespace Ui {
 class MainWindow;
@@ -34,32 +29,34 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    enum TabEnum { tabArena, tabDeck, tabEnemy, tabLog };
 
 //Variables
 private:
     Ui::MainWindow *ui;
     LogLoader *logLoader;
+    GameWatcher *gameWatcher;
     WebUploader *webUploader;
     HSCardDownloader *cardDownloader;
+    DeckHandler *deckHandler;
+    EnemyHandHandler *enemyHandHandler;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<ArenaResult> arenaLogList;
     bool noArena;
-    QList<DeckCard> deckCardList;
     QMap<QString, QJsonObject> cardsJson;
-    int remainingCards;
     QPoint dragPosition;
     ResizeButton *resizeButton;
-    QList<HandCard> enemyHandList;
+
 
 
 //Metodos
 private:
     void createLogLoader();
+    void createGameWatcher();
     void createCardDownloader();
+    void createDeckHandler();
+    void createEnemyHandHandler();
     void readSettings();
     void writeSettings();
     void completeUI();
@@ -68,15 +65,8 @@ private:
     bool isRowOk(QTreeWidgetItem *item);
     void newArenaRewards(ArenaRewards &arenaRewards);
     bool newArenaUploadButton(QString &hero);
-    void setStatusBarMessage(const QString &message, int timeout=0);
     void initCardsJson();
-    void insertDeckCard(DeckCard &deckCard);
-    void checkCardImage(QString code);
     void resizeButtonsText();
-    void resetDeckCardList();
-    void drawCardItem(QListWidgetItem * item, QString code, uint total);
-    void drawDeckCardItem(DeckCard deckCard, bool drawTotal=true);
-    void drawHandCardItem(HandCard handCard);
     void resetSettings();
 
 //Override events
@@ -94,10 +84,6 @@ public slots:
     bool newArena(QString hero);
     void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void uploadCurrentArenaRewards();
-    void newDeckCard(QString card, int total=1);
-    void showPlayerCardDraw(QString code);
-    void showEnemyCardDraw(int id, int turn, bool special, QString code);
-    void showEnemyCardPlayed(int id, QString code);
 
     //LogLoader
     void createWebUploader();
@@ -110,23 +96,27 @@ public slots:
     void reshowArena(QString hero);
     void enableButtons();
     void showNoArena();
+    void resetDeckFromWeb();
 
-    //Buttons
+    //DeckHandler//EnemyHandHandler
+    void checkCardImage(QString code);
+
+    //HSCardDownloader
+    void redrawDownloadedCardImage(QString code);
+
+    //Widgets
     void updateArenaFromWeb();
     void uploadOldLog();
     void enableRefreshButton();
     void openDonateWeb();
-    void enableDeckButtons();
-    void cardTotalMin();
-    void cardTotalPlus();
     void resizeSlot(QSize size);
+    void tabChanged(int index);
 
-    void redrawDownloadedCardImage(QString code);
+    //MainWindow
     void writeLog(QString line);
-    void lockDeckInterface();
-    void unlockDeckInterface();
-    void resetDeckFromWeb();
-    void lastHandCardIsCoin();
+    void writeLogConnected(QString line);
+    void setStatusBarMessage(QString message, int timeout=0);
+    void setStatusBarMessageConnected(QString message, int timeout=0);
 };
 
 #endif // MAINWINDOW_H

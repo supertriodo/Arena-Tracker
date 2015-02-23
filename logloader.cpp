@@ -4,7 +4,6 @@
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
     logWorker = NULL;
-    gameWatcher = NULL;
 }
 
 
@@ -30,37 +29,11 @@ void LogLoader::init(qint64 &logSize)
 
         logWorker = new LogWorker(this, logPath);
         connect(logWorker, SIGNAL(newLogLineRead(QString)),
-                this, SLOT(processLogLine(QString)));
+                this, SLOT(emitNewLogLineRead(QString)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
                 this, SLOT(updateSeek(qint64)));
         connect(logWorker, SIGNAL(sendLog(QString)),
                 this, SLOT(emitSendLog(QString)));
-
-        gameWatcher = new GameWatcher(this);
-        connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
-                this, SLOT(emitNewGameResult(GameResult)));
-        connect(gameWatcher, SIGNAL(newArena(QString)),
-                this, SLOT(emitNewArena(QString)));
-        connect(gameWatcher, SIGNAL(newArenaReward(int,int,bool,bool,bool)),
-                this, SLOT(emitNewArenaReward(int,int,bool,bool,bool)));
-        connect(gameWatcher, SIGNAL(arenaRewardsComplete()),
-                this, SLOT(emitArenaRewardsComplete()));
-        connect(gameWatcher, SIGNAL(newDeckCard(QString)),
-                this, SLOT(emitNewDeckCard(QString)));
-        connect(gameWatcher, SIGNAL(sendLog(QString)),
-                this, SLOT(emitSendLog(QString)));
-        connect(gameWatcher, SIGNAL(startGame()),
-                this, SLOT(emitStartGame()));
-        connect(gameWatcher, SIGNAL(endGame()),
-                this, SLOT(emitEndGame()));
-        connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
-                this, SLOT(emitPlayerCardDraw(QString)));
-        connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
-                this, SLOT(emitEnemyCardDraw(int,int,bool,QString)));
-        connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
-                this, SLOT(emitEnemyCardPlayed(int,QString)));
-        connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
-                this, SLOT(emitlastHandCardIsCoin()));
 
         QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     }
@@ -243,7 +216,6 @@ qint64 LogLoader::getLogFileSize()
 LogLoader::~LogLoader()
 {
     if(logWorker != NULL)   delete logWorker;
-    if(gameWatcher != NULL) delete gameWatcher;
 }
 
 
@@ -290,7 +262,6 @@ bool LogLoader::isLogReset()
         emit sendLog(tr("Log: Hearthstone started. Log reset."));
         emit seekChanged(0);
         logWorker->resetSeek();
-        gameWatcher->reset();
         logSize = 0;
         return true;
     }
@@ -308,31 +279,10 @@ void LogLoader::updateSeek(qint64 logSeek)
 }
 
 
-void LogLoader::processLogLine(QString line)
+//LogWorker signal reemit
+void LogLoader::emitNewLogLineRead(QString line)
 {
     updateTime = 500;
-    gameWatcher->processLogLine(line);
+    emit newLogLineRead(line);
 }
-
-
-void LogLoader::setDeckRead()
-{
-    gameWatcher->setDeckRead();
-}
-
-
-//GameWatcher signals reemit
-void LogLoader::emitNewGameResult(GameResult gameResult){emit newGameResult(gameResult);}
-void LogLoader::emitNewArena(QString hero){emit newArena(hero);}
-void LogLoader::emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard)
-{emit newArenaReward(gold, dust, pack, goldCard, plainCard);}
-void LogLoader::emitArenaRewardsComplete(){emit arenaRewardsComplete();}
-void LogLoader::emitNewDeckCard(QString card){emit newDeckCard(card);}
 void LogLoader::emitSendLog(QString line){emit sendLog(line);}
-void LogLoader::emitStartGame(){emit startGame();}
-void LogLoader::emitEndGame(){emit endGame();}
-void LogLoader::emitPlayerCardDraw(QString code){emit playerCardDraw(code);}
-void LogLoader::emitEnemyCardDraw(int id, int turn, bool special, QString code){emit enemyCardDraw(id,turn,special,code);}
-void LogLoader::emitEnemyCardPlayed(int id, QString code){emit enemyCardPlayed(id,code);}
-void LogLoader::emitlastHandCardIsCoin(){emit lastHandCardIsCoin();}
-

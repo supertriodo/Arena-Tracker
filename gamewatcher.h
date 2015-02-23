@@ -65,7 +65,6 @@ private:
     void advanceTurn(bool playerDraw);
 
 public:
-    void processLogLine(QString &line);
     void reset();    
     void setDeckRead();
 
@@ -84,6 +83,7 @@ signals:
     void lastHandCardIsCoin();
 
 public slots:
+    void processLogLine(QString line);
 };
 
 #endif // GAMEWATCHER_H

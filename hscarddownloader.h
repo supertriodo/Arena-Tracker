@@ -13,7 +13,7 @@ class HSCardDownloader : public QObject
 {
     Q_OBJECT
 public:
-    explicit HSCardDownloader(QObject *parent = 0);
+    HSCardDownloader(QObject *parent);
     ~HSCardDownloader();
 
 //Variables

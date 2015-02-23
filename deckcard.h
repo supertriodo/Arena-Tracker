@@ -3,28 +3,39 @@
 
 #include <QListWidgetItem>
 #include <QString>
+#include <QMap>
+
+#define GREEN QColor(200,250,200)
+#define RED QColor(Qt::red)
+#define YELLOW QColor(Qt::yellow)
+#define WHITE QColor(Qt::white)
+#define BLACK QColor(Qt::black)
+#define CARD_SIZE QSize(218,35)
 
 class DeckCard
 {
 public:
-    DeckCard(){listItem = NULL; total=remaining=1;}
+    DeckCard(QMap<QString, QJsonObject> *cardsJson);
+    ~DeckCard();
+
+//Variables
+public:
     QListWidgetItem *listItem;
     QString code;
     int cost;
     uint total;
     uint remaining;
-};
 
+private:
+    QMap<QString, QJsonObject> *cardsJson;
 
-class HandCard
-{
+//Metodos
+private:
+    void draw(QListWidgetItem * item, QString code, uint total);
+
 public:
-    HandCard(){listItem = NULL; id=turn=0; special=false; code="";}
-    QListWidgetItem *listItem;
-    int id;
-    int turn;
-    bool special;
-    QString code;
+    void draw(bool drawTotal);
+    void draw();
 };
 
 #endif // DECKCARD_H

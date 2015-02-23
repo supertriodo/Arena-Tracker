@@ -28,7 +28,7 @@ void GameWatcher::reset()
 }
 
 
-void GameWatcher::processLogLine(QString &line)
+void GameWatcher::processLogLine(QString line)
 {
     if(line.startsWith("[Bob]"))
     {

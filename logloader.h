@@ -2,7 +2,6 @@
 #define LOGLOADER_H
 
 #include "logworker.h"
-#include "gamewatcher.h"
 #include <QObject>
 #include <QTextStream>
 
@@ -19,7 +18,6 @@ public:
 private:
     QString logPath;
     qint64 logSize;
-    GameWatcher *gameWatcher;
     LogWorker *logWorker;
     bool firstRun;
     int updateTime;
@@ -39,7 +37,6 @@ private:
 
 public:
     void init(qint64 &logSize);
-    void setDeckRead();
 
 //Signals
 signals:
@@ -47,38 +44,18 @@ signals:
     void sendLog(QString line);
     void synchronized();
 
-    //GameWatcher signals reemit
-    void newGameResult(GameResult gameResult);
-    void newArena(QString hero);
-    void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-    void arenaRewardsComplete();
-    void newDeckCard(QString card);
-    void startGame();
-    void endGame();
-    void playerCardDraw(QString code);
-    void enemyCardDraw(int id, int turn, bool special, QString code);
-    void enemyCardPlayed(int id, QString code);
-    void lastHandCardIsCoin();
+    //LogWorker signal reemit
+    void newLogLineRead(QString line);
+
 
 //Slots
 private slots:
     void updateSeek(qint64 logSeek);
-    void processLogLine(QString line);
     void sendLogWorker();
 
-    //GameWatcher signals reemit
-    void emitNewGameResult(GameResult gameResult);
-    void emitNewArena(QString hero);
-    void emitNewArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-    void emitArenaRewardsComplete();
-    void emitNewDeckCard(QString card);
+    //LogWorker signal reemit
+    void emitNewLogLineRead(QString line);
     void emitSendLog(QString line);
-    void emitStartGame();
-    void emitEndGame();
-    void emitPlayerCardDraw(QString code);
-    void emitEnemyCardDraw(int id, int turn, bool special, QString code);
-    void emitEnemyCardPlayed(int id, QString code);
-    void emitlastHandCardIsCoin();
 };
 
 #endif // LOGLOADER_H
