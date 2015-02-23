@@ -59,33 +59,45 @@ void LogLoader::readLogPath()
     QSettings settings("Arena Tracker", "Arena Tracker");
     logPath = settings.value("logPath", "").toString();
 
+    QString logFileName;
+#ifdef Q_OS_MAC
+    logFileName = "Player.log";
+#else
+    logFileName = "output_log.txt";
+#endif
+
     if(logPath.isEmpty() || getLogFileSize()==-1)
     {
         QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
-                                    "1) output_log.txt location (If not default).\n"
+                                    "1) ") + logFileName + tr(" location (If not default).\n"
                                     "2) log.config location (If not default).\n"
                                     "3) Your Arena Mastery user/password.\n"
                                     "4) Restart Hearthstone (If running).\n\n"
                                     "After your first game:\n"
                                     "5) Your Hearthstone name."));
 
-        QString initDir;
-#ifdef Q_OS_WIN32
-        initDir = "C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt";
-        QFileInfo logFI(initDir);
-        if(logFI.exists())
+        QString initPath = "";
+#ifdef Q_OS_WIN
+        initPath = "C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt";
+#endif
+#ifdef Q_OS_MAC
+        initPath = QDir::homePath() + "/Library/Logs/Unity/Player.log";
+#endif
+
+        if(!initPath.isEmpty())
         {
-            logPath = initDir;
+            QFileInfo logFI(initPath);
+            if(logFI.exists())
+            {
+                logPath = initPath;
+            }
         }
-#endif
-#ifndef Q_OS_WIN32
-        initDir = QDir::homePath();
-#endif
+
         if(logPath.isEmpty())
         {
             logPath = QFileDialog::getOpenFileName(0,
-                tr("Find Hearthstone log (output_log.txt)"), initDir,
-                tr("Hearthstone log (output_log.txt)"));
+                tr("Find Hearthstone log") + " (" + logFileName + ")", QDir::homePath(),
+                "Hearthstone log (" + logFileName + ")");
         }
 
         settings.setValue("logPath", logPath);
@@ -95,8 +107,10 @@ void LogLoader::readLogPath()
 //    logPath = QString("/home/triodo/Documentos/arenaMagoFull.txt");
 #endif
 
-    qDebug() << "LogLoader: " << "Path output_log.txt " << logPath;
-    emit sendLog(tr("Settings: Path output_log.txt: ") + logPath);
+
+    qDebug() << "LogLoader: " << "Path "+ logFileName +": " << logPath;
+    emit sendLog(tr("Settings: Path ") + logFileName + ": " + logPath);
+
 }
 
 
@@ -107,42 +121,11 @@ void LogLoader::readLogConfigPath()
 
     if(logConfig.isEmpty())
     {
-        QString initDir;
-#ifdef Q_OS_WIN32
-        //initDir = QDir::homePath() + "/Local Settings/Application Data/Blizzard/Hearthstone/log.config";
-        initDir = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
-        QFileInfo logConfigFI(initDir);
-        if(logConfigFI.exists())
-        {
-            logConfig = initDir;
-        }
-        else
-        {
-            QString hsDir = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone";
-            logConfigFI = QFileInfo(hsDir);
-            if(logConfigFI.exists() && logConfigFI.isDir())
-            {
-                //Creamos log.config
-                QFile logConfigFile(initDir);
-                if(!logConfigFile.open(QIODevice::WriteOnly | QIODevice::Text))
-                {
-                    qDebug() << "LogLoader: "<< "ERROR: No se puede crear default log.config.";
-                    emit sendLog(tr("Log: ERROR: Cannot create default log.config"));
-                    settings.setValue("logConfig", "");
-                    return;
-                }
-                logConfigFile.close();
-                logConfig = initDir;
-            }
-        }
-#endif
-#ifndef Q_OS_WIN32
-        initDir = QDir::homePath();
-#endif
+        logConfig = createDefaultLogConfig();
         if(logConfig.isEmpty())
         {
             logConfig = QFileDialog::getOpenFileName(0,
-                tr("Find Hearthstone config log (log.config)"), initDir,
+                tr("Find Hearthstone config log (log.config)"), QDir::homePath(),
                 tr("log.config (log.config)"));
         }
         settings.setValue("logConfig", logConfig);
@@ -152,6 +135,50 @@ void LogLoader::readLogConfigPath()
 
     qDebug() << "LogLoader: " << "Path log.config " << logConfig;
     emit sendLog(tr("Settings: Path log.config: ") + logConfig);
+}
+
+
+QString LogLoader::createDefaultLogConfig()
+{
+    QString initPath = "";
+#ifdef Q_OS_WIN
+    initPath = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
+#endif
+
+#ifdef Q_OS_MAC
+    initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
+#endif
+
+#ifdef Q_OS_LINUX
+#endif
+
+    if(initPath.isEmpty()) return "";
+
+    QFileInfo logConfigFI(initPath);
+    if(logConfigFI.exists())
+    {
+        return initPath;
+    }
+    else
+    {
+        QString hsDir = logConfigFI.absolutePath();
+        logConfigFI = QFileInfo(hsDir);
+        if(logConfigFI.exists() && logConfigFI.isDir())
+        {
+            //Creamos log.config
+            QFile logConfigFile(initPath);
+            if(!logConfigFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                qDebug() << "LogLoader: "<< "ERROR: No se puede crear default log.config.";
+                emit sendLog(tr("Log: ERROR: Cannot create default log.config"));
+                return "";
+            }
+            logConfigFile.close();
+            return initPath;
+        }
+    }
+
+    return "";
 }
 
 

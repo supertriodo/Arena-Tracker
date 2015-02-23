@@ -31,6 +31,7 @@ private:
     void readSettings();
     void readLogPath();
     void readLogConfigPath();
+    QString createDefaultLogConfig();
     void checkLogConfig(QString logConfig);
     void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
     void workerFinished();

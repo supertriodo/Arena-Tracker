@@ -915,6 +915,8 @@ void MainWindow::resetSettings()
         settings.setValue("playerTag", "");
         settings.setValue("playerEmail", "");
         settings.setValue("password", "");
+        resize(QSize(400, 400));
+        move(QPoint(0,0));
         this->close();
     }
 }
