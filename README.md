@@ -32,6 +32,8 @@ or on email: triodo@gmail.com
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
+* I get "File: ERROR:Saving card image to disk. Did you remove HSCards dir?"
+ * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
 
 
 ## Build from source (Linux, Windows & Mac)
