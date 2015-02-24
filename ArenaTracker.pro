@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     deckhandler.cpp \
     deckcard.cpp \
     handcard.cpp \
-    enemyhandhandler.cpp
+    enemyhandhandler.cpp \
+    arenahandler.cpp
 
 HEADERS  += mainwindow.h \
     logloader.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     resizebutton.h \
     deckhandler.h \
     handcard.h \
-    enemyhandhandler.h
+    enemyhandhandler.h \
+    arenahandler.h
 
 FORMS    += mainwindow.ui
 

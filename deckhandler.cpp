@@ -9,12 +9,25 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
+
+    completeUI();
 }
 
 DeckHandler::~DeckHandler()
 {
     ui->deckListWidget->clear();
     deckCardList.clear();
+}
+
+
+void DeckHandler::completeUI()
+{
+    connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
+            this, SLOT(enableDeckButtons()));
+    connect(ui->deckButtonMin, SIGNAL(clicked()),
+            this, SLOT(cardTotalMin()));
+    connect(ui->deckButtonPlus, SIGNAL(clicked()),
+            this, SLOT(cardTotalPlus()));
 }
 
 

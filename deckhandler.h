@@ -29,6 +29,7 @@ private:
 
 //Metodos
 private:
+    void completeUI();
     void insertDeckCard(DeckCard &deckCard);
 
 public:

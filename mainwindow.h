@@ -9,9 +9,8 @@
 #include "resizebutton.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
+#include "arenahandler.h"
 #include <QMainWindow>
-#include <QTreeWidgetItem>
-#include <QListWidgetItem>
 #include <QJsonObject>
 
 
@@ -39,11 +38,12 @@ private:
     HSCardDownloader *cardDownloader;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
-    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
-    QString arenaCurrentHero;
-    QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
-    QList<ArenaResult> arenaLogList;
-    bool noArena;
+    ArenaHandler *arenaHandler;
+//    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
+//    QString arenaCurrentHero;
+//    QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
+//    QList<ArenaResult> arenaLogList;
+//    bool noArena;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     ResizeButton *resizeButton;
@@ -53,6 +53,7 @@ private:
 //Metodos
 private:
     void createLogLoader();
+    void createArenaHandler();
     void createGameWatcher();
     void createCardDownloader();
     void createDeckHandler();
@@ -60,13 +61,8 @@ private:
     void readSettings();
     void writeSettings();
     void completeUI();
-    void createTreeWidget();
-    void setRowColor(QTreeWidgetItem *item, QColor color);
-    bool isRowOk(QTreeWidgetItem *item);
-    void newArenaRewards(ArenaRewards &arenaRewards);
-    bool newArenaUploadButton(QString &hero);
     void initCardsJson();
-    void resizeButtonsText();
+    void resizeArenaButtonsText();
     void resetSettings();
 
 //Override events
@@ -79,23 +75,11 @@ protected:
 
 //Slots
 public slots:
-    //GameWatcher
-    void newGameResult(GameResult gameResult);
-    bool newArena(QString hero);
-    void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-    void uploadCurrentArenaRewards();
-
     //LogLoader
     void createWebUploader();
     void showLogLoadProgress(qint64 logSeek);
 
     //WebUploader
-    QTreeWidgetItem *showGameResult(GameResult gameResult);
-    void showArena(QString hero);
-    void reshowGameResult(GameResult gameResult);
-    void reshowArena(QString hero);
-    void enableButtons();
-    void showNoArena();
     void resetDeckFromWeb();
 
     //DeckHandler//EnemyHandHandler
@@ -105,10 +89,6 @@ public slots:
     void redrawDownloadedCardImage(QString code);
 
     //Widgets
-    void updateArenaFromWeb();
-    void uploadOldLog();
-    void enableRefreshButton();
-    void openDonateWeb();
     void resizeSlot(QSize size);
     void tabChanged(int index);
 
