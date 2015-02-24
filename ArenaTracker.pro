@@ -12,32 +12,32 @@ TARGET = ArenaTracker
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    logloader.cpp \
-    logworker.cpp \
-    gamewatcher.cpp \
-    webuploader.cpp \
-    hscarddownloader.cpp \
-    resizebutton.cpp \
-    deckhandler.cpp \
-    deckcard.cpp \
-    handcard.cpp \
-    enemyhandhandler.cpp \
-    arenahandler.cpp
+SOURCES += Sources/main.cpp\
+	Sources/mainwindow.cpp \
+    Sources/logloader.cpp \
+    Sources/logworker.cpp \
+    Sources/gamewatcher.cpp \
+    Sources/webuploader.cpp \
+    Sources/hscarddownloader.cpp \
+    Sources/resizebutton.cpp \
+    Sources/deckhandler.cpp \
+    Sources/deckcard.cpp \
+    Sources/handcard.cpp \
+    Sources/enemyhandhandler.cpp \
+    Sources/arenahandler.cpp
 
-HEADERS  += mainwindow.h \
-    logloader.h \
-    logworker.h \
-    gamewatcher.h \
-    webuploader.h \
-    hscarddownloader.h \
-    deckcard.h \
-    resizebutton.h \
-    deckhandler.h \
-    handcard.h \
-    enemyhandhandler.h \
-    arenahandler.h
+HEADERS  += Sources/mainwindow.h \
+    Sources/logloader.h \
+    Sources/logworker.h \
+    Sources/gamewatcher.h \
+    Sources/webuploader.h \
+    Sources/hscarddownloader.h \
+    Sources/deckcard.h \
+    Sources/resizebutton.h \
+    Sources/deckhandler.h \
+    Sources/handcard.h \
+    Sources/enemyhandhandler.h \
+    Sources/arenahandler.h
 
 FORMS    += mainwindow.ui
 
