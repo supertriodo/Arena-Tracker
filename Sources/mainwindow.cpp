@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
 
+    createSecretsHandler();
     createDeckHandler();
     createEnemyHandHandler();
     createCardDownloader();
@@ -39,6 +40,7 @@ MainWindow::~MainWindow()
     delete cardDownloader;
     delete enemyHandHandler;
     delete deckHandler;
+    delete secretsHandler;
     delete resizeButton;
     delete ui;
 }
@@ -66,6 +68,14 @@ void MainWindow::initCardsJson()
             cardsJson[(*it2).toObject().value("id").toString()] = (*it2).toObject();
         }
     }
+
+    DeckCard::setCardsJson(&cardsJson);
+}
+
+
+void MainWindow::createSecretsHandler()
+{
+    secretsHandler = new SecretsHandler(this, ui);
 }
 
 
@@ -93,7 +103,7 @@ void MainWindow::createDeckHandler()
 
 void MainWindow::createEnemyHandHandler()
 {
-    enemyHandHandler = new EnemyHandHandler(this, &cardsJson, ui);
+    enemyHandHandler = new EnemyHandHandler(this, ui);
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(sendLog(QString)),
@@ -209,16 +219,7 @@ void MainWindow::createWebUploader()
 void MainWindow::completeUI()
 {
     ui->tabWidget->setCurrentIndex(0);
-    ui->uploadButton->setEnabled(false);
-    ui->updateButton->setEnabled(false);
-    ui->uploadButton->setToolTip(tr("Upload"));
-    ui->updateButton->setToolTip(tr("Refresh"));
-    ui->deckButtonMin->setEnabled(false);
-    ui->deckButtonPlus->setEnabled(false);
-    ui->deckListWidget->setIconSize(QSize(218,35));
-    ui->deckListWidget->setStyleSheet("background-color: transparent;");
-    ui->enemyHandListWidget->setIconSize(QSize(218,35));
-    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
+
     QPalette palette;
     palette.setColor( QPalette::WindowText, Qt::white );
     ui->statusBar->setPalette( palette );

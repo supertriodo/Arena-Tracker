@@ -7,7 +7,7 @@
 class HandCard : public DeckCard
 {
 public:
-    HandCard(QMap<QString, QJsonObject> *cardsJson);
+    HandCard(QString code);
     ~HandCard();
 
 //Variables

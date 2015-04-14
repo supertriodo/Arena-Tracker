@@ -24,7 +24,9 @@ SOURCES += Sources/main.cpp\
     Sources/deckcard.cpp \
     Sources/handcard.cpp \
     Sources/enemyhandhandler.cpp \
-    Sources/arenahandler.cpp
+    Sources/arenahandler.cpp \
+    Sources/secretshandler.cpp \
+    Sources/secretcard.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -37,7 +39,9 @@ HEADERS  += Sources/mainwindow.h \
     Sources/deckhandler.h \
     Sources/handcard.h \
     Sources/enemyhandhandler.h \
-    Sources/arenahandler.h
+    Sources/arenahandler.h \
+    Sources/secretshandler.h \
+    Sources/secretcard.h
 
 FORMS    += mainwindow.ui
 

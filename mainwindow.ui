@@ -148,7 +148,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTreeWidget" name="treeWidget">
+         <widget class="QTreeWidget" name="arenaTreeWidget">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -241,6 +241,18 @@
           <property name="selectionMode">
            <enum>QAbstractItemView::NoSelection</enum>
           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="secretsTreeWidget">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>

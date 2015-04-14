@@ -22,6 +22,11 @@ DeckHandler::~DeckHandler()
 
 void DeckHandler::completeUI()
 {
+    ui->deckButtonMin->setEnabled(false);
+    ui->deckButtonPlus->setEnabled(false);
+    ui->deckListWidget->setIconSize(CARD_SIZE);
+    ui->deckListWidget->setStyleSheet("background-color: transparent;");
+
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
@@ -36,9 +41,7 @@ void DeckHandler::reset()
     ui->deckListWidget->clear();
     deckCardList.clear();
 
-    DeckCard deckCard(cardsJson);
-    deckCard.code = "";
-    deckCard.cost = -1;
+    DeckCard deckCard("");
     deckCard.total = 30;
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw();
@@ -58,9 +61,7 @@ void DeckHandler::newDeckCard(QString code, int total)
 {
     if(code.isEmpty())  return;
 
-    DeckCard deckCard(cardsJson);
-    deckCard.code = code;
-    deckCard.cost = (*cardsJson)[code].value("cost").toInt();
+    DeckCard deckCard(code);
     deckCard.total = total;
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw();

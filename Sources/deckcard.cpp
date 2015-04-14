@@ -2,14 +2,18 @@
 #include <QtWidgets>
 
 
+QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
-DeckCard::DeckCard(QMap<QString, QJsonObject> *cardsJson)
+
+DeckCard::DeckCard(QString code)
 {
+    this->code = code;
+
+    if(!code.isEmpty()) cost = (*cardsJson)[code].value("cost").toInt();
+    else                cost = -1;
+
     listItem = NULL;
-    code = "";
-    cost = 0;
     total = remaining = 1;
-    this->cardsJson = cardsJson;
 }
 
 
@@ -25,9 +29,12 @@ void DeckCard::draw()
 }
 void DeckCard::draw(bool drawTotal)
 {
-    draw(this->listItem, this->code, drawTotal?this->total:this->remaining);
+    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining);
+
+    this->listItem->setIcon(QIcon(canvas));
+    this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
 }
-void DeckCard::draw(QListWidgetItem * item, QString code, uint total)
+QPixmap DeckCard::draw(QString code, uint total)
 {
     QString type = (*cardsJson)[code].value("type").toString();
     QString name = (*cardsJson)[code].value("name").toString();
@@ -95,6 +102,11 @@ void DeckCard::draw(QListWidgetItem * item, QString code, uint total)
         }
     painter.end();
 
-    item->setIcon(QIcon(canvas));
-    item->setToolTip("<html><img src=./HSCards/" + code + ".png/></html>");
+    return canvas;
+}
+
+
+void DeckCard::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
+{
+    DeckCard::cardsJson = cardsJson;
 }

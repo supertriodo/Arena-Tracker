@@ -10,6 +10,7 @@
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
+#include "secretshandler.h"
 #include <QMainWindow>
 #include <QJsonObject>
 
@@ -39,6 +40,7 @@ private:
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
     ArenaHandler *arenaHandler;
+    SecretsHandler *secretsHandler;
 //    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
 //    QString arenaCurrentHero;
 //    QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
@@ -58,6 +60,7 @@ private:
     void createCardDownloader();
     void createDeckHandler();
     void createEnemyHandHandler();
+    void createSecretsHandler();
     void readSettings();
     void writeSettings();
     void completeUI();

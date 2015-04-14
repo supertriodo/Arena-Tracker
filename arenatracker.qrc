@@ -25,12 +25,15 @@
         <file>Images/bgCard1.png</file>
         <file>Images/bgCard2.png</file>
         <file>Fonts/hsFont.ttf</file>
-        <file>Json/AllSets.json</file>
         <file>Images/resize.png</file>
         <file>Images/close.png</file>
         <file>Images/minimize.png</file>
         <file>Images/handCard1.png</file>
         <file>Images/handCard2.png</file>
         <file>Images/icon.png</file>
+        <file>Images/secretHunter.png</file>
+        <file>Images/secretMage.png</file>
+        <file>Images/secretPaladin.png</file>
+        <file>Json/AllSets.json</file>
     </qresource>
 </RCC>

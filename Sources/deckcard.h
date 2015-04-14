@@ -15,7 +15,7 @@
 class DeckCard
 {
 public:
-    DeckCard(QMap<QString, QJsonObject> *cardsJson);
+    DeckCard(QString code);
     ~DeckCard();
 
 //Variables
@@ -27,15 +27,17 @@ public:
     uint remaining;
 
 private:
-    QMap<QString, QJsonObject> *cardsJson;
+    static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
-private:
-    void draw(QListWidgetItem * item, QString code, uint total);
+protected:
+    QPixmap draw(QString code, uint total);
 
 public:
     void draw(bool drawTotal);
     void draw();
+
+    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 };
 
 #endif // DECKCARD_H

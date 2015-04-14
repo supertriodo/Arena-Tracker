@@ -13,19 +13,19 @@ class EnemyHandHandler : public QObject
 {
     Q_OBJECT
 public:
-    EnemyHandHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui);
+    EnemyHandHandler(QObject *parent, Ui::MainWindow *ui);
     ~EnemyHandHandler();
 
 //Variables
 private:
     QList<HandCard> enemyHandList;
     Ui::MainWindow *ui;
-    QMap<QString, QJsonObject> *cardsJson;
     bool inGame;
 
 //Metodos
 private:
     void reset();
+    void completeUI();
 
 public:
     void redrawDownloadedCardImage(QString code);

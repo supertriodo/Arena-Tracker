@@ -23,6 +23,11 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
 
+    ui->uploadButton->setEnabled(false);
+    ui->updateButton->setEnabled(false);
+    ui->uploadButton->setToolTip(tr("Upload"));
+    ui->updateButton->setToolTip(tr("Refresh"));
+
     connect(ui->uploadButton, SIGNAL(clicked()),
             this, SLOT(uploadOldLog()));
     connect(ui->updateButton, SIGNAL(clicked()),
@@ -34,7 +39,7 @@ void ArenaHandler::completeUI()
 
 void ArenaHandler::createTreeWidget()
 {
-    QTreeWidget *treeWidget = ui->treeWidget;
+    QTreeWidget *treeWidget = ui->arenaTreeWidget;
     treeWidget->setColumnCount(5);
     treeWidget->setIconSize(QSize(32,32));
     treeWidget->setColumnWidth(0, 120);
@@ -84,7 +89,7 @@ void ArenaHandler::enableButtons()
     if(topLevelIndex != -1)
     {
         //Marcamos la arena para upload con los iconos de upload
-        QTreeWidgetItem *item = ui->treeWidget->topLevelItem(topLevelIndex);
+        QTreeWidgetItem *item = ui->arenaTreeWidget->topLevelItem(topLevelIndex);
         if(topLevelIndex == 1)  item->setIcon(4, QIcon(":Images/upload64.png"));
 
         for(int i=0; i<item->childCount(); i++)
@@ -211,7 +216,7 @@ bool ArenaHandler::newArenaUploadButton(QString &hero)
 
         setRowColor(item, RED);
 
-        ui->treeWidget->insertTopLevelItem(ui->treeWidget->topLevelItemCount()-1,item);
+        ui->arenaTreeWidget->insertTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1,item);
         return false;
     }
     return true;
@@ -243,13 +248,13 @@ void ArenaHandler::showArena(QString hero)
 {
     if(noArena)
     {
-        QTreeWidgetItem *item = ui->treeWidget->takeTopLevelItem(ui->treeWidget->topLevelItemCount()-1);
+        QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1);
         delete item;
         noArena = false;
     }
 
     arenaCurrentHero = QString(hero);
-    arenaCurrent = new QTreeWidgetItem(ui->treeWidget);
+    arenaCurrent = new QTreeWidgetItem(ui->arenaTreeWidget);
     arenaCurrent->setExpanded(true);
     arenaCurrent->setText(0, "Arena");
     arenaCurrent->setIcon(1, QIcon(":Images/hero" + arenaCurrentHero + ".png"));
@@ -270,7 +275,7 @@ void ArenaHandler::showNoArena()
     ui->updateButton->setEnabled(true);
 
     if(noArena) return;
-    QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget);
+    QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
     item->setText(0, "NO Arena");
     setRowColor(item, GREEN);
     arenaCurrent = NULL;
@@ -487,7 +492,7 @@ void ArenaHandler::uploadOldLog()
     //Eliminamos el treeWidgetItem asociado
     if(arena.playerHero.isEmpty())
     {
-        QList<QTreeWidgetItem *> itemList = ui->treeWidget->topLevelItem(0)->takeChildren();
+        QList<QTreeWidgetItem *> itemList = ui->arenaTreeWidget->topLevelItem(0)->takeChildren();
         while(!itemList.empty())
         {
             QTreeWidgetItem *item = itemList.first();
@@ -497,7 +502,7 @@ void ArenaHandler::uploadOldLog()
     }
     else
     {
-        QTreeWidgetItem *item = ui->treeWidget->takeTopLevelItem(1);
+        QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(1);
         delete item;
     }
 
@@ -522,7 +527,7 @@ void ArenaHandler::uploadOldLog()
     //Marcamos la siguiente arena con los iconos de upload
     else
     {
-        QTreeWidgetItem *item = ui->treeWidget->topLevelItem(1);
+        QTreeWidgetItem *item = ui->arenaTreeWidget->topLevelItem(1);
         item->setIcon(4, QIcon(":Images/upload64.png"));
 
         for(int i=0; i<item->childCount(); i++)

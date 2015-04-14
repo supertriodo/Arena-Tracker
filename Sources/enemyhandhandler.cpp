@@ -1,11 +1,12 @@
 #include "enemyhandhandler.h"
 #include <QtWidgets>
 
-EnemyHandHandler::EnemyHandHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui) : QObject(parent)
+EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->cardsJson = cardsJson;
     this->inGame = false;
+
+    completeUI();
 }
 
 
@@ -23,13 +24,19 @@ void EnemyHandHandler::reset()
 }
 
 
+void EnemyHandHandler::completeUI()
+{
+    ui->enemyHandListWidget->setIconSize(CARD_SIZE);
+    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
+}
+
+
 void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString code)
 {
-    HandCard handCard(cardsJson);
+    HandCard handCard(code);
     handCard.id = id;
     handCard.turn = turn;
     handCard.special = special;
-    handCard.code = code;
     handCard.listItem = new QListWidgetItem();
     ui->enemyHandListWidget->addItem(handCard.listItem);
 
@@ -55,6 +62,7 @@ void EnemyHandHandler::lastHandCardIsCoin()
 {
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
     enemyHandList.last().code = COIN;
+    enemyHandList.last().cost = 0;
     enemyHandList.last().draw();
 
     emit checkCardImage(COIN);

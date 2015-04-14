@@ -106,7 +106,7 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
     if(webState == complete && gameResultPostList->isEmpty())
     {
         //Reavivamos la conexion
-        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
+        connectWeb();
         qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
@@ -130,7 +130,7 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
     gameResultPostList->append(gamePost);
     qDebug() << "WebUploader: " << "Juego nuevo esperando para upload.";
 
-    if(!deckInWeb && arenaCards.isEmpty() && !deckCardList->isEmpty())
+    if(!deckInWeb && arenaCards.isEmpty() && deckCardList!=NULL)
     {
         createArenaCards(*deckCardList);
     }
@@ -164,6 +164,10 @@ bool WebUploader::uploadNewArena(const QString &hero)
         return false;
     }
 
+//    //Reavivamos la conexion
+//    connectWeb();
+//    qDebug() << "WebUploader: " << "Reavivamos la conexion.";
+
     networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?new=" + heroToWebNumber(hero))));
     arenaCurrentHero = QString(hero);
     webState = createArena;
@@ -184,7 +188,7 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
     if(webState == complete && gameResultPostList->isEmpty())
     {
         //Reavivamos la conexion
-        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
+        connectWeb();
         qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
@@ -225,6 +229,7 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
 
 void WebUploader::replyFinished(QNetworkReply *reply)
 {
+    qDebug() << "WebUploader: " << "ReplyFinished. " + QString::number(webState);
     reply->deleteLater();
 
     if (reply->error() != QNetworkReply::NoError)
@@ -235,10 +240,9 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     }
 
     if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
-    {
+    { 
         if(webState == signup)
         {
-            networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
             qDebug() << "WebUploader: " << "Sign up en arena Mastery correcto.";
             emit sendLog(tr("Web: Arena mastery sign up success."));
             webState = checkArenaCurrentLoad;
@@ -251,12 +255,14 @@ void WebUploader::replyFinished(QNetworkReply *reply)
             {
                 arenaCurrentID = match->captured(1).toInt();
                 deckInWeb = false;
-                networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
                 qDebug() << "WebUploader: " << "Arena nueva uploaded(" << match->captured(1) << "). Heroe: " << arenaCurrentHero;
                 emit sendLog(tr("Web: New arena uploaded."));
                 webState = complete;
             }
         }
+
+        qDebug() << "WebUploader: " << "Redirigido a " << reply->rawHeader("Location");
+        networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
     }
     else if(webState == signup)
     {
@@ -380,6 +386,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     }
     else if(webState == complete)
     {
+        qDebug() << "WebUploader: " << "UploadNext.";
         uploadNext();
     }
 }
@@ -387,7 +394,11 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
 void WebUploader::uploadNext()
 {
-    if(!gameResultPostList->isEmpty())
+    if(!arenaCards.isEmpty())
+    {
+        uploadArenaCards();
+    }
+    else if(!gameResultPostList->isEmpty())
     {
         GameResultPost gamePost = gameResultPostList->first();
         gameResultPostList->removeFirst();
@@ -414,10 +425,6 @@ void WebUploader::uploadNext()
 
         delete rewardsPost;
         rewardsPost = NULL;
-    }
-    else if(!arenaCards.isEmpty())
-    {
-        uploadArenaCards();
     }
 }
 
