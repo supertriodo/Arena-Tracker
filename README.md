@@ -6,6 +6,20 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 * A secret has been played. Watch the remaining posibilities while you test for the secret.
 
 
+## Download (Windows)
+https://github.com/supertriodo/Arena-Tracker/releases/download/v1.4/Arena.Tracker.v1.4.zip
+
+
+## Build from source (Linux, Windows & Mac)
+* Download & install QT Community.
+ * http://www.qt.io/download-open-source/
+* Download or clone Arena Tracker source code.
+* Open Qt Creator and open Arena Tracker project.
+ * Open File or project... Look for ArenaTracker.pro
+* In the botton left set the build to Release and Run.
+* Move HSCards directory to the build dir.
+
+
 ## First Run
 The first time you run Arena Tracker you will be asked for:
 
@@ -35,16 +49,6 @@ or on email: triodo@gmail.com
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
 * I get "File: ERROR:Saving card image to disk. Did you remove HSCards dir?"
  * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
-
-
-## Build from source (Linux, Windows & Mac)
-* Download & install QT Community.
- * http://www.qt.io/download-open-source/
-* Download or clone Arena Tracker source code.
-* Open Qt Creator and open Arena Tracker project.
- * Open File or project... Look for ArenaTracker.pro
-* In the botton left set the build to Release and Run.
-* Move HSCards directory to the build dir.
 
 
 ## Video examples
