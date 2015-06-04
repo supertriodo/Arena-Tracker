@@ -10,7 +10,7 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 https://github.com/supertriodo/Arena-Tracker/releases/download/v1.4/Arena.Tracker.v1.4.zip
 
 
-## Build from source (Linux, Windows & Mac)
+## Build from source (Linux, Mac & Windows)
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
 * Download or clone Arena Tracker source code.
