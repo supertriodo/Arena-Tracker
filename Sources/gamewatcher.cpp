@@ -1,6 +1,10 @@
 #include "gamewatcher.h"
 #include <QtWidgets>
 
+
+QMap<QString, QJsonObject> * GameWatcher::cardsJson;
+
+
 GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
@@ -192,6 +196,9 @@ void GameWatcher::processPower(QString &line)
                     firstPlayer.clear();
                     winnerPlayer.clear();
                     playerID = 0;
+                    secretHero = unknown;
+                    enemyMinions = 0;
+                    enemyMinionsAliveForAvenge = -1;
                     emit startGame();
                 }
             }
@@ -214,7 +221,11 @@ void GameWatcher::processPower(QString &line)
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
             {
                 name2 = match->captured(1);
-                if(name2 == playerTag)  playerID = 2;
+                if(name2 == playerTag)
+                {
+                    playerID = 2;
+                    secretHero = getSecretHero(hero2, hero1);
+                }
                 gameState = playerName2State;
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
@@ -226,7 +237,11 @@ void GameWatcher::processPower(QString &line)
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=1"), match))
             {
                 name1 = match->captured(1);
-                if(name1 == playerTag)  playerID = 1;
+                if(name1 == playerTag)
+                {
+                    playerID = 1;
+                    secretHero = getSecretHero(hero1, hero2);
+                }
                 gameState = inGameState;
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
@@ -256,7 +271,7 @@ void GameWatcher::processPowerInGame(QString &line)
             "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
             ), match))
     {
-        qDebug() << "GameWatcher: " << "Jugador: Carta Inicial robada: " << match->captured(1);
+        qDebug() << "GameWatcher: Jugador: Carta Inicial robada:" << match->captured(1);
         emit playerCardDraw(match->captured(1));
     }
     //Turn
@@ -271,7 +286,7 @@ void GameWatcher::processPowerInGame(QString &line)
     {
         if(match->captured(1) != playerTag)
         {
-            qDebug() << "GameWatcher: " << "Mulligan enemigo terminado.";
+            qDebug() << "GameWatcher: Mulligan enemigo terminado.";
             mulliganEnemyDone = true;
             if(firstPlayer == playerTag)
             {
@@ -280,48 +295,71 @@ void GameWatcher::processPowerInGame(QString &line)
             }
         }
     }
-    //Jugador juega carta con objetivo
-    else if(line.contains(QRegularExpression(
-        "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=HAND zonePos=\\d+ cardId=(.*) player=(\\d+)\\] SubType=PLAY Index=0 "
-        "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(.*) player=(\\d+)\\]"
-        ), match))
-    {
-        if(match->captured(3).toInt() == playerID)
-        {
-            qDebug() << "GameWatcher: " << "Jugador: Carta obj jugada: " << match->captured(1) << "sobre" << match->captured(4);
-            //emit juega carta con objetivo (hechizo o esbirro o arma)
-        }
-    }
-    //Jugador ataca (esbirro/heroe VS esbirro/heroe)
-    else if(line.contains(QRegularExpression(
-        "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(.*) player=(\\d+)\\] SubType=ATTACK Index=-1 "
-        "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(.*) player=(\\d+)\\]"
-        ), match))
-    {
-        if(match->captured(3).toInt() == playerID)
-        {
-            qDebug() << "GameWatcher: " << "Jugador: Ataca: " << match->captured(1) << "vs" << match->captured(4);
 
-            if(match->captured(2).contains("HERO"))
+    //SECRETOS
+    else
+    {
+        //Jugador juega carta con objetivo
+        if(line.contains(QRegularExpression(
+            "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=PLAY Index=0 "
+            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=\\d+\\]"
+            ), match))
+        {
+            if(match->captured(3).toInt() == playerID)
             {
-                if(match->captured(5).contains("HERO"))
+                QString type = (*cardsJson)[match->captured(2)].value("type").toString();
+
+                if(type == QString("Spell"))
                 {
-                    //emit ataque heroe vs heroe
+                    qDebug() << "GameWatcher: Jugador: Hechizo obj jugada:" <<
+                                match->captured(1) << "sobre" << match->captured(4);
+                    if(isPlayerTurn)    emit playerSpellObjPlayed();
                 }
                 else
                 {
-                    //emit ataque heroe vs esbirro
+                    qDebug() << "GameWatcher: Jugador: Esbirro/arma obj jugada:" <<
+                                match->captured(1) << "sobre" << match->captured(4);
                 }
             }
-            else
+        }
+
+        //Jugador ataca (esbirro/heroe VS esbirro/heroe)
+        else if(line.contains(QRegularExpression(
+            "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=ATTACK Index=-1 "
+            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
+            ), match))
+        {
+            if(match->captured(3).toInt() == playerID)
             {
-                if(match->captured(5).contains("HERO"))
+                if(match->captured(2).contains("HERO"))
                 {
-                    //emit ataque esbirro vs heroe
+                    if(match->captured(5).contains("HERO"))
+                    {
+                        qDebug() << "GameWatcher: Jugador: Ataca:" <<
+                                    match->captured(1) << "(heroe)vs(heroe)" << match->captured(4);
+                        if(isPlayerTurn)    emit playerAttack(true, true);
+                    }
+                    else
+                    {
+                        qDebug() << "GameWatcher: Jugador: Ataca:" <<
+                                    match->captured(1) << "(heroe)vs(esbirro)" << match->captured(4);
+                        if(isPlayerTurn)    emit playerAttack(true, false);
+                    }
                 }
                 else
                 {
-                    //emit ataque esbirro vs esbirro
+                    if(match->captured(5).contains("HERO"))
+                    {
+                        qDebug() << "GameWatcher: Jugador: Ataca:" <<
+                                    match->captured(1) << "(esbirro)vs(heroe)" << match->captured(4);
+                        if(isPlayerTurn)    emit playerAttack(false, true);
+                    }
+                    else
+                    {
+                        qDebug() << "GameWatcher: Jugador: Ataca:" <<
+                                    match->captured(1) << "(esbirro)vs(esbirro)" << match->captured(4);
+                        if(isPlayerTurn)    emit playerAttack(false, false);
+                    }
                 }
             }
         }
@@ -333,79 +371,55 @@ void GameWatcher::processZone(QString &line)
 {
     if(gameState == inGameState)
     {
-        //JUGADOR JUEGA
-        //Jugador juega carta
-        if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from FRIENDLY HAND -> (FRIENDLY PLAY)?\n"
-            ), match))
-        {
-            //Jugador juega hechizo
-            if(match->captured(3).isEmpty())
-            {
-                qDebug() << "GameWatcher: " << "Jugador: Hechizo jugado: " << match->captured(1);
-                //emit juega hechizo
-            }
-            //Jugador juega esbirro/arma
-            else
-            {
-                qDebug() << "GameWatcher: " << "Jugador: Esbirro/arma jugado: " << match->captured(1);
-                //emit juega esbirro/arma
-            }
-        }
-
         //ENEMIGO JUEGA
         //Enemigo juega secreto o carta devuelta al mazo en Mulligan
-        //[id=54 cardId= type=INVALID zone=SECRET zonePos=1 player=2] zone from OPPOSING HAND -> OPPOSING SECRET
-        else if(line.contains(QRegularExpression(
+        if(line.contains(QRegularExpression(
             "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from OPPOSING HAND -> OPPOSING (SECRET|DECK)"
             ), match))
         {
             if(match->captured(2) == "SECRET")
             {
-                qDebug() << "GameWatcher: " << "Enemigo: Secreto jugado. ID:" << match->captured(1);
-                //emit juega secreto
+                qDebug() << "GameWatcher: Enemigo: Secreto jugado. ID:" << match->captured(1);
+                emit enemySecretPlayed(match->captured(1).toInt(), secretHero);
             }
             else
             {
-                qDebug() << "GameWatcher: " << "Enemigo: Carta inicial devuelta. ID:" << match->captured(1);
+                qDebug() << "GameWatcher: Enemigo: Carta inicial devuelta. ID:" << match->captured(1);
             }
             emit enemyCardPlayed(match->captured(1).toInt());
         }
         //Enemigo juega carta
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING HAND ->"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING HAND -> (OPPOSING PLAY|OPPOSING PLAY .Weapon.)?\n"
             ), match))
         {
-            qDebug() << "GameWatcher: " << "Enemigo: Carta jugada: " << match->captured(1) << ". ID:" << match->captured(2);
+            //Enemigo juega hechizo
+            if(match->captured(4).isEmpty())
+            {
+                qDebug() << "GameWatcher: Enemigo: Hechizo jugado:" << match->captured(1) << "ID:" << match->captured(2);
+            }
+            //Enemigo juega esbirro
+            else if(match->captured(4) == "OPPOSING PLAY")
+            {
+                enemyMinions++;
+                qDebug() << "GameWatcher: Enemigo: Esbirro jugado:" << match->captured(1) << "ID:" << match->captured(2) << "Esbirros:" << enemyMinions;
+            }
+            //Enemigo juega arma
+            else
+            {
+                qDebug() << "GameWatcher: Enemigo: Arma jugada:" << match->captured(1) << "ID:" << match->captured(2);
+            }
+
             emit enemyCardPlayed(match->captured(2).toInt(), match->captured(3));
         }
 
         //ENEMIGO SECRETO DESVELADO
-        //[name=Contrahechizo id=54 zone=GRAVEYARD zonePos=0 cardId=EX1_287 player=2] zone from OPPOSING SECRET -> OPPOSING GRAVEYARD
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING SECRET -> OPPOSING GRAVEYARD"
+            "\\[name=(.*) id=(\\d+) zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING SECRET -> OPPOSING GRAVEYARD"
             ), match))
         {
-            qDebug() << "GameWatcher: " << "Enemigo: Secreto desvelado: " << match->captured(1);
-            //emit secreto desvelado
-        }
-
-        //JUGADOR ESBIRRO MUERE
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from FRIENDLY PLAY -> FRIENDLY GRAVEYARD"
-            ), match))
-        {
-            qDebug() << "GameWatcher: " << "Jugador: Esbirro muerto: " << match->captured(1);
-            //emit no necesario
-        }
-
-        //ENEMIGO ESBIRRO MUERE
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING PLAY -> OPPOSING GRAVEYARD"
-            ), match))
-        {
-            qDebug() << "GameWatcher: " << "Enemigo: Esbirro muerto: " << match->captured(1);
-            //emit muere esbirro
+            qDebug() << "GameWatcher: Enemigo: Secreto desvelado:" << match->captured(1);
+            emit enemySecretRevealed(match->captured(2).toInt());
         }
 
         //JUGADOR ROBA
@@ -417,7 +431,7 @@ void GameWatcher::processZone(QString &line)
             if(match->captured(2) != "DECK")
             {
                 advanceTurn(true);
-                qDebug() << "GameWatcher: " << "Jugador: Carta robada: " << match->captured(3) << " - " << match->captured(1);
+                qDebug() << "GameWatcher: Jugador: Carta robada:" << match->captured(1);
                 emit playerCardDraw(match->captured(3));
             }
         }
@@ -429,7 +443,7 @@ void GameWatcher::processZone(QString &line)
             ), match))
         {
             advanceTurn(false);
-            qDebug() << "GameWatcher: " << "Enemigo: Carta robada. ID:" << match->captured(1);
+            qDebug() << "GameWatcher: Enemigo: Carta robada. ID:" << match->captured(1);
             emit enemyCardDraw(match->captured(1).toInt(), turnReal);
         }
 
@@ -440,13 +454,13 @@ void GameWatcher::processZone(QString &line)
             //Enemigo roba carta especial del vacio
             if(mulliganEnemyDone)
             {
-                qDebug() << "GameWatcher: " << "Enemigo: Carta especial robada. ID:" << match->captured(1);
+                qDebug() << "GameWatcher: Enemigo: Carta especial robada. ID:" << match->captured(1);
                 emit enemyCardDraw(match->captured(1).toInt(), turnReal, true);
             }
             //Enemigo roba carta inicial
             else
             {
-                qDebug() << "GameWatcher: " << "Enemigo: Carta inicial robada. ID:" << match->captured(1);
+                qDebug() << "GameWatcher: Enemigo: Carta inicial robada. ID:" << match->captured(1);
                 emit enemyCardDraw(match->captured(1).toInt());
             }
         }
@@ -455,10 +469,94 @@ void GameWatcher::processZone(QString &line)
             "\\[name=(.*) id=(\\d+) zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from .* -> OPPOSING HAND"
             ), match))
         {
-            qDebug() << "GameWatcher: " << "Enemigo: Carta devuelta a la mano: " << match->captured(1) << ". ID:" << match->captured(2);
+            qDebug() << "GameWatcher: Enemigo: Carta devuelta a la mano:" << match->captured(1) << "ID:" << match->captured(2);
             emit enemyCardDraw(match->captured(2).toInt(), turnReal, false, match->captured(3));
         }
+
+
+        //SECRETOS
+        else
+        {
+            //JUGADOR JUEGA
+            //Jugador juega carta
+            if(line.contains(QRegularExpression(
+                "\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from FRIENDLY HAND -> (FRIENDLY PLAY|FRIENDLY PLAY .Weapon.)?\n"
+                ), match))
+            {
+                //Jugador juega hechizo
+                if(match->captured(2).isEmpty())
+                {
+                    qDebug() << "GameWatcher: Jugador: Hechizo jugado:" << match->captured(1);
+                    if(isPlayerTurn)    emit playerSpellPlayed();
+                }
+                //Jugador juega esbirro
+                else if(match->captured(2) == "FRIENDLY PLAY")
+                {
+                    qDebug() << "GameWatcher: Jugador: Esbirro jugado:" << match->captured(1);
+                    if(isPlayerTurn)    emit playerMinionPlayed();
+                }
+                //Jugador juega arma
+                else
+                {
+                    qDebug() << "GameWatcher: Jugador: Arma jugada:" << match->captured(1);
+                }
+            }
+
+            //JUGADOR ESBIRRO MUERE
+    //        else if(line.contains(QRegularExpression(
+    //            "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from FRIENDLY PLAY -> FRIENDLY GRAVEYARD"
+    //            ), match))
+    //        {
+    //            qDebug() << "GameWatcher: Jugador: Esbirro muerto: " << match->captured(1);
+    //            //emit no necesario
+    //        }
+
+            //ENEMIGO ESBIRRO MUERE
+            else if(line.contains(QRegularExpression(
+                "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING PLAY -> OPPOSING GRAVEYARD"
+                ), match))
+            {
+                enemyMinions--;
+                qDebug() << "GameWatcher: Enemigo: Esbirro muerto:" << match->captured(1) << "Esbirros:" << enemyMinions;
+
+                if(isPlayerTurn)
+                {
+                    emit enemyMinionDead();
+                    if(enemyMinionsAliveForAvenge == -1)
+                    {
+                        enemyMinionsAliveForAvenge = enemyMinions;
+                        QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                    }
+                    else    enemyMinionsAliveForAvenge--;
+                }
+            }
+
+            //ENEMIGO ESBIRRO CAMBIA POSICION
+            else if(line.contains(QRegularExpression(
+                "\\[name=(.*) id=\\d+ zone=PLAY zonePos=(\\d+) cardId=\\w+ player=(\\d+)\\] pos from"
+                ), match))
+            {
+                if(match->captured(3).toInt() != playerID)
+                {
+                    if(match->captured(2).toInt() > enemyMinions) enemyMinions = match->captured(2).toInt();
+                    qDebug() << "GameWatcher: Enemigo: Nueva posicion esbirro:" <<
+                                match->captured(1) << ">>" << match->captured(2) << "Esbirros:" << enemyMinions;
+                }
+            }
+        }
     }
+}
+
+
+void GameWatcher::checkAvenge()
+{
+    if(enemyMinionsAliveForAvenge > 0)
+    {
+        emit avengeTested();
+        qDebug() << "GameWatcher: Avenge tested: Supervivientes:" << enemyMinionsAliveForAvenge;
+    }
+    else    qDebug() << "GameWatcher: Avenge not tested: Supervivientes:" << enemyMinionsAliveForAvenge;
+    enemyMinionsAliveForAvenge = -1;
 }
 
 
@@ -501,6 +599,7 @@ void GameWatcher::createGameResult()
 
     GameResult gameResult;
 
+    //Volvemos a calcular playerHero y enemyHero en caso de cambio de playerTag
     if(name1 == playerTag)
     {
         gameResult.playerHero = hero1;
@@ -521,7 +620,7 @@ void GameWatcher::createGameResult()
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    qDebug() << "GameWatcher: "<< "Nuevo juego de arena.";
+    qDebug() << endl << "GameWatcher: "<< "Nuevo juego de arena.";
     emit sendLog(tr("Log: New game."));
 
     emit newGameResult(gameResult);
@@ -548,5 +647,49 @@ void GameWatcher::advanceTurn(bool playerDraw)
     {
         turnReal = turn;
         qDebug() << endl << "GameWatcher: " << "Turno: " << QString::number(turn) << " " << (playerTurn?"Jugador":"Enemigo");
+
+        if((firstPlayer==playerTag && turnReal%2==1) || (firstPlayer!=playerTag && turnReal%2==0))  isPlayerTurn=true;
+        else    isPlayerTurn=false;
+
     }
 }
+
+
+SecretHero GameWatcher::getSecretHero(QString playerHero, QString enemyHero)
+{
+    SecretHero enemySecretHero = unknown;
+    SecretHero playerSecretHero = unknown;
+
+    if(enemyHero == QString("04"))  enemySecretHero = paladin;
+    else if(enemyHero == QString("05"))  enemySecretHero = hunter;
+    else if(enemyHero == QString("08"))  enemySecretHero = mage;
+
+    if(playerHero == QString("04"))  playerSecretHero = paladin;
+    else if(playerHero == QString("05"))  playerSecretHero = hunter;
+    else if(playerHero == QString("08"))  playerSecretHero = mage;
+
+    if(enemySecretHero != unknown)  return enemySecretHero;
+    else if(playerSecretHero != unknown)  return playerSecretHero;
+    else    return unknown;
+}
+
+
+void GameWatcher::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
+{
+    GameWatcher::cardsJson = cardsJson;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

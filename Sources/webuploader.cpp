@@ -544,7 +544,7 @@ QString WebUploader::codeFromName(QString name)
     {
         if(it->value("name").toString() == name)
         {
-            return it.key();
+            if(!it->value("cost").isUndefined())    return it.key();
         }
     }
     qDebug() << "WebUploader: " << "ERROR: No se encuentra en Json codigo de carta: " << name;

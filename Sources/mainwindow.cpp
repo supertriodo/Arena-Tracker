@@ -19,10 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
 
+    createCardDownloader();
     createSecretsHandler();
     createDeckHandler();
     createEnemyHandHandler();
-    createCardDownloader();
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
@@ -70,12 +70,15 @@ void MainWindow::initCardsJson()
     }
 
     DeckCard::setCardsJson(&cardsJson);
+    GameWatcher::setCardsJson(&cardsJson);
 }
 
 
 void MainWindow::createSecretsHandler()
 {
     secretsHandler = new SecretsHandler(this, ui);
+    connect(secretsHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
 }
 
 
@@ -158,6 +161,25 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(lockEnemyInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
             enemyHandHandler, SLOT(unlockEnemyInterface()));
+
+    connect(gameWatcher, SIGNAL(startGame()),
+            secretsHandler, SLOT(resetSecretsInterface()));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
+            secretsHandler, SLOT(secretPlayed(int,SecretHero)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int)),
+            secretsHandler, SLOT(secretRevealed(int)));
+    connect(gameWatcher, SIGNAL(playerSpellPlayed()),
+            secretsHandler, SLOT(playerSpellPlayed()));
+    connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
+            secretsHandler, SLOT(playerSpellObjPlayed()));
+    connect(gameWatcher, SIGNAL(playerMinionPlayed()),
+            secretsHandler, SLOT(playerMinionPlayed()));
+    connect(gameWatcher, SIGNAL(enemyMinionDead()),
+            secretsHandler, SLOT(enemyMinionDead()));
+    connect(gameWatcher, SIGNAL(avengeTested()),
+            secretsHandler, SLOT(avengeTested()));
+    connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
+            secretsHandler, SLOT(playerAttack(bool,bool)));
 }
 
 
@@ -355,6 +377,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
 {
     deckHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
+    secretsHandler->redrawDownloadedCardImage(code);
 }
 
 

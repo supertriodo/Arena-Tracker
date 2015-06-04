@@ -4,11 +4,12 @@
 #include "deckcard.h"
 #include <QTreeWidgetItem>
 
-enum SecretHero { mage, hunter, paladin };
+enum SecretHero { mage, hunter, paladin, unknown };
 
 class SecretCard : public DeckCard
 {
 public:
+    SecretCard();
     SecretCard(QString code);
     ~SecretCard();
 

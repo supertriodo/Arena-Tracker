@@ -47,7 +47,7 @@ void DeckHandler::reset()
     deckCard.draw();
     insertDeckCard(deckCard);
 
-    qDebug() << "DeckHandler: " << "Deck List cleared.";
+    qDebug() << "DeckHandler: Deck List cleared.";
 }
 
 
@@ -136,18 +136,18 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
-                qDebug() << "DeckHandler: " << "Nueva copia de carta " <<
+                qDebug() << "DeckHandler: Nueva copia de carta" <<
                             (*cardsJson)[code].value("name").toString() <<
-                            " robada, completando mazo.";
+                            "robada, completando mazo.";
                 emit sendLog(tr("Deck: Discovered unknown card. Adding to deck: ") +
                                   (*cardsJson)[code].value("name").toString());
                 showCount();
             }
             else
             {
-                qDebug() << "DeckHandler: " << "WARNING: Nueva copia de carta robada " <<
+                qDebug() << "DeckHandler: WARNING: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
-                            " pero el mazo esta completo.";
+                            "pero el mazo esta completo.";
                 emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
                               (*cardsJson)[code].value("name").toString());
             }
@@ -155,7 +155,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
         }
     }
 
-    qDebug() << "DeckHandler: " << "WARNING: Robada carta que no esta en el mazo " <<
+    qDebug() << "DeckHandler: WARNING: Robada carta que no esta en el mazo" <<
                 (*cardsJson)[code].value("name").toString();
     emit sendLog(tr("Deck: WARNING: Drawn card not in your deck. ") +
                   (*cardsJson)[code].value("name").toString());

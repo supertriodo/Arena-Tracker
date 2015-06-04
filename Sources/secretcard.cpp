@@ -1,6 +1,11 @@
 #include "secretcard.h"
 #include <QtWidgets>
 
+SecretCard::SecretCard() : DeckCard("")
+{
+    treeItem = NULL;
+}
+
 SecretCard::SecretCard(QString code) : DeckCard(code)
 {
     treeItem = NULL;
@@ -30,6 +35,6 @@ void SecretCard::draw()
             painter.drawPixmap(0,0,QPixmap(":Images/handCard1.png"));
         painter.end();
 
-        this->listItem->setIcon(QIcon(canvas));
+        this->treeItem->setIcon(0, QIcon(canvas));
     }
 }

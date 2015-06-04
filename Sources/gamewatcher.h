@@ -2,7 +2,7 @@
 #define GAMEWATCHER_H
 
 #include <QObject>
-
+#include "secretcard.h"
 
 class GameResult
 {
@@ -47,6 +47,9 @@ private:
     GameState gameState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
     int playerID;
+    SecretHero secretHero;
+    int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
+    bool isPlayerTurn;
     bool arenaMode;
     bool deckRead;
     QRegularExpressionMatch *match;
@@ -54,6 +57,9 @@ private:
     //no aparezcan como parte del nuevo turno
     int turn, turnReal;
     bool mulliganEnemyDone;
+
+    static QMap<QString, QJsonObject> *cardsJson;
+
 
 //Metodos
 private:
@@ -63,6 +69,10 @@ private:
     void processZone(QString &line);
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
+    SecretHero getSecretHero(QString playerHero, QString enemyHero);
+
+public:
+    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 
 public:
     void reset();    
@@ -81,9 +91,18 @@ signals:
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
     void enemyCardPlayed(int id, QString code="");
     void lastHandCardIsCoin();
+    void enemySecretPlayed(int id, SecretHero hero);
+    void enemySecretRevealed(int id);
+    void playerSpellPlayed();
+    void playerMinionPlayed();
+    void enemyMinionDead();
+    void playerAttack(bool isHeroFrom, bool isHeroTo);
+    void playerSpellObjPlayed();
+    void avengeTested();
 
 public slots:
     void processLogLine(QString line);
+    void checkAvenge();
 };
 
 #endif // GAMEWATCHER_H

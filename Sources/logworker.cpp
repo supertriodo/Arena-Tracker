@@ -33,7 +33,7 @@ void LogWorker::readLog()
         if((line[lineLenght-1] != '\n') &&
                 lineLenght<((int)sizeof(line)-1))
         {
-            qDebug() << "LogWorker: "<< "Leida linea a medias.";
+//            qDebug() << "LogWorker: "<< "Leida linea a medias.";
             return;
         }
 
