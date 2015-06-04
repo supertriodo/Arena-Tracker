@@ -14,6 +14,7 @@ https://github.com/supertriodo/Arena-Tracker/releases/download/v1.4/Arena.Tracke
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
 * Download or clone Arena Tracker source code.
+ * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
 * Open Qt Creator and open Arena Tracker project.
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
