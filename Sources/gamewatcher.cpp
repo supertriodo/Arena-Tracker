@@ -117,7 +117,7 @@ void GameWatcher::processLogLine(QString line)
                 emit newArenaReward(0, dust.toInt(),false,false,false);
             }
         }
-        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero = HERO_(\\d+)"), match))
+        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero=HERO_(\\d+)"), match))
         {
             QString hero = match->captured(1);
             qDebug() << "GameWatcher: "<< "Nueva arena.";
