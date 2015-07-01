@@ -134,36 +134,36 @@ void GameWatcher::processLogLine(QString line)
     {
         processZone(line);
     }
-    else
-    {
-        if(!deckRead)
-        {
-            if(line.startsWith("[Ben]"))
-            {
-                if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
-                {
-                    gameState = readingDeck;
-                    qDebug() << "GameWatcher: "<< "Inicio leer deck.";
-                }
-            }
-            else if(line.startsWith("[Asset]"))
-            {
-                if(gameState == readingDeck)
-                {
-                    if(line.contains(QRegularExpression(
-                            "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-                    {
-                        QString code = match->captured(1);
-                        if(!code.contains("HERO"))
-                        {
-                            qDebug() << "GameWatcher: "<< "Nueva carta: " << code;
-                            emit newDeckCard(code);
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    else
+//    {
+//        if(!deckRead)
+//        {
+//            if(line.startsWith("[Ben]"))
+//            {
+//                if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
+//                {
+//                    gameState = readingDeck;
+//                    qDebug() << "GameWatcher: "<< "Inicio leer deck.";
+//                }
+//            }
+//            else if(line.startsWith("[Asset]"))
+//            {
+//                if(gameState == readingDeck)
+//                {
+//                    if(line.contains(QRegularExpression(
+//                            "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+//                    {
+//                        QString code = match->captured(1);
+//                        if(!code.contains("HERO"))
+//                        {
+//                            qDebug() << "GameWatcher: "<< "Nueva carta: " << code;
+//                            emit newDeckCard(code);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 
