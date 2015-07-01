@@ -160,14 +160,11 @@ void DeckHandler::showPlayerCardDraw(QString code)
     emit sendLog(tr("Deck: WARNING: Drawn card not in your deck. ") +
                   (*cardsJson)[code].value("name").toString());
 
-    //Testing
-#ifdef QT_DEBUG
     if(deckCardList[0].total>0)
     {
         newDeckCard(code);
         showPlayerCardDraw(code);
     }
-#endif
 }
 
 
