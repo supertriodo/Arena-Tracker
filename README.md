@@ -59,8 +59,9 @@ or on email: triodo@gmail.com
 
 
 ## Video examples
-* v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
+* v2.0: http://youtu.be/IMckn_lmW84
 * v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
+* v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 
 
 ## More info:
