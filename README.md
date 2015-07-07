@@ -21,6 +21,8 @@ https://github.com/supertriodo/Arena-Tracker/releases/download/v1.41/Arena.Track
  * http://www.qt.io/download-open-source/
 * Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
  * http://opencv.org/downloads.html
+ * In Ubuntu I followed this guide (changing the version of ovencv to v2.4.11
+   http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/
 * Download or clone Arena Tracker source code.
  * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
 * Open Qt Creator and open Arena Tracker project.
