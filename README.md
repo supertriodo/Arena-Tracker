@@ -9,7 +9,7 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 My Hearthstone ID: triodo#2541 (EU region)
 
 If you like the app, donations are much appreciated. It allows me to spend more time developing Arena Tracker.
-[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=Blywt-6y-rq9ASehsJn_7QfivQ7tk32oI5nMMXlmSL4dLXTkagolTWHLwIW&dispatch=5885d80a13c0db1f8e263663d3faee8de6030e9239419d79c3f52f70a3ed57ec)
+[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
 
 ## Download (Windows)
