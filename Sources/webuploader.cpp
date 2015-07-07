@@ -139,6 +139,29 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
 }
 
 
+void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
+{
+    if(arenaCurrentID == 0 && (webState != createArena))
+    {
+        qDebug() << "WebUploader: " << "WARNING: Uploading deck sin haber arena en progreso en la web.";
+        emit sendLog(tr("Web: WARNING:No arena in progress to upload to for the deck.\n"
+                        "(Create the arena manually in Arena Mastery and refresh the app)."));
+    }
+
+    if(webState == complete && gameResultPostList->isEmpty())
+    {
+        //Reavivamos la conexion
+        connectWeb();
+        qDebug() << "WebUploader: " << "Reavivamos la conexion.";
+    }
+
+    if(!deckInWeb && arenaCards.isEmpty() && deckCardList!=NULL)
+    {
+        createArenaCards(*deckCardList);
+    }
+}
+
+
 void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
     for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
@@ -150,7 +173,7 @@ void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
         }
     }
 
-    qDebug() << "Building Deck string: "<< endl << arenaCards;
+    qDebug() << "WebUploader: Building Deck string: "<< endl << arenaCards;
 }
 
 

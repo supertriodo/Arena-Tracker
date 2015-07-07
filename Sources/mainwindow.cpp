@@ -1,7 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "logloader.h"
+#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/nonfree/features2d.hpp"
 #include <QtWidgets>
+
+using namespace cv;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,18 +23,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     readSettings();
     initCardsJson();
+    completeUI();
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
 
     createCardDownloader();
     createSecretsHandler();
     createDeckHandler();
+    createDraftHandler();
     createEnemyHandHandler();
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
-
-    completeUI();
 }
 
 
@@ -39,6 +46,7 @@ MainWindow::~MainWindow()
     delete webUploader;
     delete cardDownloader;
     delete enemyHandHandler;
+    delete draftHandler;
     delete deckHandler;
     delete secretsHandler;
     delete resizeButton;
@@ -48,7 +56,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::resetDeckFromWeb()
 {
-    gameWatcher->setDeckRead();
+//    gameWatcher->setDeckRead();
     deckHandler->reset();
 }
 
@@ -71,6 +79,22 @@ void MainWindow::initCardsJson()
 
     DeckCard::setCardsJson(&cardsJson);
     GameWatcher::setCardsJson(&cardsJson);
+}
+
+
+void MainWindow::createDraftHandler()
+{
+    draftHandler = new DraftHandler(this, &cardsJson, ui);
+    connect(draftHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(draftHandler, SIGNAL(setStatusBarMessage(QString,int)),
+            this, SLOT(setStatusBarMessage(QString,int)));
+    connect(draftHandler, SIGNAL(newDeckCard(QString,int)),
+            deckHandler, SLOT(newDeckCard(QString,int)));
+    connect(draftHandler, SIGNAL(deckComplete()),
+            this, SLOT(uploadDeck()));
+    connect(draftHandler, SIGNAL(sendLog(QString)),
+            this, SLOT(writeLog(QString)));
 }
 
 
@@ -180,6 +204,15 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
+
+    connect(gameWatcher,SIGNAL(beginDraft(QString)),
+            draftHandler, SLOT(beginDraft(QString)));
+    connect(gameWatcher,SIGNAL(endDraft()),
+            draftHandler, SLOT(endDraft()));
+    connect(gameWatcher,SIGNAL(pauseDraft()),
+            draftHandler, SLOT(pauseDraft()));
+    connect(gameWatcher,SIGNAL(resumeDraft()),
+            draftHandler, SLOT(resumeDraft()));
 }
 
 
@@ -188,6 +221,8 @@ void MainWindow::createLogLoader()
     logLoader = new LogLoader(this);
     connect(logLoader, SIGNAL(synchronized()),
             this, SLOT(createWebUploader()));
+    connect(logLoader, SIGNAL(synchronized()),
+            gameWatcher, SLOT(setSynchronized()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(sendLog(QString)),
@@ -235,12 +270,18 @@ void MainWindow::createWebUploader()
     ui->progressBar->setVisible(false);
     resizeArenaButtonsText();
     setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
+
+    //Test
+#ifdef QT_DEBUG
+    test();
+#endif
 }
 
 
 void MainWindow::completeUI()
 {
     ui->tabWidget->setCurrentIndex(0);
+    ui->tabDraft->setVisible(false);
 
     QPalette palette;
     palette.setColor( QPalette::WindowText, Qt::white );
@@ -344,7 +385,7 @@ void MainWindow::setStatusBarMessageConnected(QString message, int timeout)
 {
     if(webUploader != NULL)
     {
-        setStatusBarMessage(message, timeout);
+        setStatusBarMessage("     " + message, timeout);
     }
 }
 
@@ -363,9 +404,9 @@ void MainWindow::showLogLoadProgress(qint64 logSeek)
 
 void MainWindow::checkCardImage(QString code)
 {
-    QFileInfo *cardFile = new QFileInfo("./HSCards/" + code + ".png");
+    QFileInfo cardFile("./HSCards/" + code + ".png");
 
-    if(!cardFile->exists())
+    if(!cardFile.exists())
     {
         //La bajamos de HearthHead
         cardDownloader->downloadWebImage(code);
@@ -378,6 +419,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     deckHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
+    draftHandler->reHistDownloadedCardImage(code);
 }
 
 
@@ -414,6 +456,17 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(event->modifiers()&Qt::AltModifier && event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)   resetSettings();
+
+            //Force begin draft
+            if(event->key() == Qt::Key_1)   gameWatcher->newDraft("01");
+            if(event->key() == Qt::Key_2)   gameWatcher->newDraft("02");
+            if(event->key() == Qt::Key_3)   gameWatcher->newDraft("03");
+            if(event->key() == Qt::Key_4)   gameWatcher->newDraft("04");
+            if(event->key() == Qt::Key_5)   gameWatcher->newDraft("05");
+            if(event->key() == Qt::Key_6)   gameWatcher->newDraft("06");
+            if(event->key() == Qt::Key_7)   gameWatcher->newDraft("07");
+            if(event->key() == Qt::Key_8)   gameWatcher->newDraft("08");
+            if(event->key() == Qt::Key_9)   gameWatcher->newDraft("09");
         }
     }
 }
@@ -440,12 +493,24 @@ void MainWindow::resetSettings()
 }
 
 
+void MainWindow::uploadDeck()
+{
+    if(webUploader == NULL) return;
+
+    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
+    webUploader->uploadDeck(deckCardList);
+}
+
+
+void MainWindow::test()
+{
+
+}
 
 //TODO
-//Secretos
-//Invocar esbirro
-//Ataque a esbirro (desde esbirro o heroe)
-//Ataque a cabeza (desde esbirro o heroe)
-//Muerte esbirro enemigo
-//Lanzar hechizo (con o sin objetivo)
-//Iceblock
+//Secrets. Kazan mystic. Mad scientist (solved, more testing)
+//Tooltip botones
+//Boton eliminar carta en deck (habra que subir de nuevo el deck a la web una vez completo)
+
+//BUGS CONOCIDOS
+//Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

@@ -11,6 +11,7 @@
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
+#include "drafthandler.h"
 #include <QMainWindow>
 #include <QJsonObject>
 
@@ -41,11 +42,7 @@ private:
     EnemyHandHandler *enemyHandHandler;
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
-//    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
-//    QString arenaCurrentHero;
-//    QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
-//    QList<ArenaResult> arenaLogList;
-//    bool noArena;
+    DraftHandler * draftHandler;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     ResizeButton *resizeButton;
@@ -61,12 +58,14 @@ private:
     void createDeckHandler();
     void createEnemyHandHandler();
     void createSecretsHandler();
+    void createDraftHandler();
     void readSettings();
     void writeSettings();
     void completeUI();
     void initCardsJson();
     void resizeArenaButtonsText();
     void resetSettings();
+    void test();
 
 //Override events
 protected:
@@ -85,11 +84,14 @@ public slots:
     //WebUploader
     void resetDeckFromWeb();
 
-    //DeckHandler//EnemyHandHandler
+    //Multi Handlers
     void checkCardImage(QString code);
 
     //HSCardDownloader
     void redrawDownloadedCardImage(QString code);
+
+    //DraftHandler
+    void uploadDeck();
 
     //Widgets
     void resizeSlot(QSize size);

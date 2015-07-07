@@ -35,5 +35,14 @@
         <file>Images/secretMage.png</file>
         <file>Images/secretPaladin.png</file>
         <file>Json/AllSets.json</file>
+        <file>Json/01.json</file>
+        <file>Json/02.json</file>
+        <file>Json/03.json</file>
+        <file>Json/04.json</file>
+        <file>Json/05.json</file>
+        <file>Json/06.json</file>
+        <file>Json/07.json</file>
+        <file>Json/08.json</file>
+        <file>Json/09.json</file>
     </qresource>
 </RCC>

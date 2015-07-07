@@ -66,13 +66,14 @@ private:
     void createArenaCards(QList<DeckCard> &deckCardList);
     QString codeFromName(QString name);
     void GetArenaCards(QString &html);
+    void uploadArenaCards();
 
 public:
     bool uploadArenaRewards(ArenaRewards &arenaRewards);
     bool uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList=NULL);
     bool uploadNewArena(const QString &hero);
     void checkArenaCurrentReload();
-    void uploadArenaCards();
+    void uploadDeck(QList<DeckCard> *deckCardList);
 
 signals:
     void loadedGameResult(GameResult gameResult);

@@ -9,9 +9,15 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
     arenaMode = false;
-    deckRead = false;
+//    deckRead = false;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
+
+    synchronized = false;
+#ifdef QT_DEBUG
+    synchronized = true;
+#endif
+
     match = new QRegularExpressionMatch();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -27,7 +33,11 @@ GameWatcher::~GameWatcher()
 
 void GameWatcher::reset()
 {
-    gameState = noGame;
+    if(gameState != drafting)
+    {
+        gameState = noGame;
+        qDebug() << "GameWatcher: GameState = noGame";
+    }
     arenaMode = false;
 }
 
@@ -48,6 +58,7 @@ void GameWatcher::processLogLine(QString line)
                 if(gameState == inRewards)
                 {
                     gameState = noGame;
+                    qDebug() << "GameWatcher: GameState = noGame";
                     qDebug() << "GameWatcher: "<< "Rewards completos.";
                     emit sendLog(tr("Log: New rewards."));
                     emit arenaRewardsComplete();
@@ -56,6 +67,7 @@ void GameWatcher::processLogLine(QString line)
             else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
             {
                 gameState = noGame;
+                qDebug() << "GameWatcher: GameState = noGame";
 
                 if(arenaMode)
                 {
@@ -70,12 +82,19 @@ void GameWatcher::processLogLine(QString line)
 #endif
             }
 
-            if(gameState == readingDeck)
+//            if(gameState == readingDeck)
+//            {
+//                deckRead = true;
+//                gameState = noGame;
+//                qDebug() << "GameWatcher: GameState = noGame";
+//                qDebug() << "GameWatcher: "<< "Final leer deck.";
+//                emit sendLog(tr("Log: Active deck read."));
+//            }
+
+            if(gameState == drafting)
             {
-                deckRead = true;
-                gameState = noGame;
-                qDebug() << "GameWatcher: "<< "Final leer deck.";
-                emit sendLog(tr("Log: Active deck read."));
+                qDebug() << "GameWatcher: " << "Pause draft.";
+                emit pauseDraft();
             }
         }
     }
@@ -84,6 +103,7 @@ void GameWatcher::processLogLine(QString line)
         if(line.contains(QRegularExpression("reward \\d=\\[")))
         {
             gameState = inRewards;
+            qDebug() << "GameWatcher: GameState = inRewards";
             qDebug() << "GameWatcher: "<< "Nuevo reward.";
 
             if(line.contains("BoosterPackRewardData"))
@@ -117,13 +137,18 @@ void GameWatcher::processLogLine(QString line)
                 emit newArenaReward(0, dust.toInt(),false,false,false);
             }
         }
-        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero = HERO_(\\d+)"), match))
+        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero=HERO_(\\d+)"), match))
         {
             QString hero = match->captured(1);
             qDebug() << "GameWatcher: "<< "Nueva arena.";
             emit sendLog(tr("Log: New arena."));
             emit newArena(hero);
-            deckRead = false;
+//            deckRead = false;
+
+            if(synchronized)
+            {
+                newDraft(hero);
+            }
         }
     }
     else if(line.startsWith("[Power]"))
@@ -134,36 +159,53 @@ void GameWatcher::processLogLine(QString line)
     {
         processZone(line);
     }
-    else
+    else if(line.startsWith("[Ben]"))
     {
-        if(!deckRead)
+        if((gameState == drafting) && line.startsWith("[Ben] SetDraftMode - DRAFTING"))
         {
-            if(line.startsWith("[Ben]"))
+            qDebug() << "GameWatcher: " << "Resume draft.";
+            emit resumeDraft();
+        }
+        else if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
+        {
+            if(gameState == drafting)
             {
-                if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
-                {
-                    gameState = readingDeck;
-                    qDebug() << "GameWatcher: "<< "Inicio leer deck.";
-                }
+                gameState = noGame;
+                qDebug() << "GameWatcher: GameState = noGame";
+                qDebug() << "GameWatcher: "<< "End draft.";
+                emit endDraft();
             }
-            else if(line.startsWith("[Asset]"))
-            {
-                if(gameState == readingDeck)
-                {
-                    if(line.contains(QRegularExpression(
-                            "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-                    {
-                        QString code = match->captured(1);
-                        if(!code.contains("HERO"))
-                        {
-                            qDebug() << "GameWatcher: "<< "Nueva carta: " << code;
-                            emit newDeckCard(code);
-                        }
-                    }
-                }
-            }
+
+//            if(!deckRead)
+//            {
+//                gameState = readingDeck;
+//                qDebug() << "GameWatcher: GameState = readingDeck";
+//                qDebug() << "GameWatcher: "<< "Inicio leer deck.";
+//            }
         }
     }
+//    else if(line.startsWith("[Asset]"))
+//    {
+//        if((gameState == readingDeck) &&
+//            line.contains(QRegularExpression(
+//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+//        {
+//            QString code = match->captured(1);
+//            if(!code.contains("HERO"))
+//            {
+//                emit newDeckCard(code);
+//            }
+//        }
+//    }
+}
+
+
+void GameWatcher::newDraft(QString hero)
+{
+    gameState = drafting;
+    qDebug() << "GameWatcher: GameState = drafting";
+    qDebug() << "GameWatcher: "<< "Begin draft.";
+    emit beginDraft(hero);
 }
 
 
@@ -171,16 +213,27 @@ void GameWatcher::processPower(QString &line)
 {
     switch(gameState)
     {
-        case readingDeck:
+//        case readingDeck:
+        case drafting:
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
-                if(gameState == readingDeck)
+//                if(gameState == readingDeck)
+//                {
+//                    deckRead = true;
+//                    gameState = noGame;
+//                    qDebug() << "GameWatcher: GameState = noGame";
+//                    qDebug() << "GameWatcher: "<< "Final leer deck.";
+//                    emit sendLog(tr("Log: Active deck read."));
+//                }
+
+                //Nunca ocurre (+seguridad)
+                if(gameState == drafting)
                 {
-                    deckRead = true;
                     gameState = noGame;
-                    qDebug() << "GameWatcher: "<< "Final leer deck.";
-                    emit sendLog(tr("Log: Active deck read."));
+                    qDebug() << "GameWatcher: GameState = noGame";
+                    qDebug() << "GameWatcher: "<< "End draft.";
+                    emit endDraft();
                 }
 
                 if(arenaMode)
@@ -243,6 +296,7 @@ void GameWatcher::processPower(QString &line)
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 gameState = inGameState;
+                qDebug() << "GameWatcher: GameState = inGameState";
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -297,7 +351,7 @@ void GameWatcher::processPowerInGame(QString &line)
     }
 
     //SECRETOS
-    else
+    else if(synchronized)
     {
         //Jugador juega carta con objetivo
         if(line.contains(QRegularExpression(
@@ -374,19 +428,23 @@ void GameWatcher::processZone(QString &line)
         //ENEMIGO JUEGA
         //Enemigo juega secreto o carta devuelta al mazo en Mulligan
         if(line.contains(QRegularExpression(
-            "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from OPPOSING HAND -> OPPOSING (SECRET|DECK)"
+            "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (SECRET|DECK)"
             ), match))
         {
-            if(match->captured(2) == "SECRET")
+            if(match->captured(2) == "OPPOSING HAND")
+            {
+                emit enemyCardPlayed(match->captured(1).toInt());
+                if(match->captured(3) == "DECK")
+                {
+                    qDebug() << "GameWatcher: Enemigo: Carta inicial devuelta. ID:" << match->captured(1);
+                }
+            }
+            if(match->captured(3) == "SECRET")
             {
                 qDebug() << "GameWatcher: Enemigo: Secreto jugado. ID:" << match->captured(1);
                 emit enemySecretPlayed(match->captured(1).toInt(), secretHero);
             }
-            else
-            {
-                qDebug() << "GameWatcher: Enemigo: Carta inicial devuelta. ID:" << match->captured(1);
-            }
-            emit enemyCardPlayed(match->captured(1).toInt());
+
         }
         //Enemigo juega carta
         else if(line.contains(QRegularExpression(
@@ -399,7 +457,7 @@ void GameWatcher::processZone(QString &line)
                 qDebug() << "GameWatcher: Enemigo: Hechizo jugado:" << match->captured(1) << "ID:" << match->captured(2);
             }
             //Enemigo juega esbirro
-            else if(match->captured(4) == "OPPOSING PLAY")
+            else if(synchronized && (match->captured(4) == "OPPOSING PLAY"))
             {
                 enemyMinions++;
                 qDebug() << "GameWatcher: Enemigo: Esbirro jugado:" << match->captured(1) << "ID:" << match->captured(2) << "Esbirros:" << enemyMinions;
@@ -415,7 +473,7 @@ void GameWatcher::processZone(QString &line)
 
         //ENEMIGO SECRETO DESVELADO
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING SECRET -> OPPOSING GRAVEYARD"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING SECRET ->"// OPPOSING GRAVEYARD"
             ), match))
         {
             qDebug() << "GameWatcher: Enemigo: Secreto desvelado:" << match->captured(1);
@@ -475,7 +533,7 @@ void GameWatcher::processZone(QString &line)
 
 
         //SECRETOS
-        else
+        else if(synchronized)
         {
             //JUGADOR JUEGA
             //Jugador juega carta
@@ -627,10 +685,10 @@ void GameWatcher::createGameResult()
 }
 
 
-void GameWatcher::setDeckRead()
-{
-    deckRead = true;
-}
+//void GameWatcher::setDeckRead()
+//{
+//    deckRead = true;
+//}
 
 
 void GameWatcher::advanceTurn(bool playerDraw)
@@ -680,9 +738,10 @@ void GameWatcher::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 }
 
 
-
-
-
+void GameWatcher::setSynchronized()
+{
+    this->synchronized = true;
+}
 
 
 

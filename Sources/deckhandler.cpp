@@ -61,6 +61,25 @@ void DeckHandler::newDeckCard(QString code, int total)
 {
     if(code.isEmpty())  return;
 
+    //Mazo completo
+    if(deckCardList[0].total == 0)
+    {
+        qDebug() << "DeckHandler: WARNING: Insertando carta en un mazo completo. Desechamos:" <<
+                    (*cardsJson)[code].value("name").toString();
+        return;
+    }
+
+    //Ya existe en el mazo
+    for(int i=0; i<deckCardList.length(); i++)
+    {
+        if(deckCardList[i].code == code)
+        {
+            qDebug() << "DeckHandler: Insertando carta existente en el mazo. Desechamos:" <<
+                        (*cardsJson)[code].value("name").toString();
+            return;
+        }
+    }
+
     DeckCard deckCard(code);
     deckCard.total = total;
     deckCard.listItem = new QListWidgetItem();
@@ -72,6 +91,8 @@ void DeckHandler::newDeckCard(QString code, int total)
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
     emit checkCardImage(code);
+
+    qDebug() << "DeckHandler: Completando mazo:" << total << (*cardsJson)[code].value("name").toString();
 }
 
 
@@ -103,7 +124,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 remainingCards--;
                 it->draw(false);
 
-                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
+//                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
                 showCount();
             }
             else if(it->remaining == 1)
@@ -112,12 +133,10 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 remainingCards--;
                 if(it->total > 1)   it->draw();
 
-
-
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
-                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
+//                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
                 showCount();
             }
             //it->remaining == 0
@@ -139,8 +158,8 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 qDebug() << "DeckHandler: Nueva copia de carta" <<
                             (*cardsJson)[code].value("name").toString() <<
                             "robada, completando mazo.";
-                emit sendLog(tr("Deck: Discovered unknown card. Adding to deck: ") +
-                                  (*cardsJson)[code].value("name").toString());
+//                emit sendLog(tr("Deck: Discovered unknown card. Adding to deck: ") +
+//                                  (*cardsJson)[code].value("name").toString());
                 showCount();
             }
             else
@@ -148,26 +167,23 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 qDebug() << "DeckHandler: WARNING: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
                             "pero el mazo esta completo.";
-                emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
-                              (*cardsJson)[code].value("name").toString());
+//                emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
+//                              (*cardsJson)[code].value("name").toString());
             }
             return;
         }
     }
 
-    qDebug() << "DeckHandler: WARNING: Robada carta que no esta en el mazo" <<
+    qDebug() << "DeckHandler: Robada carta que no esta en el mazo" <<
                 (*cardsJson)[code].value("name").toString();
-    emit sendLog(tr("Deck: WARNING: Drawn card not in your deck. ") +
-                  (*cardsJson)[code].value("name").toString());
+//    emit sendLog(tr("Deck: Drawn card not in your deck. ") +
+//                  (*cardsJson)[code].value("name").toString());
 
-    //Testing
-#ifdef QT_DEBUG
     if(deckCardList[0].total>0)
     {
         newDeckCard(code);
         showPlayerCardDraw(code);
     }
-#endif
 }
 
 

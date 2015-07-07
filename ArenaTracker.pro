@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ArenaTracker
 TEMPLATE = app
 
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
 
 SOURCES += Sources/main.cpp\
 	Sources/mainwindow.cpp \
@@ -26,7 +28,10 @@ SOURCES += Sources/main.cpp\
     Sources/enemyhandhandler.cpp \
     Sources/arenahandler.cpp \
     Sources/secretshandler.cpp \
-    Sources/secretcard.cpp
+    Sources/secretcard.cpp \
+    Sources/drafthandler.cpp \
+    Sources/heartharenamentor.cpp \
+    Sources/draftcard.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -41,7 +46,10 @@ HEADERS  += Sources/mainwindow.h \
     Sources/enemyhandhandler.h \
     Sources/arenahandler.h \
     Sources/secretshandler.h \
-    Sources/secretcard.h
+    Sources/secretcard.h \
+    Sources/drafthandler.h \
+    Sources/heartharenamentor.h \
+    Sources/draftcard.h
 
 FORMS    += mainwindow.ui
 

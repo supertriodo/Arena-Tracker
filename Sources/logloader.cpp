@@ -104,7 +104,7 @@ void LogLoader::readLogPath()
     }
 
 #ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/Documentos/arenaMagoFull.txt");
+//    logPath = QString("/home/triodo/Documentos/bugmadscientist.txt");
 #endif
 
 
