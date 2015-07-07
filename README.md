@@ -16,9 +16,11 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 https://github.com/supertriodo/Arena-Tracker/releases/download/v1.41/Arena.Tracker.v1.41.zip
 
 
-## Build from source (Linux, Mac & Windows)
+## Build from source (Linux, Mac & Windows) (Only advanced users)
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
+* Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
+ * http://opencv.org/downloads.html
 * Download or clone Arena Tracker source code.
  * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
 * Open Qt Creator and open Arena Tracker project.
