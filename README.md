@@ -6,7 +6,7 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
 
-My Hearthstone ID: triodo#2541
+My Hearthstone ID: triodo#2541 (EU region)
 
 If you like the app, donations are much appreciated. It allows me to spend more time developing Arena Tracker.
 [Donate](https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=Blywt-6y-rq9ASehsJn_7QfivQ7tk32oI5nMMXlmSL4dLXTkagolTWHLwIW&dispatch=5885d80a13c0db1f8e263663d3faee8de6030e9239419d79c3f52f70a3ed57ec)
