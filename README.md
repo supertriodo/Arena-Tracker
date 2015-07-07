@@ -1,6 +1,5 @@
 # Arena-Tracker
 Arena Tracker reads the Hearthstone log to keep track of your arena deck, games and rewards.
-* Draft with HearthArena advice.
 * Upload your stats to your ArenaMastery account.
 * Go over your deck while you play.
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
@@ -54,12 +53,11 @@ or on email: triodo@gmail.com
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
-* I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
+* I get "File: ERROR:Saving card image to disk. Did you remove HSCards dir?"
  * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
 
 
 ## Video examples
-* v2.0: http://youtu.be/IMckn_lmW84
 * v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
 * v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 
@@ -68,4 +66,3 @@ or on email: triodo@gmail.com
 * https://github.com/supertriodo/Arena-Tracker
 * http://www.reddit.com/r/ArenaTracker/
 * http://www.arenamastery.com/
-* http://www.heartharena.com/
