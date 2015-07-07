@@ -9,7 +9,7 @@ Arena Tracker reads the Hearthstone log to keep track of your arena deck, games 
 My Hearthstone ID: triodo#2541 (EU region)
 
 If you like the app, donations are much appreciated. It allows me to spend more time developing Arena Tracker.
-[Donate](https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=Blywt-6y-rq9ASehsJn_7QfivQ7tk32oI5nMMXlmSL4dLXTkagolTWHLwIW&dispatch=5885d80a13c0db1f8e263663d3faee8de6030e9239419d79c3f52f70a3ed57ec)
+[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/uk/cgi-bin/webscr?cmd=_flow&SESSION=Blywt-6y-rq9ASehsJn_7QfivQ7tk32oI5nMMXlmSL4dLXTkagolTWHLwIW&dispatch=5885d80a13c0db1f8e263663d3faee8de6030e9239419d79c3f52f70a3ed57ec)
 
 
 ## Download (Windows)
@@ -60,6 +60,10 @@ or on email: triodo@gmail.com
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
  * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
+
+
+## Is Blizzard okay with this?
+[Yes](https://twitter.com/bdbrode/status/511151446038179840)  
 
 
 ## Video examples
