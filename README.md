@@ -15,7 +15,7 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 
 
 ## Download (Windows)
-https://github.com/supertriodo/Arena-Tracker/releases/download/v1.41/Arena.Tracker.v1.41.zip
+https://github.com/supertriodo/Arena-Tracker/releases/download/v2.0/Arena.Tracker.v2.0.zip
 
 
 ## Build from source (Linux, Mac & Windows) (Only advanced users)
