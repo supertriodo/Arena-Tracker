@@ -125,7 +125,6 @@ void DraftHandler::resetTab()
         draftCards[i].radioItem->setText("");
         draftCards[i].code="";
         draftCards[i].draw();
-        draftCards[i].radioItem->setChecked(false);
     }
 
     //Mostrar sinergies
@@ -380,7 +379,7 @@ void DraftHandler::showNewCards(QString codes[3])
     int intCodes[3];
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].radioItem->isChecked())
+        if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
         {
             draftedCards.push_back(hearthArenaCodes[draftCards[i].code]);
             updateBoxTitle(draftCards[i].radioItem->text());
@@ -465,6 +464,10 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
     bigCards[0] = screenCapture(screenRects[0]);
     bigCards[1] = screenCapture(screenRects[1]);
     bigCards[2] = screenCapture(screenRects[2]);
+
+//    bigCards[0] = screenCapture(cv::Rect(512,259,97,97));
+//    bigCards[1] = screenCapture(cv::Rect(740,259,97,97));
+//    bigCards[2] = screenCapture(cv::Rect(963,259,97,97));
 
     cv::Mat screenCards[3];
     cv::resize(bigCards[0], screenCards[0], cv::Size(80, 80));
