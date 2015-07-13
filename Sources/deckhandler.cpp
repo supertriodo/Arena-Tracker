@@ -155,9 +155,9 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
-                qDebug() << "DeckHandler: Nueva copia de carta" <<
+                qDebug() << "DeckHandler: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
-                            "robada, completando mazo.";
+                            ", completando mazo.";
 //                emit sendLog(tr("Deck: Discovered unknown card. Adding to deck: ") +
 //                                  (*cardsJson)[code].value("name").toString());
                 showCount();
@@ -174,15 +174,23 @@ void DeckHandler::showPlayerCardDraw(QString code)
         }
     }
 
-    qDebug() << "DeckHandler: Robada carta que no esta en el mazo" <<
-                (*cardsJson)[code].value("name").toString();
-//    emit sendLog(tr("Deck: Drawn card not in your deck. ") +
-//                  (*cardsJson)[code].value("name").toString());
+    //MALORNE
+    if(code == MALORNE)  return;
+
 
     if(deckCardList[0].total>0)
     {
+        qDebug() << "DeckHandler: Carta que no esta en el mazo robada" <<
+                    (*cardsJson)[code].value("name").toString() <<
+                    ", completando mazo.";
         newDeckCard(code);
         showPlayerCardDraw(code);
+    }
+    else
+    {
+        qDebug() << "DeckHandler: WARNING: Carta que no esta en el mazo robada" <<
+                    (*cardsJson)[code].value("name").toString() <<
+                    "pero el mazo esta completo.";
     }
 }
 
