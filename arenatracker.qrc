@@ -44,5 +44,8 @@
         <file>Json/07.json</file>
         <file>Json/08.json</file>
         <file>Json/09.json</file>
+        <file>Images/remove64.png</file>
+        <file>Images/minus64.png</file>
+        <file>Images/plus64.png</file>
     </qresource>
 </RCC>

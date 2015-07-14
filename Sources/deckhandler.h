@@ -49,6 +49,7 @@ public slots:
     void enableDeckButtons();
     void cardTotalMin();
     void cardTotalPlus();
+    void cardRemove();
     void lockDeckInterface();
     void unlockDeckInterface();
 };

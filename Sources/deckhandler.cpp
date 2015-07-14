@@ -24,6 +24,7 @@ void DeckHandler::completeUI()
 {
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
+    ui->deckButtonRemove->setEnabled(false);
     ui->deckListWidget->setIconSize(CARD_SIZE);
     ui->deckListWidget->setStyleSheet("background-color: transparent;");
 
@@ -33,6 +34,8 @@ void DeckHandler::completeUI()
             this, SLOT(cardTotalMin()));
     connect(ui->deckButtonPlus, SIGNAL(clicked()),
             this, SLOT(cardTotalPlus()));
+    connect(ui->deckButtonRemove, SIGNAL(clicked()),
+            this, SLOT(cardRemove()));
 }
 
 
@@ -46,6 +49,8 @@ void DeckHandler::reset()
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw();
     insertDeckCard(deckCard);
+
+    enableDeckButtons();
 
     qDebug() << "DeckHandler: Deck List cleared.";
 }
@@ -220,6 +225,9 @@ void DeckHandler::enableDeckButtons()
     if(index>0 && deckCardList[index].total > 1)
                                         ui->deckButtonMin->setEnabled(true);
     else                                ui->deckButtonMin->setEnabled(false);
+    if(index>0 && deckCardList[index].total == 1)
+                                        ui->deckButtonRemove->setEnabled(true);
+    else                                ui->deckButtonRemove->setEnabled(false);
     if(index>0 && deckCardList.first().total > 0)
                                         ui->deckButtonPlus->setEnabled(true);
     else                                ui->deckButtonPlus->setEnabled(false);
@@ -252,6 +260,31 @@ void DeckHandler::cardTotalPlus()
 }
 
 
+void DeckHandler::cardRemove()
+{
+    int index = ui->deckListWidget->currentRow();
+    if(deckCardList[index].total!=1 || index==0)
+    {
+        enableDeckButtons();
+        return;
+    }
+
+    int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
+            (*cardsJson)[deckCardList[index].code].value("name").toString() +   tr(") from your deck?"),
+            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+    if(ret == QMessageBox::Cancel)  return;
+
+    ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
+    delete deckCardList[index].listItem;
+    deckCardList.removeAt(index);
+
+    deckCardList[0].total++;
+    if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
+    deckCardList[0].draw();
+    enableDeckButtons();
+}
+
+
 void DeckHandler::lockDeckInterface()
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
@@ -263,6 +296,7 @@ void DeckHandler::lockDeckInterface()
     ui->deckListWidget->selectionModel()->reset();
     ui->deckButtonMin->setHidden(true);
     ui->deckButtonPlus->setHidden(true);
+    ui->deckButtonRemove->setHidden(true);
 
     ui->tabDeck->setAttribute(Qt::WA_NoBackground);
     ui->tabDeck->repaint();
@@ -290,8 +324,10 @@ void DeckHandler::unlockDeckInterface()
     ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->deckButtonMin->setHidden(false);
     ui->deckButtonPlus->setHidden(false);
+    ui->deckButtonRemove->setHidden(false);
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
+    ui->deckButtonRemove->setEnabled(false);
 
     ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
     ui->tabDeck->repaint();

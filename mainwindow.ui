@@ -28,7 +28,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabArena">
        <attribute name="title">
@@ -67,8 +67,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>26</width>
-              <height>26</height>
+              <width>32</width>
+              <height>32</height>
              </size>
             </property>
            </widget>
@@ -103,8 +103,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>26</width>
-              <height>26</height>
+              <width>32</width>
+              <height>32</height>
              </size>
             </property>
            </widget>
@@ -323,16 +323,71 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
           <item>
-           <widget class="QPushButton" name="deckButtonMin">
+           <widget class="QPushButton" name="deckButtonRemove">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>-</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="arenatracker.qrc">
+              <normaloff>:/Images/remove64.png</normaloff>:/Images/remove64.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deckButtonMin">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="arenatracker.qrc">
+              <normaloff>:/Images/minus64.png</normaloff>:/Images/minus64.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="deckButtonPlus">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>+</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="arenatracker.qrc">
+              <normaloff>:/Images/plus64.png</normaloff>:/Images/plus64.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
             </property>
            </widget>
           </item>
