@@ -67,10 +67,11 @@ void DeckHandler::newDeckCard(QString code, int total)
     if(code.isEmpty())  return;
 
     //Mazo completo
-    if(deckCardList[0].total == 0)
+    if(deckCardList[0].total < (uint)total)
     {
-        qDebug() << "DeckHandler: WARNING: Insertando carta en un mazo completo. Desechamos:" <<
-                    (*cardsJson)[code].value("name").toString();
+        qDebug() << "DeckHandler: Desechamos:" << total <<
+                    (*cardsJson)[code].value("name").toString()
+                 << "- Mazo completo";
         return;
     }
 
@@ -79,8 +80,9 @@ void DeckHandler::newDeckCard(QString code, int total)
     {
         if(deckCardList[i].code == code)
         {
-            qDebug() << "DeckHandler: Insertando carta existente en el mazo. Desechamos:" <<
-                        (*cardsJson)[code].value("name").toString();
+            qDebug() << "DeckHandler: Desechamos:" << total <<
+                        (*cardsJson)[code].value("name").toString()
+                     << "- Ya en mazo";
             return;
         }
     }

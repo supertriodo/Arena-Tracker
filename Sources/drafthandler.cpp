@@ -262,13 +262,12 @@ void DraftHandler::insertIntoDeck()
     if(isDeckComplete)
     {
         qDebug() << "DraftHandler: Deck completo de draft.";
-        emit sendLog(tr("Draft: Deck complete."));
-        emit deckComplete();
+        emit sendLog(tr("Draft: Active deck read. Deck complete."));
     }
     else
     {
         qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
-        emit sendLog(tr("Draft: Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
+        emit sendLog(tr("Draft: Active deck read. Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
     }
 }
 

@@ -50,7 +50,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::resetDeckFromWeb()
 {
-//    gameWatcher->setDeckRead();
+    gameWatcher->setDeckRead();
     deckHandler->reset();
 }
 
@@ -85,8 +85,6 @@ void MainWindow::createDraftHandler()
             this, SLOT(setStatusBarMessage(QString,int)));
     connect(draftHandler, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCard(QString,int)));
-    connect(draftHandler, SIGNAL(deckComplete()),
-            this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
 }
@@ -452,15 +450,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if(event->key() == Qt::Key_R)   resetSettings();
 
             //Force begin draft
-            if(event->key() == Qt::Key_1)   gameWatcher->newDraft("01");
-            if(event->key() == Qt::Key_2)   gameWatcher->newDraft("02");
-            if(event->key() == Qt::Key_3)   gameWatcher->newDraft("03");
-            if(event->key() == Qt::Key_4)   gameWatcher->newDraft("04");
-            if(event->key() == Qt::Key_5)   gameWatcher->newDraft("05");
-            if(event->key() == Qt::Key_6)   gameWatcher->newDraft("06");
-            if(event->key() == Qt::Key_7)   gameWatcher->newDraft("07");
-            if(event->key() == Qt::Key_8)   gameWatcher->newDraft("08");
-            if(event->key() == Qt::Key_9)   gameWatcher->newDraft("09");
+            if(event->key() == Qt::Key_1)   {deckHandler->reset();gameWatcher->newDraft("01");}
+            if(event->key() == Qt::Key_2)   {deckHandler->reset();gameWatcher->newDraft("02");}
+            if(event->key() == Qt::Key_3)   {deckHandler->reset();gameWatcher->newDraft("03");}
+            if(event->key() == Qt::Key_4)   {deckHandler->reset();gameWatcher->newDraft("04");}
+            if(event->key() == Qt::Key_5)   {deckHandler->reset();gameWatcher->newDraft("05");}
+            if(event->key() == Qt::Key_6)   {deckHandler->reset();gameWatcher->newDraft("06");}
+            if(event->key() == Qt::Key_7)   {deckHandler->reset();gameWatcher->newDraft("07");}
+            if(event->key() == Qt::Key_8)   {deckHandler->reset();gameWatcher->newDraft("08");}
+            if(event->key() == Qt::Key_9)   {deckHandler->reset();gameWatcher->newDraft("09");}
         }
     }
 }
@@ -487,15 +485,6 @@ void MainWindow::resetSettings()
 }
 
 
-void MainWindow::uploadDeck()
-{
-    if(webUploader == NULL) return;
-
-    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
-    webUploader->uploadDeck(deckCardList);
-}
-
-
 void MainWindow::test()
 {
 
@@ -503,8 +492,8 @@ void MainWindow::test()
 
 //TODO
 //Secrets. Kazan mystic. Mad scientist (solved, more testing)
-//Tooltip botones
-//Boton eliminar carta en deck (habra que subir de nuevo el deck a la web una vez completo)
+//Consejos iniciales
+//Completar el mazo con los assets
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

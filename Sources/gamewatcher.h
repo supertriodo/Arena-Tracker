@@ -39,7 +39,7 @@ public:
 
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     inGameState, inRewards, drafting };//readingDeck
+                     inGameState, inRewards, drafting, readingDeck };
 
 //Variables
 private:
@@ -51,7 +51,7 @@ private:
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     bool isPlayerTurn;
     bool arenaMode;
-//    bool deckRead;
+    bool deckRead;
     QRegularExpressionMatch *match;
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
     //no aparezcan como parte del nuevo turno
@@ -110,7 +110,7 @@ public slots:
     void processLogLine(QString line);
     void checkAvenge();
     void setSynchronized();
-//    void setDeckRead();
+    void setDeckRead();
 };
 
 #endif // GAMEWATCHER_H
