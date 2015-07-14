@@ -271,7 +271,7 @@ void DeckHandler::cardRemove()
 
     int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
             (*cardsJson)[deckCardList[index].code].value("name").toString() +   tr(") from your deck?"),
-            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     if(ret == QMessageBox::Cancel)  return;
 
     ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
