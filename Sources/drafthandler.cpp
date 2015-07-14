@@ -455,7 +455,8 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
     QScreen *screen = screens[screenIndex];
     if (!screen) return false;
 
-    QImage image = screen->grabWindow(0).toImage();
+    QRect rect = screen->geometry();
+    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
 
     cv::Mat screenCapture = mat.clone();
@@ -574,7 +575,8 @@ bool DraftHandler::findScreenRects()
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        QImage image = screen->grabWindow(0).toImage();
+        QRect rect = screen->geometry();
+        QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
         cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
 
         cv::Mat screenCapture = mat.clone();
