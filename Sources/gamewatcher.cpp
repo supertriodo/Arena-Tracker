@@ -703,6 +703,10 @@ void GameWatcher::createGameResult()
 void GameWatcher::setDeckRead()
 {
     deckRead = true;
+    if(gameState == readingDeck)
+    {
+        endReadingDeck();
+    }
 }
 
 

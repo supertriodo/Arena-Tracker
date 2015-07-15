@@ -493,7 +493,6 @@ void MainWindow::test()
 //TODO
 //Secrets. Kazan mystic. Mad scientist (solved, more testing)
 //Consejos iniciales
-//Completar el mazo con los assets
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
