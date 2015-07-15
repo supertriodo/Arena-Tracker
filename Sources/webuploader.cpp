@@ -553,7 +553,6 @@ void WebUploader::GetArenaCards(QString &html)
         {
             QRegularExpressionMatch match = reIterator.next();
             emit newDeckCard(codeFromName(match.captured(2)), match.captured(1).toInt());
-            qDebug() << "WebUploader: "<< "Nueva carta:" << match.captured(1) << match.captured(2);
         }
         qDebug() << "WebUploader: "<< "Final leer deck.";
         emit sendLog(tr("Web: Active deck read."));

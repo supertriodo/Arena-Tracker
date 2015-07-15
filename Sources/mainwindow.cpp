@@ -497,3 +497,8 @@ void MainWindow::test()
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
+
+//NUEVOS HEROES
+//Evitar Asset hero powers (GameWatcher 201)
+//Nuevo Json hearthArena
+//Nuevo start draft manual (MainWindow 453)

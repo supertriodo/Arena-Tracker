@@ -71,6 +71,7 @@ private:
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);    
+    void endReadingDeck();
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);

@@ -84,11 +84,7 @@ void GameWatcher::processLogLine(QString line)
 
             if(gameState == readingDeck)
             {
-                deckRead = true;
-                gameState = noGame;
-                qDebug() << "GameWatcher: GameState = noGame";
-                qDebug() << "GameWatcher: "<< "Final leer deck.";
-                emit sendLog(tr("Log: Active deck read."));
+                endReadingDeck();
             }
 
             if(gameState == drafting)
@@ -191,10 +187,23 @@ void GameWatcher::processLogLine(QString line)
                 "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
         {
             QString code = match->captured(1);
-            if(!code.contains("HERO"))
+            //Hero portraits
+            if(code.contains("HERO"))
             {
-                emit newDeckCard(code);
+                qDebug() << "GameWatcher: Desechamos HERO";
+                endReadingDeck();
+                return;
             }
+            //Hero powers
+            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+            {
+                qDebug() << "GameWatcher: Desechamos HERO POWER";
+                endReadingDeck();
+                return;
+            }
+            emit newDeckCard(code);
         }
     }
 }
@@ -206,6 +215,16 @@ void GameWatcher::newDraft(QString hero)
     qDebug() << "GameWatcher: GameState = drafting";
     qDebug() << "GameWatcher: "<< "Begin draft.";
     emit beginDraft(hero);
+}
+
+
+void GameWatcher::endReadingDeck()
+{
+    deckRead = true;
+    gameState = noGame;
+    qDebug() << "GameWatcher: GameState = noGame";
+    qDebug() << "GameWatcher: "<< "Final leer deck.";
+    emit sendLog(tr("Log: Active deck read."));
 }
 
 
@@ -229,11 +248,7 @@ void GameWatcher::processPower(QString &line)
 
                 if(gameState == readingDeck)
                 {
-                    deckRead = true;
-                    gameState = noGame;
-                    qDebug() << "GameWatcher: GameState = noGame";
-                    qDebug() << "GameWatcher: "<< "Final leer deck.";
-                    emit sendLog(tr("Log: Active deck read."));
+                    endReadingDeck();
                 }
 
                 if(arenaMode)
