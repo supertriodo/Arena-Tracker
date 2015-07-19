@@ -190,7 +190,7 @@ void DraftHandler::resumeDraft()
     qDebug() << "DraftHandler: Resume draft.";
     emit sendLog(tr("Log: Draft resumed."));
 
-    QTimer::singleShot(2000, this, SLOT(captureDraft()));
+    QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
 }
 
 
@@ -287,11 +287,11 @@ void DraftHandler::captureDraft()
 
         if(areNewCards(codes))  showNewCards(codes);
 
-        QTimer::singleShot(1000, this, SLOT(captureDraft()));
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
     else
     {
-        QTimer::singleShot(5000, this, SLOT(captureDraft()));
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(captureDraft()));
     }
 }
 

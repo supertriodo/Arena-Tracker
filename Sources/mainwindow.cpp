@@ -504,8 +504,7 @@ void MainWindow::test()
 //TODO
 //Secrets. Kazan mystic. Mad scientist (solved, more testing)
 //Consejos iniciales
-//Pick cards
-//Guardar deck despues del drafting
+//Pick cards (Revisar multiMonitor)
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

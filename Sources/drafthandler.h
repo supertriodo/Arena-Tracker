@@ -13,6 +13,10 @@
 
 using namespace cv;
 
+#define CAPTUREDRAFT_START_TIME         2000
+#define CAPTUREDRAFT_LOOP_TIME          500
+#define CAPTUREDRAFT_LOOP_FLANN_TIME    5000
+
 class DraftHandler : public QObject
 {
     Q_OBJECT
