@@ -56,7 +56,8 @@ private:
     void insertIntoDeck();    
     void resetCodesCandidates();    
     void updateBoxTitle(QString cardRating);    
-    bool findScreenRects();
+    bool findScreenRects();    
+    void selectMouseCard();
 
 public:
     void reHistDownloadedCardImage(QString code);

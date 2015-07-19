@@ -1,5 +1,6 @@
 #include "drafthandler.h"
 #include "deckhandler.h"
+#include <stdlib.h>
 #include <QtWidgets>
 
 DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui) : QObject(parent)
@@ -303,6 +304,7 @@ bool DraftHandler::areNewCards(QString codes[3])
     {
         qDebug() << "DraftHandler: Sin cambios (2+=).";
         resetCodesCandidates();
+        selectMouseCard();
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
@@ -382,7 +384,7 @@ void DraftHandler::showNewCards(QString codes[3])
         {
             draftedCards.push_back(hearthArenaCodes[draftCards[i].code]);
             updateBoxTitle(draftCards[i].radioItem->text());
-            qDebug() << "DraftHandler: Card picked:" << draftCards[i].code << "-" << draftedCards.count();
+            qDebug() << "DraftHandler: Card picked:" << draftedCards.count() << "-" << (*cardsJson)[draftCards[i].code].value("name").toString();
             emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCards[i].code].value("name").toString());
         }
 
@@ -400,6 +402,8 @@ void DraftHandler::showNewCards(QString codes[3])
 
 
     hearthArenaMentor->askCardsRating(arenaHero, draftedCards, intCodes);
+
+    selectMouseCard();
 }
 
 
@@ -417,17 +421,10 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
                                 QString synergy1, QString synergy2, QString synergy3)
 {
     double ratings[3] = {rating1,rating2,rating3};
-    double maxRating = 0;
 
     for(int i=0; i<3; i++)
     {
         draftCards[i].radioItem->setText(QString::number(ratings[i]));
-
-        if(ratings[i] > maxRating)
-        {
-            maxRating = ratings[i];
-            draftCards[i].radioItem->setChecked(true);
-        }
     }
 
     //Mostrar sinergies
@@ -686,6 +683,30 @@ bool DraftHandler::findScreenRects()
     return false;
 }
 
+
+void DraftHandler::selectMouseCard()
+{
+    QList<QScreen *> screens = QGuiApplication::screens();
+    QScreen *screen = screens[screenIndex];
+    if (!screen) return;
+
+    int xMouse = QCursor::pos(screen).x();
+    int minDist = 9999;
+    int pickedCard = 0;
+
+    for(int i=0; i<3; i++)
+    {
+        int xCard = screenRects[i].x + screenRects[i].width/2;
+        int dist = abs(xMouse - xCard);
+        if(dist < minDist)
+        {
+            minDist = dist;
+            pickedCard = i;
+        }
+    }
+
+    draftCards[pickedCard].radioItem->setChecked(true);
+}
 
 
 

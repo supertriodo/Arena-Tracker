@@ -174,8 +174,8 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 qDebug() << "DeckHandler: WARNING: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
                             "pero el mazo esta completo.";
-//                emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
-//                              (*cardsJson)[code].value("name").toString());
+                emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
+                              (*cardsJson)[code].value("name").toString());
             }
             return;
         }

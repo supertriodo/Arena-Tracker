@@ -493,9 +493,13 @@ void MainWindow::test()
 //TODO
 //Secrets. Kazan mystic. Mad scientist (solved, more testing)
 //Consejos iniciales
+//Pick cards
+//Guardar deck despues del drafting
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
+//Bug secretos counterspell y otro. Se testea hechizo con objetivo.
+//  Counterspell salta y el programa descarta spellbender del otro secreto.
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)
