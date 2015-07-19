@@ -85,6 +85,8 @@ void MainWindow::createDraftHandler()
             this, SLOT(setStatusBarMessage(QString,int)));
     connect(draftHandler, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCard(QString,int)));
+    connect(draftHandler, SIGNAL(deckComplete()),
+            this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
 }
@@ -482,6 +484,15 @@ void MainWindow::resetSettings()
         move(QPoint(0,0));
         this->close();
     }
+}
+
+
+void MainWindow::uploadDeck()
+{
+    if(webUploader == NULL) return;
+
+    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
+    webUploader->uploadDeck(deckCardList);
 }
 
 

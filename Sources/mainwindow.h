@@ -90,6 +90,9 @@ public slots:
     //HSCardDownloader
     void redrawDownloadedCardImage(QString code);
 
+    //DraftHandler
+    void uploadDeck();
+
     //Widgets
     void resizeSlot(QSize size);
     void tabChanged(int index);

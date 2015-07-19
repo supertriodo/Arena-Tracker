@@ -264,6 +264,7 @@ void DraftHandler::insertIntoDeck()
     {
         qDebug() << "DraftHandler: Deck completo de draft.";
         emit sendLog(tr("Draft: Active deck read. Deck complete."));
+        emit deckComplete();
     }
     else
     {
