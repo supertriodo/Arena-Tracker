@@ -123,6 +123,7 @@ void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
     {
+        draftCards[i].radioItem->setStyleSheet("");
         draftCards[i].radioItem->setText("");
         draftCards[i].code="";
         draftCards[i].draw();
@@ -278,16 +279,17 @@ void DraftHandler::captureDraft()
 {
     if(!captureLoop)    return;
 
-    //Capture
-    cv::MatND screenCardsHist[3];
-    if(getScreenCardsHist(screenCardsHist))
+    if(screenRectsFound() || findScreenRects())
     {
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+
+        cv::MatND screenCardsHist[3];
+        getScreenCardsHist(screenCardsHist);
+
         QString codes[3];
         getBestMatchingCodes(screenCardsHist, codes);
 
         if(areNewCards(codes))  showNewCards(codes);
-
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
     else
     {
@@ -389,6 +391,7 @@ void DraftHandler::showNewCards(QString codes[3])
             emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCards[i].code].value("name").toString());
         }
 
+        draftCards[i].radioItem->setStyleSheet("");
         draftCards[i].radioItem->setText("");
         draftCards[i].code=codes[i];
         draftCards[i].draw();
@@ -422,11 +425,20 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
                                 QString synergy1, QString synergy2, QString synergy3)
 {
     double ratings[3] = {rating1,rating2,rating3};
+    double maxRating = -100;
+    int bestCard = 0;
 
     for(int i=0; i<3; i++)
     {
         draftCards[i].radioItem->setText(QString::number(ratings[i]));
+
+        if(ratings[i] > maxRating)
+        {
+            maxRating = ratings[i];
+            bestCard = i;
+        }
     }
+    draftCards[bestCard].radioItem->setStyleSheet("background:silver;");
 
     //Mostrar sinergies
     QString synergies[3] = {synergy1,synergy2, synergy3};
@@ -443,14 +455,11 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
 }
 
 
-bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
+void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 {
-    if(!findScreenRects())  return false;
-
-
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
-    if (!screen) return false;
+    if (!screen) return;
 
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
@@ -462,10 +471,6 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
     bigCards[0] = screenCapture(screenRects[0]);
     bigCards[1] = screenCapture(screenRects[1]);
     bigCards[2] = screenCapture(screenRects[2]);
-
-//    bigCards[0] = screenCapture(cv::Rect(512,259,97,97));
-//    bigCards[1] = screenCapture(cv::Rect(740,259,97,97));
-//    bigCards[2] = screenCapture(cv::Rect(963,259,97,97));
 
     cv::Mat screenCards[3];
     cv::resize(bigCards[0], screenCards[0], cv::Size(80, 80));
@@ -479,8 +484,6 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 #endif
 
     for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(screenCards[i]);
-
-    return true;
 }
 
 
@@ -562,10 +565,15 @@ cv::MatND DraftHandler::getHist(cv::Mat &srcBase)
 }
 
 
-bool DraftHandler::findScreenRects()
+bool DraftHandler::screenRectsFound()
 {
     if(screenRects[0].width != 0)   return true;
+    else                            return false;
+}
 
+
+bool DraftHandler::findScreenRects()
+{
     QList<QScreen *> screens = QGuiApplication::screens();
     for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
@@ -691,7 +699,7 @@ void DraftHandler::selectMouseCard()
     QScreen *screen = screens[screenIndex];
     if (!screen) return;
 
-    int xMouse = QCursor::pos(screen).x();
+    int xMouse = QCursor::pos(screen).x() - screen->geometry().x();
     int minDist = 9999;
     int pickedCard = 0;
 

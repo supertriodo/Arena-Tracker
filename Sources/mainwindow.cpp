@@ -451,6 +451,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         {
             if(event->key() == Qt::Key_R)   resetSettings();
 
+#ifdef Q_OS_LINUX
             //Force begin draft
             if(event->key() == Qt::Key_1)   {deckHandler->reset();gameWatcher->newDraft("01");}
             if(event->key() == Qt::Key_2)   {deckHandler->reset();gameWatcher->newDraft("02");}
@@ -461,6 +462,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if(event->key() == Qt::Key_7)   {deckHandler->reset();gameWatcher->newDraft("07");}
             if(event->key() == Qt::Key_8)   {deckHandler->reset();gameWatcher->newDraft("08");}
             if(event->key() == Qt::Key_9)   {deckHandler->reset();gameWatcher->newDraft("09");}
+#endif
         }
     }
 }

@@ -14,7 +14,7 @@
 using namespace cv;
 
 #define CAPTUREDRAFT_START_TIME         2000
-#define CAPTUREDRAFT_LOOP_TIME          500
+#define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    5000
 
 class DraftHandler : public QObject
@@ -50,7 +50,7 @@ private:
     void initCodesAndHistMaps(QString &hero);
     void resetTab();
     void clearLists();
-    bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
+    void getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void getBestMatchingCodes(cv::MatND screenCardsHist[3], QString codes[3]);
 //    void showImage(QString code);
     bool areNewCards(QString codes[3]);
@@ -60,8 +60,9 @@ private:
     void insertIntoDeck();    
     void resetCodesCandidates();    
     void updateBoxTitle(QString cardRating);    
-    bool findScreenRects();    
-    void selectMouseCard();
+    bool screenRectsFound();
+    bool findScreenRects();
+    void selectMouseCard();    
 
 public:
     void reHistDownloadedCardImage(QString code);
