@@ -281,8 +281,6 @@ void DraftHandler::captureDraft()
 
     if(screenRectsFound() || findScreenRects())
     {
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
-
         cv::MatND screenCardsHist[3];
         getScreenCardsHist(screenCardsHist);
 
@@ -290,6 +288,8 @@ void DraftHandler::captureDraft()
         getBestMatchingCodes(screenCardsHist, codes);
 
         if(areNewCards(codes))  showNewCards(codes);
+
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
     else
     {
