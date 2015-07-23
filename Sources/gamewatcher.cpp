@@ -463,7 +463,7 @@ void GameWatcher::processZone(QString &line)
         }
         //Enemigo juega carta
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING HAND -> (OPPOSING PLAY|OPPOSING PLAY .Weapon.)?\n"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING HAND -> (.*)\n"
             ), match))
         {
             //Enemigo juega hechizo
@@ -478,9 +478,13 @@ void GameWatcher::processZone(QString &line)
                 qDebug() << "GameWatcher: Enemigo: Esbirro jugado:" << match->captured(1) << "ID:" << match->captured(2) << "Esbirros:" << enemyMinions;
             }
             //Enemigo juega arma
-            else
+            else if(match->captured(4) == "OPPOSING PLAY (Weapon)")
             {
                 qDebug() << "GameWatcher: Enemigo: Arma jugada:" << match->captured(1) << "ID:" << match->captured(2);
+            }
+            else if(match->captured(4) == "OPPOSING GRAVEYARD")
+            {
+                qDebug() << "GameWatcher: Enemigo: Carta descartada:" << match->captured(1) << "ID:" << match->captured(2);
             }
 
             emit enemyCardPlayed(match->captured(2).toInt(), match->captured(3));
