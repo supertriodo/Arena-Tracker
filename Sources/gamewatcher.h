@@ -94,7 +94,7 @@ signals:
     void enemyCardPlayed(int id, QString code="");
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, SecretHero hero);
-    void enemySecretRevealed(int id);
+    void enemySecretRevealed(int id, QString code);
     void playerSpellPlayed();
     void playerMinionPlayed();
     void enemyMinionDead();

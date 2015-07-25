@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include "secretcard.h"
+#include <QQueue>
 #include <QObject>
 
 
@@ -27,6 +28,13 @@
 #define SPELLBENDER QString("tt_010")
 #define ICE_BLOCK QString("EX1_295")
 
+class SecretTest
+{
+public:
+    QString code;
+    bool secretRevealedLastSecond;
+};
+
 
 class ActiveSecret
 {
@@ -48,13 +56,16 @@ public:
 private:
     Ui::MainWindow *ui;
     QList<ActiveSecret> activeSecretList;
+    QQueue<SecretTest> secretTests;
 
 
 //Metodos
 private:
     void completeUI();
-    void discardSecretOption(QString code);
-    void checkLastSecretOption(ActiveSecret activeSecret);
+    void discardSecretOption(QString code, int delay);
+    void discardSecretOptionNow(QString code);
+    void checkLastSecretOption(ActiveSecret activeSecret);    
+    void adjustSize();
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -64,7 +75,7 @@ signals:
 
 public slots:
     void secretPlayed(int id, SecretHero hero);
-    void secretRevealed(int id);
+    void secretRevealed(int id, QString code);
     void resetSecretsInterface();
     void playerSpellPlayed();
     void playerSpellObjPlayed();
@@ -72,6 +83,9 @@ public slots:
     void enemyMinionDead();
     void avengeTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo);
+
+private slots:
+    void discardSecretOptionDelay();
 };
 
 #endif // SECRETSHANDLER_H

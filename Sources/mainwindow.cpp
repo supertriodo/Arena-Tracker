@@ -184,8 +184,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
             secretsHandler, SLOT(secretPlayed(int,SecretHero)));
-    connect(gameWatcher, SIGNAL(enemySecretRevealed(int)),
-            secretsHandler, SLOT(secretRevealed(int)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
+            secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed()),
             secretsHandler, SLOT(playerSpellPlayed()));
     connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
@@ -504,14 +504,14 @@ void MainWindow::test()
 }
 
 //TODO
-//Secrets. Kazan mystic. Mad scientist (solved, more testing)
 //Consejos iniciales
-//Pick cards (Revisar multiMonitor)
+//Revisar upload games
+//Varios tab a la vez
+//Crear archivo log con time.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
-//Bug secretos counterspell y otro. Se testea hechizo con objetivo.
-//  Counterspell salta y el programa descarta spellbender del otro secreto.
+//Draft. Cartas incorrectas.
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)

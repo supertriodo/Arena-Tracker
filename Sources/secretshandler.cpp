@@ -1,4 +1,6 @@
 #include "secretshandler.h"
+#include "deckhandler.h"
+#include <QtWidgets>
 
 SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
 {
@@ -24,10 +26,25 @@ void SecretsHandler::completeUI()
 }
 
 
+void SecretsHandler::adjustSize()
+{
+    int rowHeight = ui->secretsTreeWidget->sizeHintForRow(0);
+    int rows = 0;
+
+    for(int i=0; i<activeSecretList.count(); i++)
+    {
+        rows += activeSecretList[i].children.count() + 1;
+    }
+
+    int height = rows*rowHeight + 2*ui->secretsTreeWidget->frameWidth();
+    int maxHeight = (ui->secretsTreeWidget->height()+ui->enemyHandListWidget->height())*4/5;
+    if(height>maxHeight)    height = maxHeight;
+    ui->secretsTreeWidget->setMinimumHeight(height);
+}
+
+
 void SecretsHandler::secretPlayed(int id, SecretHero hero)
 {
-    ui->secretsTreeWidget->setHidden(false);
-
     ActiveSecret activeSecret;
     activeSecret.id = id;
     activeSecret.root.hero = hero;
@@ -76,6 +93,11 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     }
 
     activeSecretList.append(activeSecret);
+
+    ui->secretsTreeWidget->setHidden(false);
+    ui->tabWidget->setCurrentIndex(tabEnemy);
+
+    adjustSize();
 }
 
 
@@ -96,10 +118,11 @@ void SecretsHandler::resetSecretsInterface()
     ui->secretsTreeWidget->setHidden(true);
     ui->secretsTreeWidget->clear();
     activeSecretList.clear();
+    secretTests.clear();
 }
 
 
-void SecretsHandler::secretRevealed(int id)
+void SecretsHandler::secretRevealed(int id, QString code)
 {
     for(int i=0; i<activeSecretList.count(); i++)
     {
@@ -116,10 +139,36 @@ void SecretsHandler::secretRevealed(int id)
     {
         ui->secretsTreeWidget->setHidden(true);
     }
+
+    for(int i=0; i<secretTests.count(); i++)
+    {
+        secretTests[i].secretRevealedLastSecond = true;
+    }
+    adjustSize();
+
+    //No puede haber dos secretos iguales
+    discardSecretOptionNow(code);
+
+    qDebug() << "SecretsHandler: Secreto desvelado:" << code << QDateTime::currentDateTime().toString("ss");
 }
 
 
-void SecretsHandler::discardSecretOption(QString code)
+void SecretsHandler::discardSecretOptionDelay()
+{
+    if(secretTests.isEmpty())   return;
+
+    SecretTest secretTest = secretTests.dequeue();
+    if(secretTest.secretRevealedLastSecond)
+    {
+        qDebug() << "SecretsHandler: Opcion no descartada:" << secretTest.code << QDateTime::currentDateTime().toString("ss");
+        return;
+    }
+
+    discardSecretOptionNow(secretTest.code);
+}
+
+
+void SecretsHandler::discardSecretOptionNow(QString code)
 {
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
@@ -127,8 +176,10 @@ void SecretsHandler::discardSecretOption(QString code)
         {
             if(it->children[i].code == code)
             {
+                qDebug() << "SecretsHandler: Opcion descartada:" << code << QDateTime::currentDateTime().toString("ss");
                 it->root.treeItem->removeChild(it->children[i].treeItem);
                 it->children.removeAt(i);
+                adjustSize();
 
                 //Comprobar unica posibilidad
                 checkLastSecretOption(*it);
@@ -136,6 +187,20 @@ void SecretsHandler::discardSecretOption(QString code)
             }
         }
     }
+}
+
+
+void SecretsHandler::discardSecretOption(QString code, int delay=3000)
+{
+    if(activeSecretList.isEmpty())  return;
+
+    SecretTest secretTest;
+    secretTest.code = code;
+    secretTest.secretRevealedLastSecond = false;
+    secretTests.enqueue(secretTest);
+
+    QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
+    qDebug() << "SecretsHandler: Descartar en xs:" << code << QDateTime::currentDateTime().toString("ss");
 }
 
 
@@ -149,7 +214,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret activeSecret)
         activeSecret.children.clear();
 
         //No puede haber dos secretos iguales
-        discardSecretOption(activeSecret.root.code);
+        discardSecretOptionNow(activeSecret.root.code);
     }
 }
 
@@ -160,9 +225,16 @@ void SecretsHandler::playerSpellPlayed()
 }
 
 
+/*
+ * COUNTERSPELL no crea la primera linea en el log al desvelarse, solo la segunda que aparece cuando la animacion se completa
+ * Eso hace que el caso de comprobacion de SPELLBENDER tenga que ser de mas delay.
+ * No queremos que SPELLBENDER se descarte de un segundo secreto cuando al lanzar un hechizo el primer secreto
+ * desvela COUNTERSPELL
+ */
+
 void SecretsHandler::playerSpellObjPlayed()
 {
-    discardSecretOption(SPELLBENDER);
+    discardSecretOption(SPELLBENDER, 7000);
 }
 
 

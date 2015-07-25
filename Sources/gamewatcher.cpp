@@ -492,11 +492,11 @@ void GameWatcher::processZone(QString &line)
 
         //ENEMIGO SECRETO DESVELADO
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING SECRET ->"// OPPOSING GRAVEYARD"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING SECRET ->"// OPPOSING GRAVEYARD"
             ), match))
         {
             qDebug() << "GameWatcher: Enemigo: Secreto desvelado:" << match->captured(1);
-            emit enemySecretRevealed(match->captured(2).toInt());
+            emit enemySecretRevealed(match->captured(2).toInt(), match->captured(3));
         }
 
         //JUGADOR ROBA
