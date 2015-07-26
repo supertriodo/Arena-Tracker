@@ -5,6 +5,7 @@
 SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
 {
     this->ui = ui;
+    this->synchronized = false;
 
     completeUI();
 }
@@ -23,6 +24,12 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->header()->close();
     ui->secretsTreeWidget->setIconSize(CARD_SIZE);
     ui->secretsTreeWidget->setStyleSheet("background-color: transparent;");
+}
+
+
+void SecretsHandler::setSynchronized()
+{
+    this->synchronized = true;
 }
 
 
@@ -95,7 +102,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     activeSecretList.append(activeSecret);
 
     ui->secretsTreeWidget->setHidden(false);
-    ui->tabWidget->setCurrentWidget(ui->tabEnemy);
+    if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
 }

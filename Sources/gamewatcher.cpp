@@ -371,7 +371,7 @@ void GameWatcher::processPowerInGame(QString &line)
         //Jugador juega carta con objetivo
         if(line.contains(QRegularExpression(
             "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=PLAY Index=0 "
-            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=\\d+\\]"
+            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
             ), match))
         {
             if(match->captured(3).toInt() == playerID)
@@ -382,7 +382,11 @@ void GameWatcher::processPowerInGame(QString &line)
                 {
                     qDebug() << "GameWatcher: Jugador: Hechizo obj jugada:" <<
                                 match->captured(1) << "sobre" << match->captured(4);
-                    if(isPlayerTurn)    emit playerSpellObjPlayed();
+                    if(match->captured(5) == MAD_SCIENTIST)
+                    {
+                        qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
+                    }
+                    else if(isPlayerTurn)    emit playerSpellObjPlayed();
                 }
                 else
                 {
@@ -412,7 +416,11 @@ void GameWatcher::processPowerInGame(QString &line)
                     {
                         qDebug() << "GameWatcher: Jugador: Ataca:" <<
                                     match->captured(1) << "(heroe)vs(esbirro)" << match->captured(4);
-                        if(isPlayerTurn)    emit playerAttack(true, false);
+                        if(match->captured(5) == MAD_SCIENTIST)
+                        {
+                            qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
+                        }
+                        else if(isPlayerTurn)    emit playerAttack(true, false);
                     }
                 }
                 else
@@ -427,7 +435,11 @@ void GameWatcher::processPowerInGame(QString &line)
                     {
                         qDebug() << "GameWatcher: Jugador: Ataca:" <<
                                     match->captured(1) << "(esbirro)vs(esbirro)" << match->captured(4);
-                        if(isPlayerTurn)    emit playerAttack(false, false);
+                        if(match->captured(5) == MAD_SCIENTIST)
+                        {
+                            qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
+                        }
+                        else if(isPlayerTurn)    emit playerAttack(false, false);
                     }
                 }
             }
@@ -590,13 +602,17 @@ void GameWatcher::processZone(QString &line)
 
             //ENEMIGO ESBIRRO MUERE
             else if(line.contains(QRegularExpression(
-                "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from OPPOSING PLAY -> OPPOSING GRAVEYARD"
+                "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING PLAY -> OPPOSING GRAVEYARD"
                 ), match))
             {
                 enemyMinions--;
                 qDebug() << "GameWatcher: Enemigo: Esbirro muerto:" << match->captured(1) << "Esbirros:" << enemyMinions;
 
-                if(isPlayerTurn)
+                if(match->captured(2) == MAD_SCIENTIST)
+                {
+                    qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
+                }
+                else if(isPlayerTurn)
                 {
                     emit enemyMinionDead();
                     if(enemyMinionsAliveForAvenge == -1)

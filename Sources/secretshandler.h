@@ -57,6 +57,7 @@ private:
     Ui::MainWindow *ui;
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
+    bool synchronized;
 
 
 //Metodos
@@ -83,6 +84,7 @@ public slots:
     void enemyMinionDead();
     void avengeTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo);
+    void setSynchronized();
 
 private slots:
     void discardSecretOptionDelay();

@@ -4,6 +4,8 @@
 #include <QObject>
 #include "secretcard.h"
 
+#define MAD_SCIENTIST "FP1_004"
+
 class GameResult
 {
 public:

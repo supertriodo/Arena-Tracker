@@ -209,6 +209,8 @@ void MainWindow::createLogLoader()
             this, SLOT(createWebUploader()));
     connect(logLoader, SIGNAL(synchronized()),
             gameWatcher, SLOT(setSynchronized()));
+    connect(logLoader, SIGNAL(synchronized()),
+            secretsHandler, SLOT(setSynchronized()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(sendLog(QString)),
@@ -462,9 +464,9 @@ void MainWindow::test()
 
 //TODO
 //Consejos iniciales
-//Revisar upload games
 //Varios tab a la vez
 //Crear archivo log con time.
+//Revisar delays de secretos 1 a 1.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
