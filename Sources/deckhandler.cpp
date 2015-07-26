@@ -204,7 +204,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
 void DeckHandler::showCount()
 {
-    if(inGame && ui->tabWidget->currentIndex()==tabDeck)
+    if(inGame && ui->tabWidget->currentIndex()==ui->tabWidget->indexOf(ui->tabDeck))
     {
         emit sendStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
     }

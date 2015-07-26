@@ -51,7 +51,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
 
 void EnemyHandHandler::showCount()
 {
-    if(inGame && ui->tabWidget->currentIndex()==tabEnemy)
+    if(inGame && ui->tabWidget->currentIndex()==ui->tabWidget->indexOf(ui->tabEnemy))
     {
         emit sendStatusBarMessage(tr("Enemy hand: ") + QString::number(enemyHandList.count()));
     }

@@ -3,7 +3,6 @@
 
 #include "handcard.h"
 #include "ui_mainwindow.h"
-#include "deckhandler.h"
 #include <QObject>
 #include <QMap>
 

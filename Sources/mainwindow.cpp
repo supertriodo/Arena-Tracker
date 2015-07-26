@@ -304,9 +304,9 @@ void MainWindow::completeUI()
 
 void MainWindow::tabChanged(int index)
 {
-    if(index == tabDeck)            deckHandler->showCount();
-    else if(index == tabEnemy)      enemyHandHandler->showCount();
-    else                            ui->statusBar->showMessage("");
+    if(index == ui->tabWidget->indexOf(ui->tabDeck))            deckHandler->showCount();
+    else if(index == ui->tabWidget->indexOf(ui->tabEnemy))      enemyHandHandler->showCount();
+    else                                                        ui->statusBar->showMessage("");
 }
 
 

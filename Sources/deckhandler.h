@@ -9,8 +9,6 @@
 #define MALORNE QString("GVG_035")
 
 
-enum TabEnum { tabArena, tabDeck, tabEnemy, tabLog };
-
 class DeckHandler : public QObject
 {
     Q_OBJECT

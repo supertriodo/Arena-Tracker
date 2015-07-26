@@ -1,5 +1,4 @@
 #include "drafthandler.h"
-#include "deckhandler.h"
 #include <stdlib.h>
 #include <QtWidgets>
 
@@ -136,8 +135,8 @@ void DraftHandler::resetTab()
     ui->textBrowserDraft->setText("");
 
     ui->groupBoxDraft->setTitle("");
-    ui->tabWidget->insertTab(1, ui->tabDraft, "Draft");
-    ui->tabWidget->setCurrentIndex(1);
+    ui->tabWidget->addTab(ui->tabDraft, "Draft");
+    ui->tabWidget->setCurrentWidget(ui->tabDraft);
 }
 
 
@@ -224,8 +223,8 @@ void DraftHandler::endDraft()
     insertIntoDeck();
 
     //Oculta tab
-    ui->tabWidget->removeTab(1);
-    ui->tabWidget->setCurrentIndex(tabDeck);
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabDeck));
 
     clearLists();
 

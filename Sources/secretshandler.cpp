@@ -95,7 +95,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     activeSecretList.append(activeSecret);
 
     ui->secretsTreeWidget->setHidden(false);
-    ui->tabWidget->setCurrentIndex(tabEnemy);
+    ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
 }
