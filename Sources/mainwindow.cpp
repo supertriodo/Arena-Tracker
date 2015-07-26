@@ -81,8 +81,6 @@ void MainWindow::createDraftHandler()
     draftHandler = new DraftHandler(this, &cardsJson, ui);
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(draftHandler, SIGNAL(setStatusBarMessage(QString,int)),
-            this, SLOT(setStatusBarMessage(QString,int)));
     connect(draftHandler, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCard(QString,int)));
     connect(draftHandler, SIGNAL(deckComplete()),
@@ -105,8 +103,6 @@ void MainWindow::createArenaHandler()
     arenaHandler = new ArenaHandler(this, deckHandler, ui);
     connect(arenaHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
-    connect(arenaHandler, SIGNAL(sendStatusBarMessage(QString,int)),
-            this, SLOT(setStatusBarMessage(QString,int)));
 }
 
 
@@ -117,8 +113,6 @@ void MainWindow::createDeckHandler()
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLogConnected(QString)));
-    connect(deckHandler, SIGNAL(sendStatusBarMessage(QString,int)),
-            this, SLOT(setStatusBarMessageConnected(QString,int)));
 }
 
 
@@ -129,8 +123,6 @@ void MainWindow::createEnemyHandHandler()
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLogConnected(QString)));
-    connect(enemyHandHandler, SIGNAL(sendStatusBarMessage(QString,int)),
-            this, SLOT(setStatusBarMessageConnected(QString,int)));
 }
 
 
@@ -230,7 +222,6 @@ void MainWindow::createLogLoader()
     ui->progressBar->setMaximum(logSize/1000);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
-    setStatusBarMessage(tr("Loading log..."), 5000);
 }
 
 
@@ -263,7 +254,6 @@ void MainWindow::createWebUploader()
 
     ui->progressBar->setVisible(false);
     resizeArenaButtonsText();
-    setStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
 
     //Test
 #ifdef QT_DEBUG
@@ -277,10 +267,6 @@ void MainWindow::completeUI()
     ui->tabWidget->setCurrentIndex(0);
     ui->tabDraft->setVisible(false);
 
-    QPalette palette;
-    palette.setColor( QPalette::WindowText, Qt::white );
-    ui->statusBar->setPalette( palette );
-
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);
     connect(resizeButton, SIGNAL(newSize(QSize)),
@@ -288,25 +274,11 @@ void MainWindow::completeUI()
 
 
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
-    QFont font("Belwe Bd BT");
-    font.setPointSize(12);
-    ui->statusBar->setFont(font);
-
 
     connect(ui->closeButton, SIGNAL(clicked()),
             this, SLOT(close()));
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(tabChanged(int)));
-}
-
-
-void MainWindow::tabChanged(int index)
-{
-    if(index == ui->tabWidget->indexOf(ui->tabDeck))            deckHandler->showCount();
-    else if(index == ui->tabWidget->indexOf(ui->tabEnemy))      enemyHandHandler->showCount();
-    else                                                        ui->statusBar->showMessage("");
 }
 
 
@@ -366,21 +338,6 @@ void MainWindow::writeLog(QString line)
 void MainWindow::writeLogConnected(QString line)
 {
     if(webUploader != NULL)     writeLog(line);
-}
-
-
-void MainWindow::setStatusBarMessage(QString message, int timeout)
-{
-    ui->statusBar->showMessage("     " + message, timeout);
-}
-
-
-void MainWindow::setStatusBarMessageConnected(QString message, int timeout)
-{
-    if(webUploader != NULL)
-    {
-        setStatusBarMessage("     " + message, timeout);
-    }
 }
 
 
@@ -512,6 +469,7 @@ void MainWindow::test()
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
 //Draft. Cartas incorrectas.
+//Bug cientifico loco muere y salta avenge.
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)

@@ -93,7 +93,6 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
         ui->progressBar->setMinimum(0);
         ui->progressBar->setValue(0);
         ui->progressBar->setVisible(true);
-        emit setStatusBarMessage(tr("Downloading cards..."), 0);
     }
 }
 
@@ -108,7 +107,6 @@ void DraftHandler::reHistDownloadedCardImage(QString code)
     if(cardsDownloading==0)
     {
         ui->progressBar->setVisible(false);
-        emit setStatusBarMessage(tr("Cards downloaded."), 3000);
         resumeDraft();
     }
     else

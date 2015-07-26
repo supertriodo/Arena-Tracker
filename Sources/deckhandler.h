@@ -34,12 +34,10 @@ public:
     void reset();
     void redrawDownloadedCardImage(QString code);
     QList<DeckCard> * getDeckComplete();
-    void showCount();
 
 signals:
     void checkCardImage(QString code);
     void sendLog(QString line);
-    void sendStatusBarMessage(QString message, int timeout=0);
 
 public slots:
     void newDeckCard(QString card, int total=1);

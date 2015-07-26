@@ -43,18 +43,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     handCard.draw();
     enemyHandList.append(handCard);
 
-    showCount();
-
     if(code != "")      emit checkCardImage(code);
-}
-
-
-void EnemyHandHandler::showCount()
-{
-    if(inGame && ui->tabWidget->currentIndex()==ui->tabWidget->indexOf(ui->tabEnemy))
-    {
-        emit sendStatusBarMessage(tr("Enemy hand: ") + QString::number(enemyHandList.count()));
-    }
 }
 
 
@@ -80,7 +69,6 @@ void EnemyHandHandler::showEnemyCardPlayed(int id, QString code)
         {
             delete it->listItem;
             enemyHandList.removeAt(i);
-            showCount();
             return;
         }
     }

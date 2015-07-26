@@ -40,7 +40,6 @@ public:
 
 signals:
     void sendLog(QString line);
-    void sendStatusBarMessage(QString message, int timeout=0);
 
 public slots:
     //GameWatcher

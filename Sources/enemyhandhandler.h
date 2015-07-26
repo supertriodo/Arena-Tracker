@@ -28,12 +28,10 @@ private:
 
 public:
     void redrawDownloadedCardImage(QString code);
-    void showCount();
 
 signals:
     void checkCardImage(QString code);
     void sendLog(QString line);
-    void sendStatusBarMessage(QString message, int timeout=0);
 
 public slots:
     void lastHandCardIsCoin();

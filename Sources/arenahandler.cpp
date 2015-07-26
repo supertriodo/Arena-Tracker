@@ -176,7 +176,6 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
     if(arenaCurrent == NULL)    return;
     if(!isRowOk(arenaCurrent))  return;//Imposible
 
-    emit sendStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
     for(int i=0; i<arenaCurrent->childCount(); i++)
     {
         QTreeWidgetItem *item = arenaCurrent->child(i);
@@ -287,7 +286,6 @@ void ArenaHandler::showNoArena()
 
 void ArenaHandler::reshowArena(QString hero)
 {
-    emit sendStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
     ui->updateButton->setEnabled(true);
 
     if(arenaCurrent == NULL || arenaCurrentHero != hero)
@@ -462,7 +460,6 @@ bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 
 void ArenaHandler::updateArenaFromWeb()
 {
-    emit sendStatusBarMessage(tr("Loading Arena Mastery..."), 3000);
     webUploader->checkArenaCurrentReload();
     ui->updateButton->setEnabled(false);
     QTimer::singleShot(5000, this, SLOT(enableRefreshButton()));
@@ -473,7 +470,6 @@ void ArenaHandler::enableRefreshButton()
 {
     if(!ui->updateButton->isEnabled())
     {
-        emit sendStatusBarMessage(tr("No internet access to Arena Mastery"));
         ui->updateButton->setEnabled(true);
     }
 }
@@ -482,8 +478,6 @@ void ArenaHandler::enableRefreshButton()
 void ArenaHandler::uploadOldLog()
 {
     qDebug() << "MainWindow: " << "Uploading old log...";
-
-    emit sendStatusBarMessage(tr("Uploading to Arena Mastery..."), 3000);
 
     //Upload una arena por click
     ArenaResult arena = arenaLogList.first();

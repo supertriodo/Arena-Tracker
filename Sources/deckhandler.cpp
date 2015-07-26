@@ -132,7 +132,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 it->draw(false);
 
 //                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
-                showCount();
             }
             else if(it->remaining == 1)
             {
@@ -144,7 +143,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
 //                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
-                showCount();
             }
             //it->remaining == 0
             //MALORNE
@@ -165,9 +163,8 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 qDebug() << "DeckHandler: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
                             ", completando mazo.";
-//                emit sendLog(tr("Deck: Discovered unknown card. Adding to deck: ") +
-//                                  (*cardsJson)[code].value("name").toString());
-                showCount();
+                emit sendLog(tr("Deck: Discovered unknown card: ") +
+                                  (*cardsJson)[code].value("name").toString());
             }
             else
             {
@@ -198,15 +195,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
         qDebug() << "DeckHandler: WARNING: Carta que no esta en el mazo robada" <<
                     (*cardsJson)[code].value("name").toString() <<
                     "pero el mazo esta completo.";
-    }
-}
-
-
-void DeckHandler::showCount()
-{
-    if(inGame && ui->tabWidget->currentIndex()==ui->tabWidget->indexOf(ui->tabDeck))
-    {
-        emit sendStatusBarMessage(tr("Cards in deck: ") + QString::number(remainingCards));
     }
 }
 
@@ -336,6 +324,5 @@ void DeckHandler::unlockDeckInterface()
     ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
     ui->tabEnemy->repaint();
 
-    emit sendStatusBarMessage(tr("Game over"), 3000);
     this->inGame = false;
 }

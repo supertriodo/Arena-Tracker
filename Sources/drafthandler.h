@@ -69,7 +69,6 @@ public:
 
 signals:
     void checkCardImage(QString code);
-    void setStatusBarMessage(QString message, int timeout);
     void newDeckCard(QString code, int total);
     void deckComplete();
     void sendLog(QString line);

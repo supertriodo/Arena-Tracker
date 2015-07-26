@@ -95,13 +95,10 @@ public slots:
 
     //Widgets
     void resizeSlot(QSize size);
-    void tabChanged(int index);
 
     //MainWindow
     void writeLog(QString line);
     void writeLogConnected(QString line);
-    void setStatusBarMessage(QString message, int timeout=0);
-    void setStatusBarMessageConnected(QString message, int timeout=0);
 };
 
 #endif // MAINWINDOW_H
