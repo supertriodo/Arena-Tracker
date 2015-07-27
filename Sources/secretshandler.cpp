@@ -228,7 +228,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret activeSecret)
 
 void SecretsHandler::playerSpellPlayed()
 {
-    discardSecretOption(COUNTERSPELL);
+    discardSecretOptionNow(COUNTERSPELL);
 }
 
 
@@ -241,31 +241,41 @@ void SecretsHandler::playerSpellPlayed()
 
 void SecretsHandler::playerSpellObjPlayed()
 {
-    discardSecretOption(SPELLBENDER, 7000);
+    discardSecretOption(SPELLBENDER, 7000);//Ocultado por COUNTERSPELL
 }
 
 
 void SecretsHandler::playerMinionPlayed()
 {
-    discardSecretOption(MIRROR_ENTITY);
-    discardSecretOption(SNIPE);
-    discardSecretOption(REPENTANCE);
+    discardSecretOptionNow(MIRROR_ENTITY);
+    discardSecretOptionNow(SNIPE);
+    discardSecretOptionNow(REPENTANCE);
 }
 
 
 void SecretsHandler::enemyMinionDead()
 {
-    discardSecretOption(DUPLICATE);
-    discardSecretOption(REDEMPTION);
+    discardSecretOptionNow(DUPLICATE);
+    discardSecretOptionNow(REDEMPTION);
 }
 
 
 void SecretsHandler::avengeTested()
 {
-    discardSecretOption(AVENGE);
+    discardSecretOptionNow(AVENGE);
 }
 
 
+/*
+ * http://hearthstone.gamepedia.com/Secret
+ *
+ * If a Secret removes the specific target for another Secret which was already triggered, the second Secret will not take effect,
+ * since it now lacks a target. For example, if Freezing Trap removes the minion which would have been the target of Misdirection,
+ * the Misdirection will not trigger, since it no longer has a target.
+ *
+ * Note that this rule only applies for Secrets which require specific targets; Secrets such as Explosive Trap and Snake Trap do not require targets,
+ * and will always take effect once triggered, even if the original trigger minion has been removed from play.
+ */
 void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
 {
     if(isHeroFrom)
@@ -273,17 +283,17 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         //Hero -> hero
         if(isHeroTo)
         {
-            discardSecretOption(ICE_BARRIER);
-            discardSecretOption(EXPLOSIVE_TRAP);
-            discardSecretOption(MISDIRECTION);
-            discardSecretOption(EYE_FOR_AN_EYE);
-            discardSecretOption(NOBLE_SACRIFICE);
+            discardSecretOptionNow(ICE_BARRIER);
+            discardSecretOptionNow(EXPLOSIVE_TRAP);
+            discardSecretOption(MISDIRECTION);//Ocultado por EXPLOSIVE_TRAP
+            discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
+            discardSecretOptionNow(NOBLE_SACRIFICE);
         }
         //Hero -> minion
         else
         {
-            discardSecretOption(SNAKE_TRAP);
-            discardSecretOption(NOBLE_SACRIFICE);
+            discardSecretOptionNow(SNAKE_TRAP);
+            discardSecretOptionNow(NOBLE_SACRIFICE);
         }
     }
     else
@@ -291,20 +301,20 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         //Minion -> hero
         if(isHeroTo)
         {
-            discardSecretOption(VAPORIZE);
-            discardSecretOption(ICE_BARRIER);
-            discardSecretOption(EXPLOSIVE_TRAP);
-            discardSecretOption(FREEZING_TRAP);
-            discardSecretOption(MISDIRECTION);
-            discardSecretOption(EYE_FOR_AN_EYE);
-            discardSecretOption(NOBLE_SACRIFICE);
+            discardSecretOptionNow(VAPORIZE);
+            discardSecretOption(ICE_BARRIER);//Ocultado por VAPORIZE
+            discardSecretOptionNow(EXPLOSIVE_TRAP);
+            discardSecretOption(FREEZING_TRAP);//Ocultado por EXPLOSIVE_TRAP
+            discardSecretOption(MISDIRECTION);//Ocultado por FREEZING_TRAP
+            discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
+            discardSecretOptionNow(NOBLE_SACRIFICE);
         }
         //Minion -> minion
         else
         {
-            discardSecretOption(FREEZING_TRAP);
-            discardSecretOption(SNAKE_TRAP);
-            discardSecretOption(NOBLE_SACRIFICE);
+            discardSecretOptionNow(FREEZING_TRAP);
+            discardSecretOptionNow(SNAKE_TRAP);
+            discardSecretOptionNow(NOBLE_SACRIFICE);
         }
     }
 }

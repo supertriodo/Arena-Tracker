@@ -416,11 +416,11 @@ void GameWatcher::processPowerInGame(QString &line)
                     {
                         qDebug() << "GameWatcher: Jugador: Ataca:" <<
                                     match->captured(1) << "(heroe)vs(esbirro)" << match->captured(4);
-                        if(match->captured(5) == MAD_SCIENTIST)
+                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
                         {
                             qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
                         }
-                        else if(isPlayerTurn)    emit playerAttack(true, false);
+                        else */if(isPlayerTurn)    emit playerAttack(true, false);
                     }
                 }
                 else
@@ -435,11 +435,11 @@ void GameWatcher::processPowerInGame(QString &line)
                     {
                         qDebug() << "GameWatcher: Jugador: Ataca:" <<
                                     match->captured(1) << "(esbirro)vs(esbirro)" << match->captured(4);
-                        if(match->captured(5) == MAD_SCIENTIST)
+                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
                         {
                             qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
                         }
-                        else if(isPlayerTurn)    emit playerAttack(false, false);
+                        else */if(isPlayerTurn)    emit playerAttack(false, false);
                     }
                 }
             }
@@ -608,17 +608,20 @@ void GameWatcher::processZone(QString &line)
                 enemyMinions--;
                 qDebug() << "GameWatcher: Enemigo: Esbirro muerto:" << match->captured(1) << "Esbirros:" << enemyMinions;
 
-                if(match->captured(2) == MAD_SCIENTIST)
-                {
-                    qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
-                }
-                else if(isPlayerTurn)
+                if(isPlayerTurn)
                 {
                     emit enemyMinionDead();
                     if(enemyMinionsAliveForAvenge == -1)
                     {
-                        enemyMinionsAliveForAvenge = enemyMinions;
-                        QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                        if(match->captured(2) == MAD_SCIENTIST)
+                        {
+                            qDebug() << "GameWatcher: Saltamos comprobacion de secretos";
+                        }
+                        else
+                        {
+                            enemyMinionsAliveForAvenge = enemyMinions;
+                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                        }
                     }
                     else    enemyMinionsAliveForAvenge--;
                 }
