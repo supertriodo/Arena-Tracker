@@ -55,3 +55,5 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     arenatracker.qrc
+
+win32: RC_ICONS = ArenaTracker.ico

@@ -234,6 +234,12 @@
                <height>25</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <family>Belwe Bd BT</family>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="autoFillBackground">
               <bool>false</bool>
              </property>
@@ -263,6 +269,12 @@
                <height>25</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <family>Belwe Bd BT</family>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -288,6 +300,12 @@
                <width>16777215</width>
                <height>25</height>
               </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Belwe Bd BT</family>
+               <pointsize>10</pointsize>
+              </font>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>

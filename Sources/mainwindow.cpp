@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
     ui(new Ui::MainWindow)
 {
+    QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     ui->setupUi(this);
 
 #ifdef QT_DEBUG
@@ -274,9 +275,6 @@ void MainWindow::completeUI()
     connect(resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
 
-
-    QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
-
     connect(ui->closeButton, SIGNAL(clicked()),
             this, SLOT(close()));
     connect(ui->minimizeButton, SIGNAL(clicked()),
@@ -466,12 +464,12 @@ void MainWindow::test()
 //Consejos iniciales
 //Varios tab a la vez
 //Crear archivo log con time.
-//Revisar delays de secretos 1 a 1.
+//Uso en construido.
+//Crear deck durante el draft.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
 //Draft. Cartas incorrectas.
-//Bug cientifico loco muere y salta avenge.
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)

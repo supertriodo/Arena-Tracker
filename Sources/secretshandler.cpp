@@ -1,5 +1,4 @@
 #include "secretshandler.h"
-#include "deckhandler.h"
 #include <QtWidgets>
 
 SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
@@ -80,7 +79,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
 
         case mage:
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-            activeSecret.children.append(SecretCard(DUPLICATE));
+            activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
@@ -197,7 +196,7 @@ void SecretsHandler::discardSecretOptionNow(QString code)
 }
 
 
-void SecretsHandler::discardSecretOption(QString code, int delay=3000)
+void SecretsHandler::discardSecretOption(QString code, int delay)
 {
     if(activeSecretList.isEmpty())  return;
 
@@ -255,7 +254,7 @@ void SecretsHandler::playerMinionPlayed()
 
 void SecretsHandler::enemyMinionDead()
 {
-    discardSecretOptionNow(DUPLICATE);
+    discardSecretOptionNow(DDUPLICATE);
     discardSecretOptionNow(REDEMPTION);
 }
 

@@ -21,7 +21,7 @@
 #define SNAKE_TRAP QString("EX1_554")
 
 #define MIRROR_ENTITY QString("EX1_294")
-#define DUPLICATE QString("FP1_018")
+#define DDUPLICATE QString("FP1_018")
 #define ICE_BARRIER QString("EX1_289")
 #define VAPORIZE QString("EX1_594")
 #define COUNTERSPELL QString("EX1_287")
@@ -63,7 +63,7 @@ private:
 //Metodos
 private:
     void completeUI();
-    void discardSecretOption(QString code, int delay);
+    void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
     void checkLastSecretOption(ActiveSecret activeSecret);    
     void adjustSize();
