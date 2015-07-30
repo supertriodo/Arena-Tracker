@@ -256,7 +256,6 @@ void MainWindow::createWebUploader()
     arenaHandler->setWebUploader(webUploader);
 
     ui->progressBar->setVisible(false);
-    resizeArenaButtonsText();
 
     //Test
 #ifdef QT_DEBUG
@@ -269,6 +268,9 @@ void MainWindow::completeUI()
 {
     ui->tabWidget->setCurrentIndex(0);
     ui->tabDraft->setVisible(false);
+    ui->tabWidget1->hide();
+    ui->tabWidget2->hide();
+    ui->tabWidget3->hide();
 
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);
@@ -309,23 +311,112 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    resizeArenaButtonsText();
+    resizeTabWidgets(event);
     event->accept();
 }
 
 
-void MainWindow::resizeArenaButtonsText()
+void MainWindow::resizeTabWidgets(QResizeEvent *event)
 {
-    if(this->width() > 400)
+    QSize oldSize = event->oldSize();
+    QSize newSize = event->size();
+
+    QWidget* widgets[4] = {ui->tabArena, ui->tabEnemy, ui->tabLog, ui->tabDeck};
+
+     //Horizontal
+    if(oldSize.width()<=DIVIDE_TABS_H && newSize.width()>DIVIDE_TABS_H)
     {
-        ui->updateButton->setText("Refresh");
-        ui->uploadButton->setText("Upload");
+        if(newSize.height()>DIVIDE_TABS_V)
+        {
+            moveTabTo(widgets[3], ui->tabWidget3);
+            ui->tabWidget3->show();
+        }
+        else
+        {
+            moveTabTo(widgets[3], ui->tabWidget1);
+        }
+
+        moveTabTo(widgets[1], ui->tabWidget1);
+        ui->tabWidget1->show();
     }
-    else
+    else if(oldSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H)
     {
-        ui->updateButton->setText("");
-        ui->uploadButton->setText("");
+        ui->tabWidget3->hide();
+        ui->tabWidget1->hide();
+        moveTabTo(widgets[1], ui->tabWidget, 1);
+
+        if(newSize.height()>DIVIDE_TABS_V)
+        {
+            moveTabTo(widgets[3], ui->tabWidget2, 0);
+        }
+        else
+        {
+            moveTabTo(widgets[3], ui->tabWidget, 1);
+        }
     }
+
+    //Vertical
+    if(oldSize.height()<=DIVIDE_TABS_V && newSize.height()>DIVIDE_TABS_V)
+    {
+        if(newSize.width()>DIVIDE_TABS_H)
+        {
+            moveTabTo(widgets[3], ui->tabWidget3);
+            ui->tabWidget3->show();
+        }
+        else
+        {
+            moveTabTo(widgets[3], ui->tabWidget2);
+        }
+
+        moveTabTo(widgets[2], ui->tabWidget2);
+        ui->tabWidget2->show();
+    }
+    else if(oldSize.height()>DIVIDE_TABS_V && newSize.height()<=DIVIDE_TABS_V)
+    {
+        ui->tabWidget2->hide();
+        ui->tabWidget3->hide();
+
+        if(newSize.width()>DIVIDE_TABS_H)
+        {
+            moveTabTo(widgets[3], ui->tabWidget1, 0);
+        }
+        else
+        {
+            moveTabTo(widgets[3], ui->tabWidget, 1);
+        }
+
+        moveTabTo(widgets[2], ui->tabWidget);
+    }
+}
+
+
+void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
+{
+//    ui->tabWidget->removeTab(ui->tabWidget->indexOf(widget));
+//    ui->tabWidget2->removeTab(ui->tabWidget2->indexOf(widget));
+//    ui->tabWidget3->removeTab(ui->tabWidget3->indexOf(widget));
+//    ui->tabWidget4->removeTab(ui->tabWidget4->indexOf(widget));
+
+    QString label = "";
+    if(widget == ui->tabArena)
+    {
+        label = "Arena";
+    }
+    else if(widget == ui->tabDeck)
+    {
+        label = "Deck";
+    }
+    else if(widget == ui->tabEnemy)
+    {
+        label = "Enemy";
+    }
+    else if(widget == ui->tabLog)
+    {
+        label = "Log";
+    }
+
+    if(index == -1)     tabWidget->addTab(widget, label);
+    else                tabWidget->insertTab(index, widget, label);
 }
 
 
@@ -466,6 +557,7 @@ void MainWindow::test()
 //Crear archivo log con time.
 //Uso en construido.
 //Crear deck durante el draft.
+//En no sync evitar transparencias.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

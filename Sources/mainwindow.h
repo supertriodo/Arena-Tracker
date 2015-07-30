@@ -15,6 +15,9 @@
 #include <QMainWindow>
 #include <QJsonObject>
 
+#define DIVIDE_TABS_H 700
+#define DIVIDE_TABS_V 700
+
 
 namespace Ui {
 class MainWindow;
@@ -63,7 +66,8 @@ private:
     void writeSettings();
     void completeUI();
     void initCardsJson();
-    void resizeArenaButtonsText();
+    void resizeTabWidgets(QResizeEvent *event);
+    void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);
     void resetSettings();
     void test();
 
