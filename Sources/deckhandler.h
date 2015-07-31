@@ -19,7 +19,6 @@ public:
 //Variables
 private:
     QList<DeckCard> deckCardList;
-    int remainingCards;
     Ui::MainWindow *ui;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame;

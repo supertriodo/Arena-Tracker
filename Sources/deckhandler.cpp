@@ -26,7 +26,6 @@ void DeckHandler::completeUI()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
     ui->deckListWidget->setIconSize(CARD_SIZE);
-    ui->deckListWidget->setStyleSheet("background-color: transparent;");
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -131,7 +130,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
             if(it->remaining>1)
             {
                 it->remaining--;
-                remainingCards--;
                 it->draw(false);
 
 //                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
@@ -139,7 +137,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
             else if(it->remaining == 1)
             {
                 it->remaining--;
-                remainingCards--;
                 if(it->total > 1)   it->draw();
 
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
@@ -157,7 +154,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
                 else                            deckCardList[0].draw();
                 it->total++;
-                remainingCards--;
 
                 it->draw();
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
@@ -291,12 +287,11 @@ void DeckHandler::lockDeckInterface()
     ui->deckButtonPlus->setHidden(true);
     ui->deckButtonRemove->setHidden(true);
 
+    ui->deckListWidget->setStyleSheet("background-color: transparent;");
     ui->tabDeck->setAttribute(Qt::WA_NoBackground);
     ui->tabDeck->repaint();
     ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
     ui->tabEnemy->repaint();
-
-    remainingCards = 30;
 
     this->inGame = true;
 }
@@ -310,6 +305,7 @@ void DeckHandler::unlockDeckInterface()
         {
             it->draw();
             it->listItem->setHidden(false);
+            it->remaining = it->total;
         }
         else    it->listItem->setHidden(true);
     }
@@ -322,6 +318,7 @@ void DeckHandler::unlockDeckInterface()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
 
+        ui->deckListWidget->setStyleSheet("");
     ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
     ui->tabDeck->repaint();
     ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);

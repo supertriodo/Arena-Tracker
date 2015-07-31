@@ -4,7 +4,6 @@
 EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->inGame = false;
 
     completeUI();
 }
@@ -27,7 +26,6 @@ void EnemyHandHandler::reset()
 void EnemyHandHandler::completeUI()
 {
     ui->enemyHandListWidget->setIconSize(CARD_SIZE);
-    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
 }
 
 
@@ -86,18 +84,19 @@ void EnemyHandHandler::redrawDownloadedCardImage(QString code)
 
 void EnemyHandHandler::lockEnemyInterface()
 {
+    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
     ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
     ui->tabEnemy->repaint();
 
     reset();
-    this->inGame = true;
 }
 
 
 void EnemyHandHandler::unlockEnemyInterface()
 {
+    ui->enemyHandListWidget->setStyleSheet("");
     ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
     ui->tabEnemy->repaint();
 
-    this->inGame = false;
+    reset();
 }

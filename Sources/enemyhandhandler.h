@@ -19,7 +19,6 @@ public:
 private:
     QList<HandCard> enemyHandList;
     Ui::MainWindow *ui;
-    bool inGame;
 
 //Metodos
 private:

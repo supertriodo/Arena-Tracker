@@ -62,6 +62,7 @@ private:
     void createEnemyHandHandler();
     void createSecretsHandler();
     void createDraftHandler();
+    void createWebUploader();
     void readSettings();
     void writeSettings();
     void completeUI();
@@ -83,7 +84,6 @@ protected:
 //Slots
 public slots:
     //LogLoader
-    void createWebUploader();
     void showLogLoadProgress(qint64 logSeek);
 
     //WebUploader
@@ -105,6 +105,9 @@ public slots:
     void writeLog(QString line);
     void writeLogConnected(QString line);
     void confirmNewArenaDraft(QString hero);
+
+private slots:
+    void synchronizedDone();
 };
 
 #endif // MAINWINDOW_H

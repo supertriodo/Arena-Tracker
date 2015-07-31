@@ -159,8 +159,7 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCard(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
             deckHandler, SLOT(showPlayerCardDraw(QString)));
-    connect(gameWatcher, SIGNAL(startGame()),
-            deckHandler, SLOT(lockDeckInterface()));
+    //connect en synchronizedDone
     connect(gameWatcher, SIGNAL(endGame()),
             deckHandler, SLOT(unlockDeckInterface()));
 
@@ -170,12 +169,11 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(showEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
-    connect(gameWatcher, SIGNAL(startGame()),
-            enemyHandHandler, SLOT(lockEnemyInterface()));
+    //connect en synchronizedDone
     connect(gameWatcher, SIGNAL(endGame()),
             enemyHandHandler, SLOT(unlockEnemyInterface()));
 
-    connect(gameWatcher, SIGNAL(startGame()),
+    connect(gameWatcher, SIGNAL(endGame()),
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
             secretsHandler, SLOT(secretPlayed(int,SecretHero)));
@@ -203,7 +201,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher,SIGNAL(resumeDraft()),
             draftHandler, SLOT(resumeDraft()));
     connect(draftHandler, SIGNAL(endWith30()),
-            gameWatcher, SLOT(endArenaDraft()));//Connect de draftHandler
+            gameWatcher, SLOT(endArenaDraft()));
+    //Connect de draftHandler
 
     completeToolButton();
 }
@@ -213,11 +212,7 @@ void MainWindow::createLogLoader()
 {
     logLoader = new LogLoader(this);
     connect(logLoader, SIGNAL(synchronized()),
-            this, SLOT(createWebUploader()));
-    connect(logLoader, SIGNAL(synchronized()),
-            gameWatcher, SLOT(setSynchronized()));
-    connect(logLoader, SIGNAL(synchronized()),
-            secretsHandler, SLOT(setSynchronized()));
+            this, SLOT(synchronizedDone()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(sendLog(QString)),
@@ -231,6 +226,24 @@ void MainWindow::createLogLoader()
     ui->progressBar->setMaximum(logSize/1000);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
+}
+
+
+void MainWindow::synchronizedDone()
+{
+    createWebUploader();
+    gameWatcher->setSynchronized();
+    secretsHandler->setSynchronized();
+
+    connect(gameWatcher, SIGNAL(startGame()),
+            deckHandler, SLOT(lockDeckInterface()));
+    connect(gameWatcher, SIGNAL(startGame()),
+            enemyHandHandler, SLOT(lockEnemyInterface()));
+
+    //Test
+#ifdef QT_DEBUG
+    test();
+#endif
 }
 
 
@@ -262,11 +275,6 @@ void MainWindow::createWebUploader()
     arenaHandler->setWebUploader(webUploader);
 
     ui->progressBar->setVisible(false);
-
-    //Test
-#ifdef QT_DEBUG
-    test();
-#endif
 }
 
 
@@ -588,7 +596,6 @@ void MainWindow::test()
 //Crear archivo log con time.
 //Uso en construido.
 //Crear deck durante el draft.
-//En no sync evitar transparencias.
 //Recuperar readingDeck.
 //Automatizar inicio arena.
 //Eliminar drafting de gameWatcher.
