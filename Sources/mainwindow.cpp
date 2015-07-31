@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "utility.h"
 #include <QtWidgets>
 
 using namespace cv;
@@ -82,12 +83,13 @@ void MainWindow::createDraftHandler()
     draftHandler = new DraftHandler(this, &cardsJson, ui);
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(draftHandler, SIGNAL(newDeckCard(QString,int)),
-            deckHandler, SLOT(newDeckCard(QString,int)));
+    connect(draftHandler, SIGNAL(newDeckCard(QString)),
+            deckHandler, SLOT(newDeckCard(QString)));
     connect(draftHandler, SIGNAL(deckComplete()),
             this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
+    //connect en gameWatcher
 }
 
 
@@ -200,6 +202,10 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(pauseDraft()));
     connect(gameWatcher,SIGNAL(resumeDraft()),
             draftHandler, SLOT(resumeDraft()));
+    connect(draftHandler, SIGNAL(endWith30()),
+            gameWatcher, SLOT(endArenaDraft()));//Connect de draftHandler
+
+    completeToolButton();
 }
 
 
@@ -281,6 +287,44 @@ void MainWindow::completeUI()
             this, SLOT(close()));
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
+}
+
+
+void MainWindow::completeToolButton()
+{
+    QMenu *menu = new QMenu(ui->toolButton);
+    QMenu *newArenaMenu = new QMenu("New arena/draft", menu);
+
+    QSignalMapper* mapper = new QSignalMapper(this);
+    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+
+    for(int i=0; i<9; i++)
+    {
+        QAction *action = newArenaMenu->addAction(heroes[i]);
+        mapper->setMapping(action, heroes[i]);
+        connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+    }
+
+    connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
+
+    menu->addMenu(newArenaMenu);
+    ui->toolButton->setMenu(menu);
+}
+
+
+void MainWindow::confirmNewArenaDraft(QString hero)
+{
+    int ret = QMessageBox::question(this, tr("New arena: ") + hero,
+                                   "Make sure you have already picked " + hero + " in hearthstone.\n"
+                                   "Do you want to continue?",
+                                   QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(ret == QMessageBox::Ok)
+    {
+        qDebug() << "MainWindow: Nueva arena:" << hero;
+        writeLog(tr("Menu: New arena: ") + hero);
+        gameWatcher->newArenaDraft(Utility::heroToLogNumber(hero));
+    }
 }
 
 
@@ -498,19 +542,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(event->modifiers()&Qt::AltModifier && event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)   resetSettings();
-
-#ifdef Q_OS_LINUX
-            //Force begin draft
-            if(event->key() == Qt::Key_1)   {deckHandler->reset();gameWatcher->newDraft("01");}
-            if(event->key() == Qt::Key_2)   {deckHandler->reset();gameWatcher->newDraft("02");}
-            if(event->key() == Qt::Key_3)   {deckHandler->reset();gameWatcher->newDraft("03");}
-            if(event->key() == Qt::Key_4)   {deckHandler->reset();gameWatcher->newDraft("04");}
-            if(event->key() == Qt::Key_5)   {deckHandler->reset();gameWatcher->newDraft("05");}
-            if(event->key() == Qt::Key_6)   {deckHandler->reset();gameWatcher->newDraft("06");}
-            if(event->key() == Qt::Key_7)   {deckHandler->reset();gameWatcher->newDraft("07");}
-            if(event->key() == Qt::Key_8)   {deckHandler->reset();gameWatcher->newDraft("08");}
-            if(event->key() == Qt::Key_9)   {deckHandler->reset();gameWatcher->newDraft("09");}
-#endif
         }
     }
 }
@@ -558,6 +589,9 @@ void MainWindow::test()
 //Uso en construido.
 //Crear deck durante el draft.
 //En no sync evitar transparencias.
+//Recuperar readingDeck.
+//Automatizar inicio arena.
+//Eliminar drafting de gameWatcher.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
@@ -566,4 +600,4 @@ void MainWindow::test()
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)
 //Nuevo Json hearthArena
-//Nuevo start draft manual (MainWindow 453)
+//Nuevo start draft menu

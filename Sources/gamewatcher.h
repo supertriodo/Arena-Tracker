@@ -80,7 +80,6 @@ public:
 
 public:
     void reset();
-    void newDraft(QString hero);
 
 signals:
     void newGameResult(GameResult gameResult);
@@ -114,6 +113,8 @@ public slots:
     void checkAvenge();
     void setSynchronized();
     void setDeckRead();
+    void newArenaDraft(QString hero);
+    void endArenaDraft();
 };
 
 #endif // GAMEWATCHER_H

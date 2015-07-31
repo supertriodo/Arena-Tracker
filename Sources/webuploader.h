@@ -57,7 +57,6 @@ private:
     void connectWeb();
     void readSettings(QString &playerEmail, QString &password);
     void askLoginData(QString &playerEmail, QString &password);
-    QString heroToLogNumber(const QString &hero);
     QString heroToWebNumber(const QString &hero);
     GameResult createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero);
     bool getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards=false);

@@ -1,4 +1,5 @@
 #include "webuploader.h"
+#include "utility.h"
 #include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -491,7 +492,7 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
         " Arena</h1>"
         ), match))
     {
-        arenaCurrentHero = heroToLogNumber(match->captured(1));
+        arenaCurrentHero = Utility::heroToLogNumber(match->captured(1));
 
 
         //Ejemplo html
@@ -575,21 +576,6 @@ QString WebUploader::codeFromName(QString name)
 }
 
 
-QString WebUploader::heroToLogNumber(const QString &hero)
-{
-    if(hero.compare("Druid")==0)        return QString("06");
-    else if(hero.compare("Hunter")==0)  return QString("05");
-    else if(hero.compare("Mage")==0)    return QString("08");
-    else if(hero.compare("Paladin")==0) return QString("04");
-    else if(hero.compare("Priest")==0)  return QString("09");
-    else if(hero.compare("Rogue")==0)   return QString("03");
-    else if(hero.compare("Shaman")==0)  return QString("02");
-    else if(hero.compare("Warlock")==0) return QString("07");
-    else if(hero.compare("Warrior")==0) return QString("01");
-    else return QString();
-}
-
-
 QString WebUploader::heroToWebNumber(const QString &hero)
 {
     if(hero.compare("06")==0)           return QString("1");
@@ -610,7 +596,7 @@ GameResult WebUploader::createGameResult(const QRegularExpressionMatch &match, c
     GameResult gameResult;
 
     gameResult.playerHero = arenaCurrentHero;
-    gameResult.enemyHero = heroToLogNumber(match.captured(3));
+    gameResult.enemyHero = Utility::heroToLogNumber(match.captured(3));
     gameResult.isFirst = match.captured(4).startsWith("P");
     gameResult.isWinner = match.captured(1).startsWith("s");
 

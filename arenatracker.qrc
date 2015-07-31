@@ -47,5 +47,6 @@
         <file>Images/remove64.png</file>
         <file>Images/minus64.png</file>
         <file>Images/plus64.png</file>
+        <file>Images/config.png</file>
     </qresource>
 </RCC>

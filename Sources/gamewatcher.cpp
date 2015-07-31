@@ -87,11 +87,11 @@ void GameWatcher::processLogLine(QString line)
                 endReadingDeck();
             }
 
-            if(gameState == drafting)
-            {
-                qDebug() << "GameWatcher: " << "Pause draft.";
-                emit pauseDraft();
-            }
+//            if(gameState == drafting)
+//            {
+//                qDebug() << "GameWatcher: " << "Pause draft.";
+//                emit pauseDraft();
+//            }
         }
     }
     else if(line.startsWith("[Rachelle]"))
@@ -133,19 +133,14 @@ void GameWatcher::processLogLine(QString line)
                 emit newArenaReward(0, dust.toInt(),false,false,false);
             }
         }
-        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero=HERO_(\\d+)"), match))
-        {
-            QString hero = match->captured(1);
-            qDebug() << "GameWatcher: "<< "Nueva arena.";
-            emit sendLog(tr("Log: New arena."));
-            emit newArena(hero);
-            deckRead = false;
-
-            if(synchronized)
-            {
-                newDraft(hero);
-            }
-        }
+        //No ocurre en log
+//        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero=HERO_(\\d+)"), match))
+//        {
+//            qDebug() << "GameWatcher: Nueva arena.";
+//            emit sendLog(tr("Log: New arena."));
+//            QString hero = match->captured(1);
+//            newArenaDraft(hero);
+//        }
     }
     else if(line.startsWith("[Power]"))
     {
@@ -155,66 +150,94 @@ void GameWatcher::processLogLine(QString line)
     {
         processZone(line);
     }
-    else if(line.startsWith("[Ben]"))
-    {
-        if((gameState == drafting) && line.startsWith("[Ben] SetDraftMode - DRAFTING"))
-        {
-            qDebug() << "GameWatcher: " << "Resume draft.";
-            emit resumeDraft();
-        }
-        else if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
-        {
-            if(gameState == drafting)
-            {
-                gameState = noGame;
-                qDebug() << "GameWatcher: GameState = noGame";
-                qDebug() << "GameWatcher: "<< "End draft.";
-                emit endDraft();
-            }
+    //No ocurre en log
+//    else if(line.startsWith("[Ben]"))
+//    {
+//        if((gameState == drafting) && line.startsWith("[Ben] SetDraftMode - DRAFTING"))
+//        {
+//            qDebug() << "GameWatcher: " << "Resume draft.";
+//            emit resumeDraft();
+//        }
+//        else if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
+//        {
+//            if(gameState == drafting)
+//            {
+//                endArenaDraft();
+//            }
 
-            if(!deckRead)
-            {
-                gameState = readingDeck;
-                qDebug() << "GameWatcher: GameState = readingDeck";
-                qDebug() << "GameWatcher: "<< "Inicio leer deck.";
-            }
+    //Si queremos reactivar readingDeck hay que modificar newDeckCard
+//            if(!deckRead)
+//            {
+//                gameState = readingDeck;
+//                qDebug() << "GameWatcher: GameState = readingDeck";
+//                qDebug() << "GameWatcher: "<< "Inicio leer deck.";
+//            }
+//        }
+//    }
+//    else if(line.startsWith("[Asset]"))
+//    {
+//        if((gameState == readingDeck) &&
+//            line.contains(QRegularExpression(
+//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+//        {
+//            QString code = match->captured(1);
+//            //Hero portraits
+//            if(code.contains("HERO"))
+//            {
+//                qDebug() << "GameWatcher: Desechamos HERO";
+//                endReadingDeck();
+//                return;
+//            }
+//            //Hero powers
+//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+//            {
+//                qDebug() << "GameWatcher: Desechamos HERO POWER";
+//                endReadingDeck();
+//                return;
+//            }
+//            emit newDeckCard(code);
+//        }
+//    }
+}
+
+
+void GameWatcher::newArenaDraft(QString hero)
+{
+    if(gameState == noGame)
+    {
+        emit newArena(hero);
+        deckRead = false;
+
+        if(synchronized)
+        {
+            gameState = drafting;
+            qDebug() << "GameWatcher: GameState = drafting";
+            qDebug() << "GameWatcher: Begin draft.";
+            emit beginDraft(hero);
         }
     }
-    else if(line.startsWith("[Asset]"))
+    else
     {
-        if((gameState == readingDeck) &&
-            line.contains(QRegularExpression(
-                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-        {
-            QString code = match->captured(1);
-            //Hero portraits
-            if(code.contains("HERO"))
-            {
-                qDebug() << "GameWatcher: Desechamos HERO";
-                endReadingDeck();
-                return;
-            }
-            //Hero powers
-            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-            {
-                qDebug() << "GameWatcher: Desechamos HERO POWER";
-                endReadingDeck();
-                return;
-            }
-            emit newDeckCard(code);
-        }
+        qDebug() << "GameWatcher: WARNING: Recibido newArenaDraft con gameState =" << QString::number(gameState);
     }
 }
 
 
-void GameWatcher::newDraft(QString hero)
+void GameWatcher::endArenaDraft()
 {
-    gameState = drafting;
-    qDebug() << "GameWatcher: GameState = drafting";
-    qDebug() << "GameWatcher: "<< "Begin draft.";
-    emit beginDraft(hero);
+    if(gameState == drafting)
+    {
+        gameState = noGame;
+        qDebug() << "GameWatcher: GameState = noGame";
+        qDebug() << "GameWatcher: End draft.";
+        emit endDraft();
+    }
+    else
+    {
+        qDebug() << "GameWatcher: WARNING: Recibido endArenaDraft sin estar en gameState drafting.";
+    }
 }
 
 
@@ -223,7 +246,7 @@ void GameWatcher::endReadingDeck()
     deckRead = true;
     gameState = noGame;
     qDebug() << "GameWatcher: GameState = noGame";
-    qDebug() << "GameWatcher: "<< "Final leer deck.";
+    qDebug() << "GameWatcher: Final leer deck.";
     emit sendLog(tr("Log: Active deck read."));
 }
 
@@ -237,13 +260,10 @@ void GameWatcher::processPower(QString &line)
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
-                //Nunca ocurre (+seguridad)
+                //Salida alternativa de drafting (+seguridad)
                 if(gameState == drafting)
                 {
-                    gameState = noGame;
-                    qDebug() << "GameWatcher: GameState = noGame";
-                    qDebug() << "GameWatcher: "<< "End draft.";
-                    emit endDraft();
+                    endArenaDraft();
                 }
 
                 if(gameState == readingDeck)

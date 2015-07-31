@@ -66,18 +66,6 @@ void DeckHandler::newDeckCard(QString code, int total)
 {
     if(code.isEmpty())  return;
 
-    //Ya existe en el mazo
-    for(int i=0; i<deckCardList.length(); i++)
-    {
-        if(deckCardList[i].code == code)
-        {
-            qDebug() << "DeckHandler: Desechamos:" << total <<
-                        (*cardsJson)[code].value("name").toString()
-                     << "- Ya en mazo";
-            return;
-        }
-    }
-
     //Mazo completo
     if(deckCardList[0].total < (uint)total)
     {
@@ -87,17 +75,32 @@ void DeckHandler::newDeckCard(QString code, int total)
         return;
     }
 
-    DeckCard deckCard(code);
-    deckCard.total = total;
-    deckCard.listItem = new QListWidgetItem();
-    deckCard.draw();
-    insertDeckCard(deckCard);
+    //Ya existe en el mazo
+    bool found = false;
+    for(int i=0; i<deckCardList.length(); i++)
+    {
+        if(deckCardList[i].code == code)
+        {
+            found = true;
+            deckCardList[i].total+=total;
+            deckCardList[i].draw();
+            break;
+        }
+    }
+
+    if(!found)
+    {
+        DeckCard deckCard(code);
+        deckCard.total = total;
+        deckCard.listItem = new QListWidgetItem();
+        insertDeckCard(deckCard);
+        deckCard.draw();
+        emit checkCardImage(code);
+    }
 
     deckCardList[0].total-=total;
     deckCardList[0].draw();
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
-
-    emit checkCardImage(code);
 
     qDebug() << "DeckHandler: Completando mazo:" << total << (*cardsJson)[code].value("name").toString();
 }

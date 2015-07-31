@@ -13,7 +13,7 @@
 
 using namespace cv;
 
-#define CAPTUREDRAFT_START_TIME         2000
+#define CAPTUREDRAFT_START_TIME         0
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    5000
 
@@ -40,6 +40,7 @@ private:
     double deckRating;
     cv::Rect screenRects[3];
     int screenIndex;
+    int endCount;
 
 
 //Metodos
@@ -52,25 +53,25 @@ private:
     void clearLists();
     void getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void getBestMatchingCodes(cv::MatND screenCardsHist[3], QString codes[3]);
-//    void showImage(QString code);
     bool areNewCards(QString codes[3]);
     bool areSameRarity(QString codes[]);
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
-    void insertIntoDeck();    
     void resetCodesCandidates();    
     void updateBoxTitle(QString cardRating);    
     bool screenRectsFound();
     bool findScreenRects();
-    void selectMouseCard();    
+    void selectMouseCard();        
+    void pickCard(DraftCard &draftCard);
 
 public:
     void reHistDownloadedCardImage(QString code);
 
 signals:
     void checkCardImage(QString code);
-    void newDeckCard(QString code, int total);
+    void newDeckCard(QString code);
     void deckComplete();
+    void endWith30();
     void sendLog(QString line);
 
 public slots:

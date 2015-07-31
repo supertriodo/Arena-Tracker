@@ -65,6 +65,7 @@ private:
     void readSettings();
     void writeSettings();
     void completeUI();
+    void completeToolButton();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);
@@ -103,6 +104,7 @@ public slots:
     //MainWindow
     void writeLog(QString line);
     void writeLogConnected(QString line);
+    void confirmNewArenaDraft(QString hero);
 };
 
 #endif // MAINWINDOW_H

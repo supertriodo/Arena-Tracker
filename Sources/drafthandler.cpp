@@ -9,6 +9,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->cardsDownloading = 0;
     this->captureLoop = false;
     this->deckRating = 0;
+    this->endCount = 0;
 
     for(int i=0; i<3; i++)
     {
@@ -151,6 +152,7 @@ void DraftHandler::clearLists()
     }
 
     deckRating = 0;
+    endCount = 0;
 }
 
 
@@ -207,18 +209,15 @@ void DraftHandler::endDraft()
     //Guardamos ultima carta
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].radioItem->isChecked())
+        if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
         {
-            draftedCards.push_back(hearthArenaCodes[draftCards[i].code]);
-            updateBoxTitle(draftCards[i].radioItem->text());
-            qDebug() << "DraftHandler: Card picked:" << draftCards[i].code << "-" << draftedCards.count();
-            emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCards[i].code].value("name").toString());
+            pickCard(draftCards[i]);
             emit sendLog(tr("Draft: ") + ui->groupBoxDraft->title());
         }
     }
 
-    //Creamos el mazo
-    insertIntoDeck();
+    //Upload
+    if(draftedCards.count() == 30)  emit deckComplete();
 
     //Oculta tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
@@ -233,43 +232,46 @@ void DraftHandler::endDraft()
 }
 
 
-void DraftHandler::insertIntoDeck()
-{
-    int numCards = draftedCards.count();
-    bool isDeckComplete = (numCards == 30);
+/*
+ * Inserta todas las cartas de draftedCards en DeckCard
+ */
+//void DraftHandler::insertIntoDeck()
+//{
+//    int numCards = draftedCards.count();
+//    bool isDeckComplete = (numCards == 30);
 
-    while(!draftedCards.isEmpty())
-    {
-        int total = 1;
-        for(int j=draftedCards.count()-1; j>0; j--)
-        {
-            if(draftedCards.first() == draftedCards[j])
-            {
-                total++;
-                draftedCards.removeAt(j);
-            }
-        }
+//    while(!draftedCards.isEmpty())
+//    {
+//        int total = 1;
+//        for(int j=draftedCards.count()-1; j>0; j--)
+//        {
+//            if(draftedCards.first() == draftedCards[j])
+//            {
+//                total++;
+//                draftedCards.removeAt(j);
+//            }
+//        }
 
-        if((numCards <= 30) || total > 1)
-        {
-            QString code = hearthArenaCodes.key(draftedCards.first());
-            emit newDeckCard(code, total);
-        }
-        draftedCards.pop_front();
-    }
+//        if((numCards <= 30) || total > 1)
+//        {
+//            QString code = hearthArenaCodes.key(draftedCards.first());
+//            emit newDeckCard(code, total);
+//        }
+//        draftedCards.pop_front();
+//    }
 
-    if(isDeckComplete)
-    {
-        qDebug() << "DraftHandler: Deck completo de draft.";
-        emit sendLog(tr("Draft: Active deck read. Deck complete."));
-        emit deckComplete();
-    }
-    else
-    {
-        qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
-        emit sendLog(tr("Draft: Active deck read. Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
-    }
-}
+//    if(isDeckComplete)
+//    {
+//        qDebug() << "DraftHandler: Deck completo de draft.";
+//        emit sendLog(tr("Draft: Active deck read. Deck complete."));
+//        emit deckComplete();
+//    }
+//    else
+//    {
+//        qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
+//        emit sendLog(tr("Draft: Active deck read. Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
+//    }
+//}
 
 
 void DraftHandler::captureDraft()
@@ -305,12 +307,18 @@ bool DraftHandler::areNewCards(QString codes[3])
         qDebug() << "DraftHandler: Sin cambios (2+=).";
         resetCodesCandidates();
         selectMouseCard();
+        endCount = 0;
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
         qDebug() << "DraftHandler: No son cartas.";
         resetCodesCandidates();
+        if(draftedCards.count()>=29)
+        {
+            if(endCount > 10)    emit endWith30();
+            else                endCount++;
+        }
         return false;
     }
     else if(!areSameRarity(codes))
@@ -332,6 +340,7 @@ bool DraftHandler::areNewCards(QString codes[3])
     {
         qDebug() << "DraftHandler: Nuevas cartas.";
         resetCodesCandidates();
+        endCount = 0;
         return true;
     }
 }
@@ -375,6 +384,16 @@ bool DraftHandler::areSameRarity(QString codes[3])
 }
 
 
+void DraftHandler::pickCard(DraftCard &draftCard)
+{
+    draftedCards.push_back(hearthArenaCodes[draftCard.code]);
+    updateBoxTitle(draftCard.radioItem->text());
+    qDebug() << "DraftHandler: Card picked:" << draftedCards.count() << "-" << (*cardsJson)[draftCard.code].value("name").toString();
+    emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
+    emit newDeckCard(draftCard.code);
+}
+
+
 void DraftHandler::showNewCards(QString codes[3])
 {
     int intCodes[3];
@@ -382,10 +401,7 @@ void DraftHandler::showNewCards(QString codes[3])
     {
         if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
         {
-            draftedCards.push_back(hearthArenaCodes[draftCards[i].code]);
-            updateBoxTitle(draftCards[i].radioItem->text());
-            qDebug() << "DraftHandler: Card picked:" << draftedCards.count() << "-" << (*cardsJson)[draftCards[i].code].value("name").toString();
-            emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCards[i].code].value("name").toString());
+            pickCard(draftCards[i]);
         }
 
         draftCards[i].radioItem->setStyleSheet("");
