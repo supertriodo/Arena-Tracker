@@ -18,21 +18,6 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 https://github.com/supertriodo/Arena-Tracker/releases/download/v2.3/Arena.Tracker.v2.3.zip
 
 
-## Build from source (Linux, Mac & Windows) (Only advanced users)
-* Download & install QT Community.
- * http://www.qt.io/download-open-source/
-* Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
- * http://opencv.org/downloads.html
- * In Ubuntu I followed this guide (changing the version of ovencv to v2.4.11
-   http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/
-* Download or clone Arena Tracker source code.
- * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
-* Open Qt Creator and open Arena Tracker project.
- * Open File or project... Look for ArenaTracker.pro
-* In the botton left set the build to Release and Run.
-* Move HSCards directory to the build dir.
-
-
 ## First Run
 The first time you run Arena Tracker you will be asked for:
 
@@ -68,6 +53,21 @@ or on email: triodo@gmail.com
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
  * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
+
+
+## Build from source (Linux, Mac & Windows) (Only advanced users)
+* Download & install QT Community.
+ * http://www.qt.io/download-open-source/
+* Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
+ * http://opencv.org/downloads.html
+ * In Ubuntu I followed this guide (changing the version of ovencv to v2.4.11
+   http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/
+* Download or clone Arena Tracker source code.
+ * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
+* Open Qt Creator and open Arena Tracker project.
+ * Open File or project... Look for ArenaTracker.pro
+* In the botton left set the build to Release and Run.
+* Move HSCards directory to the build dir.
 
 
 ## Is Blizzard okay with this?
