@@ -540,3 +540,9 @@ void ArenaHandler::openDonateWeb()
         "item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
         ));
 }
+
+
+bool ArenaHandler::isNoArena()
+{
+    return noArena;
+}

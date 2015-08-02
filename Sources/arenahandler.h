@@ -37,6 +37,7 @@ private:
 
 public:
     void setWebUploader(WebUploader *webUploader);
+    bool isNoArena();
 
 signals:
     void sendLog(QString line);

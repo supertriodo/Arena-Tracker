@@ -64,6 +64,7 @@ private:
     bool findScreenRects();
     void selectMouseCard();        
     void pickCard(DraftCard &draftCard);
+    void removeTabHero();
 
 public:
     void reHistDownloadedCardImage(QString code);

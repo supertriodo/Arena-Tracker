@@ -42,8 +42,6 @@ void DraftHandler::completeUI()
     draftCards[0].radioItem = ui->radioButtonDraft1;
     draftCards[1].radioItem = ui->radioButtonDraft2;
     draftCards[2].radioItem = ui->radioButtonDraft3;
-
-    ui->tabWidget->removeTab(1);
 }
 
 
@@ -118,6 +116,12 @@ void DraftHandler::reHistDownloadedCardImage(QString code)
 }
 
 
+void DraftHandler::removeTabHero()
+{
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
+}
+
+
 void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
@@ -135,6 +139,8 @@ void DraftHandler::resetTab()
     ui->textBrowserDraft->setText("");
 
     ui->groupBoxDraft->setTitle("");
+
+    removeTabHero();
     ui->tabWidget->addTab(ui->tabDraft, "Draft");
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
 }
@@ -210,6 +216,8 @@ void DraftHandler::pauseDraft()
 
 void DraftHandler::endDraft()
 {
+    removeTabHero();
+
     if(!drafting)    return;
 
     //Guardamos ultima carta

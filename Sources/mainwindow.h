@@ -71,6 +71,7 @@ private:
     void writeSettings();
     void completeUI();
     void completeToolButton();
+    void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);
@@ -89,6 +90,9 @@ protected:
 public slots:
     //LogLoader
     void showLogLoadProgress(qint64 logSeek);
+
+    //GameWatcher
+    void showTabHeroOnNoArena();
 
     //WebUploader
     void resetDeckFromWeb();

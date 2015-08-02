@@ -17,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     writeLog(tr("MODE DEBUG"));
 #endif
 
+    completeUI();
     readSettings();
     initCardsJson();
-    completeUI();
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
 
@@ -201,6 +201,19 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(pauseDraft()));
     connect(gameWatcher,SIGNAL(enterArena()),
             draftHandler, SLOT(resumeDraft()));
+    connect(gameWatcher,SIGNAL(enterArena()),
+            this, SLOT(showTabHeroOnNoArena()));
+}
+
+
+void MainWindow::showTabHeroOnNoArena()
+{
+    if(webUploader == NULL) return;
+    if(arenaHandler->isNoArena())
+    {
+        ui->tabWidget->addTab(ui->tabHero, "Draft");
+        ui->tabWidget->setCurrentWidget(ui->tabHero);
+    }
 }
 
 
@@ -276,8 +289,15 @@ void MainWindow::createWebUploader()
 
 void MainWindow::completeUI()
 {
+    ui->tabWidget->hide();
+    ui->tabWidgetH2->hide();
+    ui->tabWidgetH3->hide();
+    ui->tabWidgetV1->hide();
+    ui->tabWidgetV2->hide();
+
     ui->tabWidget->setCurrentIndex(0);
-    ui->tabDraft->setVisible(false);
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
+    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
 
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);
@@ -290,6 +310,27 @@ void MainWindow::completeUI()
             this, SLOT(showMinimized()));
 
     completeToolButton();
+    completeHeroButtons();
+}
+
+
+void MainWindow::completeHeroButtons()
+{
+    QSignalMapper* mapper = new QSignalMapper(this);
+    QString heroes[9] = {"Warrior", "Shaman", "Rogue",
+                         "Paladin", "Hunter", "Druid",
+                         "Warlock", "Mage", "Priest"};
+    QPushButton *heroButtons[9] = {ui->heroButton1, ui->heroButton2, ui->heroButton3,
+                                  ui->heroButton4, ui->heroButton5, ui->heroButton6,
+                                  ui->heroButton7, ui->heroButton8, ui->heroButton9};
+
+    for(int i=0; i<9; i++)
+    {
+        mapper->setMapping(heroButtons[i], heroes[i]);
+        connect(heroButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
+    }
+
+    connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
 }
 
 
