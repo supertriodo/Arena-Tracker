@@ -282,9 +282,6 @@ void MainWindow::completeUI()
 {
     ui->tabWidget->setCurrentIndex(0);
     ui->tabDraft->setVisible(false);
-    ui->tabWidget1->hide();
-    ui->tabWidget2->hide();
-    ui->tabWidget3->hide();
 
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);
@@ -341,6 +338,7 @@ void MainWindow::readSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     QPoint pos = settings.value("pos", QPoint(0,0)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
+    this->windowsFormation = none;
     resize(size);
     move(pos);
 }
@@ -370,85 +368,96 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::resizeTabWidgets(QResizeEvent *event)
 {
-    QSize oldSize = event->oldSize();
     QSize newSize = event->size();
 
-    QWidget* widgets[4] = {ui->tabArena, ui->tabEnemy, ui->tabLog, ui->tabDeck};
+    WindowsFormation newWindowsFormation;
 
-     //Horizontal
-    if(oldSize.width()<=DIVIDE_TABS_H && newSize.width()>DIVIDE_TABS_H)
+    //H1
+    if(newSize.width()<=DIVIDE_TABS_H)
     {
-        if(newSize.height()>DIVIDE_TABS_V)
-        {
-            moveTabTo(widgets[3], ui->tabWidget3);
-            ui->tabWidget3->show();
-        }
-        else
-        {
-            moveTabTo(widgets[3], ui->tabWidget1);
-        }
-
-        moveTabTo(widgets[1], ui->tabWidget1);
-        ui->tabWidget1->show();
+        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = V2;
+        else                                newWindowsFormation = H1;
     }
-    else if(oldSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H)
+    //H2
+    else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
     {
-        ui->tabWidget3->hide();
-        ui->tabWidget1->hide();
-        moveTabTo(widgets[1], ui->tabWidget, 1);
-
-        if(newSize.height()>DIVIDE_TABS_V)
-        {
-            moveTabTo(widgets[3], ui->tabWidget2, 0);
-        }
-        else
-        {
-            moveTabTo(widgets[3], ui->tabWidget, 1);
-        }
+        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = _2X2;
+        else                                newWindowsFormation = H2;
+    }
+    //H3
+    else
+    {
+        newWindowsFormation = H3;
     }
 
-    //Vertical
-    if(oldSize.height()<=DIVIDE_TABS_V && newSize.height()>DIVIDE_TABS_V)
+    if(newWindowsFormation == windowsFormation) return;
+    windowsFormation = newWindowsFormation;
+
+    ui->tabWidget->hide();
+    ui->tabWidgetH2->hide();
+    ui->tabWidgetH3->hide();
+    ui->tabWidgetV1->hide();
+    ui->tabWidgetV2->hide();
+
+    switch(windowsFormation)
     {
-        if(newSize.width()>DIVIDE_TABS_H)
-        {
-            moveTabTo(widgets[3], ui->tabWidget3);
-            ui->tabWidget3->show();
-        }
-        else
-        {
-            moveTabTo(widgets[3], ui->tabWidget2);
-        }
+        case H1:
+            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+            moveTabTo(ui->tabArena, ui->tabWidget);
+            moveTabTo(ui->tabDeck, ui->tabWidget);
+            moveTabTo(ui->tabEnemy, ui->tabWidget);
+            moveTabTo(ui->tabLog, ui->tabWidget);
+            ui->tabWidget->show();
+            break;
 
-        moveTabTo(widgets[2], ui->tabWidget2);
-        ui->tabWidget2->show();
-    }
-    else if(oldSize.height()>DIVIDE_TABS_V && newSize.height()<=DIVIDE_TABS_V)
-    {
-        ui->tabWidget2->hide();
-        ui->tabWidget3->hide();
+        case H2:
+            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+            moveTabTo(ui->tabArena, ui->tabWidget);
+            moveTabTo(ui->tabDeck, ui->tabWidget);
+            moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+            moveTabTo(ui->tabLog, ui->tabWidgetH2);
+            ui->tabWidget->show();
+            ui->tabWidgetH2->show();
+            break;
 
-        if(newSize.width()>DIVIDE_TABS_H)
-        {
-            moveTabTo(widgets[3], ui->tabWidget1, 0);
-        }
-        else
-        {
-            moveTabTo(widgets[3], ui->tabWidget, 1);
-        }
+        case H3:
+            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+            moveTabTo(ui->tabArena, ui->tabWidget);
+            moveTabTo(ui->tabDeck, ui->tabWidgetH2);
+            moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+            moveTabTo(ui->tabLog, ui->tabWidget);
+            ui->tabWidget->show();
+            ui->tabWidgetH2->show();
+            ui->tabWidgetH3->show();
+            break;
 
-        moveTabTo(widgets[2], ui->tabWidget);
+        case V2:
+            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+            moveTabTo(ui->tabArena, ui->tabWidget);
+            moveTabTo(ui->tabDeck, ui->tabWidgetV1);
+            moveTabTo(ui->tabEnemy, ui->tabWidget);
+            moveTabTo(ui->tabLog, ui->tabWidgetV1);
+            ui->tabWidget->show();
+            ui->tabWidgetV1->show();
+            break;
+
+        case _2X2:
+            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+            moveTabTo(ui->tabArena, ui->tabWidget);
+            moveTabTo(ui->tabDeck, ui->tabWidgetV2);
+            moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+            moveTabTo(ui->tabLog, ui->tabWidgetV1);
+            ui->tabWidget->show();
+            ui->tabWidgetH2->show();
+            ui->tabWidgetV1->show();
+            ui->tabWidgetV2->show();
+            break;
     }
 }
 
 
 void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
 {
-//    ui->tabWidget->removeTab(ui->tabWidget->indexOf(widget));
-//    ui->tabWidget2->removeTab(ui->tabWidget2->indexOf(widget));
-//    ui->tabWidget3->removeTab(ui->tabWidget3->indexOf(widget));
-//    ui->tabWidget4->removeTab(ui->tabWidget4->indexOf(widget));
-
     QString label = "";
     if(widget == ui->tabArena)
     {
@@ -592,10 +601,8 @@ void MainWindow::test()
 
 //TODO
 //Consejos iniciales
-//Varios tab a la vez
 //Crear archivo log con time.
 //Uso en construido.
-//Crear deck durante el draft.
 //Recuperar readingDeck.
 //Automatizar inicio arena.
 //Eliminar drafting de gameWatcher.

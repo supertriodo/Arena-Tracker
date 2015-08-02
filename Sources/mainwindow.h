@@ -16,7 +16,8 @@
 #include <QJsonObject>
 
 #define DIVIDE_TABS_H 700
-#define DIVIDE_TABS_V 700
+#define DIVIDE_TABS_H2 1000
+#define DIVIDE_TABS_V 900
 
 
 namespace Ui {
@@ -33,6 +34,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private:
+    enum WindowsFormation {H1, H2, H3, V2, _2X2, none};
 
 //Variables
 private:
@@ -49,6 +52,7 @@ private:
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     ResizeButton *resizeButton;
+    WindowsFormation windowsFormation;
 
 
 
