@@ -170,7 +170,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 qDebug() << "DeckHandler: WARNING: Nueva copia de carta robada" <<
                             (*cardsJson)[code].value("name").toString() <<
                             "pero el mazo esta completo.";
-                emit sendLog(tr("Deck: WARNING: Extra card drawn but deck is full. Is the deck right? ") +
+                emit sendLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
                               (*cardsJson)[code].value("name").toString());
             }
             return;
@@ -186,6 +186,8 @@ void DeckHandler::showPlayerCardDraw(QString code)
         qDebug() << "DeckHandler: Carta que no esta en el mazo robada" <<
                     (*cardsJson)[code].value("name").toString() <<
                     ", completando mazo.";
+        emit sendLog(tr("Deck: Discovered unknown card: ") +
+                          (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
         showPlayerCardDraw(code);
     }
@@ -194,6 +196,8 @@ void DeckHandler::showPlayerCardDraw(QString code)
         qDebug() << "DeckHandler: WARNING: Carta que no esta en el mazo robada" <<
                     (*cardsJson)[code].value("name").toString() <<
                     "pero el mazo esta completo.";
+        emit sendLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
+                      (*cardsJson)[code].value("name").toString());
     }
 }
 

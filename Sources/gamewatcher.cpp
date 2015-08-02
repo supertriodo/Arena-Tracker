@@ -9,7 +9,7 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
     arenaMode = false;
-    deckRead = false;
+//    deckRead = false;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
 
@@ -33,11 +33,8 @@ GameWatcher::~GameWatcher()
 
 void GameWatcher::reset()
 {
-    if(gameState != drafting)
-    {
-        gameState = noGame;
-        qDebug() << "GameWatcher: GameState = noGame";
-    }
+    gameState = noGame;
+    qDebug() << "GameWatcher: GameState = noGame";
     arenaMode = false;
 }
 
@@ -51,6 +48,7 @@ void GameWatcher::processLogLine(QString line)
             if(line.startsWith("[Bob] ---RegisterScreenForge---"))
             {
                 arenaMode = true;
+                emit enterArena();
             }
             else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
                     line.startsWith("[Bob] ---RegisterFriendChallenge---"))
@@ -77,20 +75,15 @@ void GameWatcher::processLogLine(QString line)
             else
             {
                 arenaMode = false;
+                emit leaveArena();
 #ifdef QT_DEBUG
                 arenaMode = true;//Testing
 #endif
             }
 
-            if(gameState == readingDeck)
-            {
-                endReadingDeck();
-            }
-
-//            if(gameState == drafting)
+//            if(gameState == readingDeck)
 //            {
-//                qDebug() << "GameWatcher: " << "Pause draft.";
-//                emit pauseDraft();
+//                endReadingDeck();
 //            }
         }
     }
@@ -139,7 +132,8 @@ void GameWatcher::processLogLine(QString line)
 //            qDebug() << "GameWatcher: Nueva arena.";
 //            emit sendLog(tr("Log: New arena."));
 //            QString hero = match->captured(1);
-//            newArenaDraft(hero);
+//            emit newArena(hero);
+//            deckRead = false;
 //        }
     }
     else if(line.startsWith("[Power]"))
@@ -153,17 +147,14 @@ void GameWatcher::processLogLine(QString line)
     //No ocurre en log
 //    else if(line.startsWith("[Ben]"))
 //    {
-//        if((gameState == drafting) && line.startsWith("[Ben] SetDraftMode - DRAFTING"))
+//        if(line.startsWith("[Ben] SetDraftMode - DRAFTING"))
 //        {
 //            qDebug() << "GameWatcher: " << "Resume draft.";
 //            emit resumeDraft();
 //        }
 //        else if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
 //        {
-//            if(gameState == drafting)
-//            {
-//                endArenaDraft();
-//            }
+//            emit activeDraftDeck();
 
     //Si queremos reactivar readingDeck hay que modificar newDeckCard
 //            if(!deckRead)
@@ -203,73 +194,38 @@ void GameWatcher::processLogLine(QString line)
 }
 
 
-void GameWatcher::newArenaDraft(QString hero)
-{
-    if(gameState == noGame)
-    {
-        emit newArena(hero);
-        deckRead = false;
-
-        if(synchronized)
-        {
-            gameState = drafting;
-            qDebug() << "GameWatcher: GameState = drafting";
-            qDebug() << "GameWatcher: Begin draft.";
-            emit beginDraft(hero);
-        }
-    }
-    else
-    {
-        qDebug() << "GameWatcher: WARNING: Recibido newArenaDraft con gameState =" << QString::number(gameState);
-    }
-}
+//void GameWatcher::endReadingDeck()
+//{
+//    deckRead = true;
+//    gameState = noGame;
+//    qDebug() << "GameWatcher: GameState = noGame";
+//    qDebug() << "GameWatcher: Final leer deck.";
+//    emit sendLog(tr("Log: Active deck read."));
+//}
 
 
-void GameWatcher::endArenaDraft()
-{
-    if(gameState == drafting)
-    {
-        gameState = noGame;
-        qDebug() << "GameWatcher: GameState = noGame";
-        qDebug() << "GameWatcher: End draft.";
-        emit endDraft();
-    }
-    else
-    {
-        qDebug() << "GameWatcher: WARNING: Recibido endArenaDraft sin estar en gameState drafting.";
-    }
-}
-
-
-void GameWatcher::endReadingDeck()
-{
-    deckRead = true;
-    gameState = noGame;
-    qDebug() << "GameWatcher: GameState = noGame";
-    qDebug() << "GameWatcher: Final leer deck.";
-    emit sendLog(tr("Log: Active deck read."));
-}
+//void GameWatcher::setDeckRead()
+//{
+//    deckRead = true;
+//    if(gameState == readingDeck)
+//    {
+//        endReadingDeck();
+//    }
+//}
 
 
 void GameWatcher::processPower(QString &line)
 {
     switch(gameState)
     {
-        case readingDeck:
-        case drafting:
+//        case readingDeck:
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
-                //Salida alternativa de drafting (+seguridad)
-                if(gameState == drafting)
-                {
-                    endArenaDraft();
-                }
-
-                if(gameState == readingDeck)
-                {
-                    endReadingDeck();
-                }
+//                if(gameState == readingDeck)
+//                {
+//                    endReadingDeck();
+//                }
 
                 if(arenaMode)
                 {
@@ -740,16 +696,6 @@ void GameWatcher::createGameResult()
     emit sendLog(tr("Log: New game."));
 
     emit newGameResult(gameResult);
-}
-
-
-void GameWatcher::setDeckRead()
-{
-    deckRead = true;
-    if(gameState == readingDeck)
-    {
-        endReadingDeck();
-    }
 }
 
 

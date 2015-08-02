@@ -10,6 +10,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->captureLoop = false;
     this->deckRating = 0;
     this->endCount = 0;
+    this->drafting = false;
 
     for(int i=0; i<3; i++)
     {
@@ -158,7 +159,8 @@ void DraftHandler::clearLists()
 
 void DraftHandler::beginDraft(QString hero)
 {
-    if(captureLoop) return;
+    //Si ya hay un draft en proceso (captureDraft == true) se reiniciaran las listas
+    //y al hacer resumeDraft no se crearara otro loop ya que hay uno.
 
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
@@ -176,15 +178,17 @@ void DraftHandler::beginDraft(QString hero)
     resetTab();
     clearLists();
 
-    initCodesAndHistMaps(hero);
     this->arenaHero = hero;
+    this->drafting = true;
+
+    initCodesAndHistMaps(hero);
 }
 
 
 void DraftHandler::resumeDraft()
 {
-    //Solo ocurre si ya hemos iniciado un draft (gamestate == drafting)
-    if(captureLoop)    return;
+    if(!drafting)       return;
+    if(captureLoop)     return;
     captureLoop = true;
 
     qDebug() << "DraftHandler: Resume draft.";
@@ -196,7 +200,7 @@ void DraftHandler::resumeDraft()
 
 void DraftHandler::pauseDraft()
 {
-    //Para bucle captura
+    if(!drafting)       return;
     captureLoop = false;
 
     qDebug() << "DraftHandler: Pause draft.";
@@ -206,6 +210,8 @@ void DraftHandler::pauseDraft()
 
 void DraftHandler::endDraft()
 {
+    if(!drafting)    return;
+
     //Guardamos ultima carta
     for(int i=0; i<3; i++)
     {
@@ -225,7 +231,8 @@ void DraftHandler::endDraft()
 
     clearLists();
 
-    captureLoop = false;
+    this->captureLoop = false;
+    this->drafting = false;
 
     qDebug() << "DraftHandler: End draft.";
     emit sendLog(tr("Log: Draft ended."));
@@ -277,6 +284,11 @@ void DraftHandler::endDraft()
 void DraftHandler::captureDraft()
 {
     if(!captureLoop)    return;
+    if(!drafting)   //Nunca ocurre(+seguridad)
+    {
+        captureLoop = false;
+        return;
+    }
 
     if(screenRectsFound() || findScreenRects())
     {
@@ -316,7 +328,7 @@ bool DraftHandler::areNewCards(QString codes[3])
         resetCodesCandidates();
         if(draftedCards.count()>=29)
         {
-            if(endCount > 10)    emit endWith30();
+            if(endCount > 10)   endDraft();
             else                endCount++;
         }
         return false;

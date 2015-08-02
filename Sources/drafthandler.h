@@ -15,7 +15,7 @@ using namespace cv;
 
 #define CAPTUREDRAFT_START_TIME         0
 #define CAPTUREDRAFT_LOOP_TIME          200
-#define CAPTUREDRAFT_LOOP_FLANN_TIME    5000
+#define CAPTUREDRAFT_LOOP_FLANN_TIME    2000
 
 class DraftHandler : public QObject
 {
@@ -41,6 +41,7 @@ private:
     cv::Rect screenRects[3];
     int screenIndex;
     int endCount;
+    bool drafting;
 
 
 //Metodos
@@ -71,7 +72,6 @@ signals:
     void checkCardImage(QString code);
     void newDeckCard(QString code);
     void deckComplete();
-    void endWith30();
     void sendLog(QString line);
 
 public slots:

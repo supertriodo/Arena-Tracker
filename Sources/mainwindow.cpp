@@ -52,7 +52,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::resetDeckFromWeb()
 {
-    gameWatcher->setDeckRead();
+//    gameWatcher->setDeckRead();
     deckHandler->reset();
 }
 
@@ -89,7 +89,6 @@ void MainWindow::createDraftHandler()
             this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(sendLog(QString)),
             this, SLOT(writeLog(QString)));
-    //connect en gameWatcher
 }
 
 
@@ -192,19 +191,16 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
 
-    connect(gameWatcher,SIGNAL(beginDraft(QString)),
-            draftHandler, SLOT(beginDraft(QString)));
-    connect(gameWatcher,SIGNAL(endDraft()),
+//    connect(gameWatcher,SIGNAL(newArena(QString)),
+//            draftHandler, SLOT(beginDraft(QString)));
+//    connect(gameWatcher,SIGNAL(activeDraftDeck()),
+//            draftHandler, SLOT(endDraft()));
+    connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(pauseDraft()),
+    connect(gameWatcher,SIGNAL(leaveArena()),
             draftHandler, SLOT(pauseDraft()));
-    connect(gameWatcher,SIGNAL(resumeDraft()),
+    connect(gameWatcher,SIGNAL(enterArena()),
             draftHandler, SLOT(resumeDraft()));
-    connect(draftHandler, SIGNAL(endWith30()),
-            gameWatcher, SLOT(endArenaDraft()));
-    //Connect de draftHandler
-
-    completeToolButton();
 }
 
 
@@ -292,6 +288,8 @@ void MainWindow::completeUI()
             this, SLOT(close()));
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
+
+    completeToolButton();
 }
 
 
@@ -328,7 +326,9 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     {
         qDebug() << "MainWindow: Nueva arena:" << hero;
         writeLog(tr("Menu: New arena: ") + hero);
-        gameWatcher->newArenaDraft(Utility::heroToLogNumber(hero));
+        QString heroLog = Utility::heroToLogNumber(hero);
+        arenaHandler->newArena(heroLog);
+        draftHandler->beginDraft(heroLog);
     }
 }
 
@@ -401,6 +401,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
 
     switch(windowsFormation)
     {
+        case none:
         case H1:
             ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
             moveTabTo(ui->tabArena, ui->tabWidget);
@@ -606,6 +607,7 @@ void MainWindow::test()
 //Recuperar readingDeck.
 //Automatizar inicio arena.
 //Eliminar drafting de gameWatcher.
+//Salida alternativa de drafting (+seguridad) en startGame
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

@@ -41,7 +41,7 @@ public:
 
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     inGameState, inRewards, drafting, readingDeck };
+                     inGameState, inRewards };//, drafting, readingDeck };
 
 //Variables
 private:
@@ -53,7 +53,7 @@ private:
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     bool isPlayerTurn;
     bool arenaMode;
-    bool deckRead;
+//    bool deckRead;
     QRegularExpressionMatch *match;
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
     //no aparezcan como parte del nuevo turno
@@ -73,7 +73,7 @@ private:
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);    
-    void endReadingDeck();
+//    void endReadingDeck();
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
@@ -102,19 +102,16 @@ signals:
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();
     void avengeTested();
-    void beginDraft(QString hero);
-    void endDraft();
-    void pauseDraft();
-    void resumeDraft();
+    void enterArena();
+    void leaveArena();
 
+private slots:
+    void checkAvenge();
 
 public slots:
     void processLogLine(QString line);
-    void checkAvenge();
     void setSynchronized();
-    void setDeckRead();
-    void newArenaDraft(QString hero);
-    void endArenaDraft();
+//    void setDeckRead();
 };
 
 #endif // GAMEWATCHER_H
