@@ -328,6 +328,7 @@ void MainWindow::completeHeroButtons()
     {
         mapper->setMapping(heroButtons[i], heroes[i]);
         connect(heroButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
+        heroButtons[i]->setToolTip(heroes[i]);
     }
 
     connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
