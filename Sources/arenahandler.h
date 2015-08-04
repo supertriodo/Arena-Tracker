@@ -23,7 +23,6 @@ private:
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
-    QList<ArenaResult> arenaLogList;
     bool noArena;
 
 //Metodos
@@ -32,8 +31,6 @@ private:
     void createTreeWidget();
     void setRowColor(QTreeWidgetItem *item, QColor color);
     bool isRowOk(QTreeWidgetItem *item);
-    void newArenaRewards(ArenaRewards &arenaRewards);
-    bool newArenaUploadButton(QString &hero);
 
 public:
     void setWebUploader(WebUploader *webUploader);
@@ -55,12 +52,10 @@ public slots:
     void reshowGameResult(GameResult gameResult);
     void reshowArena(QString hero);
     void showNoArena();
-    void enableButtons();
+    void enableRefreshButton(bool enable=true);
 
     //Widgets
-    void updateArenaFromWeb();
-    void uploadOldLog();
-    void enableRefreshButton();
+    void refresh();
     void openDonateWeb();
 };
 

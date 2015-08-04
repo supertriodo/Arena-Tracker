@@ -269,7 +269,7 @@ void MainWindow::createWebUploader()
     connect(webUploader, SIGNAL(reloadedArena(QString)),
             arenaHandler, SLOT(reshowArena(QString)));
     connect(webUploader, SIGNAL(synchronized()),
-            arenaHandler, SLOT(enableButtons()));
+            arenaHandler, SLOT(enableRefreshButton()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(sendLog(QString)),
@@ -646,10 +646,6 @@ void MainWindow::test()
 //Consejos iniciales
 //Crear archivo log con time.
 //Uso en construido.
-//Recuperar readingDeck.
-//Automatizar inicio arena.
-//Eliminar drafting de gameWatcher.
-//Salida alternativa de drafting (+seguridad) en startGame
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

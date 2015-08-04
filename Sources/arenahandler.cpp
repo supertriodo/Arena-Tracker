@@ -8,9 +8,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::MainWi
     this->ui = ui;
 
     completeUI();
-
-    //Iniciamos la loglist con la arena huerfana
-    arenaLogList.append(ArenaResult());
 }
 
 ArenaHandler::~ArenaHandler()
@@ -23,15 +20,10 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
 
-    ui->uploadButton->setEnabled(false);
-    ui->updateButton->setEnabled(false);
-    ui->uploadButton->setToolTip(tr("Upload"));
     ui->updateButton->setToolTip(tr("Refresh"));
 
-    connect(ui->uploadButton, SIGNAL(clicked()),
-            this, SLOT(uploadOldLog()));
     connect(ui->updateButton, SIGNAL(clicked()),
-            this, SLOT(updateArenaFromWeb()));
+            this, SLOT(refresh()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
 }
@@ -66,43 +58,6 @@ void ArenaHandler::setWebUploader(WebUploader *webUploader)
 }
 
 
-void ArenaHandler::enableButtons()
-{
-    ui->updateButton->setEnabled(true);
-
-    ArenaResult arena = arenaLogList.first();
-    int topLevelIndex = -1;
-
-    //Arena huerfana sin partidas no cuenta
-    if( arena.playerHero.isEmpty() &&
-        arena.gameResultList.empty() &&
-        arena.arenaRewards.packs == 0)
-    {
-        arenaLogList.removeFirst();
-
-        if(arenaLogList.isEmpty())  topLevelIndex = -1;
-        else                        topLevelIndex = 1;
-
-    }
-    else    topLevelIndex = 0;
-
-    if(topLevelIndex != -1)
-    {
-        //Marcamos la arena para upload con los iconos de upload
-        QTreeWidgetItem *item = ui->arenaTreeWidget->topLevelItem(topLevelIndex);
-        if(topLevelIndex == 1)  item->setIcon(4, QIcon(":Images/upload64.png"));
-
-        for(int i=0; i<item->childCount(); i++)
-        {
-            QTreeWidgetItem *child = item->child(i);
-            if(child->icon(4).isNull()) child->setIcon(4, QIcon(":Images/upload32.png"));
-        }
-
-        ui->uploadButton->setEnabled(true);
-    }
-}
-
-
 void ArenaHandler::newGameResult(GameResult gameResult)
 {
     QTreeWidgetItem *item = showGameResult(gameResult);
@@ -110,14 +65,6 @@ void ArenaHandler::newGameResult(GameResult gameResult)
     if(webUploader==NULL)
     {
         setRowColor(item, WHITE);
-        if(item->parent() == arenaHomeless)
-        {
-            arenaLogList.first().gameResultList.append(gameResult);
-        }
-        else
-        {
-            arenaLogList.last().gameResultList.append(gameResult);
-        }
     }
     else
     {
@@ -126,10 +73,8 @@ void ArenaHandler::newGameResult(GameResult gameResult)
         if(deckCardList != NULL)    uploadSuccess=webUploader->uploadNewGameResult(gameResult,deckCardList);
         else                            uploadSuccess=webUploader->uploadNewGameResult(gameResult);
 
-        if(!uploadSuccess)
-        {
-            setRowColor(item, RED);
-        }
+        if(uploadSuccess)   enableRefreshButton(false);
+        else                setRowColor(item, RED);
     }
 }
 
@@ -165,7 +110,9 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult)
     item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
-    setRowColor(item, GREEN);
+    setRowColor(item, WHITE);
+
+    arenaCurrentReward = NULL;
 
     return item;
 }
@@ -194,34 +141,6 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
 }
 
 
-bool ArenaHandler::newArenaUploadButton(QString &hero)
-{
-    bool result = webUploader->uploadNewArena(hero);
-
-    if(result)
-    {
-        showArena(hero);
-    }
-    else
-    {
-        QTreeWidgetItem *item = new QTreeWidgetItem();
-        item->setExpanded(true);
-        item->setText(0, "Arena");
-        item->setIcon(1, QIcon(":Images/hero" + hero + ".png"));
-        item->setText(2, "0");
-        item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
-        item->setText(3, "0");
-        item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
-
-        setRowColor(item, RED);
-
-        ui->arenaTreeWidget->insertTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1,item);
-        return false;
-    }
-    return true;
-}
-
-
 bool ArenaHandler::newArena(QString hero)
 {
     deckHandler->reset();
@@ -230,15 +149,13 @@ bool ArenaHandler::newArena(QString hero)
     if(webUploader==NULL)
     {
         setRowColor(arenaCurrent, WHITE);
-        ArenaResult arenaResult;
-        arenaResult.playerHero = hero;
-        arenaLogList.append(arenaResult);
     }
     else if(!webUploader->uploadNewArena(hero))
     {
         setRowColor(arenaCurrent, RED);
         return false;
     }
+    else    enableRefreshButton(false);
     return true;
 }
 
@@ -262,7 +179,7 @@ void ArenaHandler::showArena(QString hero)
     arenaCurrent->setText(3, "0");
     arenaCurrent->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
 
-    setRowColor(arenaCurrent, GREEN);
+    setRowColor(arenaCurrent, WHITE);
 
     arenaCurrentReward = NULL;
     arenaCurrentGameList.clear();
@@ -271,8 +188,6 @@ void ArenaHandler::showArena(QString hero)
 
 void ArenaHandler::showNoArena()
 {
-    ui->updateButton->setEnabled(true);
-
     if(noArena) return;
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
     item->setText(0, "NO Arena");
@@ -280,14 +195,13 @@ void ArenaHandler::showNoArena()
     arenaCurrent = NULL;
     arenaCurrentReward = NULL;
     arenaCurrentHero = "";
+    arenaCurrentGameList.clear();
     noArena = true;
 }
 
 
 void ArenaHandler::reshowArena(QString hero)
 {
-    ui->updateButton->setEnabled(true);
-
     if(arenaCurrent == NULL || arenaCurrentHero != hero)
     {
         showArena(hero);
@@ -333,14 +247,6 @@ void ArenaHandler::uploadCurrentArenaRewards()
     if(webUploader==NULL)
     {
         setRowColor(arenaCurrentReward, WHITE);
-        if(arenaCurrentReward->parent() == arenaHomeless)
-        {
-            arenaLogList.first().arenaRewards = arenaRewards;
-        }
-        else
-        {
-            arenaLogList.last().arenaRewards = arenaRewards;
-        }
     }
     else if(!webUploader->uploadArenaRewards(arenaRewards))
     {
@@ -349,6 +255,7 @@ void ArenaHandler::uploadCurrentArenaRewards()
     else
     {
         setRowColor(arenaCurrentReward, GREEN);
+        enableRefreshButton(false);
     }
 }
 
@@ -402,47 +309,6 @@ void ArenaHandler::showArenaReward(int gold, int dust, bool pack, bool goldCard,
 }
 
 
-//Se usa para upload del old log
-void ArenaHandler::newArenaRewards(ArenaRewards &arenaRewards)
-{
-    if(arenaCurrent == NULL && !noArena)
-    {
-        //Solo puede fallar si no nos hemos conectado a la web
-        qDebug() << "MainWindow: " << "ERROR: Esto es IMPOSIBLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-        return;
-    }
-    if(arenaCurrentReward == NULL)
-    {
-        arenaCurrentReward = new QTreeWidgetItem(arenaCurrent==NULL?arenaHomeless:arenaCurrent);
-        arenaCurrentReward->setText(0, QString::number(arenaRewards.gold));
-        arenaCurrentReward->setIcon(0, QIcon(":Images/gold.png"));
-        arenaCurrentReward->setText(1, QString::number(arenaRewards.dust));
-        arenaCurrentReward->setIcon(1, QIcon(":Images/arcanedust.png"));
-        arenaCurrentReward->setText(2, QString::number(arenaRewards.packs));
-        arenaCurrentReward->setIcon(2, QIcon(":Images/boosterpack.png"));
-        arenaCurrentReward->setText(3, QString::number(arenaRewards.plainCards));
-        arenaCurrentReward->setIcon(3, QIcon(":Images/cardplain.png"));
-        arenaCurrentReward->setText(4, QString::number(arenaRewards.goldCards));
-        arenaCurrentReward->setIcon(4, QIcon(":Images/cardgold.png"));
-    }
-
-    //Imposible, venimos de upload old log
-    if(webUploader==NULL)
-    {
-        setRowColor(arenaCurrentReward, WHITE);
-        arenaLogList.last().arenaRewards = arenaRewards;
-    }
-    else if(!webUploader->uploadArenaRewards(arenaRewards))
-    {
-        setRowColor(arenaCurrentReward, RED);
-    }
-    else
-    {
-        setRowColor(arenaCurrentReward, GREEN);
-    }
-}
-
-
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
     for(int i=0;i<5;i++)
@@ -458,78 +324,30 @@ bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 }
 
 
-void ArenaHandler::updateArenaFromWeb()
+void ArenaHandler::refresh()
 {
-    webUploader->checkArenaCurrentReload();
+    if(arenaCurrent != NULL)
+    {
+        if(isRowOk(arenaCurrent))   setRowColor(arenaCurrent, WHITE);
+
+        //Iniciamos a blanco todas las partidas que no esten en rojo
+        for(int i=0; i<arenaCurrent->childCount(); i++)
+        {
+            if(isRowOk(arenaCurrent->child(i)))
+            {
+                setRowColor(arenaCurrent->child(i), WHITE);
+            }
+        }
+    }
+
     ui->updateButton->setEnabled(false);
-    QTimer::singleShot(5000, this, SLOT(enableRefreshButton()));
+    webUploader->refresh();
 }
 
 
-void ArenaHandler::enableRefreshButton()
+void ArenaHandler::enableRefreshButton(bool enable)
 {
-    if(!ui->updateButton->isEnabled())
-    {
-        ui->updateButton->setEnabled(true);
-    }
-}
-
-
-void ArenaHandler::uploadOldLog()
-{
-    qDebug() << "MainWindow: " << "Uploading old log...";
-
-    //Upload una arena por click
-    ArenaResult arena = arenaLogList.first();
-    arenaLogList.removeFirst();
-
-    //Eliminamos el treeWidgetItem asociado
-    if(arena.playerHero.isEmpty())
-    {
-        QList<QTreeWidgetItem *> itemList = ui->arenaTreeWidget->topLevelItem(0)->takeChildren();
-        while(!itemList.empty())
-        {
-            QTreeWidgetItem *item = itemList.first();
-            itemList.removeFirst();
-            delete item;
-        }
-    }
-    else
-    {
-        QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(1);
-        delete item;
-    }
-
-    //Creamos la arena
-    if(arena.playerHero.isEmpty() || newArenaUploadButton(arena.playerHero))
-    {
-        for(int j=0; j<arena.gameResultList.count(); j++)
-        {
-            GameResult gameResult = arena.gameResultList.at(j);
-            newGameResult(gameResult);
-        }
-        if(arena.arenaRewards.packs > 0)
-        {
-            newArenaRewards(arena.arenaRewards);
-        }
-    }
-
-    if(arenaLogList.isEmpty())
-    {
-        ui->uploadButton->setEnabled(false);
-    }
-    //Marcamos la siguiente arena con los iconos de upload
-    else
-    {
-        QTreeWidgetItem *item = ui->arenaTreeWidget->topLevelItem(1);
-        item->setIcon(4, QIcon(":Images/upload64.png"));
-
-        for(int i=0; i<item->childCount(); i++)
-        {
-            QTreeWidgetItem *child = item->child(i);
-            if(child->icon(4).isNull()) child->setIcon(4, QIcon(":Images/upload32.png"));
-        }
-    }
+    ui->updateButton->setEnabled(enable);
 }
 
 
