@@ -15,7 +15,7 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 
 
 ## Download (Windows)
-https://github.com/supertriodo/Arena-Tracker/releases/download/v2.3/Arena.Tracker.v2.3.zip
+https://github.com/supertriodo/Arena-Tracker/releases/latest
 
 
 ## First Run
@@ -35,10 +35,6 @@ After your first game:
 * 5) Your Hearthstone name.
  * A pop up message will appear asking your name.
 
-Remember to start your arenas manually from ArenaTracker:
-* In the last hearthstone patch (29-jul-2015) the line indicating the start of a new arena has been removed from log so for now the user have to manually start a new arena/draft from the new config button (at the bottom of the app).
-* The correct moment to start the arena manually is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
-
 If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
 or on email: triodo@gmail.com
@@ -46,7 +42,7 @@ or on email: triodo@gmail.com
 
 ## FAQ
 * I started a new arena and ArenaTracker didn't help me with the draft.
- * For now, when you start a new arena in hearthstone, you have to manually start a new arena/draft from the new config button (at the bottom of the app). The correct moment to start the arena manually is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
+ * When you start a new arena in hearthstone a draft tab will appear in ArenaTracker. You have to select the hero to start the draft. The correct moment to click the hero is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
 * How do I reset the app so I can set the config info again?
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
