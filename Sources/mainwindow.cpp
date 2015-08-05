@@ -646,6 +646,7 @@ void MainWindow::test()
 //Consejos iniciales
 //Crear archivo log con time.
 //Uso en construido.
+//Reset deck al completar rewards.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

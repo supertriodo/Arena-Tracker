@@ -36,8 +36,8 @@ public:
     ~WebUploader();
 
     enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
-                    createArena, checkArenaCurrentReload1, checkArenaCurrentReload2,
-                    reloadArenaCurrent1, reloadArenaCurrent2, complete };
+                    createArena, rewardsSent, checkArenaCurrentReload,
+                    gameResultSent, reloadArenaCurrent, complete };
 
 //Variables
 private:
@@ -54,7 +54,6 @@ private:
 
 //Metodos
 private:
-    void connectWeb();
     void readSettings(QString &playerEmail, QString &password);
     void askLoginData(QString &playerEmail, QString &password);
     QString heroToWebNumber(const QString &hero);
@@ -67,7 +66,7 @@ private:
     void GetArenaCards(QString &html);
     void uploadArenaCards();    
     void showWebState();
-    void checkArenaCurrentReload();
+    void checkArenaReload();
 
 public:
     bool uploadArenaRewards(ArenaRewards &arenaRewards);
@@ -87,9 +86,11 @@ signals:
     void newDeckCard(QString card, int total);
     void newWebDeckCardList();
 
+private slots:
+    void connectWeb();
+
 public slots:
     void replyFinished(QNetworkReply *reply);
-
 };
 
 #endif // WEBUPLOADER_H
