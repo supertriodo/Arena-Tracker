@@ -59,6 +59,7 @@ void SecretsHandler::secretStealed(int id, QString code)
     activeSecret.root.treeItem->setExpanded(true);
     activeSecret.root.code = code;
     activeSecret.root.draw();
+    emit checkCardImage(code);
 
     activeSecretList.append(activeSecret);
 
@@ -131,6 +132,7 @@ void SecretsHandler::redrawDownloadedCardImage(QString code)
 {
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
+        if(it->root.code == code)    it->root.draw();
         for(QList<SecretCard>::iterator it2 = it->children.begin(); it2 != it->children.end(); it2++)
         {
             if(it2->code == code)    it2->draw();
