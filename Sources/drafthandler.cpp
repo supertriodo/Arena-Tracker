@@ -51,7 +51,7 @@ void DraftHandler::createHearthArenaMentor()
     connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,QString,QString,QString)),
             this, SLOT(showNewCards(QString,double,double,double,QString,QString,QString)));
     connect(hearthArenaMentor, SIGNAL(sendLog(QString)),
-            this->parent(), SLOT(writeLog(QString)));
+            this->parent(), SLOT(pLog(QString)));
 }
 
 

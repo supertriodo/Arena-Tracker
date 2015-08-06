@@ -5,6 +5,7 @@
 #include "gamewatcher.h"
 #include "webuploader.h"
 #include "deckhandler.h"
+#include "utility.h"
 #include <QObject>
 #include <QTreeWidgetItem>
 
@@ -37,7 +38,8 @@ public:
     bool isNoArena();
 
 signals:
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="ArenaHandler");
 
 public slots:
     //GameWatcher

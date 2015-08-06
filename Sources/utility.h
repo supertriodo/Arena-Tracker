@@ -3,6 +3,8 @@
 
 #include <QString>
 
+enum DebugLevel { Normal, Warning, Error};
+
 class Utility
 {
 public:

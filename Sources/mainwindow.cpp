@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 #ifdef QT_DEBUG
-    writeLog(tr("MODE DEBUG"));
+    pLog(tr("MODE DEBUG"));
 #endif
 
     completeUI();
@@ -88,7 +88,7 @@ void MainWindow::createDraftHandler()
     connect(draftHandler, SIGNAL(deckComplete()),
             this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+            this, SLOT(pLog(QString)));
 }
 
 
@@ -103,8 +103,10 @@ void MainWindow::createSecretsHandler()
 void MainWindow::createArenaHandler()
 {
     arenaHandler = new ArenaHandler(this, deckHandler, ui);
-    connect(arenaHandler, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+    connect(arenaHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -113,8 +115,10 @@ void MainWindow::createDeckHandler()
     deckHandler = new DeckHandler(this, &cardsJson, ui);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(deckHandler, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLogConnected(QString)));
+    connect(deckHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -124,7 +128,7 @@ void MainWindow::createEnemyHandHandler()
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLogConnected(QString)));
+            this, SLOT(pLogConnected(QString)));
 }
 
 
@@ -134,7 +138,7 @@ void MainWindow::createCardDownloader()
     connect(cardDownloader, SIGNAL(downloaded(QString)),
             this, SLOT(redrawDownloadedCardImage(QString)));
     connect(cardDownloader, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+            this, SLOT(pLog(QString)));
 }
 
 
@@ -143,7 +147,7 @@ void MainWindow::createGameWatcher()
     gameWatcher = new GameWatcher(this);
 
     connect(gameWatcher, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+            this, SLOT(pLog(QString)));
 
     connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
             arenaHandler, SLOT(newGameResult(GameResult)));
@@ -176,6 +180,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
             secretsHandler, SLOT(secretPlayed(int,SecretHero)));
+    connect(gameWatcher, SIGNAL(enemySecretStealed(int,QString)),
+            secretsHandler, SLOT(secretStealed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed()),
@@ -225,7 +231,7 @@ void MainWindow::createLogLoader()
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+            this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(newLogLineRead(QString)),
             gameWatcher, SLOT(processLogLine(QString)));
 
@@ -273,7 +279,7 @@ void MainWindow::createWebUploader()
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(sendLog(QString)),
-            this, SLOT(writeLog(QString)));
+            this, SLOT(pLog(QString)));
 #ifndef QT_DEBUG //Si tenemos una arena en web podemos seguir testeando deck en construido
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCard(QString,int)));
@@ -367,7 +373,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     if(ret == QMessageBox::Ok)
     {
         qDebug() << "MainWindow: Nueva arena:" << hero;
-        writeLog(tr("Menu: New arena: ") + hero);
+        pLog(tr("Menu: New arena: ") + hero);
         QString heroLog = Utility::heroToLogNumber(hero);
         arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
@@ -524,15 +530,21 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
 }
 
 
-void MainWindow::writeLog(QString line)
+void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
+{
+    qDebug() << file + ": " + line;
+}
+
+
+void MainWindow::pLog(QString line)
 {
     ui->textEdit->append(line);
 }
 
 
-void MainWindow::writeLogConnected(QString line)
+void MainWindow::pLogConnected(QString line)
 {
-    if(webUploader != NULL)     writeLog(line);
+    if(webUploader != NULL)     pLog(line);
 }
 
 
@@ -642,11 +654,13 @@ void MainWindow::test()
 
 }
 
+
 //TODO
 //Consejos iniciales
 //Crear archivo log con time.
 //Uso en construido.
-//Reset deck al completar rewards.
+//Eliminar plogconnected (queda enemyhandhandler)
+//Terminado log deckhandler.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

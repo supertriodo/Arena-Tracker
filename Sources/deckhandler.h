@@ -1,8 +1,9 @@
 #ifndef DECKHANDLER_H
 #define DECKHANDLER_H
 
-#include "deckcard.h"
 #include "ui_mainwindow.h"
+#include "deckcard.h"
+#include "utility.h"
 #include <QObject>
 #include <QMap>
 
@@ -36,7 +37,8 @@ public:
 
 signals:
     void checkCardImage(QString code);
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
 public slots:
     void newDeckCard(QString card, int total=1);

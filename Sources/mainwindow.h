@@ -110,8 +110,9 @@ public slots:
     void resizeSlot(QSize size);
 
     //MainWindow
-    void writeLog(QString line);
-    void writeLogConnected(QString line);
+    void pLog(QString line);
+    void pLogConnected(QString line);
+    void pDebug(QString line, DebugLevel debugLevel, QString file);
     void confirmNewArenaDraft(QString hero);
 
 private slots:

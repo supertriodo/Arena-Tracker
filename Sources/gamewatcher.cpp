@@ -447,7 +447,15 @@ void GameWatcher::processZone(QString &line)
                 qDebug() << "GameWatcher: Enemigo: Secreto jugado. ID:" << match->captured(1);
                 emit enemySecretPlayed(match->captured(1).toInt(), secretHero);
             }
-
+        }
+        //Enemigo roba secreto (kezan mystic)
+        //[name=Trampa con culebras id=16 zone=SECRET zonePos=0 cardId=EX1_554 player=2] zone from FRIENDLY SECRET -> OPPOSING SECRET
+        else if(line.contains(QRegularExpression(
+            "\\[name=(.*) id=(\\d+) zone=SECRET zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from FRIENDLY SECRET -> OPPOSING SECRET"
+            ), match))
+        {
+            qDebug() << "GameWatcher: Enemigo: Secreto robado:" << match->captured(1) << " ID:" << match->captured(2);
+            emit enemySecretStealed(match->captured(2).toInt(), match->captured(3));
         }
         //Enemigo juega carta
         else if(line.contains(QRegularExpression(

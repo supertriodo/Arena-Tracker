@@ -49,6 +49,26 @@ void SecretsHandler::adjustSize()
 }
 
 
+void SecretsHandler::secretStealed(int id, QString code)
+{
+    ActiveSecret activeSecret;
+    activeSecret.id = id;
+    activeSecret.root.hero = unknown;
+
+    activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
+    activeSecret.root.treeItem->setExpanded(true);
+    activeSecret.root.code = code;
+    activeSecret.root.draw();
+
+    activeSecretList.append(activeSecret);
+
+    ui->secretsTreeWidget->setHidden(false);
+    if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
+
+    adjustSize();
+}
+
+
 void SecretsHandler::secretPlayed(int id, SecretHero hero)
 {
     ActiveSecret activeSecret;

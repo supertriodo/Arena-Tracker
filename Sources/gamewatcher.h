@@ -72,7 +72,7 @@ private:
     void processZone(QString &line);
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
-    SecretHero getSecretHero(QString playerHero, QString enemyHero);    
+    SecretHero getSecretHero(QString playerHero, QString enemyHero);
 //    void endReadingDeck();
 
 public:
@@ -95,6 +95,7 @@ signals:
     void enemyCardPlayed(int id, QString code="");
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, SecretHero hero);
+    void enemySecretStealed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void playerSpellPlayed();
     void playerMinionPlayed();

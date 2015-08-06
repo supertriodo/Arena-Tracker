@@ -232,9 +232,11 @@ void ArenaHandler::uploadCurrentArenaRewards()
     if(arenaCurrentReward == NULL)
     {
         qDebug() << "MainWindow: "<< "ERROR: ArenaCurrentReward no existe al intentar crear los rewards para upload.";
+        emit pDebug("ArenaCurrentReward doesn't exist when uploading rewards.",Error);
         return;
     }
 
+    deckHandler->reset();
 
     ArenaRewards arenaRewards;
 

@@ -76,6 +76,7 @@ signals:
 
 public slots:
     void secretPlayed(int id, SecretHero hero);
+    void secretStealed(int id, QString code);
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();
     void playerSpellPlayed();

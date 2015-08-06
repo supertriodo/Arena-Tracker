@@ -51,7 +51,7 @@ void DeckHandler::reset()
 
     enableDeckButtons();
 
-    qDebug() << "DeckHandler: Deck List cleared.";
+    emit pDebug("Deck list cleared.");
 }
 
 
@@ -68,9 +68,8 @@ void DeckHandler::newDeckCard(QString code, int total)
     //Mazo completo
     if(deckCardList[0].total < (uint)total)
     {
-        qDebug() << "DeckHandler: Desechamos:" << total <<
-                    (*cardsJson)[code].value("name").toString()
-                 << "- Mazo completo";
+        emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
+                    (*cardsJson)[code].value("name").toString(), Warning);
         return;
     }
 
@@ -101,7 +100,8 @@ void DeckHandler::newDeckCard(QString code, int total)
     deckCardList[0].draw();
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
-    qDebug() << "DeckHandler: Completando mazo:" << total << (*cardsJson)[code].value("name").toString();
+    emit pDebug("Add to deck: (" + QString::number(total) + ") " +
+                (*cardsJson)[code].value("name").toString());
 }
 
 
@@ -131,8 +131,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
             {
                 it->remaining--;
                 it->draw(false);
-
-//                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
             }
             else if(it->remaining == 1)
             {
@@ -141,8 +139,6 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
-
-//                emit sendLog(tr("Deck: Card drawn: ") + (*cardsJson)[code].value("name").toString());
             }
             //it->remaining == 0
             //MALORNE
@@ -159,18 +155,16 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
-                qDebug() << "DeckHandler: Nueva copia de carta robada" <<
-                            (*cardsJson)[code].value("name").toString() <<
-                            ", completando mazo.";
-                emit sendLog(tr("Deck: Discovered unknown card: ") +
+                emit pDebug("Discovered unknown card: " +
+                                  (*cardsJson)[code].value("name").toString());
+                emit pLog(tr("Deck: Discovered unknown card: ") +
                                   (*cardsJson)[code].value("name").toString());
             }
             else
             {
-                qDebug() << "DeckHandler: WARNING: Nueva copia de carta robada" <<
-                            (*cardsJson)[code].value("name").toString() <<
-                            "pero el mazo esta completo.";
-                emit sendLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
+                emit pDebug("Discovered unknown card but deck is full. " +
+                              (*cardsJson)[code].value("name").toString(), Warning);
+                emit pLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
                               (*cardsJson)[code].value("name").toString());
             }
             return;
@@ -183,20 +177,18 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
     if(deckCardList[0].total>0)
     {
-        qDebug() << "DeckHandler: Carta que no esta en el mazo robada" <<
-                    (*cardsJson)[code].value("name").toString() <<
-                    ", completando mazo.";
-        emit sendLog(tr("Deck: Discovered unknown card: ") +
+        emit pDebug("Discovered unknown card: " +
+                          (*cardsJson)[code].value("name").toString());
+        emit pLog(tr("Deck: Discovered unknown card: ") +
                           (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
         showPlayerCardDraw(code);
     }
     else
     {
-        qDebug() << "DeckHandler: WARNING: Carta que no esta en el mazo robada" <<
-                    (*cardsJson)[code].value("name").toString() <<
-                    "pero el mazo esta completo.";
-        emit sendLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
+        emit pDebug("Discovered unknown card but deck is full. " +
+                      (*cardsJson)[code].value("name").toString(), Warning);
+        emit pLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
                       (*cardsJson)[code].value("name").toString());
     }
 }
