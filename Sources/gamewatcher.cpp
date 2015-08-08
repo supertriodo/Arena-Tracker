@@ -345,19 +345,29 @@ void GameWatcher::processPowerInGame(QString &line)
     {
         //Jugador juega carta con objetivo
         if(line.contains(QRegularExpression(
-            "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=PLAY Index=0 "
+            "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=(\\w+) Index=(-?\\d+) "
             "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
             ), match))
         {
-            if(match->captured(3).toInt() == playerID)
+            QString name1 = match->captured(1);
+            QString zone = match->captured(2);
+            QString cardId1 = match->captured(3);
+            QString player1 = match->captured(4);
+            QString subType = match->captured(5);
+            QString index = match->captured(6);
+            QString name2 = match->captured(7);
+            QString cardId2 = match->captured(8);
+
+            //Jugador juega carta con objetivo
+            if(zone == "HAND" && subType == "PLAY" && index == "0" && player1.toInt() == playerID)
             {
-                QString type = (*cardsJson)[match->captured(2)].value("type").toString();
+                QString type = (*cardsJson)[cardId1].value("type").toString();
 
                 if(type == QString("Spell"))
                 {
                     emit pDebug("Player: Spell obj played: " +
-                                match->captured(1) + " target " + match->captured(4));
-                    if(match->captured(5) == MAD_SCIENTIST)
+                                name1 + " on target " + name2);
+                    if(cardId2 == MAD_SCIENTIST)
                     {
                         emit pDebug("Skip secret testing.");
                     }
@@ -366,31 +376,25 @@ void GameWatcher::processPowerInGame(QString &line)
                 else
                 {
                     emit pDebug("Player: Minion/weapon obj played: " +
-                                match->captured(1) + " target " + match->captured(4));
+                                name1 + " target " + name2);
                 }
             }
-        }
 
-        //Jugador ataca (esbirro/heroe VS esbirro/heroe)
-        else if(line.contains(QRegularExpression(
-            "ACTION_START Entity=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] SubType=ATTACK Index=-1 "
-            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
-            ), match))
-        {
-            if(match->captured(3).toInt() == playerID)
+            //Jugador ataca (esbirro/heroe VS esbirro/heroe)
+            else if(zone == "PLAY" && subType == "ATTACK" && index == "-1" && player1.toInt() == playerID)
             {
-                if(match->captured(2).contains("HERO"))
+                if(cardId1.contains("HERO"))
                 {
-                    if(match->captured(5).contains("HERO"))
+                    if(cardId2.contains("HERO"))
                     {
                         emit pDebug("Player: Attack: " +
-                                    match->captured(1) + " (heroe)vs(heroe) " + match->captured(4));
+                                    name1 + " (heroe)vs(heroe) " + name2);
                         if(isPlayerTurn)    emit playerAttack(true, true);
                     }
                     else
                     {
                         emit pDebug("Player: Attack: " +
-                                    match->captured(1) + " (heroe)vs(minion) " + match->captured(4));
+                                    name1 + " (heroe)vs(minion) " + name2);
                         /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
                         {
                             emit pDebug("Saltamos comprobacion de secretos";
@@ -400,16 +404,16 @@ void GameWatcher::processPowerInGame(QString &line)
                 }
                 else
                 {
-                    if(match->captured(5).contains("HERO"))
+                    if(cardId2.contains("HERO"))
                     {
                         emit pDebug("Player: Attack: " +
-                                    match->captured(1) + " (minion)vs(heroe) " + match->captured(4));
+                                    name1 + " (minion)vs(heroe) " + name2);
                         if(isPlayerTurn)    emit playerAttack(false, true);
                     }
                     else
                     {
                         emit pDebug("Player: Attack: " +
-                                    match->captured(1) + " (minion)vs(minion) " + match->captured(4));
+                                    name1 + " (minion)vs(minion) " + name2);
                         /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
                         {
                             emit pDebug("Saltamos comprobacion de secretos";
@@ -427,199 +431,197 @@ void GameWatcher::processZone(QString &line)
 {
     if(gameState == inGameState)
     {
-        //ENEMIGO JUEGA
-        //Enemigo juega secreto o carta devuelta al mazo en Mulligan
+        //Carta desconocida
         if(line.contains(QRegularExpression(
-            "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (SECRET|DECK)"
+            "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (HAND|SECRET|DECK)"
             ), match))
         {
-            if(match->captured(2) == "OPPOSING HAND")
+            QString id = match->captured(1);
+            QString zoneFrom = match->captured(2);
+            QString zoneToOpposing = match->captured(3);
+
+
+            //Enemigo juega carta
+            if(zoneFrom == "OPPOSING HAND")
             {
-                emit enemyCardPlayed(match->captured(1).toInt());
-                if(match->captured(3) == "DECK")
+                emit enemyCardPlayed(id.toInt());
+
+                //Carta devuelta al mazo en Mulligan
+                if(zoneToOpposing == "DECK")
                 {
-                    emit pDebug("Enemy: Starting card returned. ID: " + match->captured(1));
+                    emit pDebug("Enemy: Starting card returned. ID: " + id);
                 }
             }
-            if(match->captured(3) == "SECRET")
+
+            //Enemigo juega secreto
+            if(zoneToOpposing == "SECRET")
             {
-                emit pDebug("Enemy: Secret played. ID: " + match->captured(1));
-                emit enemySecretPlayed(match->captured(1).toInt(), secretHero);
+                emit pDebug("Enemy: Secret played. ID: " + id);
+                emit enemySecretPlayed(id.toInt(), secretHero);
+            }
+
+            //Enemigo roba carta de deck
+            else if(zoneToOpposing == "HAND")
+            {
+                if(zoneFrom == "OPPOSING DECK")
+                {
+                    advanceTurn(false);
+                    emit pDebug("Enemy: Card drawn. ID: " + id);
+                    emit enemyCardDraw(id.toInt(), turnReal);
+                }
+
+                else if(zoneFrom.isEmpty())
+                {
+                    //Enemigo roba carta especial del vacio
+                    if(mulliganEnemyDone)
+                    {
+                        emit pDebug("Enemy: Special card drawn. ID: " + id);
+                        emit enemyCardDraw(id.toInt(), turnReal, true);
+                    }
+                    //Enemigo roba carta inicial
+                    else
+                    {
+                        emit pDebug("Enemy: Starting card drawn. ID: " + id);
+                        emit enemyCardDraw(id.toInt());
+                    }
+                }
             }
         }
-        //Enemigo roba secreto (kezan mystic)
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=SECRET zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from FRIENDLY SECRET -> OPPOSING SECRET"
-            ), match))
-        {
-            emit pDebug("Enemy: Secret stolen: " + match->captured(1) + " ID: " + match->captured(2));
-            emit enemySecretStealed(match->captured(2).toInt(), match->captured(3));
-        }
+
+
+        //Carta conocida
         //Enemigo juega carta
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING HAND -> (.*)\n"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (.*) -> (.*)\n"
             ), match))
         {
-            //Enemigo juega hechizo
-            if(match->captured(4).isEmpty())
+            QString name = match->captured(1);
+            QString id = match->captured(2);
+            QString cardId = match->captured(3);
+            QString zoneFrom = match->captured(4);
+            QString zoneTo = match->captured(5);
+
+
+            //Enemigo roba carta conocida
+            if(zoneTo == "OPPOSING HAND")
             {
-                emit pDebug("Enemy: Spell played: " + match->captured(1) + " ID: " + match->captured(2));
-            }
-            //Enemigo juega esbirro
-            else if(synchronized && (match->captured(4) == "OPPOSING PLAY"))
-            {
-                enemyMinions++;
-                emit pDebug("Enemy: Minion played: " + match->captured(1) + " ID: " + match->captured(2) + " Minions: " + enemyMinions);
-            }
-            //Enemigo juega arma
-            else if(match->captured(4) == "OPPOSING PLAY (Weapon)")
-            {
-                emit pDebug("Enemy: Weapon played: " + match->captured(1) + " ID: " + match->captured(2));
-            }
-            else if(match->captured(4) == "OPPOSING GRAVEYARD")
-            {
-                emit pDebug("Enemy: Card discarded: " + match->captured(1) + " ID: " + match->captured(2));
+                emit pDebug("Enemy: Card returned to hand: " + name + " ID: " + id);
+                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
             }
 
-            emit enemyCardPlayed(match->captured(2).toInt(), match->captured(3));
-        }
+            //Enemigo roba secreto (kezan mystic)
+            if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
+            {
+                emit pDebug("Enemy: Secret stolen: " + name + " ID: " + id);
+                emit enemySecretStealed(id.toInt(), cardId);
+            }
 
-        //ENEMIGO SECRETO DESVELADO
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING SECRET ->"// OPPOSING GRAVEYARD"
-            ), match))
-        {
-            emit pDebug("Enemy: Secret revealed: " + match->captured(1));
-            emit enemySecretRevealed(match->captured(2).toInt(), match->captured(3));
-        }
+            //Enemigo juega carta
+            else if(zoneFrom == "OPPOSING HAND")
+            {
+                //Enemigo juega hechizo
+                if(zoneTo.isEmpty())
+                {
+                    emit pDebug("Enemy: Spell played: " + name + " ID: " + id);
+                }
+                //Enemigo juega esbirro
+                else if(synchronized && (zoneTo == "OPPOSING PLAY"))
+                {
+                    enemyMinions++;
+                    emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + enemyMinions);
+                }
+                //Enemigo juega arma
+                else if(zoneTo == "OPPOSING PLAY (Weapon)")
+                {
+                    emit pDebug("Enemy: Weapon played: " + name + " ID: " + id);
+                }
+                else if(zoneTo == "OPPOSING GRAVEYARD")
+                {
+                    emit pDebug("Enemy: Card discarded: " + name + " ID: " + id);
+                }
 
-        //JUGADOR ROBA
-        //Jugador roba carta
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=0 cardId=(\\w+) player=\\d+\\] zone from FRIENDLY DECK ->"
-            ), match))
-        {
-            if(match->captured(2) != "DECK")
+                emit enemyCardPlayed(id.toInt(), cardId);
+            }
+
+            //Enemigo secreto desvelado
+            else if(zoneFrom == "OPPOSING SECRET")
+            {
+                emit pDebug("Enemy: Secret revealed: " + name);
+                emit enemySecretRevealed(id.toInt(), cardId);
+            }
+
+            //Jugador roba carta
+            else if(zoneFrom == "FRIENDLY DECK")// && zoneTo != "FRIENDLY DECK")
             {
                 advanceTurn(true);
-                emit pDebug("Player: Card drawn: " + match->captured(1));
-                emit playerCardDraw(match->captured(3));
-            }
-        }
-
-        //ENEMIGO ROBA
-        //Enemigo roba carta de deck
-        else if(line.contains(QRegularExpression(
-            "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=\\d+\\] zone from OPPOSING DECK -> OPPOSING HAND"
-            ), match))
-        {
-            advanceTurn(false);
-            emit pDebug("Enemy: Card drawn. ID: " + match->captured(1));
-            emit enemyCardDraw(match->captured(1).toInt(), turnReal);
-        }
-
-        else if(line.contains(QRegularExpression(
-            "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=\\d+\\] zone from  -> OPPOSING HAND"
-            ), match))
-        {
-            //Enemigo roba carta especial del vacio
-            if(mulliganEnemyDone)
-            {
-                emit pDebug("Enemy: Special card drawn. ID: " + match->captured(1));
-                emit enemyCardDraw(match->captured(1).toInt(), turnReal, true);
-            }
-            //Enemigo roba carta inicial
-            else
-            {
-                emit pDebug("Enemy: Starting card drawn. ID: " + match->captured(1));
-                emit enemyCardDraw(match->captured(1).toInt());
-            }
-        }
-        //Enemigo roba carta conocida
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from .* -> OPPOSING HAND"
-            ), match))
-        {
-            emit pDebug("Enemy: Card returned to hand: " + match->captured(1) + " ID: " + match->captured(2));
-            emit enemyCardDraw(match->captured(2).toInt(), turnReal, false, match->captured(3));
-        }
-
-
-        //SECRETOS
-        else if(synchronized)
-        {
-            //JUGADOR JUEGA
-            //Jugador juega carta
-            if(line.contains(QRegularExpression(
-                "\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from FRIENDLY HAND -> (FRIENDLY PLAY|FRIENDLY PLAY .Weapon.)?\n"
-                ), match))
-            {
-                //Jugador juega hechizo
-                if(match->captured(2).isEmpty())
-                {
-                    emit pDebug("Player: Spell played: " + match->captured(1));
-                    if(isPlayerTurn)    emit playerSpellPlayed();
-                }
-                //Jugador juega esbirro
-                else if(match->captured(2) == "FRIENDLY PLAY")
-                {
-                    emit pDebug("Player: Minion played: " + match->captured(1));
-                    if(isPlayerTurn)    emit playerMinionPlayed();
-                }
-                //Jugador juega arma
-                else
-                {
-                    emit pDebug("Player: Weapon played: " + match->captured(1));
-                }
+                emit pDebug("Player: Card drawn: " + name);
+                emit playerCardDraw(cardId);
             }
 
-            //JUGADOR ESBIRRO MUERE
-    //        else if(line.contains(QRegularExpression(
-    //            "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=\\w+ player=\\d+\\] zone from FRIENDLY PLAY -> FRIENDLY GRAVEYARD"
-    //            ), match))
-    //        {
-    //            emit pDebug("Player: Esbirro muerto:  " + match->captured(1);
-    //            //emit no necesario
-    //        }
 
-            //ENEMIGO ESBIRRO MUERE
-            else if(line.contains(QRegularExpression(
-                "\\[name=(.*) id=\\d+ zone=GRAVEYARD zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from OPPOSING PLAY -> OPPOSING GRAVEYARD"
-                ), match))
+            //SECRETOS
+            else if(synchronized)
             {
-                enemyMinions--;
-                emit pDebug("Enemy: Minion dead: " + match->captured(1) + " Minions: " + enemyMinions);
-
-                if(isPlayerTurn)
+                //Jugador juega carta
+                if(zoneFrom == "FRIENDLY HAND")
                 {
-                    emit enemyMinionDead();
-                    if(enemyMinionsAliveForAvenge == -1)
+                    //Jugador juega hechizo
+                    if(zoneTo.isEmpty())
                     {
-                        if(match->captured(2) == MAD_SCIENTIST)
-                        {
-                            emit pDebug("Skip secret testing.");
-                        }
-                        else
-                        {
-                            enemyMinionsAliveForAvenge = enemyMinions;
-                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
-                        }
+                        emit pDebug("Player: Spell played: " + name);
+                        if(isPlayerTurn)    emit playerSpellPlayed();
                     }
-                    else    enemyMinionsAliveForAvenge--;
+                    //Jugador juega esbirro
+                    else if(zoneTo == "FRIENDLY PLAY")
+                    {
+                        emit pDebug("Player: Minion played: " + name);
+                        if(isPlayerTurn)    emit playerMinionPlayed();
+                    }
+                    //Jugador juega arma
+                    else if(zoneTo == "FRIENDLY PLAY (Weapon)")
+                    {
+                        emit pDebug("Player: Weapon played: " + name);
+                    }
+                }
+
+                //Enemigo esbirro muere
+                else if(zoneFrom == "OPPOSING PLAY" && zoneTo == "OPPOSING GRAVEYARD")
+                {
+                    enemyMinions--;
+                    emit pDebug("Enemy: Minion dead: " + name + " Minions: " + QString::number(enemyMinions));
+
+                    if(isPlayerTurn)
+                    {
+                        emit enemyMinionDead();
+                        if(enemyMinionsAliveForAvenge == -1)
+                        {
+                            if(cardId == MAD_SCIENTIST)
+                            {
+                                emit pDebug("Skip secret testing.");
+                            }
+                            else
+                            {
+                                enemyMinionsAliveForAvenge = enemyMinions;
+                                QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                            }
+                        }
+                        else    enemyMinionsAliveForAvenge--;
+                    }
                 }
             }
+        }
 
-            //ENEMIGO ESBIRRO CAMBIA POSICION
-            else if(line.contains(QRegularExpression(
-                "\\[name=(.*) id=\\d+ zone=PLAY zonePos=(\\d+) cardId=\\w+ player=(\\d+)\\] pos from"
-                ), match))
+
+        //Enemigo esbirro cambia pos
+        else if(synchronized && line.contains(QRegularExpression(
+            "\\[name=(.*) id=\\d+ zone=PLAY zonePos=(\\d+) cardId=\\w+ player=(\\d+)\\] pos from"
+            ), match))
+        {
+            if(match->captured(3).toInt() != playerID)
             {
-                if(match->captured(3).toInt() != playerID)
-                {
-                    if(match->captured(2).toInt() > enemyMinions) enemyMinions = match->captured(2).toInt();
-                    emit pDebug("Enemy: New minion pos: " +
-                                match->captured(1) + " >> " + match->captured(2) + " Minions: " + enemyMinions);
-                }
+                if(match->captured(2).toInt() > enemyMinions) enemyMinions = match->captured(2).toInt();
+                emit pDebug("Enemy: New minion pos: " +
+                            match->captured(1) + " >> " + match->captured(2) + " Minions: " + enemyMinions);
             }
         }
     }
@@ -631,9 +633,9 @@ void GameWatcher::checkAvenge()
     if(enemyMinionsAliveForAvenge > 0)
     {
         emit avengeTested();
-        emit pDebug("Avenge tested: Survivors: " + enemyMinionsAliveForAvenge);
+        emit pDebug("Avenge tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge));
     }
-    else    emit pDebug("Avenge not tested: Survivors: " + enemyMinionsAliveForAvenge);
+    else    emit pDebug("Avenge not tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge));
     enemyMinionsAliveForAvenge = -1;
 }
 
