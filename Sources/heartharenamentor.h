@@ -1,6 +1,7 @@
 #ifndef HEARTHARENAMENTOR_H
 #define HEARTHARENAMENTOR_H
 
+#include "utility.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 
@@ -27,7 +28,8 @@ public:
 signals:
     void newTip(QString tip, double rating1, double rating2, double rating3,
                 QString synergy1, QString synergy2, QString synergy3);
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HearthArenaMentor");
 
 public slots:
     void replyFinished(QNetworkReply *reply);

@@ -1,6 +1,7 @@
 #ifndef HSCARDDOWNLOADER_H
 #define HSCARDDOWNLOADER_H
 
+#include "utility.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -30,7 +31,8 @@ public:
 
 signals:
     void downloaded(QString code);
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HSCardDownloader");
 
 public slots:
     void saveWebImage(QNetworkReply * reply);

@@ -1,6 +1,7 @@
 #ifndef LOGLOADER_H
 #define LOGLOADER_H
 
+#include "utility.h"
 #include "logworker.h"
 #include <QObject>
 #include <QTextStream>
@@ -42,8 +43,9 @@ public:
 //Signals
 signals:
     void seekChanged(qint64 logSeek);
-    void sendLog(QString line);
     void synchronized();
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 
     //LogWorker signal reemit
     void newLogLineRead(QString line);
@@ -56,7 +58,6 @@ private slots:
 
     //LogWorker signal reemit
     void emitNewLogLineRead(QString line);
-    void emitSendLog(QString line);
 };
 
 #endif // LOGLOADER_H

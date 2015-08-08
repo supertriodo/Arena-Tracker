@@ -18,8 +18,8 @@ void LogWorker::readLog()
     QFile logFile(logPath);
     if(!logFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        qDebug() << "LogWorker: "<< "Esperando a log accesible...";
-        emit sendLog(tr("Log: ERROR:Cannot open log..."));
+        emit pDebug("Cannot open log...", Error);
+        emit pLog(tr("Log: ERROR:Cannot open log..."));
         return;
     }
 
@@ -33,7 +33,7 @@ void LogWorker::readLog()
         if((line[lineLenght-1] != '\n') &&
                 lineLenght<((int)sizeof(line)-1))
         {
-//            qDebug() << "LogWorker: "<< "Leida linea a medias.";
+            //Leida linea a medias.
             return;
         }
 

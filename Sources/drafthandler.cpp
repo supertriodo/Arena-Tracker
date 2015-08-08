@@ -9,7 +9,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->cardsDownloading = 0;
     this->captureLoop = false;
     this->deckRating = 0;
-    this->endCount = 0;
+    this->nextCount = 0;
     this->drafting = false;
 
     for(int i=0; i<3; i++)
@@ -50,8 +50,10 @@ void DraftHandler::createHearthArenaMentor()
     hearthArenaMentor = new HearthArenaMentor(this);
     connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,QString,QString,QString)),
             this, SLOT(showNewCards(QString,double,double,double,QString,QString,QString)));
-    connect(hearthArenaMentor, SIGNAL(sendLog(QString)),
-            this->parent(), SLOT(pLog(QString)));
+    connect(hearthArenaMentor, SIGNAL(pLog(QString)),
+            this, SIGNAL(pLog(QString)));
+    connect(hearthArenaMentor, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -84,7 +86,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
             cardsDownloading++;
         }
     }
-    qDebug() << "DraftHandler: Num histogramas BD:" << hearthArenaCodes.count();
+    emit pDebug("Num histograms BD:" + hearthArenaCodes.count());
 
     if(cardsDownloading==0) resumeDraft();
     else
@@ -159,7 +161,7 @@ void DraftHandler::clearLists()
     }
 
     deckRating = 0;
-    endCount = 0;
+    nextCount = 0;
 }
 
 
@@ -171,14 +173,14 @@ void DraftHandler::beginDraft(QString hero)
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
     {
-        qDebug() << "DraftHandler: Begin draft de heroe incorrecto:" << hero;
-        emit sendLog(tr("Log: ERROR: Started draft of unknown hero ") + hero);
+        emit pDebug("Begin draft of unknown hero: " + hero, Error);
+        emit pLog(tr("Log: ERROR: Started draft of unknown hero ") + hero);
         return;
     }
     else
     {
-        qDebug() << "DraftHandler: Begin draft de heroe:" << hero;
-        emit sendLog(tr("Log: New draft started."));
+        emit pDebug("Begin draft. Heroe: " + hero);
+        emit pLog(tr("Log: New draft started."));
     }
 
     resetTab();
@@ -197,8 +199,8 @@ void DraftHandler::resumeDraft()
     if(captureLoop)     return;
     captureLoop = true;
 
-    qDebug() << "DraftHandler: Resume draft.";
-    emit sendLog(tr("Log: Draft resumed."));
+    emit pDebug("Resume draft.");
+    emit pLog(tr("Log: Draft resumed."));
 
     QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
 }
@@ -209,8 +211,8 @@ void DraftHandler::pauseDraft()
     if(!drafting)       return;
     captureLoop = false;
 
-    qDebug() << "DraftHandler: Pause draft.";
-    emit sendLog(tr("Log: Draft paused."));
+    emit pDebug("Pause draft.");
+    emit pLog(tr("Log: Draft paused."));
 }
 
 
@@ -226,7 +228,7 @@ void DraftHandler::endDraft()
         if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
         {
             pickCard(draftCards[i]);
-            emit sendLog(tr("Draft: ") + ui->groupBoxDraft->title());
+            emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());
         }
     }
 
@@ -242,8 +244,8 @@ void DraftHandler::endDraft()
     this->captureLoop = false;
     this->drafting = false;
 
-    qDebug() << "DraftHandler: End draft.";
-    emit sendLog(tr("Log: Draft ended."));
+    emit pDebug("End draft.");
+    emit pLog(tr("Log: Draft ended."));
 }
 
 
@@ -277,13 +279,13 @@ void DraftHandler::endDraft()
 
 //    if(isDeckComplete)
 //    {
-//        qDebug() << "DraftHandler: Deck completo de draft.";
+//        emit qDebug() << "DraftHandler: Deck completo de draft.";
 //        emit sendLog(tr("Draft: Active deck read. Deck complete."));
 //        emit deckComplete();
 //    }
 //    else
 //    {
-//        qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
+//        emit qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
 //        emit sendLog(tr("Draft: Active deck read. Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
 //    }
 //}
@@ -319,48 +321,60 @@ void DraftHandler::captureDraft()
 
 bool DraftHandler::areNewCards(QString codes[3])
 {
-    qDebug() << codes[0] << codes[1] << codes[2];
+    emit pDebug("(" + QString::number(draftedCards.count()) + ") " + codes[0] + "/" + codes[1] + "/" + codes[2]);
     if((codes[0]==draftCards[0].code && codes[1]==draftCards[1].code) ||
         (codes[0]==draftCards[0].code && codes[2]==draftCards[2].code) ||
         (codes[1]==draftCards[1].code && codes[2]==draftCards[2].code))
     {
-        qDebug() << "DraftHandler: Sin cambios (2+=).";
+        emit pDebug("No changes (2+=).");
         resetCodesCandidates();
         selectMouseCard();
-        endCount = 0;
+        nextCount = 0;
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
-        qDebug() << "DraftHandler: No son cartas.";
+        emit pDebug("Blank code.");
         resetCodesCandidates();
         if(draftedCards.count()>=29)
         {
-            if(endCount > 10)   endDraft();
-            else                endCount++;
+            if(nextCount < 10)
+            {
+                nextCount++;
+                emit pDebug("Ending draft - " + QString::number(nextCount));
+            }
+            else                endDraft();
         }
         return false;
     }
     else if(!areSameRarity(codes))
     {
+        nextCount = 0;
         return false;
     }
     else if(codes[0]!=codesCandidates[0] ||
             codes[1]!=codesCandidates[1] ||
             codes[2]!=codesCandidates[2])
     {
-        qDebug() << "DraftHandler: Nuevos candidatos.";
+        emit pDebug("New candidates.");
         for(int i=0; i<3; i++)
         {
             codesCandidates[i]=codes[i];
         }
+        nextCount = 0;
+        return false;
+    }
+    else if(nextCount < 5)
+    {
+        nextCount++;
+        emit pDebug("New candidates - " + QString::number(nextCount));
         return false;
     }
     else
     {
-        qDebug() << "DraftHandler: Nuevas cartas.";
+        emit pDebug("New codes.");
         resetCodesCandidates();
-        endCount = 0;
+        nextCount = 0;
         return true;
     }
 }
@@ -395,7 +409,7 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
         if(raritySample != rarity)
         {
-            qDebug() << "DraftHandler: Cartas de distinta rareza:" << raritySample << rarity;
+            emit pDebug("Different rarity codes: " + QString::number(raritySample) + "/" + QString::number(rarity));
             return false;
         }
     }
@@ -408,8 +422,8 @@ void DraftHandler::pickCard(DraftCard &draftCard)
 {
     draftedCards.push_back(hearthArenaCodes[draftCard.code]);
     updateBoxTitle(draftCard.radioItem->text());
-    qDebug() << "DraftHandler: Card picked:" << draftedCards.count() << "-" << (*cardsJson)[draftCard.code].value("name").toString();
-    emit sendLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
+    emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
+    emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
     emit newDeckCard(draftCard.code);
 }
 
@@ -622,8 +636,8 @@ bool DraftHandler::findScreenRects()
         Mat img_object = imread("./HSCards/arenaTemplate.png", CV_LOAD_IMAGE_GRAYSCALE );
         if(!img_object.data)
         {
-            qDebug() << "DraftHandler: " << "ERROR: Fallo al leer arenaTemplate.png";
-            emit sendLog(tr("File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."));
+            emit pDebug("Cannot find arenaTemplate.png", Error);
+            emit pLog(tr("File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."));
             return false;
         }
         Mat img_scene;
@@ -717,7 +731,11 @@ bool DraftHandler::findScreenRects()
         for(int i=0; i<3; i++)
         {
             screenRects[i]=cv::Rect(scene_corners[i*2], scene_corners[i*2+1]);
-            qDebug() << "DraftHandler: screenRect:" << screenRects[i].x << screenRects[i].y << screenRects[i].width << screenRects[i].height;
+            emit pDebug("ScreenRect: " +
+                        QString::number(screenRects[i].x) + "/" +
+                        QString::number(screenRects[i].y) + "/" +
+                        QString::number(screenRects[i].width) + "/" +
+                        QString::number(screenRects[i].height));
         }
 
         return true;

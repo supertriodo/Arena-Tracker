@@ -87,8 +87,10 @@ void MainWindow::createDraftHandler()
             deckHandler, SLOT(newDeckCard(QString)));
     connect(draftHandler, SIGNAL(deckComplete()),
             this, SLOT(uploadDeck()));
-    connect(draftHandler, SIGNAL(sendLog(QString)),
+    connect(draftHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
+    connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -127,8 +129,10 @@ void MainWindow::createEnemyHandHandler()
     enemyHandHandler = new EnemyHandHandler(this, ui);
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(enemyHandHandler, SIGNAL(sendLog(QString)),
-            this, SLOT(pLogConnected(QString)));
+    connect(enemyHandHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -137,8 +141,10 @@ void MainWindow::createCardDownloader()
     cardDownloader = new HSCardDownloader(this);
     connect(cardDownloader, SIGNAL(downloaded(QString)),
             this, SLOT(redrawDownloadedCardImage(QString)));
-    connect(cardDownloader, SIGNAL(sendLog(QString)),
+    connect(cardDownloader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
+    connect(cardDownloader, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -146,8 +152,10 @@ void MainWindow::createGameWatcher()
 {
     gameWatcher = new GameWatcher(this);
 
-    connect(gameWatcher, SIGNAL(sendLog(QString)),
+    connect(gameWatcher, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
+    connect(gameWatcher, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
             arenaHandler, SLOT(newGameResult(GameResult)));
@@ -230,10 +238,12 @@ void MainWindow::createLogLoader()
             this, SLOT(synchronizedDone()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
-    connect(logLoader, SIGNAL(sendLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(newLogLineRead(QString)),
             gameWatcher, SLOT(processLogLine(QString)));
+    connect(logLoader, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     qint64 logSize;
     logLoader->init(logSize);
@@ -532,7 +542,12 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
 
 void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 {
-    qDebug() << file + ": " + line;
+    if(line[0]==QChar('\n'))
+    {
+        line.remove(QChar('\n'));
+        qDebug() << endl << file + ": " + line;
+    }
+    else    qDebug() << file + ": " + line;
 }
 
 
@@ -659,12 +674,16 @@ void MainWindow::test()
 //Consejos iniciales
 //Crear archivo log con time.
 //Uso en construido.
-//Eliminar plogconnected (queda enemyhandhandler)
-//Terminado log deckhandler.
+//Terminando log logWorker.
+//Unificar gw mystic
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
-//Draft. Cartas incorrectas.
+
+//NUEVAS CARTAS
+//Update Json cartas
+//Update Json heroes HA
+//Update secrets
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)

@@ -1,6 +1,7 @@
 #ifndef LOGWORKER_H
 #define LOGWORKER_H
 
+#include "utility.h"
 #include <QObject>
 
 class LogWorker : public QObject
@@ -23,7 +24,8 @@ public:
 signals:
     void newLogLineRead(QString line);
     void seekChanged(qint64 logSeek);
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogWorker");
 };
 
 #endif // LOGWORKER_H

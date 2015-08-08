@@ -14,13 +14,13 @@ void LogLoader::init(qint64 &logSize)
 
     if(logSize >= 0)
     {
-        qDebug() << "LogLoader: Log encontrado.";
-        emit sendLog(tr("Log: Log found."));
+        emit pDebug("Log found.");
+        emit pLog(tr("Log: Log found."));
 
         if(logSize == 0)
         {
-            qDebug() << "LogLoader: Log vacio.";
-            emit sendLog(tr("Log: Log is empty."));
+            emit pDebug("Log is empty.");
+            emit pLog(tr("Log: Log is empty."));
         }
 
         this->logSize = logSize;
@@ -32,8 +32,10 @@ void LogLoader::init(qint64 &logSize)
                 this, SLOT(emitNewLogLineRead(QString)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
                 this, SLOT(updateSeek(qint64)));
-        connect(logWorker, SIGNAL(sendLog(QString)),
-                this, SLOT(emitSendLog(QString)));
+        connect(logWorker, SIGNAL(pLog(QString)),
+                this, SIGNAL(pLog(QString)));
+        connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
+                this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
         QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     }
@@ -41,8 +43,8 @@ void LogLoader::init(qint64 &logSize)
     {
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logPath", "");
-        qDebug() << "LogLoader: Log no encontrado.";
-        emit sendLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
+        emit pDebug("Log not found.");
+        emit pLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
     }
 }
 
@@ -108,8 +110,8 @@ void LogLoader::readLogPath()
 #endif
 
 
-    qDebug() << "LogLoader: " << "Path "+ logFileName +": " << logPath;
-    emit sendLog(tr("Settings: Path ") + logFileName + ": " + logPath);
+    emit pDebug("Path "+ logFileName + ": " + logPath);
+    emit pLog(tr("Settings: Path ") + logFileName + ": " + logPath);
 
 }
 
@@ -133,8 +135,8 @@ void LogLoader::readLogConfigPath()
 
     if(!logConfig.isEmpty()) checkLogConfig(logConfig);
 
-    qDebug() << "LogLoader: " << "Path log.config " << logConfig;
-    emit sendLog(tr("Settings: Path log.config: ") + logConfig);
+    emit pDebug("Path log.config: " + logConfig);
+    emit pLog(tr("Settings: Path log.config: ") + logConfig);
 }
 
 
@@ -169,8 +171,8 @@ QString LogLoader::createDefaultLogConfig()
             QFile logConfigFile(initPath);
             if(!logConfigFile.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                qDebug() << "LogLoader: "<< "ERROR: No se puede crear default log.config.";
-                emit sendLog(tr("Log: ERROR: Cannot create default log.config"));
+                emit pDebug("Cannot create default log.config", Error);
+                emit pLog(tr("Log: ERROR: Cannot create default log.config"));
                 return "";
             }
             logConfigFile.close();
@@ -184,13 +186,13 @@ QString LogLoader::createDefaultLogConfig()
 
 void LogLoader::checkLogConfig(QString logConfig)
 {
-    qDebug() << "LogLoader: " << "Verificando log.config";
+    emit pDebug("Checking log.config");
 
     QFile file(logConfig);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        qDebug() << "LogLoader: "<< "ERROR: No se puede acceder a log.config.";
-        emit sendLog(tr("Log: ERROR: Cannot access log.config"));
+        emit pDebug("Cannot access log.config", Error);
+        emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
         return;
@@ -214,8 +216,8 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
 {
     if(!data.contains(option))
     {
-        qDebug() << "LogLoader: " << "Configurando log.config";
-        emit sendLog(tr("Log: Setting log.config"));
+        emit pDebug("Setting log.config");
+        emit pLog(tr("Log: Setting log.config"));
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
@@ -285,8 +287,8 @@ bool LogLoader::isLogReset()
     if((newSize == -1) || (newSize < logSize))
     {
         //Log se ha reiniciado
-        qDebug() << "LogLoader: "<< "Log reiniciado. FileSize: " << newSize << " < " << logSize;
-        emit sendLog(tr("Log: Hearthstone started. Log reset."));
+        emit pDebug("Log reset. FileSize: " + QString::number(newSize) + " < " + QString::number(logSize));
+        emit pLog(tr("Log: Hearthstone started. Log reset."));
         emit seekChanged(0);
         logWorker->resetSeek();
         logSize = 0;
@@ -312,4 +314,3 @@ void LogLoader::emitNewLogLineRead(QString line)
     updateTime = 500;
     emit newLogLineRead(line);
 }
-void LogLoader::emitSendLog(QString line){emit sendLog(line);}

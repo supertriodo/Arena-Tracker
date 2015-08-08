@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "secretcard.h"
+#include "utility.h"
 
 #define MAD_SCIENTIST "FP1_004"
 
@@ -87,7 +88,6 @@ signals:
     void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void arenaRewardsComplete();
     void newDeckCard(QString card);
-    void sendLog(QString line);
     void startGame();
     void endGame();
     void playerCardDraw(QString code);
@@ -105,6 +105,8 @@ signals:
     void avengeTested();
     void enterArena();
     void leaveArena();
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
 private slots:
     void checkAvenge();

@@ -155,16 +155,16 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                         CARD_SIZE, QIcon::Disabled, QIcon::On)));
 
-                emit pDebug("Discovered unknown card: " +
+                emit pDebug("New card: " +
                                   (*cardsJson)[code].value("name").toString());
-                emit pLog(tr("Deck: Discovered unknown card: ") +
+                emit pLog(tr("Deck: New card: ") +
                                   (*cardsJson)[code].value("name").toString());
             }
             else
             {
-                emit pDebug("Discovered unknown card but deck is full. " +
+                emit pDebug("New card but deck is full. " +
                               (*cardsJson)[code].value("name").toString(), Warning);
-                emit pLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
+                emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") +
                               (*cardsJson)[code].value("name").toString());
             }
             return;
@@ -177,18 +177,18 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
     if(deckCardList[0].total>0)
     {
-        emit pDebug("Discovered unknown card: " +
+        emit pDebug("New card: " +
                           (*cardsJson)[code].value("name").toString());
-        emit pLog(tr("Deck: Discovered unknown card: ") +
+        emit pLog(tr("Deck: New card: ") +
                           (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
         showPlayerCardDraw(code);
     }
     else
     {
-        emit pDebug("Discovered unknown card but deck is full. " +
+        emit pDebug("New card but deck is full. " +
                       (*cardsJson)[code].value("name").toString(), Warning);
-        emit pLog(tr("Deck: WARNING: Discovered unknown card but deck is full. Is the deck right? ") +
+        emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") +
                       (*cardsJson)[code].value("name").toString());
     }
 }

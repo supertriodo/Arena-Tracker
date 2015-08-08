@@ -2,6 +2,7 @@
 #define ENEMYHANDHANDLER_H
 
 #include "handcard.h"
+#include "utility.h"
 #include "ui_mainwindow.h"
 #include <QObject>
 #include <QMap>
@@ -30,7 +31,8 @@ public:
 
 signals:
     void checkCardImage(QString code);
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyHandHandler");
 
 public slots:
     void lastHandCardIsCoin();

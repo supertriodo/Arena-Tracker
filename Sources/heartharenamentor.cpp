@@ -37,7 +37,7 @@ void HearthArenaMentor::askCardsRating(QString &hero, QList<int> &draftedCards, 
 
     url += QString::number(cards[0]) + "-" + QString::number(cards[1]) + "-" + QString::number(cards[2]);
 
-//    qDebug() << "HearthArenaMentor: Asked to HearthArena. Url:" << url;
+    emit pDebug("Asked to HearthArena. Url: " + url);
 
     networkManager->get(QNetworkRequest(QUrl(url)));
 }
@@ -49,8 +49,8 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
 
     if (reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << "HearthArenaMentor: " << "ERROR: accediendo a Hearth Arena.";
-        emit sendLog(tr("Web: No internet access to Hearth Arena."));
+        emit pDebug("No internet access to Hearth Arena.", Error);
+        emit pLog(tr("Web: No internet access to Hearth Arena."));
         return;
     }
 
@@ -84,7 +84,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
         }
     }
 
-    qDebug() << "HearthArenaMentor: Tip:" << tip;
+    emit pDebug("Tip: " + tip);
 //    qDebug() << "HearthArenaMentor: Ratings:" << ratings[0] << ratings[1] << ratings[2];
 //    qDebug() << "HearthArenaMentor: Synergies:" << synergies[0] << synergies[1] << synergies[2];
     emit newTip(tip,ratings[0],ratings[1],ratings[2],synergies[0],synergies[1],synergies[2]);

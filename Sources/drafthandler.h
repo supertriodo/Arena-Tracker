@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "draftcard.h"
 #include "heartharenamentor.h"
+#include "utility.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
@@ -40,7 +41,7 @@ private:
     double deckRating;
     cv::Rect screenRects[3];
     int screenIndex;
-    int endCount;
+    int nextCount;
     bool drafting;
 
 
@@ -73,7 +74,8 @@ signals:
     void checkCardImage(QString code);
     void newDeckCard(QString code);
     void deckComplete();
-    void sendLog(QString line);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
 public slots:
     void beginDraft(QString hero);

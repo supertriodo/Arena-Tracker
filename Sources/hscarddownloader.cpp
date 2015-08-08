@@ -18,7 +18,7 @@ void HSCardDownloader::downloadWebImage(QString code)
 {
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + code + ".png"))));
     gettingWebCards[reply] = code;
-    qDebug() << "HSCardDownloader: Web Cards pendientes(+1): " << gettingWebCards.count();
+    emit pDebug("Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
 }
 
 
@@ -30,8 +30,8 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al descargar: " << code;
-        emit sendLog(tr("Web: Failed to download card image."));
+        emit pDebug("Failed to download card image: " + code, Error);
+        emit pLog(tr("Web: Failed to download card image."));
         return;
     }
     QImage webImage;
@@ -39,13 +39,13 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
     if(!webImage.save("./HSCards/" + code + ".png", "png"))
     {
-        qDebug() << "HSCardDownloader: " << "ERROR: Fallo al guardar en disco: " << code;
-        emit sendLog(tr("File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe."));
+        emit pDebug("Failed to save card image to disk: " + code, Error);
+        emit pLog(tr("File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe."));
         return;
     }
 
     emit downloaded(code);
     gettingWebCards.remove(reply);
-    qDebug() << "HSCardDownloader: Web Cards pendientes(-1): " << gettingWebCards.count();
-    emit sendLog(tr("Web: New card image downloaded."));
+    emit pDebug("Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
+    emit pLog(tr("Web: New card image downloaded."));
 }
