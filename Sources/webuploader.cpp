@@ -45,6 +45,8 @@ void WebUploader::connectWeb()
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
     postRequest(request, postData);
+
+    emit pDebug("Login web.");
 }
 
 
@@ -91,15 +93,15 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
-        qDebug() << "WebUploader: " << "WARNING: Uploading juego sin haber arena en progreso en la web.";
-        emit sendLog(tr("Web: WARNING:No arena in progress to upload to for the game.\n"
+        emit pDebug("No arena in progress to upload to for the game.", Warning);
+        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the game.\n"
                         "(Create the arena manually in Arena Mastery and refresh the app)."));
         return false;
     }
     if(arenaCurrentHero.compare(gameresult.playerHero) != 0)
     {
-        qDebug() << "WebUploader: " << "WARNING: Uploading juego de un heroe distinto al de la arena en progreso.";
-        emit sendLog(tr("Web: WARNING:Arena in progress has a different hero.\n"
+        emit pDebug("Arena in progress has a different hero.", Warning);
+        emit pLog(tr("Web: WARNING:Arena in progress has a different hero.\n"
                         "(Go to Arena Mastery, fix it and refresh the app)."));
         return false;
     }
@@ -108,7 +110,6 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
     {
         //Reavivamos la conexion
         connectWeb();
-        qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
     QURL postData;
@@ -129,7 +130,7 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
     gamePost.postData = postData;
     gamePost.request = request;
     gameResultPostList->append(gamePost);
-    qDebug() << "WebUploader: " << "Juego nuevo esperando para upload.";
+    emit pDebug("New game waiting for upload.");
 
     if(!deckInWeb && arenaCards.isEmpty() && deckCardList!=NULL)
     {
@@ -144,8 +145,8 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
-        qDebug() << "WebUploader: " << "WARNING: Uploading deck sin haber arena en progreso en la web.";
-        emit sendLog(tr("Web: WARNING:No arena in progress to upload to for the deck.\n"
+        emit pDebug("No arena in progress to upload to for the deck.", Warning);
+        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the deck.\n"
                         "(Create the arena manually in Arena Mastery and refresh the app)."));
     }
 
@@ -153,7 +154,6 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
     {
         //Reavivamos la conexion
         connectWeb();
-        qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
     if(!deckInWeb && arenaCards.isEmpty() && deckCardList!=NULL)
@@ -174,7 +174,8 @@ void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
         }
     }
 
-    qDebug() << "WebUploader: Building Deck string: "<< endl << arenaCards;
+    emit pDebug("Building Deck string:\n" + arenaCards);
+    emit pDebug("New deck waiting for upload.");
 }
 
 
@@ -182,8 +183,8 @@ bool WebUploader::uploadNewArena(const QString &hero)
 {
     if(arenaCurrentID != 0 || webState == createArena)
     {
-        qDebug() << "WebUploader: " << "WARNING: Uploading nueva Arena con una en progreso en la web.";
-        emit sendLog(tr("Web: WARNING:Arena in progress.\n"
+        emit pDebug("Arena in progress when trying to upload a new one.", Warning);
+        emit pLog(tr("Web: WARNING:Arena in progress when trying to upload a new one.\n"
                         "(Go to Arena Mastery, fix it and refresh the app)."));
         return false;
     }
@@ -192,13 +193,12 @@ bool WebUploader::uploadNewArena(const QString &hero)
     {
         //Reavivamos la conexion
         connectWeb();
-        qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
     arenaCurrentHero = QString(hero);
     webState = createArena;
 
-    qDebug() << "WebUploader: " << "Arena nueva esperando para upload.";
+    emit pDebug("New arena waiting for upload.");
     return true;
 }
 
@@ -207,8 +207,8 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
-        qDebug() << "WebUploader: " << "WARNING: Uploading rewards sin haber arena en progreso en la web.";
-        emit sendLog(tr("Web: WARNING:No arena in progress to upload to for the rewards."));
+        emit pDebug("No arena in progress to upload to for the rewards.", Warning);
+        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the rewards."));
         return false;
     }
 
@@ -216,7 +216,6 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
     {
         //Reavivamos la conexion
         connectWeb();
-        qDebug() << "WebUploader: " << "Reavivamos la conexion.";
     }
 
     QURL postData;
@@ -241,11 +240,11 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
         rewardsPost = new GameResultPost();
         rewardsPost->postData = postData;
         rewardsPost->request = request;
-        qDebug() << "WebUploader: " << "Rewards esperando para upload.";
+        emit pDebug("Rewards waiting for upload.");
     }
     else
     {
-        qDebug() << "WebUploader: " << "ERROR: Existian rewards pendientes al crear nuevos.";
+        emit pDebug("Old rewards waiting for upload when creating the new ones.", Error);
         return false;
     }
 
@@ -259,31 +258,31 @@ void WebUploader::showWebState()
     switch(webState)
     {
         case signup:
-            qDebug() << "WebUploader: ReplyFinished: signup";
+            emit pDebug("ReplyFinished: signup");
             break;
         case checkArenaCurrentLoad:
-            qDebug() << "WebUploader: ReplyFinished: checkArenaCurrentLoad";
+            emit pDebug("ReplyFinished: checkArenaCurrentLoad");
             break;
         case loadArenaCurrent:
-            qDebug() << "WebUploader: ReplyFinished: loadArenaCurrent";
+            emit pDebug("ReplyFinished: loadArenaCurrent");
             break;
         case createArena:
-            qDebug() << "WebUploader: ReplyFinished: createArena";
+            emit pDebug("ReplyFinished: createArena");
             break;
         case rewardsSent:
-            qDebug() << "WebUploader: ReplyFinished: rewardsSent";
+            emit pDebug("ReplyFinished: rewardsSent");
             break;
         case checkArenaCurrentReload:
-            qDebug() << "WebUploader: ReplyFinished: checkArenaCurrentReload";
+            emit pDebug("ReplyFinished: checkArenaCurrentReload");
             break;
         case gameResultSent:
-            qDebug() << "WebUploader: ReplyFinished: gameResultSent";
+            emit pDebug("ReplyFinished: gameResultSent");
             break;
         case reloadArenaCurrent:
-            qDebug() << "WebUploader: ReplyFinished: reloadArenaCurrent";
+            emit pDebug("ReplyFinished: reloadArenaCurrent");
             break;
         case complete:
-            qDebug() << "WebUploader: ReplyFinished: complete";
+            emit pDebug("ReplyFinished: complete");
             break;
     }
 }
@@ -299,8 +298,8 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         if(webState == rewardsSent) webState = complete;
         if(webState == gameResultSent) webState = complete;
 
-        qDebug() << "WebUploader: " << "ERROR: No internet access to Arena Mastery.";
-        emit sendLog(tr("Web: No internet access to Arena Mastery."));
+        emit pDebug("No internet access to Arena Mastery.", Error);
+        emit pLog(tr("Web: No internet access to Arena Mastery."));
         emit synchronized();
         QTimer::singleShot(10000, this, SLOT(connectWeb()));
         return;
@@ -310,8 +309,8 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     { 
         if(webState == signup)
         {
-            qDebug() << "WebUploader: " << "Sign up en arena Mastery correcto.";
-            emit sendLog(tr("Web: Arena mastery sign up success."));
+            emit pDebug("Arena mastery sign up success.");
+            emit pLog(tr("Web: Arena mastery sign up success."));
             webState = checkArenaCurrentLoad;
         }
         else if(webState == createArena)
@@ -322,18 +321,18 @@ void WebUploader::replyFinished(QNetworkReply *reply)
             {
                 arenaCurrentID = match->captured(1).toInt();
                 deckInWeb = false;
-                qDebug() << "WebUploader: " << "Arena nueva uploaded(" << match->captured(1) << "). Heroe: " << arenaCurrentHero;
-                emit sendLog(tr("Web: New arena uploaded."));
+                emit pDebug("New arena uploaded(" + match->captured(1) + "). Heroe: " + arenaCurrentHero);
+                emit pLog(tr("Web: New arena uploaded."));
                 checkArenaReload();
             }
         }
 
-        qDebug() << "WebUploader: " << "Redirigido a " << reply->rawHeader("Location");
+        emit pDebug("Redirected to " + reply->rawHeader("Location"));
         networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
     }
     else if(webState == signup)
     {
-        qDebug() << "WebUploader: " << "WARNING: Usuario o password incorrecto.";
+        emit pDebug("Wrong username or password.", Warning);
 
         QSettings settings("Arena Tracker", "Arena Tracker");
         QString playerEmail = settings.value("playerEmail", "").toString();
@@ -358,20 +357,20 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         //        <span class="glyphicon glyphicon-plus"></span> Enter a new arena
         //        </button>
 
-        qDebug() << "WebUploader: " << "Check arena actual";
+        emit pDebug("Check arena in progress.");
 
         if(QString(reply->readAll()).contains(QRegularExpression(
             "<a href=.(arena\\.php\\?arena=(\\d+)). class=.btn btn-lg btn-success startArena.>"
             ), match))
         {
             networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
-            qDebug() << "WebUploader: " << "Existe una arena en progreso.";
+            emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
             webState = loadArenaCurrent;
         }
         else
         {
-            qDebug() << "WebUploader: " << "Ninguna arena en progreso.";
+            emit pDebug("There's no arena in progress.");
             arenaCurrentID = 0;
             webState = complete;
             emit synchronized();
@@ -395,15 +394,15 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         }
         else
         {
-            qDebug() << "WebUploader: " << "ERROR: al buscar la arena en progreso.";
-            emit sendLog(tr("Web: ERROR: Failed analysing arena in web."));
+            emit pDebug("Failed analysing arena in web.", Error);
+            emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
             emit synchronized();
         }
     }
     else if(webState == rewardsSent)
     {
-        qDebug() << "WebUploader: " << "Rewards uploaded.";
-        emit sendLog(tr("Web: New rewards uploaded."));
+        emit pDebug("Rewards uploaded.");
+        emit pLog(tr("Web: New rewards uploaded."));
 
         delete rewardsPost;
         rewardsPost = NULL;
@@ -412,20 +411,20 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     }
     else if(webState == checkArenaCurrentReload)
     {
-        qDebug() << "WebUploader: " << "Check arena actual";
+        emit pDebug("Check arena in progress.");
 
         if(QString(reply->readAll()).contains(QRegularExpression(
             "<a href=.(arena\\.php\\?arena=(\\d+)). class=.btn btn-lg btn-success startArena.>"
             ), match))
         {
             networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
-            qDebug() << "WebUploader: " << "Existe una arena en progreso.";
+            emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
             webState = reloadArenaCurrent;
         }
         else
         {
-            qDebug() << "WebUploader: " << "Ninguna arena en progreso.";
+            emit pDebug("There's no arena in progress.");
             arenaCurrentID = 0;
             webState = complete;
             emit noArenaFound();
@@ -434,13 +433,13 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     }
     else if(webState == gameResultSent)
     {
-        qDebug() << "WebUploader: " << "Juego nuevo uploaded.";
-        emit sendLog(tr("Web: New game uploaded."));
+        emit pDebug("New game uploaded.");
+        emit pLog(tr("Web: New game uploaded."));
 
         gameResultPostList->removeFirst();
 
         networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
-        qDebug() << "WebUploader: " << "Recargamos la arena en progreso: " + QString::number(arenaCurrentID);
+        emit pDebug("Reload arena in progress: " + QString::number(arenaCurrentID));
         webState = reloadArenaCurrent;
     }
     else if(webState == reloadArenaCurrent)
@@ -461,19 +460,19 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         }
         else
         {
-            qDebug() << "WebUploader: " << "ERROR: al buscar la arena en progreso.";
-            emit sendLog(tr("Web: ERROR: Failed analysing arena in web."));
+            emit pDebug("Failed analysing arena in web.", Error);
+            emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
             emit synchronized();
         }
     }
     else if(webState == createArena)
     {
         networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?new=" + heroToWebNumber(arenaCurrentHero))));
-        qDebug() << "WebUploader: " << "Arena nueva pedida a la web.";
+        emit pDebug("New arena asked to web.");
     }
     else if(webState == complete)
     {
-        qDebug() << "WebUploader: " << "UploadNext.";
+        emit pDebug("UploadNext.");
         uploadNext();
     }
 }
@@ -494,7 +493,7 @@ void WebUploader::uploadNext()
             gamePost.postData.addQueryItem("arena", QString::number(arenaCurrentID));
         }
         postRequest(gamePost.request, gamePost.postData);
-        qDebug() << "WebUploader: " << "Juego nuevo enviado a la web.";
+        emit pDebug("New game sent to web.");
         webState = gameResultSent;
     }
     else if(rewardsPost != NULL)
@@ -504,7 +503,7 @@ void WebUploader::uploadNext()
             rewardsPost->postData.addQueryItem("arena", QString::number(arenaCurrentID));
         }
         postRequest(rewardsPost->request, rewardsPost->postData);
-        qDebug() << "WebUploader: " << "Rewards enviados a la web.";
+        emit pDebug("New rewards sent to web.");
         webState = rewardsSent;
     }
     else
@@ -528,8 +527,8 @@ void WebUploader::uploadArenaCards()
 
     arenaCards = "";
     deckInWeb = true;
-    qDebug() << "WebUploader: " << "Complete deck uploaded.";
-    emit sendLog(tr("Web: Complete deck uploaded."));
+    emit pDebug("Complete deck uploaded.");
+    emit pLog(tr("Web: Complete deck uploaded."));
 }
 
 
@@ -552,7 +551,7 @@ void WebUploader::refresh()
 void WebUploader::checkArenaReload()
 {
     networkManager->get(QNetworkRequest(QUrl(WEB_URL + "player.php")));
-    qDebug() << "WebUploader: " << "Recargamos player";
+    emit pDebug("Reload player.php");
     webState = checkArenaCurrentReload;
 }
 
@@ -591,8 +590,8 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
             QRegularExpressionMatch match = reIterator.next();
             list.prepend(createGameResult(match, arenaCurrentHero));
         }
-        qDebug() << "WebUploader: " << "Leida arena en progreso: " << QString(match->captured(1)) <<
-                    " con " << QString::number(list.count()) << " juegos";
+        emit pDebug("Read arena in progress: " + QString(match->captured(1)) +
+                    " with " + QString::number(list.count()) + " games.");
 
         if(getCards)
         {
@@ -616,7 +615,7 @@ void WebUploader::GetArenaCards(QString &html)
     {
         deckInWeb = true;
         emit newWebDeckCardList();
-        qDebug() << "WebUploader: "<< "Inicio leer deck.";
+        emit pDebug("Start reading deck.");
 
         //Ejemplo html carta
         //<li id='374' class='list-group-item' data-name='1' data-cost='3' data-total='1' data-remaining='1' data-any='1'>
@@ -633,8 +632,8 @@ void WebUploader::GetArenaCards(QString &html)
             QRegularExpressionMatch match = reIterator.next();
             emit newDeckCard(codeFromName(match.captured(2)), match.captured(1).toInt());
         }
-        qDebug() << "WebUploader: "<< "Final leer deck.";
-        emit sendLog(tr("Web: Active deck read."));
+        emit pDebug("End reading deck.");
+        emit pLog(tr("Web: Active deck read."));
     }
 }
 
@@ -648,8 +647,8 @@ QString WebUploader::codeFromName(QString name)
             if(!it->value("cost").isUndefined())    return it.key();
         }
     }
-    qDebug() << "WebUploader: " << "ERROR: No se encuentra en Json codigo de carta: " << name;
-    emit sendLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
+    emit pDebug("Code for card name not found in Json: " + name, Error);
+    emit pLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
     return "";
 }
 

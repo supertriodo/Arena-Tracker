@@ -125,6 +125,8 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
+
+    emit pDebug("Secret played. Hero: " + QString::number(hero));
 }
 
 
@@ -177,7 +179,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     //No puede haber dos secretos iguales
     discardSecretOptionNow(code);
 
-    qDebug() << "SecretsHandler: Secreto desvelado:" << code << QDateTime::currentDateTime().toString("ss");
+    emit pDebug("Secret revealed: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
 }
 
 
@@ -188,7 +190,7 @@ void SecretsHandler::discardSecretOptionDelay()
     SecretTest secretTest = secretTests.dequeue();
     if(secretTest.secretRevealedLastSecond)
     {
-        qDebug() << "SecretsHandler: Opcion no descartada:" << secretTest.code << QDateTime::currentDateTime().toString("ss");
+        emit pDebug("Option not discarded: " + secretTest.code + " Time: " + QDateTime::currentDateTime().toString("ss"));
         return;
     }
 
@@ -204,7 +206,7 @@ void SecretsHandler::discardSecretOptionNow(QString code)
         {
             if(it->children[i].code == code)
             {
-                qDebug() << "SecretsHandler: Opcion descartada:" << code << QDateTime::currentDateTime().toString("ss");
+                emit pDebug("Option discarded: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
                 it->root.treeItem->removeChild(it->children[i].treeItem);
                 it->children.removeAt(i);
                 adjustSize();
@@ -228,7 +230,7 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
     secretTests.enqueue(secretTest);
 
     QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
-    qDebug() << "SecretsHandler: Descartar en xs:" << code << QDateTime::currentDateTime().toString("ss");
+    emit pDebug("Discard in xs: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
 }
 
 

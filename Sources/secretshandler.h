@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include "secretcard.h"
+#include "utility.h"
 #include <QQueue>
 #include <QObject>
 
@@ -73,6 +74,8 @@ public:
 
 signals:
     void checkCardImage(QString code);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SecretsHandler");
 
 public slots:
     void secretPlayed(int id, SecretHero hero);

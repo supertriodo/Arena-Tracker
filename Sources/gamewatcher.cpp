@@ -528,7 +528,7 @@ void GameWatcher::processZone(QString &line)
                 else if(synchronized && (zoneTo == "OPPOSING PLAY"))
                 {
                     enemyMinions++;
-                    emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + enemyMinions);
+                    emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions));
                 }
                 //Enemigo juega arma
                 else if(zoneTo == "OPPOSING PLAY (Weapon)")
@@ -621,7 +621,7 @@ void GameWatcher::processZone(QString &line)
             {
                 if(match->captured(2).toInt() > enemyMinions) enemyMinions = match->captured(2).toInt();
                 emit pDebug("Enemy: New minion pos: " +
-                            match->captured(1) + " >> " + match->captured(2) + " Minions: " + enemyMinions);
+                            match->captured(1) + " >> " + match->captured(2) + " Minions: " + QString::number(enemyMinions));
             }
         }
     }

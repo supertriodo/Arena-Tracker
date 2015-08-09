@@ -99,6 +99,10 @@ void MainWindow::createSecretsHandler()
     secretsHandler = new SecretsHandler(this, ui);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
+    connect(secretsHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -288,8 +292,10 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(enableRefreshButton()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
-    connect(webUploader, SIGNAL(sendLog(QString)),
+    connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
+    connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 #ifndef QT_DEBUG //Si tenemos una arena en web podemos seguir testeando deck en construido
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCard(QString,int)));
@@ -382,7 +388,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 
     if(ret == QMessageBox::Ok)
     {
-        qDebug() << "MainWindow: Nueva arena:" << hero;
+        pDebug("New manual arena: " + hero);
         pLog(tr("Menu: New arena: ") + hero);
         QString heroLog = Utility::heroToLogNumber(hero);
         arenaHandler->newArena(heroLog);
@@ -557,12 +563,6 @@ void MainWindow::pLog(QString line)
 }
 
 
-void MainWindow::pLogConnected(QString line)
-{
-    if(webUploader != NULL)     pLog(line);
-}
-
-
 void MainWindow::showLogLoadProgress(qint64 logSeek)
 {
     if(logSeek == 0)     //Log reset
@@ -675,7 +675,6 @@ void MainWindow::test()
 //Crear archivo log con time.
 //Uso en construido.
 //Terminando log logWorker.
-//Unificar gw mystic
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

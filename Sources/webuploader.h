@@ -82,9 +82,10 @@ signals:
     void reloadedArena(QString hero);
     void synchronized();
     void noArenaFound();
-    void sendLog(QString line);
     void newDeckCard(QString card, int total);
     void newWebDeckCardList();
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="WebUploader");
 
 private slots:
     void connectWeb();
