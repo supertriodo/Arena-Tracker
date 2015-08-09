@@ -53,6 +53,7 @@ private:
     QPoint dragPosition;
     ResizeButton *resizeButton;
     WindowsFormation windowsFormation;
+    QFile* atLogFile;
 
 
 
@@ -76,6 +77,8 @@ private:
     void resizeTabWidgets(QResizeEvent *event);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);
     void resetSettings();
+    void createLogFile();
+    void closeLogFile();
     void test();
 
 //Override events

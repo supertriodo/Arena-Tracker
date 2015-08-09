@@ -286,7 +286,7 @@ void GameWatcher::processPower(QString &line)
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 gameState = inGameState;
-                emit pDebug("GameState = inGameState");
+                emit pDebug("GameState = inGameState\n");
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {

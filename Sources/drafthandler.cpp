@@ -329,13 +329,11 @@ bool DraftHandler::areNewCards(QString codes[3])
         emit pDebug("No changes (2+=).");
         resetCodesCandidates();
         selectMouseCard();
-        nextCount = 0;
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
         emit pDebug("Blank code.");
-        resetCodesCandidates();
         if(draftedCards.count()>=29)
         {
             if(nextCount < 10)
@@ -349,7 +347,7 @@ bool DraftHandler::areNewCards(QString codes[3])
     }
     else if(!areSameRarity(codes))
     {
-        nextCount = 0;
+        resetCodesCandidates();
         return false;
     }
     else if(codes[0]!=codesCandidates[0] ||
@@ -364,7 +362,7 @@ bool DraftHandler::areNewCards(QString codes[3])
         nextCount = 0;
         return false;
     }
-    else if(nextCount < 5)
+    else if(nextCount < 3)
     {
         nextCount++;
         emit pDebug("New candidates - " + QString::number(nextCount));
@@ -374,7 +372,6 @@ bool DraftHandler::areNewCards(QString codes[3])
     {
         emit pDebug("New codes.");
         resetCodesCandidates();
-        nextCount = 0;
         return true;
     }
 }

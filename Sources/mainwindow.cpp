@@ -13,15 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     ui->setupUi(this);
 
-#ifdef QT_DEBUG
-    pLog(tr("MODE DEBUG"));
-#endif
+    webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
+    atLogFile = NULL;
 
+    createLogFile();
     completeUI();
     readSettings();
     initCardsJson();
-
-    webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
 
     createCardDownloader();
     createSecretsHandler();
@@ -47,6 +45,7 @@ MainWindow::~MainWindow()
     delete secretsHandler;
     delete resizeButton;
     delete ui;
+    closeLogFile();
 }
 
 
@@ -333,6 +332,11 @@ void MainWindow::completeUI()
 
     completeToolButton();
     completeHeroButtons();
+
+#ifdef QT_DEBUG
+    pLog(tr("MODE DEBUG"));
+    pDebug("MODE DEBUG");
+#endif
 }
 
 
@@ -548,12 +552,26 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
 
 void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 {
+    (void)debugLevel;
+    QString logLine;
+    QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
     if(line[0]==QChar('\n'))
     {
-        line.remove(QChar('\n'));
-        qDebug() << endl << file + ": " + line;
+        line.remove(0, 1);
+        logLine = '\n' + timeStamp + " - " + file + ": " + line;
     }
-    else    qDebug() << file + ": " + line;
+    else
+    {
+        logLine = timeStamp + " - " + file + ": " + line;
+    }
+
+    qDebug().noquote() << logLine;
+
+    if(atLogFile != NULL)
+    {
+        QTextStream stream(atLogFile);
+        stream << logLine << endl;
+    }
 }
 
 
@@ -652,6 +670,28 @@ void MainWindow::resetSettings()
         move(QPoint(0,0));
         this->close();
     }
+}
+
+
+void MainWindow::createLogFile()
+{
+    atLogFile = new QFile("./HSCards/ArenaTrackerLog.txt");
+    if(atLogFile->exists())  atLogFile->remove();
+    if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        pDebug("Failed to create Arena Tracker log on disk.", Error);
+        pLog(tr("File: ERROR:Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
+        atLogFile = NULL;
+    }
+}
+
+
+void MainWindow::closeLogFile()
+{
+    if(atLogFile == NULL)   return;
+    atLogFile->close();
+    delete atLogFile;
+    atLogFile = NULL;
 }
 
 
