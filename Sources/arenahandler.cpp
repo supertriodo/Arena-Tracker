@@ -342,6 +342,7 @@ void ArenaHandler::refresh()
         }
     }
 
+    emit pDebug("\nRefresh Button.");
     ui->updateButton->setEnabled(false);
     webUploader->refresh();
 }

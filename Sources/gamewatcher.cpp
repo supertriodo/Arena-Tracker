@@ -335,7 +335,7 @@ void GameWatcher::processPowerInGame(QString &line)
     else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
             ), match))
     {
-        if(match->captured(1) != playerTag)
+        if(!mulliganEnemyDone && match->captured(1) != playerTag)
         {
             emit pDebug("Enemy mulligan end.");
             mulliganEnemyDone = true;

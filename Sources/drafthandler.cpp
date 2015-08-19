@@ -334,7 +334,7 @@ bool DraftHandler::areNewCards(QString codes[3])
     {
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    "Blank code.");
+                    " Blank code.");
         if(draftedCards.count()>=29)
         {
             if(nextCount < 10)
@@ -348,8 +348,6 @@ bool DraftHandler::areNewCards(QString codes[3])
     }
     else if(!areSameRarity(codes))
     {
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2]);
         resetCodesCandidates();
         nextCount = 0;
         return false;
@@ -360,7 +358,7 @@ bool DraftHandler::areNewCards(QString codes[3])
     {
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    "New candidates.");
+                    " New candidates.");
         for(int i=0; i<3; i++)
         {
             codesCandidates[i]=codes[i];
@@ -373,14 +371,14 @@ bool DraftHandler::areNewCards(QString codes[3])
         nextCount++;
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    "New candidates - " + QString::number(nextCount));
+                    " New candidates - " + QString::number(nextCount));
         return false;
     }
     else
     {
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    "New codes.");
+                    " New codes.");
         resetCodesCandidates();
         nextCount = 0;
         return true;
@@ -417,7 +415,9 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
         if(raritySample != rarity)
         {
-            emit pDebug("Different rarity codes: " + QString::number(raritySample) + "/" + QString::number(rarity));
+            emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                        codes[0] + "/" + codes[1] + "/" + codes[2] +
+                        " Different rarity codes: " + QString::number(raritySample) + "/" + QString::number(rarity));
             return false;
         }
     }
