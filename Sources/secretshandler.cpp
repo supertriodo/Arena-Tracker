@@ -88,11 +88,13 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
+//            activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
         case hunter:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
+//            activeSecret.children.append(SecretCard(BEAR_TRAP));
             activeSecret.children.append(SecretCard(SNIPE));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
@@ -102,6 +104,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
             activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
+//            activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(SPELLBENDER));
@@ -279,6 +282,7 @@ void SecretsHandler::playerMinionPlayed()
 void SecretsHandler::enemyMinionDead()
 {
     discardSecretOptionNow(DDUPLICATE);
+    discardSecretOptionNow(EFFIGY);
     discardSecretOptionNow(REDEMPTION);
 }
 
@@ -286,6 +290,12 @@ void SecretsHandler::enemyMinionDead()
 void SecretsHandler::avengeTested()
 {
     discardSecretOptionNow(AVENGE);
+}
+
+
+void SecretsHandler::cSpiritTested()
+{
+    discardSecretOptionNow(COMPETITIVE_SPIRIT);
 }
 
 
@@ -308,6 +318,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         {
             discardSecretOptionNow(ICE_BARRIER);
             discardSecretOptionNow(EXPLOSIVE_TRAP);
+            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(MISDIRECTION);//Ocultado por EXPLOSIVE_TRAP
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
             discardSecretOptionNow(NOBLE_SACRIFICE);
@@ -325,8 +336,9 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         if(isHeroTo)
         {
             discardSecretOptionNow(VAPORIZE);
-            discardSecretOption(ICE_BARRIER);//Ocultado por VAPORIZE
+            discardSecretOptionNow(ICE_BARRIER);
             discardSecretOptionNow(EXPLOSIVE_TRAP);
+            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(FREEZING_TRAP);//Ocultado por EXPLOSIVE_TRAP
             discardSecretOption(MISDIRECTION);//Ocultado por FREEZING_TRAP
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE

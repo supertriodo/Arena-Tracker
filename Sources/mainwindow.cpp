@@ -205,6 +205,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(enemyMinionDead()));
     connect(gameWatcher, SIGNAL(avengeTested()),
             secretsHandler, SLOT(avengeTested()));
+    connect(gameWatcher, SIGNAL(cSpiritTested()),
+            secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
 
@@ -712,9 +714,7 @@ void MainWindow::test()
 
 //TODO
 //Consejos iniciales
-//Crear archivo log con time.
 //Uso en construido.
-//Terminando log logWorker.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

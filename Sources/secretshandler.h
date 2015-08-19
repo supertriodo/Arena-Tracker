@@ -14,9 +14,11 @@
 #define REPENTANCE QString("EX1_379")
 #define REDEMPTION QString("EX1_136")
 #define EYE_FOR_AN_EYE QString("EX1_132")
+#define COMPETITIVE_SPIRIT QString("-")
 
 #define FREEZING_TRAP QString("EX1_611")
 #define EXPLOSIVE_TRAP QString("EX1_610")
+#define BEAR_TRAP QString("-")
 #define SNIPE QString("EX1_609")
 #define MISDIRECTION QString("EX1_533")
 #define SNAKE_TRAP QString("EX1_554")
@@ -24,6 +26,7 @@
 #define MIRROR_ENTITY QString("EX1_294")
 #define DDUPLICATE QString("FP1_018")
 #define ICE_BARRIER QString("EX1_289")
+#define EFFIGY QString("-")
 #define VAPORIZE QString("EX1_594")
 #define COUNTERSPELL QString("EX1_287")
 #define SPELLBENDER QString("tt_010")
@@ -87,6 +90,7 @@ public slots:
     void playerMinionPlayed();
     void enemyMinionDead();
     void avengeTested();
+    void cSpiritTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void setSynchronized();
 

@@ -229,6 +229,7 @@ void GameWatcher::processPower(QString &line)
                 if(arenaMode)
                 {
                     gameState = heroType1State;
+                    emit pDebug("GameState = heroType1State");
                     mulliganEnemyDone = false;
                     turn = turnReal = 0;
 
@@ -251,6 +252,7 @@ void GameWatcher::processPower(QString &line)
             {
                 hero1 = match->captured(1);
                 gameState = heroType2State;
+                emit pDebug("GameState = heroType2State");
             }
             break;
         case heroType2State:
@@ -258,6 +260,7 @@ void GameWatcher::processPower(QString &line)
             {
                 hero2 = match->captured(1);
                 gameState = playerName1State;
+                emit pDebug("GameState = playerName1State");
             }
             break;
         case playerName1State:
@@ -270,6 +273,7 @@ void GameWatcher::processPower(QString &line)
                     secretHero = getSecretHero(hero2, hero1);
                 }
                 gameState = playerName2State;
+                emit pDebug("GameState = playerName2State");
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -309,6 +313,9 @@ void GameWatcher::processPowerInGame(QString &line)
     {
         winnerPlayer = match->captured(1);
         createGameResult();
+
+        gameState = noGame;
+        emit pDebug("GameState = noGame");
     }
     //Roba carta
     else if(line.contains(QRegularExpression(
@@ -722,9 +729,15 @@ void GameWatcher::advanceTurn(bool playerDraw)
         turnReal = turn;
         emit pDebug("\nTurn: " + QString::number(turn) + " " + (playerTurn?"Player":"Enemy"));
 
-        if((firstPlayer==playerTag && turnReal%2==1) || (firstPlayer!=playerTag && turnReal%2==0))  isPlayerTurn=true;
-        else    isPlayerTurn=false;
+//        if((firstPlayer==playerTag && turnReal%2==1) || (firstPlayer!=playerTag && turnReal%2==0))  isPlayerTurn=true;
+//        else    isPlayerTurn=false;
+        isPlayerTurn = playerTurn;
 
+        if(synchronized && !isPlayerTurn && enemyMinions > 0)
+        {
+            emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions));
+            emit cSpiritTested();
+        }
     }
 }
 

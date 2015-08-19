@@ -86,7 +86,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
             cardsDownloading++;
         }
     }
-    emit pDebug("Num histograms BD:" + hearthArenaCodes.count());
+    emit pDebug("Num histograms BD:" + QString::number(hearthArenaCodes.count()));
 
     if(cardsDownloading==0) resumeDraft();
     else
@@ -321,19 +321,20 @@ void DraftHandler::captureDraft()
 
 bool DraftHandler::areNewCards(QString codes[3])
 {
-    emit pDebug("(" + QString::number(draftedCards.count()) + ") " + codes[0] + "/" + codes[1] + "/" + codes[2]);
     if((codes[0]==draftCards[0].code && codes[1]==draftCards[1].code) ||
         (codes[0]==draftCards[0].code && codes[2]==draftCards[2].code) ||
         (codes[1]==draftCards[1].code && codes[2]==draftCards[2].code))
     {
-        emit pDebug("No changes (2+=).");
         resetCodesCandidates();
+        nextCount = 0;
         selectMouseCard();
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
-        emit pDebug("Blank code.");
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2] +
+                    "Blank code.");
         if(draftedCards.count()>=29)
         {
             if(nextCount < 10)
@@ -347,14 +348,19 @@ bool DraftHandler::areNewCards(QString codes[3])
     }
     else if(!areSameRarity(codes))
     {
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2]);
         resetCodesCandidates();
+        nextCount = 0;
         return false;
     }
     else if(codes[0]!=codesCandidates[0] ||
             codes[1]!=codesCandidates[1] ||
             codes[2]!=codesCandidates[2])
     {
-        emit pDebug("New candidates.");
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2] +
+                    "New candidates.");
         for(int i=0; i<3; i++)
         {
             codesCandidates[i]=codes[i];
@@ -365,13 +371,18 @@ bool DraftHandler::areNewCards(QString codes[3])
     else if(nextCount < 3)
     {
         nextCount++;
-        emit pDebug("New candidates - " + QString::number(nextCount));
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2] +
+                    "New candidates - " + QString::number(nextCount));
         return false;
     }
     else
     {
-        emit pDebug("New codes.");
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2] +
+                    "New codes.");
         resetCodesCandidates();
+        nextCount = 0;
         return true;
     }
 }

@@ -103,6 +103,7 @@ signals:
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();
     void avengeTested();
+    void cSpiritTested();
     void enterArena();
     void leaveArena();
     void pLog(QString line);
