@@ -182,7 +182,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     //No puede haber dos secretos iguales
     discardSecretOptionNow(code);
 
-    emit pDebug("Secret revealed: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
+    emit pDebug("Secret revealed: " + code);
 }
 
 
@@ -193,7 +193,7 @@ void SecretsHandler::discardSecretOptionDelay()
     SecretTest secretTest = secretTests.dequeue();
     if(secretTest.secretRevealedLastSecond)
     {
-        emit pDebug("Option not discarded: " + secretTest.code + " Time: " + QDateTime::currentDateTime().toString("ss"));
+        emit pDebug("Option not discarded: " + secretTest.code + " (A secret revealed)");
         return;
     }
 
@@ -209,7 +209,7 @@ void SecretsHandler::discardSecretOptionNow(QString code)
         {
             if(it->children[i].code == code)
             {
-                emit pDebug("Option discarded: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
+                emit pDebug("Option discarded: " + code);
                 it->root.treeItem->removeChild(it->children[i].treeItem);
                 it->children.removeAt(i);
                 adjustSize();
@@ -233,7 +233,6 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
     secretTests.enqueue(secretTest);
 
     QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
-    emit pDebug("Discard in xs: " + code + " Time: " + QDateTime::currentDateTime().toString("ss"));
 }
 
 

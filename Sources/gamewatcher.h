@@ -68,9 +68,9 @@ private:
 //Metodos
 private:
     void createGameResult();
-    void processPower(QString &line);
-    void processPowerInGame(QString &line);
-    void processZone(QString &line);
+    void processPower(QString &line, qint64 numLine);
+    void processPowerInGame(QString &line, qint64 numLine);
+    void processZone(QString &line, qint64 numLine);
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
@@ -107,13 +107,13 @@ signals:
     void enterArena();
     void leaveArena();
     void pLog(QString line);
-    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="GameWatcher");
+    void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
 private slots:
     void checkAvenge();
 
 public slots:
-    void processLogLine(QString line);
+    void processLogLine(QString line, qint64 numLine);
     void setSynchronized();
 //    void setDeckRead();
 };

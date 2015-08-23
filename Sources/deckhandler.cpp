@@ -81,6 +81,7 @@ void DeckHandler::newDeckCard(QString code, int total)
         {
             found = true;
             deckCardList[i].total+=total;
+            deckCardList[i].remaining+=total;
             deckCardList[i].draw();
             break;
         }
@@ -90,6 +91,7 @@ void DeckHandler::newDeckCard(QString code, int total)
     {
         DeckCard deckCard(code);
         deckCard.total = total;
+        deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(deckCard);
         deckCard.draw();
@@ -198,7 +200,19 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
-        if(it->code == code)    it->draw();
+        if(it->code == code)
+        {
+            if(it->remaining > 0)
+            {
+                it->draw(false);
+            }
+            else
+            {
+                it->draw();
+                it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
+                                    CARD_SIZE, QIcon::Disabled, QIcon::On)));
+            }
+        }
     }
 }
 

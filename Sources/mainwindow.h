@@ -115,6 +115,7 @@ public slots:
     //MainWindow
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="MainWindow");
+    void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
     void confirmNewArenaDraft(QString hero);
 
 private slots:

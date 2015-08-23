@@ -32,6 +32,7 @@ private:
     void createTreeWidget();
     void setRowColor(QTreeWidgetItem *item, QColor color);
     bool isRowOk(QTreeWidgetItem *item);
+    void currentArenaToWhite();
 
 public:
     void setWebUploader(WebUploader *webUploader);

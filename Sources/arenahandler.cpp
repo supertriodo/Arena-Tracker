@@ -34,11 +34,11 @@ void ArenaHandler::createTreeWidget()
     QTreeWidget *treeWidget = ui->arenaTreeWidget;
     treeWidget->setColumnCount(5);
     treeWidget->setIconSize(QSize(32,32));
-    treeWidget->setColumnWidth(0, 120);
-    treeWidget->setColumnWidth(1, 80);
-    treeWidget->setColumnWidth(2, 60);
-    treeWidget->setColumnWidth(3, 60);
-    treeWidget->setColumnWidth(4, 60);
+    treeWidget->setColumnWidth(0, 110);//120
+    treeWidget->setColumnWidth(1, 50);//80
+    treeWidget->setColumnWidth(2, 40);//60
+    treeWidget->setColumnWidth(3, 40);//60
+    treeWidget->setColumnWidth(4, 1);//60
     treeWidget->header()->close();
 
     arenaHomeless = new QTreeWidgetItem(treeWidget);
@@ -62,18 +62,18 @@ void ArenaHandler::newGameResult(GameResult gameResult)
 {
     QTreeWidgetItem *item = showGameResult(gameResult);
 
-    if(webUploader==NULL)
-    {
-        setRowColor(item, WHITE);
-    }
-    else
+    if(webUploader!=NULL)
     {
         QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
         bool uploadSuccess;
         if(deckCardList != NULL)    uploadSuccess=webUploader->uploadNewGameResult(gameResult,deckCardList);
         else                            uploadSuccess=webUploader->uploadNewGameResult(gameResult);
 
-        if(uploadSuccess)   enableRefreshButton(false);
+        if(uploadSuccess)
+        {
+            enableRefreshButton(false);
+            currentArenaToWhite();
+        }
         else                setRowColor(item, RED);
     }
 }
@@ -148,7 +148,6 @@ bool ArenaHandler::newArena(QString hero)
 
     if(webUploader==NULL)
     {
-        setRowColor(arenaCurrent, WHITE);
     }
     else if(!webUploader->uploadNewArena(hero))
     {
@@ -190,7 +189,7 @@ void ArenaHandler::showNoArena()
 {
     if(noArena) return;
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
-    item->setText(0, "NO Arena");
+    item->setText(0, "No arena");
     setRowColor(item, GREEN);
     arenaCurrent = NULL;
     arenaCurrentReward = NULL;
@@ -209,21 +208,6 @@ void ArenaHandler::reshowArena(QString hero)
         return;
     }
     setRowColor(arenaCurrent, GREEN);
-
-    //Iniciamos a blanco todas las partidas que no esten en rojo
-    for(int i=0; i<arenaCurrent->childCount(); i++)
-    {
-        if(isRowOk(arenaCurrent->child(i)))
-        {
-            setRowColor(arenaCurrent->child(i), WHITE);
-        }
-    }
-
-    //Los rewards en verde (no se comprobaran)
-    if(arenaCurrentReward != NULL)
-    {
-        setRowColor(arenaCurrentReward, GREEN);
-    }
 }
 
 
@@ -256,8 +240,9 @@ void ArenaHandler::uploadCurrentArenaRewards()
     }
     else
     {
-        setRowColor(arenaCurrentReward, GREEN);
+        setRowColor(arenaCurrentReward, WHITE);
         enableRefreshButton(false);
+        currentArenaToWhite();
     }
 }
 
@@ -328,6 +313,16 @@ bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 
 void ArenaHandler::refresh()
 {
+    currentArenaToWhite();
+
+    emit pDebug("\nRefresh Button.");
+    ui->updateButton->setEnabled(false);
+    webUploader->refresh();
+}
+
+
+void ArenaHandler::currentArenaToWhite()
+{
     if(arenaCurrent != NULL)
     {
         if(isRowOk(arenaCurrent))   setRowColor(arenaCurrent, WHITE);
@@ -341,10 +336,6 @@ void ArenaHandler::refresh()
             }
         }
     }
-
-    emit pDebug("\nRefresh Button.");
-    ui->updateButton->setEnabled(false);
-    webUploader->refresh();
 }
 
 

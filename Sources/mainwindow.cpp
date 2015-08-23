@@ -157,8 +157,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
-    connect(gameWatcher, SIGNAL(pDebug(QString,DebugLevel,QString)),
-            this, SLOT(pDebug(QString,DebugLevel,QString)));
+    connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
     connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
             arenaHandler, SLOT(newGameResult(GameResult)));
@@ -243,8 +243,8 @@ void MainWindow::createLogLoader()
             this, SLOT(synchronizedDone()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
-    connect(logLoader, SIGNAL(newLogLineRead(QString)),
-            gameWatcher, SLOT(processLogLine(QString)));
+    connect(logLoader, SIGNAL(newLogLineRead(QString,qint64)),
+            gameWatcher, SLOT(processLogLine(QString,qint64)));
     connect(logLoader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -554,9 +554,20 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
 
 void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 {
+    pDebug(line, 0, debugLevel, file);
+}
+
+
+void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
+{
     (void)debugLevel;
     QString logLine;
     QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
+
+    if(numLine > 0)
+    {
+        file += "(" + QString::number(numLine) + ")";
+    }
     if(line[0]==QChar('\n'))
     {
         line.remove(0, 1);
@@ -715,9 +726,16 @@ void MainWindow::test()
 //TODO
 //Consejos iniciales
 //Uso en construido.
+//Recuperar reading deck.
+//Fast load
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
+
+//REWARDS
+//Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
+//Esto reinicia las variables y si luego subimos los rewards va a fallar porque no hay arenaCurrent.
+//Para reactivar los rewards habra que arreglar esto. Reactivar paso de gameResultSent a reloadArenaCurrent en replyFinished
 
 //NUEVAS CARTAS
 //Update Json cartas

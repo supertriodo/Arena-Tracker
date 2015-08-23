@@ -48,7 +48,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 
     //LogWorker signal reemit
-    void newLogLineRead(QString line);
+    void newLogLineRead(QString line, qint64 numLine);
 
 
 //Slots
@@ -57,7 +57,7 @@ private slots:
     void sendLogWorker();
 
     //LogWorker signal reemit
-    void emitNewLogLineRead(QString line);
+    void emitNewLogLineRead(QString line, qint64 numLine);
 };
 
 #endif // LOGLOADER_H

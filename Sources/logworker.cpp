@@ -4,6 +4,7 @@
 LogWorker::LogWorker(QObject *parent, const QString &logPath) : QObject(parent)
 {
     this->logSeek = 0;
+    this->logNumLine = 0;
     this->logPath = logPath;
 }
 
@@ -37,7 +38,7 @@ void LogWorker::readLog()
             return;
         }
 
-        emit newLogLineRead(QString(line));
+        emit newLogLineRead(QString(line), ++logNumLine);
 
         logSeek += lineLenght + 1;
         emit seekChanged(logSeek);
@@ -50,5 +51,6 @@ void LogWorker::readLog()
 void LogWorker::resetSeek()
 {
     logSeek = 0;
+    logNumLine = 0;
 }
 

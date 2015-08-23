@@ -28,8 +28,8 @@ void LogLoader::init(qint64 &logSize)
         updateTime = 1000;
 
         logWorker = new LogWorker(this, logPath);
-        connect(logWorker, SIGNAL(newLogLineRead(QString)),
-                this, SLOT(emitNewLogLineRead(QString)));
+        connect(logWorker, SIGNAL(newLogLineRead(QString, qint64)),
+                this, SLOT(emitNewLogLineRead(QString, qint64)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
                 this, SLOT(updateSeek(qint64)));
         connect(logWorker, SIGNAL(pLog(QString)),
@@ -309,8 +309,8 @@ void LogLoader::updateSeek(qint64 logSeek)
 
 
 //LogWorker signal reemit
-void LogLoader::emitNewLogLineRead(QString line)
+void LogLoader::emitNewLogLineRead(QString line, qint64 numLine)
 {
     updateTime = 500;
-    emit newLogLineRead(line);
+    emit newLogLineRead(line, numLine);
 }

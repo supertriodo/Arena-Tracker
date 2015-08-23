@@ -438,9 +438,11 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
         gameResultPostList->removeFirst();
 
-        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
-        emit pDebug("Reload arena in progress: " + QString::number(arenaCurrentID));
-        webState = reloadArenaCurrent;
+        checkArenaReload();
+
+//        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
+//        emit pDebug("Reload arena in progress: " + QString::number(arenaCurrentID));
+//        webState = reloadArenaCurrent;
     }
     else if(webState == reloadArenaCurrent)
     {

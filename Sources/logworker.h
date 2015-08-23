@@ -13,7 +13,7 @@ public:
 
 //Variables
 private:
-    qint64 logSeek;
+    qint64 logSeek, logNumLine;
     QString logPath;
 
 //Metodos
@@ -22,7 +22,7 @@ public:
     void resetSeek();
 
 signals:
-    void newLogLineRead(QString line);
+    void newLogLineRead(QString line, qint64 numLine);
     void seekChanged(qint64 logSeek);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogWorker");
