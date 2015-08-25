@@ -451,8 +451,9 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     //H2
     else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
     {
-        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = _2X2;
-        else                                newWindowsFormation = H2;
+//        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = _2X2;
+//        else                                newWindowsFormation = H2;
+        newWindowsFormation = H2;
     }
     //H3
     else
@@ -728,6 +729,7 @@ void MainWindow::test()
 //Uso en construido.
 //Recuperar reading deck.
 //Fast load
+//Tooltip buttons abajo.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

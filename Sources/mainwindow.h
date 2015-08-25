@@ -15,8 +15,8 @@
 #include <QMainWindow>
 #include <QJsonObject>
 
-#define DIVIDE_TABS_H 700
-#define DIVIDE_TABS_H2 1000
+#define DIVIDE_TABS_H 600//700 Rewards
+#define DIVIDE_TABS_H2 900//1000 Rewards
 #define DIVIDE_TABS_V 900
 
 
