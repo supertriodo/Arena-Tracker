@@ -30,8 +30,11 @@ private:
     static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
+private:
+    QColor getRarityColor(QString code);
+
 protected:
-    QPixmap draw(QString code, uint total);
+    QPixmap draw(QString code, uint total, bool drawRarity=false);
 
 public:
     void draw(bool drawTotal);
