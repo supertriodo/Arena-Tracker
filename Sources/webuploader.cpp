@@ -165,17 +165,17 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 
 void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
-    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
-    {
-        if(it->total > 0)
-        {
-            QString name = (*cardsJson)[it->code].value("name").toString();
-            arenaCards.append(QString::number(it->total) + " " + name + "\n");
-        }
-    }
+//    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
+//    {
+//        if(it->total > 0)
+//        {
+//            QString name = (*cardsJson)[it->code].value("name").toString();
+//            arenaCards.append(QString::number(it->total) + " " + name + "\n");
+//        }
+//    }
 
-    emit pDebug("Building Deck string:\n" + arenaCards);
-    emit pDebug("New deck waiting for upload.");
+//    emit pDebug("Building Deck string:\n" + arenaCards);
+//    emit pDebug("New deck waiting for upload.");
 }
 
 

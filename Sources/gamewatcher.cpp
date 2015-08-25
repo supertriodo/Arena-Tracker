@@ -9,7 +9,7 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
     arenaMode = false;
-//    deckRead = false;
+    deckRead = false;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
 
@@ -45,10 +45,20 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
     {
         if(line.startsWith("[Bob] ---Register"))
         {
+            if(gameState == readingDeck)
+            {
+                endReadingDeck();
+            }
+
             if(line.startsWith("[Bob] ---RegisterScreenForge---"))
             {
                 arenaMode = true;
                 emit enterArena();
+
+                if(synchronized && !deckRead && gameState == noGame)
+                {
+                    startReadingDeck();
+                }
             }
             else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
                     line.startsWith("[Bob] ---RegisterFriendChallenge---"))
@@ -79,11 +89,6 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 arenaMode = true;//Testing
 #endif
             }
-
-//            if(gameState == readingDeck)
-//            {
-//                endReadingDeck();
-//            }
         }
     }
     else if(line.startsWith("[Rachelle]"))
@@ -164,67 +169,82 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
 //            }
 //        }
 //    }
-//    else if(line.startsWith("[Asset]"))
-//    {
-//        if((gameState == readingDeck) &&
-//            line.contains(QRegularExpression(
-//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-//        {
-//            QString code = match->captured(1);
-//            //Hero portraits
-//            if(code.contains("HERO"))
-//            {
-//                emit pDebug("Desechamos HERO";
-//                endReadingDeck();
-//                return;
-//            }
-//            //Hero powers
-//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-//            {
-//                emit pDebug("Desechamos HERO POWER";
-//                endReadingDeck();
-//                return;
-//            }
-//            emit newDeckCard(code);
-//        }
-//    }
+    else if(line.startsWith("[Asset]"))
+    {
+        if((gameState == readingDeck) &&
+            line.contains(QRegularExpression(
+                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+        {
+            QString code = match->captured(1);
+            //Hero portraits
+            if(code.contains("HERO"))
+            {
+                emit pDebug("Discard HERO card", numLine);
+                endReadingDeck();
+                return;
+            }
+            //Hero powers
+            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+            {
+                emit pDebug("Discard HERO POWER", numLine);
+                endReadingDeck();
+                return;
+            }
+            emit pDebug("Read code: " + code, numLine);
+            emit newDeckCard(code);
+        }
+    }
 }
 
 
-//void GameWatcher::endReadingDeck()
-//{
-//    deckRead = true;
-//    gameState = noGame;
-//    emit pDebug("GameState = noGame";
-//    emit pDebug("Final leer deck.";
-//    emit sendLog(tr("Log: Active deck read."));
-//}
+void GameWatcher::startReadingDeck()
+{
+    if(gameState != noGame || deckRead) return;
+    gameState = readingDeck;
+    emit pDebug("GameState = readingDeck", 0);
+    emit pDebug("Start reading deck.", 0);
+}
 
 
-//void GameWatcher::setDeckRead()
-//{
-//    deckRead = true;
-//    if(gameState == readingDeck)
-//    {
-//        endReadingDeck();
-//    }
-//}
+void GameWatcher::endReadingDeck()
+{
+    if(gameState != readingDeck)    return;
+    deckRead = true;
+    gameState = noGame;
+    emit pDebug("GameState = noGame", 0);
+    emit pDebug("End reading deck.", 0);
+    emit pLog(tr("Log: Active deck read."));
+}
+
+
+void GameWatcher::setDeckRead(bool value)
+{
+    deckRead = value;
+    if(deckRead && gameState == readingDeck)
+    {
+        endReadingDeck();
+    }
+    if(!deckRead && gameState == noGame && arenaMode)
+    {
+        startReadingDeck();
+    }
+}
 
 
 void GameWatcher::processPower(QString &line, qint64 numLine)
 {
     switch(gameState)
     {
-//        case readingDeck:
+        case readingDeck:
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
-//                if(gameState == readingDeck)
-//                {
-//                    endReadingDeck();
-//                }
+                if(gameState == readingDeck)
+                {
+                    endReadingDeck();
+                }
 
                 if(arenaMode)
                 {

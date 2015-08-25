@@ -73,7 +73,7 @@ public:
 signals:
     void checkCardImage(QString code);
     void newDeckCard(QString code);
-    void deckComplete();
+    void draftEnded();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 

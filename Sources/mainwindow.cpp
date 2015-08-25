@@ -51,7 +51,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::resetDeckFromWeb()
 {
-//    gameWatcher->setDeckRead();
+    gameWatcher->setDeckRead();
     deckHandler->reset();
 }
 
@@ -84,7 +84,7 @@ void MainWindow::createDraftHandler()
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCard(QString)));
-    connect(draftHandler, SIGNAL(deckComplete()),
+    connect(draftHandler, SIGNAL(draftEnded()),
             this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
@@ -170,7 +170,7 @@ void MainWindow::createGameWatcher()
             arenaHandler, SLOT(uploadCurrentArenaRewards()));
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
-            deckHandler, SLOT(newDeckCard(QString)));
+            deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
             deckHandler, SLOT(showPlayerCardDraw(QString)));
     //connect en synchronizedDone
@@ -711,10 +711,16 @@ void MainWindow::closeLogFile()
 
 void MainWindow::uploadDeck()
 {
-    if(webUploader == NULL) return;
-
     QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
-    webUploader->uploadDeck(deckCardList);
+    if(deckCardList != NULL)
+    {
+        gameWatcher->setDeckRead();
+        if(webUploader != NULL)     webUploader->uploadDeck(deckCardList);
+    }
+    else
+    {
+        gameWatcher->setDeckRead(false);
+    }
 }
 
 
@@ -727,12 +733,14 @@ void MainWindow::test()
 //TODO
 //Consejos iniciales
 //Uso en construido.
-//Recuperar reading deck.
 //Fast load
 //Tooltip buttons abajo.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
+
+//DECK IN ARENA MASTERY
+//Create arena cards comentado en webUploader.
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.

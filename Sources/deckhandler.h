@@ -41,7 +41,8 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
 public slots:
-    void newDeckCard(QString card, int total=1);
+    void newDeckCardAsset(QString code);
+    void newDeckCard(QString card, int total=1, bool noAdd=false);
     void showPlayerCardDraw(QString code);
     void enableDeckButtons();
     void cardTotalMin();

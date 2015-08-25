@@ -232,8 +232,8 @@ void DraftHandler::endDraft()
         }
     }
 
-    //Upload
-    if(draftedCards.count() == 30)  emit deckComplete();
+    //Upload or complete deck with assets
+    emit draftEnded();
 
     //Oculta tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));

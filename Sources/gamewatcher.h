@@ -42,7 +42,7 @@ public:
 
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     inGameState, inRewards };//, drafting, readingDeck };
+                     inGameState, inRewards, readingDeck };
 
 //Variables
 private:
@@ -54,7 +54,7 @@ private:
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     bool isPlayerTurn;
     bool arenaMode;
-//    bool deckRead;
+    bool deckRead;
     QRegularExpressionMatch *match;
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
     //no aparezcan como parte del nuevo turno
@@ -74,7 +74,8 @@ private:
     QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
-//    void endReadingDeck();
+    void startReadingDeck();
+    void endReadingDeck();
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
@@ -115,7 +116,7 @@ private slots:
 public slots:
     void processLogLine(QString line, qint64 numLine);
     void setSynchronized();
-//    void setDeckRead();
+    void setDeckRead(bool value=true);
 };
 
 #endif // GAMEWATCHER_H
