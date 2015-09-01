@@ -72,6 +72,8 @@ private:
     void writeSettings();
     void completeUI();
     void completeToolButton();
+    void addDraftMenu(QMenu *menu);
+    void addClearDeckMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -79,6 +81,7 @@ private:
     void resetSettings();
     void createLogFile();
     void closeLogFile();
+    void resetDeck(bool deckRead=false);
     void test();
 
 //Override events
@@ -116,10 +119,11 @@ public slots:
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="MainWindow");
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
-    void confirmNewArenaDraft(QString hero);
 
 private slots:
     void synchronizedDone();
+    void confirmNewArenaDraft(QString hero);
+    void confirmClearDeck();
 };
 
 #endif // MAINWINDOW_H

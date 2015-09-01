@@ -51,7 +51,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::resetDeckFromWeb()
 {
-    gameWatcher->setDeckRead();
+    resetDeck(true);
+}
+
+
+void MainWindow::resetDeck(bool deckRead)
+{
+    gameWatcher->setDeckRead(deckRead);
     deckHandler->reset();
 }
 
@@ -363,9 +369,8 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::completeToolButton()
+void MainWindow::addDraftMenu(QMenu *menu)
 {
-    QMenu *menu = new QMenu(ui->toolButton);
     QMenu *newArenaMenu = new QMenu("New arena/draft", menu);
 
     QSignalMapper* mapper = new QSignalMapper(this);
@@ -381,7 +386,6 @@ void MainWindow::completeToolButton()
     connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
 
     menu->addMenu(newArenaMenu);
-    ui->toolButton->setMenu(menu);
 }
 
 
@@ -400,6 +404,38 @@ void MainWindow::confirmNewArenaDraft(QString hero)
         arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
     }
+}
+
+
+void MainWindow::addClearDeckMenu(QMenu *menu)
+{
+    QAction *action = menu->addAction("Clear deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(confirmClearDeck()));
+}
+
+
+void MainWindow::confirmClearDeck()
+{
+    int ret = QMessageBox::question(this, tr("Clear deck"),
+                                   "Do you want to clear your deck?",
+                                   QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(ret == QMessageBox::Ok)
+    {
+        pDebug("Manual clear deck");
+        pLog(tr("Menu: Clear deck"));
+        resetDeck();
+    }
+}
+
+
+void MainWindow::completeToolButton()
+{
+    QMenu *menu = new QMenu(ui->toolButton);
+    addDraftMenu(menu);
+    addClearDeckMenu(menu);
+
+    ui->toolButton->setMenu(menu);
 }
 
 
@@ -735,6 +771,10 @@ void MainWindow::test()
 //Uso en construido.
 //Fast load
 //Tooltip buttons abajo.
+//Never split
+//Clear deck
+//Robadas verde
+//Transparencias
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

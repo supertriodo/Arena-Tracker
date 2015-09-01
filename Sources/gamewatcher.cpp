@@ -226,10 +226,6 @@ void GameWatcher::setDeckRead(bool value)
     {
         endReadingDeck();
     }
-    if(!deckRead && gameState == noGame && arenaMode)
-    {
-        startReadingDeck();
-    }
 }
 
 
