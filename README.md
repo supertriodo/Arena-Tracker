@@ -37,7 +37,7 @@ After your first game:
 
 If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
-or on email: triodo@gmail.com
+or on email: arenatracker@gmail.com
 
 
 ## FAQ
