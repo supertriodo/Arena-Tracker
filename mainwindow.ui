@@ -699,6 +699,9 @@
             <property name="selectionMode">
              <enum>QAbstractItemView::NoSelection</enum>
             </property>
+            <property name="indentation">
+             <number>5</number>
+            </property>
             <property name="itemsExpandable">
              <bool>false</bool>
             </property>

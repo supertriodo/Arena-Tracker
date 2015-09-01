@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     atLogFile = NULL;
 
     createLogFile();
-    completeUI();
     readSettings();
+    completeUI();
     initCardsJson();
 
     createCardDownloader();
@@ -371,7 +371,7 @@ void MainWindow::completeHeroButtons()
 
 void MainWindow::addDraftMenu(QMenu *menu)
 {
-    QMenu *newArenaMenu = new QMenu("New arena/draft", menu);
+    QMenu *newArenaMenu = new QMenu("New arena/draft", this);
 
     QSignalMapper* mapper = new QSignalMapper(this);
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
@@ -429,10 +429,48 @@ void MainWindow::confirmClearDeck()
 }
 
 
+void MainWindow::addSplitMenu(QMenu *menu)
+{
+    QAction *action1 = new QAction("Auto", this);
+    QAction *action2 = new QAction("Never", this);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    connect(action1, SIGNAL(triggered()), this, SLOT(splitWindowAuto()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(splitWindowNever()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    this->splitWindow?action1->setChecked(true):action2->setChecked(true);
+
+    QMenu *windowSplitMenu = new QMenu("Window split", this);
+    windowSplitMenu->addAction(action1);
+    windowSplitMenu->addAction(action2);
+    menu->addMenu(windowSplitMenu);
+}
+
+
+void MainWindow::splitWindowAuto()
+{
+    this->splitWindow = true;
+    QResizeEvent *event = new QResizeEvent(this->size(), this->size());
+    resizeTabWidgets(event);
+}
+
+
+void MainWindow::splitWindowNever()
+{
+    this->splitWindow = false;
+    QResizeEvent *event = new QResizeEvent(this->size(), this->size());
+    resizeTabWidgets(event);
+}
+
+
 void MainWindow::completeToolButton()
 {
-    QMenu *menu = new QMenu(ui->toolButton);
+    QMenu *menu = new QMenu(this);
     addDraftMenu(menu);
+    addSplitMenu(menu);
     addClearDeckMenu(menu);
 
     ui->toolButton->setMenu(menu);
@@ -444,6 +482,7 @@ void MainWindow::readSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     QPoint pos = settings.value("pos", QPoint(0,0)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
+    this->splitWindow = settings.value("splitWindow", true).toBool();
     this->windowsFormation = none;
     resize(size);
     move(pos);
@@ -455,6 +494,7 @@ void MainWindow::writeSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
+    settings.setValue("splitWindow", this->splitWindow);
 }
 
 
@@ -475,7 +515,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::resizeTabWidgets(QResizeEvent *event)
 {
     QSize newSize = event->size();
-
     WindowsFormation newWindowsFormation;
 
     //H1
@@ -496,6 +535,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     {
         newWindowsFormation = H3;
     }
+
+    if(!this->splitWindow)  newWindowsFormation = H1;
 
     if(newWindowsFormation == windowsFormation) return;
     windowsFormation = newWindowsFormation;
@@ -775,6 +816,7 @@ void MainWindow::test()
 //Clear deck
 //Robadas verde
 //Transparencias
+//Check new version
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)

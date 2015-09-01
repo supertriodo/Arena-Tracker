@@ -54,6 +54,7 @@ private:
     ResizeButton *resizeButton;
     WindowsFormation windowsFormation;
     QFile* atLogFile;
+    bool splitWindow;
 
 
 
@@ -74,6 +75,7 @@ private:
     void completeToolButton();
     void addDraftMenu(QMenu *menu);
     void addClearDeckMenu(QMenu *menu);
+    void addSplitMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -124,6 +126,8 @@ private slots:
     void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
     void confirmClearDeck();
+    void splitWindowAuto();
+    void splitWindowNever();
 };
 
 #endif // MAINWINDOW_H
