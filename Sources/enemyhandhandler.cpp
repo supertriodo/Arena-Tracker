@@ -4,6 +4,8 @@
 EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
 {
     this->ui = ui;
+    this->inGame = false;
+    this->transparent = false;
 
     completeUI();
 }
@@ -84,9 +86,8 @@ void EnemyHandHandler::redrawDownloadedCardImage(QString code)
 
 void EnemyHandHandler::lockEnemyInterface()
 {
-    ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
-    ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
-    ui->tabEnemy->repaint();
+    this->inGame = true;
+    updateTransparency();
 
     reset();
 }
@@ -94,9 +95,31 @@ void EnemyHandHandler::lockEnemyInterface()
 
 void EnemyHandHandler::unlockEnemyInterface()
 {
-    ui->enemyHandListWidget->setStyleSheet("");
-    ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
-    ui->tabEnemy->repaint();
-
-    reset();
+    this->inGame = false;
+    updateTransparency();
 }
+
+
+void EnemyHandHandler::updateTransparency()
+{
+    if(inGame && transparent)
+    {
+        ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
+        ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
+        ui->tabEnemy->repaint();
+    }
+    else
+    {
+        ui->enemyHandListWidget->setStyleSheet("");
+        ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabEnemy->repaint();
+    }
+}
+
+
+void EnemyHandHandler::setTransparent(bool value)
+{
+    this->transparent = value;
+    updateTransparency();
+}
+

@@ -15,8 +15,8 @@
 #include <QMainWindow>
 #include <QJsonObject>
 
-#define DIVIDE_TABS_H 600//700 Rewards
-#define DIVIDE_TABS_H2 900//1000 Rewards
+#define DIVIDE_TABS_H 550//700 Rewards
+#define DIVIDE_TABS_H2 850//1000 Rewards
 #define DIVIDE_TABS_V 900
 
 
@@ -55,6 +55,7 @@ private:
     WindowsFormation windowsFormation;
     QFile* atLogFile;
     bool splitWindow;
+    bool transparent;
 
 
 
@@ -76,6 +77,7 @@ private:
     void addDraftMenu(QMenu *menu);
     void addClearDeckMenu(QMenu *menu);
     void addSplitMenu(QMenu *menu);
+    void addTransparentMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -128,6 +130,8 @@ private slots:
     void confirmClearDeck();
     void splitWindowAuto();
     void splitWindowNever();
+    void transparentAuto();
+    void transparentNever();
 };
 
 #endif // MAINWINDOW_H

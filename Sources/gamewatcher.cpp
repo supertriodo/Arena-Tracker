@@ -53,6 +53,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             if(line.startsWith("[Bob] ---RegisterScreenForge---"))
             {
                 arenaMode = true;
+                emit pDebug("Entering arena.", numLine);
                 emit enterArena();
 
                 if(synchronized && !deckRead && gameState == noGame)
@@ -84,6 +85,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             else
             {
                 arenaMode = false;
+                emit pDebug("Leaving arena.", numLine);
                 emit leaveArena();
 #ifdef QT_DEBUG
                 arenaMode = true;//Testing
@@ -333,41 +335,41 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         gameState = noGame;
         emit pDebug("GameState = noGame", numLine);
     }
-    //Roba carta
-    else if(line.contains(QRegularExpression(
-            "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
-            ), match))
-    {
-        emit pDebug("Player: Starting card drawn: " + match->captured(1), numLine);
-        if(synchronized)    emit playerCardDraw(match->captured(1));
-    }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
             ), match))
     {
         turn = match->captured(1).toInt();
     }
-    //Enemy mulligan
-    else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
-            ), match))
-    {
-        if(!mulliganEnemyDone && match->captured(1) != playerTag)
-        {
-            emit pDebug("Enemy mulligan end.", numLine);
-            mulliganEnemyDone = true;
-            if(firstPlayer == playerTag)
-            {
-                //Convertir ultima carta en moneda enemiga
-                emit lastHandCardIsCoin();
-            }
-        }
-    }
-
-    //SECRETOS
     else if(synchronized)
     {
-        //Jugador juega carta con objetivo
+        //Jugador roba carta inicial
         if(line.contains(QRegularExpression(
+                "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
+                ), match))
+        {
+            emit pDebug("Player: Starting card drawn: " + match->captured(1), numLine);
+            emit playerCardDraw(match->captured(1));
+        }
+        //Enemigo mulligan
+        else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
+                ), match))
+        {
+            if(!mulliganEnemyDone && match->captured(1) != playerTag)
+            {
+                emit pDebug("Enemy mulligan end.", numLine);
+                mulliganEnemyDone = true;
+                if(firstPlayer == playerTag)
+                {
+                    //Convertir ultima carta en moneda enemiga
+                    emit lastHandCardIsCoin();
+                }
+            }
+        }
+
+        //SECRETOS
+        //Jugador accion con objetivo
+        else if(line.contains(QRegularExpression(
             "GameState\\.DebugPrintPower\\(\\) - ACTION_START "
             "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "BlockType=(\\w+) Index=(-?\\d+) "
@@ -457,7 +459,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 void GameWatcher::processZone(QString &line, qint64 numLine)
 {
-    if(gameState == inGameState)
+    if(gameState == inGameState && synchronized)
     {
         //Carta desconocida
         if(line.contains(QRegularExpression(
@@ -553,7 +555,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     emit pDebug("Enemy: Spell played: " + name + " ID: " + id, numLine);
                 }
                 //Enemigo juega esbirro
-                else if(synchronized && (zoneTo == "OPPOSING PLAY"))
+                else if(zoneTo == "OPPOSING PLAY")
                 {
                     enemyMinions++;
                     emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
@@ -583,71 +585,68 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 advanceTurn(true);
                 emit pDebug("Player: Card drawn: " + name, numLine);
-                if(synchronized)    emit playerCardDraw(cardId);
+                emit playerCardDraw(cardId);
             }
 
 
             //SECRETOS
-            else if(synchronized)
+            //Jugador juega carta
+            else if(zoneFrom == "FRIENDLY HAND")
             {
-                //Jugador juega carta
-                if(zoneFrom == "FRIENDLY HAND")
+                //Jugador juega hechizo
+                if(zoneTo.isEmpty())
                 {
-                    //Jugador juega hechizo
-                    if(zoneTo.isEmpty())
-                    {
-                        emit pDebug("Player: Spell played: " + name, numLine);
-                        if(isPlayerTurn)    emit playerSpellPlayed();
-                    }
-                    //Jugador juega esbirro
-                    else if(zoneTo == "FRIENDLY PLAY")
-                    {
-                        emit pDebug("Player: Minion played: " + name, numLine);
-                        if(isPlayerTurn)    emit playerMinionPlayed();
-                    }
-                    //Jugador juega arma
-                    else if(zoneTo == "FRIENDLY PLAY (Weapon)")
-                    {
-                        emit pDebug("Player: Weapon played: " + name, numLine);
-                    }
+                    emit pDebug("Player: Spell played: " + name, numLine);
+                    if(isPlayerTurn)    emit playerSpellPlayed();
                 }
-
-                //Enemigo esbirro muere
-                else if(zoneFrom == "OPPOSING PLAY" && zoneTo == "OPPOSING GRAVEYARD")
+                //Jugador juega esbirro
+                else if(zoneTo == "FRIENDLY PLAY")
                 {
-                    enemyMinions--;
-                    emit pDebug("Enemy: Minion dead: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+                    emit pDebug("Player: Minion played: " + name, numLine);
+                    if(isPlayerTurn)    emit playerMinionPlayed();
+                }
+                //Jugador juega arma
+                else if(zoneTo == "FRIENDLY PLAY (Weapon)")
+                {
+                    emit pDebug("Player: Weapon played: " + name, numLine);
+                }
+            }
 
-                    if(synchronized && isPlayerTurn)
+            //Enemigo esbirro muere
+            else if(zoneFrom == "OPPOSING PLAY" && zoneTo == "OPPOSING GRAVEYARD")
+            {
+                enemyMinions--;
+                emit pDebug("Enemy: Minion dead: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+
+                if(isPlayerTurn)
+                {
+                    emit enemyMinionDead();
+                    if(enemyMinionsAliveForAvenge == -1)
                     {
-                        emit enemyMinionDead();
-                        if(enemyMinionsAliveForAvenge == -1)
+                        if(cardId == MAD_SCIENTIST)
                         {
-                            if(cardId == MAD_SCIENTIST)
-                            {
-                                emit pDebug("Skip secret testing.", 0);
-                            }
-                            else
-                            {
-                                enemyMinionsAliveForAvenge = enemyMinions;
-                                QTimer::singleShot(1000, this, SLOT(checkAvenge()));
-                            }
+                            emit pDebug("Skip secret testing.", 0);
                         }
-                        else    enemyMinionsAliveForAvenge--;
+                        else
+                        {
+                            enemyMinionsAliveForAvenge = enemyMinions;
+                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                        }
                     }
+                    else    enemyMinionsAliveForAvenge--;
                 }
+            }
 
-                //Jugador esbirro muere
-                else if(zoneFrom == "FRIENDLY PLAY" && zoneTo == "FRIENDLY GRAVEYARD")
-                {
-                    emit pDebug("Player: Minion dead: " + name, numLine);
-                }
+            //Jugador esbirro muere
+            else if(zoneFrom == "FRIENDLY PLAY" && zoneTo == "FRIENDLY GRAVEYARD")
+            {
+                emit pDebug("Player: Minion dead: " + name, numLine);
             }
         }
 
 
         //Enemigo esbirro cambia pos
-        else if(synchronized && line.contains(QRegularExpression(
+        else if(line.contains(QRegularExpression(
             "\\[name=(.*) id=\\d+ zone=PLAY zonePos=(\\d+) cardId=\\w+ player=(\\d+)\\] pos from"
             ), match))
         {

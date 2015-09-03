@@ -179,7 +179,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
             deckHandler, SLOT(showPlayerCardDraw(QString)));
-    //connect en synchronizedDone
+    connect(gameWatcher, SIGNAL(startGame()),
+            deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
             deckHandler, SLOT(unlockDeckInterface()));
 
@@ -189,7 +190,8 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(showEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
-    //connect en synchronizedDone
+    connect(gameWatcher, SIGNAL(startGame()),
+            enemyHandHandler, SLOT(lockEnemyInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
             enemyHandHandler, SLOT(unlockEnemyInterface()));
 
@@ -270,11 +272,8 @@ void MainWindow::synchronizedDone()
     createWebUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
-
-    connect(gameWatcher, SIGNAL(startGame()),
-            deckHandler, SLOT(lockDeckInterface()));
-    connect(gameWatcher, SIGNAL(startGame()),
-            enemyHandHandler, SLOT(lockEnemyInterface()));
+    deckHandler->setTransparent(this->transparent);
+    enemyHandHandler->setTransparent(this->transparent);
 
     //Test
 #ifdef QT_DEBUG
@@ -466,11 +465,49 @@ void MainWindow::splitWindowNever()
 }
 
 
+void MainWindow::addTransparentMenu(QMenu *menu)
+{
+    QAction *action1 = new QAction("Auto", this);
+    QAction *action2 = new QAction("Never", this);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    connect(action1, SIGNAL(triggered()), this, SLOT(transparentAuto()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(transparentNever()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    this->transparent?action1->setChecked(true):action2->setChecked(true);
+
+    QMenu *transparentMenu = new QMenu("Transparency", this);
+    transparentMenu->addAction(action1);
+    transparentMenu->addAction(action2);
+    menu->addMenu(transparentMenu);
+}
+
+
+void MainWindow::transparentAuto()
+{
+    this->transparent = true;
+    deckHandler->setTransparent(true);
+    enemyHandHandler->setTransparent(true);
+}
+
+
+void MainWindow::transparentNever()
+{
+    this->transparent = false;
+    deckHandler->setTransparent(false);
+    enemyHandHandler->setTransparent(false);
+}
+
+
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
     addDraftMenu(menu);
     addSplitMenu(menu);
+    addTransparentMenu(menu);
     addClearDeckMenu(menu);
 
     ui->toolButton->setMenu(menu);
@@ -483,6 +520,7 @@ void MainWindow::readSettings()
     QPoint pos = settings.value("pos", QPoint(0,0)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     this->splitWindow = settings.value("splitWindow", true).toBool();
+    this->transparent = settings.value("transparent", true).toBool();
     this->windowsFormation = none;
     resize(size);
     move(pos);
@@ -495,6 +533,7 @@ void MainWindow::writeSettings()
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("splitWindow", this->splitWindow);
+    settings.setValue("transparent", this->transparent);
 }
 
 
@@ -551,7 +590,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     {
         case none:
         case H1:
-            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);//Reactivar con rewards
             moveTabTo(ui->tabArena, ui->tabWidget);
             moveTabTo(ui->tabDeck, ui->tabWidget);
             moveTabTo(ui->tabEnemy, ui->tabWidget);
@@ -560,7 +599,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case H2:
-            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
             moveTabTo(ui->tabArena, ui->tabWidget);
             moveTabTo(ui->tabDeck, ui->tabWidget);
             moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
@@ -570,7 +609,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case H3:
-            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
             moveTabTo(ui->tabArena, ui->tabWidget);
             moveTabTo(ui->tabDeck, ui->tabWidgetH2);
             moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
@@ -581,7 +620,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case V2:
-            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
             moveTabTo(ui->tabArena, ui->tabWidget);
             moveTabTo(ui->tabDeck, ui->tabWidgetV1);
             moveTabTo(ui->tabEnemy, ui->tabWidget);
@@ -591,7 +630,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case _2X2:
-            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
             moveTabTo(ui->tabArena, ui->tabWidget);
             moveTabTo(ui->tabDeck, ui->tabWidgetV2);
             moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
@@ -810,16 +849,13 @@ void MainWindow::test()
 //TODO
 //Consejos iniciales
 //Uso en construido.
-//Fast load
 //Tooltip buttons abajo.
-//Never split
-//Clear deck
 //Robadas verde
 //Transparencias
 //Check new version
 
 //BUGS CONOCIDOS
-//Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl)
+//Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
 
 //DECK IN ARENA MASTERY
 //Create arena cards comentado en webUploader.
@@ -828,6 +864,7 @@ void MainWindow::test()
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
 //Esto reinicia las variables y si luego subimos los rewards va a fallar porque no hay arenaCurrent.
 //Para reactivar los rewards habra que arreglar esto. Reactivar paso de gameResultSent a reloadArenaCurrent en replyFinished
+//Descomentar en resizeTabWidgets (adjustToContents)
 
 //NUEVAS CARTAS
 //Update Json cartas

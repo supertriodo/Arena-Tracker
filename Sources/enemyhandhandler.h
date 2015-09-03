@@ -20,14 +20,19 @@ public:
 private:
     QList<HandCard> enemyHandList;
     Ui::MainWindow *ui;
+    bool inGame;
+    bool transparent;
+
 
 //Metodos
 private:
     void reset();
     void completeUI();
+    void updateTransparency();
 
 public:
     void redrawDownloadedCardImage(QString code);
+    void setTransparent(bool value);
 
 signals:
     void checkCardImage(QString code);

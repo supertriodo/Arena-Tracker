@@ -13,6 +13,7 @@
 class DeckHandler : public QObject
 {
     Q_OBJECT
+
 public:
     DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui);
     ~DeckHandler();
@@ -23,17 +24,20 @@ private:
     Ui::MainWindow *ui;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame;
+    bool transparent;
 
 
 //Metodos
 private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
+    void updateTransparency();
 
 public:
     void reset();
     void redrawDownloadedCardImage(QString code);
     QList<DeckCard> * getDeckComplete();
+    void setTransparent(bool value);
 
 signals:
     void checkCardImage(QString code);
