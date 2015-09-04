@@ -43,6 +43,8 @@ or on email: arenatracker@gmail.com
 ## FAQ
 * I started a new arena and ArenaTracker didn't help me with the draft.
  * When you start a new arena in hearthstone a draft tab will appear in ArenaTracker. You have to select the hero to start the draft. The correct moment to click the hero is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
+* Drafting gets stuck.
+ * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
 * How do I reset the app so I can set the config info again?
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
