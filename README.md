@@ -43,8 +43,13 @@ or on email: arenatracker@gmail.com
 ## FAQ
 * I started a new arena and ArenaTracker didn't help me with the draft.
  * When you start a new arena in hearthstone a draft tab will appear in ArenaTracker. You have to select the hero to start the draft. The correct moment to click the hero is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
-* Drafting gets stuck.
+* Drafting doesn't advance to next card.
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
+ * After picking a card move the mouse to the zone below or above the card so the next one can be read.
+ * After picking a card make sure you don't move the mouse to the place of any of the other 2 cards or the program can take any of those as selected.
+* What does it mean when cards in the decklist are highlighted in yellow?
+ * Minions are shown in white.
+ * Spells and weapons are shown in yellow.
 * How do I reset the app so I can set the config info again?
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
