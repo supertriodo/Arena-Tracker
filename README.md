@@ -91,7 +91,7 @@ or on email: arenatracker@gmail.com
 * http://www.heartharena.com/
 
 
-## Top donators:
+## Top donors:
 * Innotus: €5,00 EUR
  
 (Thanks to all donators for keeping this project alive.)
