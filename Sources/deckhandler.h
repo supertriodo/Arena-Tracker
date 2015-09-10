@@ -24,7 +24,7 @@ private:
     Ui::MainWindow *ui;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame;
-    bool transparent;
+    Transparency transparency;
 
 
 //Metodos
@@ -37,7 +37,7 @@ public:
     void reset();
     void redrawDownloadedCardImage(QString code);
     QList<DeckCard> * getDeckComplete();
-    void setTransparent(bool value);
+    void setTransparency(Transparency value);
 
 signals:
     void checkCardImage(QString code);

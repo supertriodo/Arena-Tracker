@@ -10,6 +10,7 @@
 #define YELLOW QColor(Qt::yellow)
 #define WHITE QColor(Qt::white)
 #define BLACK QColor(Qt::black)
+#define TRANSPARENT QColor(Qt::transparent)
 #define CARD_SIZE QSize(218,35)
 
 class DeckCard

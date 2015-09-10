@@ -3,7 +3,8 @@
 
 #include <QString>
 
-enum DebugLevel { Normal, Warning, Error};
+enum DebugLevel { Normal, Warning, Error };
+enum Transparency { Always, Auto, Never };
 
 class Utility
 {

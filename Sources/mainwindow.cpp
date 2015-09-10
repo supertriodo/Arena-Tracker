@@ -272,8 +272,7 @@ void MainWindow::synchronizedDone()
     createWebUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
-    deckHandler->setTransparent(this->transparent);
-    enemyHandHandler->setTransparent(this->transparent);
+    spreadTransparency();
 
     //Test
 #ifdef QT_DEBUG
@@ -467,38 +466,69 @@ void MainWindow::splitWindowNever()
 
 void MainWindow::addTransparentMenu(QMenu *menu)
 {
+    QAction *action0 = new QAction("Always", this);
     QAction *action1 = new QAction("Auto", this);
     QAction *action2 = new QAction("Never", this);
+    action0->setCheckable(true);
     action1->setCheckable(true);
     action2->setCheckable(true);
+    connect(action0, SIGNAL(triggered()), this, SLOT(transparentAlways()));
     connect(action1, SIGNAL(triggered()), this, SLOT(transparentAuto()));
     connect(action2, SIGNAL(triggered()), this, SLOT(transparentNever()));
 
     QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action0);
     splitGroup->addAction(action1);
     splitGroup->addAction(action2);
-    this->transparent?action1->setChecked(true):action2->setChecked(true);
+
+    switch(transparency)
+    {
+        case Always:
+            action0->setChecked(true);
+            break;
+        case Auto:
+            action1->setChecked(true);
+            break;
+        case Never:
+            action2->setChecked(true);
+            break;
+    }
 
     QMenu *transparentMenu = new QMenu("Transparency", this);
+    transparentMenu->addAction(action0);
     transparentMenu->addAction(action1);
     transparentMenu->addAction(action2);
     menu->addMenu(transparentMenu);
 }
 
 
+void MainWindow::transparentAlways()
+{
+    this->transparency = Always;
+    spreadTransparency();
+}
+
+
 void MainWindow::transparentAuto()
 {
-    this->transparent = true;
-    deckHandler->setTransparent(true);
-    enemyHandHandler->setTransparent(true);
+    this->transparency = Auto;
+    spreadTransparency();
 }
 
 
 void MainWindow::transparentNever()
 {
-    this->transparent = false;
-    deckHandler->setTransparent(false);
-    enemyHandHandler->setTransparent(false);
+    this->transparency = Never;
+    spreadTransparency();
+}
+
+
+void MainWindow::spreadTransparency()
+{
+    deckHandler->setTransparency(this->transparency);
+    enemyHandHandler->setTransparency(this->transparency);
+    arenaHandler->setTransparency(this->transparency);
+    draftHandler->setTransparency(this->transparency);
 }
 
 
@@ -520,7 +550,7 @@ void MainWindow::readSettings()
     QPoint pos = settings.value("pos", QPoint(0,0)).toPoint();
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     this->splitWindow = settings.value("splitWindow", true).toBool();
-    this->transparent = settings.value("transparent", true).toBool();
+    this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
     this->windowsFormation = none;
     resize(size);
     move(pos);
@@ -533,7 +563,7 @@ void MainWindow::writeSettings()
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("splitWindow", this->splitWindow);
-    settings.setValue("transparent", this->transparent);
+    settings.setValue("transparent", (int)this->transparency);
 }
 
 
@@ -707,7 +737,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
 
 void MainWindow::pLog(QString line)
 {
-    ui->textEdit->append(line);
+    ui->logTextEdit->append(line);
 }
 
 
@@ -851,7 +881,6 @@ void MainWindow::test()
 //Uso en construido.
 //Tooltip buttons abajo.
 //Robadas verde
-//Transparencias
 //Check new version
 
 //BUGS CONOCIDOS

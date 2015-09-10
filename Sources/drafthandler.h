@@ -43,6 +43,7 @@ private:
     int screenIndex;
     int nextCount;
     bool drafting;
+    Transparency transparency;
 
 
 //Metodos
@@ -66,9 +67,12 @@ private:
     void selectMouseCard();        
     void pickCard(DraftCard &draftCard);
     void removeTabHero();
+    void clearRadioButton(QRadioButton *radio);
+    void highlightRadioButton(QRadioButton *radio);
 
 public:
     void reHistDownloadedCardImage(QString code);
+    void setTransparency(Transparency value);
 
 signals:
     void checkCardImage(QString code);

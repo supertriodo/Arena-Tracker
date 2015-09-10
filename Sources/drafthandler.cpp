@@ -11,6 +11,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->deckRating = 0;
     this->nextCount = 0;
     this->drafting = false;
+    this->transparency = Never;
 
     for(int i=0; i<3; i++)
     {
@@ -128,8 +129,7 @@ void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
     {
-        draftCards[i].radioItem->setStyleSheet("");
-        draftCards[i].radioItem->setText("");
+        clearRadioButton(draftCards[i].radioItem);
         draftCards[i].code="";
         draftCards[i].draw();
     }
@@ -446,8 +446,7 @@ void DraftHandler::showNewCards(QString codes[3])
             pickCard(draftCards[i]);
         }
 
-        draftCards[i].radioItem->setStyleSheet("");
-        draftCards[i].radioItem->setText("");
+        clearRadioButton(draftCards[i].radioItem);
         draftCards[i].code=codes[i];
         draftCards[i].draw();
         intCodes[i] = hearthArenaCodes[codes[i]];
@@ -493,7 +492,8 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
             bestCard = i;
         }
     }
-    draftCards[bestCard].radioItem->setStyleSheet("background:silver;");
+
+    highlightRadioButton(draftCards[bestCard].radioItem);
 
     //Mostrar sinergies
     QString synergies[3] = {synergy1,synergy2, synergy3};
@@ -774,6 +774,73 @@ void DraftHandler::selectMouseCard()
     }
 
     draftCards[pickedCard].radioItem->setChecked(true);
+}
+
+
+void DraftHandler::clearRadioButton(QRadioButton *radio)
+{
+    if(transparency == Always)
+    {
+        radio->setStyleSheet("background-color: transparent; color: white");
+    }
+    else
+    {
+        radio->setStyleSheet("");
+    }
+
+    radio->setText("");
+}
+
+
+void DraftHandler::highlightRadioButton(QRadioButton *radio)
+{
+    if(transparency == Always)
+    {
+        radio->setStyleSheet("background-color: transparent; color: yellow");
+    }
+    else
+    {
+        radio->setStyleSheet("background: silver;");
+    }
+}
+
+
+void DraftHandler::setTransparency(Transparency value)
+{
+    this->transparency = value;
+
+    if(transparency==Always)
+    {
+        ui->heroLabel->setStyleSheet("background-color: transparent; color: white");
+        ui->tabHero->setAttribute(Qt::WA_NoBackground);
+        ui->tabHero->repaint();
+
+        ui->textDraft1->setStyleSheet("background-color: transparent; color: white");
+        ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
+        ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
+        ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
+        ui->radioButtonDraft1->setStyleSheet("background-color: transparent; color: white");
+        ui->radioButtonDraft2->setStyleSheet("background-color: transparent; color: white");
+        ui->radioButtonDraft3->setStyleSheet("background-color: transparent; color: white");
+        ui->tabDraft->setAttribute(Qt::WA_NoBackground);
+        ui->tabDraft->repaint();
+    }
+    else
+    {
+        ui->heroLabel->setStyleSheet("");
+        ui->tabHero->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabHero->repaint();
+
+        ui->textDraft1->setStyleSheet("");
+        ui->textDraft2->setStyleSheet("");
+        ui->textDraft3->setStyleSheet("");
+        ui->textBrowserDraft->setStyleSheet("");
+        ui->radioButtonDraft1->setStyleSheet("");
+        ui->radioButtonDraft2->setStyleSheet("");
+        ui->radioButtonDraft3->setStyleSheet("");
+        ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabDraft->repaint();
+    }
 }
 
 

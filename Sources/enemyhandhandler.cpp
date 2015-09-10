@@ -5,7 +5,7 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObjec
 {
     this->ui = ui;
     this->inGame = false;
-    this->transparent = false;
+    this->transparency = Never;
 
     completeUI();
 }
@@ -102,7 +102,7 @@ void EnemyHandHandler::unlockEnemyInterface()
 
 void EnemyHandHandler::updateTransparency()
 {
-    if(inGame && transparent)
+    if(transparency==Always || (inGame && transparency==Auto))
     {
         ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
@@ -117,9 +117,9 @@ void EnemyHandHandler::updateTransparency()
 }
 
 
-void EnemyHandHandler::setTransparent(bool value)
+void EnemyHandHandler::setTransparency(Transparency value)
 {
-    this->transparent = value;
+    this->transparency = value;
     updateTransparency();
 }
 

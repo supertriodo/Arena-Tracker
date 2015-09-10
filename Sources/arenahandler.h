@@ -25,6 +25,8 @@ private:
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     bool noArena;
+    Transparency transparency;
+
 
 //Metodos
 private:
@@ -37,6 +39,7 @@ private:
 public:
     void setWebUploader(WebUploader *webUploader);
     bool isNoArena();
+    void setTransparency(Transparency value);
 
 signals:
     void pLog(QString line);

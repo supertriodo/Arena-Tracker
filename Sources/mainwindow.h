@@ -55,7 +55,7 @@ private:
     WindowsFormation windowsFormation;
     QFile* atLogFile;
     bool splitWindow;
-    bool transparent;
+    Transparency transparency;
 
 
 
@@ -78,6 +78,7 @@ private:
     void addClearDeckMenu(QMenu *menu);
     void addSplitMenu(QMenu *menu);
     void addTransparentMenu(QMenu *menu);
+    void spreadTransparency();
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -130,6 +131,7 @@ private slots:
     void confirmClearDeck();
     void splitWindowAuto();
     void splitWindowNever();
+    void transparentAlways();
     void transparentAuto();
     void transparentNever();
 };

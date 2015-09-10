@@ -6,7 +6,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->ui = ui;
     this->cardsJson = cardsJson;
     this->inGame = false;
-    this->transparent = false;
+    this->transparency = Never;
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -344,7 +344,7 @@ void DeckHandler::unlockDeckInterface()
 
 void DeckHandler::updateTransparency()
 {
-    if(inGame && transparent)
+    if(transparency==Always || (inGame && transparency==Auto))
     {
         ui->deckListWidget->setStyleSheet("background-color: transparent;");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
@@ -359,9 +359,9 @@ void DeckHandler::updateTransparency()
 }
 
 
-void DeckHandler::setTransparent(bool value)
+void DeckHandler::setTransparency(Transparency value)
 {
-    this->transparent = value;
+    this->transparency = value;
     updateTransparency();
 }
 

@@ -6,6 +6,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::MainWi
     this->webUploader = NULL;
     this->deckHandler = deckHandler;
     this->ui = ui;
+    this->transparency = Never;
 
     completeUI();
 }
@@ -298,9 +299,12 @@ void ArenaHandler::showArenaReward(int gold, int dust, bool pack, bool goldCard,
 
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
-    for(int i=0;i<5;i++)
+    if(color == TRANSPARENT || transparency != Always)
     {
-        item->setBackgroundColor(i, color);
+        for(int i=0;i<5;i++)
+        {
+            item->setBackgroundColor(i, color);
+        }
     }
 }
 
@@ -358,3 +362,44 @@ bool ArenaHandler::isNoArena()
 {
     return noArena;
 }
+
+
+void ArenaHandler::setTransparency(Transparency value)
+{
+    this->transparency = value;
+
+    if(transparency==Always)
+    {
+        //Cada row transparente
+        int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
+        for(int i=0; i<numTopItems; i++)
+        {
+            QTreeWidgetItem * item = ui->arenaTreeWidget->topLevelItem(i);
+            int numItems = item->childCount();
+            for(int j=0; j<numItems; j++)
+            {
+                setRowColor(item->child(j), TRANSPARENT);
+            }
+            setRowColor(item, TRANSPARENT);
+        }
+
+        ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white");
+        ui->tabArena->setAttribute(Qt::WA_NoBackground);
+        ui->tabArena->repaint();
+
+        ui->logTextEdit->setStyleSheet("background-color: transparent; color: white");
+        ui->tabLog->setAttribute(Qt::WA_NoBackground);
+        ui->tabLog->repaint();
+    }
+    else
+    {
+        ui->arenaTreeWidget->setStyleSheet("");
+        ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabArena->repaint();
+
+        ui->logTextEdit->setStyleSheet("");
+        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabLog->repaint();
+    }
+}
+

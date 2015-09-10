@@ -21,7 +21,7 @@ private:
     QList<HandCard> enemyHandList;
     Ui::MainWindow *ui;
     bool inGame;
-    bool transparent;
+    Transparency transparency;
 
 
 //Metodos
@@ -32,7 +32,7 @@ private:
 
 public:
     void redrawDownloadedCardImage(QString code);
-    void setTransparent(bool value);
+    void setTransparency(Transparency value);
 
 signals:
     void checkCardImage(QString code);
