@@ -15,7 +15,7 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
 
-## Download (Windows)
+## Download (Windows/Linux)
 https://github.com/supertriodo/Arena-Tracker/releases/latest
 
 
@@ -59,7 +59,7 @@ or on email: arenatracker@gmail.com
  * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
 
 
-## Build from source (Linux, Mac & Windows) (Only advanced users)
+## Build from source (Windows/Linux/Mac) (Only advanced users)
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
 * Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
