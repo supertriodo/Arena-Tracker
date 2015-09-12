@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
     atLogFile = NULL;
+    isMainWindow = true;
+    otherWindow = NULL;
 
     createLogFile();
     readSettings();
@@ -32,20 +34,67 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 
+MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
+    QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    atLogFile = NULL;
+    logLoader = NULL;
+    gameWatcher = NULL;
+    arenaHandler = NULL;
+    webUploader = NULL;
+    cardDownloader = NULL;
+    enemyHandHandler = NULL;
+    draftHandler = NULL;
+    deckHandler = NULL;
+    secretsHandler = NULL;
+    isMainWindow = false;
+    otherWindow = primaryWindow;
+
+    readSettings();
+    completeUI();
+}
+
+
 MainWindow::~MainWindow()
 {
-    delete logLoader;
-    delete gameWatcher;
-    delete arenaHandler;
-    delete webUploader;
-    delete cardDownloader;
-    delete enemyHandHandler;
-    delete draftHandler;
-    delete deckHandler;
-    delete secretsHandler;
-    delete resizeButton;
-    delete ui;
+    if(logLoader != NULL)       delete logLoader;
+    if(gameWatcher != NULL)     delete gameWatcher;
+    if(arenaHandler != NULL)    delete arenaHandler;
+    if(webUploader != NULL)     delete webUploader;
+    if(cardDownloader != NULL)  delete cardDownloader;
+    if(enemyHandHandler != NULL) delete enemyHandHandler;
+    if(draftHandler != NULL)    delete draftHandler;
+    if(deckHandler != NULL)     delete deckHandler;
+    if(secretsHandler != NULL)  delete secretsHandler;
+    if(resizeButton != NULL)    delete resizeButton;
+    if(ui != NULL)              delete ui;
     closeLogFile();
+}
+
+
+void MainWindow::createSecondaryWindow()
+{
+    this->otherWindow = new MainWindow(0, this);
+    this->otherWindow->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->otherWindow->show();
+
+    QResizeEvent *event = new QResizeEvent(this->size(), this->size());
+    this->windowsFormation = None;
+    resizeTabWidgets(event);
+}
+
+
+void MainWindow::destroySecondaryWindow()
+{
+    this->otherWindow->close();
+    this->otherWindow = NULL;
+
+    QResizeEvent *event = new QResizeEvent(this->size(), this->size());
+    this->windowsFormation = None;
+    resizeTabWidgets(event);
 }
 
 
@@ -323,26 +372,40 @@ void MainWindow::completeUI()
     ui->tabWidgetV2->hide();
 
     ui->tabWidget->setCurrentIndex(0);
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
 
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);
     connect(resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
-
-    connect(ui->closeButton, SIGNAL(clicked()),
-            this, SLOT(close()));
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
 
-    completeToolButton();
-    completeHeroButtons();
+    if(isMainWindow)
+    {
+        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
+        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
+
+        connect(ui->closeButton, SIGNAL(clicked()),
+                this, SLOT(close()));
+
+        completeToolButton();
+        completeHeroButtons();
 
 #ifdef QT_DEBUG
-    pLog(tr("MODE DEBUG"));
-    pDebug("MODE DEBUG");
+        pLog(tr("MODE DEBUG"));
+        pDebug("MODE DEBUG");
 #endif
+    }
+    else
+    {
+        delete ui->closeButton; ui->closeButton = NULL;
+        delete ui->toolButton;  ui->toolButton = NULL;
+        delete ui->progressBar; ui->progressBar = NULL;
+
+        ui->tabWidget->clear();
+        moveTabTo(this->otherWindow->ui->tabDeck, ui->tabWidget);
+        ui->tabWidget->show();
+    }
 }
 
 
@@ -451,16 +514,26 @@ void MainWindow::addSplitMenu(QMenu *menu)
 void MainWindow::splitWindowAuto()
 {
     this->splitWindow = true;
-    QResizeEvent *event = new QResizeEvent(this->size(), this->size());
-    resizeTabWidgets(event);
+    spreadSplitWindow();
 }
 
 
 void MainWindow::splitWindowNever()
 {
     this->splitWindow = false;
+    spreadSplitWindow();
+}
+
+
+void MainWindow::spreadSplitWindow()
+{
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     resizeTabWidgets(event);
+
+    if(isMainWindow && otherWindow != NULL)
+    {
+        otherWindow->splitWindow = this->splitWindow;
+    }
 }
 
 
@@ -529,6 +602,44 @@ void MainWindow::spreadTransparency()
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
+
+    if(isMainWindow && otherWindow != NULL)
+    {
+        otherWindow->transparency = this->transparency;
+    }
+}
+
+
+void MainWindow::addNumWindowsMenu(QMenu *menu)
+{
+    QAction *action1 = new QAction("1", this);
+    QAction *action2 = new QAction("2", this);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    connect(action1, SIGNAL(triggered()), this, SLOT(numWindows1()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(numWindows2()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    (this->otherWindow == NULL)?action1->setChecked(true):action2->setChecked(true);
+
+    QMenu *numWindowsMenu = new QMenu("Windows", this);
+    numWindowsMenu->addAction(action1);
+    numWindowsMenu->addAction(action2);
+    menu->addMenu(numWindowsMenu);
+}
+
+
+void MainWindow::numWindows1()
+{
+    if(this->otherWindow != NULL)   destroySecondaryWindow();
+}
+
+
+void MainWindow::numWindows2()
+{
+    if(this->otherWindow == NULL)   createSecondaryWindow();
 }
 
 
@@ -536,9 +647,11 @@ void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
     addDraftMenu(menu);
+    addClearDeckMenu(menu);
+    menu->addSeparator();
+    addNumWindowsMenu(menu);
     addSplitMenu(menu);
     addTransparentMenu(menu);
-    addClearDeckMenu(menu);
 
     ui->toolButton->setMenu(menu);
 }
@@ -547,11 +660,26 @@ void MainWindow::completeToolButton()
 void MainWindow::readSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QPoint pos = settings.value("pos", QPoint(0,0)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-    this->splitWindow = settings.value("splitWindow", true).toBool();
-    this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
-    this->windowsFormation = none;
+    QPoint pos;
+    QSize size;
+
+    if(isMainWindow)
+    {
+        pos = settings.value("pos", QPoint(0,0)).toPoint();
+        size = settings.value("size", QSize(400, 400)).toSize();
+        this->splitWindow = settings.value("splitWindow", true).toBool();
+        this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
+        int numWindows = settings.value("numWindows", 1).toInt();
+        if(numWindows == 2) createSecondaryWindow();
+    }
+    else
+    {
+        pos = settings.value("pos2", QPoint(0,0)).toPoint();
+        size = settings.value("size2", QSize(400, 400)).toSize();
+        this->splitWindow = otherWindow->splitWindow;
+        this->transparency = otherWindow->transparency;
+    }
+    this->windowsFormation = None;
     resize(size);
     move(pos);
 }
@@ -560,15 +688,29 @@ void MainWindow::readSettings()
 void MainWindow::writeSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
-    settings.setValue("splitWindow", this->splitWindow);
-    settings.setValue("transparent", (int)this->transparency);
+    if(isMainWindow)
+    {
+        settings.setValue("pos", pos());
+        settings.setValue("size", size());
+        settings.setValue("splitWindow", this->splitWindow);
+        settings.setValue("transparent", (int)this->transparency);
+        settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
+    }
+    else
+    {
+        settings.setValue("pos2", pos());
+        settings.setValue("size2", size());
+    }
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if(isMainWindow && (otherWindow != NULL))
+    {
+        otherWindow->close();
+    }
+
     writeSettings();
     event->accept();
 }
@@ -576,7 +718,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    resizeTabWidgets(event);
+    if(isMainWindow)    resizeTabWidgets(event);
     event->accept();
 }
 
@@ -595,8 +737,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     //H2
     else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
     {
-//        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = _2X2;
-//        else                                newWindowsFormation = H2;
         newWindowsFormation = H2;
     }
     //H3
@@ -618,57 +758,90 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
 
     switch(windowsFormation)
     {
-        case none:
+        case None:
         case H1:
 //            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);//Reactivar con rewards
-            moveTabTo(ui->tabArena, ui->tabWidget);
-            moveTabTo(ui->tabDeck, ui->tabWidget);
-            moveTabTo(ui->tabEnemy, ui->tabWidget);
-            moveTabTo(ui->tabLog, ui->tabWidget);
-            ui->tabWidget->show();
+
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+            }
             break;
 
         case H2:
 //            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-            moveTabTo(ui->tabArena, ui->tabWidget);
-            moveTabTo(ui->tabDeck, ui->tabWidget);
-            moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-            moveTabTo(ui->tabLog, ui->tabWidgetH2);
-            ui->tabWidget->show();
-            ui->tabWidgetH2->show();
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+            }
             break;
 
         case H3:
 //            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-            moveTabTo(ui->tabArena, ui->tabWidget);
-            moveTabTo(ui->tabDeck, ui->tabWidgetH2);
-            moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-            moveTabTo(ui->tabLog, ui->tabWidget);
-            ui->tabWidget->show();
-            ui->tabWidgetH2->show();
-            ui->tabWidgetH3->show();
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+                ui->tabWidgetH3->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabLog, ui->tabWidgetH3);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+                ui->tabWidgetH3->show();
+            }
             break;
 
         case V2:
 //            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-            moveTabTo(ui->tabArena, ui->tabWidget);
-            moveTabTo(ui->tabDeck, ui->tabWidgetV1);
-            moveTabTo(ui->tabEnemy, ui->tabWidget);
-            moveTabTo(ui->tabLog, ui->tabWidgetV1);
-            ui->tabWidget->show();
-            ui->tabWidgetV1->show();
-            break;
-
-        case _2X2:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-            moveTabTo(ui->tabArena, ui->tabWidget);
-            moveTabTo(ui->tabDeck, ui->tabWidgetV2);
-            moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-            moveTabTo(ui->tabLog, ui->tabWidgetV1);
-            ui->tabWidget->show();
-            ui->tabWidgetH2->show();
-            ui->tabWidgetV1->show();
-            ui->tabWidgetV2->show();
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetV1->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetV1->show();
+            }
             break;
     }
 }

@@ -32,10 +32,11 @@ class MainWindow : public QMainWindow
 //Constructor
 public:
     explicit MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent, MainWindow *primaryWindow);
     ~MainWindow();
 
 private:
-    enum WindowsFormation {H1, H2, H3, V2, _2X2, none};
+    enum WindowsFormation {H1, H2, H3, V2, None};
 
 //Variables
 private:
@@ -56,6 +57,9 @@ private:
     QFile* atLogFile;
     bool splitWindow;
     Transparency transparency;
+    bool oneWindow;
+    bool isMainWindow;
+    MainWindow *otherWindow;
 
 
 
@@ -77,8 +81,10 @@ private:
     void addDraftMenu(QMenu *menu);
     void addClearDeckMenu(QMenu *menu);
     void addSplitMenu(QMenu *menu);
+    void spreadSplitWindow();
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
+    void addNumWindowsMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -87,6 +93,8 @@ private:
     void createLogFile();
     void closeLogFile();
     void resetDeck(bool deckRead=false);
+    void createSecondaryWindow();
+    void destroySecondaryWindow();
     void test();
 
 //Override events
@@ -134,6 +142,8 @@ private slots:
     void transparentAlways();
     void transparentAuto();
     void transparentNever();
+    void numWindows1();
+    void numWindows2();
 };
 
 #endif // MAINWINDOW_H
