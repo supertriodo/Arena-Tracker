@@ -154,7 +154,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 if(it->total > 1)   it->draw();
 
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                        CARD_SIZE, QIcon::Disabled, QIcon::On)));
+                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,25))));
             }
             //it->remaining == 0
             //MALORNE

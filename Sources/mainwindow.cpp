@@ -454,6 +454,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 {
     int ret = QMessageBox::question(this, tr("New arena: ") + hero,
                                    "Make sure you have already picked " + hero + " in hearthstone.\n"
+                                   "You shouldn't move hearthstone window until the end of the draft.\n"
                                    "Do you want to continue?",
                                    QMessageBox::Ok | QMessageBox::Cancel);
 
@@ -1052,7 +1053,6 @@ void MainWindow::test()
 //TODO
 //Consejos iniciales
 //Uso en construido.
-//Tooltip buttons abajo.
 //Robadas verde
 //Check new version
 
