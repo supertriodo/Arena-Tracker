@@ -232,12 +232,12 @@ void DraftHandler::endDraft()
         }
     }
 
-    //Upload or complete deck with assets
-    emit draftEnded();
-
     //Oculta tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
     ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabDeck));
+
+    //Upload or complete deck with assets
+    emit draftEnded();
 
     clearLists();
 

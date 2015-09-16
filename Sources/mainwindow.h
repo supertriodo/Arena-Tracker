@@ -60,6 +60,8 @@ private:
     bool oneWindow;
     bool isMainWindow;
     MainWindow *otherWindow;
+    QSize sizePreDraft;
+    int greyedHeight;
 
 
 
@@ -85,6 +87,7 @@ private:
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
     void addNumWindowsMenu(QMenu *menu);
+    void addTamGreyedMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -144,6 +147,11 @@ private slots:
     void transparentNever();
     void numWindows1();
     void numWindows2();
+    void tamGreyed15px();
+    void tamGreyed20px();
+    void tamGreyed25px();
+    void tamGreyed30px();
+    void tamGreyed35px();
 };
 
 #endif // MAINWINDOW_H

@@ -322,6 +322,7 @@ void MainWindow::synchronizedDone()
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     spreadTransparency();
+    deckHandler->setGreyedHeight(this->greyedHeight);
 
     //Test
 #ifdef QT_DEBUG
@@ -462,6 +463,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     {
         pDebug("New manual arena: " + hero);
         pLog(tr("Menu: New arena: ") + hero);
+        sizePreDraft = this->size();
         QString heroLog = Utility::heroToLogNumber(hero);
         arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
@@ -644,6 +646,95 @@ void MainWindow::numWindows2()
 }
 
 
+void MainWindow::addTamGreyedMenu(QMenu *menu)
+{
+    QAction *action0 = new QAction("15px(Smallest)", this);
+    QAction *action1 = new QAction("20px", this);
+    QAction *action2 = new QAction("25px", this);
+    QAction *action3 = new QAction("30px", this);
+    QAction *action4 = new QAction("35px(Normal)", this);
+    action0->setCheckable(true);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    action3->setCheckable(true);
+    action4->setCheckable(true);
+    connect(action0, SIGNAL(triggered()), this, SLOT(tamGreyed15px()));
+    connect(action1, SIGNAL(triggered()), this, SLOT(tamGreyed20px()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(tamGreyed25px()));
+    connect(action3, SIGNAL(triggered()), this, SLOT(tamGreyed30px()));
+    connect(action4, SIGNAL(triggered()), this, SLOT(tamGreyed35px()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action0);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    splitGroup->addAction(action3);
+    splitGroup->addAction(action4);
+
+    switch(greyedHeight)
+    {
+        case 15:
+            action0->setChecked(true);
+            break;
+        case 20:
+            action1->setChecked(true);
+            break;
+        case 25:
+            action2->setChecked(true);
+            break;
+        case 30:
+            action3->setChecked(true);
+            break;
+        case 35:
+            action4->setChecked(true);
+            break;
+    }
+
+    QMenu *tamGreyedMenu = new QMenu("Deck greyed size", this);
+    tamGreyedMenu->addAction(action0);
+    tamGreyedMenu->addAction(action1);
+    tamGreyedMenu->addAction(action2);
+    tamGreyedMenu->addAction(action3);
+    tamGreyedMenu->addAction(action4);
+    menu->addMenu(tamGreyedMenu);
+}
+
+
+void MainWindow::tamGreyed15px()
+{
+    this->greyedHeight = 15;
+    deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
+void MainWindow::tamGreyed20px()
+{
+    this->greyedHeight = 20;
+    deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
+void MainWindow::tamGreyed25px()
+{
+    this->greyedHeight = 25;
+    deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
+void MainWindow::tamGreyed30px()
+{
+    this->greyedHeight = 30;
+    deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
+void MainWindow::tamGreyed35px()
+{
+    this->greyedHeight = 35;
+    deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
@@ -653,6 +744,7 @@ void MainWindow::completeToolButton()
     addNumWindowsMenu(menu);
     addSplitMenu(menu);
     addTransparentMenu(menu);
+    addTamGreyedMenu(menu);
 
     ui->toolButton->setMenu(menu);
 }
@@ -668,21 +760,27 @@ void MainWindow::readSettings()
     {
         pos = settings.value("pos", QPoint(0,0)).toPoint();
         size = settings.value("size", QSize(400, 400)).toSize();
+
         this->splitWindow = settings.value("splitWindow", true).toBool();
         this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
+
         int numWindows = settings.value("numWindows", 1).toInt();
         if(numWindows == 2) createSecondaryWindow();
+
+        this->greyedHeight = settings.value("greyedHeight", 25).toInt();
     }
     else
     {
         pos = settings.value("pos2", QPoint(0,0)).toPoint();
         size = settings.value("size2", QSize(400, 400)).toSize();
+
         this->splitWindow = otherWindow->splitWindow;
         this->transparency = otherWindow->transparency;
     }
     this->windowsFormation = None;
     resize(size);
     move(pos);
+    sizePreDraft = size;
 }
 
 
@@ -695,6 +793,7 @@ void MainWindow::writeSettings()
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
         settings.setValue("transparent", (int)this->transparency);
+        settings.setValue("greyedHeight", this->greyedHeight);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
     }
     else
@@ -1041,6 +1140,10 @@ void MainWindow::uploadDeck()
     {
         gameWatcher->setDeckRead(false);
     }
+
+    //Recuperamos el size preDraft
+    if(sizePreDraft.width()<this->minimumWidth())   setMinimumWidth(sizePreDraft.width());
+    resize(sizePreDraft);
 }
 
 

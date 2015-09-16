@@ -7,6 +7,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->cardsJson = cardsJson;
     this->inGame = false;
     this->transparency = Never;
+    this->greyedHeight = 35;
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -154,7 +155,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
                 if(it->total > 1)   it->draw();
 
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,25))));
+                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
             }
             //it->remaining == 0
             //MALORNE
@@ -169,7 +170,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
                 it->draw();
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                        CARD_SIZE, QIcon::Disabled, QIcon::On)));
+                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
 
                 emit pDebug("New card: " +
                                   (*cardsJson)[code].value("name").toString());
@@ -224,7 +225,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
             {
                 it->draw();
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                    CARD_SIZE, QIcon::Disabled, QIcon::On)));
+                                    CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
             }
         }
     }
@@ -363,6 +364,27 @@ void DeckHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
     updateTransparency();
+}
+
+
+void DeckHandler::updateGreyedHeight()
+{
+    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    {
+        if(it->remaining == 0)
+        {
+            it->draw();
+            it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
+                                    CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
+        }
+    }
+}
+
+
+void DeckHandler::setGreyedHeight(int value)
+{
+    this->greyedHeight = value;
+    if(inGame)  updateGreyedHeight();
 }
 
 

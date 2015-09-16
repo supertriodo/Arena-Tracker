@@ -25,6 +25,7 @@ private:
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame;
     Transparency transparency;
+    int greyedHeight;
 
 
 //Metodos
@@ -32,12 +33,14 @@ private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
+    void updateGreyedHeight();
 
 public:
     void reset();
     void redrawDownloadedCardImage(QString code);
     QList<DeckCard> * getDeckComplete();
     void setTransparency(Transparency value);
+    void setGreyedHeight(int value);
 
 signals:
     void checkCardImage(QString code);
