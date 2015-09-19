@@ -228,6 +228,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
             deckHandler, SLOT(showPlayerCardDraw(QString)));
+    connect(gameWatcher, SIGNAL(playerTurnStart()),
+            deckHandler, SLOT(clearDrawList()));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -1156,8 +1158,9 @@ void MainWindow::test()
 //TODO
 //Consejos iniciales
 //Uso en construido.
-//Robadas verde
 //Check new version
+//Menu drawdelay //llamar clearDrawList() antes de cambiar drawDissapear
+//bug
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

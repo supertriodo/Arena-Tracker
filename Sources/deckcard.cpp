@@ -34,7 +34,7 @@ void DeckCard::draw(bool drawTotal)
     this->listItem->setIcon(QIcon(canvas));
     this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
 }
-QPixmap DeckCard::draw(QString code, uint total, bool drawRarity)
+QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameColor)
 {
     QString type = (*cardsJson)[code].value("type").toString();
     QString name = (*cardsJson)[code].value("name").toString();
@@ -84,7 +84,8 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity)
         }
         else
         {
-            if(drawRarity)  painter.setPen(QPen(getRarityColor(code)));
+            if(drawRarity)              painter.setPen(QPen(getRarityColor(code)));
+            else if(nameColor!=BLACK)   painter.setPen(QPen(nameColor));
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
 
             //Mana cost
@@ -98,9 +99,10 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity)
             font.setPointSize(12+manaSize);
             font.setBold(false);
             painter.setFont(font);
-            if(drawRarity)  painter.setPen(QPen(getRarityColor(code)));
-            else if(type!=QString("Minion"))     painter.setPen(QPen(YELLOW));
-            else                            painter.setPen(QPen(WHITE));
+            if(drawRarity)                      painter.setPen(QPen(getRarityColor(code)));
+            else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
+            else if(type!=QString("Minion"))    painter.setPen(QPen(YELLOW));
+            else                                painter.setPen(QPen(WHITE));
             painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
         }
     painter.end();
@@ -115,9 +117,9 @@ QColor DeckCard::getRarityColor(QString code)
 
     if(rarityS == "Free")               return WHITE;
     else if(rarityS == "Common")        return WHITE;
-    else if(rarityS == "Rare")          return QColor(0,191,255);
-    else if(rarityS == "Epic")          return QColor(186,85,211);
-    else if(rarityS == "Legendary")     return QColor(255,165,0);
+    else if(rarityS == "Rare")          return BLUE;
+    else if(rarityS == "Epic")          return VIOLET;
+    else if(rarityS == "Legendary")     return ORANGE;
     else                                return BLACK;
 }
 

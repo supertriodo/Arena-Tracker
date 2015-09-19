@@ -76,6 +76,7 @@ private:
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
     void startReadingDeck();
     void endReadingDeck();
+    bool findClasp(QString &line);
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
@@ -105,6 +106,7 @@ signals:
     void playerSpellObjPlayed();
     void avengeTested();
     void cSpiritTested();
+    void playerTurnStart();
     void enterArena();
     void leaveArena();
     void pLog(QString line);

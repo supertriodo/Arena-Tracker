@@ -30,7 +30,8 @@ SOURCES += Sources/main.cpp\
     Sources/drafthandler.cpp \
     Sources/heartharenamentor.cpp \
     Sources/draftcard.cpp \
-    Sources/utility.cpp
+    Sources/utility.cpp \
+    Sources/drawcard.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -49,7 +50,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/drafthandler.h \
     Sources/heartharenamentor.h \
     Sources/draftcard.h \
-    Sources/utility.h
+    Sources/utility.h \
+    Sources/drawcard.h
 
 FORMS    += mainwindow.ui
 

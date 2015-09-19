@@ -106,7 +106,7 @@ void LogLoader::readLogPath()
     }
 
 #ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/Documentos/mystic.txt");
+//    logPath = QString("/home/triodo/.PlayOnLinux/wineprefix/Blizzard32/drive_c/users/triodo/Local Settings/Application Data/Blizzard/Hearthstone/Logs/hearthstone_2015_09_17_11_26_36.log");
 #endif
 
 
@@ -221,6 +221,9 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
+//        stream << "FilePrinting=true" << endl;
+//        stream << "ConsolePrinting=false" << endl;
+//        stream << "ScreenPrinting=false" << endl;
     }
 }
 

@@ -7,6 +7,7 @@
 #include <QQueue>
 #include <QObject>
 
+#define ANIMATION_TIME 750
 
 //Secretos
 #define AVENGE QString("FP1_020")
@@ -62,6 +63,7 @@ private:
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
     bool synchronized;
+    bool secretsAnimating;
 
 
 //Metodos
@@ -69,7 +71,7 @@ private:
     void completeUI();
     void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
-    void checkLastSecretOption(ActiveSecret activeSecret);    
+    void checkLastSecretOption(ActiveSecret activeSecret);
     void adjustSize();
 
 public:
@@ -96,6 +98,7 @@ public slots:
 
 private slots:
     void discardSecretOptionDelay();
+    void clearSecretsAnimating();
 };
 
 #endif // SECRETSHANDLER_H

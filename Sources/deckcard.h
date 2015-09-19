@@ -10,6 +10,9 @@
 #define YELLOW QColor(Qt::yellow)
 #define WHITE QColor(Qt::white)
 #define BLACK QColor(Qt::black)
+#define BLUE QColor(0,191,255)
+#define VIOLET QColor(186,85,211)
+#define ORANGE QColor(255,165,0)
 #define TRANSPARENT QColor(Qt::transparent)
 #define CARD_SIZE QSize(218,35)
 
@@ -35,7 +38,7 @@ private:
     QColor getRarityColor(QString code);
 
 protected:
-    QPixmap draw(QString code, uint total, bool drawRarity=false);
+    QPixmap draw(QString code, uint total, bool drawRarity=false, QColor nameColor=BLACK);
 
 public:
     void draw(bool drawTotal);

@@ -5,6 +5,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui) : QObject(pa
 {
     this->ui = ui;
     this->synchronized = false;
+    this->secretsAnimating = false;
 
     completeUI();
 }
@@ -34,6 +35,12 @@ void SecretsHandler::setSynchronized()
 
 void SecretsHandler::adjustSize()
 {
+    if(secretsAnimating)
+    {
+        QTimer::singleShot(ANIMATION_TIME+50, this, SLOT(adjustSize()));
+        return;
+    }
+
     int rowHeight = ui->secretsTreeWidget->sizeHintForRow(0);
     int rows = 0;
 
@@ -45,7 +52,31 @@ void SecretsHandler::adjustSize()
     int height = rows*rowHeight + 2*ui->secretsTreeWidget->frameWidth();
     int maxHeight = (ui->secretsTreeWidget->height()+ui->enemyHandListWidget->height())*4/5;
     if(height>maxHeight)    height = maxHeight;
-    ui->secretsTreeWidget->setMinimumHeight(height);
+
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->secretsTreeWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->secretsTreeWidget->minimumHeight());
+    animation->setEndValue(height);
+    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->start();
+
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->secretsTreeWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(ui->secretsTreeWidget->maximumHeight());
+    animation2->setEndValue(height);
+    animation2->setEasingCurve(QEasingCurve::OutBounce);
+    animation2->start();
+
+    this->secretsAnimating = true;
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(clearSecretsAnimating()));
+}
+
+
+void SecretsHandler::clearSecretsAnimating()
+{
+    this->secretsAnimating = false;
+    if(activeSecretList.empty())    ui->secretsTreeWidget->setHidden(true);
 }
 
 
@@ -166,11 +197,6 @@ void SecretsHandler::secretRevealed(int id, QString code)
             activeSecretList.removeAt(i);
             break;
         }
-    }
-
-    if(activeSecretList.count() == 0)
-    {
-        ui->secretsTreeWidget->setHidden(true);
     }
 
     for(int i=0; i<secretTests.count(); i++)

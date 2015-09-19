@@ -8,6 +8,8 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->inGame = false;
     this->transparency = Never;
     this->greyedHeight = 35;
+    this->drawAnimating = false;
+    this->drawDisappear = 10;
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -19,6 +21,7 @@ DeckHandler::~DeckHandler()
 {
     ui->deckListWidget->clear();
     deckCardList.clear();
+    drawCardList.clear();
 }
 
 
@@ -28,6 +31,8 @@ void DeckHandler::completeUI()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
     ui->deckListWidget->setIconSize(CARD_SIZE);
+    ui->drawListWidget->setHidden(true);
+    ui->drawListWidget->setIconSize(CARD_SIZE);
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -40,10 +45,50 @@ void DeckHandler::completeUI()
 }
 
 
+void DeckHandler::adjustDrawSize()
+{
+    if(drawAnimating)
+    {
+        QTimer::singleShot(ANIMATION_TIME+50, this, SLOT(adjustDrawSize()));
+        return;
+    }
+
+    int rowHeight = ui->drawListWidget->sizeHintForRow(0);
+    int rows = drawCardList.count();
+    int height = rows*rowHeight + 2*ui->drawListWidget->frameWidth();
+
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->drawListWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->drawListWidget->minimumHeight());
+    animation->setEndValue(height);
+    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->start();
+
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->drawListWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(ui->drawListWidget->maximumHeight());
+    animation2->setEndValue(height);
+    animation2->setEasingCurve(QEasingCurve::OutBounce);
+    animation2->start();
+
+    this->drawAnimating = true;
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(clearDrawAnimating()));
+}
+
+
+void DeckHandler::clearDrawAnimating()
+{
+    this->drawAnimating = false;
+    if(drawCardList.empty())    ui->drawListWidget->setHidden(true);
+}
+
+
 void DeckHandler::reset()
 {
     ui->deckListWidget->clear();
     deckCardList.clear();
+    clearDrawList(true);
 
     DeckCard deckCard("");
     deckCard.total = 30;
@@ -138,7 +183,39 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
 }
 
 
+void DeckHandler::newDrawCard(QString code)
+{
+    DrawCard drawCard(code);
+    drawCard.listItem = new QListWidgetItem();
+    drawCardList.append(drawCard);
+    ui->drawListWidget->addItem(drawCard.listItem);
+    drawCard.draw();
+    ui->drawListWidget->setHidden(false);
+    QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
+
+    if(this->drawDisappear>0)   QTimer::singleShot(this->drawDisappear*1000,
+                                                    this, SLOT(removeOldestDrawCard()));
+}
+
+
+void DeckHandler::removeOldestDrawCard()
+{
+    if(drawCardList.empty())    return;
+    DrawCard drawCard = drawCardList.takeFirst();
+    ui->drawListWidget->removeItemWidget(drawCard.listItem);
+    delete drawCard.listItem;
+    QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
+}
+
+
 void DeckHandler::showPlayerCardDraw(QString code)
+{
+    newDrawCard(code);
+    drawFromDeck(code);
+}
+
+
+void DeckHandler::drawFromDeck(QString code)
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
@@ -199,7 +276,7 @@ void DeckHandler::showPlayerCardDraw(QString code)
         emit pLog(tr("Deck: New card: ") +
                           (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
-        showPlayerCardDraw(code);
+        drawFromDeck(code);
     }
     else
     {
@@ -227,6 +304,14 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
                 it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
                                     CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
             }
+        }
+    }
+
+    for (QList<DrawCard>::iterator it = drawCardList.begin(); it != drawCardList.end(); it++)
+    {
+        if(it->code == code)
+        {
+            it->draw();
         }
     }
 }
@@ -314,6 +399,7 @@ void DeckHandler::lockDeckInterface()
 
     this->inGame = true;
     updateTransparency();
+    clearDrawList(true);
 }
 
 
@@ -340,6 +426,7 @@ void DeckHandler::unlockDeckInterface()
 
     this->inGame = false;
     updateTransparency();
+    clearDrawList(true);
 }
 
 
@@ -348,12 +435,14 @@ void DeckHandler::updateTransparency()
     if(transparency==Always || (inGame && transparency==Auto))
     {
         ui->deckListWidget->setStyleSheet("background-color: transparent;");
+        ui->drawListWidget->setStyleSheet("background-color: transparent;");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();
     }
     else
     {
         ui->deckListWidget->setStyleSheet("");
+        ui->drawListWidget->setStyleSheet("");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDeck->repaint();
     }
@@ -385,6 +474,18 @@ void DeckHandler::setGreyedHeight(int value)
 {
     this->greyedHeight = value;
     if(inGame)  updateGreyedHeight();
+}
+
+
+void DeckHandler::clearDrawList(bool forceClear)
+{
+    if(!forceClear && this->drawDisappear>0)     return;
+
+    ui->drawListWidget->clear();
+    ui->drawListWidget->setHidden(true);
+    ui->drawListWidget->setMinimumHeight(0);
+    ui->drawListWidget->setMaximumHeight(0);
+    drawCardList.clear();
 }
 
 

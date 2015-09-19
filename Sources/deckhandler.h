@@ -3,11 +3,13 @@
 
 #include "ui_mainwindow.h"
 #include "deckcard.h"
+#include "drawcard.h"
 #include "utility.h"
 #include <QObject>
 #include <QMap>
 
 #define MALORNE QString("GVG_035")
+#define ANIMATION_TIME 750
 
 
 class DeckHandler : public QObject
@@ -21,11 +23,14 @@ public:
 //Variables
 private:
     QList<DeckCard> deckCardList;
+    QList<DrawCard> drawCardList;
     Ui::MainWindow *ui;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame;
     Transparency transparency;
     int greyedHeight;
+    bool drawAnimating;
+    int drawDisappear;
 
 
 //Metodos
@@ -34,6 +39,8 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void updateGreyedHeight();
+    void newDrawCard(QString code);
+    void drawFromDeck(QString code);
 
 public:
     void reset();
@@ -57,6 +64,12 @@ public slots:
     void cardRemove();
     void lockDeckInterface();
     void unlockDeckInterface();
+    void clearDrawList(bool forceClear=false);
+
+private slots:
+    void removeOldestDrawCard();
+    void clearDrawAnimating();
+    void adjustDrawSize();
 };
 
 #endif // DECKHANDLER_H

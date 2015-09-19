@@ -39,8 +39,26 @@ void GameWatcher::reset()
 }
 
 
+bool GameWatcher::findClasp(QString &line)
+{
+    int index = line.indexOf('[');
+
+    if(index == -1)
+    {
+        return false;
+    }
+    else
+    {
+        line.remove(0, index);
+        qDebug()<<line;
+        return true;
+    }
+}
+
+
 void GameWatcher::processLogLine(QString line, qint64 numLine)
 {
+//    if(!findClasp(line))    return;
     if(line.startsWith("[Bob]"))
     {
         if(line.startsWith("[Bob] ---Register"))
@@ -755,9 +773,9 @@ void GameWatcher::advanceTurn(bool playerDraw)
         turnReal = turn;
         emit pDebug("\nTurn: " + QString::number(turn) + " " + (playerTurn?"Player":"Enemy"), 0);
 
-//        if((firstPlayer==playerTag && turnReal%2==1) || (firstPlayer!=playerTag && turnReal%2==0))  isPlayerTurn=true;
-//        else    isPlayerTurn=false;
         isPlayerTurn = playerTurn;
+
+        if(isPlayerTurn)    emit playerTurnStart();
 
         if(synchronized && !isPlayerTurn && enemyMinions > 0)
         {
