@@ -347,6 +347,8 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(reshowArena(QString)));
     connect(webUploader, SIGNAL(synchronized()),
             arenaHandler, SLOT(enableRefreshButton()));
+    connect(webUploader, SIGNAL(synchronized()),
+            arenaHandler, SLOT(syncArenaCurrent()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(pLog(QString)),
@@ -1160,7 +1162,6 @@ void MainWindow::test()
 //Uso en construido.
 //Check new version
 //Menu drawdelay //llamar clearDrawList() antes de cambiar drawDissapear
-//bug
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

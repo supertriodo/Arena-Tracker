@@ -33,8 +33,10 @@ private:
     void completeUI();
     void createTreeWidget();
     void setRowColor(QTreeWidgetItem *item, QColor color);
+    QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
     void currentArenaToWhite();
+    void allToWhite();
 
 public:
     void setWebUploader(WebUploader *webUploader);
@@ -59,6 +61,7 @@ public slots:
     void reshowArena(QString hero);
     void showNoArena();
     void enableRefreshButton(bool enable=true);
+    void syncArenaCurrent();
 
     //Widgets
     void refresh();

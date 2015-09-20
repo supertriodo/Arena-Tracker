@@ -6,6 +6,7 @@
 #include <QMap>
 
 #define GREEN QColor(200,250,200)
+#define LIMEGREEN QColor(50,205,50)
 #define RED QColor(Qt::red)
 #define YELLOW QColor(Qt::yellow)
 #define WHITE QColor(Qt::white)

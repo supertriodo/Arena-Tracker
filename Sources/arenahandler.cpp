@@ -91,16 +91,6 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult)
     else
     {
         item = new QTreeWidgetItem(arenaCurrent);
-        if(gameResult.isWinner)
-        {
-            int wins = arenaCurrent->text(2).toInt() + 1;
-            arenaCurrent->setText(2, QString::number(wins));
-        }
-        else
-        {
-            int loses = arenaCurrent->text(3).toInt() + 1;
-            arenaCurrent->setText(3, QString::number(loses));
-        }
         arenaCurrentGameList.append(gameResult);
     }
 
@@ -127,7 +117,8 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
     for(int i=0; i<arenaCurrent->childCount(); i++)
     {
         QTreeWidgetItem *item = arenaCurrent->child(i);
-        if((item->backgroundColor(0) == RED || item->backgroundColor(0) == WHITE) &&
+        QColor statusColor = getRowColor(item);
+        if((statusColor == RED || statusColor == WHITE || statusColor == TRANSPARENT) &&
             arenaCurrentGameList.at(i).enemyHero == gameResult.enemyHero &&
             arenaCurrentGameList.at(i).isFirst == gameResult.isFirst &&
             arenaCurrentGameList.at(i).isWinner == gameResult.isWinner)
@@ -299,19 +290,44 @@ void ArenaHandler::showArenaReward(int gold, int dust, bool pack, bool goldCard,
 
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
-    if(color == TRANSPARENT || transparency != Always)
+    if(transparency == Always)
     {
+        if(color == GREEN)  color = LIMEGREEN;
+        QBrush brush(color);
+
+        for(int i=0;i<5;i++)
+        {
+            item->setBackgroundColor(i, TRANSPARENT);
+            item->setForeground(i,brush);
+        }
+    }
+    else
+    {
+        QBrush brush(BLACK);
         for(int i=0;i<5;i++)
         {
             item->setBackgroundColor(i, color);
+            item->setForeground(i,brush);
         }
     }
 }
 
 
+QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
+{
+    QColor color;
+
+    if(transparency == Always)  color = item->foreground(0).color();
+    else    color = item->backgroundColor(0);
+
+    if(color == LIMEGREEN)  color = GREEN;
+    return color;
+}
+
+
 bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 {
-    return (item->backgroundColor(0) != RED);
+    return (getRowColor(item) != RED);
 }
 
 
@@ -329,16 +345,39 @@ void ArenaHandler::currentArenaToWhite()
 {
     if(arenaCurrent != NULL)
     {
-        if(isRowOk(arenaCurrent))   setRowColor(arenaCurrent, WHITE);
+        setRowColor(arenaCurrent, WHITE);
 
         //Iniciamos a blanco todas las partidas que no esten en rojo
         for(int i=0; i<arenaCurrent->childCount(); i++)
         {
-            if(isRowOk(arenaCurrent->child(i)))
+            setRowColor(arenaCurrent->child(i), WHITE);
+        }
+    }
+}
+
+
+void ArenaHandler::syncArenaCurrent()
+{
+    int wins = 0;
+    int loses = 0;
+
+    if(arenaCurrent != NULL)
+    {
+        for(int i=0; i<arenaCurrent->childCount(); i++)
+        {
+            QColor color = getRowColor(arenaCurrent->child(i));
+            if(color == GREEN || color == YELLOW)
             {
-                setRowColor(arenaCurrent->child(i), WHITE);
+                arenaCurrentGameList[i].isWinner?wins++:loses++;
+            }
+            else
+            {
+                setRowColor(arenaCurrent->child(i), RED);
             }
         }
+
+        arenaCurrent->setText(2, QString::number(wins));
+        arenaCurrent->setText(3, QString::number(loses));
     }
 }
 
@@ -364,24 +403,31 @@ bool ArenaHandler::isNoArena()
 }
 
 
+void ArenaHandler::allToWhite()
+{
+    int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
+    for(int i=0; i<numTopItems; i++)
+    {
+        QTreeWidgetItem * item = ui->arenaTreeWidget->topLevelItem(i);
+        int numItems = item->childCount();
+        for(int j=0; j<numItems; j++)
+        {
+            setRowColor(item->child(j), WHITE);
+        }
+        setRowColor(item, WHITE);
+    }
+}
+
+
 void ArenaHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
 
     if(transparency==Always)
     {
-        //Cada row transparente
-        int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
-        for(int i=0; i<numTopItems; i++)
-        {
-            QTreeWidgetItem * item = ui->arenaTreeWidget->topLevelItem(i);
-            int numItems = item->childCount();
-            for(int j=0; j<numItems; j++)
-            {
-                setRowColor(item->child(j), TRANSPARENT);
-            }
-            setRowColor(item, TRANSPARENT);
-        }
+        allToWhite();
+        ui->updateButton->setEnabled(false);
+        webUploader->refresh();
 
         ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white");
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
@@ -393,6 +439,10 @@ void ArenaHandler::setTransparency(Transparency value)
     }
     else
     {
+        allToWhite();
+        ui->updateButton->setEnabled(false);
+        webUploader->refresh();
+
         ui->arenaTreeWidget->setStyleSheet("");
         ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
         ui->tabArena->repaint();
