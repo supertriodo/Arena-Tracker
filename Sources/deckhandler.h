@@ -48,6 +48,7 @@ public:
     QList<DeckCard> * getDeckComplete();
     void setTransparency(Transparency value);
     void setGreyedHeight(int value);
+    void setDrawDisappear(int value);
 
 signals:
     void checkCardImage(QString code);

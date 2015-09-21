@@ -179,6 +179,9 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    deckHandler->setGreyedHeight(this->greyedHeight);
+    deckHandler->setDrawDisappear(this->drawDisappear);
 }
 
 
@@ -324,7 +327,7 @@ void MainWindow::synchronizedDone()
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     spreadTransparency();
-    deckHandler->setGreyedHeight(this->greyedHeight);
+
 
     //Test
 #ifdef QT_DEBUG
@@ -694,7 +697,7 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
             break;
     }
 
-    QMenu *tamGreyedMenu = new QMenu("Deck greyed size", this);
+    QMenu *tamGreyedMenu = new QMenu("Deck: Greyed size", this);
     tamGreyedMenu->addAction(action0);
     tamGreyedMenu->addAction(action1);
     tamGreyedMenu->addAction(action2);
@@ -739,16 +742,92 @@ void MainWindow::tamGreyed35px()
 }
 
 
+void MainWindow::addTimeDrawMenu(QMenu *menu)
+{
+    QAction *action0 = new QAction("No", this);
+    QAction *action1 = new QAction("5s", this);
+    QAction *action2 = new QAction("10s", this);
+    QAction *action3 = new QAction("Turn", this);
+    action0->setCheckable(true);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    action3->setCheckable(true);
+    connect(action0, SIGNAL(triggered()), this, SLOT(timeDrawNo()));
+    connect(action1, SIGNAL(triggered()), this, SLOT(timeDraw5s()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(timeDraw10s()));
+    connect(action3, SIGNAL(triggered()), this, SLOT(timeDrawTurn()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action0);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    splitGroup->addAction(action3);
+
+    switch(drawDisappear)
+    {
+        case -1:
+            action0->setChecked(true);
+            break;
+        case 5:
+            action1->setChecked(true);
+            break;
+        case 10:
+            action2->setChecked(true);
+            break;
+        case 0:
+            action3->setChecked(true);
+            break;
+    }
+
+    QMenu *timeDrawMenu = new QMenu("Deck: Show draw", this);
+    timeDrawMenu->addAction(action0);
+    timeDrawMenu->addAction(action1);
+    timeDrawMenu->addAction(action2);
+    timeDrawMenu->addAction(action3);
+    menu->addMenu(timeDrawMenu);
+}
+
+
+void MainWindow::timeDrawNo()
+{
+    this->drawDisappear = -1;
+    deckHandler->setDrawDisappear(this->drawDisappear);
+}
+
+
+void MainWindow::timeDraw5s()
+{
+    this->drawDisappear = 5;
+    deckHandler->setDrawDisappear(this->drawDisappear);
+}
+
+
+void MainWindow::timeDraw10s()
+{
+    this->drawDisappear = 10;
+    deckHandler->setDrawDisappear(this->drawDisappear);
+}
+
+
+void MainWindow::timeDrawTurn()
+{
+    this->drawDisappear = 0;
+    deckHandler->setDrawDisappear(this->drawDisappear);
+}
+
+
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
     addDraftMenu(menu);
     addClearDeckMenu(menu);
     menu->addSeparator();
+    addTamGreyedMenu(menu);
+    addTimeDrawMenu(menu);
+    menu->addSeparator();
     addNumWindowsMenu(menu);
     addSplitMenu(menu);
     addTransparentMenu(menu);
-    addTamGreyedMenu(menu);
 
     ui->toolButton->setMenu(menu);
 }
@@ -772,6 +851,7 @@ void MainWindow::readSettings()
         if(numWindows == 2) createSecondaryWindow();
 
         this->greyedHeight = settings.value("greyedHeight", 25).toInt();
+        this->drawDisappear = settings.value("drawDisappear", 10).toInt();
     }
     else
     {
@@ -797,8 +877,9 @@ void MainWindow::writeSettings()
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
         settings.setValue("transparent", (int)this->transparency);
-        settings.setValue("greyedHeight", this->greyedHeight);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
+        settings.setValue("greyedHeight", this->greyedHeight);
+        settings.setValue("drawDisappear", this->drawDisappear);
     }
     else
     {

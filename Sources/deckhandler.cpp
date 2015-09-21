@@ -210,7 +210,7 @@ void DeckHandler::removeOldestDrawCard()
 
 void DeckHandler::showPlayerCardDraw(QString code)
 {
-    newDrawCard(code);
+    if(this->drawDisappear>=0)    newDrawCard(code);
     drawFromDeck(code);
 }
 
@@ -486,6 +486,13 @@ void DeckHandler::clearDrawList(bool forceClear)
     ui->drawListWidget->setMinimumHeight(0);
     ui->drawListWidget->setMaximumHeight(0);
     drawCardList.clear();
+}
+
+
+void DeckHandler::setDrawDisappear(int value)
+{
+    this->drawDisappear = value;
+    clearDrawList(true);
 }
 
 

@@ -62,6 +62,7 @@ private:
     MainWindow *otherWindow;
     QSize sizePreDraft;
     int greyedHeight;
+    int drawDisappear;
 
 
 
@@ -88,6 +89,7 @@ private:
     void spreadTransparency();
     void addNumWindowsMenu(QMenu *menu);
     void addTamGreyedMenu(QMenu *menu);
+    void addTimeDrawMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
@@ -152,6 +154,10 @@ private slots:
     void tamGreyed25px();
     void tamGreyed30px();
     void tamGreyed35px();
+    void timeDrawNo();
+    void timeDraw5s();
+    void timeDraw10s();
+    void timeDrawTurn();
 };
 
 #endif // MAINWINDOW_H
