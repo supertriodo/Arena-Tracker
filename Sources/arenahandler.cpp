@@ -426,8 +426,12 @@ void ArenaHandler::setTransparency(Transparency value)
     if(transparency==Always)
     {
         allToWhite();
-        ui->updateButton->setEnabled(false);
-        webUploader->refresh();
+
+        if(ui->updateButton->isEnabled())
+        {
+            ui->updateButton->setEnabled(false);
+            webUploader->refresh();
+        }
 
         ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white");
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
@@ -440,8 +444,12 @@ void ArenaHandler::setTransparency(Transparency value)
     else
     {
         allToWhite();
-        ui->updateButton->setEnabled(false);
-        webUploader->refresh();
+
+        if(ui->updateButton->isEnabled())
+        {
+            ui->updateButton->setEnabled(false);
+            webUploader->refresh();
+        }
 
         ui->arenaTreeWidget->setStyleSheet("");
         ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
