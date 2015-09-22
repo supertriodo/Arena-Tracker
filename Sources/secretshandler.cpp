@@ -238,7 +238,7 @@ void SecretsHandler::discardSecretOptionNow(QString code)
                 emit pDebug("Option discarded: " + code);
                 it->root.treeItem->removeChild(it->children[i].treeItem);
                 it->children.removeAt(i);
-                adjustSize();
+                QTimer::singleShot(10, this, SLOT(adjustSize()));
 
                 //Comprobar unica posibilidad
                 checkLastSecretOption(*it);

@@ -72,7 +72,6 @@ private:
     void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
     void checkLastSecretOption(ActiveSecret activeSecret);
-    void adjustSize();
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -99,6 +98,7 @@ public slots:
 private slots:
     void discardSecretOptionDelay();
     void clearSecretsAnimating();
+    void adjustSize();
 };
 
 #endif // SECRETSHANDLER_H
