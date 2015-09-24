@@ -83,6 +83,7 @@ public:
 
 public:
     void reset();
+    void setSynchronized();
 
 signals:
     void newGameResult(GameResult gameResult);
@@ -117,7 +118,6 @@ private slots:
 
 public slots:
     void processLogLine(QString line, qint64 numLine);
-    void setSynchronized();
     void setDeckRead(bool value=true);
 };
 

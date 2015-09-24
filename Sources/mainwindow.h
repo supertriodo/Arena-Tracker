@@ -61,7 +61,7 @@ private:
     bool isMainWindow;
     MainWindow *otherWindow;
     QSize sizePreDraft;
-    int greyedHeight;
+    int greyedHeight, cardHeight;
     int drawDisappear;
 
 
@@ -89,6 +89,7 @@ private:
     void spreadTransparency();
     void addNumWindowsMenu(QMenu *menu);
     void addTamGreyedMenu(QMenu *menu);
+    void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
     void completeHeroButtons();
     void initCardsJson();
@@ -158,6 +159,11 @@ private slots:
     void timeDraw5s();
     void timeDraw10s();
     void timeDrawTurn();
+    void tamCard15px();
+    void tamCard20px();
+    void tamCard25px();
+    void tamCard30px();
+    void tamCard35px();
 };
 
 #endif // MAINWINDOW_H

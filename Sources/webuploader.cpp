@@ -165,6 +165,7 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 
 void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
+    (void)deckCardList;
 //    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
 //    {
 //        if(it->total > 0)

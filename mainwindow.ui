@@ -629,25 +629,6 @@
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="drawListWidget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::NoSelection</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QListWidget" name="deckListWidget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -676,7 +657,7 @@
         </widget>
         <widget class="QWidget" name="tabEnemy">
          <attribute name="title">
-          <string>Enemy</string>
+          <string>Hand</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
@@ -741,6 +722,25 @@
               <string notr="true">1</string>
              </property>
             </column>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="drawListWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
+            </property>
            </widget>
           </item>
          </layout>

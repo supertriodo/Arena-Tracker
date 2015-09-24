@@ -28,6 +28,7 @@ void EnemyHandHandler::reset()
 void EnemyHandHandler::completeUI()
 {
     ui->enemyHandListWidget->setIconSize(CARD_SIZE);
+    ui->enemyHandListWidget->setMinimumHeight(0);
 }
 
 

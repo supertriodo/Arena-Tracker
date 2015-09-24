@@ -181,6 +181,7 @@ void MainWindow::createDeckHandler()
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     deckHandler->setGreyedHeight(this->greyedHeight);
+    deckHandler->setCardHeight(this->cardHeight);
     deckHandler->setDrawDisappear(this->drawDisappear);
 }
 
@@ -326,6 +327,7 @@ void MainWindow::synchronizedDone()
     createWebUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
+    deckHandler->setSynchronized();
     spreadTransparency();
 
 
@@ -742,6 +744,95 @@ void MainWindow::tamGreyed35px()
 }
 
 
+void MainWindow::addTamCardMenu(QMenu *menu)
+{
+    QAction *action0 = new QAction("15px(Smallest)", this);
+    QAction *action1 = new QAction("20px", this);
+    QAction *action2 = new QAction("25px", this);
+    QAction *action3 = new QAction("30px", this);
+    QAction *action4 = new QAction("35px(Normal)", this);
+    action0->setCheckable(true);
+    action1->setCheckable(true);
+    action2->setCheckable(true);
+    action3->setCheckable(true);
+    action4->setCheckable(true);
+    connect(action0, SIGNAL(triggered()), this, SLOT(tamCard15px()));
+    connect(action1, SIGNAL(triggered()), this, SLOT(tamCard20px()));
+    connect(action2, SIGNAL(triggered()), this, SLOT(tamCard25px()));
+    connect(action3, SIGNAL(triggered()), this, SLOT(tamCard30px()));
+    connect(action4, SIGNAL(triggered()), this, SLOT(tamCard35px()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action0);
+    splitGroup->addAction(action1);
+    splitGroup->addAction(action2);
+    splitGroup->addAction(action3);
+    splitGroup->addAction(action4);
+
+    switch(cardHeight)
+    {
+        case 15:
+            action0->setChecked(true);
+            break;
+        case 20:
+            action1->setChecked(true);
+            break;
+        case 25:
+            action2->setChecked(true);
+            break;
+        case 30:
+            action3->setChecked(true);
+            break;
+        case 35:
+            action4->setChecked(true);
+            break;
+    }
+
+    QMenu *tamCardMenu = new QMenu("Deck: Card size", this);
+    tamCardMenu->addAction(action0);
+    tamCardMenu->addAction(action1);
+    tamCardMenu->addAction(action2);
+    tamCardMenu->addAction(action3);
+    tamCardMenu->addAction(action4);
+    menu->addMenu(tamCardMenu);
+}
+
+
+void MainWindow::tamCard15px()
+{
+    this->cardHeight = 15;
+    deckHandler->setCardHeight(this->cardHeight);
+}
+
+
+void MainWindow::tamCard20px()
+{
+    this->cardHeight = 20;
+    deckHandler->setCardHeight(this->cardHeight);
+}
+
+
+void MainWindow::tamCard25px()
+{
+    this->cardHeight = 25;
+    deckHandler->setCardHeight(this->cardHeight);
+}
+
+
+void MainWindow::tamCard30px()
+{
+    this->cardHeight = 30;
+    deckHandler->setCardHeight(this->cardHeight);
+}
+
+
+void MainWindow::tamCard35px()
+{
+    this->cardHeight = 35;
+    deckHandler->setCardHeight(this->cardHeight);
+}
+
+
 void MainWindow::addTimeDrawMenu(QMenu *menu)
 {
     QAction *action0 = new QAction("No", this);
@@ -822,6 +913,7 @@ void MainWindow::completeToolButton()
     addDraftMenu(menu);
     addClearDeckMenu(menu);
     menu->addSeparator();
+    addTamCardMenu(menu);
     addTamGreyedMenu(menu);
     addTimeDrawMenu(menu);
     menu->addSeparator();
@@ -851,6 +943,7 @@ void MainWindow::readSettings()
         if(numWindows == 2) createSecondaryWindow();
 
         this->greyedHeight = settings.value("greyedHeight", 25).toInt();
+        this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 10).toInt();
     }
     else
@@ -879,6 +972,7 @@ void MainWindow::writeSettings()
         settings.setValue("transparent", (int)this->transparency);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
         settings.setValue("greyedHeight", this->greyedHeight);
+        settings.setValue("cardHeight", this->cardHeight);
         settings.setValue("drawDisappear", this->drawDisappear);
     }
     else
@@ -1045,7 +1139,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
     }
     else if(widget == ui->tabEnemy)
     {
-        label = "Enemy";
+        label = "Hand";
     }
     else if(widget == ui->tabLog)
     {
@@ -1239,10 +1333,7 @@ void MainWindow::test()
 
 
 //TODO
-//Consejos iniciales
 //Uso en construido.
-//Check new version
-//Menu drawdelay //llamar clearDrawList() antes de cambiar drawDissapear
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

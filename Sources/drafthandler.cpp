@@ -234,7 +234,7 @@ void DraftHandler::endDraft()
 
     //Oculta tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
-    ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabDeck));
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabArena));
 
     //Upload or complete deck with assets
     emit draftEnded();

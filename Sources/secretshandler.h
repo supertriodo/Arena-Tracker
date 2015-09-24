@@ -75,6 +75,7 @@ private:
 
 public:
     void redrawDownloadedCardImage(QString code);
+    void setSynchronized();
 
 signals:
     void checkCardImage(QString code);
@@ -93,7 +94,6 @@ public slots:
     void avengeTested();
     void cSpiritTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo);
-    void setSynchronized();
 
 private slots:
     void discardSecretOptionDelay();

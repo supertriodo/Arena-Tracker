@@ -39,11 +39,11 @@ private:
     QColor getRarityColor(QString code);
 
 protected:
-    QPixmap draw(QString code, uint total, bool drawRarity=false, QColor nameColor=BLACK);
+    QPixmap draw(QString code, uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
 
 public:
-    void draw(bool drawTotal);
-    void draw();
+    void draw(bool drawTotal=true, int cardHeight=35);
+    void drawGreyed(bool drawTotal, int cardHeight=35);
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 };

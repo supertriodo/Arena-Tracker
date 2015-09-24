@@ -8,8 +8,10 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->inGame = false;
     this->transparency = Never;
     this->greyedHeight = 35;
+    this->cardHeight = 35;
     this->drawAnimating = false;
     this->drawDisappear = 10;
+    this->synchronized = false;
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -45,6 +47,15 @@ void DeckHandler::completeUI()
 }
 
 
+void DeckHandler::setSynchronized()
+{
+    this->synchronized = true;
+
+    if(this->inGame)    lockDeckInterface();
+    else                unlockDeckInterface();
+}
+
+
 void DeckHandler::adjustDrawSize()
 {
     if(drawAnimating)
@@ -56,6 +67,8 @@ void DeckHandler::adjustDrawSize()
     int rowHeight = ui->drawListWidget->sizeHintForRow(0);
     int rows = drawCardList.count();
     int height = rows*rowHeight + 2*ui->drawListWidget->frameWidth();
+    int maxHeight = (ui->drawListWidget->height()+ui->enemyHandListWidget->height())*4/5;
+    if(height>maxHeight)    height = maxHeight;
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->drawListWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
@@ -93,7 +106,7 @@ void DeckHandler::reset()
     DeckCard deckCard("");
     deckCard.total = 30;
     deckCard.listItem = new QListWidgetItem();
-    deckCard.draw();
+    deckCard.draw(true, this->cardHeight);
     insertDeckCard(deckCard);
 
     enableDeckButtons();
@@ -142,7 +155,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool noAdd)
             found = true;
             deckCardList[i].total+=total;
             deckCardList[i].remaining+=total;
-            deckCardList[i].draw();
+            deckCardList[i].draw(true, this->cardHeight);
             break;
         }
     }
@@ -154,12 +167,12 @@ void DeckHandler::newDeckCard(QString code, int total, bool noAdd)
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(deckCard);
-        deckCard.draw();
+        deckCard.draw(true, this->cardHeight);
         emit checkCardImage(code);
     }
 
     deckCardList[0].total-=total;
-    deckCardList[0].draw();
+    deckCardList[0].draw(true, this->cardHeight);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
     emit pDebug("Add to deck: (" + QString::number(total) + ") " +
@@ -224,15 +237,12 @@ void DeckHandler::drawFromDeck(QString code)
             if(it->remaining>1)
             {
                 it->remaining--;
-                it->draw(false);
+                it->draw(false, this->cardHeight);
             }
             else if(it->remaining == 1)
             {
                 it->remaining--;
-                if(it->total > 1)   it->draw();
-
-                it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
+                it->drawGreyed(true, this->greyedHeight);
             }
             //it->remaining == 0
             //MALORNE
@@ -242,12 +252,10 @@ void DeckHandler::drawFromDeck(QString code)
             {
                 deckCardList[0].total--;
                 if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
-                else                            deckCardList[0].draw();
+                else                            deckCardList[0].draw(true, this->cardHeight);
                 it->total++;
 
-                it->draw();
-                it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                        CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
+                it->drawGreyed(true, this->greyedHeight);
 
                 emit pDebug("New card: " +
                                   (*cardsJson)[code].value("name").toString());
@@ -296,13 +304,11 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
         {
             if(it->remaining > 0)
             {
-                it->draw(false);
+                it->draw(false, this->cardHeight);
             }
             else
             {
-                it->draw();
-                it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                    CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
+                it->drawGreyed(true, this->greyedHeight);
             }
         }
     }
@@ -337,11 +343,12 @@ void DeckHandler::cardTotalMin()
 {
     int index = ui->deckListWidget->currentRow();
     deckCardList[index].total--;
+    deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total++;
 
-    deckCardList[index].draw();
+    deckCardList[index].draw(true, this->cardHeight);
     if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
-    deckCardList[0].draw();
+    deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 }
 
@@ -350,11 +357,12 @@ void DeckHandler::cardTotalPlus()
 {
     int index = ui->deckListWidget->currentRow();
     deckCardList[index].total++;
+    deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total--;
 
-    deckCardList[index].draw();
+    deckCardList[index].draw(true, this->cardHeight);
     if(deckCardList[0].total==0)    deckCardList[0].listItem->setHidden(true);
-    else                            deckCardList[0].draw();
+    else                            deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 }
 
@@ -379,13 +387,16 @@ void DeckHandler::cardRemove()
 
     deckCardList[0].total++;
     if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
-    deckCardList[0].draw();
+    deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 }
 
 
 void DeckHandler::lockDeckInterface()
 {
+    this->inGame = true;
+    if(!synchronized)   return;
+
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         it->remaining = it->total;
@@ -397,7 +408,6 @@ void DeckHandler::lockDeckInterface()
     ui->deckButtonPlus->setHidden(true);
     ui->deckButtonRemove->setHidden(true);
 
-    this->inGame = true;
     updateTransparency();
     clearDrawList(true);
 }
@@ -405,11 +415,14 @@ void DeckHandler::lockDeckInterface()
 
 void DeckHandler::unlockDeckInterface()
 {
+    this->inGame = false;
+    if(!synchronized)   return;
+
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         if(it->total>0)
         {
-            it->draw();
+            it->draw(true, this->cardHeight);
             it->listItem->setHidden(false);
             it->remaining = it->total;
         }
@@ -424,7 +437,6 @@ void DeckHandler::unlockDeckInterface()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
 
-    this->inGame = false;
     updateTransparency();
     clearDrawList(true);
 }
@@ -462,9 +474,7 @@ void DeckHandler::updateGreyedHeight()
     {
         if(it->remaining == 0)
         {
-            it->draw();
-            it->listItem->setIcon(QIcon(it->listItem->icon().pixmap(
-                                    CARD_SIZE, QIcon::Disabled, QIcon::On).scaled(QSize(218,this->greyedHeight))));
+            it->drawGreyed(true, this->greyedHeight);
         }
     }
 }
@@ -474,6 +484,25 @@ void DeckHandler::setGreyedHeight(int value)
 {
     this->greyedHeight = value;
     if(inGame)  updateGreyedHeight();
+}
+
+
+void DeckHandler::updateCardHeight()
+{
+    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    {
+        if(it->remaining > 0)
+        {
+            it->draw(true, this->cardHeight);
+        }
+    }
+}
+
+
+void DeckHandler::setCardHeight(int value)
+{
+    this->cardHeight = value;
+    updateCardHeight();
 }
 
 

@@ -23,18 +23,24 @@ DeckCard::~DeckCard()
 }
 
 
-void DeckCard::draw()
+void DeckCard::draw(bool drawTotal, int cardHeight)
 {
-    draw(true);
-}
-void DeckCard::draw(bool drawTotal)
-{
-    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining);
+    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
 
     this->listItem->setIcon(QIcon(canvas));
     this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
 }
-QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameColor)
+
+void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
+{
+    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
+
+    this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
+                            CARD_SIZE, QIcon::Disabled, QIcon::On)));
+    this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
+}
+
+QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameColor, int cardHeight)
 {
     QString type = (*cardsJson)[code].value("type").toString();
     QString name = (*cardsJson)[code].value("name").toString();
@@ -106,6 +112,22 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
             painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
         }
     painter.end();
+
+    //Adapt to size
+    if(cardHeight<35)
+    {
+        if(cardHeight==30)
+        {
+            return canvas.copy(0,0+3,218,35-5);
+        }
+        else
+        {
+            canvas = canvas.copy(0,0+6,218,35-10);
+
+            if(cardHeight<25)   canvas = canvas.scaled(QSize(218,cardHeight));
+            return canvas;
+        }
+    }
 
     return canvas;
 }
