@@ -219,8 +219,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult)),
-            arenaHandler, SLOT(newGameResult(GameResult)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult, bool)),
+            arenaHandler, SLOT(newGameResult(GameResult, bool)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     connect(gameWatcher, SIGNAL(newArenaReward(int,int,bool,bool,bool)),

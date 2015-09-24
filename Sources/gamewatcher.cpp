@@ -58,7 +58,6 @@ bool GameWatcher::findClasp(QString &line)
 
 void GameWatcher::processLogLine(QString line, qint64 numLine)
 {
-//    if(!findClasp(line))    return;
     if(line.startsWith("[Bob]"))
     {
         if(line.startsWith("[Bob] ---Register"))
@@ -105,9 +104,6 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 arenaMode = false;
                 emit pDebug("Leaving arena.", numLine);
                 emit leaveArena();
-#ifdef QT_DEBUG
-                arenaMode = true;//Testing
-#endif
             }
         }
     }
@@ -262,25 +258,22 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     endReadingDeck();
                 }
 
-                if(arenaMode)
-                {
-                    gameState = heroType1State;
-                    emit pDebug("GameState = heroType1State", numLine);
-                    mulliganEnemyDone = false;
-                    turn = turnReal = 0;
+                gameState = heroType1State;
+                emit pDebug("GameState = heroType1State", numLine);
+                mulliganEnemyDone = false;
+                turn = turnReal = 0;
 
-                    hero1.clear();
-                    hero2.clear();
-                    name1.clear();
-                    name2.clear();
-                    firstPlayer.clear();
-                    winnerPlayer.clear();
-                    playerID = 0;
-                    secretHero = unknown;
-                    enemyMinions = 0;
-                    enemyMinionsAliveForAvenge = -1;
-                    emit startGame();
-                }
+                hero1.clear();
+                hero2.clear();
+                name1.clear();
+                name2.clear();
+                firstPlayer.clear();
+                winnerPlayer.clear();
+                playerID = 0;
+                secretHero = unknown;
+                enemyMinions = 0;
+                enemyMinionsAliveForAvenge = -1;
+                emit startGame();
             }
             break;
         case heroType1State:
@@ -754,7 +747,7 @@ void GameWatcher::createGameResult()
     emit pDebug("\nNew game.", 0);
     emit pLog(tr("Log: New game."));
 
-    emit newGameResult(gameResult);
+    emit newGameResult(gameResult, this->arenaMode);
 }
 
 

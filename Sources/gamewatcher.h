@@ -86,7 +86,7 @@ public:
     void setSynchronized();
 
 signals:
-    void newGameResult(GameResult gameResult);
+    void newGameResult(GameResult gameResult, bool arenaMatch);
     void newArena(QString hero);
     void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void arenaRewardsComplete();

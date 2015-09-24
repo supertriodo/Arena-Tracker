@@ -59,11 +59,11 @@ void ArenaHandler::setWebUploader(WebUploader *webUploader)
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult)
+void ArenaHandler::newGameResult(GameResult gameResult, bool arenaMatch)
 {
-    QTreeWidgetItem *item = showGameResult(gameResult);
+    QTreeWidgetItem *item = showGameResult(gameResult, arenaMatch);
 
-    if(webUploader!=NULL)
+    if(arenaMatch && webUploader!=NULL)
     {
         QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
         bool uploadSuccess;
@@ -80,11 +80,11 @@ void ArenaHandler::newGameResult(GameResult gameResult)
 }
 
 
-QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult)
+QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaMatch)
 {
     QTreeWidgetItem *item;
 
-    if(arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
+    if(!arenaMatch || arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
     {
         item = new QTreeWidgetItem(arenaHomeless);
     }
@@ -128,7 +128,7 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
         }
     }
 
-    QTreeWidgetItem *item = showGameResult(gameResult);
+    QTreeWidgetItem *item = showGameResult(gameResult, true);
     setRowColor(item, YELLOW);
 }
 

@@ -49,13 +49,13 @@ signals:
 
 public slots:
     //GameWatcher
-    void newGameResult(GameResult gameResult);
+    void newGameResult(GameResult gameResult, bool arenaMatch);
     bool newArena(QString hero);
     void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
     void uploadCurrentArenaRewards();
 
     //WebUploader
-    QTreeWidgetItem *showGameResult(GameResult gameResult);
+    QTreeWidgetItem *showGameResult(GameResult gameResult, bool arenaMatch=true);
     void showArena(QString hero);
     void reshowGameResult(GameResult gameResult);
     void reshowArena(QString hero);
