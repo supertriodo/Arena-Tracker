@@ -410,6 +410,8 @@ void DeckHandler::lockDeckInterface()
 
     updateTransparency();
     clearDrawList(true);
+
+    emit pDebug("Lock deck interface.");
 }
 
 
@@ -439,6 +441,8 @@ void DeckHandler::unlockDeckInterface()
 
     updateTransparency();
     clearDrawList(true);
+
+    emit pDebug("Unlock deck interface.");
 }
 
 

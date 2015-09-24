@@ -34,7 +34,7 @@ GameWatcher::~GameWatcher()
 void GameWatcher::reset()
 {
     gameState = noGame;
-    emit pDebug("GameState = noGame", 0);
+    emit pDebug("Reset (GameState = noGame).", 0);
     arenaMode = false;
 }
 
@@ -84,20 +84,16 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 if(gameState == inRewards)
                 {
                     gameState = noGame;
-                    emit pDebug("Rewards complete.", numLine);
+                    emit pDebug("Rewards complete (GameState = noGame).", numLine);
                     emit pLog(tr("Log: New rewards."));
                     emit arenaRewardsComplete();
                 }
             }
             else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
             {
+                emit endGame();
                 gameState = noGame;
-                emit pDebug("GameState = noGame", numLine);
-
-                if(arenaMode)
-                {
-                    emit endGame();
-                }
+                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
             }
             else
             {
@@ -112,8 +108,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
         if(line.contains(QRegularExpression("reward \\d=\\[")))
         {
             gameState = inRewards;
-            emit pDebug("GameState = inRewards", numLine);
-            emit pDebug("New reward.", numLine);
+            emit pDebug("New reward (GameState = inRewards).", numLine);
 
             if(line.contains("BoosterPackRewardData"))
             {
@@ -219,8 +214,7 @@ void GameWatcher::startReadingDeck()
 {
     if(gameState != noGame || deckRead) return;
     gameState = readingDeck;
-    emit pDebug("GameState = readingDeck", 0);
-    emit pDebug("Start reading deck.", 0);
+    emit pDebug("Start reading deck (GameState = readingDeck).", 0);
 }
 
 
@@ -229,8 +223,7 @@ void GameWatcher::endReadingDeck()
     if(gameState != readingDeck)    return;
     deckRead = true;
     gameState = noGame;
-    emit pDebug("GameState = noGame", 0);
-    emit pDebug("End reading deck.", 0);
+    emit pDebug("End reading deck (GameState = noGame).", 0);
     emit pLog(tr("Log: Active deck read."));
 }
 
@@ -258,8 +251,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     endReadingDeck();
                 }
 
+                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
                 gameState = heroType1State;
-                emit pDebug("GameState = heroType1State", numLine);
+
                 mulliganEnemyDone = false;
                 turn = turnReal = 0;
 
@@ -273,6 +267,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                 secretHero = unknown;
                 enemyMinions = 0;
                 enemyMinionsAliveForAvenge = -1;
+
                 emit startGame();
             }
             break;
@@ -281,7 +276,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             {
                 hero1 = match->captured(1);
                 gameState = heroType2State;
-                emit pDebug("GameState = heroType2State", numLine);
+                emit pDebug("Found hero 1 (GameState = heroType2State)", numLine);
             }
             break;
         case heroType2State:
@@ -289,7 +284,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             {
                 hero2 = match->captured(1);
                 gameState = playerName1State;
-                emit pDebug("GameState = playerName1State", numLine);
+                emit pDebug("Found hero 2 (GameState = playerName1State)", numLine);
             }
             break;
         case playerName1State:
@@ -302,7 +297,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     secretHero = getSecretHero(hero2, hero1);
                 }
                 gameState = playerName2State;
-                emit pDebug("GameState = playerName2State", numLine);
+                emit pDebug("Found player 1 (GameState = playerName2State)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -319,7 +314,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 gameState = inGameState;
-                emit pDebug("GameState = inGameState\n", numLine);
+                emit pDebug("Found player 2 (GameState = inGameState).", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -344,7 +339,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         createGameResult();
 
         gameState = noGame;
-        emit pDebug("GameState = noGame", numLine);
+        emit pDebug("Found WON (GameState = noGame).", numLine);
     }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
@@ -744,7 +739,6 @@ void GameWatcher::createGameResult()
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    emit pDebug("\nNew game.", 0);
     emit pLog(tr("Log: New game."));
 
     emit newGameResult(gameResult, this->arenaMode);
