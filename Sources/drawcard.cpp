@@ -1,4 +1,6 @@
 #include "drawcard.h"
+#include "utility.h"
+#include <QtWidgets>
 
 DrawCard::DrawCard(QString code) : DeckCard(code)
 {
@@ -16,5 +18,5 @@ void DrawCard::draw()
     QPixmap canvas = DeckCard::draw(this->code, 1, false, ORANGE);
 
     this->listItem->setIcon(QIcon(canvas));
-    this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
+    this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
 }

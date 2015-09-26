@@ -25,3 +25,19 @@ QString Utility::heroToLogNumber(const QString &hero)
     else if(hero.compare("Warrior")==0) return QString("01");
     else return QString();
 }
+
+
+QString Utility::appPath()
+{
+    QString dirPath = QCoreApplication::applicationDirPath();
+
+#ifdef Q_OS_MAC
+    QDir dir(dirPath);
+    dir.cdUp();
+    dir.cdUp();
+    dir.cdUp();
+    return dir.absolutePath()
+#else
+    return dirPath;
+#endif
+}

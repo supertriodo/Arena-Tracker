@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isMainWindow = true;
     otherWindow = NULL;
 
+    checkHSCardsDir();
     createLogFile();
     readSettings();
     completeUI();
@@ -1213,7 +1214,7 @@ void MainWindow::showLogLoadProgress(qint64 logSeek)
 
 void MainWindow::checkCardImage(QString code)
 {
-    QFileInfo cardFile("./HSCards/" + code + ".png");
+    QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
 
     if(!cardFile.exists())
     {
@@ -1293,7 +1294,7 @@ void MainWindow::resetSettings()
 
 void MainWindow::createLogFile()
 {
-    atLogFile = new QFile("./HSCards/ArenaTrackerLog.txt");
+    atLogFile = new QFile(Utility::appPath() + "/HSCards/ArenaTrackerLog.txt");
     if(atLogFile->exists())  atLogFile->remove();
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -1332,19 +1333,40 @@ void MainWindow::uploadDeck()
 }
 
 
+void MainWindow::checkHSCardsDir()
+{
+    QFileInfo dir(Utility::appPath() + "/HSCards");
+
+    if(dir.exists())
+    {
+        if(dir.isDir())
+        {
+            pLog("Settings: Path HSCards: " + dir.absoluteFilePath());
+            pDebug("Path HSCards: " + dir.absoluteFilePath());
+        }
+        else
+        {
+            pLog("Settings: " + dir.absoluteFilePath() + " is not a directory.");
+            pDebug(dir.absoluteFilePath() + " is not a directory.");
+        }
+    }
+    else
+    {
+        pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
+        pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
+    }
+}
+
+
 void MainWindow::test()
 {
 }
 
 
 //TODO
-//Uso en construido.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
-
-//DECK IN ARENA MASTERY
-//Create arena cards comentado en webUploader.
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.

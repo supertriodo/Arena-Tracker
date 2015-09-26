@@ -101,6 +101,7 @@ private:
     void resetDeck(bool deckRead=false);
     void createSecondaryWindow();
     void destroySecondaryWindow();
+    void checkHSCardsDir();
     void test();
 
 //Override events

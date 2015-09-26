@@ -1,4 +1,5 @@
 #include "deckcard.h"
+#include "utility.h"
 #include <QtWidgets>
 
 
@@ -28,7 +29,7 @@ void DeckCard::draw(bool drawTotal, int cardHeight)
     QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
 
     this->listItem->setIcon(QIcon(canvas));
-    this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
+    this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
 }
 
 void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
@@ -37,7 +38,7 @@ void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
 
     this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
                             CARD_SIZE, QIcon::Disabled, QIcon::On)));
-    this->listItem->setToolTip("<html><img src=./HSCards/" + this->code + ".png/></html>");
+    this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
 }
 
 QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameColor, int cardHeight)
@@ -67,7 +68,7 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
         else                                target = QRectF(113,6,100,25);
         if(type!=QString("Minion"))     painter.setPen(QPen(YELLOW));
         else                            painter.setPen(QPen(WHITE));
-        painter.drawPixmap(target, QPixmap("./HSCards/" + code + ".png"), source);
+        painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + code + ".png"), source);
 
         //Background and #cards
         if(total == 1)  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));

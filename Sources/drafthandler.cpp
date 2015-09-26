@@ -75,7 +75,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
         QString code = it.value().toObject().value("image").toString();
         hearthArenaCodes[code] = it.key().toInt();
 
-        QFileInfo cardFile("./HSCards/" + code + ".png");
+        QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
         if(cardFile.exists())
         {
             cardsHist[code] = getHist(code);
@@ -575,18 +575,9 @@ void DraftHandler::getBestMatchingCodes(cv::MatND screenCardsHist[3], QString co
 }
 
 
-//void DraftHandler::showImage(QString code)
-//{
-//    if(code.isEmpty())  return;
-//    cv::Mat fullCard = cv::imread(QString("./HSCards/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
-//    cv::Mat srcBase = fullCard(cv::Rect(60,71,80,80));
-//    cv::imshow(code.toStdString(), srcBase);
-//}
-
-
 cv::MatND DraftHandler::getHist(QString &code)
 {
-    cv::Mat fullCard = cv::imread(QString("./HSCards/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
+    cv::Mat fullCard = cv::imread((Utility::appPath() + "/HSCards/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
     cv::Mat srcBase = fullCard(cv::Rect(60,71,80,80));
     return getHist(srcBase);
 }
@@ -641,7 +632,7 @@ bool DraftHandler::findScreenRects()
 
         cv::Mat screenCapture = mat.clone();
 
-        Mat img_object = imread("./HSCards/arenaTemplate.png", CV_LOAD_IMAGE_GRAYSCALE );
+        Mat img_object = imread((Utility::appPath() + "/HSCards/arenaTemplate.png").toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
         if(!img_object.data)
         {
             emit pDebug("Cannot find arenaTemplate.png", Error);
