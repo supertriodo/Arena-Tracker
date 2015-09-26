@@ -215,6 +215,7 @@ void GameWatcher::startReadingDeck()
     if(gameState != noGame || deckRead) return;
     gameState = readingDeck;
     emit pDebug("Start reading deck (GameState = readingDeck).", 0);
+    emit beginReadingDeck();
 }
 
 

@@ -138,7 +138,7 @@ void MainWindow::createDraftHandler()
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
-            deckHandler, SLOT(newDeckCard(QString)));
+            deckHandler, SLOT(newDeckCardDraft(QString)));
     connect(draftHandler, SIGNAL(draftEnded()),
             this, SLOT(uploadDeck()));
     connect(draftHandler, SIGNAL(pLog(QString)),
@@ -285,6 +285,10 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(resumeDraft()));
     connect(gameWatcher,SIGNAL(enterArena()),
             this, SLOT(showTabHeroOnNoArena()));
+
+    //Connect en webUploader
+//    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+//            webUploader, SLOT(askArenaCards()));
 }
 
 
@@ -360,12 +364,14 @@ void MainWindow::createWebUploader()
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-#ifndef QT_DEBUG //Si tenemos una arena en web podemos seguir testeando deck en construido
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
-            deckHandler, SLOT(newDeckCard(QString,int)));
+            deckHandler, SLOT(newDeckCardWeb(QString,int)));
     connect(webUploader, SIGNAL(newWebDeckCardList()),
             this, SLOT(resetDeckFromWeb()));
-#endif
+
+    //Connect de gameWatcher
+    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+            webUploader, SLOT(askArenaCards()));
 
     arenaHandler->setWebUploader(webUploader);
 
@@ -1328,7 +1334,6 @@ void MainWindow::uploadDeck()
 
 void MainWindow::test()
 {
-
 }
 
 

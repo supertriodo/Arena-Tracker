@@ -110,6 +110,7 @@ signals:
     void playerTurnStart();
     void enterArena();
     void leaveArena();
+    void beginReadingDeck();
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 

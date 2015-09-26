@@ -37,7 +37,8 @@ public:
 
     enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
                     createArena, rewardsSent, checkArenaCurrentReload,
-                    gameResultSent, reloadArenaCurrent, complete };
+                    gameResultSent, reloadArenaCurrent,
+                    getArenaDeck1, getArenaDeck2, complete };
 
 //Variables
 private:
@@ -63,7 +64,7 @@ private:
     void postRequest(QNetworkRequest request, QURL postData);
     void createArenaCards(QList<DeckCard> &deckCardList);
     QString codeFromName(QString name);
-    void GetArenaCards(QString &html);
+    void getArenaCards(QString &html);
     void uploadArenaCards();    
     void showWebState();
     void checkArenaReload();
@@ -92,6 +93,7 @@ private slots:
 
 public slots:
     void replyFinished(QNetworkReply *reply);
+    void askArenaCards();
 };
 
 #endif // WEBUPLOADER_H

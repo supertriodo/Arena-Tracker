@@ -41,6 +41,7 @@ private:
     void updateGreyedHeight();
     void updateCardHeight();
     void newDrawCard(QString code);
+    void newDeckCard(QString card, int total=1, bool add=false);
     void drawFromDeck(QString code);
 
 public:
@@ -60,7 +61,8 @@ signals:
 
 public slots:
     void newDeckCardAsset(QString code);
-    void newDeckCard(QString card, int total=1, bool noAdd=false);
+    void newDeckCardDraft(QString code);
+    void newDeckCardWeb(QString code, int total);
     void showPlayerCardDraw(QString code);
     void enableDeckButtons();
     void cardTotalMin();

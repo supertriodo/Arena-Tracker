@@ -124,11 +124,23 @@ QList<DeckCard> * DeckHandler::getDeckComplete()
 
 void DeckHandler::newDeckCardAsset(QString code)
 {
+    newDeckCard(code, 1, false);
+}
+
+
+void DeckHandler::newDeckCardDraft(QString code)
+{
     newDeckCard(code, 1, true);
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool noAdd)
+void DeckHandler::newDeckCardWeb(QString code, int total)
+{
+    newDeckCard(code, total, false);
+}
+
+
+void DeckHandler::newDeckCard(QString code, int total, bool add)
 {
     if(code.isEmpty())  return;
 
@@ -146,7 +158,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool noAdd)
     {
         if(deckCardList[i].code == code)
         {
-            if(noAdd)
+            if(!add)
             {
                 emit pDebug((*cardsJson)[code].value("name").toString() + " already in deck.");
                 return;

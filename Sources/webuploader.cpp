@@ -165,18 +165,17 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 
 void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
-    (void)deckCardList;
-//    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
-//    {
-//        if(it->total > 0)
-//        {
-//            QString name = (*cardsJson)[it->code].value("name").toString();
-//            arenaCards.append(QString::number(it->total) + " " + name + "\n");
-//        }
-//    }
+    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
+    {
+        if(it->total > 0)
+        {
+            QString name = (*cardsJson)[it->code].value("name").toString();
+            arenaCards.append(QString::number(it->total) + " " + name + "\n");
+        }
+    }
 
-//    emit pDebug("Building Deck string:\n" + arenaCards);
-//    emit pDebug("New deck waiting for upload.");
+    emit pDebug("Building Deck string:\n" + arenaCards);
+    emit pDebug("New deck waiting for upload.");
 }
 
 
@@ -282,6 +281,12 @@ void WebUploader::showWebState()
         case reloadArenaCurrent:
             emit pDebug("ReplyFinished: reloadArenaCurrent");
             break;
+        case getArenaDeck1:
+            emit pDebug("ReplyFinished: getArenaDeck1");
+            break;
+        case getArenaDeck2:
+            emit pDebug("ReplyFinished: getArenaDeck2");
+            break;
         case complete:
             emit pDebug("ReplyFinished: complete");
             break;
@@ -372,10 +377,10 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         else
         {
             emit pDebug("There's no arena in progress.");
+            emit noArenaFound();
             arenaCurrentID = 0;
             webState = complete;
-            emit synchronized();
-            emit noArenaFound();
+            uploadNext();
         }
     }
     else if(webState == loadArenaCurrent)
@@ -397,7 +402,8 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("Failed analysing arena in web.", Error);
             emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
-            emit synchronized();
+            webState = complete;
+            uploadNext();
         }
     }
     else if(webState == rewardsSent)
@@ -426,10 +432,10 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         else
         {
             emit pDebug("There's no arena in progress.");
+            emit noArenaFound();
             arenaCurrentID = 0;
             webState = complete;
-            emit noArenaFound();
-            emit synchronized();
+            uploadNext();
         }
     }
     else if(webState == gameResultSent)
@@ -440,10 +446,6 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         gameResultPostList->removeFirst();
 
         checkArenaReload();
-
-//        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
-//        emit pDebug("Reload arena in progress: " + QString::number(arenaCurrentID));
-//        webState = reloadArenaCurrent;
     }
     else if(webState == reloadArenaCurrent)
     {
@@ -465,7 +467,8 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("Failed analysing arena in web.", Error);
             emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
-            emit synchronized();
+            webState = complete;
+            uploadNext();
         }
     }
     else if(webState == createArena)
@@ -473,9 +476,31 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?new=" + heroToWebNumber(arenaCurrentHero))));
         emit pDebug("New arena asked to web.");
     }
+    else if(webState == getArenaDeck1)
+    {
+        if(arenaCurrentID != 0)
+        {
+            networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
+            emit pDebug("Arena in progress found.");
+            webState = getArenaDeck2;
+        }
+        else
+        {
+            emit pDebug("No arena in progress.");
+            webState = complete;
+            uploadNext();
+        }
+    }
+    else if(webState == getArenaDeck2)
+    {
+        emit pDebug("Get arena deck.");
+        QString html(reply->readAll());
+        getArenaCards(html);
+        webState = complete;
+        uploadNext();
+    }
     else if(webState == complete)
     {
-        emit pDebug("UploadNext.");
         uploadNext();
     }
 }
@@ -483,6 +508,8 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
 void WebUploader::uploadNext()
 {
+    emit pDebug("UploadNext.");
+
     if(!arenaCards.isEmpty())
     {
         uploadArenaCards();
@@ -537,16 +564,10 @@ void WebUploader::uploadArenaCards()
 
 void WebUploader::refresh()
 {
-    //Refresh
     if(webState == complete && gameResultPostList->isEmpty())
     {
         connectWeb();
         webState = checkArenaCurrentReload;
-    }
-    //Continua con lo que quedaba por hacer
-    else
-    {
-        connectWeb();
     }
 }
 
@@ -556,6 +577,16 @@ void WebUploader::checkArenaReload()
     networkManager->get(QNetworkRequest(QUrl(WEB_URL + "player.php")));
     emit pDebug("Reload player.php");
     webState = checkArenaCurrentReload;
+}
+
+
+void WebUploader::askArenaCards()
+{
+    if(webState == complete && gameResultPostList->isEmpty())
+    {
+        connectWeb();
+        webState = getArenaDeck1;
+    }
 }
 
 
@@ -598,7 +629,7 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
 
         if(getCards)
         {
-            GetArenaCards(html);
+            getArenaCards(html);
         }
         return true;
     }
@@ -609,7 +640,7 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
 }
 
 
-void WebUploader::GetArenaCards(QString &html)
+void WebUploader::getArenaCards(QString &html)
 {
     //Ejemplo html
     //<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>
