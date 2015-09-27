@@ -36,7 +36,7 @@ QString Utility::appPath()
     dir.cdUp();
     dir.cdUp();
     dir.cdUp();
-    return dir.absolutePath()
+    return dir.absolutePath();
 #else
     return dirPath;
 #endif
