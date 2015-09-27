@@ -72,6 +72,8 @@ or on email: arenatracker@gmail.com
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
 * Move HSCards directory to the build dir.
+ 
+If you build on Mac check: https://github.com/supertriodo/Arena-Tracker/issues/1
 
 
 ## Is Blizzard okay with this?
