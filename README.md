@@ -56,7 +56,7 @@ or on email: arenatracker@gmail.com
 * I setup the app but didn't upload my arena game.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
- * Make sure HSCards dir is in the same dir as the binary and make sure you are calling the binary from the dir where both (the binary and HSCards dir) are. If you are using the terminal, calling from other dir (./ArenaTracker/ArenaTracker) is wrong.
+ * Make sure HSCards dir is in the same dir as the binary.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
