@@ -10,7 +10,9 @@ TARGET = ArenaTracker
 TEMPLATE = app
 
 QT_CONFIG -= no-pkg-config
-unix:INCLUDEPATH += "/usr/local/Cellar/opencv/2.4.12/include/opencv headers"
+
+# MAC OS FIX (set your opencv headers path)
+#unix:INCLUDEPATH += "/usr/local/Cellar/opencv/2.4.12/include/opencv headers"
 
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
