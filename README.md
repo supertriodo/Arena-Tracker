@@ -91,6 +91,9 @@ If you build on Mac check: https://github.com/supertriodo/Arena-Tracker/issues/1
 * http://www.reddit.com/r/ArenaTracker/
 * http://www.arenamastery.com/
 * http://www.heartharena.com/
+* http://hearthstonejson.com/
+
+Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
