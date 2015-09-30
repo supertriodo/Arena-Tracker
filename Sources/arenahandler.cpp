@@ -294,21 +294,19 @@ void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
     if(transparency == Always)
     {
         if(color == GREEN)  color = LIMEGREEN;
-        QBrush brush(color);
 
         for(int i=0;i<5;i++)
         {
-            item->setBackgroundColor(i, TRANSPARENT);
-            item->setForeground(i,brush);
+            item->setBackground(i, QBrush());
+            item->setForeground(i, QBrush(color));
         }
     }
     else
     {
-        QBrush brush(BLACK);
         for(int i=0;i<5;i++)
         {
-            item->setBackgroundColor(i, color);
-            item->setForeground(i,brush);
+            item->setBackground(i, QBrush(color));
+            item->setForeground(i, QBrush(BLACK));
         }
     }
 }
@@ -434,11 +432,11 @@ void ArenaHandler::setTransparency(Transparency value)
             webUploader->refresh();
         }
 
-        ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white");
+        ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white;");
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
         ui->tabArena->repaint();
 
-        ui->logTextEdit->setStyleSheet("background-color: transparent; color: white");
+        ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
         ui->tabLog->repaint();
     }

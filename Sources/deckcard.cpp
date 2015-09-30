@@ -46,7 +46,7 @@ void DeckCard::draw(bool drawTotal, int cardHeight)
     QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
 
     this->listItem->setIcon(QIcon(canvas));
-    this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
+    this->listItem->setToolTip("<html><img src=HSCards/" + this->code + ".png/></html>");
 }
 
 void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
@@ -55,7 +55,7 @@ void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
 
     this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
                             CARD_SIZE, QIcon::Disabled, QIcon::On)));
-    this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
+    this->listItem->setToolTip("<html><img src=HSCards/" + this->code + ".png/></html>");
 }
 
 QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHeight)
