@@ -17,7 +17,7 @@ public:
 
 //Variables
 private:
-    QString logPath;
+    QString logPath, logConfig;
     qint64 logSize;
     LogWorker *logWorker;
     bool firstRun;
@@ -39,6 +39,7 @@ private:
 
 public:
     void init(qint64 &logSize);
+    QString getLogConfigPath();
 
 //Signals
 signals:

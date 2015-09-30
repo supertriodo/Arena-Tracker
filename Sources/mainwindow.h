@@ -50,7 +50,7 @@ private:
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
     DraftHandler * draftHandler;
-    QMap<QString, QJsonObject> cardsJson;
+    QMap<QString, QJsonObject> cardsJson, enCardsJson;
     QPoint dragPosition;
     ResizeButton *resizeButton;
     WindowsFormation windowsFormation;
@@ -92,6 +92,8 @@ private:
     void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
     void completeHeroButtons();
+    QString getHSLanguage();
+    void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
     void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);

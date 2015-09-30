@@ -37,7 +37,7 @@ void LogLoader::init(qint64 &logSize)
         connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
-        QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
+        sendLogWorker();
     }
     else
     {
@@ -119,7 +119,7 @@ void LogLoader::readLogPath()
 void LogLoader::readLogConfigPath()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QString logConfig = settings.value("logConfig", "").toString();
+    logConfig = settings.value("logConfig", "").toString();
 
     if(logConfig.isEmpty())
     {
@@ -308,6 +308,12 @@ bool LogLoader::isLogReset()
 void LogLoader::updateSeek(qint64 logSeek)
 {
     if(firstRun)    emit seekChanged(logSeek);
+}
+
+
+QString LogLoader::getLogConfigPath()
+{
+    return this->logConfig;
 }
 
 

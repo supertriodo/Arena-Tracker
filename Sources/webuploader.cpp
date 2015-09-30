@@ -5,8 +5,9 @@
 #include <QNetworkReply>
 #include <QtWidgets>
 
+QMap<QString, QJsonObject> * WebUploader::cardsJson;
 
-WebUploader::WebUploader(QObject *parent, QMap<QString, QJsonObject> *cardsJson) : QObject(parent)
+WebUploader::WebUploader(QObject *parent) : QObject(parent)
 {
     match = new QRegularExpressionMatch();
     webState = signup;
@@ -14,7 +15,6 @@ WebUploader::WebUploader(QObject *parent, QMap<QString, QJsonObject> *cardsJson)
     deckInWeb = false;
     gameResultPostList = new QList<GameResultPost>();
     rewardsPost = NULL;
-    this->cardsJson = cardsJson;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
@@ -165,11 +165,11 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 
 void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
-    for (QList<DeckCard>::const_iterator it = deckCardList.cbegin(); it != deckCardList.cend(); it++)
+    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         if(it->total > 0)
         {
-            QString name = (*cardsJson)[it->code].value("name").toString();
+            QString name = (*cardsJson)[it->getCode()].value("name").toString();
             arenaCards.append(QString::number(it->total) + " " + name + "\n");
         }
     }
@@ -722,5 +722,11 @@ void WebUploader::postRequest(QNetworkRequest request, QURL postData)
 #else
     networkManager->post(request, postData.encodedQuery());
 #endif
+}
+
+
+void WebUploader::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
+{
+    WebUploader::cardsJson = cardsJson;
 }
 

@@ -29,6 +29,7 @@ void EnemyHandHandler::completeUI()
 {
     ui->enemyHandListWidget->setIconSize(CARD_SIZE);
     ui->enemyHandListWidget->setMinimumHeight(0);
+    ui->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
 }
 
 
@@ -51,8 +52,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
 void EnemyHandHandler::lastHandCardIsCoin()
 {
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
-    enemyHandList.last().code = COIN;
-    enemyHandList.last().cost = 0;
+    enemyHandList.last().setCode(COIN);
     enemyHandList.last().draw();
 
     emit checkCardImage(COIN);
@@ -80,7 +80,7 @@ void EnemyHandHandler::redrawDownloadedCardImage(QString code)
 {
     for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)
     {
-        if(it->code == code)    it->draw();
+        if(it->getCode() == code)    it->draw();
     }
 }
 

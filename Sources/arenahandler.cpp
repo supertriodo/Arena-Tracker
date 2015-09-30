@@ -22,6 +22,7 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->updateButton->setToolTip(tr("Refresh"));
+    ui->arenaTreeWidget->setFrameShape(QFrame::NoFrame);
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));

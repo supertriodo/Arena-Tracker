@@ -130,7 +130,7 @@ void DraftHandler::resetTab()
     for(int i=0; i<3; i++)
     {
         clearRadioButton(draftCards[i].radioItem);
-        draftCards[i].code="";
+        draftCards[i].setCode("");
         draftCards[i].draw();
     }
 
@@ -225,7 +225,7 @@ void DraftHandler::endDraft()
     //Guardamos ultima carta
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
+        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
         {
             pickCard(draftCards[i]);
             emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());
@@ -321,9 +321,9 @@ void DraftHandler::captureDraft()
 
 bool DraftHandler::areNewCards(QString codes[3])
 {
-    if((codes[0]==draftCards[0].code && codes[1]==draftCards[1].code) ||
-        (codes[0]==draftCards[0].code && codes[2]==draftCards[2].code) ||
-        (codes[1]==draftCards[1].code && codes[2]==draftCards[2].code))
+    if((codes[0]==draftCards[0].getCode() && codes[1]==draftCards[1].getCode()) ||
+        (codes[0]==draftCards[0].getCode() && codes[2]==draftCards[2].getCode()) ||
+        (codes[1]==draftCards[1].getCode() && codes[2]==draftCards[2].getCode()))
     {
         resetCodesCandidates();
         nextCount = 0;
@@ -428,11 +428,11 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
 void DraftHandler::pickCard(DraftCard &draftCard)
 {
-    draftedCards.push_back(hearthArenaCodes[draftCard.code]);
+    draftedCards.push_back(hearthArenaCodes[draftCard.getCode()]);
     updateBoxTitle(draftCard.radioItem->text());
-    emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
-    emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + (*cardsJson)[draftCard.code].value("name").toString());
-    emit newDeckCard(draftCard.code);
+    emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
+    emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
+    emit newDeckCard(draftCard.getCode());
 }
 
 
@@ -441,13 +441,13 @@ void DraftHandler::showNewCards(QString codes[3])
     int intCodes[3];
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].radioItem->isChecked() && !draftCards[i].code.isEmpty())
+        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
         {
             pickCard(draftCards[i]);
         }
 
         clearRadioButton(draftCards[i].radioItem);
-        draftCards[i].code=codes[i];
+        draftCards[i].setCode(codes[i]);
         draftCards[i].draw();
         intCodes[i] = hearthArenaCodes[codes[i]];
     }

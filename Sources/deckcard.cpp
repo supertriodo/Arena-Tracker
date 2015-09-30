@@ -8,11 +8,7 @@ QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
 DeckCard::DeckCard(QString code)
 {
-    this->code = code;
-
-    if(!code.isEmpty()) cost = (*cardsJson)[code].value("cost").toInt();
-    else                cost = -1;
-
+    setCode(code);
     listItem = NULL;
     total = remaining = 1;
 }
@@ -24,9 +20,30 @@ DeckCard::~DeckCard()
 }
 
 
+void DeckCard::setCode(QString code)
+{
+    this->code = code;
+
+    if(!code.isEmpty())
+    {
+        cost = (*cardsJson)[code].value("cost").toInt();
+        type = (*cardsJson)[code].value("type").toString();
+        name = (*cardsJson)[code].value("name").toString();
+        rarity = (*cardsJson)[code].value("rarity").toString();
+    }
+    else
+    {
+        cost = -1;
+        type = "Minion";
+        name = "unknown";
+        rarity = "";
+    }
+}
+
+
 void DeckCard::draw(bool drawTotal, int cardHeight)
 {
-    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
+    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
 
     this->listItem->setIcon(QIcon(canvas));
     this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
@@ -34,24 +51,15 @@ void DeckCard::draw(bool drawTotal, int cardHeight)
 
 void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
 {
-    QPixmap canvas = draw(this->code, drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
+    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
 
     this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
                             CARD_SIZE, QIcon::Disabled, QIcon::On)));
     this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");
 }
 
-QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameColor, int cardHeight)
+QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHeight)
 {
-    QString type = (*cardsJson)[code].value("type").toString();
-    QString name = (*cardsJson)[code].value("name").toString();
-    int cost = (*cardsJson)[code].value("cost").toInt();
-
-    if(code=="")
-    {
-        code = "unknown";
-        type = "Minion";
-    }
     QFont font("Belwe Bd BT");
 
     QPixmap canvas(CARD_SIZE);
@@ -61,14 +69,14 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
         painter.fillRect(canvas.rect(), Qt::black);
         QRectF target;
         QRectF source;
-        if(code == "unknown")               source = QRectF(63,18,100,25);
+        if(name == "unknown")               source = QRectF(63,18,100,25);
         else if(type==QString("Minion"))    source = QRectF(48,72,100,25);
         else                                source = QRectF(48,98,100,25);
         if(total > 1)                       target = QRectF(100,6,100,25);
         else                                target = QRectF(113,6,100,25);
         if(type!=QString("Minion"))     painter.setPen(QPen(YELLOW));
         else                            painter.setPen(QPen(WHITE));
-        painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + code + ".png"), source);
+        painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
         if(total == 1)  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
@@ -84,14 +92,14 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
         //Name and mana
         font.setPointSize(10);
         painter.setFont(font);
-        if(name=="")
+        if(name == "unknown")
         {
             painter.setPen(QPen(BLACK));
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, "Unknown");
         }
         else
         {
-            if(drawRarity)              painter.setPen(QPen(getRarityColor(code)));
+            if(drawRarity)              painter.setPen(QPen(getRarityColor()));
             else if(nameColor!=BLACK)   painter.setPen(QPen(nameColor));
             painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
 
@@ -106,7 +114,7 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
             font.setPointSize(12+manaSize);
             font.setBold(false);
             painter.setFont(font);
-            if(drawRarity)                      painter.setPen(QPen(getRarityColor(code)));
+            if(drawRarity)                      painter.setPen(QPen(getRarityColor()));
             else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
             else if(type!=QString("Minion"))    painter.setPen(QPen(YELLOW));
             else                                painter.setPen(QPen(WHITE));
@@ -134,16 +142,38 @@ QPixmap DeckCard::draw(QString code, uint total, bool drawRarity, QColor nameCol
 }
 
 
-QColor DeckCard::getRarityColor(QString code)
+QColor DeckCard::getRarityColor()
 {
-    QString rarityS = (*cardsJson)[code].value("rarity").toString();
-
-    if(rarityS == "Free")               return WHITE;
-    else if(rarityS == "Common")        return WHITE;
-    else if(rarityS == "Rare")          return BLUE;
-    else if(rarityS == "Epic")          return VIOLET;
-    else if(rarityS == "Legendary")     return ORANGE;
+    if(rarity == "Free")               return WHITE;
+    else if(rarity == "Common")        return WHITE;
+    else if(rarity == "Rare")          return BLUE;
+    else if(rarity == "Epic")          return VIOLET;
+    else if(rarity == "Legendary")     return ORANGE;
     else                                return BLACK;
+}
+
+
+QString DeckCard::getCode()
+{
+    return code;
+}
+
+
+QString DeckCard::getType()
+{
+    return type;
+}
+
+
+QString DeckCard::getName()
+{
+    return name;
+}
+
+
+int DeckCard::getCost()
+{
+    return cost;
 }
 
 

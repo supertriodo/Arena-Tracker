@@ -22,7 +22,7 @@ void SecretCard::draw()
 {
     if(this->code != "")
     {
-        QPixmap canvas = DeckCard::draw(this->code, 1, true);
+        QPixmap canvas = DeckCard::draw(1, true);
 
         this->treeItem->setIcon(0, QIcon(canvas));
         this->treeItem->setToolTip(0, "<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");

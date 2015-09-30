@@ -15,7 +15,7 @@ DrawCard::~DrawCard()
 
 void DrawCard::draw()
 {
-    QPixmap canvas = DeckCard::draw(this->code, 1, false, ORANGE);
+    QPixmap canvas = DeckCard::draw(1, false, ORANGE);
 
     this->listItem->setIcon(QIcon(canvas));
     this->listItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");

@@ -16,7 +16,7 @@ HSCardDownloader::~HSCardDownloader()
 
 void HSCardDownloader::downloadWebImage(QString code)
 {
-    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + code + ".png"))));
+    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + lang + "/medium/" + code + ".png"))));
     gettingWebCards[reply] = code;
     emit pDebug("Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
 }
@@ -49,3 +49,15 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     emit pDebug("Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
     emit pLog(tr("Web: New card image downloaded."));
 }
+
+
+void HSCardDownloader::setLang(QString value)
+{
+    if(value == "esMX")         lang = "eses";
+    else if(value == "zhTW")    lang = "zhcn";
+    else if(value == "enGB" ||
+            value == "plPL" ||
+            value == "koKR")    lang = "enus";
+    else                        lang = value.toLower();
+}
+

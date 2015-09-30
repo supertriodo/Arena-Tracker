@@ -26,24 +26,31 @@ public:
 //Variables
 public:
     QListWidgetItem *listItem;
-    QString code;
-    int cost;
     uint total;
     uint remaining;
+
+protected:
+    QString code, type, name, rarity;
+    int cost;
 
 private:
     static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 private:
-    QColor getRarityColor(QString code);
+    QColor getRarityColor();
 
 protected:
-    QPixmap draw(QString code, uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
+    QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
 
 public:
     void draw(bool drawTotal=true, int cardHeight=35);
     void drawGreyed(bool drawTotal, int cardHeight=35);
+    QString getCode();
+    QString getType();
+    QString getName();
+    int getCost();
+    void setCode(QString code);
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 };

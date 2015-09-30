@@ -32,7 +32,7 @@ class WebUploader : public QObject
 {
     Q_OBJECT
 public:
-    WebUploader(QObject *parent, QMap<QString, QJsonObject> *cardsJson);
+    WebUploader(QObject *parent);
     ~WebUploader();
 
     enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
@@ -51,7 +51,9 @@ private:
     QRegularExpressionMatch *match;
     bool deckInWeb;
     QString arenaCards;
-    QMap<QString, QJsonObject> *cardsJson;
+
+private:
+    static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 private:
@@ -75,6 +77,8 @@ public:
     bool uploadNewArena(const QString &hero);
     void uploadDeck(QList<DeckCard> *deckCardList);
     void refresh();
+
+    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 
 signals:
     void loadedGameResult(GameResult gameResult);

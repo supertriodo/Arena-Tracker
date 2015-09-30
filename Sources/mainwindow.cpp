@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogFile();
     readSettings();
     completeUI();
-    initCardsJson();
 
     createCardDownloader();
     createSecretsHandler();
@@ -32,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
+
+    initCardsJson();
 }
 
 
@@ -112,9 +113,74 @@ void MainWindow::resetDeck(bool deckRead)
 }
 
 
-void MainWindow::initCardsJson()
+QString MainWindow::getHSLanguage()
 {
-    QFile jsonFile(":Json/AllSets.json");
+    QDir dir(QFileInfo(logLoader->getLogConfigPath()).absolutePath() + "/Cache/UberText");
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Time);
+    QString lang;
+
+    switch (dir.count())
+    {
+    case 0:
+        lang = "enUS";
+        break;
+    case 1:
+        foreach(QString file, dir.entryList())
+        {
+            lang = file.mid(5,4);
+        }
+        break;
+    default:
+        QStringList files = dir.entryList();
+        lang = files.takeFirst().mid(5,4);
+
+        //Remove old languages files
+        foreach(QString file, files)
+        {
+            dir.remove(file);
+            pDebug(file + " removed.");
+        }
+
+        //Remove old image cards
+        QDir dirHSCards(Utility::appPath() + "/HSCards");
+        dirHSCards.setFilter(QDir::Files);
+        QStringList filters("*_*.png");
+        dirHSCards.setNameFilters(filters);
+
+        foreach(QString file, dirHSCards.entryList())
+        {
+            dirHSCards.remove(file);
+            pDebug(file + " removed.");
+        }
+
+        break;
+    }
+
+
+    if(lang != "enGB" && lang != "enUS" && lang != "esES" && lang != "esMX" &&
+            lang != "deDE" && lang != "frFR" && lang != "itIT" &&
+            lang != "plPL" && lang != "ptBR" && lang != "ruRU" &&
+            lang != "koKR" && lang != "zhCN" && lang != "zhTW")
+    {
+        pDebug("Language: " + lang + "not supported. Using enUS.");
+        pLog("Settings: Language " + lang + "not supported. Using enUS.");
+        lang = "enUS";
+    }
+    else
+    {
+        pDebug("Language: " + lang + ".");
+        pLog("Settings: Language " + lang + ".");
+    }
+
+    cardDownloader->setLang(lang);
+    return lang;
+}
+
+
+void MainWindow::createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang)
+{
+    QFile jsonFile(":Json/AllSets." + lang + ".json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
@@ -127,9 +193,26 @@ void MainWindow::initCardsJson()
             cardsJson[(*it2).toObject().value("id").toString()] = (*it2).toObject();
         }
     }
+}
 
+
+void MainWindow::initCardsJson()
+{
+    QString lang = getHSLanguage();
+    createCardsJsonMap(this->cardsJson, lang);
     DeckCard::setCardsJson(&cardsJson);
     GameWatcher::setCardsJson(&cardsJson);
+
+
+    if(lang == "enUS")
+    {
+        WebUploader::setCardsJson(&cardsJson);
+    }
+    else
+    {
+        createCardsJsonMap(enCardsJson, "enUS");
+        WebUploader::setCardsJson(&enCardsJson);
+    }
 }
 
 
@@ -346,7 +429,7 @@ void MainWindow::synchronizedDone()
 void MainWindow::createWebUploader()
 {
     if(webUploader != NULL)   return;
-    webUploader = new WebUploader(this, &cardsJson);
+    webUploader = new WebUploader(this);
     connect(webUploader, SIGNAL(loadedGameResult(GameResult)),
             arenaHandler, SLOT(showGameResult(GameResult)));
     connect(webUploader, SIGNAL(loadedArena(QString)),
@@ -389,6 +472,14 @@ void MainWindow::completeUI()
     ui->tabWidgetV2->hide();
 
     ui->tabWidget->setCurrentIndex(0);
+
+    ui->logTextEdit->setFrameShape(QFrame::NoFrame);
+    ui->tabWidget->setStyleSheet(
+        "QTabWidget::pane {border-color: transparent; background: white;}"
+        "QTabBar::tab:selected {background: white;}"
+        "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.5em;}"
+        "QTabWidget::tab-bar {alignment: center;}"
+    );
 
     resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(resizeButton);

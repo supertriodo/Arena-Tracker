@@ -20,7 +20,7 @@ DraftCard::~DraftCard()
 
 void DraftCard::draw()
 {
-    QPixmap canvas = DeckCard::draw(this->code, 1);
+    QPixmap canvas = DeckCard::draw(1, false);
 
     this->radioItem->setIcon(QIcon(canvas));
     this->radioItem->setToolTip("<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>");

@@ -33,8 +33,10 @@ void DeckHandler::completeUI()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
     ui->deckListWidget->setIconSize(CARD_SIZE);
+    ui->deckListWidget->setFrameShape(QFrame::NoFrame);
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setIconSize(CARD_SIZE);
+    ui->drawListWidget->setFrameShape(QFrame::NoFrame);
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -156,7 +158,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     bool found = false;
     for(int i=0; i<deckCardList.length(); i++)
     {
-        if(deckCardList[i].code == code)
+        if(deckCardList[i].getCode() == code)
         {
             if(!add)
             {
@@ -196,11 +198,29 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
 {
     for(int i=0; i<deckCardList.length(); i++)
     {
-        if(deckCard.cost<deckCardList[i].cost)
+        if(deckCard.getCost() < deckCardList[i].getCost())
         {
             deckCardList.insert(i, deckCard);
             ui->deckListWidget->insertItem(i, deckCard.listItem);
             return;
+        }
+        else if(deckCard.getCost() == deckCardList[i].getCost())
+        {
+            if(deckCard.getType() != deckCardList[i].getType())
+            {
+                if(deckCard.getType() == "Weapon" || deckCardList[i].getType() == "Minion")
+                {
+                    deckCardList.insert(i, deckCard);
+                    ui->deckListWidget->insertItem(i, deckCard.listItem);
+                    return;
+                }
+            }
+            else if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
+            {
+                deckCardList.insert(i, deckCard);
+                ui->deckListWidget->insertItem(i, deckCard.listItem);
+                return;
+            }
         }
     }
     deckCardList.append(deckCard);
@@ -215,6 +235,7 @@ void DeckHandler::newDrawCard(QString code)
     drawCardList.append(drawCard);
     ui->drawListWidget->addItem(drawCard.listItem);
     drawCard.draw();
+    emit checkCardImage(code);
     ui->drawListWidget->setHidden(false);
     QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
 
@@ -244,7 +265,7 @@ void DeckHandler::drawFromDeck(QString code)
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
-        if(it->code == code)
+        if(it->getCode() == code)
         {
             if(it->remaining>1)
             {
@@ -269,17 +290,13 @@ void DeckHandler::drawFromDeck(QString code)
 
                 it->drawGreyed(true, this->greyedHeight);
 
-                emit pDebug("New card: " +
-                                  (*cardsJson)[code].value("name").toString());
-                emit pLog(tr("Deck: New card: ") +
-                                  (*cardsJson)[code].value("name").toString());
+                emit pDebug("New card: " + it->getName());
+                emit pLog(tr("Deck: New card: ") + it->getName());
             }
             else
             {
-                emit pDebug("New card but deck is full. " +
-                              (*cardsJson)[code].value("name").toString(), Warning);
-                emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") +
-                              (*cardsJson)[code].value("name").toString());
+                emit pDebug("New card but deck is full. " + it->getName(), Warning);
+                emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") + it->getName());
             }
             return;
         }
@@ -312,7 +329,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
-        if(it->code == code)
+        if(it->getCode() == code)
         {
             if(it->remaining > 0)
             {
@@ -327,7 +344,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 
     for (QList<DrawCard>::iterator it = drawCardList.begin(); it != drawCardList.end(); it++)
     {
-        if(it->code == code)
+        if(it->getCode() == code)
         {
             it->draw();
         }
@@ -389,7 +406,7 @@ void DeckHandler::cardRemove()
     }
 
     int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
-            (*cardsJson)[deckCardList[index].code].value("name").toString() +   tr(") from your deck?"),
+            deckCardList[index].getName() +   tr(") from your deck?"),
             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     if(ret == QMessageBox::Cancel)  return;
 

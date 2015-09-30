@@ -32,7 +32,6 @@
         <file>Images/secretHunter.png</file>
         <file>Images/secretMage.png</file>
         <file>Images/secretPaladin.png</file>
-        <file>Json/AllSets.json</file>
         <file>Json/01.json</file>
         <file>Json/02.json</file>
         <file>Json/03.json</file>
@@ -46,5 +45,18 @@
         <file>Images/minus64.png</file>
         <file>Images/plus64.png</file>
         <file>Images/config.png</file>
+        <file>Json/AllSets.enGB.json</file>
+        <file>Json/AllSets.enUS.json</file>
+        <file>Json/AllSets.esES.json</file>
+        <file>Json/AllSets.esMX.json</file>
+        <file>Json/AllSets.deDE.json</file>
+        <file>Json/AllSets.frFR.json</file>
+        <file>Json/AllSets.itIT.json</file>
+        <file>Json/AllSets.koKR.json</file>
+        <file>Json/AllSets.plPL.json</file>
+        <file>Json/AllSets.ptBR.json</file>
+        <file>Json/AllSets.ruRU.json</file>
+        <file>Json/AllSets.zhCN.json</file>
+        <file>Json/AllSets.zhTW.json</file>
     </qresource>
 </RCC>

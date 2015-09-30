@@ -24,6 +24,7 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->header()->close();
     ui->secretsTreeWidget->setIconSize(CARD_SIZE);
     ui->secretsTreeWidget->setStyleSheet("background-color: transparent;");
+    ui->secretsTreeWidget->setFrameShape(QFrame::NoFrame);
 }
 
 
@@ -88,7 +89,7 @@ void SecretsHandler::secretStealed(int id, QString code)
 
     activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
     activeSecret.root.treeItem->setExpanded(true);
-    activeSecret.root.code = code;
+    activeSecret.root.getCode() = code;
     activeSecret.root.draw();
     emit checkCardImage(code);
 
@@ -150,7 +151,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     {
         it->treeItem = new QTreeWidgetItem(activeSecret.root.treeItem);
         it->draw();
-        emit checkCardImage(it->code);
+        emit checkCardImage(it->getCode());
     }
 
     activeSecretList.append(activeSecret);
@@ -168,10 +169,10 @@ void SecretsHandler::redrawDownloadedCardImage(QString code)
 {
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
-        if(it->root.code == code)    it->root.draw();
+        if(it->root.getCode() == code)    it->root.draw();
         for(QList<SecretCard>::iterator it2 = it->children.begin(); it2 != it->children.end(); it2++)
         {
-            if(it2->code == code)    it2->draw();
+            if(it2->getCode() == code)    it2->draw();
         }
     }
 }
@@ -233,7 +234,7 @@ void SecretsHandler::discardSecretOptionNow(QString code)
     {
         for(int i=0; i<it->children.count(); i++)
         {
-            if(it->children[i].code == code)
+            if(it->children[i].getCode() == code)
             {
                 emit pDebug("Option discarded: " + code);
                 it->root.treeItem->removeChild(it->children[i].treeItem);
@@ -266,13 +267,13 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret activeSecret)
 {
     if(activeSecret.children.count() == 1)
     {
-        activeSecret.root.code = activeSecret.children.first().code;
+        activeSecret.root.getCode() = activeSecret.children.first().getCode();
         activeSecret.root.draw();
         activeSecret.root.treeItem->removeChild(activeSecret.children.first().treeItem);
         activeSecret.children.clear();
 
         //No puede haber dos secretos iguales
-        discardSecretOptionNow(activeSecret.root.code);
+        discardSecretOptionNow(activeSecret.root.getCode());
     }
 }
 
