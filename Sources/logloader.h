@@ -55,10 +55,12 @@ signals:
 //Slots
 private slots:
     void updateSeek(qint64 logSeek);
-    void sendLogWorker();
 
     //LogWorker signal reemit
     void emitNewLogLineRead(QString line, qint64 numLine);
+
+public slots:
+    void sendLogWorker();
 };
 
 #endif // LOGLOADER_H

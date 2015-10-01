@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogLoader();
 
     initCardsJson();
+    QTimer::singleShot(1000, logLoader, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
 }
 
 

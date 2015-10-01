@@ -36,8 +36,6 @@ void LogLoader::init(qint64 &logSize)
                 this, SIGNAL(pLog(QString)));
         connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
-
-        sendLogWorker();
     }
     else
     {
@@ -106,7 +104,7 @@ void LogLoader::readLogPath()
     }
 
 #ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/.PlayOnLinux/wineprefix/Blizzard32/drive_c/users/triodo/Local Settings/Application Data/Blizzard/Hearthstone/Logs/hearthstone_2015_09_17_11_26_36.log");
+//    logPath = QString("/home/triodo/Documentos/arenaMageFull.txt");
 #endif
 
 
