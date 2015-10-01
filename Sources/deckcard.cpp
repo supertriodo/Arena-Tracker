@@ -74,8 +74,9 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         else                                source = QRectF(48,98,100,25);
         if(total > 1)                       target = QRectF(100,6,100,25);
         else                                target = QRectF(113,6,100,25);
-        if(type!=QString("Minion"))     painter.setPen(QPen(YELLOW));
-        else                            painter.setPen(QPen(WHITE));
+        if(type==QString("Minion"))         painter.setPen(QPen(WHITE));
+        else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
+        else                                painter.setPen(QPen(ORANGE));
         painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
@@ -116,8 +117,9 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
             painter.setFont(font);
             if(drawRarity)                      painter.setPen(QPen(getRarityColor()));
             else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
-            else if(type!=QString("Minion"))    painter.setPen(QPen(YELLOW));
-            else                                painter.setPen(QPen(WHITE));
+            else if(type==QString("Minion"))    painter.setPen(QPen(WHITE));
+            else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
+            else                                painter.setPen(QPen(ORANGE));
             painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
         }
     painter.end();

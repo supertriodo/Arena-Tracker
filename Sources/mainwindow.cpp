@@ -449,10 +449,12 @@ void MainWindow::createWebUploader()
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+#ifndef QT_DEBUG //En debug no se carga el deck de web
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCardWeb(QString,int)));
     connect(webUploader, SIGNAL(newWebDeckCardList()),
             this, SLOT(resetDeckFromWeb()));
+#endif
 
     //Connect de gameWatcher
     connect(gameWatcher,SIGNAL(beginReadingDeck()),

@@ -11,7 +11,7 @@ class GameResult
 {
 public:
     bool isFirst, isWinner;
-    QString playerHero, enemyHero;
+    QString playerHero, enemyHero, enemyName;
 };
 
 

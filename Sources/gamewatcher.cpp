@@ -273,21 +273,19 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             }
             break;
         case heroType1State:
-            if(line.contains(QRegularExpression("Creating ID=4 CardID=HERO_(\\d+)"), match))
+        case heroType2State:
+            if(gameState == heroType1State && line.contains(QRegularExpression("Creating ID=4 CardID=HERO_(\\d+)"), match))
             {
                 hero1 = match->captured(1);
                 gameState = heroType2State;
                 emit pDebug("Found hero 1 (GameState = heroType2State)", numLine);
             }
-            break;
-        case heroType2State:
-            if(line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
+            else if(gameState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero2 = match->captured(1);
                 gameState = playerName1State;
                 emit pDebug("Found hero 2 (GameState = playerName1State)", numLine);
             }
-            break;
         case playerName1State:
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
             {
@@ -724,11 +722,13 @@ void GameWatcher::createGameResult()
     {
         gameResult.playerHero = hero1;
         gameResult.enemyHero = hero2;
+        gameResult.enemyName = name2;
     }
     else if(name2 == playerTag)
     {
         gameResult.playerHero = hero2;
         gameResult.enemyHero = hero1;
+        gameResult.enemyName = name1;
     }
     else
     {

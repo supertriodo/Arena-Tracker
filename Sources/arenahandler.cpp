@@ -95,10 +95,15 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaM
         arenaCurrentGameList.append(gameResult);
     }
 
-    item->setIcon(0, QIcon(":Images/hero" + gameResult.playerHero + ".png"));
+    item->setIcon(0, QIcon(":Images/" +
+                           (gameResult.playerHero==""?("secretHunter"):("hero"+gameResult.playerHero))
+                           + ".png"));
     item->setText(0, "vs");
     item->setTextAlignment(0, Qt::AlignHCenter|Qt::AlignVCenter);
-    item->setIcon(1, QIcon(":Images/hero" + gameResult.enemyHero + ".png"));
+    item->setIcon(1, QIcon(":Images/" +
+                           (gameResult.enemyHero==""?("secretHunter"):("hero"+gameResult.enemyHero))
+                           + ".png"));
+    item->setToolTip(1, gameResult.enemyName);
     item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
