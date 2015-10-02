@@ -437,7 +437,7 @@ void ArenaHandler::setTransparency(Transparency value)
             webUploader->refresh();
         }
 
-        ui->arenaTreeWidget->setStyleSheet("background-color: transparent; color: white;");
+        ui->arenaTreeWidget->setStyleSheet("background-color: transparent;");
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
         ui->tabArena->repaint();
 

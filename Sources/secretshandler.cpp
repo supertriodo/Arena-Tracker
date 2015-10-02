@@ -89,7 +89,7 @@ void SecretsHandler::secretStealed(int id, QString code)
 
     activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
     activeSecret.root.treeItem->setExpanded(true);
-    activeSecret.root.getCode() = code;
+    activeSecret.root.setCode(code);
     activeSecret.root.draw();
     emit checkCardImage(code);
 
@@ -267,7 +267,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret activeSecret)
 {
     if(activeSecret.children.count() == 1)
     {
-        activeSecret.root.getCode() = activeSecret.children.first().getCode();
+        activeSecret.root.setCode(activeSecret.children.first().getCode());
         activeSecret.root.draw();
         activeSecret.root.treeItem->removeChild(activeSecret.children.first().treeItem);
         activeSecret.children.clear();

@@ -792,7 +792,7 @@ void DraftHandler::highlightRadioButton(QRadioButton *radio)
     }
     else
     {
-        radio->setStyleSheet("background: silver;");
+        radio->setStyleSheet("background-color: silver;");
     }
 }
 
