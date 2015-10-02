@@ -814,6 +814,7 @@ void DraftHandler::setTransparency(Transparency value)
         ui->radioButtonDraft1->setStyleSheet("background-color: transparent; color: white");
         ui->radioButtonDraft2->setStyleSheet("background-color: transparent; color: white");
         ui->radioButtonDraft3->setStyleSheet("background-color: transparent; color: white");
+        ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
     }
@@ -830,6 +831,7 @@ void DraftHandler::setTransparency(Transparency value)
         ui->radioButtonDraft1->setStyleSheet("");
         ui->radioButtonDraft2->setStyleSheet("");
         ui->radioButtonDraft3->setStyleSheet("");
+        ui->groupBoxDraft->setStyleSheet("");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
     }
