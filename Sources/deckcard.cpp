@@ -43,11 +43,8 @@ void DeckCard::setCode(QString code)
 
 QString DeckCard::tooltip()
 {
-#ifdef Q_OS_WIN
     return "<html><img src=./HSCards/" + this->code + ".png/></html>";
-#else
-    return "<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>";
-#endif
+//    return "<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>";
 }
 
 
