@@ -50,7 +50,8 @@ or on email: arenatracker@gmail.com
  * After picking a card make sure you don't move the mouse to the place of any of the other 2 cards or the program can take any of those as selected.
 * What does it mean when cards in the decklist are highlighted in yellow?
  * Minions are shown in white.
- * Spells and weapons are shown in yellow.
+ * Spells are shown in yellow.
+ * Weapons are shown in orange.
 * How do I reset the app so I can set the config info again?
  * With the app selected press ctrl+alt+r
 * I setup the app but didn't upload my arena game.
