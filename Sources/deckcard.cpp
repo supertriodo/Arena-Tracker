@@ -87,14 +87,23 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
-        if(total == 1)  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
+        if(total == 1 && rarity != "Legendary")  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
         else
         {
             painter.drawPixmap(0,0,QPixmap(":Images/bgCard2.png"));
 
-            font.setPointSize(16);
-            painter.setFont(font);
-            painter.drawText(QRectF(190,6,26,24), Qt::AlignCenter, QString::number(total));
+            if(total > 1)
+            {
+                font.setPointSize(16);
+                painter.setFont(font);
+                painter.drawText(QRectF(190,6,26,24), Qt::AlignCenter, QString::number(total));
+            }
+            else
+            {
+                font.setPointSize(20);
+                painter.setFont(font);
+                painter.drawText(QRectF(190,9,26,24), Qt::AlignCenter, "*");
+            }
         }
 
         //Name and mana
