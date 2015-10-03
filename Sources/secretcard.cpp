@@ -25,7 +25,7 @@ void SecretCard::draw()
         QPixmap canvas = DeckCard::draw(1, true);
 
         this->treeItem->setIcon(0, QIcon(canvas));
-        this->treeItem->setToolTip(0, "<html><img src=HSCards/" + this->code + ".png/></html>");
+        this->treeItem->setToolTip(0, tooltip());
     }
     else
     {

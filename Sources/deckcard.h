@@ -42,6 +42,7 @@ private:
 
 protected:
     QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
+    QString tooltip();
 
 public:
     void draw(bool drawTotal=true, int cardHeight=35);
