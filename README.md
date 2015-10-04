@@ -40,6 +40,8 @@ If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
 or on email: arenatracker@gmail.com
 
+También puedes preguntarme en español.
+
 
 ## FAQ
 * I started a new arena and ArenaTracker didn't help me with the draft.
