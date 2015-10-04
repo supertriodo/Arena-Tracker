@@ -135,13 +135,17 @@ void LogLoader::readLogConfigPath()
         settings.setValue("logConfig", logConfig);
         if(!logConfig.isEmpty())
         {
-            checkLogConfig(logConfig);
+            //Remove old log.config
+            QFile file(logConfig);
+            if(file.exists())   file.remove();
+
+            checkLogConfig();
             QMessageBox::information(0, tr("Restart Hearthstone"), tr("Restart Hearthstone (If running)."));
         }
     }
     else
     {
-        checkLogConfig(logConfig);
+        checkLogConfig();
     }
 
     emit pDebug("Path log.config: " + logConfig);
@@ -177,15 +181,6 @@ QString LogLoader::createDefaultLogConfig()
         logConfigFI = QFileInfo(hsDir);
         if(logConfigFI.exists() && logConfigFI.isDir())
         {
-            //Creamos log.config
-            QFile logConfigFile(initPath);
-            if(!logConfigFile.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                emit pDebug("Cannot create default log.config", Error);
-                emit pLog(tr("Log: ERROR: Cannot create default log.config"));
-                return "";
-            }
-            logConfigFile.close();
             return initPath;
         }
     }
@@ -194,7 +189,7 @@ QString LogLoader::createDefaultLogConfig()
 }
 
 
-void LogLoader::checkLogConfig(QString logConfig)
+void LogLoader::checkLogConfig()
 {
     emit pDebug("Checking log.config");
 
