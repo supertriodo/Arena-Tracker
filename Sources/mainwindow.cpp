@@ -18,10 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     isMainWindow = true;
     otherWindow = NULL;
 
-    checkHSCardsDir();
     createLogFile();
     readSettings();
     completeUI();
+    checkHSCardsDir();
 
     createCardDownloader();
     createSecretsHandler();
@@ -31,9 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
-
-    initCardsJson();
-    QTimer::singleShot(1000, logLoader, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
 }
 
 
@@ -397,6 +394,8 @@ void MainWindow::createLogLoader()
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(newLogLineRead(QString,qint64)),
             gameWatcher, SLOT(processLogLine(QString,qint64)));
+    connect(logLoader, SIGNAL(logConfigSet()),
+            this, SLOT(initCardsJson()));
     connect(logLoader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -505,6 +504,21 @@ void MainWindow::completeUI()
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
         pDebug("MODE DEBUG");
+#endif
+
+#ifdef Q_OS_WIN
+        pLog(tr("Settings: Platform: Windows"));
+        pDebug("Platform: Windows");
+#endif
+
+#ifdef Q_OS_MAC
+        pLog(tr("Settings: Platform: Mac"));
+        pDebug("Platform: Mac");
+#endif
+
+#ifdef Q_OS_LINUX
+        pLog(tr("Settings: Platform: Linux"));
+        pDebug("Platform: Linux");
 #endif
     }
     else
@@ -1448,6 +1462,10 @@ void MainWindow::checkHSCardsDir()
     {
         pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
         pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
+        QMessageBox::warning(0, tr("HSCards not found"),
+                             "HSCards dir not found on:\n" +
+                             dir.absoluteFilePath() +
+                             "\nMove the directory there.");
     }
 }
 

@@ -36,6 +36,8 @@ void LogLoader::init(qint64 &logSize)
                 this, SIGNAL(pLog(QString)));
         connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
+
+        QTimer::singleShot(1000, this, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
     }
     else
     {
@@ -43,6 +45,7 @@ void LogLoader::init(qint64 &logSize)
         settings.setValue("logPath", "");
         emit pDebug("Log not found.");
         emit pLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(0, tr("Log not found"), tr("Log not found. Restart Arena Tracker and set the path again."));
     }
 }
 
@@ -71,12 +74,13 @@ void LogLoader::readLogPath()
         QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
                                     "1) ") + logFileName + tr(" location (If not default).\n"
                                     "2) log.config location (If not default).\n"
-                                    "3) Your Arena Mastery user/password.\n"
-                                    "4) Restart Hearthstone (If running).\n\n"
+                                    "3) Restart Hearthstone (If running).\n"
+                                    "4) Your Arena Mastery user/password.\n\n"
                                     "After your first game:\n"
                                     "5) Your Hearthstone name."));
 
         QString initPath = "";
+        logPath = "";
 #ifdef Q_OS_WIN
         initPath = "C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt";
 #endif
@@ -129,12 +133,20 @@ void LogLoader::readLogConfigPath()
                 tr("log.config (log.config)"));
         }
         settings.setValue("logConfig", logConfig);
+        if(!logConfig.isEmpty())
+        {
+            checkLogConfig(logConfig);
+            QMessageBox::information(0, tr("Restart Hearthstone"), tr("Restart Hearthstone (If running)."));
+        }
     }
-
-    if(!logConfig.isEmpty()) checkLogConfig(logConfig);
+    else
+    {
+        checkLogConfig(logConfig);
+    }
 
     emit pDebug("Path log.config: " + logConfig);
     emit pLog(tr("Settings: Path log.config: ") + logConfig);
+    emit logConfigSet();
 }
 
 
@@ -219,9 +231,6 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
-//        stream << "FilePrinting=true" << endl;
-//        stream << "ConsolePrinting=false" << endl;
-//        stream << "ScreenPrinting=false" << endl;
     }
 }
 

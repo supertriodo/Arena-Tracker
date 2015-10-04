@@ -94,7 +94,6 @@ private:
     void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
-    void initCardsJson();
     void resizeTabWidgets(QResizeEvent *event);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index=-1);
     void resetSettings();
@@ -118,6 +117,7 @@ protected:
 public slots:
     //LogLoader
     void showLogLoadProgress(qint64 logSeek);
+    void initCardsJson();
 
     //GameWatcher
     void showTabHeroOnNoArena();

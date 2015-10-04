@@ -44,6 +44,7 @@ public:
 //Signals
 signals:
     void seekChanged(qint64 logSeek);
+    void logConfigSet();
     void synchronized();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
