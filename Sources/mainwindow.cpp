@@ -362,14 +362,16 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(leaveArena()),
-            draftHandler, SLOT(pauseDraft()));
-    connect(gameWatcher,SIGNAL(enterArena()),
-            draftHandler, SLOT(resumeDraft()));
+//    connect(gameWatcher,SIGNAL(leaveArena()), //No son necesarios, el draft no entra en loop
+//            draftHandler, SLOT(pauseDraft()));
+//    connect(gameWatcher,SIGNAL(enterArena()),
+//            draftHandler, SLOT(resumeDraft()));
 //    connect(gameWatcher,SIGNAL(enterArena()),
 //            this, SLOT(showTabHeroOnNoArena()));
     connect(gameWatcher,SIGNAL(beginReadingDeck()),
             this, SLOT(resetDeck()));
+    connect(gameWatcher,SIGNAL(pickCard(QString)),
+            draftHandler, SLOT(pickCard(QString)));
     //Connect en webUploader
 //    connect(gameWatcher,SIGNAL(beginReadingDeck()),
 //            webUploader, SLOT(askArenaCards()));
@@ -592,7 +594,6 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     {
         pDebug("Manual draft: " + hero);
         pLog(tr("Menu: Force draft: ") + hero);
-        sizePreDraft = this->size();
         QString heroLog = Utility::heroToLogNumber(hero);
 //        arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
@@ -1077,7 +1078,6 @@ void MainWindow::readSettings()
     this->windowsFormation = None;
     resize(size);
     move(pos);
-    sizePreDraft = size;
 }
 
 
@@ -1439,10 +1439,6 @@ void MainWindow::uploadDeck()
     {
         gameWatcher->setDeckRead(false);
     }
-
-    //Recuperamos el size preDraft
-    if(sizePreDraft.width()<this->minimumWidth())   setMinimumWidth(sizePreDraft.width());
-    resize(sizePreDraft);
 }
 
 
@@ -1481,13 +1477,8 @@ void MainWindow::test()
 
 
 //TODO
-//Reajustar victorias despues de cada partida
-//Completar sizePreDraft
-//Pick log
-//Verificar final automatico de draft (10 blancos)
-//Cambiar reading deck [Arena]
-//Verificar plog Draft/Log
-//debug detected same cards
+//aumentar velocidad log en draft
+//eliminar radio buttons
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

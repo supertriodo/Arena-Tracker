@@ -12,6 +12,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->nextCount = 0;
     this->drafting = false;
     this->transparency = Never;
+    this->sizeDraft = this->sizePreDraft = QSize();
 
     for(int i=0; i<3; i++)
     {
@@ -101,7 +102,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
 }
 
 
-void DraftHandler::reHistDownloadedCardImage(QString code)
+void DraftHandler::reHistDownloadedCardImage(QString &code)
 {
     if(cardsDownloading == 0)   return; //No hay drafting en proceso
 
@@ -135,17 +136,24 @@ void DraftHandler::resetTab()
         draftCards[i].draw();
     }
 
-    //Mostrar sinergies
+    //Clear sinergies
     ui->textDraft1->setText("");
     ui->textDraft2->setText("");
     ui->textDraft3->setText("");
     ui->textBrowserDraft->setText("");
-
     ui->groupBoxDraft->setTitle("");
 
+    //SizePreDraft
+    QMainWindow *mainWindow = ((QMainWindow*)parent());
+    sizePreDraft = mainWindow->size();
+
+    //Show Tab
     removeTabHero();
     ui->tabWidget->addTab(ui->tabDraft, "Draft");
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
+
+    //SizeDraft
+    if(sizeDraft.isValid())     mainWindow->resize(sizeDraft);
 }
 
 
@@ -175,13 +183,13 @@ void DraftHandler::beginDraft(QString hero)
     if(heroInt<1 || heroInt>9)
     {
         emit pDebug("Begin draft of unknown hero: " + hero, Error);
-        emit pLog(tr("Log: ERROR: Started draft of unknown hero ") + hero);
+        emit pLog(tr("Draft: ERROR: Started draft of unknown hero ") + hero);
         return;
     }
     else
     {
         emit pDebug("Begin draft. Heroe: " + hero);
-        emit pLog(tr("Log: New draft started."));
+        emit pLog(tr("Draft: New draft started."));
     }
 
     resetTab();
@@ -201,7 +209,7 @@ void DraftHandler::resumeDraft()
     captureLoop = true;
 
     emit pDebug("Resume draft.");
-    emit pLog(tr("Log: Draft resumed."));
+//    emit pLog(tr("Draft: Draft resumed."));
 
     QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
 }
@@ -213,7 +221,7 @@ void DraftHandler::pauseDraft()
     captureLoop = false;
 
     emit pDebug("Pause draft.");
-    emit pLog(tr("Log: Draft paused."));
+//    emit pLog(tr("Draft: Draft paused."));
 }
 
 
@@ -223,19 +231,30 @@ void DraftHandler::endDraft()
 
     if(!drafting)    return;
 
-    //Guardamos ultima carta
-    for(int i=0; i<3; i++)
-    {
-        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
-        {
-            pickCard(draftCards[i]);
-            emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());
-        }
-    }
+    emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());
+    emit pDebug("End draft.");
+    emit pLog(tr("Draft: Draft ended."));
 
-    //Oculta tab
+    //Guardamos ultima carta
+//    for(int i=0; i<3; i++)
+//    {
+//        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
+//        {
+//            pickCard(draftCards[i]);
+//        }
+//    }
+
+    //SizeDraft
+    QMainWindow *mainWindow = ((QMainWindow*)parent());
+    if(!sizeDraft.isValid())    sizeDraft = mainWindow->size();
+
+    //Hide Tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
     ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabArena));
+
+    //SizePreDraft
+    if(sizePreDraft.width()<mainWindow->minimumWidth())     mainWindow->setMinimumWidth(sizePreDraft.width());
+    mainWindow->resize(sizePreDraft);
 
     //Upload or complete deck with assets
     emit draftEnded();
@@ -244,52 +263,7 @@ void DraftHandler::endDraft()
 
     this->captureLoop = false;
     this->drafting = false;
-
-    emit pDebug("End draft.");
-    emit pLog(tr("Log: Draft ended."));
 }
-
-
-/*
- * Inserta todas las cartas de draftedCards en DeckCard
- */
-//void DraftHandler::insertIntoDeck()
-//{
-//    int numCards = draftedCards.count();
-//    bool isDeckComplete = (numCards == 30);
-
-//    while(!draftedCards.isEmpty())
-//    {
-//        int total = 1;
-//        for(int j=draftedCards.count()-1; j>0; j--)
-//        {
-//            if(draftedCards.first() == draftedCards[j])
-//            {
-//                total++;
-//                draftedCards.removeAt(j);
-//            }
-//        }
-
-//        if((numCards <= 30) || total > 1)
-//        {
-//            QString code = hearthArenaCodes.key(draftedCards.first());
-//            emit newDeckCard(code, total);
-//        }
-//        draftedCards.pop_front();
-//    }
-
-//    if(isDeckComplete)
-//    {
-//        emit qDebug() << "DraftHandler: Deck completo de draft.";
-//        emit sendLog(tr("Draft: Active deck read. Deck complete."));
-//        emit deckComplete();
-//    }
-//    else
-//    {
-//        emit qDebug() << "DraftHandler: Deck incompleto de" << numCards << "cartas.";
-//        emit sendLog(tr("Draft: Active deck read. Deck incomplete: ") + QString::number(numCards) + tr(" cards. It'll be completed while you play."));
-//    }
-//}
 
 
 void DraftHandler::captureDraft()
@@ -310,8 +284,7 @@ void DraftHandler::captureDraft()
         getBestMatchingCodes(screenCardsHist, codes);
 
         if(areNewCards(codes))  showNewCards(codes);
-
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
     else
     {
@@ -326,9 +299,11 @@ bool DraftHandler::areNewCards(QString codes[3])
         (codes[0]==draftCards[0].getCode() && codes[2]==draftCards[2].getCode()) ||
         (codes[1]==draftCards[1].getCode() && codes[2]==draftCards[2].getCode()))
     {
+        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                    codes[0] + "/" + codes[1] + "/" + codes[2] +
+                    " Same codes.");
         resetCodesCandidates();
         nextCount = 0;
-        selectMouseCard();
         return false;
     }
     else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
@@ -336,15 +311,16 @@ bool DraftHandler::areNewCards(QString codes[3])
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
                     " Blank code.");
-        if(draftedCards.count()>=29)
-        {
-            if(nextCount < 10)
-            {
-                nextCount++;
-                emit pDebug("Ending draft - " + QString::number(nextCount));
-            }
-            else                endDraft();
-        }
+        //Salida alternativa 10 blancos
+//        if(draftedCards.count()>=29)
+//        {
+//            if(nextCount < 10)
+//            {
+//                nextCount++;
+//                emit pDebug("Ending draft - " + QString::number(nextCount));
+//            }
+//            else                endDraft();
+//        }
         return false;
     }
     else if(!areSameRarity(codes))
@@ -427,13 +403,26 @@ bool DraftHandler::areSameRarity(QString codes[3])
 }
 
 
-void DraftHandler::pickCard(DraftCard &draftCard)
+void DraftHandler::pickCard(QString code)
 {
-    draftedCards.push_back(hearthArenaCodes[draftCard.getCode()]);
-    updateBoxTitle(draftCard.radioItem->text());
+    draftedCards.push_back(hearthArenaCodes[code]);
+
+    DraftCard draftCard;
+    for(int i=0; i<3; i++)
+    {
+        if(draftCards[i].getCode() == code)
+        {
+            draftCard = draftCards[i];
+            updateBoxTitle(draftCard.radioItem->text());
+            break;
+        }
+    }
+
     emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
     emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
-    emit newDeckCard(draftCard.getCode());
+    emit newDeckCard(code);
+
+    QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
 }
 
 
@@ -442,10 +431,10 @@ void DraftHandler::showNewCards(QString codes[3])
     int intCodes[3];
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
-        {
-            pickCard(draftCards[i]);
-        }
+//        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
+//        {
+//            pickCard(draftCards[i]);
+//        }
 
         clearRadioButton(draftCards[i].radioItem);
         draftCards[i].setCode(codes[i]);
@@ -461,8 +450,6 @@ void DraftHandler::showNewCards(QString codes[3])
 
 
     hearthArenaMentor->askCardsRating(arenaHero, draftedCards, intCodes);
-
-    selectMouseCard();
 }
 
 
@@ -744,29 +731,29 @@ bool DraftHandler::findScreenRects()
 }
 
 
-void DraftHandler::selectMouseCard()
-{
-    QList<QScreen *> screens = QGuiApplication::screens();
-    QScreen *screen = screens[screenIndex];
-    if (!screen) return;
+//void DraftHandler::selectMouseCard()
+//{
+//    QList<QScreen *> screens = QGuiApplication::screens();
+//    QScreen *screen = screens[screenIndex];
+//    if (!screen) return;
 
-    int xMouse = QCursor::pos(screen).x() - screen->geometry().x();
-    int minDist = 9999;
-    int pickedCard = 0;
+//    int xMouse = QCursor::pos(screen).x() - screen->geometry().x();
+//    int minDist = 9999;
+//    int pickedCard = 0;
 
-    for(int i=0; i<3; i++)
-    {
-        int xCard = screenRects[i].x + screenRects[i].width/2;
-        int dist = abs(xMouse - xCard);
-        if(dist < minDist)
-        {
-            minDist = dist;
-            pickedCard = i;
-        }
-    }
+//    for(int i=0; i<3; i++)
+//    {
+//        int xCard = screenRects[i].x + screenRects[i].width/2;
+//        int dist = abs(xMouse - xCard);
+//        if(dist < minDist)
+//        {
+//            minDist = dist;
+//            pickedCard = i;
+//        }
+//    }
 
-    draftCards[pickedCard].radioItem->setChecked(true);
-}
+//    draftCards[pickedCard].radioItem->setChecked(true);
+//}
 
 
 void DraftHandler::clearRadioButton(QRadioButton *radio)

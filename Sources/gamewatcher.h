@@ -112,7 +112,7 @@ signals:
     void leaveArena();
     void beginReadingDeck();
     void activeDraftDeck();
-    void pickCard();
+    void pickCard(QString code);
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 

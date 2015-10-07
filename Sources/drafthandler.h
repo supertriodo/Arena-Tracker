@@ -44,6 +44,7 @@ private:
     int nextCount;
     bool drafting;
     Transparency transparency;
+    QSize sizePreDraft, sizeDraft;
 
 
 //Metodos
@@ -61,17 +62,15 @@ private:
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
     void resetCodesCandidates();    
-    void updateBoxTitle(QString cardRating);    
+    void updateBoxTitle(QString cardRating);
     bool screenRectsFound();
     bool findScreenRects();
-    void selectMouseCard();        
-    void pickCard(DraftCard &draftCard);
     void removeTabHero();
     void clearRadioButton(QRadioButton *radio);
     void highlightRadioButton(QRadioButton *radio);
 
 public:
-    void reHistDownloadedCardImage(QString code);
+    void reHistDownloadedCardImage(QString &code);
     void setTransparency(Transparency value);
 
 signals:
@@ -88,6 +87,7 @@ public slots:
     void resumeDraft();
     void showNewCards(QString tip, double rating1, double rating2, double rating3,
                       QString synergy1, QString synergy2, QString synergy3);
+    void pickCard(QString code);
 
 private slots:
     void captureDraft();

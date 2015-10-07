@@ -157,6 +157,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
         //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
         else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
         {
+            emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
             emit activeDraftDeck(); //End draft
             endReadingDeck();
         }
@@ -166,14 +167,15 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             QString code = match->captured(1);
             if(!code.contains("HERO"))
             {
-                emit pickCard();
                 emit pDebug("Pick card: " + code, numLine);
+                emit pickCard(code);
             }
         }
         //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
         else if(synchronized && line.contains(QRegularExpression(
                     "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
         {
+            emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
             startReadingDeck();
         }
         //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012

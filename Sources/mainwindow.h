@@ -60,7 +60,6 @@ private:
     bool oneWindow;
     bool isMainWindow;
     MainWindow *otherWindow;
-    QSize sizePreDraft;
     int greyedHeight, cardHeight;
     int drawDisappear;
 
