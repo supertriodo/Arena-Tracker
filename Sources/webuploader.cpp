@@ -669,6 +669,10 @@ void WebUploader::getArenaCards(QString &html)
         emit pDebug("End reading deck.");
         emit pLog(tr("Web: Active deck read."));
     }
+    else
+    {
+        emit pDebug("No deck in web.");
+    }
 }
 
 

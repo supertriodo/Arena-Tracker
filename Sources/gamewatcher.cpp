@@ -62,10 +62,9 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
     {
         if(line.startsWith("[Bob] ---Register"))
         {
-            if(gameState == readingDeck)
-            {
-                endReadingDeck();
-            }
+            //Redundante en caso de que falle
+            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+            endReadingDeck();
 
             if(line.startsWith("[Bob] ---RegisterScreenForge---"))
             {
@@ -73,10 +72,12 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 emit pDebug("Entering arena.", numLine);
                 emit enterArena();
 
-                if(synchronized && !deckRead && gameState == noGame)
-                {
-                    startReadingDeck();
-                }
+                //Alternativa para readingDeck si no funciona [Arena]
+                //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
+//                if(synchronized && !deckRead && gameState == noGame)
+//                {
+//                    startReadingDeck();
+//                }
             }
             else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
                     line.startsWith("[Bob] ---RegisterFriendChallenge---"))
@@ -141,15 +142,49 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 emit newArenaReward(0, dust.toInt(),false,false,false);
             }
         }
-        //No ocurre en log
-//        else if(line.contains(QRegularExpression("DraftManager\\.OnChosen.+ hero=HERO_(\\d+)"), match))
-//        {
-//            emit pDebug("Nueva arena.";
-//            emit pLog(tr("Log: New arena."));
-//            QString hero = match->captured(1);
-//            emit newArena(hero);
-//            deckRead = false;
-//        }
+    }
+    else if(line.startsWith("[Arena]"))
+    {
+        //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
+        if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
+        {
+            emit pDebug("New arena.", numLine);
+            emit pLog(tr("Log: New arena."));
+            QString hero = match->captured(1);
+            emit newArena(hero); //Begin draft
+            deckRead = false;
+        }
+        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+        else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
+        {
+            emit activeDraftDeck(); //End draft
+            endReadingDeck();
+        }
+        //[Arena] Client chooses: Profesora violeta (NEW1_026)
+        else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
+        {
+            QString code = match->captured(1);
+            if(!code.contains("HERO"))
+            {
+                emit pickCard();
+                emit pDebug("Pick card: " + code, numLine);
+            }
+        }
+        //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
+        else if(synchronized && line.contains(QRegularExpression(
+                    "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
+        {
+            startReadingDeck();
+        }
+        //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
+        else if(synchronized && (gameState == readingDeck) &&
+            line.contains(QRegularExpression(
+                "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
+        {
+            QString code = match->captured(1);
+            emit pDebug("Reading deck: " + code, numLine);
+            emit newDeckCard(code);
+        }
     }
     else if(line.startsWith("[Power]"))
     {
@@ -159,54 +194,33 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
     {
         processZone(line, numLine);
     }
-    //No ocurre en log
-//    else if(line.startsWith("[Ben]"))
+//    else if(line.startsWith("[Asset]"))
 //    {
-//        if(line.startsWith("[Ben] SetDraftMode - DRAFTING"))
+//        if((gameState == readingDeck) &&
+//            line.contains(QRegularExpression(
+//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
 //        {
-//            emit pDebug("Resume draft.";
-//            emit resumeDraft();
-//        }
-//        else if(line.startsWith("[Ben] SetDraftMode - ACTIVE_DRAFT_DECK"))
-//        {
-//            emit activeDraftDeck();
-
-    //Si queremos reactivar readingDeck hay que modificar newDeckCard
-//            if(!deckRead)
+//            QString code = match->captured(1);
+//            //Hero portraits
+//            if(code.contains("HERO"))
 //            {
-//                gameState = readingDeck;
-//                emit pDebug("GameState = readingDeck";
-//                emit pDebug("Inicio leer deck.";
+//                emit pDebug("Discard HERO card", numLine);
+//                endReadingDeck();
+//                return;
 //            }
+//            //Hero powers
+//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+//            {
+//                emit pDebug("Discard HERO POWER", numLine);
+//                endReadingDeck();
+//                return;
+//            }
+//            emit pDebug("Read code: " + code, numLine);
+//            emit newDeckCard(code);
 //        }
 //    }
-    else if(line.startsWith("[Asset]"))
-    {
-        if((gameState == readingDeck) &&
-            line.contains(QRegularExpression(
-                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-        {
-            QString code = match->captured(1);
-            //Hero portraits
-            if(code.contains("HERO"))
-            {
-                emit pDebug("Discard HERO card", numLine);
-                endReadingDeck();
-                return;
-            }
-            //Hero powers
-            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-            {
-                emit pDebug("Discard HERO POWER", numLine);
-                endReadingDeck();
-                return;
-            }
-            emit pDebug("Read code: " + code, numLine);
-            emit newDeckCard(code);
-        }
-    }
 }
 
 
@@ -215,7 +229,7 @@ void GameWatcher::startReadingDeck()
     if(gameState != noGame || deckRead) return;
     gameState = readingDeck;
     emit pDebug("Start reading deck (GameState = readingDeck).", 0);
-    emit beginReadingDeck();
+    emit beginReadingDeck();    //askArenaCards to web  //resetDeck
 }
 
 
@@ -247,10 +261,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
         case noGame:
             if(line.contains("CREATE_GAME"))
             {
-                if(gameState == readingDeck)
-                {
-                    endReadingDeck();
-                }
+                //Redundante en caso de que falle
+                //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+                endReadingDeck();
 
                 emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
                 gameState = heroType1State;

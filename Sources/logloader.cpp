@@ -108,7 +108,7 @@ void LogLoader::readLogPath()
     }
 
 #ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/Documentos/arenaMageFull.txt");
+    logPath = QString("/home/triodo/Documentos/test.txt");
 #endif
 
 
@@ -210,8 +210,7 @@ void LogLoader::checkLogConfig()
     checkLogConfigOption("[Power]", data, stream);
     checkLogConfigOption("[Rachelle]", data, stream);
     checkLogConfigOption("[Zone]", data, stream);
-    checkLogConfigOption("[Ben]", data, stream);
-    checkLogConfigOption("[Asset]", data, stream);
+    checkLogConfigOption("[Arena]", data, stream);
 
     file.close();
 }

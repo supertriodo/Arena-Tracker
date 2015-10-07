@@ -126,7 +126,7 @@ QList<DeckCard> * DeckHandler::getDeckComplete()
 
 void DeckHandler::newDeckCardAsset(QString code)
 {
-    newDeckCard(code, 1, false);
+    newDeckCard(code, 1, true);
 }
 
 

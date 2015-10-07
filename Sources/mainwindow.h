@@ -99,7 +99,6 @@ private:
     void resetSettings();
     void createLogFile();
     void closeLogFile();
-    void resetDeck(bool deckRead=false);
     void createSecondaryWindow();
     void destroySecondaryWindow();
     void checkHSCardsDir();
@@ -121,6 +120,7 @@ public slots:
 
     //GameWatcher
     void showTabHeroOnNoArena();
+    void resetDeck(bool deckRead=false);
 
     //WebUploader
     void resetDeckFromWeb();

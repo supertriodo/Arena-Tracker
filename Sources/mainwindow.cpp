@@ -355,19 +355,21 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
 
+    //Connect en synchronizedDone
 //    connect(gameWatcher,SIGNAL(newArena(QString)),
 //            draftHandler, SLOT(beginDraft(QString)));
-//    connect(gameWatcher,SIGNAL(activeDraftDeck()),
-//            draftHandler, SLOT(endDraft()));
+    connect(gameWatcher,SIGNAL(activeDraftDeck()),
+            draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(leaveArena()),
             draftHandler, SLOT(pauseDraft()));
     connect(gameWatcher,SIGNAL(enterArena()),
             draftHandler, SLOT(resumeDraft()));
-    connect(gameWatcher,SIGNAL(enterArena()),
-            this, SLOT(showTabHeroOnNoArena()));
-
+//    connect(gameWatcher,SIGNAL(enterArena()),
+//            this, SLOT(showTabHeroOnNoArena()));
+    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+            this, SLOT(resetDeck()));
     //Connect en webUploader
 //    connect(gameWatcher,SIGNAL(beginReadingDeck()),
 //            webUploader, SLOT(askArenaCards()));
@@ -418,6 +420,9 @@ void MainWindow::synchronizedDone()
     deckHandler->setSynchronized();
     spreadTransparency();
 
+    //Connections after synchronized
+    connect(gameWatcher,SIGNAL(newArena(QString)),
+            draftHandler, SLOT(beginDraft(QString)));
 
     //Test
 #ifdef QT_DEBUG
@@ -557,7 +562,7 @@ void MainWindow::completeHeroButtons()
 
 void MainWindow::addDraftMenu(QMenu *menu)
 {
-    QMenu *newArenaMenu = new QMenu("New arena/draft", this);
+    QMenu *newArenaMenu = new QMenu("Force draft", this);
 
     QSignalMapper* mapper = new QSignalMapper(this);
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
@@ -585,11 +590,11 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 
     if(ret == QMessageBox::Ok)
     {
-        pDebug("New manual arena: " + hero);
-        pLog(tr("Menu: New arena: ") + hero);
+        pDebug("Manual draft: " + hero);
+        pLog(tr("Menu: Force draft: ") + hero);
         sizePreDraft = this->size();
         QString heroLog = Utility::heroToLogNumber(hero);
-        arenaHandler->newArena(heroLog);
+//        arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
     }
 }
@@ -1476,6 +1481,13 @@ void MainWindow::test()
 
 
 //TODO
+//Reajustar victorias despues de cada partida
+//Completar sizePreDraft
+//Pick log
+//Verificar final automatico de draft (10 blancos)
+//Cambiar reading deck [Arena]
+//Verificar plog Draft/Log
+//debug detected same cards
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

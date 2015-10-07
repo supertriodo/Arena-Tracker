@@ -186,6 +186,23 @@ void ArenaHandler::showArena(QString hero)
 void ArenaHandler::showNoArena()
 {
     if(noArena) return;
+
+    //Add last game to score
+    if(arenaCurrent!=NULL && !arenaCurrentGameList.isEmpty())
+    {
+        if(arenaCurrentGameList.last().isWinner)
+        {
+            int wins = arenaCurrent->text(2).toInt() + 1;
+            arenaCurrent->setText(2, QString::number(wins));
+        }
+        else
+        {
+            int loses = arenaCurrent->text(3).toInt() + 1;
+            arenaCurrent->setText(3, QString::number(loses));
+        }
+        emit pDebug("Recalculate arena win/loses (last game).");
+    }
+
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
     item->setText(0, "No arena");
     setRowColor(item, GREEN);
@@ -194,6 +211,8 @@ void ArenaHandler::showNoArena()
     arenaCurrentHero = "";
     arenaCurrentGameList.clear();
     noArena = true;
+
+    emit pDebug("Show no arena.");
 }
 
 
@@ -382,6 +401,7 @@ void ArenaHandler::syncArenaCurrent()
 
         arenaCurrent->setText(2, QString::number(wins));
         arenaCurrent->setText(3, QString::number(loses));
+        emit pDebug("Recalculate arena win/loses.");
     }
 }
 
