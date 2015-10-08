@@ -766,18 +766,19 @@ bool DraftHandler::findScreenRects()
 //}
 
 
-void DraftHandler::clearRadioButton(QRadioButton *radio)
+void DraftHandler::clearRadioButton(QRadioButton *radio, bool clearText)
 {
     if(transparency == Always)
     {
-        radio->setStyleSheet("background-color: transparent; color: white");
+        radio->setStyleSheet("QRadioButton{background-color: transparent; color: white;}"
+                             "QRadioButton::indicator {width: 0px;height: 0px;}");
     }
     else
     {
-        radio->setStyleSheet("");
+        radio->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
     }
 
-    radio->setText("");
+    if(clearText)   radio->setText("");
 }
 
 
@@ -785,11 +786,13 @@ void DraftHandler::highlightRadioButton(QRadioButton *radio)
 {
     if(transparency == Always)
     {
-        radio->setStyleSheet("background-color: transparent; color: yellow");
+        radio->setStyleSheet("QRadioButton{background-color: transparent; color: yellow;}"
+                             "QRadioButton::indicator {width: 0px;height: 0px;}");
     }
     else
     {
-        radio->setStyleSheet("background-color: silver;");
+        radio->setStyleSheet("QRadioButton{background-color: silver;}"
+                             "QRadioButton::indicator {width: 0px;height: 0px;}");
     }
 }
 
@@ -808,9 +811,6 @@ void DraftHandler::setTransparency(Transparency value)
         ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
         ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
         ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
-        ui->radioButtonDraft1->setStyleSheet("background-color: transparent; color: white");
-        ui->radioButtonDraft2->setStyleSheet("background-color: transparent; color: white");
-        ui->radioButtonDraft3->setStyleSheet("background-color: transparent; color: white");
         ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
@@ -825,13 +825,15 @@ void DraftHandler::setTransparency(Transparency value)
         ui->textDraft2->setStyleSheet("");
         ui->textDraft3->setStyleSheet("");
         ui->textBrowserDraft->setStyleSheet("");
-        ui->radioButtonDraft1->setStyleSheet("");
-        ui->radioButtonDraft2->setStyleSheet("");
-        ui->radioButtonDraft3->setStyleSheet("");
         ui->groupBoxDraft->setStyleSheet("");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
     }
+
+    //Clear radio buttons
+    clearRadioButton(ui->radioButtonDraft1, false);
+    clearRadioButton(ui->radioButtonDraft2, false);
+    clearRadioButton(ui->radioButtonDraft3, false);
 }
 
 

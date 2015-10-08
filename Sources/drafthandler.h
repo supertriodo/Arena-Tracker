@@ -66,7 +66,7 @@ private:
     bool screenRectsFound();
     bool findScreenRects();
     void removeTabHero();
-    void clearRadioButton(QRadioButton *radio);
+    void clearRadioButton(QRadioButton *radio, bool clearText=true);
     void highlightRadioButton(QRadioButton *radio);
 
 public:
