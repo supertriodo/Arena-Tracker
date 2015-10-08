@@ -6,6 +6,10 @@
 #include <QObject>
 #include <QTextStream>
 
+#define MIN_UPDATE_TIME 500
+#define MAX_UPDATE_TIME 2000
+#define UPDATE_TIME_STEP 500
+
 class LogLoader : public QObject
 {
     Q_OBJECT
@@ -21,7 +25,7 @@ private:
     qint64 logSize;
     LogWorker *logWorker;
     bool firstRun;
-    int updateTime;
+    int updateTime, maxUpdateTime;
 
 //Metodos
 private:
@@ -36,6 +40,7 @@ private:
     void checkLogConfig();
     void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
     void workerFinished();
+    void setMaxUpdateTime(int value);
 
 public:
     void init(qint64 &logSize);
@@ -62,6 +67,8 @@ private slots:
 
 public slots:
     void sendLogWorker();
+    void setUpdateTimeMax();
+    void setUpdateTimeMin();
 };
 
 #endif // LOGLOADER_H

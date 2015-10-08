@@ -4,6 +4,7 @@
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
     logWorker = NULL;
+    setUpdateTimeMax();
 }
 
 
@@ -267,8 +268,27 @@ void LogLoader::workerFinished()
 {
     checkFirstRun();
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
+//    qDebug() << "UpdateTime:" << updateTime;
+    if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;
+}
 
-    if(updateTime < 4000) updateTime += 500;
+
+void LogLoader::setUpdateTimeMin()
+{
+    setMaxUpdateTime(MIN_UPDATE_TIME);
+}
+
+
+void LogLoader::setUpdateTimeMax()
+{
+    setMaxUpdateTime(MAX_UPDATE_TIME);
+}
+
+
+void LogLoader::setMaxUpdateTime(int value)
+{
+    maxUpdateTime = value;
+    updateTime = std::min(updateTime,maxUpdateTime);
 }
 
 
@@ -321,6 +341,6 @@ QString LogLoader::getLogConfigPath()
 //LogWorker signal reemit
 void LogLoader::emitNewLogLineRead(QString line, qint64 numLine)
 {
-    updateTime = 500;
+    updateTime = std::min(MIN_UPDATE_TIME,maxUpdateTime);
     emit newLogLineRead(line, numLine);
 }

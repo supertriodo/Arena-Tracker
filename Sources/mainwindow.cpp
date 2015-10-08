@@ -223,6 +223,13 @@ void MainWindow::createDraftHandler()
             deckHandler, SLOT(newDeckCardDraft(QString)));
     connect(draftHandler, SIGNAL(draftEnded()),
             this, SLOT(uploadDeck()));
+
+    //Connect en logLoader
+//    connect(draftHandler, SIGNAL(draftEnded()),
+//            logLoader, SLOT(setUpdateTimeMax()));
+//    connect(draftHandler, SIGNAL(draftStarted()),
+//            logLoader, SLOT(setUpdateTimeMin()));
+
     connect(draftHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -404,6 +411,12 @@ void MainWindow::createLogLoader()
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    //Connect de draftHandler
+    connect(draftHandler, SIGNAL(draftEnded()),
+            logLoader, SLOT(setUpdateTimeMax()));
+    connect(draftHandler, SIGNAL(draftStarted()),
+            logLoader, SLOT(setUpdateTimeMin()));
 
     qint64 logSize;
     logLoader->init(logSize);
@@ -1477,7 +1490,6 @@ void MainWindow::test()
 
 
 //TODO
-//aumentar velocidad log en draft
 //eliminar radio buttons
 
 //BUGS CONOCIDOS

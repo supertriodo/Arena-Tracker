@@ -192,6 +192,9 @@ void DraftHandler::beginDraft(QString hero)
         emit pLog(tr("Draft: New draft started."));
     }
 
+    //Set updateTime in log
+    emit draftStarted();
+
     resetTab();
     clearLists();
 
@@ -257,6 +260,7 @@ void DraftHandler::endDraft()
     mainWindow->resize(sizePreDraft);
 
     //Upload or complete deck with assets
+    //Set updateTime in log
     emit draftEnded();
 
     clearLists();
@@ -405,6 +409,12 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
 void DraftHandler::pickCard(QString code)
 {
+    if(!drafting)
+    {
+        captureLoop = false;
+        return;
+    }
+
     draftedCards.push_back(hearthArenaCodes[code]);
 
     DraftCard draftCard;
