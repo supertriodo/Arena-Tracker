@@ -5,8 +5,6 @@
 #include <QNetworkReply>
 #include <QtWidgets>
 
-QMap<QString, QJsonObject> * WebUploader::cardsJson;
-
 WebUploader::WebUploader(QObject *parent) : QObject(parent)
 {
     match = new QRegularExpressionMatch();
@@ -169,7 +167,7 @@ void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
     {
         if(it->total > 0)
         {
-            QString name = (*cardsJson)[it->getCode()].value("name").toString();
+            QString name = Utility::cardEnNameFromCode(it->getCode());
             arenaCards.append(QString::number(it->total) + " " + name + "\n");
         }
     }
@@ -664,7 +662,15 @@ void WebUploader::getArenaCards(QString &html)
         while (reIterator.hasNext())
         {
             QRegularExpressionMatch match = reIterator.next();
-            emit newDeckCard(codeFromName(match.captured(2)), match.captured(1).toInt());
+
+            QString name = match.captured(2);
+            QString code = Utility::cardEnCodeFromName(name);
+            if(code.isEmpty())
+            {
+                emit pDebug("Code for card name not found in Json: " + name, Error);
+                emit pLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
+            }
+            else    emit newDeckCard(code, match.captured(1).toInt());
         }
         emit pDebug("End reading deck.");
         emit pLog(tr("Web: Active deck read."));
@@ -673,21 +679,6 @@ void WebUploader::getArenaCards(QString &html)
     {
         emit pDebug("No deck in web.");
     }
-}
-
-
-QString WebUploader::codeFromName(QString name)
-{
-    for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
-    {
-        if(it->value("name").toString() == name)
-        {
-            if(!it->value("cost").isUndefined())    return it.key();
-        }
-    }
-    emit pDebug("Code for card name not found in Json: " + name, Error);
-    emit pLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
-    return "";
 }
 
 
@@ -726,11 +717,5 @@ void WebUploader::postRequest(QNetworkRequest request, QURL postData)
 #else
     networkManager->post(request, postData.encodedQuery());
 #endif
-}
-
-
-void WebUploader::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
-{
-    WebUploader::cardsJson = cardsJson;
 }
 

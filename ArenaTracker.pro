@@ -36,7 +36,9 @@ SOURCES += Sources/main.cpp\
     Sources/heartharenamentor.cpp \
     Sources/draftcard.cpp \
     Sources/utility.cpp \
-    Sources/drawcard.cpp
+    Sources/drawcard.cpp \
+    Sources/draftscorewindow.cpp \
+    Sources/scorebutton.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -56,7 +58,9 @@ HEADERS  += Sources/mainwindow.h \
     Sources/heartharenamentor.h \
     Sources/draftcard.h \
     Sources/utility.h \
-    Sources/drawcard.h
+    Sources/drawcard.h \
+    Sources/draftscorewindow.h \
+    Sources/scorebutton.h
 
 FORMS    += mainwindow.ui
 

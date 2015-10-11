@@ -13,6 +13,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->drafting = false;
     this->transparency = Never;
     this->sizeDraft = this->sizePreDraft = QSize();
+    this->draftScoreWindow = NULL;
 
     for(int i=0; i<3; i++)
     {
@@ -208,7 +209,11 @@ void DraftHandler::beginDraft(QString hero)
 void DraftHandler::resumeDraft()
 {
     if(!drafting)       return;
-    if(captureLoop)     return;
+    if(captureLoop) //Force draft con un draft activo
+    {
+        //return;   //Util si tenemos loopInfinitos
+    }
+
     captureLoop = true;
 
     emit pDebug("Resume draft.");
@@ -267,6 +272,20 @@ void DraftHandler::endDraft()
 
     this->captureLoop = false;
     this->drafting = false;
+
+    deleteDraftScoreWindow();
+
+}
+
+
+void DraftHandler::deleteDraftScoreWindow()
+{
+    if(draftScoreWindow != NULL)
+    {
+        draftScoreWindow->close();
+        delete draftScoreWindow;
+        draftScoreWindow = NULL;
+    }
 }
 
 
@@ -299,7 +318,8 @@ void DraftHandler::captureDraft()
 
 bool DraftHandler::areNewCards(QString codes[3])
 {
-    if((codes[0]==draftCards[0].getCode() && codes[1]==draftCards[1].getCode()) ||
+    //Util en avance automatico
+    /*if((codes[0]==draftCards[0].getCode() && codes[1]==draftCards[1].getCode()) ||
         (codes[0]==draftCards[0].getCode() && codes[2]==draftCards[2].getCode()) ||
         (codes[1]==draftCards[1].getCode() && codes[2]==draftCards[2].getCode()))
     {
@@ -310,12 +330,13 @@ bool DraftHandler::areNewCards(QString codes[3])
         nextCount = 0;
         return false;
     }
-    else if(codes[0]=="" || codes[1]=="" || codes[2]=="")
+    else */if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
                     " Blank code.");
         //Salida alternativa 10 blancos
+        //Util en avance automatico
 //        if(draftedCards.count()>=29)
 //        {
 //            if(nextCount < 10)
@@ -415,6 +436,11 @@ void DraftHandler::pickCard(QString code)
         return;
     }
 
+    if(code=="0" || code=="1" || code=="2")
+    {
+        code = draftCards[code.toInt()].getCode();
+    }
+
     draftedCards.push_back(hearthArenaCodes[code]);
 
     DraftCard draftCard;
@@ -427,6 +453,8 @@ void DraftHandler::pickCard(QString code)
             break;
         }
     }
+
+    draftScoreWindow->hideScores();
 
     emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
     emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
@@ -477,21 +505,14 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
                                 QString synergy1, QString synergy2, QString synergy3)
 {
     double ratings[3] = {rating1,rating2,rating3};
-    double maxRating = -100;
-    int bestCard = 0;
+    double maxRating = std::max(std::max(rating1,rating2),rating3);
 
     for(int i=0; i<3; i++)
     {
         draftCards[i].radioItem->setText(QString::number(ratings[i]));
-
-        if(ratings[i] > maxRating)
-        {
-            maxRating = ratings[i];
-            bestCard = i;
-        }
+        if(maxRating == ratings[i])     highlightRadioButton(draftCards[i].radioItem);
     }
 
-    highlightRadioButton(draftCards[bestCard].radioItem);
 
     //Mostrar sinergies
     QString synergies[3] = {synergy1,synergy2, synergy3};
@@ -503,8 +524,10 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
         texts[i]->setText(text);
     }
 
-
     ui->textBrowserDraft->setText(tip);
+
+    //Mostrar score
+    draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3);
 }
 
 
@@ -530,11 +553,11 @@ void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
     cv::resize(bigCards[1], screenCards[1], cv::Size(80, 80));
     cv::resize(bigCards[2], screenCards[2], cv::Size(80, 80));
 
-#ifdef QT_DEBUG
-    cv::imshow("Card1", screenCards[0]);
-    cv::imshow("Card2", screenCards[1]);
-    cv::imshow("Card3", screenCards[2]);
-#endif
+//#ifdef QT_DEBUG
+//    cv::imshow("Card1", screenCards[0]);
+//    cv::imshow("Card2", screenCards[1]);
+//    cv::imshow("Card3", screenCards[2]);
+//#endif
 
     for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(screenCards[i]);
 }
@@ -707,21 +730,21 @@ bool DraftHandler::findScreenRects()
         perspectiveTransform( obj_corners, scene_corners, H);
 
 
-#ifdef QT_DEBUG
-        //Show matches
-        Mat img_matches;
-        drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
-                     good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
-                     vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//#ifdef QT_DEBUG
+//        //Show matches
+//        Mat img_matches;
+//        drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
+//                     good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                     vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 
-        //-- Draw lines between the corners (the mapped object in the scene - image_2 )
-        line( img_matches, scene_corners[0] + Point2f( img_object.cols, 0), scene_corners[1] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-        line( img_matches, scene_corners[2] + Point2f( img_object.cols, 0), scene_corners[3] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-        line( img_matches, scene_corners[4] + Point2f( img_object.cols, 0), scene_corners[5] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
+//        //-- Draw lines between the corners (the mapped object in the scene - image_2 )
+//        line( img_matches, scene_corners[0] + Point2f( img_object.cols, 0), scene_corners[1] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
+//        line( img_matches, scene_corners[2] + Point2f( img_object.cols, 0), scene_corners[3] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
+//        line( img_matches, scene_corners[4] + Point2f( img_object.cols, 0), scene_corners[5] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
 
-        //-- Show detected matches
-        imshow( "Good Matches & Object detection", img_matches );
-#endif
+//        //-- Show detected matches
+//        imshow( "Good Matches & Object detection", img_matches );
+//#endif
 
 
         //Calculamos screenRect
@@ -734,6 +757,15 @@ bool DraftHandler::findScreenRects()
                         QString::number(screenRects[i].width) + "/" +
                         QString::number(screenRects[i].height));
         }
+
+        //Creamos draftScoreWindow
+        deleteDraftScoreWindow();
+        QPoint topLeft(screenRects[0].x, screenRects[0].y);
+        QPoint bottomRight(screenRects[2].x+screenRects[2].width,
+                screenRects[2].y+screenRects[2].height);
+        QRect draftRect(topLeft, bottomRight);
+        QSize sizeCard(screenRects[0].width, screenRects[0].height);
+        draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
 
         return true;
     }

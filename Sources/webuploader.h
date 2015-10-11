@@ -52,8 +52,6 @@ private:
     bool deckInWeb;
     QString arenaCards;
 
-private:
-    static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 private:
@@ -65,7 +63,6 @@ private:
     void uploadNext();
     void postRequest(QNetworkRequest request, QURL postData);
     void createArenaCards(QList<DeckCard> &deckCardList);
-    QString codeFromName(QString name);
     void getArenaCards(QString &html);
     void uploadArenaCards();    
     void showWebState();
@@ -77,8 +74,6 @@ public:
     bool uploadNewArena(const QString &hero);
     void uploadDeck(QList<DeckCard> *deckCardList);
     void refresh();
-
-    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 
 signals:
     void loadedGameResult(GameResult gameResult);

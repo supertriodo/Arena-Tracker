@@ -109,7 +109,7 @@ void LogLoader::readLogPath()
     }
 
 #ifdef QT_DEBUG
-    logPath = QString("/home/triodo/Documentos/test.txt");
+//    logPath = QString("/home/triodo/Documentos/test.txt");
 #endif
 
 

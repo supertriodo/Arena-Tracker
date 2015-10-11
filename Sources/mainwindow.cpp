@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "utility.h"
+#include "draftscorewindow.h"
 #include <QtWidgets>
 
 using namespace cv;
@@ -204,12 +205,12 @@ void MainWindow::initCardsJson()
 
     if(lang == "enUS")
     {
-        WebUploader::setCardsJson(&cardsJson);
+        Utility::setCardsJson(&cardsJson);
     }
     else
     {
         createCardsJsonMap(enCardsJson, "enUS");
-        WebUploader::setCardsJson(&enCardsJson);
+        Utility::setCardsJson(&enCardsJson);
     }
 }
 
@@ -1387,11 +1388,14 @@ void MainWindow::resizeSlot(QSize size)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() != Qt::Key_Alt && event->key() != Qt::Key_Control)
+    if(event->key() != Qt::Key_Control)
     {
-        if(event->modifiers()&Qt::AltModifier && event->modifiers()&Qt::ControlModifier)
+        if(event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)   resetSettings();
+            else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
+            else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
+            else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
         }
     }
 }
@@ -1490,7 +1494,6 @@ void MainWindow::test()
 
 
 //TODO
-//anadir overlay drafting
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

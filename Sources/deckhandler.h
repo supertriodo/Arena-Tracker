@@ -9,7 +9,6 @@
 #include <QMap>
 
 #define MALORNE QString("GVG_035")
-#define ANIMATION_TIME 750
 
 
 class DeckHandler : public QObject

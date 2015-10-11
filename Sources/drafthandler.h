@@ -5,6 +5,7 @@
 #include "draftcard.h"
 #include "heartharenamentor.h"
 #include "utility.h"
+#include "draftscorewindow.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
@@ -45,6 +46,7 @@ private:
     bool drafting;
     Transparency transparency;
     QSize sizePreDraft, sizeDraft;
+    DraftScoreWindow *draftScoreWindow;
 
 
 //Metodos
@@ -68,6 +70,7 @@ private:
     void removeTabHero();
     void clearRadioButton(QRadioButton *radio, bool clearText=true);
     void highlightRadioButton(QRadioButton *radio);
+    void deleteDraftScoreWindow();
 
 public:
     void reHistDownloadedCardImage(QString &code);

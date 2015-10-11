@@ -7,7 +7,6 @@
 #include <QQueue>
 #include <QObject>
 
-#define ANIMATION_TIME 750
 
 //Secretos
 #define AVENGE QString("FP1_020")
