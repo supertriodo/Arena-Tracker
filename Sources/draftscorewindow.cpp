@@ -4,18 +4,21 @@
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
+    scoreWidth = sizeCard.width()*0.8;
+
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
     if (!screen) return;
 
     QRect rectScreen = screen->geometry();
-    resize(rect.width()+2*MARGIN,rect.height()+2*MARGIN);
-    move(rectScreen.x() + rect.x() - MARGIN, rectScreen.y() + rect.y() - MARGIN + 2.6*sizeCard.height());
+    resize(rect.width()+2*MARGIN-(sizeCard.width()-scoreWidth),
+           rect.height()+2*MARGIN-(sizeCard.height()-scoreWidth));
+    move(rectScreen.x() + rect.x() - MARGIN + (sizeCard.width()-scoreWidth)/2,
+         rectScreen.y() + rect.y() - MARGIN + 2.6*sizeCard.height());
 
 
     QWidget *centralWidget = new QWidget(this);
     QFont font("Belwe Bd BT");
-    scoreWidth = sizeCard.width();
     font.setPointSize(scoreWidth/3);
 
     QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
@@ -29,7 +32,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i] = new ScoreButton(centralWidget, i);
         scoresPushButton[i]->setMinimumHeight(0);
         scoresPushButton[i]->setMaximumHeight(0);
-        scoresPushButton[i]->setMinimumWidth(sizeCard.width());
+        scoresPushButton[i]->setMinimumWidth(scoreWidth);
         scoresPushButton[i]->setFont(font);
 
         horLayoutScores->addWidget(scoresPushButton[i]);
