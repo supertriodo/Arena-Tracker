@@ -25,7 +25,7 @@ The first time you run Arena Tracker you will be asked for:
 * 1) output_log.txt location (If not default).
  * Default (Win): C:\Program Files (x86)\Hearthstone\Hearthstone_Data\output_log.txt
 * 2) log.config location (If not default).
- * Default (Win 8): USER\AppData\Local\Blizzard\Hearthstone\log.config
+ * Default (Win 7-10): USER\AppData\Local\Blizzard\Hearthstone\log.config
  * Default (Win XP): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
  * If the file doesn't exist create an empty log.config in that dir.
 * 3) Your Arena Mastery user/password.
@@ -43,21 +43,20 @@ or on email: arenatracker@gmail.com
 También puedes preguntarme en español.
 
 
-## FAQ
-* I started a new arena and ArenaTracker didn't help me with the draft.
- * When you start a new arena in hearthstone a draft tab will appear in ArenaTracker. You have to select the hero to start the draft. The correct moment to click the hero is after having selected the hero in Hearthstone and waiting in front of the 1st pick.
-* Drafting doesn't advance to next card.
+## FAQ (v3.0+)
+* I setup the app but it didn't upload my arena game/ it didn't start drafting.
+ * This usually means Hearthstone is not writting in its log.
+ * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
+ * If you use other trackers they can conflict configuring log.config (Remove log.config and start Arena Tracker).
+* Drafting doesn't read next card.
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
- * After picking a card make sure you don't move the mouse to the place of any of the other 2 cards or the program can take any of those as selected.
-* What does it mean when cards in the decklist are highlighted in yellow?
+* What does it mean when cards in the decklist are highlighted in yellow/orange?
  * Minions are shown in white.
  * Spells are shown in yellow.
  * Weapons are shown in orange.
 * How do I reset the app so I can set the config info again?
- * With the app selected press ctrl+alt+r
-* I setup the app but didn't upload my arena game.
- * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
+ * With the app selected press ctrl+r
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
  * Make sure HSCards dir is in the same dir as the binary.
 
