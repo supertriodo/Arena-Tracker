@@ -766,6 +766,7 @@ bool DraftHandler::findScreenRects()
         QRect draftRect(topLeft, bottomRight);
         QSize sizeCard(screenRects[0].width, screenRects[0].height);
         draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+        setShowDraftOverlay(this->showDraftOverlay);
 
         return true;
     }
@@ -868,6 +869,17 @@ void DraftHandler::setTransparency(Transparency value)
     clearRadioButton(ui->radioButtonDraft3, false);
 }
 
+
+void DraftHandler::setShowDraftOverlay(bool value)
+{
+    this->showDraftOverlay = value;
+
+    if(this->draftScoreWindow != NULL)
+    {
+        if(this->showDraftOverlay)  this->draftScoreWindow->show();
+        else                        this->draftScoreWindow->hide();
+    }
+}
 
 
 //Construir json de HearthArena

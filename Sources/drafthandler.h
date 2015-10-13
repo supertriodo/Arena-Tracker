@@ -47,6 +47,7 @@ private:
     Transparency transparency;
     QSize sizePreDraft, sizeDraft;
     DraftScoreWindow *draftScoreWindow;
+    bool showDraftOverlay;
 
 
 //Metodos
@@ -75,6 +76,7 @@ private:
 public:
     void reHistDownloadedCardImage(QString &code);
     void setTransparency(Transparency value);
+    void setShowDraftOverlay(bool value);
 
 signals:
     void checkCardImage(QString code);

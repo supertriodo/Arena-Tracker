@@ -62,7 +62,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2*scoreWidth; //Extra scoreWidth
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
-    show();
 }
 
 

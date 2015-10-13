@@ -235,6 +235,8 @@ void MainWindow::createDraftHandler()
             this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
 }
 
 
@@ -1042,6 +1044,43 @@ void MainWindow::timeDrawTurn()
 }
 
 
+void MainWindow::addShowDraftOverlayMenu(QMenu *menu)
+{
+    QAction *action0 = new QAction("No", this);
+    QAction *action1 = new QAction("Yes", this);
+    action0->setCheckable(true);
+    action1->setCheckable(true);
+    connect(action0, SIGNAL(triggered()), this, SLOT(showDraftOverlayNo()));
+    connect(action1, SIGNAL(triggered()), this, SLOT(showDraftOverlayYes()));
+
+    QActionGroup *splitGroup = new QActionGroup(this);
+    splitGroup->addAction(action0);
+    splitGroup->addAction(action1);
+
+    if(showDraftOverlay)    action1->setChecked(true);
+    else                    action0->setChecked(true);
+
+    QMenu *showDraftOverlayMenu = new QMenu("Draft: Show overlay", this);
+    showDraftOverlayMenu->addAction(action0);
+    showDraftOverlayMenu->addAction(action1);
+    menu->addMenu(showDraftOverlayMenu);
+}
+
+
+void MainWindow::showDraftOverlayNo()
+{
+    this->showDraftOverlay = false;
+    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+}
+
+
+void MainWindow::showDraftOverlayYes()
+{
+    this->showDraftOverlay = true;
+    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+}
+
+
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
@@ -1051,6 +1090,8 @@ void MainWindow::completeToolButton()
     addTamCardMenu(menu);
     addTamGreyedMenu(menu);
     addTimeDrawMenu(menu);
+    menu->addSeparator();
+    addShowDraftOverlayMenu(menu);
     menu->addSeparator();
     addNumWindowsMenu(menu);
     addSplitMenu(menu);
@@ -1080,6 +1121,7 @@ void MainWindow::readSettings()
         this->greyedHeight = settings.value("greyedHeight", 25).toInt();
         this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 10).toInt();
+        this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
     }
     else
     {
@@ -1108,6 +1150,7 @@ void MainWindow::writeSettings()
         settings.setValue("greyedHeight", this->greyedHeight);
         settings.setValue("cardHeight", this->cardHeight);
         settings.setValue("drawDisappear", this->drawDisappear);
+        settings.setValue("showDraftOverlay", this->showDraftOverlay);
     }
     else
     {

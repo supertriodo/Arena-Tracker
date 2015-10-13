@@ -62,6 +62,7 @@ private:
     MainWindow *otherWindow;
     int greyedHeight, cardHeight;
     int drawDisappear;
+    bool showDraftOverlay;
 
 
 
@@ -90,6 +91,7 @@ private:
     void addTamGreyedMenu(QMenu *menu);
     void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
+    void addShowDraftOverlayMenu(QMenu *menu);
     void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
@@ -166,6 +168,8 @@ private slots:
     void tamCard25px();
     void tamCard30px();
     void tamCard35px();
+    void showDraftOverlayNo();
+    void showDraftOverlayYes();
 };
 
 #endif // MAINWINDOW_H
