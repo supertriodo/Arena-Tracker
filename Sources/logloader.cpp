@@ -209,7 +209,6 @@ void LogLoader::checkLogConfig()
 
     checkLogConfigOption("[Bob]", data, stream);
     checkLogConfigOption("[Power]", data, stream);
-    checkLogConfigOption("[Rachelle]", data, stream);
     checkLogConfigOption("[Zone]", data, stream);
     checkLogConfigOption("[Arena]", data, stream);
 

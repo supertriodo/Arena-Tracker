@@ -28,6 +28,21 @@ void ArenaHandler::completeUI()
             this, SLOT(refresh()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
+
+    //Rewards UI
+    ui->lineEditGold->setMinimumWidth(1);
+    ui->lineEditArcaneDust->setMinimumWidth(1);
+    ui->lineEditPack->setMinimumWidth(1);
+    ui->lineEditPlainCard->setMinimumWidth(1);
+    ui->lineEditGoldCard->setMinimumWidth(1);
+    hideRewards();
+
+    connect(ui->rewardsNoButton, SIGNAL(clicked(bool)),
+            this, SLOT(hideRewards()));
+    connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
+            this, SLOT(hideRewards()));
+    connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
+            this, SLOT(uploadRewards()));
 }
 
 
@@ -48,7 +63,6 @@ void ArenaHandler::createTreeWidget()
     arenaHomeless->setText(0, "...");
 
     arenaCurrent = NULL;
-    arenaCurrentReward = NULL;
     arenaCurrentHero = "";
     noArena = false;
 }
@@ -93,6 +107,19 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaM
     {
         item = new QTreeWidgetItem(arenaCurrent);
         arenaCurrentGameList.append(gameResult);
+
+        //Add game to score
+        if(gameResult.isWinner)
+        {
+            int wins = arenaCurrent->text(2).toInt() + 1;
+            arenaCurrent->setText(2, QString::number(wins));
+        }
+        else
+        {
+            int loses = arenaCurrent->text(3).toInt() + 1;
+            arenaCurrent->setText(3, QString::number(loses));
+        }
+        emit pDebug("Recalculate arena win/loses (1 game).");
     }
 
     item->setIcon(0, QIcon(":Images/" +
@@ -108,8 +135,6 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaM
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
     setRowColor(item, WHITE);
-
-    arenaCurrentReward = NULL;
 
     return item;
 }
@@ -178,7 +203,6 @@ void ArenaHandler::showArena(QString hero)
 
     setRowColor(arenaCurrent, WHITE);
 
-    arenaCurrentReward = NULL;
     arenaCurrentGameList.clear();
 }
 
@@ -187,30 +211,14 @@ void ArenaHandler::showNoArena()
 {
     if(noArena) return;
 
-    //Add last game to score
-    if(arenaCurrent!=NULL && !arenaCurrentGameList.isEmpty())
-    {
-        if(arenaCurrentGameList.last().isWinner)
-        {
-            int wins = arenaCurrent->text(2).toInt() + 1;
-            arenaCurrent->setText(2, QString::number(wins));
-        }
-        else
-        {
-            int loses = arenaCurrent->text(3).toInt() + 1;
-            arenaCurrent->setText(3, QString::number(loses));
-        }
-        emit pDebug("Recalculate arena win/loses (last game).");
-    }
-
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
-    item->setText(0, "No arena");
+    item->setText(0, "None");
     setRowColor(item, GREEN);
     arenaCurrent = NULL;
-    arenaCurrentReward = NULL;
     arenaCurrentHero = "";
     arenaCurrentGameList.clear();
     noArena = true;
+    deckHandler->reset();
 
     emit pDebug("Show no arena.");
 }
@@ -225,91 +233,6 @@ void ArenaHandler::reshowArena(QString hero)
         return;
     }
     setRowColor(arenaCurrent, GREEN);
-}
-
-
-void ArenaHandler::uploadCurrentArenaRewards()
-{
-    if(arenaCurrentReward == NULL)
-    {
-        qDebug() << "MainWindow: "<< "ERROR: ArenaCurrentReward no existe al intentar crear los rewards para upload.";
-        emit pDebug("ArenaCurrentReward doesn't exist when uploading rewards.",Error);
-        return;
-    }
-
-    deckHandler->reset();
-
-    ArenaRewards arenaRewards;
-
-    arenaRewards.gold = arenaCurrentReward->text(0).toInt();
-    arenaRewards.dust = arenaCurrentReward->text(1).toInt();
-    arenaRewards.packs = arenaCurrentReward->text(2).toInt();
-    arenaRewards.plainCards = arenaCurrentReward->text(3).toInt();
-    arenaRewards.goldCards = arenaCurrentReward->text(4).toInt();
-
-    if(webUploader==NULL)
-    {
-        setRowColor(arenaCurrentReward, WHITE);
-    }
-    else if(!webUploader->uploadArenaRewards(arenaRewards))
-    {
-        setRowColor(arenaCurrentReward, RED);
-    }
-    else
-    {
-        setRowColor(arenaCurrentReward, WHITE);
-        enableRefreshButton(false);
-        currentArenaToWhite();
-    }
-}
-
-
-void ArenaHandler::showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard)
-{
-    //No guardamos los rewards si la arena de la web no esta al dia (y no existe) y recibimos nuevas recompensas
-    //para evitar modificar otras recompensas que tengamos en arena homeless del old log.
-    if(arenaCurrent == NULL && noArena)    return;
-
-    if(arenaCurrentReward == NULL)
-    {
-        arenaCurrentReward = new QTreeWidgetItem(arenaCurrent==NULL?arenaHomeless:arenaCurrent);
-        arenaCurrentReward->setText(0, "0");
-        arenaCurrentReward->setIcon(0, QIcon(":Images/gold.png"));
-        arenaCurrentReward->setText(1, "0");
-        arenaCurrentReward->setIcon(1, QIcon(":Images/arcanedust.png"));
-        arenaCurrentReward->setText(2, "0");
-        arenaCurrentReward->setIcon(2, QIcon(":Images/boosterpack.png"));
-        arenaCurrentReward->setText(3, "0");
-        arenaCurrentReward->setIcon(3, QIcon(":Images/cardplain.png"));
-        arenaCurrentReward->setText(4, "0");
-        arenaCurrentReward->setIcon(4, QIcon(":Images/cardgold.png"));
-    }
-
-    if(gold != 0)
-    {
-        gold += arenaCurrentReward->text(0).toInt();
-        arenaCurrentReward->setText(0, QString::number(gold));
-    }
-    else if(dust != 0)
-    {
-        dust += arenaCurrentReward->text(1).toInt();
-        arenaCurrentReward->setText(1, QString::number(dust));
-    }
-    else if(pack)
-    {
-        int packs = arenaCurrentReward->text(2).toInt() + 1;
-        arenaCurrentReward->setText(2, QString::number(packs));
-    }
-    else if(plainCard)
-    {
-        int plainCards = arenaCurrentReward->text(3).toInt() + 1;
-        arenaCurrentReward->setText(3, QString::number(plainCards));
-    }
-    else if(goldCard)
-    {
-        int goldCards = arenaCurrentReward->text(4).toInt() + 1;
-        arenaCurrentReward->setText(4, QString::number(goldCards));
-    }
 }
 
 
@@ -401,7 +324,7 @@ void ArenaHandler::syncArenaCurrent()
 
         arenaCurrent->setText(2, QString::number(wins));
         arenaCurrent->setText(3, QString::number(loses));
-        emit pDebug("Recalculate arena win/loses.");
+        emit pDebug("Recalculate arena win/loses (Web sync).");
     }
 }
 
@@ -424,6 +347,70 @@ void ArenaHandler::openDonateWeb()
 bool ArenaHandler::isNoArena()
 {
     return noArena;
+}
+
+
+void ArenaHandler::hideRewards()
+{
+    ui->lineEditGold->hide();
+    ui->lineEditArcaneDust->hide();
+    ui->lineEditPack->hide();
+    ui->lineEditPlainCard->hide();
+    ui->lineEditGoldCard->hide();
+
+    ui->labelGold->hide();
+    ui->labelArcaneDust->hide();
+    ui->labelPack->hide();
+    ui->labelPlainCard->hide();
+    ui->labelGoldCard->hide();
+
+    ui->rewardsNoButton->hide();
+    ui->rewardsYesButton->hide();
+}
+
+
+void ArenaHandler::showRewards()
+{
+    ui->lineEditGold->setText("");
+    ui->lineEditGold->show();
+    ui->lineEditGold->setFocus();
+    ui->lineEditGold->selectAll();
+    ui->lineEditArcaneDust->setText("0");
+    ui->lineEditArcaneDust->show();
+    ui->lineEditPack->setText("1");
+    ui->lineEditPack->show();
+    ui->lineEditPlainCard->setText("0");
+    ui->lineEditPlainCard->show();
+    ui->lineEditGoldCard->setText("0");
+    ui->lineEditGoldCard->show();
+
+    ui->labelGold->show();
+    ui->labelArcaneDust->show();
+    ui->labelPack->show();
+    ui->labelPlainCard->show();
+    ui->labelGoldCard->show();
+
+    ui->rewardsNoButton->show();
+    ui->rewardsYesButton->show();
+
+    ui->tabWidget->setCurrentWidget(ui->tabArena);
+}
+
+
+void ArenaHandler::uploadRewards()
+{
+    ArenaRewards arenaRewards;
+
+    arenaRewards.gold = ui->lineEditGold->text().toInt();
+    arenaRewards.dust = ui->lineEditArcaneDust->text().toInt();
+    arenaRewards.packs = ui->lineEditPack->text().toInt();
+    arenaRewards.plainCards = ui->lineEditPlainCard->text().toInt();
+    arenaRewards.goldCards = ui->lineEditGoldCard->text().toInt();
+
+    if(webUploader!=NULL && webUploader->uploadArenaRewards(arenaRewards))
+    {
+        enableRefreshButton(false);
+    }
 }
 
 

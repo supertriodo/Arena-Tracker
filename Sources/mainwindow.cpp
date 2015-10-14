@@ -315,10 +315,8 @@ void MainWindow::createGameWatcher()
             arenaHandler, SLOT(newGameResult(GameResult, bool)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
-    connect(gameWatcher, SIGNAL(newArenaReward(int,int,bool,bool,bool)),
-            arenaHandler, SLOT(showArenaReward(int,int,bool,bool,bool)));
-    connect(gameWatcher, SIGNAL(arenaRewardsComplete()),
-            arenaHandler, SLOT(uploadCurrentArenaRewards()));
+    connect(gameWatcher, SIGNAL(inRewards()),
+            arenaHandler, SLOT(showRewards()));
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
@@ -382,6 +380,7 @@ void MainWindow::createGameWatcher()
             this, SLOT(resetDeck()));
     connect(gameWatcher,SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
+
     //Connect en webUploader
 //    connect(gameWatcher,SIGNAL(beginReadingDeck()),
 //            webUploader, SLOT(askArenaCards()));
@@ -443,9 +442,7 @@ void MainWindow::synchronizedDone()
             draftHandler, SLOT(beginDraft(QString)));
 
     //Test
-#ifdef QT_DEBUG
     test();
-#endif
 }
 
 
@@ -1537,6 +1534,8 @@ void MainWindow::test()
 
 
 //TODO
+//Test score
+//Test transparent.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

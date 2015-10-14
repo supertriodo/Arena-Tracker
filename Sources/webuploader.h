@@ -44,7 +44,7 @@ public:
 private:
     QNetworkAccessManager *networkManager;
     WebState webState;
-    int arenaCurrentID;
+    int arenaCurrentID, lastArenaID;
     QString arenaCurrentHero;
     QList<GameResultPost> *gameResultPostList;
     GameResultPost *rewardsPost;

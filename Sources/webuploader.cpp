@@ -10,6 +10,7 @@ WebUploader::WebUploader(QObject *parent) : QObject(parent)
     match = new QRegularExpressionMatch();
     webState = signup;
     arenaCurrentID = 0;
+    lastArenaID = 0;
     deckInWeb = false;
     gameResultPostList = new QList<GameResultPost>();
     rewardsPost = NULL;
@@ -203,7 +204,7 @@ bool WebUploader::uploadNewArena(const QString &hero)
 
 bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
 {
-    if(arenaCurrentID == 0 && (webState != createArena))
+    if(lastArenaID == 0 && (webState != createArena))
     {
         emit pDebug("No arena in progress to upload to for the rewards.", Warning);
         emit pLog(tr("Web: WARNING:No arena in progress to upload to for the rewards."));
@@ -226,7 +227,7 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
     postData.addQueryItem("pack", QString::number(arenaRewards.packs));
     if(webState != createArena)
     {
-        postData.addQueryItem("arena", QString::number(arenaCurrentID));
+        postData.addQueryItem("arena", QString::number(lastArenaID));
     }
 
     QNetworkRequest request(QUrl(WEB_URL + "arena_update_ajax.php"));
@@ -324,6 +325,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
                 ), match))
             {
                 arenaCurrentID = match->captured(1).toInt();
+                lastArenaID = arenaCurrentID;
                 deckInWeb = false;
                 emit pDebug("New arena uploaded(" + match->captured(1) + "). Heroe: " + arenaCurrentHero);
                 emit pLog(tr("Web: New arena uploaded."));
@@ -370,6 +372,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
             networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
             emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
+            lastArenaID = arenaCurrentID;
             webState = loadArenaCurrent;
         }
         else
@@ -411,8 +414,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
         delete rewardsPost;
         rewardsPost = NULL;
-
-        checkArenaReload();
+        uploadNext();
     }
     else if(webState == checkArenaCurrentReload)
     {
@@ -425,6 +427,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
             networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
             emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
+            lastArenaID = arenaCurrentID;
             webState = reloadArenaCurrent;
         }
         else
@@ -528,7 +531,7 @@ void WebUploader::uploadNext()
     {
         if(!rewardsPost->postData.hasQueryItem("arena"))
         {
-            rewardsPost->postData.addQueryItem("arena", QString::number(arenaCurrentID));
+            rewardsPost->postData.addQueryItem("arena", QString::number(lastArenaID));
         }
         postRequest(rewardsPost->request, rewardsPost->postData);
         emit pDebug("New rewards sent to web.");
@@ -548,7 +551,7 @@ void WebUploader::uploadArenaCards()
     postData.addQueryItem("importReviewed", "1");
     postData.addQueryItem("importDataBlock", arenaCards);
 
-    QNetworkRequest request(QUrl(WEB_URL + "import_cards.php?arena=" + QString::number(arenaCurrentID)));
+    QNetworkRequest request(QUrl(WEB_URL + "import_cards.php?arena=" + QString::number(lastArenaID)));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
     postRequest(request, postData);

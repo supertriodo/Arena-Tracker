@@ -21,7 +21,7 @@ private:
     WebUploader *webUploader;
     DeckHandler *deckHandler;
     Ui::MainWindow *ui;
-    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaCurrentReward;
+    QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     bool noArena;
@@ -51,8 +51,7 @@ public slots:
     //GameWatcher
     void newGameResult(GameResult gameResult, bool arenaMatch);
     bool newArena(QString hero);
-    void showArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-    void uploadCurrentArenaRewards();
+    void showRewards();
 
     //WebUploader
     QTreeWidgetItem *showGameResult(GameResult gameResult, bool arenaMatch=true);
@@ -63,9 +62,11 @@ public slots:
     void enableRefreshButton(bool enable=true);
     void syncArenaCurrent();
 
-    //Widgets
+private slots:
     void refresh();
     void openDonateWeb();
+    void hideRewards();
+    void uploadRewards();
 };
 
 #endif // ARENAHANDLER_H

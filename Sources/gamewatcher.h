@@ -42,7 +42,7 @@ public:
 
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     inGameState, inRewards, readingDeck };
+                     inGameState, /*inRewards, */readingDeck };
 
 //Variables
 private:
@@ -88,8 +88,9 @@ public:
 signals:
     void newGameResult(GameResult gameResult, bool arenaMatch);
     void newArena(QString hero);
-    void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-    void arenaRewardsComplete();
+//    void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
+//    void arenaRewardsComplete();
+    void inRewards();
     void newDeckCard(QString card);
     void startGame();
     void endGame();

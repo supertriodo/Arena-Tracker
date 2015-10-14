@@ -82,13 +82,14 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
                     line.startsWith("[Bob] ---RegisterFriendChallenge---"))
             {
-                if(gameState == inRewards)
-                {
-                    gameState = noGame;
-                    emit pDebug("Rewards complete (GameState = noGame).", numLine);
-                    emit pLog(tr("Log: New rewards."));
-                    emit arenaRewardsComplete();
-                }
+                //REWARDS
+//                if(gameState == inRewards)
+//                {
+//                    gameState = noGame;
+//                    emit pDebug("Rewards complete (GameState = noGame).", numLine);
+//                    emit pLog(tr("Log: New rewards."));
+//                    emit arenaRewardsComplete();
+//                }
             }
             else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
             {
@@ -104,45 +105,45 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             }
         }
     }
-    else if(line.startsWith("[Rachelle]"))
-    {
-        if(line.contains(QRegularExpression("reward \\d=\\[")))
-        {
-            gameState = inRewards;
-            emit pDebug("New reward (GameState = inRewards).", numLine);
+//    else if(line.startsWith("[Rachelle]"))
+//    {
+//        if(line.contains(QRegularExpression("reward \\d=\\[")))
+//        {
+//            gameState = inRewards;
+//            emit pDebug("New reward (GameState = inRewards).", numLine);
 
-            if(line.contains("BoosterPackRewardData"))
-            {
-                emit newArenaReward(0,0,true,false,false);
-            }
-            else if(line.contains("CardRewardData"))
-            {
-                if(line.contains(QRegularExpression("Premium=(STANDARD|GOLDEN)"), match))
-                {
-                    QString cardType = match->captured(1);
-                    if(cardType.compare("STANDARD") == 0)
-                    {
-                        emit newArenaReward(0,0,false,false,true);
-                    }
-                    else
-                    {
-                        emit newArenaReward(0,0,false,true,false);
-                    }
+//            if(line.contains("BoosterPackRewardData"))
+//            {
+//                emit newArenaReward(0,0,true,false,false);
+//            }
+//            else if(line.contains("CardRewardData"))
+//            {
+//                if(line.contains(QRegularExpression("Premium=(STANDARD|GOLDEN)"), match))
+//                {
+//                    QString cardType = match->captured(1);
+//                    if(cardType.compare("STANDARD") == 0)
+//                    {
+//                        emit newArenaReward(0,0,false,false,true);
+//                    }
+//                    else
+//                    {
+//                        emit newArenaReward(0,0,false,true,false);
+//                    }
 
-                }
-            }
-            else if(line.contains(QRegularExpression("GoldRewardData: Amount=(\\d+)"), match))
-            {
-                QString gold = match->captured(1);
-                emit newArenaReward(gold.toInt(),0,false,false,false);
-            }
-            else if(line.contains(QRegularExpression("ArcaneDustRewardData: Amount=(\\d+)"), match))
-            {
-                QString dust = match->captured(1);
-                emit newArenaReward(0, dust.toInt(),false,false,false);
-            }
-        }
-    }
+//                }
+//            }
+//            else if(line.contains(QRegularExpression("GoldRewardData: Amount=(\\d+)"), match))
+//            {
+//                QString gold = match->captured(1);
+//                emit newArenaReward(gold.toInt(),0,false,false,false);
+//            }
+//            else if(line.contains(QRegularExpression("ArcaneDustRewardData: Amount=(\\d+)"), match))
+//            {
+//                QString dust = match->captured(1);
+//                emit newArenaReward(0, dust.toInt(),false,false,false);
+//            }
+//        }
+//    }
     else if(line.startsWith("[Arena]"))
     {
         //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
@@ -186,6 +187,12 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             QString code = match->captured(1);
             emit pDebug("Reading deck: " + code, numLine);
             emit newDeckCard(code);
+        }
+        //[Arena] SetDraftMode - IN_REWARDS
+        else if(synchronized && line.startsWith("[Arena] SetDraftMode - IN_REWARDS"))
+        {
+            emit pDebug("Found IN_REWARDS.", numLine);
+            emit inRewards();   //Show rewards input
         }
     }
     else if(line.startsWith("[Power]"))
@@ -338,8 +345,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
         case inGameState:
             processPowerInGame(line, numLine);
             break;
-        case inRewards:
-            break;
     }
 }
 
@@ -349,11 +354,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //Win state
     if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
     {
-        winnerPlayer = match->captured(1);
-        createGameResult();
-
         gameState = noGame;
         emit pDebug("Found WON (GameState = noGame).", numLine);
+
+        winnerPlayer = match->captured(1);
+        createGameResult();
     }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
