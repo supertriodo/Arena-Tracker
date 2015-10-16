@@ -121,7 +121,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         //Insert synergies
         synergiesListWidget[i]->clear();
 
-        QStringList synergiesList = synergies[i].split(". ", QString::SkipEmptyParts);
+        QStringList synergiesList = synergies[i].split(" - ", QString::SkipEmptyParts);
         foreach(QString name, synergiesList)
         {
             QString code = Utility::cardEnCodeFromName(name);
@@ -143,28 +143,24 @@ void DraftScoreWindow::hideScores()
         animation->setDuration(ANIMATION_TIME/2);
         animation->setStartValue(scoreWidth);
         animation->setEndValue(0);
-        animation->setEasingCurve(QEasingCurve::InQuad);
+        animation->setEasingCurve(QEasingCurve::Linear);
         animation->start();
 
         animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
         animation->setDuration(ANIMATION_TIME/2);
         animation->setStartValue(scoreWidth);
         animation->setEndValue(0);
-        animation->setEasingCurve(QEasingCurve::InQuad);
+        animation->setEasingCurve(QEasingCurve::Linear);
         animation->start();
+
+        connect(animation, SIGNAL(finished()),
+                this, SLOT(update()));
     }
 }
 
 
 void DraftScoreWindow::showSynergies(int index)
 {
-    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(0);
-    animation->setEndValue(225);
-    animation->setEasingCurve(QEasingCurve::OutBounce);
-    animation->start();
-
     //Calcula height
     int rowHeight = synergiesListWidget[index]->sizeHintForRow(0);
     int rows = synergiesListWidget[index]->count();
@@ -173,17 +169,31 @@ void DraftScoreWindow::showSynergies(int index)
 
     synergiesListWidget[index]->setMinimumHeight(height);
     synergiesListWidget[index]->setMaximumHeight(height);
+
+    //Width
+//    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
+//    animation->setDuration(ANIMATION_TIME);
+//    animation->setStartValue(0);
+//    animation->setEndValue(225);
+//    animation->setEasingCurve(QEasingCurve::OutBounce);
+//    animation->start();
+
+    synergiesListWidget[index]->setMaximumWidth(225);
+    this->update();
 }
 
 
 void DraftScoreWindow::hideSynergies(int index)
 {
-    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
-    animation->setDuration(ANIMATION_TIME/2);
-    animation->setStartValue(synergiesListWidget[index]->maximumWidth());
-    animation->setEndValue(0);
-    animation->setEasingCurve(QEasingCurve::InQuad);
-    animation->start();
+//    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
+//    animation->setDuration(ANIMATION_TIME/2);
+//    animation->setStartValue(synergiesListWidget[index]->maximumWidth());
+//    animation->setEndValue(0);
+//    animation->setEasingCurve(QEasingCurve::InQuad);
+//    animation->start();
+
+    synergiesListWidget[index]->setMaximumWidth(0);
+    this->update();
 }
 
 

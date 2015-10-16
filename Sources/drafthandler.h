@@ -72,6 +72,7 @@ private:
     void clearRadioButton(QRadioButton *radio, bool clearText=true);
     void highlightRadioButton(QRadioButton *radio);
     void deleteDraftScoreWindow();
+    void showOverlay();
 
 public:
     void reHistDownloadedCardImage(QString &code);

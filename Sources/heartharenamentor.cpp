@@ -80,7 +80,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
 
         for(QJsonArray::const_iterator it=jsonSynergies.constBegin(); it!=jsonSynergies.constEnd(); it++)
         {
-            synergies[i] += (*it).toString() + ". ";
+            synergies[i] += (*it).toString() + " - ";
         }
     }
 

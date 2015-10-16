@@ -264,35 +264,36 @@ void GameWatcher::setDeckRead(bool value)
 
 void GameWatcher::processPower(QString &line, qint64 numLine)
 {
+    if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
+    {
+        //Redundante en caso de que falle
+        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+        endReadingDeck();
+
+        emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
+        gameState = heroType1State;
+
+        mulliganEnemyDone = false;
+        turn = turnReal = 0;
+
+        hero1.clear();
+        hero2.clear();
+        name1.clear();
+        name2.clear();
+        firstPlayer.clear();
+        winnerPlayer.clear();
+        playerID = 0;
+        secretHero = unknown;
+        enemyMinions = 0;
+        enemyMinionsAliveForAvenge = -1;
+
+        emit startGame();
+    }
+
     switch(gameState)
     {
         case readingDeck:
         case noGame:
-            if(line.contains("CREATE_GAME"))
-            {
-                //Redundante en caso de que falle
-                //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-                endReadingDeck();
-
-                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
-                gameState = heroType1State;
-
-                mulliganEnemyDone = false;
-                turn = turnReal = 0;
-
-                hero1.clear();
-                hero2.clear();
-                name1.clear();
-                name2.clear();
-                firstPlayer.clear();
-                winnerPlayer.clear();
-                playerID = 0;
-                secretHero = unknown;
-                enemyMinions = 0;
-                enemyMinionsAliveForAvenge = -1;
-
-                emit startGame();
-            }
             break;
         case heroType1State:
         case heroType2State:
@@ -728,7 +729,8 @@ QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
 
 void GameWatcher::createGameResult()
 {
-    if(playerTag != name1 && playerTag != name2)
+    if(playerTag.isEmpty() ||
+            synchronized && playerTag != name1 && playerTag != name2)
     {
         playerTag = askPlayerTag(name1, name2);
         QSettings settings("Arena Tracker", "Arena Tracker");
@@ -752,8 +754,8 @@ void GameWatcher::createGameResult()
     }
     else
     {
-        emit pDebug("PlayerTag didn't play this game.", Error);
-        emit pLog(tr("Log: WARNING:Registered game played without you.") + "" + playerTag);
+        emit pDebug("PlayerTag didn't play this game.", Warning);
+        emit pLog(tr("Log: Spectator game:") + " " + name1 + " vs " + name2);
         return;
     }
 

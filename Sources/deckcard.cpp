@@ -70,10 +70,10 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
     QFont font("Belwe Bd BT");
 
     QPixmap canvas(CARD_SIZE);
+    canvas.fill(Qt::transparent);
     QPainter painter;
     painter.begin(&canvas);
         //Card
-        painter.fillRect(canvas.rect(), Qt::black);
         QRectF target;
         QRectF source;
         if(name == "unknown")               source = QRectF(63,18,100,25);

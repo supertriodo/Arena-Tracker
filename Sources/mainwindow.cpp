@@ -1534,8 +1534,6 @@ void MainWindow::test()
 
 
 //TODO
-//Test score
-//Test transparent.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

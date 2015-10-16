@@ -766,7 +766,7 @@ bool DraftHandler::findScreenRects()
         QRect draftRect(topLeft, bottomRight);
         QSize sizeCard(screenRects[0].width, screenRects[0].height);
         draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
-        setShowDraftOverlay(this->showDraftOverlay);
+        showOverlay();
 
         return true;
     }
@@ -873,7 +873,12 @@ void DraftHandler::setTransparency(Transparency value)
 void DraftHandler::setShowDraftOverlay(bool value)
 {
     this->showDraftOverlay = value;
+    showOverlay();
+}
 
+
+void DraftHandler::showOverlay()
+{
     if(this->draftScoreWindow != NULL)
     {
         if(this->showDraftOverlay)  this->draftScoreWindow->show();
