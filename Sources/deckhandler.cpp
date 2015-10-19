@@ -40,6 +40,7 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setIconSize(CARD_SIZE);
     ui->drawListWidget->setFrameShape(QFrame::NoFrame);
+    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
 
     connect(this->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
