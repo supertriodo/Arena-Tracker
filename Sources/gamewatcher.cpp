@@ -288,6 +288,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
         enemyMinionsAliveForAvenge = -1;
 
         emit startGame();
+        emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
     }
 
     switch(gameState)
@@ -392,6 +393,23 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 }
             }
         }
+
+        //ULTIMO TRIGGER SPECIAL CARDS
+        //[Power] PowerTaskList.DebugPrintPower() - ACTION_START Entity=[name=Yeti mecánico id=97 zone=GRAVEYARD zonePos=0 cardId=GVG_078 player=2]
+        //BlockType=TRIGGER Index=0 Target=0
+        else if(line.contains(QRegularExpression(
+            "PowerTaskList\\.DebugPrintPower\\(\\) - ACTION_START "
+            "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] "
+            "BlockType=(\\w+) Index=-?\\d+ Target="
+            ), match))
+        {
+            QString name = match->captured(1);
+            QString cardId = match->captured(2);
+            QString subType = match->captured(3);
+            emit pDebug("Trigger(" + subType + "): " + name, numLine);
+            emit specialCardTrigger(cardId, subType);
+        }
+
 
         //SECRETOS
         //Jugador accion con objetivo
@@ -646,7 +664,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 
                 if(isPlayerTurn)
                 {
-                    emit enemyMinionDead();
+                    emit enemyMinionDead(cardId);
                     if(enemyMinionsAliveForAvenge == -1)
                     {
                         if(cardId == MAD_SCIENTIST)
@@ -730,7 +748,7 @@ QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
 void GameWatcher::createGameResult()
 {
     if(playerTag.isEmpty() ||
-            synchronized && playerTag != name1 && playerTag != name2)
+            (synchronized && playerTag != name1 && playerTag != name2))
     {
         playerTag = askPlayerTag(name1, name2);
         QSettings settings("Arena Tracker", "Arena Tracker");

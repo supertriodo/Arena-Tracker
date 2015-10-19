@@ -103,7 +103,7 @@ signals:
     void enemySecretRevealed(int id, QString code);
     void playerSpellPlayed();
     void playerMinionPlayed();
-    void enemyMinionDead();
+    void enemyMinionDead(QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();
     void avengeTested();
@@ -114,6 +114,7 @@ signals:
     void beginReadingDeck();
     void activeDraftDeck();
     void pickCard(QString code);
+    void specialCardTrigger(QString code, QString subType);
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 

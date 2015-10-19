@@ -33,15 +33,13 @@ protected:
     QString code, type, name, rarity;
     int cost;
 
-private:
+protected:
     static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
-private:
-    QColor getRarityColor();
-
 protected:
     QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
+    QColor getRarityColor();
     QString tooltip();
 
 public:

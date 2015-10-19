@@ -63,6 +63,7 @@ private:
     QQueue<SecretTest> secretTests;
     bool synchronized;
     bool secretsAnimating;
+    QString lastMinionDead;
 
 
 //Metodos
@@ -78,6 +79,7 @@ public:
 
 signals:
     void checkCardImage(QString code);
+    void duplicated(QString code);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SecretsHandler");
 
@@ -89,10 +91,11 @@ public slots:
     void playerSpellPlayed();
     void playerSpellObjPlayed();
     void playerMinionPlayed();
-    void enemyMinionDead();
+    void enemyMinionDead(QString code);
     void avengeTested();
     void cSpiritTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo);
+    void resetLastMinionDead(QString code, QString subType);
 
 private slots:
     void discardSecretOptionDelay();

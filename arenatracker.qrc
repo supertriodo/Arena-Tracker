@@ -58,5 +58,6 @@
         <file>Json/AllSets.ruRU.json</file>
         <file>Json/AllSets.zhCN.json</file>
         <file>Json/AllSets.zhTW.json</file>
+        <file>Images/handCard3.png</file>
     </qresource>
 </RCC>

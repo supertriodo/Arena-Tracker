@@ -6,6 +6,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui) : QObject(pa
     this->ui = ui;
     this->synchronized = false;
     this->secretsAnimating = false;
+    this->lastMinionDead = "";
 
     completeUI();
 }
@@ -31,6 +32,14 @@ void SecretsHandler::completeUI()
 void SecretsHandler::setSynchronized()
 {
     this->synchronized = true;
+}
+
+
+void SecretsHandler::resetLastMinionDead(QString code, QString subType)
+{
+    (void) code;
+    //Duplica el primer esbirro que muera despues de una accion del usuario (!TRIGGER)
+    if(subType != "TRIGGER")   this->lastMinionDead.clear();
 }
 
 
@@ -210,6 +219,10 @@ void SecretsHandler::secretRevealed(int id, QString code)
     discardSecretOptionNow(code);
 
     emit pDebug("Secret revealed: " + code);
+
+
+    //Duplicates en Hand
+    if(code == DDUPLICATE && !lastMinionDead.isEmpty())  emit duplicated(lastMinionDead);
 }
 
 
@@ -305,8 +318,10 @@ void SecretsHandler::playerMinionPlayed()
 }
 
 
-void SecretsHandler::enemyMinionDead()
+void SecretsHandler::enemyMinionDead(QString code)
 {
+    if(lastMinionDead.isEmpty())    lastMinionDead = code;
+
     discardSecretOptionNow(DDUPLICATE);
     discardSecretOptionNow(EFFIGY);
     discardSecretOptionNow(REDEMPTION);

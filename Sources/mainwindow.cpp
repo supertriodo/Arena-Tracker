@@ -25,10 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
     checkHSCardsDir();
 
     createCardDownloader();
-    createSecretsHandler();
     createDeckHandler();
     createDraftHandler();
     createEnemyHandHandler();
+    createSecretsHandler();
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
@@ -245,6 +245,8 @@ void MainWindow::createSecretsHandler()
     secretsHandler = new SecretsHandler(this, ui);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
+    connect(secretsHandler, SIGNAL(duplicated(QString)),
+            enemyHandHandler, SLOT(convertDuplicates(QString)));
     connect(secretsHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -332,9 +334,11 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
-            enemyHandHandler, SLOT(showEnemyCardPlayed(int,QString)));
+            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
+            enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -354,14 +358,16 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerSpellObjPlayed()));
     connect(gameWatcher, SIGNAL(playerMinionPlayed()),
             secretsHandler, SLOT(playerMinionPlayed()));
-    connect(gameWatcher, SIGNAL(enemyMinionDead()),
-            secretsHandler, SLOT(enemyMinionDead()));
+    connect(gameWatcher, SIGNAL(enemyMinionDead(QString)),
+            secretsHandler, SLOT(enemyMinionDead(QString)));
     connect(gameWatcher, SIGNAL(avengeTested()),
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
+            secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
     //Connect en synchronizedDone
 //    connect(gameWatcher,SIGNAL(newArena(QString)),
@@ -1455,8 +1461,15 @@ void MainWindow::resetSettings()
         settings.setValue("playerTag", "");
         settings.setValue("playerEmail", "");
         settings.setValue("password", "");
+
         resize(QSize(400, 400));
         move(QPoint(0,0));
+
+        if(otherWindow != NULL)
+        {
+            otherWindow->resize(QSize(400, 400));
+            otherWindow->move(QPoint(0,0));
+        }
         this->close();
     }
 }
@@ -1534,6 +1547,9 @@ void MainWindow::test()
 
 
 //TODO
+//Antialiasing cards
+//Clear deck no arena
+//Move window
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

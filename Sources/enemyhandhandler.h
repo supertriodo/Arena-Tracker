@@ -22,6 +22,9 @@ private:
     Ui::MainWindow *ui;
     bool inGame;
     Transparency transparency;
+    QString knownCard;
+    int numKnownCards;
+    QString lastCreatedByCode;
 
 
 //Metodos
@@ -29,9 +32,10 @@ private:
     void reset();
     void completeUI();
     void updateTransparency();
+    void convertKnownCard(QString &code, int quantity);
 
 public:
-    void redrawDownloadedCardImage(QString code);
+    void redrawDownloadedCardImage(QString &code);
     void setTransparency(Transparency value);
 
 signals:
@@ -42,9 +46,11 @@ signals:
 public slots:
     void lastHandCardIsCoin();
     void showEnemyCardDraw(int id, int turn, bool special, QString code);
-    void showEnemyCardPlayed(int id, QString code);
+    void hideEnemyCardPlayed(int id, QString code);
     void lockEnemyInterface();
     void unlockEnemyInterface();
+    void convertDuplicates(QString code);
+    void setLastCreatedByCode(QString code);
 };
 
 #endif // ENEMYHANDHANDLER_H

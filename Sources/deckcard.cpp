@@ -44,7 +44,6 @@ void DeckCard::setCode(QString code)
 QString DeckCard::tooltip()
 {
     return "<html><img src=./HSCards/" + this->code + ".png/></html>";
-//    return "<html><img src=" + Utility::appPath() + "/HSCards/" + this->code + ".png/></html>";
 }
 
 
@@ -81,12 +80,13 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         else                                source = QRectF(48,98,100,25);
         if(total > 1)                       target = QRectF(100,6,100,25);
         else                                target = QRectF(113,6,100,25);
-        if(type==QString("Minion"))         painter.setPen(QPen(WHITE));
-        else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
-        else                                painter.setPen(QPen(ORANGE));
         painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
+        if(type==QString("Minion"))         painter.setPen(QPen(WHITE));
+        else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
+        else                                painter.setPen(QPen(ORANGE));
+
         if(total == 1 && rarity != "Legendary")  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
         else
         {

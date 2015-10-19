@@ -6,6 +6,9 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObjec
     this->ui = ui;
     this->inGame = false;
     this->transparency = Never;
+    this->knownCard = "";
+    this->numKnownCards = 0;
+    this->lastCreatedByCode = "";
 
     completeUI();
 }
@@ -33,14 +36,59 @@ void EnemyHandHandler::completeUI()
 }
 
 
+void EnemyHandHandler::setLastCreatedByCode(QString code)
+{
+    this->lastCreatedByCode = code;
+}
+
+
+void EnemyHandHandler::convertDuplicates(QString code)
+{
+    convertKnownCard(code, 2);
+}
+void EnemyHandHandler::convertKnownCard(QString &code, int quantity)
+{
+    this->knownCard = code;
+    this->numKnownCards = quantity;
+}
+
+
 void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString code)
 {
+    bool isCreatedByCard = false;
+
+    //Convert Known special cards
+    if(!special)
+    {
+        knownCard.clear();
+        numKnownCards = 0;
+    }
+    else if(code.isEmpty())
+    {
+        if(numKnownCards>0)
+        {
+            code = knownCard;
+            numKnownCards--;
+        }
+        else if(!this->lastCreatedByCode.isEmpty())
+        {
+            isCreatedByCard = true;
+        }
+    }
+
+
     HandCard handCard(code);
     handCard.id = id;
     handCard.turn = turn;
     handCard.special = special;
     handCard.listItem = new QListWidgetItem();
     ui->enemyHandListWidget->addItem(handCard.listItem);
+
+    if(isCreatedByCard)
+    {
+        handCard.setCreatedByCode(this->lastCreatedByCode);
+        emit checkCardImage(this->lastCreatedByCode);
+    }
 
     handCard.draw();
     enemyHandList.append(handCard);
@@ -59,7 +107,7 @@ void EnemyHandHandler::lastHandCardIsCoin()
 }
 
 
-void EnemyHandHandler::showEnemyCardPlayed(int id, QString code)
+void EnemyHandHandler::hideEnemyCardPlayed(int id, QString code)
 {
     (void) code;
 
@@ -76,11 +124,11 @@ void EnemyHandHandler::showEnemyCardPlayed(int id, QString code)
 }
 
 
-void EnemyHandHandler::redrawDownloadedCardImage(QString code)
+void EnemyHandHandler::redrawDownloadedCardImage(QString &code)
 {
     for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)
     {
-        if(it->getCode() == code)    it->draw();
+        if(it->getCode() == code || it->getCreatedByCode() == code)    it->draw();
     }
 }
 
