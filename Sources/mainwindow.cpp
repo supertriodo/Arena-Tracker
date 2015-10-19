@@ -242,7 +242,7 @@ void MainWindow::createDraftHandler()
 
 void MainWindow::createSecretsHandler()
 {
-    secretsHandler = new SecretsHandler(this, ui);
+    secretsHandler = new SecretsHandler(this, ui, enemyHandListWidget);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(duplicated(QString)),
@@ -266,7 +266,7 @@ void MainWindow::createArenaHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, &cardsJson, ui);
+    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyHandListWidget, deckListWidget);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(pLog(QString)),
@@ -282,7 +282,7 @@ void MainWindow::createDeckHandler()
 
 void MainWindow::createEnemyHandHandler()
 {
-    enemyHandHandler = new EnemyHandHandler(this, ui);
+    enemyHandHandler = new EnemyHandHandler(this, ui, enemyHandListWidget);
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
@@ -526,6 +526,12 @@ void MainWindow::completeUI()
 
         completeToolButton();
         completeHeroButtons();
+
+        this->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
+        ui->tabEnemyLayout->insertWidget(0, this->enemyHandListWidget);
+
+        this->deckListWidget = new MoveListWidget(ui->tabDeck);
+        ui->tabDeckLayout->addWidget(this->deckListWidget);
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));

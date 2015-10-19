@@ -807,7 +807,7 @@
          <attribute name="title">
           <string>Deck</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <layout class="QVBoxLayout" name="tabDeckLayout">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
             <item>
@@ -903,60 +903,13 @@
             </item>
            </layout>
           </item>
-          <item>
-           <widget class="QListWidget" name="deckListWidget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <family>Belwe Bd BT</family>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustIgnored</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tabEnemy">
          <attribute name="title">
           <string>Hand</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QListWidget" name="enemyHandListWidget">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <family>Belwe Bd BT</family>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::NoSelection</enum>
-            </property>
-           </widget>
-          </item>
+         <layout class="QVBoxLayout" name="tabEnemyLayout">
           <item>
            <widget class="QTreeWidget" name="secretsTreeWidget">
             <property name="enabled">

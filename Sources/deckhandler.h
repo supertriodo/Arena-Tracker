@@ -5,6 +5,7 @@
 #include "deckcard.h"
 #include "drawcard.h"
 #include "utility.h"
+#include "movelistwidget.h"
 #include <QObject>
 #include <QMap>
 
@@ -16,7 +17,8 @@ class DeckHandler : public QObject
     Q_OBJECT
 
 public:
-    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui);
+    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui,
+                MoveListWidget *enemyHandListWidget, MoveListWidget *deckListWidget);
     ~DeckHandler();
 
 //Variables
@@ -24,6 +26,7 @@ private:
     QList<DeckCard> deckCardList;
     QList<DrawCard> drawCardList;
     Ui::MainWindow *ui;
+    MoveListWidget *enemyHandListWidget, *deckListWidget;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame, synchronized;
     Transparency transparency;

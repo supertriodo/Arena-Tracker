@@ -38,7 +38,8 @@ SOURCES += Sources/main.cpp\
     Sources/utility.cpp \
     Sources/drawcard.cpp \
     Sources/draftscorewindow.cpp \
-    Sources/scorebutton.cpp
+    Sources/scorebutton.cpp \
+    movelistwidget.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -60,7 +61,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/utility.h \
     Sources/drawcard.h \
     Sources/draftscorewindow.h \
-    Sources/scorebutton.h
+    Sources/scorebutton.h \
+    movelistwidget.h
 
 FORMS    += mainwindow.ui
 

@@ -1,7 +1,7 @@
 #include "enemyhandhandler.h"
 #include <QtWidgets>
 
-EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObject(parent)
+EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui, MoveListWidget *enemyHandListWidget) : QObject(parent)
 {
     this->ui = ui;
     this->inGame = false;
@@ -9,6 +9,7 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObjec
     this->knownCard = "";
     this->numKnownCards = 0;
     this->lastCreatedByCode = "";
+    this->enemyHandListWidget = enemyHandListWidget;
 
     completeUI();
 }
@@ -16,23 +17,23 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui) : QObjec
 
 EnemyHandHandler::~EnemyHandHandler()
 {
-    ui->enemyHandListWidget->clear();
+    this->enemyHandListWidget->clear();
     enemyHandList.clear();
 }
 
 
 void EnemyHandHandler::reset()
 {
-    ui->enemyHandListWidget->clear();
+    this->enemyHandListWidget->clear();
     enemyHandList.clear();
 }
 
 
 void EnemyHandHandler::completeUI()
 {
-    ui->enemyHandListWidget->setIconSize(CARD_SIZE);
-    ui->enemyHandListWidget->setMinimumHeight(0);
-    ui->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
+    this->enemyHandListWidget->setIconSize(CARD_SIZE);
+    this->enemyHandListWidget->setMinimumHeight(0);
+    this->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
 }
 
 
@@ -82,7 +83,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     handCard.turn = turn;
     handCard.special = special;
     handCard.listItem = new QListWidgetItem();
-    ui->enemyHandListWidget->addItem(handCard.listItem);
+    this->enemyHandListWidget->addItem(handCard.listItem);
 
     if(isCreatedByCard)
     {
@@ -153,13 +154,13 @@ void EnemyHandHandler::updateTransparency()
 {
     if(transparency==Always || (inGame && transparency==Auto))
     {
-        ui->enemyHandListWidget->setStyleSheet("background-color: transparent;");
+        this->enemyHandListWidget->setStyleSheet("background-color: transparent;");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
     }
     else
     {
-        ui->enemyHandListWidget->setStyleSheet("");
+        this->enemyHandListWidget->setStyleSheet("");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
     }

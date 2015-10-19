@@ -12,6 +12,7 @@
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "drafthandler.h"
+#include "movelistwidget.h"
 #include <QMainWindow>
 #include <QJsonObject>
 
@@ -41,6 +42,7 @@ private:
 //Variables
 private:
     Ui::MainWindow *ui;
+    MoveListWidget *enemyHandListWidget, *deckListWidget;
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     WebUploader *webUploader;
