@@ -1557,9 +1557,6 @@ void MainWindow::test()
 
 
 //TODO
-//Antialiasing cards
-//Clear deck no arena
-//Move window
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

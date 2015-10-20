@@ -68,10 +68,18 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
 {
     QFont font("Belwe Bd BT");
 
+//    glEnable(GL_MULTISAMPLE);
+//    glEnable(GL_LINE_SMOOTH);
+
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;
     painter.begin(&canvas);
+//        //Antialiasing
+//        painter.setRenderHint(QPainter::Antialiasing);
+//        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+//        painter.setRenderHint(QPainter::TextAntialiasing);
+
         //Card
         QRectF target;
         QRectF source;
@@ -151,7 +159,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         {
             canvas = canvas.copy(0,0+6,218,35-10);
 
-            if(cardHeight<25)   canvas = canvas.scaled(QSize(218,cardHeight));
+            if(cardHeight<25)   canvas = canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
             return canvas;
         }
     }
