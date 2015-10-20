@@ -19,7 +19,7 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 https://github.com/supertriodo/Arena-Tracker/releases/latest
 
 
-## First Run
+##  First Run
 The first time you run Arena Tracker you will be asked for:
 
 * 1) output_log.txt location (If not default).
@@ -44,6 +44,10 @@ También puedes preguntarme en español.
 
 
 ## FAQ (v3.0+)
+* Does it work with Hearthstone in fullscreen?
+ * Actually does. It's because Hearthstone fullscreen is just a borderless window.
+* Sometimes ArenaTracker doesn't stay on top of Hearthstone.
+ * I have seen this behaviour in windows. It seems to be related to a QT/Windows bug. Try to restart ArenaTracker.
 * I setup the app but it didn't upload my arena game/ it didn't start drafting.
  * This usually means Hearthstone is not writting in its log.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
