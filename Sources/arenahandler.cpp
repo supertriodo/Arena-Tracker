@@ -166,7 +166,6 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
 
 bool ArenaHandler::newArena(QString hero)
 {
-    deckHandler->reset();
     showArena(hero);
 
     if(webUploader==NULL)
@@ -218,7 +217,6 @@ void ArenaHandler::showNoArena()
     arenaCurrentHero = "";
     arenaCurrentGameList.clear();
     noArena = true;
-    deckHandler->reset();
 
     emit pDebug("Show no arena.");
 }

@@ -126,7 +126,7 @@ public slots:
     void resetDeck(bool deckRead=false);
 
     //WebUploader
-    void resetDeckFromWeb();
+    void resetDeckAlreadyRead();
 
     //Multi Handlers
     void checkCardImage(QString code);

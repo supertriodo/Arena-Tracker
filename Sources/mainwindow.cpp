@@ -99,7 +99,7 @@ void MainWindow::destroySecondaryWindow()
 }
 
 
-void MainWindow::resetDeckFromWeb()
+void MainWindow::resetDeckAlreadyRead()
 {
     resetDeck(true);
 }
@@ -446,6 +446,8 @@ void MainWindow::synchronizedDone()
     //Connections after synchronized
     connect(gameWatcher,SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
+    connect(gameWatcher, SIGNAL(newArena(QString)),
+            this, SLOT(resetDeckAlreadyRead()));
 
     //Test
     test();
@@ -470,6 +472,8 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(syncArenaCurrent()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
+    connect(webUploader, SIGNAL(noArenaFound()),
+            this, SLOT(resetDeck()));
     connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -478,7 +482,7 @@ void MainWindow::createWebUploader()
     connect(webUploader, SIGNAL(newDeckCard(QString,int)),
             deckHandler, SLOT(newDeckCardWeb(QString,int)));
     connect(webUploader, SIGNAL(newWebDeckCardList()),
-            this, SLOT(resetDeckFromWeb()));
+            this, SLOT(resetDeckAlreadyRead()));
 #endif
 
     //Connect de gameWatcher

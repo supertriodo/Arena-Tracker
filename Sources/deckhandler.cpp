@@ -472,6 +472,7 @@ void DeckHandler::unlockDeckInterface()
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
+    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
     ui->tabDeckLayout->insertItem(0, ui->horizontalLayoutDeckButtons);
 
     updateTransparency();
