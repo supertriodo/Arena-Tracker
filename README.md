@@ -17,6 +17,10 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 
 ## Download (Windows/Linux)
 https://github.com/supertriodo/Arena-Tracker/releases/latest
+* Tested on Windows 7/8/10
+* Tested on Ubuntu/Linux Mint
+* Under Fedora 22 some libs are missing:
+ * https://github.com/supertriodo/Arena-Tracker/issues/3
 
 
 ##  First Run
