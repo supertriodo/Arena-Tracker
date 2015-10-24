@@ -99,7 +99,7 @@ void HandCard::drawCreatedByHandCard()
         font.setPointSize(10);
         font.setBold(false);
         painter.setFont(font);
-        painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
+        painter.drawText(QRectF(35,7,154,23), Qt::AlignVCenter, name);
     painter.end();
 
     this->listItem->setIcon(QIcon(canvas));

@@ -33,6 +33,7 @@ DraftHandler::~DraftHandler()
 void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
+    ui->groupBoxDraft->setStyleSheet("border-width: 0px;");
     ui->radioButtonDraft1->setIconSize(CARD_SIZE);
     ui->radioButtonDraft2->setIconSize(CARD_SIZE);
     ui->radioButtonDraft3->setIconSize(CARD_SIZE);

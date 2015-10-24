@@ -120,13 +120,13 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         if(name == "unknown")
         {
             painter.setPen(QPen(BLACK));
-            painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, "Unknown");
+            painter.drawText(QRectF(35,7,154,23), Qt::AlignVCenter, "Unknown");
         }
         else
         {
             if(drawRarity)              painter.setPen(QPen(getRarityColor()));
             else if(nameColor!=BLACK)   painter.setPen(QPen(nameColor));
-            painter.drawText(QRectF(35,7,174,23), Qt::AlignVCenter, name);
+            painter.drawText(QRectF(35,7,154,23), Qt::AlignVCenter, name);
 
             //Mana cost
             int manaSize = cost>9?6:cost;
