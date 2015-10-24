@@ -1125,7 +1125,7 @@ void MainWindow::readSettings()
         pos = settings.value("pos", QPoint(0,0)).toPoint();
         size = settings.value("size", QSize(400, 400)).toSize();
 
-        this->splitWindow = settings.value("splitWindow", true).toBool();
+        this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
 
         int numWindows = settings.value("numWindows", 1).toInt();
@@ -1557,6 +1557,9 @@ void MainWindow::test()
 
 
 //TODO
+//cuadro borde drafting
+//Fondo UI
+//Font se sale
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

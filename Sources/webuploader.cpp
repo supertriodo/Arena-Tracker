@@ -414,6 +414,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
         delete rewardsPost;
         rewardsPost = NULL;
+        webState = complete;
         uploadNext();
     }
     else if(webState == checkArenaCurrentReload)
