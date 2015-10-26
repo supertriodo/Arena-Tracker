@@ -34,6 +34,8 @@ void EnemyHandHandler::completeUI()
     this->enemyHandListWidget->setIconSize(CARD_SIZE);
     this->enemyHandListWidget->setMinimumHeight(0);
     this->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
+    this->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                             "QListView::item{padding: -1px;}");
 }
 
 
@@ -154,14 +156,11 @@ void EnemyHandHandler::updateTransparency()
 {
     if(transparency==Always || (inGame && transparency==Auto))
     {
-        this->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                                 "QListView::item{padding: -1px;}");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
     }
     else
     {
-        this->enemyHandListWidget->setStyleSheet("QListView::item{padding: -1px;}");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
     }

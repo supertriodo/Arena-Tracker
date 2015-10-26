@@ -35,12 +35,20 @@ void DeckHandler::completeUI()
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
+    ui->deckButtonMin->setHidden(true);
+    ui->deckButtonPlus->setHidden(true);
+    ui->deckButtonRemove->setHidden(true);
     this->deckListWidget->setIconSize(CARD_SIZE);
     this->deckListWidget->setFrameShape(QFrame::NoFrame);
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setIconSize(CARD_SIZE);
     ui->drawListWidget->setFrameShape(QFrame::NoFrame);
     ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
+
+    this->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                        "QListView::item{padding: -1px;}");
+    ui->drawListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                      "QListView::item{padding: -1px;}");
 
     connect(this->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -486,17 +494,11 @@ void DeckHandler::updateTransparency()
 {
     if(transparency==Always || (inGame && transparency==Auto))
     {
-        this->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                            "QListView::item{padding: -1px;}");
-        ui->drawListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                          "QListView::item{padding: -1px;}");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();
     }
     else
     {
-        this->deckListWidget->setStyleSheet("QListView::item{padding: -1px;}");
-        ui->drawListWidget->setStyleSheet("QListView::item{padding: -1px;}");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDeck->repaint();
     }
