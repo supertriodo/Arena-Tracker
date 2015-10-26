@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->cardsJson = cardsJson;

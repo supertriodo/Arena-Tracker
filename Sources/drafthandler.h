@@ -1,7 +1,7 @@
 #ifndef DRAFTHANDLER_H
 #define DRAFTHANDLER_H
 
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include "draftcard.h"
 #include "heartharenamentor.h"
 #include "utility.h"
@@ -23,12 +23,12 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui);
+    DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui);
     ~DraftHandler();
 
 //Variables
 private:
-    Ui::MainWindow *ui;
+    Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
     HearthArenaMentor *hearthArenaMentor;
     QMap<QString, int> hearthArenaCodes;

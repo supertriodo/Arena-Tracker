@@ -1,7 +1,7 @@
 #ifndef DECKHANDLER_H
 #define DECKHANDLER_H
 
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include "deckcard.h"
 #include "drawcard.h"
 #include "utility.h"
@@ -17,16 +17,14 @@ class DeckHandler : public QObject
     Q_OBJECT
 
 public:
-    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui,
-                MoveListWidget *enemyHandListWidget, MoveListWidget *deckListWidget);
+    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui);
     ~DeckHandler();
 
 //Variables
 private:
     QList<DeckCard> deckCardList;
     QList<DrawCard> drawCardList;
-    Ui::MainWindow *ui;
-    MoveListWidget *enemyHandListWidget, *deckListWidget;
+    Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
     bool inGame, synchronized;
     Transparency transparency;

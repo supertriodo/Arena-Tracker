@@ -4,7 +4,7 @@
 #include "handcard.h"
 #include "utility.h"
 #include "movelistwidget.h"
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include <QObject>
 #include <QMap>
 
@@ -14,14 +14,13 @@ class EnemyHandHandler : public QObject
 {
     Q_OBJECT
 public:
-    EnemyHandHandler(QObject *parent, Ui::MainWindow *ui, MoveListWidget *enemyHandListWidget);
+    EnemyHandHandler(QObject *parent, Ui::Extended *ui);
     ~EnemyHandHandler();
 
 //Variables
 private:
     QList<HandCard> enemyHandList;
-    Ui::MainWindow *ui;
-    MoveListWidget *enemyHandListWidget;
+    Ui::Extended *ui;
     bool inGame;
     Transparency transparency;
     QString knownCard;

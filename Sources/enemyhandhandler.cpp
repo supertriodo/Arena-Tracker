@@ -1,7 +1,7 @@
 #include "enemyhandhandler.h"
 #include <QtWidgets>
 
-EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui, MoveListWidget *enemyHandListWidget) : QObject(parent)
+EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->inGame = false;
@@ -9,7 +9,6 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui, MoveList
     this->knownCard = "";
     this->numKnownCards = 0;
     this->lastCreatedByCode = "";
-    this->enemyHandListWidget = enemyHandListWidget;
 
     completeUI();
 }
@@ -17,24 +16,24 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::MainWindow *ui, MoveList
 
 EnemyHandHandler::~EnemyHandHandler()
 {
-    this->enemyHandListWidget->clear();
+    ui->enemyHandListWidget->clear();
     enemyHandList.clear();
 }
 
 
 void EnemyHandHandler::reset()
 {
-    this->enemyHandListWidget->clear();
+    ui->enemyHandListWidget->clear();
     enemyHandList.clear();
 }
 
 
 void EnemyHandHandler::completeUI()
 {
-    this->enemyHandListWidget->setIconSize(CARD_SIZE);
-    this->enemyHandListWidget->setMinimumHeight(0);
-    this->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
-    this->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
+    ui->enemyHandListWidget->setIconSize(CARD_SIZE);
+    ui->enemyHandListWidget->setMinimumHeight(0);
+    ui->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
+    ui->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
                                              "QListView::item{padding: -1px;}");
 }
 
@@ -85,7 +84,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     handCard.turn = turn;
     handCard.special = special;
     handCard.listItem = new QListWidgetItem();
-    this->enemyHandListWidget->addItem(handCard.listItem);
+    ui->enemyHandListWidget->addItem(handCard.listItem);
 
     if(isCreatedByCard)
     {

@@ -1,8 +1,7 @@
 #include "deckhandler.h"
 #include <QtWidgets>
 
-DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::MainWindow *ui,
-                         MoveListWidget *enemyHandListWidget, MoveListWidget *deckListWidget) : QObject(parent)
+DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->cardsJson = cardsJson;
@@ -13,8 +12,6 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->drawAnimating = false;
     this->drawDisappear = 10;
     this->synchronized = false;
-    this->enemyHandListWidget = enemyHandListWidget;
-    this->deckListWidget = deckListWidget;
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -24,7 +21,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
 
 DeckHandler::~DeckHandler()
 {
-    this->deckListWidget->clear();
+    ui->deckListWidget->clear();
     deckCardList.clear();
     drawCardList.clear();
 }
@@ -38,19 +35,19 @@ void DeckHandler::completeUI()
     ui->deckButtonMin->setHidden(true);
     ui->deckButtonPlus->setHidden(true);
     ui->deckButtonRemove->setHidden(true);
-    this->deckListWidget->setIconSize(CARD_SIZE);
-    this->deckListWidget->setFrameShape(QFrame::NoFrame);
+    ui->deckListWidget->setIconSize(CARD_SIZE);
+    ui->deckListWidget->setFrameShape(QFrame::NoFrame);
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setIconSize(CARD_SIZE);
     ui->drawListWidget->setFrameShape(QFrame::NoFrame);
     ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
 
-    this->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
+    ui->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
                                         "QListView::item{padding: -1px;}");
     ui->drawListWidget->setStyleSheet("QListView{background-color: transparent;}"
                                       "QListView::item{padding: -1px;}");
 
-    connect(this->deckListWidget, SIGNAL(itemSelectionChanged()),
+    connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
             this, SLOT(cardTotalMin()));
@@ -81,7 +78,7 @@ void DeckHandler::adjustDrawSize()
     int rowHeight = ui->drawListWidget->sizeHintForRow(0);
     int rows = drawCardList.count();
     int height = rows*rowHeight + 2*ui->drawListWidget->frameWidth();
-    int maxHeight = (ui->drawListWidget->height()+this->enemyHandListWidget->height())*4/5;
+    int maxHeight = (ui->drawListWidget->height()+ui->enemyHandListWidget->height())*4/5;
     if(height>maxHeight)    height = maxHeight;
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->drawListWidget, "minimumHeight");
@@ -113,7 +110,7 @@ void DeckHandler::clearDrawAnimating()
 
 void DeckHandler::reset()
 {
-    this->deckListWidget->clear();
+    ui->deckListWidget->clear();
     deckCardList.clear();
     clearDrawList(true);
 
@@ -213,7 +210,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
         if(deckCard.getCost() < deckCardList[i].getCost())
         {
             deckCardList.insert(i, deckCard);
-            this->deckListWidget->insertItem(i, deckCard.listItem);
+            ui->deckListWidget->insertItem(i, deckCard.listItem);
             return;
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
@@ -223,20 +220,20 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
                 if(deckCard.getType() == "Weapon" || deckCardList[i].getType() == "Minion")
                 {
                     deckCardList.insert(i, deckCard);
-                    this->deckListWidget->insertItem(i, deckCard.listItem);
+                    ui->deckListWidget->insertItem(i, deckCard.listItem);
                     return;
                 }
             }
             else if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
             {
                 deckCardList.insert(i, deckCard);
-                this->deckListWidget->insertItem(i, deckCard.listItem);
+                ui->deckListWidget->insertItem(i, deckCard.listItem);
                 return;
             }
         }
     }
     deckCardList.append(deckCard);
-    this->deckListWidget->addItem(deckCard.listItem);
+    ui->deckListWidget->addItem(deckCard.listItem);
 }
 
 
@@ -366,7 +363,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 
 void DeckHandler::enableDeckButtons()
 {
-    int index = this->deckListWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
 
     if(index>0 && deckCardList[index].total > 1)
                                         ui->deckButtonMin->setEnabled(true);
@@ -382,7 +379,7 @@ void DeckHandler::enableDeckButtons()
 
 void DeckHandler::cardTotalMin()
 {
-    int index = this->deckListWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
     deckCardList[index].total--;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total++;
@@ -396,7 +393,7 @@ void DeckHandler::cardTotalMin()
 
 void DeckHandler::cardTotalPlus()
 {
-    int index = this->deckListWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
     deckCardList[index].total++;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total--;
@@ -410,7 +407,7 @@ void DeckHandler::cardTotalPlus()
 
 void DeckHandler::cardRemove()
 {
-    int index = this->deckListWidget->currentRow();
+    int index = ui->deckListWidget->currentRow();
     if(deckCardList[index].total!=1 || index==0)
     {
         enableDeckButtons();
@@ -422,7 +419,7 @@ void DeckHandler::cardRemove()
             QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
     if(ret == QMessageBox::Cancel)  return;
 
-    this->deckListWidget->removeItemWidget(deckCardList[index].listItem);
+    ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
     delete deckCardList[index].listItem;
     deckCardList.removeAt(index);
 
@@ -443,8 +440,8 @@ void DeckHandler::lockDeckInterface()
         it->remaining = it->total;
     }
 
-    this->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    this->deckListWidget->selectionModel()->reset();
+    ui->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->deckListWidget->selectionModel()->reset();
     ui->deckButtonMin->setHidden(true);
     ui->deckButtonPlus->setHidden(true);
     ui->deckButtonRemove->setHidden(true);
@@ -473,7 +470,7 @@ void DeckHandler::unlockDeckInterface()
         else    it->listItem->setHidden(true);
     }
 
-    this->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->deckButtonMin->setHidden(false);
     ui->deckButtonPlus->setHidden(false);
     ui->deckButtonRemove->setHidden(false);

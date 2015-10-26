@@ -1,7 +1,7 @@
 #include "arenahandler.h"
 #include <QtWidgets>
 
-ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::MainWindow *ui) : QObject(parent)
+ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extended *ui) : QObject(parent)
 {
     this->webUploader = NULL;
     this->deckHandler = deckHandler;

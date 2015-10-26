@@ -1,13 +1,12 @@
 #include "secretshandler.h"
 #include <QtWidgets>
 
-SecretsHandler::SecretsHandler(QObject *parent, Ui::MainWindow *ui, MoveListWidget *enemyHandListWidget) : QObject(parent)
+SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->synchronized = false;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
-    this->enemyHandListWidget = enemyHandListWidget;
 
     completeUI();
 }
@@ -62,7 +61,7 @@ void SecretsHandler::adjustSize()
     }
 
     int height = rows*rowHeight + 2*ui->secretsTreeWidget->frameWidth();
-    int maxHeight = (ui->secretsTreeWidget->height()+this->enemyHandListWidget->height())*4/5;
+    int maxHeight = (ui->secretsTreeWidget->height()+ui->enemyHandListWidget->height())*4/5;
     if(height>maxHeight)    height = maxHeight;
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->secretsTreeWidget, "minimumHeight");

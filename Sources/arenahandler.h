@@ -1,7 +1,7 @@
 #ifndef ARENAHANDLER_H
 #define ARENAHANDLER_H
 
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include "gamewatcher.h"
 #include "webuploader.h"
 #include "deckhandler.h"
@@ -13,14 +13,14 @@ class ArenaHandler : public QObject
 {
     Q_OBJECT
 public:
-    ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::MainWindow *ui);
+    ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extended *ui);
     ~ArenaHandler();
 
 //Variables
 private:
     WebUploader *webUploader;
     DeckHandler *deckHandler;
-    Ui::MainWindow *ui;
+    Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult

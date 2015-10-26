@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include "utility.h"
 #include "draftscorewindow.h"
 #include <QtWidgets>
@@ -9,7 +9,7 @@ using namespace cv;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
-    ui(new Ui::MainWindow)
+    ui(new Ui::Extended)
 {
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     ui->setupUi(this);
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
-    ui(new Ui::MainWindow)
+    ui(new Ui::Extended)
 {
     ui->setupUi(this);
 
@@ -242,7 +242,7 @@ void MainWindow::createDraftHandler()
 
 void MainWindow::createSecretsHandler()
 {
-    secretsHandler = new SecretsHandler(this, ui, enemyHandListWidget);
+    secretsHandler = new SecretsHandler(this, ui);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(duplicated(QString)),
@@ -266,7 +266,7 @@ void MainWindow::createArenaHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyHandListWidget, deckListWidget);
+    deckHandler = new DeckHandler(this, &cardsJson, ui);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(pLog(QString)),
@@ -282,7 +282,7 @@ void MainWindow::createDeckHandler()
 
 void MainWindow::createEnemyHandHandler()
 {
-    enemyHandHandler = new EnemyHandHandler(this, ui, enemyHandListWidget);
+    enemyHandHandler = new EnemyHandHandler(this, ui);
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
@@ -531,11 +531,11 @@ void MainWindow::completeUI()
         completeToolButton();
         completeHeroButtons();
 
-        this->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
-        ui->tabEnemyLayout->insertWidget(0, this->enemyHandListWidget);
+        ui->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
+        ui->tabEnemyLayout->insertWidget(0, ui->enemyHandListWidget);
 
-        this->deckListWidget = new MoveListWidget(ui->tabDeck);
-        ui->tabDeckLayout->addWidget(this->deckListWidget);
+        ui->deckListWidget = new MoveListWidget(ui->tabDeck);
+        ui->tabDeckLayout->addWidget(ui->deckListWidget);
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));

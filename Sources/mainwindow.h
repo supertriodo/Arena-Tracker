@@ -22,7 +22,7 @@
 
 
 namespace Ui {
-class MainWindow;
+class Extended;
 }
 
 
@@ -41,8 +41,7 @@ private:
 
 //Variables
 private:
-    Ui::MainWindow *ui;
-    MoveListWidget *enemyHandListWidget, *deckListWidget;
+    Ui::Extended *ui;
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     WebUploader *webUploader;

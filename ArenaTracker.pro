@@ -62,7 +62,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/drawcard.h \
     Sources/draftscorewindow.h \
     Sources/scorebutton.h \
-    Sources/movelistwidget.h
+    Sources/movelistwidget.h \
+    Sources/ui_extended.h
 
 FORMS    += mainwindow.ui
 

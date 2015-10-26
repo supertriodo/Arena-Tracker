@@ -1,7 +1,7 @@
 #ifndef SECRETSHANDLER_H
 #define SECRETSHANDLER_H
 
-#include "ui_mainwindow.h"
+#include "ui_extended.h"
 #include "secretcard.h"
 #include "utility.h"
 #include "movelistwidget.h"
@@ -54,13 +54,12 @@ class SecretsHandler : public QObject
 {
     Q_OBJECT
 public:
-    SecretsHandler(QObject *parent, Ui::MainWindow *ui, MoveListWidget *enemyHandListWidget);
+    SecretsHandler(QObject *parent, Ui::Extended *ui);
     ~SecretsHandler();
 
 //Variables
 private:
-    Ui::MainWindow *ui;
-    MoveListWidget *enemyHandListWidget;
+    Ui::Extended *ui;
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
     bool synchronized;
