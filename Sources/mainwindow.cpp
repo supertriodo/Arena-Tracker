@@ -471,8 +471,8 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(syncArenaCurrent()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
-    connect(webUploader, SIGNAL(noArenaFound()),
-            this, SLOT(resetDeck()));
+//    connect(webUploader, SIGNAL(noArenaFound()),
+//            this, SLOT(resetDeck()));
     connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
