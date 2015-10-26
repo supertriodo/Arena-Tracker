@@ -6,7 +6,6 @@
 #include "webuploader.h"
 #include "deckcard.h"
 #include "hscarddownloader.h"
-#include "resizebutton.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
@@ -53,7 +52,6 @@ private:
     DraftHandler * draftHandler;
     QMap<QString, QJsonObject> cardsJson, enCardsJson;
     QPoint dragPosition;
-    ResizeButton *resizeButton;
     WindowsFormation windowsFormation;
     QFile* atLogFile;
     bool splitWindow;

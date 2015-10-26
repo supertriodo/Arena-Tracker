@@ -70,7 +70,6 @@ MainWindow::~MainWindow()
     if(draftHandler != NULL)    delete draftHandler;
     if(deckHandler != NULL)     delete deckHandler;
     if(secretsHandler != NULL)  delete secretsHandler;
-    if(resizeButton != NULL)    delete resizeButton;
     if(ui != NULL)              delete ui;
     closeLogFile();
 }
@@ -512,10 +511,15 @@ void MainWindow::completeUI()
         "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.5em;}"
         "QTabWidget::tab-bar {alignment: center;}"
     );
+    ui->tabWidgetH2->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
+    ui->tabWidgetH3->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
+    ui->tabWidgetV1->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
+    ui->tabWidgetV2->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
 
-    resizeButton = new ResizeButton(this);
-    ui->bottomLayout->addWidget(resizeButton);
-    connect(resizeButton, SIGNAL(newSize(QSize)),
+
+    ui->resizeButton = new ResizeButton(this);
+    ui->bottomLayout->addWidget(ui->resizeButton);
+    connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
