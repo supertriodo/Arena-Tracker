@@ -158,6 +158,7 @@ private slots:
     void tamGreyed25px();
     void tamGreyed30px();
     void tamGreyed35px();
+    void tamGreyedAsCardSize();
     void timeDrawNo();
     void timeDraw5s();
     void timeDraw10s();

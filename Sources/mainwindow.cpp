@@ -273,7 +273,7 @@ void MainWindow::createDeckHandler()
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
-    deckHandler->setGreyedHeight(this->greyedHeight);
+    deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
     deckHandler->setCardHeight(this->cardHeight);
     deckHandler->setDrawDisappear(this->drawDisappear);
 }
@@ -816,16 +816,19 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
     QAction *action2 = new QAction("25px", this);
     QAction *action3 = new QAction("30px", this);
     QAction *action4 = new QAction("35px(Normal)", this);
+    QAction *action5 = new QAction("= Card Size", this);
     action0->setCheckable(true);
     action1->setCheckable(true);
     action2->setCheckable(true);
     action3->setCheckable(true);
     action4->setCheckable(true);
+    action5->setCheckable(true);
     connect(action0, SIGNAL(triggered()), this, SLOT(tamGreyed15px()));
     connect(action1, SIGNAL(triggered()), this, SLOT(tamGreyed20px()));
     connect(action2, SIGNAL(triggered()), this, SLOT(tamGreyed25px()));
     connect(action3, SIGNAL(triggered()), this, SLOT(tamGreyed30px()));
     connect(action4, SIGNAL(triggered()), this, SLOT(tamGreyed35px()));
+    connect(action5, SIGNAL(triggered()), this, SLOT(tamGreyedAsCardSize()));
 
     QActionGroup *splitGroup = new QActionGroup(this);
     splitGroup->addAction(action0);
@@ -833,6 +836,7 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
     splitGroup->addAction(action2);
     splitGroup->addAction(action3);
     splitGroup->addAction(action4);
+    splitGroup->addAction(action5);
 
     switch(greyedHeight)
     {
@@ -851,6 +855,9 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
         case 35:
             action4->setChecked(true);
             break;
+        case -1:
+            action5->setChecked(true);
+            break;
     }
 
     QMenu *tamGreyedMenu = new QMenu("Deck: Greyed size", this);
@@ -859,6 +866,7 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
     tamGreyedMenu->addAction(action2);
     tamGreyedMenu->addAction(action3);
     tamGreyedMenu->addAction(action4);
+    tamGreyedMenu->addAction(action5);
     menu->addMenu(tamGreyedMenu);
 }
 
@@ -895,6 +903,13 @@ void MainWindow::tamGreyed35px()
 {
     this->greyedHeight = 35;
     deckHandler->setGreyedHeight(this->greyedHeight);
+}
+
+
+void MainWindow::tamGreyedAsCardSize()
+{
+    this->greyedHeight = -1;
+    deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -956,6 +971,7 @@ void MainWindow::tamCard15px()
 {
     this->cardHeight = 15;
     deckHandler->setCardHeight(this->cardHeight);
+    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -963,6 +979,7 @@ void MainWindow::tamCard20px()
 {
     this->cardHeight = 20;
     deckHandler->setCardHeight(this->cardHeight);
+    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -970,6 +987,7 @@ void MainWindow::tamCard25px()
 {
     this->cardHeight = 25;
     deckHandler->setCardHeight(this->cardHeight);
+    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -977,6 +995,7 @@ void MainWindow::tamCard30px()
 {
     this->cardHeight = 30;
     deckHandler->setCardHeight(this->cardHeight);
+    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -984,6 +1003,7 @@ void MainWindow::tamCard35px()
 {
     this->cardHeight = 35;
     deckHandler->setCardHeight(this->cardHeight);
+    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
 }
 
 
@@ -1564,8 +1584,6 @@ void MainWindow::test()
 //Fondo UI
 //Tab drag
 //Tooltip cards
-//Grey size as deck size
-//Transparencia handcard en gimp
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
