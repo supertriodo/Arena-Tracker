@@ -486,15 +486,17 @@ void DeckHandler::updateTransparency()
 {
     if(transparency==Always || (inGame && transparency==Auto))
     {
-        this->deckListWidget->setStyleSheet("background-color: transparent;");
-        ui->drawListWidget->setStyleSheet("background-color: transparent;");
+        this->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                            "QListView::item{padding: -1px;}");
+        ui->drawListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                          "QListView::item{padding: -1px;}");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();
     }
     else
     {
-        this->deckListWidget->setStyleSheet("");
-        ui->drawListWidget->setStyleSheet("");
+        this->deckListWidget->setStyleSheet("QListView::item{padding: -1px;}");
+        ui->drawListWidget->setStyleSheet("QListView::item{padding: -1px;}");
         ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDeck->repaint();
     }

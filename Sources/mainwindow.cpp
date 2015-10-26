@@ -1128,7 +1128,7 @@ void MainWindow::readSettings()
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
 
-        int numWindows = settings.value("numWindows", 1).toInt();
+        int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
 
         this->greyedHeight = settings.value("greyedHeight", 25).toInt();
@@ -1558,6 +1558,10 @@ void MainWindow::test()
 
 //TODO
 //Fondo UI
+//Tab drag
+//Tooltip cards
+//Grey size as deck size
+//Transparencia handcard en gimp
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

@@ -68,17 +68,14 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
 {
     QFont font("Belwe Bd BT");
 
-//    glEnable(GL_MULTISAMPLE);
-//    glEnable(GL_LINE_SMOOTH);
-
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;
     painter.begin(&canvas);
-//        //Antialiasing
-//        painter.setRenderHint(QPainter::Antialiasing);
-//        painter.setRenderHint(QPainter::SmoothPixmapTransform);
-//        painter.setRenderHint(QPainter::TextAntialiasing);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Card
         QRectF target;
@@ -86,18 +83,26 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         if(name == "unknown")               source = QRectF(63,18,100,25);
         else if(type==QString("Minion"))    source = QRectF(48,72,100,25);
         else                                source = QRectF(48,98,100,25);
-        if(total > 1)                       target = QRectF(100,6,100,25);
-        else                                target = QRectF(113,6,100,25);
+        if(total == 1 && rarity != "Legendary") target = QRectF(113,6,100,25);
+        else                                    target = QRectF(100,6,100,25);
         painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
-        if(type==QString("Minion"))         painter.setPen(QPen(WHITE));
+        if(drawRarity)                      painter.setPen(QPen(getRarityColor()));
+        else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
+        else if(type==QString("Minion"))    painter.setPen(QPen(WHITE));
         else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
         else                                painter.setPen(QPen(ORANGE));
 
-        if(total == 1 && rarity != "Legendary")  painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
+        int maxNameLong;
+        if(total == 1 && rarity != "Legendary")
+        {
+            maxNameLong = 174;
+            painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
+        }
         else
         {
+            maxNameLong = 155;
             painter.drawPixmap(0,0,QPixmap(":Images/bgCard2.png"));
 
             if(total > 1)
@@ -115,36 +120,60 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         }
 
         //Name and mana
-        font.setPointSize(10);
-        painter.setFont(font);
         if(name == "unknown")
         {
+            font.setPointSize(10);
+            painter.setFont(font);
             painter.setPen(QPen(BLACK));
-            painter.drawText(QRectF(35,7,154,23), Qt::AlignVCenter, "Unknown");
+            painter.drawText(QRectF(34,7,154,23), Qt::AlignVCenter, "Unknown");
         }
         else
         {
-            if(drawRarity)              painter.setPen(QPen(getRarityColor()));
-            else if(nameColor!=BLACK)   painter.setPen(QPen(nameColor));
-            painter.drawText(QRectF(35,7,154,23), Qt::AlignVCenter, name);
+            //Name
+            int fontSize = 11;
+            font.setPointSize(fontSize);
+            font.setBold(true);
+            font.setKerning(true);
+
+#ifdef Q_OS_WIN
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+
+            QFontMetrics fm(font);
+            int textWide = fm.width(name);
+            int textHigh = fm.height();
+            while(textWide>maxNameLong)
+            {
+                fontSize--;
+                font.setPointSize(fontSize);
+                fm = QFontMetrics(font);
+                textWide = fm.width(name);
+                textHigh = fm.height();
+            }
+
+            painter.setFont(font);
+            painter.setBrush(painter.pen().color());
+            painter.setPen(QPen(BLACK));
+
+            QPainterPath path;
+            path.addText(34, 20 + textHigh/4, font, name);
+            painter.drawPath(path);
+
 
             //Mana cost
             int manaSize = cost>9?6:cost;
             font.setPointSize(14+manaSize);
-            font.setBold(true);
             painter.setFont(font);
-            painter.setPen(QPen(BLACK));
-            painter.drawText(QRectF(0,6,26,24), Qt::AlignCenter, QString::number(cost));
 
-            font.setPointSize(12+manaSize);
-            font.setBold(false);
-            painter.setFont(font);
-            if(drawRarity)                      painter.setPen(QPen(getRarityColor()));
-            else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
-            else if(type==QString("Minion"))    painter.setPen(QPen(WHITE));
-            else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
-            else                                painter.setPen(QPen(ORANGE));
-            painter.drawText(QRectF(1,6,26,24), Qt::AlignCenter, QString::number(cost));
+            fm = QFontMetrics(font);
+            textWide = fm.width(QString::number(cost));
+            textHigh = fm.height();
+
+            path = QPainterPath();
+            path.addText(14 - textWide/2, 20 + textHigh/4, font, QString::number(cost));
+            painter.drawPath(path);
         }
     painter.end();
 

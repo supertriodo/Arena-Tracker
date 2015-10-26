@@ -154,13 +154,14 @@ void EnemyHandHandler::updateTransparency()
 {
     if(transparency==Always || (inGame && transparency==Auto))
     {
-        this->enemyHandListWidget->setStyleSheet("background-color: transparent;");
+        this->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
+                                                 "QListView::item{padding: -1px;}");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
     }
     else
     {
-        this->enemyHandListWidget->setStyleSheet("");
+        this->enemyHandListWidget->setStyleSheet("QListView::item{padding: -1px;}");
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
     }
