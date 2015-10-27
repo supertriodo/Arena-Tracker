@@ -1,13 +1,21 @@
-#ifndef MOVELISTWIDGET_H
-#define MOVELISTWIDGET_H
+#ifndef MOVETABWIDGET_H
+#define MOVETABWIDGET_H
 
-#include <QObject>
-#include <QListWidget>
 
-class MoveListWidget : public QListWidget
+#include <QTabWidget>
+#include <QTabBar>
+
+class MoveTabWidget : public QTabWidget
 {
 public:
-    MoveListWidget(QWidget *parent = 0);
+    MoveTabWidget(QWidget *parent = 0);
+};
+
+
+class MoveTabBar : public QTabBar
+{
+public:
+    MoveTabBar(QWidget *parent = 0);
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -16,4 +24,4 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 };
 
-#endif // MOVELISTWIDGET_H
+#endif // MOVETABWIDGET_H

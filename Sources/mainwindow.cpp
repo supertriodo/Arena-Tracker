@@ -496,26 +496,12 @@ void MainWindow::createWebUploader()
 
 void MainWindow::completeUI()
 {
-    ui->tabWidget->hide();
-    ui->tabWidgetH2->hide();
-    ui->tabWidgetH3->hide();
-    ui->tabWidgetV1->hide();
-    ui->tabWidgetV2->hide();
+    ui->tabWidgetTemplate->clear();
+    ui->tabWidgetTemplate->hide();
 
-    ui->tabWidget->setCurrentIndex(0);
-
-    ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-    ui->tabWidget->setStyleSheet(
-        "QTabWidget::pane {border-color: transparent; background: white;}"
-        "QTabBar::tab:selected {background: white;}"
-        "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.5em;}"
-        "QTabWidget::tab-bar {alignment: center;}"
-    );
-    ui->tabWidgetH2->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
-    ui->tabWidgetH3->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
-    ui->tabWidgetV1->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
-    ui->tabWidgetV2->setStyleSheet("QTabWidget::pane {border-color: transparent; background: white;}");
-
+    ui->tabWidget = new MoveTabWidget(this->centralWidget());
+    ui->gridLayout->removeWidget(ui->tabWidgetTemplate);
+    ui->gridLayout->addWidget(ui->tabWidget, 0, 0);
 
     ui->resizeButton = new ResizeButton(this);
     ui->bottomLayout->addWidget(ui->resizeButton);
@@ -524,10 +510,16 @@ void MainWindow::completeUI()
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
 
+    ui->logTextEdit->setFrameShape(QFrame::NoFrame);
+
     if(isMainWindow)
     {
-        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
-        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
+        ui->tabWidgetH2 = new MoveTabWidget(this->centralWidget());
+        ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
+        ui->tabWidgetH3 = new MoveTabWidget(this->centralWidget());
+        ui->gridLayout->addWidget(ui->tabWidgetH3, 0, 2);
+        ui->tabWidgetV1 = new MoveTabWidget(this->centralWidget());
+        ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
         connect(ui->closeButton, SIGNAL(clicked()),
                 this, SLOT(close()));
@@ -567,7 +559,6 @@ void MainWindow::completeUI()
         delete ui->toolButton;  ui->toolButton = NULL;
         delete ui->progressBar; ui->progressBar = NULL;
 
-        ui->tabWidget->clear();
         moveTabTo(this->otherWindow->ui->tabDeck, ui->tabWidget);
         ui->tabWidget->show();
     }
@@ -1218,6 +1209,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::resizeTabWidgets(QResizeEvent *event)
 {
+    if(ui->tabWidget == NULL)   return;
+
     QSize newSize = event->size();
     WindowsFormation newWindowsFormation;
 
@@ -1247,7 +1240,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     ui->tabWidgetH2->hide();
     ui->tabWidgetH3->hide();
     ui->tabWidgetV1->hide();
-    ui->tabWidgetV2->hide();
 
     switch(windowsFormation)
     {
@@ -1582,8 +1574,8 @@ void MainWindow::test()
 
 //TODO
 //Fondo UI
-//Tab drag
 //Tooltip cards
+//Indicator arena white
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

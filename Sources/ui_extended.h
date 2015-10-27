@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include "movelistwidget.h"
+#include "movetabwidget.h"
 #include "resizebutton.h"
 
 QT_BEGIN_NAMESPACE
@@ -10,8 +11,13 @@ QT_BEGIN_NAMESPACE
 class Ui_Extended : public Ui_MainWindow
 {
 public:
-    MoveListWidget *enemyHandListWidget, *deckListWidget;
-    ResizeButton *resizeButton;
+    MoveTabWidget *tabWidget = NULL;
+    MoveTabWidget *tabWidgetH2 = NULL;
+    MoveTabWidget *tabWidgetH3 = NULL;
+    MoveTabWidget *tabWidgetV1 = NULL;
+    MoveListWidget *enemyHandListWidget = NULL;
+    MoveListWidget *deckListWidget = NULL;
+    ResizeButton *resizeButton = NULL;
 };
 
 namespace Ui {
