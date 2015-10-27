@@ -262,7 +262,7 @@ void DraftHandler::endDraft()
     ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabArena));
 
     //SizePreDraft
-    if(sizePreDraft.width()<mainWindow->minimumWidth())     mainWindow->setMinimumWidth(sizePreDraft.width());
+    if(sizePreDraft.width()<mainWindow->minimumWidth())     mainWindow->setMinimumWidth(281);
     mainWindow->resize(sizePreDraft);
 
     //Upload or complete deck with assets

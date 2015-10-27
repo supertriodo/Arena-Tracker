@@ -22,11 +22,12 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setHidden(true);
 
     ui->secretsTreeWidget->setColumnCount(1);
-    ui->secretsTreeWidget->header()->close();
     ui->secretsTreeWidget->setIconSize(CARD_SIZE);
     ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
                                          "QTreeView::item{padding: -1px;}");
-    ui->secretsTreeWidget->setFrameShape(QFrame::NoFrame);
+    ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->secretsTreeWidget->setIndentation(5);
+    ui->secretsTreeWidget->setItemsExpandable(false);
 }
 
 

@@ -8,8 +8,8 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
         "QTabWidget::tab-bar {alignment: center;}"
         "QTabWidget::pane {border-color: transparent; background: white;}"
         "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.5em;}"
-        "QTabBar::tab {border: 2px solid #C2C7CB;"
-            "padding: 5px;background:#C2C7CB;}"
+        "QTabBar::tab {border: 3px solid #C2C7CB;"
+            "padding: 2px;background:#C2C7CB;}"
     );
     this->setTabBar(new MoveTabBar(this));
     this->setTabBarAutoHide(true);

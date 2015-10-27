@@ -17,7 +17,7 @@
 
 #define DIVIDE_TABS_H 550//700 Rewards
 #define DIVIDE_TABS_H2 850//1000 Rewards
-#define DIVIDE_TABS_V 900
+#define DIVIDE_TABS_V 700
 
 
 namespace Ui {

@@ -527,8 +527,17 @@ void MainWindow::completeUI()
         completeToolButton();
         completeHeroButtons();
 
+        ui->arenaTreeWidget = new MoveTreeWidget(ui->tabArena);
+        ui->tabArenalLayout->insertWidget(1, ui->arenaTreeWidget);
+
         ui->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
-        ui->tabEnemyLayout->insertWidget(0, ui->enemyHandListWidget);
+        ui->tabEnemyLayout->addWidget(ui->enemyHandListWidget);
+
+        ui->secretsTreeWidget = new MoveTreeWidget(ui->tabEnemy);
+        ui->tabEnemyLayout->addWidget(ui->secretsTreeWidget);
+
+        ui->drawListWidget = new MoveListWidget(ui->tabEnemy);
+        ui->tabEnemyLayout->addWidget(ui->drawListWidget);
 
         ui->deckListWidget = new MoveListWidget(ui->tabDeck);
         ui->tabDeckLayout->addWidget(ui->deckListWidget);
@@ -1576,6 +1585,9 @@ void MainWindow::test()
 //Fondo UI
 //Tooltip cards
 //Indicator arena white
+//Move arena
+//move other listWidgets.
+//weight name card windows.
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

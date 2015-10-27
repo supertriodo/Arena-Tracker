@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "movelistwidget.h"
 #include "movetabwidget.h"
+#include "movetreewidget.h"
 #include "resizebutton.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,6 +18,9 @@ public:
     MoveTabWidget *tabWidgetV1 = NULL;
     MoveListWidget *enemyHandListWidget = NULL;
     MoveListWidget *deckListWidget = NULL;
+    MoveListWidget *drawListWidget = NULL;
+    MoveTreeWidget *secretsTreeWidget = NULL;
+    MoveTreeWidget *arenaTreeWidget = NULL;
     ResizeButton *resizeButton = NULL;
 };
 

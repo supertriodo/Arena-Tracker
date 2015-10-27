@@ -22,7 +22,6 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->updateButton->setToolTip(tr("Refresh"));
-    ui->arenaTreeWidget->setFrameShape(QFrame::NoFrame);
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));
@@ -55,8 +54,7 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(1, 50);//80
     treeWidget->setColumnWidth(2, 40);//60
     treeWidget->setColumnWidth(3, 40);//60
-    treeWidget->setColumnWidth(4, 1);//60
-    treeWidget->header()->close();
+    treeWidget->setColumnWidth(4, 0);//60
 
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);

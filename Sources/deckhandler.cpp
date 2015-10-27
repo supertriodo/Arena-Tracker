@@ -35,17 +35,11 @@ void DeckHandler::completeUI()
     ui->deckButtonMin->setHidden(true);
     ui->deckButtonPlus->setHidden(true);
     ui->deckButtonRemove->setHidden(true);
-    ui->deckListWidget->setIconSize(CARD_SIZE);
-    ui->deckListWidget->setFrameShape(QFrame::NoFrame);
     ui->drawListWidget->setHidden(true);
-    ui->drawListWidget->setIconSize(CARD_SIZE);
-    ui->drawListWidget->setFrameShape(QFrame::NoFrame);
+    ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
 
-    ui->deckListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                        "QListView::item{padding: -1px;}");
-    ui->drawListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                      "QListView::item{padding: -1px;}");
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));

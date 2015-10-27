@@ -30,11 +30,7 @@ void EnemyHandHandler::reset()
 
 void EnemyHandHandler::completeUI()
 {
-    ui->enemyHandListWidget->setIconSize(CARD_SIZE);
     ui->enemyHandListWidget->setMinimumHeight(0);
-    ui->enemyHandListWidget->setFrameShape(QFrame::NoFrame);
-    ui->enemyHandListWidget->setStyleSheet("QListView{background-color: transparent;}"
-                                             "QListView::item{padding: -1px;}");
 }
 
 
