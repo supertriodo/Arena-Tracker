@@ -1,7 +1,7 @@
 #ifndef ARENAHANDLER_H
 #define ARENAHANDLER_H
 
-#include "ui_extended.h"
+#include "Widgets/ui_extended.h"
 #include "gamewatcher.h"
 #include "webuploader.h"
 #include "deckhandler.h"

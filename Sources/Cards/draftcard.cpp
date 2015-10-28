@@ -1,5 +1,5 @@
 #include "draftcard.h"
-#include "utility.h"
+#include "../utility.h"
 #include <QtWidgets>
 
 DraftCard::DraftCard() : DeckCard("")

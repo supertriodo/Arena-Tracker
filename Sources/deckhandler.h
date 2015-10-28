@@ -1,11 +1,10 @@
 #ifndef DECKHANDLER_H
 #define DECKHANDLER_H
 
-#include "ui_extended.h"
-#include "deckcard.h"
-#include "drawcard.h"
+#include "Widgets/ui_extended.h"
+#include "Cards/deckcard.h"
+#include "Cards/drawcard.h"
 #include "utility.h"
-#include "movelistwidget.h"
 #include <QObject>
 #include <QMap>
 

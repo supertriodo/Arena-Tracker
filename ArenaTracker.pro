@@ -18,30 +18,30 @@ CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
 SOURCES += Sources/main.cpp\
-	Sources/mainwindow.cpp \
+    Sources/mainwindow.cpp \
     Sources/logloader.cpp \
     Sources/logworker.cpp \
     Sources/gamewatcher.cpp \
     Sources/webuploader.cpp \
     Sources/hscarddownloader.cpp \
-    Sources/resizebutton.cpp \
     Sources/deckhandler.cpp \
-    Sources/deckcard.cpp \
-    Sources/handcard.cpp \
     Sources/enemyhandhandler.cpp \
     Sources/arenahandler.cpp \
     Sources/secretshandler.cpp \
-    Sources/secretcard.cpp \
     Sources/drafthandler.cpp \
     Sources/heartharenamentor.cpp \
-    Sources/draftcard.cpp \
     Sources/utility.cpp \
-    Sources/drawcard.cpp \
-    Sources/draftscorewindow.cpp \
-    Sources/scorebutton.cpp \
-    Sources/movelistwidget.cpp \
-    Sources/movetabwidget.cpp \
-    Sources/movetreewidget.cpp
+    Sources/Cards/deckcard.cpp \
+    Sources/Cards/handcard.cpp \
+    Sources/Cards/secretcard.cpp \
+    Sources/Cards/draftcard.cpp \
+    Sources/Cards/drawcard.cpp \
+    Sources/Widgets/resizebutton.cpp \
+    Sources/Widgets/draftscorewindow.cpp \
+    Sources/Widgets/scorebutton.cpp \
+    Sources/Widgets/movelistwidget.cpp \
+    Sources/Widgets/movetabwidget.cpp \
+    Sources/Widgets/movetreewidget.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -49,25 +49,25 @@ HEADERS  += Sources/mainwindow.h \
     Sources/gamewatcher.h \
     Sources/webuploader.h \
     Sources/hscarddownloader.h \
-    Sources/deckcard.h \
-    Sources/resizebutton.h \
     Sources/deckhandler.h \
-    Sources/handcard.h \
     Sources/enemyhandhandler.h \
     Sources/arenahandler.h \
     Sources/secretshandler.h \
-    Sources/secretcard.h \
     Sources/drafthandler.h \
     Sources/heartharenamentor.h \
-    Sources/draftcard.h \
     Sources/utility.h \
-    Sources/drawcard.h \
-    Sources/draftscorewindow.h \
-    Sources/scorebutton.h \
-    Sources/movelistwidget.h \
-    Sources/ui_extended.h \
-    Sources/movetabwidget.h \
-    Sources/movetreewidget.h
+    Sources/Cards/deckcard.h \
+    Sources/Cards/handcard.h \
+    Sources/Cards/secretcard.h \
+    Sources/Cards/draftcard.h \
+    Sources/Cards/drawcard.h \
+    Sources/Widgets/resizebutton.h \
+    Sources/Widgets/draftscorewindow.h \
+    Sources/Widgets/scorebutton.h \
+    Sources/Widgets/movelistwidget.h \
+    Sources/Widgets/ui_extended.h \
+    Sources/Widgets/movetabwidget.h \
+    Sources/Widgets/movetreewidget.h
 
 FORMS    += mainwindow.ui
 

@@ -5,8 +5,8 @@
 #include <QObject>
 #include <QListView>
 #include "scorebutton.h"
-#include "utility.h"
-#include "deckcard.h"
+#include "../utility.h"
+#include "../Cards/deckcard.h"
 
 
 #define MARGIN 10

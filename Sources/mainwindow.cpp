@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "ui_extended.h"
+#include "Widgets/ui_extended.h"
 #include "utility.h"
-#include "draftscorewindow.h"
+#include "Widgets/draftscorewindow.h"
 #include <QtWidgets>
 
 using namespace cv;
@@ -1585,9 +1585,8 @@ void MainWindow::test()
 //Fondo UI
 //Tooltip cards
 //Indicator arena white
-//Move arena
-//move other listWidgets.
 //weight name card windows.
+//Custom buttons in title
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

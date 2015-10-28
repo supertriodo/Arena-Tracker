@@ -1,10 +1,9 @@
 #ifndef ENEMYHANDHANDLER_H
 #define ENEMYHANDHANDLER_H
 
-#include "handcard.h"
+#include "Cards/handcard.h"
 #include "utility.h"
-#include "movelistwidget.h"
-#include "ui_extended.h"
+#include "Widgets/ui_extended.h"
 #include <QObject>
 #include <QMap>
 

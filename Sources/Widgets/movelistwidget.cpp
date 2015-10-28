@@ -1,5 +1,5 @@
 #include "movelistwidget.h"
-#include "deckcard.h"
+#include "../Cards/deckcard.h"
 #include <QtWidgets>
 
 MoveListWidget::MoveListWidget(QWidget *parent) : QListWidget(parent)

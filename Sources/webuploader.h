@@ -2,7 +2,7 @@
 #define WEBUPLOADER_H
 
 #include "gamewatcher.h"
-#include "deckcard.h"
+#include "Cards/deckcard.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

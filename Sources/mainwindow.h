@@ -4,14 +4,13 @@
 #include "logloader.h"
 #include "gamewatcher.h"
 #include "webuploader.h"
-#include "deckcard.h"
+#include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "drafthandler.h"
-#include "movelistwidget.h"
 #include <QMainWindow>
 #include <QJsonObject>
 

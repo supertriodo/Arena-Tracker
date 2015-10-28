@@ -1,10 +1,9 @@
 #ifndef SECRETSHANDLER_H
 #define SECRETSHANDLER_H
 
-#include "ui_extended.h"
-#include "secretcard.h"
+#include "Widgets/ui_extended.h"
+#include "Cards/secretcard.h"
 #include "utility.h"
-#include "movelistwidget.h"
 #include <QQueue>
 #include <QObject>
 

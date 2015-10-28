@@ -2,7 +2,7 @@
 #define GAMEWATCHER_H
 
 #include <QObject>
-#include "secretcard.h"
+#include "Cards/secretcard.h"
 #include "utility.h"
 
 #define MAD_SCIENTIST "FP1_004"

@@ -1,11 +1,11 @@
 #ifndef DRAFTHANDLER_H
 #define DRAFTHANDLER_H
 
-#include "ui_extended.h"
-#include "draftcard.h"
+#include "Widgets/ui_extended.h"
+#include "Cards/draftcard.h"
 #include "heartharenamentor.h"
 #include "utility.h"
-#include "draftscorewindow.h"
+#include "Widgets/draftscorewindow.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
