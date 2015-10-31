@@ -65,6 +65,9 @@ private:
 
 
 //Metodos
+public:
+    void calculateMinimumWidth();
+
 private:
     void createLogLoader();
     void createArenaHandler();
@@ -78,6 +81,7 @@ private:
     void readSettings();
     void writeSettings();
     void completeUI();
+    void completeUIButtons();
     void completeToolButton();
     void addDraftMenu(QMenu *menu);
     void addClearDeckMenu(QMenu *menu);
@@ -101,6 +105,7 @@ private:
     void createSecondaryWindow();
     void destroySecondaryWindow();
     void checkHSCardsDir();
+    void calculateDeckWindowMinimumWidth();
     void test();
 
 //Override events

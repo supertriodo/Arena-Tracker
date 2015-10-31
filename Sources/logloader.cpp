@@ -267,7 +267,6 @@ void LogLoader::workerFinished()
 {
     checkFirstRun();
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
-//    qDebug() << "UpdateTime:" << updateTime;
     if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;
 }
 

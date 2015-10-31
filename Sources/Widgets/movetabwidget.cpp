@@ -5,16 +5,17 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 {
     this->setStyleSheet(
         "QTabBar::tab:selected {background: white;border-bottom-color: white;}"
+        "QTabBar::tab:hover {background: white;border-bottom-color: white;}"
         "QTabWidget::tab-bar {alignment: center;}"
         "QTabWidget::pane {border-color: transparent; background: white;}"
-        "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.5em;}"
+        "QTabWidget::pane {border-top: 2px solid #C2C7CB;position: absolute;top: -0.75em;}"
         "QTabBar::tab {border: 3px solid #C2C7CB;"
             "padding: 2px;background:#C2C7CB;}"
     );
     this->setTabBar(new MoveTabBar(this));
-    this->setTabBarAutoHide(true);
     this->hide();
 }
+
 
 
 MoveTabBar::MoveTabBar(QWidget *parent) : QTabBar(parent)

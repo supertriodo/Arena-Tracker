@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     otherWindow = NULL;
 
     createLogFile();
-    readSettings();
     completeUI();
+    readSettings();
+    completeToolButton();
     checkHSCardsDir();
 
     createCardDownloader();
@@ -54,8 +55,8 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     isMainWindow = false;
     otherWindow = primaryWindow;
 
-    readSettings();
     completeUI();
+    readSettings();
 }
 
 
@@ -78,17 +79,20 @@ MainWindow::~MainWindow()
 void MainWindow::createSecondaryWindow()
 {
     this->otherWindow = new MainWindow(0, this);
-    this->otherWindow->setAttribute(Qt::WA_TranslucentBackground, true);
-    this->otherWindow->show();
+    if(deckHandler!= NULL)      calculateDeckWindowMinimumWidth();
 
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
+
+    connect(ui->minimizeButton, SIGNAL(clicked()),
+            otherWindow, SLOT(showMinimized()));
 }
 
 
 void MainWindow::destroySecondaryWindow()
 {
+    disconnect(ui->minimizeButton, 0, otherWindow, 0);
     this->otherWindow->close();
     this->otherWindow = NULL;
 
@@ -276,6 +280,8 @@ void MainWindow::createDeckHandler()
     deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
     deckHandler->setCardHeight(this->cardHeight);
     deckHandler->setDrawDisappear(this->drawDisappear);
+
+    if(this->otherWindow!=NULL)     calculateDeckWindowMinimumWidth();
 }
 
 
@@ -399,6 +405,7 @@ void MainWindow::showTabHeroOnNoArena()
     {
         ui->tabWidget->addTab(ui->tabHero, "Draft");
         ui->tabWidget->setCurrentWidget(ui->tabHero);
+        this->calculateMinimumWidth();
     }
 }
 
@@ -499,32 +506,28 @@ void MainWindow::completeUI()
     ui->tabWidgetTemplate->clear();
     ui->tabWidgetTemplate->hide();
 
-    ui->tabWidget = new MoveTabWidget(this->centralWidget());
+    ui->tabWidget = new MoveTabWidget(this);
+    ui->tabWidget->hide();
     ui->gridLayout->removeWidget(ui->tabWidgetTemplate);
     ui->gridLayout->addWidget(ui->tabWidget, 0, 0);
 
-    ui->resizeButton = new ResizeButton(this);
-    ui->bottomLayout->addWidget(ui->resizeButton);
-    connect(ui->resizeButton, SIGNAL(newSize(QSize)),
-            this, SLOT(resizeSlot(QSize)));
-    connect(ui->minimizeButton, SIGNAL(clicked()),
-            this, SLOT(showMinimized()));
-
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
+
+    completeUIButtons();
 
     if(isMainWindow)
     {
-        ui->tabWidgetH2 = new MoveTabWidget(this->centralWidget());
+        ui->tabWidgetH2 = new MoveTabWidget(this);
+        ui->tabWidgetH2->hide();
         ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
-        ui->tabWidgetH3 = new MoveTabWidget(this->centralWidget());
+        ui->tabWidgetH3 = new MoveTabWidget(this);
+        ui->tabWidgetH3->hide();
         ui->gridLayout->addWidget(ui->tabWidgetH3, 0, 2);
-        ui->tabWidgetV1 = new MoveTabWidget(this->centralWidget());
+        ui->tabWidgetV1 = new MoveTabWidget(this);
+        ui->tabWidgetV1->hide();
+        ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        connect(ui->closeButton, SIGNAL(clicked()),
-                this, SLOT(close()));
-
-        completeToolButton();
         completeHeroButtons();
 
         ui->arenaTreeWidget = new MoveTreeWidget(ui->tabArena);
@@ -564,13 +567,75 @@ void MainWindow::completeUI()
     }
     else
     {
-        delete ui->closeButton; ui->closeButton = NULL;
-        delete ui->toolButton;  ui->toolButton = NULL;
         delete ui->progressBar; ui->progressBar = NULL;
 
         moveTabTo(this->otherWindow->ui->tabDeck, ui->tabWidget);
+        ui->tabWidget->setTabBarAutoHide(true);
         ui->tabWidget->show();
     }
+
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->show();
+
+    //show() hace un resize que acaba llamando a calculateMinimumWidth()
+    //estableciendo un minimumWidth() erroneo que tenemos que corregir
+    if(isMainWindow)    this->setMinimumSize(100,200);
+}
+
+
+void MainWindow::completeUIButtons()
+{
+    if(isMainWindow)
+    {
+        ui->closeButton = new QPushButton("", this);
+        ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->closeButton->resize(24, 24);
+        ui->closeButton->setIconSize(QSize(24, 24));
+        ui->closeButton->setIcon(QIcon(":/Images/close.png"));
+        ui->closeButton->setFlat(true);
+        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                       "QPushButton:hover {background: "
+                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                      "stop: 0 white, stop: 1 #90EE90);}");
+        connect(ui->closeButton, SIGNAL(clicked()),
+                this, SLOT(close()));
+
+
+        ui->toolButton = new QPushButton("", this);
+        ui->toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->toolButton->resize(24, 24);
+        ui->toolButton->setIconSize(QSize(24, 24));
+        ui->toolButton->setIcon(QIcon(":/Images/config.png"));
+        ui->toolButton->setFlat(true);
+        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
+                                      );
+
+        ui->minimizeButton = new QPushButton("", this);
+        ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        ui->minimizeButton->resize(24, 24);
+        ui->minimizeButton->setIconSize(QSize(24, 24));
+        ui->minimizeButton->setIcon(QIcon(":/Images/minimize.png"));
+        ui->minimizeButton->setFlat(true);
+        ui->minimizeButton->setStyleSheet("QPushButton {background: " +
+                                          (isMainWindow?QString("white"):QString("transparent")) +
+                                                       "; border: none;}"
+                                        "QPushButton:hover {background: "
+                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                       "stop: 0 white, stop: 1 #90EE90);}");
+        connect(ui->minimizeButton, SIGNAL(clicked()),
+                this, SLOT(showMinimized()));
+    }
+
+
+    ui->resizeButton = new ResizeButton(this);
+    ui->resizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    ui->resizeButton->resize(24, 24);
+    ui->resizeButton->setIconSize(QSize(24, 24));
+    ui->resizeButton->setIcon(QIcon(":/Images/resize.png"));
+    ui->resizeButton->setFlat(true);
+    connect(ui->resizeButton, SIGNAL(newSize(QSize)),
+            this, SLOT(resizeSlot(QSize)));
 }
 
 
@@ -595,6 +660,504 @@ void MainWindow::completeHeroButtons()
 }
 
 
+void MainWindow::readSettings()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QPoint pos;
+    QSize size;
+
+    if(isMainWindow)
+    {
+        pos = settings.value("pos", QPoint(0,0)).toPoint();
+        size = settings.value("size", QSize(400, 400)).toSize();
+
+        this->splitWindow = settings.value("splitWindow", false).toBool();
+        this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
+
+        int numWindows = settings.value("numWindows", 2).toInt();
+        if(numWindows == 2) createSecondaryWindow();
+
+        this->greyedHeight = settings.value("greyedHeight", 25).toInt();
+        this->cardHeight = settings.value("cardHeight", 35).toInt();
+        this->drawDisappear = settings.value("drawDisappear", 10).toInt();
+        this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
+    }
+    else
+    {
+        pos = settings.value("pos2", QPoint(0,0)).toPoint();
+        size = settings.value("size2", QSize(400, 400)).toSize();
+
+        this->splitWindow = otherWindow->splitWindow;
+        this->transparency = otherWindow->transparency;
+    }
+    this->windowsFormation = None;
+    resize(size);
+    move(pos);
+}
+
+
+void MainWindow::writeSettings()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    if(isMainWindow)
+    {
+        settings.setValue("pos", pos());
+        settings.setValue("size", size());
+        settings.setValue("splitWindow", this->splitWindow);
+        settings.setValue("transparent", (int)this->transparency);
+        settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
+        settings.setValue("greyedHeight", this->greyedHeight);
+        settings.setValue("cardHeight", this->cardHeight);
+        settings.setValue("drawDisappear", this->drawDisappear);
+        settings.setValue("showDraftOverlay", this->showDraftOverlay);
+    }
+    else
+    {
+        settings.setValue("pos2", pos());
+        settings.setValue("size2", size());
+    }
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QMainWindow::closeEvent(event);
+
+    if(isMainWindow && (otherWindow != NULL))
+    {
+        otherWindow->close();
+    }
+
+    writeSettings();
+    event->accept();
+}
+
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        dragPosition = event->globalPos() - frameGeometry().topLeft();
+        event->accept();
+    }
+}
+
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton)
+    {
+        move(event->globalPos() - dragPosition);
+        event->accept();
+    }
+}
+
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() != Qt::Key_Control)
+    {
+        if(event->modifiers()&Qt::ControlModifier)
+        {
+            if(event->key() == Qt::Key_R)   resetSettings();
+            else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
+            else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
+            else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
+        }
+    }
+}
+
+
+void MainWindow::resizeSlot(QSize size)
+{
+    resize(size);
+}
+
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+
+    if(isMainWindow)
+    {
+        resizeTabWidgets(event);
+
+        int top = ui->tabWidget->pos().y();
+        int left = ui->tabWidget->pos().x();
+        int right;
+
+        if(!ui->tabWidgetH3->isHidden())        right = ui->tabWidgetH3->pos().x() + ui->tabWidgetH3->width();
+        else if(!ui->tabWidgetH2->isHidden())   right = ui->tabWidgetH2->pos().x() + ui->tabWidgetH2->width();
+        else                                    right = ui->tabWidget->pos().x() + ui->tabWidget->width();
+
+        ui->closeButton->move(right-24, top);
+        ui->minimizeButton->move(right-48, top);
+        ui->resizeButton->move(event->size().width()-24, event->size().height()-24);
+        ui->toolButton->move(left, top);
+    }
+    else
+    {
+        ui->resizeButton->move(event->size().width()-24, event->size().height()-24);
+    }
+
+    event->accept();
+}
+
+
+void MainWindow::resizeTabWidgets(QResizeEvent *event)
+{
+    if(ui->tabWidget == NULL)   return;
+
+    QSize newSize = event->size();
+    WindowsFormation newWindowsFormation;
+
+    //H1
+    if(newSize.width()<=DIVIDE_TABS_H)
+    {
+        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = V2;
+        else                                newWindowsFormation = H1;
+    }
+    //H2
+    else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
+    {
+        newWindowsFormation = H2;
+    }
+    //H3
+    else
+    {
+        newWindowsFormation = H3;
+    }
+
+    if(!this->splitWindow)  newWindowsFormation = H1;
+
+    if(newWindowsFormation == windowsFormation) return;
+    windowsFormation = newWindowsFormation;
+
+    ui->tabWidget->hide();
+    ui->tabWidgetH2->hide();
+    ui->tabWidgetH3->hide();
+    ui->tabWidgetV1->hide();
+
+    switch(windowsFormation)
+    {
+        case None:
+        case H1:
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);//Reactivar con rewards
+
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+            }
+            break;
+
+        case H2:
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+            }
+            break;
+
+        case H3:
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+                ui->tabWidgetH3->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabLog, ui->tabWidgetH3);
+                ui->tabWidget->show();
+                ui->tabWidgetH2->show();
+                ui->tabWidgetH3->show();
+            }
+            break;
+
+        case V2:
+//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+            if(otherWindow == NULL)
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
+                moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetV1->show();
+            }
+            else
+            {
+                moveTabTo(ui->tabArena, ui->tabWidget);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
+                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->show();
+                ui->tabWidgetV1->show();
+            }
+            break;
+    }
+
+    this->calculateMinimumWidth();
+}
+
+
+void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
+{
+    QString label = "";
+    if(widget == ui->tabArena)
+    {
+        label = "Arena";
+    }
+    else if(widget == ui->tabDeck)
+    {
+        label = "Deck";
+    }
+    else if(widget == ui->tabEnemy)
+    {
+        label = "Hand";
+    }
+    else if(widget == ui->tabLog)
+    {
+        label = "Log";
+    }
+
+    if(index == -1)     tabWidget->addTab(widget, label);
+    else                tabWidget->insertTab(index, widget, label);
+}
+
+
+void MainWindow::calculateMinimumWidth()
+{
+    if(!isMainWindow || (windowsFormation!=H1 && windowsFormation!=V2)) return;
+
+    int minWidth = this->width() - ui->tabWidget->width();
+    minWidth += ui->tabWidget->tabBar()->width();
+    if(ui->minimizeButton!=NULL)    minWidth += ui->minimizeButton->width()*2;
+    if(ui->closeButton!=NULL)       minWidth += ui->closeButton->width()*2;
+
+    this->setMinimumWidth(minWidth);
+}
+
+
+//Fija la anchura de la ventana de deck.
+void MainWindow::calculateDeckWindowMinimumWidth()
+{
+    if(this->otherWindow!=NULL && deckHandler!= NULL)
+    {
+        int deckWidth = this->otherWindow->width() - ui->deckListWidget->width() + ui->deckListWidget->sizeHintForColumn(0);
+//        this->otherWindow->resize(deckWidth, this->otherWindow->height());
+        this->otherWindow->setMinimumWidth(deckWidth);
+        this->otherWindow->setMaximumWidth(deckWidth);
+    }
+}
+
+
+void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
+{
+    pDebug(line, 0, debugLevel, file);
+}
+
+
+void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
+{
+    (void)debugLevel;
+    QString logLine;
+    QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
+
+    if(numLine > 0)
+    {
+        file += "(" + QString::number(numLine) + ")";
+    }
+    if(line[0]==QChar('\n'))
+    {
+        line.remove(0, 1);
+        logLine = '\n' + timeStamp + " - " + file + ": " + line;
+    }
+    else
+    {
+        logLine = timeStamp + " - " + file + ": " + line;
+    }
+
+    qDebug().noquote() << logLine;
+
+    if(atLogFile != NULL)
+    {
+        QTextStream stream(atLogFile);
+        stream << logLine << endl;
+    }
+}
+
+
+void MainWindow::pLog(QString line)
+{
+    ui->logTextEdit->append(line);
+}
+
+
+void MainWindow::showLogLoadProgress(qint64 logSeek)
+{
+    if(logSeek == 0)     //Log reset
+    {
+        deckHandler->unlockDeckInterface();
+        enemyHandHandler->unlockEnemyInterface();
+        gameWatcher->reset();
+    }
+    ui->progressBar->setValue(logSeek/1000);
+}
+
+
+void MainWindow::checkCardImage(QString code)
+{
+    QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
+
+    if(!cardFile.exists())
+    {
+        //La bajamos de HearthHead
+        cardDownloader->downloadWebImage(code);
+    }
+}
+
+
+void MainWindow::redrawDownloadedCardImage(QString code)
+{
+    deckHandler->redrawDownloadedCardImage(code);
+    enemyHandHandler->redrawDownloadedCardImage(code);
+    secretsHandler->redrawDownloadedCardImage(code);
+    draftHandler->reHistDownloadedCardImage(code);
+}
+
+
+void MainWindow::resetSettings()
+{
+    int ret = QMessageBox::warning(this, tr("Reset settings"),
+                                   tr("Do you want to reset Arena Tracker settings?"),
+                                   QMessageBox::Ok | QMessageBox::Cancel);
+
+    if(ret == QMessageBox::Ok)
+    {
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        settings.setValue("logPath", "");
+        settings.setValue("logConfig", "");
+        settings.setValue("playerTag", "");
+        settings.setValue("playerEmail", "");
+        settings.setValue("password", "");
+        settings.setValue("sizeDraft", QSize(350, 400));
+
+        resize(QSize(400, 400));
+        move(QPoint(0,0));
+
+        if(otherWindow != NULL)
+        {
+            otherWindow->resize(QSize(400, 400));
+            otherWindow->move(QPoint(0,0));
+        }
+        this->close();
+    }
+}
+
+
+void MainWindow::createLogFile()
+{
+    atLogFile = new QFile(Utility::appPath() + "/HSCards/ArenaTrackerLog.txt");
+    if(atLogFile->exists())  atLogFile->remove();
+    if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        pDebug("Failed to create Arena Tracker log on disk.", Error);
+        pLog(tr("File: ERROR:Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
+        atLogFile = NULL;
+    }
+}
+
+
+void MainWindow::closeLogFile()
+{
+    if(atLogFile == NULL)   return;
+    atLogFile->close();
+    delete atLogFile;
+    atLogFile = NULL;
+}
+
+
+void MainWindow::uploadDeck()
+{
+    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
+    if(deckCardList != NULL)
+    {
+        gameWatcher->setDeckRead();
+        if(webUploader != NULL)     webUploader->uploadDeck(deckCardList);
+    }
+    else
+    {
+        gameWatcher->setDeckRead(false);
+    }
+}
+
+
+void MainWindow::checkHSCardsDir()
+{
+    QFileInfo dir(Utility::appPath() + "/HSCards");
+
+    if(dir.exists())
+    {
+        if(dir.isDir())
+        {
+            pLog("Settings: Path HSCards: " + dir.absoluteFilePath());
+            pDebug("Path HSCards: " + dir.absoluteFilePath());
+        }
+        else
+        {
+            pLog("Settings: " + dir.absoluteFilePath() + " is not a directory.");
+            pDebug(dir.absoluteFilePath() + " is not a directory.");
+        }
+    }
+    else
+    {
+        pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
+        pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
+        QMessageBox::warning(0, tr("HSCards not found"),
+                             "HSCards dir not found on:\n" +
+                             dir.absoluteFilePath() +
+                             "\nMove the directory there.");
+    }
+}
+
+
+void MainWindow::test()
+{
+}
+
+
+//MENUS
 void MainWindow::addDraftMenu(QMenu *menu)
 {
     QMenu *newArenaMenu = new QMenu("Force draft", this);
@@ -1138,455 +1701,13 @@ void MainWindow::completeToolButton()
 }
 
 
-void MainWindow::readSettings()
-{
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    QPoint pos;
-    QSize size;
-
-    if(isMainWindow)
-    {
-        pos = settings.value("pos", QPoint(0,0)).toPoint();
-        size = settings.value("size", QSize(400, 400)).toSize();
-
-        this->splitWindow = settings.value("splitWindow", false).toBool();
-        this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
-
-        int numWindows = settings.value("numWindows", 2).toInt();
-        if(numWindows == 2) createSecondaryWindow();
-
-        this->greyedHeight = settings.value("greyedHeight", 25).toInt();
-        this->cardHeight = settings.value("cardHeight", 35).toInt();
-        this->drawDisappear = settings.value("drawDisappear", 10).toInt();
-        this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
-    }
-    else
-    {
-        pos = settings.value("pos2", QPoint(0,0)).toPoint();
-        size = settings.value("size2", QSize(400, 400)).toSize();
-
-        this->splitWindow = otherWindow->splitWindow;
-        this->transparency = otherWindow->transparency;
-    }
-    this->windowsFormation = None;
-    resize(size);
-    move(pos);
-}
-
-
-void MainWindow::writeSettings()
-{
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    if(isMainWindow)
-    {
-        settings.setValue("pos", pos());
-        settings.setValue("size", size());
-        settings.setValue("splitWindow", this->splitWindow);
-        settings.setValue("transparent", (int)this->transparency);
-        settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
-        settings.setValue("greyedHeight", this->greyedHeight);
-        settings.setValue("cardHeight", this->cardHeight);
-        settings.setValue("drawDisappear", this->drawDisappear);
-        settings.setValue("showDraftOverlay", this->showDraftOverlay);
-    }
-    else
-    {
-        settings.setValue("pos2", pos());
-        settings.setValue("size2", size());
-    }
-}
-
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    if(isMainWindow && (otherWindow != NULL))
-    {
-        otherWindow->close();
-    }
-
-    writeSettings();
-    event->accept();
-}
-
-
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    if(isMainWindow)    resizeTabWidgets(event);
-    event->accept();
-}
-
-
-void MainWindow::resizeTabWidgets(QResizeEvent *event)
-{
-    if(ui->tabWidget == NULL)   return;
-
-    QSize newSize = event->size();
-    WindowsFormation newWindowsFormation;
-
-    //H1
-    if(newSize.width()<=DIVIDE_TABS_H)
-    {
-        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = V2;
-        else                                newWindowsFormation = H1;
-    }
-    //H2
-    else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
-    {
-        newWindowsFormation = H2;
-    }
-    //H3
-    else
-    {
-        newWindowsFormation = H3;
-    }
-
-    if(!this->splitWindow)  newWindowsFormation = H1;
-
-    if(newWindowsFormation == windowsFormation) return;
-    windowsFormation = newWindowsFormation;
-
-    ui->tabWidget->hide();
-    ui->tabWidgetH2->hide();
-    ui->tabWidgetH3->hide();
-    ui->tabWidgetV1->hide();
-
-    switch(windowsFormation)
-    {
-        case None:
-        case H1:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);//Reactivar con rewards
-
-            if(otherWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-            }
-            break;
-
-        case H2:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-            if(otherWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-            }
-            break;
-
-        case H3:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-            if(otherWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-                ui->tabWidgetH3->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabLog, ui->tabWidgetH3);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-                ui->tabWidgetH3->show();
-            }
-            break;
-
-        case V2:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-            if(otherWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetV1->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetV1->show();
-            }
-            break;
-    }
-}
-
-
-void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
-{
-    QString label = "";
-    if(widget == ui->tabArena)
-    {
-        label = "Arena";
-    }
-    else if(widget == ui->tabDeck)
-    {
-        label = "Deck";
-    }
-    else if(widget == ui->tabEnemy)
-    {
-        label = "Hand";
-    }
-    else if(widget == ui->tabLog)
-    {
-        label = "Log";
-    }
-
-    if(index == -1)     tabWidget->addTab(widget, label);
-    else                tabWidget->insertTab(index, widget, label);
-}
-
-
-void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
-{
-    pDebug(line, 0, debugLevel, file);
-}
-
-
-void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
-{
-    (void)debugLevel;
-    QString logLine;
-    QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
-
-    if(numLine > 0)
-    {
-        file += "(" + QString::number(numLine) + ")";
-    }
-    if(line[0]==QChar('\n'))
-    {
-        line.remove(0, 1);
-        logLine = '\n' + timeStamp + " - " + file + ": " + line;
-    }
-    else
-    {
-        logLine = timeStamp + " - " + file + ": " + line;
-    }
-
-    qDebug().noquote() << logLine;
-
-    if(atLogFile != NULL)
-    {
-        QTextStream stream(atLogFile);
-        stream << logLine << endl;
-    }
-}
-
-
-void MainWindow::pLog(QString line)
-{
-    ui->logTextEdit->append(line);
-}
-
-
-void MainWindow::showLogLoadProgress(qint64 logSeek)
-{
-    if(logSeek == 0)     //Log reset
-    {
-        deckHandler->unlockDeckInterface();
-        enemyHandHandler->unlockEnemyInterface();
-        gameWatcher->reset();
-    }
-    ui->progressBar->setValue(logSeek/1000);
-}
-
-
-void MainWindow::checkCardImage(QString code)
-{
-    QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
-
-    if(!cardFile.exists())
-    {
-        //La bajamos de HearthHead
-        cardDownloader->downloadWebImage(code);
-    }
-}
-
-
-void MainWindow::redrawDownloadedCardImage(QString code)
-{
-    deckHandler->redrawDownloadedCardImage(code);
-    enemyHandHandler->redrawDownloadedCardImage(code);
-    secretsHandler->redrawDownloadedCardImage(code);
-    draftHandler->reHistDownloadedCardImage(code);
-}
-
-
-
-void MainWindow::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        dragPosition = event->globalPos() - frameGeometry().topLeft();
-        event->accept();
-    }
-}
-
-
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
-{
-    if (event->buttons() & Qt::LeftButton)
-    {
-        move(event->globalPos() - dragPosition);
-        event->accept();
-    }
-}
-
-void MainWindow::resizeSlot(QSize size)
-{
-    resize(size);
-}
-
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if(event->key() != Qt::Key_Control)
-    {
-        if(event->modifiers()&Qt::ControlModifier)
-        {
-            if(event->key() == Qt::Key_R)   resetSettings();
-            else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
-            else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
-            else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
-        }
-    }
-}
-
-
-void MainWindow::resetSettings()
-{
-    int ret = QMessageBox::warning(this, tr("Reset settings"),
-                                   tr("Do you want to reset Arena Tracker settings?"),
-                                   QMessageBox::Ok | QMessageBox::Cancel);
-
-    if(ret == QMessageBox::Ok)
-    {
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("logPath", "");
-        settings.setValue("logConfig", "");
-        settings.setValue("playerTag", "");
-        settings.setValue("playerEmail", "");
-        settings.setValue("password", "");
-
-        resize(QSize(400, 400));
-        move(QPoint(0,0));
-
-        if(otherWindow != NULL)
-        {
-            otherWindow->resize(QSize(400, 400));
-            otherWindow->move(QPoint(0,0));
-        }
-        this->close();
-    }
-}
-
-
-void MainWindow::createLogFile()
-{
-    atLogFile = new QFile(Utility::appPath() + "/HSCards/ArenaTrackerLog.txt");
-    if(atLogFile->exists())  atLogFile->remove();
-    if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        pDebug("Failed to create Arena Tracker log on disk.", Error);
-        pLog(tr("File: ERROR:Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
-        atLogFile = NULL;
-    }
-}
-
-
-void MainWindow::closeLogFile()
-{
-    if(atLogFile == NULL)   return;
-    atLogFile->close();
-    delete atLogFile;
-    atLogFile = NULL;
-}
-
-
-void MainWindow::uploadDeck()
-{
-    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
-    if(deckCardList != NULL)
-    {
-        gameWatcher->setDeckRead();
-        if(webUploader != NULL)     webUploader->uploadDeck(deckCardList);
-    }
-    else
-    {
-        gameWatcher->setDeckRead(false);
-    }
-}
-
-
-void MainWindow::checkHSCardsDir()
-{
-    QFileInfo dir(Utility::appPath() + "/HSCards");
-
-    if(dir.exists())
-    {
-        if(dir.isDir())
-        {
-            pLog("Settings: Path HSCards: " + dir.absoluteFilePath());
-            pDebug("Path HSCards: " + dir.absoluteFilePath());
-        }
-        else
-        {
-            pLog("Settings: " + dir.absoluteFilePath() + " is not a directory.");
-            pDebug(dir.absoluteFilePath() + " is not a directory.");
-        }
-    }
-    else
-    {
-        pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
-        pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
-        QMessageBox::warning(0, tr("HSCards not found"),
-                             "HSCards dir not found on:\n" +
-                             dir.absoluteFilePath() +
-                             "\nMove the directory there.");
-    }
-}
-
-
-void MainWindow::test()
-{
-}
-
-
 //TODO
 //Fondo UI
 //Tooltip cards
-//Indicator arena white
 //weight name card windows.
-//Custom buttons in title
+//Quitar seleccion deck en leaveEvent
+//Cambiar nombre menu
+//Restore 2 windows en restore 1
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

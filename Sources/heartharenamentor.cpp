@@ -85,8 +85,6 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
     }
 
     emit pDebug("Tip: " + tip);
-//    qDebug() << "HearthArenaMentor: Ratings:" << ratings[0] << ratings[1] << ratings[2];
-//    qDebug() << "HearthArenaMentor: Synergies:" << synergies[0] << synergies[1] << synergies[2];
     emit newTip(tip,ratings[0],ratings[1],ratings[2],synergies[0],synergies[1],synergies[2]);
 }
 

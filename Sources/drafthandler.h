@@ -45,7 +45,6 @@ private:
     int nextCount;
     bool drafting;
     Transparency transparency;
-    QSize sizePreDraft, sizeDraft;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
 

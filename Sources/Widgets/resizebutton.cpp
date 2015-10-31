@@ -44,3 +44,18 @@ void ResizeButton::mouseMoveEvent(QMouseEvent *event)
         event->accept();
     }
 }
+
+
+void ResizeButton::leaveEvent(QEvent * e)
+{
+    QPushButton::leaveEvent(e);
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+}
+
+
+void ResizeButton::enterEvent(QEvent * e)
+{
+    QPushButton::enterEvent(e);
+    QApplication::setOverrideCursor(QCursor(Qt::SizeFDiagCursor));
+}
+

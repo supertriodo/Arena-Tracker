@@ -1,5 +1,7 @@
 #include "drafthandler.h"
+#include "mainwindow.h"
 #include <stdlib.h>
+#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
@@ -12,7 +14,6 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->nextCount = 0;
     this->drafting = false;
     this->transparency = Never;
-    this->sizeDraft = this->sizePreDraft = QSize();
     this->draftScoreWindow = NULL;
 
     for(int i=0; i<3; i++)
@@ -146,16 +147,19 @@ void DraftHandler::resetTab()
     ui->groupBoxDraft->setTitle("");
 
     //SizePreDraft
-    QMainWindow *mainWindow = ((QMainWindow*)parent());
-    sizePreDraft = mainWindow->size();
+    MainWindow *mainWindow = ((MainWindow*)parent());
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("size", mainWindow->size());
 
     //Show Tab
     removeTabHero();
     ui->tabWidget->addTab(ui->tabDraft, "Draft");
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
+    mainWindow->calculateMinimumWidth();
 
     //SizeDraft
-    if(sizeDraft.isValid())     mainWindow->resize(sizeDraft);
+    QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
+    mainWindow->resize(sizeDraft);
 }
 
 
@@ -203,7 +207,10 @@ void DraftHandler::beginDraft(QString hero)
     this->arenaHero = hero;
     this->drafting = true;
 
-    initCodesAndHistMaps(hero);
+    //Thread for initHistMaps
+    QFuture<void> future = QtConcurrent::run(this, &DraftHandler::initCodesAndHistMaps, hero);
+    ((MainWindow*)parent())->repaint();
+    future.waitForFinished();
 }
 
 
@@ -254,16 +261,18 @@ void DraftHandler::endDraft()
 //    }
 
     //SizeDraft
-    QMainWindow *mainWindow = ((QMainWindow*)parent());
-    if(!sizeDraft.isValid())    sizeDraft = mainWindow->size();
+    MainWindow *mainWindow = ((MainWindow*)parent());
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("sizeDraft", mainWindow->size());
 
     //Hide Tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
     ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabArena));
+    mainWindow->calculateMinimumWidth();
 
     //SizePreDraft
-    if(sizePreDraft.width()<mainWindow->minimumWidth())     mainWindow->setMinimumWidth(281);
-    mainWindow->resize(sizePreDraft);
+    QSize size = settings.value("size", QSize(400, 400)).toSize();
+    mainWindow->resize(size);
 
     //Upload or complete deck with assets
     //Set updateTime in log
@@ -510,7 +519,7 @@ void DraftHandler::showNewCards(QString tip, double rating1, double rating2, dou
 
     for(int i=0; i<3; i++)
     {
-        draftCards[i].radioItem->setText(QString::number(ratings[i]));
+        draftCards[i].radioItem->setText(QString::number((int)ratings[i]));
         if(maxRating == ratings[i])     highlightRadioButton(draftCards[i].radioItem);
     }
 

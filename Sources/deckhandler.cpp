@@ -368,6 +368,16 @@ void DeckHandler::enableDeckButtons()
     if(index>0 && deckCardList.first().total > 0)
                                         ui->deckButtonPlus->setEnabled(true);
     else                                ui->deckButtonPlus->setEnabled(false);
+
+
+    if(index!=-1 && ui->deckButtonMin->isHidden())
+    {
+        ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
+        ui->tabDeckLayout->addItem(ui->horizontalLayoutDeckButtons);
+        ui->deckButtonMin->setHidden(false);
+        ui->deckButtonPlus->setHidden(false);
+        ui->deckButtonRemove->setHidden(false);
+    }
 }
 
 
@@ -465,14 +475,6 @@ void DeckHandler::unlockDeckInterface()
     }
 
     ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->deckButtonMin->setHidden(false);
-    ui->deckButtonPlus->setHidden(false);
-    ui->deckButtonRemove->setHidden(false);
-    ui->deckButtonMin->setEnabled(false);
-    ui->deckButtonPlus->setEnabled(false);
-    ui->deckButtonRemove->setEnabled(false);
-    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
-    ui->tabDeckLayout->insertItem(0, ui->horizontalLayoutDeckButtons);
 
     updateTransparency();
     clearDrawList(true);

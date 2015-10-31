@@ -50,7 +50,6 @@ bool GameWatcher::findClasp(QString &line)
     else
     {
         line.remove(0, index);
-        qDebug()<<line;
         return true;
     }
 }
@@ -158,9 +157,13 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
         //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
         else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
         {
-            emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
+            emit pDebug("Found ACTIVE_DRAFT_DECK (GameState = noGame).", numLine);
             emit activeDraftDeck(); //End draft
             endReadingDeck();
+
+            //Redundante en caso de que falle ScreenEndOfGame
+            emit endGame();
+            gameState = noGame;
         }
         //[Arena] Client chooses: Profesora violeta (NEW1_026)
         else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
@@ -264,37 +267,36 @@ void GameWatcher::setDeckRead(bool value)
 
 void GameWatcher::processPower(QString &line, qint64 numLine)
 {
-    if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
-    {
-        //Redundante en caso de que falle
-        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-        endReadingDeck();
-
-        emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
-        gameState = heroType1State;
-
-        mulliganEnemyDone = false;
-        turn = turnReal = 0;
-
-        hero1.clear();
-        hero2.clear();
-        name1.clear();
-        name2.clear();
-        firstPlayer.clear();
-        winnerPlayer.clear();
-        playerID = 0;
-        secretHero = unknown;
-        enemyMinions = 0;
-        enemyMinionsAliveForAvenge = -1;
-
-        emit startGame();
-        emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
-    }
-
     switch(gameState)
     {
         case readingDeck:
         case noGame:
+            if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
+            {
+                //Redundante en caso de que falle
+                //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+                endReadingDeck();
+
+                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
+                gameState = heroType1State;
+
+                mulliganEnemyDone = false;
+                turn = turnReal = 0;
+
+                hero1.clear();
+                hero2.clear();
+                name1.clear();
+                name2.clear();
+                firstPlayer.clear();
+                winnerPlayer.clear();
+                playerID = 0;
+                secretHero = unknown;
+                enemyMinions = 0;
+                enemyMinionsAliveForAvenge = -1;
+
+                emit startGame();
+                emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
+            }
             break;
         case heroType1State:
         case heroType2State:
