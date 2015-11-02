@@ -42,6 +42,8 @@ private:
     void newDrawCard(QString code);
     void newDeckCard(QString card, int total=1, bool add=false);
     void drawFromDeck(QString code);
+    void showDeckButtons();
+    void hideDeckButtons();
 
 public:
     void reset();
@@ -70,6 +72,7 @@ public slots:
     void lockDeckInterface();
     void unlockDeckInterface();
     void clearDrawList(bool forceClear=false);
+    void deselectRow();
 
 private slots:
     void removeOldestDrawCard();

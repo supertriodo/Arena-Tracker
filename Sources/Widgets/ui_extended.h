@@ -25,6 +25,7 @@ public:
     QPushButton *closeButton = NULL;
     QPushButton *toolButton = NULL;
     ResizeButton *resizeButton = NULL;
+    QAction *deckWindowAction = NULL;
 };
 
 namespace Ui {

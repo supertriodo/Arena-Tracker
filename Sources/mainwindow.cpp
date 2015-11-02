@@ -21,8 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createLogFile();
     completeUI();
-    readSettings();
-    completeToolButton();
     checkHSCardsDir();
 
     createCardDownloader();
@@ -33,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
+
+    readSettings();
+    completeToolButton();
 }
 
 
@@ -79,22 +80,27 @@ MainWindow::~MainWindow()
 void MainWindow::createSecondaryWindow()
 {
     this->otherWindow = new MainWindow(0, this);
-    if(deckHandler!= NULL)      calculateDeckWindowMinimumWidth();
+    calculateDeckWindowMinimumWidth();
+    deckHandler->setTransparency(Always);
 
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
-            otherWindow, SLOT(showMinimized()));
+            this->otherWindow, SLOT(showMinimized()));
+    connect(this->otherWindow, SIGNAL(leave()),
+            this->deckHandler, SLOT(deselectRow()));
 }
 
 
 void MainWindow::destroySecondaryWindow()
 {
-    disconnect(ui->minimizeButton, 0, otherWindow, 0);
+    disconnect(ui->minimizeButton, 0, this->otherWindow, 0);
+    disconnect(this->otherWindow, 0, this->deckHandler, 0);
     this->otherWindow->close();
     this->otherWindow = NULL;
+    deckHandler->setTransparency(this->transparency);
 
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
@@ -238,8 +244,6 @@ void MainWindow::createDraftHandler()
             this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-
-    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
 }
 
 
@@ -276,12 +280,8 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-
-    deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
-    deckHandler->setCardHeight(this->cardHeight);
-    deckHandler->setDrawDisappear(this->drawDisappear);
-
-    if(this->otherWindow!=NULL)     calculateDeckWindowMinimumWidth();
+    connect(this, SIGNAL(leave()),
+            deckHandler, SLOT(deselectRow()));
 }
 
 
@@ -681,6 +681,12 @@ void MainWindow::readSettings()
         this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 10).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
+
+        //Spread options to components
+        deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
+        deckHandler->setCardHeight(this->cardHeight);
+        deckHandler->setDrawDisappear(this->drawDisappear);
+        draftHandler->setShowDraftOverlay(this->showDraftOverlay);
     }
     else
     {
@@ -733,6 +739,20 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
+void MainWindow::leaveEvent(QEvent * e)
+{
+    QMainWindow::leaveEvent(e);
+    emit leave();
+}
+
+
+void MainWindow::enterEvent(QEvent * e)
+{
+    QMainWindow::enterEvent(e);
+    emit enter();
+}
+
+
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -764,6 +784,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
         }
+    }
+}
+
+
+//Restaura ambas ventanas minimizadas
+void MainWindow::changeEvent(QEvent * event)
+{
+    if(event->type() == QEvent::WindowStateChange)
+    {
+        if((windowState() & Qt::WindowMinimized) == 0)
+        {
+            if(this->otherWindow != NULL)
+            {
+                this->otherWindow->setWindowState(Qt::WindowActive);
+            }
+        }
+
     }
 }
 
@@ -1154,6 +1191,7 @@ void MainWindow::checkHSCardsDir()
 
 void MainWindow::test()
 {
+//    ui->tabArena->setStyleSheet("background-color: black;");
 }
 
 
@@ -1221,8 +1259,8 @@ void MainWindow::confirmClearDeck()
 
 void MainWindow::addSplitMenu(QMenu *menu)
 {
-    QAction *action1 = new QAction("Auto", this);
-    QAction *action2 = new QAction("Never", this);
+    QAction *action1 = new QAction("Auto Split", this);
+    QAction *action2 = new QAction("No Split", this);
     action1->setCheckable(true);
     action2->setCheckable(true);
     connect(action1, SIGNAL(triggered()), this, SLOT(splitWindowAuto()));
@@ -1268,9 +1306,9 @@ void MainWindow::spreadSplitWindow()
 
 void MainWindow::addTransparentMenu(QMenu *menu)
 {
-    QAction *action0 = new QAction("Always", this);
+    QAction *action0 = new QAction("Transparent", this);
     QAction *action1 = new QAction("Auto", this);
-    QAction *action2 = new QAction("Never", this);
+    QAction *action2 = new QAction("Opaque", this);
     action0->setCheckable(true);
     action1->setCheckable(true);
     action2->setCheckable(true);
@@ -1327,7 +1365,7 @@ void MainWindow::transparentNever()
 
 void MainWindow::spreadTransparency()
 {
-    deckHandler->setTransparency(this->transparency);
+    deckHandler->setTransparency((this->otherWindow!=NULL)?Always:this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
@@ -1339,36 +1377,27 @@ void MainWindow::spreadTransparency()
 }
 
 
-void MainWindow::addNumWindowsMenu(QMenu *menu)
+void MainWindow::addDeckWindowAction(QMenu *menu)
 {
-    QAction *action1 = new QAction("1", this);
-    QAction *action2 = new QAction("2", this);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    connect(action1, SIGNAL(triggered()), this, SLOT(numWindows1()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(numWindows2()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-    (this->otherWindow == NULL)?action1->setChecked(true):action2->setChecked(true);
-
-    QMenu *numWindowsMenu = new QMenu("Windows", this);
-    numWindowsMenu->addAction(action1);
-    numWindowsMenu->addAction(action2);
-    menu->addMenu(numWindowsMenu);
+    ui->deckWindowAction = new QAction(
+                (this->otherWindow == NULL)?"Show Deck Window":"Hide Deck Window", this);
+    connect(ui->deckWindowAction, SIGNAL(triggered()), this, SLOT(toggleDeckWindow()));
+    menu->addAction(ui->deckWindowAction);
 }
 
 
-void MainWindow::numWindows1()
+void MainWindow::toggleDeckWindow()
 {
-    if(this->otherWindow != NULL)   destroySecondaryWindow();
-}
-
-
-void MainWindow::numWindows2()
-{
-    if(this->otherWindow == NULL)   createSecondaryWindow();
+    if(this->otherWindow == NULL)
+    {
+        createSecondaryWindow();
+        ui->deckWindowAction->setText("Hide Deck Window");
+    }
+    else
+    {
+        destroySecondaryWindow();
+        ui->deckWindowAction->setText("Show Deck Window");
+    }
 }
 
 
@@ -1572,7 +1601,7 @@ void MainWindow::tamCard35px()
 
 void MainWindow::addTimeDrawMenu(QMenu *menu)
 {
-    QAction *action0 = new QAction("No", this);
+    QAction *action0 = new QAction("Hide", this);
     QAction *action1 = new QAction("5s", this);
     QAction *action2 = new QAction("10s", this);
     QAction *action3 = new QAction("Turn", this);
@@ -1607,7 +1636,7 @@ void MainWindow::addTimeDrawMenu(QMenu *menu)
             break;
     }
 
-    QMenu *timeDrawMenu = new QMenu("Deck: Show draw", this);
+    QMenu *timeDrawMenu = new QMenu("Hand: Show draw", this);
     timeDrawMenu->addAction(action0);
     timeDrawMenu->addAction(action1);
     timeDrawMenu->addAction(action2);
@@ -1646,8 +1675,8 @@ void MainWindow::timeDrawTurn()
 
 void MainWindow::addShowDraftOverlayMenu(QMenu *menu)
 {
-    QAction *action0 = new QAction("No", this);
-    QAction *action1 = new QAction("Yes", this);
+    QAction *action0 = new QAction("Hide", this);
+    QAction *action1 = new QAction("Show", this);
     action0->setCheckable(true);
     action1->setCheckable(true);
     connect(action0, SIGNAL(triggered()), this, SLOT(showDraftOverlayNo()));
@@ -1684,16 +1713,17 @@ void MainWindow::showDraftOverlayYes()
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
-    addDraftMenu(menu);
+    addDeckWindowAction(menu);
     addClearDeckMenu(menu);
+    addDraftMenu(menu);
     menu->addSeparator();
     addTamCardMenu(menu);
     addTamGreyedMenu(menu);
+    menu->addSeparator();
     addTimeDrawMenu(menu);
     menu->addSeparator();
     addShowDraftOverlayMenu(menu);
     menu->addSeparator();
-    addNumWindowsMenu(menu);
     addSplitMenu(menu);
     addTransparentMenu(menu);
 
@@ -1705,9 +1735,6 @@ void MainWindow::completeToolButton()
 //Fondo UI
 //Tooltip cards
 //weight name card windows.
-//Quitar seleccion deck en leaveEvent
-//Cambiar nombre menu
-//Restore 2 windows en restore 1
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

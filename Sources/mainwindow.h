@@ -89,7 +89,7 @@ private:
     void spreadSplitWindow();
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
-    void addNumWindowsMenu(QMenu *menu);
+    void addDeckWindowAction(QMenu *menu);
     void addTamGreyedMenu(QMenu *menu);
     void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
@@ -115,6 +115,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
+    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:
@@ -155,8 +158,7 @@ private slots:
     void transparentAlways();
     void transparentAuto();
     void transparentNever();
-    void numWindows1();
-    void numWindows2();
+    void toggleDeckWindow();
     void tamGreyed15px();
     void tamGreyed20px();
     void tamGreyed25px();
@@ -174,6 +176,10 @@ private slots:
     void tamCard35px();
     void showDraftOverlayNo();
     void showDraftOverlayYes();
+
+signals:
+    void enter();
+    void leave();
 };
 
 #endif // MAINWINDOW_H

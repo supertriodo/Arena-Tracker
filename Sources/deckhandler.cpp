@@ -32,13 +32,11 @@ void DeckHandler::completeUI()
     ui->deckButtonMin->setEnabled(false);
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
-    ui->deckButtonMin->setHidden(true);
-    ui->deckButtonPlus->setHidden(true);
-    ui->deckButtonRemove->setHidden(true);
+    hideDeckButtons();
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
+    setTransparency(Always);
 
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
@@ -370,7 +368,20 @@ void DeckHandler::enableDeckButtons()
     else                                ui->deckButtonPlus->setEnabled(false);
 
 
-    if(index!=-1 && ui->deckButtonMin->isHidden())
+    if(index>0)
+    {
+        showDeckButtons();
+    }
+    else
+    {
+        hideDeckButtons();
+    }
+}
+
+
+void DeckHandler::showDeckButtons()
+{
+    if(ui->deckButtonMin->isHidden())
     {
         ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
         ui->tabDeckLayout->addItem(ui->horizontalLayoutDeckButtons);
@@ -378,6 +389,21 @@ void DeckHandler::enableDeckButtons()
         ui->deckButtonPlus->setHidden(false);
         ui->deckButtonRemove->setHidden(false);
     }
+}
+
+
+void DeckHandler::hideDeckButtons()
+{
+    ui->deckButtonMin->setHidden(true);
+    ui->deckButtonPlus->setHidden(true);
+    ui->deckButtonRemove->setHidden(true);
+    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
+}
+
+
+void DeckHandler::deselectRow()
+{
+    ui->deckListWidget->setCurrentRow(-1);
 }
 
 
@@ -446,10 +472,7 @@ void DeckHandler::lockDeckInterface()
 
     ui->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
     ui->deckListWidget->selectionModel()->reset();
-    ui->deckButtonMin->setHidden(true);
-    ui->deckButtonPlus->setHidden(true);
-    ui->deckButtonRemove->setHidden(true);
-    ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
+    hideDeckButtons();
 
     updateTransparency();
     clearDrawList(true);
