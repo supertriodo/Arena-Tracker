@@ -3,103 +3,19 @@
 
 MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 {
-    this->setFrameShape(QFrame::NoFrame);
-
-
-//ARENA
-//    <property name="sizePolicy">
-//     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-//      <horstretch>0</horstretch>
-//      <verstretch>0</verstretch>
-//     </sizepolicy>
-//    </property>
-    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    <property name="font">
-//     <font>
-//      <family>Belwe Bd BT</family>
-//      <pointsize>14</pointsize>
-//      <weight>50</weight>
-//      <bold>false</bold>
-//      <kerning>false</kerning>
-//     </font>
-//    </property>
-    QFont font("Belwe Bd BT", 14, 50);
+    QFont font("Belwe Bd BT", 14);
+    font.setBold(true);
+    font.setKerning(true);
     this->setFont(font);
-
-//    <property name="horizontalScrollBarPolicy">
-//     <enum>Qt::ScrollBarAsNeeded</enum>
-//    </property>
-//    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-//    <property name="sizeAdjustPolicy">
-//     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-//    </property>
+    this->setFrameShape(QFrame::NoFrame);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-//    <property name="selectionMode">
-//     <enum>QAbstractItemView::NoSelection</enum>
-//    </property>
     this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
-//    <property name="animated">
-//     <bool>true</bool>
-//    </property>
     this->setAnimated(true);
-//    <property name="headerHidden">
-//     <bool>true</bool>
-//    </property>
     this->setHeaderHidden(true);
     this->header()->close();
-//    <attribute name="headerDefaultSectionSize">
-//     <number>0</number>
-//    </attribute>
-//    <attribute name="headerMinimumSectionSize">
-//     <number>0</number>
-//    </attribute>
-
-
-
-//SECRETS
-//    <property name="enabled">
-//     <bool>true</bool>
-//    </property>
-//    <property name="sizePolicy">
-//     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-//      <horstretch>0</horstretch>
-//      <verstretch>0</verstretch>
-//     </sizepolicy>
-//    </property>
-
-//    <property name="minimumSize">
-//     <size>
-//      <width>0</width>
-//      <height>0</height>
-//     </size>
-//    </property>
-
-//    <property name="horizontalScrollBarPolicy">
-//     <enum>Qt::ScrollBarAlwaysOff</enum>
-//    </property>
-
-//    <property name="selectionMode">
-//     <enum>QAbstractItemView::NoSelection</enum>
-//    </property>
-
-//    <property name="indentation">
-//     <number>5</number>
-//    </property>
-
-//    <property name="itemsExpandable">
-//     <bool>false</bool>
-//    </property>
-
-//    <property name="headerHidden">
-//     <bool>true</bool>
-//    </property>
-
-//    <property name="expandsOnDoubleClick">
-//     <bool>false</bool>
-//    </property>
 }
 
 

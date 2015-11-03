@@ -20,6 +20,8 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 
 MoveTabBar::MoveTabBar(QWidget *parent) : QTabBar(parent)
 {
+    QFont font("Sans Serif", 10);
+    this->setFont(font);
 }
 
 void MoveTabBar::mouseDoubleClickEvent(QMouseEvent *event)

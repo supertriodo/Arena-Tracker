@@ -89,15 +89,12 @@ void MainWindow::createSecondaryWindow()
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
-    connect(this->otherWindow, SIGNAL(leave()),
-            this->deckHandler, SLOT(deselectRow()));
 }
 
 
 void MainWindow::destroySecondaryWindow()
 {
     disconnect(ui->minimizeButton, 0, this->otherWindow, 0);
-    disconnect(this->otherWindow, 0, this->deckHandler, 0);
     this->otherWindow->close();
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
@@ -280,7 +277,7 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    connect(this, SIGNAL(leave()),
+    connect(ui->deckListWidget, SIGNAL(xLeave()),
             deckHandler, SLOT(deselectRow()));
 }
 
@@ -739,20 +736,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void MainWindow::leaveEvent(QEvent * e)
-{
-    QMainWindow::leaveEvent(e);
-    emit leave();
-}
-
-
-void MainWindow::enterEvent(QEvent * e)
-{
-    QMainWindow::enterEvent(e);
-    emit enter();
-}
-
-
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -1057,7 +1040,8 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
 
 void MainWindow::pLog(QString line)
 {
-    ui->logTextEdit->append(line);
+    if(isMainWindow)    ui->logTextEdit->append(line);
+    else                this->otherWindow->pLog(line);
 }
 
 
@@ -1732,9 +1716,11 @@ void MainWindow::completeToolButton()
 
 
 //TODO
-//Fondo UI
 //Tooltip cards
-//weight name card windows.
+//Black theme
+//Resize mas izq
+//Dialogo eliminar carta junto a ventana
+//HsCardsnot found ugly
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

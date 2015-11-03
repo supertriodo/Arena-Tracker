@@ -37,3 +37,12 @@ void MoveListWidget::mouseReleaseEvent(QMouseEvent *event)
     QListWidget::mouseReleaseEvent(event);
     event->ignore();
 }
+
+
+void MoveListWidget::leaveEvent(QEvent * e)
+{
+    QListWidget::leaveEvent(e);
+
+    int mouseX = this->mapFromGlobal(QCursor::pos()).x();
+    if(mouseX < 0 || mouseX >= size().width())  emit xLeave();
+}

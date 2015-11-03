@@ -116,8 +116,6 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
-    void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:
@@ -176,10 +174,6 @@ private slots:
     void tamCard35px();
     void showDraftOverlayNo();
     void showDraftOverlayYes();
-
-signals:
-    void enter();
-    void leave();
 };
 
 #endif // MAINWINDOW_H
