@@ -794,26 +794,30 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
 
+    int top = ui->tabWidget->pos().y();
+    int bottom = top + ui->tabWidget->height();
+    int left = ui->tabWidget->pos().x();
+    int right = left + ui->tabWidget->width();
+
     if(isMainWindow)
     {
         resizeTabWidgets(event);
 
-        int top = ui->tabWidget->pos().y();
-        int left = ui->tabWidget->pos().x();
-        int right;
-
         if(!ui->tabWidgetH3->isHidden())        right = ui->tabWidgetH3->pos().x() + ui->tabWidgetH3->width();
         else if(!ui->tabWidgetH2->isHidden())   right = ui->tabWidgetH2->pos().x() + ui->tabWidgetH2->width();
-        else                                    right = ui->tabWidget->pos().x() + ui->tabWidget->width();
+
+        if(!ui->progressBar->isHidden())        bottom = ui->progressBar->pos().y() + ui->progressBar->height();
+        else if(!ui->tabWidgetV1->isHidden())        bottom = ui->tabWidgetV1->pos().y() + ui->tabWidgetV1->height();
+
 
         ui->closeButton->move(right-24, top);
         ui->minimizeButton->move(right-48, top);
-        ui->resizeButton->move(event->size().width()-24, event->size().height()-24);
+        ui->resizeButton->move(right-24, bottom-24);
         ui->toolButton->move(left, top);
     }
     else
     {
-        ui->resizeButton->move(event->size().width()-24, event->size().height()-24);
+        ui->resizeButton->move(right-24, bottom-24);
     }
 
     event->accept();
@@ -1714,8 +1718,8 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Black theme
 //Resize mas izq
-//Dialogo eliminar carta junto a ventana
 //Delete ui no usados en secondary window
+//todos QMessageBox tienen padre
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
