@@ -444,10 +444,10 @@ void DeckHandler::cardRemove()
         return;
     }
 
-    int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
-            deckCardList[index].getName() +   tr(") from your deck?"),
-            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
-    if(ret == QMessageBox::Cancel)  return;
+//    int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
+//            deckCardList[index].getName() +   tr(") from your deck?"),
+//            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
+//    if(ret == QMessageBox::Cancel)  return;
 
     ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
     delete deckCardList[index].listItem;
