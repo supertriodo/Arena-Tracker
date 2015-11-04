@@ -1164,7 +1164,7 @@ void MainWindow::checkHSCardsDir()
     {
         pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
         pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
-        QMessageBox::warning(0, tr("HSCards not found"),
+        QMessageBox::warning(this, tr("HSCards not found"),
                              "HSCards dir not found on:\n" +
                              dir.absoluteFilePath() +
                              "\nMove the directory there.");
@@ -1717,9 +1717,7 @@ void MainWindow::completeToolButton()
 //TODO
 //Tooltip cards
 //Black theme
-//Resize mas izq
 //Delete ui no usados en secondary window
-//todos QMessageBox tienen padre
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

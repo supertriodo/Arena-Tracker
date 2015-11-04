@@ -721,7 +721,7 @@ void GameWatcher::checkAvenge()
 
 QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
 {
-    QMessageBox msgBox;
+    QMessageBox msgBox((QMainWindow*)this->parent());
     msgBox.setText(tr("Who are you?"));
     msgBox.setWindowTitle(tr("Player Tag"));
     msgBox.setIcon(QMessageBox::Question);

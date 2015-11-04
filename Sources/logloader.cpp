@@ -46,7 +46,7 @@ void LogLoader::init(qint64 &logSize)
         settings.setValue("logPath", "");
         emit pDebug("Log not found.");
         emit pLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information(0, tr("Log not found"), tr("Log not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information((QMainWindow*)this->parent(), tr("Log not found"), tr("Log not found. Restart Arena Tracker and set the path again."));
     }
 }
 
