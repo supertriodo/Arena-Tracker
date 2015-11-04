@@ -570,13 +570,6 @@ void MainWindow::completeUI()
         ui->tabWidget->setTabBarAutoHide(true);
         ui->tabWidget->show();
     }
-
-    this->setAttribute(Qt::WA_TranslucentBackground, true);
-    this->show();
-
-    //show() hace un resize que acaba llamando a calculateMinimumWidth()
-    //estableciendo un minimumWidth() erroneo que tenemos que corregir
-    if(isMainWindow)    this->setMinimumSize(100,200);
 }
 
 
@@ -693,6 +686,9 @@ void MainWindow::readSettings()
         this->splitWindow = otherWindow->splitWindow;
         this->transparency = otherWindow->transparency;
     }
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->show();
+    this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
     this->windowsFormation = None;
     resize(size);
     move(pos);
@@ -995,7 +991,6 @@ void MainWindow::calculateDeckWindowMinimumWidth()
     if(this->otherWindow!=NULL && deckHandler!= NULL)
     {
         int deckWidth = this->otherWindow->width() - ui->deckListWidget->width() + ui->deckListWidget->sizeHintForColumn(0);
-//        this->otherWindow->resize(deckWidth, this->otherWindow->height());
         this->otherWindow->setMinimumWidth(deckWidth);
         this->otherWindow->setMaximumWidth(deckWidth);
     }
@@ -1720,7 +1715,7 @@ void MainWindow::completeToolButton()
 //Black theme
 //Resize mas izq
 //Dialogo eliminar carta junto a ventana
-//HsCardsnot found ugly
+//Delete ui no usados en secondary window
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
