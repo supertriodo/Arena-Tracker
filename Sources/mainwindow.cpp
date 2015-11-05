@@ -667,9 +667,9 @@ void MainWindow::readSettings()
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
 
-        this->greyedHeight = settings.value("greyedHeight", 25).toInt();
+        this->greyedHeight = settings.value("greyedHeight", -1).toInt();
         this->cardHeight = settings.value("cardHeight", 35).toInt();
-        this->drawDisappear = settings.value("drawDisappear", 10).toInt();
+        this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
 
         //Spread options to components
@@ -1315,6 +1315,10 @@ void MainWindow::addTransparentMenu(QMenu *menu)
         case Never:
             action2->setChecked(true);
             break;
+        default:
+            transparency = Auto;
+            action1->setChecked(true);
+            break;
     }
 
     QMenu *transparentMenu = new QMenu("Transparency", this);
@@ -1433,6 +1437,10 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
         case -1:
             action5->setChecked(true);
             break;
+        default:
+            greyedHeight = -1;
+            action5->setChecked(true);
+            break;
     }
 
     QMenu *tamGreyedMenu = new QMenu("Deck: Greyed size", this);
@@ -1530,6 +1538,10 @@ void MainWindow::addTamCardMenu(QMenu *menu)
         case 35:
             action4->setChecked(true);
             break;
+        default:
+            cardHeight = 35;
+            action4->setChecked(true);
+            break;
     }
 
     QMenu *tamCardMenu = new QMenu("Deck: Card size", this);
@@ -1616,6 +1628,10 @@ void MainWindow::addTimeDrawMenu(QMenu *menu)
             break;
         case 0:
             action3->setChecked(true);
+            break;
+        default:
+            drawDisappear = 5;
+            action1->setChecked(true);
             break;
     }
 
