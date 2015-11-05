@@ -19,8 +19,26 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidgetTemplate">
         <property name="font">
@@ -601,6 +619,21 @@
              <bool>false</bool>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QRadioButton" name="radioButtonDraft1">
                <property name="text">
@@ -726,8 +759,14 @@
           <string>Deck</string>
          </attribute>
          <layout class="QVBoxLayout" name="tabDeckLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QPushButton" name="deckButtonRemove">
               <property name="sizePolicy">

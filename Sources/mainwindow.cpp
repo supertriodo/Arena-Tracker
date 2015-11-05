@@ -41,8 +41,6 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
     ui(new Ui::Extended)
 {
-    ui->setupUi(this);
-
     atLogFile = NULL;
     logLoader = NULL;
     gameWatcher = NULL;
@@ -99,6 +97,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
+    ui->tabDeckLayout->setContentsMargins(11, 11, 11, 11);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -500,20 +499,16 @@ void MainWindow::createWebUploader()
 
 void MainWindow::completeUI()
 {
-    ui->tabWidgetTemplate->clear();
-    ui->tabWidgetTemplate->hide();
-
-    ui->tabWidget = new MoveTabWidget(this);
-    ui->tabWidget->hide();
-    ui->gridLayout->removeWidget(ui->tabWidgetTemplate);
-    ui->gridLayout->addWidget(ui->tabWidget, 0, 0);
-
-    ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-
-    completeUIButtons();
-
     if(isMainWindow)
     {
+        ui->tabWidget = new MoveTabWidget(this);
+        ui->tabWidget->hide();
+
+        ui->tabWidgetTemplate->clear();
+        ui->tabWidgetTemplate->hide();
+        ui->gridLayout->removeWidget(ui->tabWidgetTemplate);
+        ui->gridLayout->addWidget(ui->tabWidget, 0, 0);
+
         ui->tabWidgetH2 = new MoveTabWidget(this);
         ui->tabWidgetH2->hide();
         ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
@@ -529,18 +524,16 @@ void MainWindow::completeUI()
 
         ui->arenaTreeWidget = new MoveTreeWidget(ui->tabArena);
         ui->tabArenalLayout->insertWidget(1, ui->arenaTreeWidget);
-
         ui->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
         ui->tabEnemyLayout->addWidget(ui->enemyHandListWidget);
-
         ui->secretsTreeWidget = new MoveTreeWidget(ui->tabEnemy);
         ui->tabEnemyLayout->addWidget(ui->secretsTreeWidget);
-
         ui->drawListWidget = new MoveListWidget(ui->tabEnemy);
         ui->tabEnemyLayout->addWidget(ui->drawListWidget);
-
         ui->deckListWidget = new MoveListWidget(ui->tabDeck);
         ui->tabDeckLayout->addWidget(ui->deckListWidget);
+
+        ui->logTextEdit->setFrameShape(QFrame::NoFrame);
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
@@ -564,12 +557,11 @@ void MainWindow::completeUI()
     }
     else
     {
-        delete ui->progressBar; ui->progressBar = NULL;
-
-        moveTabTo(this->otherWindow->ui->tabDeck, ui->tabWidget);
-        ui->tabWidget->setTabBarAutoHide(true);
-        ui->tabWidget->show();
+        setCentralWidget(this->otherWindow->ui->tabDeck);
+        this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
+        this->otherWindow->ui->tabDeck->show();
     }
+    completeUIButtons();
 }
 
 
@@ -794,21 +786,15 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
 
-    int top = ui->tabWidget->pos().y();
-    int bottom = top + ui->tabWidget->height();
-    int left = ui->tabWidget->pos().x();
-    int right = left + ui->tabWidget->width();
+    QWidget *widget = this->centralWidget();
+    int top = widget->pos().y();
+    int bottom = top + widget->height();
+    int left = widget->pos().x();
+    int right = left + widget->width();
 
     if(isMainWindow)
     {
         resizeTabWidgets(event);
-
-        if(!ui->tabWidgetH3->isHidden())        right = ui->tabWidgetH3->pos().x() + ui->tabWidgetH3->width();
-        else if(!ui->tabWidgetH2->isHidden())   right = ui->tabWidgetH2->pos().x() + ui->tabWidgetH2->width();
-
-        if(!ui->progressBar->isHidden())        bottom = ui->progressBar->pos().y() + ui->progressBar->height();
-        else if(!ui->tabWidgetV1->isHidden())        bottom = ui->tabWidgetV1->pos().y() + ui->tabWidgetV1->height();
-
 
         ui->closeButton->move(right-24, top);
         ui->minimizeButton->move(right-48, top);
@@ -862,8 +848,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     {
         case None:
         case H1:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);//Reactivar con rewards
-
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
@@ -882,7 +866,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case H2:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
@@ -903,7 +886,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case H3:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
@@ -926,7 +908,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             break;
 
         case V2:
-//            ui->arenaTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
