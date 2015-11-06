@@ -11,10 +11,12 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     if (!screen) return;
 
     QRect rectScreen = screen->geometry();
-    resize(rect.width()+2*MARGIN-(sizeCard.width()-scoreWidth),
-           rect.height()+2*MARGIN-(sizeCard.height()-scoreWidth));
-    move(rectScreen.x() + rect.x() - MARGIN + (sizeCard.width()-scoreWidth)/2,
+    int midCards = (rect.width() - 3*sizeCard.width())/2;
+    resize(rect.width() + 2*MARGIN + midCards,
+           rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
+    move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
          rectScreen.y() + rect.y() - MARGIN + 2.6*sizeCard.height());
+    int synergyWidth = this->width()/3-10;
 
 
     QWidget *centralWidget = new QWidget(this);
@@ -35,13 +37,9 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i]->setMinimumWidth(scoreWidth);
         scoresPushButton[i]->setFont(font);
 
+        horLayoutScores->addStretch();
         horLayoutScores->addWidget(scoresPushButton[i]);
-        if(i<2)    horLayoutScores->addStretch();
-
-        connect(scoresPushButton[i], SIGNAL(enter(int)),
-                this, SLOT(showSynergies(int)));
-        connect(scoresPushButton[i], SIGNAL(leave(int)),
-                this, SLOT(hideSynergies(int)));
+        horLayoutScores->addStretch();
 
 
         QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
@@ -50,7 +48,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setMaximumHeight(0);
         synergiesListWidget[i]->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        synergiesListWidget[i]->setIconSize(CARD_SIZE);
+        synergiesListWidget[i]->setIconSize(QSize(std::min(218, synergyWidth),35));
         synergiesListWidget[i]->setFrameShape(QFrame::NoFrame);
         synergiesListWidget[i]->setStyleSheet("background-color: transparent;");
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
@@ -75,7 +73,6 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 {
     double ratings[3] = {rating1, rating2, rating3};
     QString synergies[3] = {synergy1, synergy2, synergy3};
-    double maxRating = std::max(std::max(rating1,rating2),rating3);
 
     for(int i=0; i<3; i++)
     {
@@ -114,23 +111,39 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         animation->setEasingCurve(QEasingCurve::OutBounce);
         animation->start();
 
-        scoresPushButton[i]->setDrawArrow(!synergies[i].isEmpty());
-        scoresPushButton[i]->setDrawHLines(ratings[i]==maxRating);
+        if(i == 0)  connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
 
 
         //Insert synergies
         synergiesListWidget[i]->clear();
 
-        QStringList synergiesList = synergies[i].split(" - ", QString::SkipEmptyParts);
+        QStringList synergiesList = synergies[i].split(" / ", QString::SkipEmptyParts);
         foreach(QString name, synergiesList)
         {
-            QString code = Utility::cardEnCodeFromName(name);
+            QString code;
+            int total = getCard(name, code);
             DeckCard deckCard(code);
+            deckCard.total = deckCard.remaining = total;
             deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
             deckCard.draw();
         }
+    }
+}
 
-        synergiesListWidget[i]->setMaximumWidth(0);
+
+int DraftScoreWindow::getCard(QString &name, QString &code)
+{
+    //Mechwarper (2x)
+    QRegularExpressionMatch match;
+    if(name.contains(QRegularExpression("([\\w ]*\\w) *\\((\\d+)x\\)"), &match))
+    {
+        code = Utility::cardEnCodeFromName(match.captured(1));
+        return match.captured(2).toInt();
+    }
+    else
+    {
+        code = Utility::cardEnCodeFromName(name);
+        return 1;
     }
 }
 
@@ -155,7 +168,20 @@ void DraftScoreWindow::hideScores()
 
         connect(animation, SIGNAL(finished()),
                 this, SLOT(update()));
+
+        hideSynergies(i);
     }
+    this->update();
+}
+
+
+void DraftScoreWindow::showSynergies()
+{
+    for(int i=0; i<3; i++)
+    {
+        showSynergies(i);
+    }
+    this->update();
 }
 
 
@@ -169,31 +195,13 @@ void DraftScoreWindow::showSynergies(int index)
 
     synergiesListWidget[index]->setMinimumHeight(height);
     synergiesListWidget[index]->setMaximumHeight(height);
-
-    //Width
-//    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
-//    animation->setDuration(ANIMATION_TIME);
-//    animation->setStartValue(0);
-//    animation->setEndValue(225);
-//    animation->setEasingCurve(QEasingCurve::OutBounce);
-//    animation->start();
-
-    synergiesListWidget[index]->setMaximumWidth(225);
-    this->update();
+    synergiesListWidget[index]->show();
 }
 
 
 void DraftScoreWindow::hideSynergies(int index)
 {
-//    QPropertyAnimation *animation = new QPropertyAnimation(synergiesListWidget[index], "maximumWidth");
-//    animation->setDuration(ANIMATION_TIME/2);
-//    animation->setStartValue(synergiesListWidget[index]->maximumWidth());
-//    animation->setEndValue(0);
-//    animation->setEasingCurve(QEasingCurve::InQuad);
-//    animation->start();
-
-    synergiesListWidget[index]->setMaximumWidth(0);
-    this->update();
+    synergiesListWidget[index]->hide();
 }
 
 

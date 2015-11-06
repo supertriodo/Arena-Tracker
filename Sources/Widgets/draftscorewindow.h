@@ -27,7 +27,11 @@ private:
     int scoreWidth;
     int maxSynergyHeight;
 
+
 //Metodos
+private:
+    int getCard(QString &name, QString &code);
+
 public:
     void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3);
     void hideScores();
@@ -35,6 +39,7 @@ public:
 private slots:
     void showSynergies(int index);
     void hideSynergies(int index);
+    void showSynergies();
 };
 
 #endif // DRAFTSCOREWINDOW_H

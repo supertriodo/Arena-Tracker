@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
-    <height>535</height>
+    <width>392</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -607,7 +607,7 @@
           <item>
            <widget class="QGroupBox" name="groupBoxDraft">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -620,7 +620,7 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <property name="spacing">
-              <number>6</number>
+              <number>0</number>
              </property>
              <property name="leftMargin">
               <number>0</number>
@@ -644,7 +644,7 @@
              <item>
               <widget class="QTextBrowser" name="textDraft1">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -652,7 +652,7 @@
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>25</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="font">
@@ -679,7 +679,7 @@
              <item>
               <widget class="QTextBrowser" name="textDraft2">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -687,7 +687,7 @@
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>25</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="font">
@@ -711,7 +711,7 @@
              <item>
               <widget class="QTextBrowser" name="textDraft3">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -719,7 +719,7 @@
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>25</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="font">
@@ -743,6 +743,12 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>100</height>
+             </size>
             </property>
             <property name="font">
              <font>

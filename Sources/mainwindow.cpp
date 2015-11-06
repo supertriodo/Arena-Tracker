@@ -1714,7 +1714,8 @@ void MainWindow::completeToolButton()
 //TODO
 //Tooltip cards
 //Black theme
-//Delete ui no usados en secondary window
+//Opciones drafting.
+//padre mainWindow para otra window
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
