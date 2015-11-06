@@ -557,6 +557,8 @@ void MainWindow::completeUI()
     }
     else
     {
+        this->setWindowIcon(QIcon(":/Images/icon.png"));
+
         setCentralWidget(this->otherWindow->ui->tabDeck);
         this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
         this->otherWindow->ui->tabDeck->show();
@@ -1715,7 +1717,6 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Black theme
 //Opciones drafting.
-//padre mainWindow para otra window
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
