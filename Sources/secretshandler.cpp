@@ -128,6 +128,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
         case paladin:
             activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
+//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
@@ -312,11 +313,18 @@ void SecretsHandler::playerSpellObjPlayed()
 }
 
 
-void SecretsHandler::playerMinionPlayed()
+void SecretsHandler::playerMinionPlayed(int playerMinions)
 {
     discardSecretOptionNow(MIRROR_ENTITY);
     discardSecretOptionNow(SNIPE);
-    discardSecretOptionNow(REPENTANCE);
+
+    if(playerMinions>3)
+    {
+        discardSecretOptionNow(SACRED_TRIAL);
+        discardSecretOption(REPENTANCE);//Ocultado por SACRED_TRIAL
+    }
+    else    discardSecretOptionNow(REPENTANCE);
+
 }
 
 

@@ -52,6 +52,7 @@ private:
     int playerID;
     SecretHero secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
+    int playerMinions;
     bool isPlayerTurn;
     bool arenaMode;
     bool deckRead;
@@ -102,7 +103,7 @@ signals:
     void enemySecretStealed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void playerSpellPlayed();
-    void playerMinionPlayed();
+    void playerMinionPlayed(int playerMinions);
     void enemyMinionDead(QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();

@@ -357,8 +357,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerSpellPlayed()));
     connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
             secretsHandler, SLOT(playerSpellObjPlayed()));
-    connect(gameWatcher, SIGNAL(playerMinionPlayed()),
-            secretsHandler, SLOT(playerMinionPlayed()));
+    connect(gameWatcher, SIGNAL(playerMinionPlayed(int)),
+            secretsHandler, SLOT(playerMinionPlayed(int)));
     connect(gameWatcher, SIGNAL(enemyMinionDead(QString)),
             secretsHandler, SLOT(enemyMinionDead(QString)));
     connect(gameWatcher, SIGNAL(avengeTested()),
@@ -1718,6 +1718,10 @@ void MainWindow::completeToolButton()
 //Black theme
 //Opciones drafting.
 //Menus checkbox
+//libpng warning: iCCP: known incorrect sRGB profile
+//Eliminar warnings
+//Language jaJP
+//Activate SACRED_TRIAL
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

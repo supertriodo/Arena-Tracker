@@ -11,6 +11,7 @@
 //Secretos
 #define AVENGE QString("FP1_020")
 #define NOBLE_SACRIFICE QString("EX1_130")
+#define SACRED_TRIAL QString("")
 #define REPENTANCE QString("EX1_379")
 #define REDEMPTION QString("EX1_136")
 #define EYE_FOR_AN_EYE QString("EX1_132")
@@ -90,7 +91,7 @@ public slots:
     void resetSecretsInterface();
     void playerSpellPlayed();
     void playerSpellObjPlayed();
-    void playerMinionPlayed();
+    void playerMinionPlayed(int playerMinions);
     void enemyMinionDead(QString code);
     void avengeTested();
     void cSpiritTested();
