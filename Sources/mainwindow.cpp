@@ -1717,6 +1717,7 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Black theme
 //Opciones drafting.
+//Menus checkbox
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

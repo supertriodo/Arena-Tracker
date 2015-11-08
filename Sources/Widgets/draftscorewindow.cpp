@@ -4,7 +4,7 @@
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    scoreWidth = sizeCard.width()*0.8;
+    scoreWidth = sizeCard.width()*0.7;
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
@@ -15,8 +15,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     resize(rect.width() + 2*MARGIN + midCards,
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
     move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
-         rectScreen.y() + rect.y() - MARGIN + 2.6*sizeCard.height());
-    int synergyWidth = this->width()/3-10;
+         rectScreen.y() + rect.y() - MARGIN + 2.65*sizeCard.height());
+    int synergyWidth = this->width()/3-10;  //List Widget need 10 px (maybe 11px) extra space more than the sizeCard.
 
 
     QWidget *centralWidget = new QWidget(this);
