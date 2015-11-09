@@ -165,7 +165,7 @@ QString MainWindow::getHSLanguage()
     if(lang != "enGB" && lang != "enUS" && lang != "esES" && lang != "esMX" &&
             lang != "deDE" && lang != "frFR" && lang != "itIT" &&
             lang != "plPL" && lang != "ptBR" && lang != "ruRU" &&
-            lang != "koKR" && lang != "zhCN" && lang != "zhTW")
+            lang != "koKR" && lang != "zhCN" && lang != "zhTW" && lang != "jaJP")
     {
         pDebug("Language: " + lang + "not supported. Using enUS.");
         pLog("Settings: Language " + lang + "not supported. Using enUS.");

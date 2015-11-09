@@ -54,8 +54,8 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 void HSCardDownloader::setLang(QString value)
 {
     if(value == "esMX")         lang = "eses";
-    else if(value == "zhTW")    lang = "zhcn";
     else if(value == "enGB" ||
+            value == "jaJP" ||
             value == "plPL" ||
             value == "koKR")    lang = "enus";
     else                        lang = value.toLower();
