@@ -1725,7 +1725,6 @@ void MainWindow::completeToolButton()
 //libpng warning: iCCP: known incorrect sRGB profile
 //Eliminar warnings
 //Language jaJP
-//Desactivar leer deck arena mastery
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
 

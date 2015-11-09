@@ -55,6 +55,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         verLayoutSynergy->addStretch();
 
         horLayoutSynergies->addStretch();
+        if(synergyWidth > 218)  horLayoutSynergies->addSpacing(std::min(30, synergyWidth-218));
         horLayoutSynergies->addLayout(verLayoutSynergy);
         horLayoutSynergies->addStretch();
     }
