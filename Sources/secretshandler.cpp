@@ -128,9 +128,9 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
         case paladin:
             activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
-//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
+//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
@@ -140,6 +140,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             activeSecret.children.append(SecretCard(BEAR_TRAP));
             activeSecret.children.append(SecretCard(SNIPE));
+//            activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
         break;
@@ -310,6 +311,12 @@ void SecretsHandler::playerSpellPlayed()
 void SecretsHandler::playerSpellObjPlayed()
 {
     discardSecretOption(SPELLBENDER, 7000);//Ocultado por COUNTERSPELL
+}
+
+
+void SecretsHandler::playerHeroPower()
+{
+    discardSecretOptionNow(DART_TRAP);
 }
 
 

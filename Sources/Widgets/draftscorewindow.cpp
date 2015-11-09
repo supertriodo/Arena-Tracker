@@ -53,8 +53,10 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setStyleSheet("background-color: transparent;");
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
         verLayoutSynergy->addStretch();
+
+        horLayoutSynergies->addStretch();
         horLayoutSynergies->addLayout(verLayoutSynergy);
-        if(i<2)    horLayoutSynergies->addStretch();
+        horLayoutSynergies->addStretch();
     }
 
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2*scoreWidth; //Extra scoreWidth

@@ -78,6 +78,7 @@ private:
     void startReadingDeck();
     void endReadingDeck();
     bool findClasp(QString &line);
+    bool isHeroPower(QString code);
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
@@ -107,6 +108,7 @@ signals:
     void enemyMinionDead(QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();
+    void playerHeroPower();
     void avengeTested();
     void cSpiritTested();
     void playerTurnStart();

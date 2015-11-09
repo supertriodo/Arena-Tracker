@@ -354,6 +354,16 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
 }
 
 
+bool GameWatcher::isHeroPower(QString code)
+{
+    if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+        code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+        code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+            return true;
+    else    return false;
+}
+
+
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
     //Win state
@@ -402,19 +412,20 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //BlockType=TRIGGER Index=0 Target=0
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - ACTION_START "
-            "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] "
+            "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "BlockType=(\\w+) Index=-?\\d+ Target="
             ), match))
         {
             QString name = match->captured(1);
             QString cardId = match->captured(2);
-            QString subType = match->captured(3);
+            QString player = match->captured(3);
+            QString subType = match->captured(4);
+
             emit pDebug("Trigger(" + subType + "): " + name, numLine);
             emit specialCardTrigger(cardId, subType);
+            if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
         }
 
-
-        //SECRETOS
         //Jugador/Enemigo accion con objetivo
         else if(line.contains(QRegularExpression(
             "GameState\\.DebugPrintPower\\(\\) - ACTION_START "

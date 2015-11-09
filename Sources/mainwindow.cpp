@@ -367,6 +367,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
             secretsHandler, SLOT(playerAttack(bool,bool)));
+    connect(gameWatcher, SIGNAL(playerHeroPower()),
+            secretsHandler, SLOT(playerHeroPower()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
@@ -1721,7 +1723,9 @@ void MainWindow::completeToolButton()
 //libpng warning: iCCP: known incorrect sRGB profile
 //Eliminar warnings
 //Language jaJP
-//Activate SACRED_TRIAL
+//Desactivar leer deck arena mastery
+//Activar SACRED_TRIAL
+//Activar DART_TRAP
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
@@ -1739,5 +1743,6 @@ void MainWindow::completeToolButton()
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)
+//Incluir nuevo hero power en isHeroPower(QString code) de GameWatcher
 //Nuevo Json hearthArena
 //Nuevo start draft menu
