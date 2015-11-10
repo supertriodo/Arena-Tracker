@@ -1168,7 +1168,7 @@ void MainWindow::test()
 //MENUS
 void MainWindow::addDraftMenu(QMenu *menu)
 {
-    QMenu *newArenaMenu = new QMenu("Force draft", this);
+    QMenu *newArenaMenu = new QMenu("Force Draft", this);
 
     QSignalMapper* mapper = new QSignalMapper(this);
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
@@ -1207,14 +1207,14 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 
 void MainWindow::addClearDeckMenu(QMenu *menu)
 {
-    QAction *action = menu->addAction("Clear deck");
+    QAction *action = menu->addAction("Clear Deck");
     connect(action, SIGNAL(triggered()), this, SLOT(confirmClearDeck()));
 }
 
 
 void MainWindow::confirmClearDeck()
 {
-    int ret = QMessageBox::question(this, tr("Clear deck"),
+    int ret = QMessageBox::question(this, tr("Clear Deck"),
                                    "Do you want to clear your deck?",
                                    QMessageBox::Ok | QMessageBox::Cancel);
 
@@ -1227,37 +1227,19 @@ void MainWindow::confirmClearDeck()
 }
 
 
-void MainWindow::addSplitMenu(QMenu *menu)
+void MainWindow::addSplitAction(QMenu *menu)
 {
-    QAction *action1 = new QAction("Auto Split", this);
-    QAction *action2 = new QAction("No Split", this);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    connect(action1, SIGNAL(triggered()), this, SLOT(splitWindowAuto()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(splitWindowNever()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-    this->splitWindow?action1->setChecked(true):action2->setChecked(true);
-
-    QMenu *windowSplitMenu = new QMenu("Window split", this);
-    windowSplitMenu->addAction(action1);
-    windowSplitMenu->addAction(action2);
-    menu->addMenu(windowSplitMenu);
+    QAction * action = new QAction("Window Split", this);
+    action->setCheckable(true);
+    if(this->splitWindow) action->setChecked(true);
+    connect(action, SIGNAL(triggered()), this, SLOT(toggleSplitWindow()));
+    menu->addAction(action);
 }
 
 
-void MainWindow::splitWindowAuto()
+void MainWindow::toggleSplitWindow()
 {
-    this->splitWindow = true;
-    spreadSplitWindow();
-}
-
-
-void MainWindow::splitWindowNever()
-{
-    this->splitWindow = false;
+    this->splitWindow = !this->splitWindow;
     spreadSplitWindow();
 }
 
@@ -1353,10 +1335,11 @@ void MainWindow::spreadTransparency()
 
 void MainWindow::addDeckWindowAction(QMenu *menu)
 {
-    ui->deckWindowAction = new QAction(
-                (this->otherWindow == NULL)?"Show Deck Window":"Hide Deck Window", this);
-    connect(ui->deckWindowAction, SIGNAL(triggered()), this, SLOT(toggleDeckWindow()));
-    menu->addAction(ui->deckWindowAction);
+    QAction * deckWindowAction = new QAction("Show Deck Window", this);
+    deckWindowAction->setCheckable(true);
+    if(this->otherWindow!=NULL) deckWindowAction->setChecked(true);
+    connect(deckWindowAction, SIGNAL(triggered()), this, SLOT(toggleDeckWindow()));
+    menu->addAction(deckWindowAction);
 }
 
 
@@ -1365,12 +1348,10 @@ void MainWindow::toggleDeckWindow()
     if(this->otherWindow == NULL)
     {
         createSecondaryWindow();
-        ui->deckWindowAction->setText("Hide Deck Window");
     }
     else
     {
         destroySecondaryWindow();
-        ui->deckWindowAction->setText("Show Deck Window");
     }
 }
 
@@ -1430,7 +1411,7 @@ void MainWindow::addTamGreyedMenu(QMenu *menu)
             break;
     }
 
-    QMenu *tamGreyedMenu = new QMenu("Deck: Greyed size", this);
+    QMenu *tamGreyedMenu = new QMenu("Deck: Greyed Size", this);
     tamGreyedMenu->addAction(action0);
     tamGreyedMenu->addAction(action1);
     tamGreyedMenu->addAction(action2);
@@ -1531,7 +1512,7 @@ void MainWindow::addTamCardMenu(QMenu *menu)
             break;
     }
 
-    QMenu *tamCardMenu = new QMenu("Deck: Card size", this);
+    QMenu *tamCardMenu = new QMenu("Deck: Card Size", this);
     tamCardMenu->addAction(action0);
     tamCardMenu->addAction(action1);
     tamCardMenu->addAction(action2);
@@ -1622,7 +1603,7 @@ void MainWindow::addTimeDrawMenu(QMenu *menu)
             break;
     }
 
-    QMenu *timeDrawMenu = new QMenu("Hand: Show draw", this);
+    QMenu *timeDrawMenu = new QMenu("Hand: Show Card Draw", this);
     timeDrawMenu->addAction(action0);
     timeDrawMenu->addAction(action1);
     timeDrawMenu->addAction(action2);
@@ -1659,39 +1640,19 @@ void MainWindow::timeDrawTurn()
 }
 
 
-void MainWindow::addShowDraftOverlayMenu(QMenu *menu)
+void MainWindow::addShowDraftOverlayAction(QMenu *menu)
 {
-    QAction *action0 = new QAction("Hide", this);
-    QAction *action1 = new QAction("Show", this);
-    action0->setCheckable(true);
-    action1->setCheckable(true);
-    connect(action0, SIGNAL(triggered()), this, SLOT(showDraftOverlayNo()));
-    connect(action1, SIGNAL(triggered()), this, SLOT(showDraftOverlayYes()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action0);
-    splitGroup->addAction(action1);
-
-    if(showDraftOverlay)    action1->setChecked(true);
-    else                    action0->setChecked(true);
-
-    QMenu *showDraftOverlayMenu = new QMenu("Draft: Show overlay", this);
-    showDraftOverlayMenu->addAction(action0);
-    showDraftOverlayMenu->addAction(action1);
-    menu->addMenu(showDraftOverlayMenu);
+    QAction * action = new QAction("Draft: Show Overlay", this);
+    action->setCheckable(true);
+    if(this->showDraftOverlay) action->setChecked(true);
+    connect(action, SIGNAL(triggered()), this, SLOT(toggleShowDraftOverlay()));
+    menu->addAction(action);
 }
 
 
-void MainWindow::showDraftOverlayNo()
+void MainWindow::toggleShowDraftOverlay()
 {
-    this->showDraftOverlay = false;
-    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
-}
-
-
-void MainWindow::showDraftOverlayYes()
-{
-    this->showDraftOverlay = true;
+    this->showDraftOverlay = !this->showDraftOverlay;
     draftHandler->setShowDraftOverlay(this->showDraftOverlay);
 }
 
@@ -1708,9 +1669,9 @@ void MainWindow::completeToolButton()
     menu->addSeparator();
     addTimeDrawMenu(menu);
     menu->addSeparator();
-    addShowDraftOverlayMenu(menu);
+    addShowDraftOverlayAction(menu);
     menu->addSeparator();
-    addSplitMenu(menu);
+    addSplitAction(menu);
     addTransparentMenu(menu);
 
     ui->toolButton->setMenu(menu);
@@ -1721,10 +1682,6 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Black theme
 //Opciones drafting.
-//Menus checkbox
-//libpng warning: iCCP: known incorrect sRGB profile
-//Eliminar warnings
-//Language jaJP
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
 

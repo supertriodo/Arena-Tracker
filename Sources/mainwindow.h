@@ -85,7 +85,7 @@ private:
     void completeToolButton();
     void addDraftMenu(QMenu *menu);
     void addClearDeckMenu(QMenu *menu);
-    void addSplitMenu(QMenu *menu);
+    void addSplitAction(QMenu *menu);
     void spreadSplitWindow();
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
@@ -93,7 +93,7 @@ private:
     void addTamGreyedMenu(QMenu *menu);
     void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
-    void addShowDraftOverlayMenu(QMenu *menu);
+    void addShowDraftOverlayAction(QMenu *menu);
     void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
@@ -151,8 +151,7 @@ private slots:
     void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
     void confirmClearDeck();
-    void splitWindowAuto();
-    void splitWindowNever();
+    void toggleSplitWindow();
     void transparentAlways();
     void transparentAuto();
     void transparentNever();
@@ -172,8 +171,7 @@ private slots:
     void tamCard25px();
     void tamCard30px();
     void tamCard35px();
-    void showDraftOverlayNo();
-    void showDraftOverlayYes();
+    void toggleShowDraftOverlay();
 };
 
 #endif // MAINWINDOW_H
