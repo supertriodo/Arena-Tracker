@@ -277,7 +277,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                 //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
                 endReadingDeck();
 
-                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State).", numLine);
+                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State)", numLine);
                 gameState = heroType1State;
 
                 mulliganEnemyDone = false;
@@ -301,7 +301,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             break;
         case heroType1State:
         case heroType2State:
-            if(gameState == heroType1State && line.contains(QRegularExpression("Creating ID=4 CardID=HERO_(\\d+)"), match))
+            if(gameState == heroType1State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero1 = match->captured(1);
                 gameState = heroType2State;
@@ -328,6 +328,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
                 firstPlayer = match->captured(1);
+                emit pDebug("Found First Player: " + firstPlayer, numLine);
             }
             break;
         case playerName2State:
@@ -340,11 +341,12 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 gameState = inGameState;
-                emit pDebug("Found player 2 (GameState = inGameState).", numLine);
+                emit pDebug("Found player 2 (GameState = inGameState)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
                 firstPlayer = match->captured(1);
+                emit pDebug("Found First Player: " + firstPlayer, numLine);
             }
             break;
         case inGameState:
@@ -391,19 +393,35 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug("Player: Starting card drawn: " + match->captured(1), numLine);
             emit playerCardDraw(match->captured(1));
         }
+        //Enemigo roba carta inicial
+        else if(line.contains(QRegularExpression(
+                      "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
+                      "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=(\\d+)\\]"
+                      ), match))
+        {
+            QString id = match->captured(1);
+            QString player = match->captured(2);
+
+            if(player.toInt() != playerID)
+            {
+                emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
+                emit enemyCardDraw(id.toInt());
+            }
+        }
         //Enemigo mulligan
         else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
                 ), match))
         {
             if(!mulliganEnemyDone && match->captured(1) != playerTag)
             {
-                emit pDebug("Enemy mulligan end.", numLine);
-                mulliganEnemyDone = true;
                 if(firstPlayer == playerTag)
                 {
                     //Convertir ultima carta en moneda enemiga
+                    emit pDebug("Enemy: Coin created.", 0);
                     emit lastHandCardIsCoin();
                 }
+                emit pDebug("Enemy mulligan end.", numLine);
+                mulliganEnemyDone = true;
             }
         }
 
@@ -566,12 +584,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     {
                         emit pDebug("Enemy: Special card drawn. ID: " + id, numLine);
                         emit enemyCardDraw(id.toInt(), turnReal, true);
-                    }
-                    //Enemigo roba carta inicial
-                    else
-                    {
-                        emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
-                        emit enemyCardDraw(id.toInt());
                     }
                 }
             }
