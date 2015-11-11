@@ -35,7 +35,6 @@ DraftHandler::~DraftHandler()
 void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
-    ui->groupBoxDraft->setStyleSheet("border-width: 0px;");
     ui->radioButtonDraft1->setIconSize(CARD_SIZE);
     ui->radioButtonDraft2->setIconSize(CARD_SIZE);
     ui->radioButtonDraft3->setIconSize(CARD_SIZE);
@@ -895,7 +894,7 @@ void DraftHandler::setTheme(Theme theme)
             ui->textDraft2->setStyleSheet("");
             ui->textDraft3->setStyleSheet("");
             ui->textBrowserDraft->setStyleSheet("");
-            ui->groupBoxDraft->setStyleSheet("");
+            ui->groupBoxDraft->setStyleSheet("border-width: 0px; border-color: transparent;");
         }
         else
         {
@@ -904,7 +903,7 @@ void DraftHandler::setTheme(Theme theme)
             ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
             ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
             ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
-            ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
+            ui->groupBoxDraft->setStyleSheet("border-width: 0px; border-color: transparent; background-color: transparent; color: white");
         }
 
         //Clear radio buttons

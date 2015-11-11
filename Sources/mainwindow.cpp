@@ -658,7 +658,7 @@ void MainWindow::readSettings()
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
-        this->theme = ThemeBlack;
+        this->theme = (Theme)settings.value("theme", ThemeBlack).toInt();
         spreadTheme();
 
         int numWindows = settings.value("numWindows", 2).toInt();
@@ -682,6 +682,7 @@ void MainWindow::readSettings()
 
         this->splitWindow = false;
         this->transparency = Transparent;
+        this->theme = ThemeBlack;
     }
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     this->show();
@@ -701,6 +702,7 @@ void MainWindow::writeSettings()
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
         settings.setValue("transparent", (int)this->transparency);
+        settings.setValue("theme", (int)this->theme);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
         settings.setValue("greyedHeight", this->greyedHeight);
         settings.setValue("cardHeight", this->cardHeight);
@@ -1327,6 +1329,24 @@ void MainWindow::spreadTransparency()
 }
 
 
+void MainWindow::addThemeAction(QMenu *menu)
+{
+    QAction * action = new QAction("Dark Theme", this);
+    action->setCheckable(true);
+    if(this->theme == ThemeBlack) action->setChecked(true);
+    connect(action, SIGNAL(triggered()), this, SLOT(toggleTheme()));
+    menu->addAction(action);
+}
+
+
+void MainWindow::toggleTheme()
+{
+    if(this->theme == ThemeWhite)   this->theme = ThemeBlack;
+    else                            this->theme = ThemeWhite;
+    spreadTheme();
+}
+
+
 void MainWindow::spreadTheme()
 {
     updateMainUITheme();
@@ -1356,13 +1376,12 @@ void MainWindow::updateMainUITheme()
         ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
                                       "QPushButton::menu-indicator {subcontrol-position: right;}"
                                       );
-        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
-                            "QMenu::item:selected {background-color: black; color: white;}"
-                            );
+        this->setStyleSheet("");
     }
     else
     {
-        ui->progressBar->setStyleSheet("QProgressBar::chunk {background-color: black;}");
+        ui->progressBar->setStyleSheet("QProgressBar::chunk {background-color: black;}"
+                                       "QProgressBar {background-color: #0F4F0F;}");
         ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                        "QPushButton:hover {background: "
                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
@@ -1374,7 +1393,9 @@ void MainWindow::updateMainUITheme()
         ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                       "QPushButton::menu-indicator {subcontrol-position: right;}"
                                       );
-        this->setStyleSheet("");
+        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
+                            "QMenu::item:selected {background-color: black; color: white;}"
+                            );
     }
 }
 
@@ -1706,7 +1727,6 @@ void MainWindow::toggleShowDraftOverlay()
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
-    addDeckWindowAction(menu);
     addClearDeckMenu(menu);
     addDraftMenu(menu);
     menu->addSeparator();
@@ -1717,8 +1737,10 @@ void MainWindow::completeToolButton()
     menu->addSeparator();
     addShowDraftOverlayAction(menu);
     menu->addSeparator();
-    addSplitAction(menu);
     addTransparentMenu(menu);
+    addThemeAction(menu);
+    addSplitAction(menu);
+    addDeckWindowAction(menu);
 
     ui->toolButton->setMenu(menu);
 
@@ -1738,8 +1760,10 @@ void MainWindow::completeToolButton()
 //TODO
 //Tooltip cards
 //Sticky borders
-//Black theme
 //Opciones drafting - opcion secreta
+//Drafting reducir padding en synergies
+//Evitar seleccionar cartas en synergies (cambiar por moveListWidget)
+//Eliminar selecciones en windows OS
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
 

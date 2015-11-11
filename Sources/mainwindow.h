@@ -90,6 +90,7 @@ private:
     void spreadSplitWindow();
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
+    void addThemeAction(QMenu *menu);
     void spreadTheme();
     void updateMainUITheme();
     void addDeckWindowAction(QMenu *menu);
@@ -175,6 +176,7 @@ private slots:
     void tamCard30px();
     void tamCard35px();
     void toggleShowDraftOverlay();
+    void toggleTheme();
 };
 
 #endif // MAINWINDOW_H
