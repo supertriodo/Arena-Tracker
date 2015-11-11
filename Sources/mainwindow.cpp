@@ -1761,7 +1761,7 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Sticky borders
 //Opciones drafting - opcion secreta
-//Eliminar selecciones en windows OS
+//Sliders black
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
 

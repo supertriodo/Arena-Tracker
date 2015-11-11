@@ -471,6 +471,8 @@ void DeckHandler::lockDeckInterface()
 
     ui->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
     ui->deckListWidget->selectionModel()->reset();
+    ui->deckListWidget->clearFocus();
+    ui->deckListWidget->setFocusPolicy(Qt::NoFocus);
     hideDeckButtons();
 
     updateTransparency();
@@ -496,6 +498,7 @@ void DeckHandler::unlockDeckInterface()
         else    it->listItem->setHidden(true);
     }
 
+    ui->deckListWidget->setFocusPolicy(Qt::ClickFocus);
     ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     updateTransparency();

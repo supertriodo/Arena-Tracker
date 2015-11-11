@@ -8,12 +8,13 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     font.setKerning(true);
     this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
-    this->setStyleSheet("background-color: transparent;");
+    this->setStyleSheet("background-color: transparent; outline: 0;");
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->setSelectionMode(QAbstractItemView::NoSelection);
+    this->setFocusPolicy(Qt::NoFocus);
     this->setAnimated(true);
     this->setHeaderHidden(true);
     this->header()->close();
