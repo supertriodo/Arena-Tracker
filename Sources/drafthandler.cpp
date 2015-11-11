@@ -13,7 +13,8 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->deckRating = 0;
     this->nextCount = 0;
     this->drafting = false;
-    this->transparency = Never;
+    this->transparency = Opaque;
+    this->theme = ThemeWhite;
     this->draftScoreWindow = NULL;
 
     for(int i=0; i<3; i++)
@@ -811,7 +812,7 @@ bool DraftHandler::findScreenRects()
 
 void DraftHandler::clearRadioButton(QRadioButton *radio, bool clearText)
 {
-    if(transparency == Always)
+    if(transparency == Transparent || theme == ThemeBlack)
     {
         radio->setStyleSheet("QRadioButton{background-color: transparent; color: white;}"
                              "QRadioButton::indicator {width: 0px;height: 0px;}");
@@ -827,16 +828,8 @@ void DraftHandler::clearRadioButton(QRadioButton *radio, bool clearText)
 
 void DraftHandler::highlightRadioButton(QRadioButton *radio)
 {
-    if(transparency == Always)
-    {
-        radio->setStyleSheet("QRadioButton{background-color: transparent; color: yellow;}"
+        radio->setStyleSheet("QRadioButton{background-color: transparent; color: rgb(50,175,50);}"
                              "QRadioButton::indicator {width: 0px;height: 0px;}");
-    }
-    else
-    {
-        radio->setStyleSheet("QRadioButton{background-color: silver;}"
-                             "QRadioButton::indicator {width: 0px;height: 0px;}");
-    }
 }
 
 
@@ -844,39 +837,81 @@ void DraftHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
 
-    if(transparency==Always)
+    if(transparency==Transparent)
     {
-        ui->heroLabel->setStyleSheet("background-color: transparent; color: white");
         ui->tabHero->setAttribute(Qt::WA_NoBackground);
         ui->tabHero->repaint();
-
-        ui->textDraft1->setStyleSheet("background-color: transparent; color: white");
-        ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
-        ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
-        ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
-        ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
+
+        if(theme == ThemeWhite)
+        {
+            ui->heroLabel->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft1->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
+            ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
+            ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
+        }
     }
     else
     {
-        ui->heroLabel->setStyleSheet("");
         ui->tabHero->setAttribute(Qt::WA_NoBackground, false);
         ui->tabHero->repaint();
-
-        ui->textDraft1->setStyleSheet("");
-        ui->textDraft2->setStyleSheet("");
-        ui->textDraft3->setStyleSheet("");
-        ui->textBrowserDraft->setStyleSheet("");
-        ui->groupBoxDraft->setStyleSheet("");
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
+
+        if(theme == ThemeWhite)
+        {
+            ui->heroLabel->setStyleSheet("");
+            ui->textDraft1->setStyleSheet("");
+            ui->textDraft2->setStyleSheet("");
+            ui->textDraft3->setStyleSheet("");
+            ui->textBrowserDraft->setStyleSheet("");
+            ui->groupBoxDraft->setStyleSheet("");
+        }
     }
 
     //Clear radio buttons
-    clearRadioButton(ui->radioButtonDraft1, false);
-    clearRadioButton(ui->radioButtonDraft2, false);
-    clearRadioButton(ui->radioButtonDraft3, false);
+    if(theme == ThemeWhite)
+    {
+        clearRadioButton(ui->radioButtonDraft1, false);
+        clearRadioButton(ui->radioButtonDraft2, false);
+        clearRadioButton(ui->radioButtonDraft3, false);
+    }
+}
+
+
+void DraftHandler::setTheme(Theme theme)
+{
+    this->theme = theme;
+
+    if(transparency != Transparent)
+    {
+        if(theme == ThemeWhite)
+        {
+            ui->heroLabel->setStyleSheet("");
+            ui->textDraft1->setStyleSheet("");
+            ui->textDraft2->setStyleSheet("");
+            ui->textDraft3->setStyleSheet("");
+            ui->textBrowserDraft->setStyleSheet("");
+            ui->groupBoxDraft->setStyleSheet("");
+        }
+        else
+        {
+            ui->heroLabel->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft1->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft2->setStyleSheet("background-color: transparent; color: white");
+            ui->textDraft3->setStyleSheet("background-color: transparent; color: white");
+            ui->textBrowserDraft->setStyleSheet("background-color: transparent; color: white");
+            ui->groupBoxDraft->setStyleSheet("background-color: transparent; color: white");
+        }
+
+        //Clear radio buttons
+        clearRadioButton(ui->radioButtonDraft1, false);
+        clearRadioButton(ui->radioButtonDraft2, false);
+        clearRadioButton(ui->radioButtonDraft3, false);
+    }
 }
 
 

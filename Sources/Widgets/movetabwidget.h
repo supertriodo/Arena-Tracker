@@ -4,11 +4,13 @@
 
 #include <QTabWidget>
 #include <QTabBar>
+#include "../utility.h"
 
 class MoveTabWidget : public QTabWidget
 {
 public:
     MoveTabWidget(QWidget *parent = 0);
+    void setTheme(Theme theme);
 };
 
 

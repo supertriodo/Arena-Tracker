@@ -6,7 +6,8 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extend
     this->webUploader = NULL;
     this->deckHandler = deckHandler;
     this->ui = ui;
-    this->transparency = Never;
+    this->transparency = Opaque;
+    this->theme = ThemeWhite;
 
     completeUI();
 }
@@ -21,6 +22,7 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
 
+    ui->logTextEdit->setFrameShape(QFrame::NoFrame);
     ui->updateButton->setToolTip(tr("Refresh"));
 
     connect(ui->updateButton, SIGNAL(clicked()),
@@ -234,35 +236,20 @@ void ArenaHandler::reshowArena(QString hero)
 
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
-    if(transparency == Always)
-    {
-        if(color == GREEN)  color = LIMEGREEN;
+    if(transparency != Transparent && theme == ThemeWhite) if(color == WHITE)  color = BLACK;
 
-        for(int i=0;i<5;i++)
-        {
-            item->setBackground(i, QBrush());
-            item->setForeground(i, QBrush(color));
-        }
-    }
-    else
+    for(int i=0;i<5;i++)
     {
-        for(int i=0;i<5;i++)
-        {
-            item->setBackground(i, QBrush(color));
-            item->setForeground(i, QBrush(BLACK));
-        }
+        item->setForeground(i, QBrush(color));
     }
 }
 
 
 QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 {
-    QColor color;
+    QColor color = item->foreground(0).color();
 
-    if(transparency == Always)  color = item->foreground(0).color();
-    else    color = item->backgroundColor(0);
-
-    if(color == LIMEGREEN)  color = GREEN;
+    if(color == BLACK)      color = WHITE;
     return color;
 }
 
@@ -430,26 +417,30 @@ void ArenaHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
 
-    if(transparency==Always)
+    if(transparency==Transparent)
     {
-        allToWhite();
-
-        if(ui->updateButton->isEnabled())
-        {
-            ui->updateButton->setEnabled(false);
-            webUploader->refresh();
-        }
-
-        ui->arenaTreeWidget->setStyleSheet("background-color: transparent;");
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
         ui->tabArena->repaint();
-
-        ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
         ui->tabLog->repaint();
+
+        if(theme == ThemeWhite)
+            ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
     }
     else
     {
+        ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabArena->repaint();
+        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabLog->repaint();
+
+        if(theme == ThemeWhite)
+            ui->logTextEdit->setStyleSheet("background-color: transparent;");
+    }
+
+    if(theme == ThemeWhite)
+    {
+        //Change arenaTreeWidget normal color to (BLACK/WHITE)
         allToWhite();
 
         if(ui->updateButton->isEnabled())
@@ -457,14 +448,31 @@ void ArenaHandler::setTransparency(Transparency value)
             ui->updateButton->setEnabled(false);
             webUploader->refresh();
         }
-
-        ui->arenaTreeWidget->setStyleSheet("");
-        ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabArena->repaint();
-
-        ui->logTextEdit->setStyleSheet("");
-        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabLog->repaint();
     }
 }
+
+
+//Blanco opaco usa un theme diferente a los otros 3
+void ArenaHandler::setTheme(Theme theme)
+{
+    this->theme = theme;
+
+    if(transparency != Transparent)
+    {
+        if(theme == ThemeWhite)
+            ui->logTextEdit->setStyleSheet("background-color: transparent;");
+        else
+            ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
+
+        //Change arenaTreeWidget normal color to (BLACK/WHITE)
+        allToWhite();
+
+        if(ui->updateButton->isEnabled())
+        {
+            ui->updateButton->setEnabled(false);
+            webUploader->refresh();
+        }
+    }
+}
+
 

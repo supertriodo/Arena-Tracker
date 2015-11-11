@@ -8,7 +8,8 @@
 #define ANIMATION_TIME 750
 
 enum DebugLevel { Normal, Warning, Error };
-enum Transparency { Always, Auto, Never };
+enum Transparency { Transparent, AutoTransparent, Opaque };
+enum Theme { ThemeWhite, ThemeBlack };
 
 class Utility
 {

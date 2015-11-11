@@ -5,7 +5,7 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::Extended *ui) : QObject(
 {
     this->ui = ui;
     this->inGame = false;
-    this->transparency = Never;
+    this->transparency = Opaque;
     this->knownCard = "";
     this->numKnownCards = 0;
     this->lastCreatedByCode = "";
@@ -149,7 +149,7 @@ void EnemyHandHandler::unlockEnemyInterface()
 
 void EnemyHandHandler::updateTransparency()
 {
-    if(transparency==Always || (inGame && transparency==Auto))
+    if(transparency==Transparent || (inGame && transparency==AutoTransparent))
     {
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();

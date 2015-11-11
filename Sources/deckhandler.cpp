@@ -6,7 +6,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->ui = ui;
     this->cardsJson = cardsJson;
     this->inGame = false;
-    this->transparency = Never;
+    this->transparency = Opaque;
     this->greyedHeight = 35;
     this->cardHeight = 35;
     this->drawAnimating = false;
@@ -36,7 +36,6 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setTransparency(Always);
 
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
@@ -508,7 +507,7 @@ void DeckHandler::unlockDeckInterface()
 
 void DeckHandler::updateTransparency()
 {
-    if(transparency==Always || (inGame && transparency==Auto))
+    if(transparency==Transparent || (inGame && transparency==AutoTransparent))
     {
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();

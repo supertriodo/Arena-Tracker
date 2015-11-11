@@ -79,7 +79,7 @@ void MainWindow::createSecondaryWindow()
 {
     this->otherWindow = new MainWindow(0, this);
     calculateDeckWindowMinimumWidth();
-    deckHandler->setTransparency(Always);
+    deckHandler->setTransparency(Transparent);
 
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
@@ -537,7 +537,6 @@ void MainWindow::completeUI()
         ui->deckListWidget = new MoveListWidget(ui->tabDeck);
         ui->tabDeckLayout->addWidget(ui->deckListWidget);
 
-        ui->logTextEdit->setFrameShape(QFrame::NoFrame);
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
@@ -581,7 +580,7 @@ void MainWindow::completeUIButtons()
         ui->closeButton->setIconSize(QSize(24, 24));
         ui->closeButton->setIcon(QIcon(":/Images/close.png"));
         ui->closeButton->setFlat(true);
-        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                        "QPushButton:hover {background: "
                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
                                                       "stop: 0 white, stop: 1 #90EE90);}");
@@ -605,10 +604,8 @@ void MainWindow::completeUIButtons()
         ui->minimizeButton->setIconSize(QSize(24, 24));
         ui->minimizeButton->setIcon(QIcon(":/Images/minimize.png"));
         ui->minimizeButton->setFlat(true);
-        ui->minimizeButton->setStyleSheet("QPushButton {background: " +
-                                          (isMainWindow?QString("white"):QString("transparent")) +
-                                                       "; border: none;}"
-                                        "QPushButton:hover {background: "
+        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                          "QPushButton:hover {background: "
                                                        "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
                                                        "stop: 0 white, stop: 1 #90EE90);}");
         connect(ui->minimizeButton, SIGNAL(clicked()),
@@ -660,7 +657,9 @@ void MainWindow::readSettings()
         size = settings.value("size", QSize(400, 400)).toSize();
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
-        this->transparency = (Transparency)settings.value("transparent", Auto).toInt();
+        this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
+        this->theme = ThemeBlack;
+        spreadTheme();
 
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
@@ -681,8 +680,8 @@ void MainWindow::readSettings()
         pos = settings.value("pos2", QPoint(0,0)).toPoint();
         size = settings.value("size2", QSize(400, 400)).toSize();
 
-        this->splitWindow = otherWindow->splitWindow;
-        this->transparency = otherWindow->transparency;
+        this->splitWindow = false;
+        this->transparency = Transparent;
     }
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     this->show();
@@ -1275,17 +1274,17 @@ void MainWindow::addTransparentMenu(QMenu *menu)
 
     switch(transparency)
     {
-        case Always:
+        case Transparent:
             action0->setChecked(true);
             break;
-        case Auto:
+        case AutoTransparent:
             action1->setChecked(true);
             break;
-        case Never:
+        case Opaque:
             action2->setChecked(true);
             break;
         default:
-            transparency = Auto;
+            transparency = AutoTransparent;
             action1->setChecked(true);
             break;
     }
@@ -1300,35 +1299,82 @@ void MainWindow::addTransparentMenu(QMenu *menu)
 
 void MainWindow::transparentAlways()
 {
-    this->transparency = Always;
+    this->transparency = Transparent;
     spreadTransparency();
 }
 
 
 void MainWindow::transparentAuto()
 {
-    this->transparency = Auto;
+    this->transparency = AutoTransparent;
     spreadTransparency();
 }
 
 
 void MainWindow::transparentNever()
 {
-    this->transparency = Never;
+    this->transparency = Opaque;
     spreadTransparency();
 }
 
 
 void MainWindow::spreadTransparency()
 {
-    deckHandler->setTransparency((this->otherWindow!=NULL)?Always:this->transparency);
+    deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
+}
 
-    if(isMainWindow && otherWindow != NULL)
+
+void MainWindow::spreadTheme()
+{
+    updateMainUITheme();
+    arenaHandler->setTheme(this->theme);
+    draftHandler->setTheme(this->theme);
+}
+
+
+void MainWindow::updateMainUITheme()
+{
+    ui->tabWidget->setTheme(this->theme);
+    ui->tabWidgetH2->setTheme(this->theme);
+    ui->tabWidgetH3->setTheme(this->theme);
+    ui->tabWidgetV1->setTheme(this->theme);
+
+    if(theme == ThemeWhite)
     {
-        otherWindow->transparency = this->transparency;
+        ui->progressBar->setStyleSheet("");
+        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                       "QPushButton:hover {background: "
+                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                      "stop: 0 white, stop: 1 #90EE90);}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                          "QPushButton:hover {background: "
+                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                       "stop: 0 white, stop: 1 #90EE90);}");
+        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
+                                      );
+        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
+                            "QMenu::item:selected {background-color: black; color: white;}"
+                            );
+    }
+    else
+    {
+        ui->progressBar->setStyleSheet("QProgressBar::chunk {background-color: black;}");
+        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                       "QPushButton:hover {background: "
+                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                      "stop: 0 black, stop: 1 #006400);}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                          "QPushButton:hover {background: "
+                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                       "stop: 0 black, stop: 1 #006400);}");
+        ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
+                                      );
+        this->setStyleSheet("");
     }
 }
 
@@ -1675,13 +1721,25 @@ void MainWindow::completeToolButton()
     addTransparentMenu(menu);
 
     ui->toolButton->setMenu(menu);
+
+    if(theme == ThemeWhite)
+    {
+        this->setStyleSheet("");
+    }
+    else
+    {
+        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
+                            "QMenu::item:selected {background-color: black; color: white;}"
+                            );
+    }
 }
 
 
 //TODO
 //Tooltip cards
+//Sticky borders
 //Black theme
-//Opciones drafting.
+//Opciones drafting - opcion secreta
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
 

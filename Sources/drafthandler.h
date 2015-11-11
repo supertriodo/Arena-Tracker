@@ -45,6 +45,7 @@ private:
     int nextCount;
     bool drafting;
     Transparency transparency;
+    Theme theme;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
 
@@ -76,6 +77,7 @@ private:
 public:
     void reHistDownloadedCardImage(QString &code);
     void setTransparency(Transparency value);
+    void setTheme(Theme theme);
     void setShowDraftOverlay(bool value);
 
 signals:

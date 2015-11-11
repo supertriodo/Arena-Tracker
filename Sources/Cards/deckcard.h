@@ -5,8 +5,7 @@
 #include <QString>
 #include <QMap>
 
-#define GREEN QColor(200,250,200)
-#define LIMEGREEN QColor(50,205,50)
+#define GREEN QColor(50,175,50)
 #define RED QColor(255,0,0)
 #define YELLOW QColor(255,255,0)
 #define WHITE QColor(255,255,255)

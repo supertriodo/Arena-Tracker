@@ -26,6 +26,7 @@ private:
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     bool noArena;
     Transparency transparency;
+    Theme theme;
 
 
 //Metodos
@@ -42,6 +43,7 @@ public:
     void setWebUploader(WebUploader *webUploader);
     bool isNoArena();
     void setTransparency(Transparency value);
+    void setTheme(Theme theme);
 
 signals:
     void pLog(QString line);

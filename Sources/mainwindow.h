@@ -55,6 +55,7 @@ private:
     QFile* atLogFile;
     bool splitWindow;
     Transparency transparency;
+    Theme theme;
     bool oneWindow;
     bool isMainWindow;
     MainWindow *otherWindow;
@@ -89,6 +90,8 @@ private:
     void spreadSplitWindow();
     void addTransparentMenu(QMenu *menu);
     void spreadTransparency();
+    void spreadTheme();
+    void updateMainUITheme();
     void addDeckWindowAction(QMenu *menu);
     void addTamGreyedMenu(QMenu *menu);
     void addTamCardMenu(QMenu *menu);
