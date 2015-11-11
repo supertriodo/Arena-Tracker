@@ -43,14 +43,11 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
 
         QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
-        synergiesListWidget[i] = new QListWidget(centralWidget);
+        synergiesListWidget[i] = new MoveListWidget(centralWidget);
         synergiesListWidget[i]->setMinimumHeight(0);
         synergiesListWidget[i]->setMaximumHeight(0);
-        synergiesListWidget[i]->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setIconSize(QSize(std::min(218, synergyWidth),35));
-        synergiesListWidget[i]->setFrameShape(QFrame::NoFrame);
-        synergiesListWidget[i]->setStyleSheet("background-color: transparent;");
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
         verLayoutSynergy->addStretch();
 

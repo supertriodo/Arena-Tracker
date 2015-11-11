@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QObject>
-#include <QListView>
+#include "movelistwidget.h"
 #include "scorebutton.h"
 #include "../utility.h"
 #include "../Cards/deckcard.h"
@@ -23,7 +23,7 @@ public:
 //Variables
 private:
     ScoreButton *scoresPushButton[3];
-    QListWidget *synergiesListWidget[3];
+    MoveListWidget *synergiesListWidget[3];
     int scoreWidth;
     int maxSynergyHeight;
 

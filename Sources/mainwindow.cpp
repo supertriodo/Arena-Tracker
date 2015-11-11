@@ -1761,8 +1761,6 @@ void MainWindow::completeToolButton()
 //Tooltip cards
 //Sticky borders
 //Opciones drafting - opcion secreta
-//Drafting reducir padding en synergies
-//Evitar seleccionar cartas en synergies (cambiar por moveListWidget)
 //Eliminar selecciones en windows OS
 //Activar SACRED_TRIAL
 //Activar DART_TRAP
