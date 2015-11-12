@@ -1381,15 +1381,19 @@ void MainWindow::updateMainUITheme()
                                       "QPushButton::menu-indicator {subcontrol-position: right;}"
                                       );
 
-        QString mainCSS =   "QMenu {background-color: #0F4F0F; color: white;}"
-                            "QMenu::item:selected {background-color: black; color: white;}"
+        QString mainCSS =
+                "QMenu {background-color: #0F4F0F; color: white;}"
+                "QMenu::item:selected {background-color: black; color: white;}"
 
-                            "QScrollBar:vertical {background-color: black; border: 2px solid green;}"
-                            "QScrollBar::handle:vertical {background: #0F4F0F;}"
-                            "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {border: 2px solid green;background: #0F4F0F;}"
+                "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
+                "QScrollBar::handle:vertical {background: #0F4F0F; min-height: 20px;}"
+                "QScrollBar::add-line:vertical {border: 2px solid green;background: #0F4F0F; height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
+                "QScrollBar::sub-line:vertical {border: 2px solid green;background: #0F4F0F; height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
+                "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; width: 3px; height: 3px; background: green;}"
+                "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                            "QProgressBar {background-color: black;}"
-                            "QProgressBar::chunk {background-color: #0F4F0F;}";
+                "QProgressBar {background-color: black;}"
+                "QProgressBar::chunk {background-color: #0F4F0F;}";
         this->setStyleSheet(mainCSS);
         if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
     }

@@ -709,6 +709,7 @@ GameResult WebUploader::createGameResult(const QRegularExpressionMatch &match, c
     gameResult.enemyHero = Utility::heroToLogNumber(match.captured(3));
     gameResult.isFirst = match.captured(4).startsWith("P");
     gameResult.isWinner = match.captured(1).startsWith("s");
+    gameResult.enemyName = "";
 
     return gameResult;
 }

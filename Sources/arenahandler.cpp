@@ -130,7 +130,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaM
     item->setIcon(1, QIcon(":Images/" +
                            (gameResult.enemyHero==""?("secretHunter"):("hero"+gameResult.enemyHero))
                            + ".png"));
-    item->setToolTip(1, "<span style=\"color:green;\">" + gameResult.enemyName + "</span>");
+    if(!gameResult.enemyName.isEmpty())     item->setToolTip(1, "<span style=\"color:green;\">" + gameResult.enemyName + "</span>");
     item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
