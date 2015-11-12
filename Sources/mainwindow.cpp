@@ -80,6 +80,7 @@ void MainWindow::createSecondaryWindow()
     this->otherWindow = new MainWindow(0, this);
     calculateDeckWindowMinimumWidth();
     deckHandler->setTransparency(Transparent);
+    updateMainUITheme();
 
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
@@ -580,10 +581,6 @@ void MainWindow::completeUIButtons()
         ui->closeButton->setIconSize(QSize(24, 24));
         ui->closeButton->setIcon(QIcon(":/Images/close.png"));
         ui->closeButton->setFlat(true);
-        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: "
-                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 white, stop: 1 #90EE90);}");
         connect(ui->closeButton, SIGNAL(clicked()),
                 this, SLOT(close()));
 
@@ -594,9 +591,6 @@ void MainWindow::completeUIButtons()
         ui->toolButton->setIconSize(QSize(24, 24));
         ui->toolButton->setIcon(QIcon(":/Images/config.png"));
         ui->toolButton->setFlat(true);
-        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
-                                      );
 
         ui->minimizeButton = new QPushButton("", this);
         ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -604,10 +598,6 @@ void MainWindow::completeUIButtons()
         ui->minimizeButton->setIconSize(QSize(24, 24));
         ui->minimizeButton->setIcon(QIcon(":/Images/minimize.png"));
         ui->minimizeButton->setFlat(true);
-        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                          "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                       "stop: 0 white, stop: 1 #90EE90);}");
         connect(ui->minimizeButton, SIGNAL(clicked()),
                 this, SLOT(showMinimized()));
     }
@@ -1363,38 +1353,45 @@ void MainWindow::updateMainUITheme()
 
     if(theme == ThemeWhite)
     {
-        ui->progressBar->setStyleSheet("");
         ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
                                        "QPushButton:hover {background: "
                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
                                                       "stop: 0 white, stop: 1 #90EE90);}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
                                           "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
                                                        "stop: 0 white, stop: 1 #90EE90);}");
         ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
                                       "QPushButton::menu-indicator {subcontrol-position: right;}"
                                       );
         this->setStyleSheet("");
+        if(otherWindow!=NULL)   otherWindow->setStyleSheet("");
     }
     else
     {
-        ui->progressBar->setStyleSheet("QProgressBar::chunk {background-color: black;}"
-                                       "QProgressBar {background-color: #0F4F0F;}");
         ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                        "QPushButton:hover {background: "
                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
                                                       "stop: 0 black, stop: 1 #006400);}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                           "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
                                                        "stop: 0 black, stop: 1 #006400);}");
         ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
                                       "QPushButton::menu-indicator {subcontrol-position: right;}"
                                       );
-        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
+
+        QString mainCSS =   "QMenu {background-color: #0F4F0F; color: white;}"
                             "QMenu::item:selected {background-color: black; color: white;}"
-                            );
+
+                            "QScrollBar:vertical {background-color: black; border: 2px solid green;}"
+                            "QScrollBar::handle:vertical {background: #0F4F0F;}"
+                            "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {border: 2px solid green;background: #0F4F0F;}"
+
+                            "QProgressBar {background-color: black;}"
+                            "QProgressBar::chunk {background-color: #0F4F0F;}";
+        this->setStyleSheet(mainCSS);
+        if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
     }
 }
 
@@ -1743,16 +1740,7 @@ void MainWindow::completeToolButton()
 
     ui->toolButton->setMenu(menu);
 
-    if(theme == ThemeWhite)
-    {
-        this->setStyleSheet("");
-    }
-    else
-    {
-        this->setStyleSheet("QMenu {background-color: #0F4F0F; color: white;}"
-                            "QMenu::item:selected {background-color: black; color: white;}"
-                            );
-    }
+    updateMainUITheme();
 }
 
 

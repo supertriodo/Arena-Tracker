@@ -425,7 +425,7 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabLog->repaint();
 
         if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
+            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
     }
     else
     {
@@ -435,7 +435,7 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabLog->repaint();
 
         if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("background-color: transparent;");
+            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent;}");
     }
 
     if(theme == ThemeWhite)
@@ -460,9 +460,9 @@ void ArenaHandler::setTheme(Theme theme)
     if(transparency != Transparent)
     {
         if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("background-color: transparent;");
+            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent;}");
         else
-            ui->logTextEdit->setStyleSheet("background-color: transparent; color: white;");
+            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
 
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
         allToWhite();

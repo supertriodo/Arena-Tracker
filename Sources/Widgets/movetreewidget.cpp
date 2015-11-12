@@ -8,7 +8,7 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     font.setKerning(true);
     this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
-    this->setStyleSheet("background-color: transparent; outline: 0;");
+    this->setStyleSheet("QTreeView{background-color: transparent; outline: 0;}");
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
