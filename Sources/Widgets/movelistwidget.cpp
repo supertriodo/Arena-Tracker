@@ -6,7 +6,7 @@ MoveListWidget::MoveListWidget(QWidget *parent) : QListWidget(parent)
 {
     this->setFrameShape(QFrame::NoFrame);
     this->setIconSize(CARD_SIZE);
-    this->setStyleSheet("QListView{background-color: transparent; outline: 0;}"
+    this->setStyleSheet("background-color: transparent; outline: 0;"
                                         "QListView::item{padding: -1px;}");
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

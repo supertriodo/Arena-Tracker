@@ -23,7 +23,7 @@ void SecretsHandler::completeUI()
 
     ui->secretsTreeWidget->setColumnCount(1);
     ui->secretsTreeWidget->setIconSize(CARD_SIZE);
-    ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
+    ui->secretsTreeWidget->setStyleSheet("background-color: transparent;"
                                          "QTreeView::item{padding: -1px;}");
     ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->secretsTreeWidget->setIndentation(5);
@@ -130,7 +130,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
-//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
+            activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
@@ -140,7 +140,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             activeSecret.children.append(SecretCard(BEAR_TRAP));
             activeSecret.children.append(SecretCard(SNIPE));
-//            activeSecret.children.append(SecretCard(DART_TRAP));
+            activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
         break;

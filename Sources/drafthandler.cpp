@@ -55,7 +55,7 @@ void DraftHandler::createHearthArenaMentor()
 {
     hearthArenaMentor = new HearthArenaMentor(this);
     connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,QString,QString,QString)),
-            this, SLOT(showNewCards(QString,double,double,double,QString,QString,QString)));
+            this, SLOT(showNewRatings(QString,double,double,double,QString,QString,QString)));
     connect(hearthArenaMentor, SIGNAL(pLog(QString)),
             this, SIGNAL(pLog(QString)));
     connect(hearthArenaMentor, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -511,7 +511,7 @@ void DraftHandler::updateBoxTitle(QString cardRating)
 }
 
 
-void DraftHandler::showNewCards(QString tip, double rating1, double rating2, double rating3,
+void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, double rating3,
                                 QString synergy1, QString synergy2, QString synergy3)
 {
     double ratings[3] = {rating1,rating2,rating3};

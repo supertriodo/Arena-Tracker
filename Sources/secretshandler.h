@@ -13,7 +13,7 @@
 #define NOBLE_SACRIFICE QString("EX1_130")
 #define REPENTANCE QString("EX1_379")
 #define REDEMPTION QString("EX1_136")
-#define SACRED_TRIAL QString("")
+#define SACRED_TRIAL QString("LOE_027")
 #define EYE_FOR_AN_EYE QString("EX1_132")
 #define COMPETITIVE_SPIRIT QString("AT_073")
 
@@ -21,7 +21,7 @@
 #define EXPLOSIVE_TRAP QString("EX1_610")
 #define BEAR_TRAP QString("AT_060")
 #define SNIPE QString("EX1_609")
-#define DART_TRAP QString("")
+#define DART_TRAP QString("LOE_021")
 #define MISDIRECTION QString("EX1_533")
 #define SNAKE_TRAP QString("EX1_554")
 

@@ -1162,7 +1162,6 @@ void MainWindow::checkHSCardsDir()
 
 void MainWindow::test()
 {
-//    ui->tabArena->setStyleSheet("background-color: black;");
 }
 
 
@@ -1762,8 +1761,6 @@ void MainWindow::completeToolButton()
 //Sticky borders
 //Opciones drafting - opcion secreta
 //Sliders black
-//Activar SACRED_TRIAL
-//Activar DART_TRAP
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

@@ -93,7 +93,7 @@ public slots:
     void endDraft();
     void pauseDraft();
     void resumeDraft();
-    void showNewCards(QString tip, double rating1, double rating2, double rating3,
+    void showNewRatings(QString tip, double rating1, double rating2, double rating3,
                       QString synergy1, QString synergy2, QString synergy3);
     void pickCard(QString code);
 
