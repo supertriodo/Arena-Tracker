@@ -91,7 +91,8 @@ If you build on Mac check: https://github.com/supertriodo/Arena-Tracker/issues/1
 
 
 ## Video examples
-* v2.0: http://youtu.be/IMckn_lmW84
+* v3.21: https://www.youtube.com/watch?v=U-XzJZ5UG2k
+* v2.0: https://www.youtube.com/watch?v=IMckn_lmW84
 * v1.3: https://www.youtube.com/watch?v=9TsaSWSe9X4
 * v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 
