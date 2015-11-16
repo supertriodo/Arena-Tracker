@@ -735,7 +735,50 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
-        move(event->globalPos() - dragPosition);
+        QPoint newPosition = event->globalPos() - dragPosition;
+        int top = newPosition.y();
+        int bottom = top + this->height();
+        int left = newPosition.x();
+        int right = left + this->width();
+        int midX = (left + right)/2;
+        int midY = (top + bottom)/2;
+
+        const int stickyMargin = 10;
+
+        foreach (QScreen *screen, QGuiApplication::screens())
+        {
+            if (!screen)    continue;
+            QRect screenRect = screen->geometry();
+            int topScreen = screenRect.y();
+            int bottomScreen = topScreen + screenRect.height();
+            int leftScreen = screenRect.x();
+            int rightScreen = leftScreen + screenRect.width();
+
+            if(midX < leftScreen || midX > rightScreen ||
+                    midY < topScreen || midY > bottomScreen) continue;
+
+            if(std::abs(top - topScreen) < stickyMargin)
+            {
+                newPosition.setY(topScreen);
+            }
+            else if(std::abs(bottom - bottomScreen) < stickyMargin)
+            {
+                newPosition.setY(bottomScreen - this->height());
+            }
+            if(std::abs(left - leftScreen) < stickyMargin)
+            {
+                newPosition.setX(leftScreen);
+            }
+            else if(std::abs(right - rightScreen) < stickyMargin)
+            {
+                newPosition.setX(rightScreen - this->width());
+            }
+            move(newPosition);
+            event->accept();
+            return;
+        }
+
+        move(newPosition);
         event->accept();
     }
 }
@@ -1750,9 +1793,7 @@ void MainWindow::completeToolButton()
 
 //TODO
 //Tooltip cards
-//Sticky borders
 //Opciones drafting - opcion secreta
-//Sliders black
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
