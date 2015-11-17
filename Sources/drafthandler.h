@@ -48,6 +48,7 @@ private:
     Theme theme;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
+    bool learningMode;
 
 
 //Metodos
@@ -79,6 +80,7 @@ public:
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
     void setShowDraftOverlay(bool value);
+    void setLearningMode(bool value);
 
 signals:
     void checkCardImage(QString code);

@@ -1,77 +1,67 @@
 #include "scorebutton.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent, int index) : QPushButton(parent)
+ScoreButton::ScoreButton(QWidget *parent) : QPushButton(parent)
 {
-    this->index = index;
-    this->drawArrow = false;
-    this->drawHLines = false;
+    this->learningMode = false;
+    this->learningShow = false;
 }
 
 
 void ScoreButton::leaveEvent(QEvent * e)
 {
     setFlat(true);
+    if(learningMode)
+    {
+        learningShow = false;
+        setScore(score);
+    }
     QPushButton::leaveEvent(e);
-    emit leave(index);
 }
 
 
 void ScoreButton::enterEvent(QEvent * e)
 {
     setFlat(false);
+    if(learningMode)
+    {
+        learningShow = true;
+        setScore(score);
+    }
     QPushButton::enterEvent(e);
-    emit enter(index);
 }
 
 
-void ScoreButton::paintEvent(QPaintEvent *event) {
-    QPushButton::paintEvent(event);
-
-    QPainter painter(this);
-
-
-
-    // Flecha
-    if(drawArrow)
-    {
-        painter.setPen(QPen(Qt::black, width()/20));
-        int ancho = width()/8;
-        int inicioVertical = height()*3/4 + width()/50;
-        int finalVertical = height()*7/8;
-        QLine lines[3] = {
-            {QLine(QPoint(width()/2,inicioVertical), QPoint(width()/2,finalVertical))}, //Vertical
-            {QLine(QPoint(width()/2 - ancho,(inicioVertical+finalVertical)/2), QPoint(width()/2,finalVertical))}, //Izq
-            {QLine(QPoint(width()/2 + ancho,(inicioVertical+finalVertical)/2), QPoint(width()/2,finalVertical))}  //Dcha
-        };
-        painter.drawLines(lines, 3);
-    }
-
-    //Lineas mejor
-    if(drawHLines)
-    {
-        painter.setPen(QPen(Qt::black, width()/25));
-        int inicioMejor = height()*5/16;
-        int finalMejor = height()*12/16 - width()/50;
-        QLine lines2[2] = {
-            {QLine(QPoint(width()/20,inicioMejor), QPoint(width()-width()/20,inicioMejor))},
-            {QLine(QPoint(width()/20,finalMejor), QPoint(width()-width()/20,finalMejor))}
-        };
-        painter.drawLines(lines2, 2);
-    }
-}
-
-
-void ScoreButton::setDrawArrow(bool value)
+void ScoreButton::setLearningMode(bool value)
 {
-    this->drawArrow = value;
+    this->learningMode = value;
+    this->setScore(score);
 }
 
 
-void ScoreButton::setDrawHLines(bool value)
+void ScoreButton::setScore(double score)
 {
-    this->drawHLines = value;
-}
+    bool hideScore = learningMode && !learningShow;
+    this->score = score;
+    int rating255 = std::max(std::min((int)(score*2.55), 255), 0);
+    int r = std::min(255, (255 - rating255)*2);
+    int g = std::min(255,rating255*2);
+    int b = 0;
 
+    if(hideScore)    this->setText("?");
+    else                this->setText(QString::number((int)score));
+    QString gradientCSS = "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+                          "stop: 0 black, "
+                          "stop: 0.5 rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +"), "
+                          "stop: 1 black);";
+    this->setStyleSheet(
+            "QPushButton{background-color: " + (hideScore?"black;":gradientCSS) +
+            "color: " + (hideScore?"white;":"black;") +
+
+            "border-style: solid;border-color: black;" +
+
+            "border-width: " + QString::number(width()/20) + "px;border-radius: "
+            + QString::number(width()/3) + "px;}");
+}
 
 

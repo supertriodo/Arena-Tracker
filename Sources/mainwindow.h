@@ -62,6 +62,7 @@ private:
     int greyedHeight, cardHeight;
     int drawDisappear;
     bool showDraftOverlay;
+    bool draftLearningMode;
 
 
 
@@ -98,6 +99,7 @@ private:
     void addTamCardMenu(QMenu *menu);
     void addTimeDrawMenu(QMenu *menu);
     void addShowDraftOverlayAction(QMenu *menu);
+    void addDraftLearningModeAction(QMenu *menu);
     void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
@@ -177,6 +179,7 @@ private slots:
     void tamCard35px();
     void toggleShowDraftOverlay();
     void toggleTheme();
+    void toggleDraftLearningMode();
 };
 
 #endif // MAINWINDOW_H

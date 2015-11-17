@@ -1,6 +1,7 @@
 #include "draftscorewindow.h"
 #include <QtWidgets>
 
+
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
@@ -31,7 +32,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget, i);
+        scoresPushButton[i] = new ScoreButton(centralWidget);
         scoresPushButton[i]->setMinimumHeight(0);
         scoresPushButton[i]->setMaximumHeight(0);
         scoresPushButton[i]->setMinimumWidth(scoreWidth);
@@ -68,6 +69,15 @@ DraftScoreWindow::~DraftScoreWindow()
 }
 
 
+void DraftScoreWindow::setLearningMode(bool value)
+{
+    for(int i=0; i<3; i++)
+    {
+        scoresPushButton[i]->setLearningMode(value);
+    }
+}
+
+
 void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
                                  QString synergy1, QString synergy2, QString synergy3)
 {
@@ -76,25 +86,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 
     for(int i=0; i<3; i++)
     {
-        int rating255 = std::max(std::min((int)(ratings[i]*2.55), 255), 0);
-        int r = std::min(255, (255 - rating255)*2);
-        int g = std::min(255,rating255*2);
-        int b = 0;
-
-        scoresPushButton[i]->setText(QString::number((int)ratings[i]));
-        scoresPushButton[i]->setStyleSheet(
-                    "QPushButton{background-color: "
-
-                    "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-                    "stop: 0 black, "
-                    "stop: 0.5 rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +"), "
-                    "stop: 1 black);"
-
-                    "border-style: solid;border-color: black;" +
-                    ((!synergies[i].isEmpty())?"border-bottom-style: dotted;":"") +
-
-                    "border-width: " + QString::number(scoreWidth/20) + "px;border-radius: "
-                    + QString::number(scoreWidth/3) + "px;}");
+        scoresPushButton[i]->setScore(ratings[i]);
 
         QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
         animation->setDuration(ANIMATION_TIME);

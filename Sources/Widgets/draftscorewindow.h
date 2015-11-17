@@ -35,6 +35,7 @@ private:
 public:
     void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3);
     void hideScores();
+    void setLearningMode(bool value);
 
 private slots:
     void showSynergies(int index);

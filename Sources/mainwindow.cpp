@@ -658,12 +658,14 @@ void MainWindow::readSettings()
         this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
+        this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
 
         //Spread options to components
         deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
         deckHandler->setCardHeight(this->cardHeight);
         deckHandler->setDrawDisappear(this->drawDisappear);
         draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+        draftHandler->setLearningMode(this->draftLearningMode);
     }
     else
     {
@@ -698,6 +700,7 @@ void MainWindow::writeSettings()
         settings.setValue("cardHeight", this->cardHeight);
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
+        settings.setValue("draftLearningMode", this->draftLearningMode);
     }
     else
     {
@@ -1767,6 +1770,23 @@ void MainWindow::toggleShowDraftOverlay()
 }
 
 
+void MainWindow::addDraftLearningModeAction(QMenu *menu)
+{
+    QAction * action = new QAction("Draft: Learning Mode", this);
+    action->setCheckable(true);
+    if(this->draftLearningMode) action->setChecked(true);
+    connect(action, SIGNAL(triggered()), this, SLOT(toggleDraftLearningMode()));
+    menu->addAction(action);
+}
+
+
+void MainWindow::toggleDraftLearningMode()
+{
+    this->draftLearningMode = !this->draftLearningMode;
+    draftHandler->setLearningMode(this->draftLearningMode);
+}
+
+
 void MainWindow::completeToolButton()
 {
     QMenu *menu = new QMenu(this);
@@ -1779,6 +1799,7 @@ void MainWindow::completeToolButton()
     addTimeDrawMenu(menu);
     menu->addSeparator();
     addShowDraftOverlayAction(menu);
+    addDraftLearningModeAction(menu);
     menu->addSeparator();
     addTransparentMenu(menu);
     addThemeAction(menu);

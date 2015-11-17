@@ -10,27 +10,21 @@ class ScoreButton : public QPushButton
 
 //Constructor
 public:
-    ScoreButton(QWidget * parent, int index);
+    ScoreButton(QWidget * parent);
 
 //Variables
 private:
-    int index;
-    bool drawArrow;
-    bool drawHLines;
+    double score;
+    bool learningMode, learningShow;
 
 //Metodos
 protected:
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setDrawArrow(bool value);
-    void setDrawHLines(bool value);
-
-signals:
-    void enter(int index);
-    void leave(int index);
+    void setScore(double score);
+    void setLearningMode(bool value);
 };
 
 #endif // SCOREBUTTON_H
