@@ -1439,7 +1439,12 @@ void MainWindow::updateMainUITheme()
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
                 "QProgressBar {background-color: black;}"
-                "QProgressBar::chunk {background-color: #0F4F0F;}";
+                "QProgressBar::chunk {background-color: #0F4F0F;}"
+
+                "QDialog {background: black;}"
+                "QLabel {color: white;}"
+                "QPushButton {background: #0F4F0F; color: white;}"
+                ;
         this->setStyleSheet(mainCSS);
         if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
     }
@@ -1814,7 +1819,7 @@ void MainWindow::completeToolButton()
 
 //TODO
 //Tooltip cards
-//Opciones drafting - opcion secreta
+//Dialogos dark theme
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
