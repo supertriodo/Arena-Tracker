@@ -90,7 +90,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 
         QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
         animation->setDuration(ANIMATION_TIME);
-        animation->setStartValue(0);
+        animation->setStartValue(scoresPushButton[i]->maximumHeight());
         animation->setEndValue(scoreWidth);
         animation->setEasingCurve(QEasingCurve::OutBounce);
         animation->start();
@@ -98,7 +98,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 
         animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
         animation->setDuration(ANIMATION_TIME);
-        animation->setStartValue(0);
+        animation->setStartValue(scoresPushButton[i]->minimumHeight());
         animation->setEndValue(scoreWidth);
         animation->setEasingCurve(QEasingCurve::OutBounce);
         animation->start();
@@ -146,14 +146,14 @@ void DraftScoreWindow::hideScores()
     {
         QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
         animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoreWidth);
+        animation->setStartValue(scoresPushButton[i]->maximumHeight());
         animation->setEndValue(0);
         animation->setEasingCurve(QEasingCurve::Linear);
         animation->start();
 
         animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
         animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoreWidth);
+        animation->setStartValue(scoresPushButton[i]->minimumHeight());
         animation->setEndValue(0);
         animation->setEasingCurve(QEasingCurve::Linear);
         animation->start();

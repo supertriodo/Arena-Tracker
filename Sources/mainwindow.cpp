@@ -1818,8 +1818,12 @@ void MainWindow::completeToolButton()
 
 
 //TODO
-//Tooltip cards
-//Dialogos dark theme
+//Tooltip window
+//New stats site
+//No reducir scores si no estan mostradas
+//Tier list scores
+//unknown scores en learningMode
+//Mostrar razas
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
