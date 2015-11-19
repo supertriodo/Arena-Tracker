@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>392</width>
-    <height>493</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -646,7 +646,17 @@
              <item>
               <widget class="QRadioButton" name="radioButtonDraft1">
                <property name="text">
-                <string>Card1</string>
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelDraft1">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -681,7 +691,17 @@
              <item>
               <widget class="QRadioButton" name="radioButtonDraft2">
                <property name="text">
-                <string>Card2</string>
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelDraft2">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -713,7 +733,17 @@
              <item>
               <widget class="QRadioButton" name="radioButtonDraft3">
                <property name="text">
-                <string>Card3</string>
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelDraft3">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>

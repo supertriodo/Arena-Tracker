@@ -66,6 +66,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
 
     QString tip;
     double ratings[3];
+    double tierScore[3];
     QString synergies[3];
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(reply->readAll());
@@ -76,6 +77,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
     {
         QJsonObject jsonCard = jsonObject.value("results").toArray().at(i).toObject().value("card").toObject();
         ratings[i] = jsonCard.value("score").toDouble();
+        tierScore[i] = jsonCard.value("tierScore").toDouble();
         QJsonArray jsonSynergies = jsonCard.value("synergies").toArray();
 
         for(QJsonArray::const_iterator it=jsonSynergies.constBegin(); it!=jsonSynergies.constEnd(); it++)
@@ -86,7 +88,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
     }
 
     emit pDebug("Tip: " + tip);
-    emit newTip(tip,ratings[0],ratings[1],ratings[2],synergies[0],synergies[1],synergies[2]);
+    emit newTip(tip,ratings[0],ratings[1],ratings[2],tierScore[0],tierScore[1],tierScore[2],synergies[0],synergies[1],synergies[2]);
 }
 
 

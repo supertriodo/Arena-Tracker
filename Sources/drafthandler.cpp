@@ -14,7 +14,6 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->nextCount = 0;
     this->drafting = false;
     this->transparency = Opaque;
-    this->theme = ThemeWhite;
     this->draftScoreWindow = NULL;
 
     for(int i=0; i<3; i++)
@@ -38,24 +37,30 @@ void DraftHandler::completeUI()
     ui->radioButtonDraft1->setIconSize(CARD_SIZE);
     ui->radioButtonDraft2->setIconSize(CARD_SIZE);
     ui->radioButtonDraft3->setIconSize(CARD_SIZE);
+    ui->radioButtonDraft1->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
+    ui->radioButtonDraft2->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
+    ui->radioButtonDraft3->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
 
     QFont font("Belwe Bd BT");
     font.setPointSize(18);
-    ui->radioButtonDraft1->setFont(font);
-    ui->radioButtonDraft2->setFont(font);
-    ui->radioButtonDraft3->setFont(font);
+    ui->labelDraft1->setFont(font);
+    ui->labelDraft2->setFont(font);
+    ui->labelDraft3->setFont(font);
 
     draftCards[0].radioItem = ui->radioButtonDraft1;
     draftCards[1].radioItem = ui->radioButtonDraft2;
     draftCards[2].radioItem = ui->radioButtonDraft3;
+    draftCards[0].scoreItem = ui->labelDraft1;
+    draftCards[1].scoreItem = ui->labelDraft2;
+    draftCards[2].scoreItem = ui->labelDraft3;
 }
 
 
 void DraftHandler::createHearthArenaMentor()
 {
     hearthArenaMentor = new HearthArenaMentor(this);
-    connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,QString,QString,QString)),
-            this, SLOT(showNewRatings(QString,double,double,double,QString,QString,QString)));
+    connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,double,double,double,QString,QString,QString)),
+            this, SLOT(showNewRatings(QString,double,double,double,double,double,double,QString,QString,QString)));
     connect(hearthArenaMentor, SIGNAL(pLog(QString)),
             this, SIGNAL(pLog(QString)));
     connect(hearthArenaMentor, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -134,15 +139,16 @@ void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
     {
-        clearRadioButton(draftCards[i].radioItem);
+        clearScore(draftCards[i].scoreItem);
+        draftCards[i].scoreItem->hide();
         draftCards[i].setCode("");
         draftCards[i].draw();
     }
 
-    //Clear sinergies
-    ui->textDraft1->setText("");
-    ui->textDraft2->setText("");
-    ui->textDraft3->setText("");
+    //Clear synergies
+    ui->textDraft1->setText("Detecting Cards...");
+    ui->textDraft2->setText("Detecting Cards...");
+    ui->textDraft3->setText("Detecting Cards...");
     ui->textBrowserDraft->setText("");
     ui->groupBoxDraft->setTitle("");
 
@@ -459,10 +465,25 @@ void DraftHandler::pickCard(QString code)
         if(draftCards[i].getCode() == code)
         {
             draftCard = draftCards[i];
-            updateBoxTitle(draftCard.radioItem->text());
+            updateBoxTitle(draftCard.scoreItem->text());
             break;
         }
     }
+
+    //Clear cards and score
+    for(int i=0; i<3; i++)
+    {
+        clearScore(draftCards[i].scoreItem);
+        draftCards[i].scoreItem->hide();
+        draftCards[i].setCode("");
+        draftCards[i].draw();
+    }
+
+    //Clear synergies
+    ui->textDraft1->setText("Detecting Cards...");
+    ui->textDraft2->setText("Detecting Cards...");
+    ui->textDraft3->setText("Detecting Cards...");
+    ui->textBrowserDraft->setText("");
 
     draftScoreWindow->hideScores();
 
@@ -484,13 +505,13 @@ void DraftHandler::showNewCards(QString codes[3])
 //            pickCard(draftCards[i]);
 //        }
 
-        clearRadioButton(draftCards[i].radioItem);
+        clearScore(draftCards[i].scoreItem);
         draftCards[i].setCode(codes[i]);
         draftCards[i].draw();
         intCodes[i] = hearthArenaCodes[codes[i]];
     }
 
-    //Limpiar texto
+    //Clear synergies
     ui->textDraft1->setText("");
     ui->textDraft2->setText("");
     ui->textDraft3->setText("");
@@ -501,8 +522,11 @@ void DraftHandler::showNewCards(QString codes[3])
 }
 
 
-void DraftHandler::updateBoxTitle(QString cardRating)
+void DraftHandler::updateBoxTitle(QString scoreString)
 {
+    QString cardRating = scoreString.split(" -- (")[1];
+    cardRating = cardRating.left(cardRating.length() - 1);
+
     deckRating += cardRating.toDouble();
     int numCards = draftedCards.count();
     int actualRating = (int)(deckRating/numCards);
@@ -512,16 +536,24 @@ void DraftHandler::updateBoxTitle(QString cardRating)
 
 
 void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, double rating3,
-                                QString synergy1, QString synergy2, QString synergy3)
+                                  double tierScore1, double tierScore2, double tierScore3,
+                                  QString synergy1, QString synergy2, QString synergy3)
 {
     double ratings[3] = {rating1,rating2,rating3};
+    double tierScore[3] = {tierScore1, tierScore2, tierScore3};
     double maxRating = std::max(std::max(rating1,rating2),rating3);
 
     for(int i=0; i<3; i++)
     {
-        draftCards[i].radioItem->setText(QString::number((int)ratings[i]));
-        if(maxRating == ratings[i])     highlightRadioButton(draftCards[i].radioItem);
+        draftCards[i].scoreItem->setText(QString::number((int)ratings[i]) +
+                                        " -- (" + QString::number((int)tierScore[i]) + ")");
+        if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreItem);
+
+        if(learningMode)    draftCards[i].scoreItem->hide();
+        else                draftCards[i].scoreItem->show();
     }
+
+    if(!learningMode)    ui->textBrowserDraft->setText(tip);
 
 
     //Mostrar sinergies
@@ -534,7 +566,6 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         texts[i]->setText(text);
     }
 
-    ui->textBrowserDraft->setText(tip);
 
     //Mostrar score
     draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3);
@@ -810,26 +841,24 @@ bool DraftHandler::findScreenRects()
 //}
 
 
-void DraftHandler::clearRadioButton(QRadioButton *radio, bool clearText)
+void DraftHandler::clearScore(QLabel *label, bool clearText)
 {
-    if(transparency == Transparent || theme == ThemeBlack)
+    if(transparency == Transparent)
     {
-        radio->setStyleSheet("QRadioButton{background-color: transparent; color: white;}"
-                             "QRadioButton::indicator {width: 0px;height: 0px;}");
+        label->setStyleSheet("QLabel {background-color: transparent; color: white;}");
     }
     else
     {
-        radio->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
+        label->setStyleSheet("");
     }
 
-    if(clearText)   radio->setText("");
+    if(clearText)   label->setText("");
 }
 
 
-void DraftHandler::highlightRadioButton(QRadioButton *radio)
+void DraftHandler::highlightScore(QLabel *label)
 {
-        radio->setStyleSheet("QRadioButton{background-color: transparent; color: rgb(50,175,50);}"
-                             "QRadioButton::indicator {width: 0px;height: 0px;}");
+    label->setStyleSheet("QLabel {background-color: transparent; color: rgb(50,175,50);}");
 }
 
 
@@ -844,15 +873,12 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
 
-        if(theme == ThemeWhite)
-        {
-            ui->heroLabel->setStyleSheet("QLabel{background-color: transparent; color: white;}");
-            ui->textDraft1->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->groupBoxDraft->setStyleSheet("QGroupBox{background-color: transparent; color: white;}");
-        }
+        ui->heroLabel->setStyleSheet("QLabel{background-color: transparent; color: white;}");
+        ui->textDraft1->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
+        ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
+        ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
+        ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{background-color: transparent; color: white;}");
     }
     else
     {
@@ -861,57 +887,18 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
 
-        if(theme == ThemeWhite)
-        {
-            ui->heroLabel->setStyleSheet("");
-            ui->textDraft1->setStyleSheet("");
-            ui->textDraft2->setStyleSheet("");
-            ui->textDraft3->setStyleSheet("");
-            ui->textBrowserDraft->setStyleSheet("");
-            ui->groupBoxDraft->setStyleSheet("");
-        }
+        ui->heroLabel->setStyleSheet("");
+        ui->textDraft1->setStyleSheet("");
+        ui->textDraft2->setStyleSheet("");
+        ui->textDraft3->setStyleSheet("");
+        ui->textBrowserDraft->setStyleSheet("");
+        ui->groupBoxDraft->setStyleSheet("");
     }
 
-    //Clear radio buttons
-    if(theme == ThemeWhite)
-    {
-        clearRadioButton(ui->radioButtonDraft1, false);
-        clearRadioButton(ui->radioButtonDraft2, false);
-        clearRadioButton(ui->radioButtonDraft3, false);
-    }
-}
-
-
-void DraftHandler::setTheme(Theme theme)
-{
-    this->theme = theme;
-
-    if(transparency != Transparent)
-    {
-        if(theme == ThemeWhite)
-        {
-            ui->heroLabel->setStyleSheet("");
-            ui->textDraft1->setStyleSheet("");
-            ui->textDraft2->setStyleSheet("");
-            ui->textDraft3->setStyleSheet("");
-            ui->textBrowserDraft->setStyleSheet("");
-            ui->groupBoxDraft->setStyleSheet("QGroupBox{border-width: 0px; border-color: transparent;}");
-        }
-        else
-        {
-            ui->heroLabel->setStyleSheet("QLabel{background-color: transparent; color: white;}");
-            ui->textDraft1->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-            ui->groupBoxDraft->setStyleSheet("QGroupBox{border-width: 0px; border-color: transparent; background-color: transparent; color: white;}");
-        }
-
-        //Clear radio buttons
-        clearRadioButton(ui->radioButtonDraft1, false);
-        clearRadioButton(ui->radioButtonDraft2, false);
-        clearRadioButton(ui->radioButtonDraft3, false);
-    }
+    //Clear score labels
+    clearScore(ui->labelDraft1, false);
+    clearScore(ui->labelDraft2, false);
+    clearScore(ui->labelDraft3, false);
 }
 
 
@@ -936,6 +923,22 @@ void DraftHandler::setLearningMode(bool value)
 {
     this->learningMode = value;
     if(this->draftScoreWindow != NULL)  draftScoreWindow->setLearningMode(value);
+
+    if(learningMode)
+    {
+        for(int i=0; i<3; i++)
+        {
+            draftCards[i].scoreItem->hide();
+        }
+        ui->textBrowserDraft->setText("");
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            draftCards[i].scoreItem->show();
+        }
+    }
 }
 
 

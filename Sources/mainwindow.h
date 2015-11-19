@@ -94,6 +94,7 @@ private:
     void addThemeAction(QMenu *menu);
     void spreadTheme();
     void updateMainUITheme();
+    void updateButtonsTheme();
     void addDeckWindowAction(QMenu *menu);
     void addTamGreyedMenu(QMenu *menu);
     void addTamCardMenu(QMenu *menu);

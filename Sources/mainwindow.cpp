@@ -1386,7 +1386,6 @@ void MainWindow::spreadTheme()
 {
     updateMainUITheme();
     arenaHandler->setTheme(this->theme);
-    draftHandler->setTheme(this->theme);
 }
 
 
@@ -1396,38 +1395,18 @@ void MainWindow::updateMainUITheme()
     ui->tabWidgetH2->setTheme(this->theme);
     ui->tabWidgetH3->setTheme(this->theme);
     ui->tabWidgetV1->setTheme(this->theme);
+    updateButtonsTheme();
 
+    QString mainCSS = "";
     if(theme == ThemeWhite)
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                       "QPushButton:hover {background: "
-                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 white, stop: 1 #90EE90);}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                          "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
-                                                       "stop: 0 white, stop: 1 #90EE90);}");
-        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
-                                      );
-        this->setStyleSheet("");
-        if(otherWindow!=NULL)   otherWindow->setStyleSheet("");
+        mainCSS +=
+                "QGroupBox {border-width: 0px; border-color: transparent;}"
+                ;
     }
     else
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: "
-                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 black, stop: 1 #006400);}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                          "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
-                                                       "stop: 0 black, stop: 1 #006400);}");
-        ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
-                                      );
-
-        QString mainCSS =
+        mainCSS +=
                 "QMenu {background-color: #0F4F0F; color: white;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
@@ -1442,11 +1421,47 @@ void MainWindow::updateMainUITheme()
                 "QProgressBar::chunk {background-color: #0F4F0F;}"
 
                 "QDialog {background: black;}"
-                "QLabel {color: white;}"
                 "QPushButton {background: #0F4F0F; color: white;}"
+
+                "QGroupBox {border-width: 0px; border-color: transparent; background-color: transparent; color: white;}"
+                "QLabel {background-color: transparent; color: white;}"
+                "QTextBrowser {background-color: transparent; color: white;}"
                 ;
-        this->setStyleSheet(mainCSS);
-        if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
+    }
+    this->setStyleSheet(mainCSS);
+    if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
+}
+
+
+void MainWindow::updateButtonsTheme()
+{
+    if(theme == ThemeWhite)
+    {
+        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                       "QPushButton:hover {background: "
+                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                      "stop: 0 white, stop: 1 #90EE90);}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                          "QPushButton:hover {background: "
+                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
+                                                       "stop: 0 white, stop: 1 #90EE90);}");
+        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
+                                      );
+    }
+    else
+    {
+        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                       "QPushButton:hover {background: "
+                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
+                                                      "stop: 0 black, stop: 1 #006400);}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                          "QPushButton:hover {background: "
+                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
+                                                       "stop: 0 black, stop: 1 #006400);}");
+        ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
+                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
+                                      );
     }
 }
 
@@ -1820,10 +1835,12 @@ void MainWindow::completeToolButton()
 //TODO
 //Tooltip window
 //New stats site
-//No reducir scores si no estan mostradas
 //Tier list scores
 //unknown scores en learningMode
 //Mostrar razas
+//Eliminar arenaHandler setTheme
+//Ocultar score para mostrar detecting cards centrado
+//Guardar score and tierScore en draftCard
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

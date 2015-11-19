@@ -2,7 +2,8 @@
 #define DRAFTCARD_H
 
 #include "deckcard.h"
-#include <qradiobutton.h>
+#include <QRadioButton>
+#include <QLabel>
 
 
 class DraftCard : public DeckCard
@@ -15,6 +16,7 @@ public:
 //Variables
 public:
     QRadioButton *radioItem;
+    QLabel *scoreItem;
 
 //Metodos
 public:

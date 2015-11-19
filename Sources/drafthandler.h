@@ -45,7 +45,6 @@ private:
     int nextCount;
     bool drafting;
     Transparency transparency;
-    Theme theme;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
     bool learningMode;
@@ -66,19 +65,18 @@ private:
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
     void resetCodesCandidates();    
-    void updateBoxTitle(QString cardRating);
+    void updateBoxTitle(QString scoreString);
     bool screenRectsFound();
     bool findScreenRects();
     void removeTabHero();
-    void clearRadioButton(QRadioButton *radio, bool clearText=true);
-    void highlightRadioButton(QRadioButton *radio);
+    void clearScore(QLabel *label, bool clearText=true);
+    void highlightScore(QLabel *label);
     void deleteDraftScoreWindow();
     void showOverlay();
 
 public:
     void reHistDownloadedCardImage(QString &code);
     void setTransparency(Transparency value);
-    void setTheme(Theme theme);
     void setShowDraftOverlay(bool value);
     void setLearningMode(bool value);
 
@@ -96,7 +94,8 @@ public slots:
     void pauseDraft();
     void resumeDraft();
     void showNewRatings(QString tip, double rating1, double rating2, double rating3,
-                      QString synergy1, QString synergy2, QString synergy3);
+                        double tierScore1, double tierScore2, double tierScore3,
+                        QString synergy1, QString synergy2, QString synergy3);
     void pickCard(QString code);
 
 private slots:
