@@ -1843,7 +1843,7 @@ void MainWindow::completeToolButton()
 //New stats site
 //Mostrar razas
 //Eliminar arenaHandler setTheme
-//Draft split Min synergy 0
+//Tam hands list
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
