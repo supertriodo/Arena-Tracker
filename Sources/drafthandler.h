@@ -65,7 +65,7 @@ private:
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
     void resetCodesCandidates();    
-    void updateBoxTitle(QString scoreString);
+    void updateBoxTitle(double cardRating);
     bool screenRectsFound();
     bool findScreenRects();
     void removeTabHero();

@@ -457,16 +457,20 @@ void DraftHandler::pickCard(QString code)
         code = draftCards[code.toInt()].getCode();
     }
 
-    draftedCards.push_back(hearthArenaCodes[code]);
-
     DraftCard draftCard;
-    for(int i=0; i<3; i++)
+
+    if(hearthArenaCodes.contains(code))
     {
-        if(draftCards[i].getCode() == code)
+        draftedCards.push_back(hearthArenaCodes[code]);
+
+        for(int i=0; i<3; i++)
         {
-            draftCard = draftCards[i];
-            updateBoxTitle(draftCard.scoreItem->text());
-            break;
+            if(draftCards[i].getCode() == code)
+            {
+                draftCard = draftCards[i];
+                updateBoxTitle(draftCard.tierScore);
+                break;
+            }
         }
     }
 
@@ -522,12 +526,9 @@ void DraftHandler::showNewCards(QString codes[3])
 }
 
 
-void DraftHandler::updateBoxTitle(QString scoreString)
+void DraftHandler::updateBoxTitle(double cardRating)
 {
-    QString cardRating = scoreString.split(" -- (")[1];
-    cardRating = cardRating.left(cardRating.length() - 1);
-
-    deckRating += cardRating.toDouble();
+    deckRating += cardRating;
     int numCards = draftedCards.count();
     int actualRating = (int)(deckRating/numCards);
     ui->groupBoxDraft->setTitle(QString("DECK RATING: " + QString::number(actualRating) +
@@ -545,6 +546,8 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
 
     for(int i=0; i<3; i++)
     {
+        draftCards[i].score = ratings[i];
+        draftCards[i].tierScore = tierScore[i];
         draftCards[i].scoreItem->setText(QString::number((int)ratings[i]) +
                                         " -- (" + QString::number((int)tierScore[i]) + ")");
         if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreItem);

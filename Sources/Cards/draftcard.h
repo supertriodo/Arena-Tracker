@@ -17,6 +17,7 @@ public:
 public:
     QRadioButton *radioItem;
     QLabel *scoreItem;
+    double score, tierScore;
 
 //Metodos
 public:
