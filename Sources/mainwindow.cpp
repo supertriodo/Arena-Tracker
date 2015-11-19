@@ -830,14 +830,15 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     QMainWindow::resizeEvent(event);
 
     QWidget *widget = this->centralWidget();
-    int top = widget->pos().y();
-    int bottom = top + widget->height();
-    int left = widget->pos().x();
-    int right = left + widget->width();
 
     if(isMainWindow)
     {
         resizeTabWidgets(event);
+
+        int top = widget->pos().y();
+        int bottom = top + widget->height();
+        int left = widget->pos().x();
+        int right = left + widget->width();
 
         ui->closeButton->move(right-24, top);
         ui->minimizeButton->move(right-48, top);
@@ -846,6 +847,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     }
     else
     {
+        int top = widget->pos().y();
+        int bottom = top + widget->height();
+        int left = widget->pos().x();
+        int right = left + widget->width();
+
         ui->resizeButton->move(right-24, bottom-24);
     }
 
