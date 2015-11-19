@@ -946,5 +946,8 @@ void DraftHandler::setLearningMode(bool value)
 //1) Copiar line (var cards = ...)
 //2) Eliminar al principio ("\")
 //3) Eliminar al final (\"";)
-//4) Eliminar (\\\\\\\\\\\\\\") buscar en gedit (\\\\\\\") Problemas con " en descripciones.
+//4) Eliminar (\\\\\\\") Problemas con " en descripciones.
+//(Ancien Spirit - Chaman)
+//(Explorer's Hat - Hunter)
+//(Soul of the forest - Druid)
 //5) Eliminar todas las (\)

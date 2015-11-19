@@ -1835,11 +1835,8 @@ void MainWindow::completeToolButton()
 //TODO
 //Tooltip window
 //New stats site
-//Tier list scores
-//unknown scores en learningMode
 //Mostrar razas
 //Eliminar arenaHandler setTheme
-//Ocultar score para mostrar detecting cards centrado
 //Guardar score and tierScore en draftCard
 
 //BUGS CONOCIDOS
@@ -1853,7 +1850,7 @@ void MainWindow::completeToolButton()
 
 //NUEVAS CARTAS
 //Update Json cartas
-//Update Json heroes HA
+//Update Json heroes HA (Utility::heroToLogNumber) para saber el numero de cada heroe
 //Update secrets
 
 //NUEVOS HEROES
