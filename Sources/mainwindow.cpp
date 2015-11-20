@@ -1843,7 +1843,7 @@ void MainWindow::completeToolButton()
 //New stats site
 //Mostrar razas
 //Eliminar arenaHandler setTheme
-//Tam hands list
+//Tam hands list sizePolicy
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

@@ -78,9 +78,19 @@ void HandCard::drawCreatedByHandCard()
         //Card
         QRectF target = QRectF(113,6,100,25);;
         QRectF source;
-        if(type==QString("Minion"))         source = QRectF(48,72,100,25);
-        else                                source = QRectF(48,98,100,25);
-        painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + createdByCode + ".png"), source);
+
+        QFileInfo cardFI(Utility::appPath() + "/HSCards/" + createdByCode + ".png");
+        if(cardFI.exists())
+        {
+            if(type==QString("Minion"))         source = QRectF(48,72,100,25);
+            else                                source = QRectF(48,98,100,25);
+            painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + createdByCode + ".png"), source);
+        }
+        else
+        {
+            source = QRectF(63,18,100,25);
+            painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/unknown.png"), source);
+        }
 
         //Background
         painter.drawPixmap(0,0,QPixmap(":Images/handCard3.png"));
