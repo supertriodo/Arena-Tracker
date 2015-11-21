@@ -31,6 +31,7 @@ void EnemyHandHandler::reset()
 void EnemyHandHandler::completeUI()
 {
     ui->enemyHandListWidget->setMinimumHeight(0);
+    ui->enemyHandListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
 }
 
 

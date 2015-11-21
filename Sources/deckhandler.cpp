@@ -34,7 +34,7 @@ void DeckHandler::completeUI()
     ui->deckButtonRemove->setEnabled(false);
     hideDeckButtons();
     ui->drawListWidget->setHidden(true);
-    ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 

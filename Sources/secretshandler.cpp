@@ -25,7 +25,7 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setIconSize(CARD_SIZE);
     ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
                                          "QTreeView::item{padding: -1px;}");
-    ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->secretsTreeWidget->setIndentation(5);
     ui->secretsTreeWidget->setItemsExpandable(false);
 }
