@@ -46,4 +46,5 @@ void MoveListWidget::leaveEvent(QEvent * e)
 
     int mouseX = this->mapFromGlobal(QCursor::pos()).x();
     if(mouseX < 0 || mouseX >= size().width())  emit xLeave();
+    emit leave();
 }

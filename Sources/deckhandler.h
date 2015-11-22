@@ -57,6 +57,7 @@ public:
 
 signals:
     void checkCardImage(QString code);
+    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
@@ -78,6 +79,8 @@ private slots:
     void removeOldestDrawCard();
     void clearDrawAnimating();
     void adjustDrawSize();
+    void findDeckCardEntered(QListWidgetItem *item);
+    void findDrawCardEntered(QListWidgetItem *item);
 };
 
 #endif // DECKHANDLER_H

@@ -41,3 +41,10 @@ void MoveTreeWidget::mouseReleaseEvent(QMouseEvent *event)
     QTreeWidget::mouseReleaseEvent(event);
     event->ignore();
 }
+
+
+void MoveTreeWidget::leaveEvent(QEvent * e)
+{
+    QTreeWidget::leaveEvent(e);
+    emit leave();
+}

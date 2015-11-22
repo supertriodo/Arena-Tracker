@@ -36,10 +36,16 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->drawListWidget->setMouseTracking(true);
+    ui->deckListWidget->setMouseTracking(true);
 
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
+    connect(ui->deckListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findDeckCardEntered(QListWidgetItem*)));
+    connect(ui->drawListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findDrawCardEntered(QListWidgetItem*)));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
             this, SLOT(cardTotalMin()));
     connect(ui->deckButtonPlus, SIGNAL(clicked()),
@@ -585,5 +591,34 @@ void DeckHandler::setDrawDisappear(int value)
     this->drawDisappear = value;
     clearDrawList(true);
 }
+
+
+void DeckHandler::findDeckCardEntered(QListWidgetItem * item)
+{
+    QString code = deckCardList[ui->deckListWidget->row(item)].getCode();
+
+    QRect rectCard = ui->deckListWidget->visualItemRect(item);
+    QPoint posCard = ui->deckListWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int deckListTop = ui->deckListWidget->mapToGlobal(QPoint(0,0)).y();
+    int deckListBottom = ui->deckListWidget->mapToGlobal(QPoint(0,ui->deckListWidget->height())).y();
+    emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
+}
+
+
+void DeckHandler::findDrawCardEntered(QListWidgetItem * item)
+{
+    QString code = drawCardList[ui->drawListWidget->row(item)].getCode();
+
+    QRect rectCard = ui->drawListWidget->visualItemRect(item);
+    QPoint posCard = ui->drawListWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int drawListTop = -1;
+    int drawListBottom = ui->drawListWidget->mapToGlobal(QPoint(0,ui->drawListWidget->height())).y();
+    emit cardEntered(code, globalRectCard, drawListTop, drawListBottom);
+}
+
 
 

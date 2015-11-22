@@ -143,7 +143,6 @@ void HandCard::drawCreatedByHandCard()
     painter.end();
 
     this->listItem->setIcon(QIcon(canvas));
-    this->listItem->setToolTip("<html><img src=./HSCards/" + this->createdByCode + ".png/></html>");
 }
 
 

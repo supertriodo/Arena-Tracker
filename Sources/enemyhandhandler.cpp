@@ -32,6 +32,10 @@ void EnemyHandHandler::completeUI()
 {
     ui->enemyHandListWidget->setMinimumHeight(0);
     ui->enemyHandListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
+    ui->enemyHandListWidget->setMouseTracking(true);
+
+    connect(ui->enemyHandListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findHandCardEntered(QListWidgetItem*)));
 }
 
 
@@ -168,4 +172,22 @@ void EnemyHandHandler::setTransparency(Transparency value)
     this->transparency = value;
     updateTransparency();
 }
+
+
+void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
+{
+    HandCard handCard = enemyHandList[ui->enemyHandListWidget->row(item)];
+    QString code = handCard.getCode();
+    if(code.isEmpty())  code = handCard.getCreatedByCode();
+
+    QRect rectCard = ui->enemyHandListWidget->visualItemRect(item);
+    QPoint posCard = ui->enemyHandListWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int enemyHandListTop = ui->enemyHandListWidget->mapToGlobal(QPoint(0,0)).y();
+    int enemyHandListBottom = ui->enemyHandListWidget->mapToGlobal(QPoint(0,ui->enemyHandListWidget->height())).y();
+    emit cardEntered(code, globalRectCard, enemyHandListTop, enemyHandListBottom);
+}
+
+
 

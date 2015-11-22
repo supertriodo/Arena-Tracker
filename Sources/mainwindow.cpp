@@ -2,6 +2,7 @@
 #include "Widgets/ui_extended.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
+#include "Widgets/cardwindow.h"
 #include <QtWidgets>
 
 using namespace cv;
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createArenaHandler();
     createGameWatcher();
     createLogLoader();
+    createCardWindow();
 
     readSettings();
     completeToolButton();
@@ -291,6 +293,26 @@ void MainWindow::createEnemyHandHandler()
             this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createCardWindow()
+{
+    CardWindow *cardWindow = new CardWindow(this);
+    connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+    connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+    connect(secretsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+    connect(ui->deckListWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->drawListWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->enemyHandListWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->secretsTreeWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
 }
 
 
@@ -1842,8 +1864,10 @@ void MainWindow::completeToolButton()
 //Tooltip window
 //New stats site
 //Mostrar razas
-//Eliminar arenaHandler setTheme
-//Tam hands list sizePolicy
+//Destruir elementos new en draft overlay
+//otherWindow padre window
+//test secret root
+//menu desactivar tooltips
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

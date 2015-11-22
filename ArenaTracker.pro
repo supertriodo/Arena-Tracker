@@ -41,7 +41,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/scorebutton.cpp \
     Sources/Widgets/movelistwidget.cpp \
     Sources/Widgets/movetabwidget.cpp \
-    Sources/Widgets/movetreewidget.cpp
+    Sources/Widgets/movetreewidget.cpp \
+    Sources/Widgets/cardwindow.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -67,7 +68,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/movelistwidget.h \
     Sources/Widgets/ui_extended.h \
     Sources/Widgets/movetabwidget.h \
-    Sources/Widgets/movetreewidget.h
+    Sources/Widgets/movetreewidget.h \
+    Sources/Widgets/cardwindow.h
 
 FORMS    += mainwindow.ui
 

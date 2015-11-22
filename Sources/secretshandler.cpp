@@ -28,6 +28,10 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->secretsTreeWidget->setIndentation(5);
     ui->secretsTreeWidget->setItemsExpandable(false);
+    ui->secretsTreeWidget->setMouseTracking(true);
+
+    connect(ui->secretsTreeWidget, SIGNAL(itemEntered(QTreeWidgetItem*,int)),
+            this, SLOT(findSecretCardEntered(QTreeWidgetItem*)));
 }
 
 
@@ -414,7 +418,30 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
 
 
 
+void SecretsHandler::findSecretCardEntered(QTreeWidgetItem * item)
+{
+    QString code;
+    int indexTopLevel = ui->secretsTreeWidget->indexOfTopLevelItem(item);
+    int indexLowLevel = -1;
+    if(indexTopLevel == -1)//Low level item
+    {
+        indexTopLevel = ui->secretsTreeWidget->indexOfTopLevelItem(item->parent());
+        indexLowLevel = item->parent()->indexOfChild(item);
+        code = activeSecretList[indexTopLevel].children[indexLowLevel].getCode();
+    }
+    else//Top level item
+    {
+        code = activeSecretList[indexTopLevel].root.getCode();
+    }
 
+    QRect rectCard = ui->secretsTreeWidget->visualItemRect(item);
+    QPoint posCard = ui->secretsTreeWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int secretListTop = ui->secretsTreeWidget->mapToGlobal(QPoint(0,0)).y();
+    int secretListBottom = ui->secretsTreeWidget->mapToGlobal(QPoint(0,ui->secretsTreeWidget->height())).y();
+    emit cardEntered(code, globalRectCard, secretListTop, secretListBottom);
+}
 
 
 

@@ -20,6 +20,7 @@ protected:
 
 signals:
     void xLeave();
+    void leave();
 };
 
 #endif // MOVELISTWIDGET_H

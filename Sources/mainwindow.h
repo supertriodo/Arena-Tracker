@@ -11,6 +11,7 @@
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "drafthandler.h"
+#include "Widgets/cardwindow.h"
 #include <QMainWindow>
 #include <QJsonObject>
 
@@ -49,6 +50,7 @@ private:
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
     DraftHandler * draftHandler;
+    CardWindow *cardWindow;
     QMap<QString, QJsonObject> cardsJson, enCardsJson;
     QPoint dragPosition;
     WindowsFormation windowsFormation;
@@ -74,6 +76,7 @@ private:
     void createLogLoader();
     void createArenaHandler();
     void createGameWatcher();
+    void createCardWindow();
     void createCardDownloader();
     void createDeckHandler();
     void createEnemyHandHandler();

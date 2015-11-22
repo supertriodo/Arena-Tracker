@@ -23,5 +23,4 @@ void DraftCard::draw()
     QPixmap canvas = DeckCard::draw(1, false);
 
     this->radioItem->setIcon(QIcon(canvas));
-    this->radioItem->setToolTip(tooltip());
 }
