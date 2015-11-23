@@ -98,11 +98,11 @@ If you build on Mac check: https://github.com/supertriodo/Arena-Tracker/issues/1
 
 
 ## More info:
-* https://github.com/supertriodo/Arena-Tracker
 * http://www.reddit.com/r/ArenaTracker/
 * http://www.arenamastery.com/
 * http://www.heartharena.com/
 * http://hearthstonejson.com/
+* Arena Tracker is a [HearthSim](http://hearthsim.info) project. Come join us in #hearthsim on chat.freenode.net.
 
 Thanks to all these projects ArenaTracker is possible.
 
