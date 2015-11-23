@@ -58,6 +58,9 @@
           <string>Arena</string>
          </attribute>
          <layout class="QVBoxLayout" name="tabArenalLayout">
+          <property name="topMargin">
+           <number>26</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
             <item>
@@ -375,6 +378,9 @@
           <string>Hero</string>
          </attribute>
          <layout class="QGridLayout" name="heroGridLayout">
+          <property name="topMargin">
+           <number>26</number>
+          </property>
           <item row="2" column="1">
            <widget class="QPushButton" name="heroButton2">
             <property name="text">
@@ -605,7 +611,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="topMargin">
-           <number>15</number>
+           <number>32</number>
           </property>
           <item>
            <widget class="QGroupBox" name="groupBoxDraft">
@@ -849,6 +855,9 @@
           <property name="spacing">
            <number>0</number>
           </property>
+          <property name="topMargin">
+           <number>26</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
             <property name="spacing">
@@ -966,13 +975,20 @@
          <attribute name="title">
           <string>Hand</string>
          </attribute>
-         <layout class="QVBoxLayout" name="tabEnemyLayout"/>
+         <layout class="QVBoxLayout" name="tabEnemyLayout">
+          <property name="topMargin">
+           <number>26</number>
+          </property>
+         </layout>
         </widget>
         <widget class="QWidget" name="tabLog">
          <attribute name="title">
           <string>Log</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="topMargin">
+           <number>26</number>
+          </property>
           <item>
            <widget class="QTextEdit" name="logTextEdit">
             <property name="maximumSize">

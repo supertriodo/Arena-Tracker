@@ -15,7 +15,6 @@ CardWindow::CardWindow(QWidget *parent) :
 
 CardWindow::~CardWindow()
 {
-    delete cardLabel;
 }
 
 

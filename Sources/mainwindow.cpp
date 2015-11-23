@@ -100,7 +100,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(11, 11, 11, 11);
+    ui->tabDeckLayout->setContentsMargins(9, 26, 9, 9);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -1861,13 +1861,8 @@ void MainWindow::completeToolButton()
 
 
 //TODO
-//Tooltip window
 //New stats site
 //Mostrar razas
-//Destruir elementos new en draft overlay
-//otherWindow padre window
-//test secret root
-//menu desactivar tooltips
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

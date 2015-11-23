@@ -18,9 +18,9 @@ void MoveTabWidget::setTheme(Theme theme)
         "QTabBar::tab:hover {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
         "QTabWidget::tab-bar {alignment: center;}"
         "QTabWidget::pane {border-color: transparent; background: " + backgroundColor + ";}"
-        "QTabWidget::pane {border-top: 2px solid " + borderColor + ";position: absolute;top: -0.75em;}"
-        "QTabBar::tab {border: 3px solid " + borderColor + ";"
-            "padding: 2px;background: " + borderColor + "; color: " + foregroundColor + ";}"
+        "QTabWidget::pane {position: absolute;top: -24px;}"
+        "QTabBar::tab {border: 2px solid " + borderColor + ";"
+            "padding: 2px;background: " + borderColor + "; color: " + foregroundColor + "; height: 16px;}"
     );
 }
 
