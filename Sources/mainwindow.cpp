@@ -512,11 +512,11 @@ void MainWindow::createWebUploader()
 //            deckHandler, SLOT(newDeckCardWeb(QString,int)));
 //    connect(webUploader, SIGNAL(newWebDeckCardList()),
 //            this, SLOT(resetDeckAlreadyRead()));
-//#endif
 
 //    //Connect de gameWatcher
 //    connect(gameWatcher,SIGNAL(beginReadingDeck()),
 //            webUploader, SLOT(askArenaCards()));
+//#endif
 
     arenaHandler->setWebUploader(webUploader);
 
@@ -607,13 +607,6 @@ void MainWindow::completeUIButtons()
                 this, SLOT(close()));
 
 
-        ui->toolButton = new QPushButton("", this);
-        ui->toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->toolButton->resize(24, 24);
-        ui->toolButton->setIconSize(QSize(24, 24));
-        ui->toolButton->setIcon(QIcon(":/Images/config.png"));
-        ui->toolButton->setFlat(true);
-
         ui->minimizeButton = new QPushButton("", this);
         ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         ui->minimizeButton->resize(24, 24);
@@ -676,14 +669,14 @@ void MainWindow::readSettings()
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
 
-        this->greyedHeight = settings.value("greyedHeight", -1).toInt();
+        this->greyedHeight = settings.value("greyedHeight", 35).toInt();
         this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
 
         //Spread options to components
-        deckHandler->setGreyedHeight((this->greyedHeight==-1)?this->cardHeight:this->greyedHeight);
+        deckHandler->setGreyedHeight(this->greyedHeight);
         deckHandler->setCardHeight(this->cardHeight);
         deckHandler->setDrawDisappear(this->drawDisappear);
         draftHandler->setShowDraftOverlay(this->showDraftOverlay);
@@ -865,7 +858,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         ui->closeButton->move(right-24, top);
         ui->minimizeButton->move(right-48, top);
         ui->resizeButton->move(right-24, bottom-24);
-        ui->toolButton->move(left, top);
     }
     else
     {
@@ -925,6 +917,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
             }
             else
@@ -932,6 +925,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
             }
             break;
@@ -943,6 +937,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -951,6 +946,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -963,6 +959,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
                 ui->tabWidgetH3->show();
@@ -972,6 +969,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
                 moveTabTo(ui->tabLog, ui->tabWidgetH3);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
                 ui->tabWidgetH3->show();
@@ -985,6 +983,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -993,6 +992,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
                 moveTabTo(ui->tabLog, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -1022,6 +1022,10 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
     {
         label = "Log";
     }
+    else if(widget == ui->tabConfig)
+    {
+        label = "Config";
+    }
 
     if(index == -1)     tabWidget->addTab(widget, label);
     else                tabWidget->insertTab(index, widget, label);
@@ -1034,8 +1038,8 @@ void MainWindow::calculateMinimumWidth()
 
     int minWidth = this->width() - ui->tabWidget->width();
     minWidth += ui->tabWidget->tabBar()->width();
-    if(ui->minimizeButton!=NULL)    minWidth += ui->minimizeButton->width()*2;
-    if(ui->closeButton!=NULL)       minWidth += ui->closeButton->width()*2;
+    if(ui->minimizeButton!=NULL)    minWidth += ui->minimizeButton->width();
+    if(ui->closeButton!=NULL)       minWidth += ui->closeButton->width();
 
     this->setMinimumWidth(minWidth);
 }
@@ -1229,12 +1233,12 @@ void MainWindow::test()
 }
 
 
-//MENUS
-void MainWindow::addDraftMenu(QMenu *menu)
+//Config Tab
+void MainWindow::addDraftMenu(QPushButton *button)
 {
-    QMenu *newArenaMenu = new QMenu("Force Draft", this);
+    QMenu *newArenaMenu = new QMenu(button);
 
-    QSignalMapper* mapper = new QSignalMapper(this);
+    QSignalMapper* mapper = new QSignalMapper(button);
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
 
     for(int i=0; i<9; i++)
@@ -1246,7 +1250,7 @@ void MainWindow::addDraftMenu(QMenu *menu)
 
     connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
 
-    menu->addMenu(newArenaMenu);
+    button->setMenu(newArenaMenu);
 }
 
 
@@ -1269,13 +1273,6 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 }
 
 
-void MainWindow::addClearDeckMenu(QMenu *menu)
-{
-    QAction *action = menu->addAction("Clear Deck");
-    connect(action, SIGNAL(triggered()), this, SLOT(confirmClearDeck()));
-}
-
-
 void MainWindow::confirmClearDeck()
 {
     int ret = QMessageBox::question(this, tr("Clear Deck"),
@@ -1288,16 +1285,6 @@ void MainWindow::confirmClearDeck()
         pLog(tr("Menu: Clear deck"));
         resetDeck();
     }
-}
-
-
-void MainWindow::addSplitAction(QMenu *menu)
-{
-    QAction * action = new QAction("Window Split", this);
-    action->setCheckable(true);
-    if(this->splitWindow) action->setChecked(true);
-    connect(action, SIGNAL(triggered()), this, SLOT(toggleSplitWindow()));
-    menu->addAction(action);
 }
 
 
@@ -1317,48 +1304,6 @@ void MainWindow::spreadSplitWindow()
     {
         otherWindow->splitWindow = this->splitWindow;
     }
-}
-
-
-void MainWindow::addTransparentMenu(QMenu *menu)
-{
-    QAction *action0 = new QAction("Transparent", this);
-    QAction *action1 = new QAction("Auto", this);
-    QAction *action2 = new QAction("Opaque", this);
-    action0->setCheckable(true);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    connect(action0, SIGNAL(triggered()), this, SLOT(transparentAlways()));
-    connect(action1, SIGNAL(triggered()), this, SLOT(transparentAuto()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(transparentNever()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action0);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-
-    switch(transparency)
-    {
-        case Transparent:
-            action0->setChecked(true);
-            break;
-        case AutoTransparent:
-            action1->setChecked(true);
-            break;
-        case Opaque:
-            action2->setChecked(true);
-            break;
-        default:
-            transparency = AutoTransparent;
-            action1->setChecked(true);
-            break;
-    }
-
-    QMenu *transparentMenu = new QMenu("Transparency", this);
-    transparentMenu->addAction(action0);
-    transparentMenu->addAction(action1);
-    transparentMenu->addAction(action2);
-    menu->addMenu(transparentMenu);
 }
 
 
@@ -1389,16 +1334,79 @@ void MainWindow::spreadTransparency()
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
+    updateOtherTabsTransparency();
 }
 
 
-void MainWindow::addThemeAction(QMenu *menu)
+//Update Config and Log tabs transparency
+void MainWindow::updateOtherTabsTransparency()
 {
-    QAction * action = new QAction("Dark Theme", this);
-    action->setCheckable(true);
-    if(this->theme == ThemeBlack) action->setChecked(true);
-    connect(action, SIGNAL(triggered()), this, SLOT(toggleTheme()));
-    menu->addAction(action);
+    if(transparency==Transparent)
+    {
+        ui->tabLog->setAttribute(Qt::WA_NoBackground);
+        ui->tabLog->repaint();
+        ui->tabConfig->setAttribute(Qt::WA_NoBackground);
+        ui->tabConfig->repaint();
+
+        QString groupBoxCSS =
+                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
+        ui->configBoxActions->setStyleSheet(groupBoxCSS);
+        ui->configBoxUI->setStyleSheet(groupBoxCSS);
+        ui->configBoxDeck->setStyleSheet(groupBoxCSS);
+        ui->configBoxHand->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraft->setStyleSheet(groupBoxCSS);
+
+        QString labelCSS = "QLabel {background-color: transparent; color: white;}";
+        ui->configLabelDeckNormal->setStyleSheet(labelCSS);
+        ui->configLabelDeckGreyed->setStyleSheet(labelCSS);
+        ui->configLabelDrawTime->setStyleSheet(labelCSS);
+        ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
+
+        QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
+        ui->configRadioTransparent->setStyleSheet(radioCSS);
+        ui->configRadioAuto->setStyleSheet(radioCSS);
+        ui->configRadioOpaque->setStyleSheet(radioCSS);
+
+        QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
+        ui->configCheckDarkTheme->setStyleSheet(checkCSS);
+        ui->configCheckWindowSplit->setStyleSheet(checkCSS);
+        ui->configCheckDeckWindow->setStyleSheet(checkCSS);
+        ui->configCheckOverlay->setStyleSheet(checkCSS);
+        ui->configCheckLearning->setStyleSheet(checkCSS);
+
+        ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
+    }
+    else
+    {
+        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabLog->repaint();
+        ui->tabConfig->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabConfig->repaint();
+
+        ui->configBoxActions->setStyleSheet("");
+        ui->configBoxUI->setStyleSheet("");
+        ui->configBoxDeck->setStyleSheet("");
+        ui->configBoxHand->setStyleSheet("");
+        ui->configBoxDraft->setStyleSheet("");
+
+        ui->configLabelDeckNormal->setStyleSheet("");
+        ui->configLabelDeckGreyed->setStyleSheet("");
+        ui->configLabelDrawTime->setStyleSheet("");
+        ui->configLabelDrawTimeValue->setStyleSheet("");
+
+        ui->configRadioTransparent->setStyleSheet("");
+        ui->configRadioAuto->setStyleSheet("");
+        ui->configRadioOpaque->setStyleSheet("");
+
+        ui->configCheckDarkTheme->setStyleSheet("");
+        ui->configCheckWindowSplit->setStyleSheet("");
+        ui->configCheckDeckWindow->setStyleSheet("");
+        ui->configCheckOverlay->setStyleSheet("");
+        ui->configCheckLearning->setStyleSheet("");
+
+        ui->logTextEdit->setStyleSheet("");
+    }
 }
 
 
@@ -1429,7 +1437,9 @@ void MainWindow::updateMainUITheme()
     if(theme == ThemeWhite)
     {
         mainCSS +=
-                "QGroupBox {border-width: 0px; border-color: transparent;}"
+                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
+                "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
+                "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
                 ;
     }
     else
@@ -1450,10 +1460,15 @@ void MainWindow::updateMainUITheme()
 
                 "QDialog {background: black;}"
                 "QPushButton {background: #0F4F0F; color: white;}"
+                "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
 
-                "QGroupBox {border-width: 0px; border-color: transparent; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
                 "QLabel {background-color: transparent; color: white;}"
                 "QTextBrowser {background-color: transparent; color: white;}"
+                "QRadioButton {background-color: transparent; color: white;}"
+                "QCheckBox {background-color: transparent; color: white;}"
+                "QTextEdit{background-color: transparent; color: white;}"
                 ;
     }
     this->setStyleSheet(mainCSS);
@@ -1473,9 +1488,6 @@ void MainWindow::updateButtonsTheme()
                                           "QPushButton:hover {background: "
                                                        "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
                                                        "stop: 0 white, stop: 1 #90EE90);}");
-        ui->toolButton->setStyleSheet("QPushButton {background: white; border: none;}"
-                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
-                                      );
     }
     else
     {
@@ -1487,20 +1499,7 @@ void MainWindow::updateButtonsTheme()
                                           "QPushButton:hover {background: "
                                                        "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
                                                        "stop: 0 black, stop: 1 #006400);}");
-        ui->toolButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                      "QPushButton::menu-indicator {subcontrol-position: right;}"
-                                      );
     }
-}
-
-
-void MainWindow::addDeckWindowAction(QMenu *menu)
-{
-    QAction * deckWindowAction = new QAction("Show Deck Window", this);
-    deckWindowAction->setCheckable(true);
-    if(this->otherWindow!=NULL) deckWindowAction->setChecked(true);
-    connect(deckWindowAction, SIGNAL(triggered()), this, SLOT(toggleDeckWindow()));
-    menu->addAction(deckWindowAction);
 }
 
 
@@ -1517,297 +1516,54 @@ void MainWindow::toggleDeckWindow()
 }
 
 
-void MainWindow::addTamGreyedMenu(QMenu *menu)
+void MainWindow::updateTamGreyed(int value)
 {
-    QAction *action0 = new QAction("15px(Smallest)", this);
-    QAction *action1 = new QAction("20px", this);
-    QAction *action2 = new QAction("25px", this);
-    QAction *action3 = new QAction("30px", this);
-    QAction *action4 = new QAction("35px(Normal)", this);
-    QAction *action5 = new QAction("= Card Size", this);
-    action0->setCheckable(true);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    action3->setCheckable(true);
-    action4->setCheckable(true);
-    action5->setCheckable(true);
-    connect(action0, SIGNAL(triggered()), this, SLOT(tamGreyed15px()));
-    connect(action1, SIGNAL(triggered()), this, SLOT(tamGreyed20px()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(tamGreyed25px()));
-    connect(action3, SIGNAL(triggered()), this, SLOT(tamGreyed30px()));
-    connect(action4, SIGNAL(triggered()), this, SLOT(tamGreyed35px()));
-    connect(action5, SIGNAL(triggered()), this, SLOT(tamGreyedAsCardSize()));
+    this->greyedHeight = value;
+    deckHandler->setGreyedHeight(value);
+    if(ui->configCheckLink->isChecked())  ui->configSliderCardSize->setValue(value);
+}
 
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action0);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-    splitGroup->addAction(action3);
-    splitGroup->addAction(action4);
-    splitGroup->addAction(action5);
 
-    switch(greyedHeight)
+void MainWindow::updateTamCard(int value)
+{
+    this->cardHeight = value;
+    deckHandler->setCardHeight(value);
+    if(ui->configCheckLink->isChecked())  ui->configSliderGreyedSize->setValue(value);
+}
+
+
+void MainWindow::linkGreyedSizeToCardSize(bool value)
+{
+    if(value)   ui->configSliderGreyedSize->setValue(ui->configSliderCardSize->value());
+}
+
+
+//Valores drawDisappear:
+//  -1  No show
+//  0   Turn
+//  n   Ns
+void MainWindow::updateTimeDraw(int value)
+{
+    //Slider            0  - Ns - 11
+    //DrawDissapear     -1 - Ns - 0
+
+    switch(value)
     {
-        case 15:
-            action0->setChecked(true);
-            break;
-        case 20:
-            action1->setChecked(true);
-            break;
-        case 25:
-            action2->setChecked(true);
-            break;
-        case 30:
-            action3->setChecked(true);
-            break;
-        case 35:
-            action4->setChecked(true);
-            break;
-        case -1:
-            action5->setChecked(true);
-            break;
-        default:
-            greyedHeight = -1;
-            action5->setChecked(true);
-            break;
-    }
-
-    QMenu *tamGreyedMenu = new QMenu("Deck: Greyed Size", this);
-    tamGreyedMenu->addAction(action0);
-    tamGreyedMenu->addAction(action1);
-    tamGreyedMenu->addAction(action2);
-    tamGreyedMenu->addAction(action3);
-    tamGreyedMenu->addAction(action4);
-    tamGreyedMenu->addAction(action5);
-    menu->addMenu(tamGreyedMenu);
-}
-
-
-void MainWindow::tamGreyed15px()
-{
-    this->greyedHeight = 15;
-    deckHandler->setGreyedHeight(this->greyedHeight);
-}
-
-
-void MainWindow::tamGreyed20px()
-{
-    this->greyedHeight = 20;
-    deckHandler->setGreyedHeight(this->greyedHeight);
-}
-
-
-void MainWindow::tamGreyed25px()
-{
-    this->greyedHeight = 25;
-    deckHandler->setGreyedHeight(this->greyedHeight);
-}
-
-
-void MainWindow::tamGreyed30px()
-{
-    this->greyedHeight = 30;
-    deckHandler->setGreyedHeight(this->greyedHeight);
-}
-
-
-void MainWindow::tamGreyed35px()
-{
-    this->greyedHeight = 35;
-    deckHandler->setGreyedHeight(this->greyedHeight);
-}
-
-
-void MainWindow::tamGreyedAsCardSize()
-{
-    this->greyedHeight = -1;
-    deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::addTamCardMenu(QMenu *menu)
-{
-    QAction *action0 = new QAction("15px(Smallest)", this);
-    QAction *action1 = new QAction("20px", this);
-    QAction *action2 = new QAction("25px", this);
-    QAction *action3 = new QAction("30px", this);
-    QAction *action4 = new QAction("35px(Normal)", this);
-    action0->setCheckable(true);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    action3->setCheckable(true);
-    action4->setCheckable(true);
-    connect(action0, SIGNAL(triggered()), this, SLOT(tamCard15px()));
-    connect(action1, SIGNAL(triggered()), this, SLOT(tamCard20px()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(tamCard25px()));
-    connect(action3, SIGNAL(triggered()), this, SLOT(tamCard30px()));
-    connect(action4, SIGNAL(triggered()), this, SLOT(tamCard35px()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action0);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-    splitGroup->addAction(action3);
-    splitGroup->addAction(action4);
-
-    switch(cardHeight)
-    {
-        case 15:
-            action0->setChecked(true);
-            break;
-        case 20:
-            action1->setChecked(true);
-            break;
-        case 25:
-            action2->setChecked(true);
-            break;
-        case 30:
-            action3->setChecked(true);
-            break;
-        case 35:
-            action4->setChecked(true);
-            break;
-        default:
-            cardHeight = 35;
-            action4->setChecked(true);
-            break;
-    }
-
-    QMenu *tamCardMenu = new QMenu("Deck: Card Size", this);
-    tamCardMenu->addAction(action0);
-    tamCardMenu->addAction(action1);
-    tamCardMenu->addAction(action2);
-    tamCardMenu->addAction(action3);
-    tamCardMenu->addAction(action4);
-    menu->addMenu(tamCardMenu);
-}
-
-
-void MainWindow::tamCard15px()
-{
-    this->cardHeight = 15;
-    deckHandler->setCardHeight(this->cardHeight);
-    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::tamCard20px()
-{
-    this->cardHeight = 20;
-    deckHandler->setCardHeight(this->cardHeight);
-    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::tamCard25px()
-{
-    this->cardHeight = 25;
-    deckHandler->setCardHeight(this->cardHeight);
-    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::tamCard30px()
-{
-    this->cardHeight = 30;
-    deckHandler->setCardHeight(this->cardHeight);
-    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::tamCard35px()
-{
-    this->cardHeight = 35;
-    deckHandler->setCardHeight(this->cardHeight);
-    if(this->greyedHeight==-1)  deckHandler->setGreyedHeight(this->cardHeight);
-}
-
-
-void MainWindow::addTimeDrawMenu(QMenu *menu)
-{
-    QAction *action0 = new QAction("Hide", this);
-    QAction *action1 = new QAction("5s", this);
-    QAction *action2 = new QAction("10s", this);
-    QAction *action3 = new QAction("Turn", this);
-    action0->setCheckable(true);
-    action1->setCheckable(true);
-    action2->setCheckable(true);
-    action3->setCheckable(true);
-    connect(action0, SIGNAL(triggered()), this, SLOT(timeDrawNo()));
-    connect(action1, SIGNAL(triggered()), this, SLOT(timeDraw5s()));
-    connect(action2, SIGNAL(triggered()), this, SLOT(timeDraw10s()));
-    connect(action3, SIGNAL(triggered()), this, SLOT(timeDrawTurn()));
-
-    QActionGroup *splitGroup = new QActionGroup(this);
-    splitGroup->addAction(action0);
-    splitGroup->addAction(action1);
-    splitGroup->addAction(action2);
-    splitGroup->addAction(action3);
-
-    switch(drawDisappear)
-    {
-        case -1:
-            action0->setChecked(true);
-            break;
-        case 5:
-            action1->setChecked(true);
-            break;
-        case 10:
-            action2->setChecked(true);
-            break;
         case 0:
-            action3->setChecked(true);
+            this->drawDisappear = -1;
+            ui->configLabelDrawTimeValue->setText("No");
+            break;
+        case 11:
+            this->drawDisappear = 0;
+            ui->configLabelDrawTimeValue->setText("Turn");
             break;
         default:
-            drawDisappear = 5;
-            action1->setChecked(true);
+            this->drawDisappear = value;
+            ui->configLabelDrawTimeValue->setText(QString::number(value) + "s");
             break;
     }
 
-    QMenu *timeDrawMenu = new QMenu("Hand: Show Card Draw", this);
-    timeDrawMenu->addAction(action0);
-    timeDrawMenu->addAction(action1);
-    timeDrawMenu->addAction(action2);
-    timeDrawMenu->addAction(action3);
-    menu->addMenu(timeDrawMenu);
-}
-
-
-void MainWindow::timeDrawNo()
-{
-    this->drawDisappear = -1;
     deckHandler->setDrawDisappear(this->drawDisappear);
-}
-
-
-void MainWindow::timeDraw5s()
-{
-    this->drawDisappear = 5;
-    deckHandler->setDrawDisappear(this->drawDisappear);
-}
-
-
-void MainWindow::timeDraw10s()
-{
-    this->drawDisappear = 10;
-    deckHandler->setDrawDisappear(this->drawDisappear);
-}
-
-
-void MainWindow::timeDrawTurn()
-{
-    this->drawDisappear = 0;
-    deckHandler->setDrawDisappear(this->drawDisappear);
-}
-
-
-void MainWindow::addShowDraftOverlayAction(QMenu *menu)
-{
-    QAction * action = new QAction("Draft: Show Overlay", this);
-    action->setCheckable(true);
-    if(this->showDraftOverlay) action->setChecked(true);
-    connect(action, SIGNAL(triggered()), this, SLOT(toggleShowDraftOverlay()));
-    menu->addAction(action);
 }
 
 
@@ -1815,16 +1571,6 @@ void MainWindow::toggleShowDraftOverlay()
 {
     this->showDraftOverlay = !this->showDraftOverlay;
     draftHandler->setShowDraftOverlay(this->showDraftOverlay);
-}
-
-
-void MainWindow::addDraftLearningModeAction(QMenu *menu)
-{
-    QAction * action = new QAction("Draft: Learning Mode", this);
-    action->setCheckable(true);
-    if(this->draftLearningMode) action->setChecked(true);
-    connect(action, SIGNAL(triggered()), this, SLOT(toggleDraftLearningMode()));
-    menu->addAction(action);
 }
 
 
@@ -1837,32 +1583,80 @@ void MainWindow::toggleDraftLearningMode()
 
 void MainWindow::completeToolButton()
 {
-    QMenu *menu = new QMenu(this);
-    addClearDeckMenu(menu);
-    addDraftMenu(menu);
-    menu->addSeparator();
-    addTamCardMenu(menu);
-    addTamGreyedMenu(menu);
-    menu->addSeparator();
-    addTimeDrawMenu(menu);
-    menu->addSeparator();
-    addShowDraftOverlayAction(menu);
-    addDraftLearningModeAction(menu);
-    menu->addSeparator();
-    addTransparentMenu(menu);
-    addThemeAction(menu);
-    addSplitAction(menu);
-    addDeckWindowAction(menu);
+    //Actions
+    connect(ui->configButtonClearDeck, SIGNAL(clicked()), this, SLOT(confirmClearDeck()));
+    addDraftMenu(ui->configButtonForceDraft);
 
-    ui->toolButton->setMenu(menu);
+    //UI
+    connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));
+    connect(ui->configRadioAuto, SIGNAL(clicked()), this, SLOT(transparentAuto()));
+    connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
+    switch(transparency)
+    {
+        case Transparent:
+            ui->configRadioTransparent->setChecked(true);
+            break;
+        case AutoTransparent:
+            ui->configRadioAuto->setChecked(true);
+            break;
+        case Opaque:
+            ui->configRadioOpaque->setChecked(true);
+            break;
+        default:
+            transparency = AutoTransparent;
+            ui->configRadioAuto->setChecked(true);
+            break;
+    }
 
-    updateMainUITheme();
+    connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
+    if(this->theme == ThemeBlack) ui->configCheckDarkTheme->setChecked(true);
+
+    connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
+    if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
+
+    connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
+    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
+
+    //Deck
+    connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
+    if(this->cardHeight<15 || this->cardHeight>35)  this->cardHeight=35;
+    ui->configSliderCardSize->setValue(this->cardHeight);
+
+    connect(ui->configSliderGreyedSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamGreyed(int)));
+    if(this->greyedHeight<15 || this->greyedHeight>35)  this->greyedHeight=35;
+    ui->configSliderGreyedSize->setValue(this->greyedHeight);
+
+    connect(ui->configCheckLink, SIGNAL(clicked(bool)), this, SLOT(linkGreyedSizeToCardSize(bool)));
+    if(this->cardHeight == this->greyedHeight)  ui->configCheckLink->setChecked(true);
+    ui->configCheckLink->setStyleSheet("QCheckBox::indicator {width: 11px;height: 26px;}"
+                                       "QCheckBox::indicator:checked{image: url(:/Images/link.png);}"
+                                       "QCheckBox::indicator:unchecked{image: url(:/Images/unlink.png);}");
+
+    //Hand
+    connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
+    if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
+    ui->configSliderDrawTime->setValue(this->drawDisappear);
+
+    //Draft
+    connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
+    if(this->showDraftOverlay) ui->configCheckOverlay->setChecked(true);
+
+    connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
 }
 
 
 //TODO
 //New stats site
 //Mostrar razas
+//Window split, config coge mucho espacio
+//Colores rewards
+//Colocacion tabs en win split
+//group box en drafting
+//Test tab config en todos windows split
+//Icon tabs
+//Fix card size change slider
+//Velen's chosen bug draft
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

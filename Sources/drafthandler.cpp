@@ -881,7 +881,7 @@ void DraftHandler::setTransparency(Transparency value)
         ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{background-color: transparent; color: white;}");
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px; background-color: transparent; color: white;}");
     }
     else
     {

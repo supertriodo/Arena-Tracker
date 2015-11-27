@@ -130,7 +130,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaM
     item->setIcon(1, QIcon(":Images/" +
                            (gameResult.enemyHero==""?("secretHunter"):("hero"+gameResult.enemyHero))
                            + ".png"));
-    if(!gameResult.enemyName.isEmpty())     item->setToolTip(1, "<span style=\"color:green;\">" + gameResult.enemyName + "</span>");
+    if(!gameResult.enemyName.isEmpty())     item->setToolTip(1, gameResult.enemyName);
     item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
     item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
 
@@ -424,8 +424,7 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
         ui->tabLog->repaint();
 
-        if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
+        ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
     }
     else
     {
@@ -434,8 +433,7 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
         ui->tabLog->repaint();
 
-        if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent;}");
+        ui->logTextEdit->setStyleSheet("");
     }
 
     if(theme == ThemeWhite)
@@ -459,11 +457,6 @@ void ArenaHandler::setTheme(Theme theme)
 
     if(transparency != Transparent)
     {
-        if(theme == ThemeWhite)
-            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent;}");
-        else
-            ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
-
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
         allToWhite();
 

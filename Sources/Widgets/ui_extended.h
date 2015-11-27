@@ -23,7 +23,6 @@ public:
     MoveTreeWidget *arenaTreeWidget = NULL;
     QPushButton *minimizeButton = NULL;
     QPushButton *closeButton = NULL;
-    QPushButton *toolButton = NULL;
     ResizeButton *resizeButton = NULL;
 };
 

@@ -16,7 +16,7 @@ void MoveTabWidget::setTheme(Theme theme)
     this->setStyleSheet(
         "QTabBar::tab:selected {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
         "QTabBar::tab:hover {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
-        "QTabWidget::tab-bar {alignment: center;}"
+        "QTabWidget::tab-bar {alignment: left;}"
         "QTabWidget::pane {border-color: transparent; background: " + backgroundColor + ";}"
         "QTabWidget::pane {position: absolute;top: -24px;}"
         "QTabBar::tab {border: 2px solid " + borderColor + ";"

@@ -60,5 +60,7 @@
         <file>Json/AllSets.zhTW.json</file>
         <file>Images/handCard3.png</file>
         <file>Json/AllSets.jaJP.json</file>
+        <file>Images/link.png</file>
+        <file>Images/unlink.png</file>
     </qresource>
 </RCC>
