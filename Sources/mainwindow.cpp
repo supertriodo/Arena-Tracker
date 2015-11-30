@@ -899,6 +899,29 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
 
     if(!this->splitWindow)  newWindowsFormation = H1;
 
+    switch(newWindowsFormation)
+    {
+        case None:
+        case H1:
+            break;
+        case H2:
+            ui->tabWidgetH2->setMinimumWidth(this->width()/2);
+            ui->tabWidgetH2->setMaximumWidth(this->width()/2);
+            break;
+
+        case H3:
+            ui->tabWidgetH2->setMinimumWidth(this->width()/3);
+            ui->tabWidgetH2->setMaximumWidth(this->width()/3);
+            ui->tabWidgetH3->setMinimumWidth(this->width()/3);
+            ui->tabWidgetH3->setMaximumWidth(this->width()/3);
+            break;
+
+        case V2:
+            ui->tabWidgetV1->setMinimumHeight(this->height()/2);
+            ui->tabWidgetV1->setMaximumHeight(this->height()/2);
+            break;
+    }
+
     if(newWindowsFormation == windowsFormation) return;
     windowsFormation = newWindowsFormation;
 
@@ -1648,14 +1671,12 @@ void MainWindow::completeToolButton()
 
 //TODO
 //New stats site
-//Mostrar razas
-//Window split, config coge mucho espacio
 //Colores rewards
 //Colocacion tabs en win split
 //group box en drafting
 //Test tab config en todos windows split
 //Icon tabs
-//Fix card size change slider
+//Add 50 px card size
 //Velen's chosen bug draft
 
 //BUGS CONOCIDOS
