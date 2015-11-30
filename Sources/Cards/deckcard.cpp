@@ -176,18 +176,22 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
     painter.end();
 
     //Adapt to size
-    if(cardHeight<35)
+    if(cardHeight!=35)
     {
-        if(cardHeight==30)
-        {
-            return canvas.copy(0,0+3,218,35-5);
-        }
-        else
+        if(cardHeight<25)
         {
             canvas = canvas.copy(0,0+6,218,35-10);
-
-            if(cardHeight<25)   canvas = canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-            return canvas;
+            return canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        }
+//        else if(cardHeight>35)
+//        {
+//            return canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//        }
+        else    //25<=cardHeight<35
+        {
+            int reducePx = 35 - cardHeight;//1-10
+            int topPx = reducePx/2+1;
+            return canvas.copy(0,0+topPx,218,35-reducePx);
         }
     }
 
