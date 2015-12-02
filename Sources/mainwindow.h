@@ -95,6 +95,7 @@ private:
     void spreadTheme();
     void updateMainUITheme();
     void updateButtonsTheme();
+    void updateTabWidgetsTheme();
     void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);

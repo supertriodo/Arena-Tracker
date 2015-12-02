@@ -10,7 +10,7 @@ class MoveTabWidget : public QTabWidget
 {
 public:
     MoveTabWidget(QWidget *parent = 0);
-    void setTheme(Theme theme);
+    void setTheme(Theme theme, QString tabBarAlignment);
 };
 
 

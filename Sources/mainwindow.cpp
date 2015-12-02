@@ -1448,12 +1448,18 @@ void MainWindow::spreadTheme()
 }
 
 
+void MainWindow::updateTabWidgetsTheme()
+{
+    ui->tabWidget->setTheme(this->theme, "left");
+    ui->tabWidgetH2->setTheme(this->theme, "center");
+    ui->tabWidgetH3->setTheme(this->theme, "center");
+    ui->tabWidgetV1->setTheme(this->theme, "left");
+}
+
+
 void MainWindow::updateMainUITheme()
 {
-    ui->tabWidget->setTheme(this->theme);
-    ui->tabWidgetH2->setTheme(this->theme);
-    ui->tabWidgetH3->setTheme(this->theme);
-    ui->tabWidgetV1->setTheme(this->theme);
+    updateTabWidgetsTheme();
     updateButtonsTheme();
 
     QString mainCSS = "";
@@ -1672,14 +1678,13 @@ void MainWindow::completeToolButton()
 //TODO
 //3)New stats site
 //3)Colores rewards
-//1)group box en drafting
 //3)Icon tabs
 //3)Add 50 px card size
 //2)Velen's chosen bug draft
 //3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
-//3)Tab en medio en tab split interiores
+//2)Config slider
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
