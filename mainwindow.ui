@@ -624,6 +624,12 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Belwe Bd BT</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
             <property name="title">
              <string/>
             </property>
@@ -1062,6 +1068,10 @@
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QPushButton" name="configButtonClearDeck">
+                   <property name="toolTip">
+                    <string>Clear Deck: Empty your deck.
+It'll be reloaded when entering the arena.</string>
+                   </property>
                    <property name="text">
                     <string>Clear Deck</string>
                    </property>
@@ -1069,6 +1079,10 @@
                  </item>
                  <item>
                   <widget class="QPushButton" name="configButtonForceDraft">
+                   <property name="toolTip">
+                    <string>Force Draft: Start a new draft from the beginning.
+It'll clear the deck and any drafting info.</string>
+                   </property>
                    <property name="text">
                     <string>Force Draft</string>
                    </property>

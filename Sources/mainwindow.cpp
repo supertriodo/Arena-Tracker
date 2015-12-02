@@ -1679,6 +1679,7 @@ void MainWindow::completeToolButton()
 //3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
+//3)Tab en medio en tab split interiores
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

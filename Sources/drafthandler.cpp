@@ -881,7 +881,8 @@ void DraftHandler::setTransparency(Transparency value)
         ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px; background-color: transparent; color: white;}");
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
+                                         "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
     else
     {
@@ -895,7 +896,8 @@ void DraftHandler::setTransparency(Transparency value)
         ui->textDraft2->setStyleSheet("");
         ui->textDraft3->setStyleSheet("");
         ui->textBrowserDraft->setStyleSheet("");
-        ui->groupBoxDraft->setStyleSheet("");
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
+                                         "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
 
     //Clear score labels
