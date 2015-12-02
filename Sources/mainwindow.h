@@ -87,7 +87,7 @@ private:
     void writeSettings();
     void completeUI();
     void completeUIButtons();
-    void completeToolButton();
+    void completeConfigTab();
     void addDraftMenu(QPushButton *button);
     void spreadSplitWindow();
     void spreadTransparency();

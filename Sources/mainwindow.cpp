@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardWindow();
 
     readSettings();
-    completeToolButton();
+    completeConfigTab();
 }
 
 
@@ -1610,7 +1610,7 @@ void MainWindow::toggleDraftLearningMode()
 }
 
 
-void MainWindow::completeToolButton()
+void MainWindow::completeConfigTab()
 {
     //Actions
     connect(ui->configButtonClearDeck, SIGNAL(clicked()), this, SLOT(confirmClearDeck()));

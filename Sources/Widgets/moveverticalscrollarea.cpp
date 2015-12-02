@@ -8,7 +8,7 @@ MoveVerticalScrollArea::MoveVerticalScrollArea(QWidget *parent) : QScrollArea(pa
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setStyleSheet("QScrollArea { background: transparent; }"
-                  "QScrollArea > QWidget > QWidget { background: transparent; }");
+                  "QScrollArea > QWidget > QWidget { background: transparent; }");//Rompe scrollbar
     //             QScrollArea > ViewPort > WidgetContents
     setFrameShape(QFrame::NoFrame);
 }
