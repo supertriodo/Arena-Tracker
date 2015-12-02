@@ -1678,6 +1678,7 @@ void MainWindow::completeToolButton()
 //Icon tabs
 //Add 50 px card size
 //Velen's chosen bug draft
+//Config no adapta su size despues de un window split
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

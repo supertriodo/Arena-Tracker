@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>6</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1022,307 +1022,354 @@
            <number>26</number>
           </property>
           <item>
-           <widget class="QGroupBox" name="configBoxActions">
-            <property name="title">
-             <string>Actions</string>
+           <widget class="MoveVerticalScrollArea" name="configScrollArea">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QPushButton" name="configButtonClearDeck">
-               <property name="text">
-                <string>Clear Deck</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="configButtonForceDraft">
-               <property name="text">
-                <string>Force Draft</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="configBoxUI">
-            <property name="title">
-             <string>UI</string>
+            <property name="lineWidth">
+             <number>0</number>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QGroupBox" name="configBoxTransparency">
-               <property name="title">
-                <string>Transparency</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_4">
-                <item>
-                 <widget class="QRadioButton" name="configRadioTransparent">
-                  <property name="toolTip">
-                   <string>Transparent</string>
-                  </property>
-                  <property name="text">
-                   <string>Transparent</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="configRadioAuto">
-                  <property name="toolTip">
-                   <string>Auto: Deck/Hand tabs will be
-transparent during a game</string>
-                  </property>
-                  <property name="text">
-                   <string>Auto</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="configRadioOpaque">
-                  <property name="toolTip">
-                   <string>Opaque</string>
-                  </property>
-                  <property name="text">
-                   <string>Opaque</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="configBoxUIExtra">
-               <property name="title">
-                <string/>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_7">
-                <item>
-                 <widget class="QCheckBox" name="configCheckDarkTheme">
-                  <property name="toolTip">
-                   <string>Dark Theme</string>
-                  </property>
-                  <property name="text">
-                   <string>Dark Theme</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="configCheckWindowSplit">
-                  <property name="toolTip">
-                   <string>Split Window: When window gets bigger
-it'll split to show several tabs at once</string>
-                  </property>
-                  <property name="text">
-                   <string>Split Window </string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="configCheckDeckWindow">
-                  <property name="toolTip">
-                   <string>Deck Window: Separate Deck tab
-in a new window</string>
-                  </property>
-                  <property name="text">
-                   <string>Deck Window</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="configBoxDeck">
-            <property name="title">
-             <string>Deck</string>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustIgnored</enum>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            <property name="widgetResizable">
+             <bool>true</bool>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <property name="rightMargin">
-              <number>0</number>
+            <widget class="QWidget" name="configScrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>428</width>
+               <height>522</height>
+              </rect>
              </property>
-             <item>
-              <layout class="QVBoxLayout" name="configDeckVerticalLayout">
-               <item>
-                <widget class="QLabel" name="configLabelDeckNormal">
-                 <property name="toolTip">
-                  <string>Normal Card Size</string>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QGroupBox" name="configBoxActions">
+                <property name="title">
+                 <string>Actions</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QPushButton" name="configButtonClearDeck">
+                   <property name="text">
+                    <string>Clear Deck</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="configButtonForceDraft">
+                   <property name="text">
+                    <string>Force Draft</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxUI">
+                <property name="title">
+                 <string>UI</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QGroupBox" name="configBoxTransparency">
+                   <property name="title">
+                    <string>Transparency</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_4">
+                    <item>
+                     <widget class="QRadioButton" name="configRadioTransparent">
+                      <property name="toolTip">
+                       <string>Transparent</string>
+                      </property>
+                      <property name="text">
+                       <string>Transparent</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="configRadioAuto">
+                      <property name="toolTip">
+                       <string>Auto: Deck/Hand tabs will be
+transparent during a game</string>
+                      </property>
+                      <property name="text">
+                       <string>Auto</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="configRadioOpaque">
+                      <property name="toolTip">
+                       <string>Opaque</string>
+                      </property>
+                      <property name="text">
+                       <string>Opaque</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="configBoxUIExtra">
+                   <property name="title">
+                    <string/>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_7">
+                    <item>
+                     <widget class="QCheckBox" name="configCheckDarkTheme">
+                      <property name="toolTip">
+                       <string>Dark Theme</string>
+                      </property>
+                      <property name="text">
+                       <string>Dark Theme</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="configCheckWindowSplit">
+                      <property name="toolTip">
+                       <string>Split Window: When window gets bigger
+it'll split to show several tabs at once</string>
+                      </property>
+                      <property name="text">
+                       <string>Split Window </string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="configCheckDeckWindow">
+                      <property name="toolTip">
+                       <string>Deck Window: Separate Deck tab
+in a new window</string>
+                      </property>
+                      <property name="text">
+                       <string>Deck Window</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxDeck">
+                <property name="title">
+                 <string>Deck</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <property name="rightMargin">
+                  <number>0</number>
                  </property>
-                 <property name="text">
-                  <string>Normal</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="configLabelDeckGreyed">
-                 <property name="toolTip">
-                  <string>Greyed Card Size</string>
-                 </property>
-                 <property name="text">
-                  <string>Greyed</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="configDeckVerticalLayout2">
-               <item>
-                <widget class="QSlider" name="configSliderCardSize">
-                 <property name="minimum">
-                  <number>15</number>
-                 </property>
-                 <property name="maximum">
-                  <number>35</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>1</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>1</number>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="tickPosition">
-                  <enum>QSlider::NoTicks</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSlider" name="configSliderGreyedSize">
-                 <property name="minimum">
-                  <number>15</number>
-                 </property>
-                 <property name="maximum">
-                  <number>35</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>1</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>1</number>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="tickPosition">
-                  <enum>QSlider::NoTicks</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="configCheckLink">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>11</width>
-                 <height>26</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="configBoxHand">
-            <property name="title">
-             <string>Hand</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QLabel" name="configLabelDrawTime">
-               <property name="toolTip">
-                <string>Draw: Time new cards drawn
+                 <item>
+                  <layout class="QVBoxLayout" name="configDeckVerticalLayout">
+                   <item>
+                    <widget class="QLabel" name="configLabelDeckNormal">
+                     <property name="toolTip">
+                      <string>Normal Card Size</string>
+                     </property>
+                     <property name="text">
+                      <string>Normal</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="configLabelDeckGreyed">
+                     <property name="toolTip">
+                      <string>Greyed Card Size</string>
+                     </property>
+                     <property name="text">
+                      <string>Greyed</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="configDeckVerticalLayout2">
+                   <item>
+                    <widget class="QSlider" name="configSliderCardSize">
+                     <property name="minimum">
+                      <number>15</number>
+                     </property>
+                     <property name="maximum">
+                      <number>35</number>
+                     </property>
+                     <property name="singleStep">
+                      <number>1</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::NoTicks</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="configSliderGreyedSize">
+                     <property name="minimum">
+                      <number>15</number>
+                     </property>
+                     <property name="maximum">
+                      <number>35</number>
+                     </property>
+                     <property name="singleStep">
+                      <number>1</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="tickPosition">
+                      <enum>QSlider::NoTicks</enum>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="configCheckLink">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>11</width>
+                     <height>26</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxHand">
+                <property name="title">
+                 <string>Hand</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <item>
+                  <widget class="QLabel" name="configLabelDrawTime">
+                   <property name="toolTip">
+                    <string>Draw: Time new cards drawn
 are shown on screen</string>
-               </property>
-               <property name="text">
-                <string>Draw</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="configSliderDrawTime">
-               <property name="minimum">
-                <number>0</number>
-               </property>
-               <property name="maximum">
-                <number>11</number>
-               </property>
-               <property name="pageStep">
-                <number>1</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="configLabelDrawTimeValue">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="configBoxDraft">
-            <property name="title">
-             <string>Draft</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QCheckBox" name="configCheckOverlay">
-               <property name="toolTip">
-                <string>Overlay: Show/Hide drafting overlay</string>
-               </property>
-               <property name="text">
-                <string>Overlay</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="configCheckLearning">
-               <property name="toolTip">
-                <string>Learning: This mode will temporarily hide
+                   </property>
+                   <property name="text">
+                    <string>Draw</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="configSliderDrawTime">
+                   <property name="minimum">
+                    <number>0</number>
+                   </property>
+                   <property name="maximum">
+                    <number>11</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="configLabelDrawTimeValue">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxDraft">
+                <property name="title">
+                 <string>Draft</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <item>
+                  <widget class="QCheckBox" name="configCheckOverlay">
+                   <property name="toolTip">
+                    <string>Overlay: Show/Hide drafting overlay</string>
+                   </property>
+                   <property name="text">
+                    <string>Overlay</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="configCheckLearning">
+                   <property name="toolTip">
+                    <string>Learning: This mode will temporarily hide
 card scores during the draft.</string>
-               </property>
-               <property name="text">
-                <string>Learning</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+                   </property>
+                   <property name="text">
+                    <string>Learning</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -1351,6 +1398,14 @@ card scores during the draft.</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MoveVerticalScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>Sources/Widgets/moveverticalscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="arenatracker.qrc"/>
  </resources>
