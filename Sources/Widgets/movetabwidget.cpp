@@ -4,6 +4,7 @@
 MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 {
     this->setTabBar(new MoveTabBar(this));
+    this->setTabBarAutoHide(true);
     this->hide();
 }
 

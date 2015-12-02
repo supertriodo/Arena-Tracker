@@ -939,16 +939,16 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
             }
             else
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
             }
             break;
@@ -959,8 +959,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -968,8 +968,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -981,8 +981,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
                 ui->tabWidgetH3->show();
@@ -991,8 +991,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabLog, ui->tabWidgetH3);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabConfig, ui->tabWidgetH3);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
                 ui->tabWidgetH3->show();
@@ -1005,8 +1005,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -1014,8 +1014,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -1670,15 +1670,15 @@ void MainWindow::completeToolButton()
 
 
 //TODO
-//New stats site
-//Colores rewards
-//Colocacion tabs en win split
-//group box en drafting
-//Test tab config en todos windows split
-//Icon tabs
-//Add 50 px card size
-//Velen's chosen bug draft
-//Config no adapta su size despues de un window split
+//3)New stats site
+//3)Colores rewards
+//1)group box en drafting
+//3)Icon tabs
+//3)Add 50 px card size
+//2)Velen's chosen bug draft
+//3)UI promote movetabwidgets
+//3)Combinar minimum/maximum height a fixedheight en animaciones
+//3)En winSplit y separateDeck mantener la tab seleccionada
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

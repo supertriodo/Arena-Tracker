@@ -18,15 +18,13 @@ void MoveVerticalScrollArea::resizeEvent(QResizeEvent *event)
 {
     QScrollArea::resizeEvent(event);
 
-    if(!verticalScrollBar()->isVisible())
+    if(this->height()<widget()->height())
     {
-        widget()->setMaximumWidth(this->width());
-        widget()->setMinimumWidth(this->width());
+        widget()->setFixedWidth(this->width() - verticalScrollBar()->width());
     }
     else
     {
-        widget()->setMaximumWidth(this->width() - verticalScrollBar()->width());
-        widget()->setMinimumWidth(this->width() - verticalScrollBar()->width());
+        widget()->setFixedWidth(this->width());
     }
 }
 
