@@ -313,6 +313,8 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(hide()));
     connect(ui->secretsTreeWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
+    connect(draftHandler, SIGNAL(draftStarted()),
+            cardWindow, SLOT(hide()));
 }
 
 
@@ -1676,6 +1678,7 @@ void MainWindow::completeConfigTab()
 
 
 //TODO
+//2)Config slider
 //3)New stats site
 //3)Colores rewards
 //3)Icon tabs
@@ -1684,7 +1687,8 @@ void MainWindow::completeConfigTab()
 //3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
-//2)Config slider
+//3)Joust triggered known card draws does not show up in enemy hand. I think this only apply to hunter card: King's Elekk
+//Test shortcut
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)

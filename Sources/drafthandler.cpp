@@ -204,7 +204,7 @@ void DraftHandler::beginDraft(QString hero)
         emit pLog(tr("Draft: New draft started."));
     }
 
-    //Set updateTime in log
+    //Set updateTime in log / Hide card Window
     emit draftStarted();
 
     resetTab();
