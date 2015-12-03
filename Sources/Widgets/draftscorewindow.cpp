@@ -127,7 +127,7 @@ int DraftScoreWindow::getCard(QString &name, QString &code)
 {
     //Mechwarper (2x)
     QRegularExpressionMatch match;
-    if(name.contains(QRegularExpression("([\\w ]*\\w) *\\((\\d+)x\\)"), &match))
+    if(name.contains(QRegularExpression("^(.*[^ ]) +\\((\\d+)x\\)$"), &match))
     {
         code = Utility::cardEnCodeFromName(match.captured(1));
         return match.captured(2).toInt();

@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1081,7 +1081,7 @@ It'll be reloaded when entering the arena.</string>
                   <widget class="QPushButton" name="configButtonForceDraft">
                    <property name="toolTip">
                     <string>Force Draft: Start a new draft from the beginning.
-It'll clear the deck and any drafting info.</string>
+It'll clear any drafting progress.</string>
                    </property>
                    <property name="text">
                     <string>Force Draft</string>

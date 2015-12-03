@@ -1515,14 +1515,14 @@ void MainWindow::updateButtonsTheme()
 {
     if(theme == ThemeWhite)
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+        ui->closeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
                                        "QPushButton:hover {background: "
                                                       "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 white, stop: 1 #90EE90);}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: white; border: none;}"
+                                                      "stop: 0 #F0F0F0, stop: 1 #90EE90);}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
                                           "QPushButton:hover {background: "
                                                        "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
-                                                       "stop: 0 white, stop: 1 #90EE90);}");
+                                                       "stop: 0 #F0F0F0, stop: 1 #90EE90);}");
     }
     else
     {
@@ -1685,11 +1685,11 @@ void MainWindow::completeConfigTab()
 //3)New stats site
 //3)Icon tabs
 //3)Add 50 px card size
-//2)Velen's chosen bug draft
 //3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
 //3)Joust triggered known card draws does not show up in enemy hand. I think this only apply to hunter card: King's Elekk
+//2)Tooltip cards synergy drafting
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
