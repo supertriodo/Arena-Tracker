@@ -1471,6 +1471,8 @@ void MainWindow::updateMainUITheme()
                 "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
                 "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
+                "QTextEdit {background: transparent;}"
+                "QLineEdit {border: 1px solid black;border-radius: 5px;background: white;}"
                 ;
     }
     else
@@ -1500,6 +1502,8 @@ void MainWindow::updateMainUITheme()
                 "QRadioButton {background-color: transparent; color: white;}"
                 "QCheckBox {background-color: transparent; color: white;}"
                 "QTextEdit{background-color: transparent; color: white;}"
+
+                "QLineEdit {border: 2px solid rgb(50,175,50);border-radius: 5px;background: #0F4F0F; color: white;selection-background-color: black;}"
                 ;
     }
     this->setStyleSheet(mainCSS);
@@ -1678,9 +1682,7 @@ void MainWindow::completeConfigTab()
 
 
 //TODO
-//2)Config slider
 //3)New stats site
-//3)Colores rewards
 //3)Icon tabs
 //3)Add 50 px card size
 //2)Velen's chosen bug draft
@@ -1688,10 +1690,10 @@ void MainWindow::completeConfigTab()
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
 //3)Joust triggered known card draws does not show up in enemy hand. I think this only apply to hunter card: King's Elekk
-//Test shortcut
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
+//Tab Config ScrollArea slider transparent CSS
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.

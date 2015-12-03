@@ -11,7 +11,7 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment)
 {
     QString foregroundColor = (theme==ThemeWhite)?"black":"white";
-    QString backgroundColor = (theme==ThemeWhite)?"white":"black";
+    QString backgroundColor = (theme==ThemeWhite)?"#F0F0F0":"black";
     QString borderColor = (theme==ThemeWhite)?"#C2C7CB":"#0F4F0F";
 
     this->setStyleSheet(
