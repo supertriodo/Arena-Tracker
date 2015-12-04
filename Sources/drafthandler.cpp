@@ -956,3 +956,14 @@ void DraftHandler::setLearningMode(bool value)
 //(Explorer's Hat - Hunter)
 //(Soul of the forest - Druid)
 //5) Eliminar todas las (\)
+
+//Heroes
+//01) Warrior
+//02) Shaman
+//03) Rogue
+//04) Paladin
+//05) Hunter
+//06) Druid
+//07) Warlock
+//08) Mage
+//09) Priest
