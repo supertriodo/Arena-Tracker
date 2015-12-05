@@ -811,6 +811,12 @@ bool DraftHandler::findScreenRects()
         QSize sizeCard(screenRects[0].width, screenRects[0].height);
         draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
         draftScoreWindow->setLearningMode(this->learningMode);
+
+        connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
+                this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
+        connect(draftScoreWindow, SIGNAL(cardLeave()),
+                this, SIGNAL(overlayCardLeave()));
+
         showOverlay();
 
         return true;

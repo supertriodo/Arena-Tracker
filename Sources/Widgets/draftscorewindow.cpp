@@ -49,6 +49,13 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setMaximumHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setIconSize(QSize(std::min(218, synergyWidth),35));
+        synergiesListWidget[i]->setMouseTracking(true);
+
+        connect(synergiesListWidget[i], SIGNAL(itemEntered(QListWidgetItem*)),
+                this, SLOT(findSynergyCardEntered(QListWidgetItem*)));
+        connect(synergiesListWidget[i], SIGNAL(leave()),
+                this, SIGNAL(cardLeave()));
+
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
         verLayoutSynergy->addStretch();
 
@@ -66,6 +73,11 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
 DraftScoreWindow::~DraftScoreWindow()
 {
+    for(int i=0; i<3; i++)
+    {
+        synergiesListWidget[i]->clear();
+        synergiesDeckCardLists[i].clear();
+    }
 }
 
 
@@ -108,6 +120,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 
         //Insert synergies
         synergiesListWidget[i]->clear();
+        synergiesDeckCardLists[i].clear();
 
         QStringList synergiesList = synergies[i].split(" / ", QString::SkipEmptyParts);
         foreach(QString name, synergiesList)
@@ -118,6 +131,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
             deckCard.total = deckCard.remaining = total;
             deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
             deckCard.draw();
+            synergiesDeckCardLists[i].append(deckCard);
         }
     }
 }
@@ -195,5 +209,48 @@ void DraftScoreWindow::hideSynergies(int index)
 {
     synergiesListWidget[index]->hide();
 }
+
+
+void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
+{
+    //Detect synergy list
+    QListWidget * listWidget = item->listWidget();
+    int indexList = -1;
+
+    for(int i=0; i<3; i++)
+    {
+        if(synergiesListWidget[i] == listWidget)
+        {
+            indexList = i;
+            break;
+        }
+    }
+    if(indexList == -1) return;
+
+    QString code = synergiesDeckCardLists[indexList][listWidget->row(item)].getCode();
+
+    QRect rectCard = listWidget->visualItemRect(item);
+    QPoint posCard = listWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int synergyListTop = listWidget->mapToGlobal(QPoint(0,0)).y();
+    int synergyListBottom = listWidget->mapToGlobal(QPoint(0,listWidget->height())).y();
+    emit cardEntered(code, globalRectCard, synergyListTop, synergyListBottom);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -18,7 +18,7 @@ CardWindow::~CardWindow()
 }
 
 
-void CardWindow::LoadCard(QString code, QRect rectCard, int maxTop, int maxBottom)
+void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     if(code.isEmpty() ||
         !QFileInfo(Utility::appPath() + "/HSCards/" + code + ".png").exists())
@@ -51,6 +51,7 @@ void CardWindow::LoadCard(QString code, QRect rectCard, int maxTop, int maxBotto
     }
 
     int moveX, moveY;
+    if(alignReverse)    showAtLeft = !showAtLeft;
     if(showAtLeft)  moveX = rectCard.left()-WCARD;
     else            moveX = rectCard.right();
 

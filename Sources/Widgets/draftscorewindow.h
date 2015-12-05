@@ -24,6 +24,7 @@ public:
 private:
     ScoreButton *scoresPushButton[3];
     MoveListWidget *synergiesListWidget[3];
+    QList<DeckCard> synergiesDeckCardLists[3];
     int scoreWidth;
     int maxSynergyHeight;
 
@@ -37,10 +38,15 @@ public:
     void hideScores();
     void setLearningMode(bool value);
 
+signals:
+    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void cardLeave();
+
 private slots:
     void showSynergies(int index);
     void hideSynergies(int index);
     void showSynergies();
+    void findSynergyCardEntered(QListWidgetItem *item);
 };
 
 #endif // DRAFTSCOREWINDOW_H

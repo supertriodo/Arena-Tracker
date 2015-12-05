@@ -85,6 +85,8 @@ signals:
     void newDeckCard(QString code);
     void draftStarted();
     void draftEnded();
+    void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
+    void overlayCardLeave();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 

@@ -300,11 +300,14 @@ void MainWindow::createCardWindow()
 {
     CardWindow *cardWindow = new CardWindow(this);
     connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(secretsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(LoadCard(QString, QRect, int, int)));
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(draftHandler, SIGNAL(overlayCardEntered(QString, QRect, int, int, bool)),
+            cardWindow, SLOT(loadCard(QString, QRect, int, int, bool)));
+
     connect(ui->deckListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(ui->drawListWidget, SIGNAL(leave()),
@@ -312,6 +315,8 @@ void MainWindow::createCardWindow()
     connect(ui->enemyHandListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(ui->secretsTreeWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(draftHandler, SIGNAL(overlayCardLeave()),
             cardWindow, SLOT(hide()));
     connect(draftHandler, SIGNAL(draftStarted()),
             cardWindow, SLOT(hide()));
@@ -1689,7 +1694,6 @@ void MainWindow::completeConfigTab()
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 //3)En winSplit y separateDeck mantener la tab seleccionada
 //3)Joust triggered known card draws does not show up in enemy hand. I think this only apply to hunter card: King's Elekk
-//2)Tooltip cards synergy drafting
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
