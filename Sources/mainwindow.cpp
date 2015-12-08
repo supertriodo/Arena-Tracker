@@ -907,20 +907,16 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
         case H1:
             break;
         case H2:
-            ui->tabWidgetH2->setMinimumWidth(this->width()/2);
-            ui->tabWidgetH2->setMaximumWidth(this->width()/2);
+            ui->tabWidgetH2->setFixedWidth(this->width()/2);
             break;
 
         case H3:
-            ui->tabWidgetH2->setMinimumWidth(this->width()/3);
-            ui->tabWidgetH2->setMaximumWidth(this->width()/3);
-            ui->tabWidgetH3->setMinimumWidth(this->width()/3);
-            ui->tabWidgetH3->setMaximumWidth(this->width()/3);
+            ui->tabWidgetH2->setFixedWidth(this->width()/3);
+            ui->tabWidgetH3->setFixedWidth(this->width()/3);
             break;
 
         case V2:
-            ui->tabWidgetV1->setMinimumHeight(this->height()/2);
-            ui->tabWidgetV1->setMaximumHeight(this->height()/2);
+            ui->tabWidgetV1->setFixedHeight(this->height()/2);
             break;
     }
 
@@ -1079,8 +1075,7 @@ void MainWindow::calculateDeckWindowMinimumWidth()
     if(this->otherWindow!=NULL && deckHandler!= NULL)
     {
         int deckWidth = this->otherWindow->width() - ui->deckListWidget->width() + ui->deckListWidget->sizeHintForColumn(0);
-        this->otherWindow->setMinimumWidth(deckWidth);
-        this->otherWindow->setMaximumWidth(deckWidth);
+        this->otherWindow->setFixedWidth(deckWidth);
     }
 }
 
