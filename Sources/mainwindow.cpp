@@ -937,6 +937,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
     ui->tabWidgetH3->hide();
     ui->tabWidgetV1->hide();
 
+    QWidget * currentTab = ui->tabWidget->currentWidget();
+
     switch(windowsFormation)
     {
         case None:
@@ -1028,6 +1030,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             }
             break;
     }
+    ui->tabWidget->setCurrentWidget(currentTab);
 
     this->calculateMinimumWidth();
 }
@@ -1692,8 +1695,7 @@ void MainWindow::completeConfigTab()
 //3)Add 50 px card size
 //3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
-//3)En winSplit y separateDeck mantener la tab seleccionada
-//3)Joust triggered known card draws does not show up in enemy hand. I think this only apply to hunter card: King's Elekk
+
 
 //BUGS CONOCIDOS
 //Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
