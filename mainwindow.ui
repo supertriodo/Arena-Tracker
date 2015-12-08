@@ -40,7 +40,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QTabWidget" name="tabWidgetTemplate">
+       <widget class="MoveTabWidget" name="tabWidget">
         <property name="font">
          <font>
           <family>Sans Serif</family>
@@ -1417,6 +1417,12 @@ card scores during the draft.</string>
    <class>MoveVerticalScrollArea</class>
    <extends>QScrollArea</extends>
    <header>Sources/Widgets/moveverticalscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MoveTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>Sources/Widgets/movetabwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

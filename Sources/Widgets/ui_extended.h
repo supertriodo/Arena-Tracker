@@ -12,7 +12,6 @@ QT_BEGIN_NAMESPACE
 class Ui_Extended : public Ui_MainWindow
 {
 public:
-    MoveTabWidget *tabWidget = NULL;
     MoveTabWidget *tabWidgetH2 = NULL;
     MoveTabWidget *tabWidgetH3 = NULL;
     MoveTabWidget *tabWidgetV1 = NULL;

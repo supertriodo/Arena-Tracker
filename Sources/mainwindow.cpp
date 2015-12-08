@@ -535,13 +535,8 @@ void MainWindow::completeUI()
 {
     if(isMainWindow)
     {
-        ui->tabWidget = new MoveTabWidget(this);
+        ui->tabWidget->clear();
         ui->tabWidget->hide();
-
-        ui->tabWidgetTemplate->clear();
-        ui->tabWidgetTemplate->hide();
-        ui->gridLayout->removeWidget(ui->tabWidgetTemplate);
-        ui->gridLayout->addWidget(ui->tabWidget, 0, 0);
 
         ui->tabWidgetH2 = new MoveTabWidget(this);
         ui->tabWidgetH2->hide();
@@ -1693,7 +1688,6 @@ void MainWindow::completeConfigTab()
 //3)New stats site
 //3)Icon tabs
 //3)Add 50 px card size
-//3)UI promote movetabwidgets
 //3)Combinar minimum/maximum height a fixedheight en animaciones
 
 
