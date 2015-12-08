@@ -1052,8 +1052,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>428</width>
-               <height>522</height>
+               <width>414</width>
+               <height>523</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1201,7 +1201,7 @@ in a new window</string>
                    <item>
                     <widget class="QLabel" name="configLabelDeckNormal">
                      <property name="toolTip">
-                      <string>Normal Card Size</string>
+                      <string>Normal: Height of the non-greyed cards.</string>
                      </property>
                      <property name="text">
                       <string>Normal</string>
@@ -1214,13 +1214,23 @@ in a new window</string>
                    <item>
                     <widget class="QLabel" name="configLabelDeckGreyed">
                      <property name="toolTip">
-                      <string>Greyed Card Size</string>
+                      <string>Greyed: Height of the greyed cards.</string>
                      </property>
                      <property name="text">
                       <string>Greyed</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="configLabelDeckTooltip">
+                     <property name="toolTip">
+                      <string>Tooltip: Size of the card's tooltip.</string>
+                     </property>
+                     <property name="text">
+                      <string>Tooltip</string>
                      </property>
                     </widget>
                    </item>
@@ -1269,6 +1279,22 @@ in a new window</string>
                      </property>
                      <property name="tickPosition">
                       <enum>QSlider::NoTicks</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="configSliderTooltipSize">
+                     <property name="minimum">
+                      <number>10</number>
+                     </property>
+                     <property name="maximum">
+                      <number>50</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>

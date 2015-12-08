@@ -298,7 +298,7 @@ void MainWindow::createEnemyHandHandler()
 
 void MainWindow::createCardWindow()
 {
-    CardWindow *cardWindow = new CardWindow(this);
+    cardWindow = new CardWindow(this);
     connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
@@ -676,6 +676,8 @@ void MainWindow::readSettings()
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
+        int tooltipScale = settings.value("tooltipScale", 10).toInt();
+
 
         //Spread options to components
         deckHandler->setGreyedHeight(this->greyedHeight);
@@ -683,6 +685,9 @@ void MainWindow::readSettings()
         deckHandler->setDrawDisappear(this->drawDisappear);
         draftHandler->setShowDraftOverlay(this->showDraftOverlay);
         draftHandler->setLearningMode(this->draftLearningMode);
+
+        ui->configSliderTooltipSize->setValue(tooltipScale);
+        cardWindow->scale(tooltipScale);
     }
     else
     {
@@ -718,6 +723,7 @@ void MainWindow::writeSettings()
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
+        settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
     }
     else
     {
@@ -1665,6 +1671,8 @@ void MainWindow::completeConfigTab()
                                        "QCheckBox::indicator:checked{image: url(:/Images/link.png);}"
                                        "QCheckBox::indicator:unchecked{image: url(:/Images/unlink.png);}");
 
+    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), cardWindow, SLOT(scale(int)));
+
     //Hand
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
     if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
@@ -1683,7 +1691,8 @@ void MainWindow::completeConfigTab()
 //3)New stats site
 //3)Icon tabs
 //3)Add 50 px card size
-//3)Combinar minimum/maximum height a fixedheight en animaciones
+//3)Tooltip sliders
+//3)app fuera de pantalla issue
 
 
 //BUGS CONOCIDOS

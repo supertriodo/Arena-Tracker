@@ -29,6 +29,7 @@ signals:
 
 public slots:
     void loadCard(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=false);
+    void scale(int value_x10);
 };
 
 #endif // CARDWINDOW_H

@@ -7,7 +7,7 @@ CardWindow::CardWindow(QWidget *parent) :
 {
     cardLabel = new QLabel(this);
     setCentralWidget(cardLabel);
-    move(700, 400);
+    setMinimumSize(0,0);
     resize(WCARD,HCARD);
     setAttribute(Qt::WA_TranslucentBackground, true);
 }
@@ -15,6 +15,14 @@ CardWindow::CardWindow(QWidget *parent) :
 
 CardWindow::~CardWindow()
 {
+}
+
+
+void CardWindow::scale(int value_x10)
+{
+    float value = value_x10/10.0;
+    setMinimumSize(0,0);
+    resize(value*WCARD, value*HCARD);
 }
 
 
@@ -50,20 +58,24 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
         break;
     }
 
+    int winWidth = width();
+    int winHeight = height();
+
     int moveX, moveY;
     if(alignReverse)    showAtLeft = !showAtLeft;
-    if(showAtLeft)  moveX = rectCard.left()-WCARD;
+    if(showAtLeft)  moveX = rectCard.left()-winWidth;
     else            moveX = rectCard.right();
 
-    moveY = midY-HCARD/2;
+    moveY = midY-winHeight/2;
     if((maxTop!=-1) && (moveY<maxTop)) moveY=maxTop;
-    else if((maxBottom!=-1) && ((moveY+HCARD)>maxBottom))
+    else if((maxBottom!=-1) && ((moveY+winHeight)>maxBottom))
     {
-        if((maxBottom-HCARD)<maxTop)    moveY=maxTop;
-        else                            moveY=maxBottom-HCARD;
+        if((maxBottom-winHeight)<maxTop)    moveY=maxTop;
+        else                            moveY=maxBottom-winHeight;
     }
 
     move(moveX, moveY);
-    cardLabel->setPixmap(QPixmap(Utility::appPath() + "/HSCards/" + code + ".png").copy(5,34,WCARD,HCARD));
+    cardLabel->setPixmap(QPixmap(Utility::appPath() + "/HSCards/" + code + ".png").copy(5,34,WCARD,HCARD)
+                         .scaled(winWidth, winHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     show();
 }
