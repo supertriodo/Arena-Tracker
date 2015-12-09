@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>6</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1244,7 +1244,7 @@ in a new window</string>
                       <number>15</number>
                      </property>
                      <property name="maximum">
-                      <number>35</number>
+                      <number>100</number>
                      </property>
                      <property name="singleStep">
                       <number>1</number>
@@ -1266,7 +1266,7 @@ in a new window</string>
                       <number>15</number>
                      </property>
                      <property name="maximum">
-                      <number>35</number>
+                      <number>100</number>
                      </property>
                      <property name="singleStep">
                       <number>1</number>

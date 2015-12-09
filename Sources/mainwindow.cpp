@@ -677,20 +677,38 @@ void MainWindow::initConfigTab(int tooltipScale)
     if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
     //Deck
-    if(this->cardHeight<15 || this->cardHeight>35)  this->cardHeight = 35;
-    ui->configSliderCardSize->setValue(this->cardHeight);
+    if(this->cardHeight<ui->configSliderCardSize->minimum() || this->cardHeight>ui->configSliderCardSize->maximum())  this->cardHeight = 35;
+    if(ui->configSliderCardSize->value() == this->cardHeight)   updateTamCard(this->cardHeight);
+    else    ui->configSliderCardSize->setValue(this->cardHeight);
 
-    if(this->greyedHeight<15 || this->greyedHeight>35)  this->greyedHeight = 35;
-    ui->configSliderGreyedSize->setValue(this->greyedHeight);
+    if(this->greyedHeight<ui->configSliderGreyedSize->minimum() || this->greyedHeight>ui->configSliderGreyedSize->maximum())  this->greyedHeight = 35;
+    if(ui->configSliderGreyedSize->value() == this->greyedHeight)   updateTamGreyed(this->greyedHeight);
+    else    ui->configSliderGreyedSize->setValue(this->greyedHeight);
 
     if(this->cardHeight == this->greyedHeight)  ui->configCheckLink->setChecked(true);
 
-    if(tooltipScale<10 || tooltipScale>50)  tooltipScale = 10;
-    ui->configSliderTooltipSize->setValue(tooltipScale);
+    if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
+    if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
+    else ui->configSliderTooltipSize->setValue(tooltipScale);
 
     //Hand
-    if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
-    ui->configSliderDrawTime->setValue(this->drawDisappear);
+    //Slider            0  - Ns - 11
+    //DrawDissapear     -1 - Ns - 0
+    switch(this->drawDisappear)
+    {
+        case -1:
+            ui->configSliderDrawTime->setValue(0);
+            updateTimeDraw(0);
+            break;
+        case 0:
+            ui->configSliderDrawTime->setValue(11);
+            break;
+        default:
+            if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
+            ui->configSliderDrawTime->setValue(this->drawDisappear);
+            break;
+    }
+
 
     //Draft
     if(this->showDraftOverlay) ui->configCheckOverlay->setChecked(true);
@@ -1706,7 +1724,6 @@ void MainWindow::completeConfigTab()
 //3)New stats site
 //3)Icon tabs
 //3)Add 50 px card size
-//3)Tooltip sliders
 //3)app fuera de pantalla issue
 
 
