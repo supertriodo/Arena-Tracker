@@ -35,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardWindow();
 
     readSettings();
-    completeConfigTab();
 }
 
 
@@ -514,16 +513,16 @@ void MainWindow::createWebUploader()
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     //No cargamos el deck desde arenaMastery, lo leemos del log
-//#ifndef QT_DEBUG //En debug no se carga el deck de web
-//    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
-//            deckHandler, SLOT(newDeckCardWeb(QString,int)));
-//    connect(webUploader, SIGNAL(newWebDeckCardList()),
-//            this, SLOT(resetDeckAlreadyRead()));
+#ifdef QT_DEBUG
+    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
+            deckHandler, SLOT(newDeckCardWeb(QString,int)));
+    connect(webUploader, SIGNAL(newWebDeckCardList()),
+            this, SLOT(resetDeckAlreadyRead()));
 
-//    //Connect de gameWatcher
-//    connect(gameWatcher,SIGNAL(beginReadingDeck()),
-//            webUploader, SLOT(askArenaCards()));
-//#endif
+    //Connect de gameWatcher
+    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+            webUploader, SLOT(askArenaCards()));
+#endif
 
     arenaHandler->setWebUploader(webUploader);
 
@@ -549,8 +548,6 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        completeHeroButtons();
-
         ui->arenaTreeWidget = new MoveTreeWidget(ui->tabArena);
         ui->tabArenalLayout->insertWidget(1, ui->arenaTreeWidget);
         ui->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
@@ -561,6 +558,9 @@ void MainWindow::completeUI()
         ui->tabEnemyLayout->addWidget(ui->drawListWidget);
         ui->deckListWidget = new MoveListWidget(ui->tabDeck);
         ui->tabDeckLayout->addWidget(ui->deckListWidget);
+
+        completeHeroButtons();
+        completeConfigTab();
 
 
 #ifdef QT_DEBUG
@@ -652,6 +652,55 @@ void MainWindow::completeHeroButtons()
 }
 
 
+void MainWindow::initConfigTab(int tooltipScale)
+{
+    //UI
+    switch(transparency)
+    {
+        case Transparent:
+            ui->configRadioTransparent->setChecked(true);
+            break;
+        case AutoTransparent:
+            ui->configRadioAuto->setChecked(true);
+            break;
+        case Opaque:
+            ui->configRadioOpaque->setChecked(true);
+            break;
+        default:
+            transparency = AutoTransparent;
+            ui->configRadioAuto->setChecked(true);
+            break;
+    }
+
+    if(this->theme == ThemeBlack) ui->configCheckDarkTheme->setChecked(true);
+    if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
+    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
+
+    //Deck
+    if(this->cardHeight<15 || this->cardHeight>35)  this->cardHeight = 35;
+    ui->configSliderCardSize->setValue(this->cardHeight);
+
+    if(this->greyedHeight<15 || this->greyedHeight>35)  this->greyedHeight = 35;
+    ui->configSliderGreyedSize->setValue(this->greyedHeight);
+
+    if(this->cardHeight == this->greyedHeight)  ui->configCheckLink->setChecked(true);
+
+    if(tooltipScale<10 || tooltipScale>50)  tooltipScale = 10;
+    ui->configSliderTooltipSize->setValue(tooltipScale);
+
+    //Hand
+    if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
+    ui->configSliderDrawTime->setValue(this->drawDisappear);
+
+    //Draft
+    if(this->showDraftOverlay) ui->configCheckOverlay->setChecked(true);
+    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+
+    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
+    draftHandler->setLearningMode(this->draftLearningMode);
+}
+
+
 void MainWindow::readSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -678,16 +727,7 @@ void MainWindow::readSettings()
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
 
-
-        //Spread options to components
-        deckHandler->setGreyedHeight(this->greyedHeight);
-        deckHandler->setCardHeight(this->cardHeight);
-        deckHandler->setDrawDisappear(this->drawDisappear);
-        draftHandler->setShowDraftOverlay(this->showDraftOverlay);
-        draftHandler->setLearningMode(this->draftLearningMode);
-
-        ui->configSliderTooltipSize->setValue(tooltipScale);
-        cardWindow->scale(tooltipScale);
+        initConfigTab(tooltipScale);
     }
     else
     {
@@ -1559,6 +1599,7 @@ void MainWindow::updateTamGreyed(int value)
 {
     this->greyedHeight = value;
     deckHandler->setGreyedHeight(value);
+    ui->configSliderGreyedSize->setToolTip(QString::number(value) + " px");
     if(ui->configCheckLink->isChecked())  ui->configSliderCardSize->setValue(value);
 }
 
@@ -1567,6 +1608,7 @@ void MainWindow::updateTamCard(int value)
 {
     this->cardHeight = value;
     deckHandler->setCardHeight(value);
+    ui->configSliderCardSize->setToolTip(QString::number(value) + " px");
     if(ui->configCheckLink->isChecked())  ui->configSliderGreyedSize->setValue(value);
 }
 
@@ -1574,6 +1616,13 @@ void MainWindow::updateTamCard(int value)
 void MainWindow::linkGreyedSizeToCardSize(bool value)
 {
     if(value)   ui->configSliderGreyedSize->setValue(ui->configSliderCardSize->value());
+}
+
+
+void MainWindow::updateTooltipScale(int value)
+{
+    cardWindow->scale(value);
+    ui->configSliderTooltipSize->setToolTip("x"+QString::number(value/10.0));
 }
 
 
@@ -1630,60 +1679,26 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));
     connect(ui->configRadioAuto, SIGNAL(clicked()), this, SLOT(transparentAuto()));
     connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
-    switch(transparency)
-    {
-        case Transparent:
-            ui->configRadioTransparent->setChecked(true);
-            break;
-        case AutoTransparent:
-            ui->configRadioAuto->setChecked(true);
-            break;
-        case Opaque:
-            ui->configRadioOpaque->setChecked(true);
-            break;
-        default:
-            transparency = AutoTransparent;
-            ui->configRadioAuto->setChecked(true);
-            break;
-    }
 
     connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
-    if(this->theme == ThemeBlack) ui->configCheckDarkTheme->setChecked(true);
-
     connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
-    if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
-
     connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
-    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
-    if(this->cardHeight<15 || this->cardHeight>35)  this->cardHeight=35;
-    ui->configSliderCardSize->setValue(this->cardHeight);
-
     connect(ui->configSliderGreyedSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamGreyed(int)));
-    if(this->greyedHeight<15 || this->greyedHeight>35)  this->greyedHeight=35;
-    ui->configSliderGreyedSize->setValue(this->greyedHeight);
-
     connect(ui->configCheckLink, SIGNAL(clicked(bool)), this, SLOT(linkGreyedSizeToCardSize(bool)));
-    if(this->cardHeight == this->greyedHeight)  ui->configCheckLink->setChecked(true);
     ui->configCheckLink->setStyleSheet("QCheckBox::indicator {width: 11px;height: 26px;}"
                                        "QCheckBox::indicator:checked{image: url(:/Images/link.png);}"
                                        "QCheckBox::indicator:unchecked{image: url(:/Images/unlink.png);}");
-
-    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), cardWindow, SLOT(scale(int)));
+    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
 
     //Hand
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
-    if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
-    ui->configSliderDrawTime->setValue(this->drawDisappear);
 
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
-    if(this->showDraftOverlay) ui->configCheckOverlay->setChecked(true);
-
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
-    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
 }
 
 

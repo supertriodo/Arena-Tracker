@@ -108,6 +108,7 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
+    void initConfigTab(int tooltipScale);
     void test();
 
 //Override events
@@ -165,6 +166,7 @@ private slots:
     void toggleTheme();
     void toggleDraftLearningMode();
     void linkGreyedSizeToCardSize(bool value);
+    void updateTooltipScale(int value);
 };
 
 #endif // MAINWINDOW_H
