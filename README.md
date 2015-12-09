@@ -69,6 +69,8 @@ También puedes preguntarme en español.
  * With the app selected press ctrl+r
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
  * Make sure HSCards dir is in the same dir as the binary.
+* I can't browse hidden .dirs when looking for log.config/output_log.txt in the file browser.
+ * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
