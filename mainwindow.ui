@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1052,11 +1052,26 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>414</width>
-               <height>523</height>
+               <width>428</width>
+               <height>522</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QGroupBox" name="configBoxActions">
                 <property name="title">
@@ -1066,6 +1081,21 @@
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="configButtonClearDeck">
                    <property name="toolTip">
@@ -1100,12 +1130,42 @@ It'll clear any drafting progress.</string>
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
                  <item>
                   <widget class="QGroupBox" name="configBoxTransparency">
                    <property name="title">
                     <string>Transparency</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_4">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>9</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>9</number>
+                    </property>
                     <item>
                      <widget class="QRadioButton" name="configRadioTransparent">
                       <property name="toolTip">
@@ -1146,6 +1206,21 @@ transparent during a game</string>
                     <string/>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>9</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>9</number>
+                    </property>
                     <item>
                      <widget class="QCheckBox" name="configCheckDarkTheme">
                       <property name="toolTip">
@@ -1193,31 +1268,30 @@ in a new window</string>
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
                  <property name="rightMargin">
-                  <number>0</number>
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
                  </property>
                  <item>
                   <layout class="QVBoxLayout" name="configDeckVerticalLayout">
                    <item>
                     <widget class="QLabel" name="configLabelDeckNormal">
                      <property name="toolTip">
-                      <string>Normal: Height of the non-greyed cards.</string>
+                      <string>Card: Height of the deck cards.</string>
                      </property>
                      <property name="text">
-                      <string>Normal</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="configLabelDeckGreyed">
-                     <property name="toolTip">
-                      <string>Greyed: Height of the greyed cards.</string>
-                     </property>
-                     <property name="text">
-                      <string>Greyed</string>
+                      <string>Card</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1261,28 +1335,6 @@ in a new window</string>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QSlider" name="configSliderGreyedSize">
-                     <property name="minimum">
-                      <number>15</number>
-                     </property>
-                     <property name="maximum">
-                      <number>100</number>
-                     </property>
-                     <property name="singleStep">
-                      <number>1</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>1</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="tickPosition">
-                      <enum>QSlider::NoTicks</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QSlider" name="configSliderTooltipSize">
                      <property name="minimum">
                       <number>10</number>
@@ -1301,17 +1353,22 @@ in a new window</string>
                   </layout>
                  </item>
                  <item>
-                  <widget class="QCheckBox" name="configCheckLink">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>11</width>
-                     <height>26</height>
-                    </size>
-                   </property>
-                  </widget>
+                  <layout class="QVBoxLayout" name="configDeckVerticalLayout3">
+                   <item>
+                    <widget class="QLabel" name="configLabelDeckNormal2">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="configLabelDeckTooltip2">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>
@@ -1325,6 +1382,21 @@ in a new window</string>
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="configLabelDrawTime">
                    <property name="toolTip">
@@ -1371,6 +1443,21 @@ are shown on screen</string>
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>9</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>9</number>
+                 </property>
                  <item>
                   <widget class="QCheckBox" name="configCheckOverlay">
                    <property name="toolTip">

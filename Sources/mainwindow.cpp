@@ -681,12 +681,6 @@ void MainWindow::initConfigTab(int tooltipScale)
     if(ui->configSliderCardSize->value() == this->cardHeight)   updateTamCard(this->cardHeight);
     else    ui->configSliderCardSize->setValue(this->cardHeight);
 
-    if(this->greyedHeight<ui->configSliderGreyedSize->minimum() || this->greyedHeight>ui->configSliderGreyedSize->maximum())  this->greyedHeight = 35;
-    if(ui->configSliderGreyedSize->value() == this->greyedHeight)   updateTamGreyed(this->greyedHeight);
-    else    ui->configSliderGreyedSize->setValue(this->greyedHeight);
-
-    if(this->cardHeight == this->greyedHeight)  ui->configCheckLink->setChecked(true);
-
     if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
     if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
     else ui->configSliderTooltipSize->setValue(tooltipScale);
@@ -716,6 +710,33 @@ void MainWindow::initConfigTab(int tooltipScale)
 
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
+}
+
+
+void MainWindow::moveInScreen(QPoint pos, QSize size)
+{
+    QPoint points[4];
+    points[0] = pos + QPoint(5,5);
+    points[1] = pos + QPoint(-5 + size.width(), 5);
+    points[2] = pos + QPoint(5, -5 + size.height());
+    points[3] = pos + QPoint(-5 + size.width(), -5 + size.height());
+
+    foreach(QScreen *screen, QGuiApplication::screens())
+    {
+        if (!screen)    continue;
+        QRect geometry = screen->geometry();
+
+        for(int i=0; i<4; i++)
+        {
+            if(geometry.contains(points[i]))
+            {
+                move(pos);
+                return;
+            }
+        }
+    }
+
+    move(QPoint(0,0));
 }
 
 
@@ -761,7 +782,7 @@ void MainWindow::readSettings()
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
     this->windowsFormation = None;
     resize(size);
-    move(pos);
+    moveInScreen(pos, size);
 }
 
 
@@ -1446,7 +1467,6 @@ void MainWindow::updateOtherTabsTransparency()
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
         ui->configLabelDeckNormal->setStyleSheet(labelCSS);
-        ui->configLabelDeckGreyed->setStyleSheet(labelCSS);
         ui->configLabelDrawTime->setStyleSheet(labelCSS);
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
 
@@ -1478,7 +1498,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraft->setStyleSheet("");
 
         ui->configLabelDeckNormal->setStyleSheet("");
-        ui->configLabelDeckGreyed->setStyleSheet("");
         ui->configLabelDrawTime->setStyleSheet("");
         ui->configLabelDrawTimeValue->setStyleSheet("");
 
@@ -1613,34 +1632,29 @@ void MainWindow::toggleDeckWindow()
 }
 
 
-void MainWindow::updateTamGreyed(int value)
-{
-    this->greyedHeight = value;
-    deckHandler->setGreyedHeight(value);
-    ui->configSliderGreyedSize->setToolTip(QString::number(value) + " px");
-    if(ui->configCheckLink->isChecked())  ui->configSliderCardSize->setValue(value);
-}
-
-
 void MainWindow::updateTamCard(int value)
 {
     this->cardHeight = value;
     deckHandler->setCardHeight(value);
-    ui->configSliderCardSize->setToolTip(QString::number(value) + " px");
-    if(ui->configCheckLink->isChecked())  ui->configSliderGreyedSize->setValue(value);
-}
+    calculateDeckWindowMinimumWidth();
+
+    QString labelText = QString::number(value) + " px";
+    ui->configSliderCardSize->setToolTip(labelText);
+    ui->configLabelDeckNormal2->setText(labelText);
 
 
-void MainWindow::linkGreyedSizeToCardSize(bool value)
-{
-    if(value)   ui->configSliderGreyedSize->setValue(ui->configSliderCardSize->value());
+    this->greyedHeight = value;
+    deckHandler->setGreyedHeight(value);
 }
 
 
 void MainWindow::updateTooltipScale(int value)
 {
     cardWindow->scale(value);
-    ui->configSliderTooltipSize->setToolTip("x"+QString::number(value/10.0));
+
+    QString labelText = "x"+QString::number(value/10.0);
+    ui->configSliderTooltipSize->setToolTip(labelText);
+    ui->configLabelDeckTooltip2->setText(labelText);
 }
 
 
@@ -1653,21 +1667,26 @@ void MainWindow::updateTimeDraw(int value)
     //Slider            0  - Ns - 11
     //DrawDissapear     -1 - Ns - 0
 
+    QString labelText;
+
     switch(value)
     {
         case 0:
             this->drawDisappear = -1;
-            ui->configLabelDrawTimeValue->setText("No");
+            labelText = "No";
             break;
         case 11:
             this->drawDisappear = 0;
-            ui->configLabelDrawTimeValue->setText("Turn");
+            labelText = "Turn";
             break;
         default:
             this->drawDisappear = value;
-            ui->configLabelDrawTimeValue->setText(QString::number(value) + "s");
+            labelText = QString::number(value) + "s";
             break;
     }
+
+    ui->configLabelDrawTimeValue->setText(labelText);
+    ui->configSliderDrawTime->setToolTip(labelText);
 
     deckHandler->setDrawDisappear(this->drawDisappear);
 }
@@ -1689,6 +1708,7 @@ void MainWindow::toggleDraftLearningMode()
 
 void MainWindow::completeConfigTab()
 {
+    //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
     //Actions
     connect(ui->configButtonClearDeck, SIGNAL(clicked()), this, SLOT(confirmClearDeck()));
     addDraftMenu(ui->configButtonForceDraft);
@@ -1704,11 +1724,6 @@ void MainWindow::completeConfigTab()
 
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
-    connect(ui->configSliderGreyedSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamGreyed(int)));
-    connect(ui->configCheckLink, SIGNAL(clicked(bool)), this, SLOT(linkGreyedSizeToCardSize(bool)));
-    ui->configCheckLink->setStyleSheet("QCheckBox::indicator {width: 11px;height: 26px;}"
-                                       "QCheckBox::indicator:checked{image: url(:/Images/link.png);}"
-                                       "QCheckBox::indicator:unchecked{image: url(:/Images/unlink.png);}");
     connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
 
     //Hand
@@ -1717,13 +1732,42 @@ void MainWindow::completeConfigTab()
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+
+    completeHighResConfigTab();
+}
+
+
+void MainWindow::completeHighResConfigTab()
+{
+    int screenHeight = getScreenHighest();
+
+    int maxCard = (int)(screenHeight/1000.0*35);
+    maxCard -= maxCard%5;
+    ui->configSliderCardSize->setMaximum(maxCard);
+
+    int maxTooltip = (int)(screenHeight/1000.0*15);
+    maxTooltip -= maxTooltip%5;
+    ui->configSliderTooltipSize->setMaximum(maxTooltip);
+}
+
+
+int MainWindow::getScreenHighest()
+{
+    int height = 0;
+
+    foreach(QScreen *screen, QGuiApplication::screens())
+    {
+        if (!screen)    continue;
+        QRect geometry = screen->geometry();
+        if(geometry.height()>height)    height = geometry.height();
+    }
+    return height;
 }
 
 
 //TODO
 //3)New stats site
 //3)Icon tabs
-//3)Add 50 px card size
 //3)app fuera de pantalla issue
 
 

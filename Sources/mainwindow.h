@@ -109,6 +109,9 @@ private:
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
     void initConfigTab(int tooltipScale);
+    void moveInScreen(QPoint pos, QSize size);
+    int getScreenHighest();
+    void completeHighResConfigTab();
     void test();
 
 //Override events
@@ -159,13 +162,11 @@ private slots:
     void transparentAuto();
     void transparentNever();
     void toggleDeckWindow();
-    void updateTamGreyed(int value);
     void updateTimeDraw(int value);
     void updateTamCard(int value);
     void toggleShowDraftOverlay();
     void toggleTheme();
     void toggleDraftLearningMode();
-    void linkGreyedSizeToCardSize(bool value);
     void updateTooltipScale(int value);
 };
 
