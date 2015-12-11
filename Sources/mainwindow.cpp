@@ -1768,7 +1768,6 @@ int MainWindow::getScreenHighest()
 //TODO
 //3)New stats site
 //3)Icon tabs
-//3)app fuera de pantalla issue
 
 
 //BUGS CONOCIDOS

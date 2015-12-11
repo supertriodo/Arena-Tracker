@@ -1288,7 +1288,7 @@ in a new window</string>
                    <item>
                     <widget class="QLabel" name="configLabelDeckNormal">
                      <property name="toolTip">
-                      <string>Card: Height of the deck cards.</string>
+                      <string>Card: Height in pixels of the deck cards.</string>
                      </property>
                      <property name="text">
                       <string>Card</string>
@@ -1301,7 +1301,7 @@ in a new window</string>
                    <item>
                     <widget class="QLabel" name="configLabelDeckTooltip">
                      <property name="toolTip">
-                      <string>Tooltip: Size of the card's tooltip.</string>
+                      <string>Tooltip: Size scale of the card's tooltip.</string>
                      </property>
                      <property name="text">
                       <string>Tooltip</string>
