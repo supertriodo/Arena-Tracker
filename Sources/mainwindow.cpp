@@ -3,6 +3,7 @@
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"
+#include "versionchecker.h"
 #include <QtWidgets>
 
 using namespace cv;
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardWindow();
 
     readSettings();
+    createVersionChecker();
 }
 
 
@@ -219,6 +221,16 @@ void MainWindow::initCardsJson()
         createCardsJsonMap(enCardsJson, "enUS");
         Utility::setCardsJson(&enCardsJson);
     }
+}
+
+
+void MainWindow::createVersionChecker()
+{
+    VersionChecker *versionChecker = new VersionChecker(this);
+    connect(versionChecker, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 

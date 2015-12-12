@@ -43,7 +43,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/movetabwidget.cpp \
     Sources/Widgets/movetreewidget.cpp \
     Sources/Widgets/moveverticalscrollarea.cpp \
-    Sources/Widgets/cardwindow.cpp
+    Sources/Widgets/cardwindow.cpp \
+    Sources/versionchecker.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -71,7 +72,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/movetabwidget.h \
     Sources/Widgets/movetreewidget.h \
     Sources/Widgets/moveverticalscrollarea.h \
-    Sources/Widgets/cardwindow.h
+    Sources/Widgets/cardwindow.h \
+    Sources/versionchecker.h
 
 FORMS    += mainwindow.ui
 

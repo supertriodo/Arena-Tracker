@@ -83,6 +83,7 @@ private:
     void createSecretsHandler();
     void createDraftHandler();
     void createWebUploader();
+    void createVersionChecker();
     void readSettings();
     void writeSettings();
     void completeUI();
