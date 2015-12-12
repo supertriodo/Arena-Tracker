@@ -1112,32 +1112,30 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
 }
 
 
-void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget, int index)
+void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 {
-    QString label = "";
+    QIcon icon;
     if(widget == ui->tabArena)
     {
-        label = "Arena";
+        icon = QIcon(":/Images/arena.png");
     }
     else if(widget == ui->tabDeck)
     {
-        label = "Deck";
+        icon = QIcon(":/Images/deck.png");
     }
     else if(widget == ui->tabEnemy)
     {
-        label = "Hand";
+        icon = QIcon(":/Images/hand.png");
     }
     else if(widget == ui->tabLog)
     {
-        label = "Log";
+        icon = QIcon(":/Images/log.png");
     }
     else if(widget == ui->tabConfig)
     {
-        label = "Config";
+        icon = QIcon(":/Images/config.png");
     }
-
-    if(index == -1)     tabWidget->addTab(widget, label);
-    else                tabWidget->insertTab(index, widget, label);
+    tabWidget->addTab(widget, icon, "");
 }
 
 
@@ -1348,10 +1346,11 @@ void MainWindow::addDraftMenu(QPushButton *button)
 
     QSignalMapper* mapper = new QSignalMapper(button);
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    QString heroesLogNumber[9] = {"06", "05", "08", "04", "09", "03", "02", "07", "01"};
 
     for(int i=0; i<9; i++)
     {
-        QAction *action = newArenaMenu->addAction(heroes[i]);
+        QAction *action = newArenaMenu->addAction(QIcon(":/Images/hero" + heroesLogNumber[i] + ".png"), heroes[i]);
         mapper->setMapping(action, heroes[i]);
         connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
     }

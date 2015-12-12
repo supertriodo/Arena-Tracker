@@ -59,7 +59,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="tabArenalLayout">
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
@@ -379,7 +379,7 @@
          </attribute>
          <layout class="QGridLayout" name="heroGridLayout">
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
           <item row="2" column="1">
            <widget class="QPushButton" name="heroButton2">
@@ -611,7 +611,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="topMargin">
-           <number>32</number>
+           <number>46</number>
           </property>
           <item>
            <widget class="QGroupBox" name="groupBoxDraft">
@@ -862,7 +862,7 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
@@ -983,7 +983,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="tabEnemyLayout">
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
          </layout>
         </widget>
@@ -993,7 +993,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
           <item>
            <widget class="QTextEdit" name="logTextEdit">
@@ -1025,7 +1025,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="topMargin">
-           <number>26</number>
+           <number>40</number>
           </property>
           <item>
            <widget class="MoveVerticalScrollArea" name="configScrollArea">
@@ -1053,7 +1053,7 @@
                <x>0</x>
                <y>0</y>
                <width>428</width>
-               <height>522</height>
+               <height>508</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1103,7 +1103,18 @@
 It'll be reloaded when entering the arena.</string>
                    </property>
                    <property name="text">
-                    <string>Clear Deck</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/Images/clearDeck.png</normalon>
+                    </iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
@@ -1114,7 +1125,18 @@ It'll be reloaded when entering the arena.</string>
 It'll clear any drafting progress.</string>
                    </property>
                    <property name="text">
-                    <string>Force Draft</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/Images/draft.png</normalon>
+                    </iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
                    </property>
                   </widget>
                  </item>

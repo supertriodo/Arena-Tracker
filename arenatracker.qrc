@@ -44,7 +44,6 @@
         <file>Images/remove64.png</file>
         <file>Images/minus64.png</file>
         <file>Images/plus64.png</file>
-        <file>Images/config.png</file>
         <file>Json/AllSets.enGB.json</file>
         <file>Json/AllSets.enUS.json</file>
         <file>Json/AllSets.esES.json</file>
@@ -60,5 +59,12 @@
         <file>Json/AllSets.zhTW.json</file>
         <file>Images/handCard3.png</file>
         <file>Json/AllSets.jaJP.json</file>
+        <file>Images/deck.png</file>
+        <file>Images/hand.png</file>
+        <file>Images/config.png</file>
+        <file>Images/log.png</file>
+        <file>Images/arena.png</file>
+        <file>Images/draft.png</file>
+        <file>Images/clearDeck.png</file>
     </qresource>
 </RCC>
