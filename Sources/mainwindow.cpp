@@ -1739,6 +1739,7 @@ void MainWindow::completeConfigTab()
 void MainWindow::completeHighResConfigTab()
 {
     int screenHeight = getScreenHighest();
+    if(screenHeight < 1000) return;
 
     int maxCard = (int)(screenHeight/1000.0*35);
     maxCard -= maxCard%5;
@@ -1766,7 +1767,6 @@ int MainWindow::getScreenHighest()
 
 //TODO
 //3)New stats site
-//3)Icon tabs
 
 
 //BUGS CONOCIDOS

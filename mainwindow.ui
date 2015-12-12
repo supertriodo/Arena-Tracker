@@ -1340,7 +1340,7 @@ in a new window</string>
                       <number>15</number>
                      </property>
                      <property name="maximum">
-                      <number>100</number>
+                      <number>35</number>
                      </property>
                      <property name="singleStep">
                       <number>1</number>
@@ -1362,7 +1362,7 @@ in a new window</string>
                       <number>10</number>
                      </property>
                      <property name="maximum">
-                      <number>50</number>
+                      <number>15</number>
                      </property>
                      <property name="pageStep">
                       <number>1</number>
