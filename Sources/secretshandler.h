@@ -73,7 +73,7 @@ private:
     void completeUI();
     void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
-    void checkLastSecretOption(ActiveSecret activeSecret);
+    void checkLastSecretOption(ActiveSecret &activeSecret);
 
 public:
     void redrawDownloadedCardImage(QString code);

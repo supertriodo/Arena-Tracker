@@ -164,6 +164,26 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
         break;
     }
 
+    emit pDebug("Secret played. Hero: " + QString::number(hero));
+
+    //Eliminar de las opciones, secretos que ya hemos reducido a 1 opcion
+    foreach(ActiveSecret activeSecretOld, activeSecretList)
+    {
+        QString code = activeSecretOld.root.getCode();
+        if(!code.isEmpty())
+        {
+            for(int i=0; i<activeSecret.children.count(); i++)
+            {
+                if(activeSecret.children[i].getCode() == code)
+                {
+                    emit pDebug("Option discarded on just played secret (already guessed on an active secret): " + code);
+                    activeSecret.children.removeAt(i);
+                    break;
+                }
+            }
+        }
+    }
+
     for(QList<SecretCard>::iterator it = activeSecret.children.begin(); it != activeSecret.children.end(); it++)
     {
         it->treeItem = new QTreeWidgetItem(activeSecret.root.treeItem);
@@ -177,8 +197,6 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
-
-    emit pDebug("Secret played. Hero: " + QString::number(hero));
 }
 
 
@@ -284,7 +302,7 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
 }
 
 
-void SecretsHandler::checkLastSecretOption(ActiveSecret activeSecret)
+void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
 {
     if(activeSecret.children.count() == 1)
     {
