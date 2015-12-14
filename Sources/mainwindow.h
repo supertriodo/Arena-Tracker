@@ -109,7 +109,7 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale);
+    void initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -169,6 +169,9 @@ private slots:
     void toggleTheme();
     void toggleDraftLearningMode();
     void updateTooltipScale(int value);
+    void updateAMConnectButton(int value=2);
+    void updateAMConnectButton(bool isConnected);
+    void tryConnectAM();
 };
 
 #endif // MAINWINDOW_H

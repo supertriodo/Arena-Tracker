@@ -97,6 +97,8 @@ void ArenaHandler::newGameResult(GameResult gameResult, bool arenaMatch)
 
 QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaMatch)
 {
+    emit pDebug("Show GameResult.");
+
     QTreeWidgetItem *item;
 
     if(!arenaMatch || arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
@@ -183,6 +185,8 @@ bool ArenaHandler::newArena(QString hero)
 
 void ArenaHandler::showArena(QString hero)
 {
+    emit pDebug("Show Arena.");
+
     if(noArena)
     {
         QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1);
@@ -202,7 +206,9 @@ void ArenaHandler::showArena(QString hero)
 
     setRowColor(arenaCurrent, WHITE);
 
-    arenaCurrentGameList.clear();
+    arenaPreviousGameList.clear();
+    arenaPreviousGameList = arenaCurrentGameList;
+    arenaCurrentGameList = QList<GameResult>();
 }
 
 
@@ -215,8 +221,11 @@ void ArenaHandler::showNoArena()
     setRowColor(item, GREEN);
     arenaCurrent = NULL;
     arenaCurrentHero = "";
-    arenaCurrentGameList.clear();
     noArena = true;
+
+    arenaPreviousGameList.clear();
+    arenaPreviousGameList = arenaCurrentGameList;
+    arenaCurrentGameList = QList<GameResult>();
 
     emit pDebug("Show no arena.");
 }
@@ -467,5 +476,49 @@ void ArenaHandler::setTheme(Theme theme)
         }
     }
 }
+
+//Elimina la penultima arena si es igual a la ultima.
+//La arena en log es la misma que la arena leida de web.
+void ArenaHandler::removeDuplicateArena()
+{
+    emit pDebug("Try to remove dulicate arena.");
+
+    if(arenaCurrentGameList.count() != arenaPreviousGameList.count())   return;
+
+    for(int i=0; i<arenaCurrentGameList.count(); i++)
+    {
+        GameResult previous = arenaPreviousGameList[i];
+        GameResult current = arenaCurrentGameList[i];
+
+        if(previous.playerHero != current.playerHero)   return;
+        if(previous.enemyHero != current.enemyHero)     return;
+        if(previous.isFirst != current.isFirst)         return;
+        if(previous.isWinner != current.isWinner)       return;
+    }
+
+    //Remove Previous Arena
+    arenaPreviousGameList.clear();
+    int indexCurrent = ui->arenaTreeWidget->indexOfTopLevelItem(arenaCurrent);
+    delete ui->arenaTreeWidget->topLevelItem(indexCurrent-1);
+
+    emit pDebug("Dulicate arena found and removed.");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -51,12 +51,14 @@ private:
     QRegularExpressionMatch *match;
     bool deckInWeb;
     QString arenaCards;
+    QString playerEmail, password;
+    bool isConnected;
 
 
 //Metodos
 private:
-    void readSettings(QString &playerEmail, QString &password);
-    void askLoginData(QString &playerEmail, QString &password);
+//    void readSettings(QString &playerEmail, QString &password);
+//    void askLoginData(QString &playerEmail, QString &password);
     QString heroToWebNumber(const QString &hero);
     GameResult createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero);
     bool getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards=false);
@@ -74,16 +76,19 @@ public:
     bool uploadNewArena(const QString &hero);
     void uploadDeck(QList<DeckCard> *deckCardList);
     void refresh();
+    void tryConnect(QString playerEmail, QString password);
 
 signals:
     void loadedGameResult(GameResult gameResult);
     void loadedArena(QString hero);
+    void loadArenaCurrentFinished();
     void reloadedGameResult(GameResult gameResult);
     void reloadedArena(QString hero);
     void synchronized();
     void noArenaFound();
     void newDeckCard(QString card, int total);
     void newWebDeckCardList();
+    void connectionTried(bool isConnected);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="WebUploader");
 

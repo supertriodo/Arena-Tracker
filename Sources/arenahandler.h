@@ -24,6 +24,7 @@ private:
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
+    QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
     bool noArena;
     Transparency transparency;
     Theme theme;
@@ -36,12 +37,12 @@ private:
     void setRowColor(QTreeWidgetItem *item, QColor color);
     QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
-    void currentArenaToWhite();
     void allToWhite();
 
 public:
     void setWebUploader(WebUploader *webUploader);
     bool isNoArena();
+    void currentArenaToWhite();
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
 
@@ -63,6 +64,7 @@ public slots:
     void showNoArena();
     void enableRefreshButton(bool enable=true);
     void syncArenaCurrent();
+    void removeDuplicateArena();
 
 private slots:
     void refresh();

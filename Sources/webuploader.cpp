@@ -14,12 +14,14 @@ WebUploader::WebUploader(QObject *parent) : QObject(parent)
     deckInWeb = false;
     gameResultPostList = new QList<GameResultPost>();
     rewardsPost = NULL;
+    playerEmail = password = "";
+    isConnected = false;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
-    connectWeb();
+//    connectWeb();
 }
 
 WebUploader::~WebUploader()
@@ -30,10 +32,23 @@ WebUploader::~WebUploader()
 }
 
 
+void WebUploader::tryConnect(QString playerEmail, QString password)
+{
+    this->playerEmail = playerEmail;
+    this->password = password;
+
+    delete networkManager->cookieJar();
+    networkManager->setCookieJar(new QNetworkCookieJar());
+
+    webState = signup;
+    connectWeb();
+}
+
+
 void WebUploader::connectWeb()
 {
-    QString playerEmail, password;
-    readSettings(playerEmail, password);
+//    QString playerEmail, password;
+//    readSettings(playerEmail, password);
 
     QURL postData;
     postData.addQueryItem("signin", "1");
@@ -45,47 +60,47 @@ void WebUploader::connectWeb()
         "application/x-www-form-urlencoded");
     postRequest(request, postData);
 
-    emit pDebug("Login web.");
+    emit pDebug("\nLogin web.");
 }
 
 
-void WebUploader::readSettings(QString &playerEmail, QString &password)
-{
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    playerEmail = settings.value("playerEmail", "").toString();
-    password = settings.value("password", "").toString();
+//void WebUploader::readSettings(QString &playerEmail, QString &password)
+//{
+//    QSettings settings("Arena Tracker", "Arena Tracker");
+//    playerEmail = settings.value("playerEmail", "").toString();
+//    password = settings.value("password", "").toString();
 
-    if(playerEmail.isEmpty() || password.isEmpty())
-    {
-        askLoginData(playerEmail, password);
-    }
-}
+//    if(playerEmail.isEmpty() || password.isEmpty())
+//    {
+//        askLoginData(playerEmail, password);
+//    }
+//}
 
 
-void WebUploader::askLoginData(QString &playerEmail, QString &password)
-{
-    bool ok;
-    playerEmail = QInputDialog::getText(0, tr("Arena Mastery Login"),
-                                         tr("User email:"), QLineEdit::Normal,
-                                         playerEmail, &ok);
+//void WebUploader::askLoginData(QString &playerEmail, QString &password)
+//{
+//    bool ok;
+//    playerEmail = QInputDialog::getText(0, tr("Arena Mastery Login"),
+//                                         tr("User email:"), QLineEdit::Normal,
+//                                         playerEmail, &ok);
 
-    if(ok)
-    {
-        password = QInputDialog::getText(0, tr("Arena Mastery Login"),
-                                             tr("Password:"), QLineEdit::Password,
-                                             password, &ok);
-    }
+//    if(ok)
+//    {
+//        password = QInputDialog::getText(0, tr("Arena Mastery Login"),
+//                                             tr("Password:"), QLineEdit::Password,
+//                                             password, &ok);
+//    }
 
-    if(!ok)
-    {
-        playerEmail = "";
-        password = "";
-    }
+//    if(!ok)
+//    {
+//        playerEmail = "";
+//        password = "";
+//    }
 
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("playerEmail", playerEmail);
-    settings.setValue("password", password);
-}
+//    QSettings settings("Arena Tracker", "Arena Tracker");
+//    settings.setValue("playerEmail", playerEmail);
+//    settings.setValue("password", password);
+//}
 
 
 bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList)
@@ -316,7 +331,13 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("Arena mastery sign up success.");
             emit pLog(tr("Web: Arena mastery sign up success."));
-            webState = checkArenaCurrentLoad;
+
+            //Si ya hemos cargado la ultima arena hacemos un reload
+            if(!isConnected)    webState = checkArenaCurrentLoad;
+            else                webState = checkArenaCurrentReload;
+
+            isConnected = true;
+            emit connectionTried(true);
         }
         else if(webState == createArena)
         {
@@ -339,16 +360,19 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == signup)
     {
         emit pDebug("Wrong username or password.", Warning);
+        emit pLog(tr("Web: Arena mastery sign up failed. Wrong username or password."));
+        isConnected = false;
+        emit connectionTried(false);
 
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        QString playerEmail = settings.value("playerEmail", "").toString();
-        QString password = settings.value("password", "").toString();
+//        QSettings settings("Arena Tracker", "Arena Tracker");
+//        QString playerEmail = settings.value("playerEmail", "").toString();
+//        QString password = settings.value("password", "").toString();
 
-        askLoginData(playerEmail, password);
-        if(!playerEmail.isEmpty() && !password.isEmpty())
-        {
-            connectWeb();
-        }
+//        askLoginData(playerEmail, password);
+//        if(!playerEmail.isEmpty() && !password.isEmpty())
+//        {
+//            connectWeb();
+//        }
     }
     else if(webState == checkArenaCurrentLoad)
     {
@@ -397,6 +421,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
                 list.removeFirst();
             }
 
+            emit loadArenaCurrentFinished();    //ArenaHandler removeDuplicateArena()
             checkArenaReload();
         }
         else

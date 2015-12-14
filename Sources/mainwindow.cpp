@@ -101,7 +101,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(9, 26, 9, 9);
+    ui->tabDeckLayout->setContentsMargins(9, 40, 9, 9);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -517,8 +517,10 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(syncArenaCurrent()));
     connect(webUploader, SIGNAL(noArenaFound()),
             arenaHandler, SLOT(showNoArena()));
-//    connect(webUploader, SIGNAL(noArenaFound()),
-//            this, SLOT(resetDeck()));
+    connect(webUploader, SIGNAL(connectionTried(bool)),
+            this, SLOT(updateAMConnectButton(bool)));
+    connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
+            arenaHandler, SLOT(removeDuplicateArena()));
     connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -537,6 +539,7 @@ void MainWindow::createWebUploader()
 #endif
 
     arenaHandler->setWebUploader(webUploader);
+    tryConnectAM();
 
     ui->progressBar->setVisible(false);
 }
@@ -664,7 +667,7 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale)
+void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword)
 {
     //UI
     switch(transparency)
@@ -722,6 +725,10 @@ void MainWindow::initConfigTab(int tooltipScale)
 
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
+
+    //Arena Mastery
+    ui->configLineEditMastery->setText(AMplayerEmail);
+    ui->configLineEditMastery2->setText(AMpassword);
 }
 
 
@@ -777,8 +784,10 @@ void MainWindow::readSettings()
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
+        QString AMplayerEmail = settings.value("playerEmail", "").toString();
+        QString AMpassword = settings.value("password", "").toString();
 
-        initConfigTab(tooltipScale);
+        initConfigTab(tooltipScale, AMplayerEmail, AMpassword);
     }
     else
     {
@@ -815,6 +824,8 @@ void MainWindow::writeSettings()
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
+        settings.setValue("playerEmail", ui->configLineEditMastery->text());
+        settings.setValue("password", ui->configLineEditMastery2->text());
     }
     else
     {
@@ -1717,6 +1728,44 @@ void MainWindow::toggleDraftLearningMode()
 }
 
 
+void MainWindow::updateAMConnectButton(bool isConnected)
+{
+    if(isConnected) updateAMConnectButton(1);
+    else            updateAMConnectButton(0);
+}
+
+
+void MainWindow::updateAMConnectButton(int value)
+{
+    switch(value)
+    {
+        case 0:
+            ui->configButtonMastery->setIcon(QIcon(":/Images/lose.png"));
+            ui->configButtonMastery->setEnabled(true);
+            break;
+        case 1:
+            ui->configButtonMastery->setIcon(QIcon(":/Images/win.png"));
+            ui->configButtonMastery->setEnabled(true);
+            break;
+        case 2:
+            ui->configButtonMastery->setIcon(QIcon(":/Images/refresh64.png"));
+            ui->configButtonMastery->setEnabled(false);
+            break;
+    }
+}
+
+
+void MainWindow::tryConnectAM()
+{
+    if(webUploader == NULL) return;
+    if(arenaHandler == NULL)return;
+    arenaHandler->currentArenaToWhite();
+    webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
+    ui->configButtonMastery->setIcon(QIcon(":/Images/refresh64.png"));
+    ui->configButtonMastery->setEnabled(false);
+}
+
+
 void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
@@ -1743,6 +1792,16 @@ void MainWindow::completeConfigTab()
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+
+    //Arena Mastery
+    connect(ui->configLineEditMastery, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
+    connect(ui->configLineEditMastery, SIGNAL(editingFinished()), this, SLOT(tryConnectAM()));
+
+    connect(ui->configLineEditMastery2, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
+    connect(ui->configLineEditMastery2, SIGNAL(editingFinished()), this, SLOT(tryConnectAM()));
+
+    connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(updateAMConnectButton()));
+    connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
 
     completeHighResConfigTab();
 }
@@ -1778,7 +1837,8 @@ int MainWindow::getScreenHighest()
 
 
 //TODO
-//3)New stats site
+//Button to web
+//Corregir msg inicial
 
 
 //BUGS CONOCIDOS
