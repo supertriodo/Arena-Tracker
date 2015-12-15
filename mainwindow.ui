@@ -175,6 +175,9 @@
             </item>
             <item>
              <widget class="QLabel" name="labelGold">
+              <property name="toolTip">
+               <string>Gold</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -207,6 +210,9 @@
             </item>
             <item>
              <widget class="QLabel" name="labelArcaneDust">
+              <property name="toolTip">
+               <string>Arcane Dust</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -273,6 +279,9 @@
             </item>
             <item>
              <widget class="QLabel" name="labelPack">
+              <property name="toolTip">
+               <string>Booster packs</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -305,6 +314,9 @@
             </item>
             <item>
              <widget class="QLabel" name="labelPlainCard">
+              <property name="toolTip">
+               <string>Plain cards</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -337,6 +349,9 @@
             </item>
             <item>
              <widget class="QLabel" name="labelGoldCard">
+              <property name="toolTip">
+               <string>Golden cards</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1052,7 +1067,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>414</width>
+               <width>272</width>
                <height>593</height>
               </rect>
              </property>
