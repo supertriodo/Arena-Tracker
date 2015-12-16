@@ -1759,6 +1759,9 @@ void MainWindow::tryConnectAM()
 {
     if(webUploader == NULL) return;
     if(arenaHandler == NULL)return;
+    if(ui->configLineEditMastery->text().isEmpty())     return;
+    if(ui->configLineEditMastery2->text().isEmpty())    return;
+
     arenaHandler->currentArenaToWhite();
     webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
     ui->configButtonMastery->setIcon(QIcon(":/Images/refresh64.png"));
