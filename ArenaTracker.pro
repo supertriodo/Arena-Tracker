@@ -44,7 +44,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/movetreewidget.cpp \
     Sources/Widgets/moveverticalscrollarea.cpp \
     Sources/Widgets/cardwindow.cpp \
-    Sources/versionchecker.cpp
+    Sources/versionchecker.cpp \
+    Sources/hearthstatsuploader.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -73,7 +74,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/movetreewidget.h \
     Sources/Widgets/moveverticalscrollarea.h \
     Sources/Widgets/cardwindow.h \
-    Sources/versionchecker.h
+    Sources/versionchecker.h \
+    Sources/hearthstatsuploader.h
 
 FORMS    += mainwindow.ui
 

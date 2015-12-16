@@ -1,11 +1,11 @@
-#include "webuploader.h"
+#include "hearthstatsuploader.h"
 #include "utility.h"
 #include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtWidgets>
 
-WebUploader::WebUploader(QObject *parent) : QObject(parent)
+HearthstatsUploader::HearthstatsUploader(QObject *parent) : QObject(parent)
 {
     match = new QRegularExpressionMatch();
     webState = signup;
@@ -22,7 +22,7 @@ WebUploader::WebUploader(QObject *parent) : QObject(parent)
             this, SLOT(replyFinished(QNetworkReply*)));
 }
 
-WebUploader::~WebUploader()
+HearthstatsUploader::~HearthstatsUploader()
 {
     delete networkManager;
     delete gameResultPostList;
@@ -30,13 +30,13 @@ WebUploader::~WebUploader()
 }
 
 
-bool WebUploader::isConnected()
+bool HearthstatsUploader::isConnected()
 {
     return this->connected;
 }
 
 
-void WebUploader::tryConnect(QString playerEmail, QString password)
+void HearthstatsUploader::tryConnect(QString playerEmail, QString password)
 {
     this->playerEmail = playerEmail;
     this->password = password;
@@ -49,23 +49,22 @@ void WebUploader::tryConnect(QString playerEmail, QString password)
 }
 
 
-void WebUploader::connectWeb()
+void HearthstatsUploader::connectWeb()
 {
     QUrlQuery postData;
-    postData.addQueryItem("signin", "1");
-    postData.addQueryItem("playerEmail", playerEmail);
-    postData.addQueryItem("password", password);
+    postData.addQueryItem("user[email]", playerEmail);
+    postData.addQueryItem("user[password]", password);
 
-    QNetworkRequest request(QUrl(WEB_URL + "index.php"));
+    QNetworkRequest request(QUrl(WEB_URL + "users/sign_in"));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
     postRequest(request, postData);
 
-    emit pDebug("\nLogin Arena Mastery.");
+    emit pDebug("\nLogin Hearth Stats.");
 }
 
 
-bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList)
+bool HearthstatsUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *deckCardList)
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
@@ -117,7 +116,7 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
 }
 
 
-void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
+void HearthstatsUploader::uploadDeck(QList<DeckCard> *deckCardList)
 {
     if(arenaCurrentID == 0 && (webState != createArena))
     {
@@ -139,7 +138,7 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
 }
 
 
-void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
+void HearthstatsUploader::createArenaCards(QList<DeckCard> &deckCardList)
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
@@ -155,7 +154,7 @@ void WebUploader::createArenaCards(QList<DeckCard> &deckCardList)
 }
 
 
-bool WebUploader::uploadNewArena(const QString &hero)
+bool HearthstatsUploader::uploadNewArena(const QString &hero)
 {
     if(arenaCurrentID != 0 || webState == createArena)
     {
@@ -179,7 +178,7 @@ bool WebUploader::uploadNewArena(const QString &hero)
 }
 
 
-bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
+bool HearthstatsUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
 {
     if(lastArenaID == 0 && (webState != createArena))
     {
@@ -229,7 +228,7 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
 }
 
 
-void WebUploader::showWebState()
+void HearthstatsUploader::showWebState()
 {
     switch(webState)
     {
@@ -270,7 +269,7 @@ void WebUploader::showWebState()
 }
 
 
-void WebUploader::replyFinished(QNetworkReply *reply)
+void HearthstatsUploader::replyFinished(QNetworkReply *reply)
 {
     showWebState();
     reply->deleteLater();
@@ -288,15 +287,16 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     }
 
     if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
-    { 
+    {
         if(webState == signup)
         {
-            emit pDebug("Arena mastery sign up success.");
-            emit pLog(tr("Web: Arena mastery sign up success."));
+            emit pDebug("Hearth Stats sign up success.");
+            emit pLog(tr("Web: Hearth Stats sign up success."));
 
             //Si ya hemos cargado la ultima arena hacemos un reload
-            if(!connected)    webState = checkArenaCurrentLoad;
-            else                webState = checkArenaCurrentReload;
+//            if(!connected)    webState = checkArenaCurrentLoad;
+//            else                webState = checkArenaCurrentReload;
+            webState = complete;//BORRAR
 
             connected = true;
             emit connectionTried(true);
@@ -322,7 +322,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == signup)
     {
         emit pDebug("Wrong username or password.", Warning);
-        emit pLog(tr("Web: Arena mastery sign up failed. Wrong username or password."));
+        emit pLog(tr("Web: Hearth Stats sign up failed. Wrong username or password."));
         connected = false;
         emit connectionTried(false);
     }
@@ -486,7 +486,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 }
 
 
-void WebUploader::uploadNext()
+void HearthstatsUploader::uploadNext()
 {
     emit pDebug("UploadNext.");
 
@@ -523,7 +523,7 @@ void WebUploader::uploadNext()
 }
 
 
-void WebUploader::uploadArenaCards()
+void HearthstatsUploader::uploadArenaCards()
 {
     QUrlQuery postData;
     postData.addQueryItem("batchImportPwn", "1");
@@ -542,7 +542,7 @@ void WebUploader::uploadArenaCards()
 }
 
 
-void WebUploader::refresh()
+void HearthstatsUploader::refresh()
 {
     if(webState == complete && gameResultPostList->isEmpty())
     {
@@ -552,7 +552,7 @@ void WebUploader::refresh()
 }
 
 
-void WebUploader::checkArenaReload()
+void HearthstatsUploader::checkArenaReload()
 {
     networkManager->get(QNetworkRequest(QUrl(WEB_URL + "player.php")));
     emit pDebug("Reload player.php");
@@ -560,7 +560,7 @@ void WebUploader::checkArenaReload()
 }
 
 
-void WebUploader::askArenaCards()
+void HearthstatsUploader::askArenaCards()
 {
     if(webState == complete && gameResultPostList->isEmpty())
     {
@@ -570,7 +570,7 @@ void WebUploader::askArenaCards()
 }
 
 
-bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards)
+bool HearthstatsUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult> &list, bool getCards)
 {
     //Ejemplo html
     //<div class='col-md-5' id='nameDate'>
@@ -620,7 +620,7 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
 }
 
 
-void WebUploader::getArenaCards(QString &html)
+void HearthstatsUploader::getArenaCards(QString &html)
 {
     //Ejemplo html
     //<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>
@@ -664,7 +664,7 @@ void WebUploader::getArenaCards(QString &html)
 }
 
 
-QString WebUploader::heroToWebNumber(const QString &hero)
+QString HearthstatsUploader::heroToWebNumber(const QString &hero)
 {
     if(hero.compare("06")==0)           return QString("1");
     else if(hero.compare("05")==0)      return QString("2");
@@ -679,7 +679,7 @@ QString WebUploader::heroToWebNumber(const QString &hero)
 }
 
 
-GameResult WebUploader::createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero)
+GameResult HearthstatsUploader::createGameResult(const QRegularExpressionMatch &match, const QString &arenaCurrentHero)
 {
     GameResult gameResult;
 
@@ -693,7 +693,7 @@ GameResult WebUploader::createGameResult(const QRegularExpressionMatch &match, c
 }
 
 
-void WebUploader::postRequest(QNetworkRequest request, QUrlQuery postData)
+void HearthstatsUploader::postRequest(QNetworkRequest request, QUrlQuery postData)
 {
     networkManager->post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
 }

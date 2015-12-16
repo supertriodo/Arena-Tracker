@@ -78,7 +78,7 @@ void ArenaHandler::newGameResult(GameResult gameResult, bool arenaMatch)
 {
     QTreeWidgetItem *item = showGameResult(gameResult, arenaMatch);
 
-    if(arenaMatch && webUploader!=NULL)
+    if(arenaMatch && webUploader!=NULL && webUploader->isConnected())
     {
         QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
         bool uploadSuccess;
@@ -170,7 +170,7 @@ bool ArenaHandler::newArena(QString hero)
 {
     showArena(hero);
 
-    if(webUploader==NULL)
+    if(webUploader==NULL || !webUploader->isConnected())
     {
     }
     else if(!webUploader->uploadNewArena(hero))
@@ -275,7 +275,8 @@ void ArenaHandler::refresh()
 
     emit pDebug("\nRefresh Button.");
     ui->updateButton->setEnabled(false);
-    webUploader->refresh();
+
+    if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
 }
 
 
@@ -399,7 +400,7 @@ void ArenaHandler::uploadRewards()
     arenaRewards.plainCards = ui->lineEditPlainCard->text().toInt();
     arenaRewards.goldCards = ui->lineEditGoldCard->text().toInt();
 
-    if(webUploader!=NULL && webUploader->uploadArenaRewards(arenaRewards))
+    if(webUploader!=NULL && webUploader->isConnected() && webUploader->uploadArenaRewards(arenaRewards))
     {
         enableRefreshButton(false);
     }
@@ -453,7 +454,7 @@ void ArenaHandler::setTransparency(Transparency value)
         if(ui->updateButton->isEnabled())
         {
             ui->updateButton->setEnabled(false);
-            webUploader->refresh();
+            if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
         }
     }
 }
@@ -472,7 +473,7 @@ void ArenaHandler::setTheme(Theme theme)
         if(ui->updateButton->isEnabled())
         {
             ui->updateButton->setEnabled(false);
-            webUploader->refresh();
+            if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
         }
     }
 }

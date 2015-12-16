@@ -145,6 +145,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
 //    }
     else if(line.startsWith("[Arena]"))
     {
+        //NEW ARENA
         //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
         if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
         {
@@ -154,6 +155,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             emit newArena(hero); //Begin draft
             deckRead = false;
         }
+        //END READING DECK
         //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
         else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
         {
@@ -165,6 +167,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             emit endGame();
             gameState = noGame;
         }
+        //DRAFTING PICK CARD
         //[Arena] Client chooses: Profesora violeta (NEW1_026)
         else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
         {
@@ -175,6 +178,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
                 emit pickCard(code);
             }
         }
+        //START READING DECK
         //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
         else if(synchronized && line.contains(QRegularExpression(
                     "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
@@ -182,6 +186,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
             startReadingDeck();
         }
+        //READ DECK CARD
         //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
         else if(synchronized && (gameState == readingDeck) &&
             line.contains(QRegularExpression(
@@ -191,6 +196,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             emit pDebug("Reading deck: " + code, numLine);
             emit newDeckCard(code);
         }
+        //IN REWARDS
         //[Arena] SetDraftMode - IN_REWARDS
         else if(synchronized && line.startsWith("[Arena] SetDraftMode - IN_REWARDS"))
         {

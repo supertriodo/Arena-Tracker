@@ -75,8 +75,7 @@ void LogLoader::readLogPath()
         QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
                                     "1) ") + logFileName + tr(" location (If not default).\n"
                                     "2) log.config location (If not default).\n"
-                                    "3) Restart Hearthstone (If running).\n"
-                                    "4) Your Arena Mastery user/password.\n\n"
+                                    "3) Restart Hearthstone (If running).\n\n"
                                     "After your first game:\n"
                                     "5) Your Hearthstone name."));
 

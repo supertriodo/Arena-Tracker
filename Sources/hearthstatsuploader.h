@@ -1,5 +1,6 @@
-#ifndef WEBUPLOADER_H
-#define WEBUPLOADER_H
+#ifndef HEARTHSTATSUPLOADER_H
+#define HEARTHSTATSUPLOADER_H
+
 
 #include "gamewatcher.h"
 #include "Cards/deckcard.h"
@@ -12,7 +13,7 @@
 
 
 
-#define WEB_URL QString("http://www.arenamastery.com/")
+#define WEB_URL QString("https://hearthstats.net/")
 
 class GameResultPost
 {
@@ -22,12 +23,12 @@ public:
 };
 
 
-class WebUploader : public QObject
+class HearthstatsUploader : public QObject
 {
     Q_OBJECT
 public:
-    WebUploader(QObject *parent);
-    ~WebUploader();
+    HearthstatsUploader(QObject *parent);
+    ~HearthstatsUploader();
 
     enum WebState { signup, checkArenaCurrentLoad, loadArenaCurrent,
                     createArena, rewardsSent, checkArenaCurrentReload,
@@ -58,7 +59,7 @@ private:
     void postRequest(QNetworkRequest request, QUrlQuery postData);
     void createArenaCards(QList<DeckCard> &deckCardList);
     void getArenaCards(QString &html);
-    void uploadArenaCards();    
+    void uploadArenaCards();
     void showWebState();
     void checkArenaReload();
 
@@ -93,4 +94,4 @@ public slots:
     void askArenaCards();
 };
 
-#endif // WEBUPLOADER_H
+#endif // HEARTHSTATSUPLOADER_H

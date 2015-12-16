@@ -527,16 +527,16 @@ void MainWindow::createWebUploader()
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     //No cargamos el deck desde arenaMastery, lo leemos del log
-#ifdef QT_DEBUG
-    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
-            deckHandler, SLOT(newDeckCardWeb(QString,int)));
-    connect(webUploader, SIGNAL(newWebDeckCardList()),
-            this, SLOT(resetDeckAlreadyRead()));
+//#ifdef QT_DEBUG
+//    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
+//            deckHandler, SLOT(newDeckCardWeb(QString,int)));
+//    connect(webUploader, SIGNAL(newWebDeckCardList()),
+//            this, SLOT(resetDeckAlreadyRead()));
 
-    //Connect de gameWatcher
-    connect(gameWatcher,SIGNAL(beginReadingDeck()),
-            webUploader, SLOT(askArenaCards()));
-#endif
+//    //Connect de gameWatcher
+//    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+//            webUploader, SLOT(askArenaCards()));
+//#endif
 
     arenaHandler->setWebUploader(webUploader);
     tryConnectAM();
