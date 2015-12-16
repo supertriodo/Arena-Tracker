@@ -31,13 +31,21 @@ void ResizeButton::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
-        QScreen *screen = QGuiApplication::primaryScreen();
-        QRect rect = screen->geometry();
-
         QPoint topLeft = mainWindow->frameGeometry().topLeft();
         QPoint newBottomRight = event->globalPos() + dragPosition;
-        if(newBottomRight.y()>rect.height()) newBottomRight.setY(rect.height());
-        if(newBottomRight.x()>rect.width()) newBottomRight.setX(rect.width());
+        QPoint midApp = mainWindow->frameGeometry().center();
+
+        foreach (QScreen *screen, QGuiApplication::screens())
+        {
+            if(screen->geometry().contains(midApp))
+            {
+                int maxRight = screen->geometry().right();
+                int maxBottom = screen->geometry().bottom();
+                if(newBottomRight.y()>maxBottom)    newBottomRight.setY(maxBottom);
+                if(newBottomRight.x()>maxRight)     newBottomRight.setX(maxRight);
+                break;
+            }
+        }
 
         QSize size(newBottomRight.x() - topLeft.x(), newBottomRight.y() - topLeft.y());
         emit newSize(size);
