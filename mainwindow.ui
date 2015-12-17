@@ -1067,7 +1067,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>272</width>
+               <width>414</width>
                <height>593</height>
               </rect>
              </property>
@@ -1583,6 +1583,9 @@ card scores during the draft.</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="configButtonMastery">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>

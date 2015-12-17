@@ -1841,7 +1841,6 @@ int MainWindow::getScreenHighest()
 
 //TODO
 //Button to web
-//Corregir msg inicial
 
 
 //BUGS CONOCIDOS

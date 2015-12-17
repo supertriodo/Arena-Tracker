@@ -37,6 +37,8 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
         QSettings settings("Arena Tracker", "Arena Tracker");
         QString remindedVersion = settings.value("version", "").toString();
 
+        emit pDebug("VERSION: " + VERSION + " - RemindedVersion: " + remindedVersion + " - LatestVersion: " + latestVersion);
+
         if(remindedVersion.isEmpty())
         {
             remindedVersion = VERSION;
