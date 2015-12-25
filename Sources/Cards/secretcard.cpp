@@ -2,8 +2,10 @@
 #include "../utility.h"
 #include <QtWidgets>
 
-SecretCard::SecretCard() : SecretCard("")
+SecretCard::SecretCard() : DeckCard("")
 {
+    treeItem = NULL;
+    hero = unknown;
 }
 
 SecretCard::SecretCard(QString code) : DeckCard(code)
