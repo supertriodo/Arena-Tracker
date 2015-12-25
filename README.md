@@ -19,10 +19,6 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 https://github.com/supertriodo/Arena-Tracker/releases/latest
 * Tested on Windows 7/8/10
 * Tested on Ubuntu/Linux Mint
-* Under Fedora 22 some libs are missing:
- * https://github.com/supertriodo/Arena-Tracker/issues/3
-* Under Kubuntu 14.04 LTS some libs are missing:
- * https://www.reddit.com/r/ArenaTracker/comments/3v1vow/wont_start_under_kubuntu/
 
 
 ##  First Run
