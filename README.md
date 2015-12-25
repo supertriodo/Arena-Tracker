@@ -57,10 +57,11 @@ También puedes preguntarme en español.
 * I setup the app but it didn't upload my arena game/ it didn't start drafting.
  * This usually means Hearthstone is not writting in its log.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
- * If you use other trackers they can conflict configuring log.config (Remove log.config and start Arena Tracker).
+ * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Remove log.config and start Arena Tracker).
 * Drafting doesn't read next card.
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
+ * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Remove log.config and start Arena Tracker).
 * What does it mean when cards in the decklist are highlighted in yellow/orange?
  * Minions are shown in white.
  * Spells are shown in yellow.
