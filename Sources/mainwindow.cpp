@@ -1841,6 +1841,9 @@ int MainWindow::getScreenHighest()
 
 //TODO
 //Button to web
+//triodo: you can check for cardids on drawn cards
+//Enviar log si no se cerro bien.
+//Cartas sin margen en main window.
 
 
 //BUGS CONOCIDOS

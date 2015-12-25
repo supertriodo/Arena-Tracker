@@ -500,26 +500,11 @@ void ArenaHandler::removeDuplicateArena()
     //Remove Previous Arena
     arenaPreviousGameList.clear();
     int indexCurrent = ui->arenaTreeWidget->indexOfTopLevelItem(arenaCurrent);
-    delete ui->arenaTreeWidget->topLevelItem(indexCurrent-1);
+    QTreeWidgetItem *arenaRepeated = ui->arenaTreeWidget->topLevelItem(indexCurrent-1);
+    if(arenaRepeated == arenaHomeless)  return;
 
+    delete arenaRepeated;
     emit pDebug("Dulicate arena found and removed.");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
