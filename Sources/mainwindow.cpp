@@ -101,7 +101,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(9, 40, 9, 9);
+    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 9);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);

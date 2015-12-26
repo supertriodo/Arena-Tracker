@@ -876,8 +876,14 @@
           <property name="spacing">
            <number>0</number>
           </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
           <property name="topMargin">
            <number>40</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
@@ -997,8 +1003,14 @@
           <string>Hand</string>
          </attribute>
          <layout class="QVBoxLayout" name="tabEnemyLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
           <property name="topMargin">
            <number>40</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
          </layout>
         </widget>
@@ -1067,7 +1079,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>414</width>
+               <width>272</width>
                <height>593</height>
               </rect>
              </property>
