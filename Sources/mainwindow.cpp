@@ -553,13 +553,15 @@ void MainWindow::createHStatsUploader()
     if(hstatsUploader != NULL)  return;
     hstatsUploader = new HearthstatsUploader(this);
 
+    connect(hstatsUploader, SIGNAL(connectionTried(bool)),
+            this, SLOT(updateHStatsConnectButton(bool)));
     connect(hstatsUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(hstatsUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
 //    arenaHandler->setWebUploader(webUploader);
-//    tryConnectAM();
+    tryConnectHStats();
 }
 
 
@@ -685,7 +687,8 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword)
+void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword,
+                               QString HStatsPlayerEmail, QString HStatsPassword)
 {
     //UI
     switch(transparency)
@@ -747,6 +750,10 @@ void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString 
     //Arena Mastery
     ui->configLineEditMastery->setText(AMplayerEmail);
     ui->configLineEditMastery2->setText(AMpassword);
+
+    //Hearth Stats
+    ui->configLineEditHStats->setText(HStatsPlayerEmail);
+    ui->configLineEditHStats2->setText(HStatsPassword);
 }
 
 
@@ -804,8 +811,10 @@ void MainWindow::readSettings()
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
+        QString HStatsPlayerEmail = settings.value("HStatsPlayerEmail", "").toString();
+        QString HStatsPassword = settings.value("HStatsPassword", "").toString();
 
-        initConfigTab(tooltipScale, AMplayerEmail, AMpassword);
+        initConfigTab(tooltipScale, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
     }
     else
     {
@@ -844,6 +853,8 @@ void MainWindow::writeSettings()
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
+        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
+        settings.setValue("HStatsPassword", ui->configLineEditHStats2->text());
     }
     else
     {
@@ -1788,6 +1799,47 @@ void MainWindow::tryConnectAM()
 }
 
 
+void MainWindow::updateHStatsConnectButton(bool isConnected)
+{
+    if(isConnected) updateHStatsConnectButton(1);
+    else            updateHStatsConnectButton(0);
+}
+
+
+void MainWindow::updateHStatsConnectButton(int value)
+{
+    switch(value)
+    {
+        case 0:
+            ui->configButtonHStats->setIcon(QIcon(":/Images/lose.png"));
+            ui->configButtonHStats->setEnabled(true);
+            break;
+        case 1:
+            ui->configButtonHStats->setIcon(QIcon(":/Images/win.png"));
+            ui->configButtonHStats->setEnabled(true);
+            break;
+        case 2:
+            ui->configButtonHStats->setIcon(QIcon(":/Images/refresh64.png"));
+            ui->configButtonHStats->setEnabled(false);
+            break;
+    }
+}
+
+
+void MainWindow::tryConnectHStats()
+{
+    if(hstatsUploader == NULL) return;
+    if(arenaHandler == NULL)return;
+    if(ui->configLineEditHStats->text().isEmpty())     return;
+    if(ui->configLineEditHStats2->text().isEmpty())    return;
+
+//    arenaHandler->currentArenaToWhite();
+    hstatsUploader->tryConnect(ui->configLineEditHStats->text(), ui->configLineEditHStats2->text());
+    ui->configButtonHStats->setIcon(QIcon(":/Images/refresh64.png"));
+    ui->configButtonHStats->setEnabled(false);
+}
+
+
 void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
@@ -1824,6 +1876,16 @@ void MainWindow::completeConfigTab()
 
     connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(updateAMConnectButton()));
     connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
+
+    //Hearth Stats
+    connect(ui->configLineEditHStats, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
+    connect(ui->configLineEditHStats, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+
+    connect(ui->configLineEditHStats2, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
+    connect(ui->configLineEditHStats2, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+
+    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(updateHStatsConnectButton()));
+    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(tryConnectHStats()));
 
     completeHighResConfigTab();
 }

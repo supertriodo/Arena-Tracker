@@ -112,7 +112,7 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword);
+    void initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -174,6 +174,9 @@ private slots:
     void updateAMConnectButton(int value=2);
     void updateAMConnectButton(bool isConnected);
     void tryConnectAM();
+    void updateHStatsConnectButton(int value=2);
+    void updateHStatsConnectButton(bool isConnected);
+    void tryConnectHStats();
     void test();
 };
 

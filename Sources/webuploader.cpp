@@ -279,11 +279,11 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     {
         if(webState == rewardsSent) webState = complete;
         if(webState == gameResultSent) webState = complete;
+        if(webState == signup)  emit connectionTried(false);
 
         emit pDebug("No internet access to Arena Mastery.", Error);
         emit pLog(tr("Web: No internet access to Arena Mastery."));
         emit synchronized();
-        QTimer::singleShot(10000, this, SLOT(connectWeb()));
         return;
     }
 
