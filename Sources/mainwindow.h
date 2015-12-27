@@ -4,6 +4,7 @@
 #include "logloader.h"
 #include "gamewatcher.h"
 #include "webuploader.h"
+#include "hearthstatsuploader.h"
 #include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "deckhandler.h"
@@ -44,6 +45,7 @@ private:
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     WebUploader *webUploader;
+    HearthstatsUploader *hstatsUploader;
     HSCardDownloader *cardDownloader;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
@@ -83,6 +85,7 @@ private:
     void createSecretsHandler();
     void createDraftHandler();
     void createWebUploader();
+    void createHStatsUploader();
     void createVersionChecker();
     void readSettings();
     void writeSettings();
@@ -113,7 +116,6 @@ private:
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
-    void test();
 
 //Override events
 protected:
@@ -172,6 +174,7 @@ private slots:
     void updateAMConnectButton(int value=2);
     void updateAMConnectButton(bool isConnected);
     void tryConnectAM();
+    void test();
 };
 
 #endif // MAINWINDOW_H

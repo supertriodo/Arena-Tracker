@@ -13,14 +13,7 @@
 
 
 
-#define WEB_URL QString("https://hearthstats.net/")
-
-class GameResultPost
-{
-public:
-    QUrlQuery postData;
-    QNetworkRequest request;
-};
+#define HSTATS_URL QString("https://hearthstats.net/")
 
 
 class HearthstatsUploader : public QObject
@@ -84,7 +77,7 @@ signals:
     void newWebDeckCardList();
     void connectionTried(bool isConnected);
     void pLog(QString line);
-    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="WebUploader");
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HStatsUploader");
 
 private slots:
     void connectWeb();

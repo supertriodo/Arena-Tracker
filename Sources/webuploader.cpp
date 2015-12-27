@@ -291,15 +291,15 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     { 
         if(webState == signup)
         {
-            emit pDebug("Arena mastery sign up success.");
-            emit pLog(tr("Web: Arena mastery sign up success."));
+            emit pDebug("Arena Mastery sign up success.");
+            emit pLog(tr("Web: Arena Mastery sign up success."));
 
             //Si ya hemos cargado la ultima arena hacemos un reload
             if(!connected)    webState = checkArenaCurrentLoad;
             else                webState = checkArenaCurrentReload;
 
             connected = true;
-            emit connectionTried(true);
+            emit connectionTried(true); //Update config connect button
         }
         else if(webState == createArena)
         {
@@ -322,7 +322,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == signup)
     {
         emit pDebug("Wrong username or password.", Warning);
-        emit pLog(tr("Web: Arena mastery sign up failed. Wrong username or password."));
+        emit pLog(tr("Web: Arena Mastery sign up failed. Wrong username or password."));
         connected = false;
         emit connectionTried(false);
     }

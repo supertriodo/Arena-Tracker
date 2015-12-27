@@ -4,12 +4,23 @@
 #include <QString>
 #include <QMap>
 #include <QJsonObject>
+#include <QUrlQuery>
+#include <QNetworkRequest>
 
 #define ANIMATION_TIME 750
 
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque };
 enum Theme { ThemeWhite, ThemeBlack };
+
+
+class GameResultPost
+{
+public:
+    QUrlQuery postData;
+    QNetworkRequest request;
+};
+
 
 class Utility
 {

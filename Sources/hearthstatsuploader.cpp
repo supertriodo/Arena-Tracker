@@ -55,7 +55,7 @@ void HearthstatsUploader::connectWeb()
     postData.addQueryItem("user[email]", playerEmail);
     postData.addQueryItem("user[password]", password);
 
-    QNetworkRequest request(QUrl(WEB_URL + "users/sign_in"));
+    QNetworkRequest request(QUrl(HSTATS_URL + "users/sign_in"));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
     postRequest(request, postData);
@@ -97,7 +97,7 @@ bool HearthstatsUploader::uploadNewGameResult(GameResult &gameresult, QList<Deck
         postData.addQueryItem("arena", QString::number(arenaCurrentID));
     }
 
-    QNetworkRequest request(QUrl(WEB_URL + "arena_gameupdate_ajax.php"));
+    QNetworkRequest request(QUrl(HSTATS_URL + "arena_gameupdate_ajax.php"));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
 
@@ -160,7 +160,7 @@ bool HearthstatsUploader::uploadNewArena(const QString &hero)
     {
         emit pDebug("Arena in progress when trying to upload a new one.", Warning);
         emit pLog(tr("Web: WARNING:Arena in progress when trying to upload a new one.\n"
-                        "(Go to Arena Mastery, fix it and refresh the app)."));
+                        "(Go to Hearth Stats, fix it and refresh the app)."));
         return false;
     }
 
@@ -206,7 +206,7 @@ bool HearthstatsUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
         postData.addQueryItem("arena", QString::number(lastArenaID));
     }
 
-    QNetworkRequest request(QUrl(WEB_URL + "arena_update_ajax.php"));
+    QNetworkRequest request(QUrl(HSTATS_URL + "arena_update_ajax.php"));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
 
@@ -279,8 +279,8 @@ void HearthstatsUploader::replyFinished(QNetworkReply *reply)
         if(webState == rewardsSent) webState = complete;
         if(webState == gameResultSent) webState = complete;
 
-        emit pDebug("No internet access to Arena Mastery.", Error);
-        emit pLog(tr("Web: No internet access to Arena Mastery."));
+        emit pDebug("No internet access to Hearth Stats.", Error);
+        emit pLog(tr("Web: No internet access to Hearth Stats."));
         emit synchronized();
         QTimer::singleShot(10000, this, SLOT(connectWeb()));
         return;
@@ -299,25 +299,27 @@ void HearthstatsUploader::replyFinished(QNetworkReply *reply)
             webState = complete;//BORRAR
 
             connected = true;
-            emit connectionTried(true);
+            emit connectionTried(true); //Update config connect button
         }
         else if(webState == createArena)
         {
             if(QString(reply->rawHeader("Location")).contains(QRegularExpression(
-                "arena\\.php\\?arena=(\\d+)"
+                "arenas/new"
                 ), match))
             {
-                arenaCurrentID = match->captured(1).toInt();
-                lastArenaID = arenaCurrentID;
+//                arenaCurrentID = match->captured(1).toInt();
+//                lastArenaID = arenaCurrentID;
                 deckInWeb = false;
-                emit pDebug("New arena uploaded(" + match->captured(1) + "). Heroe: " + arenaCurrentHero);
+                emit pDebug("New arena uploaded. Heroe: " + arenaCurrentHero);
                 emit pLog(tr("Web: New arena uploaded."));
-                checkArenaReload();
+//                checkArenaReload();
+//                webState = checkArenaCurrentReload;//Descomentar
+                webState = complete;//BORRAR
             }
         }
 
         emit pDebug("Redirected to " + reply->rawHeader("Location"));
-        networkManager->get(QNetworkRequest(QUrl(WEB_URL + reply->rawHeader("Location"))));
+        networkManager->get(QNetworkRequest(QUrl(reply->rawHeader("Location"))));
     }
     else if(webState == signup)
     {
@@ -346,7 +348,7 @@ void HearthstatsUploader::replyFinished(QNetworkReply *reply)
             "<a href=.(arena\\.php\\?arena=(\\d+)). class=.btn btn-lg btn-success startArena.>"
             ), match))
         {
-            networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
+            networkManager->get(QNetworkRequest(QUrl(HSTATS_URL + match->captured(1))));
             emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
             lastArenaID = arenaCurrentID;
@@ -403,7 +405,7 @@ void HearthstatsUploader::replyFinished(QNetworkReply *reply)
             "<a href=.(arena\\.php\\?arena=(\\d+)). class=.btn btn-lg btn-success startArena.>"
             ), match))
         {
-            networkManager->get(QNetworkRequest(QUrl(WEB_URL + match->captured(1))));
+            networkManager->get(QNetworkRequest(QUrl(HSTATS_URL + match->captured(1))));
             emit pDebug("Arena in progress found.");
             arenaCurrentID = match->captured(2).toInt();
             lastArenaID = arenaCurrentID;
@@ -453,14 +455,21 @@ void HearthstatsUploader::replyFinished(QNetworkReply *reply)
     }
     else if(webState == createArena)
     {
-        networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?new=" + heroToWebNumber(arenaCurrentHero))));
+        QUrlQuery postData;
+        postData.addQueryItem("arena_run[klass_id]", heroToWebNumber(arenaCurrentHero));
+
+        QNetworkRequest request(QUrl(HSTATS_URL + "arena_runs"));
+        request.setHeader(QNetworkRequest::ContentTypeHeader,
+            "application/x-www-form-urlencoded");
+        postRequest(request, postData);
+
         emit pDebug("New arena asked to web.");
     }
     else if(webState == getArenaDeck1)
     {
         if(arenaCurrentID != 0)
         {
-            networkManager->get(QNetworkRequest(QUrl(WEB_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
+            networkManager->get(QNetworkRequest(QUrl(HSTATS_URL + "arena.php?arena=" + QString::number(arenaCurrentID))));
             emit pDebug("Arena in progress found.");
             webState = getArenaDeck2;
         }
@@ -530,7 +539,7 @@ void HearthstatsUploader::uploadArenaCards()
     postData.addQueryItem("importReviewed", "1");
     postData.addQueryItem("importDataBlock", arenaCards);
 
-    QNetworkRequest request(QUrl(WEB_URL + "import_cards.php?arena=" + QString::number(lastArenaID)));
+    QNetworkRequest request(QUrl(HSTATS_URL + "import_cards.php?arena=" + QString::number(lastArenaID)));
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
     postRequest(request, postData);
@@ -554,7 +563,7 @@ void HearthstatsUploader::refresh()
 
 void HearthstatsUploader::checkArenaReload()
 {
-    networkManager->get(QNetworkRequest(QUrl(WEB_URL + "player.php")));
+    networkManager->get(QNetworkRequest(QUrl(HSTATS_URL + "player.php")));
     emit pDebug("Reload player.php");
     webState = checkArenaCurrentReload;
 }

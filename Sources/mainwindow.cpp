@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
+    hstatsUploader = NULL;
     atLogFile = NULL;
     isMainWindow = true;
     otherWindow = NULL;
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     gameWatcher = NULL;
     arenaHandler = NULL;
     webUploader = NULL;
+    hstatsUploader = NULL;
     cardDownloader = NULL;
     enemyHandHandler = NULL;
     draftHandler = NULL;
@@ -483,10 +485,13 @@ void MainWindow::createLogLoader()
 void MainWindow::synchronizedDone()
 {
     createWebUploader();
+    createHStatsUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
     spreadTransparency();
+
+    ui->progressBar->setVisible(false);
 
     //Connections after synchronized
     connect(gameWatcher,SIGNAL(newArena(QString)),
@@ -495,7 +500,7 @@ void MainWindow::synchronizedDone()
             this, SLOT(resetDeckAlreadyRead()));
 
     //Test
-    test();
+    QTimer::singleShot(5000, this, SLOT(test()));
 }
 
 
@@ -540,8 +545,21 @@ void MainWindow::createWebUploader()
 
     arenaHandler->setWebUploader(webUploader);
     tryConnectAM();
+}
 
-    ui->progressBar->setVisible(false);
+
+void MainWindow::createHStatsUploader()
+{
+    if(hstatsUploader != NULL)  return;
+    hstatsUploader = new HearthstatsUploader(this);
+
+    connect(hstatsUploader, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(hstatsUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+//    arenaHandler->setWebUploader(webUploader);
+//    tryConnectAM();
 }
 
 
@@ -1359,6 +1377,7 @@ void MainWindow::checkHSCardsDir()
 
 void MainWindow::test()
 {
+//    hstatsUploader->uploadNewArena("01");
 }
 
 
@@ -1843,7 +1862,7 @@ int MainWindow::getScreenHighest()
 //Button to web
 //triodo: you can check for cardids on drawn cards
 //Enviar log si no se cerro bien.
-//Cartas sin margen en main window.
+//Revisar checkArenaReload en createArena (arena mastery)
 
 
 //BUGS CONOCIDOS

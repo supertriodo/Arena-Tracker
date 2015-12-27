@@ -14,13 +14,6 @@
 
 #define WEB_URL QString("http://www.arenamastery.com/")
 
-class GameResultPost
-{
-public:
-    QUrlQuery postData;
-    QNetworkRequest request;
-};
-
 
 class WebUploader : public QObject
 {
