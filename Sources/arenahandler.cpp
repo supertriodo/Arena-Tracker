@@ -23,7 +23,7 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-    ui->updateButton->setToolTip(tr("Refresh"));
+    ui->updateButton->setToolTip(tr("Reload latest arena from Arena Mastery."));
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));

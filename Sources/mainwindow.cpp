@@ -485,7 +485,7 @@ void MainWindow::createLogLoader()
 void MainWindow::synchronizedDone()
 {
     createWebUploader();
-    createHStatsUploader();
+//    createHStatsUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
@@ -811,8 +811,8 @@ void MainWindow::readSettings()
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
-        QString HStatsPlayerEmail = settings.value("HStatsPlayerEmail", "").toString();
-        QString HStatsPassword = settings.value("HStatsPassword", "").toString();
+        QString HStatsPlayerEmail = "";//settings.value("HStatsPlayerEmail", "").toString();
+        QString HStatsPassword = "";//settings.value("HStatsPassword", "").toString();
 
         initConfigTab(tooltipScale, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
     }
@@ -853,8 +853,8 @@ void MainWindow::writeSettings()
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
-        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
-        settings.setValue("HStatsPassword", ui->configLineEditHStats2->text());
+//        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
+//        settings.setValue("HStatsPassword", ui->configLineEditHStats2->text());
     }
     else
     {
@@ -1388,7 +1388,6 @@ void MainWindow::checkHSCardsDir()
 
 void MainWindow::test()
 {
-//    hstatsUploader->uploadNewArena("01");
 }
 
 
@@ -1878,14 +1877,15 @@ void MainWindow::completeConfigTab()
     connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
 
     //Hearth Stats
-    connect(ui->configLineEditHStats, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-    connect(ui->configLineEditHStats, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+    ui->configBoxHStats->hide();
+//    connect(ui->configLineEditHStats, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
+//    connect(ui->configLineEditHStats, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
 
-    connect(ui->configLineEditHStats2, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-    connect(ui->configLineEditHStats2, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+//    connect(ui->configLineEditHStats2, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
+//    connect(ui->configLineEditHStats2, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
 
-    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(updateHStatsConnectButton()));
-    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(tryConnectHStats()));
+//    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(updateHStatsConnectButton()));
+//    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(tryConnectHStats()));
 
     completeHighResConfigTab();
 }
