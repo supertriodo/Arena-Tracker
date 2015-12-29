@@ -297,12 +297,12 @@ void DeckHandler::drawFromDeck(QString code)
                 it->drawGreyed(true, this->greyedHeight);
 
                 emit pDebug("New card: " + it->getName());
-                emit pLog(tr("Deck: New card: ") + it->getName());
+//                emit pLog(tr("Deck: New card: ") + it->getName());
             }
             else
             {
                 emit pDebug("New card but deck is full. " + it->getName(), Warning);
-                emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") + it->getName());
+                emit pLog(tr("Deck: New card found but deck is full: ") + it->getName());
             }
             return;
         }
@@ -316,8 +316,8 @@ void DeckHandler::drawFromDeck(QString code)
     {
         emit pDebug("New card: " +
                           (*cardsJson)[code].value("name").toString());
-        emit pLog(tr("Deck: New card: ") +
-                          (*cardsJson)[code].value("name").toString());
+//        emit pLog(tr("Deck: New card: ") +
+//                          (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
         drawFromDeck(code);
     }
@@ -325,7 +325,7 @@ void DeckHandler::drawFromDeck(QString code)
     {
         emit pDebug("New card but deck is full. " +
                       (*cardsJson)[code].value("name").toString(), Warning);
-        emit pLog(tr("Deck: WARNING: New card but deck is full. Is the deck right? ") +
+        emit pLog(tr("Deck: New card found but deck is full: ") +
                       (*cardsJson)[code].value("name").toString());
     }
 }
