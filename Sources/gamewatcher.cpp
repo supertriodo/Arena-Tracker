@@ -8,7 +8,7 @@ QMap<QString, QJsonObject> * GameWatcher::cardsJson;
 GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
-    arenaMode = false;
+    loadingScreen = menu;
     deckRead = false;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
@@ -34,8 +34,9 @@ GameWatcher::~GameWatcher()
 void GameWatcher::reset()
 {
     gameState = noGame;
+    loadingScreen = menu;
     emit pDebug("Reset (GameState = noGame).", 0);
-    arenaMode = false;
+    emit pDebug("Reset (LoadingScreen = menu).", 0);
 }
 
 
@@ -57,89 +58,82 @@ bool GameWatcher::findClasp(QString &line)
 
 void GameWatcher::processLogLine(QString line, qint64 numLine)
 {
-    if(line.startsWith("[Bob]"))
+    if(line.startsWith("[LoadingScreen]"))
     {
-        if(line.startsWith("[Bob] ---Register"))
+        //[LoadingScreen] LoadingScreen.OnSceneLoaded() - prevMode=HUB currMode=DRAFT
+        if(line.contains(QRegularExpression("LoadingScreen\\.OnSceneLoaded\\(\\) *- *prevMode=(\\w+) *currMode=(\\w+)"), match))
         {
+            QString prevMode = match->captured(1);
+            QString currMode = match->captured(2);
+            emit pDebug("LoadingScreen: " + prevMode + " -> " + currMode, numLine);
+
             //Redundante en caso de que falle
             //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
             endReadingDeck();
 
-            if(line.startsWith("[Bob] ---RegisterScreenForge---"))
-            {
-                arenaMode = true;
-                emit pDebug("Entering arena.", numLine);
-                emit enterArena();
-
-                //Alternativa para readingDeck si no funciona [Arena]
-                //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
-//                if(synchronized && !deckRead && gameState == noGame)
-//                {
-//                    startReadingDeck();
-//                }
-            }
-            else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
-                    line.startsWith("[Bob] ---RegisterFriendChallenge---"))
-            {
-                //REWARDS
-//                if(gameState == inRewards)
-//                {
-//                    gameState = noGame;
-//                    emit pDebug("Rewards complete (GameState = noGame).", numLine);
-//                    emit pLog(tr("Log: New rewards."));
-//                    emit arenaRewardsComplete();
-//                }
-            }
-            else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
+            if(prevMode == "GAMEPLAY")
             {
                 emit endGame();
                 gameState = noGame;
-                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
+                emit pDebug("Quitting GAMEPLAY (GameState = noGame).\n", numLine);
             }
-            else
+
+            if(currMode == "DRAFT")
             {
-                arenaMode = false;
-                emit pDebug("Leaving arena.", numLine);
-                emit leaveArena();
+                loadingScreen = arena;
+                emit pDebug("Entering ARENA.", numLine);
+            }
+            else if(currMode == "HUB")
+            {
+                loadingScreen = menu;
+                emit pDebug("Entering MENU.", numLine);
+            }
+            else if(currMode == "TOURNAMENT")
+            {
+                loadingScreen = constructed;
+                emit pDebug("Entering CONSTRUCTED.", numLine);
+            }
+            else if(currMode == "ADVENTURE")
+            {
+                loadingScreen = adventure;
+                emit pDebug("Entering ADVENTURE.", numLine);
+            }
+            else if(currMode == "TAVERN")
+            {
+                loadingScreen = tavernBrawl;
+                emit pDebug("Entering TAVERN.", numLine);
             }
         }
     }
-//    else if(line.startsWith("[Rachelle]"))
+//    if(line.startsWith("[Bob]"))
 //    {
-//        if(line.contains(QRegularExpression("reward \\d=\\[")))
+//        if(line.startsWith("[Bob] ---Register"))
 //        {
-//            gameState = inRewards;
-//            emit pDebug("New reward (GameState = inRewards).", numLine);
+//            //Redundante en caso de que falle
+//            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+//            endReadingDeck();
 
-//            if(line.contains("BoosterPackRewardData"))
+//            if(line.startsWith("[Bob] ---RegisterScreenForge---"))
 //            {
-//                emit newArenaReward(0,0,true,false,false);
+//                arenaMode = true;
+//                emit pDebug("Entering arena.", numLine);
+//                emit enterArena();
 //            }
-//            else if(line.contains("CardRewardData"))
+//            else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
+//                    line.startsWith("[Bob] ---RegisterFriendChallenge---"))
 //            {
-//                if(line.contains(QRegularExpression("Premium=(STANDARD|GOLDEN)"), match))
-//                {
-//                    QString cardType = match->captured(1);
-//                    if(cardType.compare("STANDARD") == 0)
-//                    {
-//                        emit newArenaReward(0,0,false,false,true);
-//                    }
-//                    else
-//                    {
-//                        emit newArenaReward(0,0,false,true,false);
-//                    }
-
-//                }
 //            }
-//            else if(line.contains(QRegularExpression("GoldRewardData: Amount=(\\d+)"), match))
+//            else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
 //            {
-//                QString gold = match->captured(1);
-//                emit newArenaReward(gold.toInt(),0,false,false,false);
+//                emit endGame();
+//                gameState = noGame;
+//                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
 //            }
-//            else if(line.contains(QRegularExpression("ArcaneDustRewardData: Amount=(\\d+)"), match))
+//            else
 //            {
-//                QString dust = match->captured(1);
-//                emit newArenaReward(0, dust.toInt(),false,false,false);
+//                arenaMode = false;
+//                emit pDebug("Leaving arena.", numLine);
+//                emit leaveArena();
 //            }
 //        }
 //    }
@@ -212,33 +206,6 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
     {
         processZone(line, numLine);
     }
-//    else if(line.startsWith("[Asset]"))
-//    {
-//        if((gameState == readingDeck) &&
-//            line.contains(QRegularExpression(
-//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-//        {
-//            QString code = match->captured(1);
-//            //Hero portraits
-//            if(code.contains("HERO"))
-//            {
-//                emit pDebug("Discard HERO card", numLine);
-//                endReadingDeck();
-//                return;
-//            }
-//            //Hero powers
-//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-//            {
-//                emit pDebug("Discard HERO POWER", numLine);
-//                endReadingDeck();
-//                return;
-//            }
-//            emit pDebug("Read code: " + code, numLine);
-//            emit newDeckCard(code);
-//        }
-//    }
 }
 
 
@@ -277,7 +244,13 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
     {
         case readingDeck:
         case noGame:
-            if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
+            //[Power] ================== Start Spectator Game ==================
+            if(line.contains(QRegularExpression("Start Spectator Game"), match))
+            {
+                loadingScreen = spectator;
+                emit pDebug("Entering SPECTATOR.", numLine);
+            }
+            else if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
             {
                 //Redundante en caso de que falle
                 //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
@@ -834,7 +807,7 @@ void GameWatcher::createGameResult()
 
     emit pLog(tr("Log: New game."));
 
-    emit newGameResult(gameResult, this->arenaMode);
+    emit newGameResult(gameResult, loadingScreen == arena);
 }
 
 
@@ -903,5 +876,73 @@ void GameWatcher::setSynchronized()
 
 
 
+// RACHELLE PROCESS
+//    else if(line.startsWith("[Rachelle]"))
+//    {
+//        if(line.contains(QRegularExpression("reward \\d=\\[")))
+//        {
+//            gameState = inRewards;
+//            emit pDebug("New reward (GameState = inRewards).", numLine);
 
+//            if(line.contains("BoosterPackRewardData"))
+//            {
+//                emit newArenaReward(0,0,true,false,false);
+//            }
+//            else if(line.contains("CardRewardData"))
+//            {
+//                if(line.contains(QRegularExpression("Premium=(STANDARD|GOLDEN)"), match))
+//                {
+//                    QString cardType = match->captured(1);
+//                    if(cardType.compare("STANDARD") == 0)
+//                    {
+//                        emit newArenaReward(0,0,false,false,true);
+//                    }
+//                    else
+//                    {
+//                        emit newArenaReward(0,0,false,true,false);
+//                    }
+
+//                }
+//            }
+//            else if(line.contains(QRegularExpression("GoldRewardData: Amount=(\\d+)"), match))
+//            {
+//                QString gold = match->captured(1);
+//                emit newArenaReward(gold.toInt(),0,false,false,false);
+//            }
+//            else if(line.contains(QRegularExpression("ArcaneDustRewardData: Amount=(\\d+)"), match))
+//            {
+//                QString dust = match->captured(1);
+//                emit newArenaReward(0, dust.toInt(),false,false,false);
+//            }
+//        }
+//    }
+
+// ASSET PROCESS
+//    else if(line.startsWith("[Asset]"))
+//    {
+//        if((gameState == readingDeck) &&
+//            line.contains(QRegularExpression(
+//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
+//        {
+//            QString code = match->captured(1);
+//            //Hero portraits
+//            if(code.contains("HERO"))
+//            {
+//                emit pDebug("Discard HERO card", numLine);
+//                endReadingDeck();
+//                return;
+//            }
+//            //Hero powers
+//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+//            {
+//                emit pDebug("Discard HERO POWER", numLine);
+//                endReadingDeck();
+//                return;
+//            }
+//            emit pDebug("Read code: " + code, numLine);
+//            emit newDeckCard(code);
+//        }
+//    }
 

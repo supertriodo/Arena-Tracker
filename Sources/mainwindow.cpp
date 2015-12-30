@@ -422,12 +422,6 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-//    connect(gameWatcher,SIGNAL(leaveArena()), //No son necesarios, el draft no entra en loop
-//            draftHandler, SLOT(pauseDraft()));
-//    connect(gameWatcher,SIGNAL(enterArena()),
-//            draftHandler, SLOT(resumeDraft()));
-//    connect(gameWatcher,SIGNAL(enterArena()),
-//            this, SLOT(showTabHeroOnNoArena()));
     connect(gameWatcher,SIGNAL(beginReadingDeck()),
             this, SLOT(resetDeck()));
     connect(gameWatcher,SIGNAL(pickCard(QString)),
@@ -1923,8 +1917,8 @@ int MainWindow::getScreenHighest()
 //TODO
 //Button to web
 //triodo: you can check for cardids on drawn cards
-//Enviar log si no se cerro bien.
-//Revisar checkArenaReload en createArena (arena mastery)
+//Completar eliminar bob y anadir loadingScreen (log.config) y test
+//Anadir diferentes categorias en el arbol arena
 
 
 //BUGS CONOCIDOS

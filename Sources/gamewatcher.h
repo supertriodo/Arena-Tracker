@@ -43,6 +43,7 @@ public:
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
                      inGameState, /*inRewards, */readingDeck };
+    enum LoadingScreen { menu, arena, constructed, adventure, tavernBrawl, spectator };
 
 //Variables
 private:
@@ -54,7 +55,7 @@ private:
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     int playerMinions;
     bool isPlayerTurn;
-    bool arenaMode;
+    LoadingScreen loadingScreen;
     bool deckRead;
     QRegularExpressionMatch *match;
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
@@ -112,8 +113,6 @@ signals:
     void avengeTested();
     void cSpiritTested();
     void playerTurnStart();
-    void enterArena();
-    void leaveArena();
     void beginReadingDeck();
     void activeDraftDeck();
     void pickCard(QString code);
