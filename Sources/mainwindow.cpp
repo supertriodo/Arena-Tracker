@@ -1918,6 +1918,7 @@ int MainWindow::getScreenHighest()
 //Button to web
 //triodo: you can check for cardids on drawn cards
 //Completar eliminar bob y anadir loadingScreen (log.config) y test
+//Test duplicate con arenaPrevious
 //Anadir diferentes categorias en el arbol arena
 
 

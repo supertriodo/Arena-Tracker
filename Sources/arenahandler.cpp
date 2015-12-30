@@ -63,6 +63,7 @@ void ArenaHandler::createTreeWidget()
     arenaHomeless->setText(0, "...");
 
     arenaCurrent = NULL;
+    arenaPrevious = NULL;
     arenaCurrentHero = "";
     noArena = false;
 }
@@ -192,6 +193,15 @@ void ArenaHandler::showArena(QString hero)
         QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1);
         delete item;
         noArena = false;
+        //La gameList se paso a previous en el showNoArena
+    }
+    else
+    {
+        //Pasamos la gameList a previous
+        arenaPreviousGameList.clear();
+        arenaPreviousGameList = arenaCurrentGameList;
+        arenaCurrentGameList = QList<GameResult>();
+        arenaPrevious = arenaCurrent;
     }
 
     arenaCurrentHero = QString(hero);
@@ -205,10 +215,6 @@ void ArenaHandler::showArena(QString hero)
     arenaCurrent->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
 
     setRowColor(arenaCurrent, WHITE);
-
-    arenaPreviousGameList.clear();
-    arenaPreviousGameList = arenaCurrentGameList;
-    arenaCurrentGameList = QList<GameResult>();
 }
 
 
@@ -216,18 +222,20 @@ void ArenaHandler::showNoArena()
 {
     if(noArena) return;
 
+    emit pDebug("Show no arena.");
+
+    //Pasamos la gameList a previous
+    arenaPreviousGameList.clear();
+    arenaPreviousGameList = arenaCurrentGameList;
+    arenaCurrentGameList = QList<GameResult>();
+    arenaPrevious = arenaCurrent;
+
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
     item->setText(0, "None");
     setRowColor(item, GREEN);
     arenaCurrent = NULL;
     arenaCurrentHero = "";
     noArena = true;
-
-    arenaPreviousGameList.clear();
-    arenaPreviousGameList = arenaCurrentGameList;
-    arenaCurrentGameList = QList<GameResult>();
-
-    emit pDebug("Show no arena.");
 }
 
 
@@ -484,6 +492,7 @@ void ArenaHandler::removeDuplicateArena()
 {
     emit pDebug("Try to remove dulicate arena.");
 
+    if(noArena) return;
     if(arenaCurrentGameList.count() != arenaPreviousGameList.count())   return;
 
     for(int i=0; i<arenaCurrentGameList.count(); i++)
@@ -499,11 +508,12 @@ void ArenaHandler::removeDuplicateArena()
 
     //Remove Previous Arena
     arenaPreviousGameList.clear();
-    int indexCurrent = ui->arenaTreeWidget->indexOfTopLevelItem(arenaCurrent);
-    QTreeWidgetItem *arenaRepeated = ui->arenaTreeWidget->topLevelItem(indexCurrent-1);
-    if(arenaRepeated == arenaHomeless)  return;
+    if(arenaCurrent == NULL)                return;
+    if(arenaPrevious == NULL)               return;
+    if(arenaPrevious->text(0) != "Arena")   return;
 
-    delete arenaRepeated;
+    delete arenaPrevious;
+    arenaPrevious = NULL;
     emit pDebug("Dulicate arena found and removed.");
 }
 

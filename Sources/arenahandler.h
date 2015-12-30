@@ -21,7 +21,7 @@ private:
     WebUploader *webUploader;
     DeckHandler *deckHandler;
     Ui::Extended *ui;
-    QTreeWidgetItem *arenaHomeless, *arenaCurrent;
+    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
