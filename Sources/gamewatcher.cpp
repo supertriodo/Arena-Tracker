@@ -807,7 +807,7 @@ void GameWatcher::createGameResult()
 
     emit pLog(tr("Log: New game."));
 
-    emit newGameResult(gameResult, loadingScreen == arena);
+    emit newGameResult(gameResult, loadingScreen);
 }
 
 

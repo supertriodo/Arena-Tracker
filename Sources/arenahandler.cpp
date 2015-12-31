@@ -60,12 +60,17 @@ void ArenaHandler::createTreeWidget()
 
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);
-    arenaHomeless->setText(0, "...");
+    arenaHomeless->setText(0, "Arena");
+    arenaHomeless->setText(1, "...");
 
     arenaCurrent = NULL;
     arenaPrevious = NULL;
     arenaCurrentHero = "";
     noArena = false;
+
+    for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
+    adventureTreeItem = NULL;
+    tavernBrawlTreeItem = NULL;
 }
 
 
@@ -75,11 +80,11 @@ void ArenaHandler::setWebUploader(WebUploader *webUploader)
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, bool arenaMatch)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreen loadingScreen)
 {
-    QTreeWidgetItem *item = showGameResult(gameResult, arenaMatch);
+    QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
 
-    if(arenaMatch && webUploader!=NULL && webUploader->isConnected())
+    if(loadingScreen == arena && webUploader!=NULL && webUploader->isConnected())
     {
         QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
         bool uploadSuccess;
@@ -91,39 +96,134 @@ void ArenaHandler::newGameResult(GameResult gameResult, bool arenaMatch)
             enableRefreshButton(false);
             currentArenaToWhite();
         }
-        else                setRowColor(item, RED);
+        else if(item != NULL)   setRowColor(item, RED);
     }
 }
 
 
-QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, bool arenaMatch)
+void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 {
-    emit pDebug("Show GameResult.");
-
-    QTreeWidgetItem *item;
-
-    if(!arenaMatch || arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
+    emit pDebug("Recalculate win/loses (1 game).");
+    if(isWinner)
     {
-        item = new QTreeWidgetItem(arenaHomeless);
+        int wins = topLevelItem->text(2).toInt() + 1;
+        topLevelItem->setText(2, QString::number(wins));
     }
     else
     {
-        item = new QTreeWidgetItem(arenaCurrent);
-        arenaCurrentGameList.append(gameResult);
-
-        //Add game to score
-        if(gameResult.isWinner)
-        {
-            int wins = arenaCurrent->text(2).toInt() + 1;
-            arenaCurrent->setText(2, QString::number(wins));
-        }
-        else
-        {
-            int loses = arenaCurrent->text(3).toInt() + 1;
-            arenaCurrent->setText(3, QString::number(loses));
-        }
-        emit pDebug("Recalculate arena win/loses (1 game).");
+        int loses = topLevelItem->text(3).toInt() + 1;
+        topLevelItem->setText(3, QString::number(loses));
     }
+}
+
+
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtEnd)
+{
+    QTreeWidgetItem *item;
+
+    if(addAtEnd)    item = new QTreeWidgetItem(ui->arenaTreeWidget);
+    else
+    {
+        item = new QTreeWidgetItem();
+        ui->arenaTreeWidget->insertTopLevelItem(0, item);
+    }
+
+    item->setExpanded(true);
+    item->setText(0, title);
+    if(!hero.isEmpty())     item->setIcon(1, QIcon(":Images/hero" + hero + ".png"));
+    item->setText(2, "0");
+    item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
+    item->setText(3, "0");
+    item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
+
+    setRowColor(item, WHITE);
+
+    return item;
+}
+
+
+QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, LoadingScreen loadingScreen)
+{
+    QTreeWidgetItem *item = NULL;
+    int indexHero = gameResult.playerHero.toInt()-1;
+
+    switch(loadingScreen)
+    {
+        case menu:
+            emit pDebug("Avoid GameResult from menu.");
+        break;
+
+        case spectator:
+            emit pDebug("Avoid GameResult from spectator.");
+        break;
+
+        case arena:
+            if(arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
+            {
+                emit pDebug("Create GameResult from arena in arenaHomeless.");
+                item = new QTreeWidgetItem(arenaHomeless);
+            }
+            else
+            {
+                emit pDebug("Create GameResult from arena in arenaCurrent.");
+                item = new QTreeWidgetItem(arenaCurrent);
+                arenaCurrentGameList.append(gameResult);
+                updateWinLose(gameResult.isWinner, arenaCurrent);
+            }
+        break;
+
+        case constructed:
+            emit pDebug("Create GameResult from constructed with hero " + gameResult.playerHero + ".");
+
+            if(indexHero<0||indexHero>8)  return NULL;
+
+            if(constructedTreeItem[indexHero] == NULL)
+            {
+                emit pDebug("Create Category constructed[" + QString::number(indexHero) + "].");
+                constructedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
+            }
+
+            item = new QTreeWidgetItem(constructedTreeItem[indexHero]);
+            updateWinLose(gameResult.isWinner, constructedTreeItem[indexHero]);
+        break;
+
+        case adventure:
+            emit pDebug("Create GameResult from adventure.");
+
+            if(adventureTreeItem == NULL)
+            {
+                emit pDebug("Create Category adventure.");
+                adventureTreeItem = createTopLevelItem("Solo", "", false);
+            }
+
+            item = new QTreeWidgetItem(adventureTreeItem);
+            updateWinLose(gameResult.isWinner, adventureTreeItem);
+        break;
+
+        case tavernBrawl:
+            emit pDebug("Create GameResult from tavern brawl.");
+
+            if(tavernBrawlTreeItem == NULL)
+            {
+                emit pDebug("Create Category tavern brawl.");
+                tavernBrawlTreeItem = createTopLevelItem("Brawl", "", false);
+            }
+
+            item = new QTreeWidgetItem(tavernBrawlTreeItem);
+            updateWinLose(gameResult.isWinner, tavernBrawlTreeItem);
+        break;
+    }
+
+    return item;
+}
+
+
+QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreen loadingScreen)
+{
+    emit pDebug("Show GameResult.");
+
+    QTreeWidgetItem *item = createGameInCategory(gameResult, loadingScreen);
+    if(item == NULL)    return NULL;
 
     item->setIcon(0, QIcon(":Images/" +
                            (gameResult.playerHero==""?("secretHunter"):("hero"+gameResult.playerHero))
@@ -162,8 +262,8 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
         }
     }
 
-    QTreeWidgetItem *item = showGameResult(gameResult, true);
-    setRowColor(item, YELLOW);
+    QTreeWidgetItem *item = showGameResult(gameResult, arena);
+    if(item != NULL)    setRowColor(item, YELLOW);
 }
 
 
@@ -205,16 +305,7 @@ void ArenaHandler::showArena(QString hero)
     }
 
     arenaCurrentHero = QString(hero);
-    arenaCurrent = new QTreeWidgetItem(ui->arenaTreeWidget);
-    arenaCurrent->setExpanded(true);
-    arenaCurrent->setText(0, "Arena");
-    arenaCurrent->setIcon(1, QIcon(":Images/hero" + arenaCurrentHero + ".png"));
-    arenaCurrent->setText(2, "0");
-    arenaCurrent->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
-    arenaCurrent->setText(3, "0");
-    arenaCurrent->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
-
-    setRowColor(arenaCurrent, WHITE);
+    arenaCurrent = createTopLevelItem("Arena", arenaCurrentHero, true);
 }
 
 

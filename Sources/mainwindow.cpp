@@ -357,8 +357,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult, bool)),
-            arenaHandler, SLOT(newGameResult(GameResult, bool)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreen)),
+            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreen)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     connect(gameWatcher, SIGNAL(inRewards()),
@@ -502,8 +502,8 @@ void MainWindow::createWebUploader()
 {
     if(webUploader != NULL)   return;
     webUploader = new WebUploader(this);
-    connect(webUploader, SIGNAL(loadedGameResult(GameResult)),
-            arenaHandler, SLOT(showGameResult(GameResult)));
+    connect(webUploader, SIGNAL(loadedGameResult(GameResult, LoadingScreen)),
+            arenaHandler, SLOT(showGameResult(GameResult, LoadingScreen)));
     connect(webUploader, SIGNAL(loadedArena(QString)),
             arenaHandler, SLOT(showArena(QString)));
     connect(webUploader, SIGNAL(reloadedGameResult(GameResult)),
@@ -1919,7 +1919,7 @@ int MainWindow::getScreenHighest()
 //triodo: you can check for cardids on drawn cards
 //Completar eliminar bob y anadir loadingScreen (log.config) y test
 //Test duplicate con arenaPrevious
-//Anadir diferentes categorias en el arbol arena
+//Eliminar arena homeless, construir en demanda.
 
 
 //BUGS CONOCIDOS

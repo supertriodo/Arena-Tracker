@@ -370,7 +370,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
 
             while(!list.empty())
             {
-                emit loadedGameResult(list.first());
+                emit loadedGameResult(list.first(), arena);
                 list.removeFirst();
             }
 

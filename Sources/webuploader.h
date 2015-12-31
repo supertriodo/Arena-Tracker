@@ -65,7 +65,7 @@ public:
     bool isConnected();
 
 signals:
-    void loadedGameResult(GameResult gameResult);
+    void loadedGameResult(GameResult gameResult, LoadingScreen loadingScreen);
     void loadedArena(QString hero);
     void loadArenaCurrentFinished();
     void reloadedGameResult(GameResult gameResult);

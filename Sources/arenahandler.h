@@ -22,6 +22,8 @@ private:
     DeckHandler *deckHandler;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
+    QTreeWidgetItem *constructedTreeItem[9];
+    QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
@@ -38,6 +40,9 @@ private:
     QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
     void allToWhite();
+    QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreen loadingScreen);
+    void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
 
 public:
     void setWebUploader(WebUploader *webUploader);
@@ -52,12 +57,12 @@ signals:
 
 public slots:
     //GameWatcher
-    void newGameResult(GameResult gameResult, bool arenaMatch);
+    void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
     bool newArena(QString hero);
     void showRewards();
 
     //WebUploader
-    QTreeWidgetItem *showGameResult(GameResult gameResult, bool arenaMatch=true);
+    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreen loadingScreen);
     void showArena(QString hero);
     void reshowGameResult(GameResult gameResult);
     void reshowArena(QString hero);

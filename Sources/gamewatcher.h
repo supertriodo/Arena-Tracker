@@ -43,7 +43,6 @@ public:
 private:
     enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
                      inGameState, /*inRewards, */readingDeck };
-    enum LoadingScreen { menu, arena, constructed, adventure, tavernBrawl, spectator };
 
 //Variables
 private:
@@ -89,7 +88,7 @@ public:
     void setSynchronized();
 
 signals:
-    void newGameResult(GameResult gameResult, bool arenaMatch);
+    void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
     void newArena(QString hero);
 //    void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
 //    void arenaRewardsComplete();
