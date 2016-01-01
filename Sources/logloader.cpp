@@ -206,7 +206,7 @@ void LogLoader::checkLogConfig()
     QString data = QString(file.readAll());
     QTextStream stream(&file);
 
-    checkLogConfigOption("[Bob]", data, stream);
+    checkLogConfigOption("[LoadingScreen]", data, stream);
     checkLogConfigOption("[Power]", data, stream);
     checkLogConfigOption("[Zone]", data, stream);
     checkLogConfigOption("[Arena]", data, stream);
@@ -224,6 +224,7 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
+        if(option == "[Power]") stream << "Verbose=1" << endl;
     }
 }
 

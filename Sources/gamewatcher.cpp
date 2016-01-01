@@ -60,143 +60,11 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
 {
     if(line.startsWith("[LoadingScreen]"))
     {
-        //[LoadingScreen] LoadingScreen.OnSceneLoaded() - prevMode=HUB currMode=DRAFT
-        if(line.contains(QRegularExpression("LoadingScreen\\.OnSceneLoaded\\(\\) *- *prevMode=(\\w+) *currMode=(\\w+)"), match))
-        {
-            QString prevMode = match->captured(1);
-            QString currMode = match->captured(2);
-            emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
-
-            //Redundante en caso de que falle
-            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-            endReadingDeck();
-
-            if(prevMode == "GAMEPLAY")
-            {
-                emit endGame();
-                gameState = noGame;
-                emit pDebug("Quitting GAMEPLAY (GameState = noGame).", numLine);
-            }
-
-            if(currMode == "DRAFT")
-            {
-                loadingScreen = arena;
-                emit pDebug("Entering ARENA (LoadingScreen = arena).", numLine);
-            }
-            else if(currMode == "HUB")
-            {
-                loadingScreen = menu;
-                emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
-            }
-            else if(currMode == "TOURNAMENT")
-            {
-                loadingScreen = constructed;
-                emit pDebug("Entering CONSTRUCTED (LoadingScreen = constructed).", numLine);
-            }
-            else if(currMode == "ADVENTURE")
-            {
-                loadingScreen = adventure;
-                emit pDebug("Entering ADVENTURE (LoadingScreen = adventure).", numLine);
-            }
-            else if(currMode == "TAVERN_BRAWL")
-            {
-                loadingScreen = tavernBrawl;
-                emit pDebug("Entering TAVERN (LoadingScreen = tavernBrawl).", numLine);
-            }
-        }
+        processLoadingScreen(line, numLine);
     }
-//    if(line.startsWith("[Bob]"))
-//    {
-//        if(line.startsWith("[Bob] ---Register"))
-//        {
-//            //Redundante en caso de que falle
-//            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-//            endReadingDeck();
-
-//            if(line.startsWith("[Bob] ---RegisterScreenForge---"))
-//            {
-//                arenaMode = true;
-//                emit pDebug("Entering arena.", numLine);
-//                emit enterArena();
-//            }
-//            else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
-//                    line.startsWith("[Bob] ---RegisterFriendChallenge---"))
-//            {
-//            }
-//            else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
-//            {
-//                emit endGame();
-//                gameState = noGame;
-//                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
-//            }
-//            else
-//            {
-//                arenaMode = false;
-//                emit pDebug("Leaving arena.", numLine);
-//                emit leaveArena();
-//            }
-//        }
-//    }
     else if(line.startsWith("[Arena]"))
     {
-        //NEW ARENA
-        //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
-        if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
-        {
-            emit pDebug("New arena.", numLine);
-            emit pLog(tr("Log: New arena."));
-            QString hero = match->captured(1);
-            emit newArena(hero); //Begin draft
-            deckRead = false;
-        }
-        //END READING DECK
-        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-        else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
-        {
-            emit pDebug("Found ACTIVE_DRAFT_DECK (GameState = noGame).", numLine);
-            emit activeDraftDeck(); //End draft
-            endReadingDeck();
-
-            //Redundante en caso de que falle ScreenEndOfGame
-            emit endGame();
-            gameState = noGame;
-        }
-        //DRAFTING PICK CARD
-        //[Arena] Client chooses: Profesora violeta (NEW1_026)
-        else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
-        {
-            QString code = match->captured(1);
-            if(!code.contains("HERO"))
-            {
-                emit pDebug("Pick card: " + code, numLine);
-                emit pickCard(code);
-            }
-        }
-        //START READING DECK
-        //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
-        else if(synchronized && line.contains(QRegularExpression(
-                    "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
-        {
-            emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
-            startReadingDeck();
-        }
-        //READ DECK CARD
-        //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
-        else if(synchronized && (gameState == readingDeck) &&
-            line.contains(QRegularExpression(
-                "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
-        {
-            QString code = match->captured(1);
-            emit pDebug("Reading deck: " + code, numLine);
-            emit newDeckCard(code);
-        }
-        //IN REWARDS
-        //[Arena] SetDraftMode - IN_REWARDS
-        else if(synchronized && line.startsWith("[Arena] SetDraftMode - IN_REWARDS"))
-        {
-            emit pDebug("Found IN_REWARDS.", numLine);
-            emit inRewards();   //Show rewards input
-        }
+        processArena(line, numLine);
     }
     else if(line.startsWith("[Power]"))
     {
@@ -234,6 +102,118 @@ void GameWatcher::setDeckRead(bool value)
     if(deckRead && gameState == readingDeck)
     {
         endReadingDeck();
+    }
+}
+
+
+void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
+{
+    //[LoadingScreen] LoadingScreen.OnSceneLoaded() - prevMode=HUB currMode=DRAFT
+    if(line.contains(QRegularExpression("LoadingScreen\\.OnSceneLoaded\\(\\) *- *prevMode=(\\w+) *currMode=(\\w+)"), match))
+    {
+        QString prevMode = match->captured(1);
+        QString currMode = match->captured(2);
+        emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
+
+        //Redundante en caso de que falle
+        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+        endReadingDeck();
+
+        if(prevMode == "GAMEPLAY")
+        {
+            emit endGame();
+            gameState = noGame;
+            emit pDebug("Quitting GAMEPLAY (GameState = noGame).", numLine);
+        }
+
+        if(currMode == "DRAFT")
+        {
+            loadingScreen = arena;
+            emit pDebug("Entering ARENA (LoadingScreen = arena).", numLine);
+        }
+        else if(currMode == "HUB")
+        {
+            loadingScreen = menu;
+            emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
+        }
+        else if(currMode == "TOURNAMENT")
+        {
+            loadingScreen = constructed;
+            emit pDebug("Entering CONSTRUCTED (LoadingScreen = constructed).", numLine);
+        }
+        else if(currMode == "ADVENTURE")
+        {
+            loadingScreen = adventure;
+            emit pDebug("Entering ADVENTURE (LoadingScreen = adventure).", numLine);
+        }
+        else if(currMode == "TAVERN_BRAWL")
+        {
+            loadingScreen = tavernBrawl;
+            emit pDebug("Entering TAVERN (LoadingScreen = tavernBrawl).", numLine);
+        }
+    }
+}
+
+
+void GameWatcher::processArena(QString &line, qint64 numLine)
+{
+    //NEW ARENA
+    //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
+    if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
+    {
+        emit pDebug("New arena.", numLine);
+        emit pLog(tr("Log: New arena."));
+        QString hero = match->captured(1);
+        emit newArena(hero); //Begin draft
+        deckRead = false;
+    }
+    //END READING DECK
+    //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+    else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
+    {
+        emit pDebug("Found ACTIVE_DRAFT_DECK (GameState = noGame).", numLine);
+        emit activeDraftDeck(); //End draft
+        endReadingDeck();
+
+        //Redundante en caso de que falle ScreenEndOfGame
+        emit endGame();
+        gameState = noGame;
+    }
+    //DRAFTING PICK CARD
+    //[Arena] Client chooses: Profesora violeta (NEW1_026)
+    else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
+    {
+        QString code = match->captured(1);
+        if(!code.contains("HERO"))
+        {
+            emit pDebug("Pick card: " + code, numLine);
+            emit pickCard(code);
+        }
+    }
+    //START READING DECK
+    //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
+    else if(synchronized && line.contains(QRegularExpression(
+                "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
+    {
+        emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
+        startReadingDeck();
+    }
+    //READ DECK CARD
+    //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
+    else if(synchronized && (gameState == readingDeck) &&
+        line.contains(QRegularExpression(
+            "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
+    {
+        QString code = match->captured(1);
+        emit pDebug("Reading deck: " + code, numLine);
+        emit newDeckCard(code);
+    }
+    //IN REWARDS
+    //[Arena] SetDraftMode - IN_REWARDS
+    else if(synchronized && line.startsWith("[Arena] SetDraftMode - IN_REWARDS"))
+    {
+        emit pDebug("Found IN_REWARDS.", numLine);
+        emit inRewards();   //Show rewards input
     }
 }
 
@@ -941,6 +921,40 @@ void GameWatcher::setSynchronized()
 //            }
 //            emit pDebug("Read code: " + code, numLine);
 //            emit newDeckCard(code);
+//        }
+//    }
+
+//  BOB PROCESS
+//    if(line.startsWith("[Bob]"))
+//    {
+//        if(line.startsWith("[Bob] ---Register"))
+//        {
+//            //Redundante en caso de que falle
+//            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+//            endReadingDeck();
+
+//            if(line.startsWith("[Bob] ---RegisterScreenForge---"))
+//            {
+//                arenaMode = true;
+//                emit pDebug("Entering arena.", numLine);
+//                emit enterArena();
+//            }
+//            else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
+//                    line.startsWith("[Bob] ---RegisterFriendChallenge---"))
+//            {
+//            }
+//            else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
+//            {
+//                emit endGame();
+//                gameState = noGame;
+//                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
+//            }
+//            else
+//            {
+//                arenaMode = false;
+//                emit pDebug("Leaving arena.", numLine);
+//                emit leaveArena();
+//            }
 //        }
 //    }
 

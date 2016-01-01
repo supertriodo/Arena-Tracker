@@ -69,6 +69,8 @@ private:
 //Metodos
 private:
     void createGameResult();
+    void processLoadingScreen(QString &line, qint64 numLine);
+    void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
