@@ -61,7 +61,7 @@ void ArenaHandler::createTreeWidget()
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);
     arenaHomeless->setText(0, "Arena");
-    arenaHomeless->setText(1, "...");
+    arenaHomeless->setHidden(true);
 
     arenaCurrent = NULL;
     arenaPrevious = NULL;
@@ -158,9 +158,14 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
         break;
 
         case arena:
+            emit pLog(tr("Log: New arena game."));
+
             if(arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
             {
                 emit pDebug("Create GameResult from arena in arenaHomeless.");
+
+                if(arenaHomeless->isHidden())   arenaHomeless->setHidden(false);
+
                 item = new QTreeWidgetItem(arenaHomeless);
             }
             else
@@ -174,6 +179,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 
         case constructed:
             emit pDebug("Create GameResult from constructed with hero " + gameResult.playerHero + ".");
+            emit pLog(tr("Log: New ranked game."));
 
             if(indexHero<0||indexHero>8)  return NULL;
 
@@ -189,6 +195,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 
         case adventure:
             emit pDebug("Create GameResult from adventure.");
+            emit pLog(tr("Log: New solo game."));
 
             if(adventureTreeItem == NULL)
             {
@@ -202,6 +209,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 
         case tavernBrawl:
             emit pDebug("Create GameResult from tavern brawl.");
+            emit pLog(tr("Log: New tavern brawl game."));
 
             if(tavernBrawlTreeItem == NULL)
             {

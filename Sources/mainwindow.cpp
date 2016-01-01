@@ -1919,7 +1919,7 @@ int MainWindow::getScreenHighest()
 //triodo: you can check for cardids on drawn cards
 //Completar eliminar bob y anadir loadingScreen (log.config) y test
 //Test duplicate con arenaPrevious
-//Eliminar arena homeless, construir en demanda.
+//Anadir a log mensajes de tipos de game creados.
 
 
 //BUGS CONOCIDOS

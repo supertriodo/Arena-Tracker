@@ -65,7 +65,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
         {
             QString prevMode = match->captured(1);
             QString currMode = match->captured(2);
-            emit pDebug("LoadingScreen: " + prevMode + " -> " + currMode, numLine);
+            emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
 
             //Redundante en caso de que falle
             //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
@@ -75,33 +75,33 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
             {
                 emit endGame();
                 gameState = noGame;
-                emit pDebug("Quitting GAMEPLAY (GameState = noGame).\n", numLine);
+                emit pDebug("Quitting GAMEPLAY (GameState = noGame).", numLine);
             }
 
             if(currMode == "DRAFT")
             {
                 loadingScreen = arena;
-                emit pDebug("Entering ARENA.", numLine);
+                emit pDebug("Entering ARENA (LoadingScreen = arena).", numLine);
             }
             else if(currMode == "HUB")
             {
                 loadingScreen = menu;
-                emit pDebug("Entering MENU.", numLine);
+                emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
             }
             else if(currMode == "TOURNAMENT")
             {
                 loadingScreen = constructed;
-                emit pDebug("Entering CONSTRUCTED.", numLine);
+                emit pDebug("Entering CONSTRUCTED (LoadingScreen = constructed).", numLine);
             }
             else if(currMode == "ADVENTURE")
             {
                 loadingScreen = adventure;
-                emit pDebug("Entering ADVENTURE.", numLine);
+                emit pDebug("Entering ADVENTURE (LoadingScreen = adventure).", numLine);
             }
-            else if(currMode == "TAVERN")
+            else if(currMode == "TAVERN_BRAWL")
             {
                 loadingScreen = tavernBrawl;
-                emit pDebug("Entering TAVERN.", numLine);
+                emit pDebug("Entering TAVERN (LoadingScreen = tavernBrawl).", numLine);
             }
         }
     }
@@ -804,8 +804,6 @@ void GameWatcher::createGameResult()
 
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
-
-    emit pLog(tr("Log: New game."));
 
     emit newGameResult(gameResult, loadingScreen);
 }
