@@ -110,7 +110,7 @@ void MainWindow::destroySecondaryWindow()
 }
 
 
-void MainWindow::resetDeckAlreadyRead()
+void MainWindow::resetDeckDontRead()
 {
     resetDeck(true);
 }
@@ -422,14 +422,10 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(beginReadingDeck()),
+    connect(gameWatcher,SIGNAL(needResetDeck()),
             this, SLOT(resetDeck()));
     connect(gameWatcher,SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
-
-    //Connect en webUploader
-//    connect(gameWatcher,SIGNAL(beginReadingDeck()),
-//            webUploader, SLOT(askArenaCards()));
 }
 
 
@@ -479,7 +475,6 @@ void MainWindow::createLogLoader()
 void MainWindow::synchronizedDone()
 {
     createWebUploader();
-//    createHStatsUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
@@ -491,7 +486,7 @@ void MainWindow::synchronizedDone()
     connect(gameWatcher,SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
-            this, SLOT(resetDeckAlreadyRead()));
+            this, SLOT(resetDeckDontRead()));
 
     //Test
     QTimer::singleShot(5000, this, SLOT(test()));
@@ -525,17 +520,6 @@ void MainWindow::createWebUploader()
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
-    //No cargamos el deck desde arenaMastery, lo leemos del log
-//#ifdef QT_DEBUG
-//    connect(webUploader, SIGNAL(newDeckCard(QString,int)),
-//            deckHandler, SLOT(newDeckCardWeb(QString,int)));
-//    connect(webUploader, SIGNAL(newWebDeckCardList()),
-//            this, SLOT(resetDeckAlreadyRead()));
-
-//    //Connect de gameWatcher
-//    connect(gameWatcher,SIGNAL(beginReadingDeck()),
-//            webUploader, SLOT(askArenaCards()));
-//#endif
 
     arenaHandler->setWebUploader(webUploader);
     tryConnectAM();
@@ -1919,10 +1903,10 @@ int MainWindow::getScreenHighest()
 //triodo: you can check for cardids on drawn cards
 //(log.config) y test
 //Test duplicate con arenaPrevious
+//Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
 
 //BUGS CONOCIDOS
-//Bug log tavern brawl (No hay [Bob] ---Register al entrar a tavern brawl) (Solo falla si no hay que hacer un mazo)
 //Tab Config ScrollArea slider transparent CSS
 
 //REWARDS

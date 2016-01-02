@@ -82,7 +82,7 @@ void GameWatcher::startReadingDeck()
     if(gameState != noGame || deckRead) return;
     gameState = readingDeck;
     emit pDebug("Start reading deck (GameState = readingDeck).", 0);
-    emit beginReadingDeck();    //askArenaCards to web  //resetDeck
+    emit needResetDeck();    //resetDeck
 }
 
 
@@ -91,13 +91,14 @@ void GameWatcher::endReadingDeck()
     if(gameState != readingDeck)    return;
     deckRead = true;
     gameState = noGame;
-    emit pDebug("End reading deck (GameState = noGame).", 0);
+    emit pDebug("End reading deck (GameState = noGame)(DeckRead = true).", 0);
     emit pLog(tr("Log: Active deck read."));
 }
 
 
 void GameWatcher::setDeckRead(bool value)
 {
+    emit pDebug(QString("SetDeckRead (DeckRead = ") + (value?"true":"false") + ")", 0);
     deckRead = value;
     if(deckRead && gameState == readingDeck)
     {
@@ -135,6 +136,8 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         {
             loadingScreen = menu;
             emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
+
+            if(prevMode == "DRAFT") emit needResetDeck();//ResetDeck
         }
         else if(currMode == "TOURNAMENT")
         {
@@ -164,8 +167,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         emit pDebug("New arena.", numLine);
         emit pLog(tr("Log: New arena."));
         QString hero = match->captured(1);
-        emit newArena(hero); //Begin draft
-        deckRead = false;
+        emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (deckRead = true)
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK

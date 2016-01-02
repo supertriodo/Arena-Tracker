@@ -114,7 +114,7 @@ signals:
     void avengeTested();
     void cSpiritTested();
     void playerTurnStart();
-    void beginReadingDeck();
+    void needResetDeck();
     void activeDraftDeck();
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString subType);

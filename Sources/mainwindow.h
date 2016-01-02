@@ -135,9 +135,7 @@ public slots:
     //GameWatcher
     void showTabHeroOnNoArena();
     void resetDeck(bool deckRead=false);
-
-    //WebUploader
-    void resetDeckAlreadyRead();
+    void resetDeckDontRead();
 
     //Multi Handlers
     void checkCardImage(QString code);
