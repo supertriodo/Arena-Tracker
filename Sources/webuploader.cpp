@@ -70,14 +70,14 @@ bool WebUploader::uploadNewGameResult(GameResult &gameresult, QList<DeckCard> *d
     if(arenaCurrentID == 0 && (webState != createArena))
     {
         emit pDebug("No arena in progress to upload to for the game.", Warning);
-        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the game.\n"
+        emit pLog(tr("Arena Mastery: WARNING: No arena in progress to upload to for the game.\n"
                         "(Create the arena manually in Arena Mastery and refresh the app)."));
         return false;
     }
     if(arenaCurrentHero.compare(gameresult.playerHero) != 0)
     {
         emit pDebug("Arena in progress has a different hero.", Warning);
-        emit pLog(tr("Web: WARNING:Arena in progress has a different hero.\n"
+        emit pLog(tr("Arena Mastery: WARNING: Arena in progress has a different hero.\n"
                         "(Go to Arena Mastery, fix it and refresh the app)."));
         return false;
     }
@@ -122,7 +122,7 @@ void WebUploader::uploadDeck(QList<DeckCard> *deckCardList)
     if(arenaCurrentID == 0 && (webState != createArena))
     {
         emit pDebug("No arena in progress to upload to for the deck.", Warning);
-        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the deck.\n"
+        emit pLog(tr("Arena Mastery: WARNING: No arena in progress to upload to for the deck.\n"
                         "(Create the arena manually in Arena Mastery and refresh the app)."));
     }
 
@@ -160,7 +160,7 @@ bool WebUploader::uploadNewArena(const QString &hero)
     if(arenaCurrentID != 0 || webState == createArena)
     {
         emit pDebug("Arena in progress when trying to upload a new one.", Warning);
-        emit pLog(tr("Web: WARNING:Arena in progress when trying to upload a new one.\n"
+        emit pLog(tr("Arena Mastery: WARNING: Arena in progress when trying to upload a new one.\n"
                         "(Go to Arena Mastery, fix it and refresh the app)."));
         return false;
     }
@@ -184,7 +184,7 @@ bool WebUploader::uploadArenaRewards(ArenaRewards &arenaRewards)
     if(lastArenaID == 0 && (webState != createArena))
     {
         emit pDebug("No arena in progress to upload to for the rewards.", Warning);
-        emit pLog(tr("Web: WARNING:No arena in progress to upload to for the rewards."));
+        emit pLog(tr("Arena Mastery: WARNING: No arena in progress to upload to for the rewards."));
         return false;
     }
 
@@ -282,7 +282,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         if(webState == signup)  emit connectionTried(false);
 
         emit pDebug("No internet access to Arena Mastery.", Error);
-        emit pLog(tr("Web: No internet access to Arena Mastery."));
+        emit pLog(tr("Arena Mastery: No internet access to Arena Mastery."));
         emit synchronized();
         return;
     }
@@ -292,7 +292,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         if(webState == signup)
         {
             emit pDebug("Arena Mastery sign up success.");
-            emit pLog(tr("Web: Arena Mastery sign up success."));
+            emit pLog(tr("Arena Mastery: Sign up success."));
 
             //Si ya hemos cargado la ultima arena hacemos un reload
             if(!connected)    webState = checkArenaCurrentLoad;
@@ -311,7 +311,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
                 lastArenaID = arenaCurrentID;
                 deckInWeb = false;
                 emit pDebug("New arena uploaded(" + match->captured(1) + "). Heroe: " + arenaCurrentHero);
-                emit pLog(tr("Web: New arena uploaded."));
+                emit pLog(tr("Arena Mastery: New arena uploaded."));
                 checkArenaReload();
             }
         }
@@ -322,7 +322,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == signup)
     {
         emit pDebug("Wrong username or password.", Warning);
-        emit pLog(tr("Web: Arena Mastery sign up failed. Wrong username or password."));
+        emit pLog(tr("Arena Mastery: Sign up failed. Wrong username or password."));
         connected = false;
         emit connectionTried(false);
     }
@@ -364,7 +364,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == loadArenaCurrent)
     {
         QList<GameResult> list;
-        if(getArenaCurrentAndGames(reply, list, true))
+        if(getArenaCurrentAndGames(reply, list))
         {
             emit loadedArena(arenaCurrentHero);
 
@@ -380,7 +380,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         else
         {
             emit pDebug("Failed analysing arena in web.", Error);
-            emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
+            emit pLog(tr("Arena Mastery: ERROR: Failed analysing arena from web."));
             webState = complete;
             uploadNext();
         }
@@ -388,7 +388,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == rewardsSent)
     {
         emit pDebug("Rewards uploaded.");
-        emit pLog(tr("Web: New rewards uploaded."));
+        emit pLog(tr("Arena Mastery: New rewards uploaded."));
 
         delete rewardsPost;
         rewardsPost = NULL;
@@ -421,7 +421,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     else if(webState == gameResultSent)
     {
         emit pDebug("New game uploaded.");
-        emit pLog(tr("Web: New game uploaded."));
+        emit pLog(tr("Arena Mastery: New game uploaded."));
 
         gameResultPostList->removeFirst();
 
@@ -446,7 +446,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
         else
         {
             emit pDebug("Failed analysing arena in web.", Error);
-            emit pLog(tr("Web: ERROR: Failed analysing arena in web."));
+            emit pLog(tr("Arena Mastery: ERROR: Failed analysing arena from web."));
             webState = complete;
             uploadNext();
         }
@@ -538,7 +538,7 @@ void WebUploader::uploadArenaCards()
     arenaCards = "";
     deckInWeb = true;
     emit pDebug("Complete deck uploaded.");
-    emit pLog(tr("Web: Complete deck uploaded."));
+    emit pLog(tr("Arena Mastery: Complete deck uploaded."));
 }
 
 
@@ -655,7 +655,7 @@ void WebUploader::getArenaCards(QString &html)
             else    emit newDeckCard(code, match.captured(1).toInt());
         }
         emit pDebug("End reading deck.");
-        emit pLog(tr("Web: Active deck read."));
+        emit pLog(tr("Arena Mastery: Active deck read."));
     }
     else
     {
