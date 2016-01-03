@@ -47,6 +47,7 @@ public:
     QString getCode();
     QString getType();
     QString getName();
+    QString getRarity();
     int getCost();
     void setCode(QString code);
 

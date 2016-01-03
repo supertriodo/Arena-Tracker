@@ -25,6 +25,7 @@ private:
     QList<DrawCard> drawCardList;
     Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
+    QJsonObject decksJson;
     bool inGame, synchronized;
     Transparency transparency;
     int greyedHeight, cardHeight;
@@ -44,6 +45,8 @@ private:
     void drawFromDeck(QString code);
     void showDeckButtons();
     void hideDeckButtons();
+    void saveDecksJsonFile();
+    bool inArena();
 
 public:
     void reset();
@@ -54,6 +57,9 @@ public:
     void setCardHeight(int value);
     void setDrawDisappear(int value);
     void setSynchronized();
+    void saveDeck();
+    void loadDecks();
+    void loadDeck(QString deckName);
 
 signals:
     void checkCardImage(QString code);

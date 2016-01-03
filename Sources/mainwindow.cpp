@@ -173,8 +173,8 @@ QString MainWindow::getHSLanguage()
             lang != "plPL" && lang != "ptBR" && lang != "ruRU" &&
             lang != "koKR" && lang != "zhCN" && lang != "zhTW" && lang != "jaJP")
     {
-        pDebug("Language: " + lang + "not supported. Using enUS.");
-        pLog("Settings: Language " + lang + "not supported. Using enUS.");
+        pDebug("Language: " + lang + " not supported. Using enUS.");
+        pLog("Settings: Language " + lang + " not supported. Using enUS.");
         lang = "enUS";
     }
     else
@@ -292,8 +292,8 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    connect(ui->deckListWidget, SIGNAL(xLeave()),
-            deckHandler, SLOT(deselectRow()));
+
+    deckHandler->loadDecks();
 }
 
 
@@ -929,6 +929,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
+            else if(event->key() == Qt::Key_S)  deckHandler->saveDeck();
+            else if(event->key() == Qt::Key_L)  deckHandler->loadDeck("testDeck");
         }
     }
 }
@@ -1305,7 +1307,7 @@ void MainWindow::createLogFile()
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         pDebug("Failed to create Arena Tracker log on disk.", Error);
-        pLog(tr("File: ERROR:Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
+        pLog(tr("File: ERROR: Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
         atLogFile = NULL;
     }
 }
@@ -1898,13 +1900,19 @@ int MainWindow::getScreenHighest()
 }
 
 
+LoadingScreen MainWindow::getLoadingScreen()
+{
+    if(gameWatcher != NULL) return gameWatcher->getLoadingScreen();
+    else                    return menu;
+}
+
+
 //TODO
 //Button to web
 //triodo: you can check for cardids on drawn cards
 //(log.config) y test
 //Test duplicate con arenaPrevious
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
-
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

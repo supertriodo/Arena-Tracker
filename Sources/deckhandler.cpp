@@ -1,4 +1,5 @@
 #include "deckhandler.h"
+#include "mainwindow.h"
 #include <QtWidgets>
 
 DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
@@ -44,6 +45,8 @@ void DeckHandler::completeUI()
             this, SLOT(enableDeckButtons()));
     connect(ui->deckListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findDeckCardEntered(QListWidgetItem*)));
+    connect(ui->deckListWidget, SIGNAL(xLeave()),
+            this, SLOT(deselectRow()));
     connect(ui->drawListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findDrawCardEntered(QListWidgetItem*)));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
@@ -358,6 +361,13 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 }
 
 
+bool DeckHandler::inArena()
+{
+    MainWindow* mainWindow = (MainWindow *) this->parent();
+    return mainWindow->getLoadingScreen() == arena;
+}
+
+
 void DeckHandler::enableDeckButtons()
 {
     int index = ui->deckListWidget->currentRow();
@@ -368,7 +378,11 @@ void DeckHandler::enableDeckButtons()
     if(index>0 && deckCardList[index].total == 1)
                                         ui->deckButtonRemove->setEnabled(true);
     else                                ui->deckButtonRemove->setEnabled(false);
-    if(index>0 && deckCardList.first().total > 0)
+    if(index>0 && deckCardList.first().total > 0 &&
+            (inArena() |
+                ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != "Legendary"))
+            )
+        )
                                         ui->deckButtonPlus->setEnabled(true);
     else                                ui->deckButtonPlus->setEnabled(false);
 
@@ -619,6 +633,127 @@ void DeckHandler::findDrawCardEntered(QListWidgetItem * item)
     int drawListBottom = ui->drawListWidget->mapToGlobal(QPoint(0,ui->drawListWidget->height())).y();
     emit cardEntered(code, globalRectCard, drawListTop, drawListBottom);
 }
+
+
+/*
+ * ObjectDecks
+ * {
+ * deck1 -> ObjectDeck
+ * deck2 -> ObjectDeck
+ * }
+ *
+ * ObjectDeck
+ * {
+ * id1 -> nCards
+ * id2 -> nCards
+ * hero -> heroLog
+ * }
+ */
+void DeckHandler::loadDecks()
+{
+    QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
+    if(!jsonFile.exists())
+    {
+        emit pDebug("Json decks file doesn't exists.");
+        emit pLog("Deck: Loaded 0 decks.");
+        return;
+    }
+
+    if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to load Arena Tracker decks json from disk.", Error);
+        emit pLog(tr("File: ERROR: Loading Arena Tracker decks json from disk. Make sure HSCards dir is in the same place as the exe."));
+        return;
+    }
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+
+    decksJson = jsonDoc.object();
+
+    emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
+    emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
+}
+
+
+void DeckHandler::loadDeck(QString deckName)
+{
+    if(!decksJson.contains(deckName))
+    {
+        emit pDebug("Deck " + deckName + " not found.", Error);
+        return;
+    }
+
+    reset();
+    QJsonObject jsonObjectDeck = decksJson[deckName].toObject();
+
+    foreach(QString key, jsonObjectDeck.keys())
+    {
+        if(key != "hero")   newDeckCard(key, jsonObjectDeck[key].toInt());
+    }
+
+    emit pDebug("Deck " + deckName + " loaded.");
+    emit pLog("Deck: " + deckName + " loaded.");
+}
+
+
+void DeckHandler::saveDeck()
+{
+    //Create json deck
+    QJsonObject jsonObjectDeck;
+    QString hero = "";
+
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        QString code = deckCard.getCode();
+        int total = deckCard.total;
+        if(!code.isEmpty() && total > 0)
+        {
+            jsonObjectDeck.insert(deckCard.getCode(), (int)deckCard.total);
+            if(hero.isEmpty())
+            {
+                hero = (*cardsJson)[deckCard.getCode()].value("playerClass").toString();
+            }
+        }
+    }
+    jsonObjectDeck.insert("hero", hero);
+
+    decksJson.insert("testDeck", jsonObjectDeck);
+
+    emit pDebug("Updated decksJson with " + QString("testDeck") + ".");
+    emit pLog("Deck: Updated decks with " + QString("testDeck") + ".");
+
+    saveDecksJsonFile();
+}
+
+
+void DeckHandler::saveDecksJsonFile()
+{
+    //Build json data from decksJson
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(decksJson);
+
+
+    //Save to disk
+    QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
+    if(jsonFile.exists())   jsonFile.remove();
+
+    if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to create Arena Tracker decks json on disk.", Error);
+        emit pLog(tr("File: ERROR: Creating Arena Tracker decks json on disk. Make sure HSCards dir is in the same place as the exe."));
+        return;
+    }
+    jsonFile.write(jsonDoc.toJson());
+    jsonFile.close();
+
+    emit pDebug("Decks json file updated.");
+}
+
+
+
+
+
+
 
 
 

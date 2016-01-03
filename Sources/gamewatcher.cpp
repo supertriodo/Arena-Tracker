@@ -850,6 +850,10 @@ void GameWatcher::setSynchronized()
 }
 
 
+LoadingScreen GameWatcher::getLoadingScreen()
+{
+    return this->loadingScreen;
+}
 
 
 

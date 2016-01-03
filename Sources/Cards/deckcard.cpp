@@ -233,6 +233,11 @@ int DeckCard::getCost()
     return cost;
 }
 
+QString DeckCard::getRarity()
+{
+    return rarity;
+}
+
 
 void DeckCard::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {

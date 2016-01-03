@@ -88,6 +88,7 @@ public:
 public:
     void reset();
     void setSynchronized();
+    LoadingScreen getLoadingScreen();
 
 signals:
     void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
