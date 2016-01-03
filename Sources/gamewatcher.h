@@ -99,6 +99,8 @@ signals:
     void newDeckCard(QString card);
     void startGame();
     void endGame();
+    void enterArena();
+    void leaveArena();
     void playerCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
     void enemyCardPlayed(int id, QString code="");

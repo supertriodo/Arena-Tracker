@@ -1,5 +1,4 @@
 #include "deckhandler.h"
-#include "mainwindow.h"
 #include <QtWidgets>
 
 DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
@@ -7,6 +6,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->ui = ui;
     this->cardsJson = cardsJson;
     this->inGame = false;
+    this->inArena = false;
     this->transparency = Opaque;
     this->greyedHeight = 35;
     this->cardHeight = 35;
@@ -305,7 +305,7 @@ void DeckHandler::drawFromDeck(QString code)
             else
             {
                 emit pDebug("New card but deck is full. " + it->getName(), Warning);
-                emit pLog(tr("Deck: New card found but deck is full: ") + it->getName());
+//                emit pLog(tr("Deck: New card found but deck is full: ") + it->getName());
             }
             return;
         }
@@ -328,8 +328,8 @@ void DeckHandler::drawFromDeck(QString code)
     {
         emit pDebug("New card but deck is full. " +
                       (*cardsJson)[code].value("name").toString(), Warning);
-        emit pLog(tr("Deck: New card found but deck is full: ") +
-                      (*cardsJson)[code].value("name").toString());
+//        emit pLog(tr("Deck: New card found but deck is full: ") +
+//                      (*cardsJson)[code].value("name").toString());
     }
 }
 
@@ -361,13 +361,6 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 }
 
 
-bool DeckHandler::inArena()
-{
-    MainWindow* mainWindow = (MainWindow *) this->parent();
-    return mainWindow->getLoadingScreen() == arena;
-}
-
-
 void DeckHandler::enableDeckButtons()
 {
     int index = ui->deckListWidget->currentRow();
@@ -379,7 +372,7 @@ void DeckHandler::enableDeckButtons()
                                         ui->deckButtonRemove->setEnabled(true);
     else                                ui->deckButtonRemove->setEnabled(false);
     if(index>0 && deckCardList.first().total > 0 &&
-            (inArena() |
+            (inArena |
                 ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != "Legendary"))
             )
         )
@@ -403,7 +396,7 @@ void DeckHandler::showDeckButtons()
     if(ui->deckButtonMin->isHidden())
     {
         ui->tabDeckLayout->removeItem(ui->horizontalLayoutDeckButtons);
-        ui->tabDeckLayout->addItem(ui->horizontalLayoutDeckButtons);
+        ui->tabDeckLayout->insertItem(1, ui->horizontalLayoutDeckButtons);
         ui->deckButtonMin->setHidden(false);
         ui->deckButtonPlus->setHidden(false);
         ui->deckButtonRemove->setHidden(false);
@@ -494,6 +487,7 @@ void DeckHandler::lockDeckInterface()
     ui->deckListWidget->clearFocus();
     ui->deckListWidget->setFocusPolicy(Qt::NoFocus);
     hideDeckButtons();
+    hideManageDecksButtons();
 
     updateTransparency();
     clearDrawList(true);
@@ -520,6 +514,7 @@ void DeckHandler::unlockDeckInterface()
 
     ui->deckListWidget->setFocusPolicy(Qt::ClickFocus);
     ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    showManageDecksButtons();
 
     updateTransparency();
     clearDrawList(true);
@@ -691,6 +686,8 @@ void DeckHandler::loadDeck(QString deckName)
         if(key != "hero")   newDeckCard(key, jsonObjectDeck[key].toInt());
     }
 
+    ui->deckLineEdit->setText(deckName);
+
     emit pDebug("Deck " + deckName + " loaded.");
     emit pLog("Deck: " + deckName + " loaded.");
 }
@@ -750,10 +747,48 @@ void DeckHandler::saveDecksJsonFile()
 }
 
 
+void DeckHandler::enterArena()
+{
+    this->inArena = true;
+    hideManageDecksButtons();
+}
 
 
+void DeckHandler::leaveArena()
+{
+    this->inArena = false;
+    showManageDecksButtons();
+
+    //Recuperamos deck
+    QString deckName = ui->deckLineEdit->text();
+    if(decksJson.contains(deckName))
+    {
+        loadDeck(deckName);
+    }
+    else    reset();
+}
 
 
+void DeckHandler::showManageDecksButtons()
+{
+    if(ui->deckButtonNew->isHidden() && !inArena && !inGame)
+    {
+        ui->tabDeckLayout->removeItem(ui->verticalLayoutManageDecks);
+        ui->tabDeckLayout->addItem(ui->verticalLayoutManageDecks);
+        ui->deckLineEdit->setHidden(false);
+        ui->deckButtonNew->setHidden(false);
+        ui->deckButtonLoad->setHidden(false);
+        ui->deckButtonSave->setHidden(false);
+    }
+}
 
 
+void DeckHandler::hideManageDecksButtons()
+{
+    ui->deckLineEdit->setHidden(true);
+    ui->deckButtonNew->setHidden(true);
+    ui->deckButtonLoad->setHidden(true);
+    ui->deckButtonSave->setHidden(true);
+    ui->tabDeckLayout->removeItem(ui->verticalLayoutManageDecks);
+}
 

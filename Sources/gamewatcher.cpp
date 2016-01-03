@@ -131,13 +131,23 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         {
             loadingScreen = arena;
             emit pDebug("Entering ARENA (LoadingScreen = arena).", numLine);
+
+            if(prevMode == "HUB")
+            {
+                emit enterArena();//enterArena deckHandler
+            }
         }
         else if(currMode == "HUB")
         {
             loadingScreen = menu;
             emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
 
-            if(prevMode == "DRAFT") emit needResetDeck();//ResetDeck
+            if(prevMode == "DRAFT")
+            {
+                deckRead = false;
+                emit pDebug("(deckRead = false)", 0);
+                emit leaveArena();//leaveArena deckHandler
+            }
         }
         else if(currMode == "TOURNAMENT")
         {

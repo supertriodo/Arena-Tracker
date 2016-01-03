@@ -26,7 +26,7 @@ private:
     Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
     QJsonObject decksJson;
-    bool inGame, synchronized;
+    bool inGame, inArena, synchronized;
     Transparency transparency;
     int greyedHeight, cardHeight;
     bool drawAnimating;
@@ -46,7 +46,8 @@ private:
     void showDeckButtons();
     void hideDeckButtons();
     void saveDecksJsonFile();
-    bool inArena();
+    void hideManageDecksButtons();
+    void showManageDecksButtons();
 
 public:
     void reset();
@@ -80,6 +81,8 @@ public slots:
     void unlockDeckInterface();
     void clearDrawList(bool forceClear=false);
     void deselectRow();
+    void enterArena();
+    void leaveArena();
 
 private slots:
     void removeOldestDrawCard();

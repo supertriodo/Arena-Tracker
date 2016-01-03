@@ -374,6 +374,10 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
             deckHandler, SLOT(unlockDeckInterface()));
+    connect(gameWatcher, SIGNAL(enterArena()),
+            deckHandler, SLOT(enterArena()));
+    connect(gameWatcher, SIGNAL(leaveArena()),
+            deckHandler, SLOT(leaveArena()));
 
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
@@ -570,7 +574,7 @@ void MainWindow::completeUI()
         ui->drawListWidget = new MoveListWidget(ui->tabEnemy);
         ui->tabEnemyLayout->addWidget(ui->drawListWidget);
         ui->deckListWidget = new MoveListWidget(ui->tabDeck);
-        ui->tabDeckLayout->addWidget(ui->deckListWidget);
+        ui->tabDeckLayout->insertWidget(0, ui->deckListWidget);
 
         completeHeroButtons();
         completeConfigTab();
@@ -1913,6 +1917,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //(log.config) y test
 //Test duplicate con arenaPrevious
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
+
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
