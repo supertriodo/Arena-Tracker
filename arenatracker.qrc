@@ -66,5 +66,8 @@
         <file>Images/arena.png</file>
         <file>Images/draft.png</file>
         <file>Images/clearDeck.png</file>
+        <file>Images/loadDeck.png</file>
+        <file>Images/newDeck.png</file>
+        <file>Images/saveDeck.png</file>
     </qresource>
 </RCC>

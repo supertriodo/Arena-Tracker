@@ -13,6 +13,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->drawAnimating = false;
     this->drawDisappear = 10;
     this->synchronized = false;
+    this->loadedDeckName = QString();
 
     //Iniciamos deckCardList con 30 cartas desconocidas
     reset();
@@ -34,6 +35,9 @@ void DeckHandler::completeUI()
     ui->deckButtonPlus->setEnabled(false);
     ui->deckButtonRemove->setEnabled(false);
     hideDeckButtons();
+
+    ui->deckButtonSave->setEnabled(false);
+
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -55,6 +59,17 @@ void DeckHandler::completeUI()
             this, SLOT(cardTotalPlus()));
     connect(ui->deckButtonRemove, SIGNAL(clicked()),
             this, SLOT(cardRemove()));
+
+    connect(ui->deckLineEdit, SIGNAL(textEdited(QString)),
+            this, SLOT(enableDeckButtonSave()));
+    connect(ui->deckButtonSave, SIGNAL(clicked()),
+            this, SLOT(saveDeck()));
+}
+
+
+void DeckHandler::enableDeckButtonSave()
+{
+    ui->deckButtonSave->setEnabled(true);
 }
 
 
@@ -197,6 +212,8 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].total-=total;
     deckCardList[0].draw(true, this->cardHeight);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+
+    enableDeckButtonSave();
 
     emit pDebug("Add to deck: (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());
@@ -430,6 +447,8 @@ void DeckHandler::cardTotalMin()
     if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
     deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
+
+    enableDeckButtonSave();
 }
 
 
@@ -444,6 +463,8 @@ void DeckHandler::cardTotalPlus()
     if(deckCardList[0].total==0)    deckCardList[0].listItem->setHidden(true);
     else                            deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
+
+    enableDeckButtonSave();
 }
 
 
@@ -469,6 +490,8 @@ void DeckHandler::cardRemove()
     if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
     deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
+
+    enableDeckButtonSave();
 }
 
 
@@ -686,7 +709,9 @@ void DeckHandler::loadDeck(QString deckName)
         if(key != "hero")   newDeckCard(key, jsonObjectDeck[key].toInt());
     }
 
+    loadedDeckName = deckName;
     ui->deckLineEdit->setText(deckName);
+    ui->deckButtonSave->setEnabled(false);
 
     emit pDebug("Deck " + deckName + " loaded.");
     emit pLog("Deck: " + deckName + " loaded.");
@@ -714,10 +739,18 @@ void DeckHandler::saveDeck()
     }
     jsonObjectDeck.insert("hero", hero);
 
-    decksJson.insert("testDeck", jsonObjectDeck);
+    QString deckName = ui->deckLineEdit->text();
+    if(!loadedDeckName.isNull())
+    {
+        decksJson.remove(loadedDeckName);
+        emit pDebug("Removed " + loadedDeckName + " from decksJson.");
+    }
+    decksJson.insert(deckName, jsonObjectDeck);
+    loadedDeckName = deckName;
+    ui->deckButtonSave->setEnabled(false);
 
-    emit pDebug("Updated decksJson with " + QString("testDeck") + ".");
-    emit pLog("Deck: Updated decks with " + QString("testDeck") + ".");
+    emit pDebug("Added " + deckName + " to decksJson.");
+    emit pLog("Deck: " + deckName + " saved.");
 
     saveDecksJsonFile();
 }
@@ -760,12 +793,17 @@ void DeckHandler::leaveArena()
     showManageDecksButtons();
 
     //Recuperamos deck
-    QString deckName = ui->deckLineEdit->text();
-    if(decksJson.contains(deckName))
+    if(!loadedDeckName.isNull() && decksJson.contains(loadedDeckName))
     {
-        loadDeck(deckName);
+        loadDeck(loadedDeckName);
     }
-    else    reset();
+    else
+    {
+        //LLamar a newDeck();
+//        loadedDeckName = QString();
+//        reset();
+//        ui->deckLineEdit->setText("New deck");
+    }
 }
 
 
@@ -779,6 +817,7 @@ void DeckHandler::showManageDecksButtons()
         ui->deckButtonNew->setHidden(false);
         ui->deckButtonLoad->setHidden(false);
         ui->deckButtonSave->setHidden(false);
+        ui->deckButtonDeleteDeck->setHidden(false);
     }
 }
 
@@ -789,6 +828,7 @@ void DeckHandler::hideManageDecksButtons()
     ui->deckButtonNew->setHidden(true);
     ui->deckButtonLoad->setHidden(true);
     ui->deckButtonSave->setHidden(true);
+    ui->deckButtonDeleteDeck->setHidden(true);
     ui->tabDeckLayout->removeItem(ui->verticalLayoutManageDecks);
 }
 

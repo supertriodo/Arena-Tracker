@@ -933,7 +933,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
-            else if(event->key() == Qt::Key_S)  deckHandler->saveDeck();
             else if(event->key() == Qt::Key_L)  deckHandler->loadDeck("testDeck");
         }
     }
@@ -1917,6 +1916,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //(log.config) y test
 //Test duplicate con arenaPrevious
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
+
+//New/Remove deck poner loadedDeck a NULL
 
 
 //BUGS CONOCIDOS

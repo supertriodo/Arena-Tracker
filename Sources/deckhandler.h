@@ -26,6 +26,7 @@ private:
     Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
     QJsonObject decksJson;
+    QString loadedDeckName;
     bool inGame, inArena, synchronized;
     Transparency transparency;
     int greyedHeight, cardHeight;
@@ -58,7 +59,6 @@ public:
     void setCardHeight(int value);
     void setDrawDisappear(int value);
     void setSynchronized();
-    void saveDeck();
     void loadDecks();
     void loadDeck(QString deckName);
 
@@ -90,6 +90,8 @@ private slots:
     void adjustDrawSize();
     void findDeckCardEntered(QListWidgetItem *item);
     void findDrawCardEntered(QListWidgetItem *item);
+    void enableDeckButtonSave();
+    void saveDeck();
 };
 
 #endif // DECKHANDLER_H
