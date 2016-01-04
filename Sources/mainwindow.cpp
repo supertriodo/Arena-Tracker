@@ -1918,6 +1918,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
 //New/Remove deck poner loadedDeck a NULL
+//Cadenas new deck
 
 
 //BUGS CONOCIDOS

@@ -49,6 +49,8 @@ private:
     void saveDecksJsonFile();
     void hideManageDecksButtons();
     void showManageDecksButtons();
+    QString getNewDeckName();
+    bool askSaveDeck();
 
 public:
     void reset();
@@ -92,6 +94,7 @@ private slots:
     void findDrawCardEntered(QListWidgetItem *item);
     void enableDeckButtonSave();
     void saveDeck();
+    void newDeck();
 };
 
 #endif // DECKHANDLER_H

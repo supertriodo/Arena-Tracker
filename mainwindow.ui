@@ -1001,7 +1001,7 @@
             <item>
              <widget class="QLineEdit" name="deckLineEdit">
               <property name="text">
-               <string>New deck</string>
+               <string/>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1182,7 +1182,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>414</width>
+               <width>272</width>
                <height>701</height>
               </rect>
              </property>

@@ -64,6 +64,8 @@ void DeckHandler::completeUI()
             this, SLOT(enableDeckButtonSave()));
     connect(ui->deckButtonSave, SIGNAL(clicked()),
             this, SLOT(saveDeck()));
+    connect(ui->deckButtonNew, SIGNAL(clicked()),
+            this, SLOT(newDeck()));
 }
 
 
@@ -690,11 +692,15 @@ void DeckHandler::loadDecks()
 
     emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
     emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
+
+    ui->deckLineEdit->setText(getNewDeckName());
 }
 
 
 void DeckHandler::loadDeck(QString deckName)
 {
+    if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return;
+
     if(!decksJson.contains(deckName))
     {
         emit pDebug("Deck " + deckName + " not found.", Error);
@@ -780,9 +786,50 @@ void DeckHandler::saveDecksJsonFile()
 }
 
 
+QString DeckHandler::getNewDeckName()
+{
+    QString newDeckName = "New deck";
+    if(!decksJson.contains(newDeckName))    return newDeckName;
+
+    int num = 2;
+    while(decksJson.contains(newDeckName + " " + QString::number(num)))    num++;
+    return newDeckName + " " + QString::number(num);
+}
+
+
+bool DeckHandler::askSaveDeck()
+{
+    QString deckName = ui->deckLineEdit->text();
+
+    int ret = QMessageBox::warning(ui->tabDeck, "Save " + deckName + "?",
+            deckName + " has unsaved changes.",
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+
+    if(ret == QMessageBox::Save)
+    {
+        saveDeck();
+        return true;
+    }
+    else if(ret == QMessageBox::Discard)    return true;
+    else                                    return false;
+}
+
+
+void DeckHandler::newDeck()
+{
+    if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return;
+
+    reset();
+    loadedDeckName = QString();
+    ui->deckButtonSave->setEnabled(false);
+    ui->deckLineEdit->setText(getNewDeckName());
+}
+
+
 void DeckHandler::enterArena()
 {
     this->inArena = true;
+    ui->deckButtonSave->setEnabled(false);
     hideManageDecksButtons();
 }
 
@@ -790,6 +837,7 @@ void DeckHandler::enterArena()
 void DeckHandler::leaveArena()
 {
     this->inArena = false;
+    ui->deckButtonSave->setEnabled(false);
     showManageDecksButtons();
 
     //Recuperamos deck
@@ -799,10 +847,7 @@ void DeckHandler::leaveArena()
     }
     else
     {
-        //LLamar a newDeck();
-//        loadedDeckName = QString();
-//        reset();
-//        ui->deckLineEdit->setText("New deck");
+        newDeck();
     }
 }
 
