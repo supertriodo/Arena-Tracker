@@ -7,6 +7,7 @@
 #include "utility.h"
 #include <QObject>
 #include <QMap>
+#include <QSignalMapper>
 
 #define MALORNE QString("GVG_035")
 
@@ -32,6 +33,9 @@ private:
     int greyedHeight, cardHeight;
     bool drawAnimating;
     int drawDisappear;
+    QSignalMapper* loadDeckMapper;
+    QMenu *loadDeckMenus[9];
+    QMap<QString, QAction *> loadDeckActionMap;
 
 
 //Metodos
@@ -51,6 +55,8 @@ private:
     void showManageDecksButtons();
     QString getNewDeckName();
     bool askSaveDeck();
+    void createLoadDeckMenu(QPushButton *button);
+    void addDeckToLoadMenu(QString deckName);
 
 public:
     void reset();
@@ -62,7 +68,6 @@ public:
     void setDrawDisappear(int value);
     void setSynchronized();
     void loadDecks();
-    void loadDeck(QString deckName);
 
 signals:
     void checkCardImage(QString code);
@@ -95,6 +100,7 @@ private slots:
     void enableDeckButtonSave();
     void saveDeck();
     void newDeck();
+    void loadDeck(QString deckName);
 };
 
 #endif // DECKHANDLER_H

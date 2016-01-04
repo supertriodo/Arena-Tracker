@@ -15,8 +15,14 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->synchronized = false;
     this->loadedDeckName = QString();
 
-    //Iniciamos deckCardList con 30 cartas desconocidas
-    reset();
+    this->loadDeckMapper = new QSignalMapper(ui->deckButtonLoad);
+
+    this->loadDeckActionMap.clear();
+    for(int i=0; i<9; i++)
+    {
+        loadDeckMenus[i] = NULL;
+    }
+
 
     completeUI();
 }
@@ -26,6 +32,18 @@ DeckHandler::~DeckHandler()
     ui->deckListWidget->clear();
     deckCardList.clear();
     drawCardList.clear();
+    delete loadDeckMapper;
+
+    for(int i=0; i<9; i++)
+    {
+        if(loadDeckMenus[i] == NULL)    delete loadDeckMenus[i];
+    }
+
+    foreach(QString deckName, loadDeckActionMap.keys())
+    {
+        QAction *action = loadDeckActionMap[deckName];
+        if(action !=NULL)   delete action;
+    }
 }
 
 
@@ -693,7 +711,60 @@ void DeckHandler::loadDecks()
     emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
     emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
 
-    ui->deckLineEdit->setText(getNewDeckName());
+    //Iniciamos deckCardList con 30 cartas desconocidas
+    ui->deckButtonSave->setEnabled(false);
+    newDeck();
+
+    //Create Load Deck Menu
+    createLoadDeckMenu(ui->deckButtonLoad);
+}
+
+
+void DeckHandler::createLoadDeckMenu(QPushButton *button)
+{
+    QMenu *decksMenu = new QMenu(button);
+    button->setMenu(decksMenu);
+    button->setMaximumWidth(ui->deckButtonNew->width());
+
+    foreach(QString deckName, decksJson.keys())
+    {
+        addDeckToLoadMenu(deckName);
+    }
+
+    connect(loadDeckMapper, SIGNAL(mapped(QString)), this, SLOT(loadDeck(QString)));
+}
+
+
+void DeckHandler::addDeckToLoadMenu(QString deckName)
+{
+    if(!decksJson.contains(deckName))
+    {
+        emit pDebug("Deck " + deckName + " not found. Adding to menu.", Error);
+        return;
+    }
+
+    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    int indexClassArray[9] = {8,6,5,3,1,0,7,2,4};
+    QString heroLog = decksJson[deckName].toObject()["hero"].toString();
+    int numberClass = heroLog.toInt()-1;
+    if(numberClass<0 || numberClass>8)    return;     //Arreglar no class
+    int indexClass = indexClassArray[numberClass];
+    QMenu * menuClass = loadDeckMenus[indexClass];
+
+    //Create menu
+    if(menuClass == NULL)
+    {
+        menuClass = new QMenu(heroes[indexClass]);
+        menuClass->setIcon(QIcon(":/Images/hero" + heroLog + ".png"));
+        ui->deckButtonLoad->menu()->addMenu(menuClass); //Arreglar orden menus
+        loadDeckMenus[indexClass] = menuClass;
+    }
+
+    //Create action
+    QAction *action = menuClass->addAction(deckName);
+    loadDeckMapper->setMapping(action, deckName);
+    connect(action, SIGNAL(triggered()), loadDeckMapper, SLOT(map()));
+    loadDeckActionMap[deckName] = action;
 }
 
 
@@ -703,7 +774,7 @@ void DeckHandler::loadDeck(QString deckName)
 
     if(!decksJson.contains(deckName))
     {
-        emit pDebug("Deck " + deckName + " not found.", Error);
+        emit pDebug("Deck " + deckName + " not found. Trying to load.", Error);
         return;
     }
 
@@ -743,7 +814,7 @@ void DeckHandler::saveDeck()
             }
         }
     }
-    jsonObjectDeck.insert("hero", hero);
+    jsonObjectDeck.insert("hero", Utility::heroToLogNumber(hero));
 
     QString deckName = ui->deckLineEdit->text();
     if(!loadedDeckName.isNull())
