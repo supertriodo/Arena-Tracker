@@ -102,6 +102,7 @@ private slots:
     void saveDeck();
     void newDeck();
     void loadDeck(QString deckName);
+    void removeDeck();
     void unselectClassItems();
     void loadSelectedDeck();
     void finishShowDeckTreeWidget();

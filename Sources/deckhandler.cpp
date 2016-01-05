@@ -35,6 +35,7 @@ void DeckHandler::completeUI()
     hideDeckButtons();
 
     ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonDeleteDeck->setEnabled(false);
 
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -67,6 +68,8 @@ void DeckHandler::completeUI()
             this, SLOT(newDeck()));
     connect(ui->deckButtonLoad, SIGNAL(clicked()),
             this, SLOT(toggleLoadDeckTreeWidget()));
+    connect(ui->deckButtonDeleteDeck, SIGNAL(clicked()),
+            this, SLOT(removeDeck()));
 }
 
 
@@ -369,7 +372,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].draw(true, this->cardHeight);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
-    enableDeckButtonSave();
+    ui->deckButtonSave->setEnabled(true);
 
     emit pDebug("Add to deck: (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());
@@ -604,7 +607,7 @@ void DeckHandler::cardTotalMin()
     deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 
-    enableDeckButtonSave();
+    ui->deckButtonSave->setEnabled(true);
 }
 
 
@@ -620,7 +623,7 @@ void DeckHandler::cardTotalPlus()
     else                            deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 
-    enableDeckButtonSave();
+    ui->deckButtonSave->setEnabled(true);
 }
 
 
@@ -647,7 +650,7 @@ void DeckHandler::cardRemove()
     deckCardList[0].draw(true, this->cardHeight);
     enableDeckButtons();
 
-    enableDeckButtonSave();
+    ui->deckButtonSave->setEnabled(true);
 }
 
 
@@ -905,6 +908,7 @@ void DeckHandler::loadDeck(QString deckName)
     loadedDeckName = deckName;
     ui->deckLineEdit->setText(deckName);
     ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Deck " + deckName + " loaded.");
     emit pLog("Deck: " + deckName + " loaded.");
@@ -932,19 +936,24 @@ void DeckHandler::saveDeck()
     }
     jsonObjectDeck.insert("hero", Utility::heroToLogNumber(hero));
 
+    //Remove existing json deck
     QString deckName = ui->deckLineEdit->text();
     if(!loadedDeckName.isNull())
     {
         decksJson.remove(loadedDeckName);
         emit pDebug("Removed " + loadedDeckName + " from decksJson.");
     }
+
+    //Add json deck
     decksJson.insert(deckName, jsonObjectDeck);
     loadedDeckName = deckName;
     ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Added " + deckName + " to decksJson.");
     emit pLog("Deck: " + deckName + " saved.");
 
+    //Save to disk
     saveDecksJsonFile();
 }
 
@@ -1009,7 +1018,38 @@ void DeckHandler::newDeck()
     reset();
     loadedDeckName = QString();
     ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonDeleteDeck->setEnabled(false);
     ui->deckLineEdit->setText(getNewDeckName());
+}
+
+
+void DeckHandler::removeDeck()
+{
+    if(loadedDeckName.isNull())
+    {
+        emit pDebug("Clicked remove deck with no loadedDeckName. Remove button should be disabled.", Warning);
+        return;
+    }
+
+    //Ask user
+    int ret = QMessageBox::warning(ui->tabDeck, "Remove " + loadedDeckName + "?",
+            "Do you want to remove " + loadedDeckName + " from your decks.",
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+
+    if(ret == QMessageBox::No)  return;
+
+    //Remove existing json deck
+    decksJson.remove(loadedDeckName);
+    loadedDeckName = QString();
+    ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonDeleteDeck->setEnabled(false);
+    emit pDebug("Removed " + loadedDeckName + " from decksJson.");
+
+    //Save to disk
+    saveDecksJsonFile();
+
+    //New
+    newDeck();
 }
 
 
