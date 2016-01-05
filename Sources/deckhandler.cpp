@@ -42,7 +42,7 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setMouseTracking(true);
     ui->deckListWidget->setMouseTracking(true);
 
-    createTreeWidget();
+    createDeckTreeWidget();
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -65,15 +65,19 @@ void DeckHandler::completeUI()
             this, SLOT(saveDeck()));
     connect(ui->deckButtonNew, SIGNAL(clicked()),
             this, SLOT(newDeck()));
+    connect(ui->deckButtonLoad, SIGNAL(clicked()),
+            this, SLOT(toggleLoadDeckTreeWidget()));
 }
 
 
-void DeckHandler::createTreeWidget()
+void DeckHandler::createDeckTreeWidget()
 {
     QTreeWidget *treeWidget = ui->loadDeckTreeWidget;
     treeWidget->setColumnCount(1);
     treeWidget->setIconSize(QSize(32,32));
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    treeWidget->setHidden(true);
+    treeWidget->setFixedHeight(0);
 
     for(int i=0; i<9; i++)
     {
@@ -93,7 +97,7 @@ void DeckHandler::createTreeWidget()
     loadDeckClasses[9]->setForeground(0, QBrush(QColor(Utility::getHeroColor(9))));
 
     connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(unselectClassItems()));
-    connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(loadSelectedDeck()));
+    connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(hideDeckTreeWidget()));
 }
 
 
@@ -117,6 +121,105 @@ void DeckHandler::loadSelectedDeck()
     if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
     QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
     if(item!=NULL && !isItemClass(item))  loadDeck(item->text(0));
+}
+
+
+void DeckHandler::toggleLoadDeckTreeWidget()
+{
+    if(ui->loadDeckTreeWidget->isHidden())  showDeckTreeWidget();
+    else                                    hideDeckTreeWidget();
+}
+
+
+void DeckHandler::showDeckTreeWidget()
+{
+    ui->deckButtonLoad->setEnabled(false);
+    ui->loadDeckTreeWidget->setHidden(false);
+    ui->loadDeckTreeWidget->clearSelection();
+    int totalHeight = ui->deckListWidget->height();
+    QEasingCurve easingCurve = QEasingCurve::OutCubic;
+
+    //Muestra
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->loadDeckTreeWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(easingCurve);
+    animation->start();
+
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishShowDeckTreeWidget()));
+
+    animation = new QPropertyAnimation(ui->loadDeckTreeWidget, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(easingCurve);
+    animation->start();
+
+    //Oculta
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->deckListWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(totalHeight);
+    animation2->setEndValue(0);
+    animation2->setEasingCurve(easingCurve);
+    animation2->start();
+}
+
+
+void DeckHandler::finishShowDeckTreeWidget()
+{
+    ui->deckListWidget->setHidden(true);
+    ui->deckListWidget->setFixedHeight(0);
+    ui->loadDeckTreeWidget->setMinimumHeight(0);
+    ui->loadDeckTreeWidget->setMaximumHeight(16777215);
+    ui->deckButtonLoad->setEnabled(true);
+}
+
+
+void DeckHandler::hideDeckTreeWidget()
+{
+    loadSelectedDeck();
+    ui->deckButtonLoad->setEnabled(false);
+    ui->deckListWidget->setHidden(false);
+    int totalHeight = ui->loadDeckTreeWidget->height();
+    QEasingCurve easingCurve = QEasingCurve::InCubic;
+
+    //Muestra
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->deckListWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->deckListWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(easingCurve);
+    animation->start();
+
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishHideDeckTreeWidget()));
+
+    animation = new QPropertyAnimation(ui->deckListWidget, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->deckListWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(easingCurve);
+    animation->start();
+
+    //Oculta
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->loadDeckTreeWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(totalHeight);
+    animation2->setEndValue(0);
+    animation2->setEasingCurve(easingCurve);
+    animation2->start();
+}
+
+
+void DeckHandler::finishHideDeckTreeWidget()
+{
+    ui->loadDeckTreeWidget->setHidden(true);
+    ui->loadDeckTreeWidget->setFixedHeight(0);
+    ui->deckListWidget->setMinimumHeight(0);
+    ui->deckListWidget->setMaximumHeight(16777215);
+    ui->deckButtonLoad->setEnabled(true);
 }
 
 

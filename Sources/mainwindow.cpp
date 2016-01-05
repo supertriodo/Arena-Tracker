@@ -1911,11 +1911,9 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Button to web
 //triodo: you can check for cardids on drawn cards
 //(log.config) y test
-//Test duplicate con arenaPrevious
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
 //New/Remove deck poner loadedDeck a NULL
-//Cadena heroes[9] en utility
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

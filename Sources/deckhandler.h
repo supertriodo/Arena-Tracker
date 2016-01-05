@@ -55,8 +55,9 @@ private:
     QString getNewDeckName();
     bool askSaveDeck();
     void addDeckToLoadTree(QString deckName);
-    void createTreeWidget();
+    void createDeckTreeWidget();
     bool isItemClass(QTreeWidgetItem *item);
+    void showDeckTreeWidget();
 
 public:
     void reset();
@@ -103,6 +104,10 @@ private slots:
     void loadDeck(QString deckName);
     void unselectClassItems();
     void loadSelectedDeck();
+    void finishShowDeckTreeWidget();
+    void finishHideDeckTreeWidget();
+    void hideDeckTreeWidget();
+    void toggleLoadDeckTreeWidget();
 };
 
 #endif // DECKHANDLER_H
