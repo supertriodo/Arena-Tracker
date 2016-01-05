@@ -33,9 +33,8 @@ private:
     int greyedHeight, cardHeight;
     bool drawAnimating;
     int drawDisappear;
-    QSignalMapper* loadDeckMapper;
-    QMenu *loadDeckMenus[9];
-    QMap<QString, QAction *> loadDeckActionMap;
+    QTreeWidgetItem *loadDeckClasses[10];
+    QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
 
 
 //Metodos
@@ -55,8 +54,9 @@ private:
     void showManageDecksButtons();
     QString getNewDeckName();
     bool askSaveDeck();
-    void createLoadDeckMenu(QPushButton *button);
-    void addDeckToLoadMenu(QString deckName);
+    void addDeckToLoadTree(QString deckName);
+    void createTreeWidget();
+    bool isItemClass(QTreeWidgetItem *item);
 
 public:
     void reset();
@@ -101,6 +101,8 @@ private slots:
     void saveDeck();
     void newDeck();
     void loadDeck(QString deckName);
+    void unselectClassItems();
+    void loadSelectedDeck();
 };
 
 #endif // DECKHANDLER_H

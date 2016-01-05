@@ -886,6 +886,18 @@
            <number>0</number>
           </property>
           <item>
+           <widget class="MoveListWidget" name="deckListWidget"/>
+          </item>
+          <item>
+           <widget class="MoveTreeWidget" name="loadDeckTreeWidget">
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayoutDeckButtons">
             <property name="spacing">
              <number>0</number>
@@ -1182,7 +1194,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>272</width>
+               <width>414</width>
                <height>701</height>
               </rect>
              </property>
@@ -1858,6 +1870,16 @@ card scores during the draft.</string>
    <extends>QTabWidget</extends>
    <header>Sources/Widgets/movetabwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MoveListWidget</class>
+   <extends>QListWidget</extends>
+   <header>Sources/Widgets/movelistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MoveTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>Sources/Widgets/movetreewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

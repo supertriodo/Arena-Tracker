@@ -29,6 +29,28 @@ QString Utility::heroToLogNumber(const QString &hero)
 }
 
 
+//Return info about heroes in alphabetical order
+QString Utility::getHeroColor(int order)
+{
+    QString heroesColors[10] = {"#FF7D0A", "#ABD473", "#69CCF0", "#F58CBA", "#FFFFFF", "#FFF569", "#0070DE", "#9482C9", "#C79C6E", "#000000"};
+    return heroesColors[order];
+}
+
+
+QString Utility::getHeroName(int order)
+{
+    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    return heroes[order];
+}
+
+
+QString Utility::getHeroLogNumber(int order)
+{
+    QString heroesLogNumber[9] = {"06", "05", "08", "04", "09", "03", "02", "07", "01"};
+    return heroesLogNumber[order];
+}
+
+
 QString Utility::cardEnNameFromCode(QString code)
 {
     return (*cardsJson)[code].value("name").toString();

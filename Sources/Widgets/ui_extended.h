@@ -16,7 +16,6 @@ public:
     MoveTabWidget *tabWidgetH3 = NULL;
     MoveTabWidget *tabWidgetV1 = NULL;
     MoveListWidget *enemyHandListWidget = NULL;
-    MoveListWidget *deckListWidget = NULL;
     MoveListWidget *drawListWidget = NULL;
     MoveTreeWidget *secretsTreeWidget = NULL;
     MoveTreeWidget *arenaTreeWidget = NULL;

@@ -38,6 +38,9 @@ private:
 //Metodos
 public:
     static QString heroToLogNumber(const QString &hero);
+    static QString getHeroColor(int order);
+    static QString getHeroName(int order);
+    static QString getHeroLogNumber(int order);
     static QString appPath();
     static QString cardEnNameFromCode(QString code);
     static QString cardEnCodeFromName(QString name);

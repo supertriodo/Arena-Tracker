@@ -573,8 +573,6 @@ void MainWindow::completeUI()
         ui->tabEnemyLayout->addWidget(ui->secretsTreeWidget);
         ui->drawListWidget = new MoveListWidget(ui->tabEnemy);
         ui->tabEnemyLayout->addWidget(ui->drawListWidget);
-        ui->deckListWidget = new MoveListWidget(ui->tabDeck);
-        ui->tabDeckLayout->insertWidget(0, ui->deckListWidget);
 
         completeHeroButtons();
         completeConfigTab();
@@ -1379,13 +1377,11 @@ void MainWindow::addDraftMenu(QPushButton *button)
     QMenu *newArenaMenu = new QMenu(button);
 
     QSignalMapper* mapper = new QSignalMapper(button);
-    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
-    QString heroesLogNumber[9] = {"06", "05", "08", "04", "09", "03", "02", "07", "01"};
 
     for(int i=0; i<9; i++)
     {
-        QAction *action = newArenaMenu->addAction(QIcon(":/Images/hero" + heroesLogNumber[i] + ".png"), heroes[i]);
-        mapper->setMapping(action, heroes[i]);
+        QAction *action = newArenaMenu->addAction(QIcon(":/Images/hero" + Utility::getHeroLogNumber(i) + ".png"), Utility::getHeroName(i));
+        mapper->setMapping(action, Utility::getHeroName(i));
         connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
     }
 
@@ -1593,6 +1589,8 @@ void MainWindow::updateMainUITheme()
     {
         mainCSS +=
                 "QMenu {background-color: #0F4F0F; color: white;}"
+                "QMenu::item {font-family: Sans Serif; font-size: 12pt; border: 1px solid black; background-color: #0F4F0F; color: white; "
+                    "min-width: 90px; min-height: 25px; padding: 2px 2px 2px 18px;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
                 "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
@@ -1917,7 +1915,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
 //New/Remove deck poner loadedDeck a NULL
-
+//Cadena heroes[9] en utility
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

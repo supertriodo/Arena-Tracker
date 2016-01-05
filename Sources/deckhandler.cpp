@@ -14,15 +14,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->drawDisappear = 10;
     this->synchronized = false;
     this->loadedDeckName = QString();
-
-    this->loadDeckMapper = new QSignalMapper(ui->deckButtonLoad);
-
-    this->loadDeckActionMap.clear();
-    for(int i=0; i<9; i++)
-    {
-        loadDeckMenus[i] = NULL;
-    }
-
+    this->loadDeckItemsMap.clear();
 
     completeUI();
 }
@@ -32,18 +24,6 @@ DeckHandler::~DeckHandler()
     ui->deckListWidget->clear();
     deckCardList.clear();
     drawCardList.clear();
-    delete loadDeckMapper;
-
-    for(int i=0; i<9; i++)
-    {
-        if(loadDeckMenus[i] == NULL)    delete loadDeckMenus[i];
-    }
-
-    foreach(QString deckName, loadDeckActionMap.keys())
-    {
-        QAction *action = loadDeckActionMap[deckName];
-        if(action !=NULL)   delete action;
-    }
 }
 
 
@@ -62,6 +42,7 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setMouseTracking(true);
     ui->deckListWidget->setMouseTracking(true);
 
+    createTreeWidget();
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -84,6 +65,58 @@ void DeckHandler::completeUI()
             this, SLOT(saveDeck()));
     connect(ui->deckButtonNew, SIGNAL(clicked()),
             this, SLOT(newDeck()));
+}
+
+
+void DeckHandler::createTreeWidget()
+{
+    QTreeWidget *treeWidget = ui->loadDeckTreeWidget;
+    treeWidget->setColumnCount(1);
+    treeWidget->setIconSize(QSize(32,32));
+    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    for(int i=0; i<9; i++)
+    {
+        loadDeckClasses[i] = new QTreeWidgetItem(treeWidget);
+        loadDeckClasses[i]->setHidden(true);
+        loadDeckClasses[i]->setExpanded(true);
+        loadDeckClasses[i]->setText(0, Utility::getHeroName(i));
+        loadDeckClasses[i]->setIcon(0, QIcon(":/Images/hero" + Utility::getHeroLogNumber(i) + ".png"));
+        loadDeckClasses[i]->setForeground(0, QBrush(QColor(Utility::getHeroColor(i))));
+    }
+
+    loadDeckClasses[9] = new QTreeWidgetItem(treeWidget);
+    loadDeckClasses[9]->setHidden(true);
+    loadDeckClasses[9]->setExpanded(true);
+    loadDeckClasses[9]->setText(0, "Multi class");
+    loadDeckClasses[9]->setIcon(0, QIcon(":/Images/secretHunter.png"));
+    loadDeckClasses[9]->setForeground(0, QBrush(QColor(Utility::getHeroColor(9))));
+
+    connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(unselectClassItems()));
+    connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(loadSelectedDeck()));
+}
+
+
+bool DeckHandler::isItemClass(QTreeWidgetItem *item)
+{
+    for(int i=0; i<10; i++) if(item == loadDeckClasses[i])  return true;
+    return false;
+}
+
+
+void DeckHandler::unselectClassItems()
+{
+    if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
+    QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
+    if(isItemClass(item))   ui->loadDeckTreeWidget->clearSelection();
+}
+
+
+void DeckHandler::loadSelectedDeck()
+{
+    if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
+    QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
+    if(item!=NULL && !isItemClass(item))  loadDeck(item->text(0));
 }
 
 
@@ -715,56 +748,36 @@ void DeckHandler::loadDecks()
     ui->deckButtonSave->setEnabled(false);
     newDeck();
 
-    //Create Load Deck Menu
-    createLoadDeckMenu(ui->deckButtonLoad);
-}
-
-
-void DeckHandler::createLoadDeckMenu(QPushButton *button)
-{
-    QMenu *decksMenu = new QMenu(button);
-    button->setMenu(decksMenu);
-    button->setMaximumWidth(ui->deckButtonNew->width());
-
+    //Load decks to loadDeckTreeWidget
     foreach(QString deckName, decksJson.keys())
     {
-        addDeckToLoadMenu(deckName);
+        addDeckToLoadTree(deckName);
     }
-
-    connect(loadDeckMapper, SIGNAL(mapped(QString)), this, SLOT(loadDeck(QString)));
 }
 
 
-void DeckHandler::addDeckToLoadMenu(QString deckName)
+void DeckHandler::addDeckToLoadTree(QString deckName)
 {
     if(!decksJson.contains(deckName))
     {
-        emit pDebug("Deck " + deckName + " not found. Adding to menu.", Error);
+        emit pDebug("Deck " + deckName + " not found. Adding to loadDeckTreeWidget.", Error);
         return;
     }
 
-    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
     int indexClassArray[9] = {8,6,5,3,1,0,7,2,4};
     QString heroLog = decksJson[deckName].toObject()["hero"].toString();
     int numberClass = heroLog.toInt()-1;
-    if(numberClass<0 || numberClass>8)    return;     //Arreglar no class
-    int indexClass = indexClassArray[numberClass];
-    QMenu * menuClass = loadDeckMenus[indexClass];
+    int indexClass;
+    if(numberClass<0 || numberClass>8)      indexClass = 9;
+    else                                    indexClass = indexClassArray[numberClass];
+    QTreeWidgetItem *deckClass = loadDeckClasses[indexClass];
+    if(deckClass->isHidden())   deckClass->setHidden(false);
 
-    //Create menu
-    if(menuClass == NULL)
-    {
-        menuClass = new QMenu(heroes[indexClass]);
-        menuClass->setIcon(QIcon(":/Images/hero" + heroLog + ".png"));
-        ui->deckButtonLoad->menu()->addMenu(menuClass); //Arreglar orden menus
-        loadDeckMenus[indexClass] = menuClass;
-    }
-
-    //Create action
-    QAction *action = menuClass->addAction(deckName);
-    loadDeckMapper->setMapping(action, deckName);
-    connect(action, SIGNAL(triggered()), loadDeckMapper, SLOT(map()));
-    loadDeckActionMap[deckName] = action;
+    //Create item
+    QTreeWidgetItem *item = new QTreeWidgetItem(deckClass);
+    item->setText(0, deckName);
+    item->setForeground(0, QBrush(QColor(Utility::getHeroColor(indexClass))));
+    loadDeckItemsMap[deckName] = item;
 }
 
 
