@@ -47,7 +47,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     emit downloaded(code);
     gettingWebCards.remove(reply);
     emit pDebug("Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
-    emit pLog(tr("Web: New card image downloaded."));
+//    emit pLog(tr("Web: New card image downloaded."));
 }
 
 

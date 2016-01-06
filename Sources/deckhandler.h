@@ -108,7 +108,9 @@ private slots:
     void unselectClassItems();
     void loadSelectedDeck();
     void finishShowDeckTreeWidget();
+    void finishHideDeckListWidget();
     void finishHideDeckTreeWidget();
+    void finishShowDeckListWidget();
     void hideDeckTreeWidget();
     void toggleLoadDeckTreeWidget();
 };

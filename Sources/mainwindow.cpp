@@ -1898,7 +1898,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //(log.config) y test
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
-//New/Remove deck poner loadedDeck a NULL
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
