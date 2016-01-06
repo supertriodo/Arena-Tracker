@@ -158,7 +158,6 @@ public slots:
 private slots:
     void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
-    void confirmClearDeck();
     void toggleSplitWindow();
     void transparentAlways();
     void transparentAuto();

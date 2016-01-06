@@ -1410,21 +1410,6 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 }
 
 
-void MainWindow::confirmClearDeck()
-{
-    int ret = QMessageBox::question(this, tr("Clear Deck"),
-                                   "Do you want to clear your deck?",
-                                   QMessageBox::Ok | QMessageBox::Cancel);
-
-    if(ret == QMessageBox::Ok)
-    {
-        pDebug("Manual clear deck");
-        pLog(tr("Menu: Clear deck"));
-        resetDeck();
-    }
-}
-
-
 void MainWindow::toggleSplitWindow()
 {
     this->splitWindow = !this->splitWindow;
@@ -1557,6 +1542,7 @@ void MainWindow::spreadTheme()
 {
     updateMainUITheme();
     arenaHandler->setTheme(this->theme);
+    deckHandler->setTheme(this->theme);
 }
 
 
@@ -1589,8 +1575,8 @@ void MainWindow::updateMainUITheme()
     {
         mainCSS +=
                 "QMenu {background-color: #0F4F0F; color: white;}"
-                "QMenu::item {font-family: Sans Serif; font-size: 12pt; border: 1px solid black; background-color: #0F4F0F; color: white; "
-                    "min-width: 90px; min-height: 25px; padding: 2px 2px 2px 18px;}"
+//                "QMenu::item {font-family: Sans Serif; font-size: 12pt; border: 1px solid black; background-color: #0F4F0F; color: white; "
+//                    "min-width: 90px; min-height: 25px; padding: 2px 2px 2px 18px;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
                 "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
@@ -1823,7 +1809,6 @@ void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
     //Actions
-    connect(ui->configButtonClearDeck, SIGNAL(clicked()), this, SLOT(confirmClearDeck()));
     addDraftMenu(ui->configButtonForceDraft);
 
     //UI

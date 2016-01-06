@@ -55,6 +55,7 @@ private:
     QString getNewDeckName();
     bool askSaveDeck();
     void addDeckToLoadTree(QString deckName);
+    void removeDeckFromLoadTree(QString deckName);
     void createDeckTreeWidget();
     bool isItemClass(QTreeWidgetItem *item);
     void showDeckTreeWidget();
@@ -64,6 +65,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     QList<DeckCard> * getDeckComplete();
     void setTransparency(Transparency value);
+    void setTheme(Theme value);
     void setGreyedHeight(int value);
     void setCardHeight(int value);
     void setDrawDisappear(int value);

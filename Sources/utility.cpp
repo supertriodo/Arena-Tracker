@@ -32,7 +32,7 @@ QString Utility::heroToLogNumber(const QString &hero)
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {
-    QString heroesColors[10] = {"#FF7D0A", "#ABD473", "#69CCF0", "#F58CBA", "#FFFFFF", "#FFF569", "#0070DE", "#9482C9", "#C79C6E", "#000000"};
+    QString heroesColors[10] = {"#FF7D0A", "#ABD473", "#69CCF0", "#F58CBA", "#FFFFFF", "#FFF569", "#0070DE", "#9482C9", "#C79C6E", "#A9A9A9"};
     return heroesColors[order];
 }
 

@@ -727,6 +727,19 @@ void DeckHandler::setTransparency(Transparency value)
 }
 
 
+void DeckHandler::setTheme(Theme value)
+{
+    if(value == ThemeBlack)
+    {
+        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: black; outline: 0;}");
+    }
+    else
+    {
+        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: #F0F0F0; outline: 0;}");
+    }
+}
+
+
 void DeckHandler::updateGreyedHeight()
 {
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
@@ -887,6 +900,20 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
 }
 
 
+void DeckHandler::removeDeckFromLoadTree(QString deckName)
+{
+    QTreeWidgetItem *item = loadDeckItemsMap[deckName];
+    if(item != NULL)
+    {
+        QTreeWidgetItem *itemClass = item->parent();
+        delete item;
+        if(itemClass != NULL && (itemClass->childCount()==0))   itemClass->setHidden(true);
+    }
+
+    loadDeckItemsMap.remove(deckName);
+}
+
+
 void DeckHandler::loadDeck(QString deckName)
 {
     if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return;
@@ -946,6 +973,18 @@ void DeckHandler::saveDeck()
 
     //Add json deck
     decksJson.insert(deckName, jsonObjectDeck);
+
+    //Update load deck tree
+    if(loadedDeckName.isNull())
+    {
+        addDeckToLoadTree(deckName);
+    }
+    else if(loadedDeckName != deckName)
+    {
+        removeDeckFromLoadTree(loadedDeckName);
+        addDeckToLoadTree(deckName);
+    }
+
     loadedDeckName = deckName;
     ui->deckButtonSave->setEnabled(false);
     ui->deckButtonDeleteDeck->setEnabled(true);
@@ -1020,6 +1059,8 @@ void DeckHandler::newDeck()
     ui->deckButtonSave->setEnabled(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
     ui->deckLineEdit->setText(getNewDeckName());
+
+    emit pDebug("New deck.");
 }
 
 
@@ -1040,6 +1081,8 @@ void DeckHandler::removeDeck()
 
     //Remove existing json deck
     decksJson.remove(loadedDeckName);
+    removeDeckFromLoadTree(loadedDeckName);
+
     loadedDeckName = QString();
     ui->deckButtonSave->setEnabled(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
