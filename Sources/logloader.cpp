@@ -77,7 +77,7 @@ void LogLoader::readLogPath()
                                     "2) log.config location (If not default).\n"
                                     "3) Restart Hearthstone (If running).\n\n"
                                     "After your first game:\n"
-                                    "5) Your Hearthstone name."));
+                                    "4) Your Hearthstone name."));
 
         QString initPath = "";
         logPath = "";

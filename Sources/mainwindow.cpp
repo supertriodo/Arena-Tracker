@@ -1895,7 +1895,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Button to web
 //triodo: you can check for cardids on drawn cards
-//(log.config) y test
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 
 
