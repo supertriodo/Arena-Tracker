@@ -155,8 +155,8 @@ void DeckHandler::showDeckTreeWidget()
 
     animation = new QPropertyAnimation(ui->loadDeckTreeWidget, "maximumHeight");
     animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight());
-    animation->setEndValue(totalHeight);
+    animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight()+2);
+    animation->setEndValue(totalHeight+2);
     animation->setEasingCurve(easingCurve);
     animation->start();
 
@@ -213,8 +213,8 @@ void DeckHandler::hideDeckTreeWidget()
 
     animation = new QPropertyAnimation(ui->deckListWidget, "maximumHeight");
     animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(ui->deckListWidget->minimumHeight());
-    animation->setEndValue(totalHeight);
+    animation->setStartValue(ui->deckListWidget->minimumHeight()+2);
+    animation->setEndValue(totalHeight+2);
     animation->setEasingCurve(easingCurve);
     animation->start();
 
@@ -865,6 +865,11 @@ void DeckHandler::findDrawCardEntered(QListWidgetItem * item)
  */
 void DeckHandler::loadDecks()
 {
+    //Iniciamos deckCardList con 30 cartas desconocidas
+    ui->deckButtonSave->setEnabled(false);
+    newDeck();
+
+    //Load decks from file
     QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
     if(!jsonFile.exists())
     {
@@ -886,10 +891,6 @@ void DeckHandler::loadDecks()
 
     emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
     emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
-
-    //Iniciamos deckCardList con 30 cartas desconocidas
-    ui->deckButtonSave->setEnabled(false);
-    newDeck();
 
     //Load decks to loadDeckTreeWidget
     foreach(QString deckName, decksJson.keys())

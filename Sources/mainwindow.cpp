@@ -621,7 +621,7 @@ void MainWindow::completeUIButtons()
         ui->closeButton->setIcon(QIcon(":/Images/close.png"));
         ui->closeButton->setFlat(true);
         connect(ui->closeButton, SIGNAL(clicked()),
-                this, SLOT(close()));
+                this, SLOT(closeApp()));
 
 
         ui->minimizeButton = new QPushButton("", this);
@@ -643,6 +643,14 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->setFlat(true);
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
+}
+
+
+void MainWindow::closeApp()
+{
+    //Check unsaved decks
+    if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
+    close();
 }
 
 
@@ -1896,6 +1904,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Button to web
 //triodo: you can check for cardids on drawn cards
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
+//Ask unsaved deck before closing
 
 
 //BUGS CONOCIDOS

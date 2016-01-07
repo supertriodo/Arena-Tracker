@@ -53,7 +53,6 @@ private:
     void hideManageDecksButtons();
     void showManageDecksButtons();
     QString getNewDeckName();
-    bool askSaveDeck();
     void addDeckToLoadTree(QString deckName);
     void removeDeckFromLoadTree(QString deckName);
     void createDeckTreeWidget();
@@ -71,6 +70,7 @@ public:
     void setDrawDisappear(int value);
     void setSynchronized();
     void loadDecks();
+    bool askSaveDeck();
 
 signals:
     void checkCardImage(QString code);

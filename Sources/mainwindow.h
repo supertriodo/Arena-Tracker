@@ -175,6 +175,7 @@ private slots:
     void updateHStatsConnectButton(int value=2);
     void updateHStatsConnectButton(bool isConnected);
     void tryConnectHStats();
+    void closeApp();
     void test();
 };
 
