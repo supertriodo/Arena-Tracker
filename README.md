@@ -1,7 +1,8 @@
 # Arena-Tracker
-Arena Tracker reads the Hearthstone log to keep track of your arena deck, games and rewards.
-* Draft with HearthArena advice.
-* Upload your stats to your ArenaMastery account.
+Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl.
+* Draft your arena with HearthArena advice.
+* Upload your arena stats to your ArenaMastery account.
+* Save and organize your constructed decks. No more 9 slots limit.
 * Go over your deck while you play.
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
