@@ -64,12 +64,30 @@ void DeckHandler::completeUI()
             this, SLOT(enableDeckButtonSave()));
     connect(ui->deckButtonSave, SIGNAL(clicked()),
             this, SLOT(saveDeck()));
-    connect(ui->deckButtonNew, SIGNAL(clicked()),
-            this, SLOT(newDeck()));
     connect(ui->deckButtonLoad, SIGNAL(clicked()),
             this, SLOT(toggleLoadDeckTreeWidget()));
     connect(ui->deckButtonDeleteDeck, SIGNAL(clicked()),
             this, SLOT(removeDeck()));
+
+    addNewDeckMenu(ui->deckButtonNew);
+}
+
+
+void DeckHandler::addNewDeckMenu(QPushButton *button)
+{
+    QMenu *newDeckMenu = new QMenu(button);
+
+    QAction *action = newDeckMenu->addAction("New empty deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(newEmptyDeck()));
+
+    action = newDeckMenu->addAction("Clone current deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(newCopyCurrentDeck()));
+
+    action = newDeckMenu->addAction("Import HearthHead deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
+
+    button->setMenu(newDeckMenu);
+    button->setMaximumWidth(51);
 }
 
 
@@ -867,7 +885,7 @@ void DeckHandler::loadDecks()
 {
     //Iniciamos deckCardList con 30 cartas desconocidas
     ui->deckButtonSave->setEnabled(false);
-    newDeck();
+    newEmptyDeck();
 
     //Load decks from file
     QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
@@ -1077,17 +1095,81 @@ bool DeckHandler::askSaveDeck()
 }
 
 
-void DeckHandler::newDeck()
+void DeckHandler::newEmptyDeck()
 {
-    if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return;
+    newDeck(true);
+}
 
-    reset();
+
+void DeckHandler::newCopyCurrentDeck()
+{
+    newDeck(false);
+}
+
+
+void DeckHandler::newImportHearthHead()
+{
+    if(newDeck(true))  importHearthHead();
+}
+
+
+bool DeckHandler::newDeck(bool reset)
+{
+    if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return false;
+
+    if(reset)   this->reset();
     loadedDeckName = QString();
     ui->deckButtonSave->setEnabled(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
     ui->deckLineEdit->setText(getNewDeckName());
 
     emit pDebug("New deck.");
+    return true;
+}
+
+
+void DeckHandler::importHearthHead()
+{
+    QString data = QApplication::clipboard()->text();
+    QStringList dataLines = data.split('\n');
+
+    QRegularExpressionMatch match;
+
+    foreach(QString line, dataLines)
+    {
+        QString name;
+        QString code;
+        int numCards = 0;
+
+        //2 Arcane Missiles
+        if(line.contains(QRegularExpression("^(\\d+) +([^ ].*)$"), &match))
+        {
+            numCards = match.captured(1).toInt();
+            name = match.captured(2);
+
+            code = Utility::cardLocalCodeFromName(name);
+            if(code.isEmpty())  code = Utility::cardEnCodeFromName(name);
+        }
+
+        emit pDebug("Import HearthHead: " + line);
+
+        if(code.isNull())
+        {
+            emit pDebug("Import HearthHead: Bad Format.", Warning);
+        }
+        else if(code.isEmpty())
+        {
+            emit pDebug("Import HearthHead: Name: " + name + " not found in Jsons.", Warning);
+        }
+        else if(numCards<1 || numCards>2)
+        {
+            emit pDebug("Import HearthHead: Num cards: " + QString::number(numCards) + " is not correct.", Warning);
+        }
+        else
+        {
+            newDeckCard(code, numCards);
+        }
+    }
 }
 
 
@@ -1119,7 +1201,7 @@ void DeckHandler::removeDeck()
     saveDecksJsonFile();
 
     //New
-    newDeck();
+    newEmptyDeck();
 }
 
 
@@ -1150,7 +1232,7 @@ void DeckHandler::leaveArena()
     }
     else
     {
-        newDeck();
+        newEmptyDeck();
     }
 }
 

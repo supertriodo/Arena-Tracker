@@ -1,6 +1,7 @@
 #include "utility.h"
 #include <QtWidgets>
 
+QMap<QString, QJsonObject> * Utility::enCardsJson;
 QMap<QString, QJsonObject> * Utility::cardsJson;
 
 Utility::Utility()
@@ -53,11 +54,25 @@ QString Utility::getHeroLogNumber(int order)
 
 QString Utility::cardEnNameFromCode(QString code)
 {
-    return (*cardsJson)[code].value("name").toString();
+    return (*enCardsJson)[code].value("name").toString();
 }
 
 
 QString Utility::cardEnCodeFromName(QString name)
+{
+    for (QMap<QString, QJsonObject>::const_iterator it = enCardsJson->cbegin(); it != enCardsJson->cend(); it++)
+    {
+        if(it->value("name").toString() == name)
+        {
+            if(!it->value("cost").isUndefined())    return it.key();
+        }
+    }
+
+    return "";
+}
+
+
+QString Utility::cardLocalCodeFromName(QString name)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
@@ -86,6 +101,11 @@ QString Utility::appPath()
 #endif
 }
 
+
+void Utility::setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson)
+{
+    Utility::enCardsJson = enCardsJson;
+}
 
 void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {

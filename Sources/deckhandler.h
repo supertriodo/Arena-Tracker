@@ -58,6 +58,9 @@ private:
     void createDeckTreeWidget();
     bool isItemClass(QTreeWidgetItem *item);
     void showDeckTreeWidget();
+    void addNewDeckMenu(QPushButton *button);
+    bool newDeck(bool reset);
+    void importHearthHead();
 
 public:
     void reset();
@@ -102,7 +105,6 @@ private slots:
     void findDrawCardEntered(QListWidgetItem *item);
     void enableDeckButtonSave();
     void saveDeck();
-    void newDeck();
     void loadDeck(QString deckName);
     void removeDeck();
     void unselectClassItems();
@@ -113,6 +115,9 @@ private slots:
     void finishShowDeckListWidget();
     void hideDeckTreeWidget();
     void toggleLoadDeckTreeWidget();
+    void newEmptyDeck();
+    void newCopyCurrentDeck();
+    void newImportHearthHead();
 };
 
 #endif // DECKHANDLER_H

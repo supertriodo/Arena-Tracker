@@ -212,16 +212,17 @@ void MainWindow::initCardsJson()
     createCardsJsonMap(this->cardsJson, lang);
     DeckCard::setCardsJson(&cardsJson);
     GameWatcher::setCardsJson(&cardsJson);
+    Utility::setCardsJson(&cardsJson);
 
 
     if(lang == "enUS")
     {
-        Utility::setCardsJson(&cardsJson);
+        Utility::setEnCardsJson(&cardsJson);
     }
     else
     {
         createCardsJsonMap(enCardsJson, "enUS");
-        Utility::setCardsJson(&enCardsJson);
+        Utility::setEnCardsJson(&enCardsJson);
     }
 }
 
@@ -1905,7 +1906,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //triodo: you can check for cardids on drawn cards
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
-//Nuevo deck copia y hearthhead
+//Nuevo deck copia y hearthhead (Ventana pregunta)
+//Save deck, verificar nombre cogido.
 
 
 //BUGS CONOCIDOS
