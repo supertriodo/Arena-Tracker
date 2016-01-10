@@ -922,6 +922,7 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
     item->setText(0, deckName);
     item->setForeground(0, QBrush(QColor(Utility::getHeroColor(indexClass))));
     loadDeckItemsMap[deckName] = item;
+    deckClass->sortChildren(0, Qt::AscendingOrder);
 }
 
 
