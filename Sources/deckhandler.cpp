@@ -920,6 +920,7 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
     //Create item
     QTreeWidgetItem *item = new QTreeWidgetItem(deckClass);
     item->setText(0, deckName);
+    item->setToolTip(0, deckName);
     item->setForeground(0, QBrush(QColor(Utility::getHeroColor(indexClass))));
     loadDeckItemsMap[deckName] = item;
     deckClass->sortChildren(0, Qt::AscendingOrder);
