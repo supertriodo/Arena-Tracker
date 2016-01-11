@@ -754,7 +754,8 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
     points[2] = pos + QPoint(5, -5 + size.height());
     points[3] = pos + QPoint(-5 + size.width(), -5 + size.height());
 
-    emit pDebug("Window Pos: (" + pos.x() + "," + pos.y() + ") - Size: (" + size.width() + "," + size.height() + ")");
+    emit pDebug("Window Pos: (" + QString::number(pos.x()) + "," + QString::number(pos.y()) +
+                ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) + ")");
 
     foreach(QScreen *screen, QGuiApplication::screens())
     {
@@ -765,8 +766,8 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
         {
             if(geometry.contains(points[i]))
             {
-                emit pDebug("Window in screen: (" + geometry.topLeft() + "," + geometry.topRight() +
-                            "," + geometry.bottomLeft() + "," + geometry.bottomRight() + ")");
+                emit pDebug("Window in screen: (" + QString::number(geometry.top()) + "," + QString::number(geometry.right()) +
+                            "," + QString::number(geometry.bottom()) + "," + QString::number(geometry.left()) + ")");
                 move(pos);
                 return;
             }
