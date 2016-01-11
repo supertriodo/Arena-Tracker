@@ -1044,7 +1044,7 @@
               <item>
                <widget class="QPushButton" name="deckButtonSave">
                 <property name="toolTip">
-                 <string>Save Deck</string>
+                 <string>Save Current Deck</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -1065,7 +1065,7 @@
               <item>
                <widget class="QPushButton" name="deckButtonDeleteDeck">
                 <property name="toolTip">
-                 <string>Remove Deck</string>
+                 <string>Remove Current Deck</string>
                 </property>
                 <property name="text">
                  <string/>

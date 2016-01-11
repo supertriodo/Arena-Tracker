@@ -1906,6 +1906,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //triodo: you can check for cardids on drawn cards
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
+//pos ventanas en log
 //Nuevo deck copia y hearthhead (Ventana pregunta)
 //Save deck, verificar nombre cogido.
 

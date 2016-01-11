@@ -1119,7 +1119,7 @@ bool DeckHandler::newDeck(bool reset)
 
     if(reset)   this->reset();
     loadedDeckName = QString();
-    ui->deckButtonSave->setEnabled(false);
+    ui->deckButtonSave->setEnabled(!reset);
     ui->deckButtonDeleteDeck->setEnabled(false);
     ui->deckLineEdit->setText(getNewDeckName());
 
