@@ -1118,7 +1118,27 @@ void DeckHandler::newCopyCurrentDeck()
 
 void DeckHandler::newImportHearthHead()
 {
-    if(newDeck(true))  importHearthHead();
+    if(newDeck(true) && showHearthHeadHowTo())  importHearthHead();
+}
+
+
+bool DeckHandler::showHearthHeadHowTo()
+{
+    QString text =  "This option allow you to import a deck from <a href='http://www.hearthhead.com/'>HearthHead.com</a>:<br/>"
+            "1) Go to <a href='http://www.hearthhead.com/'>HearthHead.com</a> and choose the deck you want.<br/>"
+            "2) Click Export -> Cockatrice and copy the text shown.<br/>"
+                    "....There's no need to paste it anywhere.<br/>"
+            "3) Ok this dialog and Arena Tracker will create the deck.";
+
+    QMessageBox msgBox(0);
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(text);
+    msgBox.setWindowTitle("Import HearthHead deck");
+    msgBox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
+    msgBox.exec();
+
+    if(msgBox.result() == QMessageBox::Ok)  return true;
+    else                                    return false;
 }
 
 

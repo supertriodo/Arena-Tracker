@@ -61,6 +61,7 @@ private:
     void addNewDeckMenu(QPushButton *button);
     bool newDeck(bool reset);
     void importHearthHead();
+    bool showHearthHeadHowTo();
 
 public:
     void reset();
