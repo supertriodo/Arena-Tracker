@@ -754,6 +754,8 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
     points[2] = pos + QPoint(5, -5 + size.height());
     points[3] = pos + QPoint(-5 + size.width(), -5 + size.height());
 
+    emit pDebug("Window Pos: (" + pos.x() + "," + pos.y() + ") - Size: (" + size.width() + "," + size.height() + ")");
+
     foreach(QScreen *screen, QGuiApplication::screens())
     {
         if (!screen)    continue;
@@ -763,12 +765,15 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
         {
             if(geometry.contains(points[i]))
             {
+                emit pDebug("Window in screen: (" + geometry.topLeft() + "," + geometry.topRight() +
+                            "," + geometry.bottomLeft() + "," + geometry.bottomRight() + ")");
                 move(pos);
                 return;
             }
         }
     }
 
+    emit pDebug("Window outside screens. Move to (0,0)");
     move(QPoint(0,0));
 }
 
@@ -1906,7 +1911,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //triodo: you can check for cardids on drawn cards
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
-//pos ventanas en log
 //Nuevo deck copia y hearthhead (Ventana pregunta)
 //Save deck, verificar nombre cogido.
 
