@@ -1288,7 +1288,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
 
 void MainWindow::resetSettings()
 {
-    int ret = QMessageBox::warning(this, tr("Reset settings"),
+    int ret = QMessageBox::warning(0, tr("Reset settings"),
                                    tr("Do you want to reset Arena Tracker settings?"),
                                    QMessageBox::Ok | QMessageBox::Cancel);
 
@@ -1913,7 +1913,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
 //Nuevo deck copia y hearthhead (Ventana pregunta)
-//Save deck, verificar nombre cogido.
 
 
 //BUGS CONOCIDOS

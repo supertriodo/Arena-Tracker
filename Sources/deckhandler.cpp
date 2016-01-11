@@ -1009,11 +1009,20 @@ void DeckHandler::saveDeck()
     jsonObjectDeck.insert("hero", Utility::heroToLogNumber(hero));
 
     //Remove existing json deck
-    QString deckName = ui->deckLineEdit->text();
     if(!loadedDeckName.isNull())
     {
         decksJson.remove(loadedDeckName);
         emit pDebug("Removed " + loadedDeckName + " from decksJson.");
+    }
+
+    //Verificar nombre unico
+    QString deckName = ui->deckLineEdit->text();
+    if(decksJson.contains(deckName))
+    {
+        int num = 2;
+        while(decksJson.contains(deckName + " " + QString::number(num)))    num++;
+        deckName = deckName + " " + QString::number(num);
+        ui->deckLineEdit->setText(deckName);
     }
 
     //Add json deck
