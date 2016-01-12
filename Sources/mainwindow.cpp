@@ -1298,8 +1298,6 @@ void MainWindow::resetSettings()
         settings.setValue("logPath", "");
         settings.setValue("logConfig", "");
         settings.setValue("playerTag", "");
-        settings.setValue("playerEmail", "");
-        settings.setValue("password", "");
         settings.setValue("sizeDraft", QSize(350, 400));
 
         resize(QSize(400, 400));
