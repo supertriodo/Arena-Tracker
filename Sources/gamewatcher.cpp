@@ -276,13 +276,14 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             {
                 hero1 = match->captured(1);
                 gameState = heroType2State;
-                emit pDebug("Found hero 1 (GameState = heroType2State)", numLine);
+                emit pDebug("Found hero 1: " + hero1 + " (GameState = heroType2State)", numLine);
             }
             else if(gameState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero2 = match->captured(1);
-                gameState = playerName1State;
-                emit pDebug("Found hero 2 (GameState = playerName1State)", numLine);
+                if(loadingScreen == spectator)  gameState = inGameState;
+                else                            gameState = playerName1State;
+                emit pDebug("Found hero 2: " + hero2 + " (GameState = playerName1State)", numLine);
             }
         case playerName1State:
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
@@ -294,7 +295,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     secretHero = getSecretHero(hero2, hero1);
                 }
                 gameState = playerName2State;
-                emit pDebug("Found player 1 (GameState = playerName2State)", numLine);
+                emit pDebug("Found player 2: " + name2 + " (GameState = playerName2State)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -312,7 +313,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 gameState = inGameState;
-                emit pDebug("Found player 2 (GameState = inGameState)", numLine);
+                emit pDebug("Found player 1: " + name1 + " (GameState = inGameState)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -358,10 +359,47 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     {
         //Jugador roba carta inicial
         if(line.contains(QRegularExpression(
-                "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
+                "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
                 ), match))
         {
-            emit pDebug("Player: Starting card drawn: " + match->captured(1), numLine);
+            QString cardId = match->captured(1);
+            QString player = match->captured(2);
+
+            emit pDebug("Player: Starting card drawn: " + cardId, numLine);
+
+            //Descubrimos el playerID del jugador y su playerTag (si playerTag no estaba definido)
+            if(playerID == 0)
+            {
+                playerID = player.toInt();
+
+                if(playerID == 1)
+                {
+                    if(loadingScreen != spectator)  playerTag = name1;
+                    secretHero = getSecretHero(hero1, hero2);
+                }
+                else if(playerID == 2)
+                {
+                    if(loadingScreen != spectator)  playerTag = name2;
+                    secretHero = getSecretHero(hero2, hero1);
+                }
+                else
+                {
+                    playerID = 0;
+                    emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
+                }
+
+                if(loadingScreen != spectator)
+                {
+                    QSettings settings("Arena Tracker", "Arena Tracker");
+                    settings.setValue("playerTag", playerTag);
+                    emit pDebug("Defined playerID, secretHero and playerTag: " + playerTag, 0);
+                }
+                else
+                {
+                    emit pDebug("Defined playerID and secretHero in spectator game.", 0);
+                }
+            }
+
             emit playerCardDraw(match->captured(1));
         }
         //Enemigo roba carta inicial
@@ -734,54 +772,51 @@ void GameWatcher::checkAvenge()
 }
 
 
-QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
-{
-    QMessageBox msgBox((QMainWindow*)this->parent());
-    msgBox.setText(tr("Who are you?"));
-    msgBox.setWindowTitle(tr("Player Tag"));
-    msgBox.setIcon(QMessageBox::Question);
-    QPushButton *button1 = msgBox.addButton(playerName1, QMessageBox::ActionRole);
-    QPushButton *button2 = msgBox.addButton(playerName2, QMessageBox::ActionRole);
-    QPushButton *button3 = msgBox.addButton("None", QMessageBox::ActionRole);
+//QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
+//{
+//    QMessageBox msgBox((QMainWindow*)this->parent());
+//    msgBox.setText(tr("Who are you?"));
+//    msgBox.setWindowTitle(tr("Player Tag"));
+//    msgBox.setIcon(QMessageBox::Question);
+//    QPushButton *button1 = msgBox.addButton(playerName1, QMessageBox::ActionRole);
+//    QPushButton *button2 = msgBox.addButton(playerName2, QMessageBox::ActionRole);
+//    QPushButton *button3 = msgBox.addButton("None", QMessageBox::ActionRole);
 
-    msgBox.exec();
+//    msgBox.exec();
 
-    if (msgBox.clickedButton() == button1)
-    {
-        return playerName1;
-    }
-    else if (msgBox.clickedButton() == button2)
-    {
-        return playerName2;
-    }
-    else
-    {
-        (void)button3;
-        return playerTag;
-    }
-}
+//    if (msgBox.clickedButton() == button1)
+//    {
+//        return playerName1;
+//    }
+//    else if (msgBox.clickedButton() == button2)
+//    {
+//        return playerName2;
+//    }
+//    else
+//    {
+//        (void)button3;
+//        return playerTag;
+//    }
+//}
 
 
 void GameWatcher::createGameResult()
 {
-    if(playerTag.isEmpty() ||
-            (synchronized && playerTag != name1 && playerTag != name2))
+    if(loadingScreen == spectator)
     {
-        playerTag = askPlayerTag(name1, name2);
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("playerTag", playerTag);
+        emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
+        return;
     }
 
     GameResult gameResult;
 
-    //Volvemos a calcular playerHero y enemyHero en caso de cambio de playerTag
-    if(name1 == playerTag)
+    if(playerID == 1)
     {
         gameResult.playerHero = hero1;
         gameResult.enemyHero = hero2;
         gameResult.enemyName = name2;
     }
-    else if(name2 == playerTag)
+    else if(playerID == 2)
     {
         gameResult.playerHero = hero2;
         gameResult.enemyHero = hero1;
@@ -789,8 +824,7 @@ void GameWatcher::createGameResult()
     }
     else
     {
-        emit pDebug("PlayerTag didn't play this game.", Warning);
-        emit pLog(tr("Log: Spectator game:") + " " + name1 + " vs " + name2);
+        emit pDebug("CreateGameResult: PlayerID wasn't defined in the game.", 0, Error);
         return;
     }
 

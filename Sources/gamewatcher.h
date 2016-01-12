@@ -74,7 +74,6 @@ private:
     void processPower(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
-    QString askPlayerTag(QString &playerName1, QString &playerName2);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
     void startReadingDeck();
@@ -93,8 +92,6 @@ public:
 signals:
     void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
     void newArena(QString hero);
-//    void newArenaReward(int gold, int dust, bool pack, bool goldCard, bool plainCard);
-//    void arenaRewardsComplete();
     void inRewards();
     void newDeckCard(QString card);
     void startGame();

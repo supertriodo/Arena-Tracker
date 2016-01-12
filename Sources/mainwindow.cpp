@@ -1910,10 +1910,15 @@ LoadingScreen MainWindow::getLoadingScreen()
 //triodo: you can check for cardids on drawn cards
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
+//Ventana centro en screens
+//reducir scroll space deck
+//Restart hs log.config changed
+//Cambiar info pregunta nombre
 
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
+//Spectator games no avanzan el turno ya que playerTag es diferente de los jugadores.
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
