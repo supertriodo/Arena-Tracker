@@ -103,7 +103,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 9);
+    ui->tabDeckLayout->setContentsMargins(0, 45, 0, 9);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -565,15 +565,6 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->hide();
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
-
-        ui->arenaTreeWidget = new MoveTreeWidget(ui->tabArena);
-        ui->tabArenalLayout->insertWidget(1, ui->arenaTreeWidget);
-        ui->enemyHandListWidget = new MoveListWidget(ui->tabEnemy);
-        ui->tabEnemyLayout->addWidget(ui->enemyHandListWidget);
-        ui->secretsTreeWidget = new MoveTreeWidget(ui->tabEnemy);
-        ui->tabEnemyLayout->addWidget(ui->secretsTreeWidget);
-        ui->drawListWidget = new MoveListWidget(ui->tabEnemy);
-        ui->tabEnemyLayout->addWidget(ui->drawListWidget);
 
         completeHeroButtons();
         completeConfigTab();
@@ -1904,6 +1895,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Button to web
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
+//Test moves hand
 
 
 //BUGS CONOCIDOS

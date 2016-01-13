@@ -15,10 +15,6 @@ public:
     MoveTabWidget *tabWidgetH2 = NULL;
     MoveTabWidget *tabWidgetH3 = NULL;
     MoveTabWidget *tabWidgetV1 = NULL;
-    MoveListWidget *enemyHandListWidget = NULL;
-    MoveListWidget *drawListWidget = NULL;
-    MoveTreeWidget *secretsTreeWidget = NULL;
-    MoveTreeWidget *arenaTreeWidget = NULL;
     QPushButton *minimizeButton = NULL;
     QPushButton *closeButton = NULL;
     ResizeButton *resizeButton = NULL;

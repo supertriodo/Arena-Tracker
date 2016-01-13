@@ -76,6 +76,7 @@ private slots:
     void openDonateWeb();
     void hideRewards();
     void uploadRewards();
+    void openAMWeb();
 };
 
 #endif // ARENAHANDLER_H

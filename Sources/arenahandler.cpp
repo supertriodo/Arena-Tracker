@@ -23,10 +23,11 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-    ui->updateButton->setToolTip(tr("Reload latest arena from Arena Mastery."));
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));
+    connect(ui->webButton, SIGNAL(clicked()),
+            this, SLOT(openAMWeb()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
 
@@ -441,6 +442,12 @@ void ArenaHandler::openDonateWeb()
         "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&"
         "item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
         ));
+}
+
+
+void ArenaHandler::openAMWeb()
+{
+    QDesktopServices::openUrl(QUrl(WEB_URL));
 }
 
 

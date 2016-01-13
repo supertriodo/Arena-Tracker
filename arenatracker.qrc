@@ -18,7 +18,6 @@
         <file>Images/hero07.png</file>
         <file>Images/hero08.png</file>
         <file>Images/hero09.png</file>
-        <file>Images/refresh64.png</file>
         <file>Images/donate.gif</file>
         <file>Images/bgCard1.png</file>
         <file>Images/bgCard2.png</file>
@@ -69,5 +68,7 @@
         <file>Images/loadDeck.png</file>
         <file>Images/newDeck.png</file>
         <file>Images/saveDeck.png</file>
+        <file>Images/refresh.png</file>
+        <file>Images/web.png</file>
     </qresource>
 </RCC>

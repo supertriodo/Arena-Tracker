@@ -59,7 +59,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="tabArenalLayout">
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
@@ -76,7 +76,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>60</width>
+                <width>0</width>
                 <height>0</height>
                </size>
               </property>
@@ -87,12 +87,45 @@
                 <bold>false</bold>
                </font>
               </property>
+              <property name="toolTip">
+               <string>Reload latest arena from Arena Mastery.</string>
+              </property>
               <property name="text">
                <string/>
               </property>
               <property name="icon">
                <iconset resource="arenatracker.qrc">
-                <normaloff>:/Images/refresh64.png</normaloff>:/Images/refresh64.png</iconset>
+                <normaloff>:/Images/refresh.png</normaloff>:/Images/refresh.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="webButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Open web Arena Mastery.</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/web.png</normalon>
+               </iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -148,6 +181,15 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="MoveTreeWidget" name="arenaTreeWidget">
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutRewards1">
@@ -394,7 +436,7 @@
          </attribute>
          <layout class="QGridLayout" name="heroGridLayout">
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <item row="2" column="1">
            <widget class="QPushButton" name="heroButton2">
@@ -626,7 +668,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="topMargin">
-           <number>46</number>
+           <number>50</number>
           </property>
           <item>
            <widget class="QGroupBox" name="groupBoxDraft">
@@ -880,7 +922,7 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -1108,11 +1150,26 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
           </property>
+          <item>
+           <widget class="MoveListWidget" name="enemyHandListWidget"/>
+          </item>
+          <item>
+           <widget class="MoveTreeWidget" name="secretsTreeWidget">
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <widget class="MoveListWidget" name="drawListWidget"/>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tabLog">
@@ -1121,7 +1178,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <item>
            <widget class="QTextEdit" name="logTextEdit">
@@ -1153,7 +1210,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="topMargin">
-           <number>40</number>
+           <number>45</number>
           </property>
           <item>
            <widget class="MoveVerticalScrollArea" name="configScrollArea">
