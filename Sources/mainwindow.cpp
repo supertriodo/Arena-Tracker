@@ -748,29 +748,24 @@ void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString 
 
 void MainWindow::moveInScreen(QPoint pos, QSize size)
 {
-    QPoint points[4];
-    points[0] = pos + QPoint(5,5);
-    points[1] = pos + QPoint(-5 + size.width(), 5);
-    points[2] = pos + QPoint(5, -5 + size.height());
-    points[3] = pos + QPoint(-5 + size.width(), -5 + size.height());
+    QRect appRect(pos, size);
+    QPoint midPoint = appRect.center();
 
     emit pDebug("Window Pos: (" + QString::number(pos.x()) + "," + QString::number(pos.y()) +
-                ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) + ")");
+                ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) +
+                ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")");
 
     foreach(QScreen *screen, QGuiApplication::screens())
     {
         if (!screen)    continue;
         QRect geometry = screen->geometry();
 
-        for(int i=0; i<4; i++)
+        if(geometry.contains(midPoint))
         {
-            if(geometry.contains(points[i]))
-            {
-                emit pDebug("Window in screen: (" + QString::number(geometry.top()) + "," + QString::number(geometry.right()) +
-                            "," + QString::number(geometry.bottom()) + "," + QString::number(geometry.left()) + ")");
-                move(pos);
-                return;
-            }
+            emit pDebug("Window in screen: (" + QString::number(geometry.left()) + "," + QString::number(geometry.top()) + "," +
+                        QString::number(geometry.right()) + "," + QString::number(geometry.bottom()) + ")");
+            move(pos);
+            return;
         }
     }
 
@@ -1912,7 +1907,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Crear decks con python
 //Ventana centro en screens
 //reducir scroll space deck
-//Subir deck a web indefinidamente
 
 
 //BUGS CONOCIDOS
