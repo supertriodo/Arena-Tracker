@@ -607,10 +607,22 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
         emit pDebug("Read arena in progress: " + QString(match->captured(1)) +
                     " with " + QString::number(list.count()) + " games.");
 
-        if(getCards)
+        //Deck in web
+        //Ejemplo html
+        //<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>
+        if(html.contains("<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>"))
         {
-            getArenaCards(html);
+            deckInWeb = true;
+            emit pDebug("Deck present in web.");
+
+            if(getCards)    getArenaCards(html);
         }
+        else
+        {
+            deckInWeb = false;
+            emit pDebug("No deck in web.");
+        }
+
         return true;
     }
     else
@@ -620,47 +632,37 @@ bool WebUploader::getArenaCurrentAndGames(QNetworkReply *reply, QList<GameResult
 }
 
 
+//No se llama nunca
 void WebUploader::getArenaCards(QString &html)
 {
-    //Ejemplo html
-    //<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>
+    emit newWebDeckCardList();
+    emit pDebug("Start reading deck.");
 
-    if(html.contains("<li><a href='#deck' data-toggle='tab'>Cards: List & Info</a></li>"))
+    //Ejemplo html carta
+    //<li id='374' class='list-group-item' data-name='1' data-cost='3' data-total='1' data-remaining='1' data-any='1'>
+    //<span style='display: inline-block;'>(3) <a href='http://www.hearthpwn.com/cards/428' onClick='return false;'>Acolyte of Pain</a>
+    //</span> (<span id='remaining-374' style='font-weight:bold;'>1</span> copy)</li>
+    QRegularExpression re(
+        "<li id='\\d+' class='list-group-item' data-name='\\d+' data-cost='\\d+' data-total='(\\d+)' data-remaining='\\d+' data-any='\\d+'>"
+        "<span style='display: inline-block;'>.*<a href=.*onClick=.*>(.+)</a> "
+        "</span>.*</li>");
+    QRegularExpressionMatchIterator reIterator = re.globalMatch(html);
+
+    while (reIterator.hasNext())
     {
-        deckInWeb = true;
-        emit newWebDeckCardList();
-        emit pDebug("Start reading deck.");
+        QRegularExpressionMatch match = reIterator.next();
 
-        //Ejemplo html carta
-        //<li id='374' class='list-group-item' data-name='1' data-cost='3' data-total='1' data-remaining='1' data-any='1'>
-        //<span style='display: inline-block;'>(3) <a href='http://www.hearthpwn.com/cards/428' onClick='return false;'>Acolyte of Pain</a>
-        //</span> (<span id='remaining-374' style='font-weight:bold;'>1</span> copy)</li>
-        QRegularExpression re(
-            "<li id='\\d+' class='list-group-item' data-name='\\d+' data-cost='\\d+' data-total='(\\d+)' data-remaining='\\d+' data-any='\\d+'>"
-            "<span style='display: inline-block;'>.*<a href=.*onClick=.*>(.+)</a> "
-            "</span>.*</li>");
-        QRegularExpressionMatchIterator reIterator = re.globalMatch(html);
-
-        while (reIterator.hasNext())
+        QString name = match.captured(2);
+        QString code = Utility::cardEnCodeFromName(name);
+        if(code.isEmpty())
         {
-            QRegularExpressionMatch match = reIterator.next();
-
-            QString name = match.captured(2);
-            QString code = Utility::cardEnCodeFromName(name);
-            if(code.isEmpty())
-            {
-                emit pDebug("Code for card name not found in Json: " + name, Error);
-                emit pLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
-            }
-            else    emit newDeckCard(code, match.captured(1).toInt());
+            emit pDebug("Code for card name not found in Json: " + name, Error);
+            emit pLog(tr("JSon: ERROR: Code for card name not found in Json: ") + name);
         }
-        emit pDebug("End reading deck.");
-        emit pLog(tr("Arena Mastery: Active deck read."));
+        else    emit newDeckCard(code, match.captured(1).toInt());
     }
-    else
-    {
-        emit pDebug("No deck in web.");
-    }
+    emit pDebug("End reading deck.");
+    emit pLog(tr("Arena Mastery: Active deck read."));
 }
 
 
