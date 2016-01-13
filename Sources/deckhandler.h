@@ -55,7 +55,7 @@ private:
     QString getNewDeckName();
     void addDeckToLoadTree(QString deckName);
     void removeDeckFromLoadTree(QString deckName);
-    void createDeckTreeWidget();
+    void createLoadDeckTreeWidget();
     bool isItemClass(QTreeWidgetItem *item);
     void showDeckTreeWidget();
     void addNewDeckMenu(QPushButton *button);

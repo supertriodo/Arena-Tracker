@@ -41,9 +41,10 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->drawListWidget->setMouseTracking(true);
+    ui->deckListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->deckListWidget->setMouseTracking(true);
 
-    createDeckTreeWidget();
+    createLoadDeckTreeWidget();
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
@@ -91,7 +92,7 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
 }
 
 
-void DeckHandler::createDeckTreeWidget()
+void DeckHandler::createLoadDeckTreeWidget()
 {
     QTreeWidget *treeWidget = ui->loadDeckTreeWidget;
     treeWidget->setColumnCount(1);
