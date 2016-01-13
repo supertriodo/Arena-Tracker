@@ -38,7 +38,7 @@ private:
     void readLogConfigPath();
     QString createDefaultLogConfig();
     void checkLogConfig();
-    void checkLogConfigOption(QString option, QString &data, QTextStream &stream);
+    bool checkLogConfigOption(QString option, QString &data, QTextStream &stream);
     void workerFinished();
     void setMaxUpdateTime(int value);
 

@@ -249,6 +249,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                 endReadingDeck();
 
                 emit pDebug("\nFound CREATE_GAME (GameState = heroType1State)", numLine);
+                emit pDebug("PlayerTag: " + playerTag, 0);
                 gameState = heroType1State;
 
                 mulliganEnemyDone = false;

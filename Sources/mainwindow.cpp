@@ -1912,8 +1912,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Crear decks con python
 //Ventana centro en screens
 //reducir scroll space deck
-//Restart hs log.config changed
-//Cambiar info pregunta nombre
+//Subir deck a web indefinidamente
 
 
 //BUGS CONOCIDOS

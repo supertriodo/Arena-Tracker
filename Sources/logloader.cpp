@@ -75,9 +75,7 @@ void LogLoader::readLogPath()
         QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
                                     "1) ") + logFileName + tr(" location (If not default).\n"
                                     "2) log.config location (If not default).\n"
-                                    "3) Restart Hearthstone (If running).\n\n"
-                                    "After your first game:\n"
-                                    "4) Your Hearthstone name."));
+                                    "3) Restart Hearthstone (If running)."));
 
         QString initPath = "";
         logPath = "";
@@ -140,7 +138,6 @@ void LogLoader::readLogConfigPath()
             if(file.exists())   file.remove();
 
             checkLogConfig();
-            QMessageBox::information(0, tr("Restart Hearthstone"), tr("Restart Hearthstone (If running)."));
         }
     }
     else
@@ -206,16 +203,19 @@ void LogLoader::checkLogConfig()
     QString data = QString(file.readAll());
     QTextStream stream(&file);
 
-    checkLogConfigOption("[LoadingScreen]", data, stream);
-    checkLogConfigOption("[Power]", data, stream);
-    checkLogConfigOption("[Zone]", data, stream);
-    checkLogConfigOption("[Arena]", data, stream);
+    bool logConfigChanged = false;
+    logConfigChanged = checkLogConfigOption("[LoadingScreen]", data, stream) || logConfigChanged;
+    logConfigChanged = checkLogConfigOption("[Power]", data, stream) || logConfigChanged;
+    logConfigChanged = checkLogConfigOption("[Zone]", data, stream) || logConfigChanged;
+    logConfigChanged = checkLogConfigOption("[Arena]", data, stream) || logConfigChanged;
+
+    if(logConfigChanged)    QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nRestart Hearthstone (If running)."));
 
     file.close();
 }
 
 
-void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream &stream)
+bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream &stream)
 {
     if(!data.contains(option))
     {
@@ -225,7 +225,10 @@ void LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
         if(option == "[Power]") stream << "Verbose=1" << endl;
+
+        return true;
     }
+    else    return false;
 }
 
 
