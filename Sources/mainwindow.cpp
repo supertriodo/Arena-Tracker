@@ -103,7 +103,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(0, 45, 0, 9);
+    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 9);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -1892,10 +1892,11 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
-//Button to web
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
-//Test moves hand
+//win split relativo a tam screen
+//Arena size column ,metrics
+//Eliminar groupbox draft, titulos
 
 
 //BUGS CONOCIDOS

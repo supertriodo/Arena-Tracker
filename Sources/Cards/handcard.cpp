@@ -96,8 +96,8 @@ void HandCard::drawCreatedByHandCard()
         painter.drawPixmap(0,0,QPixmap(":Images/handCard3.png"));
 
         //BY
-        int fontSize = 11;
-        font.setPointSize(fontSize);
+        int fontSize = 15;
+        font.setPixelSize(fontSize);//11pt
         font.setBold(true);
         font.setKerning(true);
 #ifdef Q_OS_WIN
@@ -125,7 +125,7 @@ void HandCard::drawCreatedByHandCard()
         while(textWide>maxNameLong)
         {
             fontSize--;
-            font.setPointSize(fontSize);
+            font.setPixelSize(fontSize);//<11pt
             fm = QFontMetrics(font);
             textWide = fm.width(name);
             textHigh = fm.height();
@@ -162,8 +162,7 @@ void HandCard::drawDefaultHandCard()
         painter.drawPixmap(0,0,QPixmap(this->special?":Images/handCard2.png":":Images/handCard1.png"));
 
         //Turn
-        int fontSize = 18;
-        font.setPointSize(fontSize);
+        font.setPixelSize(25);//18
         font.setBold(true);
         font.setKerning(true);
 #ifdef Q_OS_WIN

@@ -22,7 +22,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     QWidget *centralWidget = new QWidget(this);
     QFont font("Belwe Bd BT");
-    font.setPointSize(scoreWidth/3);
+    font.setPixelSize(scoreWidth/2);
 
     QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *horLayoutScores = new QHBoxLayout();

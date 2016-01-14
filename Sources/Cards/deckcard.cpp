@@ -105,13 +105,13 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
 
             if(total > 1)
             {
-                font.setPointSize(16);
+                font.setPixelSize(22);//16pt
                 painter.setFont(font);
                 painter.drawText(QRectF(190,6,26,24), Qt::AlignCenter, QString::number(total));
             }
             else
             {
-                font.setPointSize(20);
+                font.setPixelSize(28);//20pt
                 painter.setFont(font);
                 painter.drawText(QRectF(190,9,26,24), Qt::AlignCenter, "*");
             }
@@ -120,7 +120,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         //Name and mana
         if(name == "unknown")
         {
-            font.setPointSize(10);
+            font.setPixelSize(14);//10pt
             painter.setFont(font);
             painter.setPen(QPen(BLACK));
             painter.drawText(QRectF(34,7,154,23), Qt::AlignVCenter, "Unknown");
@@ -128,8 +128,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         else
         {
             //Name
-            int fontSize = 11;
-            font.setPointSize(fontSize);
+            int fontSize = 15;
+            font.setPixelSize(fontSize);//11pt
             font.setBold(true);
             font.setKerning(true);
 
@@ -145,7 +145,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
             while(textWide>maxNameLong)
             {
                 fontSize--;
-                font.setPointSize(fontSize);
+                font.setPixelSize(fontSize);//<11pt
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
                 textHigh = fm.height();
@@ -161,8 +161,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
 
 
             //Mana cost
-            int manaSize = cost>9?6:cost;
-            font.setPointSize(14+manaSize);
+            int manaSize = cost>9?26:18+1.5*cost;
+            font.setPixelSize(manaSize);//20pt | 14 + cost
             painter.setFont(font);
 
             fm = QFontMetrics(font);
@@ -170,7 +170,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
             textHigh = fm.height();
 
             path = QPainterPath();
-            path.addText(14 - textWide/2, 20 + textHigh/4, font, QString::number(cost));
+            path.addText(13 - textWide/2, 20 + textHigh/4, font, QString::number(cost));
             painter.drawPath(path);
         }
     painter.end();
