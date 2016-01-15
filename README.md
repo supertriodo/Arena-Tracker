@@ -3,6 +3,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Draft your arena with HearthArena advice.
 * Upload your arena stats to your ArenaMastery account.
 * Save and organize your constructed decks. No more 9 slots limit.
+* Import decks from HearthHead.
 * Go over your deck while you play.
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
@@ -32,10 +33,6 @@ The first time you run Arena Tracker you will be asked for:
  * Default (Win XP): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
  * If the file doesn't exist create an empty log.config in that dir.
 * 3) Restart Hearthstone (if you have it opened).
-
-After your first game:
-* 4) Your Hearthstone name.
- * A pop up message will appear asking your name.
 
 If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
@@ -101,6 +98,7 @@ If you build on Mac check: https://github.com/supertriodo/Arena-Tracker/issues/1
 * http://www.reddit.com/r/ArenaTracker/
 * http://www.arenamastery.com/
 * http://www.heartharena.com/
+* http://www.hearthhead.com/
 * http://hearthstonejson.com/
 * Arena Tracker is a [HearthSim](http://hearthsim.info) project. Come join us in #hearthsim on chat.freenode.net.
 
