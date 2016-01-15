@@ -88,7 +88,11 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
     connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
 
     button->setMenu(newDeckMenu);
-    button->setMaximumWidth(51);
+
+    //Evita que new deck coja mas espacio
+    ui->deckButtonLoad->setMinimumWidth(51);
+    ui->deckButtonSave->setMinimumWidth(51);
+    ui->deckButtonDeleteDeck->setMinimumWidth(51);
 }
 
 
