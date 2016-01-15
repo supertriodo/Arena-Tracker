@@ -58,7 +58,7 @@ También puedes preguntarme en español.
  * Minions are shown in white.
  * Spells are shown in yellow.
  * Weapons are shown in orange.
-* How do I reset the app so I can set the config info again?
+* How do I reset the app so I can set the config info again? Or move the app its initial position and size.
  * With the app selected press ctrl+r
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
  * Make sure HSCards dir is in the same dir as the binary.
