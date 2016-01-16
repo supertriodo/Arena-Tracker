@@ -1894,10 +1894,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
 //Crear decks con python
-//win split relativo a tam screen
-//Arena size column ,metrics
-//Eliminar groupbox draft, titulos
-//Save deck on enter
+//Sustituir groupbox titulos
 
 
 //BUGS CONOCIDOS

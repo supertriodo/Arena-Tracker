@@ -53,11 +53,16 @@ void ArenaHandler::createTreeWidget()
     QTreeWidget *treeWidget = ui->arenaTreeWidget;
     treeWidget->setColumnCount(5);
     treeWidget->setIconSize(QSize(32,32));
-    treeWidget->setColumnWidth(0, 110);//120
-    treeWidget->setColumnWidth(1, 50);//80
-    treeWidget->setColumnWidth(2, 40);//60
-    treeWidget->setColumnWidth(3, 40);//60
-    treeWidget->setColumnWidth(4, 0);//60
+
+    QFont font("Belwe Bd BT", 14);
+    QFontMetrics fm(font);
+    int textWide = fm.width("Ranked");
+
+    treeWidget->setColumnWidth(0, textWide*1.5);//110
+    treeWidget->setColumnWidth(1, 50);
+    treeWidget->setColumnWidth(2, 40);
+    treeWidget->setColumnWidth(3, 40);
+    treeWidget->setColumnWidth(4, 0);
 
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);
