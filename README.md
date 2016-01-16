@@ -106,7 +106,7 @@ Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
-* Michael Bull: €10,00 EUR
+* [Michael Bull](https://github.com/MikeBull94): €10,00 EUR
 * Innotus: €5,00 EUR
  
 (Thanks for keeping this project alive.)
