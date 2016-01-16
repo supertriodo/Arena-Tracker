@@ -1897,6 +1897,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //win split relativo a tam screen
 //Arena size column ,metrics
 //Eliminar groupbox draft, titulos
+//Save deck on enter
 
 
 //BUGS CONOCIDOS

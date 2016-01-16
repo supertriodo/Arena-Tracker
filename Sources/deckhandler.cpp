@@ -63,6 +63,8 @@ void DeckHandler::completeUI()
 
     connect(ui->deckLineEdit, SIGNAL(textEdited(QString)),
             this, SLOT(enableDeckButtonSave()));
+    connect(ui->deckLineEdit, SIGNAL(returnPressed()),
+            this, SLOT(saveDeck()));
     connect(ui->deckButtonSave, SIGNAL(clicked()),
             this, SLOT(saveDeck()));
     connect(ui->deckButtonLoad, SIGNAL(clicked()),
@@ -994,6 +996,8 @@ void DeckHandler::loadDeck(QString deckName)
 
 void DeckHandler::saveDeck()
 {
+    if(!ui->deckButtonSave->isEnabled())    return;
+
     //Create json deck
     QJsonObject jsonObjectDeck;
     QString hero = "";
