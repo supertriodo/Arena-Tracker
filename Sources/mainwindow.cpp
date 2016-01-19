@@ -932,6 +932,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
+            else if(event->key() == Qt::Key_Z)  deckHandler->deckBuilderPY();
         }
     }
 }
@@ -1893,8 +1894,12 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
-//Crear decks con python
-//Sustituir groupbox titulos
+//Class cards colors
+//sleep python
+//install python
+//nuevos botones
+//golden cards
+//eliminar ctrl-z
 
 
 //BUGS CONOCIDOS

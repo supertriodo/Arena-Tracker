@@ -1,11 +1,15 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "opencv2/opencv.hpp"
 #include <QString>
 #include <QMap>
 #include <QJsonObject>
 #include <QUrlQuery>
 #include <QNetworkRequest>
+#include <QScreen>
+
+using namespace cv;
 
 #define ANIMATION_TIME 750
 
@@ -34,6 +38,8 @@ public:
 private:
     static QMap<QString, QJsonObject> *enCardsJson;   //en-us json
     static QMap<QString, QJsonObject> *cardsJson;   //local json
+    static QString diacriticLetters;
+    static QStringList noDiacriticLetters;
 
 
 //Metodos
@@ -48,6 +54,8 @@ public:
     static QString cardLocalCodeFromName(QString name);
     static void setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson);
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
+    static QString removeAccents(QString s);
+    static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
 };
 
 #endif // UTILITY_H

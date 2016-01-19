@@ -1,6 +1,5 @@
 #include "drafthandler.h"
 #include "mainwindow.h"
-#include <stdlib.h>
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -685,116 +684,25 @@ bool DraftHandler::screenRectsFound()
 
 bool DraftHandler::findScreenRects()
 {
+    std::vector<Point2f> templatePoints(6);
+    templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
+    templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
+    templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+
+
     QList<QScreen *> screens = QGuiApplication::screens();
     for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        QRect rect = screen->geometry();
-        QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-        cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
-
-        cv::Mat screenCapture = mat.clone();
-
-        Mat img_object = imread((Utility::appPath() + "/HSCards/arenaTemplate.png").toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
-        if(!img_object.data)
-        {
-            emit pDebug("Cannot find arenaTemplate.png", Error);
-            emit pLog(tr("File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."));
-            return false;
-        }
-        Mat img_scene;
-        cv::cvtColor(screenCapture, img_scene, CV_BGR2GRAY);
-
-        //-- Step 1: Detect the keypoints using SURF Detector
-        int minHessian = 400;
-
-        SurfFeatureDetector detector( minHessian );
-
-        std::vector<KeyPoint> keypoints_object, keypoints_scene;
-
-        detector.detect( img_object, keypoints_object );
-        detector.detect( img_scene, keypoints_scene );
-
-        //-- Step 2: Calculate descriptors (feature vectors)
-        SurfDescriptorExtractor extractor;
-
-        Mat descriptors_object, descriptors_scene;
-
-        extractor.compute( img_object, keypoints_object, descriptors_object );
-        extractor.compute( img_scene, keypoints_scene, descriptors_scene );
-
-        //-- Step 3: Matching descriptor vectors using FLANN matcher
-        FlannBasedMatcher matcher;
-        std::vector< DMatch > matches;
-        matcher.match( descriptors_object, descriptors_scene, matches );
-
-        double min_dist = 100;
-
-        //-- Quick calculation of max and min distances between keypoints
-        for( int i = 0; i < descriptors_object.rows; i++ )
-        { double dist = matches[i].distance;
-          if( dist < min_dist ) min_dist = dist;
-        }
-
-        qDebug()<< "DraftHandler: FLANN min dist:" <<min_dist;
-
-        //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist )
-        std::vector< DMatch > good_matches;
-
-        for( int i = 0; i < descriptors_object.rows; i++ )
-        { if( matches[i].distance < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
-           { good_matches.push_back( matches[i]); }
-        }
-        qDebug()<< "DraftHandler: FLANN Keypoints buenos:" <<good_matches.size();
-        if(good_matches.size() < 10)    continue;
-
-
-        //-- Localize the object (find homography)
-        std::vector<Point2f> obj;
-        std::vector<Point2f> scene;
-
-        for( uint i = 0; i < good_matches.size(); i++ )
-        {
-          //-- Get the keypoints from the good matches
-          obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
-          scene.push_back( keypoints_scene[ good_matches[i].trainIdx ].pt );
-        }
-
-        Mat H = findHomography( obj, scene, CV_RANSAC );
-
-        //-- Get the corners from the image_1 ( the object to be "detected" )
-        std::vector<Point2f> obj_corners(6);
-        obj_corners[0] = cvPoint(205,276); obj_corners[1] = cvPoint(205+118,276+118);
-        obj_corners[2] = cvPoint(484,276); obj_corners[3] = cvPoint(484+118,276+118);
-        obj_corners[4] = cvPoint(762,276); obj_corners[5] = cvPoint(762+118,276+118);
-        std::vector<Point2f> scene_corners(4);
-
-        perspectiveTransform( obj_corners, scene_corners, H);
-
-
-//#ifdef QT_DEBUG
-//        //Show matches
-//        Mat img_matches;
-//        drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
-//                     good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                     vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-
-//        //-- Draw lines between the corners (the mapped object in the scene - image_2 )
-//        line( img_matches, scene_corners[0] + Point2f( img_object.cols, 0), scene_corners[1] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-//        line( img_matches, scene_corners[2] + Point2f( img_object.cols, 0), scene_corners[3] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-//        line( img_matches, scene_corners[4] + Point2f( img_object.cols, 0), scene_corners[5] + Point2f( img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-
-//        //-- Show detected matches
-//        imshow( "Good Matches & Object detection", img_matches );
-//#endif
-
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen("arenaTemplate.png", screen, templatePoints);
+        if(screenPoints.empty())    continue;
 
         //Calculamos screenRect
         for(int i=0; i<3; i++)
         {
-            screenRects[i]=cv::Rect(scene_corners[i*2], scene_corners[i*2+1]);
+            screenRects[i]=cv::Rect(screenPoints[i*2], screenPoints[i*2+1]);
             emit pDebug("ScreenRect: " +
                         QString::number(screenRects[i].x) + "/" +
                         QString::number(screenRects[i].y) + "/" +

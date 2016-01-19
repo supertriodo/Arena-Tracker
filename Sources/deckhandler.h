@@ -75,6 +75,7 @@ public:
     void setSynchronized();
     void loadDecks();
     bool askSaveDeck();
+    bool deckBuilderPY();
 
 signals:
     void checkCardImage(QString code);

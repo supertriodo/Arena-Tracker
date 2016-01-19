@@ -1,8 +1,15 @@
 #include "utility.h"
+#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/nonfree/features2d.hpp"
 #include <QtWidgets>
 
 QMap<QString, QJsonObject> * Utility::enCardsJson;
 QMap<QString, QJsonObject> * Utility::cardsJson;
+QString Utility::diacriticLetters;
+QStringList Utility::noDiacriticLetters;
 
 Utility::Utility()
 {
@@ -110,4 +117,124 @@ void Utility::setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson)
 void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {
     Utility::cardsJson = cardsJson;
+}
+
+
+QString Utility::removeAccents(QString s)
+{
+    if (diacriticLetters.isEmpty())
+    {
+        diacriticLetters = QString::fromUtf8("ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ");
+        noDiacriticLetters << "S"<<"OE"<<"Z"<<"s"<<"oe"<<"z"<<"Y"<<"Y"<<"u"<<"A"<<"A"<<"A"<<"A"<<"A"<<"A"<<"AE"<<"C"<<"E"<<"E"<<"E"<<"E"<<"I"<<"I"<<"I"<<"I"<<"D"<<"N"<<"O"<<"O"<<"O"<<"O"<<"O"<<"O"<<"U"<<"U"<<"U"<<"U"<<"Y"<<"s"<<"a"<<"a"<<"a"<<"a"<<"a"<<"a"<<"ae"<<"c"<<"e"<<"e"<<"e"<<"e"<<"i"<<"i"<<"i"<<"i"<<"o"<<"n"<<"o"<<"o"<<"o"<<"o"<<"o"<<"o"<<"u"<<"u"<<"u"<<"u"<<"y"<<"y";
+    }
+
+    QString output = "";
+    for (int i = 0; i < s.length(); i++)
+    {
+        QChar c = s[i];
+        int dIndex = diacriticLetters.indexOf(c);
+        if (dIndex < 0)
+        {
+            output.append(c);
+        }
+        else
+        {
+            QString replacement = noDiacriticLetters[dIndex];
+            output.append(replacement);
+        }
+    }
+
+    return output;
+}
+
+
+std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches)
+{
+    std::vector<Point2f> screenPoints;
+    QRect rect = screen->geometry();
+    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
+
+    cv::Mat screenCapture = mat.clone();
+
+    Mat img_object = imread((Utility::appPath() + "/HSCards/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
+    if(!img_object.data)
+    {
+        qDebug() << "Cannot find" << templateImage;
+        return screenPoints;
+    }
+    Mat img_scene;
+    cv::cvtColor(screenCapture, img_scene, CV_BGR2GRAY);
+
+    //-- Step 1: Detect the keypoints using SURF Detector
+    int minHessian = 400;
+
+    SurfFeatureDetector detector( minHessian );
+
+    std::vector<KeyPoint> keypoints_object, keypoints_scene;
+
+    detector.detect( img_object, keypoints_object );
+    detector.detect( img_scene, keypoints_scene );
+
+    //-- Step 2: Calculate descriptors (feature vectors)
+    SurfDescriptorExtractor extractor;
+
+    Mat descriptors_object, descriptors_scene;
+
+    extractor.compute( img_object, keypoints_object, descriptors_object );
+    extractor.compute( img_scene, keypoints_scene, descriptors_scene );
+
+    //-- Step 3: Matching descriptor vectors using FLANN matcher
+    FlannBasedMatcher matcher;
+    std::vector< DMatch > matches;
+    matcher.match( descriptors_object, descriptors_scene, matches );
+
+    double min_dist = 100;
+
+    //-- Quick calculation of max and min distances between keypoints
+    for( int i = 0; i < descriptors_object.rows; i++ )
+    { double dist = matches[i].distance;
+      if( dist < min_dist ) min_dist = dist;
+    }
+
+    qDebug()<< "DraftHandler: FLANN min dist:" <<min_dist;
+
+    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist )
+    std::vector< DMatch > good_matches;
+
+    for( int i = 0; i < descriptors_object.rows; i++ )
+    { if( matches[i].distance < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
+       { good_matches.push_back( matches[i]); }
+    }
+    qDebug()<< "DraftHandler: FLANN Keypoints buenos:" <<good_matches.size();
+    if(good_matches.size() < 10)    return screenPoints;
+
+
+    //-- Localize the object (find homography)
+    std::vector<Point2f> obj;
+    std::vector<Point2f> scene;
+
+    for( uint i = 0; i < good_matches.size(); i++ )
+    {
+      //-- Get the keypoints from the good matches
+      obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
+      scene.push_back( keypoints_scene[ good_matches[i].trainIdx ].pt );
+    }
+
+    Mat H = findHomography( obj, scene, CV_RANSAC );
+
+    //-- Get the corners from the image_1 ( the object to be "detected" )
+    perspectiveTransform(templatePoints, screenPoints, H);
+
+    //Show matches
+    if(showMatches)
+    {
+        Mat img_matches;
+        drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
+                     good_matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+                     vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        imshow( "Good Matches & Object detection", img_matches );
+    }
+
+    return screenPoints;
 }

@@ -6,14 +6,8 @@
 #include "heartharenamentor.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
-#include "opencv2/opencv.hpp"
-#include "opencv2/core/core.hpp"
-#include "opencv2/features2d/features2d.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/nonfree/features2d.hpp"
 #include <QObject>
 
-using namespace cv;
 
 #define CAPTUREDRAFT_START_TIME         0
 #define CAPTUREDRAFT_LOOP_TIME          200

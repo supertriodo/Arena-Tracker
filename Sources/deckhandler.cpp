@@ -1300,3 +1300,63 @@ void DeckHandler::hideManageDecksButtons()
     ui->tabDeckLayout->removeItem(ui->verticalLayoutManageDecks);
 }
 
+
+bool DeckHandler::deckBuilderPY()
+{
+    //Detecta zonas en pantalla
+    std::vector<Point2f> screenPoints;
+    std::vector<Point2f> templatePoints(4);
+    templatePoints[0] = cvPoint(187,335);
+    templatePoints[1] = cvPoint(432,335);
+    templatePoints[2] = cvPoint(760,995);
+    templatePoints[3] = cvPoint(1265,75);
+
+
+    QList<QScreen *> screens = QGuiApplication::screens();
+    for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
+    {
+        QScreen *screen = screens[screenIndex];
+        if (!screen)    continue;
+        QRect rect = screen->geometry();
+        if(rect.x() != 0 || rect.y() != 0)  continue;
+
+        //Main Screen
+        screenPoints = Utility::findTemplateOnScreen("collectionTemplate.png", screen, templatePoints);
+        break;
+    }
+
+
+    if(screenPoints.empty())
+    {
+        emit pDebug("DeckBuilder: Collection template not found on main screen.");
+        return false;
+    }
+
+
+    //Lanza script
+    QProcess p;
+    QStringList params;
+
+    params << Utility::appPath() + "/HSCards/deckBuilder.py";
+    foreach(Point2f point, screenPoints)
+    {
+        params << QString::number((int)point.x) << QString::number((int)point.y);
+    }
+
+    params << ui->deckLineEdit->text();
+    params << QString::number(0.5);//time sleep
+
+    foreach(DeckCard deckCard, deckCardList.mid(1))
+    {
+        params << Utility::removeAccents(deckCard.getName()) << QString::number(deckCard.total);
+    }
+
+    emit pDebug("Start script:\n" + params.join(" - "));
+
+    p.start("python3", params);
+    p.waitForFinished(-1);
+
+    emit pDebug("End script:\n" + p.readAll());
+    return true;
+}
+
