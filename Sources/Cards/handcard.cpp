@@ -25,16 +25,18 @@ void HandCard::setCreatedByCode(QString code)
     if(!createdByCode.isEmpty())
     {
         cost = (*cardsJson)[code].value("cost").toInt();
-        type = (*cardsJson)[code].value("type").toString();
+        type = getTypeFromString((*cardsJson)[code].value("type").toString());
         name = (*cardsJson)[code].value("name").toString();
-        rarity = (*cardsJson)[code].value("rarity").toString();
+        rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
+        cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
     }
     else
     {
         cost = -1;
-        type = "Minion";
+        type = INVALID_TYPE;
         name = "unknown";
-        rarity = "";
+        rarity = INVALID_RARITY;
+        cardClass = INVALID_CLASS;
     }
 }
 
@@ -82,8 +84,8 @@ void HandCard::drawCreatedByHandCard()
         QFileInfo cardFI(Utility::appPath() + "/HSCards/" + createdByCode + ".png");
         if(cardFI.exists())
         {
-            if(type==QString("Minion"))         source = QRectF(48,72,100,25);
-            else                                source = QRectF(48,98,100,25);
+            if(type==MINION)        source = QRectF(48,72,100,25);
+            else                    source = QRectF(48,98,100,25);
             painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + createdByCode + ".png"), source);
         }
         else
@@ -133,9 +135,10 @@ void HandCard::drawCreatedByHandCard()
 
         painter.setFont(font);
         painter.setPen(QPen(BLACK));
-        if(type==QString("Minion"))         painter.setBrush(WHITE);
-        else if (type==QString("Spell"))    painter.setBrush(YELLOW);
-        else                                painter.setBrush(ORANGE);
+
+        if(drawSpellWeaponColor && type==SPELL)         painter.setBrush(YELLOW);
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
+        else                                            painter.setBrush(WHITE);
 
         path = QPainterPath();
         path.addText(34, 20 + textHigh/4, font, name);

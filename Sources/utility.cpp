@@ -37,10 +37,25 @@ QString Utility::heroToLogNumber(const QString &hero)
 }
 
 
+QString Utility::heroToLogNumber(CardClass cardClass)
+{
+    if(cardClass == DRUID)        return QString("06");
+    else if(cardClass == HUNTER)  return QString("05");
+    else if(cardClass == MAGE)    return QString("08");
+    else if(cardClass == PALADIN) return QString("04");
+    else if(cardClass == PRIEST)  return QString("09");
+    else if(cardClass == ROGUE)   return QString("03");
+    else if(cardClass == SHAMAN)  return QString("02");
+    else if(cardClass == WARLOCK) return QString("07");
+    else if(cardClass == WARRIOR) return QString("01");
+    else return QString();
+}
+
+
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {
-    QString heroesColors[10] = {"#FF7D0A", "#ABD473", "#69CCF0", "#F58CBA", "#FFFFFF", "#FFF569", "#0070DE", "#9482C9", "#C79C6E", "#A9A9A9"};
+    QString heroesColors[10] = {"#7f4f29", "#347c2c", "#699cd5", "#de9a3e", "#a4a4a4", "#4c4e54", "#0070DE", "#6c4177", "#912a21", "#A9A9A9"};
     return heroesColors[order];
 }
 
@@ -48,6 +63,7 @@ QString Utility::getHeroColor(int order)
 QString Utility::getHeroName(int order)
 {
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    if(order>8) return "";
     return heroes[order];
 }
 

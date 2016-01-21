@@ -16,6 +16,12 @@
 #define TRANSPARENT QColor(0,0,0,0)
 #define CARD_SIZE QSize(218,35)
 
+
+enum CardRarity {INVALID_RARITY, COMMON, RARE, EPIC, LEGENDARY};
+enum CardType {INVALID_TYPE, HERO, MINION, SPELL, ENCHANTMENT, WEAPON, HERO_POWER};
+enum CardClass {DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, DREAM, INVALID_CLASS, NEUTRAL};
+
+
 class DeckCard
 {
 public:
@@ -29,29 +35,38 @@ public:
     uint remaining;
 
 protected:
-    QString code, type, name, rarity;
+    QString code, name;
+    CardRarity rarity;
+    CardType type;
+    CardClass cardClass;
     int cost;
 
-protected:
+    static bool drawClassColor, drawSpellWeaponColor;
     static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 protected:
     QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
     QColor getRarityColor();
+    CardRarity getRarityFromString(QString value);
+    CardType getTypeFromString(QString value);
+    CardClass getClassFromString(QString value);
     QString tooltip();
 
 public:
     void draw(bool drawTotal=true, int cardHeight=35);
     void drawGreyed(bool drawTotal, int cardHeight=35);
     QString getCode();
-    QString getType();
+    CardType getType();
     QString getName();
-    QString getRarity();
+    CardRarity getRarity();
+    CardClass getCardClass();
     int getCost();
     void setCode(QString code);
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
+    static void setDrawClassColor(bool value);
+    static void setSpellWeaponColor(bool value);
 };
 
 #endif // DECKCARD_H

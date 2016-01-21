@@ -1,6 +1,7 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "Cards/deckcard.h"
 #include "opencv2/opencv.hpp"
 #include <QString>
 #include <QMap>
@@ -45,6 +46,7 @@ private:
 //Metodos
 public:
     static QString heroToLogNumber(const QString &hero);
+    static QString heroToLogNumber(CardClass cardClass);
     static QString getHeroColor(int order);
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);

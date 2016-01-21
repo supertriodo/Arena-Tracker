@@ -442,7 +442,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
         {
             if(deckCard.getType() != deckCardList[i].getType())
             {
-                if(deckCard.getType() == "Weapon" || deckCardList[i].getType() == "Minion")
+                if(deckCard.getType() == WEAPON || deckCardList[i].getType() == MINION)
                 {
                     deckCardList.insert(i, deckCard);
                     ui->deckListWidget->insertItem(i, deckCard.listItem);
@@ -598,7 +598,7 @@ void DeckHandler::enableDeckButtons()
     else                                ui->deckButtonRemove->setEnabled(false);
     if(index>0 && deckCardList.first().total > 0 &&
             (inArena |
-                ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != "Legendary"))
+                ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != LEGENDARY))
             )
         )
                                         ui->deckButtonPlus->setEnabled(true);
@@ -1011,11 +1011,11 @@ void DeckHandler::saveDeck()
             jsonObjectDeck.insert(deckCard.getCode(), (int)deckCard.total);
             if(hero.isEmpty())
             {
-                hero = (*cardsJson)[deckCard.getCode()].value("playerClass").toString();
+                hero = Utility::heroToLogNumber(deckCard.getCardClass());
             }
         }
     }
-    jsonObjectDeck.insert("hero", Utility::heroToLogNumber(hero));
+    jsonObjectDeck.insert("hero", hero);
 
     //Remove existing json deck
     if(!loadedDeckName.isNull())

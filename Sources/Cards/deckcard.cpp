@@ -3,6 +3,8 @@
 #include <QtWidgets>
 
 
+bool DeckCard::drawClassColor = true;
+bool DeckCard::drawSpellWeaponColor = true;
 QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
 
@@ -27,17 +29,59 @@ void DeckCard::setCode(QString code)
     if(!code.isEmpty())
     {
         cost = (*cardsJson)[code].value("cost").toInt();
-        type = (*cardsJson)[code].value("type").toString();
+        type = getTypeFromString((*cardsJson)[code].value("type").toString());
         name = (*cardsJson)[code].value("name").toString();
-        rarity = (*cardsJson)[code].value("rarity").toString();
+        rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
+        cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
     }
     else
     {
         cost = -1;
-        type = "Minion";
+        type = INVALID_TYPE;
         name = "unknown";
-        rarity = "";
+        rarity = INVALID_RARITY;
+        cardClass = INVALID_CLASS;
     }
+}
+
+
+CardRarity DeckCard::getRarityFromString(QString value)
+{
+    if(value == "FREE")             return COMMON;
+    else if(value == "COMMON")      return COMMON;
+    else if(value == "RARE")        return RARE;
+    else if(value == "EPIC")        return EPIC;
+    else if(value == "LEGENDARY")   return LEGENDARY;
+    else                            return INVALID_RARITY;
+}
+
+
+CardType DeckCard::getTypeFromString(QString value)
+{
+    if(value == "MINION")           return MINION;
+    else if(value == "SPELL")       return SPELL;
+    else if(value == "WEAPON")      return WEAPON;
+    else if(value == "ENCHANTMENT") return ENCHANTMENT;
+    else if(value == "HERO")        return HERO;
+    else if(value == "HERO_POWER")  return HERO_POWER;
+    else                            return INVALID_TYPE;
+}
+
+
+CardClass DeckCard::getClassFromString(QString value)
+{
+    if(value == "NEUTRAL")      return NEUTRAL;
+    else if(value == "DRUID")   return DRUID;
+    else if(value == "HUNTER")  return HUNTER;
+    else if(value == "MAGE")    return MAGE;
+    else if(value == "PALADIN") return PALADIN;
+    else if(value == "PRIEST")  return PRIEST;
+    else if(value == "ROGUE")   return ROGUE;
+    else if(value == "SHAMAN")  return SHAMAN;
+    else if(value == "WARLOCK") return WARLOCK;
+    else if(value == "WARRIOR") return WARRIOR;
+    else if(value == "DREAM")   return DREAM;
+    else                        return INVALID_CLASS;
 }
 
 
@@ -78,30 +122,30 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
         //Card
         QRectF target;
         QRectF source;
-        if(name == "unknown")               source = QRectF(63,18,100,25);
-        else if(type==QString("Minion"))    source = QRectF(48,72,100,25);
-        else                                source = QRectF(48,98,100,25);
-        if(total == 1 && rarity != "Legendary") target = QRectF(113,6,100,25);
+        if(name == "unknown")                   source = QRectF(63,18,100,25);
+        else if(type==MINION)                   source = QRectF(48,72,100,25);
+        else                                    source = QRectF(48,98,100,25);
+        if(total == 1 && rarity != LEGENDARY)   target = QRectF(113,6,100,25);
         else                                    target = QRectF(100,6,100,25);
         painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
 
         //Background and #cards
-        if(drawRarity)                      painter.setPen(QPen(getRarityColor()));
-        else if(nameColor!=BLACK)           painter.setPen(QPen(nameColor));
-        else if(type==QString("Minion"))    painter.setPen(QPen(WHITE));
-        else if (type==QString("Spell"))    painter.setPen(QPen(YELLOW));
-        else                                painter.setPen(QPen(ORANGE));
+        if(nameColor!=BLACK)                            painter.setPen(QPen(nameColor));
+        else if(drawRarity)                             painter.setPen(QPen(getRarityColor()));
+        else if(drawSpellWeaponColor && type==SPELL)    painter.setPen(QPen(YELLOW));
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setPen(QPen(ORANGE));
+        else                                            painter.setPen(QPen(WHITE));
 
         int maxNameLong;
-        if(total == 1 && rarity != "Legendary")
+        if(total == 1 && rarity != LEGENDARY)
         {
             maxNameLong = 174;
-            painter.drawPixmap(0,0,QPixmap(":Images/bgCard1.png"));
+            painter.drawPixmap(0,0,QPixmap(":Images/bgCard1" + (drawClassColor?Utility::getHeroName(cardClass):QString("")) + ".png"));
         }
         else
         {
             maxNameLong = 155;
-            painter.drawPixmap(0,0,QPixmap(":Images/bgCard2.png"));
+            painter.drawPixmap(0,0,QPixmap(":Images/bgCard2" + (drawClassColor?Utility::getHeroName(cardClass):QString("")) + ".png"));
 
             if(total > 1)
             {
@@ -116,6 +160,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
                 painter.drawText(QRectF(190,9,26,24), Qt::AlignCenter, "*");
             }
         }
+
 
         //Name and mana
         if(name == "unknown")
@@ -201,12 +246,11 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHe
 
 QColor DeckCard::getRarityColor()
 {
-    if(rarity == "Free")               return WHITE;
-    else if(rarity == "Common")        return WHITE;
-    else if(rarity == "Rare")          return BLUE;
-    else if(rarity == "Epic")          return VIOLET;
-    else if(rarity == "Legendary")     return ORANGE;
-    else                                return BLACK;
+    if(rarity == COMMON)            return WHITE;
+    else if(rarity == RARE)         return BLUE;
+    else if(rarity == EPIC)         return VIOLET;
+    else if(rarity == LEGENDARY)    return ORANGE;
+    else                            return BLACK;
 }
 
 
@@ -216,7 +260,7 @@ QString DeckCard::getCode()
 }
 
 
-QString DeckCard::getType()
+CardType DeckCard::getType()
 {
     return type;
 }
@@ -233,9 +277,15 @@ int DeckCard::getCost()
     return cost;
 }
 
-QString DeckCard::getRarity()
+CardRarity DeckCard::getRarity()
 {
     return rarity;
+}
+
+
+CardClass DeckCard::getCardClass()
+{
+    return cardClass;
 }
 
 
@@ -243,3 +293,16 @@ void DeckCard::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {
     DeckCard::cardsJson = cardsJson;
 }
+
+
+void DeckCard::setDrawClassColor(bool value)
+{
+    DeckCard::drawClassColor = value;
+}
+
+
+void DeckCard::setSpellWeaponColor(bool value)
+{
+    DeckCard::drawSpellWeaponColor = value;
+}
+

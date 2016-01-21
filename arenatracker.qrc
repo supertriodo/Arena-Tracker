@@ -43,21 +43,7 @@
         <file>Images/remove64.png</file>
         <file>Images/minus64.png</file>
         <file>Images/plus64.png</file>
-        <file>Json/AllSets.enGB.json</file>
-        <file>Json/AllSets.enUS.json</file>
-        <file>Json/AllSets.esES.json</file>
-        <file>Json/AllSets.esMX.json</file>
-        <file>Json/AllSets.deDE.json</file>
-        <file>Json/AllSets.frFR.json</file>
-        <file>Json/AllSets.itIT.json</file>
-        <file>Json/AllSets.koKR.json</file>
-        <file>Json/AllSets.plPL.json</file>
-        <file>Json/AllSets.ptBR.json</file>
-        <file>Json/AllSets.ruRU.json</file>
-        <file>Json/AllSets.zhCN.json</file>
-        <file>Json/AllSets.zhTW.json</file>
         <file>Images/handCard3.png</file>
-        <file>Json/AllSets.jaJP.json</file>
         <file>Images/deck.png</file>
         <file>Images/hand.png</file>
         <file>Images/config.png</file>
@@ -70,5 +56,36 @@
         <file>Images/saveDeck.png</file>
         <file>Images/refresh.png</file>
         <file>Images/web.png</file>
+        <file>Json/cards.enUS.json</file>
+        <file>Json/cards.esES.json</file>
+        <file>Json/cards.deDE.json</file>
+        <file>Json/cards.esMX.json</file>
+        <file>Json/cards.frFR.json</file>
+        <file>Json/cards.itIT.json</file>
+        <file>Json/cards.jaJP.json</file>
+        <file>Json/cards.koKR.json</file>
+        <file>Json/cards.plPL.json</file>
+        <file>Json/cards.ptBR.json</file>
+        <file>Json/cards.ruRU.json</file>
+        <file>Json/cards.zhCN.json</file>
+        <file>Json/cards.zhTW.json</file>
+        <file>Images/bgCard1Warrior.png</file>
+        <file>Images/bgCard2Warrior.png</file>
+        <file>Images/bgCard1Druid.png</file>
+        <file>Images/bgCard2Druid.png</file>
+        <file>Images/bgCard1Hunter.png</file>
+        <file>Images/bgCard2Hunter.png</file>
+        <file>Images/bgCard1Mage.png</file>
+        <file>Images/bgCard2Mage.png</file>
+        <file>Images/bgCard1Paladin.png</file>
+        <file>Images/bgCard2Paladin.png</file>
+        <file>Images/bgCard1Priest.png</file>
+        <file>Images/bgCard2Priest.png</file>
+        <file>Images/bgCard1Rogue.png</file>
+        <file>Images/bgCard2Rogue.png</file>
+        <file>Images/bgCard1Shaman.png</file>
+        <file>Images/bgCard2Shaman.png</file>
+        <file>Images/bgCard1Warlock.png</file>
+        <file>Images/bgCard2Warlock.png</file>
     </qresource>
 </RCC>

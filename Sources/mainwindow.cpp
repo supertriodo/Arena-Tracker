@@ -177,6 +177,12 @@ QString MainWindow::getHSLanguage()
         pLog("Settings: Language " + lang + " not supported. Using enUS.");
         lang = "enUS";
     }
+    else if(lang == "enGB")
+    {
+        pDebug("Language: " + lang + ". Using enUS.");
+        pLog("Settings: Language " + lang + ". Using enUS.");
+        lang = "enUS";
+    }
     else
     {
         pDebug("Language: " + lang + ".");
@@ -190,18 +196,17 @@ QString MainWindow::getHSLanguage()
 
 void MainWindow::createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang)
 {
-    QFile jsonFile(":Json/AllSets." + lang + ".json");
+    QFile jsonFile(":Json/cards." + lang + ".json");
+
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
-    QJsonObject jsonAllSets = jsonDoc.object();
-    for(QJsonObject::const_iterator it=jsonAllSets.constBegin(); it!=jsonAllSets.constEnd(); it++)
+
+    QJsonArray jsonArray = jsonDoc.array();
+    foreach(QJsonValue jsonCard, jsonArray)
     {
-        QJsonArray array = it.value().toArray();
-        for(QJsonArray::const_iterator it2=array.constBegin(); it2!=array.constEnd(); it2++)
-        {
-            cardsJson[(*it2).toObject().value("id").toString()] = (*it2).toObject();
-        }
+        QJsonObject jsonCardObject = jsonCard.toObject();
+        cardsJson[jsonCardObject.value("id").toString()] = jsonCardObject;
     }
 }
 
@@ -1900,6 +1905,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //nuevos botones
 //golden cards
 //eliminar ctrl-z
+//colores clases
+//other window fuera pantalla
 
 
 //BUGS CONOCIDOS
@@ -1922,3 +1929,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Incluir nuevo hero power en isHeroPower(QString code) de GameWatcher
 //Nuevo Json hearthArena
 //Nuevo start draft menu
+
+//NUEVOS BACKGROUND
+//Coger el color de una parte clara de un carta de clase
+//Colores->Colorear...(4 opcion por abajo)
+//Colores->Tono y saturacion...(2 opcion) Luminosidad +50
