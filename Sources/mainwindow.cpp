@@ -672,7 +672,8 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword,
+void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
+                               QString AMplayerEmail, QString AMpassword,
                                QString HStatsPlayerEmail, QString HStatsPassword)
 {
     //UI
@@ -705,6 +706,12 @@ void MainWindow::initConfigTab(int tooltipScale, QString AMplayerEmail, QString 
     if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
     if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
     else ui->configSliderTooltipSize->setValue(tooltipScale);
+
+    ui->configCheckClassColor->setChecked(showClassColor);
+    updateShowClassColor(showClassColor);
+
+    ui->configCheckSpellColor->setChecked(showSpellColor);
+    updateShowSpellColor(showSpellColor);
 
     //Hand
     //Slider            0  - Ns - 11
@@ -795,12 +802,14 @@ void MainWindow::readSettings()
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
+        bool showClassColor = settings.value("showClassColor", true).toBool();
+        bool showSpellColor = settings.value("showSpellColor", true).toBool();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
         QString HStatsPlayerEmail = "";//settings.value("HStatsPlayerEmail", "").toString();
         QString HStatsPassword = "";//settings.value("HStatsPassword", "").toString();
 
-        initConfigTab(tooltipScale, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
+        initConfigTab(tooltipScale, showClassColor, showSpellColor, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
     }
     else
     {
@@ -837,6 +846,8 @@ void MainWindow::writeSettings()
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
+        settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
+        settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
 //        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
@@ -1680,6 +1691,24 @@ void MainWindow::updateTooltipScale(int value)
 }
 
 
+void MainWindow::updateShowClassColor(bool checked)
+{
+    DeckCard::setDrawClassColor(checked);
+    if(deckHandler!=NULL)       deckHandler->redrawClassCards();
+    if(secretsHandler!=NULL)    secretsHandler->redrawClassCards();
+    if(enemyHandHandler!=NULL)  enemyHandHandler->redrawClassCards();
+}
+
+
+void MainWindow::updateShowSpellColor(bool checked)
+{
+    DeckCard::setDrawSpellWeaponColor(checked);
+    if(deckHandler!=NULL)       deckHandler->redrawSpellWeaponCards();
+    if(secretsHandler!=NULL)    secretsHandler->redrawSpellWeaponCards();
+    if(enemyHandHandler!=NULL)  enemyHandHandler->redrawSpellWeaponCards();
+}
+
+
 //Valores drawDisappear:
 //  -1  No show
 //  0   Turn
@@ -1828,6 +1857,8 @@ void MainWindow::completeConfigTab()
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
     connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
+    connect(ui->configCheckClassColor, SIGNAL(clicked(bool)), this, SLOT(updateShowClassColor(bool)));
+    connect(ui->configCheckSpellColor, SIGNAL(clicked(bool)), this, SLOT(updateShowSpellColor(bool)));
 
     //Hand
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
@@ -1898,15 +1929,13 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
-//Nuevo formato Json cards. Ahora es solo un array de cartas. Eliminado objeto de sets de array.
-//Class cards colors
 //sleep python
 //install python
 //nuevos botones
 //golden cards
 //eliminar ctrl-z
-//colores clases
 //other window fuera pantalla
+//Modificar tamano handCard/secretcard/drawcard
 
 
 //BUGS CONOCIDOS

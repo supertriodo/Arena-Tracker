@@ -113,7 +113,7 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
+    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -156,6 +156,7 @@ public slots:
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
 
 private slots:
+    void test();
     void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
     void toggleSplitWindow();
@@ -176,7 +177,8 @@ private slots:
     void updateHStatsConnectButton(bool isConnected);
     void tryConnectHStats();
     void closeApp();
-    void test();
+    void updateShowClassColor(bool checked);
+    void updateShowSpellColor(bool checked);
 };
 
 #endif // MAINWINDOW_H

@@ -301,7 +301,7 @@ void DeckCard::setDrawClassColor(bool value)
 }
 
 
-void DeckCard::setSpellWeaponColor(bool value)
+void DeckCard::setDrawSpellWeaponColor(bool value)
 {
     DeckCard::drawSpellWeaponColor = value;
 }

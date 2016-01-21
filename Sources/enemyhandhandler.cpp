@@ -136,6 +136,31 @@ void EnemyHandHandler::redrawDownloadedCardImage(QString &code)
 }
 
 
+void EnemyHandHandler::redrawClassCards()
+{
+    foreach(HandCard handCard, enemyHandList)
+    {
+        if(handCard.getCardClass()<9)
+        {
+            handCard.draw();
+        }
+    }
+}
+
+
+void EnemyHandHandler::redrawSpellWeaponCards()
+{
+    foreach(HandCard handCard, enemyHandList)
+    {
+        CardType cardType = handCard.getType();
+        if(cardType == SPELL || cardType == WEAPON)
+        {
+            handCard.draw();
+        }
+    }
+}
+
+
 void EnemyHandHandler::lockEnemyInterface()
 {
     this->inGame = true;

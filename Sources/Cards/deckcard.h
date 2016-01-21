@@ -66,7 +66,7 @@ public:
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);
-    static void setSpellWeaponColor(bool value);
+    static void setDrawSpellWeaponColor(bool value);
 };
 
 #endif // DECKCARD_H

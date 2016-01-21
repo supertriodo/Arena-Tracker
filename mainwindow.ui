@@ -1287,7 +1287,7 @@
                <x>0</x>
                <y>0</y>
                <width>437</width>
-               <height>701</height>
+               <height>733</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1501,7 +1501,7 @@ in a new window</string>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <layout class="QVBoxLayout" name="verticalLayout_8">
                  <property name="spacing">
                   <number>5</number>
                  </property>
@@ -1518,87 +1518,115 @@ in a new window</string>
                   <number>9</number>
                  </property>
                  <item>
-                  <layout class="QVBoxLayout" name="configDeckVerticalLayout">
+                  <layout class="QHBoxLayout" name="configDeckHorizontalLayout">
                    <item>
-                    <widget class="QLabel" name="configLabelDeckNormal">
-                     <property name="toolTip">
-                      <string>Card: Height in pixels of the deck cards.</string>
-                     </property>
-                     <property name="text">
-                      <string>Card</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout">
+                     <item>
+                      <widget class="QLabel" name="configLabelDeckNormal">
+                       <property name="toolTip">
+                        <string>Card: Height in pixels of the deck cards.</string>
+                       </property>
+                       <property name="text">
+                        <string>Card</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="configLabelDeckTooltip">
+                       <property name="toolTip">
+                        <string>Tooltip: Size scale of the card's tooltip.</string>
+                       </property>
+                       <property name="text">
+                        <string>Tooltip</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QLabel" name="configLabelDeckTooltip">
-                     <property name="toolTip">
-                      <string>Tooltip: Size scale of the card's tooltip.</string>
-                     </property>
-                     <property name="text">
-                      <string>Tooltip</string>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout2">
+                     <item>
+                      <widget class="QSlider" name="configSliderCardSize">
+                       <property name="minimum">
+                        <number>15</number>
+                       </property>
+                       <property name="maximum">
+                        <number>35</number>
+                       </property>
+                       <property name="singleStep">
+                        <number>1</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>1</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::NoTicks</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="configSliderTooltipSize">
+                       <property name="minimum">
+                        <number>10</number>
+                       </property>
+                       <property name="maximum">
+                        <number>15</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>1</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout3">
+                     <item>
+                      <widget class="QLabel" name="configLabelDeckNormal2">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="configLabelDeckTooltip2">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="configDeckVerticalLayout2">
+                  <layout class="QHBoxLayout" name="configDeckHorizontalLayout2">
                    <item>
-                    <widget class="QSlider" name="configSliderCardSize">
-                     <property name="minimum">
-                      <number>15</number>
+                    <widget class="QCheckBox" name="configCheckClassColor">
+                     <property name="toolTip">
+                      <string>Show a colored background for class cards.</string>
                      </property>
-                     <property name="maximum">
-                      <number>35</number>
-                     </property>
-                     <property name="singleStep">
-                      <number>1</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>1</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="tickPosition">
-                      <enum>QSlider::NoTicks</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QSlider" name="configSliderTooltipSize">
-                     <property name="minimum">
-                      <number>10</number>
-                     </property>
-                     <property name="maximum">
-                      <number>15</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>1</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="configDeckVerticalLayout3">
-                   <item>
-                    <widget class="QLabel" name="configLabelDeckNormal2">
                      <property name="text">
-                      <string/>
+                      <string>Class Color</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="configLabelDeckTooltip2">
+                    <widget class="QCheckBox" name="configCheckSpellColor">
+                     <property name="toolTip">
+                      <string>Show text in color for spells and weapons.</string>
+                     </property>
                      <property name="text">
-                      <string/>
+                      <string>Spell Color</string>
                      </property>
                     </widget>
                    </item>

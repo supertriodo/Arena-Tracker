@@ -77,6 +77,8 @@ private:
 
 public:
     void redrawDownloadedCardImage(QString code);
+    void redrawClassCards();
+    void redrawSpellWeaponCards();
     void setSynchronized();
 
 signals:

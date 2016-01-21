@@ -561,7 +561,7 @@ void DeckHandler::drawFromDeck(QString code)
 
 void DeckHandler::redrawDownloadedCardImage(QString code)
 {
-    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         if(it->getCode() == code)
         {
@@ -576,11 +576,67 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
         }
     }
 
-    for (QList<DrawCard>::iterator it = drawCardList.begin(); it != drawCardList.end(); it++)
+    for(QList<DrawCard>::iterator it = drawCardList.begin(); it != drawCardList.end(); it++)
     {
         if(it->getCode() == code)
         {
             it->draw();
+        }
+    }
+}
+
+
+void DeckHandler::redrawClassCards()
+{
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        if(deckCard.getCardClass()<9)
+        {
+            if(deckCard.remaining > 0)
+            {
+                deckCard.draw(false, this->cardHeight);
+            }
+            else
+            {
+                deckCard.drawGreyed(true, this->greyedHeight);
+            }
+        }
+    }
+
+    foreach(DeckCard deckCard, drawCardList)
+    {
+        if(deckCard.getCardClass()<9)
+        {
+            deckCard.draw();
+        }
+    }
+}
+
+
+void DeckHandler::redrawSpellWeaponCards()
+{
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        CardType cardType = deckCard.getType();
+        if(cardType == SPELL || cardType == WEAPON)
+        {
+            if(deckCard.remaining > 0)
+            {
+                deckCard.draw(false, this->cardHeight);
+            }
+            else
+            {
+                deckCard.drawGreyed(true, this->greyedHeight);
+            }
+        }
+    }
+
+    foreach(DeckCard deckCard, drawCardList)
+    {
+        CardType cardType = deckCard.getType();
+        if(cardType == SPELL || cardType == WEAPON)
+        {
+            deckCard.draw();
         }
     }
 }

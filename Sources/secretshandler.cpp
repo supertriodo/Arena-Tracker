@@ -213,6 +213,34 @@ void SecretsHandler::redrawDownloadedCardImage(QString code)
 }
 
 
+void SecretsHandler::redrawClassCards()
+{
+    foreach(ActiveSecret activeSecret, activeSecretList)
+    {
+        if(activeSecret.root.getCardClass()<9)   activeSecret.root.draw();
+        foreach(SecretCard secretCard, activeSecret.children)
+        {
+            if(secretCard.getCardClass()<9)   secretCard.draw();
+        }
+    }
+}
+
+
+void SecretsHandler::redrawSpellWeaponCards()
+{
+    foreach(ActiveSecret activeSecret, activeSecretList)
+    {
+        CardType cardType = activeSecret.root.getType();
+        if(cardType == SPELL || cardType == WEAPON)   activeSecret.root.draw();
+        foreach(SecretCard secretCard, activeSecret.children)
+        {
+            cardType = secretCard.getType();
+            if(cardType == SPELL || cardType == WEAPON)   secretCard.draw();
+        }
+    }
+}
+
+
 void SecretsHandler::resetSecretsInterface()
 {
     ui->secretsTreeWidget->setHidden(true);

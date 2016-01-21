@@ -36,6 +36,8 @@ private:
 
 public:
     void redrawDownloadedCardImage(QString &code);
+    void redrawClassCards();
+    void redrawSpellWeaponCards();
     void setTransparency(Transparency value);
 
 signals:
