@@ -22,7 +22,7 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setHidden(true);
 
     ui->secretsTreeWidget->setColumnCount(1);
-    ui->secretsTreeWidget->setIconSize(CARD_SIZE);
+    ui->secretsTreeWidget->setIconSize(10*CARD_SIZE);
     ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
                                          "QTreeView::item{padding: -1px;}");
     ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -236,6 +236,19 @@ void SecretsHandler::redrawSpellWeaponCards()
         {
             cardType = secretCard.getType();
             if(cardType == SPELL || cardType == WEAPON)   secretCard.draw();
+        }
+    }
+}
+
+
+void SecretsHandler::redrawAllCards()
+{
+    foreach(ActiveSecret activeSecret, activeSecretList)
+    {
+        activeSecret.root.draw();
+        foreach(SecretCard secretCard, activeSecret.children)
+        {
+            secretCard.draw();
         }
     }
 }

@@ -107,7 +107,7 @@ void DeckCard::drawGreyed(bool drawTotal)
                             canvas.size(), QIcon::Disabled, QIcon::On)));
 }
 
-QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor)
+QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resize)
 {
     QFont font("Belwe Bd BT");
 
@@ -222,26 +222,30 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor)
     painter.end();
 
     //Adapt to size
-    if(cardHeight!=35)
-    {
-        if(cardHeight<25)
-        {
-            canvas = canvas.copy(0,0+6,218,35-10);
-            return canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        }
-        else if(cardHeight>35)
-        {
-            return canvas.scaled(QSize(218,cardHeight), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-        }
-        else    //25<=cardHeight<35
-        {
-            int reducePx = 35 - cardHeight;//1-10
-            int topPx = reducePx/2+1;
-            return canvas.copy(0,0+topPx,218,35-reducePx);
-        }
-    }
+    if(resize)  return resizeCardHeight(canvas);
+    else        return canvas;
+}
 
-    return canvas;
+
+QPixmap DeckCard::resizeCardHeight(QPixmap &canvas)
+{
+    if(cardHeight==35)  return canvas;
+
+    if(cardHeight<25)
+    {
+        canvas = canvas.copy(0,0+6,218,35-10);
+        return canvas.scaled(QSize(218,cardHeight), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    }
+    else if(cardHeight>35)
+    {
+        return canvas.scaled(QSize(218,cardHeight), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+    }
+    else    //25<=cardHeight<35
+    {
+        int reducePx = 35 - cardHeight;//1-10
+        int topPx = reducePx/2+1;
+        return canvas.copy(0,0+topPx,218,35-reducePx);
+    }
 }
 
 

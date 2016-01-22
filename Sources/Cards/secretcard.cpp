@@ -27,7 +27,7 @@ void SecretCard::draw()
 
     if(this->code != "")
     {
-        canvas = DeckCard::draw(1, true);
+        canvas = DeckCard::draw(1, true, BLACK, false);
     }
     else
     {
@@ -63,5 +63,5 @@ void SecretCard::draw()
     }
     painter.end();
 
-    this->treeItem->setIcon(0, QIcon(canvas));
+    this->treeItem->setIcon(0, QIcon(resizeCardHeight(canvas)));
 }

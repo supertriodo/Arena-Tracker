@@ -145,7 +145,7 @@ void HandCard::drawCreatedByHandCard()
         painter.drawPath(path);
     painter.end();
 
-    this->listItem->setIcon(QIcon(canvas));
+    this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
 }
 
 
@@ -187,5 +187,5 @@ void HandCard::drawDefaultHandCard()
         painter.drawPath(path);
     painter.end();
 
-    this->listItem->setIcon(QIcon(canvas));
+    this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
 }

@@ -161,6 +161,15 @@ void EnemyHandHandler::redrawSpellWeaponCards()
 }
 
 
+void EnemyHandHandler::redrawAllCards()
+{
+    foreach(HandCard handCard, enemyHandList)
+    {
+        handCard.draw();
+    }
+}
+
+
 void EnemyHandHandler::lockEnemyInterface()
 {
     this->inGame = true;

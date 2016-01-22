@@ -73,6 +73,7 @@ public:
     void setTransparency(Transparency value);
     void setShowDraftOverlay(bool value);
     void setLearningMode(bool value);
+    void redrawAllCards();
 
 signals:
     void checkCardImage(QString code);

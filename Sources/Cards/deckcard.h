@@ -47,12 +47,13 @@ protected:
 
 //Metodos
 protected:
-    QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK);
+    QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, bool resize=true);
     QColor getRarityColor();
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);
     CardClass getClassFromString(QString value);
     QString tooltip();
+    QPixmap resizeCardHeight(QPixmap &canvas);
 
 public:
     void draw(bool drawTotal=true);

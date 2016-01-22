@@ -33,9 +33,9 @@ DraftHandler::~DraftHandler()
 void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
-    ui->radioButtonDraft1->setIconSize(CARD_SIZE);
-    ui->radioButtonDraft2->setIconSize(CARD_SIZE);
-    ui->radioButtonDraft3->setIconSize(CARD_SIZE);
+    ui->radioButtonDraft1->setIconSize(10*CARD_SIZE);
+    ui->radioButtonDraft2->setIconSize(10*CARD_SIZE);
+    ui->radioButtonDraft3->setIconSize(10*CARD_SIZE);
     ui->radioButtonDraft1->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
     ui->radioButtonDraft2->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
     ui->radioButtonDraft3->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
@@ -857,6 +857,17 @@ void DraftHandler::setLearningMode(bool value)
         {
             draftCards[i].scoreItem->show();
         }
+    }
+}
+
+
+void DraftHandler::redrawAllCards()
+{
+    if(!drafting)   return;
+
+    for(int i=0; i<3; i++)
+    {
+        draftCards[i].draw();
     }
 }
 

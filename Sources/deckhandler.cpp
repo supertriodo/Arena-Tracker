@@ -601,11 +601,11 @@ void DeckHandler::redrawClassCards()
         }
     }
 
-    foreach(DeckCard deckCard, drawCardList)
+    foreach(DrawCard drawCard, drawCardList)
     {
-        if(deckCard.getCardClass()<9)
+        if(drawCard.getCardClass()<9)
         {
-            deckCard.draw();
+            drawCard.draw();
         }
     }
 }
@@ -629,12 +629,12 @@ void DeckHandler::redrawSpellWeaponCards()
         }
     }
 
-    foreach(DeckCard deckCard, drawCardList)
+    foreach(DrawCard drawCard, drawCardList)
     {
-        CardType cardType = deckCard.getType();
+        CardType cardType = drawCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
         {
-            deckCard.draw();
+            drawCard.draw();
         }
     }
 }
@@ -652,6 +652,11 @@ void DeckHandler::redrawAllCards()
         {
             deckCard.drawGreyed(true);
         }
+    }
+
+    foreach(DrawCard drawCard, drawCardList)
+    {
+        drawCard.draw();
     }
 }
 

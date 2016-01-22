@@ -79,6 +79,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     void redrawClassCards();
     void redrawSpellWeaponCards();
+    void redrawAllCards();
     void setSynchronized();
 
 signals:

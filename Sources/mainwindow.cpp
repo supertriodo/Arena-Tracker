@@ -1667,7 +1667,10 @@ void MainWindow::updateTamCard(int value)
 {
     this->cardHeight = value;
     DeckCard::setCardHeight(value);
-    if(deckHandler!=NULL)       deckHandler->redrawAllCards();
+    deckHandler->redrawAllCards();
+    secretsHandler->redrawAllCards();
+    enemyHandHandler->redrawAllCards();
+    draftHandler->redrawAllCards();
 
     calculateDeckWindowMinimumWidth();
 
@@ -1690,18 +1693,20 @@ void MainWindow::updateTooltipScale(int value)
 void MainWindow::updateShowClassColor(bool checked)
 {
     DeckCard::setDrawClassColor(checked);
-    if(deckHandler!=NULL)       deckHandler->redrawClassCards();
-    if(secretsHandler!=NULL)    secretsHandler->redrawClassCards();
-    if(enemyHandHandler!=NULL)  enemyHandHandler->redrawClassCards();
+    deckHandler->redrawClassCards();
+    secretsHandler->redrawClassCards();
+    enemyHandHandler->redrawClassCards();
+    draftHandler->redrawAllCards();
 }
 
 
 void MainWindow::updateShowSpellColor(bool checked)
 {
     DeckCard::setDrawSpellWeaponColor(checked);
-    if(deckHandler!=NULL)       deckHandler->redrawSpellWeaponCards();
-    if(secretsHandler!=NULL)    secretsHandler->redrawSpellWeaponCards();
-    if(enemyHandHandler!=NULL)  enemyHandHandler->redrawSpellWeaponCards();
+    deckHandler->redrawSpellWeaponCards();
+    secretsHandler->redrawSpellWeaponCards();
+    enemyHandHandler->redrawSpellWeaponCards();
+    draftHandler->redrawAllCards();
 }
 
 
