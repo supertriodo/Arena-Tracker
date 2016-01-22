@@ -58,7 +58,7 @@ También puedes preguntarme en español.
  * Minions are shown in white.
  * Spells are shown in yellow.
  * Weapons are shown in orange.
-* What does it mean the colored background of cards?
+* What does it mean when cards have a colored background?
  * It means they are class cards.
 * How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
  * With the app selected press ctrl+r
