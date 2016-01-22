@@ -54,10 +54,12 @@ También puedes preguntarme en español.
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
  * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Remove log.config and start Arena Tracker).
-* What does it mean when cards in the decklist are highlighted in yellow/orange?
+* What does it mean when text cards are shown in yellow/orange?
  * Minions are shown in white.
  * Spells are shown in yellow.
  * Weapons are shown in orange.
+* What does it mean when cards have a colored background?
+ * It means they are class cards.
 * How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
  * With the app selected press ctrl+r
 * I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
