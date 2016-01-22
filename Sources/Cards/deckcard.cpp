@@ -5,6 +5,7 @@
 
 bool DeckCard::drawClassColor = true;
 bool DeckCard::drawSpellWeaponColor = true;
+int DeckCard::cardHeight = 35;
 QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
 
@@ -91,22 +92,22 @@ QString DeckCard::tooltip()
 }
 
 
-void DeckCard::draw(bool drawTotal, int cardHeight)
+void DeckCard::draw(bool drawTotal)
 {
-    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
+    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK);
 
     this->listItem->setIcon(QIcon(canvas));
 }
 
-void DeckCard::drawGreyed(bool drawTotal, int cardHeight)
+void DeckCard::drawGreyed(bool drawTotal)
 {
-    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK, cardHeight);
+    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK);
 
     this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
                             canvas.size(), QIcon::Disabled, QIcon::On)));
 }
 
-QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, int cardHeight)
+QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor)
 {
     QFont font("Belwe Bd BT");
 
@@ -306,3 +307,8 @@ void DeckCard::setDrawSpellWeaponColor(bool value)
     DeckCard::drawSpellWeaponColor = value;
 }
 
+
+void DeckCard::setCardHeight(int value)
+{
+    DeckCard::cardHeight = value;
+}

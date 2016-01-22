@@ -63,7 +63,7 @@ private:
     bool oneWindow;
     bool isMainWindow;
     MainWindow *otherWindow;
-    int greyedHeight, cardHeight;
+    int cardHeight;
     int drawDisappear;
     bool showDraftOverlay;
     bool draftLearningMode;

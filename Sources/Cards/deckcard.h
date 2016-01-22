@@ -42,11 +42,12 @@ protected:
     int cost;
 
     static bool drawClassColor, drawSpellWeaponColor;
+    static int cardHeight;
     static QMap<QString, QJsonObject> *cardsJson;
 
 //Metodos
 protected:
-    QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, int cardHeight=35);
+    QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK);
     QColor getRarityColor();
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);
@@ -54,8 +55,8 @@ protected:
     QString tooltip();
 
 public:
-    void draw(bool drawTotal=true, int cardHeight=35);
-    void drawGreyed(bool drawTotal, int cardHeight=35);
+    void draw(bool drawTotal=true);
+    void drawGreyed(bool drawTotal);
     QString getCode();
     CardType getType();
     QString getName();
@@ -67,6 +68,7 @@ public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);
+    static void setCardHeight(int value);
 };
 
 #endif // DECKCARD_H

@@ -796,7 +796,6 @@ void MainWindow::readSettings()
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
 
-        this->greyedHeight = settings.value("greyedHeight", 35).toInt();
         this->cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
@@ -840,7 +839,6 @@ void MainWindow::writeSettings()
         settings.setValue("transparent", (int)this->transparency);
         settings.setValue("theme", (int)this->theme);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
-        settings.setValue("greyedHeight", this->greyedHeight);
         settings.setValue("cardHeight", this->cardHeight);
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
@@ -1668,16 +1666,14 @@ void MainWindow::toggleDeckWindow()
 void MainWindow::updateTamCard(int value)
 {
     this->cardHeight = value;
-    deckHandler->setCardHeight(value);
+    DeckCard::setCardHeight(value);
+    if(deckHandler!=NULL)       deckHandler->redrawAllCards();
+
     calculateDeckWindowMinimumWidth();
 
     QString labelText = QString::number(value) + " px";
     ui->configSliderCardSize->setToolTip(labelText);
     ui->configLabelDeckNormal2->setText(labelText);
-
-
-    this->greyedHeight = value;
-    deckHandler->setGreyedHeight(value);
 }
 
 
@@ -1897,7 +1893,7 @@ void MainWindow::completeHighResConfigTab()
     int screenHeight = getScreenHighest();
     if(screenHeight < 1000) return;
 
-    int maxCard = (int)(screenHeight/1000.0*35);
+    int maxCard = (int)(screenHeight/1000.0*50);
     maxCard -= maxCard%5;
     ui->configSliderCardSize->setMaximum(maxCard);
 

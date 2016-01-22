@@ -30,7 +30,6 @@ private:
     QString loadedDeckName;
     bool inGame, inArena, synchronized;
     Transparency transparency;
-    int greyedHeight, cardHeight;
     bool drawAnimating;
     int drawDisappear;
     QTreeWidgetItem *loadDeckClasses[10];
@@ -42,8 +41,6 @@ private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
-    void updateGreyedHeight();
-    void updateCardHeight();
     void newDrawCard(QString code);
     void newDeckCard(QString card, int total=1, bool add=false);
     void drawFromDeck(QString code);
@@ -65,6 +62,7 @@ private:
 
 public:
     void reset();
+    void redrawAllCards();
     void redrawDownloadedCardImage(QString code);
     void redrawClassCards();
     void redrawSpellWeaponCards();
