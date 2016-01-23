@@ -88,11 +88,6 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
     connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
 
     button->setMenu(newDeckMenu);
-
-    //Evita que new deck coja mas espacio
-    ui->deckButtonLoad->setMinimumWidth(51);
-    ui->deckButtonSave->setMinimumWidth(51);
-    ui->deckButtonDeleteDeck->setMinimumWidth(51);
 }
 
 
@@ -660,6 +655,21 @@ void DeckHandler::redrawAllCards()
     }
 }
 
+
+void DeckHandler::updateIconSize(int cardHeight)
+{
+    int iconHeight = cardHeight*52/35;
+    if(iconHeight<52)   iconHeight=52;
+    ui->deckButtonNew->setIconSize(QSize(iconHeight, iconHeight));
+    ui->deckButtonLoad->setIconSize(QSize(iconHeight, iconHeight));
+    ui->deckButtonSave->setIconSize(QSize(iconHeight, iconHeight));
+    ui->deckButtonDeleteDeck->setIconSize(QSize(iconHeight, iconHeight));
+
+    //Evita que new deck coja mas espacio
+    ui->deckButtonLoad->setMinimumWidth(iconHeight);
+    ui->deckButtonSave->setMinimumWidth(iconHeight);
+    ui->deckButtonDeleteDeck->setMinimumWidth(iconHeight);
+}
 
 
 void DeckHandler::enableDeckButtons()

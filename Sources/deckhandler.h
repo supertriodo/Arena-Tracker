@@ -66,6 +66,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     void redrawClassCards();
     void redrawSpellWeaponCards();
+    void updateIconSize(int cardHeight);
     QList<DeckCard> * getDeckComplete();
     void setTransparency(Transparency value);
     void setTheme(Theme value);

@@ -1673,6 +1673,7 @@ void MainWindow::updateTamCard(int value)
 {
     this->cardHeight = value;
     DeckCard::setCardHeight(value);
+    deckHandler->updateIconSize(value);
     deckHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
@@ -1941,8 +1942,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //nuevos botones
 //golden cards
 //eliminar ctrl-z
-//other window fuera pantalla
-
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
