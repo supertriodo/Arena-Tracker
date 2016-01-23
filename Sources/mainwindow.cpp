@@ -754,9 +754,11 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
     QRect appRect(pos, size);
     QPoint midPoint = appRect.center();
 
-    emit pDebug("Window Pos: (" + QString::number(pos.x()) + "," + QString::number(pos.y()) +
-                ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) +
-                ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")");
+    QString message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
+            "Window Pos: (" + QString::number(pos.x()) + "," + QString::number(pos.y()) +
+            ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) +
+            ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")";
+    pDebug(message);
 
     foreach(QScreen *screen, QGuiApplication::screens())
     {
@@ -765,14 +767,18 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
 
         if(geometry.contains(midPoint))
         {
-            emit pDebug("Window in screen: (" + QString::number(geometry.left()) + "," + QString::number(geometry.top()) + "," +
-                        QString::number(geometry.right()) + "," + QString::number(geometry.bottom()) + ")");
+            message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
+                    "Window in screen: (" + QString::number(geometry.left()) + "," + QString::number(geometry.top()) + "," +
+                    QString::number(geometry.right()) + "," + QString::number(geometry.bottom()) + ")";
+            pDebug(message);
             move(pos);
             return;
         }
     }
 
-    emit pDebug("Window outside screens. Move to (0,0)");
+    message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
+            "Window outside screens. Move to (0,0)";
+    pDebug(message);
     move(QPoint(0,0));
 }
 
@@ -1936,7 +1942,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //golden cards
 //eliminar ctrl-z
 //other window fuera pantalla
-//Modificar tamano handCard/secretcard/drawcard
 
 
 //BUGS CONOCIDOS
