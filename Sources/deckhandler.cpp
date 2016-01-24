@@ -1181,7 +1181,7 @@ void DeckHandler::newImportHearthHead()
 
 bool DeckHandler::showHearthHeadHowTo()
 {
-    QString text =  "This option allow you to import a deck from <a href='http://www.hearthhead.com/'>HearthHead.com</a>:<br/>"
+    QString text =  "This option allows you to import a deck from <a href='http://www.hearthhead.com/'>HearthHead.com</a>:<br/>"
             "1) Go to <a href='http://www.hearthhead.com/'>HearthHead.com</a> and choose the deck you want.<br/>"
             "2) Click Export -> Cockatrice and copy the text shown.<br/>"
                     "....There's no need to paste it anywhere.<br/>"
@@ -1392,7 +1392,7 @@ bool DeckHandler::deckBuilderPY()
     }
 
     params << ui->deckLineEdit->text();
-    params << QString::number(0.5);//time sleep
+    params << QString::number(0.1);//time sleep
 
     foreach(DeckCard deckCard, deckCardList.mid(1))
     {
@@ -1408,3 +1408,52 @@ bool DeckHandler::deckBuilderPY()
     return true;
 }
 
+
+void DeckHandler::askCreateDeckPY()
+{
+    QString text =  "This option allows you to create in Hearthstone your current deck, taking control of mouse and keyboard.\n\n"
+            "1) The first time you use it, you will need to install python3 in your system. Click the install button to learn how to do it.\n\n"
+            "2) If you have more than one screen, make sure Hearthstone is located in your primary screen.\n\n"
+            "3) Make sure you have manually created an empty deck of the correct class in Hearthstone "
+                    "and stay in the screen where you select the cards to join your deck.\n\n"
+            "4) During the process Arena Tracker will take control of your mouse and keyboard to create the deck so don't use them. "
+                    "If you need to stop the script for whatever reason move quickly the mouse to the top-left corner of the screen.";
+
+    QMessageBox msgBox((QWidget*)this->parent());
+    msgBox.setWindowTitle("Create Deck in Hearthstone");
+    msgBox.setText(text);
+    msgBox.setIcon(QMessageBox::Information);
+    QPushButton *button1 = msgBox.addButton("Start", QMessageBox::ActionRole);
+                           msgBox.addButton("Cancel", QMessageBox::ActionRole);
+    QPushButton *button3 = msgBox.addButton("How To Install", QMessageBox::ActionRole);
+
+    msgBox.exec();
+
+    if(msgBox.clickedButton() == button1)           deckBuilderPY();
+    else if(msgBox.clickedButton() == button3)      showInstallPY();
+}
+
+
+void DeckHandler::showInstallPY()
+{
+#ifdef Q_OS_MAC
+    QString text = "Open a terminal (Ubuntu/Linux Mint):\n\n"
+            "sudo apt-get install python3-pip\n"
+            "sudo pip3 install python3-xlib\n"
+            "sudo apt-get install python3-tk\n"
+            "sudo apt-get install python3-dev\n"
+            "sudo pip3 install pyautogui";
+    QMessageBox::information((QWidget*)this->parent(), "Install Python3", text, QMessageBox::Ok);
+#else
+    QString text = "1) Install <a href='https://www.python.org/downloads/'>Python3</a>.<br/>"
+            "2) Install <a href='https://pyautogui.readthedocs.org/en/latest/install.html'>PyAutoGUI</a>.";
+
+
+    QMessageBox msgBox(0);
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(text);
+    msgBox.setWindowTitle("Install Python3");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
+#endif
+}

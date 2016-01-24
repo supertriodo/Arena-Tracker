@@ -1308,7 +1308,7 @@
                <x>0</x>
                <y>0</y>
                <width>437</width>
-               <height>733</height>
+               <height>741</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1343,18 +1343,18 @@
                   <number>5</number>
                  </property>
                  <property name="topMargin">
-                  <number>9</number>
+                  <number>5</number>
                  </property>
                  <property name="rightMargin">
                   <number>5</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>9</number>
+                  <number>5</number>
                  </property>
                  <item>
                   <widget class="QPushButton" name="configButtonForceDraft">
                    <property name="toolTip">
-                    <string>Force Draft: Start a new draft from the beginning.
+                    <string>Force Draft: Start a new arena draft from the beginning.
 It'll clear any drafting progress.</string>
                    </property>
                    <property name="text">
@@ -1367,8 +1367,33 @@ It'll clear any drafting progress.</string>
                    </property>
                    <property name="iconSize">
                     <size>
-                     <width>32</width>
-                     <height>32</height>
+                     <width>48</width>
+                     <height>48</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="configButtonCreateDeckPY">
+                   <property name="toolTip">
+                    <string>Auto Create Deck: Create in Hearthstone your current deck,
+taking control of mouse and keyboard.</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/Images/createDeckPY.png</normalon>
+                    </iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>48</width>
+                     <height>48</height>
                     </size>
                    </property>
                    <property name="flat">

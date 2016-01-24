@@ -298,6 +298,9 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+    //connect de completeConfigTab
+    connect(ui->configButtonCreateDeckPY, SIGNAL(clicked()),
+            deckHandler, SLOT(askCreateDeckPY()));
 
     deckHandler->loadDecks();
 }
@@ -948,11 +951,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         if(event->modifiers()&Qt::ControlModifier)
         {
-            if(event->key() == Qt::Key_R)   resetSettings();
-            else if(event->key() == Qt::Key_1)       draftHandler->pickCard("0");
+            if(event->key() == Qt::Key_R)       resetSettings();
+            else if(event->key() == Qt::Key_1)  draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
-            else if(event->key() == Qt::Key_Z)  deckHandler->deckBuilderPY();
         }
     }
 }
@@ -1852,6 +1854,7 @@ void MainWindow::completeConfigTab()
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
     //Actions
     addDraftMenu(ui->configButtonForceDraft);
+    //connect en createDeckHandler
 
     //UI
     connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));

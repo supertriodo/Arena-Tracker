@@ -59,6 +59,8 @@ private:
     bool newDeck(bool reset);
     void importHearthHead();
     bool showHearthHeadHowTo();
+    bool deckBuilderPY();
+    void showInstallPY();
 
 public:
     void reset();
@@ -76,7 +78,6 @@ public:
     void setSynchronized();
     void loadDecks();
     bool askSaveDeck();
-    bool deckBuilderPY();
 
 signals:
     void checkCardImage(QString code);
@@ -99,6 +100,7 @@ public slots:
     void deselectRow();
     void enterArena();
     void leaveArena();
+    void askCreateDeckPY();
 
 private slots:
     void removeOldestDrawCard();
