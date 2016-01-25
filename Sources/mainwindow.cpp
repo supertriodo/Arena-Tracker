@@ -1942,9 +1942,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //sleep python
 //install python
-//nuevos botones
 //golden cards
-//eliminar ctrl-z
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

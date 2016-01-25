@@ -1181,10 +1181,10 @@ void DeckHandler::newImportHearthHead()
 
 bool DeckHandler::showHearthHeadHowTo()
 {
-    QString text =  "This option allows you to import a deck from <a href='http://www.hearthhead.com/'>HearthHead.com</a>:<br/>"
-            "1) Go to <a href='http://www.hearthhead.com/'>HearthHead.com</a> and choose the deck you want.<br/>"
+    QString text =  "This option allows you to import a deck from HearthHead:<br/><br/>"
+            "1) Go to <a href='http://www.hearthhead.com/'>HearthHead.com</a> and choose the deck you want.<br/><br/>"
             "2) Click Export -> Cockatrice and copy the text shown.<br/>"
-                    "....There's no need to paste it anywhere.<br/>"
+                    "*   There's no need to paste it anywhere.<br/><br/>"
             "3) Ok this dialog and Arena Tracker will create the deck.";
 
     QMessageBox msgBox(0);
@@ -1377,6 +1377,7 @@ bool DeckHandler::deckBuilderPY()
     if(screenPoints.empty())
     {
         emit pDebug("DeckBuilder: Collection template not found on main screen.");
+        emit pLog("Deck Builder: Hearthstone not found on main screen.");
         return false;
     }
 
@@ -1411,13 +1412,7 @@ bool DeckHandler::deckBuilderPY()
 
 void DeckHandler::askCreateDeckPY()
 {
-    QString text =  "This option allows you to create in Hearthstone your current deck, taking control of mouse and keyboard.\n\n"
-            "1) The first time you use it, you will need to install python3 in your system. Click the install button to learn how to do it.\n\n"
-            "2) If you have more than one screen, make sure Hearthstone is located in your primary screen.\n\n"
-            "3) Make sure you have manually created an empty deck of the correct class in Hearthstone "
-                    "and stay in the screen where you select the cards to join your deck.\n\n"
-            "4) During the process Arena Tracker will take control of your mouse and keyboard to create the deck so don't use them. "
-                    "If you need to stop the script for whatever reason move quickly the mouse to the top-left corner of the screen.";
+    QString text = "This will create in Hearthstone your deck,\ntaking control of mouse and keyboard.";
 
     QMessageBox msgBox((QWidget*)this->parent());
     msgBox.setWindowTitle("Create Deck in Hearthstone");
@@ -1425,7 +1420,7 @@ void DeckHandler::askCreateDeckPY()
     msgBox.setIcon(QMessageBox::Information);
     QPushButton *button1 = msgBox.addButton("Start", QMessageBox::ActionRole);
                            msgBox.addButton("Cancel", QMessageBox::ActionRole);
-    QPushButton *button3 = msgBox.addButton("How To Install", QMessageBox::ActionRole);
+    QPushButton *button3 = msgBox.addButton("How To Use/Install", QMessageBox::ActionRole);
 
     msgBox.exec();
 
@@ -1436,24 +1431,31 @@ void DeckHandler::askCreateDeckPY()
 
 void DeckHandler::showInstallPY()
 {
-#ifdef Q_OS_MAC
-    QString text = "Open a terminal (Ubuntu/Linux Mint):\n\n"
-            "sudo apt-get install python3-pip\n"
-            "sudo pip3 install python3-xlib\n"
-            "sudo apt-get install python3-tk\n"
-            "sudo apt-get install python3-dev\n"
-            "sudo pip3 install pyautogui";
-    QMessageBox::information((QWidget*)this->parent(), "Install Python3", text, QMessageBox::Ok);
+    QString instructions1 =
+        "This option allows you to create in Hearthstone your current deck, taking control of mouse and keyboard.<br/><br/>"
+        "1) The first time you use it, you will need to install python3 in your system.<br/><br/>";
+    QString instructions3 =
+        "2) If you have more than one screen, make sure Hearthstone is located in your primary screen.<br/><br/>"
+        "3) Make sure you have manually created an empty deck of the correct class in Hearthstone "
+                "and stay in the screen where you select the cards to join your deck.<br/><br/>"
+        "4) During the process Arena Tracker will take control of your mouse and keyboard to create the deck so don't use them. "
+                "If you need to stop the script move quickly the mouse to the top-left corner of the screen.";
+#ifdef Q_OS_LINUX
+    QString instructions2 = "*   Open a terminal (Ubuntu/Linux Mint):<br/><br/>"
+            "sudo apt-get install python3-pip<br/>"
+            "sudo pip3 install python3-xlib<br/>"
+            "sudo apt-get install python3-tk<br/>"
+            "sudo apt-get install python3-dev<br/>"
+            "sudo pip3 install pyautogui<br/><br/>";
 #else
-    QString text = "1) Install <a href='https://www.python.org/downloads/'>Python3</a>.<br/>"
-            "2) Install <a href='https://pyautogui.readthedocs.org/en/latest/install.html'>PyAutoGUI</a>.";
-
+    QString instructions2 = "1a) Install <a href='https://www.python.org/downloads/'>Python3</a>.<br/>"
+            "1b) Install <a href='https://pyautogui.readthedocs.org/en/latest/install.html'>PyAutoGUI</a>.<br/><br/>";
+#endif
 
     QMessageBox msgBox(0);
     msgBox.setTextFormat(Qt::RichText);
-    msgBox.setText(text);
-    msgBox.setWindowTitle("Install Python3");
+    msgBox.setText(instructions1 + instructions2 + instructions3);
+    msgBox.setWindowTitle("Create Deck in Hearthstone (How to Use/Install)");
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
-#endif
 }
