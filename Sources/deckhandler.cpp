@@ -1386,7 +1386,7 @@ bool DeckHandler::deckBuilderPY()
     QProcess p;
     QStringList params;
 
-    params << Utility::appPath() + "/HSCards/deckBuilder.py";
+    params << QDir::toNativeSeparators(Utility::appPath() + "/HSCards/deckBuilder.py");
     foreach(Point2f point, screenPoints)
     {
         params << QString::number((int)point.x) << QString::number((int)point.y);
@@ -1402,7 +1402,11 @@ bool DeckHandler::deckBuilderPY()
 
     emit pDebug("Start script:\n" + params.join(" - "));
 
+#ifdef Q_OS_LINUX
     p.start("python3", params);
+#else
+    p.start("python", params);
+#endif
     p.waitForFinished(-1);
 
     emit pDebug("End script:\n" + p.readAll());
@@ -1433,13 +1437,14 @@ void DeckHandler::showInstallPY()
 {
     QString instructions1 =
         "This option allows you to create in Hearthstone your current deck, taking control of mouse and keyboard.<br/><br/>"
-        "1) The first time you use it, you will need to install python3 in your system.<br/><br/>";
+        "1) The first time you use it, you will need to install python 3 in your system.<br/><br/>";
     QString instructions3 =
         "2) If you have more than one screen, make sure Hearthstone is located in your primary screen.<br/><br/>"
         "3) Make sure you have manually created an empty deck of the correct class in Hearthstone "
-                "and stay in the screen where you select the cards to join your deck.<br/><br/>"
+                "and stay in the screen where you select the cards for your deck.<br/><br/>"
         "4) During the process Arena Tracker will take control of your mouse and keyboard to create the deck so don't use them. "
                 "If you need to stop the script move quickly the mouse to the top-left corner of the screen.";
+
 #ifdef Q_OS_LINUX
     QString instructions2 = "*   Open a terminal (Ubuntu/Linux Mint):<br/><br/>"
             "sudo apt-get install python3-pip<br/>"
@@ -1447,9 +1452,21 @@ void DeckHandler::showInstallPY()
             "sudo apt-get install python3-tk<br/>"
             "sudo apt-get install python3-dev<br/>"
             "sudo pip3 install pyautogui<br/><br/>";
-#else
-    QString instructions2 = "1a) Install <a href='https://www.python.org/downloads/'>Python3</a>.<br/>"
+#endif
+#ifdef Q_OS_WIN
+    QString instructions2 =
+            "1a) Install <a href='https://www.python.org/downloads/'>Python 3</a>.<br/>"
+            "*   Check: Add Python to PATH during the installation.<br/><br/>"
+            "1b) Open a terminal (cmd.exe) to install PyAutoGUI.<br/>"
+            "*   pip install image<br/>"
+            "*   pip install pyautogui<br/><br/>";
+#endif
+#ifdef Q_OS_MAC
+    QString instructions2 =
+            "1a) Install <a href='https://www.python.org/downloads/'>Python3</a>.<br/>"
+            "*   Add Python to PATH<br/><br/>"
             "1b) Install <a href='https://pyautogui.readthedocs.org/en/latest/install.html'>PyAutoGUI</a>.<br/><br/>";
+
 #endif
 
     QMessageBox msgBox(0);
