@@ -18,12 +18,21 @@ def typeCard(cardName):
 	pyautogui.press('enter')
 
 
-def addCards(num):
-	x, y = posCard1
-	pyautogui.moveTo(x, y)
-	pyautogui.click()
+def addCards(num, golden):
+	if num == 1:
+		x, y = posCard1
+		pyautogui.moveTo(x, y)
+		pyautogui.click()
+	else:
+		if golden:
+			x, y = posCard2
+			pyautogui.moveTo(x, y)
+			pyautogui.click()
+			pyautogui.click()
 
-	if num != 1:
+		x, y = posCard1
+		pyautogui.moveTo(x, y)
+		pyautogui.click()
 		pyautogui.click()
 
 
@@ -33,7 +42,8 @@ posSearch = int(sys.argv[5]), int(sys.argv[6])
 posDeckTitle = int(sys.argv[7]), int(sys.argv[8])
 deckTitle = sys.argv[9]
 pyautogui.PAUSE = float(sys.argv[10])
-deckArgv = sys.argv[11:]
+goldenCards = bool(sys.argv[11]=="1")
+deckArgv = sys.argv[12:]
 deckNames = []
 deckNums = []
 
@@ -48,6 +58,7 @@ print("PosCard2: ", posCard2)
 print("PosSearch: ", posSearch)
 print("PosDeckTitle: ", posDeckTitle)
 print("DeckTitle: ", deckTitle)
+print("GoldenCards: ", goldenCards)
 print("DeckNames: ", deckNames)
 print("DeckNums: ", deckNums)
 
@@ -57,7 +68,7 @@ try:
 
 	for i in range(len(deckNames)):
 		typeCard(deckNames[i])
-		addCards(int(deckNums[i]))
+		addCards(int(deckNums[i]), goldenCards)
 
 except pyautogui.FailSafeException:
 	print('Abort...\n')

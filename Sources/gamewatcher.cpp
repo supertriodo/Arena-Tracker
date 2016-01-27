@@ -773,34 +773,6 @@ void GameWatcher::checkAvenge()
 }
 
 
-//QString GameWatcher::askPlayerTag(QString &playerName1, QString &playerName2)
-//{
-//    QMessageBox msgBox((QMainWindow*)this->parent());
-//    msgBox.setText(tr("Who are you?"));
-//    msgBox.setWindowTitle(tr("Player Tag"));
-//    msgBox.setIcon(QMessageBox::Question);
-//    QPushButton *button1 = msgBox.addButton(playerName1, QMessageBox::ActionRole);
-//    QPushButton *button2 = msgBox.addButton(playerName2, QMessageBox::ActionRole);
-//    QPushButton *button3 = msgBox.addButton("None", QMessageBox::ActionRole);
-
-//    msgBox.exec();
-
-//    if (msgBox.clickedButton() == button1)
-//    {
-//        return playerName1;
-//    }
-//    else if (msgBox.clickedButton() == button2)
-//    {
-//        return playerName2;
-//    }
-//    else
-//    {
-//        (void)button3;
-//        return playerTag;
-//    }
-//}
-
-
 void GameWatcher::createGameResult()
 {
     if(loadingScreen == spectator)

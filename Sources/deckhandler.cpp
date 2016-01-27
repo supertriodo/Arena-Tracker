@@ -1385,6 +1385,7 @@ bool DeckHandler::deckBuilderPY()
     //Lanza script
     QProcess p;
     QStringList params;
+    bool goldenCards = ui->configCheckGoldenCards->isChecked();
 
     params << QDir::toNativeSeparators(Utility::appPath() + "/HSCards/deckBuilder.py");
     foreach(Point2f point, screenPoints)
@@ -1392,8 +1393,9 @@ bool DeckHandler::deckBuilderPY()
         params << QString::number((int)point.x) << QString::number((int)point.y);
     }
 
-    params << ui->deckLineEdit->text();
-    params << QString::number(0.1);//time sleep
+    params << ui->deckLineEdit->text();//Deck name
+    params << QString::number(0.1);//Time pause
+    params << (goldenCards?QString("1"):QString("0"));//Golden cards
 
     foreach(DeckCard deckCard, deckCardList.mid(1))
     {
@@ -1422,9 +1424,10 @@ void DeckHandler::askCreateDeckPY()
     msgBox.setWindowTitle("Create Deck in Hearthstone");
     msgBox.setText(text);
     msgBox.setIcon(QMessageBox::Information);
-    QPushButton *button1 = msgBox.addButton("Start", QMessageBox::ActionRole);
-                           msgBox.addButton("Cancel", QMessageBox::ActionRole);
-    QPushButton *button3 = msgBox.addButton("How To Use/Install", QMessageBox::ActionRole);
+
+    QPushButton *button1 = msgBox.addButton("Start", QMessageBox::AcceptRole);
+                           msgBox.addButton("Cancel", QMessageBox::RejectRole);
+    QPushButton *button3 = msgBox.addButton("How To Use/Install", QMessageBox::HelpRole);
 
     msgBox.exec();
 

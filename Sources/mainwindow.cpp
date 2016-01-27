@@ -675,10 +675,13 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
+void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards,
                                QString AMplayerEmail, QString AMpassword,
                                QString HStatsPlayerEmail, QString HStatsPassword)
 {
+    //Actions
+    ui->configCheckGoldenCards->setChecked(createGoldenCards);
+
     //UI
     switch(transparency)
     {
@@ -812,12 +815,13 @@ void MainWindow::readSettings()
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         bool showClassColor = settings.value("showClassColor", true).toBool();
         bool showSpellColor = settings.value("showSpellColor", true).toBool();
+        bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
         QString HStatsPlayerEmail = "";//settings.value("HStatsPlayerEmail", "").toString();
         QString HStatsPassword = "";//settings.value("HStatsPassword", "").toString();
 
-        initConfigTab(tooltipScale, showClassColor, showSpellColor, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
+        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
     }
     else
     {
@@ -855,6 +859,7 @@ void MainWindow::writeSettings()
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
         settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
+        settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
 //        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
@@ -1940,9 +1945,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
-//sleep python
-//install python
-//golden cards
+
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
