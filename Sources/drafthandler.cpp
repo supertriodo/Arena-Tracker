@@ -158,7 +158,7 @@ void DraftHandler::resetTab()
 
     //Show Tab
     removeTabHero();
-    ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/draft.png"), "");
+    ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/arena.png"), "");
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
     mainWindow->calculateMinimumWidth();
 
