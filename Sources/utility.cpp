@@ -254,3 +254,29 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
     return screenPoints;
 }
+
+
+void Utility::fadeInWidget(QWidget * widget)
+{
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(widget);
+    widget->setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(350);
+    a->setStartValue(0);
+    a->setEndValue(1);
+    a->setEasingCurve(QEasingCurve::InBack);
+    a->start(QPropertyAnimation::DeleteWhenStopped);
+}
+
+
+void Utility::fadeOutWidget(QWidget * widget)
+{
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(widget);
+    widget->setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(350);
+    a->setStartValue(1);
+    a->setEndValue(0);
+    a->setEasingCurve(QEasingCurve::OutBack);
+    a->start(QPropertyAnimation::DeleteWhenStopped);
+}

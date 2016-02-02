@@ -550,19 +550,11 @@ void ArenaHandler::setTransparency(Transparency value)
     {
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
         ui->tabArena->repaint();
-        ui->tabLog->setAttribute(Qt::WA_NoBackground);
-        ui->tabLog->repaint();
-
-        ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
     }
     else
     {
         ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
         ui->tabArena->repaint();
-        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabLog->repaint();
-
-        ui->logTextEdit->setStyleSheet("");
     }
 
     if(theme == ThemeWhite)

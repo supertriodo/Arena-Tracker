@@ -35,6 +35,7 @@ void GameWatcher::reset()
 {
     gameState = noGame;
     loadingScreen = menu;
+    deckRead = false;
     emit pDebug("Reset (GameState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
 }

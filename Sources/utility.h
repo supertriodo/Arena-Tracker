@@ -58,6 +58,8 @@ public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static QString removeAccents(QString s);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
+    static void fadeInWidget(QWidget *widget);
+    static void fadeOutWidget(QWidget *widget);
 };
 
 #endif // UTILITY_H

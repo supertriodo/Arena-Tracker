@@ -103,7 +103,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
 
-    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 9);
+    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     QResizeEvent *event = new QResizeEvent(this->size(), this->size());
     this->windowsFormation = None;
     resizeTabWidgets(event);
@@ -1272,6 +1272,7 @@ void MainWindow::showLogLoadProgress(qint64 logSeek)
     if(logSeek == 0)     //Log reset
     {
         deckHandler->unlockDeckInterface();
+        deckHandler->leaveArena();
         enemyHandHandler->unlockEnemyInterface();
         gameWatcher->reset();
     }
@@ -1945,6 +1946,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
+//Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
+//Corregir refresh button en connect arenamastery
 
 
 //BUGS CONOCIDOS

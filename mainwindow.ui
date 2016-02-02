@@ -973,6 +973,9 @@
           <property name="rightMargin">
            <number>0</number>
           </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="MoveListWidget" name="deckListWidget"/>
           </item>
@@ -1223,6 +1226,9 @@
            <number>40</number>
           </property>
           <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
