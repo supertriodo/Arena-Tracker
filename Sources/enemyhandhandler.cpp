@@ -194,7 +194,7 @@ void EnemyHandHandler::updateTransparency()
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
 
-        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemy)
         {
             emit needMainWindowFade(true);
         }
@@ -204,7 +204,7 @@ void EnemyHandHandler::updateTransparency()
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
 
-        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemy)
         {
             emit needMainWindowFade(false);
         }

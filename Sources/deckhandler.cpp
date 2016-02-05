@@ -848,7 +848,7 @@ void DeckHandler::updateTransparency()
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();
 
-        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabDeck)
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabDeck)
         {
             emit needMainWindowFade(true);
         }

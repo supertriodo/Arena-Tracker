@@ -587,6 +587,9 @@ void MainWindow::completeUI()
         completeHeroButtons();
         completeConfigTab();
 
+        connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+                this, SLOT(spreadMouseInApp()));
+
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
@@ -1014,12 +1017,23 @@ void MainWindow::spreadMouseInApp()
 {
     if(!isMainWindow)   return;
 
-    if(this->otherWindow==NULL)     deckHandler->setMouseInApp(mouseInApp);
-    enemyHandHandler->setMouseInApp(mouseInApp);
-    arenaHandler->setMouseInApp(mouseInApp);
-    draftHandler->setMouseInApp(mouseInApp);
+    QWidget *currentTab = ui->tabWidget->currentWidget();
 
-    updateOtherTabsTransparency(false);
+    if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabArena)     arenaHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabDraft)     draftHandler->setMouseInApp(mouseInApp);
+    else                                    updateOtherTabsTransparency();
+
+    if(transparency==Transparent)
+    {
+        if(mouseInApp)      fadeBarAndButtons(false);
+        else                fadeBarAndButtons(true);
+    }
+    else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy)
+    {
+        fadeBarAndButtons(false);
+    }
 }
 
 
@@ -1518,22 +1532,19 @@ void MainWindow::transparentNever()
 
 void MainWindow::spreadTransparency(Transparency newTransparency)
 {
-    bool transparencyChanged = this->transparency != newTransparency;
     this->transparency = newTransparency;
 
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
-    updateOtherTabsTransparency(transparencyChanged);
+    updateOtherTabsTransparency();
 }
 
 
 //Update Config and Log tabs transparency
-void MainWindow::updateOtherTabsTransparency(bool transparencyChanged)
+void MainWindow::updateOtherTabsTransparency()
 {
-    if(!transparencyChanged && transparency!=Transparent)   return;
-
     if(!mouseInApp && transparency==Transparent)
     {
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
@@ -1568,8 +1579,6 @@ void MainWindow::updateOtherTabsTransparency(bool transparencyChanged)
         ui->configCheckLearning->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
-
-        fadeBarAndButtons(true);
     }
     else
     {
@@ -1599,8 +1608,6 @@ void MainWindow::updateOtherTabsTransparency(bool transparencyChanged)
         ui->configCheckLearning->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
-
-        fadeBarAndButtons(false);
     }
 }
 

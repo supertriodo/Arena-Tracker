@@ -97,8 +97,7 @@ private:
     void addDraftMenu(QPushButton *button);
     void spreadSplitWindow();
     void spreadTransparency(Transparency newTransparency);
-    void spreadMouseInApp();
-    void updateOtherTabsTransparency(bool transparencyChanged);
+    void updateOtherTabsTransparency();
     void spreadTheme();
     void updateMainUITheme();
     void updateButtonsTheme();
@@ -184,6 +183,7 @@ private slots:
     void updateShowClassColor(bool checked);
     void updateShowSpellColor(bool checked);
     void fadeBarAndButtons(bool fadeOut);
+    void spreadMouseInApp();
 };
 
 #endif // MAINWINDOW_H
