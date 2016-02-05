@@ -21,6 +21,7 @@ private:
     QList<HandCard> enemyHandList;
     Ui::Extended *ui;
     bool inGame;
+    bool mouseInApp;
     Transparency transparency;
     QString knownCard;
     int numKnownCards;
@@ -40,10 +41,12 @@ public:
     void redrawSpellWeaponCards();
     void redrawAllCards();
     void setTransparency(Transparency value);
+    void setMouseInApp(bool value);
 
 signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void needMainWindowFade(bool fade);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyHandHandler");
 

@@ -13,6 +13,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->synchronized = false;
     this->loadedDeckName = QString();
     this->loadDeckItemsMap.clear();
+    this->mouseInApp = false;
 
     completeUI();
 }
@@ -842,15 +843,25 @@ void DeckHandler::unlockDeckInterface()
 
 void DeckHandler::updateTransparency()
 {
-    if(transparency==Transparent || (inGame && transparency==AutoTransparent))
+    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
     {
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();
+
+        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabDeck)
+        {
+            emit needMainWindowFade(true);
+        }
     }
     else
     {
         ui->tabDeck->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDeck->repaint();
+
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabDeck)
+        {
+            emit needMainWindowFade(false);
+        }
     }
 }
 
@@ -858,6 +869,13 @@ void DeckHandler::updateTransparency()
 void DeckHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
+    updateTransparency();
+}
+
+
+void DeckHandler::setMouseInApp(bool value)
+{
+    this->mouseInApp = value;
     updateTransparency();
 }
 

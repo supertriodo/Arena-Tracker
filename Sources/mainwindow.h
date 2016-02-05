@@ -58,6 +58,7 @@ private:
     WindowsFormation windowsFormation;
     QFile* atLogFile;
     bool splitWindow;
+    bool mouseInApp;
     Transparency transparency;
     Theme theme;
     bool oneWindow;
@@ -95,8 +96,9 @@ private:
     void completeConfigTab();
     void addDraftMenu(QPushButton *button);
     void spreadSplitWindow();
-    void spreadTransparency();
-    void updateOtherTabsTransparency();
+    void spreadTransparency(Transparency newTransparency);
+    void spreadMouseInApp();
+    void updateOtherTabsTransparency(bool transparencyChanged);
     void spreadTheme();
     void updateMainUITheme();
     void updateButtonsTheme();
@@ -126,6 +128,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
+    void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:
@@ -179,6 +183,7 @@ private slots:
     void closeApp();
     void updateShowClassColor(bool checked);
     void updateShowSpellColor(bool checked);
+    void fadeBarAndButtons(bool fadeOut);
 };
 
 #endif // MAINWINDOW_H

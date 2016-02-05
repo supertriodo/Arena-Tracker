@@ -2,9 +2,7 @@
 #define UI_EXTENDED
 
 #include "ui_mainwindow.h"
-#include "movelistwidget.h"
 #include "movetabwidget.h"
-#include "movetreewidget.h"
 #include "resizebutton.h"
 
 QT_BEGIN_NAMESPACE

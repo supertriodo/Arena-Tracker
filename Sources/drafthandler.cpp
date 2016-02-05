@@ -14,6 +14,7 @@ DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJso
     this->drafting = false;
     this->transparency = Opaque;
     this->draftScoreWindow = NULL;
+    this->mouseInApp = false;
 
     for(int i=0; i<3; i++)
     {
@@ -783,7 +784,7 @@ void DraftHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
 
-    if(transparency==Transparent)
+    if(!mouseInApp && transparency==Transparent)
     {
         ui->tabHero->setAttribute(Qt::WA_NoBackground);
         ui->tabHero->repaint();
@@ -818,6 +819,13 @@ void DraftHandler::setTransparency(Transparency value)
     clearScore(ui->labelDraft1, false);
     clearScore(ui->labelDraft2, false);
     clearScore(ui->labelDraft3, false);
+}
+
+
+void DraftHandler::setMouseInApp(bool value)
+{
+    this->mouseInApp = value;
+    setTransparency(this->transparency);
 }
 
 

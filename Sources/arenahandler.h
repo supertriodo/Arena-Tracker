@@ -28,6 +28,7 @@ private:
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
     bool noArena;
+    bool mouseInApp;
     Transparency transparency;
     Theme theme;
 
@@ -48,6 +49,7 @@ public:
     void setWebUploader(WebUploader *webUploader);
     bool isNoArena();
     void currentArenaToWhite();
+    void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
 

@@ -9,6 +9,7 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::Extended *ui) : QObject(
     this->knownCard = "";
     this->numKnownCards = 0;
     this->lastCreatedByCode = "";
+    this->mouseInApp = false;
 
     completeUI();
 }
@@ -188,15 +189,25 @@ void EnemyHandHandler::unlockEnemyInterface()
 
 void EnemyHandHandler::updateTransparency()
 {
-    if(transparency==Transparent || (inGame && transparency==AutoTransparent))
+    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
     {
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
+
+        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        {
+            emit needMainWindowFade(true);
+        }
     }
     else
     {
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
+
+        if((inGame && transparency==AutoTransparent) && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        {
+            emit needMainWindowFade(false);
+        }
     }
 }
 
@@ -204,6 +215,13 @@ void EnemyHandHandler::updateTransparency()
 void EnemyHandHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
+    updateTransparency();
+}
+
+
+void EnemyHandHandler::setMouseInApp(bool value)
+{
+    this->mouseInApp = value;
     updateTransparency();
 }
 

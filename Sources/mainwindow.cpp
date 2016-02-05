@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hstatsUploader = NULL;
     atLogFile = NULL;
     isMainWindow = true;
+    mouseInApp = false;
     otherWindow = NULL;
 
     createLogFile();
@@ -57,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     deckHandler = NULL;
     secretsHandler = NULL;
     isMainWindow = false;
+    mouseInApp = false;
     otherWindow = primaryWindow;
 
     completeUI();
@@ -294,6 +296,8 @@ void MainWindow::createDeckHandler()
     deckHandler = new DeckHandler(this, &cardsJson, ui);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
+    connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
+            this, SLOT(fadeBarAndButtons(bool)));
     connect(deckHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -311,6 +315,8 @@ void MainWindow::createEnemyHandHandler()
     enemyHandHandler = new EnemyHandHandler(this, ui);
     connect(enemyHandHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
+    connect(enemyHandHandler, SIGNAL(needMainWindowFade(bool)),
+            this, SLOT(fadeBarAndButtons(bool)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -491,7 +497,11 @@ void MainWindow::synchronizedDone()
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
-    spreadTransparency();
+
+    //Aseguramos que transparencyChanged tendra el valor correcto (Inicialmente todo se dibujo en opaco)
+    Transparency newTransparency = this->transparency;
+    this->transparency = Opaque;
+    spreadTransparency(newTransparency);
 
     ui->progressBar->setVisible(false);
 
@@ -982,6 +992,37 @@ void MainWindow::changeEvent(QEvent * event)
 }
 
 
+void MainWindow::leaveEvent(QEvent * e)
+{
+    QMainWindow::leaveEvent(e);
+
+    this->mouseInApp = false;
+    spreadMouseInApp();
+}
+
+
+void MainWindow::enterEvent(QEvent * e)
+{
+    QMainWindow::enterEvent(e);
+
+    this->mouseInApp = true;
+    spreadMouseInApp();
+}
+
+
+void MainWindow::spreadMouseInApp()
+{
+    if(!isMainWindow)   return;
+
+    if(this->otherWindow==NULL)     deckHandler->setMouseInApp(mouseInApp);
+    enemyHandHandler->setMouseInApp(mouseInApp);
+    arenaHandler->setMouseInApp(mouseInApp);
+    draftHandler->setMouseInApp(mouseInApp);
+
+    updateOtherTabsTransparency(false);
+}
+
+
 void MainWindow::resizeSlot(QSize size)
 {
     resize(size);
@@ -1459,39 +1500,41 @@ void MainWindow::spreadSplitWindow()
 
 void MainWindow::transparentAlways()
 {
-    this->transparency = Transparent;
-    spreadTransparency();
+    spreadTransparency(Transparent);
 }
 
 
 void MainWindow::transparentAuto()
 {
-    this->transparency = AutoTransparent;
-    spreadTransparency();
+    spreadTransparency(AutoTransparent);
 }
 
 
 void MainWindow::transparentNever()
 {
-    this->transparency = Opaque;
-    spreadTransparency();
+    spreadTransparency(Opaque);
 }
 
 
-void MainWindow::spreadTransparency()
+void MainWindow::spreadTransparency(Transparency newTransparency)
 {
+    bool transparencyChanged = this->transparency != newTransparency;
+    this->transparency = newTransparency;
+
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
-    updateOtherTabsTransparency();
+    updateOtherTabsTransparency(transparencyChanged);
 }
 
 
 //Update Config and Log tabs transparency
-void MainWindow::updateOtherTabsTransparency()
+void MainWindow::updateOtherTabsTransparency(bool transparencyChanged)
 {
-    if(transparency==Transparent)
+    if(!transparencyChanged && transparency!=Transparent)   return;
+
+    if(!mouseInApp && transparency==Transparent)
     {
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
         ui->tabLog->repaint();
@@ -1525,6 +1568,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckLearning->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
+
+        fadeBarAndButtons(true);
     }
     else
     {
@@ -1554,6 +1599,31 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckLearning->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
+
+        fadeBarAndButtons(false);
+    }
+}
+
+
+void MainWindow::fadeBarAndButtons(bool fadeOut)
+{
+    if(fadeOut)
+    {
+        Utility::fadeOutWidget(ui->tabWidget->tabBar());
+        Utility::fadeOutWidget(ui->tabWidgetH2->tabBar());
+        Utility::fadeOutWidget(ui->tabWidgetH3->tabBar());
+        Utility::fadeOutWidget(ui->minimizeButton);
+        Utility::fadeOutWidget(ui->closeButton);
+        Utility::fadeOutWidget(ui->resizeButton);
+    }
+    else
+    {
+        Utility::fadeInWidget(ui->tabWidget->tabBar());
+        Utility::fadeInWidget(ui->tabWidgetH2->tabBar());
+        Utility::fadeInWidget(ui->tabWidgetH3->tabBar());
+        Utility::fadeInWidget(ui->minimizeButton);
+        Utility::fadeInWidget(ui->closeButton);
+        Utility::fadeInWidget(ui->resizeButton);
     }
 }
 
@@ -1948,6 +2018,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
 //Corregir refresh button en connect arenamastery
+//Arreglar colores config
+//Optimizar setmouseinapp
 
 
 //BUGS CONOCIDOS

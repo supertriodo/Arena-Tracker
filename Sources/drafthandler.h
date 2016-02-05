@@ -38,6 +38,7 @@ private:
     int screenIndex;
     int nextCount;
     bool drafting;
+    bool mouseInApp;
     Transparency transparency;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
@@ -70,6 +71,7 @@ private:
 
 public:
     void reHistDownloadedCardImage(QString &code);
+    void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setShowDraftOverlay(bool value);
     void setLearningMode(bool value);

@@ -258,25 +258,42 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
 void Utility::fadeInWidget(QWidget * widget)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(widget);
-    widget->setGraphicsEffect(eff);
+    QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)widget->graphicsEffect();
+    if(eff == 0)
+    {
+        eff = new QGraphicsOpacityEffect(widget);
+        widget->setGraphicsEffect(eff);
+        eff->setOpacity(1);
+    }
+
+    if(eff->opacity() == 1) return;
+
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(350);
+    a->setDuration(ANIMATION_TIME);
     a->setStartValue(0);
     a->setEndValue(1);
-    a->setEasingCurve(QEasingCurve::InBack);
+    a->setEasingCurve(QEasingCurve::OutBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 
 void Utility::fadeOutWidget(QWidget * widget)
 {
-    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(widget);
-    widget->setGraphicsEffect(eff);
+    QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)widget->graphicsEffect();
+    if(eff == 0)
+    {
+        eff = new QGraphicsOpacityEffect(widget);
+        widget->setGraphicsEffect(eff);
+        eff->setOpacity(1);
+    }
+
+    if(eff->opacity() == 0) return;
+
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(350);
+    a->setDuration(ANIMATION_TIME);
     a->setStartValue(1);
     a->setEndValue(0);
     a->setEasingCurve(QEasingCurve::OutBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
+

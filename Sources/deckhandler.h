@@ -29,6 +29,7 @@ private:
     QJsonObject decksJson;
     QString loadedDeckName;
     bool inGame, inArena, synchronized;
+    bool mouseInApp;
     Transparency transparency;
     bool drawAnimating;
     int drawDisappear;
@@ -71,6 +72,7 @@ public:
     void updateIconSize(int cardHeight);
     QList<DeckCard> * getDeckComplete();
     void setTransparency(Transparency value);
+    void setMouseInApp(bool value);
     void setTheme(Theme value);
     void setGreyedHeight(int value);
     void setCardHeight(int value);
@@ -82,6 +84,7 @@ public:
 signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void needMainWindowFade(bool fade);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 

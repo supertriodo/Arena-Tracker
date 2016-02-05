@@ -8,6 +8,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extend
     this->ui = ui;
     this->transparency = Opaque;
     this->theme = ThemeWhite;
+    this->mouseInApp = false;
 
     completeUI();
 }
@@ -358,7 +359,8 @@ void ArenaHandler::reshowArena(QString hero)
 
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
-    if(transparency != Transparent && theme == ThemeWhite) if(color == WHITE)  color = BLACK;
+    if(theme == ThemeWhite && (transparency != Transparent || mouseInApp))
+        if(color == WHITE)  color = BLACK;
 
     for(int i=0;i<5;i++)
     {
@@ -544,9 +546,10 @@ void ArenaHandler::allToWhite()
 
 void ArenaHandler::setTransparency(Transparency value)
 {
+    bool transparencyChanged = this->transparency != value;
     this->transparency = value;
 
-    if(transparency==Transparent)
+    if(!mouseInApp && transparency==Transparent)
     {
         ui->tabArena->setAttribute(Qt::WA_NoBackground);
         ui->tabArena->repaint();
@@ -557,12 +560,17 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabArena->repaint();
     }
 
-    if(theme == ThemeWhite)
+    //Habra que cambiar los colores en theme blanco si:
+    //1) La transparencia se ha cambiado
+    //2) El raton ha salido/entrado y estamos en transparente
+    if(theme == ThemeWhite &&
+            (transparencyChanged || this->transparency == Transparent ))
     {
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
         allToWhite();
 
-        if(ui->updateButton->isEnabled())
+        //Solo recargamos arenaMastery si la transparencia se ha cambiado, no cuando el raton entra y sale.
+        if(transparencyChanged && ui->updateButton->isEnabled())
         {
             ui->updateButton->setEnabled(false);
             if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
@@ -571,21 +579,25 @@ void ArenaHandler::setTransparency(Transparency value)
 }
 
 
+void ArenaHandler::setMouseInApp(bool value)
+{
+    this->mouseInApp = value;
+    setTransparency(this->transparency);
+}
+
+
 //Blanco opaco usa un theme diferente a los otros 3
 void ArenaHandler::setTheme(Theme theme)
 {
     this->theme = theme;
 
-    if(transparency != Transparent)
-    {
-        //Change arenaTreeWidget normal color to (BLACK/WHITE)
-        allToWhite();
+    //Change arenaTreeWidget normal color to (BLACK/WHITE)
+    allToWhite();
 
-        if(ui->updateButton->isEnabled())
-        {
-            ui->updateButton->setEnabled(false);
-            if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
-        }
+    if(ui->updateButton->isEnabled())
+    {
+        ui->updateButton->setEnabled(false);
+        if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
     }
 }
 
