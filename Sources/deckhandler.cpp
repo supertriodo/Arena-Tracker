@@ -1315,12 +1315,6 @@ void DeckHandler::enterArena()
     this->inArena = true;
     ui->deckButtonSave->setEnabled(false);
     hideManageDecksButtons();
-
-    if(!ui->loadDeckTreeWidget->isHidden())
-    {
-        ui->loadDeckTreeWidget->clearSelection();
-        hideDeckTreeWidget();
-    }
 }
 
 
@@ -1361,6 +1355,12 @@ void DeckHandler::showManageDecksButtons()
 
 void DeckHandler::hideManageDecksButtons()
 {
+    if(!ui->loadDeckTreeWidget->isHidden())
+    {
+        ui->loadDeckTreeWidget->clearSelection();
+        hideDeckTreeWidget();
+    }
+
     ui->deckLineEdit->setHidden(true);
     ui->deckButtonNew->setHidden(true);
     ui->deckButtonLoad->setHidden(true);
