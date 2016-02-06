@@ -1908,7 +1908,7 @@ card scores during the draft.</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normalon>:/Images/refresh64.png</normalon>
+                     <normalon>:/Images/refresh.png</normalon>
                     </iconset>
                    </property>
                    <property name="iconSize">
@@ -1988,7 +1988,7 @@ card scores during the draft.</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normalon>:/Images/refresh64.png</normalon>
+                     <normalon>:/Images/refresh.png</normalon>
                     </iconset>
                    </property>
                    <property name="iconSize">

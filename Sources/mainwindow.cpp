@@ -1870,7 +1870,7 @@ void MainWindow::updateAMConnectButton(int value)
             ui->configButtonMastery->setEnabled(true);
             break;
         case 2:
-            ui->configButtonMastery->setIcon(QIcon(":/Images/refresh64.png"));
+            ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
             ui->configButtonMastery->setEnabled(false);
             break;
     }
@@ -1886,7 +1886,7 @@ void MainWindow::tryConnectAM()
 
     arenaHandler->currentArenaToWhite();
     webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
-    ui->configButtonMastery->setIcon(QIcon(":/Images/refresh64.png"));
+    ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
     ui->configButtonMastery->setEnabled(false);
 }
 
@@ -1911,7 +1911,7 @@ void MainWindow::updateHStatsConnectButton(int value)
             ui->configButtonHStats->setEnabled(true);
             break;
         case 2:
-            ui->configButtonHStats->setIcon(QIcon(":/Images/refresh64.png"));
+            ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
             ui->configButtonHStats->setEnabled(false);
             break;
     }
@@ -1927,7 +1927,7 @@ void MainWindow::tryConnectHStats()
 
 //    arenaHandler->currentArenaToWhite();
     hstatsUploader->tryConnect(ui->configLineEditHStats->text(), ui->configLineEditHStats2->text());
-    ui->configButtonHStats->setIcon(QIcon(":/Images/refresh64.png"));
+    ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
     ui->configButtonHStats->setEnabled(false);
 }
 
@@ -2026,9 +2026,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Auto size deck
 //Deck oponente
 //Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
-//Corregir refresh button en connect arenamastery
-//Bug cerrar load deck al bloquear
-//Al reinciar HS no borrar deck actual
 //Arreglar colores config
 //Quitar tilde shenjon
 
