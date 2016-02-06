@@ -1326,6 +1326,8 @@ void DeckHandler::enterArena()
 
 void DeckHandler::leaveArena()
 {
+    if(!inArena)    return;
+
     this->inArena = false;
     ui->deckButtonSave->setEnabled(false);
     showManageDecksButtons();

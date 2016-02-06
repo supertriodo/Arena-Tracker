@@ -2023,12 +2023,14 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
+//Auto size deck
 //Deck oponente
 //Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
 //Corregir refresh button en connect arenamastery
+//Bug cerrar load deck al bloquear
+//Al reinciar HS no borrar deck actual
 //Arreglar colores config
 //Quitar tilde shenjon
-//Sacar api webs
 
 
 //BUGS CONOCIDOS
