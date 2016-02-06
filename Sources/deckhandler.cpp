@@ -333,6 +333,7 @@ void DeckHandler::reset()
 
     DeckCard deckCard("");
     deckCard.total = 30;
+    deckCard.remaining = deckCard.total;
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw(true);
     insertDeckCard(deckCard);

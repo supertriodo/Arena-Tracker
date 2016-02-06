@@ -2023,10 +2023,12 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 
 //TODO
+//Deck oponente
 //Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
 //Corregir refresh button en connect arenamastery
 //Arreglar colores config
-//Optimizar setmouseinapp
+//Quitar tilde shenjon
+//Sacar api webs
 
 
 //BUGS CONOCIDOS
