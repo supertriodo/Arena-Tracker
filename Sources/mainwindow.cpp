@@ -1560,11 +1560,17 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet(groupBoxCSS);
         ui->configBoxHand->setStyleSheet(groupBoxCSS);
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
+        ui->configBoxMastery->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
         ui->configLabelDeckNormal->setStyleSheet(labelCSS);
+        ui->configLabelDeckNormal2->setStyleSheet(labelCSS);
+        ui->configLabelDeckTooltip->setStyleSheet(labelCSS);
+        ui->configLabelDeckTooltip2->setStyleSheet(labelCSS);
         ui->configLabelDrawTime->setStyleSheet(labelCSS);
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
+        ui->configLabelMastery->setStyleSheet(labelCSS);
+        ui->configLabelMastery2->setStyleSheet(labelCSS);
 
         QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
         ui->configRadioTransparent->setStyleSheet(radioCSS);
@@ -1572,9 +1578,12 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioOpaque->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
+        ui->configCheckGoldenCards->setStyleSheet(checkCSS);
         ui->configCheckDarkTheme->setStyleSheet(checkCSS);
         ui->configCheckWindowSplit->setStyleSheet(checkCSS);
         ui->configCheckDeckWindow->setStyleSheet(checkCSS);
+        ui->configCheckClassColor->setStyleSheet(checkCSS);
+        ui->configCheckSpellColor->setStyleSheet(checkCSS);
         ui->configCheckOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
 
@@ -1592,18 +1601,27 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet("");
         ui->configBoxHand->setStyleSheet("");
         ui->configBoxDraft->setStyleSheet("");
+        ui->configBoxMastery->setStyleSheet("");
 
         ui->configLabelDeckNormal->setStyleSheet("");
+        ui->configLabelDeckNormal2->setStyleSheet("");
+        ui->configLabelDeckTooltip->setStyleSheet("");
+        ui->configLabelDeckTooltip2->setStyleSheet("");
         ui->configLabelDrawTime->setStyleSheet("");
         ui->configLabelDrawTimeValue->setStyleSheet("");
+        ui->configLabelMastery->setStyleSheet("");
+        ui->configLabelMastery2->setStyleSheet("");
 
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
         ui->configRadioOpaque->setStyleSheet("");
 
+        ui->configCheckGoldenCards->setStyleSheet("");
         ui->configCheckDarkTheme->setStyleSheet("");
         ui->configCheckWindowSplit->setStyleSheet("");
         ui->configCheckDeckWindow->setStyleSheet("");
+        ui->configCheckClassColor->setStyleSheet("");
+        ui->configCheckSpellColor->setStyleSheet("");
         ui->configCheckOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
 
@@ -2026,7 +2044,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Auto size deck
 //Deck oponente
 
-//Arreglar colores config
 //Quitar tilde shenjon
 
 
