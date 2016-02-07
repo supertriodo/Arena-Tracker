@@ -2044,8 +2044,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Auto size deck
 //Deck oponente
 
-//Quitar tilde shenjon
-
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
