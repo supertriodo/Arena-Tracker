@@ -105,7 +105,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         animation->setStartValue(scoresPushButton[i]->maximumHeight());
         animation->setEndValue(scoreWidth);
         animation->setEasingCurve(QEasingCurve::OutBounce);
-        animation->start();
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
 
 
         animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
@@ -113,7 +113,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         animation->setStartValue(scoresPushButton[i]->minimumHeight());
         animation->setEndValue(scoreWidth);
         animation->setEasingCurve(QEasingCurve::OutBounce);
-        animation->start();
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
 
         if(i == 0)  connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
 
@@ -163,14 +163,14 @@ void DraftScoreWindow::hideScores()
         animation->setStartValue(scoresPushButton[i]->maximumHeight());
         animation->setEndValue(0);
         animation->setEasingCurve(QEasingCurve::Linear);
-        animation->start();
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
 
         animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
         animation->setDuration(ANIMATION_TIME/2);
         animation->setStartValue(scoresPushButton[i]->minimumHeight());
         animation->setEndValue(0);
         animation->setEasingCurve(QEasingCurve::Linear);
-        animation->start();
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
 
         connect(animation, SIGNAL(finished()),
                 this, SLOT(update()));

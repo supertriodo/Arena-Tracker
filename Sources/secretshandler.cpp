@@ -74,14 +74,14 @@ void SecretsHandler::adjustSize()
     animation->setStartValue(ui->secretsTreeWidget->minimumHeight());
     animation->setEndValue(height);
     animation->setEasingCurve(QEasingCurve::OutBounce);
-    animation->start();
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     QPropertyAnimation *animation2 = new QPropertyAnimation(ui->secretsTreeWidget, "maximumHeight");
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(ui->secretsTreeWidget->maximumHeight());
     animation2->setEndValue(height);
     animation2->setEasingCurve(QEasingCurve::OutBounce);
-    animation2->start();
+    animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     this->secretsAnimating = true;
     connect(animation, SIGNAL(finished()),

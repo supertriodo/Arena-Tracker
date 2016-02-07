@@ -2025,7 +2025,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Deck oponente
-//Eliminar animaciones - a->start(QPropertyAnimation::DeleteWhenStopped);
+
 //Arreglar colores config
 //Quitar tilde shenjon
 
