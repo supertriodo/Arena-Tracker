@@ -10,7 +10,6 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->transparency = Opaque;
     this->drawAnimating = false;
     this->drawDisappear = 10;
-    this->synchronized = false;
     this->loadedDeckName = QString();
     this->loadDeckItemsMap.clear();
     this->mouseInApp = false;
@@ -277,8 +276,6 @@ void DeckHandler::enableDeckButtonSave()
 
 void DeckHandler::setSynchronized()
 {
-    this->synchronized = true;
-
     if(this->inGame)    lockDeckInterface();
     else                unlockDeckInterface();
 }
@@ -520,27 +517,19 @@ void DeckHandler::drawFromDeck(QString code)
                 it->drawGreyed(true);
 
                 emit pDebug("New card: " + it->getName());
-//                emit pLog(tr("Deck: New card: ") + it->getName());
             }
             else
             {
                 emit pDebug("New card but deck is full. " + it->getName(), Warning);
-//                emit pLog(tr("Deck: New card found but deck is full: ") + it->getName());
             }
             return;
         }
     }
 
-    //MALORNE
-    if(code == MALORNE)  return;
-
-
     if(deckCardList[0].total>0)
     {
         emit pDebug("New card: " +
                           (*cardsJson)[code].value("name").toString());
-//        emit pLog(tr("Deck: New card: ") +
-//                          (*cardsJson)[code].value("name").toString());
         newDeckCard(code);
         drawFromDeck(code);
     }
@@ -548,8 +537,6 @@ void DeckHandler::drawFromDeck(QString code)
     {
         emit pDebug("New card but deck is full. " +
                       (*cardsJson)[code].value("name").toString(), Warning);
-//        emit pLog(tr("Deck: New card found but deck is full: ") +
-//                      (*cardsJson)[code].value("name").toString());
     }
 }
 
@@ -794,7 +781,6 @@ void DeckHandler::cardRemove()
 void DeckHandler::lockDeckInterface()
 {
     this->inGame = true;
-    if(!synchronized)   return;
 
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
@@ -818,7 +804,6 @@ void DeckHandler::lockDeckInterface()
 void DeckHandler::unlockDeckInterface()
 {
     this->inGame = false;
-    if(!synchronized)   return;
 
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {

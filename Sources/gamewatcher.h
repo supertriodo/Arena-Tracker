@@ -96,6 +96,7 @@ signals:
     void newDeckCard(QString card);
     void startGame();
     void endGame();
+    void enemyHero(QString hero);
     void enterArena();
     void leaveArena();
     void playerCardDraw(QString code);

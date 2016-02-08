@@ -42,6 +42,7 @@ public:
     void redrawAllCards();
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
+    bool isFromEnemyDeck(int id);
 
 signals:
     void checkCardImage(QString code);

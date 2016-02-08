@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1245,6 +1245,31 @@
           </item>
           <item>
            <widget class="MoveListWidget" name="drawListWidget"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabEnemyDeck">
+         <attribute name="title">
+          <string>Deck Op</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>40</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="MoveListWidget" name="enemyDeckListWidget"/>
           </item>
          </layout>
         </widget>

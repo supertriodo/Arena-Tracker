@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDeckHandler();
     createDraftHandler();
     createEnemyHandHandler();
+    createEnemyDeckHandler();
     createSecretsHandler();
     createArenaHandler();
     createGameWatcher();
@@ -56,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     enemyHandHandler = NULL;
     draftHandler = NULL;
     deckHandler = NULL;
+    enemyDeckHandler = NULL;
     secretsHandler = NULL;
     isMainWindow = false;
     mouseInApp = false;
@@ -73,6 +75,7 @@ MainWindow::~MainWindow()
     if(arenaHandler != NULL)    delete arenaHandler;
     if(webUploader != NULL)     delete webUploader;
     if(cardDownloader != NULL)  delete cardDownloader;
+    if(enemyDeckHandler != NULL) delete enemyDeckHandler;
     if(enemyHandHandler != NULL) delete enemyHandHandler;
     if(draftHandler != NULL)    delete draftHandler;
     if(deckHandler != NULL)     delete deckHandler;
@@ -291,6 +294,20 @@ void MainWindow::createArenaHandler()
 }
 
 
+void MainWindow::createEnemyDeckHandler()
+{
+    enemyDeckHandler = new EnemyDeckHandler(this, &cardsJson, ui, enemyHandHandler);
+    connect(enemyDeckHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(enemyDeckHandler, SIGNAL(needMainWindowFade(bool)),
+            this, SLOT(fadeBarAndButtons(bool)));
+    connect(enemyDeckHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(enemyDeckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
 void MainWindow::createDeckHandler()
 {
     deckHandler = new DeckHandler(this, &cardsJson, ui);
@@ -329,6 +346,8 @@ void MainWindow::createCardWindow()
     cardWindow = new CardWindow(this);
     connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(enemyDeckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(secretsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
@@ -337,6 +356,8 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(loadCard(QString, QRect, int, int, bool)));
 
     connect(ui->deckListWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->enemyDeckListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(ui->drawListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
@@ -385,19 +406,30 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(showPlayerCardDraw(QString)));
     connect(gameWatcher, SIGNAL(playerTurnStart()),
             deckHandler, SLOT(clearDrawList()));
-    connect(gameWatcher, SIGNAL(startGame()),
-            deckHandler, SLOT(lockDeckInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
-            deckHandler, SLOT(unlockDeckInterface()));
+    //Connect en synchronizedDone
+//    connect(gameWatcher, SIGNAL(startGame()),
+//            deckHandler, SLOT(lockDeckInterface()));
+//    connect(gameWatcher, SIGNAL(endGame()),
+//            deckHandler, SLOT(unlockDeckInterface()));
     connect(gameWatcher, SIGNAL(enterArena()),
             deckHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             deckHandler, SLOT(leaveArena()));
 
+    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
+            enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
+            enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
+    connect(gameWatcher, SIGNAL(startGame()),
+            enemyDeckHandler, SLOT(reset()));
+    connect(gameWatcher, SIGNAL(enemyHero(QString)),
+            enemyDeckHandler, SLOT(setEnemyClass(QString)));
+
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
-    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
-            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
+    //Se llama desde enemyDeckHandler->enemyCardPlayed()
+//    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
+//            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
@@ -505,11 +537,18 @@ void MainWindow::synchronizedDone()
 
     ui->progressBar->setVisible(false);
 
+
     //Connections after synchronized
     connect(gameWatcher,SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             this, SLOT(resetDeckDontRead()));
+
+    connect(gameWatcher, SIGNAL(startGame()),
+            deckHandler, SLOT(lockDeckInterface()));
+    connect(gameWatcher, SIGNAL(endGame()),
+            deckHandler, SLOT(unlockDeckInterface()));
+
 
     //Test
     QTimer::singleShot(5000, this, SLOT(test()));
@@ -1140,16 +1179,20 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
+//                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
             }
             else
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
+//                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
             }
             break;
@@ -1160,6 +1203,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1169,6 +1213,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1182,6 +1227,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1192,7 +1238,8 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabConfig, ui->tabWidgetH3);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidgetH3);
+                moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
@@ -1206,8 +1253,10 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
+//                moveTabTo(ui->tabLog, ui->tabWidget);
+                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -1215,6 +1264,7 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1242,6 +1292,10 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     else if(widget == ui->tabEnemy)
     {
         icon = QIcon(":/Images/hand.png");
+    }
+    else if(widget == ui->tabEnemyDeck)
+    {
+        icon = QIcon(":/Images/deck.png");
     }
     else if(widget == ui->tabLog)
     {
@@ -1350,6 +1404,7 @@ void MainWindow::checkCardImage(QString code)
 void MainWindow::redrawDownloadedCardImage(QString code)
 {
     deckHandler->redrawDownloadedCardImage(code);
+    enemyDeckHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
@@ -1778,6 +1833,7 @@ void MainWindow::updateTamCard(int value)
     DeckCard::setCardHeight(value);
     deckHandler->updateIconSize(value);
     deckHandler->redrawAllCards();
+    enemyDeckHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     draftHandler->redrawAllCards();
@@ -2042,8 +2098,11 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
+//Cambiar unknown
+//Transparencias split window
+//Icono op deck
 //Deck oponente
-
+//Transparencias deck op
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

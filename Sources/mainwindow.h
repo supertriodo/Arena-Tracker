@@ -7,6 +7,7 @@
 #include "hearthstatsuploader.h"
 #include "Cards/deckcard.h"
 #include "hscarddownloader.h"
+#include "enemydeckhandler.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
@@ -16,8 +17,8 @@
 #include <QMainWindow>
 #include <QJsonObject>
 
-#define DIVIDE_TABS_H 550//700 Rewards
-#define DIVIDE_TABS_H2 850//1000 Rewards
+#define DIVIDE_TABS_H 500
+#define DIVIDE_TABS_H2 750
 #define DIVIDE_TABS_V 700
 
 
@@ -47,6 +48,7 @@ private:
     WebUploader *webUploader;
     HearthstatsUploader *hstatsUploader;
     HSCardDownloader *cardDownloader;
+    EnemyDeckHandler *enemyDeckHandler;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
     ArenaHandler *arenaHandler;
@@ -82,6 +84,7 @@ private:
     void createGameWatcher();
     void createCardWindow();
     void createCardDownloader();
+    void createEnemyDeckHandler();
     void createDeckHandler();
     void createEnemyHandHandler();
     void createSecretsHandler();

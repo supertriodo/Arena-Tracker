@@ -45,7 +45,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/moveverticalscrollarea.cpp \
     Sources/Widgets/cardwindow.cpp \
     Sources/versionchecker.cpp \
-    Sources/hearthstatsuploader.cpp
+    Sources/hearthstatsuploader.cpp \
+    Sources/enemydeckhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -75,7 +76,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/moveverticalscrollarea.h \
     Sources/Widgets/cardwindow.h \
     Sources/versionchecker.h \
-    Sources/hearthstatsuploader.h
+    Sources/hearthstatsuploader.h \
+    Sources/enemydeckhandler.h
 
 FORMS    += mainwindow.ui
 

@@ -71,7 +71,7 @@ CardType DeckCard::getTypeFromString(QString value)
 
 CardClass DeckCard::getClassFromString(QString value)
 {
-    if(value == "NEUTRAL")      return NEUTRAL;
+    if(value == "")      return NEUTRAL;
     else if(value == "DRUID")   return DRUID;
     else if(value == "HUNTER")  return HUNTER;
     else if(value == "MAGE")    return MAGE;

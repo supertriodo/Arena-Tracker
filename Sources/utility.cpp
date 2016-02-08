@@ -52,6 +52,21 @@ QString Utility::heroToLogNumber(CardClass cardClass)
 }
 
 
+CardClass Utility::heroFromLogNumber(QString hero)
+{
+    if(hero == QString("06"))       return DRUID;
+    else if(hero == QString("05"))  return HUNTER;
+    else if(hero == QString("08"))  return MAGE;
+    else if(hero == QString("04"))  return PALADIN;
+    else if(hero == QString("09"))  return PRIEST;
+    else if(hero == QString("03"))  return ROGUE;
+    else if(hero == QString("02"))  return SHAMAN;
+    else if(hero == QString("07"))  return WARLOCK;
+    else if(hero == QString("01"))  return WARRIOR;
+    else                            return INVALID_CLASS;
+}
+
+
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {

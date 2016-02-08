@@ -295,6 +295,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                 {
                     playerID = 2;
                     secretHero = getSecretHero(hero2, hero1);
+                    emit enemyHero(hero1);
                 }
                 gameState = playerName2State;
                 emit pDebug("Found player 2: " + name2 + " (GameState = playerName2State)", numLine);
@@ -313,6 +314,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
                 {
                     playerID = 1;
                     secretHero = getSecretHero(hero1, hero2);
+                    emit enemyHero(hero2);
                 }
                 gameState = inGameState;
                 emit pDebug("Found player 1: " + name1 + " (GameState = inGameState)", numLine);
@@ -561,6 +563,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Enemigo juega carta desconocida
             if(zoneFrom == "OPPOSING HAND")
             {
+                emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
                 emit enemyCardPlayed(id.toInt());
 
                 //Carta devuelta al mazo en Mulligan
