@@ -1320,7 +1320,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     }
     else if(widget == ui->tabEnemyDeck)
     {
-        icon = QIcon(":/Images/deck.png");
+        icon = QIcon(":/Images/enemyDeck.png");
     }
     else if(widget == ui->tabLog)
     {
@@ -2124,9 +2124,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
-//Bug mazo sin guardar -> importar hearthhead
 //Cambiar unknown
-//Icono op deck
 
 
 //BUGS CONOCIDOS
