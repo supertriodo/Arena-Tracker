@@ -1061,6 +1061,7 @@ void MainWindow::spreadMouseInApp()
     else if(currentTab == ui->tabDraft)     draftHandler->setMouseInApp(mouseInApp);
     else                                    updateOtherTabsTransparency();
 
+    //Fade Bar
     if(transparency==Transparent)
     {
         if(mouseInApp)      fadeBarAndButtons(false);
@@ -1069,6 +1070,33 @@ void MainWindow::spreadMouseInApp()
     else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck)
     {
         fadeBarAndButtons(false);
+    }
+
+    //Split windows
+    if(windowsFormation == H2 || windowsFormation == H3)
+    {
+        currentTab = ui->tabWidgetH2->currentWidget();
+
+        if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
+        else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+        else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
+
+        if(windowsFormation == H3)
+        {
+            currentTab = ui->tabWidgetH3->currentWidget();
+
+            if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
+            else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+            else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
+        }
+    }
+    else if(windowsFormation == V2)
+    {
+        currentTab = ui->tabWidgetV1->currentWidget();
+
+        if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
+        else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+        else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     }
 }
 
@@ -2100,10 +2128,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Cambiar unknown
 //Actualizar linus hot-to auto create deck
 //Redownload failed
-//Transparencias split window
 //Icono op deck
-//Deck oponente
-//Transparencias deck op
+
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
