@@ -21,6 +21,7 @@ private:
     EnemyHandHandler *enemyHandHandler;
     QMap<QString, QJsonObject> *cardsJson;
     Transparency transparency;
+    bool inGame, mouseInApp;
     CardClass enemyClass;
     int lastSecretIdAdded;
 
@@ -28,11 +29,15 @@ private:
 public:
     void redrawAllCards();
     void redrawDownloadedCardImage(QString code);
+    void setTransparency(Transparency value);
+    void setMouseInApp(bool value);
 
 private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
     void newDeckCard(QString card, int total=1, bool add=false);
+    void updateTransparency();
+    void reset();
 
 signals:
     void checkCardImage(QString code);
@@ -42,10 +47,11 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyDeckHandler");
 
 public slots:
-    void reset();
     void enemyCardPlayed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void setEnemyClass(QString hero);
+    void lockEnemyDeckInterface();
+    void unlockEnemyDeckInterface();
 
 private slots:
     void findDeckCardEntered(QListWidgetItem *item);

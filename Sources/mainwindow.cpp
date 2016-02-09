@@ -406,11 +406,10 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(showPlayerCardDraw(QString)));
     connect(gameWatcher, SIGNAL(playerTurnStart()),
             deckHandler, SLOT(clearDrawList()));
-    //Connect en synchronizedDone
-//    connect(gameWatcher, SIGNAL(startGame()),
-//            deckHandler, SLOT(lockDeckInterface()));
-//    connect(gameWatcher, SIGNAL(endGame()),
-//            deckHandler, SLOT(unlockDeckInterface()));
+    connect(gameWatcher, SIGNAL(startGame()),
+            deckHandler, SLOT(lockDeckInterface()));
+    connect(gameWatcher, SIGNAL(endGame()),
+            deckHandler, SLOT(unlockDeckInterface()));
     connect(gameWatcher, SIGNAL(enterArena()),
             deckHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
@@ -421,7 +420,9 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(startGame()),
-            enemyDeckHandler, SLOT(reset()));
+            enemyDeckHandler, SLOT(lockEnemyDeckInterface()));
+    connect(gameWatcher, SIGNAL(endGame()),
+            enemyDeckHandler, SLOT(unlockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(enemyHero(QString)),
             enemyDeckHandler, SLOT(setEnemyClass(QString)));
 
@@ -543,11 +544,6 @@ void MainWindow::synchronizedDone()
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             this, SLOT(resetDeckDontRead()));
-
-    connect(gameWatcher, SIGNAL(startGame()),
-            deckHandler, SLOT(lockDeckInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
-            deckHandler, SLOT(unlockDeckInterface()));
 
 
     //Test
@@ -1060,6 +1056,7 @@ void MainWindow::spreadMouseInApp()
 
     if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabArena)     arenaHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabDraft)     draftHandler->setMouseInApp(mouseInApp);
     else                                    updateOtherTabsTransparency();
@@ -1069,7 +1066,7 @@ void MainWindow::spreadMouseInApp()
         if(mouseInApp)      fadeBarAndButtons(false);
         else                fadeBarAndButtons(true);
     }
-    else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy)
+    else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck)
     {
         fadeBarAndButtons(false);
     }
@@ -1590,6 +1587,7 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     this->transparency = newTransparency;
 
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
+    enemyDeckHandler->setTransparency(this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
@@ -2098,7 +2096,10 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
+//Bug mazo sin guardar -> importar hearthhead
 //Cambiar unknown
+//Actualizar linus hot-to auto create deck
+//Redownload failed
 //Transparencias split window
 //Icono op deck
 //Deck oponente

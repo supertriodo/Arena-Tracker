@@ -10,7 +10,8 @@ EnemyDeckHandler::EnemyDeckHandler(QObject *parent, QMap<QString, QJsonObject> *
     this->transparency = Opaque;
     this->enemyClass = INVALID_CLASS;
     this->lastSecretIdAdded = -1;
-//    this->mouseInApp = false;
+    this->mouseInApp = false;
+    this->inGame = false;
 
     completeUI();
     reset();
@@ -173,6 +174,61 @@ void EnemyDeckHandler::insertDeckCard(DeckCard &deckCard)
     }
     deckCardList.append(deckCard);
     ui->enemyDeckListWidget->addItem(deckCard.listItem);
+}
+
+
+void EnemyDeckHandler::updateTransparency()
+{
+    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
+    {
+        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground);
+        ui->tabEnemyDeck->repaint();
+
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)
+        {
+            emit needMainWindowFade(true);
+        }
+    }
+    else
+    {
+        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabEnemyDeck->repaint();
+
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)
+        {
+            emit needMainWindowFade(false);
+        }
+    }
+}
+
+
+void EnemyDeckHandler::setTransparency(Transparency value)
+{
+    this->transparency = value;
+    updateTransparency();
+}
+
+
+void EnemyDeckHandler::setMouseInApp(bool value)
+{
+    this->mouseInApp = value;
+    updateTransparency();
+}
+
+
+void EnemyDeckHandler::lockEnemyDeckInterface()
+{
+    this->inGame = true;
+    updateTransparency();
+
+    reset();
+}
+
+
+void EnemyDeckHandler::unlockEnemyDeckInterface()
+{
+    this->inGame = false;
+    updateTransparency();
 }
 
 
