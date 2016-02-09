@@ -1460,6 +1460,7 @@ void DeckHandler::showInstallPY()
             "sudo pip3 install python3-xlib<br/>"
             "sudo apt-get install python3-tk<br/>"
             "sudo apt-get install python3-dev<br/>"
+            "sudo pip3 install image<br/>"
             "sudo pip3 install pyautogui<br/><br/>";
 #endif
 #ifdef Q_OS_WIN
