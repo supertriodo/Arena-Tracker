@@ -1224,6 +1224,7 @@ void DeckHandler::importHearthHead()
     QStringList dataLines = data.split('\n');
 
     QRegularExpressionMatch match;
+    this->reset();
 
     foreach(QString line, dataLines)
     {
