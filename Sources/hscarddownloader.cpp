@@ -18,7 +18,7 @@ void HSCardDownloader::downloadWebImage(QString code)
 {
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + lang + "/medium/" + code + ".png"))));
     gettingWebCards[reply] = code;
-    emit pDebug("Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
+    emit pDebug("Downloading: " + code + " - Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
 }
 
 
@@ -27,27 +27,31 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     reply->deleteLater();
 
     QString code = gettingWebCards[reply];
+    gettingWebCards.remove(reply);
+    emit pDebug("Reply: " + code + " - Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug("Failed to download card image: " + code, Error);
-        emit pLog(tr("Web: Failed to download card image."));
-        return;
+        emit pDebug("Failed to download card image: " + code + " - Trying again.", Error);
+        emit pLog(tr("Web: Failed to download card image. Trying again."));
+        downloadWebImage(code);
     }
-    QImage webImage;
-    webImage.loadFromData(reply->readAll());
-
-    if(!webImage.save(Utility::appPath() + "/HSCards/" + code + ".png", "png"))
+    else
     {
-        emit pDebug("Failed to save card image to disk: " + code, Error);
-        emit pLog(tr("File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe."));
-        return;
-    }
+        QImage webImage;
+        webImage.loadFromData(reply->readAll());
 
-    emit downloaded(code);
-    gettingWebCards.remove(reply);
-    emit pDebug("Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
-//    emit pLog(tr("Web: New card image downloaded."));
+        if(!webImage.save(Utility::appPath() + "/HSCards/" + code + ".png", "png"))
+        {
+            emit pDebug("Failed to save card image to disk: " + code, Error);
+            emit pLog(tr("File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe."));
+        }
+        else
+        {
+            emit pDebug("Card downloaded: " + code);
+            emit downloaded(code);
+        }
+    }
 }
 
 

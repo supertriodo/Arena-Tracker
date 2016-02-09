@@ -2126,8 +2126,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Auto size deck
 //Bug mazo sin guardar -> importar hearthhead
 //Cambiar unknown
-//Actualizar linus hot-to auto create deck
-//Redownload failed
 //Icono op deck
 
 

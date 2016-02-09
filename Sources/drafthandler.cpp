@@ -97,7 +97,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
             cardsDownloading++;
         }
     }
-    emit pDebug("Num histograms BD:" + QString::number(hearthArenaCodes.count()));
+//    emit pDebug("Num histograms BD:" + QString::number(hearthArenaCodes.count()));
 
     if(cardsDownloading==0) resumeDraft();
     else
@@ -217,6 +217,7 @@ void DraftHandler::beginDraft(QString hero)
     QFuture<void> future = QtConcurrent::run(this, &DraftHandler::initCodesAndHistMaps, hero);
     ((MainWindow*)parent())->repaint();
     future.waitForFinished();
+//    initCodesAndHistMaps(hero);
 }
 
 
