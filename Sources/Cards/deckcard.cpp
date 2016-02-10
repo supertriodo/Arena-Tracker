@@ -123,7 +123,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         //Card
         QRectF target;
         QRectF source;
-        if(name == "unknown")                   source = QRectF(63,18,100,25);
+        if(name == "unknown")                   source = QRectF(0,0,100,25);
         else if(type==MINION)                   source = QRectF(48,72,100,25);
         else                                    source = QRectF(48,98,100,25);
         if(total == 1 && rarity != LEGENDARY)   target = QRectF(113,6,100,25);
