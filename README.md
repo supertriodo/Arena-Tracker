@@ -4,6 +4,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Upload your arena stats to your ArenaMastery account.
 * Save and organize your constructed decks. No more 9 slots limit.
 * Import decks from HearthHead.
+* Auto create decks in Hearthstone.
 * Go over your deck while you play.
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
