@@ -2124,7 +2124,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
-//Cambiar unknown
 
 
 //BUGS CONOCIDOS
