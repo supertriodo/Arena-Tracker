@@ -1715,9 +1715,19 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 {
     if(fadeOut)
     {
-        Utility::fadeOutWidget(ui->tabWidget->tabBar());
-        Utility::fadeOutWidget(ui->tabWidgetH2->tabBar());
-        Utility::fadeOutWidget(ui->tabWidgetH3->tabBar());
+        bool inTabEnemy = ui->tabWidget->currentWidget() == ui->tabEnemy;
+        if(inTabEnemy && enemyHandHandler->isEmptyOutGame())
+        {
+            Utility::fadeInWidget(ui->tabWidget->tabBar());
+            Utility::fadeInWidget(ui->tabWidgetH2->tabBar());
+            Utility::fadeInWidget(ui->tabWidgetH3->tabBar());
+        }
+        else
+        {
+            Utility::fadeOutWidget(ui->tabWidget->tabBar());
+            Utility::fadeOutWidget(ui->tabWidgetH2->tabBar());
+            Utility::fadeOutWidget(ui->tabWidgetH3->tabBar());
+        }
         Utility::fadeOutWidget(ui->minimizeButton);
         Utility::fadeOutWidget(ui->closeButton);
         Utility::fadeOutWidget(ui->resizeButton);

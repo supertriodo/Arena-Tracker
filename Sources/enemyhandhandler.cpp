@@ -203,12 +203,15 @@ void EnemyHandHandler::unlockEnemyInterface()
 
 void EnemyHandHandler::updateTransparency()
 {
+    bool inTabEnemy = ui->tabWidget->currentWidget() == ui->tabEnemy;
+
     if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
     {
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
 
-        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
+        if(inTabEnemy && transparency!=Opaque)
         {
             emit needMainWindowFade(true);
         }
@@ -218,7 +221,7 @@ void EnemyHandHandler::updateTransparency()
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
 
-        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemy)
+        if(inTabEnemy && transparency==AutoTransparent)
         {
             emit needMainWindowFade(false);
         }
@@ -237,6 +240,12 @@ void EnemyHandHandler::setMouseInApp(bool value)
 {
     this->mouseInApp = value;
     updateTransparency();
+}
+
+
+bool EnemyHandHandler::isEmptyOutGame()
+{
+    return !inGame && enemyHandList.isEmpty();
 }
 
 
