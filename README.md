@@ -67,6 +67,8 @@ También puedes preguntarme en español.
  * Make sure HSCards dir is in the same dir as the binary.
 * I can't browse hidden .dirs when looking for log.config/output_log.txt in the file browser.
  * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
+* How can I back-up my data.
+ * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed decks, they are stored in ArenaTrackerDecks.json inside HSCards dir.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
