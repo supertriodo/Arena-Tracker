@@ -49,6 +49,7 @@ signals:
 public slots:
     void enemyCardPlayed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
+    void enemyKnownCardDraw(QString code);
     void setEnemyClass(QString hero);
     void lockEnemyDeckInterface();
     void unlockEnemyDeckInterface();

@@ -419,6 +419,8 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
+    connect(gameWatcher, SIGNAL(enemyKnownCardDraw(QString)),
+            enemyDeckHandler, SLOT(enemyKnownCardDraw(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyDeckHandler, SLOT(lockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -2134,6 +2136,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
+//Copy enemy deck
 
 
 //BUGS CONOCIDOS

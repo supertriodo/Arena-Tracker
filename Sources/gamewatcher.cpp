@@ -619,7 +619,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Enemigo roba carta conocida
             if(zoneTo == "OPPOSING HAND")
             {
-                if(zoneFrom == "OPPOSING DECK")     advanceTurn(false);
+                if(zoneFrom == "OPPOSING DECK")
+                {
+                    advanceTurn(false);
+                    emit enemyKnownCardDraw(cardId);
+                }
                 emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
                 emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
             }
@@ -664,6 +668,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 emit pDebug("Enemy: Secret revealed: " + name, numLine);
                 emit enemySecretRevealed(id.toInt(), cardId);
+            }
+
+            //Enemigo roba carta overdraw
+            else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
+            {
+                advanceTurn(false);
+                emit pDebug("Enemy: Card overdraw: " + name, numLine);
+                emit enemyKnownCardDraw(cardId);
             }
 
             //Jugador roba carta conocida

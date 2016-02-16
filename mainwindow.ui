@@ -1339,7 +1339,7 @@
                <x>0</x>
                <y>0</y>
                <width>437</width>
-               <height>766</height>
+               <height>772</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1683,7 +1683,10 @@ in a new window</string>
                         <enum>Qt::Horizontal</enum>
                        </property>
                        <property name="tickPosition">
-                        <enum>QSlider::NoTicks</enum>
+                        <enum>QSlider::TicksAbove</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>
@@ -1700,6 +1703,12 @@ in a new window</string>
                        </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="tickPosition">
+                        <enum>QSlider::TicksAbove</enum>
+                       </property>
+                       <property name="tickInterval">
+                        <number>5</number>
                        </property>
                       </widget>
                      </item>

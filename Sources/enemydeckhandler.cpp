@@ -59,6 +59,13 @@ void EnemyDeckHandler::setEnemyClass(QString hero)
 }
 
 
+void EnemyDeckHandler::enemyKnownCardDraw(QString code)
+{
+    this->lastSecretIdAdded = -1;
+    newDeckCard(code, 1, true);
+}
+
+
 void EnemyDeckHandler::enemyCardPlayed(int id, QString code)
 {
     this->lastSecretIdAdded = -1;
