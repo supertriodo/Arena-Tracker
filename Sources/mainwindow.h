@@ -187,6 +187,7 @@ private slots:
     void updateShowSpellColor(bool checked);
     void fadeBarAndButtons(bool fadeOut);
     void spreadMouseInApp();
+    void currentArenaToWhiteAM(bool connected);
 };
 
 #endif // MAINWINDOW_H

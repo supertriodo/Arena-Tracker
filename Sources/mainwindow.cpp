@@ -553,6 +553,12 @@ void MainWindow::synchronizedDone()
 }
 
 
+void MainWindow::currentArenaToWhiteAM(bool connected)
+{
+    if(connected) arenaHandler->currentArenaToWhite();
+}
+
+
 void MainWindow::createWebUploader()
 {
     if(webUploader != NULL)   return;
@@ -573,6 +579,8 @@ void MainWindow::createWebUploader()
             arenaHandler, SLOT(showNoArena()));
     connect(webUploader, SIGNAL(connectionTried(bool)),
             this, SLOT(updateAMConnectButton(bool)));
+    connect(webUploader, SIGNAL(connectionTried(bool)),
+            this, SLOT(currentArenaToWhiteAM(bool)));
     connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
             arenaHandler, SLOT(removeDuplicateArena()));
     connect(webUploader, SIGNAL(pLog(QString)),
@@ -593,6 +601,8 @@ void MainWindow::createHStatsUploader()
 
     connect(hstatsUploader, SIGNAL(connectionTried(bool)),
             this, SLOT(updateHStatsConnectButton(bool)));
+//    connect(webUploader, SIGNAL(connectionTried(bool)),
+//            this, SLOT(currentArenaToWhiteHS(bool)));
     connect(hstatsUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(hstatsUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1983,7 +1993,7 @@ void MainWindow::updateAMConnectButton(int value)
             break;
         case 2:
             ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
-            ui->configButtonMastery->setEnabled(false);
+            ui->configButtonMastery->setEnabled(true);
             break;
     }
 }
@@ -1996,10 +2006,9 @@ void MainWindow::tryConnectAM()
     if(ui->configLineEditMastery->text().isEmpty())     return;
     if(ui->configLineEditMastery2->text().isEmpty())    return;
 
-    arenaHandler->currentArenaToWhite();
-    webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
     ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
     ui->configButtonMastery->setEnabled(false);
+    webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
 }
 
 
@@ -2024,7 +2033,7 @@ void MainWindow::updateHStatsConnectButton(int value)
             break;
         case 2:
             ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
-            ui->configButtonHStats->setEnabled(false);
+            ui->configButtonHStats->setEnabled(true);
             break;
     }
 }
@@ -2037,10 +2046,9 @@ void MainWindow::tryConnectHStats()
     if(ui->configLineEditHStats->text().isEmpty())     return;
     if(ui->configLineEditHStats2->text().isEmpty())    return;
 
-//    arenaHandler->currentArenaToWhite();
-    hstatsUploader->tryConnect(ui->configLineEditHStats->text(), ui->configLineEditHStats2->text());
     ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
     ui->configButtonHStats->setEnabled(false);
+    hstatsUploader->tryConnect(ui->configLineEditHStats->text(), ui->configLineEditHStats2->text());
 }
 
 
@@ -2075,23 +2083,21 @@ void MainWindow::completeConfigTab()
 
     //Arena Mastery
     connect(ui->configLineEditMastery, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
-    connect(ui->configLineEditMastery, SIGNAL(editingFinished()), this, SLOT(tryConnectAM()));
+    connect(ui->configLineEditMastery, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
 
     connect(ui->configLineEditMastery2, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
-    connect(ui->configLineEditMastery2, SIGNAL(editingFinished()), this, SLOT(tryConnectAM()));
+    connect(ui->configLineEditMastery2, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
 
-    connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(updateAMConnectButton()));
     connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
 
     //Hearth Stats
     ui->configBoxHStats->hide();
 //    connect(ui->configLineEditHStats, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-//    connect(ui->configLineEditHStats, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+//    connect(ui->configLineEditHStats, SIGNAL(returnPressed()), this, SLOT(tryConnectHStats()));
 
 //    connect(ui->configLineEditHStats2, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-//    connect(ui->configLineEditHStats2, SIGNAL(editingFinished()), this, SLOT(tryConnectHStats()));
+//    connect(ui->configLineEditHStats2, SIGNAL(returnPressed()), this, SLOT(tryConnectHStats()));
 
-//    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(updateHStatsConnectButton()));
 //    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(tryConnectHStats()));
 
     completeHighResConfigTab();
