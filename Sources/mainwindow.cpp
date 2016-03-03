@@ -2143,11 +2143,13 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Copy enemy deck
+//Pregunta guardar deck vacio al cerrar
 
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
 //Spectator games no avanzan el turno ya que playerTag es diferente de los jugadores.
+//Cazar crash bug en drafting con 31 cartas
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
