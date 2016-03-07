@@ -413,7 +413,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].draw(true);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
-    ui->deckButtonSave->setEnabled(true);
+    if(!this->inArena)   ui->deckButtonSave->setEnabled(true);
 
     emit pDebug("Add to deck: (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());

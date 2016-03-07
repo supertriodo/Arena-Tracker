@@ -175,9 +175,9 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
     if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
     {
-        emit pDebug("New arena.", numLine);
-        emit pLog(tr("Log: New arena."));
         QString hero = match->captured(1);
+        emit pDebug("New arena. Heroe: " + hero, numLine);
+        emit pLog(tr("Log: New arena."));
         emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (deckRead = true)
     }
     //END READING DECK
