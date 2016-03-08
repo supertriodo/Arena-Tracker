@@ -111,7 +111,7 @@ private slots:
     void adjustDrawSize();
     void findDeckCardEntered(QListWidgetItem *item);
     void findDrawCardEntered(QListWidgetItem *item);
-    void enableDeckButtonSave();
+    void enableDeckButtonSave(bool enable=true);
     void saveDeck();
     void loadDeck(QString deckName);
     void removeDeck();

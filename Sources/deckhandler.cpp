@@ -32,7 +32,7 @@ void DeckHandler::completeUI()
     ui->deckButtonRemove->setEnabled(false);
     hideDeckButtons();
 
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
 
     ui->drawListWidget->setHidden(true);
@@ -268,9 +268,12 @@ void DeckHandler::finishShowDeckListWidget()
 }
 
 
-void DeckHandler::enableDeckButtonSave()
+void DeckHandler::enableDeckButtonSave(bool enable)
 {
-    ui->deckButtonSave->setEnabled(true);
+    if(enable)  emit pDebug("Save button enabled");
+    else        emit pDebug("Save button disabled");
+    if(inArena) enable = false;
+    ui->deckButtonSave->setEnabled(enable);
 }
 
 
@@ -413,7 +416,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].draw(true);
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
-    if(!this->inArena)   ui->deckButtonSave->setEnabled(true);
+    if(!this->inArena)   enableDeckButtonSave();
 
     emit pDebug("Add to deck: (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());
@@ -731,7 +734,7 @@ void DeckHandler::cardTotalMin()
     deckCardList[0].draw(true);
     enableDeckButtons();
 
-    ui->deckButtonSave->setEnabled(true);
+    enableDeckButtonSave();
 }
 
 
@@ -747,7 +750,7 @@ void DeckHandler::cardTotalPlus()
     else                            deckCardList[0].draw(true);
     enableDeckButtons();
 
-    ui->deckButtonSave->setEnabled(true);
+    enableDeckButtonSave();
 }
 
 
@@ -774,7 +777,7 @@ void DeckHandler::cardRemove()
     deckCardList[0].draw(true);
     enableDeckButtons();
 
-    ui->deckButtonSave->setEnabled(true);
+    enableDeckButtonSave();
 }
 
 
@@ -943,7 +946,7 @@ void DeckHandler::findDrawCardEntered(QListWidgetItem * item)
 void DeckHandler::loadDecks()
 {
     //Iniciamos deckCardList con 30 cartas desconocidas
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     newEmptyDeck();
 
     //Load decks from file
@@ -1038,7 +1041,7 @@ void DeckHandler::loadDeck(QString deckName)
 
     loadedDeckName = deckName;
     ui->deckLineEdit->setText(deckName);
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Deck " + deckName + " loaded.");
@@ -1101,7 +1104,7 @@ void DeckHandler::saveDeck()
     }
 
     loadedDeckName = deckName;
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Added " + deckName + " to decksJson.");
@@ -1209,7 +1212,7 @@ bool DeckHandler::newDeck(bool reset)
 
     if(reset)   this->reset();
     loadedDeckName = QString();
-    ui->deckButtonSave->setEnabled(!reset);
+    enableDeckButtonSave(!reset);
     ui->deckButtonDeleteDeck->setEnabled(false);
     ui->deckLineEdit->setText(getNewDeckName());
 
@@ -1284,7 +1287,7 @@ void DeckHandler::removeDeck()
     removeDeckFromLoadTree(loadedDeckName);
 
     loadedDeckName = QString();
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
     emit pDebug("Removed " + loadedDeckName + " from decksJson.");
 
@@ -1298,8 +1301,10 @@ void DeckHandler::removeDeck()
 
 void DeckHandler::enterArena()
 {
+    emit pDebug("Enter arena");
+
     this->inArena = true;
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     hideManageDecksButtons();
 }
 
@@ -1308,8 +1313,10 @@ void DeckHandler::leaveArena()
 {
     if(!inArena)    return;
 
+    emit pDebug("Leave arena");
+
     this->inArena = false;
-    ui->deckButtonSave->setEnabled(false);
+    enableDeckButtonSave(false);
     showManageDecksButtons();
 
     //Recuperamos deck
