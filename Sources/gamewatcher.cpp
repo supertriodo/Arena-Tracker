@@ -12,6 +12,7 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     deckRead = false;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
+    logSeekCreate = -1;
 
     synchronized = false;
 #ifdef QT_DEBUG
@@ -36,6 +37,7 @@ void GameWatcher::reset()
     gameState = noGame;
     loadingScreen = menu;
     deckRead = false;
+    logSeekCreate = -1;
     emit pDebug("Reset (GameState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
 }
@@ -57,7 +59,7 @@ bool GameWatcher::findClasp(QString &line)
 }
 
 
-void GameWatcher::processLogLine(QString line, qint64 numLine)
+void GameWatcher::processLogLine(QString line, qint64 numLine, qint64 logSeek)
 {
     if(line.startsWith("[LoadingScreen]"))
     {
@@ -69,7 +71,7 @@ void GameWatcher::processLogLine(QString line, qint64 numLine)
     }
     else if(line.startsWith("[Power]"))
     {
-        processPower(line, numLine);
+        processPower(line, numLine, logSeek);
     }
     else if(line.startsWith("[Zone]"))
     {
@@ -231,7 +233,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
 }
 
 
-void GameWatcher::processPower(QString &line, qint64 numLine)
+void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 {
     switch(gameState)
     {
@@ -251,6 +253,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
 
                 emit pDebug("\nFound CREATE_GAME (GameState = heroType1State)", numLine);
                 emit pDebug("PlayerTag: " + playerTag, 0);
+                logSeekCreate = logSeek;
                 gameState = heroType1State;
 
                 mulliganEnemyDone = false;
@@ -326,7 +329,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
             }
             break;
         case inGameState:
-            processPowerInGame(line, numLine);
+            processPowerInGame(line, numLine, logSeek);
             break;
     }
 }
@@ -342,7 +345,7 @@ bool GameWatcher::isHeroPower(QString code)
 }
 
 
-void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
+void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSeek)
 {
     //Win state
     if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
@@ -352,6 +355,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         winnerPlayer = match->captured(1);
         createGameResult();
+        createGameLog(logSeek + line.length());
     }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
@@ -821,6 +825,37 @@ void GameWatcher::createGameResult()
     gameResult.isWinner = (winnerPlayer == playerTag);
 
     emit newGameResult(gameResult, loadingScreen);
+}
+
+
+void GameWatcher::createGameLog(qint64 logSeekWon)
+{
+    if(logSeekCreate == -1)
+    {
+        emit pDebug("Cannot create match log. Found WON but not CREATE_GAME", 0);
+        return;
+    }
+
+    QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh:mm");
+    QString win = (winnerPlayer == playerTag)?"WIN":"LOSE";
+    QString gameMode = Utility::getLoadingScreenString(loadingScreen);
+    QString playerHero, enemyHero;
+    if(playerID == 1)
+    {
+        playerHero = Utility::heroStringFromLogNumber(hero1);
+        enemyHero = Utility::heroStringFromLogNumber(hero2);
+    }
+    else
+    {
+        playerHero = Utility::heroStringFromLogNumber(hero2);
+        enemyHero = Utility::heroStringFromLogNumber(hero1);
+    }
+    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win;
+
+
+    emit pDebug("Game log ready to be copied.", 0);
+    emit gameLogComplete(logSeekCreate, logSeekWon, fileName);
+    logSeekCreate = -1;
 }
 
 

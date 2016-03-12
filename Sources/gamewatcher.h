@@ -2,6 +2,7 @@
 #define GAMEWATCHER_H
 
 #include <QObject>
+#include <QString>
 #include "Cards/secretcard.h"
 #include "utility.h"
 
@@ -62,6 +63,7 @@ private:
     int turn, turnReal;
     bool mulliganEnemyDone;
     bool synchronized;
+    qint64 logSeekCreate;
 
     static QMap<QString, QJsonObject> *cardsJson;
 
@@ -71,8 +73,8 @@ private:
     void createGameResult();
     void processLoadingScreen(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
-    void processPower(QString &line, qint64 numLine);
-    void processPowerInGame(QString &line, qint64 numLine);
+    void processPower(QString &line, qint64 numLine, qint64 logSeek);
+    void processPowerInGame(QString &line, qint64 numLine, qint64 logSeek);
     void processZone(QString &line, qint64 numLine);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
@@ -80,6 +82,7 @@ private:
     void endReadingDeck();
     bool findClasp(QString &line);
     bool isHeroPower(QString code);
+    void createGameLog(qint64 logSeekWon);
 
 public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
@@ -120,6 +123,7 @@ signals:
     void activeDraftDeck();
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString subType);
+    void gameLogComplete(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
@@ -127,7 +131,7 @@ private slots:
     void checkAvenge();
 
 public slots:
-    void processLogLine(QString line, qint64 numLine);
+    void processLogLine(QString line, qint64 numLine, qint64 logSeek);
     void setDeckRead(bool value=true);
 };
 

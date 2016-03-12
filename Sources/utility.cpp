@@ -67,6 +67,21 @@ CardClass Utility::heroFromLogNumber(QString hero)
 }
 
 
+QString Utility::heroStringFromLogNumber(QString hero)
+{
+    if(hero == QString("06"))       return "DRUID";
+    else if(hero == QString("05"))  return "HUNTER";
+    else if(hero == QString("08"))  return "MAGE";
+    else if(hero == QString("04"))  return "PALADIN";
+    else if(hero == QString("09"))  return "PRIEST";
+    else if(hero == QString("03"))  return "ROGUE";
+    else if(hero == QString("02"))  return "SHAMAN";
+    else if(hero == QString("07"))  return "WARLOCK";
+    else if(hero == QString("01"))  return "WARRIOR";
+    else                            return "";
+}
+
+
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {
@@ -87,6 +102,18 @@ QString Utility::getHeroLogNumber(int order)
 {
     QString heroesLogNumber[9] = {"06", "05", "08", "04", "09", "03", "02", "07", "01"};
     return heroesLogNumber[order];
+}
+
+
+QString Utility::getLoadingScreenString(LoadingScreen loadingScreen)
+{
+    if(loadingScreen == menu)               return "MENU";
+    else if(loadingScreen == arena)         return "ARENA";
+    else if(loadingScreen == constructed)   return "RANKED";
+    else if(loadingScreen == adventure)     return "SOLO";
+    else if(loadingScreen == tavernBrawl)   return "BRAWL";
+    else if(loadingScreen == spectator)     return "SPECTATOR";
+    else                                    return "";
 }
 
 

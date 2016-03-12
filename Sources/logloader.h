@@ -55,7 +55,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 
     //LogWorker signal reemit
-    void newLogLineRead(QString line, qint64 numLine);
+    void newLogLineRead(QString line, qint64 numLine, qint64 logSeek);
 
 
 //Slots
@@ -63,12 +63,13 @@ private slots:
     void updateSeek(qint64 logSeek);
 
     //LogWorker signal reemit
-    void emitNewLogLineRead(QString line, qint64 numLine);
+    void emitNewLogLineRead(QString line, qint64 numLine, qint64 logSeek);
 
 public slots:
     void sendLogWorker();
     void setUpdateTimeMax();
     void setUpdateTimeMin();
+    void copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
 };
 
 #endif // LOGLOADER_H

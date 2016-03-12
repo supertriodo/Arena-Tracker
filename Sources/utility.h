@@ -48,6 +48,7 @@ public:
     static QString heroToLogNumber(const QString &hero);
     static QString heroToLogNumber(CardClass cardClass);
     static CardClass heroFromLogNumber(QString hero);
+    static QString heroStringFromLogNumber(QString hero);
     static QString getHeroColor(int order);
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);
@@ -61,6 +62,7 @@ public:
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
     static void fadeInWidget(QWidget *widget);
     static void fadeOutWidget(QWidget *widget);
+    static QString getLoadingScreenString(LoadingScreen loadingScreen);
 };
 
 #endif // UTILITY_H

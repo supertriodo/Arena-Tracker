@@ -29,8 +29,8 @@ void LogLoader::init(qint64 &logSize)
         updateTime = 1000;
 
         logWorker = new LogWorker(this, logPath);
-        connect(logWorker, SIGNAL(newLogLineRead(QString, qint64)),
-                this, SLOT(emitNewLogLineRead(QString, qint64)));
+        connect(logWorker, SIGNAL(newLogLineRead(QString, qint64, qint64)),
+                this, SLOT(emitNewLogLineRead(QString, qint64, qint64)));
         connect(logWorker, SIGNAL(seekChanged(qint64)),
                 this, SLOT(updateSeek(qint64)));
         connect(logWorker, SIGNAL(pLog(QString)),
@@ -327,6 +327,13 @@ bool LogLoader::isLogReset()
 }
 
 
+void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
+{
+    if(logWorker == NULL)   return;
+    logWorker->copyGameLog(logSeekCreate, logSeekWon, fileName);
+}
+
+
 void LogLoader::updateSeek(qint64 logSeek)
 {
     if(firstRun)    emit seekChanged(logSeek);
@@ -340,8 +347,8 @@ QString LogLoader::getLogConfigPath()
 
 
 //LogWorker signal reemit
-void LogLoader::emitNewLogLineRead(QString line, qint64 numLine)
+void LogLoader::emitNewLogLineRead(QString line, qint64 numLine, qint64 logSeek)
 {
     updateTime = std::min(MIN_UPDATE_TIME,maxUpdateTime);
-    emit newLogLineRead(line, numLine);
+    emit newLogLineRead(line, numLine, logSeek);
 }

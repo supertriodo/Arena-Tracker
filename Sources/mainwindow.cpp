@@ -502,8 +502,9 @@ void MainWindow::createLogLoader()
             this, SLOT(synchronizedDone()));
     connect(logLoader, SIGNAL(seekChanged(qint64)),
             this, SLOT(showLogLoadProgress(qint64)));
-    connect(logLoader, SIGNAL(newLogLineRead(QString,qint64)),
-            gameWatcher, SLOT(processLogLine(QString,qint64)));
+    connect(logLoader, SIGNAL(newLogLineRead(QString,qint64,qint64)),
+            gameWatcher, SLOT(processLogLine(QString,qint64,qint64)));
+    //Connect en synchronizedDone
     connect(logLoader, SIGNAL(logConfigSet()),
             this, SLOT(initCardsJson()));
     connect(logLoader, SIGNAL(pLog(QString)),
@@ -546,6 +547,8 @@ void MainWindow::synchronizedDone()
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             this, SLOT(resetDeckDontRead()));
+    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
+            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
 
 
     //Test
