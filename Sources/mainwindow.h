@@ -121,6 +121,7 @@ private:
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
+    void checkGamesLogDir();
 
 //Override events
 protected:

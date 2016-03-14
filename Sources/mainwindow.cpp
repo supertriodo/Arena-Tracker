@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardWindow();
 
     readSettings();
+    checkGamesLogDir();
     createVersionChecker();
 }
 
@@ -504,13 +505,16 @@ void MainWindow::createLogLoader()
             this, SLOT(showLogLoadProgress(qint64)));
     connect(logLoader, SIGNAL(newLogLineRead(QString,qint64,qint64)),
             gameWatcher, SLOT(processLogLine(QString,qint64,qint64)));
-    //Connect en synchronizedDone
     connect(logLoader, SIGNAL(logConfigSet()),
             this, SLOT(initCardsJson()));
     connect(logLoader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    //Connect en synchronizedDone
+//    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
+//            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
 
     //Connect de draftHandler
     connect(draftHandler, SIGNAL(draftEnded()),
@@ -1544,6 +1548,38 @@ void MainWindow::checkHSCardsDir()
 }
 
 
+void MainWindow::checkGamesLogDir()
+{
+    QFileInfo dirInfo(Utility::appPath() + "/HSCards");
+    if(!dirInfo.exists())
+    {
+        emit pDebug("Cannot check GamesLog dir. HSCards dir doesn't exist.");
+        return;
+    }
+
+    dirInfo = QFileInfo(Utility::appPath() + "/HSCards/GamesLog");
+    if(!dirInfo.exists())
+    {
+        QDir().mkdir(Utility::appPath() + "/HSCards/GamesLog");
+        emit pDebug("GamesLog dir created.");
+    }
+
+    QDir dir(Utility::appPath() + "/HSCards/GamesLog");
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Time);
+    QStringList filterName;
+    filterName << "*.txt";
+    dir.setNameFilters(filterName);
+
+    QStringList files = dir.entryList().mid(10);
+    foreach(QString file, files)
+    {
+        dir.remove(file);
+        pDebug(file + " removed.");
+    }
+}
+
+
 void MainWindow::test()
 {
 }
@@ -2146,7 +2182,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Copy enemy deck
-//Pregunta guardar deck vacio al cerrar
+//Max games log stored
+//Copy draft
 
 
 //BUGS CONOCIDOS
