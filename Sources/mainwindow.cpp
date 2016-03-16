@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isMainWindow = true;
     mouseInApp = false;
     otherWindow = NULL;
+    draftLogFile = "";
 
     createLogFile();
     completeUI();
@@ -62,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     secretsHandler = NULL;
     isMainWindow = false;
     mouseInApp = false;
+    draftLogFile = "";
     otherWindow = primaryWindow;
 
     completeUI();
@@ -1377,6 +1379,99 @@ void MainWindow::calculateDeckWindowMinimumWidth()
 }
 
 
+void MainWindow::checkDraftLogLine(QString logLine, QString file)
+{
+    //New Draft
+    if(file == "DraftHandler")
+    {
+        QRegularExpressionMatch match;
+        if(logLine.contains(QRegularExpression("DraftHandler: Begin draft\\. Heroe: (\\d+)"), &match))
+        {
+            //Check dir
+            QFileInfo dir(Utility::appPath() + "/HSCards/GamesLog");
+            if(!dir.exists())
+            {
+                pDebug("Cannot create draft Log. HSCards/GamesLog dir doesn't exist.");
+                return;
+            }
+
+            //Remove old not-complete draft
+            if(!draftLogFile.isEmpty())
+            {
+                QDir dir(Utility::appPath() + "/HSCards/GamesLog");
+                dir.remove(draftLogFile);
+                pDebug("Remove not-complete draft: " + draftLogFile);
+                draftLogFile = "";
+            }
+
+            QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh:mm");
+            QString playerHero = Utility::heroStringFromLogNumber(match.captured(1));
+            QString fileName = "DRAFT " + timeStamp + " " + playerHero + ".arenatracker";
+
+            QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + fileName);
+            if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                emit pDebug("Cannot create draft log file...", Error);
+                emit pLog(tr("Log: ERROR:Cannot create draft log file..."));
+                return;
+            }
+
+            QTextStream stream(&logDraft);
+            stream << logLine << endl;
+            logDraft.close();
+
+            pDebug("Start DraftLog: " + fileName);
+            draftLogFile = fileName;
+            return;
+        }
+    }
+
+    //Continue Draft
+    bool copyLogLine = false;
+    bool endDraftLog = false;
+
+    if(!draftLogFile.isEmpty())
+    {
+        if(file == "DraftHandler")
+        {
+            if(logLine.contains("New codes"))
+            {
+                copyLogLine = true;
+            }
+            else if(logLine.contains("End draft"))
+            {
+                copyLogLine = true;
+                endDraftLog = true;
+            }
+        }
+        else if(file == "GameWatcher" && logLine.contains("Pick card"))
+        {
+            copyLogLine = true;
+        }
+
+        if(copyLogLine)
+        {
+            QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + draftLogFile);
+            if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+            {
+                emit pDebug("Cannot open draft log file...", Error);
+                emit pLog(tr("Log: ERROR:Cannot open draft log file..."));
+                return;
+            }
+
+            QTextStream stream(&logDraft);
+            stream << logLine << endl;
+            logDraft.close();
+        }
+        if(endDraftLog)
+        {
+            pDebug("End DraftLog: " + draftLogFile);
+            draftLogFile = "";
+        }
+    }
+}
+
+
 void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 {
     pDebug(line, 0, debugLevel, file);
@@ -1410,6 +1505,8 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
         QTextStream stream(atLogFile);
         stream << logLine << endl;
     }
+
+    checkDraftLogLine(logLine, file);
 }
 
 
@@ -1568,7 +1665,7 @@ void MainWindow::checkGamesLogDir()
     dir.setFilter(QDir::Files);
     dir.setSorting(QDir::Time);
     QStringList filterName;
-    filterName << "*.txt";
+    filterName << "*.arenatracker";
     dir.setNameFilters(filterName);
 
     QStringList files = dir.entryList().mid(10);
@@ -2182,7 +2279,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Copy enemy deck
-//Max games log stored
+//Max games log stored slider
 //Copy draft
 
 

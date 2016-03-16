@@ -70,6 +70,7 @@ private:
     int drawDisappear;
     bool showDraftOverlay;
     bool draftLearningMode;
+    QString draftLogFile;
 
 
 
@@ -122,6 +123,7 @@ private:
     int getScreenHighest();
     void completeHighResConfigTab();
     void checkGamesLogDir();
+    void checkDraftLogLine(QString logLine, QString file);
 
 //Override events
 protected:

@@ -850,7 +850,7 @@ void GameWatcher::createGameLog(qint64 logSeekWon)
         playerHero = Utility::heroStringFromLogNumber(hero2);
         enemyHero = Utility::heroStringFromLogNumber(hero1);
     }
-    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win;
+    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win + ".arenatracker";
 
 
     emit pDebug("Game log ready to be copied.", 0);
