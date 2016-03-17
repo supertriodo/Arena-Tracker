@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>7</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1337,9 +1337,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-249</y>
                <width>437</width>
-               <height>772</height>
+               <height>834</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1705,7 +1705,7 @@ in a new window</string>
                         <enum>Qt::Horizontal</enum>
                        </property>
                        <property name="tickPosition">
-                        <enum>QSlider::TicksAbove</enum>
+                        <enum>QSlider::NoTicks</enum>
                        </property>
                        <property name="tickInterval">
                         <number>5</number>
@@ -1864,6 +1864,56 @@ card scores during the draft.</string>
                    </property>
                    <property name="text">
                     <string>Learning</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxZero">
+                <property name="title">
+                 <string>Zero To Heroes</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>5</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="configLabelZero">
+                   <property name="toolTip">
+                    <string>Games: Number of replay logs
+kept on HSCards/GamesLog to
+upload to www.zerotoheroes.com</string>
+                   </property>
+                   <property name="text">
+                    <string>Games</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="configSliderZero">
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>10</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="configLabelZero2">
+                   <property name="text">
+                    <string/>
                    </property>
                   </widget>
                  </item>

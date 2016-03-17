@@ -719,6 +719,7 @@ void MainWindow::closeApp()
 {
     //Check unsaved decks
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
+    removeNonCompleteDraft();
     close();
 }
 
@@ -744,7 +745,8 @@ void MainWindow::completeHeroButtons()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards,
+void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
+                               bool createGoldenCards, int maxGamesLog,
                                QString AMplayerEmail, QString AMpassword,
                                QString HStatsPlayerEmail, QString HStatsPassword)
 {
@@ -813,6 +815,10 @@ void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showS
 
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
+
+    //Zero To Heroes
+    ui->configSliderZero->setValue(maxGamesLog);
+    updateMaxGamesLog(maxGamesLog);
 
     //Arena Mastery
     ui->configLineEditMastery->setText(AMplayerEmail);
@@ -885,12 +891,13 @@ void MainWindow::readSettings()
         bool showClassColor = settings.value("showClassColor", true).toBool();
         bool showSpellColor = settings.value("showSpellColor", true).toBool();
         bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
+        int maxGamesLog = settings.value("maxGamesLog", 10).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
         QString HStatsPlayerEmail = "";//settings.value("HStatsPlayerEmail", "").toString();
         QString HStatsPassword = "";//settings.value("HStatsPassword", "").toString();
 
-        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
+        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
     }
     else
     {
@@ -929,6 +936,7 @@ void MainWindow::writeSettings()
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
         settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
+        settings.setValue("maxGamesLog", ui->configSliderZero->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
 //        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
@@ -1379,6 +1387,27 @@ void MainWindow::calculateDeckWindowMinimumWidth()
 }
 
 
+void MainWindow::removeNonCompleteDraft()
+{
+    //Remove old not-complete draft
+    if(!draftLogFile.isEmpty())
+    {
+        //Check dir
+        QFileInfo dirInfo(Utility::appPath() + "/HSCards/GamesLog");
+        if(!dirInfo.exists())
+        {
+            pDebug("Cannot remove non-complete draft Log. HSCards/GamesLog dir doesn't exist.");
+            return;
+        }
+
+        QDir dir(Utility::appPath() + "/HSCards/GamesLog");
+        dir.remove(draftLogFile);
+        pDebug("Remove non-complete draft: " + draftLogFile);
+        draftLogFile = "";
+    }
+}
+
+
 void MainWindow::checkDraftLogLine(QString logLine, QString file)
 {
     //New Draft
@@ -1396,13 +1425,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             }
 
             //Remove old not-complete draft
-            if(!draftLogFile.isEmpty())
-            {
-                QDir dir(Utility::appPath() + "/HSCards/GamesLog");
-                dir.remove(draftLogFile);
-                pDebug("Remove not-complete draft: " + draftLogFile);
-                draftLogFile = "";
-            }
+            removeNonCompleteDraft();
 
             QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh:mm");
             QString playerHero = Utility::heroStringFromLogNumber(match.captured(1));
@@ -1411,8 +1434,8 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + fileName);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                emit pDebug("Cannot create draft log file...", Error);
-                emit pLog(tr("Log: ERROR:Cannot create draft log file..."));
+                pDebug("Cannot create draft log file...", Error);
+                pLog(tr("Log: ERROR:Cannot create draft log file..."));
                 return;
             }
 
@@ -1454,8 +1477,8 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + draftLogFile);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
             {
-                emit pDebug("Cannot open draft log file...", Error);
-                emit pLog(tr("Log: ERROR:Cannot open draft log file..."));
+                pDebug("Cannot open draft log file...", Error);
+                pLog(tr("Log: ERROR:Cannot open draft log file..."));
                 return;
             }
 
@@ -1481,22 +1504,18 @@ void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
 {
     (void)debugLevel;
-    QString logLine;
+    QString logLine = "";
     QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
 
-    if(numLine > 0)
-    {
-        file += "(" + QString::number(numLine) + ")";
-    }
     if(line[0]==QChar('\n'))
     {
         line.remove(0, 1);
-        logLine = '\n' + timeStamp + " - " + file + ": " + line;
+        logLine += '\n';
     }
-    else
-    {
-        logLine = timeStamp + " - " + file + ": " + line;
-    }
+
+    logLine += timeStamp + " - " + file;
+    if(numLine > 0) logLine += "(" + QString::number(numLine) + ")";
+    logLine += ": " + line;
 
     qDebug().noquote() << logLine;
 
@@ -1506,7 +1525,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
         stream << logLine << endl;
     }
 
-    checkDraftLogLine(logLine, file);
+    if(copyGameLogs)    checkDraftLogLine(logLine, file);
 }
 
 
@@ -1650,7 +1669,7 @@ void MainWindow::checkGamesLogDir()
     QFileInfo dirInfo(Utility::appPath() + "/HSCards");
     if(!dirInfo.exists())
     {
-        emit pDebug("Cannot check GamesLog dir. HSCards dir doesn't exist.");
+        pDebug("Cannot check GamesLog dir. HSCards dir doesn't exist.");
         return;
     }
 
@@ -1658,8 +1677,16 @@ void MainWindow::checkGamesLogDir()
     if(!dirInfo.exists())
     {
         QDir().mkdir(Utility::appPath() + "/HSCards/GamesLog");
-        emit pDebug("GamesLog dir created.");
+        pDebug("GamesLog dir created.");
     }
+
+    int maxGamesLog = ui->configSliderZero->value();
+    if(maxGamesLog == 100)
+    {
+        pDebug("GamesLog: Keep ALL.");
+        return;
+    }
+    pDebug("GamesLog: Keep recent " + QString::number(maxGamesLog) + ".");
 
     QDir dir(Utility::appPath() + "/HSCards/GamesLog");
     dir.setFilter(QDir::Files);
@@ -1668,7 +1695,7 @@ void MainWindow::checkGamesLogDir()
     filterName << "*.arenatracker";
     dir.setNameFilters(filterName);
 
-    QStringList files = dir.entryList().mid(10);
+    QStringList files = dir.entryList().mid(maxGamesLog);
     foreach(QString file, files)
     {
         dir.remove(file);
@@ -1790,6 +1817,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxHand->setStyleSheet(groupBoxCSS);
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
         ui->configBoxMastery->setStyleSheet(groupBoxCSS);
+        ui->configBoxZero->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
         ui->configLabelDeckNormal->setStyleSheet(labelCSS);
@@ -1800,6 +1828,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
         ui->configLabelMastery->setStyleSheet(labelCSS);
         ui->configLabelMastery2->setStyleSheet(labelCSS);
+        ui->configLabelZero->setStyleSheet(labelCSS);
+        ui->configLabelZero2->setStyleSheet(labelCSS);
 
         QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
         ui->configRadioTransparent->setStyleSheet(radioCSS);
@@ -1831,6 +1861,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxHand->setStyleSheet("");
         ui->configBoxDraft->setStyleSheet("");
         ui->configBoxMastery->setStyleSheet("");
+        ui->configBoxZero->setStyleSheet("");
 
         ui->configLabelDeckNormal->setStyleSheet("");
         ui->configLabelDeckNormal2->setStyleSheet("");
@@ -1840,6 +1871,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet("");
         ui->configLabelMastery->setStyleSheet("");
         ui->configLabelMastery2->setStyleSheet("");
+        ui->configLabelZero->setStyleSheet("");
+        ui->configLabelZero2->setStyleSheet("");
 
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
@@ -2108,6 +2141,39 @@ void MainWindow::toggleDraftLearningMode()
 }
 
 
+void MainWindow::updateMaxGamesLog(int value)
+{
+    if(value == 0)
+    {
+        copyGameLogs = false;
+        LogWorker::setCopyGameLogs(false);
+    }
+    else
+    {
+        copyGameLogs = true;
+        LogWorker::setCopyGameLogs(true);
+    }
+
+    QString labelText;
+    if(value == 100)
+    {
+        labelText = "ALL";
+
+    }
+    else if(value == 0)
+    {
+        labelText = "OFF";
+    }
+    else
+    {
+        labelText = QString::number(ui->configSliderZero->value());
+    }
+
+    ui->configLabelZero2->setText(labelText);
+    ui->configSliderZero->setToolTip(labelText);
+}
+
+
 void MainWindow::updateAMConnectButton(bool isConnected)
 {
     if(isConnected) updateAMConnectButton(1);
@@ -2217,6 +2283,9 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
 
+    //Zero To Heroes
+    connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
+
     //Arena Mastery
     connect(ui->configLineEditMastery, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
     connect(ui->configLineEditMastery, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
@@ -2279,8 +2348,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Copy enemy deck
-//Max games log stored slider
-//Copy draft
 
 
 //BUGS CONOCIDOS

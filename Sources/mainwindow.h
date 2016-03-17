@@ -71,6 +71,7 @@ private:
     bool showDraftOverlay;
     bool draftLearningMode;
     QString draftLogFile;
+    bool copyGameLogs;
 
 
 
@@ -118,12 +119,13 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
+    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
     void checkGamesLogDir();
     void checkDraftLogLine(QString logLine, QString file);
+    void removeNonCompleteDraft();
 
 //Override events
 protected:
@@ -191,6 +193,7 @@ private slots:
     void fadeBarAndButtons(bool fadeOut);
     void spreadMouseInApp();
     void currentArenaToWhiteAM(bool connected);
+    void updateMaxGamesLog(int value);
 };
 
 #endif // MAINWINDOW_H
