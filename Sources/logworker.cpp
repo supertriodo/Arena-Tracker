@@ -43,7 +43,7 @@ void LogWorker::readLog()
 
         emit newLogLineRead(QString(line), ++logNumLine, logSeek);
 
-        logSeek += lineLenght + 1;
+        logSeek += lineLenght;
         emit seekChanged(logSeek);
     }
 
