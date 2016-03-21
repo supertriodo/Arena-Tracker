@@ -135,7 +135,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
     while((gameLogSeek <= logSeekWon) && ((lineLenght = logFile.readLine(line, sizeof(line))) > 0))
     {
         s2 << line;
-        gameLogSeek += lineLenght + 1;
+        gameLogSeek += lineLenght;
     }
 
     logFile.close();
