@@ -3,6 +3,7 @@
 
 #include "utility.h"
 #include <QObject>
+#include <QFile>
 
 class LogWorker : public QObject
 {
@@ -21,6 +22,7 @@ private:
     //Metodos
 private:
     void doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
+    int readLine(QFile &file, QString &line);
 
 public:
     void readLog();

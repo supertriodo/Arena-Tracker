@@ -17,10 +17,26 @@ LogWorker::~LogWorker()
 }
 
 
+int LogWorker::readLine(QFile &file, QString &line)
+{
+    char c;
+    int lineLength = 0;
+    line = "";
+
+    while(true)
+    {
+        if(!file.getChar(&c))    return -1;
+        line.append(c);
+        lineLength++;
+        if(c == '\n')    return lineLength;
+    }
+}
+
+
 void LogWorker::readLog()
 {
     QFile logFile(logPath);
-    if(!logFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if(!logFile.open(QIODevice::ReadOnly))
     {
         emit pDebug("Cannot open log...", Error);
         emit pLog(tr("Log: ERROR:Cannot open log..."));
@@ -29,20 +45,12 @@ void LogWorker::readLog()
 
     logFile.seek(logSeek);
 
-    char line[2048];
+    QString line;
     int lineLenght;
 
-    while((lineLenght = logFile.readLine(line, sizeof(line))) > 0)
+    while((lineLenght = readLine(logFile, line)) > 0)
     {
-        if((line[lineLenght-1] != '\n') &&
-                lineLenght<((int)sizeof(line)-1))
-        {
-            //Leida linea a medias.
-            return;
-        }
-
         emit newLogLineRead(QString(line), ++logNumLine, logSeek);
-
         logSeek += lineLenght;
         emit seekChanged(logSeek);
     }
@@ -101,7 +109,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
     emit pDebug("Start copy GameLog: " + fileName + ": " + QString::number(logSeekCreate) + " - " + QString::number(logSeekWon));
 
     QFile logFile(logPath);
-    if(!logFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if(!logFile.open(QIODevice::ReadOnly))
     {
         emit pDebug("Cannot open log...", Error);
         emit pLog(tr("Log: ERROR:Cannot open log..."));
@@ -109,7 +117,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
     }
 
     QFile logGame(Utility::appPath() + "/HSCards/GamesLog/" + fileName);
-    if(!logGame.open(QIODevice::WriteOnly | QIODevice::Text))
+    if(!logGame.open(QIODevice::WriteOnly))
     {
         emit pDebug("Cannot create game log file...", Error);
         emit pLog(tr("Log: ERROR:Cannot create game log file..."));
@@ -140,7 +148,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
 
 void LogWorker::setCopyGameLogs(bool value)
 {
-    copyGameLogs = value;
+    copyGameLogs = false;//value;//Desactivado
 }
 
 

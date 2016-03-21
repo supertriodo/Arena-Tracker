@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>7</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1337,7 +1337,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-249</y>
+               <y>0</y>
                <width>437</width>
                <height>834</height>
               </rect>
@@ -1888,12 +1888,12 @@ card scores during the draft.</string>
                  <item>
                   <widget class="QLabel" name="configLabelZero">
                    <property name="toolTip">
-                    <string>Games: Number of replay logs
+                    <string>Drafts: Number of drafts logs
 kept on HSCards/GamesLog to
 upload to www.zerotoheroes.com</string>
                    </property>
                    <property name="text">
-                    <string>Games</string>
+                    <string>Drafts</string>
                    </property>
                   </widget>
                  </item>
