@@ -2,9 +2,6 @@
 #include <QtWidgets>
 
 
-QMap<QString, QJsonObject> * GameWatcher::cardsJson;
-
-
 GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
     gameState = noGame;
@@ -443,37 +440,39 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
         }
 
         //ULTIMO TRIGGER SPECIAL CARDS
-        //[Power] PowerTaskList.DebugPrintPower() - ACTION_START Entity=[name=Yeti mecánico id=97 zone=GRAVEYARD zonePos=0 cardId=GVG_078 player=2]
-        //BlockType=TRIGGER Index=0 Target=0
+        //[Power] PowerTaskList.DebugPrintPower() - ACTION_START BlockType=ATTACK Entity=[name=Garrosh Grito Infernal id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1]
+        //EffectCardId= EffectIndex=-1 Target=[name=Uther el Iluminado id=66 zone=PLAY zonePos=0 cardId=HERO_04 player=2]
         else if(line.contains(QRegularExpression(
-            "PowerTaskList\\.DebugPrintPower\\(\\) - ACTION_START "
+            "PowerTaskList\\.DebugPrintPower\\(\\) - ACTION_START BlockType=(\\w+) "
             "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-            "BlockType=(\\w+) Index=-?\\d+ Target="
+            "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
             ), match))
         {
-            QString name = match->captured(1);
-            QString cardId = match->captured(2);
-            QString player = match->captured(3);
-            QString subType = match->captured(4);
+            QString blockType = match->captured(1);
+            QString name = match->captured(2);
+            QString cardId = match->captured(3);
+            QString player = match->captured(4);
 
-            emit pDebug("Trigger(" + subType + "): " + name, numLine);
-            emit specialCardTrigger(cardId, subType);
+            emit pDebug("Trigger(" + blockType + "): " + name, numLine);
+            emit specialCardTrigger(cardId, blockType);
             if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
         }
 
         //Jugador/Enemigo accion con objetivo
+        //[Power] GameState.DebugPrintPower() - ACTION_START BlockType=ATTACK Entity=[name=Garrosh Grito Infernal id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1]
+        //EffectCardId= EffectIndex=-1 Target=[name=Uther el Iluminado id=66 zone=PLAY zonePos=0 cardId=HERO_04 player=2]
         else if(line.contains(QRegularExpression(
-            "GameState\\.DebugPrintPower\\(\\) - ACTION_START "
+            "GameState\\.DebugPrintPower\\(\\) - ACTION_START BlockType=(\\w+) "
             "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-            "BlockType=(\\w+) Index=(-?\\d+) "
+            "EffectCardId=\\w* EffectIndex=(-?\\d+) "
             "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
             ), match))
         {
-            QString name1 = match->captured(1);
-            QString zone = match->captured(2);
-            QString cardId1 = match->captured(3);
-            QString player1 = match->captured(4);
-            QString subType = match->captured(5);
+            QString blockType = match->captured(1);
+            QString name1 = match->captured(2);
+            QString zone = match->captured(3);
+            QString cardId1 = match->captured(4);
+            QString player1 = match->captured(5);
             QString index = match->captured(6);
             QString name2 = match->captured(7);
             QString cardId2 = match->captured(8);
@@ -482,17 +481,16 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
 
 
             //Jugador/Enemigo juega carta con objetivo
-            if(zone == "HAND" && subType == "PLAY" && index == "0")
+            if(zone == "HAND" && blockType == "PLAY" && index == "0")
             {
-                QString type = (*cardsJson)[cardId1].value("type").toString();
-
-                if(type == QString("Spell"))
+                DeckCard deckCard(cardId1);
+                if(deckCard.getType() == SPELL)
                 {
                     emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
                                 name1 + " on target " + name2, numLine);
                     if(cardId2 == MAD_SCIENTIST)
                     {
-                        emit pDebug("Skip spellObj testing (Mad Scientist died).", 0);
+                        emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
                     }
                     else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
                 }
@@ -504,7 +502,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
             }
 
             //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
-            else if(zone == "PLAY" && subType == "ATTACK" && index == "-1")
+            else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1")
             {
                 if(cardId1.contains("HERO"))
                 {
@@ -608,9 +606,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
 
+        //[Zone] ZoneChangeList.ProcessChanges() - id=3 local=True [name=Acólito de dolor id=10 zone=HAND zonePos=2 cardId=EX1_007 player=1]
+        //zone from FRIENDLY HAND -> FRIENDLY PLAY
         //Carta conocida
         else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (.*) -> (.*)\n"
+            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\(Weapon\\))?)?"
             ), match))
         {
             QString name = match->captured(1);
@@ -903,12 +903,6 @@ SecretHero GameWatcher::getSecretHero(QString playerHero, QString enemyHero)
     if(enemySecretHero != unknown)  return enemySecretHero;
     else if(playerSecretHero != unknown)  return playerSecretHero;
     else    return unknown;
-}
-
-
-void GameWatcher::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
-{
-    GameWatcher::cardsJson = cardsJson;
 }
 
 

@@ -270,8 +270,8 @@ void DeckHandler::finishShowDeckListWidget()
 
 void DeckHandler::enableDeckButtonSave(bool enable)
 {
-    if(enable)  emit pDebug("Save button enabled");
-    else        emit pDebug("Save button disabled");
+//    if(enable)  emit pDebug("Save button enabled");
+//    else        emit pDebug("Save button disabled");
     if(inArena) enable = false;
     ui->deckButtonSave->setEnabled(enable);
 }

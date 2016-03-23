@@ -65,7 +65,6 @@ private:
     bool synchronized;
     qint64 logSeekCreate;
 
-    static QMap<QString, QJsonObject> *cardsJson;
 
 
 //Metodos
@@ -84,8 +83,6 @@ private:
     bool isHeroPower(QString code);
     void createGameLog(qint64 logSeekWon);
 
-public:
-    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
 
 public:
     void reset();

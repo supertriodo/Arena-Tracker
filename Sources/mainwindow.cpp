@@ -224,7 +224,6 @@ void MainWindow::initCardsJson()
     QString lang = getHSLanguage();
     createCardsJsonMap(this->cardsJson, lang);
     DeckCard::setCardsJson(&cardsJson);
-    GameWatcher::setCardsJson(&cardsJson);
     Utility::setCardsJson(&cardsJson);
 
 
@@ -2348,6 +2347,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Copy enemy deck
+//No bajar carta que esta la lista de bajando.
 
 
 //BUGS CONOCIDOS
