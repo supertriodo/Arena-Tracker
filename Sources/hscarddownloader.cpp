@@ -16,6 +16,12 @@ HSCardDownloader::~HSCardDownloader()
 
 void HSCardDownloader::downloadWebImage(QString code)
 {
+    if(gettingWebCards.values().contains(code))
+    {
+        emit pDebug("Skip download: " + code + " - Already downloading.");
+        return;
+    }
+
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + lang + "/medium/" + code + ".png"))));
     gettingWebCards[reply] = code;
     emit pDebug("Downloading: " + code + " - Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
