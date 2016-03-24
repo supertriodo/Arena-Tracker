@@ -269,3 +269,8 @@ void EnemyDeckHandler::findDeckCardEntered(QListWidgetItem * item)
     int deckListBottom = ui->enemyDeckListWidget->mapToGlobal(QPoint(0,ui->enemyDeckListWidget->height())).y();
     emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
 }
+
+QList<DeckCard> EnemyDeckHandler::getDeckCardList()
+{
+    return deckCardList;
+}

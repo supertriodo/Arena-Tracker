@@ -29,15 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
     checkHSCardsDir();
 
     createCardDownloader();
-    createDeckHandler();
-    createDraftHandler();
     createEnemyHandHandler();
-    createEnemyDeckHandler();
-    createSecretsHandler();
-    createArenaHandler();
-    createGameWatcher();
-    createLogLoader();
-    createCardWindow();
+    createEnemyDeckHandler();//-->EnemyHandHandler
+    createDeckHandler();//-->EnemyDeckHandler
+    createDraftHandler();//-->DeckHandler
+    createSecretsHandler();//-->EnemyHandHandler
+    createArenaHandler();//-->DeckHandler
+    createGameWatcher();//-->A lot
+    createLogLoader();//-->GameWatcher -->DraftHandler
+    createCardWindow();//-->A lot
 
     readSettings();
     checkGamesLogDir();
@@ -312,7 +312,7 @@ void MainWindow::createEnemyDeckHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, &cardsJson, ui);
+    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyDeckHandler);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
@@ -2346,8 +2346,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
-//Copy enemy deck
-//No bajar carta que esta la lista de bajando.
 
 
 //BUGS CONOCIDOS

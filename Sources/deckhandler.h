@@ -5,6 +5,7 @@
 #include "Cards/deckcard.h"
 #include "Cards/drawcard.h"
 #include "utility.h"
+#include "enemydeckhandler.h"
 #include <QObject>
 #include <QMap>
 #include <QSignalMapper>
@@ -17,7 +18,7 @@ class DeckHandler : public QObject
     Q_OBJECT
 
 public:
-    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui);
+    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler);
     ~DeckHandler();
 
 //Variables
@@ -35,6 +36,7 @@ private:
     int drawDisappear;
     QTreeWidgetItem *loadDeckClasses[10];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
+    EnemyDeckHandler *enemyDeckHandler;
 
 
 //Metodos
@@ -43,7 +45,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code);
-    void newDeckCard(QString card, int total=1, bool add=false);
+    void newDeckCard(QString code, int total=1, bool add=false);
     void drawFromDeck(QString code);
     void showDeckButtons();
     void hideDeckButtons();
@@ -62,6 +64,7 @@ private:
     bool showHearthHeadHowTo();
     bool deckBuilderPY();
     void showInstallPY();
+    void importEnemyDeck();
 
 public:
     void reset();
@@ -126,6 +129,7 @@ private slots:
     void newEmptyDeck();
     void newCopyCurrentDeck();
     void newImportHearthHead();
+    void newCopyEnemyDeck();
 };
 
 #endif // DECKHANDLER_H

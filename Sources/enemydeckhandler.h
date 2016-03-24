@@ -31,6 +31,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
+    QList<DeckCard> getDeckCardList();
 
 private:
     void completeUI();

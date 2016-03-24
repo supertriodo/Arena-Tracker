@@ -1,7 +1,8 @@
 #include "deckhandler.h"
 #include <QtWidgets>
 
-DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
+DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
+                         Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler) : QObject(parent)
 {
     this->ui = ui;
     this->cardsJson = cardsJson;
@@ -13,6 +14,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->loadedDeckName = QString();
     this->loadDeckItemsMap.clear();
     this->mouseInApp = false;
+    this->enemyDeckHandler = enemyDeckHandler;
 
     completeUI();
 }
@@ -83,6 +85,9 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
 
     action = newDeckMenu->addAction("Clone current deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newCopyCurrentDeck()));
+
+    action = newDeckMenu->addAction("Clone enemy deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(newCopyEnemyDeck()));
 
     action = newDeckMenu->addAction("Import HearthHead deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
@@ -1186,6 +1191,12 @@ void DeckHandler::newImportHearthHead()
 }
 
 
+void DeckHandler::newCopyEnemyDeck()
+{
+    if(newDeck(true))   importEnemyDeck();
+}
+
+
 bool DeckHandler::showHearthHeadHowTo()
 {
     QString text =  "This option allows you to import a deck from HearthHead:<br/><br/>"
@@ -1263,6 +1274,17 @@ void DeckHandler::importHearthHead()
         {
             newDeckCard(code, numCards);
         }
+    }
+}
+
+
+void DeckHandler::importEnemyDeck()
+{
+    QList<DeckCard> enemyDeckCardList = enemyDeckHandler->getDeckCardList();
+
+    foreach(DeckCard deckCard, enemyDeckCardList)
+    {
+        if(!deckCard.getCode().isEmpty())   newDeckCard(deckCard.getCode(), deckCard.total);
     }
 }
 
