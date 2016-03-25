@@ -15,6 +15,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->loadDeckItemsMap.clear();
     this->mouseInApp = false;
     this->enemyDeckHandler = enemyDeckHandler;
+    this->synchronized = false;
 
     completeUI();
 }
@@ -284,6 +285,7 @@ void DeckHandler::enableDeckButtonSave(bool enable)
 
 void DeckHandler::setSynchronized()
 {
+    this->synchronized = true;
     if(this->inGame)    lockDeckInterface();
     else                unlockDeckInterface();
 }
@@ -790,6 +792,8 @@ void DeckHandler::lockDeckInterface()
 {
     this->inGame = true;
 
+    if(!synchronized)   return;
+
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         it->remaining = it->total;
@@ -812,6 +816,8 @@ void DeckHandler::lockDeckInterface()
 void DeckHandler::unlockDeckInterface()
 {
     this->inGame = false;
+
+    if(!synchronized)   return;
 
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {

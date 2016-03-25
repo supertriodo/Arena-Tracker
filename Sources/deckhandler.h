@@ -29,7 +29,7 @@ private:
     QMap<QString, QJsonObject> *cardsJson;
     QJsonObject decksJson;
     QString loadedDeckName;
-    bool inGame, inArena;
+    bool inGame, inArena, synchronized;
     bool mouseInApp;
     Transparency transparency;
     bool drawAnimating;
