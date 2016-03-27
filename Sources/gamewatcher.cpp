@@ -631,6 +631,18 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
                 emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
             }
+            //Enemigo, nuevo minion en PLAY
+            else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
+            {
+                enemyMinions++;
+                emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+            }
+            //Jugador, nuevo minion en PLAY
+            else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
+            {
+                playerMinions++;
+                emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+            }
 
             //Enemigo roba secreto (kezan mystic)
             if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
@@ -650,7 +662,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 //Enemigo juega esbirro
                 else if(zoneTo == "OPPOSING PLAY")
                 {
-                    enemyMinions++;
                     emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
                 }
                 //Enemigo juega arma
@@ -702,7 +713,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 //Jugador juega esbirro
                 else if(zoneTo == "FRIENDLY PLAY")
                 {
-                    playerMinions++;
                     emit pDebug("Player: Minion played: " + name + " Minions: " + QString::number(playerMinions), numLine);
                     if(isPlayerTurn)    emit playerMinionPlayed(playerMinions);
                 }
@@ -719,12 +729,12 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
 
             //Enemigo esbirro muere
-            else if(zoneFrom == "OPPOSING PLAY" && zoneTo == "OPPOSING GRAVEYARD")
+            else if(zoneFrom == "OPPOSING PLAY" && zoneTo != "OPPOSING PLAY")
             {
-                enemyMinions--;
-                emit pDebug("Enemy: Minion dead: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+                if(enemyMinions>0)  enemyMinions--;
+                emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
 
-                if(isPlayerTurn)
+                if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
                 {
                     emit enemyMinionDead(cardId);
                     if(enemyMinionsAliveForAvenge == -1)
@@ -744,39 +754,42 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
 
             //Jugador esbirro muere
-            else if(zoneFrom == "FRIENDLY PLAY" && zoneTo == "FRIENDLY GRAVEYARD")
+            else if(zoneFrom == "FRIENDLY PLAY" && zoneTo != "FRIENDLY PLAY")
             {
-                playerMinions--;
-                emit pDebug("Player: Minion dead: " + name + " Minions: " + QString::number(playerMinions), numLine);
+                if(playerMinions>0) playerMinions--;
+                emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
             }
         }
 
 
         //Jugador/Enemigo esbirro cambia pos
         //No podemos usar zonePos= porque para los esbirros del jugador que pasan a una posicion mayor muestra su posicion origen
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
-            ), match))
-        {
-            QString name = match->captured(1);
-            QString player = match->captured(2);
-            QString zonePos = match->captured(3);
+        //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
+        //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
+        //y despues se genran los esbirros de deathrattle causando una suma erronea.
+//        else if(line.contains(QRegularExpression(
+//            "\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
+//            ), match))
+//        {
+//            QString name = match->captured(1);
+//            QString player = match->captured(2);
+//            QString zonePos = match->captured(3);
 
-            //Jugador esbirro cambia pos
-            if(player.toInt() == playerID)
-            {
-                if(zonePos.toInt() > playerMinions) playerMinions = zonePos.toInt();
-                emit pDebug("Player: New minion pos: " +
-                            name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
-            }
-            //Enemigo esbirro cambia pos
-            else
-            {
-                if(zonePos.toInt() > enemyMinions) enemyMinions = zonePos.toInt();
-                emit pDebug("Enemy: New minion pos: " +
-                            name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
-            }
-        }
+//            //Jugador esbirro cambia pos
+//            if(player.toInt() == playerID)
+//            {
+//                if(zonePos.toInt() > playerMinions) playerMinions = zonePos.toInt();
+//                emit pDebug("Player: New minion pos: " +
+//                            name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+//            }
+//            //Enemigo esbirro cambia pos
+//            else
+//            {
+//                if(zonePos.toInt() > enemyMinions) enemyMinions = zonePos.toInt();
+//                emit pDebug("Enemy: New minion pos: " +
+//                            name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+//            }
+//        }
     }
 }
 
