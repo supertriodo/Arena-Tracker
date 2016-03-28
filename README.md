@@ -90,8 +90,6 @@ If you build on Mac check:
 * https://github.com/supertriodo/Arena-Tracker/issues/1
 * https://github.com/supertriodo/Arena-Tracker/issues/7
 
-It seems Hearthstone doesn't write correctly in the log for Mac. If you get it working please contact me.
-
 
 ## Is Blizzard okay with this?
 [Yes](https://twitter.com/bdbrode/status/511151446038179840)  
