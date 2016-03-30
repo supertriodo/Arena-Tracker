@@ -25,7 +25,7 @@ private:
     void drawCreatedByHandCard();
 
 public:
-    void draw() Q_DECL_OVERRIDE;
+    void draw();
     void setCreatedByCode(QString code);
     QString getCreatedByCode();
 };

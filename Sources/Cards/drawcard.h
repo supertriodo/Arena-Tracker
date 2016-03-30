@@ -12,7 +12,7 @@ public:
 
 //Metodos
 public:
-    void draw() Q_DECL_OVERRIDE;
+    void draw();
 };
 
 #endif // DRAWCARD_H
