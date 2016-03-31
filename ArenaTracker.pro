@@ -11,9 +11,6 @@ TEMPLATE = app
 
 QT_CONFIG -= no-pkg-config
 
-# MAC OS FIX (set your opencv headers path)
-#unix:INCLUDEPATH += "/usr/local/Cellar/opencv/2.4.12/include/opencv headers"
-
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
@@ -85,3 +82,4 @@ RESOURCES += \
     arenatracker.qrc
 
 win32: RC_ICONS = ArenaTracker.ico
+macx: ICON = ArenaTracker.icns
