@@ -3,7 +3,8 @@
 
 MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 {
-    QFont font("Belwe Bd BT", 14);
+    QFont font("Belwe Bd BT");
+    font.setPixelSize(20);
     font.setBold(true);
     font.setKerning(true);
     this->setFont(font);

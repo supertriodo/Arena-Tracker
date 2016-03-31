@@ -61,8 +61,17 @@
           <property name="spacing">
            <number>5</number>
           </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
           <property name="topMargin">
            <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
@@ -448,8 +457,20 @@
           <string>Hero</string>
          </attribute>
          <layout class="QGridLayout" name="heroGridLayout">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
           <property name="topMargin">
            <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
+          <property name="spacing">
+           <number>5</number>
           </property>
           <item row="2" column="1">
            <widget class="QPushButton" name="heroButton2">
@@ -680,8 +701,20 @@
           <string>Draft</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
           <property name="topMargin">
            <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
           </property>
           <item>
            <widget class="QGroupBox" name="groupBoxDraft">
@@ -1278,8 +1311,20 @@
           <string>Log</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
           <property name="topMargin">
            <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
           </property>
           <item>
            <widget class="QTextEdit" name="logTextEdit">
@@ -1310,8 +1355,20 @@
           <string>Config</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
           <property name="topMargin">
            <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
           </property>
           <item>
            <widget class="MoveVerticalScrollArea" name="configScrollArea">
@@ -1337,9 +1394,9 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
-               <width>437</width>
-               <height>834</height>
+               <y>-15</y>
+               <width>435</width>
+               <height>833</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1683,7 +1740,7 @@ in a new window</string>
                         <enum>Qt::Horizontal</enum>
                        </property>
                        <property name="tickPosition">
-                        <enum>QSlider::TicksAbove</enum>
+                        <enum>QSlider::NoTicks</enum>
                        </property>
                        <property name="tickInterval">
                         <number>20</number>
