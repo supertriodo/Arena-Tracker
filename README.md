@@ -23,16 +23,19 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 https://github.com/supertriodo/Arena-Tracker/releases/latest
 * Tested on Windows 7/8/10
 * Tested on Ubuntu/Linux Mint
+* Tested on Mac OS X 10.11
 
 
 ##  First Run
 The first time you run Arena Tracker you will be asked for:
 
-* 1) output_log.txt location (If not default).
- * Default (Win): C:\Program Files (x86)\Hearthstone\Hearthstone_Data\output_log.txt
+* 1) (output_log.txt/Player.log) location (If not default).
+ * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Hearthstone_Data\output_log.txt
+ * Default (Mac): ~/Library/Logs/Unity/Player.log
 * 2) log.config location (If not default).
  * Default (Win 7-10): USER\AppData\Local\Blizzard\Hearthstone\log.config
- * Default (Win XP): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
+ * Default (Win XP/WINE): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
+ * Default (Mac): ~/Library/Preferences/Blizzard/Hearthstone/log.config
  * If the file doesn't exist create an empty log.config in that dir.
 * 3) Restart Hearthstone (if you have it opened).
 
@@ -45,7 +48,9 @@ También puedes preguntarme en español.
 
 ## FAQ (v3.0+)
 * Does it work with Hearthstone in fullscreen?
- * Actually does. It's because Hearthstone fullscreen is just a borderless window.
+ * (Windows) Actually does. It's because Hearthstone fullscreen is just a borderless window.
+ * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
+ * (Mac) You need to play with Hearthstone in windows mode.
 * Sometimes ArenaTracker doesn't stay on top of Hearthstone.
  * I have seen this behaviour in windows. It seems to be related to a QT/Windows bug. Try to restart ArenaTracker.
 * I setup the app but it didn't upload my arena game/ it didn't start drafting.
@@ -73,22 +78,25 @@ También puedes preguntarme en español.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
+* (Mac) Download & install XCode
+ * https://developer.apple.com/downloads/?name=Xcode
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
 * Download, compile & install Opencv v2.4.11 (NOT 3.0) (This step can be tricky)
  * http://opencv.org/downloads.html
- * In Ubuntu I followed this guide (changing the version of ovencv to v2.4.11
+ * On Ubuntu I followed this guide: (changing the version of ovencv to v2.4.11)
    http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/
+ * On Mac I followed this guide:
+   https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/
 * Download or clone Arena Tracker source code.
  * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
 * Open Qt Creator and open Arena Tracker project.
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
-* Move HSCards directory to the build dir.
+* Copy HSCards directory to the build dir, to the same place the executable is.
  
 If you build on Mac check:
 * https://github.com/supertriodo/Arena-Tracker/issues/1
-* https://github.com/supertriodo/Arena-Tracker/issues/7
 
 
 ## Is Blizzard okay with this?
