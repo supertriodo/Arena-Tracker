@@ -154,7 +154,16 @@ QString Utility::cardLocalCodeFromName(QString name)
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();
+
+#ifdef Q_OS_MAC
+    QDir dir(dirPath);
+    dir.cdUp();
+    dir.cdUp();
+    dir.cdUp();
+    return dir.absolutePath();
+#else
     return dirPath;
+#endif
 }
 
 
