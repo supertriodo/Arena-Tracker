@@ -86,5 +86,5 @@ macx: ICON = ArenaTracker.icns
 
 #Deploy MAC
 #1 Compilar
-#2 Mover HSCards junto a ejecutable dentro del bundle
-#3 ~/Qt/5.6/clang_64/bin/macdeployqt ArenaTracker.app -dmg
+#2 Mover HSCards a build dir
+#3 ~/Qt/5.6/clang_64/bin/macdeployqt ArenaTracker.app
