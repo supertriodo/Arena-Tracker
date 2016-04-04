@@ -1394,7 +1394,7 @@
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-15</y>
+               <y>0</y>
                <width>435</width>
                <height>833</height>
               </rect>
@@ -1945,12 +1945,12 @@ card scores during the draft.</string>
                  <item>
                   <widget class="QLabel" name="configLabelZero">
                    <property name="toolTip">
-                    <string>Drafts: Number of drafts logs
+                    <string>Logs: Number of games/drafts logs
 kept on HSCards/GamesLog to
 upload to www.zerotoheroes.com</string>
                    </property>
                    <property name="text">
-                    <string>Drafts</string>
+                    <string>Logs</string>
                    </property>
                   </widget>
                  </item>

@@ -148,7 +148,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
 
 void LogWorker::setCopyGameLogs(bool value)
 {
-    copyGameLogs = false;//value;//Desactivado
+    copyGameLogs = value;
 }
 
 
