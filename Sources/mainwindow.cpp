@@ -872,7 +872,7 @@ void MainWindow::readSettings()
     if(isMainWindow)
     {
         pos = settings.value("pos", QPoint(0,0)).toPoint();
-        size = settings.value("size", QSize(400, 400)).toSize();
+        size = settings.value("size", QSize(255, 600)).toSize();
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
@@ -901,7 +901,7 @@ void MainWindow::readSettings()
     else
     {
         pos = settings.value("pos2", QPoint(0,0)).toPoint();
-        size = settings.value("size2", QSize(400, 400)).toSize();
+        size = settings.value("size2", QSize(255, 600)).toSize();
 
         this->splitWindow = false;
         this->transparency = Transparent;
@@ -1502,6 +1502,12 @@ void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 
 void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
 {
+    if(!isMainWindow)
+    {
+        this->otherWindow->pDebug(line, numLine, debugLevel, file);
+        return;
+    }
+
     (void)debugLevel;
     QString logLine = "";
     QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
@@ -1582,14 +1588,14 @@ void MainWindow::resetSettings()
         settings.setValue("logPath", "");
         settings.setValue("logConfig", "");
         settings.setValue("playerTag", "");
-        settings.setValue("sizeDraft", QSize(350, 400));
+        settings.setValue("sizeDraft", QSize(255, 600));
 
-        resize(QSize(400, 400));
+        resize(QSize(255, 600));
         move(QPoint(0,0));
 
         if(otherWindow != NULL)
         {
-            otherWindow->resize(QSize(400, 400));
+            otherWindow->resize(QSize(255, 600));
             otherWindow->move(QPoint(0,0));
         }
         this->close();
