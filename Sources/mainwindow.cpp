@@ -251,7 +251,7 @@ void MainWindow::createVersionChecker()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, &cardsJson, ui);
+    draftHandler = new DraftHandler(this, ui);
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -1426,7 +1426,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             //Remove old not-complete draft
             removeNonCompleteDraft();
 
-            QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh:mm");
+            QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
             QString playerHero = Utility::heroStringFromLogNumber(match.captured(1));
             QString fileName = "DRAFT " + timeStamp + " " + playerHero + ".arenatracker";
 

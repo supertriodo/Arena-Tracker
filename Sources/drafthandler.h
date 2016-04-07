@@ -17,13 +17,12 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui);
+    DraftHandler(QObject *parent, Ui::Extended *ui);
     ~DraftHandler();
 
 //Variables
 private:
     Ui::Extended *ui;
-    QMap<QString, QJsonObject> *cardsJson;
     HearthArenaMentor *hearthArenaMentor;
     QMap<QString, int> hearthArenaCodes;
     QMap<QString, cv::MatND> cardsHist;

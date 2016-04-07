@@ -3,10 +3,9 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->cardsJson = cardsJson;
     this->cardsDownloading = 0;
     this->captureLoop = false;
     this->deckRating = 0;
@@ -416,21 +415,14 @@ void DraftHandler::resetCodesCandidates()
 
 bool DraftHandler::areSameRarity(QString codes[3])
 {
-    enum Rarity {common, rare, epic, legendary, noInit};
-    Rarity raritySample = noInit;
+    CardRarity raritySample = INVALID_RARITY;
 
     for(int i=0; i<3; i++)
     {
-        QString rarityS = (*cardsJson)[codes[i]].value("rarity").toString();
-        Rarity rarity = noInit;
+        DeckCard deckCard(codes[i]);
+        CardRarity rarity = deckCard.getRarity();
 
-        if(rarityS == "Free")               rarity = common;
-        else if(rarityS == "Common")        rarity = common;
-        else if(rarityS == "Rare")          rarity = rare;
-        else if(rarityS == "Epic")          rarity = epic;
-        else if(rarityS == "Legendary")     rarity = legendary;
-
-        if(raritySample == noInit)  raritySample = rarity;
+        if(raritySample == INVALID_RARITY)  raritySample = rarity;
 
         if(raritySample != rarity)
         {

@@ -849,7 +849,7 @@ void GameWatcher::createGameLog(qint64 logSeekWon)
         return;
     }
 
-    QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh:mm");
+    QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
     QString win = (winnerPlayer == playerTag)?"WIN":"LOSE";
     QString gameMode = Utility::getLoadingScreenString(loadingScreen);
     QString playerHero, enemyHero;
