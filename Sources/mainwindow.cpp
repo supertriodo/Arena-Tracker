@@ -2059,6 +2059,7 @@ void MainWindow::updateTamCard(int value)
     secretsHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     draftHandler->redrawAllCards();
+    draftHandler->updateTamCard(value);
 
     calculateDeckWindowMinimumWidth();
 

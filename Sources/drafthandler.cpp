@@ -139,15 +139,10 @@ void DraftHandler::resetTab()
     for(int i=0; i<3; i++)
     {
         clearScore(draftCards[i].scoreItem);
-        draftCards[i].scoreItem->hide();
         draftCards[i].setCode("");
         draftCards[i].draw();
     }
 
-    //Clear synergies
-    ui->textDraft1->setText("Detecting Cards...");
-    ui->textDraft2->setText("Detecting Cards...");
-    ui->textDraft3->setText("Detecting Cards...");
     ui->textBrowserDraft->setText("");
     ui->groupBoxDraft->setTitle("");
 
@@ -471,15 +466,10 @@ void DraftHandler::pickCard(QString code)
     for(int i=0; i<3; i++)
     {
         clearScore(draftCards[i].scoreItem);
-        draftCards[i].scoreItem->hide();
         draftCards[i].setCode("");
         draftCards[i].draw();
     }
 
-    //Clear synergies
-    ui->textDraft1->setText("Detecting Cards...");
-    ui->textDraft2->setText("Detecting Cards...");
-    ui->textDraft3->setText("Detecting Cards...");
     ui->textBrowserDraft->setText("");
 
     draftScoreWindow->hideScores();
@@ -508,10 +498,6 @@ void DraftHandler::showNewCards(QString codes[3])
         intCodes[i] = hearthArenaCodes[codes[i]];
     }
 
-    //Clear synergies
-    ui->textDraft1->setText("");
-    ui->textDraft2->setText("");
-    ui->textDraft3->setText("");
     ui->textBrowserDraft->setText("");
 
 
@@ -550,18 +536,6 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
     }
 
     if(!learningMode)    ui->textBrowserDraft->setText(tip);
-
-
-    //Mostrar sinergies
-    QString synergies[3] = {synergy1,synergy2, synergy3};
-    QTextBrowser *texts[3] = {ui->textDraft1,ui->textDraft2,ui->textDraft3};
-
-    for(int i=0; i<3; i++)
-    {
-        QString text = synergies[i];
-        texts[i]->setText(text);
-    }
-
 
     //Mostrar score
     draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3);
@@ -754,7 +728,10 @@ bool DraftHandler::findScreenRects()
 
 void DraftHandler::clearScore(QLabel *label, bool clearText)
 {
-    if(transparency == Transparent)
+    if(clearText)   label->setText("");
+    else if(label->styleSheet() == "QLabel {background-color: transparent; color: rgb(50,175,50);}") return;
+
+    if(!mouseInApp && transparency == Transparent)
     {
         label->setStyleSheet("QLabel {background-color: transparent; color: white;}");
     }
@@ -762,8 +739,6 @@ void DraftHandler::clearScore(QLabel *label, bool clearText)
     {
         label->setStyleSheet("");
     }
-
-    if(clearText)   label->setText("");
 }
 
 
@@ -785,9 +760,6 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->repaint();
 
         ui->heroLabel->setStyleSheet("QLabel{background-color: transparent; color: white;}");
-        ui->textDraft1->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-        ui->textDraft2->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-        ui->textDraft3->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
@@ -800,9 +772,6 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->repaint();
 
         ui->heroLabel->setStyleSheet("");
-        ui->textDraft1->setStyleSheet("");
-        ui->textDraft2->setStyleSheet("");
-        ui->textDraft3->setStyleSheet("");
         ui->textBrowserDraft->setStyleSheet("");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
@@ -870,6 +839,14 @@ void DraftHandler::redrawAllCards()
     {
         draftCards[i].draw();
     }
+}
+
+
+void DraftHandler::updateTamCard(int value)
+{
+    ui->radioButtonDraft1->setMaximumHeight(value);
+    ui->radioButtonDraft2->setMaximumHeight(value);
+    ui->radioButtonDraft3->setMaximumHeight(value);
 }
 
 

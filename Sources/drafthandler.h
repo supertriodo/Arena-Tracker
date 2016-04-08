@@ -75,6 +75,7 @@ public:
     void setShowDraftOverlay(bool value);
     void setLearningMode(bool value);
     void redrawAllCards();
+    void updateTamCard(int value);
 
 signals:
     void checkCardImage(QString code);
