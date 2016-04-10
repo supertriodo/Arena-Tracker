@@ -436,6 +436,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
                 }
                 emit pDebug("Enemy mulligan end.", numLine);
                 mulliganEnemyDone = true;
+                playerMinions = 0;
+                enemyMinions = 0;
             }
         }
 

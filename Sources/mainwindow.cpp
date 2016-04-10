@@ -2353,6 +2353,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
+//Arreglar tbb de opencv
 
 
 //BUGS CONOCIDOS
