@@ -22,8 +22,10 @@ If you like the app, donations are much appreciated. It allows me to spend more 
 ## Download (Windows/Linux/Mac)
 https://github.com/supertriodo/Arena-Tracker/releases/latest
 * Tested on Windows 7/8/10
-* Tested on Ubuntu/Linux Mint
 * Tested on Mac OS X 10.11
+* Tested on Ubuntu/Linux Mint
+* There's a package in AUR maintained by the community for Arch Linux Users
+ * https://aur.archlinux.org/packages/arena-tracker/
 
 
 ##  First Run
