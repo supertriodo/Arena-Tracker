@@ -9,7 +9,7 @@ https://github.com/supertriodo/Arena-Tracker/releases/latest
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
-* There's a package in AUR maintained by the community for Arch Linux Users
+* For Arch Linux users there's a package in AUR maintained by the community
  * https://aur.archlinux.org/packages/arena-tracker/
 
 Extract the zip wherever you want and double click the executable, no installation required.
