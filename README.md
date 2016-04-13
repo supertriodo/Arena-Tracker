@@ -31,9 +31,6 @@ The first time you run Arena Tracker you will be asked for:
 
 If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
-or on email: arenatracker@gmail.com
-
-También puedes preguntarme en español.
 
 
 ## FAQ (v3.0+)
