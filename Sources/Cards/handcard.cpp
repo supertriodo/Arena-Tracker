@@ -91,7 +91,7 @@ void HandCard::drawCreatedByHandCard()
         else
         {
             source = QRectF(63,18,100,25);
-            painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/unknown.png"), source);
+            painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
         }
 
         //Background

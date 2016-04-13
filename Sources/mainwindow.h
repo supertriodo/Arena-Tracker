@@ -4,7 +4,6 @@
 #include "logloader.h"
 #include "gamewatcher.h"
 #include "webuploader.h"
-#include "hearthstatsuploader.h"
 #include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "enemydeckhandler.h"
@@ -46,7 +45,6 @@ private:
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     WebUploader *webUploader;
-    HearthstatsUploader *hstatsUploader;
     HSCardDownloader *cardDownloader;
     EnemyDeckHandler *enemyDeckHandler;
     DeckHandler *deckHandler;
@@ -92,7 +90,6 @@ private:
     void createSecretsHandler();
     void createDraftHandler();
     void createWebUploader();
-    void createHStatsUploader();
     void createVersionChecker();
     void readSettings();
     void writeSettings();
@@ -119,7 +116,7 @@ private:
     void destroySecondaryWindow();
     void checkHSCardsDir();
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword, QString HStatsPlayerEmail, QString HStatsPassword);
+    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -184,9 +181,6 @@ private slots:
     void updateAMConnectButton(int value=2);
     void updateAMConnectButton(bool isConnected);
     void tryConnectAM();
-    void updateHStatsConnectButton(int value=2);
-    void updateHStatsConnectButton(bool isConnected);
-    void tryConnectHStats();
     void closeApp();
     void updateShowClassColor(bool checked);
     void updateShowSpellColor(bool checked);

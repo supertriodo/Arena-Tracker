@@ -128,7 +128,9 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         else                                    source = QRectF(48,98,100,25);
         if(total == 1 && rarity != LEGENDARY)   target = QRectF(113,6,100,25);
         else                                    target = QRectF(100,6,100,25);
-        painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + ((name=="unknown")?name:code) + ".png"), source);
+
+        if(name == "unknown")   painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
+        else    painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + code + ".png"), source);
 
         //Background and #cards
         if(nameColor!=BLACK)                            painter.setPen(QPen(nameColor));

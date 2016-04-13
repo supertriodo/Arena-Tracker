@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
-    hstatsUploader = NULL;
     atLogFile = NULL;
     isMainWindow = true;
     mouseInApp = false;
@@ -54,7 +53,6 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     gameWatcher = NULL;
     arenaHandler = NULL;
     webUploader = NULL;
-    hstatsUploader = NULL;
     cardDownloader = NULL;
     enemyHandHandler = NULL;
     draftHandler = NULL;
@@ -602,25 +600,6 @@ void MainWindow::createWebUploader()
 }
 
 
-void MainWindow::createHStatsUploader()
-{
-    if(hstatsUploader != NULL)  return;
-    hstatsUploader = new HearthstatsUploader(this);
-
-    connect(hstatsUploader, SIGNAL(connectionTried(bool)),
-            this, SLOT(updateHStatsConnectButton(bool)));
-//    connect(webUploader, SIGNAL(connectionTried(bool)),
-//            this, SLOT(currentArenaToWhiteHS(bool)));
-    connect(hstatsUploader, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
-    connect(hstatsUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
-            this, SLOT(pDebug(QString,DebugLevel,QString)));
-
-//    arenaHandler->setWebUploader(webUploader);
-    tryConnectHStats();
-}
-
-
 void MainWindow::completeUI()
 {
     if(isMainWindow)
@@ -746,8 +725,7 @@ void MainWindow::completeHeroButtons()
 
 void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
                                bool createGoldenCards, int maxGamesLog,
-                               QString AMplayerEmail, QString AMpassword,
-                               QString HStatsPlayerEmail, QString HStatsPassword)
+                               QString AMplayerEmail, QString AMpassword)
 {
     //Actions
     ui->configCheckGoldenCards->setChecked(createGoldenCards);
@@ -822,10 +800,6 @@ void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showS
     //Arena Mastery
     ui->configLineEditMastery->setText(AMplayerEmail);
     ui->configLineEditMastery2->setText(AMpassword);
-
-    //Hearth Stats
-    ui->configLineEditHStats->setText(HStatsPlayerEmail);
-    ui->configLineEditHStats2->setText(HStatsPassword);
 }
 
 
@@ -893,10 +867,8 @@ void MainWindow::readSettings()
         int maxGamesLog = settings.value("maxGamesLog", 10).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
-        QString HStatsPlayerEmail = "";//settings.value("HStatsPlayerEmail", "").toString();
-        QString HStatsPassword = "";//settings.value("HStatsPassword", "").toString();
 
-        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword, HStatsPlayerEmail, HStatsPassword);
+        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
     }
     else
     {
@@ -938,8 +910,6 @@ void MainWindow::writeSettings()
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
-//        settings.setValue("HStatsPlayerEmail", ui->configLineEditHStats->text());
-//        settings.setValue("HStatsPassword", ui->configLineEditHStats2->text());
     }
     else
     {
@@ -2220,46 +2190,6 @@ void MainWindow::tryConnectAM()
 }
 
 
-void MainWindow::updateHStatsConnectButton(bool isConnected)
-{
-    if(isConnected) updateHStatsConnectButton(1);
-    else            updateHStatsConnectButton(0);
-}
-
-
-void MainWindow::updateHStatsConnectButton(int value)
-{
-    switch(value)
-    {
-        case 0:
-            ui->configButtonHStats->setIcon(QIcon(":/Images/lose.png"));
-            ui->configButtonHStats->setEnabled(true);
-            break;
-        case 1:
-            ui->configButtonHStats->setIcon(QIcon(":/Images/win.png"));
-            ui->configButtonHStats->setEnabled(true);
-            break;
-        case 2:
-            ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
-            ui->configButtonHStats->setEnabled(true);
-            break;
-    }
-}
-
-
-void MainWindow::tryConnectHStats()
-{
-    if(hstatsUploader == NULL) return;
-    if(arenaHandler == NULL)return;
-    if(ui->configLineEditHStats->text().isEmpty())     return;
-    if(ui->configLineEditHStats2->text().isEmpty())    return;
-
-    ui->configButtonHStats->setIcon(QIcon(":/Images/refresh.png"));
-    ui->configButtonHStats->setEnabled(false);
-    hstatsUploader->tryConnect(ui->configLineEditHStats->text(), ui->configLineEditHStats2->text());
-}
-
-
 void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
@@ -2301,15 +2231,6 @@ void MainWindow::completeConfigTab()
 
     connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
 
-    //Hearth Stats
-    ui->configBoxHStats->hide();
-//    connect(ui->configLineEditHStats, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-//    connect(ui->configLineEditHStats, SIGNAL(returnPressed()), this, SLOT(tryConnectHStats()));
-
-//    connect(ui->configLineEditHStats2, SIGNAL(textChanged(QString)), this, SLOT(updateHStatsConnectButton()));
-//    connect(ui->configLineEditHStats2, SIGNAL(returnPressed()), this, SLOT(tryConnectHStats()));
-
-//    connect(ui->configButtonHStats, SIGNAL(clicked()), this, SLOT(tryConnectHStats()));
 
     completeHighResConfigTab();
 }
@@ -2353,7 +2274,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
-//Arreglar tbb de opencv
 
 
 //BUGS CONOCIDOS
