@@ -11,8 +11,8 @@ TEMPLATE = app
 
 QT_CONFIG -= no-pkg-config
 
-CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+!android:CONFIG += link_pkgconfig
+!android:PKGCONFIG += opencv
 
 SOURCES += Sources/main.cpp\
     Sources/mainwindow.cpp \
@@ -81,6 +81,13 @@ RESOURCES += \
 
 win32: RC_ICONS = ArenaTracker.ico
 macx: ICON = ArenaTracker.icns
+
+android {
+    SOURCES -= Sources/Widgets/cardwindow.cpp \
+        Sources/drafthandler.cpp
+    HEADERS -= Sources/Widgets/cardwindow.h \
+        Sources/drafthandler.h
+}
 
 #Deploy MAC
 #1 Compilar

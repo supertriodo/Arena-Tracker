@@ -11,10 +11,13 @@
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
-#include "drafthandler.h"
 #include "Widgets/cardwindow.h"
 #include <QMainWindow>
 #include <QJsonObject>
+
+#ifndef Q_OS_ANDROID
+#include "drafthandler.h"
+#endif
 
 #define DIVIDE_TABS_H 500
 #define DIVIDE_TABS_H2 750
@@ -51,7 +54,9 @@ private:
     EnemyHandHandler *enemyHandHandler;
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
+#ifndef Q_OS_ANDROID
     DraftHandler * draftHandler;
+#endif
     CardWindow *cardWindow;
     QMap<QString, QJsonObject> cardsJson, enCardsJson;
     QPoint dragPosition;
@@ -104,7 +109,6 @@ private:
     void updateMainUITheme();
     void updateButtonsTheme();
     void updateTabWidgetsTheme();
-    void completeHeroButtons();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
     void resizeTabWidgets(QResizeEvent *event);

@@ -6,7 +6,9 @@
 #include "versionchecker.h"
 #include <QtWidgets>
 
+#ifndef Q_OS_ANDROID
 using namespace cv;
+#endif
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,7 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createLogFile();
     completeUI();
-    checkHSCardsDir();
+#ifndef Q_OS_ANDROID
+    checkHSCardsDir();//TODO
+#endif
 
     createCardDownloader();
     createEnemyHandHandler();
@@ -35,12 +39,16 @@ MainWindow::MainWindow(QWidget *parent) :
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler
     createGameWatcher();//-->A lot
-    createLogLoader();//-->GameWatcher -->DraftHandler
+#ifndef Q_OS_ANDROID
+    createLogLoader();//-->GameWatcher -->DraftHandler//TODO
+#endif
     createCardWindow();//-->A lot
 
     readSettings();
-    checkGamesLogDir();
-    createVersionChecker();
+#ifndef Q_OS_ANDROID
+    checkGamesLogDir();//TODO
+    createVersionChecker();//TODO
+#endif
 }
 
 
@@ -55,7 +63,9 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     webUploader = NULL;
     cardDownloader = NULL;
     enemyHandHandler = NULL;
+#ifndef Q_OS_ANDROID
     draftHandler = NULL;
+#endif
     deckHandler = NULL;
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
@@ -78,7 +88,9 @@ MainWindow::~MainWindow()
     if(cardDownloader != NULL)  delete cardDownloader;
     if(enemyDeckHandler != NULL) delete enemyDeckHandler;
     if(enemyHandHandler != NULL) delete enemyHandHandler;
+#ifndef Q_OS_ANDROID
     if(draftHandler != NULL)    delete draftHandler;
+#endif
     if(deckHandler != NULL)     delete deckHandler;
     if(secretsHandler != NULL)  delete secretsHandler;
     if(ui != NULL)              delete ui;
@@ -249,6 +261,7 @@ void MainWindow::createVersionChecker()
 
 void MainWindow::createDraftHandler()
 {
+#ifndef Q_OS_ANDROID
     draftHandler = new DraftHandler(this, ui);
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
@@ -267,6 +280,7 @@ void MainWindow::createDraftHandler()
             this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+#endif
 }
 
 
@@ -319,9 +333,11 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+#ifndef Q_OS_ANDROID
     //connect de completeConfigTab
     connect(ui->configButtonCreateDeckPY, SIGNAL(clicked()),
             deckHandler, SLOT(askCreateDeckPY()));
+#endif
 
     deckHandler->loadDecks();
 }
@@ -343,6 +359,7 @@ void MainWindow::createEnemyHandHandler()
 
 void MainWindow::createCardWindow()
 {
+#ifndef Q_OS_ANDROID
     cardWindow = new CardWindow(this);
     connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
@@ -369,6 +386,7 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(hide()));
     connect(draftHandler, SIGNAL(draftStarted()),
             cardWindow, SLOT(hide()));
+#endif
 }
 
 
@@ -469,6 +487,7 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
+#ifndef Q_OS_ANDROID
     //Connect en synchronizedDone
 //    connect(gameWatcher,SIGNAL(newArena(QString)),
 //            draftHandler, SLOT(beginDraft(QString)));
@@ -476,10 +495,12 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(needResetDeck()),
-            this, SLOT(resetDeck()));
     connect(gameWatcher,SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
+#endif
+
+    connect(gameWatcher,SIGNAL(needResetDeck()),
+            this, SLOT(resetDeck()));
 }
 
 
@@ -515,11 +536,14 @@ void MainWindow::createLogLoader()
 //    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
 //            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
 
+
+#ifndef Q_OS_ANDROID
     //Connect de draftHandler
     connect(draftHandler, SIGNAL(draftEnded()),
             logLoader, SLOT(setUpdateTimeMax()));
     connect(draftHandler, SIGNAL(draftStarted()),
             logLoader, SLOT(setUpdateTimeMin()));
+#endif
 
     qint64 logSize;
     logLoader->init(logSize);
@@ -537,21 +561,25 @@ void MainWindow::synchronizedDone()
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
 
+#ifndef Q_OS_ANDROID
     //Aseguramos que transparencyChanged tendra el valor correcto (Inicialmente todo se dibujo en opaco)
     Transparency newTransparency = this->transparency;
     this->transparency = Opaque;
     spreadTransparency(newTransparency);
+#endif
 
     ui->progressBar->setVisible(false);
 
 
     //Connections after synchronized
+#ifndef Q_OS_ANDROID
     connect(gameWatcher,SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
-    connect(gameWatcher, SIGNAL(newArena(QString)),
-            this, SLOT(resetDeckDontRead()));
     connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
             logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
+#endif
+    connect(gameWatcher, SIGNAL(newArena(QString)),
+            this, SLOT(resetDeckDontRead()));
 
 
     //Test
@@ -618,11 +646,12 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        completeHeroButtons();
         completeConfigTab();
 
+#ifndef Q_OS_ANDROID
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(spreadMouseInApp()));
+#endif
 
 
 #ifdef QT_DEBUG
@@ -702,31 +731,32 @@ void MainWindow::closeApp()
 }
 
 
-void MainWindow::completeHeroButtons()
-{
-    QSignalMapper* mapper = new QSignalMapper(this);
-    QString heroes[9] = {"Warrior", "Shaman", "Rogue",
-                         "Paladin", "Hunter", "Druid",
-                         "Warlock", "Mage", "Priest"};
-    QPushButton *heroButtons[9] = {ui->heroButton1, ui->heroButton2, ui->heroButton3,
-                                  ui->heroButton4, ui->heroButton5, ui->heroButton6,
-                                  ui->heroButton7, ui->heroButton8, ui->heroButton9};
+//void MainWindow::completeHeroButtons()
+//{
+//    QSignalMapper* mapper = new QSignalMapper(this);
+//    QString heroes[9] = {"Warrior", "Shaman", "Rogue",
+//                         "Paladin", "Hunter", "Druid",
+//                         "Warlock", "Mage", "Priest"};
+//    QPushButton *heroButtons[9] = {ui->heroButton1, ui->heroButton2, ui->heroButton3,
+//                                  ui->heroButton4, ui->heroButton5, ui->heroButton6,
+//                                  ui->heroButton7, ui->heroButton8, ui->heroButton9};
 
-    for(int i=0; i<9; i++)
-    {
-        mapper->setMapping(heroButtons[i], heroes[i]);
-        connect(heroButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
-        heroButtons[i]->setToolTip(heroes[i]);
-    }
+//    for(int i=0; i<9; i++)
+//    {
+//        mapper->setMapping(heroButtons[i], heroes[i]);
+//        connect(heroButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
+//        heroButtons[i]->setToolTip(heroes[i]);
+//    }
 
-    connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
-}
+//    connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
+//}
 
 
 void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
                                bool createGoldenCards, int maxGamesLog,
                                QString AMplayerEmail, QString AMpassword)
 {
+#ifndef Q_OS_ANDROID//TODO
     //Actions
     ui->configCheckGoldenCards->setChecked(createGoldenCards);
 
@@ -758,7 +788,7 @@ void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showS
     else    ui->configSliderCardSize->setValue(this->cardHeight);
 
     if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
-    if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
+    if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);//TODO eliminar en android
     else ui->configSliderTooltipSize->setValue(tooltipScale);
 
     ui->configCheckClassColor->setChecked(showClassColor);
@@ -800,6 +830,7 @@ void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showS
     //Arena Mastery
     ui->configLineEditMastery->setText(AMplayerEmail);
     ui->configLineEditMastery2->setText(AMpassword);
+#endif
 }
 
 
@@ -843,6 +874,32 @@ void MainWindow::readSettings()
     QPoint pos;
     QSize size;
 
+#ifdef Q_OS_ANDROID//TODO
+    pos = QPoint();
+    size = QSize();
+
+    this->splitWindow = false;
+    this->transparency = Opaque;
+    this->theme = (Theme)settings.value("theme", ThemeBlack).toInt();
+    spreadTheme();
+
+    this->cardHeight = settings.value("cardHeight", 35).toInt();
+    this->drawDisappear = settings.value("drawDisappear", 5).toInt();
+    this->showDraftOverlay = false;
+    this->draftLearningMode = false;
+    int tooltipScale = settings.value("tooltipScale", 10).toInt();
+    bool showClassColor = settings.value("showClassColor", true).toBool();
+    bool showSpellColor = settings.value("showSpellColor", true).toBool();
+    bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
+    int maxGamesLog = settings.value("maxGamesLog", 10).toInt();
+    QString AMplayerEmail = settings.value("playerEmail", "").toString();
+    QString AMpassword = settings.value("password", "").toString();
+
+    initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
+
+    this->windowsFormation = None;
+    this->show();
+#else
     if(isMainWindow)
     {
         pos = settings.value("pos", QPoint(0,0)).toPoint();
@@ -885,6 +942,7 @@ void MainWindow::readSettings()
     this->windowsFormation = None;
     resize(size);
     moveInScreen(pos, size);
+#endif
 }
 
 
@@ -998,6 +1056,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+#ifndef Q_OS_ANDROID
     if(event->key() != Qt::Key_Control)
     {
         if(event->modifiers()&Qt::ControlModifier)
@@ -1008,6 +1067,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
         }
     }
+#endif
 }
 
 
@@ -1048,6 +1108,7 @@ void MainWindow::enterEvent(QEvent * e)
 
 void MainWindow::spreadMouseInApp()
 {
+#ifndef Q_OS_ANDROID
     if(!isMainWindow)   return;
 
     QWidget *currentTab = ui->tabWidget->currentWidget();
@@ -1096,6 +1157,7 @@ void MainWindow::spreadMouseInApp()
         else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
         else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     }
+#endif
 }
 
 
@@ -1204,7 +1266,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-//                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
             }
@@ -1214,7 +1275,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-//                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
             }
@@ -1278,7 +1338,6 @@ void MainWindow::resizeTabWidgets(QResizeEvent *event)
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-//                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
@@ -1542,7 +1601,9 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     enemyDeckHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
+#ifndef Q_OS_ANDROID
     draftHandler->reHistDownloadedCardImage(code);
+#endif
 }
 
 
@@ -1706,6 +1767,7 @@ void MainWindow::addDraftMenu(QPushButton *button)
 
 void MainWindow::confirmNewArenaDraft(QString hero)
 {
+#ifndef Q_OS_ANDROID
     int ret = QMessageBox::question(this, tr("New arena: ") + hero,
                                    "Make sure you have already picked " + hero + " in hearthstone.\n"
                                    "You shouldn't move hearthstone window until the end of the draft.\n"
@@ -1717,9 +1779,9 @@ void MainWindow::confirmNewArenaDraft(QString hero)
         pDebug("Manual draft: " + hero);
         pLog(tr("Menu: Force draft: ") + hero);
         QString heroLog = Utility::heroToLogNumber(hero);
-//        arenaHandler->newArena(heroLog);
         draftHandler->beginDraft(heroLog);
     }
+#endif
 }
 
 
@@ -1762,6 +1824,7 @@ void MainWindow::transparentNever()
 
 void MainWindow::spreadTransparency(Transparency newTransparency)
 {
+#ifndef Q_OS_ANDROID
     this->transparency = newTransparency;
 
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
@@ -1770,6 +1833,7 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
     updateOtherTabsTransparency();
+#endif
 }
 
 
@@ -1945,8 +2009,6 @@ void MainWindow::updateMainUITheme()
     {
         mainCSS +=
                 "QMenu {background-color: #0F4F0F; color: white;}"
-//                "QMenu::item {font-family: Sans Serif; font-size: 12pt; border: 1px solid black; background-color: #0F4F0F; color: white; "
-//                    "min-width: 90px; min-height: 25px; padding: 2px 2px 2px 18px;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
                 "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
@@ -2028,8 +2090,10 @@ void MainWindow::updateTamCard(int value)
     enemyDeckHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
+#ifndef Q_OS_ANDROID
     draftHandler->redrawAllCards();
     draftHandler->updateTamCard(value);
+#endif
 
     calculateDeckWindowMinimumWidth();
 
@@ -2041,11 +2105,13 @@ void MainWindow::updateTamCard(int value)
 
 void MainWindow::updateTooltipScale(int value)
 {
+#ifndef Q_OS_ANDROID
     cardWindow->scale(value);
 
     QString labelText = "x"+QString::number(value/10.0);
     ui->configSliderTooltipSize->setToolTip(labelText);
     ui->configLabelDeckTooltip2->setText(labelText);
+#endif
 }
 
 
@@ -2055,7 +2121,9 @@ void MainWindow::updateShowClassColor(bool checked)
     deckHandler->redrawClassCards();
     secretsHandler->redrawClassCards();
     enemyHandHandler->redrawClassCards();
+#ifndef Q_OS_ANDROID
     draftHandler->redrawAllCards();
+#endif
 }
 
 
@@ -2065,7 +2133,9 @@ void MainWindow::updateShowSpellColor(bool checked)
     deckHandler->redrawSpellWeaponCards();
     secretsHandler->redrawSpellWeaponCards();
     enemyHandHandler->redrawSpellWeaponCards();
+#ifndef Q_OS_ANDROID
     draftHandler->redrawAllCards();
+#endif
 }
 
 
@@ -2105,15 +2175,19 @@ void MainWindow::updateTimeDraw(int value)
 
 void MainWindow::toggleShowDraftOverlay()
 {
+#ifndef Q_OS_ANDROID
     this->showDraftOverlay = !this->showDraftOverlay;
     draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+#endif
 }
 
 
 void MainWindow::toggleDraftLearningMode()
 {
+#ifndef Q_OS_ANDROID
     this->draftLearningMode = !this->draftLearningMode;
     draftHandler->setLearningMode(this->draftLearningMode);
+#endif
 }
 
 
@@ -2192,23 +2266,19 @@ void MainWindow::tryConnectAM()
 
 void MainWindow::completeConfigTab()
 {
-    //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
+#ifdef Q_OS_ANDROID//TODO
     //Actions
-    addDraftMenu(ui->configButtonForceDraft);
-    //connect en createDeckHandler
+    ui->configBoxActions->hide();
 
     //UI
-    connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));
-    connect(ui->configRadioAuto, SIGNAL(clicked()), this, SLOT(transparentAuto()));
-    connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
-
+//    ui->configBoxUI->hide();
     connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
-    connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
-    connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
+//    connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));//TODO eliminar en android
+//    connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));//TODO eliminar en android
 
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
-    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
+//    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));//TODO eliminar en android
     connect(ui->configCheckClassColor, SIGNAL(clicked(bool)), this, SLOT(updateShowClassColor(bool)));
     connect(ui->configCheckSpellColor, SIGNAL(clicked(bool)), this, SLOT(updateShowSpellColor(bool)));
 
@@ -2216,7 +2286,47 @@ void MainWindow::completeConfigTab()
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
 
     //Draft
-    connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
+    ui->configBoxDraft->hide();
+
+    //Zero To Heroes
+    ui->configBoxZero->hide();
+
+    //Arena Mastery
+    connect(ui->configLineEditMastery, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
+    connect(ui->configLineEditMastery, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
+
+    connect(ui->configLineEditMastery2, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
+    connect(ui->configLineEditMastery2, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
+
+    connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
+
+    completeHighResConfigTab();//TODO
+#else
+    //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
+    //Actions
+    addDraftMenu(ui->configButtonForceDraft);//TODO eliminar en android
+    //connect en createDeckHandler
+
+    //UI
+    connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));//TODO eliminar los 3 en android
+    connect(ui->configRadioAuto, SIGNAL(clicked()), this, SLOT(transparentAuto()));
+    connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
+
+    connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
+    connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
+    connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));//TODO eliminar en android
+
+    //Deck
+    connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
+    connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));//TODO eliminar en android
+    connect(ui->configCheckClassColor, SIGNAL(clicked(bool)), this, SLOT(updateShowClassColor(bool)));
+    connect(ui->configCheckSpellColor, SIGNAL(clicked(bool)), this, SLOT(updateShowSpellColor(bool)));
+
+    //Hand
+    connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
+
+    //Draft
+    connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));//TODO eliminar los 2 en android
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
 
     //Zero To Heroes
@@ -2233,6 +2343,7 @@ void MainWindow::completeConfigTab()
 
 
     completeHighResConfigTab();
+#endif
 }
 
 

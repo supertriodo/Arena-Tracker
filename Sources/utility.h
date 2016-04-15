@@ -2,7 +2,6 @@
 #define UTILITY_H
 
 #include "Cards/deckcard.h"
-#include "opencv2/opencv.hpp"
 #include <QString>
 #include <QMap>
 #include <QJsonObject>
@@ -10,7 +9,10 @@
 #include <QNetworkRequest>
 #include <QScreen>
 
+#ifndef Q_OS_ANDROID
+#include "opencv2/opencv.hpp"
 using namespace cv;
+#endif
 
 #define ANIMATION_TIME 750
 
@@ -59,10 +61,13 @@ public:
     static void setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson);
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static QString removeAccents(QString s);
-    static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
     static void fadeInWidget(QWidget *widget);
     static void fadeOutWidget(QWidget *widget);
     static QString getLoadingScreenString(LoadingScreen loadingScreen);
+
+#ifndef Q_OS_ANDROID
+    static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
+#endif
 };
 
 #endif // UTILITY_H

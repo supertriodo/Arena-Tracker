@@ -1,10 +1,12 @@
 #include "utility.h"
+#include <QtWidgets>
+#ifndef Q_OS_ANDROID
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/nonfree/features2d.hpp"
-#include <QtWidgets>
+#endif
 
 QMap<QString, QJsonObject> * Utility::enCardsJson;
 QMap<QString, QJsonObject> * Utility::cardsJson;
@@ -206,6 +208,7 @@ QString Utility::removeAccents(QString s)
 }
 
 
+#ifndef Q_OS_ANDROID
 std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches)
 {
     std::vector<Point2f> screenPoints;
@@ -296,6 +299,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
     return screenPoints;
 }
+#endif
 
 
 void Utility::fadeInWidget(QWidget * widget)
