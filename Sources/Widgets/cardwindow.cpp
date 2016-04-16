@@ -29,7 +29,7 @@ void CardWindow::scale(int value_x10)
 void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     if(code.isEmpty() ||
-        !QFileInfo(Utility::appPath() + "/HSCards/" + code + ".png").exists())
+        !QFileInfo(Utility::hscardsPath() + "/" + code + ".png").exists())
     {
         hide();
         return;
@@ -75,7 +75,7 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
     }
 
     move(moveX, moveY);
-    cardLabel->setPixmap(QPixmap(Utility::appPath() + "/HSCards/" + code + ".png").copy(5,34,WCARD,HCARD)
+    cardLabel->setPixmap(QPixmap(Utility::hscardsPath() + "/" + code + ".png").copy(5,34,WCARD,HCARD)
                          .scaled(winWidth, winHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     show();
 }

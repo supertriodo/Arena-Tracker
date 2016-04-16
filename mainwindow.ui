@@ -1849,9 +1849,9 @@ card scores during the draft.</string>
                  <item>
                   <widget class="QLabel" name="configLabelZero">
                    <property name="toolTip">
-                    <string>Logs: Number of games/drafts logs
-kept on HSCards/GamesLog to
-upload to www.zerotoheroes.com</string>
+                    <string>Logs: Number of games/drafts logs kept on 
+USER/Arena Tracker/Games Drafts Logs
+to upload to www.zerotoheroes.com</string>
                    </property>
                    <property name="text">
                     <string>Logs</string>

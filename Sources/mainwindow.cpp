@@ -25,11 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     otherWindow = NULL;
     draftLogFile = "";
 
-    createLogFile();
-    completeUI();
 #ifndef Q_OS_ANDROID
-    checkHSCardsDir();//TODO
+    createDataDir();//TODO
+    createLogFile();
 #endif
+    completeUI();
 
     createCardDownloader();
     createEnemyHandHandler();
@@ -171,7 +171,7 @@ QString MainWindow::getHSLanguage()
         }
 
         //Remove old image cards
-        QDir dirHSCards(Utility::appPath() + "/HSCards");
+        QDir dirHSCards(Utility::hscardsPath());
         dirHSCards.setFilter(QDir::Files);
         QStringList filters("*_*.png");
         dirHSCards.setNameFilters(filters);
@@ -1421,14 +1421,14 @@ void MainWindow::removeNonCompleteDraft()
     if(!draftLogFile.isEmpty())
     {
         //Check dir
-        QFileInfo dirInfo(Utility::appPath() + "/HSCards/GamesLog");
+        QFileInfo dirInfo(Utility::gameslogPath());
         if(!dirInfo.exists())
         {
-            pDebug("Cannot remove non-complete draft Log. HSCards/GamesLog dir doesn't exist.");
+            pDebug("Cannot remove non-complete draft Log. GamesLog dir doesn't exist.");
             return;
         }
 
-        QDir dir(Utility::appPath() + "/HSCards/GamesLog");
+        QDir dir(Utility::gameslogPath());
         dir.remove(draftLogFile);
         pDebug("Remove non-complete draft: " + draftLogFile);
         draftLogFile = "";
@@ -1445,10 +1445,10 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
         if(logLine.contains(QRegularExpression("DraftHandler: Begin draft\\. Heroe: (\\d+)"), &match))
         {
             //Check dir
-            QFileInfo dir(Utility::appPath() + "/HSCards/GamesLog");
+            QFileInfo dir(Utility::gameslogPath());
             if(!dir.exists())
             {
-                pDebug("Cannot create draft Log. HSCards/GamesLog dir doesn't exist.");
+                pDebug("Cannot create draft Log. GamesLog dir doesn't exist.");
                 return;
             }
 
@@ -1459,7 +1459,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             QString playerHero = Utility::heroStringFromLogNumber(match.captured(1));
             QString fileName = "DRAFT " + timeStamp + " " + playerHero + ".arenatracker";
 
-            QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + fileName);
+            QFile logDraft(Utility::gameslogPath() + "/" + fileName);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
             {
                 pDebug("Cannot create draft log file...", Error);
@@ -1502,7 +1502,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
 
         if(copyLogLine)
         {
-            QFile logDraft(Utility::appPath() + "/HSCards/GamesLog/" + draftLogFile);
+            QFile logDraft(Utility::gameslogPath() + "/" + draftLogFile);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
             {
                 pDebug("Cannot open draft log file...", Error);
@@ -1585,7 +1585,7 @@ void MainWindow::showLogLoadProgress(qint64 logSeek)
 
 void MainWindow::checkCardImage(QString code)
 {
-    QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
+    QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
 
     if(!cardFile.exists())
     {
@@ -1636,12 +1636,12 @@ void MainWindow::resetSettings()
 
 void MainWindow::createLogFile()
 {
-    atLogFile = new QFile(Utility::appPath() + "/HSCards/ArenaTrackerLog.txt");
+    atLogFile = new QFile(Utility::dataPath() + "/ArenaTrackerLog.txt");
     if(atLogFile->exists())  atLogFile->remove();
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         pDebug("Failed to create Arena Tracker log on disk.", Error);
-        pLog(tr("File: ERROR: Creating Arena Tracker log on disk. Make sure HSCards dir is in the same place as the exe."));
+        pLog(tr("File: ERROR: Failed to create Arena Tracker log on disk."));
         atLogFile = NULL;
     }
 }
@@ -1671,49 +1671,58 @@ void MainWindow::uploadDeck()
 }
 
 
-void MainWindow::checkHSCardsDir()
+bool MainWindow::createDir(QString pathDir)
 {
-    QFileInfo dir(Utility::appPath() + "/HSCards");
+    QFileInfo dirInfo(pathDir);
+    if(!dirInfo.exists())
+    {
+        QDir().mkdir(pathDir);
+        pDebug(pathDir + " created.");
+        return true;
+    }
+    return false;
+}
 
-    if(dir.exists())
+
+void MainWindow::createDataDir()
+{
+    if(createDir(Utility::dataPath()))
     {
-        if(dir.isDir())
+        //Rescue old decks json
+        QFile file(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
+        if(file.exists())
         {
-            pLog("Settings: Path HSCards: " + dir.absoluteFilePath());
-            pDebug("Path HSCards: " + dir.absoluteFilePath());
-        }
-        else
-        {
-            pLog("Settings: " + dir.absoluteFilePath() + " is not a directory.");
-            pDebug(dir.absoluteFilePath() + " is not a directory.");
+            file.copy(Utility::dataPath() + "/ArenaTrackerDecks.json");
+            pDebug("ArenaTrackerDecks.json recovered.");
         }
     }
-    else
+    createDir(Utility::hscardsPath());
+#ifndef Q_OS_ANDROID
+    createDir(Utility::gameslogPath());
+    if(createDir(Utility::extraPath()))
     {
-        pLog("Settings: HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
-        pDebug("HSCards dir not found on " + dir.absoluteFilePath() + " Move the directory there.");
-        QMessageBox::warning(this, tr("HSCards not found"),
-                             "HSCards dir not found on:\n" +
-                             dir.absoluteFilePath() +
-                             "\nMove the directory there.");
+        QFile file1(":Extra/deckBuilder.py");
+        file1.copy(Utility::extraPath() + "/deckBuilder.py");
+
+        QFile file2(":Extra/arenaTemplate.png");
+        file2.copy(Utility::extraPath() + "/arenaTemplate.png");
+
+        QFile file3(":Extra/collectionTemplate.png");
+        file3.copy(Utility::extraPath() + "/collectionTemplate.png");
+
+        pDebug("Extra files created.");
     }
+#endif
 }
 
 
 void MainWindow::checkGamesLogDir()
 {
-    QFileInfo dirInfo(Utility::appPath() + "/HSCards");
+    QFileInfo dirInfo(Utility::gameslogPath());
     if(!dirInfo.exists())
     {
-        pDebug("Cannot check GamesLog dir. HSCards dir doesn't exist.");
+        pDebug("Cannot check GamesLog dir. Dir doesn't exist.");
         return;
-    }
-
-    dirInfo = QFileInfo(Utility::appPath() + "/HSCards/GamesLog");
-    if(!dirInfo.exists())
-    {
-        QDir().mkdir(Utility::appPath() + "/HSCards/GamesLog");
-        pDebug("GamesLog dir created.");
     }
 
     int maxGamesLog = ui->configSliderZero->value();
@@ -1724,7 +1733,7 @@ void MainWindow::checkGamesLogDir()
     }
     pDebug("GamesLog: Keep recent " + QString::number(maxGamesLog) + ".");
 
-    QDir dir(Utility::appPath() + "/HSCards/GamesLog");
+    QDir dir(Utility::gameslogPath());
     dir.setFilter(QDir::Files);
     dir.setSorting(QDir::Time);
     QStringList filterName;
@@ -2385,6 +2394,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
+
+//Test complete draft
 
 
 //BUGS CONOCIDOS

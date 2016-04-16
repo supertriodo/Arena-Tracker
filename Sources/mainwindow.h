@@ -118,7 +118,8 @@ private:
     void closeLogFile();
     void createSecondaryWindow();
     void destroySecondaryWindow();
-    void checkHSCardsDir();
+    void createDataDir();
+    bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
     void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
     void moveInScreen(QPoint pos, QSize size);

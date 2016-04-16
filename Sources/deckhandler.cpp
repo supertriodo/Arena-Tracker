@@ -961,7 +961,7 @@ void DeckHandler::loadDecks()
     newEmptyDeck();
 
     //Load decks from file
-    QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerDecks.json");
     if(!jsonFile.exists())
     {
         emit pDebug("Json decks file doesn't exists.");
@@ -972,7 +972,7 @@ void DeckHandler::loadDecks()
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         emit pDebug("Failed to load Arena Tracker decks json from disk.", Error);
-        emit pLog(tr("File: ERROR: Loading Arena Tracker decks json from disk. Make sure HSCards dir is in the same place as the exe."));
+        emit pLog(tr("File: ERROR: Loading Arena Tracker decks json from disk."));
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
@@ -1134,13 +1134,13 @@ void DeckHandler::saveDecksJsonFile()
 
 
     //Save to disk
-    QFile jsonFile(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerDecks.json");
     if(jsonFile.exists())   jsonFile.remove();
 
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         emit pDebug("Failed to create Arena Tracker decks json on disk.", Error);
-        emit pLog(tr("File: ERROR: Creating Arena Tracker decks json on disk. Make sure HSCards dir is in the same place as the exe."));
+        emit pLog(tr("File: ERROR: Creating Arena Tracker decks json on disk."));
         return;
     }
     jsonFile.write(jsonDoc.toJson());
@@ -1430,7 +1430,7 @@ bool DeckHandler::deckBuilderPY()
     QStringList params;
     bool goldenCards = ui->configCheckGoldenCards->isChecked();
 
-    params << QDir::toNativeSeparators(Utility::appPath() + "/HSCards/deckBuilder.py");
+    params << QDir::toNativeSeparators(Utility::extraPath() + "/deckBuilder.py");
     foreach(Point2f point, screenPoints)
     {
         params << QString::number((int)point.x) << QString::number((int)point.y);

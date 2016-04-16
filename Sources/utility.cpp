@@ -169,6 +169,30 @@ QString Utility::appPath()
 }
 
 
+QString Utility::dataPath()
+{
+    return QDir::homePath() + "/Arena Tracker";
+}
+
+
+QString Utility::gameslogPath()
+{
+    return dataPath() + "/Games Drafts Logs";
+}
+
+
+QString Utility::hscardsPath()
+{
+    return dataPath() + "/Hearthstone Cards";
+}
+
+
+QString Utility::extraPath()
+{
+    return dataPath() + "/Extra";
+}
+
+
 void Utility::setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson)
 {
     Utility::enCardsJson = enCardsJson;
@@ -218,7 +242,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
     cv::Mat screenCapture = mat.clone();
 
-    Mat img_object = imread((Utility::appPath() + "/HSCards/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
+    Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
     if(!img_object.data)
     {
         qDebug() << "Cannot find" << templateImage;

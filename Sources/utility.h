@@ -55,6 +55,10 @@ public:
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);
     static QString appPath();
+    static QString dataPath();
+    static QString gameslogPath();
+    static QString hscardsPath();
+    static QString extraPath();
     static QString cardEnNameFromCode(QString code);
     static QString cardEnCodeFromName(QString name);
     static QString cardLocalCodeFromName(QString name);

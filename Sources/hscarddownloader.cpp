@@ -47,10 +47,10 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         QImage webImage;
         webImage.loadFromData(reply->readAll());
 
-        if(!webImage.save(Utility::appPath() + "/HSCards/" + code + ".png", "png"))
+        if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
             emit pDebug("Failed to save card image to disk: " + code, Error);
-            emit pLog(tr("File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe."));
+            emit pLog(tr("File: ERROR:Saving card image to disk."));
         }
         else
         {

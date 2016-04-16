@@ -74,18 +74,18 @@ void LogWorker::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fil
         return;
     }
 
-    QFileInfo dir(Utility::appPath() + "/HSCards");
+    QFileInfo dir(Utility::hscardsPath());
     if(!dir.exists())
     {
         emit pDebug("Cannot copy game Log. HSCards dir doesn't exist.");
         return;
     }
 
-    dir = QFileInfo(Utility::appPath() + "/HSCards/GamesLog");
+    dir = QFileInfo(Utility::gameslogPath());
     if(!dir.exists())
     {
-        QDir().mkdir(Utility::appPath() + "/HSCards/GamesLog");
-        emit pDebug("GamesLog dir created.");
+        emit pDebug("Cannot copy game Log. GamesLog dir doesn't exist.");
+        return;
     }
 
     if(logSeekCreate < 0)
@@ -116,7 +116,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
         return;
     }
 
-    QFile logGame(Utility::appPath() + "/HSCards/GamesLog/" + fileName);
+    QFile logGame(Utility::gameslogPath() + "/" + fileName);
     if(!logGame.open(QIODevice::WriteOnly))
     {
         emit pDebug("Cannot create game log file...", Error);

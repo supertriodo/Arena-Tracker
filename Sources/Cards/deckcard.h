@@ -52,7 +52,6 @@ protected:
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);
     CardClass getClassFromString(QString value);
-    QString tooltip();
     QPixmap resizeCardHeight(QPixmap &canvas);
 
 public:

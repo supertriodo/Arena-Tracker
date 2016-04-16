@@ -86,12 +86,6 @@ CardClass DeckCard::getClassFromString(QString value)
 }
 
 
-QString DeckCard::tooltip()
-{
-    return "<html><img src=./HSCards/" + this->code + ".png/></html>";
-}
-
-
 void DeckCard::draw(bool drawTotal)
 {
     QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK);
@@ -130,7 +124,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         else                                    target = QRectF(100,6,100,25);
 
         if(name == "unknown")   painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
-        else    painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + code + ".png"), source);
+        else    painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + code + ".png"), source);
 
         //Background and #cards
         if(nameColor!=BLACK)                            painter.setPen(QPen(nameColor));

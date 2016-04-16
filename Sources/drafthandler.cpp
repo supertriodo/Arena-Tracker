@@ -84,7 +84,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
         QString code = it.value().toObject().value("image").toString();
         hearthArenaCodes[code] = it.key().toInt();
 
-        QFileInfo cardFile(Utility::appPath() + "/HSCards/" + code + ".png");
+        QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
         if(cardFile.exists())
         {
             cardsHist[code] = getHist(code);
@@ -609,7 +609,7 @@ void DraftHandler::getBestMatchingCodes(cv::MatND screenCardsHist[3], QString co
 
 cv::MatND DraftHandler::getHist(QString &code)
 {
-    cv::Mat fullCard = cv::imread((Utility::appPath() + "/HSCards/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
+    cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
     cv::Mat srcBase = fullCard(cv::Rect(60,71,80,80));
     return getHist(srcBase);
 }

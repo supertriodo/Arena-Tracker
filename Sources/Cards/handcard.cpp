@@ -81,12 +81,12 @@ void HandCard::drawCreatedByHandCard()
         QRectF target = QRectF(113,6,100,25);;
         QRectF source;
 
-        QFileInfo cardFI(Utility::appPath() + "/HSCards/" + createdByCode + ".png");
+        QFileInfo cardFI(Utility::hscardsPath() + "/" + createdByCode + ".png");
         if(cardFI.exists())
         {
             if(type==MINION)        source = QRectF(48,72,100,25);
             else                    source = QRectF(48,98,100,25);
-            painter.drawPixmap(target, QPixmap(Utility::appPath() + "/HSCards/" + createdByCode + ".png"), source);
+            painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + createdByCode + ".png"), source);
         }
         else
         {
