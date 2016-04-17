@@ -111,7 +111,8 @@ private:
     void updateTabWidgetsTheme();
     QString getHSLanguage();
     void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
-    void resizeTabWidgets(QResizeEvent *event);
+    void resizeTabWidgets(QSize newSize);
+    void resizeTabWidgets(WindowsFormation newWindowsFormation);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget);
     void resetSettings();
     void createLogFile();
@@ -129,6 +130,7 @@ private:
     void checkDraftLogLine(QString logLine, QString file);
     void removeNonCompleteDraft();
 
+#ifndef Q_OS_ANDROID
 //Override events
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -139,6 +141,7 @@ protected:
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+#endif
 
 //Slots
 public slots:

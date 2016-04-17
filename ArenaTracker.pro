@@ -89,8 +89,13 @@ android {
     HEADERS -= Sources/Widgets/cardwindow.h \
         Sources/drafthandler.h
     RESOURCES -= extra.qrc
+    DISTFILES += \
+        android-sources/AndroidManifest.xml
+
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 }
 
 #Deploy MAC
 #1 Compilar
 #2 ~/Qt/5.6/clang_64/bin/macdeployqt ArenaTracker.app
+
