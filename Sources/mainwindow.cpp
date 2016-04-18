@@ -39,11 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler
     createGameWatcher();//-->A lot
-//#ifndef Q_OS_ANDROID
+#ifndef Q_OS_ANDROID
     createLogLoader();//-->GameWatcher -->DraftHandler//TODO
-//#else
-//    logLoader = NULL;
-//#endif
+#else
+    logLoader = NULL;
+#endif
     createCardWindow();//-->A lot
 
     readSettings();
@@ -878,6 +878,14 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
 }
 
 
+void MainWindow::updateAndroidCardHeight()
+{
+    int tabWidth = this->width()/2;
+    this->cardHeight = tabWidth * 35 / 218;
+    ui->configSliderCardSize->setMaximum(this->cardHeight);
+}
+
+
 void MainWindow::readSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -893,7 +901,7 @@ void MainWindow::readSettings()
     this->theme = ThemeWhite;
     //spreadTheme();//TODO
 
-    this->cardHeight = 90;
+//    this->cardHeight = 90;
     this->drawDisappear = -1;
     this->showDraftOverlay = false;
     this->draftLearningMode = false;
@@ -905,12 +913,14 @@ void MainWindow::readSettings()
     QString AMplayerEmail = settings.value("playerEmail", "").toString();
     QString AMpassword = settings.value("password", "").toString();
 
-    initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
-
     this->show();
     resizeTabWidgets(H2);
+    updateAndroidCardHeight();
+
+    initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
 
     initCardsJson();//TODO
+    synchronizedDone();//TODO
     deckHandler->newDeckCardAsset("AT_010");//TODO
 #else
     if(isMainWindow)
@@ -964,6 +974,7 @@ void MainWindow::writeSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     if(isMainWindow)
     {
+#ifndef Q_OS_ANDROID
         settings.setValue("pos", pos());
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
@@ -975,10 +986,11 @@ void MainWindow::writeSettings()
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
-        settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
-        settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
+#endif
+        settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
+        settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
         settings.setValue("password", ui->configLineEditMastery2->text());
     }
@@ -2154,6 +2166,8 @@ void MainWindow::updateShowClassColor(bool checked)
     enemyHandHandler->redrawClassCards();
 #ifndef Q_OS_ANDROID
     draftHandler->redrawAllCards();
+#else
+    writeSettings();
 #endif
 }
 
@@ -2166,6 +2180,8 @@ void MainWindow::updateShowSpellColor(bool checked)
     enemyHandHandler->redrawSpellWeaponCards();
 #ifndef Q_OS_ANDROID
     draftHandler->redrawAllCards();
+#else
+    writeSettings();
 #endif
 }
 
@@ -2273,6 +2289,9 @@ void MainWindow::updateAMConnectButton(int value)
         case 1:
             ui->configButtonMastery->setIcon(QIcon(":/Images/win.png"));
             ui->configButtonMastery->setEnabled(true);
+#ifdef Q_OS_ANDROID
+            writeSettings();
+#endif
             break;
         case 2:
             ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
@@ -2370,10 +2389,7 @@ void MainWindow::completeConfigTab()
 
 void MainWindow::completeHighResConfigTab()
 {
-#ifdef Q_OS_ANDROID//TODO
-    ui->configSliderCardSize->setMaximum(200);
-    return;
-#else
+#ifndef Q_OS_ANDROID
     int screenHeight = getScreenHighest();
     if(screenHeight < 1000) return;
 
