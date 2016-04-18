@@ -39,9 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler
     createGameWatcher();//-->A lot
-#ifndef Q_OS_ANDROID
+//#ifndef Q_OS_ANDROID
     createLogLoader();//-->GameWatcher -->DraftHandler//TODO
-#endif
+//#else
+//    logLoader = NULL;
+//#endif
     createCardWindow();//-->A lot
 
     readSettings();
@@ -141,46 +143,51 @@ void MainWindow::resetDeck(bool deckRead)
 
 QString MainWindow::getHSLanguage()
 {
-    QDir dir(QFileInfo(logLoader->getLogConfigPath()).absolutePath() + "/Cache/UberText");
-    dir.setFilter(QDir::Files);
-    dir.setSorting(QDir::Time);
-    QString lang;
+    QString lang = "";
 
-    switch (dir.count())
+    if(logLoader != NULL)
     {
-    case 0:
-        lang = "enUS";
-        break;
-    case 1:
-        foreach(QString file, dir.entryList())
+        QDir dir(QFileInfo(logLoader->getLogConfigPath()).absolutePath() + "/Cache/UberText");
+        dir.setFilter(QDir::Files);
+        dir.setSorting(QDir::Time);
+
+
+        switch (dir.count())
         {
-            lang = file.mid(5,4);
+        case 0:
+            lang = "enUS";
+            break;
+        case 1:
+            foreach(QString file, dir.entryList())
+            {
+                lang = file.mid(5,4);
+            }
+            break;
+        default:
+            QStringList files = dir.entryList();
+            lang = files.takeFirst().mid(5,4);
+
+            //Remove old languages files
+            foreach(QString file, files)
+            {
+                dir.remove(file);
+                pDebug(file + " removed.");
+            }
+
+            //Remove old image cards
+            QDir dirHSCards(Utility::hscardsPath());
+            dirHSCards.setFilter(QDir::Files);
+            QStringList filters("*_*.png");
+            dirHSCards.setNameFilters(filters);
+
+            foreach(QString file, dirHSCards.entryList())
+            {
+                dirHSCards.remove(file);
+                pDebug(file + " removed.");
+            }
+
+            break;
         }
-        break;
-    default:
-        QStringList files = dir.entryList();
-        lang = files.takeFirst().mid(5,4);
-
-        //Remove old languages files
-        foreach(QString file, files)
-        {
-            dir.remove(file);
-            pDebug(file + " removed.");
-        }
-
-        //Remove old image cards
-        QDir dirHSCards(Utility::hscardsPath());
-        dirHSCards.setFilter(QDir::Files);
-        QStringList filters("*_*.png");
-        dirHSCards.setNameFilters(filters);
-
-        foreach(QString file, dirHSCards.entryList())
-        {
-            dirHSCards.remove(file);
-            pDebug(file + " removed.");
-        }
-
-        break;
     }
 
 
@@ -902,6 +909,9 @@ void MainWindow::readSettings()
 
     this->show();
     resizeTabWidgets(H2);
+
+    initCardsJson();//TODO
+    deckHandler->newDeckCardAsset("AT_010");//TODO
 #else
     if(isMainWindow)
     {
@@ -2360,6 +2370,10 @@ void MainWindow::completeConfigTab()
 
 void MainWindow::completeHighResConfigTab()
 {
+#ifdef Q_OS_ANDROID//TODO
+    ui->configSliderCardSize->setMaximum(200);
+    return;
+#else
     int screenHeight = getScreenHighest();
     if(screenHeight < 1000) return;
 
@@ -2370,9 +2384,6 @@ void MainWindow::completeHighResConfigTab()
     int maxTooltip = (int)(screenHeight/1000.0*15);
     maxTooltip -= maxTooltip%5;
     ui->configSliderTooltipSize->setMaximum(maxTooltip);
-
-#ifdef Q_OS_ANDROID//TODO
-    ui->configSliderCardSize->setMaximum(200);
 #endif
 }
 
