@@ -102,6 +102,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::createSecondaryWindow()
 {
+#ifndef Q_OS_ANDROID
     this->otherWindow = new MainWindow(0, this);
     calculateDeckWindowMinimumWidth();
     deckHandler->setTransparency(Transparent);
@@ -112,11 +113,13 @@ void MainWindow::createSecondaryWindow()
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
+#endif
 }
 
 
 void MainWindow::destroySecondaryWindow()
 {
+#ifndef Q_OS_ANDROID
     disconnect(ui->minimizeButton, 0, this->otherWindow, 0);
     this->otherWindow->close();
     this->otherWindow = NULL;
@@ -125,6 +128,7 @@ void MainWindow::destroySecondaryWindow()
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     this->windowsFormation = None;
     resizeTabWidgets(this->size());
+#endif
 }
 
 
@@ -256,11 +260,13 @@ void MainWindow::initCardsJson()
 
 void MainWindow::createVersionChecker()
 {
+#ifndef Q_OS_ANDROID
     VersionChecker *versionChecker = new VersionChecker(this);
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+#endif
 }
 
 
@@ -687,18 +693,13 @@ void MainWindow::completeUI()
         this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
         this->otherWindow->ui->tabDeck->show();
     }
-#ifndef Q_OS_ANDROID
     completeUIButtons();
-#else
-    ui->closeButton = NULL;
-    ui->minimizeButton = NULL;
-    ui->resizeButton = NULL;
-#endif
 }
 
 
 void MainWindow::completeUIButtons()
 {
+#ifndef Q_OS_ANDROID
     if(isMainWindow)
     {
         ui->closeButton = new QPushButton("", this);
@@ -730,6 +731,7 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->setFlat(true);
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
+#endif
 }
 
 
@@ -1424,6 +1426,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 
 void MainWindow::calculateMinimumWidth()
 {
+#ifndef Q_OS_ANDROID
     if(!isMainWindow || (windowsFormation!=H1 && windowsFormation!=V2)) return;
 
     int minWidth = this->width() - ui->tabWidget->width();
@@ -1432,6 +1435,7 @@ void MainWindow::calculateMinimumWidth()
     if(ui->closeButton!=NULL)       minWidth += ui->closeButton->width();
 
     this->setMinimumWidth(minWidth);
+#endif
 }
 
 
@@ -2086,6 +2090,7 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateButtonsTheme()
 {
+#ifndef Q_OS_ANDROID
     if(theme == ThemeWhite)
     {
         ui->closeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
@@ -2108,6 +2113,7 @@ void MainWindow::updateButtonsTheme()
                                                        "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
                                                        "stop: 0 black, stop: 1 #006400);}");
     }
+#endif
 }
 
 

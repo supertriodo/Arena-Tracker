@@ -84,10 +84,26 @@ win32: RC_ICONS = ArenaTracker.ico
 macx: ICON = ArenaTracker.icns
 
 android {
-    SOURCES -= Sources/Widgets/cardwindow.cpp \
-        Sources/drafthandler.cpp
-    HEADERS -= Sources/Widgets/cardwindow.h \
-        Sources/drafthandler.h
+    SOURCES -= \
+        Sources/drafthandler.cpp \
+        Sources/heartharenamentor.cpp \
+        Sources/Cards/draftcard.cpp \
+        Sources/Widgets/resizebutton.cpp \
+        Sources/Widgets/draftscorewindow.cpp \
+        Sources/Widgets/scorebutton.cpp \
+        Sources/Widgets/cardwindow.cpp \
+        Sources/versionchecker.cpp
+
+    HEADERS -= \
+        Sources/drafthandler.h \
+        Sources/heartharenamentor.h \
+        Sources/Cards/draftcard.h \
+        Sources/Widgets/resizebutton.h \
+        Sources/Widgets/draftscorewindow.h \
+        Sources/Widgets/scorebutton.h \
+        Sources/Widgets/cardwindow.h \
+        Sources/versionchecker.h
+
     RESOURCES -= extra.qrc
     DISTFILES += \
         android-sources/AndroidManifest.xml

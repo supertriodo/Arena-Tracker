@@ -13,9 +13,11 @@ public:
     MoveTabWidget *tabWidgetH2 = NULL;
     MoveTabWidget *tabWidgetH3 = NULL;
     MoveTabWidget *tabWidgetV1 = NULL;
+#ifndef Q_OS_ANDROID
     QPushButton *minimizeButton = NULL;
     QPushButton *closeButton = NULL;
     ResizeButton *resizeButton = NULL;
+#endif
 };
 
 namespace Ui {
