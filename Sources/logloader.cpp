@@ -162,7 +162,8 @@ QString LogLoader::createDefaultLogConfig()
     initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_ANDROID
+    initPath = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/log.config";
 #endif
 
     if(initPath.isEmpty()) return "";

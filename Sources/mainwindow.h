@@ -129,6 +129,7 @@ private:
     void checkGamesLogDir();
     void checkDraftLogLine(QString logLine, QString file);
     void removeNonCompleteDraft();
+    void updateAndroidUIPostShow();
     void updateAndroidCardHeight();
 
 #ifndef Q_OS_ANDROID

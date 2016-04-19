@@ -39,11 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler
     createGameWatcher();//-->A lot
-#ifndef Q_OS_ANDROID
+//#ifndef Q_OS_ANDROID
     createLogLoader();//-->GameWatcher -->DraftHandler//TODO
-#else
-    logLoader = NULL;
-#endif
+//#else
+//    logLoader = NULL;
+//#endif
     createCardWindow();//-->A lot
 
     readSettings();
@@ -880,6 +880,13 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
 }
 
 
+void MainWindow::updateAndroidUIPostShow()
+{
+    updateAndroidCardHeight();
+    arenaHandler->updateAndroidTreeWidget();
+}
+
+
 void MainWindow::updateAndroidCardHeight()
 {
     int tabWidth = this->width()/2;
@@ -917,7 +924,7 @@ void MainWindow::readSettings()
 
     this->show();
     resizeTabWidgets(H2);
-    updateAndroidCardHeight();
+    updateAndroidUIPostShow();
 
     initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
 

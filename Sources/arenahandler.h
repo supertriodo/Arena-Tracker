@@ -52,6 +52,7 @@ public:
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
+    void updateAndroidTreeWidget();
 
 signals:
     void pLog(QString line);
