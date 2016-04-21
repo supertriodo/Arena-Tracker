@@ -3,87 +3,89 @@
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
-    logWorker = NULL;
     setUpdateTimeMax();
+    logComponentList.append("LoadingScreen");
+    logComponentList.append("Power");
+    logComponentList.append("Zone");
+    logComponentList.append("Arena");
 }
 
 
-void LogLoader::init(qint64 &logSize)
+bool LogLoader::init()
 {
-    readSettings();
-    logSize = getLogFileSize();
+    if(!readSettings()) return false;
 
-    if(logSize >= 0)
+    emit pDebug("Log found.");
+    emit pLog(tr("Log: Log found."));
+
+    updateTime = 1000;
+
+    createLogWorkers();
+
+    QTimer::singleShot(1000, this, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
+    return true;
+}
+
+
+void LogLoader::createLogWorkers()
+{
+    foreach(QString component, logComponentList)
     {
-        emit pDebug("Log found.");
-        emit pLog(tr("Log: Log found."));
-
-        if(logSize == 0)
-        {
-            emit pDebug("Log is empty.");
-            emit pLog(tr("Log: Log is empty."));
-        }
-
-        this->logSize = logSize;
-        firstRun = true;
-        updateTime = 1000;
-
-        logWorker = new LogWorker(this, logPath);
-        connect(logWorker, SIGNAL(newLogLineRead(QString, qint64, qint64)),
-                this, SLOT(emitNewLogLineRead(QString, qint64, qint64)));
-        connect(logWorker, SIGNAL(seekChanged(qint64)),
-                this, SLOT(updateSeek(qint64)));
-        connect(logWorker, SIGNAL(pLog(QString)),
-                this, SIGNAL(pLog(QString)));
-        connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
-                this, SIGNAL(pDebug(QString,DebugLevel,QString)));
-
-        QTimer::singleShot(1000, this, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
-    }
-    else
-    {
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("logPath", "");
-        emit pDebug("Log not found.");
-        emit pLog(tr("Log: Log not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information((QMainWindow*)this->parent(), tr("Log not found"), tr("Log not found. Restart Arena Tracker and set the path again."));
+        createLogWorker(component);
     }
 }
 
 
-void LogLoader::readSettings()
+void LogLoader::createLogWorker(QString logComponent)
 {
-    readLogPath();
-    readLogConfigPath();
+    LogWorker *logWorker;
+    logWorker = new LogWorker(this, logsDirPath, logComponent);
+    connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
+            this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+    connect(logWorker, SIGNAL(pLog(QString)),
+            this, SIGNAL(pLog(QString)));
+    connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SIGNAL(pDebug(QString,DebugLevel,QString)));
+
+    if(logComponent == "LoadingScreen")
+    {
+        connect(logWorker, SIGNAL(logReset()),
+                this, SIGNAL(logReset()));
+    }
+
+    logWorkerList.append(logWorker);
 }
 
 
-void LogLoader::readLogPath()
+bool LogLoader::readSettings()
+{
+    return readLogsDirPath() && readLogConfigPath();
+}
+
+
+bool LogLoader::readLogsDirPath()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    logPath = settings.value("logPath", "").toString();
+    logsDirPath = settings.value("logsDirPath", "").toString();
 
-    QString logFileName;
-#ifdef Q_OS_MAC
-    logFileName = "Player.log";
-#else
-    logFileName = "output_log.txt";
-#endif
-
-    if(logPath.isEmpty() || getLogFileSize()==-1)
+    if(logsDirPath.isEmpty())
     {
-        QMessageBox::information(0, tr("Arena Tracker"), tr("The first time you run Arena Tracker you will be asked for:\n"
-                                    "1) ") + logFileName + tr(" location (If not default).\n"
+        QMessageBox::information(0, "Arena Tracker", "The first time you run Arena Tracker you will be asked for:\n"
+                                    "1) Logs dir location (If not default).\n"
                                     "2) log.config location (If not default).\n"
-                                    "3) Restart Hearthstone (If running)."));
+                                    "3) Start Hearthstone (Restart if running)."
+                                    );
 
         QString initPath = "";
-        logPath = "";
+        logsDirPath = "";
 #ifdef Q_OS_WIN
-        initPath = "C:/Program Files (x86)/Hearthstone/Hearthstone_Data/output_log.txt";
+        initPath = "C:/Program Files (x86)/Hearthstone/Logs";
 #endif
 #ifdef Q_OS_MAC
-        initPath = QDir::homePath() + "/Library/Logs/Unity/Player.log";
+        initPath = "/Applications/Hearthstone/Logs";
+#endif
+#ifdef Q_OS_ANDROID
+    initPath = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/Logs";
 #endif
 
         if(!initPath.isEmpty())
@@ -91,33 +93,38 @@ void LogLoader::readLogPath()
             QFileInfo logFI(initPath);
             if(logFI.exists())
             {
-                logPath = initPath;
+                logsDirPath = initPath;
             }
         }
 
-        if(logPath.isEmpty())
+        if(logsDirPath.isEmpty())
         {
-            logPath = QFileDialog::getOpenFileName(0,
-                tr("Find Hearthstone log") + " (" + logFileName + ")", QDir::homePath(),
-                "Hearthstone log (" + logFileName + ")");
+            logsDirPath = QFileDialog::getExistingDirectory(0,
+                "Find Hearthstone Logs dir.",
+                QDir::homePath());
         }
 
-        settings.setValue("logPath", logPath);
+        settings.setValue("logsDirPath", logsDirPath);
     }
 
-#ifdef QT_DEBUG
-//    logPath = QString("/home/triodo/Documentos/test.txt");
-#endif
+    emit pDebug("Path Logs Dir: " + logsDirPath);
+    emit pLog("Settings: Path Logs Dir: " + logsDirPath);
 
-
-    emit pDebug("Path "+ logFileName + ": " + logPath);
-    emit pLog(tr("Settings: Path ") + logFileName + ": " + logPath);
-
+    if(!QFileInfo(logsDirPath).exists())
+    {
+        settings.setValue("logsDirPath", "");
+        emit pDebug("Logs dir not found.");
+        emit pLog(tr("Log: Logs dir not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(0, tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
+        return false;
+    }
+    return true;
 }
 
 
-void LogLoader::readLogConfigPath()
+bool LogLoader::readLogConfigPath()
 {
+    bool isOk = true;
     QSettings settings("Arena Tracker", "Arena Tracker");
     logConfig = settings.value("logConfig", "").toString();
 
@@ -137,17 +144,28 @@ void LogLoader::readLogConfigPath()
             QFile file(logConfig);
             if(file.exists())   file.remove();
 
-            checkLogConfig();
+            isOk = checkLogConfig();
         }
     }
     else
     {
-        checkLogConfig();
+        isOk = checkLogConfig();
     }
 
     emit pDebug("Path log.config: " + logConfig);
     emit pLog(tr("Settings: Path log.config: ") + logConfig);
-    emit logConfigSet();
+
+    if(!QFileInfo(logConfig).exists())
+    {
+        settings.setValue("logConfig", "");
+        emit pDebug("log.config not found.");
+        emit pLog(tr("Log: log.config not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(0, tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        return false;
+    }
+
+    if(isOk)    emit logConfigSet();
+    return isOk;
 }
 
 
@@ -157,11 +175,9 @@ QString LogLoader::createDefaultLogConfig()
 #ifdef Q_OS_WIN
     initPath = QDir::homePath() + "/AppData/Local/Blizzard/Hearthstone/log.config";
 #endif
-
 #ifdef Q_OS_MAC
     initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
 #endif
-
 #ifdef Q_OS_ANDROID
     initPath = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/log.config";
 #endif
@@ -187,7 +203,7 @@ QString LogLoader::createDefaultLogConfig()
 }
 
 
-void LogLoader::checkLogConfig()
+bool LogLoader::checkLogConfig()
 {
     emit pDebug("Checking log.config");
 
@@ -198,21 +214,27 @@ void LogLoader::checkLogConfig()
         emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
-        return;
+        QMessageBox::information(0, tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        return false;
     }
 
     QString data = QString(file.readAll());
     QTextStream stream(&file);
 
     bool logConfigChanged = false;
-    logConfigChanged = checkLogConfigOption("[LoadingScreen]", data, stream) || logConfigChanged;
-    logConfigChanged = checkLogConfigOption("[Power]", data, stream) || logConfigChanged;
-    logConfigChanged = checkLogConfigOption("[Zone]", data, stream) || logConfigChanged;
-    logConfigChanged = checkLogConfigOption("[Arena]", data, stream) || logConfigChanged;
-
-    if(logConfigChanged)    QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nRestart Hearthstone (If running)."));
+    foreach(QString component, logComponentList)
+    {
+        logConfigChanged = checkLogConfigOption("["+component+"]", data, stream) || logConfigChanged;
+    }
 
     file.close();
+
+    if(logConfigChanged)
+    {
+        QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
+    }
+
+    return true;
 }
 
 
@@ -225,6 +247,7 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "ConsolePrinting=true" << endl;
+        stream << "FilePrinting=true" << endl;
         if(option == "[Power]") stream << "Verbose=1" << endl;
 
         return true;
@@ -233,43 +256,17 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
 }
 
 
-/*
- * Return
- * -1 no existe
- * 0 inaccesible
- * n size
- */
-qint64 LogLoader::getLogFileSize()
-{
-    QFileInfo log(logPath);
-    if(log.exists())
-    {
-        return log.size();
-    }
-    return -1;
-}
-
-
 LogLoader::~LogLoader()
 {
-    if(logWorker != NULL)   delete logWorker;
+    foreach(LogWorker *worker, logWorkerList)   delete worker;
+    logWorkerList.clear();
 }
 
 
 void LogLoader::sendLogWorker()
 {
-    if(!isLogReset())
-    {
-        logWorker->readLog();
-    }
+    foreach(LogWorker *worker, logWorkerList)   worker->readLog();
 
-    workerFinished();
-}
-
-
-void LogLoader::workerFinished()
-{
-    checkFirstRun();
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;
 }
@@ -294,50 +291,10 @@ void LogLoader::setMaxUpdateTime(int value)
 }
 
 
-void LogLoader::checkFirstRun()
-{
-    if(firstRun)
-    {
-        firstRun = false;
-        emit synchronized();
-    }
-}
-
-
-bool LogLoader::isLogReset()
-{
-    qint64 newSize = getLogFileSize();
-
-    if(newSize == 0)    return false;
-
-    if((newSize == -1) || (newSize < logSize))
-    {
-        //Log se ha reiniciado
-        emit pDebug("Log reset. FileSize: " + QString::number(newSize) + " < " + QString::number(logSize));
-        emit pLog(tr("Log: Hearthstone started. Log reset."));
-        emit seekChanged(0);
-        logWorker->resetSeek();
-        logSize = 0;
-        return true;
-    }
-    else
-    {
-        logSize = newSize;
-        return false;
-    }
-}
-
-
 void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
 {
-    if(logWorker == NULL)   return;
-    logWorker->copyGameLog(logSeekCreate, logSeekWon, fileName);
-}
-
-
-void LogLoader::updateSeek(qint64 logSeek)
-{
-    if(firstRun)    emit seekChanged(logSeek);
+//    if(logWorker == NULL)   return;
+//    logWorker->copyGameLog(logSeekCreate, logSeekWon, fileName);//TODO
 }
 
 
@@ -348,8 +305,10 @@ QString LogLoader::getLogConfigPath()
 
 
 //LogWorker signal reemit
-void LogLoader::emitNewLogLineRead(QString line, qint64 numLine, qint64 logSeek)
+void LogLoader::emitNewLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
     updateTime = std::min(MIN_UPDATE_TIME,maxUpdateTime);
-    emit newLogLineRead(line, numLine, logSeek);
+    emit newLogLineRead(logComponent, line, numLine, logSeek);
 }
+
+

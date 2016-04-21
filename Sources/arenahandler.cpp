@@ -92,8 +92,6 @@ void ArenaHandler::updateAndroidTreeWidget()
     QFont font(treeWidget->font());
     font.setPixelSize(scale * 20);
     treeWidget->setFont(font);
-
-    qDebug()<<scale;
 }
 
 

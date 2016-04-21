@@ -21,49 +21,43 @@ public:
 
 //Variables
 private:
-    QString logPath, logConfig;
-    qint64 logSize;
-    LogWorker *logWorker;
-    bool firstRun;
+    QString logsDirPath, logConfig;
+    QList<LogWorker *>logWorkerList;
+    QList<QString> logComponentList;
     int updateTime, maxUpdateTime;
 
 //Metodos
 private:
-    qint64 getLogFileSize();
-    bool isLogReset();
-    void checkFirstRun();
     void createFileWatcher();
-    void readSettings();
-    void readLogPath();
-    void readLogConfigPath();
+    bool readSettings();
+    bool readLogsDirPath();
+    bool readLogConfigPath();
     QString createDefaultLogConfig();
-    void checkLogConfig();
+    bool checkLogConfig();
     bool checkLogConfigOption(QString option, QString &data, QTextStream &stream);
-    void workerFinished();
     void setMaxUpdateTime(int value);
+    void createLogWorkers();
+    void createLogWorker(QString logComponent);
 
 public:
-    void init(qint64 &logSize);
+    bool init();
     QString getLogConfigPath();
 
 //Signals
 signals:
-    void seekChanged(qint64 logSeek);
+    void logReset();
     void logConfigSet();
-    void synchronized();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 
     //LogWorker signal reemit
-    void newLogLineRead(QString line, qint64 numLine, qint64 logSeek);
+    void newLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
 
 
 //Slots
 private slots:
-    void updateSeek(qint64 logSeek);
-
     //LogWorker signal reemit
-    void emitNewLogLineRead(QString line, qint64 numLine, qint64 logSeek);
+    void emitNewLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
 
 public slots:
     void sendLogWorker();

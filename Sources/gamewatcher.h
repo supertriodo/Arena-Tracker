@@ -79,7 +79,6 @@ private:
     SecretHero getSecretHero(QString playerHero, QString enemyHero);
     void startReadingDeck();
     void endReadingDeck();
-    bool findClasp(QString &line);
     bool isHeroPower(QString code);
     void createGameLog(qint64 logSeekWon);
 
@@ -128,7 +127,7 @@ private slots:
     void checkAvenge();
 
 public slots:
-    void processLogLine(QString line, qint64 numLine, qint64 logSeek);
+    void processLogLine(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
     void setDeckRead(bool value=true);
 };
 

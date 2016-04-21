@@ -40,37 +40,21 @@ void GameWatcher::reset()
 }
 
 
-bool GameWatcher::findClasp(QString &line)
+void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
-    int index = line.indexOf('[');
-
-    if(index == -1)
-    {
-        return false;
-    }
-    else
-    {
-        line.remove(0, index);
-        return true;
-    }
-}
-
-
-void GameWatcher::processLogLine(QString line, qint64 numLine, qint64 logSeek)
-{
-    if(line.startsWith("[LoadingScreen]"))
+    if(logComponent == logLoadingScreen)
     {
         processLoadingScreen(line, numLine);
     }
-    else if(line.startsWith("[Arena]"))
+    else if(logComponent == logArena)
     {
         processArena(line, numLine);
     }
-    else if(line.startsWith("[Power]"))
+    else if(logComponent == logPower)
     {
         processPower(line, numLine, logSeek);
     }
-    else if(line.startsWith("[Zone]"))
+    else if(logComponent == logZone)
     {
         processZone(line, numLine);
     }
@@ -181,7 +165,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-    else if(synchronized && line.startsWith("[Arena] SetDraftMode - ACTIVE_DRAFT_DECK"))
+    else if(synchronized && line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
     {
         emit pDebug("Found ACTIVE_DRAFT_DECK (GameState = noGame).", numLine);
         emit activeDraftDeck(); //End draft
@@ -222,7 +206,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //IN REWARDS
     //[Arena] SetDraftMode - IN_REWARDS
-    else if(synchronized && line.startsWith("[Arena] SetDraftMode - IN_REWARDS"))
+    else if(synchronized && line.contains("SetDraftMode - IN_REWARDS"))
     {
         emit pDebug("Found IN_REWARDS.", numLine);
         emit inRewards();   //Show rewards input
@@ -242,7 +226,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 loadingScreen = spectator;
                 emit pDebug("Entering SPECTATOR.", numLine);
             }
-            else if(line.startsWith("[Power] GameState.DebugPrintPower() - CREATE_GAME"))
+            else if(line.contains("CREATE_GAME"))
             {
                 //Redundante en caso de que falle
                 //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK

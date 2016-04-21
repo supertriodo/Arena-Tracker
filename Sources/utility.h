@@ -20,6 +20,7 @@ enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque };
 enum Theme { ThemeWhite, ThemeBlack };
 enum LoadingScreen { menu, arena, constructed, adventure, tavernBrawl, spectator };
+enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
 
 
 class GameResultPost

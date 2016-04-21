@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     checkGamesLogDir();//TODO
     createVersionChecker();//TODO
 #endif
+
+    synchronizedDone();
 }
 
 
@@ -530,12 +532,14 @@ void MainWindow::showTabHeroOnNoArena()
 void MainWindow::createLogLoader()
 {
     logLoader = new LogLoader(this);
-    connect(logLoader, SIGNAL(synchronized()),
-            this, SLOT(synchronizedDone()));
-    connect(logLoader, SIGNAL(seekChanged(qint64)),
-            this, SLOT(showLogLoadProgress(qint64)));
-    connect(logLoader, SIGNAL(newLogLineRead(QString,qint64,qint64)),
-            gameWatcher, SLOT(processLogLine(QString,qint64,qint64)));
+//    connect(logLoader, SIGNAL(synchronized()),
+//            this, SLOT(synchronizedDone()));
+//    connect(logLoader, SIGNAL(seekChanged(qint64)),
+//            this, SLOT(showLogLoadProgress(qint64)));
+    connect(logLoader, SIGNAL(logReset()),
+            this, SLOT(logReset()));
+    connect(logLoader, SIGNAL(newLogLineRead(LogComponent, QString,qint64,qint64)),
+            gameWatcher, SLOT(processLogLine(LogComponent, QString,qint64,qint64)));
     connect(logLoader, SIGNAL(logConfigSet()),
             this, SLOT(initCardsJson()));
     connect(logLoader, SIGNAL(pLog(QString)),
@@ -556,12 +560,7 @@ void MainWindow::createLogLoader()
             logLoader, SLOT(setUpdateTimeMin()));
 #endif
 
-    qint64 logSize;
-    logLoader->init(logSize);
-
-    ui->progressBar->setMaximum(logSize/1000);
-    ui->progressBar->setMinimum(0);
-    ui->progressBar->setValue(0);
+    if(!logLoader->init())  QTimer::singleShot(1, this, SLOT(closeApp()));
 }
 
 
@@ -927,10 +926,6 @@ void MainWindow::readSettings()
     updateAndroidUIPostShow();
 
     initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
-
-    initCardsJson();//TODO
-    synchronizedDone();//TODO
-    deckHandler->newDeckCardAsset("AT_010");//TODO
 #else
     if(isMainWindow)
     {
@@ -1612,16 +1607,25 @@ void MainWindow::pLog(QString line)
 }
 
 
-void MainWindow::showLogLoadProgress(qint64 logSeek)
+//void MainWindow::showLogLoadProgress(qint64 logSeek)
+//{
+//    if(logSeek == 0)     //Log reset
+//    {
+//        deckHandler->unlockDeckInterface();
+//        deckHandler->leaveArena();
+//        enemyHandHandler->unlockEnemyInterface();
+//        gameWatcher->reset();
+//    }
+//    ui->progressBar->setValue(logSeek/1000);
+//}
+
+
+void MainWindow::logReset()
 {
-    if(logSeek == 0)     //Log reset
-    {
-        deckHandler->unlockDeckInterface();
-        deckHandler->leaveArena();
-        enemyHandHandler->unlockEnemyInterface();
-        gameWatcher->reset();
-    }
-    ui->progressBar->setValue(logSeek/1000);
+    deckHandler->unlockDeckInterface();
+    deckHandler->leaveArena();
+    enemyHandHandler->unlockEnemyInterface();
+    gameWatcher->reset();
 }
 
 
@@ -1658,7 +1662,7 @@ void MainWindow::resetSettings()
     if(ret == QMessageBox::Ok)
     {
         QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("logPath", "");
+        settings.setValue("logsDirPath", "");
         settings.setValue("logConfig", "");
         settings.setValue("playerTag", "");
         settings.setValue("sizeDraft", QSize(255, 600));

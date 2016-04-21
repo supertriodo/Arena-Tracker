@@ -77,7 +77,6 @@ private:
     bool copyGameLogs;
 
 
-
 //Metodos
 public:
     void calculateMinimumWidth();
@@ -148,7 +147,7 @@ protected:
 //Slots
 public slots:
     //LogLoader
-    void showLogLoadProgress(qint64 logSeek);
+//    void showLogLoadProgress(qint64 logSeek);
     void initCardsJson();
 
     //GameWatcher
@@ -198,6 +197,7 @@ private slots:
     void spreadMouseInApp();
     void currentArenaToWhiteAM(bool connected);
     void updateMaxGamesLog(int value);
+    void logReset();
 };
 
 #endif // MAINWINDOW_H

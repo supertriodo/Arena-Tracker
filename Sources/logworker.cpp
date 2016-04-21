@@ -4,16 +4,73 @@
 
 bool LogWorker::copyGameLogs;
 
-LogWorker::LogWorker(QObject *parent, const QString &logPath) : QObject(parent)
+LogWorker::LogWorker(QObject *parent, const QString &logsDirPath, const QString &logComponentString) : QObject(parent)
 {
     this->logSeek = 0;
     this->logNumLine = 0;
-    this->logPath = logPath;
+    this->logComponentString = logComponentString;
+    this->logPath = logsDirPath + "/" + logComponentString + ".log";
+    this->logSize = QFileInfo (logPath).size();
+    this->synchronized = true;
+    initLogComponent(logComponentString);
 }
 
 LogWorker::~LogWorker()
 {
 
+}
+
+
+void LogWorker::initLogComponent(QString logComponentString)
+{
+    if(logComponentString == "LoadingScreen")
+    {
+        this->logComponent = logLoadingScreen;
+    }
+    else if(logComponentString == "Power")
+    {
+        this->logComponent = logPower;
+    }
+    else if(logComponentString == "Zone")
+    {
+        this->logComponent = logZone;
+    }
+    else if(logComponentString == "Arena")
+    {
+        this->logComponent = logArena;
+    }
+    else
+    {
+        this->logComponent = logInvalid;
+    }
+}
+
+
+void LogWorker::reset()
+{
+    logSeek = 0;
+    logNumLine = 0;
+    logSize = 0;
+}
+
+
+bool LogWorker::isLogReset()
+{
+    qint64 newSize = QFileInfo (logPath).size();
+
+    if(newSize < logSize)
+    {
+        //Log se ha reiniciado
+        emit pDebug("Log " + logComponentString + " reset. FileSize: " + QString::number(newSize) + " < " + QString::number(logSize));
+        emit logReset();
+        reset();
+        return true;
+    }
+    else
+    {
+        logSize = newSize;
+        return false;
+    }
 }
 
 
@@ -35,11 +92,12 @@ int LogWorker::readLine(QFile &file, QString &line)
 
 void LogWorker::readLog()
 {
+    isLogReset();
+
     QFile logFile(logPath);
     if(!logFile.open(QIODevice::ReadOnly))
     {
-        emit pDebug("Cannot open log...", Error);
-        emit pLog(tr("Log: ERROR:Cannot open log..."));
+        emit pDebug("Cannot open log " + this->logComponentString, Error);
         return;
     }
 
@@ -50,19 +108,12 @@ void LogWorker::readLog()
 
     while((lineLenght = readLine(logFile, line)) > 0)
     {
-        emit newLogLineRead(QString(line), ++logNumLine, logSeek);
+        if(synchronized)    emit newLogLineRead(logComponent, line, ++logNumLine, logSeek);
         logSeek += lineLenght;
-        emit seekChanged(logSeek);
     }
 
     logFile.close();
-}
-
-
-void LogWorker::resetSeek()
-{
-    logSeek = 0;
-    logNumLine = 0;
+    synchronized = true;
 }
 
 
