@@ -16,7 +16,6 @@ public:
 private:
     qint64 logSeek, logNumLine, logSize;
     QString logPath, logComponentString;
-    bool synchronized;
     LogComponent logComponent;
 
     static bool copyGameLogs;

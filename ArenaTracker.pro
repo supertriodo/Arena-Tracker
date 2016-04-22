@@ -11,8 +11,8 @@ TEMPLATE = app
 
 QT_CONFIG -= no-pkg-config
 
-!android:CONFIG += link_pkgconfig
-!android:PKGCONFIG += opencv
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
 
 SOURCES += Sources/main.cpp\
     Sources/mainwindow.cpp \
@@ -83,35 +83,6 @@ RESOURCES += \
 win32: RC_ICONS = ArenaTracker.ico
 macx: ICON = ArenaTracker.icns
 
-android {
-    SOURCES -= \
-        Sources/drafthandler.cpp \
-        Sources/heartharenamentor.cpp \
-        Sources/Cards/draftcard.cpp \
-        Sources/Widgets/resizebutton.cpp \
-        Sources/Widgets/draftscorewindow.cpp \
-        Sources/Widgets/scorebutton.cpp \
-        Sources/Widgets/cardwindow.cpp \
-        Sources/versionchecker.cpp
-
-    HEADERS -= \
-        Sources/drafthandler.h \
-        Sources/heartharenamentor.h \
-        Sources/Cards/draftcard.h \
-        Sources/Widgets/resizebutton.h \
-        Sources/Widgets/draftscorewindow.h \
-        Sources/Widgets/scorebutton.h \
-        Sources/Widgets/cardwindow.h \
-        Sources/versionchecker.h
-
-    RESOURCES -= extra.qrc
-    DISTFILES += \
-        android-sources/AndroidManifest.xml
-
-    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
-}
-
 #Deploy MAC
 #1 Compilar
 #2 ~/Qt/5.6/clang_64/bin/macdeployqt ArenaTracker.app
-

@@ -77,24 +77,6 @@ void ArenaHandler::createTreeWidget()
 }
 
 
-void ArenaHandler::updateAndroidTreeWidget()
-{
-    QTreeWidget *treeWidget = ui->arenaTreeWidget;
-
-    float scale = treeWidget->width()/220.0;
-    if(scale > 2)   scale = 2;
-    treeWidget->setColumnWidth(0, scale * 110);
-    treeWidget->setColumnWidth(1, scale * 50);
-    treeWidget->setColumnWidth(2, scale * 35);
-    treeWidget->setColumnWidth(3, scale * 35);
-
-    treeWidget->setIconSize(QSize(scale * 32, scale * 32));
-    QFont font(treeWidget->font());
-    font.setPixelSize(scale * 20);
-    treeWidget->setFont(font);
-}
-
-
 void ArenaHandler::setWebUploader(WebUploader *webUploader)
 {
     this->webUploader = webUploader;

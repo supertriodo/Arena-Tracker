@@ -11,7 +11,6 @@ LogWorker::LogWorker(QObject *parent, const QString &logsDirPath, const QString 
     this->logComponentString = logComponentString;
     this->logPath = logsDirPath + "/" + logComponentString + ".log";
     this->logSize = QFileInfo (logPath).size();
-    this->synchronized = true;
     initLogComponent(logComponentString);
 }
 
@@ -108,12 +107,11 @@ void LogWorker::readLog()
 
     while((lineLenght = readLine(logFile, line)) > 0)
     {
-        if(synchronized)    emit newLogLineRead(logComponent, line, ++logNumLine, logSeek);
+        emit newLogLineRead(logComponent, line, ++logNumLine, logSeek);
         logSeek += lineLenght;
     }
 
     logFile.close();
-    synchronized = true;
 }
 
 

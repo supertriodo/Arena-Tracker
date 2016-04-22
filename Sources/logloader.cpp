@@ -22,7 +22,7 @@ bool LogLoader::init()
 
     createLogWorkers();
 
-    QTimer::singleShot(1000, this, SLOT(sendLogWorker())); //Retraso para dejar que la aplicacion se pinte.
+    QTimer::singleShot(1, this, SLOT(sendLogWorkerFirstRun())); //Retraso para dejar que la aplicacion se pinte.
     return true;
 }
 
@@ -40,8 +40,6 @@ void LogLoader::createLogWorker(QString logComponent)
 {
     LogWorker *logWorker;
     logWorker = new LogWorker(this, logsDirPath, logComponent);
-    connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
-            this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
     connect(logWorker, SIGNAL(pLog(QString)),
             this, SIGNAL(pLog(QString)));
     connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -100,7 +98,7 @@ bool LogLoader::readLogsDirPath()
         if(logsDirPath.isEmpty())
         {
             logsDirPath = QFileDialog::getExistingDirectory(0,
-                "Find Hearthstone Logs dir.",
+                "Find Hearthstone Logs dir",
                 QDir::homePath());
         }
 
@@ -246,7 +244,6 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
         emit pLog(tr("Log: Setting log.config"));
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
-        stream << "ConsolePrinting=true" << endl;
         stream << "FilePrinting=true" << endl;
         if(option == "[Power]") stream << "Verbose=1" << endl;
 
@@ -260,6 +257,20 @@ LogLoader::~LogLoader()
 {
     foreach(LogWorker *worker, logWorkerList)   delete worker;
     logWorkerList.clear();
+}
+
+
+void LogLoader::sendLogWorkerFirstRun()
+{
+    foreach(LogWorker *worker, logWorkerList)
+    {
+        worker->readLog();
+        connect(worker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
+                this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+    }
+
+    QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
+    emit synchronized();
 }
 
 

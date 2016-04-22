@@ -1393,7 +1393,6 @@ void DeckHandler::hideManageDecksButtons()
 
 bool DeckHandler::deckBuilderPY()
 {
-#ifndef Q_OS_ANDROID
     //Detecta zonas en pantalla
     std::vector<Point2f> screenPoints;
     std::vector<Point2f> templatePoints(4);
@@ -1456,7 +1455,6 @@ bool DeckHandler::deckBuilderPY()
 
     emit pDebug("End script:\n" + p.readAll());
     return true;
-#endif
 }
 
 

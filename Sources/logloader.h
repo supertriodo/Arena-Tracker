@@ -45,6 +45,7 @@ public:
 
 //Signals
 signals:
+    void synchronized();
     void logReset();
     void logConfigSet();
     void pLog(QString line);
@@ -59,8 +60,10 @@ private slots:
     //LogWorker signal reemit
     void emitNewLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
 
-public slots:
     void sendLogWorker();
+    void sendLogWorkerFirstRun();
+
+public slots:
     void setUpdateTimeMax();
     void setUpdateTimeMin();
     void copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);

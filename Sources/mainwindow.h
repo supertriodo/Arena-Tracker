@@ -11,13 +11,10 @@
 #include "enemyhandhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
+#include "drafthandler.h"
 #include "Widgets/cardwindow.h"
 #include <QMainWindow>
 #include <QJsonObject>
-
-#ifndef Q_OS_ANDROID
-#include "drafthandler.h"
-#endif
 
 #define DIVIDE_TABS_H 500
 #define DIVIDE_TABS_H2 750
@@ -54,9 +51,7 @@ private:
     EnemyHandHandler *enemyHandHandler;
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
-#ifndef Q_OS_ANDROID
     DraftHandler * draftHandler;
-#endif
     CardWindow *cardWindow;
     QMap<QString, QJsonObject> cardsJson, enCardsJson;
     QPoint dragPosition;
@@ -75,6 +70,7 @@ private:
     bool draftLearningMode;
     QString draftLogFile;
     bool copyGameLogs;
+
 
 
 //Metodos
@@ -128,10 +124,7 @@ private:
     void checkGamesLogDir();
     void checkDraftLogLine(QString logLine, QString file);
     void removeNonCompleteDraft();
-    void updateAndroidUIPostShow();
-    void updateAndroidCardHeight();
 
-#ifndef Q_OS_ANDROID
 //Override events
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -142,12 +135,10 @@ protected:
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
-#endif
 
 //Slots
 public slots:
     //LogLoader
-//    void showLogLoadProgress(qint64 logSeek);
     void initCardsJson();
 
     //GameWatcher
