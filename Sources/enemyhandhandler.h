@@ -34,6 +34,7 @@ private:
     void completeUI();
     void updateTransparency();
     void convertKnownCard(QString &code, int quantity);
+    bool isIDinHand(int id);
 
 public:
     void redrawDownloadedCardImage(QString &code);

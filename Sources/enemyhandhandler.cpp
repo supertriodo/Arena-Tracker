@@ -59,6 +59,8 @@ void EnemyHandHandler::convertKnownCard(QString &code, int quantity)
 
 void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString code)
 {
+    if(isIDinHand(id))    return;
+
     bool isCreatedByCard = false;
 
     //Convert Known special cards
@@ -98,6 +100,16 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     enemyHandList.append(handCard);
 
     if(code != "")      emit checkCardImage(code);
+}
+
+
+bool EnemyHandHandler::isIDinHand(int id)
+{
+    foreach(HandCard handCard, enemyHandList)
+    {
+        if(handCard.id == id)   return true;
+    }
+    return false;
 }
 
 

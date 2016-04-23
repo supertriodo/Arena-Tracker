@@ -2272,7 +2272,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Quitar eliminar arenas duplicados
 //Hide Track secrets
 //Forzar reescribir log.config
-//Bug hand card id repetido
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
