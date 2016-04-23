@@ -336,7 +336,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
 
         winnerPlayer = match->captured(1);
         createGameResult();
-        createGameLog(logSeek + line.length());
+        createGameLog(logSeek);
     }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"

@@ -304,8 +304,8 @@ void LogLoader::setMaxUpdateTime(int value)
 
 void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
 {
-//    if(logWorker == NULL)   return;
-//    logWorker->copyGameLog(logSeekCreate, logSeekWon, fileName);//TODO
+    if(logWorkerList.count() < 2)   return;
+    logWorkerList[1]->copyGameLog(logSeekCreate, logSeekWon, fileName);
 }
 
 

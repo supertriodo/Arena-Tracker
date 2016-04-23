@@ -2270,9 +2270,9 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Quitar eliminar arenas duplicados
-//Reactivar copy log (zerotoheroes)
-//Poner hypertext como botones
-//Redraw enemy deck(class cards and spells)
+//Hide Track secrets
+//Forzar reescribir log.config
+//Bug hand card id repetido
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
