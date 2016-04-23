@@ -27,6 +27,8 @@ private:
 
 //Metodos
 public:
+    void redrawClassCards();
+    void redrawSpellWeaponCards();
     void redrawAllCards();
     void redrawDownloadedCardImage(QString code);
     void setTransparency(Transparency value);

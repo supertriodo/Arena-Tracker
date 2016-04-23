@@ -239,6 +239,31 @@ void EnemyDeckHandler::unlockEnemyDeckInterface()
 }
 
 
+void EnemyDeckHandler::redrawClassCards()
+{
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        if(deckCard.getCardClass()<9)
+        {
+            deckCard.draw(true);
+        }
+    }
+}
+
+
+void EnemyDeckHandler::redrawSpellWeaponCards()
+{
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        CardType cardType = deckCard.getType();
+        if(cardType == SPELL || cardType == WEAPON)
+        {
+            deckCard.draw(true);
+        }
+    }
+}
+
+
 void EnemyDeckHandler::redrawAllCards()
 {
     foreach(DeckCard deckCard, deckCardList)

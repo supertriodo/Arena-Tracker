@@ -2049,6 +2049,7 @@ void MainWindow::updateShowClassColor(bool checked)
     secretsHandler->redrawClassCards();
     enemyHandHandler->redrawClassCards();
     draftHandler->redrawAllCards();
+    enemyDeckHandler->redrawClassCards();
 }
 
 
@@ -2059,6 +2060,7 @@ void MainWindow::updateShowSpellColor(bool checked)
     secretsHandler->redrawSpellWeaponCards();
     enemyHandHandler->redrawSpellWeaponCards();
     draftHandler->redrawAllCards();
+    enemyDeckHandler->redrawSpellWeaponCards();
 }
 
 
