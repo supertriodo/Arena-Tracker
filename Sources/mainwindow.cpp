@@ -2269,9 +2269,11 @@ LoadingScreen MainWindow::getLoadingScreen()
 
 //TODO
 //Auto size deck
-//Quitar eliminar arenas duplicados
 //Hide Track secrets
-//Forzar reescribir log.config
+//idol no sale en enemy deck
+//Scroll config
+
+//Eliminar reescribir log.config
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

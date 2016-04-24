@@ -74,6 +74,8 @@ bool LogLoader::readLogsDirPath()
                                     "3) Start Hearthstone (Restart if running)."
                                     );
 
+        settings.setValue("logConfig", "");//TODO borrar
+
         QString initPath = "";
         logsDirPath = "";
 #ifdef Q_OS_WIN
@@ -305,7 +307,7 @@ void LogLoader::setMaxUpdateTime(int value)
 void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
 {
     if(logWorkerList.count() < 2)   return;
-    logWorkerList[1]->copyGameLog(logSeekCreate, logSeekWon, fileName);
+    logWorkerList[1]->copyGameLog(logSeekCreate, logSeekWon, fileName);//logWorkerList[1] es [Power]
 }
 
 
