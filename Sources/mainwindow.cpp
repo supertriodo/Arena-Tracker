@@ -2271,7 +2271,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Hide Track secrets
-//Scroll config
 
 //Eliminar reescribir log.config
 

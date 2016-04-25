@@ -79,21 +79,22 @@ bool LogLoader::readLogsDirPath()
         QString initPath = "";
         logsDirPath = "";
 #ifdef Q_OS_WIN
-        initPath = "C:/Program Files (x86)/Hearthstone/Logs";
+        initPath = "C:/Program Files (x86)/Hearthstone";
 #endif
 #ifdef Q_OS_MAC
-        initPath = "/Applications/Hearthstone/Logs";
-#endif
-#ifdef Q_OS_ANDROID
-    initPath = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/Logs";
+        initPath = "/Applications/Hearthstone";
 #endif
 
         if(!initPath.isEmpty())
         {
-            QFileInfo logFI(initPath);
-            if(logFI.exists())
+            if(QFileInfo (initPath + "/Hearthstone_Data").exists())
             {
-                logsDirPath = initPath;
+                logsDirPath = initPath + "/Logs";
+                if(!QFileInfo (logsDirPath).exists())
+                {
+                    QDir().mkdir(logsDirPath);
+                    emit pDebug(logsDirPath + " created.");
+                }
             }
         }
 
@@ -177,9 +178,6 @@ QString LogLoader::createDefaultLogConfig()
 #endif
 #ifdef Q_OS_MAC
     initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
-#endif
-#ifdef Q_OS_ANDROID
-    initPath = "/sdcard/Android/data/com.blizzard.wtcg.hearthstone/files/log.config";
 #endif
 
     if(initPath.isEmpty()) return "";
