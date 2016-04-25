@@ -180,7 +180,8 @@ QString MainWindow::getHSLanguage()
     if(lang != "enGB" && lang != "enUS" && lang != "esES" && lang != "esMX" &&
             lang != "deDE" && lang != "frFR" && lang != "itIT" &&
             lang != "plPL" && lang != "ptBR" && lang != "ruRU" &&
-            lang != "koKR" && lang != "zhCN" && lang != "zhTW" && lang != "jaJP")
+            lang != "koKR" && lang != "zhCN" && lang != "zhTW" &&
+            lang != "jaJP" && lang != "thTH")
     {
         pDebug("Language: " + lang + " not supported. Using enUS.");
         pLog("Settings: Language " + lang + " not supported. Using enUS.");
@@ -2270,7 +2271,6 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Hide Track secrets
-//idol no sale en enemy deck
 //Scroll config
 
 //Eliminar reescribir log.config

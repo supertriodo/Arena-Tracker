@@ -90,5 +90,6 @@
         <file>Images/createDeckPY.png</file>
         <file>Images/enemyDeck.png</file>
         <file>Images/unknown.png</file>
+        <file>Json/cards.thTH.json</file>
     </qresource>
 </RCC>

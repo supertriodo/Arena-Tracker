@@ -67,7 +67,8 @@ void HSCardDownloader::setLang(QString value)
     else if(value == "enGB" ||
             value == "jaJP" ||
             value == "plPL" ||
-            value == "koKR")    lang = "enus";
+            value == "koKR" ||
+            value == "thTH")    lang = "enus";
     else                        lang = value.toLower();
 }
 
