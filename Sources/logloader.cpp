@@ -87,7 +87,7 @@ bool LogLoader::readLogsDirPath()
 
         if(!initPath.isEmpty())
         {
-            if(QFileInfo (initPath + "/Hearthstone_Data").exists())
+            if(QFileInfo (initPath).exists())
             {
                 logsDirPath = initPath + "/Logs";
                 if(!QFileInfo (logsDirPath).exists())
