@@ -22,6 +22,7 @@ The first time you run Arena Tracker you will be asked for:
 * 1) Logs dir location (If not default).
  * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Logs
  * Default (Mac): /Applications/Hearthstone/Logs
+ * If the Logs dir doesn't exist create it.
 * 2) log.config location (If not default).
  * Default (Win 7-10): USER\AppData\Local\Blizzard\Hearthstone\log.config
  * Default (Win XP/WINE): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
