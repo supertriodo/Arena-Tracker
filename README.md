@@ -13,7 +13,7 @@ https://github.com/supertriodo/Arena-Tracker/releases/latest
  * https://aur.archlinux.org/packages/arena-tracker/
 
 Extract the zip wherever you want and double click the executable, no installation required.
-To update to a new version override the executable and HSCards dir with the new ones. Don't remove your old HSCards dir as it contains your deck collection in HSCards/ArenaTrackerDecks.json
+Data used by Arena Tracker will be stored in USER/Arena Tracker
 
 
 ##  First Run
