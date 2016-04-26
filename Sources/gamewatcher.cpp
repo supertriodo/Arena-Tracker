@@ -418,7 +418,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
                     emit pDebug("Enemy: Coin created.", 0);
                     emit lastHandCardIsCoin();
                 }
-                emit pDebug("Enemy mulligan end.", numLine);
+                emit pDebug("Enemy mulligan end. Minions: 0", numLine);
                 mulliganEnemyDone = true;
                 playerMinions = 0;
                 enemyMinions = 0;
@@ -426,10 +426,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
         }
 
         //ULTIMO TRIGGER SPECIAL CARDS
-        //[Power] PowerTaskList.DebugPrintPower() - ACTION_START BlockType=ATTACK Entity=[name=Garrosh Grito Infernal id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1]
-        //EffectCardId= EffectIndex=-1 Target=[name=Uther el Iluminado id=66 zone=PLAY zonePos=0 cardId=HERO_04 player=2]
+        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Robo de ideas id=31 zone=PLAY zonePos=0 cardId=EX1_339 player=1]
+        //EffectCardId= EffectIndex=-1 Target=0
         else if(line.contains(QRegularExpression(
-            "PowerTaskList\\.DebugPrintPower\\(\\) - ACTION_START BlockType=(\\w+) "
+            "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
             "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
             ), match))
@@ -445,10 +445,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
         }
 
         //Jugador/Enemigo accion con objetivo
-        //[Power] GameState.DebugPrintPower() - ACTION_START BlockType=ATTACK Entity=[name=Garrosh Grito Infernal id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1]
-        //EffectCardId= EffectIndex=-1 Target=[name=Uther el Iluminado id=66 zone=PLAY zonePos=0 cardId=HERO_04 player=2]
+        //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
+        //EffectCardId= EffectIndex=-1 Target=[name=Acaparador de botín id=31 zone=PLAY zonePos=1 cardId=EX1_096 player=1]
         else if(line.contains(QRegularExpression(
-            "GameState\\.DebugPrintPower\\(\\) - ACTION_START BlockType=(\\w+) "
+            "GameState\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
             "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "EffectCardId=\\w* EffectIndex=(-?\\d+) "
             "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
