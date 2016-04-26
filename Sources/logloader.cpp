@@ -68,11 +68,22 @@ bool LogLoader::readLogsDirPath()
 
     if(logsDirPath.isEmpty())
     {
-        QMessageBox::information(0, "Arena Tracker", "The first time you run Arena Tracker you will be asked for:\n"
-                                    "1) Logs dir location (If not default).\n"
-                                    "2) log.config location (If not default).\n"
-                                    "3) Start Hearthstone (Restart if running)."
-                                    );
+        QString instructions = "The first time you run Arena Tracker you will be asked for:"
+            "<br/>1) Logs dir location (If not default)."
+            "<br/>2) log.config location (If not default)."
+            "<br/>3) Start Hearthstone (Restart if running).";
+#ifdef Q_OS_LINUX
+        instructions +=
+            "<br/><br/>In Linux you will have to locate manually Logs dir and log.config"
+            "<br/>Use this <a href='https://github.com/supertriodo/Arena-Tracker#first-run'>default dirs</a> as reference.";
+#endif
+
+        QMessageBox msgBox(0);
+        msgBox.setTextFormat(Qt::RichText);
+        msgBox.setText(instructions);
+        msgBox.setWindowTitle("Config Arena Tracker");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
 
         settings.setValue("logConfig", "");//TODO borrar
 
