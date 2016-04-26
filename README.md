@@ -34,7 +34,7 @@ If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
 
 
-## FAQ (v3.0+)
+## FAQ
 * Does it work with Hearthstone in fullscreen?
  * (Windows) Actually does. It's because Hearthstone fullscreen is just a borderless window.
  * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
