@@ -57,12 +57,10 @@ http://www.reddit.com/r/ArenaTracker/
  * It means they are class cards.
 * How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
  * With the app selected press ctrl+r
-* I get "File: ERROR:Saving card image to disk. Make sure HSCards dir is in the same place as the exe." or "File: ERROR:Cannot find arenaTemplate.png. Make sure HSCards dir is in the same place as the exe."
- * Make sure HSCards dir is in the same dir as the binary.
 * I can't browse hidden .dirs when looking for log.config/output_log.txt in the file browser.
  * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
 * How can I back-up my data.
- * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed decks, they are stored in ArenaTrackerDecks.json inside HSCards dir.
+ * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in ArenaTrackerDecks.json in USER/Arena Tracker/
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
