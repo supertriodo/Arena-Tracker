@@ -13,7 +13,14 @@ https://github.com/supertriodo/Arena-Tracker/releases/latest
  * https://aur.archlinux.org/packages/arena-tracker/
 
 Extract the zip wherever you want and double click the executable, no installation required.
-Data used by Arena Tracker will be stored in USER/Arena Tracker
+
+Data used by Arena Tracker will be stored in USER/Arena Tracker with the following structure:
+* Arena Tracker\
+ * ArenaTrackerLog.txt     -- (Log created by Arena Tracker, used for debugging)
+ * ArenaTrackerDecks.json  -- (Your deck collection in Arena Tracker)
+ * Extra\                  -- (Template and scripts used by Arena Tracker)
+ * Games Drafts Logs\      -- (Logs of Games/Drafts to upload to Zero To Heroes)
+ * Hearthstone Cards\      -- (Hearthstone cards images)
 
 
 ##  First Run
