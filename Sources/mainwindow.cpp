@@ -2272,7 +2272,7 @@ LoadingScreen MainWindow::getLoadingScreen()
 //Auto size deck
 //Hide Track secrets
 
-//Eliminar reescribir log.config
+//Futuro: Eliminar reescribir log.config
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
