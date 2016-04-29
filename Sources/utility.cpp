@@ -169,7 +169,9 @@ QString Utility::appPath()
 
 QString Utility::dataPath()
 {
-    return QDir::homePath() + "/Arena Tracker";
+    QFileInfo dirInfo(appPath() + "/Arena Tracker");
+    if(dirInfo.exists())   return dirInfo.absoluteFilePath();
+    else                    return QDir::homePath() + "/Arena Tracker";
 }
 
 

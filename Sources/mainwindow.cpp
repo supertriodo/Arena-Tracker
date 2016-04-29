@@ -1641,6 +1641,8 @@ void MainWindow::createDataDir()
 
         pDebug("Extra files created.");
     }
+
+    pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }
 
 
@@ -2271,8 +2273,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Hide Track secrets
-//Sen'jin
-//.Arena Tracker
 
 //Futuro: Eliminar reescribir log.config
 
