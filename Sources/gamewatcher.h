@@ -42,21 +42,21 @@ public:
     ~GameWatcher();
 
 private:
-    enum GameState { noGame, heroType1State, heroType2State, playerName1State, playerName2State,
-                     inGameState, /*inRewards, */readingDeck };
+    enum PowerState { noGame, heroType1State, heroType2State, playerName1State, playerName2State, inGameState };
+    enum ArenaState { noDeckRead, deckRead, readingDeck };
 
 //Variables
 private:
     QString playerTag;
-    GameState gameState;
+    PowerState powerState;
+    ArenaState arenaState;
+    LoadingScreenState loadingScreenState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
     int playerID;
     SecretHero secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     int playerMinions;
     bool isPlayerTurn;
-    LoadingScreen loadingScreen;
-    bool deckRead;
     QRegularExpressionMatch *match;
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
     //no aparezcan como parte del nuevo turno
@@ -86,10 +86,10 @@ private:
 public:
     void reset();
     void setSynchronized();
-    LoadingScreen getLoadingScreen();
+    LoadingScreenState getLoadingScreen();
 
 signals:
-    void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void newArena(QString hero);
     void inRewards();
     void newDeckCard(QString card);

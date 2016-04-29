@@ -397,8 +397,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreen)),
-            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreen)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState)),
+            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     connect(gameWatcher, SIGNAL(inRewards()),
@@ -562,8 +562,8 @@ void MainWindow::createWebUploader()
 {
     if(webUploader != NULL)   return;
     webUploader = new WebUploader(this);
-    connect(webUploader, SIGNAL(loadedGameResult(GameResult, LoadingScreen)),
-            arenaHandler, SLOT(showGameResult(GameResult, LoadingScreen)));
+    connect(webUploader, SIGNAL(loadedGameResult(GameResult, LoadingScreenState)),
+            arenaHandler, SLOT(showGameResult(GameResult, LoadingScreenState)));
     connect(webUploader, SIGNAL(loadedArena(QString)),
             arenaHandler, SLOT(showArena(QString)));
     connect(webUploader, SIGNAL(reloadedGameResult(GameResult)),
@@ -2261,7 +2261,7 @@ int MainWindow::getScreenHighest()
 }
 
 
-LoadingScreen MainWindow::getLoadingScreen()
+LoadingScreenState MainWindow::getLoadingScreen()
 {
     if(gameWatcher != NULL) return gameWatcher->getLoadingScreen();
     else                    return menu;
@@ -2271,6 +2271,8 @@ LoadingScreen MainWindow::getLoadingScreen()
 //TODO
 //Auto size deck
 //Hide Track secrets
+//Sen'jin
+//.Arena Tracker
 
 //Futuro: Eliminar reescribir log.config
 

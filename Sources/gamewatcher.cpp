@@ -4,9 +4,9 @@
 
 GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
-    gameState = noGame;
-    loadingScreen = menu;
-    deckRead = false;
+    powerState = noGame;
+    arenaState = noDeckRead;
+    loadingScreenState = menu;
     mulliganEnemyDone = false;
     turn = turnReal = 0;
     logSeekCreate = -1;
@@ -31,11 +31,11 @@ GameWatcher::~GameWatcher()
 
 void GameWatcher::reset()
 {
-    gameState = noGame;
-    loadingScreen = menu;
-    deckRead = false;
+    powerState = noGame;
+    arenaState = noDeckRead;
+    loadingScreenState = menu;
     logSeekCreate = -1;
-    emit pDebug("Reset (GameState = noGame).", 0);
+    emit pDebug("Reset (powerState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
 }
 
@@ -63,30 +63,33 @@ void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64
 
 void GameWatcher::startReadingDeck()
 {
-    if(gameState != noGame || deckRead) return;
-    gameState = readingDeck;
-    emit pDebug("Start reading deck (GameState = readingDeck).", 0);
+    if(arenaState == deckRead) return;
     emit needResetDeck();    //resetDeck
+    arenaState = readingDeck;
+    emit pDebug("Start reading deck (arenaState = readingDeck).", 0);
 }
 
 
 void GameWatcher::endReadingDeck()
 {
-    if(gameState != readingDeck)    return;
-    deckRead = true;
-    gameState = noGame;
-    emit pDebug("End reading deck (GameState = noGame)(DeckRead = true).", 0);
+    if(arenaState != readingDeck)    return;
+    arenaState = deckRead;
+    emit pDebug("End reading deck (arenaState = deckRead).", 0);
     emit pLog(tr("Log: Active deck read."));
 }
 
 
 void GameWatcher::setDeckRead(bool value)
 {
-    emit pDebug(QString("SetDeckRead (DeckRead = ") + (value?"true":"false") + ")", 0);
-    deckRead = value;
-    if(deckRead && gameState == readingDeck)
+    if(value)
     {
-        endReadingDeck();
+        arenaState = deckRead;
+        emit pDebug("SetDeckRead (arenaState = deckRead).", 0);
+    }
+    else
+    {
+        arenaState = noDeckRead;
+        emit pDebug("SetDeckRead (arenaState = noDeckRead).", 0);
     }
 }
 
@@ -100,21 +103,20 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         QString currMode = match->captured(2);
         emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
 
-        //Redundante en caso de que falle
-        //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-        endReadingDeck();
-
         if(prevMode == "GAMEPLAY")
         {
             emit endGame();
-            gameState = noGame;
-            emit pDebug("Quitting GAMEPLAY (GameState = noGame).", numLine);
+            if(loadingScreenState == spectator)
+            {
+                powerState = noGame;
+                emit pDebug("Quitting SPECTATOR GAMEPLAY (powerState = noGame).", numLine);
+            }
         }
 
         if(currMode == "DRAFT")
         {
-            loadingScreen = arena;
-            emit pDebug("Entering ARENA (LoadingScreen = arena).", numLine);
+            loadingScreenState = arena;
+            emit pDebug("Entering ARENA (loadingScreenState = arena).", numLine);
 
             if(prevMode == "HUB")
             {
@@ -123,30 +125,29 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         }
         else if(currMode == "HUB")
         {
-            loadingScreen = menu;
-            emit pDebug("Entering MENU (LoadingScreen = menu).", numLine);
+            loadingScreenState = menu;
+            emit pDebug("Entering MENU (loadingScreenState = menu).", numLine);
 
             if(prevMode == "DRAFT")
             {
-                deckRead = false;
-                emit pDebug("(deckRead = false)", 0);
+                setDeckRead(false);
                 emit leaveArena();//leaveArena deckHandler
             }
         }
         else if(currMode == "TOURNAMENT")
         {
-            loadingScreen = constructed;
-            emit pDebug("Entering CONSTRUCTED (LoadingScreen = constructed).", numLine);
+            loadingScreenState = constructed;
+            emit pDebug("Entering CONSTRUCTED (loadingScreenState = constructed).", numLine);
         }
         else if(currMode == "ADVENTURE")
         {
-            loadingScreen = adventure;
-            emit pDebug("Entering ADVENTURE (LoadingScreen = adventure).", numLine);
+            loadingScreenState = adventure;
+            emit pDebug("Entering ADVENTURE (loadingScreenState = adventure).", numLine);
         }
         else if(currMode == "TAVERN_BRAWL")
         {
-            loadingScreen = tavernBrawl;
-            emit pDebug("Entering TAVERN (LoadingScreen = tavernBrawl).", numLine);
+            loadingScreenState = tavernBrawl;
+            emit pDebug("Entering TAVERN (loadingScreenState = tavernBrawl).", numLine);
         }
     }
 }
@@ -161,19 +162,15 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         QString hero = match->captured(1);
         emit pDebug("New arena. Heroe: " + hero, numLine);
         emit pLog(tr("Log: New arena."));
-        emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (deckRead = true)
+        emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (arenaState = deckRead)
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
     else if(synchronized && line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
     {
-        emit pDebug("Found ACTIVE_DRAFT_DECK (GameState = noGame).", numLine);
+        emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
         emit activeDraftDeck(); //End draft
         endReadingDeck();
-
-        //Redundante en caso de que falle ScreenEndOfGame
-        emit endGame();
-        gameState = noGame;
     }
     //DRAFTING PICK CARD
     //[Arena] Client chooses: Profesora violeta (NEW1_026)
@@ -196,7 +193,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
-    else if(synchronized && (gameState == readingDeck) &&
+    else if(synchronized && (arenaState == readingDeck) &&
         line.contains(QRegularExpression(
             "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
     {
@@ -216,26 +213,21 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
 
 void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 {
-    switch(gameState)
+    switch(powerState)
     {
-        case readingDeck:
         case noGame:
             //[Power] ================== Start Spectator Game ==================
             if(line.contains(QRegularExpression("Start Spectator Game"), match))
             {
-                loadingScreen = spectator;
-                emit pDebug("Entering SPECTATOR.", numLine);
+                loadingScreenState = spectator;
+                emit pDebug("Entering SPECTATOR. (loadingScreenState = spectator)", numLine);
             }
             else if(line.contains("CREATE_GAME"))
             {
-                //Redundante en caso de que falle
-                //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-                endReadingDeck();
-
-                emit pDebug("\nFound CREATE_GAME (GameState = heroType1State)", numLine);
+                emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
                 emit pDebug("PlayerTag: " + playerTag, 0);
                 logSeekCreate = logSeek;
-                gameState = heroType1State;
+                powerState = heroType1State;
 
                 mulliganEnemyDone = false;
                 turn = turnReal = 0;
@@ -258,18 +250,18 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             break;
         case heroType1State:
         case heroType2State:
-            if(gameState == heroType1State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
+            if(powerState == heroType1State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero1 = match->captured(1);
-                gameState = heroType2State;
-                emit pDebug("Found hero 1: " + hero1 + " (GameState = heroType2State)", numLine);
+                powerState = heroType2State;
+                emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
             }
-            else if(gameState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
+            else if(powerState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero2 = match->captured(1);
-                if(loadingScreen == spectator)  gameState = inGameState;
-                else                            gameState = playerName1State;
-                emit pDebug("Found hero 2: " + hero2 + " (GameState = playerName1State)", numLine);
+                if(loadingScreenState == spectator)     powerState = inGameState;
+                else                                    powerState = playerName1State;
+                emit pDebug("Found hero 2: " + hero2 + " (powerState = playerName1State)", numLine);
             }
         case playerName1State:
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
@@ -281,8 +273,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                     secretHero = getSecretHero(hero2, hero1);
                     emit enemyHero(hero1);
                 }
-                gameState = playerName2State;
-                emit pDebug("Found player 2: " + name2 + " (GameState = playerName2State)", numLine);
+                powerState = playerName2State;
+                emit pDebug("Found player 2: " + name2 + " (powerState = playerName2State)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -300,8 +292,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                     secretHero = getSecretHero(hero1, hero2);
                     emit enemyHero(hero2);
                 }
-                gameState = inGameState;
-                emit pDebug("Found player 1: " + name1 + " (GameState = inGameState)", numLine);
+                powerState = inGameState;
+                emit pDebug("Found player 1: " + name1 + " (powerState = inGameState)", numLine);
             }
             else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
             {
@@ -331,8 +323,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
     //Win state
     if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
     {
-        gameState = noGame;
-        emit pDebug("Found WON (GameState = noGame).", numLine);
+        powerState = noGame;
+        emit pDebug("Found WON (powerState = noGame).", numLine);
 
         winnerPlayer = match->captured(1);
         createGameResult();
@@ -363,12 +355,12 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
 
                 if(playerID == 1)
                 {
-                    if(loadingScreen != spectator)  playerTag = name1;
+                    if(loadingScreenState != spectator)  playerTag = name1;
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 else if(playerID == 2)
                 {
-                    if(loadingScreen != spectator)  playerTag = name2;
+                    if(loadingScreenState != spectator)  playerTag = name2;
                     secretHero = getSecretHero(hero2, hero1);
                 }
                 else
@@ -377,7 +369,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
                     emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
                 }
 
-                if(loadingScreen != spectator)
+                if(loadingScreenState != spectator)
                 {
                     QSettings settings("Arena Tracker", "Arena Tracker");
                     settings.setValue("playerTag", playerTag);
@@ -536,247 +528,244 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
 
 void GameWatcher::processZone(QString &line, qint64 numLine)
 {
-    if(gameState == inGameState && synchronized)
+    //Carta desconocida (Enemigo)
+    if(line.contains(QRegularExpression(
+        "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (HAND|SECRET|DECK)"
+        ), match))
     {
-        //Carta desconocida (Enemigo)
-        if(line.contains(QRegularExpression(
-            "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (HAND|SECRET|DECK)"
-            ), match))
+        QString id = match->captured(1);
+        QString zoneFrom = match->captured(2);
+        QString zoneToOpposing = match->captured(3);
+
+
+        //Enemigo juega carta desconocida
+        if(zoneFrom == "OPPOSING HAND")
         {
-            QString id = match->captured(1);
-            QString zoneFrom = match->captured(2);
-            QString zoneToOpposing = match->captured(3);
+            emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
+            emit enemyCardPlayed(id.toInt());
 
-
-            //Enemigo juega carta desconocida
-            if(zoneFrom == "OPPOSING HAND")
+            //Carta devuelta al mazo en Mulligan
+            if(zoneToOpposing == "DECK")
             {
-                emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
-                emit enemyCardPlayed(id.toInt());
-
-                //Carta devuelta al mazo en Mulligan
-                if(zoneToOpposing == "DECK")
-                {
-                    emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
-                }
-            }
-
-            //Enemigo juega secreto
-            if(zoneToOpposing == "SECRET")
-            {
-                emit pDebug("Enemy: Secret played. ID: " + id, numLine);
-                emit enemySecretPlayed(id.toInt(), secretHero);
-            }
-
-            //Enemigo roba carta desconocida
-            else if(zoneToOpposing == "HAND")
-            {
-                //Enemigo roba carta de deck
-                if(zoneFrom == "OPPOSING DECK")
-                {
-                    advanceTurn(false);
-                    emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
-                    emit enemyCardDraw(id.toInt(), turnReal);
-                }
-
-                else if(zoneFrom.isEmpty())
-                {
-                    //Enemigo roba carta especial del vacio
-                    if(mulliganEnemyDone)
-                    {
-                        emit pDebug("Enemy: Special card drawn. ID: " + id, numLine);
-                        emit enemyCardDraw(id.toInt(), turnReal, true);
-                    }
-                }
+                emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
             }
         }
 
-
-        //[Zone] ZoneChangeList.ProcessChanges() - id=3 local=True [name=Acólito de dolor id=10 zone=HAND zonePos=2 cardId=EX1_007 player=1]
-        //zone from FRIENDLY HAND -> FRIENDLY PLAY
-        //Carta conocida
-        else if(line.contains(QRegularExpression(
-            "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\(Weapon\\))?)?"
-            ), match))
+        //Enemigo juega secreto
+        if(zoneToOpposing == "SECRET")
         {
-            QString name = match->captured(1);
-            QString id = match->captured(2);
-            QString cardId = match->captured(3);
-            QString zoneFrom = match->captured(4);
-            QString zoneTo = match->captured(5);
+            emit pDebug("Enemy: Secret played. ID: " + id, numLine);
+            emit enemySecretPlayed(id.toInt(), secretHero);
+        }
 
-
-            //Enemigo roba carta conocida
-            if(zoneTo == "OPPOSING HAND")
-            {
-                if(zoneFrom == "OPPOSING DECK")
-                {
-                    advanceTurn(false);
-                    emit enemyKnownCardDraw(cardId);
-                }
-                emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
-                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
-            }
-            //Enemigo, nuevo minion en PLAY
-            else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
-            {
-                enemyMinions++;
-                emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
-            }
-            //Jugador, nuevo minion en PLAY
-            else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
-            {
-                playerMinions++;
-                emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
-            }
-
-            //Enemigo roba secreto (kezan mystic)
-            if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
-            {
-                emit pDebug("Enemy: Secret stolen: " + name + " ID: " + id, numLine);
-                emit enemySecretStealed(id.toInt(), cardId);
-            }
-
-            //Enemigo juega carta conocida
-            else if(zoneFrom == "OPPOSING HAND")
-            {
-                //Enemigo juega hechizo
-                if(zoneTo.isEmpty())
-                {
-                    emit pDebug("Enemy: Spell played: " + name + " ID: " + id, numLine);
-                }
-                //Enemigo juega esbirro
-                else if(zoneTo == "OPPOSING PLAY")
-                {
-                    emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
-                }
-                //Enemigo juega arma
-                else if(zoneTo == "OPPOSING PLAY (Weapon)")
-                {
-                    emit pDebug("Enemy: Weapon played: " + name + " ID: " + id, numLine);
-                }
-                //Enemigo descarta carta
-                else if(zoneTo == "OPPOSING GRAVEYARD")
-                {
-                    emit pDebug("Enemy: Card discarded: " + name + " ID: " + id, numLine);
-                }
-
-                emit enemyCardPlayed(id.toInt(), cardId);
-            }
-
-            //Enemigo secreto desvelado
-            else if(zoneFrom == "OPPOSING SECRET")
-            {
-                emit pDebug("Enemy: Secret revealed: " + name, numLine);
-                emit enemySecretRevealed(id.toInt(), cardId);
-            }
-
-            //Enemigo roba carta overdraw
-            else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
+        //Enemigo roba carta desconocida
+        else if(zoneToOpposing == "HAND")
+        {
+            //Enemigo roba carta de deck
+            if(zoneFrom == "OPPOSING DECK")
             {
                 advanceTurn(false);
-                emit pDebug("Enemy: Card overdraw: " + name, numLine);
+                emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
+                emit enemyCardDraw(id.toInt(), turnReal);
+            }
+
+            else if(zoneFrom.isEmpty())
+            {
+                //Enemigo roba carta especial del vacio
+                if(mulliganEnemyDone)
+                {
+                    emit pDebug("Enemy: Special card drawn. ID: " + id, numLine);
+                    emit enemyCardDraw(id.toInt(), turnReal, true);
+                }
+            }
+        }
+    }
+
+
+    //[Zone] ZoneChangeList.ProcessChanges() - id=3 local=True [name=Acólito de dolor id=10 zone=HAND zonePos=2 cardId=EX1_007 player=1]
+    //zone from FRIENDLY HAND -> FRIENDLY PLAY
+    //Carta conocida
+    else if(line.contains(QRegularExpression(
+        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\(Weapon\\))?)?"
+        ), match))
+    {
+        QString name = match->captured(1);
+        QString id = match->captured(2);
+        QString cardId = match->captured(3);
+        QString zoneFrom = match->captured(4);
+        QString zoneTo = match->captured(5);
+
+
+        //Enemigo roba carta conocida
+        if(zoneTo == "OPPOSING HAND")
+        {
+            if(zoneFrom == "OPPOSING DECK")
+            {
+                advanceTurn(false);
                 emit enemyKnownCardDraw(cardId);
             }
+            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+            emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
+        }
+        //Enemigo, nuevo minion en PLAY
+        else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
+        {
+            enemyMinions++;
+            emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+        }
+        //Jugador, nuevo minion en PLAY
+        else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
+        {
+            playerMinions++;
+            emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+        }
 
-            //Jugador roba carta conocida
-            else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
+        //Enemigo roba secreto (kezan mystic)
+        if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
+        {
+            emit pDebug("Enemy: Secret stolen: " + name + " ID: " + id, numLine);
+            emit enemySecretStealed(id.toInt(), cardId);
+        }
+
+        //Enemigo juega carta conocida
+        else if(zoneFrom == "OPPOSING HAND")
+        {
+            //Enemigo juega hechizo
+            if(zoneTo.isEmpty())
             {
-                advanceTurn(true);
-                emit pDebug("Player: Card drawn: " + name, numLine);
-                emit playerCardDraw(cardId);
+                emit pDebug("Enemy: Spell played: " + name + " ID: " + id, numLine);
+            }
+            //Enemigo juega esbirro
+            else if(zoneTo == "OPPOSING PLAY")
+            {
+                emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
+            }
+            //Enemigo juega arma
+            else if(zoneTo == "OPPOSING PLAY (Weapon)")
+            {
+                emit pDebug("Enemy: Weapon played: " + name + " ID: " + id, numLine);
+            }
+            //Enemigo descarta carta
+            else if(zoneTo == "OPPOSING GRAVEYARD")
+            {
+                emit pDebug("Enemy: Card discarded: " + name + " ID: " + id, numLine);
             }
 
-            //Jugador juega carta conocida
-            else if(zoneFrom == "FRIENDLY HAND")
+            emit enemyCardPlayed(id.toInt(), cardId);
+        }
+
+        //Enemigo secreto desvelado
+        else if(zoneFrom == "OPPOSING SECRET")
+        {
+            emit pDebug("Enemy: Secret revealed: " + name, numLine);
+            emit enemySecretRevealed(id.toInt(), cardId);
+        }
+
+        //Enemigo roba carta overdraw
+        else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
+        {
+            advanceTurn(false);
+            emit pDebug("Enemy: Card overdraw: " + name, numLine);
+            emit enemyKnownCardDraw(cardId);
+        }
+
+        //Jugador roba carta conocida
+        else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
+        {
+            advanceTurn(true);
+            emit pDebug("Player: Card drawn: " + name, numLine);
+            emit playerCardDraw(cardId);
+        }
+
+        //Jugador juega carta conocida
+        else if(zoneFrom == "FRIENDLY HAND")
+        {
+            //Jugador juega hechizo
+            if(zoneTo.isEmpty())
             {
-                //Jugador juega hechizo
-                if(zoneTo.isEmpty())
-                {
-                    emit pDebug("Player: Spell played: " + name, numLine);
-                    if(isPlayerTurn)    emit playerSpellPlayed();
-                }
-                //Jugador juega esbirro
-                else if(zoneTo == "FRIENDLY PLAY")
-                {
-                    emit pDebug("Player: Minion played: " + name + " Minions: " + QString::number(playerMinions), numLine);
-                    if(isPlayerTurn)    emit playerMinionPlayed(playerMinions);
-                }
-                //Jugador juega arma
-                else if(zoneTo == "FRIENDLY PLAY (Weapon)")
-                {
-                    emit pDebug("Player: Weapon played: " + name, numLine);
-                }
-                //Jugador descarta carta
-                else if(zoneTo == "FRIENDLY GRAVEYARD")
-                {
-                    emit pDebug("Player: Card discarded: " + name, numLine);
-                }
+                emit pDebug("Player: Spell played: " + name, numLine);
+                if(isPlayerTurn)    emit playerSpellPlayed();
             }
-
-            //Enemigo esbirro muere
-            else if(zoneFrom == "OPPOSING PLAY" && zoneTo != "OPPOSING PLAY")
+            //Jugador juega esbirro
+            else if(zoneTo == "FRIENDLY PLAY")
             {
-                if(enemyMinions>0)  enemyMinions--;
-                emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
-
-                if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
-                {
-                    emit enemyMinionDead(cardId);
-                    if(enemyMinionsAliveForAvenge == -1)
-                    {
-                        if(cardId == MAD_SCIENTIST)
-                        {
-                            emit pDebug("Skip avenge testing (Mad Scientist died).", 0);
-                        }
-                        else
-                        {
-                            enemyMinionsAliveForAvenge = enemyMinions;
-                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
-                        }
-                    }
-                    else    enemyMinionsAliveForAvenge--;
-                }
+                emit pDebug("Player: Minion played: " + name + " Minions: " + QString::number(playerMinions), numLine);
+                if(isPlayerTurn)    emit playerMinionPlayed(playerMinions);
             }
-
-            //Jugador esbirro muere
-            else if(zoneFrom == "FRIENDLY PLAY" && zoneTo != "FRIENDLY PLAY")
+            //Jugador juega arma
+            else if(zoneTo == "FRIENDLY PLAY (Weapon)")
             {
-                if(playerMinions>0) playerMinions--;
-                emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+                emit pDebug("Player: Weapon played: " + name, numLine);
+            }
+            //Jugador descarta carta
+            else if(zoneTo == "FRIENDLY GRAVEYARD")
+            {
+                emit pDebug("Player: Card discarded: " + name, numLine);
             }
         }
 
+        //Enemigo esbirro muere
+        else if(zoneFrom == "OPPOSING PLAY" && zoneTo != "OPPOSING PLAY")
+        {
+            if(enemyMinions>0)  enemyMinions--;
+            emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
 
-        //Jugador/Enemigo esbirro cambia pos
-        //No podemos usar zonePos= porque para los esbirros del jugador que pasan a una posicion mayor muestra su posicion origen
-        //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
-        //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
-        //y despues se genran los esbirros de deathrattle causando una suma erronea.
-//        else if(line.contains(QRegularExpression(
-//            "\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
-//            ), match))
-//        {
-//            QString name = match->captured(1);
-//            QString player = match->captured(2);
-//            QString zonePos = match->captured(3);
+            if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
+            {
+                emit enemyMinionDead(cardId);
+                if(enemyMinionsAliveForAvenge == -1)
+                {
+                    if(cardId == MAD_SCIENTIST)
+                    {
+                        emit pDebug("Skip avenge testing (Mad Scientist died).", 0);
+                    }
+                    else
+                    {
+                        enemyMinionsAliveForAvenge = enemyMinions;
+                        QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                    }
+                }
+                else    enemyMinionsAliveForAvenge--;
+            }
+        }
 
-//            //Jugador esbirro cambia pos
-//            if(player.toInt() == playerID)
-//            {
-//                if(zonePos.toInt() > playerMinions) playerMinions = zonePos.toInt();
-//                emit pDebug("Player: New minion pos: " +
-//                            name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
-//            }
-//            //Enemigo esbirro cambia pos
-//            else
-//            {
-//                if(zonePos.toInt() > enemyMinions) enemyMinions = zonePos.toInt();
-//                emit pDebug("Enemy: New minion pos: " +
-//                            name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
-//            }
-//        }
+        //Jugador esbirro muere
+        else if(zoneFrom == "FRIENDLY PLAY" && zoneTo != "FRIENDLY PLAY")
+        {
+            if(playerMinions>0) playerMinions--;
+            emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+        }
     }
+
+
+    //Jugador/Enemigo esbirro cambia pos
+    //No podemos usar zonePos= porque para los esbirros del jugador que pasan a una posicion mayor muestra su posicion origen
+    //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
+    //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
+    //y despues se genran los esbirros de deathrattle causando una suma erronea.
+//    else if(line.contains(QRegularExpression(
+//        "\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
+//        ), match))
+//    {
+//        QString name = match->captured(1);
+//        QString player = match->captured(2);
+//        QString zonePos = match->captured(3);
+
+//        //Jugador esbirro cambia pos
+//        if(player.toInt() == playerID)
+//        {
+//            if(zonePos.toInt() > playerMinions) playerMinions = zonePos.toInt();
+//            emit pDebug("Player: New minion pos: " +
+//                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+//        }
+//        //Enemigo esbirro cambia pos
+//        else
+//        {
+//            if(zonePos.toInt() > enemyMinions) enemyMinions = zonePos.toInt();
+//            emit pDebug("Enemy: New minion pos: " +
+//                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+//        }
+//    }
 }
 
 
@@ -794,7 +783,7 @@ void GameWatcher::checkAvenge()
 
 void GameWatcher::createGameResult()
 {
-    if(loadingScreen == spectator)
+    if(loadingScreenState == spectator)
     {
         emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
         return;
@@ -823,7 +812,7 @@ void GameWatcher::createGameResult()
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    emit newGameResult(gameResult, loadingScreen);
+    emit newGameResult(gameResult, loadingScreenState);
 }
 
 
@@ -837,7 +826,7 @@ void GameWatcher::createGameLog(qint64 logSeekWon)
 
     QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
     QString win = (winnerPlayer == playerTag)?"WIN":"LOSE";
-    QString gameMode = Utility::getLoadingScreenString(loadingScreen);
+    QString gameMode = Utility::getLoadingScreenString(loadingScreenState);
     QString playerHero, enemyHero;
     if(playerID == 1)
     {
@@ -911,9 +900,9 @@ void GameWatcher::setSynchronized()
 }
 
 
-LoadingScreen GameWatcher::getLoadingScreen()
+LoadingScreenState GameWatcher::getLoadingScreen()
 {
-    return this->loadingScreen;
+    return this->loadingScreenState;
 }
 
 

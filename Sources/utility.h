@@ -18,7 +18,7 @@ using namespace cv;
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque };
 enum Theme { ThemeWhite, ThemeBlack };
-enum LoadingScreen { menu, arena, constructed, adventure, tavernBrawl, spectator };
+enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl, spectator };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
 
 
@@ -67,7 +67,7 @@ public:
     static QString removeAccents(QString s);
     static void fadeInWidget(QWidget *widget);
     static void fadeOutWidget(QWidget *widget);
-    static QString getLoadingScreenString(LoadingScreen loadingScreen);
+    static QString getLoadingScreenString(LoadingScreenState loadingScreen);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
 };
 

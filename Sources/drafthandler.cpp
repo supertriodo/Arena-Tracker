@@ -96,7 +96,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
             cardsDownloading++;
         }
     }
-//    emit pDebug("Num histograms BD:" + QString::number(hearthArenaCodes.count()));
+    qDebug() << "Num histograms BD:" << QString::number(hearthArenaCodes.count());
 
     if(cardsDownloading==0) resumeDraft();
     else

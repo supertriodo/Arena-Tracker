@@ -76,7 +76,7 @@ private:
 //Metodos
 public:
     void calculateMinimumWidth();
-    LoadingScreen getLoadingScreen();
+    LoadingScreenState getLoadingScreen();
 
 private:
     void createLogLoader();

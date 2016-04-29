@@ -83,7 +83,7 @@ void ArenaHandler::setWebUploader(WebUploader *webUploader)
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreen loadingScreen)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
     QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
 
@@ -145,7 +145,7 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, b
 }
 
 
-QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, LoadingScreen loadingScreen)
+QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen)
 {
     QTreeWidgetItem *item = NULL;
     int indexHero = gameResult.playerHero.toInt()-1;
@@ -229,7 +229,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 }
 
 
-QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreen loadingScreen)
+QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
     emit pDebug("Show GameResult.");
 

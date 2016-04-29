@@ -41,7 +41,7 @@ private:
     QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
     void allToWhite();
-    QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreen loadingScreen);
+    QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
 
@@ -59,12 +59,12 @@ signals:
 
 public slots:
     //GameWatcher
-    void newGameResult(GameResult gameResult, LoadingScreen loadingScreen);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     bool newArena(QString hero);
     void showRewards();
 
     //WebUploader
-    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreen loadingScreen);
+    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void showArena(QString hero);
     void reshowGameResult(GameResult gameResult);
     void reshowArena(QString hero);

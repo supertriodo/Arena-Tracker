@@ -105,7 +105,7 @@ QString Utility::getHeroLogNumber(int order)
 }
 
 
-QString Utility::getLoadingScreenString(LoadingScreen loadingScreen)
+QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
 {
     if(loadingScreen == menu)               return "MENU";
     else if(loadingScreen == arena)         return "ARENA";
