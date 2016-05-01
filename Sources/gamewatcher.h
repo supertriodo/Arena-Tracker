@@ -64,12 +64,13 @@ private:
     bool mulliganEnemyDone;
     bool synchronized;
     qint64 logSeekCreate;
+    bool copyGameLogs;
 
 
 
 //Metodos
 private:
-    void createGameResult();
+    void createGameResult(QString logFileName);
     void processLoadingScreen(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine, qint64 logSeek);
@@ -80,16 +81,17 @@ private:
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);
-    void createGameLog(qint64 logSeekWon);
+    QString createGameLog(qint64 logSeekWon);
 
 
 public:
     void reset();
     void setSynchronized();
     LoadingScreenState getLoadingScreen();
+    void setCopyGameLogs(bool value);
 
 signals:
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName);
     void newArena(QString hero);
     void inRewards();
     void newDeckCard(QString card);

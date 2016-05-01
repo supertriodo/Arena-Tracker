@@ -27,6 +27,7 @@ private:
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
+    QMap<QTreeWidgetItem *, QString> replayLogsMap;
     bool noArena;
     bool mouseInApp;
     Transparency transparency;
@@ -52,6 +53,8 @@ public:
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
+    void deselectRow();
+    void linkLogToDraft(QString logFileName);
 
 signals:
     void pLog(QString line);
@@ -59,7 +62,7 @@ signals:
 
 public slots:
     //GameWatcher
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName);
     bool newArena(QString hero);
     void showRewards();
 
@@ -72,6 +75,7 @@ public slots:
     void enableRefreshButton(bool enable=true);
     void syncArenaCurrent();
     void removeDuplicateArena();
+    void linkLogsToWebGames();
 
 private slots:
     void refresh();
@@ -79,6 +83,8 @@ private slots:
     void hideRewards();
     void uploadRewards();
     void openAMWeb();
+    void changedRow(QTreeWidgetItem *current);
+    void replayLog();
 };
 
 #endif // ARENAHANDLER_H

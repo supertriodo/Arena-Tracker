@@ -397,8 +397,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState)),
-            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState, QString)),
+            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState, QString)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     connect(gameWatcher, SIGNAL(inRewards()),
@@ -582,6 +582,8 @@ void MainWindow::createWebUploader()
             this, SLOT(currentArenaToWhiteAM(bool)));
     connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
             arenaHandler, SLOT(removeDuplicateArena()));
+    connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
+            arenaHandler, SLOT(linkLogsToWebGames()));
     connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1028,6 +1030,8 @@ void MainWindow::leaveEvent(QEvent * e)
 
     this->mouseInApp = false;
     spreadMouseInApp();
+
+    if(arenaHandler != NULL)    arenaHandler->deselectRow();
 }
 
 
@@ -1453,6 +1457,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
         if(endDraftLog)
         {
             pDebug("End DraftLog: " + draftLogFile);
+            if(arenaHandler != NULL)    arenaHandler->linkLogToDraft(draftLogFile);
             draftLogFile = "";
         }
     }
@@ -2120,12 +2125,12 @@ void MainWindow::updateMaxGamesLog(int value)
     if(value == 0)
     {
         copyGameLogs = false;
-        LogWorker::setCopyGameLogs(false);
+        gameWatcher->setCopyGameLogs(false);
     }
     else
     {
         copyGameLogs = true;
-        LogWorker::setCopyGameLogs(true);
+        gameWatcher->setCopyGameLogs(true);
     }
 
     QString labelText;
@@ -2271,8 +2276,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Auto size deck
 //Hide Track secrets
+//Precarga loadingScreen component
+//Eliminar synchronized the gameWatcher
 
 //Futuro: Eliminar reescribir log.config
 

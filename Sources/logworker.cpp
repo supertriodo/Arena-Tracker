@@ -2,7 +2,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-bool LogWorker::copyGameLogs;
 
 LogWorker::LogWorker(QObject *parent, const QString &logsDirPath, const QString &logComponentString) : QObject(parent)
 {
@@ -117,12 +116,6 @@ void LogWorker::readLog()
 
 void LogWorker::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
 {
-    if(!copyGameLogs)
-    {
-        emit pDebug("Game log copy disabled.");
-        return;
-    }
-
     QFileInfo dir(Utility::hscardsPath());
     if(!dir.exists())
     {
@@ -192,12 +185,6 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
 
     if(gameLogSeek > logSeekWon)   emit pDebug("End copy GameLog: Success");
     else                            emit pDebug("End copy GameLog: Reached EOF before WON");
-}
-
-
-void LogWorker::setCopyGameLogs(bool value)
-{
-    copyGameLogs = value;
 }
 
 

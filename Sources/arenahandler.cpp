@@ -29,6 +29,8 @@ void ArenaHandler::completeUI()
             this, SLOT(refresh()));
     connect(ui->webButton, SIGNAL(clicked()),
             this, SLOT(openAMWeb()));
+    connect(ui->replayButton, SIGNAL(clicked()),
+            this, SLOT(replayLog()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
 
@@ -61,6 +63,11 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
+    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+            this, SLOT(changedRow(QTreeWidgetItem*)));
+
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);
     arenaHomeless->setText(0, "Arena");
@@ -77,15 +84,48 @@ void ArenaHandler::createTreeWidget()
 }
 
 
+void ArenaHandler::deselectRow()
+{
+    ui->arenaTreeWidget->setCurrentItem(NULL);
+}
+
+
+void ArenaHandler::changedRow(QTreeWidgetItem *current)
+{
+    if(replayLogsMap.contains(current))     ui->replayButton->setEnabled(true);
+    else                                    ui->replayButton->setEnabled(false);
+}
+
+
+void ArenaHandler::replayLog()
+{
+    if(!replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
+
+    QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
+    //Verifical logFileName existe
+    qDebug()<<Utility::gameslogPath() + "/" + logFileName;
+
+    deselectRow();
+}
+
+
+void ArenaHandler::linkLogToDraft(QString logFileName)
+{
+    if(arenaCurrent != NULL && !logFileName.isEmpty())  replayLogsMap[arenaCurrent] = logFileName;
+}
+
+
 void ArenaHandler::setWebUploader(WebUploader *webUploader)
 {
     this->webUploader = webUploader;
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName)
 {
     QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
+
+    if(item != NULL && !logFileName.isEmpty())  replayLogsMap[item] = logFileName;
 
     if(loadingScreen == arena && webUploader!=NULL && webUploader->isConnected())
     {
@@ -627,5 +667,57 @@ void ArenaHandler::removeDuplicateArena()
     arenaPrevious = NULL;
     emit pDebug("Dulicate arena found and removed.");
 }
+
+
+void ArenaHandler::linkLogsToWebGames()
+{
+    emit pDebug("Link logs to web games.");
+
+    QRegularExpressionMatch match;
+
+    QDir dir(Utility::gameslogPath());
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Time);
+
+    //Games
+    QStringList arenaFilter;
+    arenaFilter << "ARENA*.arenatracker";
+    dir.setNameFilters(arenaFilter);
+
+    QStringList files = dir.entryList().mid(0, arenaCurrentGameList.count());
+    int gameIndex = arenaCurrentGameList.count();
+    foreach(QString file, files)
+    {
+        gameIndex --;
+
+        if(!file.contains(QRegularExpression("ARENA .* (\\w+)vs(\\w+) (WIN|LOSE).arenatracker"), &match)) return;
+        QString playerHero = match.captured(1);
+        QString enemyHero = match.captured(2);
+        bool isWinner = match.captured(3) == "WIN";
+
+        GameResult gameWeb = arenaCurrentGameList[gameIndex];
+        if(Utility::heroStringFromLogNumber(gameWeb.playerHero) != playerHero)  return;
+        if(Utility::heroStringFromLogNumber(gameWeb.enemyHero) != enemyHero)  return;
+        if(gameWeb.isWinner != isWinner)    return;
+
+        replayLogsMap[arenaCurrent->child(gameIndex)] = file;
+    }
+
+    //Draft
+    QStringList draftFilter;
+    draftFilter << "DRAFT*.arenatracker";
+    dir.setNameFilters(draftFilter);
+
+    if(dir.entryList().isEmpty())   return;
+    QString file = dir.entryList().first();
+
+    if(!file.contains(QRegularExpression("DRAFT .* (\\w+).arenatracker"), &match)) return;
+    QString playerHero = match.captured(1);
+
+    if(Utility::heroStringFromLogNumber(arenaCurrentGameList[0].playerHero) != playerHero)  return;
+
+    replayLogsMap[arenaCurrent] = file;
+}
+
 
 

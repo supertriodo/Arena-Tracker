@@ -327,8 +327,16 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
         emit pDebug("Found WON (powerState = noGame).", numLine);
 
         winnerPlayer = match->captured(1);
-        createGameResult();
-        createGameLog(logSeek);
+
+        if(loadingScreenState == spectator)
+        {
+            emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
+        }
+        else
+        {
+            QString logFileName = createGameLog(logSeek);
+            createGameResult(logFileName);
+        }
     }
     //Turn
     else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
@@ -781,14 +789,8 @@ void GameWatcher::checkAvenge()
 }
 
 
-void GameWatcher::createGameResult()
+void GameWatcher::createGameResult(QString logFileName)
 {
-    if(loadingScreenState == spectator)
-    {
-        emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
-        return;
-    }
-
     GameResult gameResult;
 
     if(playerID == 1)
@@ -812,16 +814,21 @@ void GameWatcher::createGameResult()
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    emit newGameResult(gameResult, loadingScreenState);
+    emit newGameResult(gameResult, loadingScreenState, logFileName);
 }
 
 
-void GameWatcher::createGameLog(qint64 logSeekWon)
+QString GameWatcher::createGameLog(qint64 logSeekWon)
 {
+    if(!copyGameLogs)
+    {
+        emit pDebug("Game log copy disabled.", 0);
+        return "";
+    }
     if(logSeekCreate == -1)
     {
         emit pDebug("Cannot create match log. Found WON but not CREATE_GAME", 0);
-        return;
+        return "";
     }
 
     QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
@@ -844,6 +851,8 @@ void GameWatcher::createGameLog(qint64 logSeekWon)
     emit pDebug("Game log ready to be copied.", 0);
     emit gameLogComplete(logSeekCreate, logSeekWon, fileName);
     logSeekCreate = -1;
+
+    return fileName;
 }
 
 
@@ -906,7 +915,10 @@ LoadingScreenState GameWatcher::getLoadingScreen()
 }
 
 
-
+void GameWatcher::setCopyGameLogs(bool value)
+{
+    this->copyGameLogs = value;
+}
 
 
 

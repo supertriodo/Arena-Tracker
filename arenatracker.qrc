@@ -91,5 +91,6 @@
         <file>Images/enemyDeck.png</file>
         <file>Images/unknown.png</file>
         <file>Json/cards.thTH.json</file>
+        <file>Images/replay.png</file>
     </qresource>
 </RCC>
