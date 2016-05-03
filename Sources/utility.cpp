@@ -112,7 +112,6 @@ QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
     else if(loadingScreen == constructed)   return "RANKED";
     else if(loadingScreen == adventure)     return "SOLO";
     else if(loadingScreen == tavernBrawl)   return "BRAWL";
-    else if(loadingScreen == spectator)     return "SPECTATOR";
     else                                    return "";
 }
 

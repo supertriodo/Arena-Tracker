@@ -65,6 +65,7 @@ private:
     bool synchronized;
     qint64 logSeekCreate;
     bool copyGameLogs;
+    bool spectating;
 
 
 
@@ -74,7 +75,7 @@ private:
     void processLoadingScreen(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine, qint64 logSeek);
-    void processPowerInGame(QString &line, qint64 numLine, qint64 logSeek);
+    void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
     void advanceTurn(bool playerDraw);
     SecretHero getSecretHero(QString playerHero, QString enemyHero);

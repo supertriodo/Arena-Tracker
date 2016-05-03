@@ -2276,6 +2276,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//Auto deck
 //Hide Track secrets
 //Precarga loadingScreen component
 //Eliminar synchronized the gameWatcher

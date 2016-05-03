@@ -18,7 +18,7 @@ using namespace cv;
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque };
 enum Theme { ThemeWhite, ThemeBlack };
-enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl, spectator };
+enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
 
 

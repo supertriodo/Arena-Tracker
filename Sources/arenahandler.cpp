@@ -196,10 +196,6 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Avoid GameResult from menu.");
         break;
 
-        case spectator:
-            emit pDebug("Avoid GameResult from spectator.");
-        break;
-
         case arena:
             emit pLog(tr("Log: New arena game."));
 

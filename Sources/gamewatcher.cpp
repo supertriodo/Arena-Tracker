@@ -8,6 +8,7 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     arenaState = noDeckRead;
     loadingScreenState = menu;
     mulliganEnemyDone = false;
+    spectating = false;
     turn = turnReal = 0;
     logSeekCreate = -1;
 
@@ -34,6 +35,7 @@ void GameWatcher::reset()
     powerState = noGame;
     arenaState = noDeckRead;
     loadingScreenState = menu;
+    spectating = false;
     logSeekCreate = -1;
     emit pDebug("Reset (powerState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
@@ -102,16 +104,6 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         QString prevMode = match->captured(1);
         QString currMode = match->captured(2);
         emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
-
-        if(prevMode == "GAMEPLAY")
-        {
-            emit endGame();
-            if(loadingScreenState == spectator)
-            {
-                powerState = noGame;
-                emit pDebug("Quitting SPECTATOR GAMEPLAY (powerState = noGame).", numLine);
-            }
-        }
 
         if(currMode == "DRAFT")
         {
@@ -213,40 +205,94 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
 
 void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 {
+    //================== End Spectator Game ==================
+    if(line.contains("End Spectator Game"))
+    {
+        emit pDebug("End Spectator Game.", numLine);
+        spectating = false;
+
+        if(powerState != noGame)
+        {
+            emit pDebug("WON not found (PowerState = noGame)", 0);
+            powerState = noGame;
+            emit endGame();
+        }
+    }
+
+    if(powerState == noGame)
+    {
+        //================== Begin Spectating 1st player ==================
+        //================== Start Spectator Game ==================
+        if(line.contains("Begin Spectating") || line.contains("Start Spectator Game"))
+        {
+            emit pDebug("Start Spectator Game.", numLine);
+            spectating = true;
+        }
+        else if(line.contains("CREATE_GAME"))
+        {
+            emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
+            emit pDebug("PlayerTag: " + playerTag, 0);
+            logSeekCreate = logSeek;
+            powerState = heroType1State;
+
+            mulliganEnemyDone = false;
+            turn = turnReal = 0;
+
+            hero1.clear();
+            hero2.clear();
+            name1.clear();
+            name2.clear();
+            firstPlayer.clear();
+            winnerPlayer.clear();
+            playerID = 0;
+            secretHero = unknown;
+            playerMinions = -2;
+            enemyMinions = -2;
+            enemyMinionsAliveForAvenge = -1;
+
+            emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
+            emit startGame();
+        }
+    }
+    else
+    {
+        //Win state
+        if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
+        {
+            powerState = noGame;
+            emit pDebug("Found WON (powerState = noGame).", numLine);
+
+            winnerPlayer = match->captured(1);
+
+            if(spectating)
+            {
+                emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
+            }
+            else
+            {
+                QString logFileName = createGameLog(logSeek);
+                createGameResult(logFileName);
+            }
+
+            emit endGame();
+        }
+        //Turn
+        else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
+                ), match))
+        {
+            turn = match->captured(1).toInt();
+            emit pDebug("Found TURN: " + match->captured(1), numLine);
+
+            if(powerState != inGameState)
+            {
+                powerState = inGameState;
+                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState)", 0);
+            }
+        }
+    }
     switch(powerState)
     {
         case noGame:
-            //[Power] ================== Start Spectator Game ==================
-            if(line.contains(QRegularExpression("Start Spectator Game"), match))
-            {
-                loadingScreenState = spectator;
-                emit pDebug("Entering SPECTATOR. (loadingScreenState = spectator)", numLine);
-            }
-            else if(line.contains("CREATE_GAME"))
-            {
-                emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
-                emit pDebug("PlayerTag: " + playerTag, 0);
-                logSeekCreate = logSeek;
-                powerState = heroType1State;
-
-                mulliganEnemyDone = false;
-                turn = turnReal = 0;
-
-                hero1.clear();
-                hero2.clear();
-                name1.clear();
-                name2.clear();
-                firstPlayer.clear();
-                winnerPlayer.clear();
-                playerID = 0;
-                secretHero = unknown;
-                playerMinions = 0;
-                enemyMinions = 0;
-                enemyMinionsAliveForAvenge = -1;
-
-                emit startGame();
-                emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
-            }
             break;
         case heroType1State:
         case heroType2State:
@@ -259,9 +305,18 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             else if(powerState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero2 = match->captured(1);
-                if(loadingScreenState == spectator)     powerState = inGameState;
-                else                                    powerState = playerName1State;
-                emit pDebug("Found hero 2: " + hero2 + " (powerState = playerName1State)", numLine);
+                if(spectating)
+                {
+                    powerState = inGameState;
+                    turn = 1;
+                    emit pDebug("Found hero 2: " + hero2 + " (powerState = inGameState)", numLine);
+                }
+                else
+                {
+                    powerState = playerName1State;
+                    emit pDebug("Found hero 2: " + hero2 + " (powerState = playerName1State)", numLine);
+                }
+
             }
         case playerName1State:
             if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
@@ -302,7 +357,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             }
             break;
         case inGameState:
-            processPowerInGame(line, numLine, logSeek);
+            processPowerInGame(line, numLine);
             break;
     }
 }
@@ -318,33 +373,9 @@ bool GameWatcher::isHeroPower(QString code)
 }
 
 
-void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSeek)
+void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
-    //Win state
-    if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
-    {
-        powerState = noGame;
-        emit pDebug("Found WON (powerState = noGame).", numLine);
-
-        winnerPlayer = match->captured(1);
-
-        if(loadingScreenState == spectator)
-        {
-            emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
-        }
-        else
-        {
-            QString logFileName = createGameLog(logSeek);
-            createGameResult(logFileName);
-        }
-    }
-    //Turn
-    else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
-            ), match))
-    {
-        turn = match->captured(1).toInt();
-    }
-    else if(synchronized)
+    if(synchronized)
     {
         //Jugador roba carta inicial
         if(line.contains(QRegularExpression(
@@ -363,12 +394,12 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
 
                 if(playerID == 1)
                 {
-                    if(loadingScreenState != spectator)  playerTag = name1;
+                    if(!spectating)  playerTag = name1;
                     secretHero = getSecretHero(hero1, hero2);
                 }
                 else if(playerID == 2)
                 {
-                    if(loadingScreenState != spectator)  playerTag = name2;
+                    if(!spectating)  playerTag = name2;
                     secretHero = getSecretHero(hero2, hero1);
                 }
                 else
@@ -377,7 +408,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine, qint64 logSe
                     emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
                 }
 
-                if(loadingScreenState != spectator)
+                if(!spectating)
                 {
                     QSettings settings("Arena Tracker", "Arena Tracker");
                     settings.setValue("playerTag", playerTag);
@@ -866,7 +897,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
     //Al turno 1 dejamos que pase cualquiera asi dejamos el turno 0 para indicar cartas de mulligan
     //Solo avanza de turno al robar carta el jugador que le corresponde
-    if(turn == 1 || playerDraw == playerTurn)
+    if(turn == 1 || playerDraw == playerTurn || spectating)
     {
         turnReal = turn;
         emit pDebug("\nTurn: " + QString::number(turn) + " " + (playerTurn?"Player":"Enemy"), 0);
