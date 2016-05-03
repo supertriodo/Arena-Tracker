@@ -2279,7 +2279,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Auto deck
 //Hide Track secrets
 //Precarga loadingScreen component
-//Eliminar synchronized the gameWatcher
+//Progress bar info
 
 //Futuro: Eliminar reescribir log.config
 

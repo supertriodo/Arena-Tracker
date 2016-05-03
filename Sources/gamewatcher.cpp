@@ -13,9 +13,6 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     logSeekCreate = -1;
 
     synchronized = false;
-#ifdef QT_DEBUG
-    synchronized = true;
-#endif
 
     match = new QRegularExpressionMatch();
 
@@ -58,7 +55,7 @@ void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64
     }
     else if(logComponent == logZone)
     {
-        processZone(line, numLine);
+        processZone(line, numLine);//if(synchronized)
     }
 }
 
@@ -158,7 +155,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-    else if(synchronized && line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
+    else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))//if(synchronized)
     {
         emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
         emit activeDraftDeck(); //End draft
@@ -166,7 +163,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //DRAFTING PICK CARD
     //[Arena] Client chooses: Profesora violeta (NEW1_026)
-    else if(synchronized && line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
+    else if(line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))//if(synchronized)
     {
         QString code = match->captured(1);
         if(!code.contains("HERO"))
@@ -177,7 +174,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //START READING DECK
     //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
-    else if(synchronized && line.contains(QRegularExpression(
+    else if(line.contains(QRegularExpression(//if(synchronized)
                 "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
     {
         emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
@@ -185,8 +182,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
-    else if(synchronized && (arenaState == readingDeck) &&
-        line.contains(QRegularExpression(
+    else if((arenaState == readingDeck) && line.contains(QRegularExpression(//if(synchronized)
             "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
     {
         QString code = match->captured(1);
@@ -195,7 +191,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //IN REWARDS
     //[Arena] SetDraftMode - IN_REWARDS
-    else if(synchronized && line.contains("SetDraftMode - IN_REWARDS"))
+    else if(line.contains("SetDraftMode - IN_REWARDS"))//if(synchronized)
     {
         emit pDebug("Found IN_REWARDS.", numLine);
         emit inRewards();   //Show rewards input
@@ -357,7 +353,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             }
             break;
         case inGameState:
-            processPowerInGame(line, numLine);
+            processPowerInGame(line, numLine);//if(synchronized)
             break;
     }
 }
@@ -375,189 +371,186 @@ bool GameWatcher::isHeroPower(QString code)
 
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
-    if(synchronized)
+    //Jugador roba carta inicial
+    if(line.contains(QRegularExpression(
+            "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
+            ), match))
     {
-        //Jugador roba carta inicial
-        if(line.contains(QRegularExpression(
-                "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
-                ), match))
+        QString cardId = match->captured(1);
+        QString player = match->captured(2);
+
+        emit pDebug("Player: Starting card drawn: " + cardId, numLine);
+
+        //Descubrimos el playerID del jugador y su playerTag (si playerTag no estaba definido)
+        if(playerID == 0)
         {
-            QString cardId = match->captured(1);
-            QString player = match->captured(2);
+            playerID = player.toInt();
 
-            emit pDebug("Player: Starting card drawn: " + cardId, numLine);
-
-            //Descubrimos el playerID del jugador y su playerTag (si playerTag no estaba definido)
-            if(playerID == 0)
+            if(playerID == 1)
             {
-                playerID = player.toInt();
-
-                if(playerID == 1)
-                {
-                    if(!spectating)  playerTag = name1;
-                    secretHero = getSecretHero(hero1, hero2);
-                }
-                else if(playerID == 2)
-                {
-                    if(!spectating)  playerTag = name2;
-                    secretHero = getSecretHero(hero2, hero1);
-                }
-                else
-                {
-                    playerID = 0;
-                    emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
-                }
-
-                if(!spectating)
-                {
-                    QSettings settings("Arena Tracker", "Arena Tracker");
-                    settings.setValue("playerTag", playerTag);
-                    emit pDebug("Defined playerID, secretHero and playerTag: " + playerTag, 0);
-                }
-                else
-                {
-                    emit pDebug("Defined playerID and secretHero in spectator game.", 0);
-                }
+                if(!spectating)  playerTag = name1;
+                secretHero = getSecretHero(hero1, hero2);
+            }
+            else if(playerID == 2)
+            {
+                if(!spectating)  playerTag = name2;
+                secretHero = getSecretHero(hero2, hero1);
+            }
+            else
+            {
+                playerID = 0;
+                emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
             }
 
-            emit playerCardDraw(match->captured(1));
-        }
-        //Enemigo roba carta inicial
-        else if(line.contains(QRegularExpression(
-                      "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
-                      "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=(\\d+)\\]"
-                      ), match))
-        {
-            QString id = match->captured(1);
-            QString player = match->captured(2);
-
-            if(player.toInt() != playerID)
+            if(!spectating)
             {
-                emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
-                emit enemyCardDraw(id.toInt());
+                QSettings settings("Arena Tracker", "Arena Tracker");
+                settings.setValue("playerTag", playerTag);
+                emit pDebug("Defined playerID, secretHero and playerTag: " + playerTag, 0);
             }
-        }
-        //Enemigo mulligan
-        else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
-                ), match))
-        {
-            if(!mulliganEnemyDone && match->captured(1) != playerTag)
+            else
             {
-                if(firstPlayer == playerTag)
-                {
-                    //Convertir ultima carta en moneda enemiga
-                    emit pDebug("Enemy: Coin created.", 0);
-                    emit lastHandCardIsCoin();
-                }
-                emit pDebug("Enemy mulligan end. Minions: 0", numLine);
-                mulliganEnemyDone = true;
-                playerMinions = 0;
-                enemyMinions = 0;
+                emit pDebug("Defined playerID and secretHero in spectator game.", 0);
             }
         }
 
-        //ULTIMO TRIGGER SPECIAL CARDS
-        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Robo de ideas id=31 zone=PLAY zonePos=0 cardId=EX1_339 player=1]
-        //EffectCardId= EffectIndex=-1 Target=0
-        else if(line.contains(QRegularExpression(
-            "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-            "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-            "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
+        emit playerCardDraw(match->captured(1));
+    }
+    //Enemigo roba carta inicial
+    else if(line.contains(QRegularExpression(
+                  "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
+                  "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=(\\d+)\\]"
+                  ), match))
+    {
+        QString id = match->captured(1);
+        QString player = match->captured(2);
+
+        if(player.toInt() != playerID)
+        {
+            emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
+            emit enemyCardDraw(id.toInt());
+        }
+    }
+    //Enemigo mulligan
+    else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
             ), match))
+    {
+        if(!mulliganEnemyDone && match->captured(1) != playerTag)
         {
-            QString blockType = match->captured(1);
-            QString name = match->captured(2);
-            QString cardId = match->captured(3);
-            QString player = match->captured(4);
+            if(firstPlayer == playerTag)
+            {
+                //Convertir ultima carta en moneda enemiga
+                emit pDebug("Enemy: Coin created.", 0);
+                emit lastHandCardIsCoin();
+            }
+            emit pDebug("Enemy mulligan end. Minions: 0", numLine);
+            mulliganEnemyDone = true;
+            playerMinions = 0;
+            enemyMinions = 0;
+        }
+    }
 
-            emit pDebug("Trigger(" + blockType + "): " + name, numLine);
-            emit specialCardTrigger(cardId, blockType);
-            if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
+    //ULTIMO TRIGGER SPECIAL CARDS
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Robo de ideas id=31 zone=PLAY zonePos=0 cardId=EX1_339 player=1]
+    //EffectCardId= EffectIndex=-1 Target=0
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
+        "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+        "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
+        ), match))
+    {
+        QString blockType = match->captured(1);
+        QString name = match->captured(2);
+        QString cardId = match->captured(3);
+        QString player = match->captured(4);
+
+        emit pDebug("Trigger(" + blockType + "): " + name, numLine);
+        emit specialCardTrigger(cardId, blockType);
+        if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
+    }
+
+    //Jugador/Enemigo accion con objetivo
+    //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
+    //EffectCardId= EffectIndex=-1 Target=[name=Acaparador de botín id=31 zone=PLAY zonePos=1 cardId=EX1_096 player=1]
+    else if(line.contains(QRegularExpression(
+        "GameState\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
+        "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+        "EffectCardId=\\w* EffectIndex=(-?\\d+) "
+        "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
+        ), match))
+    {
+        QString blockType = match->captured(1);
+        QString name1 = match->captured(2);
+        QString zone = match->captured(3);
+        QString cardId1 = match->captured(4);
+        QString player1 = match->captured(5);
+        QString index = match->captured(6);
+        QString name2 = match->captured(7);
+        QString cardId2 = match->captured(8);
+
+        bool isPlayer = (player1.toInt() == playerID);
+
+
+        //Jugador/Enemigo juega carta con objetivo
+        if(zone == "HAND" && blockType == "PLAY" && index == "0")
+        {
+            DeckCard deckCard(cardId1);
+            if(deckCard.getType() == SPELL)
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
+                            name1 + " on target " + name2, numLine);
+                if(cardId2 == MAD_SCIENTIST)
+                {
+                    emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
+                }
+                else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
+            }
+            else
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Minion/weapon obj played: " +
+                            name1 + " target " + name2, numLine);
+            }
         }
 
-        //Jugador/Enemigo accion con objetivo
-        //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
-        //EffectCardId= EffectIndex=-1 Target=[name=Acaparador de botín id=31 zone=PLAY zonePos=1 cardId=EX1_096 player=1]
-        else if(line.contains(QRegularExpression(
-            "GameState\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-            "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-            "EffectCardId=\\w* EffectIndex=(-?\\d+) "
-            "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
-            ), match))
+        //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
+        else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1")
         {
-            QString blockType = match->captured(1);
-            QString name1 = match->captured(2);
-            QString zone = match->captured(3);
-            QString cardId1 = match->captured(4);
-            QString player1 = match->captured(5);
-            QString index = match->captured(6);
-            QString name2 = match->captured(7);
-            QString cardId2 = match->captured(8);
-
-            bool isPlayer = (player1.toInt() == playerID);
-
-
-            //Jugador/Enemigo juega carta con objetivo
-            if(zone == "HAND" && blockType == "PLAY" && index == "0")
+            if(cardId1.contains("HERO"))
             {
-                DeckCard deckCard(cardId1);
-                if(deckCard.getType() == SPELL)
+                if(cardId2.contains("HERO"))
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
-                                name1 + " on target " + name2, numLine);
-                    if(cardId2 == MAD_SCIENTIST)
-                    {
-                        emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
-                    }
-                    else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                name1 + " (heroe)vs(heroe) " + name2, numLine);
+                    if(isPlayer && isPlayerTurn)    emit playerAttack(true, true);
                 }
                 else
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Minion/weapon obj played: " +
-                                name1 + " target " + name2, numLine);
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                name1 + " (heroe)vs(minion) " + name2, numLine);
+                    /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
+                    {
+                        emit pDebug("Saltamos comprobacion de secretos";
+                    }
+                    else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false);
                 }
             }
-
-            //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
-            else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1")
+            else
             {
-                if(cardId1.contains("HERO"))
+                if(cardId2.contains("HERO"))
                 {
-                    if(cardId2.contains("HERO"))
-                    {
-                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                    name1 + " (heroe)vs(heroe) " + name2, numLine);
-                        if(isPlayer && isPlayerTurn)    emit playerAttack(true, true);
-                    }
-                    else
-                    {
-                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                    name1 + " (heroe)vs(minion) " + name2, numLine);
-                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
-                        {
-                            emit pDebug("Saltamos comprobacion de secretos";
-                        }
-                        else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false);
-                    }
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                name1 + " (minion)vs(heroe) " + name2, numLine);
+                    if(isPlayer && isPlayerTurn)    emit playerAttack(false, true);
                 }
                 else
                 {
-                    if(cardId2.contains("HERO"))
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                name1 + " (minion)vs(minion) " + name2, numLine);
+                    /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
                     {
-                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                    name1 + " (minion)vs(heroe) " + name2, numLine);
-                        if(isPlayer && isPlayerTurn)    emit playerAttack(false, true);
+                        emit pDebug("Saltamos comprobacion de secretos";
                     }
-                    else
-                    {
-                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                    name1 + " (minion)vs(minion) " + name2, numLine);
-                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
-                        {
-                            emit pDebug("Saltamos comprobacion de secretos";
-                        }
-                        else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false);
-                    }
+                    else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false);
                 }
             }
         }
@@ -906,7 +899,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
         if(isPlayerTurn)    emit playerTurnStart();
 
-        if(synchronized && !isPlayerTurn && enemyMinions > 0)
+        if(!isPlayerTurn && enemyMinions > 0)//if synchronized
         {
             emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions), 0);
             emit cSpiritTested();
