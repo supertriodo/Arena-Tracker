@@ -49,9 +49,11 @@ void LogLoader::createLogWorker(QString logComponent)
     {
         connect(logWorker, SIGNAL(logReset()),
                 this, SIGNAL(logReset()));
+        connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
+                this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
     }
 
-    logWorkerList.append(logWorker);
+    logWorkerMap[logComponent] = logWorker;
 }
 
 
@@ -266,18 +268,23 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
 
 LogLoader::~LogLoader()
 {
-    foreach(LogWorker *worker, logWorkerList)   delete worker;
-    logWorkerList.clear();
+    foreach(LogWorker *worker, logWorkerMap.values())   delete worker;
+    logWorkerMap.clear();
 }
 
 
 void LogLoader::sendLogWorkerFirstRun()
 {
-    foreach(LogWorker *worker, logWorkerList)
+    foreach(QString logComponent, logComponentList)
     {
-        worker->readLog();
-        connect(worker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
-                this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+        LogWorker *logWorker = logWorkerMap[logComponent];
+        logWorker->readLog();
+
+        if(logComponent != "LoadingScreen")
+        {
+            connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
+                    this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+        }
     }
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
@@ -287,7 +294,7 @@ void LogLoader::sendLogWorkerFirstRun()
 
 void LogLoader::sendLogWorker()
 {
-    foreach(LogWorker *worker, logWorkerList)   worker->readLog();
+    foreach(LogWorker *logWorker, logWorkerMap.values())   logWorker->readLog();
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;
@@ -315,8 +322,7 @@ void LogLoader::setMaxUpdateTime(int value)
 
 void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
 {
-    if(logWorkerList.count() < 2)   return;
-    logWorkerList[1]->copyGameLog(logSeekCreate, logSeekWon, fileName);//logWorkerList[1] es [Power]
+    logWorkerMap["Power"]->copyGameLog(logSeekCreate, logSeekWon, fileName);
 }
 
 

@@ -22,7 +22,7 @@ public:
 //Variables
 private:
     QString logsDirPath, logConfig;
-    QList<LogWorker *>logWorkerList;
+    QMap<QString, LogWorker *>logWorkerMap;
     QList<QString> logComponentList;
     int updateTime, maxUpdateTime;
 
