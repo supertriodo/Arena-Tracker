@@ -70,6 +70,8 @@ bool LogLoader::readLogsDirPath()
 
     if(logsDirPath.isEmpty())
     {
+        emit pDebug("Show First Run instructions dialog.");
+
         QString instructions = "The first time you run Arena Tracker you will be asked for:"
             "<br/>1) Logs dir location (If not default)."
             "<br/>2) log.config location (If not default)."
@@ -87,7 +89,6 @@ bool LogLoader::readLogsDirPath()
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
 
-        settings.setValue("logConfig", "");//TODO borrar
 
         QString initPath = "";
         logsDirPath = "";
@@ -113,6 +114,7 @@ bool LogLoader::readLogsDirPath()
 
         if(logsDirPath.isEmpty())
         {
+            emit pDebug("Show Find Logs dir dialog.");
             logsDirPath = QFileDialog::getExistingDirectory(0,
                 "Find Hearthstone Logs dir",
                 QDir::homePath());
@@ -121,7 +123,7 @@ bool LogLoader::readLogsDirPath()
         settings.setValue("logsDirPath", logsDirPath);
     }
 
-    emit pDebug("Path Logs Dir: " + logsDirPath);
+    emit pDebug("Path Logs Dir: " + logsDirPath + " - " + QString::number(logsDirPath.length()));
     emit pLog("Settings: Path Logs Dir: " + logsDirPath);
 
     if(!QFileInfo(logsDirPath).exists())
@@ -147,6 +149,7 @@ bool LogLoader::readLogConfigPath()
         logConfig = createDefaultLogConfig();
         if(logConfig.isEmpty())
         {
+            emit pDebug("Show Find log.config dialog.");
             logConfig = QFileDialog::getOpenFileName(0,
                 tr("Find Hearthstone config log (log.config)"), QDir::homePath(),
                 tr("log.config (log.config)"));
@@ -166,7 +169,7 @@ bool LogLoader::readLogConfigPath()
         isOk = checkLogConfig();
     }
 
-    emit pDebug("Path log.config: " + logConfig);
+    emit pDebug("Path log.config: " + logConfig + " - " + QString::number(logConfig.length()));
     emit pLog(tr("Settings: Path log.config: ") + logConfig);
 
     if(!QFileInfo(logConfig).exists())

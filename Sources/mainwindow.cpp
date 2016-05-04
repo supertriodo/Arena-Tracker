@@ -2278,10 +2278,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Auto deck
 //Hide Track secrets
-//Precarga loadingScreen component
-//Progress bar info
 
-//Futuro: Eliminar reescribir log.config
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
