@@ -710,7 +710,7 @@ void ArenaHandler::linkLogsToWebGames()
     if(!file.contains(QRegularExpression("DRAFT .* (\\w+).arenatracker"), &match)) return;
     QString playerHero = match.captured(1);
 
-    if(Utility::heroStringFromLogNumber(arenaCurrentGameList[0].playerHero) != playerHero)  return;
+    if(Utility::heroStringFromLogNumber(arenaCurrentHero) != playerHero)  return;
 
     replayLogsMap[arenaCurrent] = file;
 }
