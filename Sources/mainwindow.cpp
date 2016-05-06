@@ -2357,7 +2357,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Recuperar arena deck local
-//Boton + mover
 
 
 //BUGS CONOCIDOS
