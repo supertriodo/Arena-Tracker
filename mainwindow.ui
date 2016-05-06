@@ -1572,7 +1572,7 @@ transparent during a game</string>
                        <string>Dark Theme</string>
                       </property>
                       <property name="text">
-                       <string>Dark Theme</string>
+                       <string>Dark</string>
                       </property>
                      </widget>
                     </item>
@@ -1583,7 +1583,7 @@ transparent during a game</string>
 it'll split to show several tabs at once</string>
                       </property>
                       <property name="text">
-                       <string>Split Window </string>
+                       <string>Split</string>
                       </property>
                      </widget>
                     </item>
@@ -1594,7 +1594,7 @@ it'll split to show several tabs at once</string>
 in a new window</string>
                       </property>
                       <property name="text">
-                       <string>Deck Window</string>
+                       <string>Deck</string>
                       </property>
                      </widget>
                     </item>
@@ -1731,22 +1731,32 @@ in a new window</string>
                  <item>
                   <layout class="QHBoxLayout" name="configDeckHorizontalLayout2">
                    <item>
-                    <widget class="QCheckBox" name="configCheckClassColor">
+                    <widget class="QCheckBox" name="configCheckAutoSize">
                      <property name="toolTip">
-                      <string>Show a colored background for class cards.</string>
+                      <string>Auto Size: Adapt card size to deck window size.</string>
                      </property>
                      <property name="text">
-                      <string>Class Color</string>
+                      <string>Auto</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="configCheckClassColor">
+                     <property name="toolTip">
+                      <string>Class Color: Show a colored background for class cards.</string>
+                     </property>
+                     <property name="text">
+                      <string>Class</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="configCheckSpellColor">
                      <property name="toolTip">
-                      <string>Show text in color for spells and weapons.</string>
+                      <string>Spell Color: Show text in color for spells and weapons.</string>
                      </property>
                      <property name="text">
-                      <string>Spell Color</string>
+                      <string>Spell</string>
                      </property>
                     </widget>
                    </item>

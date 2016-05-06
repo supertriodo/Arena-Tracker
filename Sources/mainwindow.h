@@ -117,13 +117,16 @@ private:
     void createDataDir();
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
     void checkGamesLogDir();
     void checkDraftLogLine(QString logLine, QString file);
     void removeNonCompleteDraft();
+    void spreadTamCard(int value);
+    int getTamCard();
+    int getAutoTamCard();
 
 //Override events
 protected:
@@ -189,6 +192,7 @@ private slots:
     void currentArenaToWhiteAM(bool connected);
     void updateMaxGamesLog(int value);
     void logReset();
+    void spreadCorrectTamCard();
 };
 
 #endif // MAINWINDOW_H

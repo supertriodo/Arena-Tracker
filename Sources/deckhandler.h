@@ -10,8 +10,6 @@
 #include <QMap>
 #include <QSignalMapper>
 
-#define MALORNE QString("GVG_035")
-
 
 class DeckHandler : public QObject
 {
@@ -65,6 +63,7 @@ private:
     bool deckBuilderPY();
     void showInstallPY();
     void importEnemyDeck();
+    void hideUnknown(bool hidden = true);
 
 public:
     void reset();
@@ -73,7 +72,8 @@ public:
     void redrawClassCards();
     void redrawSpellWeaponCards();
     void updateIconSize(int cardHeight);
-    QList<DeckCard> * getDeckComplete();
+    QList<DeckCard> *getDeckComplete();
+    int getNumCardRows();
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
     void setTheme(Theme value);
@@ -88,6 +88,7 @@ signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
+    void deckSizeChanged();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 

@@ -343,7 +343,7 @@ void DeckHandler::reset()
     deckCard.remaining = deckCard.total;
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw(true);
-    insertDeckCard(deckCard);
+    insertDeckCard(deckCard); //Lanza emit deckSizeChanged();
 
     enableDeckButtons();
 
@@ -355,6 +355,13 @@ QList<DeckCard> * DeckHandler::getDeckComplete()
 {
     if(deckCardList[0].total==0)    return &deckCardList;
     else    return NULL;
+}
+
+int DeckHandler::getNumCardRows()
+{
+    int numCards = deckCardList.count();
+    if(deckCardList[0].listItem->isHidden())    numCards--;
+    return numCards;
 }
 
 
@@ -420,8 +427,9 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     }
 
     deckCardList[0].total-=total;
+    deckCardList[0].remaining = deckCardList[0].total;
     deckCardList[0].draw(true);
-    if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+    if(deckCardList[0].total == 0)  hideUnknown();
 
     if(!this->inArena)   enableDeckButtonSave();
 
@@ -438,6 +446,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
         {
             deckCardList.insert(i, deckCard);
             ui->deckListWidget->insertItem(i, deckCard.listItem);
+            emit deckSizeChanged();
             return;
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
@@ -448,6 +457,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
                 {
                     deckCardList.insert(i, deckCard);
                     ui->deckListWidget->insertItem(i, deckCard.listItem);
+                    emit deckSizeChanged();
                     return;
                 }
             }
@@ -455,12 +465,21 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
             {
                 deckCardList.insert(i, deckCard);
                 ui->deckListWidget->insertItem(i, deckCard.listItem);
+                emit deckSizeChanged();
                 return;
             }
         }
     }
     deckCardList.append(deckCard);
     ui->deckListWidget->addItem(deckCard.listItem);
+    emit deckSizeChanged();
+}
+
+
+void DeckHandler::hideUnknown(bool hidden)
+{
+    deckCardList[0].listItem->setHidden(hidden);
+    emit deckSizeChanged();
 }
 
 
@@ -514,13 +533,12 @@ void DeckHandler::drawFromDeck(QString code)
                 it->drawGreyed(true);
             }
             //it->remaining == 0
-            //MALORNE
-            else if(code == MALORNE)  return;
             //Reajustamos el mazo si tiene unknown cards
             else if(deckCardList[0].total>0)
             {
                 deckCardList[0].total--;
-                if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+                deckCardList[0].remaining = deckCardList[0].total;
+                if(deckCardList[0].total == 0)  hideUnknown();
                 else                            deckCardList[0].draw(true);
                 it->total++;
 
@@ -735,9 +753,10 @@ void DeckHandler::cardTotalMin()
     deckCardList[index].total--;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total++;
+    deckCardList[0].remaining = deckCardList[0].total;
 
     deckCardList[index].draw(true);
-    if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
+    if(deckCardList[0].total==1)    hideUnknown(false);
     deckCardList[0].draw(true);
     enableDeckButtons();
 
@@ -751,9 +770,10 @@ void DeckHandler::cardTotalPlus()
     deckCardList[index].total++;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total--;
+    deckCardList[0].remaining = deckCardList[0].total;
 
     deckCardList[index].draw(true);
-    if(deckCardList[0].total==0)    deckCardList[0].listItem->setHidden(true);
+    if(deckCardList[0].total==0)    hideUnknown();
     else                            deckCardList[0].draw(true);
     enableDeckButtons();
 
@@ -780,11 +800,13 @@ void DeckHandler::cardRemove()
     deckCardList.removeAt(index);
 
     deckCardList[0].total++;
-    if(deckCardList[0].total==1)    deckCardList[0].listItem->setHidden(false);
+    deckCardList[0].remaining = deckCardList[0].total;
+    if(deckCardList[0].total==1)    hideUnknown(false);
     deckCardList[0].draw(true);
     enableDeckButtons();
 
     enableDeckButtonSave();
+    emit deckSizeChanged();
 }
 
 

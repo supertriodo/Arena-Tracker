@@ -16,12 +16,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     ui->setupUi(this);
 
-    webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
     atLogFile = NULL;
     isMainWindow = true;
     mouseInApp = false;
     otherWindow = NULL;
     draftLogFile = "";
+    cardHeight = -1;
+
+    webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
+    logLoader = NULL;
+    gameWatcher = NULL;
+    arenaHandler = NULL;
+    cardDownloader = NULL;
+    enemyHandHandler = NULL;
+    draftHandler = NULL;
+    deckHandler = NULL;
+    enemyDeckHandler = NULL;
+    secretsHandler = NULL;
 
     createDataDir();
     createLogFile();
@@ -62,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     isMainWindow = false;
     mouseInApp = false;
     draftLogFile = "";
+    cardHeight = -1;
     otherWindow = primaryWindow;
 
     completeUI();
@@ -323,6 +335,9 @@ void MainWindow::createDeckHandler()
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+    connect(deckHandler, SIGNAL(deckSizeChanged()),
+            this, SLOT(spreadCorrectTamCard()));
+
     //connect de completeConfigTab
     connect(ui->configButtonCreateDeckPY, SIGNAL(clicked()),
             deckHandler, SLOT(askCreateDeckPY()));
@@ -719,7 +734,8 @@ void MainWindow::closeApp()
 //}
 
 
-void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showSpellColor,
+void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
+                               bool showClassColor, bool showSpellColor,
                                bool createGoldenCards, int maxGamesLog,
                                QString AMplayerEmail, QString AMpassword)
 {
@@ -749,13 +765,15 @@ void MainWindow::initConfigTab(int tooltipScale, bool showClassColor, bool showS
     if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
     //Deck
-    if(this->cardHeight<ui->configSliderCardSize->minimum() || this->cardHeight>ui->configSliderCardSize->maximum())  this->cardHeight = 35;
-    if(ui->configSliderCardSize->value() == this->cardHeight)   updateTamCard(this->cardHeight);
-    else    ui->configSliderCardSize->setValue(this->cardHeight);
+    if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
+    if(ui->configSliderCardSize->value() == cardHeight)   updateTamCard(cardHeight);
+    else    ui->configSliderCardSize->setValue(cardHeight);
 
     if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
     if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
     else ui->configSliderTooltipSize->setValue(tooltipScale);
+
+    ui->configCheckAutoSize->setChecked(autoSize);
 
     ui->configCheckClassColor->setChecked(showClassColor);
     updateShowClassColor(showClassColor);
@@ -852,19 +870,20 @@ void MainWindow::readSettings()
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
 
-        this->cardHeight = settings.value("cardHeight", 35).toInt();
+        int cardHeight = settings.value("cardHeight", 35).toInt();
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
+        bool autoSize = settings.value("autoSize", true).toBool();
         bool showClassColor = settings.value("showClassColor", true).toBool();
         bool showSpellColor = settings.value("showSpellColor", true).toBool();
         bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
-        int maxGamesLog = settings.value("maxGamesLog", 10).toInt();
+        int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
 
-        initConfigTab(tooltipScale, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
+        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
     }
     else
     {
@@ -895,11 +914,12 @@ void MainWindow::writeSettings()
         settings.setValue("transparent", (int)this->transparency);
         settings.setValue("theme", (int)this->theme);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
-        settings.setValue("cardHeight", this->cardHeight);
+        settings.setValue("cardHeight", ui->configSliderCardSize->value());
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
+        settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
         settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
@@ -1121,6 +1141,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         ui->closeButton->move(right-24, top);
         ui->minimizeButton->move(right-48, top);
         ui->resizeButton->move(right-24, bottom-24);
+
+        if(otherWindow == NULL) spreadCorrectTamCard();
     }
     else
     {
@@ -1130,8 +1152,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         int right = left + widget->width();
 
         ui->resizeButton->move(right-24, bottom-24);
-    }
 
+        otherWindow->spreadCorrectTamCard();
+    }
     event->accept();
 }
 
@@ -2017,22 +2040,77 @@ void MainWindow::toggleDeckWindow()
     {
         destroySecondaryWindow();
     }
+    spreadCorrectTamCard();
+}
+
+
+int MainWindow::getAutoTamCard()
+{
+    int numCards = deckHandler->getNumCardRows();
+    int deckHeight = ui->tabDeck->height();
+    if(this->otherWindow == NULL)   deckHeight -= 40;
+
+    if(numCards > 0)    return deckHeight/numCards;
+    else                return -1;
+}
+
+
+int MainWindow::getTamCard()
+{
+    bool autoSize = ui->configCheckAutoSize->isChecked();
+
+    int tamCardSlider = ui->configSliderCardSize->value();
+
+    if(autoSize)
+    {
+        int tamCardAuto = getAutoTamCard();
+        if(tamCardAuto == -1)   return tamCardSlider;
+        else                    return std::min(tamCardAuto, tamCardSlider);
+    }
+    else
+    {
+        return tamCardSlider;
+    }
+}
+
+
+void MainWindow::spreadTamCard(int value)
+{
+    if(value < ui->configSliderCardSize->minimum()) value = ui->configSliderCardSize->minimum();
+    if(this->cardHeight == value) return;
+
+    this->cardHeight = value;
+    DeckCard::setCardHeight(value);
+
+    if(deckHandler != NULL)
+    {
+        deckHandler->updateIconSize(value);
+        deckHandler->redrawAllCards();
+    }
+
+    if(enemyDeckHandler != NULL)    enemyDeckHandler->redrawAllCards();
+    if(secretsHandler != NULL)      secretsHandler->redrawAllCards();
+    if(enemyHandHandler != NULL)    enemyHandHandler->redrawAllCards();
+
+    if(draftHandler != NULL)
+    {
+        draftHandler->redrawAllCards();
+        draftHandler->updateTamCard(value);
+    }
+
+    calculateDeckWindowMinimumWidth();
+}
+
+
+void MainWindow::spreadCorrectTamCard()
+{
+    spreadTamCard(getTamCard());
 }
 
 
 void MainWindow::updateTamCard(int value)
 {
-    this->cardHeight = value;
-    DeckCard::setCardHeight(value);
-    deckHandler->updateIconSize(value);
-    deckHandler->redrawAllCards();
-    enemyDeckHandler->redrawAllCards();
-    secretsHandler->redrawAllCards();
-    enemyHandHandler->redrawAllCards();
-    draftHandler->redrawAllCards();
-    draftHandler->updateTamCard(value);
-
-    calculateDeckWindowMinimumWidth();
+    spreadCorrectTamCard();
 
     QString labelText = QString::number(value) + " px";
     ui->configSliderCardSize->setToolTip(labelText);
@@ -2212,6 +2290,7 @@ void MainWindow::completeConfigTab()
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
     connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
+    connect(ui->configCheckAutoSize, SIGNAL(clicked()), this, SLOT(spreadCorrectTamCard()));
     connect(ui->configCheckClassColor, SIGNAL(clicked(bool)), this, SLOT(updateShowClassColor(bool)));
     connect(ui->configCheckSpellColor, SIGNAL(clicked(bool)), this, SLOT(updateShowSpellColor(bool)));
 
@@ -2276,8 +2355,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Auto deck
 //Hide Track secrets
+//Recuperar arena deck local
+//Boton + mover
 
 
 //BUGS CONOCIDOS
