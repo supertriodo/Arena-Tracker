@@ -1547,3 +1547,91 @@ void DeckHandler::showInstallPY()
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 }
+
+
+void DeckHandler::completeArenaDeck(QString draftLog)
+{
+    if(deckCardList[0].total == 0)
+    {
+        emit pDebug("Completing Arena Deck: Deck complete from log.");
+        return;
+    }
+
+    QList<QString> cardsInDeck, cardsToAdd;
+
+    //Create cardsInDeck list
+    foreach(DeckCard deckCard, deckCardList)
+    {
+        QString code = deckCard.getCode();
+        if(!code.isEmpty())
+        {
+            for(uint i=0; i<deckCard.total; i++) cardsInDeck.append(code);
+        }
+    }
+
+    //Create cardsToAdd list
+    QFile logFile(Utility::gameslogPath() + "/" + draftLog);
+    if(!logFile.open(QIODevice::ReadOnly))
+    {
+        emit pDebug("Cannot open draft log " + Utility::gameslogPath() + "/" + draftLog, Error);
+        return;
+    }
+
+    char line[2048];
+    while(logFile.readLine(line, sizeof(line)) > 0)
+    {
+        QString code = getCodeFromDraftLogLine(line);
+        if(!code.isEmpty())
+        {
+            if(cardsInDeck.contains(code))
+            {
+                cardsInDeck.removeOne(code);
+            }
+            else
+            {
+                cardsToAdd.append(code);
+            }
+        }
+    }
+    logFile.close();
+
+    //Check lists make sense
+    if(deckCardList[0].total != (uint)cardsToAdd.count())
+    {
+        emit pDebug("Completing Arena Deck: Cards to add != unknown cards.");
+        return;
+    }
+
+    //Complete deck
+    foreach(QString code, cardsToAdd)
+    {
+        newDeckCardDraft(code);
+    }
+
+    emit pDebug("Completing Arena Deck: " + QString::number(cardsToAdd.count()) + " cards added.");
+}
+
+
+QString DeckHandler::getCodeFromDraftLogLine(QString line)
+{
+    QRegularExpressionMatch match;
+    //Pick card: CS1_112
+    if(line.contains(QRegularExpression("Pick card: (\\w+)"), &match))
+    {
+        return match.captured(1);
+    }
+    else
+    {
+        return "";
+    }
+}
+
+
+
+
+
+
+
+
+
+

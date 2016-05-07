@@ -716,4 +716,8 @@ void ArenaHandler::linkLogsToWebGames()
 }
 
 
-
+QString ArenaHandler::getArenaCurrentGameLog()
+{
+    if(replayLogsMap.contains(arenaCurrent))    return replayLogsMap[arenaCurrent];
+    else                                        return "";
+}

@@ -73,6 +73,7 @@ void GameWatcher::endReadingDeck()
 {
     if(arenaState != readingDeck)    return;
     arenaState = deckRead;
+    emit arenaDeckRead();
     emit pDebug("End reading deck (arenaState = deckRead).", 0);
     emit pLog(tr("Log: Active deck read."));
 }

@@ -55,6 +55,7 @@ public:
     void setTheme(Theme theme);
     void deselectRow();
     void linkLogToDraft(QString logFileName);
+    QString getArenaCurrentGameLog();
 
 signals:
     void pLog(QString line);

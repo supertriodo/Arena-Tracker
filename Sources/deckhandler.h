@@ -64,6 +64,7 @@ private:
     void showInstallPY();
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
+    QString getCodeFromDraftLogLine(QString line);
 
 public:
     void reset();
@@ -83,6 +84,7 @@ public:
     void setSynchronized();
     void loadDecks();
     bool askSaveDeck();
+    void completeArenaDeck(QString draftLog);
 
 signals:
     void checkCardImage(QString code);

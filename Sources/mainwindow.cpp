@@ -407,6 +407,8 @@ void MainWindow::createGameWatcher()
 {
     gameWatcher = new GameWatcher(this);
 
+    connect(gameWatcher, SIGNAL(arenaDeckRead()),
+            this, SLOT(completeArenaDeck()));
     connect(gameWatcher, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
@@ -1705,6 +1707,24 @@ void MainWindow::checkGamesLogDir()
     {
         dir.remove(file);
         pDebug(file + " removed.");
+    }
+}
+
+
+void MainWindow::completeArenaDeck()
+{
+    if(arenaHandler == NULL)    return;
+
+    QString arenaCurrentGameLog = arenaHandler->getArenaCurrentGameLog();
+    if(arenaCurrentGameLog.isEmpty())
+    {
+        pDebug("Completing Arena Deck: No draft log.");
+    }
+    else
+    {
+        pDebug("Completing Arena Deck: " + arenaCurrentGameLog);
+
+        if(deckHandler != NULL) deckHandler->completeArenaDeck(arenaCurrentGameLog);
     }
 }
 

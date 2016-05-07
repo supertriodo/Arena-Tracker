@@ -193,6 +193,7 @@ private slots:
     void updateMaxGamesLog(int value);
     void logReset();
     void spreadCorrectTamCard();
+    void completeArenaDeck();
 };
 
 #endif // MAINWINDOW_H

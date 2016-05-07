@@ -123,6 +123,7 @@ signals:
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString subType);
     void gameLogComplete(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
+    void arenaDeckRead();
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
