@@ -635,6 +635,8 @@ void MainWindow::completeUI()
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(spreadMouseInApp()));
 
+        ui->replayButton->hide();//TODO eliminar
+
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
