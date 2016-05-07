@@ -68,6 +68,8 @@ http://www.reddit.com/r/ArenaTracker/
  * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
 * How can I back-up my data.
  * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in USER/Arena Tracker/ArenaTrackerDecks.json
+* I don't want an Arena Tracker dir messing around in my HOME dir!
+ * If you don't want Arena Tracker dir in your HOME dir, you can place it wherever you want and move Arena Tracker binary to the same place and Arena Tracker dir won't be created in your HOME anymore.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
