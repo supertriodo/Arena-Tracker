@@ -78,7 +78,6 @@ private:
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
     void advanceTurn(bool playerDraw);
-    SecretHero getSecretHero(QString playerHero, QString enemyHero);
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);

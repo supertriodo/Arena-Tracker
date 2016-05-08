@@ -261,7 +261,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 
             winnerPlayer = match->captured(1);
 
-            if(spectating)
+            if(spectating || loadingScreenState == menu)
             {
                 emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
             }
@@ -283,7 +283,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             if(powerState != inGameState)
             {
                 powerState = inGameState;
-                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState)", 0);
+                mulliganEnemyDone = true;
+                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganEnemyDone = true)", 0);
             }
         }
     }
@@ -304,7 +305,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 hero2 = match->captured(1);
                 if(spectating)
                 {
-                    powerState = inGameState;
+                    powerState = playerName1State;
                     turn = 1;
                     emit pDebug("Found hero 2: " + hero2 + " (powerState = inGameState)", numLine);
                 }
@@ -322,7 +323,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 if(name2 == playerTag)
                 {
                     playerID = 2;
-                    secretHero = getSecretHero(hero2, hero1);
                     emit enemyHero(hero1);
                 }
                 powerState = playerName2State;
@@ -341,7 +341,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 if(name1 == playerTag)
                 {
                     playerID = 1;
-                    secretHero = getSecretHero(hero1, hero2);
                     emit enemyHero(hero2);
                 }
                 powerState = inGameState;
@@ -373,6 +372,7 @@ bool GameWatcher::isHeroPower(QString code)
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
     //Jugador roba carta inicial
+    //En spectator games no ocurre
     if(line.contains(QRegularExpression(
             "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
             ), match))
@@ -390,12 +390,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             if(playerID == 1)
             {
                 if(!spectating)  playerTag = name1;
-                secretHero = getSecretHero(hero1, hero2);
             }
             else if(playerID == 2)
             {
                 if(!spectating)  playerTag = name2;
-                secretHero = getSecretHero(hero2, hero1);
             }
             else
             {
@@ -407,17 +405,18 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             {
                 QSettings settings("Arena Tracker", "Arena Tracker");
                 settings.setValue("playerTag", playerTag);
-                emit pDebug("Defined playerID, secretHero and playerTag: " + playerTag, 0);
+                emit pDebug("Defined playerID and playerTag: " + playerTag, 0);
             }
             else
             {
-                emit pDebug("Defined playerID and secretHero in spectator game.", 0);
+                emit pDebug("Defined playerID in spectator game.", 0);
             }
         }
 
         emit playerCardDraw(match->captured(1));
     }
     //Enemigo roba carta inicial
+    //En spectator games no ocurre
     else if(line.contains(QRegularExpression(
                   "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
                   "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=(\\d+)\\]"
@@ -469,6 +468,23 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         emit specialCardTrigger(cardId, blockType);
         if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
     }
+
+    //Secret hero
+    //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[id=43 cardId= type=INVALID zone=HAND zonePos=1 player=2] tag=CLASS value=PALADIN
+    else if(line.contains(QRegularExpression(
+        "GameState\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] tag=CLASS value=(MAGE|HUNTER|PALADIN)"
+        ), match))
+    {
+        QString id = match->captured(1);
+        QString classHero = match->captured(2);
+
+        emit pDebug("Secret hero: " + classHero + " Id: " + id, numLine);
+        if(classHero == "MAGE")         secretHero = mage;
+        else if(classHero == "HUNTER")  secretHero = hunter;
+        else if(classHero == "PALADIN") secretHero = paladin;
+    }
+
 
     //Jugador/Enemigo accion con objetivo
     //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
@@ -909,23 +925,23 @@ void GameWatcher::advanceTurn(bool playerDraw)
 }
 
 
-SecretHero GameWatcher::getSecretHero(QString playerHero, QString enemyHero)
-{
-    SecretHero enemySecretHero = unknown;
-    SecretHero playerSecretHero = unknown;
+//SecretHero GameWatcher::getSecretHero(QString playerHero, QString enemyHero)
+//{
+//    SecretHero enemySecretHero = unknown;
+//    SecretHero playerSecretHero = unknown;
 
-    if(enemyHero == QString("04"))  enemySecretHero = paladin;
-    else if(enemyHero == QString("05"))  enemySecretHero = hunter;
-    else if(enemyHero == QString("08"))  enemySecretHero = mage;
+//    if(enemyHero == QString("04"))  enemySecretHero = paladin;
+//    else if(enemyHero == QString("05"))  enemySecretHero = hunter;
+//    else if(enemyHero == QString("08"))  enemySecretHero = mage;
 
-    if(playerHero == QString("04"))  playerSecretHero = paladin;
-    else if(playerHero == QString("05"))  playerSecretHero = hunter;
-    else if(playerHero == QString("08"))  playerSecretHero = mage;
+//    if(playerHero == QString("04"))  playerSecretHero = paladin;
+//    else if(playerHero == QString("05"))  playerSecretHero = hunter;
+//    else if(playerHero == QString("08"))  playerSecretHero = mage;
 
-    if(enemySecretHero != unknown)  return enemySecretHero;
-    else if(playerSecretHero != unknown)  return playerSecretHero;
-    else    return unknown;
-}
+//    if(enemySecretHero != unknown)  return enemySecretHero;
+//    else if(playerSecretHero != unknown)  return playerSecretHero;
+//    else    return unknown;
+//}
 
 
 void GameWatcher::setSynchronized()

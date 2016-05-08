@@ -2380,10 +2380,13 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //Recuperar arena deck local
 
+//SPECTATOR GAMES: Todo correcto excepto:
+//Las cartas iniciales pre-mulligan de ambos jugadores no aparecen en el log.
+//Los nombres de los jugadores no aparecen en el log. Saltamos de heroType1State --> inGameState al recibir un TURN
+//  y se hara mulliganEnemyDone = true para activar (Enemigo roba carta especial del vacio) durante la partida.
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
-//Spectator games no avanzan el turno ya que playerTag es diferente de los jugadores.
 //Cazar crash bug en drafting con 31 cartas
 
 //REWARDS
