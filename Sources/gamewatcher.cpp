@@ -281,7 +281,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             {
                 powerState = inGameState;
                 mulliganEnemyDone = mulliganPlayerDone = true;
-                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganDone = true)", 0);
+                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganDone = true)", 0, Warning);
             }
         }
     }
@@ -393,9 +393,11 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
             {
                 emit pDebug("Player mulligan end.", numLine);
                 mulliganPlayerDone = true;
+                emit playerTurnStart();
 
                 if(mulliganEnemyDone)
                 {
+                    turn = 1;
                     powerState = inGameState;
                     emit pDebug("Mulligan phase end (powerState = inGameState)", numLine);
                 }
@@ -417,6 +419,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 
                 if(mulliganPlayerDone)
                 {
+                    turn = 1;
                     powerState = inGameState;
                     emit pDebug("Mulligan phase end (powerState = inGameState)", numLine);
                 }
@@ -911,7 +914,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
         isPlayerTurn = playerTurn;
 
-        if(isPlayerTurn && turn!=1)    emit playerTurnStart();
+        if(playerDraw)      emit playerTurnStart();
 
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)
