@@ -100,7 +100,7 @@ signals:
     void enemyHero(QString hero);
     void enterArena();
     void leaveArena();
-    void playerCardDraw(QString code);
+    void playerCardDraw(QString code, bool mulligan=false);
     void playerReturnToDeck(QString code);
     void enemyKnownCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
@@ -117,7 +117,7 @@ signals:
     void playerHeroPower();
     void avengeTested();
     void cSpiritTested();
-    void playerTurnStart();
+    void clearDrawList(bool forceClear=false);
     void needResetDeck();
     void activeDraftDeck();
     void pickCard(QString code);

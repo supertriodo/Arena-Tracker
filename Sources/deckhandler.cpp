@@ -483,7 +483,7 @@ void DeckHandler::hideUnknown(bool hidden)
 }
 
 
-void DeckHandler::newDrawCard(QString code)
+void DeckHandler::newDrawCard(QString code, bool mulligan)
 {
     DrawCard drawCard(code);
     drawCard.listItem = new QListWidgetItem();
@@ -494,8 +494,10 @@ void DeckHandler::newDrawCard(QString code)
     ui->drawListWidget->setHidden(false);
     QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
 
-    if(this->drawDisappear>0)   QTimer::singleShot(this->drawDisappear*1000,
-                                                    this, SLOT(removeOldestDrawCard()));
+    if(!mulligan && this->drawDisappear>0)
+    {
+        QTimer::singleShot(this->drawDisappear*1000, this, SLOT(removeOldestDrawCard()));
+    }
 }
 
 
@@ -509,9 +511,9 @@ void DeckHandler::removeOldestDrawCard()
 }
 
 
-void DeckHandler::showPlayerCardDraw(QString code)
+void DeckHandler::showPlayerCardDraw(QString code, bool mulligan)
 {
-    if(this->drawDisappear>=0)    newDrawCard(code);
+    if(this->drawDisappear>=0)    newDrawCard(code, mulligan);
     drawFromDeck(code);
 }
 
@@ -955,6 +957,8 @@ void DeckHandler::clearDrawList(bool forceClear)
     ui->drawListWidget->setMinimumHeight(0);
     ui->drawListWidget->setMaximumHeight(0);
     drawCardList.clear();
+
+    emit pDebug("Clear Draw List.");
 }
 
 

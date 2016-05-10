@@ -423,12 +423,12 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
-            deckHandler, SLOT(showPlayerCardDraw(QString)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString, bool)),
+            deckHandler, SLOT(showPlayerCardDraw(QString, bool)));
     connect(gameWatcher, SIGNAL(playerReturnToDeck(QString)),
             deckHandler, SLOT(returnToDeck(QString)));
-    connect(gameWatcher, SIGNAL(playerTurnStart()),
-            deckHandler, SLOT(clearDrawList()));
+    connect(gameWatcher, SIGNAL(clearDrawList(bool)),
+            deckHandler, SLOT(clearDrawList(bool)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -2381,6 +2381,11 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 
+
+//SPECTATOR GAMES
+//Si empiezan desde el principio todo correcto.
+//Si empiezan a medias faltara: name1, name2, playerTag, playerID, firstPlayer
+//  fallaran algunos check de secretos
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

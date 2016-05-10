@@ -357,7 +357,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         QString player = match->captured(3);
 
         emit pDebug("Player: Starting card drawn: " + cardName, numLine);
-        emit playerCardDraw(cardId);
+        emit playerCardDraw(cardId, true);
 
         if(playerID == 0)
         {
@@ -393,7 +393,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
             {
                 emit pDebug("Player mulligan end.", numLine);
                 mulliganPlayerDone = true;
-                emit playerTurnStart();
+                emit clearDrawList(true);
 
                 if(mulliganEnemyDone)
                 {
@@ -907,14 +907,14 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
     //Al turno 1 dejamos que pase cualquiera asi dejamos el turno 0 para indicar cartas de mulligan
     //Solo avanza de turno al robar carta el jugador que le corresponde
-    if(turn == 1 || playerDraw == playerTurn || spectating)
+    if(turn == 1 || playerDraw == playerTurn || playerID == 0)
     {
         turnReal = turn;
         emit pDebug("\nTurn: " + QString::number(turn) + " " + (playerTurn?"Player":"Enemy"), 0);
 
         isPlayerTurn = playerTurn;
 
-        if(playerDraw)      emit playerTurnStart();
+        if(playerDraw)      emit clearDrawList();
 
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)
