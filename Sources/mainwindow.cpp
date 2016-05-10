@@ -1922,7 +1922,7 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
     if(fadeOut)
     {
         bool inTabEnemy = ui->tabWidget->currentWidget() == ui->tabEnemy;
-        if(inTabEnemy && enemyHandHandler->isEmptyOutGame())
+        if(inTabEnemy && enemyHandHandler->isEmpty())
         {
             Utility::fadeInWidget(ui->tabWidget->tabBar());
             Utility::fadeInWidget(ui->tabWidgetH2->tabBar());

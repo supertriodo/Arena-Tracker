@@ -100,6 +100,9 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     enemyHandList.append(handCard);
 
     if(code != "")      emit checkCardImage(code);
+
+    //Hide TabBar with 1 HandCards, was shown with 0 HandCards to avoid a full transparent window
+    if(enemyHandList.count() == 1)  updateTransparency();
 }
 
 
@@ -134,6 +137,10 @@ void EnemyHandHandler::hideEnemyCardPlayed(int id, QString code)
         {
             delete it->listItem;
             enemyHandList.removeAt(i);
+
+            //Show TabBar with 0 HandCards to avoid a full transparent window
+            if(enemyHandList.isEmpty())  updateTransparency();
+
             return;
         }
     }
@@ -255,9 +262,9 @@ void EnemyHandHandler::setMouseInApp(bool value)
 }
 
 
-bool EnemyHandHandler::isEmptyOutGame()
+bool EnemyHandHandler::isEmpty()
 {
-    return !inGame && enemyHandList.isEmpty();
+    return enemyHandList.isEmpty();
 }
 
 

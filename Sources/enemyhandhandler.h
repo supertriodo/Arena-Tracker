@@ -44,7 +44,7 @@ public:
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
     bool isFromEnemyDeck(int id);
-    bool isEmptyOutGame();
+    bool isEmpty();
 
 signals:
     void checkCardImage(QString code);
