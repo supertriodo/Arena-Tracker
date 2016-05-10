@@ -6,7 +6,6 @@
 #include "Cards/secretcard.h"
 #include "utility.h"
 
-#define MAD_SCIENTIST "FP1_004"
 
 class GameResult
 {
@@ -42,7 +41,7 @@ public:
     ~GameWatcher();
 
 private:
-    enum PowerState { noGame, heroType1State, heroType2State, playerName1State, playerName2State, inGameState };
+    enum PowerState { noGame, heroType1State, heroType2State, mulliganState, inGameState };
     enum ArenaState { noDeckRead, deckRead, readingDeck };
 
 //Variables
@@ -61,7 +60,7 @@ private:
     //TurnReal avanza a turn cuando robamos carta, nos aseguramos de que animaciones atrasadas
     //no aparezcan como parte del nuevo turno
     int turn, turnReal;
-    bool mulliganEnemyDone;
+    bool mulliganEnemyDone, mulliganPlayerDone;
     bool synchronized;
     qint64 logSeekCreate;
     bool copyGameLogs;
@@ -75,6 +74,7 @@ private:
     void processLoadingScreen(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine, qint64 logSeek);
+    void processPowerMulligan(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
     void advanceTurn(bool playerDraw);
@@ -101,6 +101,7 @@ signals:
     void enterArena();
     void leaveArena();
     void playerCardDraw(QString code);
+    void playerReturnToDeck(QString code);
     void enemyKnownCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
     void enemyCardPlayed(int id, QString code="");

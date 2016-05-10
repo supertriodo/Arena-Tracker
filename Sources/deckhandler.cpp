@@ -518,7 +518,10 @@ void DeckHandler::showPlayerCardDraw(QString code)
 
 void DeckHandler::drawFromDeck(QString code)
 {
-    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    //Avoid special cards
+    if(code == THE_COIN)    return;
+
+    for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         if(it->getCode() == code)
         {
@@ -544,11 +547,13 @@ void DeckHandler::drawFromDeck(QString code)
 
                 it->drawGreyed(true);
 
-                emit pDebug("New card: " + it->getName());
+                emit pDebug("New card: " + it->getName() + ". " +
+                            QString::number(it->remaining) + "/" + QString::number(it->total));
             }
             else
             {
-                emit pDebug("New card but deck is full. " + it->getName(), Warning);
+                emit pDebug("New card but deck is full. " + it->getName() + ". " +
+                            QString::number(it->remaining) + "/" + QString::number(it->total), Warning);
             }
             return;
         }
@@ -557,7 +562,7 @@ void DeckHandler::drawFromDeck(QString code)
     if(deckCardList[0].total>0)
     {
         emit pDebug("New card: " +
-                          (*cardsJson)[code].value("name").toString());
+                          (*cardsJson)[code].value("name").toString() + ". 0/1");
         newDeckCard(code);
         drawFromDeck(code);
     }
@@ -566,6 +571,32 @@ void DeckHandler::drawFromDeck(QString code)
         emit pDebug("New card but deck is full. " +
                       (*cardsJson)[code].value("name").toString(), Warning);
     }
+}
+
+
+void DeckHandler::returnToDeck(QString code)
+{
+    for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    {
+        if(it->getCode() == code)
+        {
+            if(it->remaining < it->total)
+            {
+                it->remaining++;
+                it->draw(false);
+                emit pDebug("Return to deck: " + code + ". " +
+                            QString::number(it->remaining) + "/" + QString::number(it->total));
+            }
+            else
+            {
+                emit pDebug("Not return to deck: " + code + ". Remaining=Total " +
+                            QString::number(it->remaining) + "/" + QString::number(it->total), Warning);
+            }
+            return;
+        }
+    }
+
+    emit pDebug("Not return to deck: " + code + ". Code not found", Warning);
 }
 
 

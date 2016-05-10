@@ -10,6 +10,9 @@
 #include <QNetworkRequest>
 #include <QScreen>
 
+#define MAD_SCIENTIST "FP1_004"
+#define THE_COIN "GAME_005"
+
 
 using namespace cv;
 

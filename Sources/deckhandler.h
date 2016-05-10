@@ -110,6 +110,7 @@ public slots:
     void enterArena();
     void leaveArena();
     void askCreateDeckPY();
+    void returnToDeck(QString code);
 
 private slots:
     void removeOldestDrawCard();

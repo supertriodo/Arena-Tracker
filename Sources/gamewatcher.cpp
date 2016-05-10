@@ -15,9 +15,6 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     synchronized = false;
 
     match = new QRegularExpressionMatch();
-
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    this->playerTag = settings.value("playerTag", "").toString();
 }
 
 
@@ -55,7 +52,7 @@ void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64
     }
     else if(logComponent == logZone)
     {
-        processZone(line, numLine);//if(synchronized)
+        processZone(line, numLine);
     }
 }
 
@@ -156,7 +153,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-    else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))//if(synchronized)
+    else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
     {
         emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
         emit activeDraftDeck(); //End draft
@@ -164,7 +161,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //DRAFTING PICK CARD
     //[Arena] Client chooses: Profesora violeta (NEW1_026)
-    else if(line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))//if(synchronized)
+    else if(line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
     {
         QString code = match->captured(1);
         if(!code.contains("HERO"))
@@ -175,7 +172,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //START READING DECK
     //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
-    else if(line.contains(QRegularExpression(//if(synchronized)
+    else if(line.contains(QRegularExpression(
                 "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
     {
         emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
@@ -183,7 +180,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
-    else if((arenaState == readingDeck) && line.contains(QRegularExpression(//if(synchronized)
+    else if((arenaState == readingDeck) && line.contains(QRegularExpression(
             "DraftManager\\.OnChoicesAndContents - Draft deck contains card (\\w+)"), match))
     {
         QString code = match->captured(1);
@@ -192,7 +189,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     }
     //IN REWARDS
     //[Arena] SetDraftMode - IN_REWARDS
-    else if(line.contains("SetDraftMode - IN_REWARDS"))//if(synchronized)
+    else if(line.contains("SetDraftMode - IN_REWARDS"))
     {
         emit pDebug("Found IN_REWARDS.", numLine);
         emit inRewards();   //Show rewards input
@@ -228,11 +225,10 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         else if(line.contains("CREATE_GAME"))
         {
             emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
-            emit pDebug("PlayerTag: " + playerTag, 0);
             logSeekCreate = logSeek;
             powerState = heroType1State;
 
-            mulliganEnemyDone = false;
+            mulliganEnemyDone = mulliganPlayerDone = false;
             turn = turnReal = 0;
 
             hero1.clear();
@@ -242,6 +238,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             firstPlayer.clear();
             winnerPlayer.clear();
             playerID = 0;
+            playerTag = "";
             secretHero = unknown;
             playerMinions = -2;
             enemyMinions = -2;
@@ -280,11 +277,11 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             turn = match->captured(1).toInt();
             emit pDebug("Found TURN: " + match->captured(1), numLine);
 
-            if(powerState != inGameState)
+            if(powerState != inGameState && turn > 1)
             {
                 powerState = inGameState;
-                mulliganEnemyDone = true;
-                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganEnemyDone = true)", 0);
+                mulliganEnemyDone = mulliganPlayerDone = true;
+                emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganDone = true)", 0);
             }
         }
     }
@@ -303,58 +300,128 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             else if(powerState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
             {
                 hero2 = match->captured(1);
-                if(spectating)
-                {
-                    powerState = playerName1State;
-                    turn = 1;
-                    emit pDebug("Found hero 2: " + hero2 + " (powerState = inGameState)", numLine);
-                }
-                else
-                {
-                    powerState = playerName1State;
-                    emit pDebug("Found hero 2: " + hero2 + " (powerState = playerName1State)", numLine);
-                }
-
+                powerState = mulliganState;
+                emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
             }
-        case playerName1State:
-            if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=2"), match))
-            {
-                name2 = match->captured(1);
-                if(name2 == playerTag)
-                {
-                    playerID = 2;
-                    emit enemyHero(hero1);
-                }
-                powerState = playerName2State;
-                emit pDebug("Found player 2: " + name2 + " (powerState = playerName2State)", numLine);
-            }
-            else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
-            {
-                firstPlayer = match->captured(1);
-                emit pDebug("Found First Player: " + firstPlayer, numLine);
-            }
-            break;
-        case playerName2State:
-            if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYER_ID value=1"), match))
-            {
-                name1 = match->captured(1);
-                if(name1 == playerTag)
-                {
-                    playerID = 1;
-                    emit enemyHero(hero2);
-                }
-                powerState = inGameState;
-                emit pDebug("Found player 1: " + name1 + " (powerState = inGameState)", numLine);
-            }
-            else if(line.contains(QRegularExpression("Entity=(.+) tag=FIRST_PLAYER value=1"), match))
-            {
-                firstPlayer = match->captured(1);
-                emit pDebug("Found First Player: " + firstPlayer, numLine);
-            }
+        case mulliganState:
+            processPowerMulligan(line, numLine);
             break;
         case inGameState:
-            processPowerInGame(line, numLine);//if(synchronized)
+            processPowerInGame(line, numLine);
             break;
+    }
+}
+
+
+void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
+{
+    //Jugador/Enemigo names y firstPlayer
+    //GameState.DebugPrintEntityChoices() - id=1 Player=fayatime TaskList=3 ChoiceType=MULLIGAN CountMin=0 CountMax=5
+    //GameState.DebugPrintEntityChoices() - id=2 Player=Винсент TaskList=4 ChoiceType=MULLIGAN CountMin=0 CountMax=3
+    if(line.contains(QRegularExpression(
+                "GameState\\.DebugPrintEntityChoices\\(\\) - id=(\\d+) Player=(.*) TaskList=\\d+ ChoiceType=MULLIGAN CountMin=0 CountMax=(\\d+)"
+                  ), match))
+    {
+        QString player = match->captured(1);
+        QString playerName = match->captured(2);
+        QString numCards = match->captured(3);
+
+        if(player.toInt() == 1)
+        {
+            name1 = playerName;
+            emit pDebug("Found player 1: " + name1, numLine);
+        }
+        else if(player.toInt() == 2)
+        {
+            name2 = playerName;
+            emit pDebug("Found player 2: " + name2, numLine);
+        }
+        else    emit pDebug("Read invalid PlayerID value: " + player, numLine, Error);
+
+        if(numCards == "3")
+        {
+            firstPlayer = playerName;
+            emit pDebug("Found First Player: " + firstPlayer, numLine);
+        }
+    }
+
+    //Jugador roba carta inicial
+    //GameState.DebugPrintEntityChoices() -   Entities[0]=[name=Conjurador etéreo id=22 zone=HAND zonePos=1 cardId=LOE_003 player=1]
+    else if(line.contains(QRegularExpression(
+                "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
+                "\\[name=(.*) id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
+                  ), match))
+    {
+        QString cardName = match->captured(1);
+        QString cardId = match->captured(2);
+        QString player = match->captured(3);
+
+        emit pDebug("Player: Starting card drawn: " + cardName, numLine);
+        emit playerCardDraw(cardId);
+
+        if(playerID == 0)
+        {
+            playerID = player.toInt();
+            playerTag = (playerID == 1)?name1:name2;
+            emit enemyHero((playerID == 1)?hero2:hero1);
+            emit pDebug("Found playerID: " + player + " playerTag: " + playerTag, 0);
+        }
+    }
+
+    //Enemigo roba carta inicial
+    else if(line.contains(QRegularExpression(
+                  "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
+                  "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=\\d+\\]"
+                  ), match))
+    {
+        QString id = match->captured(1);
+
+        emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
+        emit enemyCardDraw(id.toInt());
+    }
+
+    //MULLIGAN DONE
+    //GameState.DebugPrintPower() -     TAG_CHANGE Entity=fayatime tag=MULLIGAN_STATE value=DONE
+    //GameState.DebugPrintPower() -     TAG_CHANGE Entity=Винсент tag=MULLIGAN_STATE value=DONE
+    else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
+            ), match))
+    {
+        //Player mulligan
+        if(match->captured(1) == playerTag)
+        {
+            if(!mulliganPlayerDone)
+            {
+                emit pDebug("Player mulligan end.", numLine);
+                mulliganPlayerDone = true;
+
+                if(mulliganEnemyDone)
+                {
+                    powerState = inGameState;
+                    emit pDebug("Mulligan phase end (powerState = inGameState)", numLine);
+                }
+            }
+        }
+        //Enemy mulligan
+        else
+        {
+            if(!mulliganEnemyDone)
+            {
+                if(firstPlayer == playerTag)
+                {
+                    //Convertir ultima carta en moneda enemiga
+                    emit pDebug("Enemy: Coin created.", 0);
+                    emit lastHandCardIsCoin();
+                }
+                emit pDebug("Enemy mulligan end.", numLine);
+                mulliganEnemyDone = true;
+
+                if(mulliganPlayerDone)
+                {
+                    powerState = inGameState;
+                    emit pDebug("Mulligan phase end (powerState = inGameState)", numLine);
+                }
+            }
+        }
     }
 }
 
@@ -371,89 +438,10 @@ bool GameWatcher::isHeroPower(QString code)
 
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
-    //Jugador roba carta inicial
-    //En spectator games no ocurre
-    if(line.contains(QRegularExpression(
-            "m_chosenEntities\\[\\d+\\]=\\[name=.* id=\\d+ zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
-            ), match))
-    {
-        QString cardId = match->captured(1);
-        QString player = match->captured(2);
-
-        emit pDebug("Player: Starting card drawn: " + cardId, numLine);
-
-        //Descubrimos el playerID del jugador y su playerTag (si playerTag no estaba definido)
-        if(playerID == 0)
-        {
-            playerID = player.toInt();
-
-            if(playerID == 1)
-            {
-                if(!spectating)  playerTag = name1;
-            }
-            else if(playerID == 2)
-            {
-                if(!spectating)  playerTag = name2;
-            }
-            else
-            {
-                playerID = 0;
-                emit pDebug("Read invalid PlayerID value: " + player, 0, Error);
-            }
-
-            if(!spectating)
-            {
-                QSettings settings("Arena Tracker", "Arena Tracker");
-                settings.setValue("playerTag", playerTag);
-                emit pDebug("Defined playerID and playerTag: " + playerTag, 0);
-            }
-            else
-            {
-                emit pDebug("Defined playerID in spectator game.", 0);
-            }
-        }
-
-        emit playerCardDraw(match->captured(1));
-    }
-    //Enemigo roba carta inicial
-    //En spectator games no ocurre
-    else if(line.contains(QRegularExpression(
-                  "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
-                  "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=(\\d+)\\]"
-                  ), match))
-    {
-        QString id = match->captured(1);
-        QString player = match->captured(2);
-
-        if(player.toInt() != playerID)
-        {
-            emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
-            emit enemyCardDraw(id.toInt());
-        }
-    }
-    //Enemigo mulligan
-    else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
-            ), match))
-    {
-        if(!mulliganEnemyDone && match->captured(1) != playerTag)
-        {
-            if(firstPlayer == playerTag)
-            {
-                //Convertir ultima carta en moneda enemiga
-                emit pDebug("Enemy: Coin created.", 0);
-                emit lastHandCardIsCoin();
-            }
-            emit pDebug("Enemy mulligan end. Minions: 0", numLine);
-            mulliganEnemyDone = true;
-            playerMinions = 0;
-            enemyMinions = 0;
-        }
-    }
-
     //ULTIMO TRIGGER SPECIAL CARDS
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Robo de ideas id=31 zone=PLAY zonePos=0 cardId=EX1_339 player=1]
     //EffectCardId= EffectIndex=-1 Target=0
-    else if(line.contains(QRegularExpression(
+    if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
         "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
         "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
@@ -590,13 +578,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo juega carta desconocida
         if(zoneFrom == "OPPOSING HAND")
         {
-            emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
             emit enemyCardPlayed(id.toInt());
 
             //Carta devuelta al mazo en Mulligan
             if(zoneToOpposing == "DECK")
             {
                 emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
+            }
+            else
+            {
+                emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
             }
         }
 
@@ -750,6 +741,12 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY GRAVEYARD")
             {
                 emit pDebug("Player: Card discarded: " + name, numLine);
+            }
+            //Carta devuelta al mazo en Mulligan
+            else if(zoneTo == "FRIENDLY DECK")
+            {
+                emit pDebug("Player: Starting card returned: " + name, numLine);
+                emit playerReturnToDeck(cardId);
             }
         }
 
@@ -914,9 +911,10 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
         isPlayerTurn = playerTurn;
 
-        if(isPlayerTurn)    emit playerTurnStart();
+        if(isPlayerTurn && turn!=1)    emit playerTurnStart();
 
-        if(!isPlayerTurn && enemyMinions > 0)//if synchronized
+        //Secret CSpirit test
+        if(!isPlayerTurn && enemyMinions > 0)
         {
             emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions), 0);
             emit cSpiritTested();

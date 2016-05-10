@@ -425,6 +425,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString)),
             deckHandler, SLOT(showPlayerCardDraw(QString)));
+    connect(gameWatcher, SIGNAL(playerReturnToDeck(QString)),
+            deckHandler, SLOT(returnToDeck(QString)));
     connect(gameWatcher, SIGNAL(playerTurnStart()),
             deckHandler, SLOT(clearDrawList()));
     connect(gameWatcher, SIGNAL(startGame()),
@@ -2378,12 +2380,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets
-//Recuperar arena deck local
 
-//SPECTATOR GAMES: Todo correcto excepto:
-//Las cartas iniciales pre-mulligan de ambos jugadores no aparecen en el log.
-//Los nombres de los jugadores no aparecen en el log. Saltamos de heroType1State --> inGameState al recibir un TURN
-//  y se hara mulliganEnemyDone = true para activar (Enemigo roba carta especial del vacio) durante la partida.
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
