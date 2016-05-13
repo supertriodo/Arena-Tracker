@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1231,6 +1231,44 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tabPlan">
+         <attribute name="title">
+          <string>Plan</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>45</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="PlanGraphicsView" name="planGraphicsView">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="renderHints">
+             <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="tabEnemyDeck">
          <attribute name="title">
           <string>Deck Op</string>
@@ -2091,6 +2129,11 @@ to upload to www.zerotoheroes.com</string>
    <class>MoveTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>Sources/Widgets/movetreewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlanGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>Sources/Widgets/plangraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

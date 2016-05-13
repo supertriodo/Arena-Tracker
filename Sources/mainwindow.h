@@ -9,6 +9,7 @@
 #include "enemydeckhandler.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
+#include "planhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "drafthandler.h"
@@ -49,6 +50,7 @@ private:
     EnemyDeckHandler *enemyDeckHandler;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
+    PlanHandler *planHandler;
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
     DraftHandler * draftHandler;
@@ -87,6 +89,7 @@ private:
     void createEnemyDeckHandler();
     void createDeckHandler();
     void createEnemyHandHandler();
+    void createPlanHandler();
     void createSecretsHandler();
     void createDraftHandler();
     void createWebUploader();

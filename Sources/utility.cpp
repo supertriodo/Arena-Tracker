@@ -150,6 +150,12 @@ QString Utility::cardLocalCodeFromName(QString name)
 }
 
 
+QJsonValue Utility::getCardAtribute(QString code, QString attribute)
+{
+    return (*cardsJson)[code].value(attribute);
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();

@@ -92,5 +92,6 @@
         <file>Images/unknown.png</file>
         <file>Json/cards.thTH.json</file>
         <file>Images/replay.png</file>
+        <file>Images/bgMinionSimple.png</file>
     </qresource>
 </RCC>

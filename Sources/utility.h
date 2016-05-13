@@ -57,6 +57,7 @@ public:
     static QString getHeroColor(int order);
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);
+    static QJsonValue getCardAtribute(QString code, QString attribute);
     static QString appPath();
     static QString dataPath();
     static QString gameslogPath();

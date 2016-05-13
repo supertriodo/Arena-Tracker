@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     completeUI();
 
     createCardDownloader();
+    createPlanHandler();
     createEnemyHandHandler();
     createEnemyDeckHandler();//-->EnemyHandHandler
     createDeckHandler();//-->EnemyDeckHandler
@@ -356,6 +357,20 @@ void MainWindow::createEnemyHandHandler()
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createPlanHandler()
+{
+    planHandler = new PlanHandler(this, ui);
+//    connect(planHandler, SIGNAL(checkCardImage(QString)),
+//            this, SLOT(checkCardImage(QString)));
+    connect(planHandler, SIGNAL(needMainWindowFade(bool)),
+            this, SLOT(fadeBarAndButtons(bool)));
+    connect(planHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(planHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
@@ -1078,6 +1093,7 @@ void MainWindow::spreadMouseInApp()
 
     if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabPlan)      planHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabArena)     arenaHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabDraft)     draftHandler->setMouseInApp(mouseInApp);
@@ -1242,6 +1258,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
@@ -1341,6 +1358,10 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
         icon = QIcon(":/Images/deck.png");
     }
     else if(widget == ui->tabEnemy)
+    {
+        icon = QIcon(":/Images/hand.png");
+    }
+    else if(widget == ui->tabPlan)
     {
         icon = QIcon(":/Images/hand.png");
     }
@@ -1733,6 +1754,9 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
+    planHandler->addMinion("AT_003", true, 0);
+    planHandler->addMinion("AT_003", true, 1);
+    planHandler->addMinion("AT_003", false, 1);
 }
 
 
@@ -1817,6 +1841,7 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
     enemyDeckHandler->setTransparency(this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
+    planHandler->setTransparency(this->transparency);
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
     updateOtherTabsTransparency();
@@ -2380,6 +2405,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets
+//Repaint downloaded cards in plan
+//Carta conocida (Hero Power) Minions a 0, no -2
+//Completar resizeTabWidgets para planTab
 
 
 //SPECTATOR GAMES

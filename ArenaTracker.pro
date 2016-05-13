@@ -42,7 +42,10 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/moveverticalscrollarea.cpp \
     Sources/Widgets/cardwindow.cpp \
     Sources/versionchecker.cpp \
-    Sources/enemydeckhandler.cpp
+    Sources/enemydeckhandler.cpp \
+    Sources/planhandler.cpp \
+    Sources/Widgets/plangraphicsview.cpp \
+    Sources/Widgets/miniongraphicsitem.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -72,7 +75,10 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/moveverticalscrollarea.h \
     Sources/Widgets/cardwindow.h \
     Sources/versionchecker.h \
-    Sources/enemydeckhandler.h
+    Sources/enemydeckhandler.h \
+    Sources/planhandler.h \
+    Sources/Widgets/plangraphicsview.h \
+    Sources/Widgets/miniongraphicsitem.h
 
 FORMS    += mainwindow.ui
 
