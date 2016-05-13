@@ -240,8 +240,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             playerID = 0;
             playerTag = "";
             secretHero = unknown;
-            playerMinions = -2;
-            enemyMinions = -2;
+            playerMinions = 0;
+            enemyMinions = 0;
             enemyMinionsAliveForAvenge = -1;
 
             emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
@@ -629,7 +629,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     //zone from FRIENDLY HAND -> FRIENDLY PLAY
     //Carta conocida
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from (\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\(Weapon\\))?)?"
+        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from "
+        "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
         QString name = match->captured(1);
