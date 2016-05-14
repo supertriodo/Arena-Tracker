@@ -2,11 +2,18 @@
 #include "../utility.h"
 #include <QtWidgets>
 
-MinionGraphicsItem::MinionGraphicsItem(QString code)
+MinionGraphicsItem::MinionGraphicsItem(QString code, int id)
 {
     this->code = code;
+    this->id = id;
     this->attack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = Utility::getCardAtribute(code, "health").toInt();
+}
+
+
+int MinionGraphicsItem::getId()
+{
+    return this->id;
 }
 
 
@@ -27,6 +34,8 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 
 void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
+    Q_UNUSED(option);
+
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + code + ".png")));
     painter->setBrushOrigin(QPointF(200-100,303-112));

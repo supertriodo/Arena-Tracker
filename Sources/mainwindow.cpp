@@ -480,6 +480,19 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(endGame()),
             enemyHandHandler, SLOT(unlockEnemyInterface()));
 
+    connect(gameWatcher, SIGNAL(playerMinionZonePlayAdd(QString,int,int)),
+            planHandler, SLOT(playerMinionZonePlayAdd(QString,int,int)));
+    connect(gameWatcher, SIGNAL(enemyMinionZonePlayAdd(QString,int,int)),
+            planHandler, SLOT(enemyMinionZonePlayAdd(QString,int,int)));
+    connect(gameWatcher, SIGNAL(playerMinionZonePlayRemove(int)),
+            planHandler, SLOT(playerMinionZonePlayRemove(int)));
+    connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
+            planHandler, SLOT(enemyMinionZonePlayRemove(int)));
+    connect(gameWatcher, SIGNAL(playerMinionPosChange(int,int)),
+            planHandler, SLOT(playerMinionPosChange(int,int)));
+    connect(gameWatcher, SIGNAL(enemyMinionPosChange(int,int)),
+            planHandler, SLOT(enemyMinionPosChange(int,int)));
+
     connect(gameWatcher, SIGNAL(endGame()),
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
@@ -1754,9 +1767,6 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    planHandler->addMinion("AT_003", true, 0);
-    planHandler->addMinion("AT_003", true, 1);
-    planHandler->addMinion("AT_003", false, 1);
 }
 
 
@@ -2406,8 +2416,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Repaint downloaded cards in plan
-//Carta conocida (Hero Power) Minions a 0, no -2
 //Completar resizeTabWidgets para planTab
+//Calcular playerID si = 0 con ZONE
 
 
 //SPECTATOR GAMES

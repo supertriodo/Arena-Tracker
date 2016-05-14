@@ -629,15 +629,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     //zone from FRIENDLY HAND -> FRIENDLY PLAY
     //Carta conocida
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=\\d+\\] zone from "
+        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w+) player=\\d+\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
         QString name = match->captured(1);
         QString id = match->captured(2);
-        QString cardId = match->captured(3);
-        QString zoneFrom = match->captured(4);
-        QString zoneTo = match->captured(5);
+        QString zonePos = match->captured(3);
+        QString cardId = match->captured(4);
+        QString zoneFrom = match->captured(5);
+        QString zoneTo = match->captured(6);
 
 
         //Enemigo roba carta conocida
@@ -656,12 +657,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             enemyMinions++;
             emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
         //Jugador, nuevo minion en PLAY
         else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
         {
             playerMinions++;
             emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
 
         //Enemigo roba secreto (kezan mystic)
@@ -759,6 +762,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             if(enemyMinions>0)  enemyMinions--;
             emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+            emit enemyMinionZonePlayRemove(id.toInt());
 
             if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
             {
@@ -784,6 +788,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             if(playerMinions>0) playerMinions--;
             emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+            emit playerMinionZonePlayRemove(id.toInt());
         }
     }
 
@@ -793,29 +798,31 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
     //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
     //y despues se genran los esbirros de deathrattle causando una suma erronea.
-//    else if(line.contains(QRegularExpression(
-//        "\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
-//        ), match))
-//    {
-//        QString name = match->captured(1);
-//        QString player = match->captured(2);
-//        QString zonePos = match->captured(3);
+    //id=7 local=True [name=Ingeniera novata id=25 zone=HAND zonePos=5 cardId=EX1_015 player=1] pos from 5 -> 3
+    else if(line.contains(QRegularExpression(
+        "\\[name=(.*) id=(\\d+) zone=(?:HAND|PLAY) zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
+        ), match))
+    {
+        QString name = match->captured(1);
+        QString id = match->captured(2);
+        QString player = match->captured(3);
+        QString zonePos = match->captured(4);
 
-//        //Jugador esbirro cambia pos
-//        if(player.toInt() == playerID)
-//        {
-//            if(zonePos.toInt() > playerMinions) playerMinions = zonePos.toInt();
-//            emit pDebug("Player: New minion pos: " +
-//                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
-//        }
-//        //Enemigo esbirro cambia pos
-//        else
-//        {
-//            if(zonePos.toInt() > enemyMinions) enemyMinions = zonePos.toInt();
-//            emit pDebug("Enemy: New minion pos: " +
-//                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
-//        }
-//    }
+        //Jugador esbirro cambia pos
+        if(player.toInt() == playerID)
+        {
+            emit pDebug("Player: New minion pos: " +
+                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+            emit playerMinionPosChange(id.toInt(), zonePos.toInt());
+        }
+        //Enemigo esbirro cambia pos
+        else
+        {
+            emit pDebug("Enemy: New minion pos: " +
+                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+            emit enemyMinionPosChange(id.toInt(), zonePos.toInt());
+        }
+    }
 }
 
 
