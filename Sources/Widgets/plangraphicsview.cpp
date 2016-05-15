@@ -15,7 +15,7 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 
 void PlanGraphicsView::updateView(int minionsZone)
 {
-    this->scene()->setSceneRect(-140/2*minionsZone, -150, 140*minionsZone, 300);
+    this->scene()->setSceneRect(-140/2*minionsZone, -180, 140*minionsZone, 185*2);
     fitInView(this->scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 

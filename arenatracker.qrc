@@ -93,5 +93,9 @@
         <file>Json/cards.thTH.json</file>
         <file>Images/replay.png</file>
         <file>Images/bgMinionSimple.png</file>
+        <file>Images/bgMinionGlow.png</file>
+        <file>Images/bgMinionShield.png</file>
+        <file>Images/bgMinionTauntGlow.png</file>
+        <file>Images/bgMinionTauntSimple.png</file>
     </qresource>
 </RCC>

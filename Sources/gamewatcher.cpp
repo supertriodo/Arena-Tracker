@@ -460,8 +460,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
     }
 
+    //TAG_CHANGE desconocido
     //Secret hero
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[id=43 cardId= type=INVALID zone=HAND zonePos=1 player=2] tag=CLASS value=PALADIN
+    //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[id=81 cardId= type=INVALID zone=SETASIDE zonePos=0 player=2] tag=HEALTH value=11
     else if(line.contains(QRegularExpression(
         "GameState\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
         "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] tag=CLASS value=(MAGE|HUNTER|PALADIN)"
@@ -476,6 +478,36 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         else if(classHero == "PALADIN") secretHero = paladin;
     }
 
+    //TAG_CHANGE conocido
+    //PowerTaskList aparece segundo pero hay acciones que no tienen GameState, como el damage del maestro del acero herido
+    //GameState.DebugPrintPower() -         TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=DAMAGE value=0
+    //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+        "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "tag=(\\w+) value=(\\w+)"
+        ), match))
+    {
+        QString name = match->captured(1);
+        QString id = match->captured(2);
+        QString zone = match->captured(3);
+        QString player = match->captured(4);
+        QString tag = match->captured(5);
+        QString value = match->captured(6);
+
+
+        bool isPlayer = (player.toInt() == playerID);
+
+        qDebug()<<name<<id<<zone<<tag<<value;
+        qDebug()<<line;
+
+        if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
+                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT")
+        {
+            if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
+            else            emit enemyMinionTagChange(id.toInt(), tag, value);
+        }
+    }
 
     //Jugador/Enemigo accion con objetivo
     //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
@@ -923,6 +955,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
         isPlayerTurn = playerTurn;
 
         if(playerDraw)      emit clearDrawList();
+        emit newTurn(isPlayerTurn);
 
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)

@@ -117,6 +117,8 @@ signals:
     void enemyMinionZonePlayRemove(int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
+    void playerMinionTagChange(int id, QString tag, QString value);
+    void enemyMinionTagChange(int id, QString tag, QString value);
     void enemyMinionDead(QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void playerSpellObjPlayed();
@@ -124,6 +126,7 @@ signals:
     void avengeTested();
     void cSpiritTested();
     void clearDrawList(bool forceClear=false);
+    void newTurn(bool isPlayerTurn);
     void needResetDeck();
     void activeDraftDeck();
     void pickCard(QString code);

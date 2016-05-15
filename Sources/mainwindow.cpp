@@ -492,6 +492,12 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionPosChange(int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionPosChange(int,int)),
             planHandler, SLOT(enemyMinionPosChange(int,int)));
+    connect(gameWatcher, SIGNAL(playerMinionTagChange(int,QString,QString)),
+            planHandler, SLOT(playerMinionTagChange(int,QString,QString)));
+    connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString)),
+            planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
+    connect(gameWatcher, SIGNAL(newTurn(bool)),
+            planHandler, SLOT(newTurn(bool)));
 
     connect(gameWatcher, SIGNAL(endGame()),
             secretsHandler, SLOT(resetSecretsInterface()));
@@ -1262,6 +1268,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
@@ -1767,6 +1774,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
+//    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
 }
 
 
@@ -2418,6 +2426,10 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Repaint downloaded cards in plan
 //Completar resizeTabWidgets para planTab
 //Calcular playerID si = 0 con ZONE
+//Repaint parciales
+//Cambiar tag desconocido para ignoto
+//Refuerzo no exausted
+//TAG_CHANGE Entity=[name=Administradora de Villa Oscura id=4 zone=PLAY zonePos=1 cardId=OG_310 player=2] tag=CONTROLLER value=1\r\n"
 
 
 //SPECTATOR GAMES

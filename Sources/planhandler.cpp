@@ -39,13 +39,13 @@ void PlanHandler::enemyMinionZonePlayAdd(QString code, int id, int pos)
 
 void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
-    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id);
+    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, this->playerTurn);
     this->lastMinionAdded = minion;
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     minionsList->insert(pos, minion);
 
-    updateZonePos(friendly);
+    updateZoneSpots(friendly);
     ui->planGraphicsView->scene()->addItem(minion);
     ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
 
@@ -67,7 +67,7 @@ void PlanHandler::enemyMinionZonePlayRemove(int id)
 
 void PlanHandler::removeMinion(bool friendly, int id)
 {
-    this->lastMinionAdded = NULL;
+    //this->lastMinionAdded = NULL;//Puede causar problemas si se crea esbirro y se elimina esbirro a la vez y el orden es crea/elimina/cambia pos creado (shadow madness)
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     int pos = findMinionPos(minionsList, id);
@@ -78,14 +78,14 @@ void PlanHandler::removeMinion(bool friendly, int id)
     }
 
     MinionGraphicsItem* minion = minionsList->takeAt(pos);
-    updateZonePos(friendly);
+    updateZoneSpots(friendly);
     ui->planGraphicsView->scene()->removeItem(minion);
     ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
     delete minion;
 }
 
 
-void PlanHandler::updateZonePos(bool friendly)
+void PlanHandler::updateZoneSpots(bool friendly)
 {
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     for(int i=0; i<minionsList->count(); i++)
@@ -110,6 +110,16 @@ int PlanHandler::findMinionPos(QList<MinionGraphicsItem *> * minionsList, int id
     }
     return -1;
 }
+
+
+MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id)
+{
+    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
+    int pos = findMinionPos(minionsList, id);
+    if(pos == -1)   return NULL;
+    else            return minionsList->at(pos);
+}
+
 
 
 void PlanHandler::playerMinionPosChange(int id, int pos)
@@ -154,10 +164,65 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
         {
             qDebug()<<"Update minion pos"<<pos;
             minionsList->move(oldPos, pos);
-            updateZonePos(friendly);
+            updateZoneSpots(friendly);
         }
     }
     this->lastMinionAdded = NULL;
+}
+
+
+void PlanHandler::playerMinionTagChange(int id, QString tag, QString value)
+{
+    addTagChange(id, true, tag, value);
+}
+
+
+void PlanHandler::enemyMinionTagChange(int id, QString tag, QString value)
+{
+    addTagChange(id, false, tag, value);
+}
+
+
+void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value)
+{
+    qDebug()<<"AddTagChange"<<id<<tag<<value<<pendingTagChanges.count();
+    TagChange tagChange;
+    tagChange.id = id;
+    tagChange.friendly = friendly;
+    tagChange.tag = tag;
+    tagChange.value = value;
+
+    pendingTagChanges.append(tagChange);
+    QTimer::singleShot(500, this, SLOT(checkPendingTagChanges()));
+}
+
+
+void PlanHandler::checkPendingTagChanges()
+{
+    int lastMinionFoundIndex = -1;
+    for(int i=0; i<pendingTagChanges.count(); i++)
+    {
+        TagChange tagChange = pendingTagChanges.at(i);
+        MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
+
+        if(minion != NULL)
+        {
+            lastMinionFoundIndex = i;
+            minion->processTagChange(tagChange.tag, tagChange.value);
+        }
+    }
+
+    for(int i=0; i<=lastMinionFoundIndex; i++)  pendingTagChanges.removeFirst();
+}
+
+
+void PlanHandler::newTurn(bool playerTurn)
+{
+    this->playerTurn = playerTurn;
+    foreach(MinionGraphicsItem * minion, playerMinions)
+    {
+        minion->setPlayerTurn(playerTurn);
+    }
 }
 
 
