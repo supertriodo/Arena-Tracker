@@ -31,6 +31,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     void processTagChange(QString tag, QString value);
     void setPlayerTurn(bool playerTurn);
+    void changeZone(bool playerTurn);
 };
 
 #endif // MINIONGRAPHICSITEM_H

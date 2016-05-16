@@ -10,12 +10,10 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
     this->damage = 0;
-    this->playerTurn = playerTurn;
     this->shield = false;
     this->taunt = false;
-
-    if(friendly)    this->exausted = false;
-    else            this->exausted = true;
+    this->exausted = !friendly;
+    this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -38,6 +36,14 @@ void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 }
 
 
+void MinionGraphicsItem::changeZone(bool playerTurn)
+{
+    this->friendly = !this->friendly;
+    this->playerTurn = this->friendly && playerTurn;
+    this->exausted = true;
+}
+
+
 QRectF MinionGraphicsItem::boundingRect() const
 {
     //185x200 Minion Framework
@@ -55,7 +61,7 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 
 void MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
-    qDebug()<<"Graphic item"<<tag<<value;
+    qDebug()<<"Graphic item"<<id<<tag<<value;
     if(tag == "DAMAGE")
     {
         this->damage = value.toInt();
@@ -63,7 +69,6 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "ATK")
     {
         this->attack = value.toInt();
-
     }
     else if(tag == "HEALTH")
     {

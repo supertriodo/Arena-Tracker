@@ -488,6 +488,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
             planHandler, SLOT(enemyMinionZonePlayRemove(int)));
+    connect(gameWatcher, SIGNAL(playerMinionZonePlaySteal(int,int)),
+            planHandler, SLOT(playerMinionZonePlaySteal(int,int)));
+    connect(gameWatcher, SIGNAL(enemyMinionZonePlaySteal(int,int)),
+            planHandler, SLOT(enemyMinionZonePlaySteal(int,int)));
     connect(gameWatcher, SIGNAL(playerMinionPosChange(int,int)),
             planHandler, SLOT(playerMinionPosChange(int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionPosChange(int,int)),
@@ -2429,7 +2433,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
 //Refuerzo no exausted
-//TAG_CHANGE Entity=[name=Administradora de Villa Oscura id=4 zone=PLAY zonePos=1 cardId=OG_310 player=2] tag=CONTROLLER value=1\r\n"
+//Cambiar WON a powertasklist
+//minion 0 attack no glow
+
 
 
 //SPECTATOR GAMES

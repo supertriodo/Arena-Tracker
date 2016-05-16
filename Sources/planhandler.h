@@ -42,9 +42,12 @@ private:
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
     MinionGraphicsItem *findMinion(bool friendly, int id);
     void addMinion(bool friendly, QString code, int id, int pos);
+    void addMinion(bool friendly, MinionGraphicsItem *minion, int pos);
     void updateMinionPos(bool friendly, int id, int pos);
     void removeMinion(bool friendly, int id);
     void addTagChange(int id, bool friendly, QString tag, QString value);
+    void stealMinion(bool friendly, int id, int pos);
+    MinionGraphicsItem *takeMinion(bool friendly, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -60,6 +63,8 @@ signals:
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
     void enemyMinionZonePlayAdd(QString code, int id, int pos);
+    void playerMinionZonePlaySteal(int id, int pos);
+    void enemyMinionZonePlaySteal(int id, int pos);
     void playerMinionZonePlayRemove(int id);
     void enemyMinionZonePlayRemove(int id);
     void playerMinionPosChange(int id, int pos);

@@ -689,14 +689,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             enemyMinions++;
             emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
-            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
+            if(zoneFrom == "FRIENDLY PLAY") emit playerMinionZonePlaySteal(id.toInt(), zonePos.toInt());
+            else                            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
         //Jugador, nuevo minion en PLAY
         else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
         {
             playerMinions++;
             emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
-            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
+            if(zoneFrom == "OPPOSING PLAY") emit enemyMinionZonePlaySteal(id.toInt(), zonePos.toInt());
+            else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
 
         //Enemigo roba secreto (kezan mystic)
@@ -794,7 +796,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             if(enemyMinions>0)  enemyMinions--;
             emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
-            emit enemyMinionZonePlayRemove(id.toInt());
+            if(zoneTo != "FRIENDLY PLAY")   emit enemyMinionZonePlayRemove(id.toInt());
 
             if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
             {
@@ -820,7 +822,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             if(playerMinions>0) playerMinions--;
             emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
-            emit playerMinionZonePlayRemove(id.toInt());
+            if(zoneTo != "OPPOSING PLAY")   emit playerMinionZonePlayRemove(id.toInt());
         }
     }
 
@@ -843,15 +845,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Jugador esbirro cambia pos
         if(player.toInt() == playerID)
         {
-            emit pDebug("Player: New minion pos: " +
-                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+//            emit pDebug("Player: New minion pos: " +
+//                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
             emit playerMinionPosChange(id.toInt(), zonePos.toInt());
         }
         //Enemigo esbirro cambia pos
         else
         {
-            emit pDebug("Enemy: New minion pos: " +
-                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+//            emit pDebug("Enemy: New minion pos: " +
+//                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
             emit enemyMinionPosChange(id.toInt(), zonePos.toInt());
         }
     }
@@ -940,6 +942,9 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
 void GameWatcher::advanceTurn(bool playerDraw)
 {
     if(turnReal == turn)    return;
+
+    //Al jugar contra la maquina puede que se lea antes el fin de turno que el robo del inicio del turno
+    if(turn > turnReal+1)   turn = turnReal+1;
 
     bool playerTurn;
     if((firstPlayer==playerTag && turn%2==1) || (firstPlayer!=playerTag && turn%2==0))  playerTurn=true;
