@@ -2434,7 +2434,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Cambiar tag desconocido para ignoto
 //Refuerzo no exausted
 //Cambiar WON a powertasklist
-//minion 0 attack no glow
 
 
 

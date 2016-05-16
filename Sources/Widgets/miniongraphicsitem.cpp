@@ -102,12 +102,12 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Taunt/Minion template
     if(this->taunt)
     {
-        painter->drawPixmap(-140/2, -192/2, QPixmap(":Images/bgMinionTaunt" + QString((exausted || !playerTurn)?"Simple":"Glow") + ".png"));
+        painter->drawPixmap(-140/2, -192/2, QPixmap(":Images/bgMinionTaunt" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
         painter->drawPixmap(-140/2, -160/2, QPixmap(":Images/bgMinionSimple.png"));
     }
     else
     {
-        painter->drawPixmap(-140/2, -160/2, QPixmap(":Images/bgMinion" + QString((exausted || !playerTurn)?"Simple":"Glow") + ".png"));
+        painter->drawPixmap(-140/2, -160/2, QPixmap(":Images/bgMinion" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
     }
 
 
