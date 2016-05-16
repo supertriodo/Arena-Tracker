@@ -251,7 +251,10 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
     else
     {
         //Win state
-        if(line.contains(QRegularExpression("Entity=(.+) tag=PLAYSTATE value=WON"), match))
+        //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=El tabernero tag=PLAYSTATE value=WON
+        if(line.contains(QRegularExpression(
+                            "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+                            "Entity=(.+) tag=PLAYSTATE value=WON"), match))
         {
             powerState = noGame;
             emit pDebug("Found WON (powerState = noGame).", numLine);
@@ -271,7 +274,10 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             emit endGame();
         }
         //Turn
-        else if(line.contains(QRegularExpression("Entity=GameEntity tag=TURN value=(\\d+)"
+        //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12
+        else if(line.contains(QRegularExpression(
+                            "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+                            "Entity=GameEntity tag=TURN value=(\\d+)"
                 ), match))
         {
             turn = match->captured(1).toInt();
@@ -944,7 +950,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
     if(turnReal == turn)    return;
 
     //Al jugar contra la maquina puede que se lea antes el fin de turno que el robo del inicio del turno
-    if(turn > turnReal+1)   turn = turnReal+1;
+    //if(turn > turnReal+1)   turn = turnReal+1;
 
     bool playerTurn;
     if((firstPlayer==playerTag && turn%2==1) || (firstPlayer!=playerTag && turn%2==0))  playerTurn=true;

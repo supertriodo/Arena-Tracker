@@ -2433,7 +2433,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
 //Refuerzo no exausted
-//Cambiar WON a powertasklist
 
 
 
