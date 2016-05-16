@@ -2433,7 +2433,24 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
 //Refuerzo no exausted
+//Quitar moverse a hand con secretos
 
+
+//Minions generados
+//D 12:32:49.4409880 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Recluta Mano de Plata id=97 zone=PLAY zonePos=6 cardId=CS2_101t player=1] tag=ZONE_POSITION value=7
+//D 12:32:49.4423580 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [name=Explorador múrloc id=98 zone=PLAY zonePos=6 cardId=EX1_506a player=1] CardID=EX1_506a
+//D 12:32:49.4437560 PowerTaskList.DebugPrintPower() -         tag=EXHAUSTED value=1
+//D 12:32:49.4447720 PowerTaskList.DebugPrintPower() -         tag=HEALTH value=1
+//D 12:32:49.4457920 PowerTaskList.DebugPrintPower() -         tag=ATK value=1
+//D 12:32:49.4466890 PowerTaskList.DebugPrintPower() -         tag=ZONE value=PLAY
+//D 12:32:49.4476200 PowerTaskList.DebugPrintPower() -         tag=CONTROLLER value=1
+//D 12:32:49.4486250 PowerTaskList.DebugPrintPower() -         tag=ENTITY_ID value=98
+//D 12:32:49.4496270 PowerTaskList.DebugPrintPower() -         tag=FACTION value=NEUTRAL
+//D 12:32:49.4505810 PowerTaskList.DebugPrintPower() -         tag=CARDTYPE value=MINION
+//D 12:32:49.4515220 PowerTaskList.DebugPrintPower() -         tag=RARITY value=COMMON
+//D 12:32:49.4524630 PowerTaskList.DebugPrintPower() -         tag=ZONE_POSITION value=6
+//D 12:32:49.4533940 PowerTaskList.DebugPrintPower() -         tag=CREATOR value=4
+//D 12:32:49.4542560 PowerTaskList.DebugPrintPower() - BLOCK_END
 
 
 //SPECTATOR GAMES

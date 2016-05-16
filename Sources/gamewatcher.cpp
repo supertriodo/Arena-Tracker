@@ -508,7 +508,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         qDebug()<<line;
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT")
+                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);

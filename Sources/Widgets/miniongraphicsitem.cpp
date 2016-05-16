@@ -12,7 +12,8 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->damage = 0;
     this->shield = false;
     this->taunt = false;
-    this->exausted = !friendly;
+    this->charge = false;
+    this->exausted = true;//!friendly;
     this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
@@ -40,7 +41,8 @@ void MinionGraphicsItem::changeZone(bool playerTurn)
 {
     this->friendly = !this->friendly;
     this->playerTurn = this->friendly && playerTurn;
-    this->exausted = true;
+    if(friendly && charge)      this->exausted = false;
+    else                        this->exausted = true;
 }
 
 
@@ -85,6 +87,11 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "TAUNT")
     {
         this->taunt = (value=="1");
+    }
+    else if(tag == "CHARGE")
+    {
+        this->charge = (value=="1");
+        if(friendly && charge)    this->exausted = false;
     }
     update();
 }

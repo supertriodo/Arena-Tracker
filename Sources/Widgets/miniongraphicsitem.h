@@ -18,7 +18,7 @@ private:
     int attack, health, id;
     int damage;
     bool friendly, exausted, playerTurn;
-    bool shield, taunt;
+    bool shield, taunt, charge;
 
 //Metodos
 public:
