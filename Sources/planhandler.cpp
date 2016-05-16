@@ -41,6 +41,7 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, this->playerTurn);
     addMinion(friendly, minion, pos);
+    emit checkCardImage(code);
 }
 
 
@@ -270,6 +271,19 @@ void PlanHandler::newTurn(bool playerTurn)
     foreach(MinionGraphicsItem * minion, playerMinions)
     {
         minion->setPlayerTurn(playerTurn);
+    }
+}
+
+
+void PlanHandler::redrawDownloadedCardImage(QString code)
+{
+    foreach(MinionGraphicsItem * minion, playerMinions)
+    {
+        if(minion->getCode() == code)   minion->update();
+    }
+    foreach(MinionGraphicsItem * minion, enemyMinions)
+    {
+        if(minion->getCode() == code)   minion->update();
     }
 }
 

@@ -22,16 +22,14 @@ private:
 
 //Metodos
 public:
-    void setZonePos(bool friendly, int pos, int minionsZone);
-    int getId();
-
-
-public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     void processTagChange(QString tag, QString value);
     void setPlayerTurn(bool playerTurn);
     void changeZone(bool playerTurn);
+    QString getCode();
+    void setZonePos(bool friendly, int pos, int minionsZone);
+    int getId();
 };
 
 #endif // MINIONGRAPHICSITEM_H

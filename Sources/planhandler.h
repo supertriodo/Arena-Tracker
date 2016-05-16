@@ -52,9 +52,10 @@ private:
 public:
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
+    void redrawDownloadedCardImage(QString code);
 
 signals:
-//    void checkCardImage(QString code);
+    void checkCardImage(QString code);
 //    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void pLog(QString line);

@@ -30,6 +30,12 @@ int MinionGraphicsItem::getId()
 }
 
 
+QString MinionGraphicsItem::getCode()
+{
+    return this->code;
+}
+
+
 void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;

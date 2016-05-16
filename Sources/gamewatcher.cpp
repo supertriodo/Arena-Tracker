@@ -707,6 +707,18 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
 
+        else if(zoneTo == "OPPOSING PLAY (Hero)")
+        {
+            emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name, numLine);
+//            emit enemyHeroZonePlayAdd();
+        }
+
+        else if(zoneTo == "FRIENDLY PLAY (Hero)")
+        {
+            emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name, numLine);
+//            emit playerHeroZonePlayAdd();
+        }
+
         //Enemigo roba secreto (kezan mystic)
         if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
         {

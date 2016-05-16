@@ -364,8 +364,8 @@ void MainWindow::createEnemyHandHandler()
 void MainWindow::createPlanHandler()
 {
     planHandler = new PlanHandler(this, ui);
-//    connect(planHandler, SIGNAL(checkCardImage(QString)),
-//            this, SLOT(checkCardImage(QString)));
+    connect(planHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
     connect(planHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
     connect(planHandler, SIGNAL(pLog(QString)),
@@ -1611,6 +1611,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     deckHandler->redrawDownloadedCardImage(code);
     enemyDeckHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
+    planHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
 }
@@ -2432,7 +2433,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Calcular playerID si = 0 con ZONE
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
-//Refuerzo no exausted
 //Quitar moverse a hand con secretos
 
 
