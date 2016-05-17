@@ -111,7 +111,6 @@ void SecretsHandler::secretStealed(int id, QString code)
     activeSecretList.append(activeSecret);
 
     ui->secretsTreeWidget->setHidden(false);
-    if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
 }
@@ -194,7 +193,6 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
     activeSecretList.append(activeSecret);
 
     ui->secretsTreeWidget->setHidden(false);
-    if(synchronized) ui->tabWidget->setCurrentWidget(ui->tabEnemy);
 
     adjustSize();
 }

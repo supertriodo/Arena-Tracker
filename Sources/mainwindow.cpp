@@ -2433,11 +2433,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Completar resizeTabWidgets para planTab
-//Calcular playerID si = 0 con ZONE
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
-//Quitar moverse a hand con secretos
-//Cambiar modo de cambiar posicion, dejar un cambio por minion, guardado en miniongraphicsitem
 //Tag escarcha
 //Tag stealth
 
@@ -2464,8 +2461,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //SPECTATOR GAMES
 //Si empiezan desde el principio todo correcto.
-//Si empiezan a medias faltara: name1, name2, playerTag, playerID, firstPlayer
-//  fallaran algunos check de secretos
+//Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
+//  no causara problemas
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
