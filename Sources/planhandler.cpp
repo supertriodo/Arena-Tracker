@@ -39,6 +39,8 @@ void PlanHandler::enemyMinionZonePlayAdd(QString code, int id, int pos)
 
 void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
+    qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
+
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, this->playerTurn);
     addMinion(friendly, minion, pos);
     emit checkCardImage(code);
@@ -55,8 +57,6 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem* minion, int pos)
     updateZoneSpots(friendly);
     ui->planGraphicsView->scene()->addItem(minion);
     ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
-
-    qDebug()<<"New minion id"<<minion->getId()<<"pos"<<pos;
 }
 
 
@@ -74,6 +74,8 @@ void PlanHandler::enemyMinionZonePlayRemove(int id)
 
 void PlanHandler::removeMinion(bool friendly, int id)
 {
+    qDebug()<<"REMOVE MINION --> id"<<id;
+
     MinionGraphicsItem* minion = takeMinion(friendly, id);
     if(minion == NULL)  emit pDebug("Remove minion not found. Id: " + QString::number(id));
     else                delete minion;
@@ -93,8 +95,6 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
     ui->planGraphicsView->scene()->removeItem(minion);
     ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
 
-    qDebug()<<"Remove minion id"<<id<<"pos"<<pos;
-
     return minion;
 }
 
@@ -113,6 +113,8 @@ void PlanHandler::enemyMinionZonePlaySteal(int id, int pos)
 
 void PlanHandler::stealMinion(bool friendly, int id, int pos)
 {
+    qDebug()<<"STEAL MINION --> id"<<id<<"pos"<<pos;
+
     MinionGraphicsItem* minion = takeMinion(friendly, id);
     if(minion == NULL)  emit pDebug("Steal minion not found. Id: " + QString::number(id));
     else
@@ -185,13 +187,13 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
     }
     else if(minionsList->at(oldPos)!=this->lastMinionAdded)
     {
-        qDebug()<<"Solo se puede cambiar pos del ultimo minion added.";
+        qDebug()<<"Solo se puede cambiar pos del ultimo minion added."<<id<<"-->"<<pos;
     }
     else
     {
         if(oldPos == pos)
         {
-            qDebug()<<"Minion already in the pos"<<pos;
+            qDebug()<<"POSITION --> Minion already in the pos"<<id<<"-->"<<pos;
         }
         else if(pos >= minionsList->count())
         {
@@ -200,7 +202,7 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
         }
         else
         {
-            qDebug()<<"Update minion pos"<<pos;
+            qDebug()<<"POSITION --> "<<id<<"-->"<<pos;
             minionsList->move(oldPos, pos);
             updateZoneSpots(friendly);
         }
@@ -223,7 +225,7 @@ void PlanHandler::enemyMinionTagChange(int id, QString tag, QString value)
 
 void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value)
 {
-    qDebug()<<"AddTagChange"<<id<<tag<<value<<pendingTagChanges.count();
+//    qDebug()<<"AddTagChange"<<id<<tag<<value<<pendingTagChanges.count();
     TagChange tagChange;
     tagChange.id = id;
     tagChange.friendly = friendly;
@@ -286,6 +288,45 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
         if(minion->getCode() == code)   minion->update();
     }
 }
+
+
+void PlanHandler::reset()
+{
+    while(!playerMinions.empty())
+    {
+        MinionGraphicsItem* minion = playerMinions.takeFirst();
+        ui->planGraphicsView->scene()->removeItem(minion);
+        delete minion;
+    }
+
+    while(!enemyMinions.empty())
+    {
+        MinionGraphicsItem* minion = enemyMinions.takeFirst();
+        ui->planGraphicsView->scene()->removeItem(minion);
+        delete minion;
+    }
+
+    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
+    pendingTagChanges.clear();
+    this->lastMinionAdded = NULL;
+}
+
+
+void PlanHandler::lockPlanInterface()
+{
+    this->inGame = true;
+    updateTransparency();
+
+    reset();
+}
+
+
+void PlanHandler::unlockPlanInterface()
+{
+    this->inGame = false;
+    updateTransparency();
+}
+
 
 
 void PlanHandler::updateTransparency()

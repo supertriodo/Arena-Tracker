@@ -502,6 +502,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
     connect(gameWatcher, SIGNAL(newTurn(bool)),
             planHandler, SLOT(newTurn(bool)));
+    connect(gameWatcher, SIGNAL(startGame()),
+            planHandler, SLOT(lockPlanInterface()));
+    connect(gameWatcher, SIGNAL(endGame()),
+            planHandler, SLOT(unlockPlanInterface()));
 
     connect(gameWatcher, SIGNAL(endGame()),
             secretsHandler, SLOT(resetSecretsInterface()));
@@ -2428,12 +2432,17 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets
-//Repaint downloaded cards in plan
 //Completar resizeTabWidgets para planTab
 //Calcular playerID si = 0 con ZONE
 //Repaint parciales
 //Cambiar tag desconocido para ignoto
 //Quitar moverse a hand con secretos
+//Cambiar modo de cambiar posicion, dejar un cambio por minion, guardado en miniongraphicsitem
+//Tag escarcha
+//Tag stealth
+
+//ZoneChangeList.ProcessChanges() - id=60 local=False [id=58 cardId= type=INVALID zone=SETASIDE zonePos=1 player=2] zone from OPPOSING HAND ->
+//Eliminar cartas desconocidas de la mano
 
 
 //Minions generados

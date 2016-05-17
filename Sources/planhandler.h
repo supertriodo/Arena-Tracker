@@ -53,6 +53,7 @@ public:
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
     void redrawDownloadedCardImage(QString code);
+    void reset();
 
 signals:
     void checkCardImage(QString code);
@@ -73,6 +74,8 @@ public slots:
     void playerMinionTagChange(int id, QString tag, QString value);
     void enemyMinionTagChange(int id, QString tag, QString value);
     void newTurn(bool playerTurn);
+    void lockPlanInterface();
+    void unlockPlanInterface();
 
 private slots:
     void checkPendingTagChanges();

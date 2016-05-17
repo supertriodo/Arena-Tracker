@@ -18,7 +18,6 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
-        qDebug()<<value.toString();
         processTagChange(value.toString(), "1");
     }
 }
@@ -69,7 +68,7 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 
 void MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
-    qDebug()<<"Graphic item"<<id<<tag<<value;
+    qDebug()<<"TAG CHANGE -->"<<id<<tag<<value;
     if(tag == "DAMAGE")
     {
         this->damage = value.toInt();

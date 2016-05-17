@@ -504,8 +504,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         bool isPlayer = (player.toInt() == playerID);
 
-        qDebug()<<name<<id<<zone<<tag<<value;
-        qDebug()<<line;
+//        qDebug()<<name<<id<<zone<<tag<<value;
+//        qDebug()<<line;
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE")
@@ -667,7 +667,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     //zone from FRIENDLY HAND -> FRIENDLY PLAY
     //Carta conocida
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w+) player=\\d+\\] zone from "
+        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w+) player=(\\d+)\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
@@ -675,8 +675,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         QString id = match->captured(2);
         QString zonePos = match->captured(3);
         QString cardId = match->captured(4);
-        QString zoneFrom = match->captured(5);
-        QString zoneTo = match->captured(6);
+        QString player = match->captured(5);
+        QString zoneFrom = match->captured(6);
+        QString zoneTo = match->captured(7);
 
 
         //Enemigo roba carta conocida
@@ -716,6 +717,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "FRIENDLY PLAY (Hero)")
         {
             emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name, numLine);
+            if(playerID == 0)
+            {
+                playerID = player.toInt();
+                emit pDebug("Found playerID: " + player, numLine);
+            }
 //            emit playerHeroZonePlayAdd();
         }
 
@@ -967,6 +973,8 @@ void GameWatcher::advanceTurn(bool playerDraw)
     bool playerTurn;
     if((firstPlayer==playerTag && turn%2==1) || (firstPlayer!=playerTag && turn%2==0))  playerTurn=true;
     else    playerTurn=false;
+
+    if(spectating)  playerTurn = playerDraw;
 
     //Al turno 1 dejamos que pase cualquiera asi dejamos el turno 0 para indicar cartas de mulligan
     //Solo avanza de turno al robar carta el jugador que le corresponde
