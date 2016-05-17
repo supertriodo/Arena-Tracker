@@ -2434,7 +2434,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //Completar resizeTabWidgets para planTab
 //Repaint parciales
-//Cambiar tag desconocido para ignoto
 //Tag escarcha
 //Tag stealth
 

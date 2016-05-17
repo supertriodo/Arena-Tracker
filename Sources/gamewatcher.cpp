@@ -435,16 +435,6 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 }
 
 
-bool GameWatcher::isHeroPower(QString code)
-{
-    if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-        code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-        code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-            return true;
-    else    return false;
-}
-
-
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
     //ULTIMO TRIGGER SPECIAL CARDS
@@ -471,17 +461,29 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[id=43 cardId= type=INVALID zone=HAND zonePos=1 player=2] tag=CLASS value=PALADIN
     //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[id=81 cardId= type=INVALID zone=SETASIDE zonePos=0 player=2] tag=HEALTH value=11
     else if(line.contains(QRegularExpression(
-        "GameState\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] tag=CLASS value=(MAGE|HUNTER|PALADIN)"
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=(\\d+)\\] tag=(\\w+) value=(\\w+)"
         ), match))
     {
         QString id = match->captured(1);
-        QString classHero = match->captured(2);
+        QString player = match->captured(2);
+        QString tag = match->captured(3);
+        QString value = match->captured(4);
+        bool isPlayer = (player.toInt() == playerID);
 
-        emit pDebug("Secret hero: " + classHero + " Id: " + id, numLine);
-        if(classHero == "MAGE")         secretHero = mage;
-        else if(classHero == "HUNTER")  secretHero = hunter;
-        else if(classHero == "PALADIN") secretHero = paladin;
+        if(tag == "CLASS")
+        {
+            emit pDebug("Secret hero: " + value + " Id: " + id, numLine);
+            if(value == "MAGE")         secretHero = mage;
+            else if(value == "HUNTER")  secretHero = hunter;
+            else if(value == "PALADIN") secretHero = paladin;
+        }
+        else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
+                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE")
+        {
+            if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
+            else            emit enemyMinionTagChange(id.toInt(), tag, value);
+        }
     }
 
     //TAG_CHANGE conocido
@@ -500,8 +502,6 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString player = match->captured(4);
         QString tag = match->captured(5);
         QString value = match->captured(6);
-
-
         bool isPlayer = (player.toInt() == playerID);
 
 //        qDebug()<<name<<id<<zone<<tag<<value;
@@ -881,6 +881,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit enemyMinionPosChange(id.toInt(), zonePos.toInt());
         }
     }
+}
+
+
+bool GameWatcher::isHeroPower(QString code)
+{
+    if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
+        code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
+        code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
+            return true;
+    else    return false;
 }
 
 

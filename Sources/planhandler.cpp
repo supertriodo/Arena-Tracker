@@ -225,7 +225,6 @@ void PlanHandler::enemyMinionTagChange(int id, QString tag, QString value)
 
 void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value)
 {
-//    qDebug()<<"AddTagChange"<<id<<tag<<value<<pendingTagChanges.count();
     TagChange tagChange;
     tagChange.id = id;
     tagChange.friendly = friendly;
@@ -240,30 +239,23 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     }
     else
     {
+        QTimer::singleShot(1000, this, SLOT(checkPendingTagChanges()));
+        pendingTagChanges.append(tagChange);
         emit pDebug("Append Tag Change: Id: " + QString::number(id) + " - " + tag + " --> " + value +
                     " - " + QString::number(pendingTagChanges.count()));
-        pendingTagChanges.append(tagChange);
-        QTimer::singleShot(500, this, SLOT(checkPendingTagChanges()));
     }
 }
 
 
 void PlanHandler::checkPendingTagChanges()
 {
-    int lastMinionFoundIndex = -1;
-    for(int i=0; i<pendingTagChanges.count(); i++)
-    {
-        TagChange tagChange = pendingTagChanges.at(i);
-        MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
+    qDebug()<<"CHECK TAG LIST -->"<<pendingTagChanges.count();
 
-        if(minion != NULL)
-        {
-            lastMinionFoundIndex = i;
-            minion->processTagChange(tagChange.tag, tagChange.value);
-        }
-    }
+    if(pendingTagChanges.isEmpty()) return;
 
-    for(int i=0; i<=lastMinionFoundIndex; i++)  pendingTagChanges.removeFirst();
+    TagChange tagChange = pendingTagChanges.takeFirst();
+    MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
+    if(minion != NULL)  minion->processTagChange(tagChange.tag, tagChange.value);
 }
 
 
