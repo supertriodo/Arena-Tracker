@@ -46,6 +46,20 @@ http://www.reddit.com/r/ArenaTracker/
  * (Windows) Actually does. It's because Hearthstone fullscreen is just a borderless window.
  * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
  * (Mac) You need to play with Hearthstone in windows mode.
+* How can I import a deck from hearthstone to Arena Tracker?
+ * [There are 3 ways.](https://github.com/supertriodo/Arena-Tracker/issues/12)
+* What does it mean when text cards are shown in yellow/orange?
+ * Minions are shown in white.
+ * Spells are shown in yellow.
+ * Weapons are shown in orange.
+* What does it mean when cards have a colored background?
+ * It means they are class cards.
+* How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
+ * With the app selected press ctrl+r
+* How can I back-up my data.
+ * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in USER/Arena Tracker/ArenaTrackerDecks.json
+* I don't want an Arena Tracker dir messing around in my HOME dir!
+ * If you don't want Arena Tracker dir in your HOME dir, you can place it wherever you want and move Arena Tracker binary to the same place and Arena Tracker dir won't be created in your HOME anymore.
 * Sometimes ArenaTracker doesn't stay on top of Hearthstone.
  * I have seen this behaviour in windows. It seems to be related to a QT/Windows bug. Try to restart ArenaTracker.
 * I setup the app but it didn't upload my arena game/ it didn't start drafting.
@@ -56,20 +70,8 @@ http://www.reddit.com/r/ArenaTracker/
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
  * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Reset the app (ctrl+r) and log.config will be recreated).
-* What does it mean when text cards are shown in yellow/orange?
- * Minions are shown in white.
- * Spells are shown in yellow.
- * Weapons are shown in orange.
-* What does it mean when cards have a colored background?
- * It means they are class cards.
-* How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
- * With the app selected press ctrl+r
 * I can't browse hidden .dirs when looking for log.config/output_log.txt in the file browser.
  * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
-* How can I back-up my data.
- * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in USER/Arena Tracker/ArenaTrackerDecks.json
-* I don't want an Arena Tracker dir messing around in my HOME dir!
- * If you don't want Arena Tracker dir in your HOME dir, you can place it wherever you want and move Arena Tracker binary to the same place and Arena Tracker dir won't be created in your HOME anymore.
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
