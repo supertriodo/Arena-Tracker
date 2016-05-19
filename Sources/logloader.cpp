@@ -297,7 +297,7 @@ void LogLoader::sendLogWorkerFirstRun()
 
 void LogLoader::sendLogWorker()
 {
-    foreach(LogWorker *logWorker, logWorkerMap.values())   logWorker->readLog();
+    foreach(QString logComponent, logComponentList)     logWorkerMap[logComponent]->readLog();
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;

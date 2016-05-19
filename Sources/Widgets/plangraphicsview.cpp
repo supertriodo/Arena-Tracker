@@ -1,6 +1,6 @@
 #include "plangraphicsview.h"
 #include "herographicsitem.h"
-#include <QDebug>
+#include <QtWidgets>
 
 PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
@@ -8,8 +8,16 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 
     QGraphicsScene *graphicsScene = new QGraphicsScene(this);
     graphicsScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+
     this->setScene(graphicsScene);
-    updateView(0);
+    this->reset();
+    this->updateView(0);
+}
+
+
+void PlanGraphicsView::reset()
+{
+    this->zoom = this->targetZoom = 0;
 }
 
 
@@ -22,7 +30,33 @@ void PlanGraphicsView::updateView(int minionsZone)
 
     this->scene()->setSceneRect(std::min(-wHero/2, -wMinion/2*minionsZone), -hMinion-hHero,
                                 std::max(wHero, wMinion*minionsZone), (hMinion+hHero)*2);
-    fitInView(this->scene()->sceneRect(), Qt::KeepAspectRatio);
+    fitInViewSmooth();
+}
+
+
+void PlanGraphicsView::fitInViewSmooth()
+{
+    bool zooming = (targetZoom != zoom);
+    QRectF boardRect = this->scene()->sceneRect();
+    float zoomWidth = this->width()/boardRect.width();
+    float zoomHeight = this->height()/boardRect.height();
+    targetZoom = std::min(zoomWidth, zoomHeight);
+    if(!zooming)    progressiveZoom();
+}
+
+
+void PlanGraphicsView::progressiveZoom()
+{
+    const float zoomDiff = targetZoom - zoom;
+    float advanceZoom = (zoomDiff>0)?ZOOM_SPEED:-ZOOM_SPEED;
+    advanceZoom += zoomDiff/25;
+    zoom += advanceZoom;
+    if(std::fabs(targetZoom - zoom) < ZOOM_SPEED)    zoom = targetZoom;
+    else                QTimer::singleShot(20, this, SLOT(progressiveZoom()));
+
+    QMatrix mtx;
+    mtx.scale(zoom, zoom);
+    this->setMatrix(mtx);
 }
 
 
@@ -30,5 +64,5 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
 
-    fitInView(this->scene()->sceneRect(), Qt::KeepAspectRatio);
+    fitInViewSmooth();
 }

@@ -152,6 +152,7 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
 
     hero = new HeroGraphicsItem(code, id, friendly, this->playerTurn);
     ui->planGraphicsView->scene()->addItem(hero);
+    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
 
     if(friendly)    playerHero = hero;
     else            enemyHero = hero;
@@ -373,7 +374,7 @@ void PlanHandler::reset()
     if(playerHero != NULL)  removeHero(true, playerHero->getId());
     if(enemyHero != NULL)   removeHero(false, enemyHero->getId());
 
-    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
+    ui->planGraphicsView->reset();
     pendingTagChanges.clear();
     this->lastMinionAdded = NULL;
 }
