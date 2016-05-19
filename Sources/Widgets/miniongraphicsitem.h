@@ -6,19 +6,22 @@
 
 class MinionGraphicsItem : public QGraphicsItem
 {
-
 //Constructor
 public:
     MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
 
 //Variables
-private:
+protected:
     QString code;
     int origAttack, origHealth;
     int attack, health, id;
     int damage;
     bool friendly, exausted, playerTurn;
     bool shield, taunt, charge;
+
+public:
+    static const int WIDTH = 142;
+    static const int HEIGHT = 184;
 
 //Metodos
 public:

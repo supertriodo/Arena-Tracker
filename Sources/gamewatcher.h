@@ -117,6 +117,8 @@ signals:
     void enemyMinionZonePlayRemove(int id);
     void playerMinionZonePlaySteal(int id, int pos);
     void enemyMinionZonePlaySteal(int id, int pos);
+    void playerHeroZonePlayAdd(QString code, int id);
+    void enemyHeroZonePlayAdd(QString code, int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
     void playerMinionTagChange(int id, QString tag, QString value);

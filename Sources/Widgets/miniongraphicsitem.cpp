@@ -13,7 +13,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->shield = false;
     this->taunt = false;
     this->charge = false;
-    this->exausted = true;//!friendly;
+    this->exausted = true;
     this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
@@ -53,15 +53,16 @@ void MinionGraphicsItem::changeZone(bool playerTurn)
 
 QRectF MinionGraphicsItem::boundingRect() const
 {
-    //185x200 Minion Framework
-    return QRectF( -142/2, -184/2, 142, 184);
+    return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
 }
 
 
 void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 {
-    int x = 140*(pos - (minionsZone-1)/2.0);
-    int y = friendly?180/2:-180/2;
+    const int hMinion = HEIGHT-5;
+    const int wMinion = WIDTH-5;
+    int x = wMinion*(pos - (minionsZone-1)/2.0);
+    int y = friendly?hMinion/2:-hMinion/2;
     this->setPos(x, y);
 }
 
@@ -108,18 +109,18 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + code + ".png")));
-    painter->setBrushOrigin(QPointF(200-100,303-112));
+    painter->setBrushOrigin(QPointF(100,191));
     painter->drawEllipse(QPointF(0,0), 50, 68);
 
     //Taunt/Minion template
     if(this->taunt)
     {
-        painter->drawPixmap(-140/2, -192/2, QPixmap(":Images/bgMinionTaunt" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
-        painter->drawPixmap(-140/2, -160/2, QPixmap(":Images/bgMinionSimple.png"));
+        painter->drawPixmap(-70, -96, QPixmap(":Images/bgMinionTaunt" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
+        painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinionSimple.png"));
     }
     else
     {
-        painter->drawPixmap(-140/2, -160/2, QPixmap(":Images/bgMinion" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
+        painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinion" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
     }
 
 
@@ -134,7 +135,6 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
 #endif
     painter->setFont(font);
-    painter->setBrush(WHITE);
     QPen pen(BLACK);
     pen.setWidth(2);
     painter->setPen(pen);
@@ -159,6 +159,6 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Shield
     if(this->shield)
     {
-        painter->drawPixmap(-142/2, -184/2, QPixmap(":Images/bgMinionShield.png"));
+        painter->drawPixmap(-71, -92, QPixmap(":Images/bgMinionShield.png"));
     }
 }

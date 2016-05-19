@@ -364,8 +364,8 @@ void MainWindow::createEnemyHandHandler()
 void MainWindow::createPlanHandler()
 {
     planHandler = new PlanHandler(this, ui);
-    connect(planHandler, SIGNAL(checkCardImage(QString)),
-            this, SLOT(checkCardImage(QString)));
+    connect(planHandler, SIGNAL(checkCardImage(QString, bool)),
+            this, SLOT(checkCardImage(QString, bool)));
     connect(planHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
     connect(planHandler, SIGNAL(pLog(QString)),
@@ -484,6 +484,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionZonePlayAdd(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayAdd(QString,int,int)),
             planHandler, SLOT(enemyMinionZonePlayAdd(QString,int,int)));
+    connect(gameWatcher, SIGNAL(playerHeroZonePlayAdd(QString,int)),
+            planHandler, SLOT(playerHeroZonePlayAdd(QString,int)));
+    connect(gameWatcher, SIGNAL(enemyHeroZonePlayAdd(QString,int)),
+            planHandler, SLOT(enemyHeroZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(playerMinionZonePlayRemove(int)),
             planHandler, SLOT(playerMinionZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
@@ -1598,14 +1602,14 @@ void MainWindow::logReset()
 }
 
 
-void MainWindow::checkCardImage(QString code)
+void MainWindow::checkCardImage(QString code, bool isHero)
 {
     QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
 
     if(!cardFile.exists())
     {
         //La bajamos de HearthHead
-        cardDownloader->downloadWebImage(code);
+        cardDownloader->downloadWebImage(code, isHero);
     }
 }
 
@@ -1784,6 +1788,8 @@ void MainWindow::completeArenaDeck()
 void MainWindow::test()
 {
 //    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+//    planHandler->playerHeroZonePlayAdd("HERO_08", 1);
+//    planHandler->enemyHeroZonePlayAdd("HERO_09", 1);
 }
 
 
@@ -2433,7 +2439,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Completar resizeTabWidgets para planTab
-//Repaint parciales
 //Tag escarcha
 //Tag stealth
 
@@ -2456,6 +2461,11 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //D 12:32:49.4524630 PowerTaskList.DebugPrintPower() -         tag=ZONE_POSITION value=6
 //D 12:32:49.4533940 PowerTaskList.DebugPrintPower() -         tag=CREATOR value=4
 //D 12:32:49.4542560 PowerTaskList.DebugPrintPower() - BLOCK_END
+
+//Cambio Heroe (Zone)
+//D 12:57:15.3458590 ZoneChangeList.ProcessChanges() - processing index=0 change=powerTask=[power=[type=TAG_CHANGE entity=
+//[id=88 cardId=BRM_027h name=Ragnaros, Señor del Fuego] tag=LINKED_ENTITY value=64] complete=False]
+//entity=[name=Ragnaros, Señor del Fuego id=88 zone=PLAY zonePos=0 cardId=BRM_027h player=1] srcZoneTag=INVALID srcPos= dstZoneTag=INVALID dstPos=
 
 
 //SPECTATOR GAMES

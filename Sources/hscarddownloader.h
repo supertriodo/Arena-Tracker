@@ -7,7 +7,15 @@
 #include <QNetworkReply>
 #include <QMap>
 
-#define CARDS_URL "http://wow.zamimg.com/images/hearthstone/cards/"
+#define CARDS_URL QString("http://wow.zamimg.com/images/hearthstone/")
+
+
+class DownloadingCard
+{
+public:
+    QString code = "";
+    bool isHero = false;
+};
 
 
 class HSCardDownloader : public QObject
@@ -20,7 +28,7 @@ public:
 //Variables
 private:
     QNetworkAccessManager *networkManager;
-    QMap<QNetworkReply *, QString> gettingWebCards;
+    QMap<QNetworkReply *, DownloadingCard> gettingWebCards;
     QString lang;
 
 
@@ -28,7 +36,7 @@ private:
 private:
 
 public:
-    void downloadWebImage(QString code);
+    void downloadWebImage(QString code, bool isHero=false);
     void setLang(QString value);
 
 signals:

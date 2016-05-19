@@ -97,5 +97,9 @@
         <file>Images/bgMinionShield.png</file>
         <file>Images/bgMinionTauntGlow.png</file>
         <file>Images/bgMinionTauntSimple.png</file>
+        <file>Images/bgHeroAttack.png</file>
+        <file>Images/bgHeroLife.png</file>
+        <file>Images/bgHeroArmor.png</file>
+        <file>Images/bgHeroGlow.png</file>
     </qresource>
 </RCC>

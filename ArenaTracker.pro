@@ -45,7 +45,8 @@ SOURCES += Sources/main.cpp\
     Sources/enemydeckhandler.cpp \
     Sources/planhandler.cpp \
     Sources/Widgets/plangraphicsview.cpp \
-    Sources/Widgets/miniongraphicsitem.cpp
+    Sources/Widgets/miniongraphicsitem.cpp \
+    Sources/Widgets/herographicsitem.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -78,7 +79,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/enemydeckhandler.h \
     Sources/planhandler.h \
     Sources/Widgets/plangraphicsview.h \
-    Sources/Widgets/miniongraphicsitem.h
+    Sources/Widgets/miniongraphicsitem.h \
+    Sources/Widgets/herographicsitem.h
 
 FORMS    += mainwindow.ui
 

@@ -153,7 +153,7 @@ public slots:
     void resetDeckDontRead();
 
     //Multi Handlers
-    void checkCardImage(QString code);
+    void checkCardImage(QString code, bool isHero=false);
 
     //HSCardDownloader
     void redrawDownloadedCardImage(QString code);

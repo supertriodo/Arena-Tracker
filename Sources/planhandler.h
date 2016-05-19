@@ -3,6 +3,7 @@
 
 #include "Widgets/ui_extended.h"
 #include "Widgets/miniongraphicsitem.h"
+#include "Widgets/herographicsitem.h"
 #include "utility.h"
 #include <QObject>
 
@@ -27,6 +28,8 @@ private:
     Ui::Extended *ui;
     QList<TagChange> pendingTagChanges;
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
+    HeroGraphicsItem * playerHero;
+    HeroGraphicsItem * enemyHero;
     MinionGraphicsItem * lastMinionAdded;
     bool playerTurn;
     bool inGame;
@@ -48,6 +51,8 @@ private:
     void addTagChange(int id, bool friendly, QString tag, QString value);
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id);
+    void addHero(bool friendly, QString code, int id);
+    void removeHero(bool friendly, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -56,7 +61,7 @@ public:
     void reset();
 
 signals:
-    void checkCardImage(QString code);
+    void checkCardImage(QString code, bool isHero);
 //    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void pLog(QString line);
@@ -73,6 +78,8 @@ public slots:
     void enemyMinionPosChange(int id, int pos);
     void playerMinionTagChange(int id, QString tag, QString value);
     void enemyMinionTagChange(int id, QString tag, QString value);
+    void playerHeroZonePlayAdd(QString code, int id);
+    void enemyHeroZonePlayAdd(QString code, int id);
     void newTurn(bool playerTurn);
     void lockPlanInterface();
     void unlockPlanInterface();

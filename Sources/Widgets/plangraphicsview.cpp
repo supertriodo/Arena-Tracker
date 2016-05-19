@@ -1,4 +1,5 @@
 #include "plangraphicsview.h"
+#include "herographicsitem.h"
 #include <QDebug>
 
 PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
@@ -7,15 +8,20 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 
     QGraphicsScene *graphicsScene = new QGraphicsScene(this);
     graphicsScene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    graphicsScene->setSceneRect(-200, -200, 400, 400);
-
     this->setScene(graphicsScene);
+    updateView(0);
 }
 
 
 void PlanGraphicsView::updateView(int minionsZone)
 {
-    this->scene()->setSceneRect(-140/2*minionsZone, -180, 140*minionsZone, 185*2);
+    const int wMinion = MinionGraphicsItem::WIDTH-5;//142
+    const int hMinion = MinionGraphicsItem::HEIGHT-5;//184
+    const int wHero = HeroGraphicsItem::WIDTH;//160
+    const int hHero = HeroGraphicsItem::HEIGHT;//184
+
+    this->scene()->setSceneRect(std::min(-wHero/2, -wMinion/2*minionsZone), -hMinion-hHero,
+                                std::max(wHero, wMinion*minionsZone), (hMinion+hHero)*2);
     fitInView(this->scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 

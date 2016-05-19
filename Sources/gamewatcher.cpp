@@ -504,11 +504,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(6);
         bool isPlayer = (player.toInt() == playerID);
 
-//        qDebug()<<name<<id<<zone<<tag<<value;
-//        qDebug()<<line;
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE")
+                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                tag == "ARMOR")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
@@ -533,7 +532,6 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString index = match->captured(6);
         QString name2 = match->captured(7);
         QString cardId2 = match->captured(8);
-
         bool isPlayer = (player1.toInt() == playerID);
 
 
@@ -711,7 +709,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "OPPOSING PLAY (Hero)")
         {
             emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name, numLine);
-//            emit enemyHeroZonePlayAdd();
+            emit enemyHeroZonePlayAdd(cardId, id.toInt());
         }
 
         else if(zoneTo == "FRIENDLY PLAY (Hero)")
@@ -722,7 +720,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 playerID = player.toInt();
                 emit pDebug("Found playerID: " + player, numLine);
             }
-//            emit playerHeroZonePlayAdd();
+            emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
 
         //Enemigo roba secreto (kezan mystic)

@@ -14,16 +14,26 @@ HSCardDownloader::~HSCardDownloader()
 }
 
 
-void HSCardDownloader::downloadWebImage(QString code)
+void HSCardDownloader::downloadWebImage(QString code, bool isHero)
 {
-    if(gettingWebCards.values().contains(code))
+    foreach(DownloadingCard downCard, gettingWebCards.values())
     {
-        emit pDebug("Skip download: " + code + " - Already downloading.");
-        return;
+        if(downCard.code == code)
+        {
+            emit pDebug("Skip download: " + code + " - Already downloading.");
+            return;
+        }
     }
 
-    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(QString(CARDS_URL + lang + "/medium/" + code + ".png"))));
-    gettingWebCards[reply] = code;
+    QString urlString;
+    if(isHero)  urlString = CARDS_URL + "heroes/" + code + ".png";
+    else        urlString = CARDS_URL + "cards/" + lang + "/medium/" + code + ".png";
+
+    QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
+    DownloadingCard downCard;
+    downCard.code = code;
+    downCard.isHero = isHero;
+    gettingWebCards[reply] = downCard;
     emit pDebug("Downloading: " + code + " - Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
 }
 
@@ -32,15 +42,25 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 {
     reply->deleteLater();
 
-    QString code = gettingWebCards[reply];
+    DownloadingCard downCard = gettingWebCards[reply];
+    QString code = downCard.code;
+    bool isHero = downCard.isHero;
     gettingWebCards.remove(reply);
     emit pDebug("Reply: " + code + " - Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug("Failed to download card image: " + code + " - Trying again.", Error);
-        emit pLog(tr("Web: Failed to download card image. Trying again."));
-        downloadWebImage(code);
+        if(isHero)
+        {
+            emit pDebug("Failed to download hero card image: " + code, Error);
+            emit pLog(tr("Web: Failed to download hero card image."));
+        }
+        else
+        {
+            emit pDebug("Failed to download card image: " + code + " - Trying again.", Error);
+            emit pLog(tr("Web: Failed to download card image. Trying again."));
+            downloadWebImage(code);
+        }
     }
     else
     {
