@@ -479,7 +479,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             else if(value == "PALADIN") secretHero = paladin;
         }
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE")
+                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                tag == "ARMOR" || tag == "FROZEN")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
@@ -507,7 +508,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR")
+                tag == "ARMOR" || tag == "FROZEN")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);

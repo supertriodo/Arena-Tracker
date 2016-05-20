@@ -17,7 +17,7 @@ protected:
     int attack, health, id;
     int damage;
     bool friendly, exausted, playerTurn;
-    bool shield, taunt, charge;
+    bool shield, taunt, charge, stealth, frozen;
 
 public:
     static const int WIDTH = 142;

@@ -1788,6 +1788,9 @@ void MainWindow::completeArenaDeck()
 void MainWindow::test()
 {
 //    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+//    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
+//    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
+//    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
 //    planHandler->playerHeroZonePlayAdd("HERO_08", 1);
 //    planHandler->enemyHeroZonePlayAdd("HERO_09", 1);
 }

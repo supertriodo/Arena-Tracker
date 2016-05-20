@@ -12,6 +12,8 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->damage = 0;
     this->shield = false;
     this->taunt = false;
+    this->stealth = false;
+    this->frozen = false;
     this->charge = false;
     this->exausted = true;
     this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
@@ -99,6 +101,14 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
         this->charge = (value=="1");
         if(friendly && charge)    this->exausted = false;
     }
+    else if(tag == "STEALTH")
+    {
+        this->stealth = (value=="1");
+    }
+    else if(tag == "FROZEN")
+    {
+        this->frozen = (value=="1");
+    }
     update();
 }
 
@@ -112,16 +122,27 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->setBrushOrigin(QPointF(100,191));
     painter->drawEllipse(QPointF(0,0), 50, 68);
 
-    //Taunt/Minion template
+    //Stealth
+    if(this->stealth)
+    {
+        painter->drawPixmap(-52, -71, QPixmap(":Images/bgMinionStealth.png"));
+    }
+
+    //Taunt/Frozen/Minion template
+    bool glow = (!exausted && !frozen && playerTurn && attack>0);
     if(this->taunt)
     {
-        painter->drawPixmap(-70, -96, QPixmap(":Images/bgMinionTaunt" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
-        painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinionSimple.png"));
+        painter->drawPixmap(-70, -96, QPixmap(":Images/bgMinionTaunt" + QString(glow?"Glow":"Simple") + ".png"));
+
+        if(this->frozen)        painter->drawPixmap(-76, -82, QPixmap(":Images/bgMinionFrozen.png"));
+        else                    painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinionSimple.png"));
     }
     else
     {
-        painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinion" + QString((exausted || !playerTurn || attack==0)?"Simple":"Glow") + ".png"));
+        if(this->frozen)        painter->drawPixmap(-76, -82, QPixmap(":Images/bgMinionFrozen.png"));
+        else                    painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinion" + QString(glow?"Glow":"Simple") + ".png"));
     }
+
 
 
     //Attack/Health
