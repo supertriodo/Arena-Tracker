@@ -9,8 +9,9 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->inGame = false;
     this->mouseInApp = false;
     this->lastMinionAdded = NULL;
-    this->playerHero = NULL;
-    this->enemyHero = NULL;
+    this->nowBoard = new Board();
+    this->nowBoard->playerHero = NULL;
+    this->nowBoard->enemyHero = NULL;
 
     completeUI();
 }
@@ -18,7 +19,8 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
 PlanHandler::~PlanHandler()
 {
-
+    reset();
+    delete nowBoard;
 }
 
 
@@ -58,7 +60,7 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem* minion, int pos)
 
     updateZoneSpots(friendly);
     ui->planGraphicsView->scene()->addItem(minion);
-    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
+    ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
 }
 
 
@@ -95,7 +97,7 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
     MinionGraphicsItem* minion = minionsList->takeAt(pos);
     updateZoneSpots(friendly);
     ui->planGraphicsView->scene()->removeItem(minion);
-    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
+    ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
 
     return minion;
 }
@@ -142,7 +144,7 @@ void PlanHandler::enemyHeroZonePlayAdd(QString code, int id)
 void PlanHandler::addHero(bool friendly, QString code, int id)
 {
     qDebug()<<"NEW HERO --> id"<<id;
-    HeroGraphicsItem* hero = friendly?playerHero:enemyHero;
+    HeroGraphicsItem* hero = friendly?nowBoard->playerHero:nowBoard->enemyHero;
 
     if(hero != NULL)
     {
@@ -152,10 +154,10 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
 
     hero = new HeroGraphicsItem(code, id, friendly, this->playerTurn);
     ui->planGraphicsView->scene()->addItem(hero);
-    ui->planGraphicsView->updateView(std::max(playerMinions.count(), enemyMinions.count()));
+    ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
 
-    if(friendly)    playerHero = hero;
-    else            enemyHero = hero;
+    if(friendly)    nowBoard->playerHero = hero;
+    else            nowBoard->enemyHero = hero;
 
     emit checkCardImage(code, true);
 }
@@ -165,7 +167,7 @@ void PlanHandler::removeHero(bool friendly, int id)
 {
     qDebug()<<"REMOVE HERO --> id"<<id;
 
-    HeroGraphicsItem* hero = friendly?playerHero:enemyHero;
+    HeroGraphicsItem* hero = friendly?nowBoard->playerHero:nowBoard->enemyHero;
     if(hero == NULL || hero->getId() != id)
     {
         emit pDebug("Remove hero not found. Id: " + QString::number(id), Warning);
@@ -175,8 +177,8 @@ void PlanHandler::removeHero(bool friendly, int id)
         ui->planGraphicsView->scene()->removeItem(hero);
         delete hero;
 
-        if(friendly)    playerHero = NULL;
-        else            enemyHero = NULL;
+        if(friendly)    nowBoard->playerHero = NULL;
+        else            nowBoard->enemyHero = NULL;
     }
 }
 
@@ -193,8 +195,8 @@ void PlanHandler::updateZoneSpots(bool friendly)
 
 QList<MinionGraphicsItem *> * PlanHandler::getMinionList(bool friendly)
 {
-    if(friendly)    return &playerMinions;
-    else            return &enemyMinions;
+    if(friendly)    return &nowBoard->playerMinions;
+    else            return &nowBoard->enemyMinions;
 }
 
 
@@ -293,15 +295,15 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         emit pDebug("Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         minion->processTagChange(tagChange.tag, tagChange.value);
     }
-    else if(playerHero->getId() == tagChange.id)
+    else if(nowBoard->playerHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        playerHero->processTagChange(tagChange.tag, tagChange.value);
+        nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
     }
-    else if(enemyHero->getId() == tagChange.id)
+    else if(nowBoard->enemyHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
     }
     else
     {
@@ -322,57 +324,57 @@ void PlanHandler::checkPendingTagChanges()
     TagChange tagChange = pendingTagChanges.takeFirst();
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
     if(minion != NULL)                              minion->processTagChange(tagChange.tag, tagChange.value);
-    else if(playerHero->getId() == tagChange.id)    playerHero->processTagChange(tagChange.tag, tagChange.value);
-    else if(enemyHero->getId() == tagChange.id)     enemyHero->processTagChange(tagChange.tag, tagChange.value);
+    else if(nowBoard->playerHero->getId() == tagChange.id)    nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+    else if(nowBoard->enemyHero->getId() == tagChange.id)     nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
 }
 
 
 void PlanHandler::newTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;
-    foreach(MinionGraphicsItem * minion, playerMinions)
+    foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
     {
         minion->setPlayerTurn(playerTurn);
     }
 
-    if(playerHero != NULL)      playerHero->setPlayerTurn(playerTurn);
+    if(nowBoard->playerHero != NULL)      nowBoard->playerHero->setPlayerTurn(playerTurn);
 }
 
 
 void PlanHandler::redrawDownloadedCardImage(QString code)
 {
-    foreach(MinionGraphicsItem * minion, playerMinions)
+    foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
     {
         if(minion->getCode() == code)   minion->update();
     }
-    foreach(MinionGraphicsItem * minion, enemyMinions)
+    foreach(MinionGraphicsItem * minion, nowBoard->enemyMinions)
     {
         if(minion->getCode() == code)   minion->update();
     }
 
-    if(playerHero != NULL && playerHero->getCode() == code)   playerHero->update();
-    if(enemyHero != NULL && enemyHero->getCode() == code)     enemyHero->update();
+    if(nowBoard->playerHero != NULL && nowBoard->playerHero->getCode() == code)   nowBoard->playerHero->update();
+    if(nowBoard->enemyHero != NULL && nowBoard->enemyHero->getCode() == code)     nowBoard->enemyHero->update();
 }
 
 
 void PlanHandler::reset()
 {
-    while(!playerMinions.empty())
+    while(!nowBoard->playerMinions.empty())
     {
-        MinionGraphicsItem* minion = playerMinions.takeFirst();
+        MinionGraphicsItem* minion = nowBoard->playerMinions.takeFirst();
         ui->planGraphicsView->scene()->removeItem(minion);
         delete minion;
     }
 
-    while(!enemyMinions.empty())
+    while(!nowBoard->enemyMinions.empty())
     {
-        MinionGraphicsItem* minion = enemyMinions.takeFirst();
+        MinionGraphicsItem* minion = nowBoard->enemyMinions.takeFirst();
         ui->planGraphicsView->scene()->removeItem(minion);
         delete minion;
     }
 
-    if(playerHero != NULL)  removeHero(true, playerHero->getId());
-    if(enemyHero != NULL)   removeHero(false, enemyHero->getId());
+    if(nowBoard->playerHero != NULL)  removeHero(true, nowBoard->playerHero->getId());
+    if(nowBoard->enemyHero != NULL)   removeHero(false, nowBoard->enemyHero->getId());
 
     ui->planGraphicsView->reset();
     pendingTagChanges.clear();

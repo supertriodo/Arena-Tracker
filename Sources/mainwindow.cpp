@@ -1304,9 +1304,9 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -1314,6 +1314,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
@@ -1328,6 +1329,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
@@ -1338,8 +1340,9 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             else
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidgetH3);
+                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
+                moveTabTo(ui->tabPlan, ui->tabWidgetH2);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1354,6 +1357,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
@@ -1364,6 +1368,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
@@ -1395,7 +1400,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     }
     else if(widget == ui->tabPlan)
     {
-        icon = QIcon(":/Images/hand.png");
+        icon = QIcon(":/Images/plan.png");
     }
     else if(widget == ui->tabEnemyDeck)
     {

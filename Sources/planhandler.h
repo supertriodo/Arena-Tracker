@@ -16,6 +16,14 @@ public:
     QString tag, value;
 };
 
+class Board
+{
+public:
+    QList<MinionGraphicsItem *> playerMinions, enemyMinions;
+    HeroGraphicsItem * playerHero = NULL;
+    HeroGraphicsItem * enemyHero = NULL;
+};
+
 class PlanHandler : public QObject
 {
     Q_OBJECT
@@ -27,9 +35,8 @@ public:
 private:
     Ui::Extended *ui;
     QList<TagChange> pendingTagChanges;
-    QList<MinionGraphicsItem *> playerMinions, enemyMinions;
-    HeroGraphicsItem * playerHero;
-    HeroGraphicsItem * enemyHero;
+    Board *nowBoard;
+    QList<Board *> turnBoards;
     MinionGraphicsItem * lastMinionAdded;
     bool playerTurn;
     bool inGame;

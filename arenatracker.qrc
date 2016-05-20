@@ -104,5 +104,6 @@
         <file>Images/bgMinionStealth.png</file>
         <file>Images/bgMinionFrozen.png</file>
         <file>Images/bgHeroFrozen.png</file>
+        <file>Images/plan.png</file>
     </qresource>
 </RCC>
