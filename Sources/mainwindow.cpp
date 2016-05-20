@@ -726,8 +726,6 @@ void MainWindow::completeUIButtons()
     {
         ui->closeButton = new QPushButton("", this);
         ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->closeButton->resize(24, 24);
-        ui->closeButton->setIconSize(QSize(24, 24));
         ui->closeButton->setIcon(QIcon(":/Images/close.png"));
         ui->closeButton->setFlat(true);
         connect(ui->closeButton, SIGNAL(clicked()),
@@ -736,8 +734,6 @@ void MainWindow::completeUIButtons()
 
         ui->minimizeButton = new QPushButton("", this);
         ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->minimizeButton->resize(24, 24);
-        ui->minimizeButton->setIconSize(QSize(24, 24));
         ui->minimizeButton->setIcon(QIcon(":/Images/minimize.png"));
         ui->minimizeButton->setFlat(true);
         connect(ui->minimizeButton, SIGNAL(clicked()),
@@ -1191,8 +1187,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         int left = widget->pos().x();
         int right = left + widget->width();
 
-        ui->closeButton->move(right-24, top);
-        ui->minimizeButton->move(right-48, top);
+        resizeTopButtons(right, top);
         ui->resizeButton->move(right-24, bottom-24);
 
         if(otherWindow == NULL) spreadCorrectTamCard();
@@ -1209,6 +1204,34 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         otherWindow->spreadCorrectTamCard();
     }
     event->accept();
+}
+
+
+void MainWindow::resizeTopButtons(int right, int top)
+{
+    int limitWidth = ui->tabWidget->tabBar()->width() + 48;
+
+    int buttonsWidth;
+    bool smallButtons = this->width() < limitWidth;
+    if(smallButtons)
+    {
+        buttonsWidth = 19;
+        ui->closeButton->move(right-buttonsWidth, top);
+        ui->minimizeButton->move(right-buttonsWidth, top+buttonsWidth);
+    }
+    else
+    {
+        buttonsWidth = 24;
+        ui->closeButton->move(right-buttonsWidth, top);
+        ui->minimizeButton->move(right-2*buttonsWidth, top);
+    }
+
+    ui->closeButton->resize(buttonsWidth, buttonsWidth);
+    ui->closeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
+    ui->minimizeButton->resize(buttonsWidth, buttonsWidth);
+    ui->minimizeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
+
+
 }
 
 
@@ -1421,13 +1444,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 void MainWindow::calculateMinimumWidth()
 {
     if(!isMainWindow || (windowsFormation!=H1 && windowsFormation!=V2)) return;
-
-    int minWidth = this->width() - ui->tabWidget->width();
-    minWidth += ui->tabWidget->tabBar()->width();
-    if(ui->minimizeButton!=NULL)    minWidth += ui->minimizeButton->width();
-    if(ui->closeButton!=NULL)       minWidth += ui->closeButton->width();
-
-    this->setMinimumWidth(minWidth);
+    this->setMinimumWidth(ui->tabWidget->tabBar()->width() + 19);
 }
 
 
@@ -2098,24 +2115,16 @@ void MainWindow::updateButtonsTheme()
     if(theme == ThemeWhite)
     {
         ui->closeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
-                                       "QPushButton:hover {background: "
-                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 #F0F0F0, stop: 1 #90EE90);}");
+                                       "QPushButton:hover {background: #0F4F0F;}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
-                                          "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
-                                                       "stop: 0 #F0F0F0, stop: 1 #90EE90);}");
+                                          "QPushButton:hover {background: #0F4F0F;}");
     }
     else
     {
         ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: "
-                                                      "qlineargradient(x1: 0, y1: 1, x2: 1, y2: 0, "
-                                                      "stop: 0 black, stop: 1 #006400);}");
+                                       "QPushButton:hover {background: #0F4F0F;}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                          "QPushButton:hover {background: "
-                                                       "qlineargradient(x1: 1, y1: 1, x2: 0, y2: 0, "
-                                                       "stop: 0 black, stop: 1 #006400);}");
+                                          "QPushButton:hover {background: #0F4F0F;}");
     }
 }
 
