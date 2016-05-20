@@ -14,6 +14,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->taunt = false;
     this->stealth = false;
     this->frozen = false;
+    this->windfury = false;
     this->charge = false;
     this->exausted = true;
     this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
@@ -108,6 +109,10 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "FROZEN")
     {
         this->frozen = (value=="1");
+    }
+    else if(tag == "WINDFURY")
+    {
+        this->windfury = (value=="1");
     }
     update();
 }

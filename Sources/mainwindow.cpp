@@ -2442,7 +2442,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Completar resizeTabWidgets para planTab
-
+//Windfury and tag NUM_ATTACKS_THIS_TURN
 
 
 //Minions generados

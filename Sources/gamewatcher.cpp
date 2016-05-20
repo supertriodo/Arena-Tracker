@@ -480,7 +480,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR" || tag == "FROZEN")
+                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
@@ -508,7 +508,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR" || tag == "FROZEN")
+                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
         {
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
