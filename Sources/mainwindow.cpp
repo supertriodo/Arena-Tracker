@@ -123,7 +123,7 @@ void MainWindow::destroySecondaryWindow()
 
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     this->windowsFormation = None;
-    resizeTabWidgets(this->size());
+    this->resize(this->width() + 30, this->height());
 }
 
 
@@ -1230,8 +1230,6 @@ void MainWindow::resizeTopButtons(int right, int top)
     ui->closeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
     ui->minimizeButton->resize(buttonsWidth, buttonsWidth);
     ui->minimizeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
-
-
 }
 
 
@@ -1260,19 +1258,12 @@ void MainWindow::resizeTabWidgets(QSize newSize)
 
     if(!this->splitWindow)  newWindowsFormation = H1;
 
-    if(newWindowsFormation == windowsFormation) return;
-    resizeTabWidgets(newWindowsFormation);
-}
-
-
-void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
-{
-    windowsFormation = newWindowsFormation;
     switch(windowsFormation)
     {
         case None:
         case H1:
             break;
+
         case H2:
             ui->tabWidgetH2->setFixedWidth(this->width()/2);
             break;
@@ -1286,6 +1277,14 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             ui->tabWidgetV1->setFixedHeight(this->height()/2);
             break;
     }
+
+    if(newWindowsFormation != windowsFormation) resizeTabWidgets(newWindowsFormation);
+}
+
+
+void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
+{
+    windowsFormation = newWindowsFormation;
 
     ui->tabWidget->hide();
     ui->tabWidgetH2->hide();
@@ -1330,6 +1329,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
+                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -1383,7 +1383,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
+                moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetV1->show();
             }
@@ -1443,8 +1443,11 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 
 void MainWindow::calculateMinimumWidth()
 {
-    if(!isMainWindow || (windowsFormation!=H1 && windowsFormation!=V2)) return;
-    this->setMinimumWidth(ui->tabWidget->tabBar()->width() + 19);
+    if(isMainWindow)
+    {
+        int minWidth = ui->tabWidget->tabBar()->width() + 19;
+        this->setMinimumWidth(minWidth);
+    }
 }
 
 
