@@ -607,12 +607,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 {
     //Carta desconocida (Enemigo)
     if(line.contains(QRegularExpression(
-        "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from (.*) -> OPPOSING (HAND|SECRET|DECK)"
+        "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from "
+        "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
         QString id = match->captured(1);
         QString zoneFrom = match->captured(2);
-        QString zoneToOpposing = match->captured(3);
+        QString zoneTo = match->captured(3);
 
 
         //Enemigo juega carta desconocida
@@ -621,7 +622,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit enemyCardPlayed(id.toInt());
 
             //Carta devuelta al mazo en Mulligan
-            if(zoneToOpposing == "DECK")
+            if(zoneTo == "OPPOSING DECK")
             {
                 emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
             }
@@ -632,14 +633,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Enemigo juega secreto
-        if(zoneToOpposing == "SECRET")
+        if(zoneTo == "OPPOSING SECRET")
         {
             emit pDebug("Enemy: Secret played. ID: " + id, numLine);
             emit enemySecretPlayed(id.toInt(), secretHero);
         }
 
         //Enemigo roba carta desconocida
-        else if(zoneToOpposing == "HAND")
+        else if(zoneTo == "OPPOSING HAND")
         {
             //Enemigo roba carta de deck
             if(zoneFrom == "OPPOSING DECK")

@@ -2442,11 +2442,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets
 //Completar resizeTabWidgets para planTab
-//Tag FROZEN
-//Tag stealth
 
-//ZoneChangeList.ProcessChanges() - id=60 local=False [id=58 cardId= type=INVALID zone=SETASIDE zonePos=1 player=2] zone from OPPOSING HAND ->
-//Eliminar cartas desconocidas de la mano
 
 
 //Minions generados
