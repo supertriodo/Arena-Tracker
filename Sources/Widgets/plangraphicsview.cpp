@@ -18,6 +18,12 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 void PlanGraphicsView::reset()
 {
     this->zoom = this->targetZoom = 0;
+    if(this->scene() == NULL)   return;
+
+    foreach(QGraphicsItem *item, this->scene()->items())
+    {
+        this->scene()->removeItem(item);
+    }
 }
 
 

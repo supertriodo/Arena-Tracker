@@ -36,6 +36,7 @@ private:
     Ui::Extended *ui;
     QList<TagChange> pendingTagChanges;
     Board *nowBoard;
+    Board *viewBoard;
     QList<Board *> turnBoards;
     MinionGraphicsItem * lastMinionAdded;
     bool playerTurn;
@@ -59,7 +60,8 @@ private:
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id);
     void addHero(bool friendly, QString code, int id);
-    void removeHero(bool friendly, int id);
+    void removeHero(Board *board, bool friendly);
+    void resetBoard(Board *board);
 
 public:
     void setTransparency(Transparency value);
