@@ -17,7 +17,6 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
 PlanHandler::~PlanHandler()
 {
-    reset();
     delete nowBoard;
 }
 
@@ -176,11 +175,7 @@ void PlanHandler::removeHero(Board *board, bool friendly)
     }
     else
     {
-        //Si scene se ha liberado y el heroe formaba parte de la escena, ya ha sido liberado por scene
-        if(ui->planGraphicsView->scene()!=NULL || viewBoard != board)
-        {
-            delete hero;
-        }
+        delete hero;
 
         if(friendly)    board->playerHero = NULL;
         else            board->enemyHero = NULL;
@@ -392,20 +387,16 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 
 void PlanHandler::resetBoard(Board *board)
 {
-    //Si scene se ha liberado y el minion formaba parte de la escena, ya ha sido liberado por scene
-    if(ui->planGraphicsView->scene()!=NULL || viewBoard != board)
+    while(!board->playerMinions.empty())
     {
-        while(!board->playerMinions.empty())
-        {
-            MinionGraphicsItem* minion = board->playerMinions.takeFirst();
-            delete minion;
-        }
+        MinionGraphicsItem* minion = board->playerMinions.takeFirst();
+        delete minion;
+    }
 
-        while(!board->enemyMinions.empty())
-        {
-            MinionGraphicsItem* minion = board->enemyMinions.takeFirst();
-            delete minion;
-        }
+    while(!board->enemyMinions.empty())
+    {
+        MinionGraphicsItem* minion = board->enemyMinions.takeFirst();
+        delete minion;
     }
 
     if(board->playerHero != NULL)  removeHero(board, true);

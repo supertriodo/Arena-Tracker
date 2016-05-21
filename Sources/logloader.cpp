@@ -3,7 +3,9 @@
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
+    updateTime = MIN_UPDATE_TIME;
     setUpdateTimeMax();
+
     logComponentList.append("LoadingScreen");
     logComponentList.append("Power");
     logComponentList.append("Zone");

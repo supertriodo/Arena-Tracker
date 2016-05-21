@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isMainWindow = true;
     mouseInApp = false;
     otherWindow = NULL;
+    copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
 
@@ -73,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     secretsHandler = NULL;
     isMainWindow = false;
     mouseInApp = false;
+    copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
     otherWindow = primaryWindow;
@@ -943,6 +945,7 @@ void MainWindow::readSettings()
         this->theme = ThemeBlack;
     }
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->windowsFormation = None;
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
     this->windowsFormation = None;
