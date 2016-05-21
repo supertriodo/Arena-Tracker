@@ -504,8 +504,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionTagChange(int,QString,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString)),
             planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
-    connect(gameWatcher, SIGNAL(newTurn(bool)),
-            planHandler, SLOT(newTurn(bool)));
+    connect(gameWatcher, SIGNAL(newTurn(bool, int)),
+            planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(startGame()),
             planHandler, SLOT(lockPlanInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -1816,8 +1816,15 @@ void MainWindow::test()
 //    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
 //    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
 //    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-//    planHandler->playerHeroZonePlayAdd("HERO_08", 1);
-//    planHandler->enemyHeroZonePlayAdd("HERO_09", 1);
+//    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
+//    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+
+//    QTimer::singleShot(10000, this, SLOT(test2()));
+}
+
+void MainWindow::test2()
+{
+//    planHandler->reset();
 }
 
 
@@ -2458,8 +2465,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets
-//Completar resizeTabWidgets para planTab
+//No Zone fuera de inGame
 //Windfury and tag NUM_ATTACKS_THIS_TURN
+
 
 
 //Minions generados

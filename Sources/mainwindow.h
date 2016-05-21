@@ -171,7 +171,7 @@ public slots:
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
 
 private slots:
-    void test();
+    void test();void test2();
     void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
     void toggleSplitWindow();

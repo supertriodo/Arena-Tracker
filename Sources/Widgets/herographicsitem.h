@@ -8,6 +8,7 @@ class HeroGraphicsItem : public MinionGraphicsItem
 //Constructor
 public:
     HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
+    HeroGraphicsItem(HeroGraphicsItem *copy);
 
 //Variables:
 private:

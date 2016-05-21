@@ -26,6 +26,28 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
 }
 
 
+MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
+{
+    this->code = copy->code;
+    this->id = copy->id;
+    this->friendly = copy->friendly;
+    this->attack = copy->attack;
+    this->origAttack = copy->origAttack;
+    this->health = copy->health;
+    this->origHealth = copy->origHealth;
+    this->damage = copy->damage;
+    this->shield = copy->shield;
+    this->taunt = copy->taunt;
+    this->stealth = copy->stealth;
+    this->frozen = copy->frozen;
+    this->windfury = copy->windfury;
+    this->charge = copy->charge;
+    this->exausted = copy->exausted;
+    this->playerTurn = copy->playerTurn;
+    this->setPos(copy->pos());
+}
+
+
 int MinionGraphicsItem::getId()
 {
     return this->id;

@@ -996,7 +996,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
         isPlayerTurn = playerTurn;
 
         if(playerDraw)      emit clearDrawList();
-        emit newTurn(isPlayerTurn);
+        emit newTurn(isPlayerTurn, turn);
 
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)

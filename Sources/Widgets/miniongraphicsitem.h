@@ -9,6 +9,7 @@ class MinionGraphicsItem : public QGraphicsItem
 //Constructor
 public:
     MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
+    MinionGraphicsItem(MinionGraphicsItem *copy);
 
 //Variables
 protected:

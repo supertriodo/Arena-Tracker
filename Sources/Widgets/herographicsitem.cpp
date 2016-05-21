@@ -15,6 +15,13 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
 }
 
 
+HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
+    :MinionGraphicsItem(copy)
+{
+    this->armor = copy->armor;
+}
+
+
 QRectF HeroGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);

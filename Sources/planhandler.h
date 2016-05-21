@@ -22,6 +22,8 @@ public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
+    bool playerTurn;
+    int numTurn;
 };
 
 class PlanHandler : public QObject
@@ -38,8 +40,8 @@ private:
     Board *nowBoard;
     Board *viewBoard;
     QList<Board *> turnBoards;
+    int firstStoredTurn;
     MinionGraphicsItem * lastMinionAdded;
-    bool playerTurn;
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -47,7 +49,6 @@ private:
 //Metodos:
 private:
     void updateTransparency();
-    void completeUI();
     void updateZoneSpots(bool friendly);
     QList<MinionGraphicsItem *> *getMinionList(bool friendly);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
@@ -89,7 +90,7 @@ public slots:
     void enemyMinionTagChange(int id, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
-    void newTurn(bool playerTurn);
+    void newTurn(bool playerTurn, int numTurn);
     void lockPlanInterface();
     void unlockPlanInterface();
 

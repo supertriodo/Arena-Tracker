@@ -130,7 +130,7 @@ signals:
     void avengeTested();
     void cSpiritTested();
     void clearDrawList(bool forceClear=false);
-    void newTurn(bool isPlayerTurn);
+    void newTurn(bool isPlayerTurn, int numTurn);
     void needResetDeck();
     void activeDraftDeck();
     void pickCard(QString code);

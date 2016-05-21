@@ -8,13 +8,10 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->transparency = Opaque;
     this->inGame = false;
     this->mouseInApp = false;
-    this->lastMinionAdded = NULL;
     this->nowBoard = new Board();
     this->nowBoard->playerHero = NULL;
     this->nowBoard->enemyHero = NULL;
-    this->viewBoard = nowBoard;
-
-    completeUI();
+    reset();
 }
 
 
@@ -22,11 +19,6 @@ PlanHandler::~PlanHandler()
 {
     reset();
     delete nowBoard;
-}
-
-
-void PlanHandler::completeUI()
-{
 }
 
 
@@ -46,7 +38,7 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
     qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
 
-    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, this->playerTurn);
+    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
     addMinion(friendly, minion, pos);
     emit checkCardImage(code, false);
 }
@@ -132,7 +124,7 @@ void PlanHandler::stealMinion(bool friendly, int id, int pos)
     else
     {
         addMinion(!friendly, minion, pos);
-        minion->changeZone(this->playerTurn);
+        minion->changeZone(nowBoard->playerTurn);
     }
 }
 
@@ -157,10 +149,11 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
     if(hero != NULL)
     {
         emit pDebug("Trying to add a hero with an existing one. Force remove old one.", Warning);
+        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->removeItem(hero);
         removeHero(nowBoard, friendly);
     }
 
-    hero = new HeroGraphicsItem(code, id, friendly, this->playerTurn);
+    hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
     if(viewBoard == nowBoard)
     {
         ui->planGraphicsView->scene()->addItem(hero);
@@ -183,12 +176,8 @@ void PlanHandler::removeHero(Board *board, bool friendly)
     }
     else
     {
-        if(ui->planGraphicsView->scene()!=NULL && viewBoard == nowBoard)
-        {
-            ui->planGraphicsView->scene()->removeItem(hero);
-        }
         //Si scene se ha liberado y el heroe formaba parte de la escena, ya ha sido liberado por scene
-        if(ui->planGraphicsView->scene()!=NULL || viewBoard != nowBoard)
+        if(ui->planGraphicsView->scene()!=NULL || viewBoard != board)
         {
             delete hero;
         }
@@ -345,15 +334,43 @@ void PlanHandler::checkPendingTagChanges()
 }
 
 
-void PlanHandler::newTurn(bool playerTurn)
+void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
-    this->playerTurn = playerTurn;
+    //Update nowBoard
+    nowBoard->playerTurn = playerTurn;
+    nowBoard->numTurn = numTurn;
+
     foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
     {
         minion->setPlayerTurn(playerTurn);
     }
 
     if(nowBoard->playerHero != NULL)      nowBoard->playerHero->setPlayerTurn(playerTurn);
+
+
+    //Store nowBoard
+    if(this->firstStoredTurn == 0)  this->firstStoredTurn = numTurn;
+
+    Board *board = new Board();
+    board->playerTurn = playerTurn;
+    board->numTurn = numTurn;
+
+    if(nowBoard->playerHero == NULL)    board->playerHero = NULL;
+    else                                board->playerHero = new HeroGraphicsItem(nowBoard->playerHero);
+    if(nowBoard->enemyHero == NULL)     board->enemyHero = NULL;
+    else                                board->enemyHero = new HeroGraphicsItem(nowBoard->enemyHero);
+
+    foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
+    {
+        board->playerMinions.append(new MinionGraphicsItem(minion));
+    }
+
+    foreach(MinionGraphicsItem * minion, nowBoard->enemyMinions)
+    {
+        board->enemyMinions.append(new MinionGraphicsItem(minion));
+    }
+
+    turnBoards.append(board);
 }
 
 
@@ -375,36 +392,37 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 
 void PlanHandler::resetBoard(Board *board)
 {
-    while(!board->playerMinions.empty())
+    //Si scene se ha liberado y el minion formaba parte de la escena, ya ha sido liberado por scene
+    if(ui->planGraphicsView->scene()!=NULL || viewBoard != board)
     {
-        MinionGraphicsItem* minion = board->playerMinions.takeFirst();
-        //Si scene se ha liberado y el minion formaba parte de la escena, ya ha sido liberado por scene
-        if(ui->planGraphicsView->scene()!=NULL || viewBoard != nowBoard)
+        while(!board->playerMinions.empty())
         {
+            MinionGraphicsItem* minion = board->playerMinions.takeFirst();
             delete minion;
         }
-    }
 
-    while(!board->enemyMinions.empty())
-    {
-        MinionGraphicsItem* minion = board->enemyMinions.takeFirst();
-        //Si scene se ha liberado y el minion formaba parte de la escena, ya ha sido liberado por scene
-        if(ui->planGraphicsView->scene()!=NULL || viewBoard != nowBoard)
+        while(!board->enemyMinions.empty())
         {
+            MinionGraphicsItem* minion = board->enemyMinions.takeFirst();
             delete minion;
         }
     }
 
     if(board->playerHero != NULL)  removeHero(board, true);
     if(board->enemyHero != NULL)   removeHero(board, false);
+
+    board->numTurn = 0;
 }
 
 
 void PlanHandler::reset()
 {
+    emit pDebug("Clear all boards.");
     ui->planGraphicsView->reset();
     pendingTagChanges.clear();
     this->lastMinionAdded = NULL;
+    this->viewBoard = nowBoard;
+    this->firstStoredTurn = 0;
 
     resetBoard(nowBoard);
     while(!turnBoards.empty())
@@ -429,6 +447,8 @@ void PlanHandler::unlockPlanInterface()
 {
     this->inGame = false;
     updateTransparency();
+
+    reset();
 }
 
 
