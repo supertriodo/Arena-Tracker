@@ -23,7 +23,7 @@ public:
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
     bool playerTurn;
-    int numTurn;
+    int numTurn = 0;//0 --> nowBoard
 };
 
 class PlanHandler : public QObject
@@ -40,7 +40,7 @@ private:
     Board *nowBoard;
     Board *viewBoard;
     QList<Board *> turnBoards;
-    int firstStoredTurn;
+    int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
     bool inGame;
     bool mouseInApp;
@@ -63,6 +63,9 @@ private:
     void addHero(bool friendly, QString code, int id);
     void removeHero(Board *board, bool friendly);
     void resetBoard(Board *board);
+    void updateButtons();
+    void loadViewBoard();
+    void completeUI();
 
 public:
     void setTransparency(Transparency value);
@@ -96,6 +99,8 @@ public slots:
 
 private slots:
     void checkPendingTagChanges();
+    void showNextTurn();
+    void showPrevTurn();
 };
 
 #endif // PLANHANDLER_H

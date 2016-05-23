@@ -1252,6 +1252,24 @@
            <number>10</number>
           </property>
           <item>
+           <layout class="QHBoxLayout" name="horizontalLayoutPlanButtons">
+            <item>
+             <widget class="QPushButton" name="planButtonPrev">
+              <property name="text">
+               <string>Prev</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="planButtonNext">
+              <property name="text">
+               <string>Next</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
            <widget class="PlanGraphicsView" name="planGraphicsView">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
@@ -1383,7 +1401,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>435</width>
+               <width>216</width>
                <height>725</height>
               </rect>
              </property>

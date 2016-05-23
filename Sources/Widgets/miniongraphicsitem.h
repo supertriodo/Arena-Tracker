@@ -17,7 +17,7 @@ protected:
     int origAttack, origHealth;
     int attack, health, id;
     int damage;
-    bool friendly, exausted, playerTurn;
+    bool friendly, exausted, playerTurn, dead;
     bool shield, taunt, charge, stealth, frozen, windfury;
 
 public:
@@ -30,6 +30,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     void processTagChange(QString tag, QString value);
     void setPlayerTurn(bool playerTurn);
+    void setDead(bool value);
     void changeZone(bool playerTurn);
     QString getCode();
     void setZonePos(bool friendly, int pos, int minionsZone);

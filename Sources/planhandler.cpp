@@ -11,13 +11,24 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->nowBoard = new Board();
     this->nowBoard->playerHero = NULL;
     this->nowBoard->enemyHero = NULL;
+    this->nowBoard->numTurn = 0;
     reset();
+    completeUI();
 }
 
 
 PlanHandler::~PlanHandler()
 {
     delete nowBoard;
+}
+
+
+void PlanHandler::completeUI()
+{
+    connect(ui->planButtonPrev, SIGNAL(clicked()),
+            this, SLOT(showPrevTurn()));
+    connect(ui->planButtonNext, SIGNAL(clicked()),
+            this, SLOT(showNextTurn()));
 }
 
 
@@ -49,10 +60,10 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem* minion, int pos)
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     minionsList->insert(pos, minion);
+    updateZoneSpots(friendly);
 
     if(viewBoard == nowBoard)
     {
-        updateZoneSpots(friendly);
         ui->planGraphicsView->scene()->addItem(minion);
         ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
     }
@@ -90,10 +101,10 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
     if(pos == -1)   return NULL;
 
     MinionGraphicsItem* minion = minionsList->takeAt(pos);
+    updateZoneSpots(friendly);
 
     if(viewBoard == nowBoard)
     {
-        updateZoneSpots(friendly);
         ui->planGraphicsView->scene()->removeItem(minion);
         ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
     }
@@ -333,7 +344,6 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     //Update nowBoard
     nowBoard->playerTurn = playerTurn;
-    nowBoard->numTurn = numTurn;
 
     foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
     {
@@ -344,7 +354,11 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
 
     //Store nowBoard
-    if(this->firstStoredTurn == 0)  this->firstStoredTurn = numTurn;
+    if(this->firstStoredTurn == 0)
+    {
+        this->firstStoredTurn = numTurn;
+        updateButtons();
+    }
 
     Board *board = new Board();
     board->playerTurn = playerTurn;
@@ -401,8 +415,6 @@ void PlanHandler::resetBoard(Board *board)
 
     if(board->playerHero != NULL)  removeHero(board, true);
     if(board->enemyHero != NULL)   removeHero(board, false);
-
-    board->numTurn = 0;
 }
 
 
@@ -414,6 +426,7 @@ void PlanHandler::reset()
     this->lastMinionAdded = NULL;
     this->viewBoard = nowBoard;
     this->firstStoredTurn = 0;
+    updateButtons();
 
     resetBoard(nowBoard);
     while(!turnBoards.empty())
@@ -422,6 +435,79 @@ void PlanHandler::reset()
         resetBoard(board);
         delete board;
     }
+}
+
+
+void PlanHandler::updateButtons()
+{
+    int viewTurn = viewBoard->numTurn;
+    bool nextEnabled = viewTurn != 0;
+    bool prevEnabled = (firstStoredTurn!=0 && viewTurn==0) || viewTurn>firstStoredTurn;
+    ui->planButtonNext->setEnabled(nextEnabled);
+    ui->planButtonPrev->setEnabled(prevEnabled);
+}
+
+
+void PlanHandler::showNextTurn()
+{
+    int viewTurn = viewBoard->numTurn;
+    if(viewTurn == 0)
+    {
+        emit pDebug("Moving to next turn when in nowBoard. Next Turn button should be disabled.", Error);
+        updateButtons();
+        return;
+    }
+    int countTurns = turnBoards.count();
+    int lastTurn = firstStoredTurn + countTurns - 1;
+    if(viewTurn < lastTurn) viewBoard = turnBoards[viewTurn+1-firstStoredTurn];
+    else                    viewBoard = nowBoard;
+
+    loadViewBoard();
+    updateButtons();
+    qDebug()<<nowBoard->numTurn<<countTurns<<firstStoredTurn<<lastTurn<<endl
+           <<viewTurn<<viewBoard->numTurn;
+}
+
+
+void PlanHandler::showPrevTurn()
+{
+    int viewTurn = viewBoard->numTurn;
+    if(viewTurn == firstStoredTurn)
+    {
+        emit pDebug("Moving to prev turn with no prev turn. Prev Turn button should be disabled.", Error);
+        updateButtons();
+        return;
+    }
+    int countTurns = turnBoards.count();
+    int lastTurn = firstStoredTurn + countTurns - 1;
+    if(viewTurn == 0)       viewBoard = turnBoards[lastTurn-firstStoredTurn];
+    else                    viewBoard = turnBoards[viewTurn-1-firstStoredTurn];
+
+    loadViewBoard();
+    updateButtons();
+    qDebug()<<nowBoard->numTurn<<countTurns<<firstStoredTurn<<lastTurn<<endl
+           <<viewTurn<<viewBoard->numTurn;
+}
+
+
+void PlanHandler::loadViewBoard()
+{
+    ui->planGraphicsView->removeAll();
+
+    ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
+    ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
+
+    foreach(MinionGraphicsItem *minion, viewBoard->playerMinions)
+    {
+        ui->planGraphicsView->scene()->addItem(minion);
+    }
+
+    foreach(MinionGraphicsItem *minion, viewBoard->enemyMinions)
+    {
+        ui->planGraphicsView->scene()->addItem(minion);
+    }
+
+    ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
 }
 
 
@@ -438,8 +524,6 @@ void PlanHandler::unlockPlanInterface()
 {
     this->inGame = false;
     updateTransparency();
-
-    reset();
 }
 
 

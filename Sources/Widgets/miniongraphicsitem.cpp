@@ -17,6 +17,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->windfury = false;
     this->charge = false;
     this->exausted = true;
+    this->dead = false;
     this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
@@ -43,6 +44,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->windfury = copy->windfury;
     this->charge = copy->charge;
     this->exausted = copy->exausted;
+    this->dead = copy->dead;
     this->playerTurn = copy->playerTurn;
     this->setPos(copy->pos());
 }
@@ -63,6 +65,13 @@ QString MinionGraphicsItem::getCode()
 void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;
+    update();
+}
+
+
+void MinionGraphicsItem::setDead(bool value)
+{
+    this->dead = value;
     update();
 }
 
@@ -150,7 +159,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawEllipse(QPointF(0,0), 50, 68);
 
     //Stealth
-    if(this->stealth)
+    if(this->stealth || this->dead)
     {
         painter->drawPixmap(-52, -71, QPixmap(":Images/bgMinionStealth.png"));
     }

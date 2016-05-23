@@ -25,6 +25,7 @@ private:
 public:
     void updateView(int minionsZone);
     void reset();
+    void removeAll();
 
 //Override events
 protected:
