@@ -4,6 +4,7 @@
 #include "Widgets/ui_extended.h"
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
+#include "Widgets/attackgraphicsitem.h"
 #include "utility.h"
 #include <QObject>
 
@@ -16,15 +17,18 @@ public:
     QString tag, value;
 };
 
+
 class Board
 {
 public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
+    QList<AttackGraphicsItem *> attacks;
     bool playerTurn;
     int numTurn = 0;//0 --> nowBoard
 };
+
 
 class PlanHandler : public QObject
 {
@@ -50,7 +54,7 @@ private:
 private:
     void updateTransparency();
     void updateZoneSpots(bool friendly);
-    QList<MinionGraphicsItem *> *getMinionList(bool friendly);
+    QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
     MinionGraphicsItem *findMinion(bool friendly, int id);
     void addMinion(bool friendly, QString code, int id, int pos);
@@ -66,6 +70,7 @@ private:
     void updateButtons();
     void loadViewBoard();
     void completeUI();
+    bool findAttackPoint(AttackGraphicsItem *attack, bool isFrom, int id, Board *board);
 
 public:
     void setTransparency(Transparency value);
@@ -93,6 +98,7 @@ public slots:
     void enemyMinionTagChange(int id, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
+    void zonePlayAttack(int id1, int id2);
     void newTurn(bool playerTurn, int numTurn);
     void lockPlanInterface();
     void unlockPlanInterface();

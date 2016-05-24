@@ -18,7 +18,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->charge = false;
     this->exausted = true;
     this->dead = false;
-    this->playerTurn = friendly && playerTurn;//Para minion enemigos playerTurn siempre sera falso asi que se dibujaran sin glow
+    this->playerTurn = playerTurn;
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -118,7 +118,7 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     }
     else if(tag == "EXHAUSTED")
     {
-        if(friendly)    this->exausted = (value=="1");
+        this->exausted = (value=="1");
     }
     else if(tag == "DIVINE_SHIELD")
     {
@@ -131,7 +131,7 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "CHARGE")
     {
         this->charge = (value=="1");
-        if(friendly && charge)    this->exausted = false;
+        if(charge)    this->exausted = false;
     }
     else if(tag == "STEALTH")
     {
@@ -165,7 +165,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     }
 
     //Taunt/Frozen/Minion template
-    bool glow = (!exausted && !frozen && playerTurn && attack>0);
+    bool glow = (!exausted && !frozen && (playerTurn==friendly) && attack>0);
     if(this->taunt)
     {
         painter->drawPixmap(-70, -96, QPixmap(":Images/bgMinionTaunt" + QString(glow?"Glow":"Simple") + ".png"));

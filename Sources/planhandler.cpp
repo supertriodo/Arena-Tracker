@@ -25,6 +25,15 @@ PlanHandler::~PlanHandler()
 
 void PlanHandler::completeUI()
 {
+    QFont font("Belwe Bd BT");
+    font.setPixelSize(24);
+    font.setBold(true);
+    font.setKerning(true);
+    ui->planLabelTurn->setFont(font);
+    QFontMetrics fm(font);
+    int textWide = fm.width("T99");
+    ui->planLabelTurn->setFixedWidth(textWide);
+
     connect(ui->planButtonPrev, SIGNAL(clicked()),
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
@@ -107,6 +116,15 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
     {
         ui->planGraphicsView->scene()->removeItem(minion);
         ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+    }
+
+    //Marcar como dead minion
+    if(!turnBoards.empty())
+    {
+        Board *board = turnBoards.last();
+        minionsList = getMinionList(friendly, board);
+        pos = findMinionPos(minionsList, id);
+        if(pos != -1)   minionsList->at(pos)->setDead(true);
     }
 
     return minion;
@@ -204,10 +222,11 @@ void PlanHandler::updateZoneSpots(bool friendly)
 }
 
 
-QList<MinionGraphicsItem *> * PlanHandler::getMinionList(bool friendly)
+QList<MinionGraphicsItem *> * PlanHandler::getMinionList(bool friendly, Board *board)
 {
-    if(friendly)    return &nowBoard->playerMinions;
-    else            return &nowBoard->enemyMinions;
+    if(board == NULL)   board = nowBoard;
+    if(friendly)    return &board->playerMinions;
+    else            return &board->enemyMinions;
 }
 
 
@@ -340,6 +359,71 @@ void PlanHandler::checkPendingTagChanges()
 }
 
 
+bool PlanHandler::findAttackPoint(AttackGraphicsItem *attack, bool isFrom, int id, Board *board)
+{
+    if(board->playerHero->getId() == id)
+    {
+        attack->setPointPos(isFrom, true, true, 0, 0);
+    }
+    else if(board->enemyHero->getId() == id)
+    {
+        attack->setPointPos(isFrom, true, false, 0, 0);
+    }
+    else
+    {
+        QList<MinionGraphicsItem *> * minionsList = getMinionList(true, board);
+        int pos = findMinionPos(minionsList, id);
+        if(pos != -1)
+        {
+            attack->setPointPos(isFrom, false, true, pos, minionsList->count());
+        }
+        else
+        {
+            minionsList = getMinionList(false, board);
+            pos = findMinionPos(minionsList, id);
+            if(pos != -1)
+            {
+                attack->setPointPos(isFrom, false, false, pos, minionsList->count());
+            }
+            else
+            {
+                emit pDebug("Attack section not found. Id: " + QString::number(id), Warning);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+void PlanHandler::zonePlayAttack(int id1, int id2)
+{
+    if(turnBoards.empty())  return;
+
+    AttackGraphicsItem *attack = new AttackGraphicsItem();
+    Board *board = turnBoards.last();
+
+    if(findAttackPoint(attack, true, id1, board) && findAttackPoint(attack, false, id2, board))
+    {
+        if(board->playerTurn == attack->isFriendly())
+        {
+            board->attacks.append(attack);
+            if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(attack);
+        }
+        else
+        {
+            emit pDebug("Attack registered in the wrong turn. Resend in 1 sec to wait for the turn change.");
+            QTimer::singleShot(1000, this, SLOT(zonePlayAttack(id1, id2)));
+            delete attack;
+        }
+    }
+    else
+    {
+        delete attack;
+    }
+}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     //Update nowBoard
@@ -350,7 +434,13 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
         minion->setPlayerTurn(playerTurn);
     }
 
+    foreach(MinionGraphicsItem * minion, nowBoard->enemyMinions)
+    {
+        minion->setPlayerTurn(playerTurn);
+    }
+
     if(nowBoard->playerHero != NULL)      nowBoard->playerHero->setPlayerTurn(playerTurn);
+    if(nowBoard->enemyHero != NULL)      nowBoard->enemyHero->setPlayerTurn(playerTurn);
 
 
     //Store nowBoard
@@ -413,6 +503,12 @@ void PlanHandler::resetBoard(Board *board)
         delete minion;
     }
 
+    while(!board->attacks.empty())
+    {
+        AttackGraphicsItem* attack = board->attacks.takeFirst();
+        delete attack;
+    }
+
     if(board->playerHero != NULL)  removeHero(board, true);
     if(board->enemyHero != NULL)   removeHero(board, false);
 }
@@ -445,6 +541,14 @@ void PlanHandler::updateButtons()
     bool prevEnabled = (firstStoredTurn!=0 && viewTurn==0) || viewTurn>firstStoredTurn;
     ui->planButtonNext->setEnabled(nextEnabled);
     ui->planButtonPrev->setEnabled(prevEnabled);
+
+    QString color;
+    if(viewBoard->playerTurn)    color = "green";
+    else                        color = "red";
+    ui->planLabelTurn->setStyleSheet("QLabel {background-color: transparent; color: " + color + ";}");
+
+    if(viewTurn==0) ui->planLabelTurn->setText("--");
+    else            ui->planLabelTurn->setText("T" + QString::number((viewTurn+1)/2));
 }
 
 
@@ -464,8 +568,6 @@ void PlanHandler::showNextTurn()
 
     loadViewBoard();
     updateButtons();
-    qDebug()<<nowBoard->numTurn<<countTurns<<firstStoredTurn<<lastTurn<<endl
-           <<viewTurn<<viewBoard->numTurn;
 }
 
 
@@ -485,8 +587,6 @@ void PlanHandler::showPrevTurn()
 
     loadViewBoard();
     updateButtons();
-    qDebug()<<nowBoard->numTurn<<countTurns<<firstStoredTurn<<lastTurn<<endl
-           <<viewTurn<<viewBoard->numTurn;
 }
 
 
@@ -507,12 +607,19 @@ void PlanHandler::loadViewBoard()
         ui->planGraphicsView->scene()->addItem(minion);
     }
 
+    foreach(AttackGraphicsItem *attack, viewBoard->attacks)
+    {
+        ui->planGraphicsView->scene()->addItem(attack);
+    }
+
     ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
 }
 
 
 void PlanHandler::lockPlanInterface()
 {
+    emit pDebug("Lock plan interface.");
+
     this->inGame = true;
     updateTransparency();
 
@@ -522,6 +629,8 @@ void PlanHandler::lockPlanInterface()
 
 void PlanHandler::unlockPlanInterface()
 {
+    emit pDebug("Unlock plan interface.");
+
     this->inGame = false;
     updateTransparency();
 }

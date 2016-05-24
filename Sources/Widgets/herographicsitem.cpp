@@ -49,7 +49,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
 
     //Glow
-    bool glow = (!exausted && !frozen && playerTurn && attack>0);
+    bool glow = (!exausted && !frozen && (playerTurn==friendly) && attack>0);
     if(glow)
     {
         painter->drawPixmap(-84, -92, QPixmap(":Images/bgHeroGlow.png"));

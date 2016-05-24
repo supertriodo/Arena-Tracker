@@ -1261,6 +1261,22 @@
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="planLabelTurn">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="planButtonNext">
               <property name="text">
                <string>Next</string>
@@ -1401,7 +1417,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>216</width>
+               <width>435</width>
                <height>725</height>
               </rect>
              </property>

@@ -238,7 +238,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             firstPlayer.clear();
             winnerPlayer.clear();
             playerID = 0;
-            playerTag = "";
+            playerTag.clear();
             secretHero = unknown;
             playerMinions = 0;
             enemyMinions = 0;
@@ -365,7 +365,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         emit pDebug("Player: Starting card drawn: " + cardName, numLine);
         emit playerCardDraw(cardId, true);
 
-        if(playerID == 0)
+        if(playerID == 0 || playerTag.isEmpty())
         {
             playerID = player.toInt();
             playerTag = (playerID == 1)?name1:name2;
@@ -437,30 +437,11 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
-    //ULTIMO TRIGGER SPECIAL CARDS
-    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Robo de ideas id=31 zone=PLAY zonePos=0 cardId=EX1_339 player=1]
-    //EffectCardId= EffectIndex=-1 Target=0
-    if(line.contains(QRegularExpression(
-        "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-        "Entity=\\[name=(.*) id=\\d+ zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-        "EffectCardId=\\w* EffectIndex=-?\\d+ Target="
-        ), match))
-    {
-        QString blockType = match->captured(1);
-        QString name = match->captured(2);
-        QString cardId = match->captured(3);
-        QString player = match->captured(4);
-
-        emit pDebug("Trigger(" + blockType + "): " + name, numLine);
-        emit specialCardTrigger(cardId, blockType);
-        if(isHeroPower(cardId) && isPlayerTurn && player.toInt()==playerID)     emit playerHeroPower();
-    }
-
     //TAG_CHANGE desconocido
     //Secret hero
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[id=43 cardId= type=INVALID zone=HAND zonePos=1 player=2] tag=CLASS value=PALADIN
     //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[id=81 cardId= type=INVALID zone=SETASIDE zonePos=0 player=2] tag=HEALTH value=11
-    else if(line.contains(QRegularExpression(
+    if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
         "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=(\\d+)\\] tag=(\\w+) value=(\\w+)"
         ), match))
@@ -515,26 +496,34 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
     }
 
+
     //Jugador/Enemigo accion con objetivo
-    //GameState.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Arquera elfa id=51 zone=PLAY zonePos=1 cardId=CS2_189 player=2]
-    //EffectCardId= EffectIndex=-1 Target=[name=Acaparador de botín id=31 zone=PLAY zonePos=1 cardId=EX1_096 player=1]
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
+    //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
     else if(line.contains(QRegularExpression(
-        "GameState\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-        "Entity=\\[name=(.*) id=\\d+ zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+        "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
+        "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
         "EffectCardId=\\w* EffectIndex=(-?\\d+) "
-        "Target=\\[name=(.*) id=\\d+ zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\]"
+        "Target=(?:\\[name=(.*) id=(\\d+) zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\])"
         ), match))
     {
         QString blockType = match->captured(1);
         QString name1 = match->captured(2);
-        QString zone = match->captured(3);
-        QString cardId1 = match->captured(4);
-        QString player1 = match->captured(5);
-        QString index = match->captured(6);
-        QString name2 = match->captured(7);
-        QString cardId2 = match->captured(8);
+        QString id1 = match->captured(3);
+        QString zone = match->captured(4);
+        QString cardId1 = match->captured(5);
+        QString player1 = match->captured(6);
+        QString index = match->captured(7);
+        QString name2 = match->captured(8);
+        QString id2 = match->captured(9);
+        QString cardId2 = match->captured(10);
         bool isPlayer = (player1.toInt() == playerID);
 
+
+        //ULTIMO TRIGGER SPECIAL CARDS
+        emit pDebug("Trigger(" + blockType + "): " + name1, numLine);
+        emit specialCardTrigger(cardId1, blockType);
+        if(isHeroPower(cardId1) && isPlayerTurn && player1.toInt()==playerID)     emit playerHeroPower();
 
         //Jugador/Enemigo juega carta con objetivo
         if(zone == "HAND" && blockType == "PLAY" && index == "0")
@@ -560,6 +549,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
         else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1")
         {
+            emit zonePlayAttack(id1.toInt(), id2.toInt());
+
             if(cardId1.contains("HERO"))
             {
                 if(cardId2.contains("HERO"))
@@ -984,7 +975,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
     if((firstPlayer==playerTag && turn%2==1) || (firstPlayer!=playerTag && turn%2==0))  playerTurn=true;
     else    playerTurn=false;
 
-    if(spectating)  playerTurn = playerDraw;
+    if(firstPlayer.isEmpty() || playerTag.isEmpty())    playerTurn = playerDraw;
 
     //Al turno 1 dejamos que pase cualquiera asi dejamos el turno 0 para indicar cartas de mulligan
     //Solo avanza de turno al robar carta el jugador que le corresponde

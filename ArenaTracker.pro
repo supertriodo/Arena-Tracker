@@ -46,7 +46,8 @@ SOURCES += Sources/main.cpp\
     Sources/planhandler.cpp \
     Sources/Widgets/plangraphicsview.cpp \
     Sources/Widgets/miniongraphicsitem.cpp \
-    Sources/Widgets/herographicsitem.cpp
+    Sources/Widgets/herographicsitem.cpp \
+    Sources/Widgets/attackgraphicsitem.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -80,7 +81,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/planhandler.h \
     Sources/Widgets/plangraphicsview.h \
     Sources/Widgets/miniongraphicsitem.h \
-    Sources/Widgets/herographicsitem.h
+    Sources/Widgets/herographicsitem.h \
+    Sources/Widgets/attackgraphicsitem.h
 
 FORMS    += mainwindow.ui
 

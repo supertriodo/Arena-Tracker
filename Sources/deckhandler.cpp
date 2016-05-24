@@ -845,6 +845,8 @@ void DeckHandler::cardRemove()
 
 void DeckHandler::lockDeckInterface()
 {
+    emit pDebug("Lock deck interface.");
+
     this->inGame = true;
 
     if(!synchronized)   return;
@@ -863,13 +865,13 @@ void DeckHandler::lockDeckInterface()
 
     updateTransparency();
     clearDrawList(true);
-
-    emit pDebug("Lock deck interface.");
 }
 
 
 void DeckHandler::unlockDeckInterface()
 {
+    emit pDebug("Unlock deck interface.");
+
     this->inGame = false;
 
     if(!synchronized)   return;
@@ -891,8 +893,6 @@ void DeckHandler::unlockDeckInterface()
 
     updateTransparency();
     clearDrawList(true);
-
-    emit pDebug("Unlock deck interface.");
 }
 
 

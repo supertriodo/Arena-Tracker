@@ -506,6 +506,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionTagChange(int,QString,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString)),
             planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
+    connect(gameWatcher, SIGNAL(zonePlayAttack(int,int)),
+            planHandler, SLOT(zonePlayAttack(int,int)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(startGame()),
@@ -2470,6 +2472,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //No Zone fuera de inGame
 //Windfury and tag NUM_ATTACKS_THIS_TURN
+//Mostrar hechizos y battlecry en objetivos
+//Mostrar esbirros creados por minions del tablero, no jugados, y ataques a estos.
 
 
 
