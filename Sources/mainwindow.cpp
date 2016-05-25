@@ -475,7 +475,7 @@ void MainWindow::createGameWatcher()
 //            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int)),
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
@@ -486,6 +486,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionZonePlayAdd(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayAdd(QString,int,int)),
             planHandler, SLOT(enemyMinionZonePlayAdd(QString,int,int)));
+    connect(gameWatcher, SIGNAL(playerMinionZonePlayAddTriggered(QString,int,int)),
+            planHandler, SLOT(playerMinionZonePlayAddTriggered(QString,int,int)));
+    connect(gameWatcher, SIGNAL(enemyMinionZonePlayAddTriggered(QString,int,int)),
+            planHandler, SLOT(enemyMinionZonePlayAddTriggered(QString,int,int)));
     connect(gameWatcher, SIGNAL(playerHeroZonePlayAdd(QString,int)),
             planHandler, SLOT(playerHeroZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(enemyHeroZonePlayAdd(QString,int)),
@@ -510,6 +514,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(zonePlayAttack(int,int)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
+            planHandler, SLOT(setLastTriggerId(QString,QString,int)));
     connect(gameWatcher, SIGNAL(startGame()),
             planHandler, SLOT(lockPlanInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -539,7 +545,7 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerAttack(bool,bool)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
     //Connect en synchronizedDone
@@ -1817,12 +1823,20 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
-//    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
-//    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
-//    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-//    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
-//    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
+    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
+    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
+    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
+    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+    planHandler->newTurn(true, 1);
+    planHandler->zonePlayAttack(1,2);
+    planHandler->zonePlayAttack(3,2);
+    planHandler->zonePlayAttack(11,4);
+    planHandler->newTurn(false, 2);
+    planHandler->zonePlayAttack(12,11);
+    planHandler->setLastTriggerId("", "TRIGGER", 1);
+    planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2470,10 +2484,11 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets
-//No Zone fuera de inGame
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Mostrar hechizos y battlecry en objetivos
-//Mostrar esbirros creados por minions del tablero, no jugados, y ataques a estos.
+//Avanzar turno en fatigue
+//Mostrar hechizos y battlecry en objetivos y ataques de minion recien jugados con carga
+//Doblar linea ataque
+
 
 
 

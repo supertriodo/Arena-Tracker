@@ -113,6 +113,8 @@ signals:
     void playerMinionPlayed(int playerMinions);
     void playerMinionZonePlayAdd(QString code, int id, int pos);
     void enemyMinionZonePlayAdd(QString code, int id, int pos);
+    void playerMinionZonePlayAddTriggered(QString code, int id, int pos);
+    void enemyMinionZonePlayAddTriggered(QString code, int id, int pos);
     void playerMinionZonePlayRemove(int id);
     void enemyMinionZonePlayRemove(int id);
     void playerMinionZonePlaySteal(int id, int pos);
@@ -135,7 +137,7 @@ signals:
     void needResetDeck();
     void activeDraftDeck();
     void pickCard(QString code);
-    void specialCardTrigger(QString code, QString subType);
+    void specialCardTrigger(QString code, QString blockType, int id);
     void gameLogComplete(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
     void arenaDeckRead();
     void pLog(QString line);

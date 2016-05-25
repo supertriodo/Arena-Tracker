@@ -244,7 +244,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             enemyMinions = 0;
             enemyMinionsAliveForAvenge = -1;
 
-            emit specialCardTrigger("", "");    //Evita Cartas createdBy en el mulligan de practica
+            emit specialCardTrigger("", "", -1);    //Evita Cartas createdBy en el mulligan de practica
             emit startGame();
         }
     }
@@ -454,7 +454,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         if(tag == "CLASS")
         {
-            emit pDebug("Secret hero: " + value + " Id: " + id, numLine);
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Secret hero: " + value + " Id: " + id, numLine);
             if(value == "MAGE")         secretHero = mage;
             else if(value == "HUNTER")  secretHero = hunter;
             else if(value == "PALADIN") secretHero = paladin;
@@ -463,6 +463,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
         {
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + "): " + value + " Id: " + id, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
         }
@@ -491,6 +492,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
         {
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value + " -- " + name, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
         }
@@ -500,11 +502,13 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //Jugador/Enemigo accion con objetivo
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
     //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[name=Trepadora embrujada id=12 zone=GRAVEYARD zonePos=0 cardId=FP1_002 player=1]
+    //EffectCardId= EffectIndex=0 Target=0
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
         "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
         "EffectCardId=\\w* EffectIndex=(-?\\d+) "
-        "Target=(?:\\[name=(.*) id=(\\d+) zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\])"
+        "Target=(?:\\[name=(.*) id=(\\d+) zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
         ), match))
     {
         QString blockType = match->captured(1);
@@ -522,11 +526,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         //ULTIMO TRIGGER SPECIAL CARDS
         emit pDebug("Trigger(" + blockType + "): " + name1, numLine);
-        emit specialCardTrigger(cardId1, blockType);
+        emit specialCardTrigger(cardId1, blockType, id1.toInt());
         if(isHeroPower(cardId1) && isPlayerTurn && player1.toInt()==playerID)     emit playerHeroPower();
 
         //Jugador/Enemigo juega carta con objetivo
-        if(zone == "HAND" && blockType == "PLAY" && index == "0")
+        if(zone == "HAND" && blockType == "PLAY" && index == "0" && !cardId2.isEmpty())
         {
             DeckCard deckCard(cardId1);
             if(deckCard.getType() == SPELL)
@@ -547,7 +551,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
 
         //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
-        else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1")
+        else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1" && !cardId2.isEmpty())
         {
             emit zonePlayAttack(id1.toInt(), id2.toInt());
 
@@ -688,6 +692,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             enemyMinions++;
             emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
             if(zoneFrom == "FRIENDLY PLAY") emit playerMinionZonePlaySteal(id.toInt(), zonePos.toInt());
+            else if(zoneFrom.isEmpty())     emit enemyMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
         //Jugador, nuevo minion en PLAY
@@ -696,6 +701,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             playerMinions++;
             emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
             if(zoneFrom == "OPPOSING PLAY") emit enemyMinionZonePlaySteal(id.toInt(), zonePos.toInt());
+            else if(zoneFrom.isEmpty())     emit playerMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
 

@@ -73,6 +73,7 @@ public:
     static void fadeOutWidget(QWidget *widget);
     static QString getLoadingScreenString(LoadingScreenState loadingScreen);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
+    static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
 };
 
 #endif // UTILITY_H

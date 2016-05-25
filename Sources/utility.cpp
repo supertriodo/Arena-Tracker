@@ -370,3 +370,21 @@ void Utility::fadeOutWidget(QWidget * widget)
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
+
+QPixmap Utility::getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin)
+{
+    QPointF center = QPointF(image.width() / 2, image.height() / 2);
+    qreal dist = QLineF(anchor, center).length();
+    qreal a = qAtan2(anchor.y() - center.y(), anchor.x() - center.x());
+    QPointF rotAnchor(qCos(rot + a) * dist, qSin(rot + a) * dist);
+    rotAnchor += center;
+
+    QPixmap rotImage = image.transformed(QTransform().rotateRadians(rot));
+
+    QPointF rotCenter = QPointF(rotImage.width() / 2, rotImage.height() / 2);
+    QPointF offset = rotCenter - center;
+
+    origin = pos - (rotAnchor + offset);
+
+    return rotImage;
+}

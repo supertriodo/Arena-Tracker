@@ -35,6 +35,7 @@ public:
     QString getCode();
     void setZonePos(bool friendly, int pos, int minionsZone);
     int getId();
+    bool isFriendly();
 };
 
 #endif // MINIONGRAPHICSITEM_H

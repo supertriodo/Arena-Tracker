@@ -4,7 +4,7 @@
 #include "Widgets/ui_extended.h"
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
-#include "Widgets/attackgraphicsitem.h"
+#include "Widgets/arrowgraphicsitem.h"
 #include "utility.h"
 #include <QObject>
 
@@ -24,7 +24,7 @@ public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
-    QList<AttackGraphicsItem *> attacks;
+    QList<ArrowGraphicsItem *> arrows;
     bool playerTurn;
     int numTurn = 0;//0 --> nowBoard
 };
@@ -46,6 +46,7 @@ private:
     QList<Board *> turnBoards;
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
+    int lastTriggerId;//-1 --> no trigger
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -53,12 +54,15 @@ private:
 //Metodos:
 private:
     void updateTransparency();
-    void updateZoneSpots(bool friendly);
+    void updateZoneSpots(bool friendly, Board *board=NULL);
     QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
     MinionGraphicsItem *findMinion(bool friendly, int id);
     void addMinion(bool friendly, QString code, int id, int pos);
     void addMinion(bool friendly, MinionGraphicsItem *minion, int pos);
+    void addMinionTriggered(bool friendly, QString code, int id, int pos);
+    void addMinionToLastTurn(bool friendly, MinionGraphicsItem *minion);
+    void addReinforceToLastTurn(MinionGraphicsItem *parent, MinionGraphicsItem *child, Board *board);
     void updateMinionPos(bool friendly, int id, int pos);
     void removeMinion(bool friendly, int id);
     void addTagChange(int id, bool friendly, QString tag, QString value);
@@ -70,7 +74,7 @@ private:
     void updateButtons();
     void loadViewBoard();
     void completeUI();
-    bool findAttackPoint(AttackGraphicsItem *attack, bool isFrom, int id, Board *board);
+    bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
 
 public:
     void setTransparency(Transparency value);
@@ -88,6 +92,8 @@ signals:
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
     void enemyMinionZonePlayAdd(QString code, int id, int pos);
+    void playerMinionZonePlayAddTriggered(QString code, int id, int pos);
+    void enemyMinionZonePlayAddTriggered(QString code, int id, int pos);
     void playerMinionZonePlaySteal(int id, int pos);
     void enemyMinionZonePlaySteal(int id, int pos);
     void playerMinionZonePlayRemove(int id);
@@ -100,6 +106,7 @@ public slots:
     void enemyHeroZonePlayAdd(QString code, int id);
     void zonePlayAttack(int id1, int id2);
     void newTurn(bool playerTurn, int numTurn);
+    void setLastTriggerId(QString code, QString blockType, int id);
     void lockPlanInterface();
     void unlockPlanInterface();
 

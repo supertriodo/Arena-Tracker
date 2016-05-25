@@ -62,6 +62,12 @@ QString MinionGraphicsItem::getCode()
 }
 
 
+bool MinionGraphicsItem::isFriendly()
+{
+    return this->friendly;
+}
+
+
 void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;
@@ -159,7 +165,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawEllipse(QPointF(0,0), 50, 68);
 
     //Stealth
-    if(this->stealth || this->dead)
+    if(this->stealth)
     {
         painter->drawPixmap(-52, -71, QPixmap(":Images/bgMinionStealth.png"));
     }
@@ -217,5 +223,11 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(this->shield)
     {
         painter->drawPixmap(-71, -92, QPixmap(":Images/bgMinionShield.png"));
+    }
+
+    //Dead
+    if(this->dead)
+    {
+        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
     }
 }
