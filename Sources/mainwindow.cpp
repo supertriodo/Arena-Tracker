@@ -1835,6 +1835,7 @@ void MainWindow::test()
     planHandler->zonePlayAttack(11,4);
     planHandler->newTurn(false, 2);
     planHandler->zonePlayAttack(12,11);
+    planHandler->zonePlayAttack(12,11);
     planHandler->setLastTriggerId("", "TRIGGER", 1);
     planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
 
@@ -2487,7 +2488,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
 //Mostrar hechizos y battlecry en objetivos y ataques de minion recien jugados con carga
-//Doblar linea ataque
+//Ataque mostrar x2 en ataques cosnecutivos
 
 
 

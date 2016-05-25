@@ -17,6 +17,7 @@ private:
     MinionGraphicsItem *to;
     bool friendly;
     bool attack;
+    int numAttacks;
 
 //Metodos
 public:
@@ -25,6 +26,8 @@ public:
     bool isFriendly();
     void setEnd(bool isFrom, MinionGraphicsItem *item);
     void prepareGeometryChange();
+    void increaseNumAttacks();
+    MinionGraphicsItem *getEnd(bool isFrom);
 };
 
 #endif // ARROWGRAPHICSITEM_H

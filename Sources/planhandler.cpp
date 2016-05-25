@@ -490,6 +490,26 @@ bool PlanHandler::findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, 
 }
 
 
+bool PlanHandler::appendAttack(ArrowGraphicsItem *attack, Board *board)
+{
+    int fromId = attack->getEnd(true)->getId();
+    int toId = attack->getEnd(false)->getId();
+
+    foreach(ArrowGraphicsItem *arrow, board->arrows)
+    {
+        if(arrow->getEnd(true)->getId() == fromId && arrow->getEnd(false)->getId() == toId)
+        {
+            arrow->increaseNumAttacks();
+            arrow->update();
+            return false;
+        }
+    }
+
+    board->arrows.append(attack);
+    return true;
+}
+
+
 void PlanHandler::zonePlayAttack(int id1, int id2)
 {
     if(turnBoards.empty())  return;
@@ -501,8 +521,11 @@ void PlanHandler::zonePlayAttack(int id1, int id2)
     {
         if(board->playerTurn == attack->isFriendly())
         {
-            board->arrows.append(attack);
-            if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(attack);
+            if(appendAttack(attack, board))
+            {
+                if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(attack);
+            }
+            else    delete attack;
         }
         else
         {

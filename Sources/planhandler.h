@@ -75,6 +75,7 @@ private:
     void loadViewBoard();
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
+    bool appendAttack(ArrowGraphicsItem *attack, Board *board);
 
 public:
     void setTransparency(Transparency value);
