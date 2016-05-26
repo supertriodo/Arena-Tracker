@@ -719,13 +719,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneFrom.isEmpty())     emit playerMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
-
+        //Enemigo, carga heroe
         else if(zoneTo == "OPPOSING PLAY (Hero)")
         {
             emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name, numLine);
             emit enemyHeroZonePlayAdd(cardId, id.toInt());
         }
-
+        //Jugador, carga heroe
         else if(zoneTo == "FRIENDLY PLAY (Hero)")
         {
             emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name, numLine);
@@ -736,6 +736,19 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
+        //Enemigo, equipa arma
+        else if(zoneTo == "OPPOSING PLAY (Weapon)" && zoneFrom != "OPPOSING GRAVEYARD")//Al reemplazar un arma por otra, la antigua va, vuelve y va a graveyard.
+        {
+            emit pDebug("Enemy: Weapon moved to OPPOSING PLAY (Weapon): " + name, numLine);
+            emit enemyWeaponZonePlayAdd(cardId);
+        }
+        //Jugador, equipa arma
+        else if(zoneTo == "FRIENDLY PLAY (Weapon)" && zoneFrom != "FRIENDLY GRAVEYARD")
+        {
+            emit pDebug("Player: Weapon moved to FRIENDLY PLAY (Weapon): " + name, numLine);
+            emit playerWeaponZonePlayAdd(cardId);
+        }
+
 
         //Enemigo roba secreto (kezan mystic)
         if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")

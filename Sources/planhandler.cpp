@@ -543,6 +543,7 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
         else
         {
             attack->getEnd(false)->addAddon(code);
+            emit checkCardImage(code, false);
             delete attack;
         }
     }
@@ -553,21 +554,45 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 }
 
 
+void PlanHandler::playerWeaponZonePlayAdd(QString code)
+{
+    this->addWeaponAddon(true, code);
+}
+
+
+void PlanHandler::enemyWeaponZonePlayAdd(QString code)
+{
+    this->addWeaponAddon(false, code);
+}
+
+
+void PlanHandler::addWeaponAddon(bool friendly, QString code)
+{
+    if(turnBoards.empty())  return;
+
+    Board *board = turnBoards.last();
+
+    if(friendly)    board->playerHero->addAddon(code);
+    else            board->enemyHero->addAddon(code);
+    emit checkCardImage(code, false);
+}
+
+
 void PlanHandler::playerCardObjPlayed(QString code, int id2)
 {
-    if(nowBoard->playerTurn)    addMinionAddon(code, id2);
+    if(nowBoard->playerTurn)    addCardObjAddon(code, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
 void PlanHandler::enemyCardObjPlayed(QString code, int id2)
 {
-    if(!nowBoard->playerTurn)   addMinionAddon(code, id2);
+    if(!nowBoard->playerTurn)   addCardObjAddon(code, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addMinionAddon(QString code, int id)
+void PlanHandler::addCardObjAddon(QString code, int id)
 {
     if(turnBoards.empty())  return;
 

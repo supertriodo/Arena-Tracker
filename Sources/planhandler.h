@@ -76,7 +76,8 @@ private:
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addMinionAddon(QString code, int id);
+    void addCardObjAddon(QString code, int id);
+    void addWeaponAddon(bool friendly, QString code);
 
 public:
     void setTransparency(Transparency value);
@@ -106,6 +107,8 @@ public slots:
     void enemyMinionTagChange(int id, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
+    void playerWeaponZonePlayAdd(QString code);
+    void enemyWeaponZonePlayAdd(QString code);
     void zonePlayAttack(QString code, int id1, int id2);
     void playerCardObjPlayed(QString code, int id2);
     void enemyCardObjPlayed(QString code, int id2);

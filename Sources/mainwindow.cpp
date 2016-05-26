@@ -495,6 +495,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerHeroZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(enemyHeroZonePlayAdd(QString,int)),
             planHandler, SLOT(enemyHeroZonePlayAdd(QString,int)));
+    connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString)),
+            planHandler, SLOT(playerWeaponZonePlayAdd(QString)));
+    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString)),
+            planHandler, SLOT(enemyWeaponZonePlayAdd(QString)));
     connect(gameWatcher, SIGNAL(playerMinionZonePlayRemove(int)),
             planHandler, SLOT(playerMinionZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
@@ -2507,7 +2511,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
-//Mostrar hechizos y battlecry en objetivos y ataques de minion recien jugados con carga
 //Mostrar addons que causan dano o muerte sin objetivo, como aoe.
 //Mostrar addons de armas jugadas.
 
