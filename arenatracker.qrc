@@ -108,5 +108,6 @@
         <file>Images/bgMinionDead.png</file>
         <file>Images/arrowAttack.png</file>
         <file>Images/arrowReinforce.png</file>
+        <file>Images/bgMinionAddon.png</file>
     </qresource>
 </RCC>

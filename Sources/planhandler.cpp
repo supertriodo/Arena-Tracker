@@ -447,9 +447,9 @@ void PlanHandler::checkPendingTagChanges()
 
     TagChange tagChange = pendingTagChanges.takeFirst();
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
-    if(minion != NULL)                              minion->processTagChange(tagChange.tag, tagChange.value);
-    else if(nowBoard->playerHero->getId() == tagChange.id)    nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
-    else if(nowBoard->enemyHero->getId() == tagChange.id)     nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+    if(minion != NULL)                                      minion->processTagChange(tagChange.tag, tagChange.value);
+    else if(nowBoard->playerHero->getId() == tagChange.id)  nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+    else if(nowBoard->enemyHero->getId() == tagChange.id)   nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
 }
 
 
@@ -540,6 +540,63 @@ void PlanHandler::zonePlayAttack(int id1, int id2)
 }
 
 
+void PlanHandler::playerCardObjPlayed(QString code, int id2)
+{
+    if(nowBoard->playerTurn)    addMinionAddon(code, id2);
+    else                        emit pDebug("Minion addon registered in the wrong turn.");
+}
+
+
+void PlanHandler::enemyCardObjPlayed(QString code, int id2)
+{
+    if(!nowBoard->playerTurn)   addMinionAddon(code, id2);
+    else                        emit pDebug("Minion addon registered in the wrong turn.");
+}
+
+
+void PlanHandler::addMinionAddon(QString code, int id)
+{
+    if(turnBoards.empty())  return;
+
+    Board *board = turnBoards.last();
+
+    if(board->playerHero->getId() == id)
+    {
+        board->playerHero->addAddon(code);
+        emit checkCardImage(code, false);
+    }
+    else if(board->enemyHero->getId() == id)
+    {
+        board->enemyHero->addAddon(code);
+        emit checkCardImage(code, false);
+    }
+    else
+    {
+        QList<MinionGraphicsItem *> * minionsList = getMinionList(true, board);
+        int pos = findMinionPos(minionsList, id);
+        if(pos != -1)
+        {
+            minionsList->at(pos)->addAddon(code);
+            emit checkCardImage(code, false);
+        }
+        else
+        {
+            minionsList = getMinionList(false, board);
+            pos = findMinionPos(minionsList, id);
+            if(pos != -1)
+            {
+                minionsList->at(pos)->addAddon(code);
+                emit checkCardImage(code, false);
+            }
+            else
+            {
+                emit pDebug("Minion addon target not found. Id: " + QString::number(id), Warning);
+            }
+        }
+    }
+}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     //Update nowBoard
@@ -601,15 +658,15 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 {
     foreach(MinionGraphicsItem * minion, viewBoard->playerMinions)
     {
-        if(minion->getCode() == code)   minion->update();
+        minion->checkDownloadedCode(code);
     }
     foreach(MinionGraphicsItem * minion, viewBoard->enemyMinions)
     {
-        if(minion->getCode() == code)   minion->update();
+        minion->checkDownloadedCode(code);
     }
 
-    if(viewBoard->playerHero != NULL && viewBoard->playerHero->getCode() == code)   viewBoard->playerHero->update();
-    if(viewBoard->enemyHero != NULL && viewBoard->enemyHero->getCode() == code)     viewBoard->enemyHero->update();
+    if(viewBoard->playerHero != NULL)   viewBoard->playerHero->checkDownloadedCode(code);
+    if(viewBoard->enemyHero != NULL)    viewBoard->enemyHero->checkDownloadedCode(code);
 }
 
 

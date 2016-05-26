@@ -108,6 +108,37 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         path.addText(70 - textWide/2, textHigh/4, font, QString::number(armor));
         painter->drawPath(path);
     }
+
+    //Addons
+    for(int i=0; i<this->addons.count() && i<4; i++)
+    {
+        QString addon = this->addons[i];
+        int moveX, moveY;
+        switch(i)
+        {
+            case 0:
+                moveX = 0;
+                moveY = 10;
+                break;
+            case 1:
+                moveX = 0;
+                moveY = -40;
+                break;
+            case 2:
+                moveX = -25;
+                moveY = -15;
+                break;
+            case 3:
+                moveX = 25;
+                moveY = -15;
+                break;
+        }
+
+        painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + addon + ".png")));
+        painter->setBrushOrigin(QPointF(100+moveX,191+moveY));
+        painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
+        painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));
+    }
 }
 
 

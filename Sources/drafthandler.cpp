@@ -152,6 +152,7 @@ void DraftHandler::resetTab()
     settings.setValue("size", mainWindow->size());
 
     //Show Tab
+    mainWindow->resize(mainWindow->width() + 30, mainWindow->height());
     removeTabHero();
     ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/arena.png"), "");
     ui->tabWidget->setCurrentWidget(ui->tabDraft);

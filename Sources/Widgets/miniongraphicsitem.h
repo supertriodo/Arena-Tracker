@@ -19,6 +19,7 @@ protected:
     int damage;
     bool friendly, exausted, playerTurn, dead;
     bool shield, taunt, charge, stealth, frozen, windfury;
+    QList<QString> addons;
 
 public:
     static const int WIDTH = 142;
@@ -36,6 +37,8 @@ public:
     void setZonePos(bool friendly, int pos, int minionsZone);
     int getId();
     bool isFriendly();
+    void addAddon(QString code);
+    void checkDownloadedCode(QString code);
 };
 
 #endif // MINIONGRAPHICSITEM_H

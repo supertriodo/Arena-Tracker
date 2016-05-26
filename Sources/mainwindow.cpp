@@ -109,7 +109,7 @@ void MainWindow::createSecondaryWindow()
     updateMainUITheme();
 
     this->windowsFormation = None;
-    resizeTabWidgets(this->size());
+    this->resizeChecks(this->size());
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
@@ -126,6 +126,7 @@ void MainWindow::destroySecondaryWindow()
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     this->windowsFormation = None;
     this->resize(this->width() + 30, this->height());
+    this->resize(this->width() - 30, this->height());
 }
 
 
@@ -516,6 +517,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
             planHandler, SLOT(setLastTriggerId(QString,QString,int)));
+    connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int)),
+            planHandler, SLOT(playerCardObjPlayed(QString,int)));
+    connect(gameWatcher, SIGNAL(enemyCardObjPlayed(QString,int)),
+            planHandler, SLOT(enemyCardObjPlayed(QString,int)));
     connect(gameWatcher, SIGNAL(startGame()),
             planHandler, SLOT(lockPlanInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -1186,12 +1191,18 @@ void MainWindow::resizeSlot(QSize size)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
+    resizeChecks(this->size());
+    event->accept();
+}
 
+
+void MainWindow::resizeChecks(QSize size)
+{
     QWidget *widget = this->centralWidget();
 
     if(isMainWindow)
     {
-        resizeTabWidgets(this->size());
+        resizeTabWidgets(size);
 
         int top = widget->pos().y();
         int bottom = top + widget->height();
@@ -1214,7 +1225,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
         otherWindow->spreadCorrectTamCard();
     }
-    event->accept();
 }
 
 
@@ -1829,15 +1839,25 @@ void MainWindow::test()
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+
     planHandler->newTurn(true, 1);
     planHandler->zonePlayAttack(1,2);
     planHandler->zonePlayAttack(3,2);
     planHandler->zonePlayAttack(11,4);
+    planHandler->playerCardObjPlayed("AT_004", 4);
+    planHandler->playerCardObjPlayed("AT_004", 4);
+    planHandler->playerCardObjPlayed("AT_004", 4);
+    planHandler->playerCardObjPlayed("AT_004", 4);
+
     planHandler->newTurn(false, 2);
     planHandler->zonePlayAttack(12,11);
     planHandler->zonePlayAttack(12,11);
     planHandler->setLastTriggerId("", "TRIGGER", 1);
     planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
+    planHandler->enemyCardObjPlayed("AT_004", 12);
+    planHandler->enemyCardObjPlayed("AT_004", 12);
+    planHandler->enemyCardObjPlayed("AT_004", 12);
+    planHandler->enemyCardObjPlayed("AT_004", 12);
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2488,8 +2508,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
 //Mostrar hechizos y battlecry en objetivos y ataques de minion recien jugados con carga
-//Ataque mostrar x2 en ataques cosnecutivos
-
+//Mostrar esbirros robados en prev turn
+//Mostrar addons que causan dano o muerte sin objetivo, como aoe.
 
 
 

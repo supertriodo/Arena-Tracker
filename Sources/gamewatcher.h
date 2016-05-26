@@ -129,6 +129,8 @@ signals:
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void zonePlayAttack(int id1, int id2);
     void playerSpellObjPlayed();
+    void playerCardObjPlayed(QString code, int id2);
+    void enemyCardObjPlayed(QString code, int id2);
     void playerHeroPower();
     void avengeTested();
     void cSpiritTested();

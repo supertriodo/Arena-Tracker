@@ -469,6 +469,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
     }
 
+
     //TAG_CHANGE conocido
     //PowerTaskList aparece segundo pero hay acciones que no tienen GameState, como el damage del maestro del acero herido
     //GameState.DebugPrintPower() -         TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=DAMAGE value=0
@@ -504,11 +505,13 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[name=Trepadora embrujada id=12 zone=GRAVEYARD zonePos=0 cardId=FP1_002 player=1]
     //EffectCardId= EffectIndex=0 Target=0
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Elemental de Escarcha id=43 zone=PLAY zonePos=1 cardId=EX1_283 player=2]
+    //EffectCardId= EffectIndex=-1 Target=[name=Trituradora antigua de Sneed id=23 zone=PLAY zonePos=5 cardId=GVG_114 player=1]
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
         "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-        "EffectCardId=\\w* EffectIndex=(-?\\d+) "
-        "Target=(?:\\[name=(.*) id=(\\d+) zone=PLAY zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
+        "EffectCardId=\\w* EffectIndex=-?\\d+ "
+        "Target=(?:\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
         ), match))
     {
         QString blockType = match->captured(1);
@@ -517,80 +520,92 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString zone = match->captured(4);
         QString cardId1 = match->captured(5);
         QString player1 = match->captured(6);
-        QString index = match->captured(7);
-        QString name2 = match->captured(8);
-        QString id2 = match->captured(9);
+        QString name2 = match->captured(7);
+        QString id2 = match->captured(8);
+        QString zone2 = match->captured(9);
         QString cardId2 = match->captured(10);
         bool isPlayer = (player1.toInt() == playerID);
 
 
-        //ULTIMO TRIGGER SPECIAL CARDS
-        emit pDebug("Trigger(" + blockType + "): " + name1, numLine);
+        //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
+        emit pDebug("Trigger(" + blockType + "): " + name1 + (name2.isEmpty()?"":" --> " + name2), numLine);
         emit specialCardTrigger(cardId1, blockType, id1.toInt());
         if(isHeroPower(cardId1) && isPlayerTurn && player1.toInt()==playerID)     emit playerHeroPower();
 
-        //Jugador/Enemigo juega carta con objetivo
-        if(zone == "HAND" && blockType == "PLAY" && index == "0" && !cardId2.isEmpty())
-        {
-            DeckCard deckCard(cardId1);
-            if(deckCard.getType() == SPELL)
-            {
-                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
-                            name1 + " on target " + name2, numLine);
-                if(cardId2 == MAD_SCIENTIST)
-                {
-                    emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
-                }
-                else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
-            }
-            else
-            {
-                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Minion/weapon obj played: " +
-                            name1 + " target " + name2, numLine);
-            }
-        }
 
-        //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
-        else if(zone == "PLAY" && blockType == "ATTACK" && index == "-1" && !cardId2.isEmpty())
+        //Accion con objetivo en PLAY
+        if(zone2 == "PLAY")
         {
-            emit zonePlayAttack(id1.toInt(), id2.toInt());
-
-            if(cardId1.contains("HERO"))
+            //Jugador juega carta con objetivo en PLAY, No enemigo pq BlockType=PLAY es de entity desconocida para el enemigo
+            if(blockType == "PLAY" && zone == "HAND")
             {
-                if(cardId2.contains("HERO"))
+                DeckCard deckCard(cardId1);
+                if(deckCard.getType() == SPELL)
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                name1 + " (heroe)vs(heroe) " + name2, numLine);
-                    if(isPlayer && isPlayerTurn)    emit playerAttack(true, true);
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
+                                name1 + " on target " + name2, numLine);
+                    if(cardId2 == MAD_SCIENTIST)
+                    {
+                        emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
+                    }
+                    else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
                 }
                 else
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                name1 + " (heroe)vs(minion) " + name2, numLine);
-                    /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
-                    {
-                        emit pDebug("Saltamos comprobacion de secretos";
-                    }
-                    else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false);
+                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Minion/weapon obj played: " +
+                                name1 + " target " + name2, numLine);
                 }
             }
-            else
+
+            //Jugador/enemigo causa accion con objetivo en PLAY
+            else if(blockType == "POWER")
             {
-                if(cardId2.contains("HERO"))
+                if(isPlayer)    emit playerCardObjPlayed(cardId1, id2.toInt());
+                else            emit enemyCardObjPlayed(cardId1, id2.toInt());
+            }
+
+            //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
+            else if(blockType == "ATTACK" && zone == "PLAY")
+            {
+                emit zonePlayAttack(id1.toInt(), id2.toInt());
+
+                if(cardId1.contains("HERO"))
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                name1 + " (minion)vs(heroe) " + name2, numLine);
-                    if(isPlayer && isPlayerTurn)    emit playerAttack(false, true);
+                    if(cardId2.contains("HERO"))
+                    {
+                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                    name1 + " (heroe)vs(heroe) " + name2, numLine);
+                        if(isPlayer && isPlayerTurn)    emit playerAttack(true, true);
+                    }
+                    else
+                    {
+                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                    name1 + " (heroe)vs(minion) " + name2, numLine);
+                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
+                        {
+                            emit pDebug("Saltamos comprobacion de secretos";
+                        }
+                        else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false);
+                    }
                 }
                 else
                 {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
-                                name1 + " (minion)vs(minion) " + name2, numLine);
-                    /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
+                    if(cardId2.contains("HERO"))
                     {
-                        emit pDebug("Saltamos comprobacion de secretos";
+                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                    name1 + " (minion)vs(heroe) " + name2, numLine);
+                        if(isPlayer && isPlayerTurn)    emit playerAttack(false, true);
                     }
-                    else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false);
+                    else
+                    {
+                        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
+                                    name1 + " (minion)vs(minion) " + name2, numLine);
+                        /*if(match->captured(5) == MAD_SCIENTIST) //Son comprobaciones now de secretos
+                        {
+                            emit pDebug("Saltamos comprobacion de secretos";
+                        }
+                        else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false);
+                    }
                 }
             }
         }

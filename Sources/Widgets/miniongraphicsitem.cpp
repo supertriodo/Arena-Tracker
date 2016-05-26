@@ -47,6 +47,11 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->dead = copy->dead;
     this->playerTurn = copy->playerTurn;
     this->setPos(copy->pos());
+
+    foreach(QString addon, copy->addons)
+    {
+        this->addons.append(addon);
+    }
 }
 
 
@@ -68,6 +73,20 @@ bool MinionGraphicsItem::isFriendly()
 }
 
 
+void MinionGraphicsItem::checkDownloadedCode(QString code)
+{
+    bool needUpdate = false;
+
+    if(this->code == code)  needUpdate = true;
+    foreach(QString addon, this->addons)
+    {
+        if(addon == code)   needUpdate = true;
+    }
+
+    if(needUpdate)  this->update();
+}
+
+
 void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;
@@ -78,6 +97,13 @@ void MinionGraphicsItem::setPlayerTurn(bool playerTurn)
 void MinionGraphicsItem::setDead(bool value)
 {
     this->dead = value;
+    update();
+}
+
+
+void MinionGraphicsItem::addAddon(QString code)
+{
+    this->addons.append(code);
     update();
 }
 
@@ -160,7 +186,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     Q_UNUSED(option);
 
     //Card background
-    painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + code + ".png")));
+    painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));
     painter->setBrushOrigin(QPointF(100,191));
     painter->drawEllipse(QPointF(0,0), 50, 68);
 
@@ -229,5 +255,36 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(this->dead)
     {
         painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
+    }
+
+    //Addons
+    for(int i=0; i<this->addons.count() && i<4; i++)
+    {
+        QString addon = this->addons[i];
+        int moveX, moveY;
+        switch(i)
+        {
+            case 0:
+                moveX = 0;
+                moveY = 10;
+                break;
+            case 1:
+                moveX = 0;
+                moveY = -40;
+                break;
+            case 2:
+                moveX = -25;
+                moveY = -15;
+                break;
+            case 3:
+                moveX = 25;
+                moveY = -15;
+                break;
+        }
+
+        painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + addon + ".png")));
+        painter->setBrushOrigin(QPointF(100+moveX,191+moveY));
+        painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
+        painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));
     }
 }
