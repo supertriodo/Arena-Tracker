@@ -97,17 +97,17 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
 
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
     addMinion(friendly, minion, pos);
-    if(this->lastTriggerId!=-1)     addMinionToLastTurn(friendly, minion);
+    if(this->lastTriggerId!=-1)     copyMinionToLastTurn(friendly, minion);
     emit checkCardImage(code, false);
 }
 
 
-void PlanHandler::addMinionToLastTurn(bool friendly, MinionGraphicsItem *minion)
+void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion, int idCreator)
 {
     if(turnBoards.empty())  return;
 
     MinionGraphicsItem *triggerMinion = NULL;
-    int idCreator = this->lastTriggerId;
+    if(idCreator == -1)     idCreator = this->lastTriggerId;
     Board *board = turnBoards.last();
     QList<MinionGraphicsItem *> *minionsList = getMinionList(friendly, board);
     int pos = findMinionPos(minionsList, idCreator);
@@ -237,6 +237,8 @@ void PlanHandler::stealMinion(bool friendly, int id, int pos)
     {
         addMinion(!friendly, minion, pos);
         minion->changeZone(nowBoard->playerTurn);
+
+        copyMinionToLastTurn(!friendly, minion, id);
     }
 }
 

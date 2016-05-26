@@ -61,7 +61,7 @@ private:
     void addMinion(bool friendly, QString code, int id, int pos);
     void addMinion(bool friendly, MinionGraphicsItem *minion, int pos);
     void addMinionTriggered(bool friendly, QString code, int id, int pos);
-    void addMinionToLastTurn(bool friendly, MinionGraphicsItem *minion);
+    void copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion, int idCreator=-1);
     void addReinforceToLastTurn(MinionGraphicsItem *parent, MinionGraphicsItem *child, Board *board);
     void updateMinionPos(bool friendly, int id, int pos);
     void removeMinion(bool friendly, int id);
