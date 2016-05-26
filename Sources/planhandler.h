@@ -106,7 +106,7 @@ public slots:
     void enemyMinionTagChange(int id, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
-    void zonePlayAttack(int id1, int id2);
+    void zonePlayAttack(QString code, int id1, int id2);
     void playerCardObjPlayed(QString code, int id2);
     void enemyCardObjPlayed(QString code, int id2);
     void newTurn(bool playerTurn, int numTurn);

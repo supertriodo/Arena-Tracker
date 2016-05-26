@@ -567,7 +567,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
             else if(blockType == "ATTACK" && zone == "PLAY")
             {
-                emit zonePlayAttack(id1.toInt(), id2.toInt());
+                emit zonePlayAttack(cardId1, id1.toInt(), id2.toInt());
 
                 if(cardId1.contains("HERO"))
                 {

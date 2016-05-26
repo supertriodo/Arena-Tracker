@@ -512,26 +512,37 @@ bool PlanHandler::appendAttack(ArrowGraphicsItem *attack, Board *board)
 }
 
 
-void PlanHandler::zonePlayAttack(int id1, int id2)
+void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 {
     if(turnBoards.empty())  return;
 
     ArrowGraphicsItem *attack = new ArrowGraphicsItem();
     Board *board = turnBoards.last();
 
-    if(findArrowPoint(attack, true, id1, board) && findArrowPoint(attack, false, id2, board))
+    //To
+    if(findArrowPoint(attack, false, id2, board))
     {
-        if(board->playerTurn == attack->isFriendly())
+        //From
+        if(findArrowPoint(attack, true, id1, board))
         {
-            if(appendAttack(attack, board))
+            if(board->playerTurn == attack->isFriendly())
             {
-                if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(attack);
+                if(appendAttack(attack, board))
+                {
+                    if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(attack);
+                }
+                else    delete attack;
             }
-            else    delete attack;
+            else
+            {
+                emit pDebug("Attack registered in the wrong turn.");
+                delete attack;
+            }
         }
+        //Ataque con carga de minion recien jugado
         else
         {
-            emit pDebug("Attack registered in the wrong turn.");
+            attack->getEnd(false)->addAddon(code);
             delete attack;
         }
     }

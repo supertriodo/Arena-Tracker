@@ -118,19 +118,19 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         {
             case 0:
                 moveX = 0;
-                moveY = 10;
+                moveY = 30;
                 break;
             case 1:
                 moveX = 0;
                 moveY = -40;
                 break;
             case 2:
-                moveX = -25;
-                moveY = -15;
+                moveX = -30;
+                moveY = -5;
                 break;
             case 3:
-                moveX = 25;
-                moveY = -15;
+                moveX = 30;
+                moveY = -5;
                 break;
         }
 

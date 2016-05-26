@@ -511,8 +511,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionTagChange(int,QString,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString)),
             planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
-    connect(gameWatcher, SIGNAL(zonePlayAttack(int,int)),
-            planHandler, SLOT(zonePlayAttack(int,int)));
+    connect(gameWatcher, SIGNAL(zonePlayAttack(QString, int,int)),
+            planHandler, SLOT(zonePlayAttack(QString, int,int)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
@@ -1841,17 +1841,17 @@ void MainWindow::test()
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
 
     planHandler->newTurn(true, 1);
-    planHandler->zonePlayAttack(1,2);
-    planHandler->zonePlayAttack(3,2);
-    planHandler->zonePlayAttack(11,4);
+    planHandler->zonePlayAttack("AT_003",1,2);
+    planHandler->zonePlayAttack("AT_003",3,2);
+    planHandler->zonePlayAttack("AT_003",11,4);
     planHandler->playerCardObjPlayed("AT_004", 4);
     planHandler->playerCardObjPlayed("AT_004", 4);
     planHandler->playerCardObjPlayed("AT_004", 4);
     planHandler->playerCardObjPlayed("AT_004", 4);
 
     planHandler->newTurn(false, 2);
-    planHandler->zonePlayAttack(12,11);
-    planHandler->zonePlayAttack(12,11);
+    planHandler->zonePlayAttack("AT_003",12,11);
+    planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->setLastTriggerId("", "TRIGGER", 1);
     planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
     planHandler->enemyCardObjPlayed("AT_004", 12);
@@ -2508,8 +2508,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
 //Mostrar hechizos y battlecry en objetivos y ataques de minion recien jugados con carga
-//Mostrar esbirros robados en prev turn
 //Mostrar addons que causan dano o muerte sin objetivo, como aoe.
+//Mostrar addons de armas jugadas.
 
 
 
