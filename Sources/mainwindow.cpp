@@ -519,6 +519,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(zonePlayAttack(QString, int,int)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
+    connect(gameWatcher, SIGNAL(logTurn()),
+            planHandler, SLOT(resetLastTrigger()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
             planHandler, SLOT(setLastTriggerId(QString,QString,int)));
     connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int,int)),
@@ -2511,9 +2513,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
-//Mostrar addons que causan dano o muerte sin objetivo, como aoe.
 //Evitar anadir como addon a tu misma id, al morir escavadora
-
+//Muerte heroes
 
 
 //Minions generados

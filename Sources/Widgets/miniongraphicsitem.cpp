@@ -73,6 +73,12 @@ bool MinionGraphicsItem::isFriendly()
 }
 
 
+bool MinionGraphicsItem::isDead()
+{
+    return this->dead;
+}
+
+
 void MinionGraphicsItem::checkDownloadedCode(QString code)
 {
     bool needUpdate = false;
@@ -153,7 +159,10 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     qDebug()<<"TAG CHANGE -->"<<id<<tag<<value;
     if(tag == "DAMAGE")
     {
-        this->damage = value.toInt();
+        int newDamage = value.toInt();
+        //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
+        if(this->damage >= this->health && newDamage == 0)  this->dead = true;
+        else                                                this->damage = newDamage;
     }
     else if(tag == "ATK")
     {

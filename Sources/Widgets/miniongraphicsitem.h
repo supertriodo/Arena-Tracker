@@ -48,6 +48,7 @@ public:
     void addAddon(Addon addon);
     void addAddon(QString code, int id);
     void checkDownloadedCode(QString code);
+    bool isDead();
 };
 
 #endif // MINIONGRAPHICSITEM_H

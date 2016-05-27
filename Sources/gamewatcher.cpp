@@ -281,6 +281,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 ), match))
         {
             turn = match->captured(1).toInt();
+            emit logTurn();
             emit pDebug("Found TURN: " + match->captured(1), numLine);
 
             if(powerState != inGameState && turn > 1)
@@ -461,7 +462,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
+                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" ||
+                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + "): " + value + " Id: " + id, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
@@ -491,7 +493,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY")
+                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" ||
+                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value + " -- " + name, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);

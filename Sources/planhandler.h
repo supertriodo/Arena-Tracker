@@ -77,8 +77,9 @@ private:
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addCardObjAddon(QString code, int id1, int id2);
-    void addWeaponAddon(bool friendly, QString code, int id);
+    void addAddonToLastTurn(QString code, int id1, int id2);
+    void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
+    void addAddon(MinionGraphicsItem *minion, QString code, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -117,6 +118,7 @@ public slots:
     void setLastTriggerId(QString code, QString blockType, int id);
     void lockPlanInterface();
     void unlockPlanInterface();
+    void resetLastTrigger();
 
 private slots:
     void checkPendingTagChanges();

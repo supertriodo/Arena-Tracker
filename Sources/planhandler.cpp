@@ -211,11 +211,6 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
         if(pos != -1)
         {
             minionsList->at(pos)->setDead(true);
-            if(this->lastPowerAddon.id != -1)
-            {
-                minionsList->at(pos)->addAddon(this->lastPowerAddon);
-                emit checkCardImage(this->lastPowerAddon.code, false);
-            }
         }
     }
 
@@ -375,26 +370,29 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
 
     if(oldPos == -1)
     {
-        emit pDebug("Update pos minion not found. Id: " + QString::number(id), Error);
+        emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
+                    ". Id not found.", Warning);
     }
     else if(minionsList->at(oldPos)!=this->lastMinionAdded)
     {
-        qDebug()<<"Solo se puede cambiar pos del ultimo minion added."<<id<<"-->"<<pos;
+        emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
+                    ". Not last minion added.");
     }
     else
     {
         if(oldPos == pos)
         {
-            qDebug()<<"POSITION --> Minion already in the pos"<<id<<"-->"<<pos;
+            emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
+                        ". Minion already in place.");
         }
         else if(pos >= minionsList->count())
         {
-            emit pDebug("Update pos minion ouside list bounds. Pos: " + QString::number(pos) +
-                        " Count: " + QString::number(minionsList->count()), Error);
+            emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
+                        ". Minion ouside list bounds. Count: " + QString::number(minionsList->count()), Error);
         }
         else
         {
-            qDebug()<<"POSITION --> "<<id<<"-->"<<pos;
+            emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos));
             minionsList->move(oldPos, pos);
             updateZoneSpots(friendly);
         }
@@ -423,21 +421,29 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     tagChange.tag = tag;
     tagChange.value = value;
 
+    bool isDead = true;
+    bool isHero = true;
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
     if(minion != NULL)
     {
         emit pDebug("Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         minion->processTagChange(tagChange.tag, tagChange.value);
+        isDead = minion->isDead();
+        isHero = false;
     }
-    else if(nowBoard->playerHero->getId() == tagChange.id)
+    else if(friendly && nowBoard->playerHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        isDead = nowBoard->playerHero->isDead();
+        isHero = true;
     }
-    else if(nowBoard->enemyHero->getId() == tagChange.id)
+    else if(!friendly && nowBoard->enemyHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        isDead = nowBoard->enemyHero->isDead();
+        isHero = true;
     }
     else
     {
@@ -445,6 +451,21 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         pendingTagChanges.append(tagChange);
         emit pDebug("Append Tag Change: Id: " + QString::number(id) + " - " + tag + " --> " + value +
                     " - " + QString::number(pendingTagChanges.count()));
+        return;
+    }
+
+
+    if(!isDead && this->lastPowerAddon.id != -1 &&
+        (
+            tag == "ATK" || tag == "HEALTH" ||
+            tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+            tag == "FROZEN" || tag == "WINDFURY" ||
+            tag == "ARMOR" || tag == "DAMAGE" ||
+            tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
+        ) &&
+        !(isHero && tag == "ATK" && value == "0"))
+    {
+        addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
     }
 }
 
@@ -456,10 +477,46 @@ void PlanHandler::checkPendingTagChanges()
     if(pendingTagChanges.isEmpty()) return;
 
     TagChange tagChange = pendingTagChanges.takeFirst();
+    //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
+    //Ejemplo Jefe de banda de diablillos ataca y mata a otro minion, el jefe produce un trigger que apareceria en el esbirro muerto.
+    bool isDead = true;
+    //Evita addons al perder un arma y cambiar el atk a 0
+    bool isHero = true;
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
-    if(minion != NULL)                                      minion->processTagChange(tagChange.tag, tagChange.value);
-    else if(nowBoard->playerHero->getId() == tagChange.id)  nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
-    else if(nowBoard->enemyHero->getId() == tagChange.id)   nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+    if(minion != NULL)
+    {
+        minion->processTagChange(tagChange.tag, tagChange.value);
+        isDead = minion->isDead();
+        isHero = false;
+    }
+    else if(tagChange.friendly && nowBoard->playerHero->getId() == tagChange.id)
+    {
+        nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        isDead = nowBoard->playerHero->isDead();
+        isHero = true;
+    }
+    else if(!tagChange.friendly && nowBoard->enemyHero->getId() == tagChange.id)
+    {
+        nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        isDead = nowBoard->enemyHero->isDead();
+        isHero = true;
+    }
+    else    return;
+
+    QString tag = tagChange.tag;
+    QString value = tagChange.value;
+    if(!isDead && this->lastPowerAddon.id != -1 &&
+        (
+            tag == "ATK" || tag == "HEALTH" ||
+            tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+            tag == "FROZEN" || tag == "WINDFURY" ||
+            tag == "ARMOR" || tag == "DAMAGE" ||
+            tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
+        ) &&
+        !(isHero && tag == "ATK" && value == "0"))
+    {
+        addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
+    }
 }
 
 
@@ -550,7 +607,7 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
         //Ataque con carga de minion recien jugado
         else
         {
-            attack->getEnd(false)->addAddon(code, id1);
+            addAddon(attack->getEnd(false), code, id1);
             emit checkCardImage(code, false);
             delete attack;
         }
@@ -564,43 +621,42 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 
 void PlanHandler::playerWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddon(true, code, id);
+    this->addWeaponAddonToLastTurn(true, code, id);
 }
 
 
 void PlanHandler::enemyWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddon(false, code, id);
+    this->addWeaponAddonToLastTurn(false, code, id);
 }
 
 
-void PlanHandler::addWeaponAddon(bool friendly, QString code, int id)
+void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 {
     if(turnBoards.empty())  return;
 
     Board *board = turnBoards.last();
 
-    if(friendly)    board->playerHero->addAddon(code, id);
-    else            board->enemyHero->addAddon(code, id);
-    emit checkCardImage(code, false);
+    if(friendly)    addAddon(board->playerHero, code, id);
+    else            addAddon(board->enemyHero, code, id);
 }
 
 
 void PlanHandler::playerCardObjPlayed(QString code, int id1, int id2)
 {
-    if(nowBoard->playerTurn)    addCardObjAddon(code, id1, id2);
+    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
 void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 {
-    if(!nowBoard->playerTurn)   addCardObjAddon(code, id1, id2);
+    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
+void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 {
     if(turnBoards.empty())  return;
 
@@ -608,12 +664,12 @@ void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
 
     if(board->playerHero->getId() == id2)
     {
-        board->playerHero->addAddon(code, id1);
+        addAddon(board->playerHero, code, id1);
         emit checkCardImage(code, false);
     }
     else if(board->enemyHero->getId() == id2)
     {
-        board->enemyHero->addAddon(code, id1);
+        addAddon(board->enemyHero, code, id1);
         emit checkCardImage(code, false);
     }
     else
@@ -622,7 +678,7 @@ void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
         int pos = findMinionPos(minionsList, id2);
         if(pos != -1)
         {
-            minionsList->at(pos)->addAddon(code, id1);
+            addAddon(minionsList->at(pos), code, id1);
             emit checkCardImage(code, false);
         }
         else
@@ -631,7 +687,7 @@ void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
             pos = findMinionPos(minionsList, id2);
             if(pos != -1)
             {
-                minionsList->at(pos)->addAddon(code, id1);
+                addAddon(minionsList->at(pos), code, id1);
                 emit checkCardImage(code, false);
             }
             else
@@ -640,6 +696,14 @@ void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
             }
         }
     }
+}
+
+
+void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id)
+{
+    emit pDebug("Addon(" + QString::number(id) + ")-->" + code);
+    minion->addAddon(code, id);
+    emit checkCardImage(code, false);
 }
 
 
@@ -689,6 +753,19 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     }
 
     turnBoards.append(board);
+
+
+    //Avanza en ultimo turno
+    int prevTurn = turnBoards.count()-2;
+    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
+}
+
+
+//Evita addons provocado por ocultar/aparecer el arma al final del turno
+void PlanHandler::resetLastTrigger()
+{
+    this->lastTriggerId = -1;
+    this->lastPowerAddon.id = -1;
 }
 
 
@@ -697,7 +774,8 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id)
     if(blockType == "TRIGGER")
     {
         this->lastTriggerId = id;
-//        this->lastPowerAddon.id = -1;
+        this->lastPowerAddon.code = code;
+        this->lastPowerAddon.id = id;
     }
     else if(blockType == "POWER")
     {
@@ -707,8 +785,7 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id)
     }
     else
     {
-        this->lastTriggerId = -1;
-        this->lastPowerAddon.id = -1;
+        resetLastTrigger();
     }
 }
 
@@ -763,8 +840,7 @@ void PlanHandler::reset()
     this->viewBoard = nowBoard;
     this->firstStoredTurn = 0;
     this->nowBoard->playerTurn = true;
-    this->lastTriggerId = -1;
-    this->lastPowerAddon.id = -1;
+    resetLastTrigger();
     updateButtons();
 
     resetBoard(nowBoard);
