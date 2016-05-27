@@ -4,6 +4,14 @@
 #include <QGraphicsItem>
 
 
+class Addon
+{
+public:
+    QString code;
+    int id;
+};
+
+
 class MinionGraphicsItem : public QGraphicsItem
 {
 //Constructor
@@ -19,7 +27,7 @@ protected:
     int damage;
     bool friendly, exausted, playerTurn, dead;
     bool shield, taunt, charge, stealth, frozen, windfury;
-    QList<QString> addons;
+    QList<Addon> addons;
 
 public:
     static const int WIDTH = 142;
@@ -37,7 +45,8 @@ public:
     void setZonePos(bool friendly, int pos, int minionsZone);
     int getId();
     bool isFriendly();
-    void addAddon(QString code);
+    void addAddon(Addon addon);
+    void addAddon(QString code, int id);
     void checkDownloadedCode(QString code);
 };
 

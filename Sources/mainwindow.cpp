@@ -495,10 +495,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerHeroZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(enemyHeroZonePlayAdd(QString,int)),
             planHandler, SLOT(enemyHeroZonePlayAdd(QString,int)));
-    connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString)),
-            planHandler, SLOT(playerWeaponZonePlayAdd(QString)));
-    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString)),
-            planHandler, SLOT(enemyWeaponZonePlayAdd(QString)));
+    connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString, int)),
+            planHandler, SLOT(playerWeaponZonePlayAdd(QString, int)));
+    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString, int)),
+            planHandler, SLOT(enemyWeaponZonePlayAdd(QString, int)));
     connect(gameWatcher, SIGNAL(playerMinionZonePlayRemove(int)),
             planHandler, SLOT(playerMinionZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
@@ -521,10 +521,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
             planHandler, SLOT(setLastTriggerId(QString,QString,int)));
-    connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int)),
-            planHandler, SLOT(playerCardObjPlayed(QString,int)));
-    connect(gameWatcher, SIGNAL(enemyCardObjPlayed(QString,int)),
-            planHandler, SLOT(enemyCardObjPlayed(QString,int)));
+    connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int,int)),
+            planHandler, SLOT(playerCardObjPlayed(QString,int,int)));
+    connect(gameWatcher, SIGNAL(enemyCardObjPlayed(QString,int,int)),
+            planHandler, SLOT(enemyCardObjPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(startGame()),
             planHandler, SLOT(lockPlanInterface()));
     connect(gameWatcher, SIGNAL(endGame()),
@@ -1837,31 +1837,31 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
-    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
-    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
-    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
-    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+//    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+//    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
+//    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
+//    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
+//    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
+//    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
 
-    planHandler->newTurn(true, 1);
-    planHandler->zonePlayAttack("AT_003",1,2);
-    planHandler->zonePlayAttack("AT_003",3,2);
-    planHandler->zonePlayAttack("AT_003",11,4);
-    planHandler->playerCardObjPlayed("AT_004", 4);
-    planHandler->playerCardObjPlayed("AT_004", 4);
-    planHandler->playerCardObjPlayed("AT_004", 4);
-    planHandler->playerCardObjPlayed("AT_004", 4);
+//    planHandler->newTurn(true, 1);
+//    planHandler->zonePlayAttack("AT_003",1,2);
+//    planHandler->zonePlayAttack("AT_003",3,2);
+//    planHandler->zonePlayAttack("AT_003",11,4);
+//    planHandler->playerCardObjPlayed("AT_004", 4);
+//    planHandler->playerCardObjPlayed("AT_004", 4);
+//    planHandler->playerCardObjPlayed("AT_004", 4);
+//    planHandler->playerCardObjPlayed("AT_004", 4);
 
-    planHandler->newTurn(false, 2);
-    planHandler->zonePlayAttack("AT_003",12,11);
-    planHandler->zonePlayAttack("AT_003",12,11);
-    planHandler->setLastTriggerId("", "TRIGGER", 1);
-    planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
-    planHandler->enemyCardObjPlayed("AT_004", 12);
-    planHandler->enemyCardObjPlayed("AT_004", 12);
-    planHandler->enemyCardObjPlayed("AT_004", 12);
-    planHandler->enemyCardObjPlayed("AT_004", 12);
+//    planHandler->newTurn(false, 2);
+//    planHandler->zonePlayAttack("AT_003",12,11);
+//    planHandler->zonePlayAttack("AT_003",12,11);
+//    planHandler->setLastTriggerId("", "TRIGGER", 1);
+//    planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
+//    planHandler->enemyCardObjPlayed("AT_004", 12);
+//    planHandler->enemyCardObjPlayed("AT_004", 12);
+//    planHandler->enemyCardObjPlayed("AT_004", 12);
+//    planHandler->enemyCardObjPlayed("AT_004", 12);
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2512,7 +2512,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
 //Mostrar addons que causan dano o muerte sin objetivo, como aoe.
-//Mostrar addons de armas jugadas.
+//Evitar anadir como addon a tu misma id, al morir escavadora
 
 
 

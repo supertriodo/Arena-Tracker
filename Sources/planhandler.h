@@ -47,6 +47,7 @@ private:
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
     int lastTriggerId;//-1 --> no trigger
+    Addon lastPowerAddon;//Id=-1 --> no power
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -76,8 +77,8 @@ private:
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addCardObjAddon(QString code, int id);
-    void addWeaponAddon(bool friendly, QString code);
+    void addCardObjAddon(QString code, int id1, int id2);
+    void addWeaponAddon(bool friendly, QString code, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -107,11 +108,11 @@ public slots:
     void enemyMinionTagChange(int id, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
-    void playerWeaponZonePlayAdd(QString code);
-    void enemyWeaponZonePlayAdd(QString code);
+    void playerWeaponZonePlayAdd(QString code, int id);
+    void enemyWeaponZonePlayAdd(QString code, int id);
     void zonePlayAttack(QString code, int id1, int id2);
-    void playerCardObjPlayed(QString code, int id2);
-    void enemyCardObjPlayed(QString code, int id2);
+    void playerCardObjPlayed(QString code, int id1, int id2);
+    void enemyCardObjPlayed(QString code, int id1, int id2);
     void newTurn(bool playerTurn, int numTurn);
     void setLastTriggerId(QString code, QString blockType, int id);
     void lockPlanInterface();

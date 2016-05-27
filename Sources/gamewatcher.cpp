@@ -560,8 +560,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             //Jugador/enemigo causa accion con objetivo en PLAY
             else if(blockType == "POWER")
             {
-                if(isPlayer)    emit playerCardObjPlayed(cardId1, id2.toInt());
-                else            emit enemyCardObjPlayed(cardId1, id2.toInt());
+                if(isPlayer)    emit playerCardObjPlayed(cardId1, id1.toInt(), id2.toInt());
+                else            emit enemyCardObjPlayed(cardId1, id1.toInt(), id2.toInt());
             }
 
             //Jugador/Enemigo ataca (esbirro/heroe VS esbirro/heroe)
@@ -740,13 +740,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "OPPOSING PLAY (Weapon)" && zoneFrom != "OPPOSING GRAVEYARD")//Al reemplazar un arma por otra, la antigua va, vuelve y va a graveyard.
         {
             emit pDebug("Enemy: Weapon moved to OPPOSING PLAY (Weapon): " + name, numLine);
-            emit enemyWeaponZonePlayAdd(cardId);
+            emit enemyWeaponZonePlayAdd(cardId, id.toInt());
         }
         //Jugador, equipa arma
         else if(zoneTo == "FRIENDLY PLAY (Weapon)" && zoneFrom != "FRIENDLY GRAVEYARD")
         {
             emit pDebug("Player: Weapon moved to FRIENDLY PLAY (Weapon): " + name, numLine);
-            emit playerWeaponZonePlayAdd(cardId);
+            emit playerWeaponZonePlayAdd(cardId, id.toInt());
         }
 
 

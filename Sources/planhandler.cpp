@@ -208,7 +208,15 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id)
         Board *board = turnBoards.last();
         minionsList = getMinionList(friendly, board);
         pos = findMinionPos(minionsList, id);
-        if(pos != -1)   minionsList->at(pos)->setDead(true);
+        if(pos != -1)
+        {
+            minionsList->at(pos)->setDead(true);
+            if(this->lastPowerAddon.id != -1)
+            {
+                minionsList->at(pos)->addAddon(this->lastPowerAddon);
+                emit checkCardImage(this->lastPowerAddon.code, false);
+            }
+        }
     }
 
     return minion;
@@ -535,14 +543,14 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
             }
             else
             {
-                emit pDebug("Attack registered in the wrong turn.");
+                emit pDebug("Attack registered in the wrong turn.", Warning);
                 delete attack;
             }
         }
         //Ataque con carga de minion recien jugado
         else
         {
-            attack->getEnd(false)->addAddon(code);
+            attack->getEnd(false)->addAddon(code, id1);
             emit checkCardImage(code, false);
             delete attack;
         }
@@ -554,81 +562,81 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 }
 
 
-void PlanHandler::playerWeaponZonePlayAdd(QString code)
+void PlanHandler::playerWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddon(true, code);
+    this->addWeaponAddon(true, code, id);
 }
 
 
-void PlanHandler::enemyWeaponZonePlayAdd(QString code)
+void PlanHandler::enemyWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddon(false, code);
+    this->addWeaponAddon(false, code, id);
 }
 
 
-void PlanHandler::addWeaponAddon(bool friendly, QString code)
+void PlanHandler::addWeaponAddon(bool friendly, QString code, int id)
 {
     if(turnBoards.empty())  return;
 
     Board *board = turnBoards.last();
 
-    if(friendly)    board->playerHero->addAddon(code);
-    else            board->enemyHero->addAddon(code);
+    if(friendly)    board->playerHero->addAddon(code, id);
+    else            board->enemyHero->addAddon(code, id);
     emit checkCardImage(code, false);
 }
 
 
-void PlanHandler::playerCardObjPlayed(QString code, int id2)
+void PlanHandler::playerCardObjPlayed(QString code, int id1, int id2)
 {
-    if(nowBoard->playerTurn)    addCardObjAddon(code, id2);
+    if(nowBoard->playerTurn)    addCardObjAddon(code, id1, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::enemyCardObjPlayed(QString code, int id2)
+void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 {
-    if(!nowBoard->playerTurn)   addCardObjAddon(code, id2);
+    if(!nowBoard->playerTurn)   addCardObjAddon(code, id1, id2);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addCardObjAddon(QString code, int id)
+void PlanHandler::addCardObjAddon(QString code, int id1, int id2)
 {
     if(turnBoards.empty())  return;
 
     Board *board = turnBoards.last();
 
-    if(board->playerHero->getId() == id)
+    if(board->playerHero->getId() == id2)
     {
-        board->playerHero->addAddon(code);
+        board->playerHero->addAddon(code, id1);
         emit checkCardImage(code, false);
     }
-    else if(board->enemyHero->getId() == id)
+    else if(board->enemyHero->getId() == id2)
     {
-        board->enemyHero->addAddon(code);
+        board->enemyHero->addAddon(code, id1);
         emit checkCardImage(code, false);
     }
     else
     {
         QList<MinionGraphicsItem *> * minionsList = getMinionList(true, board);
-        int pos = findMinionPos(minionsList, id);
+        int pos = findMinionPos(minionsList, id2);
         if(pos != -1)
         {
-            minionsList->at(pos)->addAddon(code);
+            minionsList->at(pos)->addAddon(code, id1);
             emit checkCardImage(code, false);
         }
         else
         {
             minionsList = getMinionList(false, board);
-            pos = findMinionPos(minionsList, id);
+            pos = findMinionPos(minionsList, id2);
             if(pos != -1)
             {
-                minionsList->at(pos)->addAddon(code);
+                minionsList->at(pos)->addAddon(code, id1);
                 emit checkCardImage(code, false);
             }
             else
             {
-                emit pDebug("Minion addon target not found. Id: " + QString::number(id), Warning);
+                emit pDebug("Minion addon target not found. Id: " + QString::number(id2), Warning);
             }
         }
     }
@@ -686,9 +694,22 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
 void PlanHandler::setLastTriggerId(QString code, QString blockType, int id)
 {
-    Q_UNUSED(code);
-    if(blockType == "TRIGGER")  this->lastTriggerId = id;
-    else                        this->lastTriggerId = -1;
+    if(blockType == "TRIGGER")
+    {
+        this->lastTriggerId = id;
+//        this->lastPowerAddon.id = -1;
+    }
+    else if(blockType == "POWER")
+    {
+        this->lastTriggerId = -1;
+        this->lastPowerAddon.code = code;
+        this->lastPowerAddon.id = id;
+    }
+    else
+    {
+        this->lastTriggerId = -1;
+        this->lastPowerAddon.id = -1;
+    }
 }
 
 
@@ -743,6 +764,7 @@ void PlanHandler::reset()
     this->firstStoredTurn = 0;
     this->nowBoard->playerTurn = true;
     this->lastTriggerId = -1;
+    this->lastPowerAddon.id = -1;
     updateButtons();
 
     resetBoard(nowBoard);

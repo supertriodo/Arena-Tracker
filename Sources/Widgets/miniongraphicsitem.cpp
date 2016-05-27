@@ -48,7 +48,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->playerTurn = copy->playerTurn;
     this->setPos(copy->pos());
 
-    foreach(QString addon, copy->addons)
+    foreach(Addon addon, copy->addons)
     {
         this->addons.append(addon);
     }
@@ -78,9 +78,9 @@ void MinionGraphicsItem::checkDownloadedCode(QString code)
     bool needUpdate = false;
 
     if(this->code == code)  needUpdate = true;
-    foreach(QString addon, this->addons)
+    foreach(Addon addon, this->addons)
     {
-        if(addon == code)   needUpdate = true;
+        if(addon.code == code)   needUpdate = true;
     }
 
     if(needUpdate)  this->update();
@@ -101,9 +101,24 @@ void MinionGraphicsItem::setDead(bool value)
 }
 
 
-void MinionGraphicsItem::addAddon(QString code)
+void MinionGraphicsItem::addAddon(QString code, int id)
 {
-    this->addons.append(code);
+    Addon addon;
+    addon.code = code;
+    addon.id = id;
+    this->addAddon(addon);
+}
+
+
+//Paso por valor para almacenar una copia de addon
+void MinionGraphicsItem::addAddon(Addon addon)
+{
+    foreach(Addon storedAddon, this->addons)
+    {
+        if(storedAddon.id == addon.id)  return;
+    }
+
+    this->addons.append(addon);
     update();
 }
 
@@ -260,7 +275,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Addons
     for(int i=0; i<this->addons.count() && i<4; i++)
     {
-        QString addon = this->addons[i];
+        QString addonCode = this->addons[i].code;
         int moveX, moveY;
         switch(i)
         {
@@ -282,7 +297,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
                 break;
         }
 
-        painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + addon + ".png")));
+        painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + addonCode + ".png")));
         painter->setBrushOrigin(QPointF(100+moveX,191+moveY));
         painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
         painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));

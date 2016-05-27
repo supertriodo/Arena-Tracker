@@ -121,8 +121,8 @@ signals:
     void enemyMinionZonePlaySteal(int id, int pos);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
-    void playerWeaponZonePlayAdd(QString code);
-    void enemyWeaponZonePlayAdd(QString code);
+    void playerWeaponZonePlayAdd(QString code, int id);
+    void enemyWeaponZonePlayAdd(QString code, int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
     void playerMinionTagChange(int id, QString tag, QString value);
@@ -131,8 +131,8 @@ signals:
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void zonePlayAttack(QString code, int id1, int id2);
     void playerSpellObjPlayed();
-    void playerCardObjPlayed(QString code, int id2);
-    void enemyCardObjPlayed(QString code, int id2);
+    void playerCardObjPlayed(QString code, int id1, int id2);
+    void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();
     void avengeTested();
     void cSpiritTested();
