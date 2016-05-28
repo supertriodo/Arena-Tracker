@@ -80,6 +80,7 @@ private:
     void addAddonToLastTurn(QString code, int id1, int id2);
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id);
+    void addHeroDeadToLastTurn(bool playerWon);
 
 public:
     void setTransparency(Transparency value);
@@ -119,6 +120,7 @@ public slots:
     void lockPlanInterface();
     void unlockPlanInterface();
     void resetLastTrigger();
+    void endGame(bool playerWon);
 
 private slots:
     void checkPendingTagChanges();

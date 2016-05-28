@@ -96,7 +96,7 @@ signals:
     void inRewards();
     void newDeckCard(QString card);
     void startGame();
-    void endGame();
+    void endGame(bool playerWon);
     void enemyHero(QString hero);
     void enterArena();
     void leaveArena();

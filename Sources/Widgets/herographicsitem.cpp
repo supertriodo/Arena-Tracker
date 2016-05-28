@@ -109,6 +109,12 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPath(path);
     }
 
+    //Dead
+    if(this->dead)
+    {
+        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
+    }
+
     //Addons
     for(int i=0; i<this->addons.count() && i<4; i++)
     {

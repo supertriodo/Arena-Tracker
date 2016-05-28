@@ -431,14 +431,14 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         isDead = minion->isDead();
         isHero = false;
     }
-    else if(friendly && nowBoard->playerHero->getId() == tagChange.id)
+    else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
-    else if(!friendly && nowBoard->enemyHero->getId() == tagChange.id)
+    else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
@@ -490,13 +490,13 @@ void PlanHandler::checkPendingTagChanges()
         isDead = minion->isDead();
         isHero = false;
     }
-    else if(tagChange.friendly && nowBoard->playerHero->getId() == tagChange.id)
+    else if(tagChange.friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
     {
         nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
-    else if(!tagChange.friendly && nowBoard->enemyHero->getId() == tagChange.id)
+    else if(!tagChange.friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
     {
         nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->enemyHero->isDead();
@@ -523,11 +523,11 @@ void PlanHandler::checkPendingTagChanges()
 
 bool PlanHandler::findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board)
 {
-    if(board->playerHero->getId() == id)
+    if(board->playerHero!=NULL && board->playerHero->getId() == id)
     {
         arrow->setEnd(isFrom, board->playerHero);
     }
-    else if(board->enemyHero->getId() == id)
+    else if(board->enemyHero!=NULL && board->enemyHero->getId() == id)
     {
         arrow->setEnd(isFrom, board->enemyHero);
     }
@@ -662,11 +662,11 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 
     Board *board = turnBoards.last();
 
-    if(board->playerHero->getId() == id2)
+    if(board->playerHero!=NULL && board->playerHero->getId() == id2)
     {
         addAddon(board->playerHero, code, id1);
     }
-    else if(board->enemyHero->getId() == id2)
+    else if(board->enemyHero!=NULL && board->enemyHero->getId() == id2)
     {
         addAddon(board->enemyHero, code, id1);
     }
@@ -957,6 +957,38 @@ void PlanHandler::unlockPlanInterface()
     updateTransparency();
 }
 
+
+void PlanHandler::addHeroDeadToLastTurn(bool playerWon)
+{
+    if(playerWon)
+    {
+        if(nowBoard->enemyHero!=NULL)  nowBoard->enemyHero->setDead(true);
+    }
+    else
+    {
+        if(nowBoard->playerHero!=NULL) nowBoard->playerHero->setDead(true);
+    }
+
+    if(turnBoards.empty())  return;
+
+    Board *board = turnBoards.last();
+
+    if(playerWon)
+    {
+        if(board->enemyHero!=NULL)  board->enemyHero->setDead(true);
+    }
+    else
+    {
+        if(board->playerHero!=NULL) board->playerHero->setDead(true);
+    }
+}
+
+
+void PlanHandler::endGame(bool playerWon)
+{
+    addHeroDeadToLastTurn(playerWon);
+    unlockPlanInterface();
+}
 
 
 void PlanHandler::updateTransparency()

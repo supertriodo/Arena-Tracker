@@ -449,7 +449,7 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(clearDrawList(bool)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
+    connect(gameWatcher, SIGNAL(endGame(bool)),
             deckHandler, SLOT(unlockDeckInterface()));
     connect(gameWatcher, SIGNAL(enterArena()),
             deckHandler, SLOT(enterArena()));
@@ -464,7 +464,7 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(enemyKnownCardDraw(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyDeckHandler, SLOT(lockEnemyDeckInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
+    connect(gameWatcher, SIGNAL(endGame(bool)),
             enemyDeckHandler, SLOT(unlockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(enemyHero(QString)),
             enemyDeckHandler, SLOT(setEnemyClass(QString)));
@@ -480,7 +480,7 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
+    connect(gameWatcher, SIGNAL(endGame(bool)),
             enemyHandHandler, SLOT(unlockEnemyInterface()));
 
     connect(gameWatcher, SIGNAL(playerMinionZonePlayAdd(QString,int,int)),
@@ -529,10 +529,11 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(enemyCardObjPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(startGame()),
             planHandler, SLOT(lockPlanInterface()));
-    connect(gameWatcher, SIGNAL(endGame()),
-            planHandler, SLOT(unlockPlanInterface()));
+    connect(gameWatcher, SIGNAL(endGame(bool)),
+            planHandler, SLOT(endGame(bool)));
 
-    connect(gameWatcher, SIGNAL(endGame()),
+
+    connect(gameWatcher, SIGNAL(endGame(bool)),
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
             secretsHandler, SLOT(secretPlayed(int,SecretHero)));
@@ -2513,7 +2514,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
-//Evitar anadir como addon a tu misma id, al morir escavadora
 //Muerte heroes
 
 

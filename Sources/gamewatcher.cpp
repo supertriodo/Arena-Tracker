@@ -209,46 +209,51 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         {
             emit pDebug("WON not found (PowerState = noGame)", 0);
             powerState = noGame;
-            emit endGame();
+            emit endGame(false);
         }
     }
 
-    if(powerState == noGame)
+    //================== Begin Spectating 1st player ==================
+    //================== Start Spectator Game ==================
+    else if(line.contains("Begin Spectating") || line.contains("Start Spectator Game"))
     {
-        //================== Begin Spectating 1st player ==================
-        //================== Start Spectator Game ==================
-        if(line.contains("Begin Spectating") || line.contains("Start Spectator Game"))
-        {
-            emit pDebug("Start Spectator Game.", numLine);
-            spectating = true;
-        }
-        else if(line.contains("CREATE_GAME"))
-        {
-            emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
-            logSeekCreate = logSeek;
-            powerState = heroType1State;
-
-            mulliganEnemyDone = mulliganPlayerDone = false;
-            turn = turnReal = 0;
-
-            hero1.clear();
-            hero2.clear();
-            name1.clear();
-            name2.clear();
-            firstPlayer.clear();
-            winnerPlayer.clear();
-            playerID = 0;
-            playerTag.clear();
-            secretHero = unknown;
-            playerMinions = 0;
-            enemyMinions = 0;
-            enemyMinionsAliveForAvenge = -1;
-
-            emit specialCardTrigger("", "", -1);    //Evita Cartas createdBy en el mulligan de practica
-            emit startGame();
-        }
+        emit pDebug("Start Spectator Game.", numLine);
+        spectating = true;
     }
-    else
+    else if(line.contains("CREATE_GAME"))
+    {
+        if(powerState != noGame)
+        {
+            emit pDebug("WON not found (PowerState = noGame)", 0);
+            powerState = noGame;
+            emit endGame(false);
+        }
+
+        emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
+        logSeekCreate = logSeek;
+        powerState = heroType1State;
+
+        mulliganEnemyDone = mulliganPlayerDone = false;
+        turn = turnReal = 0;
+
+        hero1.clear();
+        hero2.clear();
+        name1.clear();
+        name2.clear();
+        firstPlayer.clear();
+        winnerPlayer.clear();
+        playerID = 0;
+        playerTag.clear();
+        secretHero = unknown;
+        playerMinions = 0;
+        enemyMinions = 0;
+        enemyMinionsAliveForAvenge = -1;
+
+        emit specialCardTrigger("", "", -1);    //Evita Cartas createdBy en el mulligan de practica
+        emit startGame();
+    }
+
+    if(powerState != noGame)
     {
         //Win state
         //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=El tabernero tag=PLAYSTATE value=WON
@@ -271,7 +276,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 createGameResult(logFileName);
             }
 
-            emit endGame();
+            bool playerWon = (winnerPlayer == playerTag);
+
+            emit endGame(playerWon);
         }
         //Turn
         //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12
