@@ -307,7 +307,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         }
 
         painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + addonCode + ".png")));
-        painter->setBrushOrigin(QPointF(100+moveX,191+moveY));
+        painter->setBrushOrigin(QPointF(100+moveX,202+moveY));
         painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
         painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));
     }

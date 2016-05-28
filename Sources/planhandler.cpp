@@ -481,6 +481,7 @@ void PlanHandler::checkPendingTagChanges()
     //Ejemplo Jefe de banda de diablillos ataca y mata a otro minion, el jefe produce un trigger que apareceria en el esbirro muerto.
     bool isDead = true;
     //Evita addons al perder un arma y cambiar el atk a 0
+    //Ejemplo ataque con arma a grubashi y gasta el arma.
     bool isHero = true;
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
     if(minion != NULL)
@@ -608,7 +609,6 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
         else
         {
             addAddon(attack->getEnd(false), code, id1);
-            emit checkCardImage(code, false);
             delete attack;
         }
     }
@@ -665,12 +665,10 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
     if(board->playerHero->getId() == id2)
     {
         addAddon(board->playerHero, code, id1);
-        emit checkCardImage(code, false);
     }
     else if(board->enemyHero->getId() == id2)
     {
         addAddon(board->enemyHero, code, id1);
-        emit checkCardImage(code, false);
     }
     else
     {
@@ -679,7 +677,6 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
         if(pos != -1)
         {
             addAddon(minionsList->at(pos), code, id1);
-            emit checkCardImage(code, false);
         }
         else
         {
@@ -688,7 +685,6 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
             if(pos != -1)
             {
                 addAddon(minionsList->at(pos), code, id1);
-                emit checkCardImage(code, false);
             }
             else
             {
@@ -701,9 +697,16 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 
 void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id)
 {
-    emit pDebug("Addon(" + QString::number(id) + ")-->" + code);
-    minion->addAddon(code, id);
-    emit checkCardImage(code, false);
+    if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
+    {
+        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code + " Avoid ENCHANTMENT.");
+    }
+    else
+    {
+        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
+        minion->addAddon(code, id);
+        emit checkCardImage(code, false);
+    }
 }
 
 
