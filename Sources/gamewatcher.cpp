@@ -220,7 +220,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         emit pDebug("Start Spectator Game.", numLine);
         spectating = true;
     }
-    else if(line.contains("CREATE_GAME"))
+    //Create game
+    //GameState.DebugPrintPower() - CREATE_GAME
+    else if(line.contains("GameState.DebugPrintPower() - CREATE_GAME"))
     {
         if(powerState != noGame)
         {
@@ -249,7 +251,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
 
-        emit specialCardTrigger("", "", -1);    //Evita Cartas createdBy en el mulligan de practica
+        emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en el mulligan de practica
         emit startGame();
     }
 
@@ -510,13 +512,15 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     }
 
 
-    //Jugador/Enemigo accion con objetivo
+    //Jugador/Enemigo accion con/sin objetivo
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
     //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[name=Trepadora embrujada id=12 zone=GRAVEYARD zonePos=0 cardId=FP1_002 player=1]
     //EffectCardId= EffectIndex=0 Target=0
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Elemental de Escarcha id=43 zone=PLAY zonePos=1 cardId=EX1_283 player=2]
     //EffectCardId= EffectIndex=-1 Target=[name=Trituradora antigua de Sneed id=23 zone=PLAY zonePos=5 cardId=GVG_114 player=1]
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=FATIGUE Entity=[name=Malfurion Tempestira id=76 zone=PLAY zonePos=0 cardId=HERO_06 player=1]
+    //EffectCardId= EffectIndex=0 Target=0
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
         "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
@@ -539,12 +543,18 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
         emit pDebug("Trigger(" + blockType + "): " + name1 + (name2.isEmpty()?"":" --> " + name2), numLine);
-        emit specialCardTrigger(cardId1, blockType, id1.toInt());
+        emit specialCardTrigger(cardId1, blockType, id1.toInt(), id2.isEmpty()?-1:id2.toInt());
         if(isHeroPower(cardId1) && isPlayerTurn && player1.toInt()==playerID)     emit playerHeroPower();
 
 
+        //Accion sin objetivo
+        if(zone2.isEmpty())
+        {
+
+        }
+
         //Accion con objetivo en PLAY
-        if(zone2 == "PLAY")
+        else if(zone2 == "PLAY")
         {
             //Jugador juega carta con objetivo en PLAY, No enemigo pq BlockType=PLAY es de entity desconocida para el enemigo
             if(blockType == "PLAY" && zone == "HAND")

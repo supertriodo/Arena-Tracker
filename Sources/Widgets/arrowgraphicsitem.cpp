@@ -4,12 +4,14 @@
 #include "../utility.h"
 #include <QtWidgets>
 
-ArrowGraphicsItem::ArrowGraphicsItem(bool attack)
+ArrowGraphicsItem::ArrowGraphicsItem(ArrowType arrowType)
 {
-    this->attack = attack;
+    this->arrowType = arrowType;
     this->numAttacks = 1;
     this->setPos(0, 0);
-    this->setZValue(1);
+
+    if(arrowType == reinforcement)  this->setZValue(1);
+    else                            this->setZValue(2);
 }
 
 
@@ -25,6 +27,12 @@ void ArrowGraphicsItem::setEnd(bool isFrom, MinionGraphicsItem *item)
     {
         from = item;
         this->friendly = item->isFriendly();
+
+        if(item->isHero())
+        {
+            this->arrowType = heroAttack;
+            this->setZValue(3);
+        }
     }
     else
     {
@@ -37,6 +45,12 @@ MinionGraphicsItem * ArrowGraphicsItem::getEnd(bool isFrom)
 {
     if(isFrom)  return this->from;
     else        return this->to;
+}
+
+
+ArrowGraphicsItem::ArrowType ArrowGraphicsItem::getArrowType()
+{
+    return this->arrowType;
 }
 
 
@@ -74,16 +88,33 @@ void ArrowGraphicsItem::prepareGeometryChange()
 }
 
 
+QPixmap ArrowGraphicsItem::getArrowPixmap(int &margen)
+{
+    switch(arrowType)
+    {
+        case heroAttack:
+            margen = 120;
+            return QPixmap(":Images/arrowHeroAttack.png");
+        case reinforcement:
+            margen = 80;
+            return QPixmap(":Images/arrowReinforce.png");
+        default:
+            margen = 115;
+            return QPixmap (":Images/arrowAttack.png");
+    }
+}
+
+
 void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     Q_UNUSED(option);
 
     QLine line(this->from->pos().toPoint(), this->to->pos().toPoint());
     QVector2D vector(line.dx(), line.dy());
-    QPixmap pixmap(":Images/arrow"+QString(attack?"Attack":"Reinforce")+".png");
-    const int margen = attack?115:80;
+    int margen;
+    QPixmap pixmap = getArrowPixmap(margen);
     const int arrowHeight = vector.length()-margen;
-    const int arrowWide = std::max(20, 50 - arrowHeight/10);
+    const int arrowWide = std::max(15, 80 - arrowHeight/5);
     pixmap = pixmap.scaled(QSize(arrowHeight,arrowWide), Qt::IgnoreAspectRatio, Qt::FastTransformation);
     qreal rot = qAtan2(vector.y(), vector.x());
     QPointF origin;

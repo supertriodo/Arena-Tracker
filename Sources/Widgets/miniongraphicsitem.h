@@ -25,7 +25,7 @@ protected:
     int origAttack, origHealth;
     int attack, health, id;
     int damage;
-    bool friendly, exausted, playerTurn, dead;
+    bool friendly, exausted, playerTurn, dead, hero;
     bool shield, taunt, charge, stealth, frozen, windfury;
     QList<Addon> addons;
 
@@ -49,6 +49,7 @@ public:
     void addAddon(QString code, int id);
     void checkDownloadedCode(QString code);
     bool isDead();
+    bool isHero();
 };
 
 #endif // MINIONGRAPHICSITEM_H

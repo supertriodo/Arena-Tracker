@@ -476,7 +476,7 @@ void MainWindow::createGameWatcher()
 //            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
@@ -520,9 +520,9 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(logTurn()),
-            planHandler, SLOT(resetLastTrigger()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int)),
-            planHandler, SLOT(setLastTriggerId(QString,QString,int)));
+            planHandler, SLOT(resetLastPowerAddon()));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int, int)),
+            planHandler, SLOT(setLastTriggerId(QString,QString,int, int)));
     connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int,int)),
             planHandler, SLOT(playerCardObjPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyCardObjPlayed(QString,int,int)),
@@ -557,7 +557,7 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerAttack(bool,bool)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
     //Connect en synchronizedDone
@@ -2511,10 +2511,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Hide Track secrets
+//Hide Track secrets, avoid draft
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
-//Muerte heroes
+//Addon colores
+//Ataque heroe al final de la lista en naranja
+//Jugar secreto
 
 
 //Minions generados

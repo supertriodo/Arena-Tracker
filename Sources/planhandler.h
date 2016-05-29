@@ -46,8 +46,10 @@ private:
     QList<Board *> turnBoards;
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
+    qint64 lastMinionAddedTime=0;
     int lastTriggerId;//-1 --> no trigger
     Addon lastPowerAddon;//Id=-1 --> no power
+    qint64 lastPowerTime=0;
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -81,6 +83,9 @@ private:
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id);
     void addHeroDeadToLastTurn(bool playerWon);
+    bool isLastPowerAddonValid();
+    bool isLastMinionAddedValid();
+    bool isLastTriggerValid(QString code);
 
 public:
     void setTransparency(Transparency value);
@@ -116,10 +121,10 @@ public slots:
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void newTurn(bool playerTurn, int numTurn);
-    void setLastTriggerId(QString code, QString blockType, int id);
+    void setLastTriggerId(QString code, QString blockType, int id, int idTarget);
     void lockPlanInterface();
     void unlockPlanInterface();
-    void resetLastTrigger();
+    void resetLastPowerAddon();
     void endGame(bool playerWon);
 
 private slots:

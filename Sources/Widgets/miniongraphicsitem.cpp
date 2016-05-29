@@ -7,6 +7,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->code = code;
     this->id = id;
     this->friendly = friendly;
+    this->hero = false;
     this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
     this->damage = 0;
@@ -32,6 +33,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->code = copy->code;
     this->id = copy->id;
     this->friendly = copy->friendly;
+    this->hero = copy->hero;
     this->attack = copy->attack;
     this->origAttack = copy->origAttack;
     this->health = copy->health;
@@ -76,6 +78,12 @@ bool MinionGraphicsItem::isFriendly()
 bool MinionGraphicsItem::isDead()
 {
     return this->dead;
+}
+
+
+bool MinionGraphicsItem::isHero()
+{
+    return this->hero;
 }
 
 

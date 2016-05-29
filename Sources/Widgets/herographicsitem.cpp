@@ -7,6 +7,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
 {
     this->armor = 0;
     this->exausted = false;
+    this->hero = true;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;

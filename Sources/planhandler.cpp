@@ -66,6 +66,7 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
 {
     this->lastMinionAdded = minion;
+    this->lastMinionAddedTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     minionsList->insert(pos, minion);
@@ -115,27 +116,16 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     //El padre es amigo
     if(pos != -1)
     {
+        MinionGraphicsItem *creatorMinion = minionsList->at(pos);
         triggerMinion = new MinionGraphicsItem(minion);
         minionsList->insert(pos+1, triggerMinion);
-        addReinforceToLastTurn(minionsList->at(pos), triggerMinion, board);
+        addReinforceToLastTurn(creatorMinion, triggerMinion, board);
     }
+    //El padre no esta en el mismo board
     else
     {
-        QList<MinionGraphicsItem *> *opMinionsList = getMinionList(!friendly, board);
-        pos = findMinionPos(opMinionsList, idCreator);
-        //El padre es enemigo
-        if(pos != -1)
-        {
-            triggerMinion = new MinionGraphicsItem(minion);
-            minionsList->append(triggerMinion);
-            addReinforceToLastTurn(opMinionsList->at(pos), triggerMinion, board);
-        }
-        //El padre no esta en el board
-        else
-        {
-            emit pDebug("Triggered minion creator is not on the board. Ids: " +
-                        QString::number(idCreator) + " --> " + QString::number(minion->getId()), Warning);
-        }
+        emit pDebug("Triggered minion and creator are not on the same board. Ids: " +
+                    QString::number(idCreator) + " --> " + QString::number(minion->getId()), Warning);
     }
 
     //Update Board
@@ -154,11 +144,11 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
 
 void PlanHandler::addReinforceToLastTurn(MinionGraphicsItem *parent, MinionGraphicsItem *child, Board *board)
 {
-    ArrowGraphicsItem *reinforce = new ArrowGraphicsItem(false);
+    ArrowGraphicsItem *reinforce = new ArrowGraphicsItem(ArrowGraphicsItem::reinforcement);
     reinforce->setEnd(true, parent);
     reinforce->setEnd(false, child);
 
-    board->arrows.append(reinforce);
+    board->arrows.prepend(reinforce);
     if(viewBoard == board)  ui->planGraphicsView->scene()->addItem(reinforce);
 }
 
@@ -363,7 +353,7 @@ void PlanHandler::enemyMinionPosChange(int id, int pos)
 
 void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
 {
-    if(this->lastMinionAdded == NULL) return;
+    if(!isLastMinionAddedValid()) return;
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     int oldPos = findMinionPos(minionsList, id);
@@ -398,6 +388,21 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
         }
     }
     this->lastMinionAdded = NULL;
+}
+
+
+bool PlanHandler::isLastMinionAddedValid()
+{
+    if(this->lastMinionAdded == NULL)   return false;
+
+    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    if((now - this->lastMinionAddedTime) > 1000)
+    {
+        emit pDebug("POSITION(" + QString::number(this->lastMinionAdded->getId()) + ") Avoid OLD.");
+        this->lastMinionAdded = NULL;
+        return false;
+    }
+    return true;
 }
 
 
@@ -455,7 +460,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     }
 
 
-    if(!isDead && this->lastPowerAddon.id != -1 &&
+    if(!isDead && isLastPowerAddonValid() &&
         (
             tag == "ATK" || tag == "HEALTH" ||
             tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
@@ -506,7 +511,7 @@ void PlanHandler::checkPendingTagChanges()
 
     QString tag = tagChange.tag;
     QString value = tagChange.value;
-    if(!isDead && this->lastPowerAddon.id != -1 &&
+    if(!isDead && isLastPowerAddonValid() &&
         (
             tag == "ATK" || tag == "HEALTH" ||
             tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
@@ -518,6 +523,21 @@ void PlanHandler::checkPendingTagChanges()
     {
         addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
     }
+}
+
+
+bool PlanHandler::isLastPowerAddonValid()
+{
+    if(this->lastPowerAddon.id == -1)   return false;
+
+    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    if((now - this->lastPowerTime) > 6000)
+    {
+        emit pDebug("Addon()-->" + this->lastPowerAddon.code + " Avoid OLD.");
+        this->lastPowerAddon.id = -1;
+        return false;
+    }
+    return true;
 }
 
 
@@ -573,7 +593,9 @@ bool PlanHandler::appendAttack(ArrowGraphicsItem *attack, Board *board)
         }
     }
 
-    board->arrows.append(attack);
+    if(attack->getArrowType() == ArrowGraphicsItem::heroAttack)     board->arrows.append(attack);
+    else                                                            board->arrows.prepend(attack);
+
     return true;
 }
 
@@ -765,31 +787,47 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
 
 //Evita addons provocado por ocultar/aparecer el arma al final del turno
-void PlanHandler::resetLastTrigger()
+void PlanHandler::resetLastPowerAddon()
 {
-    this->lastTriggerId = -1;
     this->lastPowerAddon.id = -1;
 }
 
 
-void PlanHandler::setLastTriggerId(QString code, QString blockType, int id)
+void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int idTarget)
 {
     if(blockType == "TRIGGER")
     {
-        this->lastTriggerId = id;
+        if(isLastTriggerValid(code))    this->lastTriggerId = id;
+        else                            emit pDebug("Trigger code is in the forbidden creator list: " + code, Warning);
         this->lastPowerAddon.code = code;
         this->lastPowerAddon.id = id;
+        this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     }
     else if(blockType == "POWER")
     {
-        this->lastTriggerId = -1;
+        this->lastTriggerId = idTarget;
         this->lastPowerAddon.code = code;
         this->lastPowerAddon.id = id;
+        this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     }
     else
     {
-        resetLastTrigger();
+        this->lastTriggerId = -1;
+        this->lastPowerAddon.id = -1;
     }
+}
+
+
+bool PlanHandler::isLastTriggerValid(QString code)
+{
+    QList<QString> forbiddenCreatorList;
+    //Malabarista de cuchillos
+    forbiddenCreatorList.append("NEW1_019");
+    //Osa parda perturbada
+    forbiddenCreatorList.append("OG_313");
+    //Concejal de Villa Oscura
+    forbiddenCreatorList.append("OG_113");
+    return !forbiddenCreatorList.contains(code);
 }
 
 
@@ -843,7 +881,8 @@ void PlanHandler::reset()
     this->viewBoard = nowBoard;
     this->firstStoredTurn = 0;
     this->nowBoard->playerTurn = true;
-    resetLastTrigger();
+    this->lastTriggerId = -1;
+    this->lastPowerAddon.id = -1;
     updateButtons();
 
     resetBoard(nowBoard);
@@ -865,8 +904,8 @@ void PlanHandler::updateButtons()
     ui->planButtonPrev->setEnabled(prevEnabled);
 
     QString color;
-    if(viewBoard->playerTurn)    color = "green";
-    else                        color = "red";
+    if(viewBoard->playerTurn)    color = "#008000";
+    else                        color = "#8B0000";
     ui->planLabelTurn->setStyleSheet("QLabel {background-color: transparent; color: " + color + ";}");
 
     if(viewTurn==0) ui->planLabelTurn->setText("--");
