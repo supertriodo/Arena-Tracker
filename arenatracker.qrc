@@ -110,5 +110,6 @@
         <file>Images/arrowReinforce.png</file>
         <file>Images/bgMinionAddon.png</file>
         <file>Images/arrowHeroAttack.png</file>
+        <file>Images/bgFatigueAddon.png</file>
     </qresource>
 </RCC>

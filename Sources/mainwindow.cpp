@@ -1840,31 +1840,23 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
-//    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
-//    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
-//    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-//    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
-//    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
+    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
+    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
+    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
+    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
 
-//    planHandler->newTurn(true, 1);
-//    planHandler->zonePlayAttack("AT_003",1,2);
-//    planHandler->zonePlayAttack("AT_003",3,2);
-//    planHandler->zonePlayAttack("AT_003",11,4);
-//    planHandler->playerCardObjPlayed("AT_004", 4);
-//    planHandler->playerCardObjPlayed("AT_004", 4);
-//    planHandler->playerCardObjPlayed("AT_004", 4);
-//    planHandler->playerCardObjPlayed("AT_004", 4);
+    planHandler->newTurn(true, 1);
+    planHandler->zonePlayAttack("AT_003",1,2);
+    planHandler->zonePlayAttack("AT_003",3,2);
+    planHandler->zonePlayAttack("AT_003",11,4);
 
-//    planHandler->newTurn(false, 2);
-//    planHandler->zonePlayAttack("AT_003",12,11);
-//    planHandler->zonePlayAttack("AT_003",12,11);
-//    planHandler->setLastTriggerId("", "TRIGGER", 1);
-//    planHandler->playerMinionZonePlayAddTriggered("EX1_020", 5, 1);
-//    planHandler->enemyCardObjPlayed("AT_004", 12);
-//    planHandler->enemyCardObjPlayed("AT_004", 12);
-//    planHandler->enemyCardObjPlayed("AT_004", 12);
-//    planHandler->enemyCardObjPlayed("AT_004", 12);
+    planHandler->newTurn(false, 2);
+    planHandler->zonePlayAttack("AT_003",12,11);
+    planHandler->zonePlayAttack("AT_003",12,11);
+    planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
+    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2515,9 +2507,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Avanzar turno en fatigue
 //Addon colores
-//Ataque heroe al final de la lista en naranja
 //Jugar secreto
-
+//Evitar FROZEN=0, track SILENCED
 
 //Minions generados
 //D 12:32:49.4409880 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Recluta Mano de Plata id=97 zone=PLAY zonePos=6 cardId=CS2_101t player=1] tag=ZONE_POSITION value=7

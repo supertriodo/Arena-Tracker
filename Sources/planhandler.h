@@ -47,8 +47,8 @@ private:
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
     qint64 lastMinionAddedTime=0;
-    int lastTriggerId;//-1 --> no trigger
-    Addon lastPowerAddon;//Id=-1 --> no power
+    int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements
+    Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons
     qint64 lastPowerTime=0;
     bool inGame;
     bool mouseInApp;

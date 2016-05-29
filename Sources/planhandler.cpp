@@ -719,7 +719,12 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 
 void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id)
 {
-    if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
+    if(code == "FATIGUE")
+    {
+        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
+        minion->addAddon(code, id);
+    }
+    else if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
     {
         emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code + " Avoid ENCHANTMENT.");
     }
@@ -807,6 +812,13 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     {
         this->lastTriggerId = idTarget;
         this->lastPowerAddon.code = code;
+        this->lastPowerAddon.id = id;
+        this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    }
+    else if(blockType == "FATIGUE")
+    {
+        this->lastTriggerId = -1;
+        this->lastPowerAddon.code = "FATIGUE";
         this->lastPowerAddon.id = id;
         this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     }

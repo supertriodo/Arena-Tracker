@@ -550,7 +550,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //Accion sin objetivo
         if(zone2.isEmpty())
         {
-
+            if(blockType == "FATIGUE" && zone == "PLAY")
+            {
+                advanceTurn(isPlayer);
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Fatigue damage.", numLine);
+            }
         }
 
         //Accion con objetivo en PLAY
