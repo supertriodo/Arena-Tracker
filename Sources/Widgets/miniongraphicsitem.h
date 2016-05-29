@@ -9,6 +9,7 @@ class Addon
 public:
     QString code;
     int id;
+    int number;
 };
 
 
@@ -46,7 +47,7 @@ public:
     int getId();
     bool isFriendly();
     void addAddon(Addon addon);
-    void addAddon(QString code, int id);
+    void addAddon(QString code, int id, int number=1);
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();

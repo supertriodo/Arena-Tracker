@@ -464,11 +464,12 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         (
             tag == "ATK" || tag == "HEALTH" ||
             tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-            tag == "FROZEN" || tag == "WINDFURY" ||
+            tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
             tag == "ARMOR" || tag == "DAMAGE" ||
             tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
         ) &&
-        !(isHero && tag == "ATK" && value == "0"))
+        !(isHero && tag == "ATK" && value == "0") &&
+        !(tag == "FROZEN" && value == "0"))
     {
         addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
     }
@@ -515,11 +516,12 @@ void PlanHandler::checkPendingTagChanges()
         (
             tag == "ATK" || tag == "HEALTH" ||
             tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-            tag == "FROZEN" || tag == "WINDFURY" ||
+            tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
             tag == "ARMOR" || tag == "DAMAGE" ||
             tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
         ) &&
-        !(isHero && tag == "ATK" && value == "0"))
+        !(isHero && tag == "ATK" && value == "0") &&//Evita addons al perder un arma y cambiar el atk a 0
+        !(tag == "FROZEN" && value == "0"))         //Evita addons por perder el frozen al final del turno
     {
         addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
     }
@@ -678,7 +680,7 @@ void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 }
 
 
-void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
+void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
 {
     if(turnBoards.empty())  return;
 
@@ -686,11 +688,11 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 
     if(board->playerHero!=NULL && board->playerHero->getId() == id2)
     {
-        addAddon(board->playerHero, code, id1);
+        addAddon(board->playerHero, code, id1, number);
     }
     else if(board->enemyHero!=NULL && board->enemyHero->getId() == id2)
     {
-        addAddon(board->enemyHero, code, id1);
+        addAddon(board->enemyHero, code, id1, number);
     }
     else
     {
@@ -698,7 +700,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
         int pos = findMinionPos(minionsList, id2);
         if(pos != -1)
         {
-            addAddon(minionsList->at(pos), code, id1);
+            addAddon(minionsList->at(pos), code, id1, number);
         }
         else
         {
@@ -706,7 +708,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
             pos = findMinionPos(minionsList, id2);
             if(pos != -1)
             {
-                addAddon(minionsList->at(pos), code, id1);
+                addAddon(minionsList->at(pos), code, id1, number);
             }
             else
             {
@@ -717,12 +719,12 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2)
 }
 
 
-void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id)
+void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, int number)
 {
     if(code == "FATIGUE")
     {
         emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id);
+        minion->addAddon(code, id, number);
     }
     else if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
     {
@@ -731,7 +733,7 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id)
     else
     {
         emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id);
+        minion->addAddon(code, id, number);
         emit checkCardImage(code, false);
     }
 }

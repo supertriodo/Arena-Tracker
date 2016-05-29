@@ -115,11 +115,12 @@ void MinionGraphicsItem::setDead(bool value)
 }
 
 
-void MinionGraphicsItem::addAddon(QString code, int id)
+void MinionGraphicsItem::addAddon(QString code, int id, int number)
 {
     Addon addon;
     addon.code = code;
     addon.id = id;
+    addon.number = number;
     this->addAddon(addon);
 }
 
@@ -209,6 +210,10 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "WINDFURY")
     {
         this->windfury = (value=="1");
+    }
+    else
+    {
+        return;
     }
     update();
 }
