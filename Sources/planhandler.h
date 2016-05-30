@@ -79,7 +79,7 @@ private:
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number=1);
+    void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, QString tag, int number=1);
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number=1);
     void addHeroDeadToLastTurn(bool playerWon);

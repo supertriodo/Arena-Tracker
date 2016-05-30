@@ -21,7 +21,7 @@ class MinionGraphicsItem : public QGraphicsItem
 //Constructor
 public:
     MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
-    MinionGraphicsItem(MinionGraphicsItem *copy);
+    MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMinion=false);
 
 //Variables
 protected:
@@ -33,6 +33,7 @@ protected:
     bool shield, taunt, charge, stealth, frozen, windfury;
     QList<Addon> addons;
     bool addonsStacked;
+    bool triggerMinion;
 
 public:
     static const int WIDTH = 142;
@@ -55,6 +56,7 @@ public:
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();
+    bool isTriggerMinion();
 
 private:
     void addAddonNeutral(Addon addon);

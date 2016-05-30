@@ -21,6 +21,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->dead = false;
     this->playerTurn = playerTurn;
     this->addonsStacked = false;
+    this->triggerMinion = false;
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -29,7 +30,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
 }
 
 
-MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
+MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMinion)
 {
     this->code = copy->code;
     this->id = copy->id;
@@ -51,6 +52,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->playerTurn = copy->playerTurn;
     this->addonsStacked = copy->addonsStacked;
     this->setPos(copy->pos());
+    this->triggerMinion = triggerMinion;
 
     foreach(Addon addon, copy->addons)
     {
@@ -86,6 +88,12 @@ bool MinionGraphicsItem::isDead()
 bool MinionGraphicsItem::isHero()
 {
     return this->hero;
+}
+
+
+bool MinionGraphicsItem::isTriggerMinion()
+{
+    return this->triggerMinion;
 }
 
 

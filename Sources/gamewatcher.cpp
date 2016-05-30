@@ -512,6 +512,29 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     }
 
 
+    //Enemigo accion desconocida
+    //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=PLAY Entity=[id=46 cardId= type=INVALID zone=HAND zonePos=2 player=2]
+    //EffectCardId= EffectIndex=0 Target=0
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
+        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=(\\w+) zonePos=\\d+ player=(\\d+)\\] "
+        "EffectCardId=\\w* EffectIndex=-?\\d+ "
+        "Target="
+        ), match))
+    {
+        QString blockType = match->captured(1);
+        QString id1 = match->captured(3);
+//        QString zone = match->captured(4);
+//        QString player1 = match->captured(6);
+//        bool isPlayer = (player1.toInt() == playerID);
+
+
+        //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
+        emit pDebug("Trigger(" + blockType + ") desconocido: " + id1, numLine);
+        emit specialCardTrigger("", blockType, id1.toInt(), -1);
+    }
+
+
     //Jugador/Enemigo accion con/sin objetivo
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
     //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]

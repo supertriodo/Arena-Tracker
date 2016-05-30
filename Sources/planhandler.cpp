@@ -117,7 +117,7 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     if(pos != -1)
     {
         MinionGraphicsItem *creatorMinion = minionsList->at(pos);
-        triggerMinion = new MinionGraphicsItem(minion);
+        triggerMinion = new MinionGraphicsItem(minion, true);
         minionsList->insert(pos+1, triggerMinion);
         addReinforceToLastTurn(creatorMinion, triggerMinion, board);
     }
@@ -467,7 +467,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     {
         if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage, tag);
         }
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
@@ -475,7 +475,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
         }
     }
 }
@@ -524,7 +524,7 @@ void PlanHandler::checkPendingTagChanges()
     {
         if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage, tag);
         }
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
@@ -532,7 +532,7 @@ void PlanHandler::checkPendingTagChanges()
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
         }
     }
 }
@@ -678,19 +678,19 @@ void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 
 void PlanHandler::playerCardObjPlayed(QString code, int id1, int id2)
 {
-    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
+    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral, "");
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
 void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 {
-    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
+    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral, "");
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number)
+void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, QString tag, int number)
 {
     if(turnBoards.empty())  return;
 
@@ -710,7 +710,12 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
         int pos = findMinionPos(minionsList, id2);
         if(pos != -1)
         {
-            addAddon(minionsList->at(pos), code, id1, type, number);
+            MinionGraphicsItem *targetMinion = minionsList->at(pos);
+            if(targetMinion->isTriggerMinion() && (tag == "ATK" || tag == "HEALTH"))
+            {
+                emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH on Triggered Minion.");
+            }
+            else    addAddon(targetMinion, code, id1, type, number);
         }
         else
         {
@@ -718,11 +723,16 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
             pos = findMinionPos(minionsList, id2);
             if(pos != -1)
             {
-                addAddon(minionsList->at(pos), code, id1, type, number);
+                MinionGraphicsItem *targetMinion = minionsList->at(pos);
+                if(targetMinion->isTriggerMinion() && (tag == "ATK" || tag == "HEALTH"))
+                {
+                    emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH on Triggered Minion.");
+                }
+                else    addAddon(targetMinion, code, id1, type, number);
             }
             else
             {
-                emit pDebug("Minion addon target not found. Id: " + QString::number(id2), Warning);
+                emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Minion id not found.", Warning);
             }
         }
     }

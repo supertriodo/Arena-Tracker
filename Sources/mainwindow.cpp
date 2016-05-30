@@ -2507,9 +2507,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Addon colores
 //Jugar secreto
-//No addons para atk/health si en la zona hay auras, dog, stormwind
+//No addons para atk/health si en la zona hay auras, dog, stormwind TAG CHANGE --> 25 "AURA" "1"
 //Recuperar reinforcement en different board creados por spell con obj
-//Trigger play desconocido
 //Numero stack
 
 //Minions generados
