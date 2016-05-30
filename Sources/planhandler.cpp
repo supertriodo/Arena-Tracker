@@ -486,7 +486,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA"
                )
         {
             addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
@@ -543,7 +543,7 @@ void PlanHandler::checkPendingTagChanges()
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA"
                )
         {
             addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
@@ -725,9 +725,9 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
         if(pos != -1)
         {
             MinionGraphicsItem *targetMinion = minionsList->at(pos);
-            if(targetMinion->isTriggerMinion() && (tag == "ATK" || tag == "HEALTH"))
+            if((tag == "ATK" || tag == "HEALTH") && areThereAuras(true))
             {
-                emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH on Triggered Minion.");
+                emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH with auras.");
             }
             else    addAddon(targetMinion, code, id1, type, number);
         }
@@ -738,9 +738,9 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
             if(pos != -1)
             {
                 MinionGraphicsItem *targetMinion = minionsList->at(pos);
-                if(targetMinion->isTriggerMinion() && (tag == "ATK" || tag == "HEALTH"))
+                if((tag == "ATK" || tag == "HEALTH") && areThereAuras(false))
                 {
-                    emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH on Triggered Minion.");
+                    emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH with auras.");
                 }
                 else    addAddon(targetMinion, code, id1, type, number);
             }
@@ -750,6 +750,18 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
             }
         }
     }
+}
+
+
+bool PlanHandler::areThereAuras(bool friendly)
+{
+    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
+    foreach(MinionGraphicsItem *minion, *minionsList)
+    {
+        if(minion->isAura())    return true;
+    }
+
+    return false;
 }
 
 

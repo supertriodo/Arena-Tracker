@@ -34,6 +34,7 @@ protected:
     QList<Addon> addons;
     bool addonsStacked;
     bool triggerMinion;
+    bool aura;
 
 public:
     static const int WIDTH = 142;
@@ -56,7 +57,8 @@ public:
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();
-    bool isTriggerMinion();
+    bool isTriggerMinion();    
+    bool isAura();
 
 private:
     void addAddonNeutral(Addon addon);

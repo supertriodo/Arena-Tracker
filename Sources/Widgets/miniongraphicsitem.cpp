@@ -22,6 +22,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->playerTurn = playerTurn;
     this->addonsStacked = false;
     this->triggerMinion = false;
+    this->aura = false;
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -53,6 +54,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->addonsStacked = copy->addonsStacked;
     this->setPos(copy->pos());
     this->triggerMinion = triggerMinion;
+    this->aura = copy->aura;
 
     foreach(Addon addon, copy->addons)
     {
@@ -94,6 +96,12 @@ bool MinionGraphicsItem::isHero()
 bool MinionGraphicsItem::isTriggerMinion()
 {
     return this->triggerMinion;
+}
+
+
+bool MinionGraphicsItem::isAura()
+{
+    return this->aura;
 }
 
 
@@ -302,6 +310,10 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "WINDFURY")
     {
         this->windfury = (value=="1");
+    }
+    else if(tag == "AURA")
+    {
+        this->aura = (value=="1");
     }
     else
     {

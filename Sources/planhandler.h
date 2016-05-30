@@ -85,7 +85,8 @@ private:
     void addHeroDeadToLastTurn(bool playerWon);
     bool isLastPowerAddonValid();
     bool isLastMinionAddedValid();
-    bool isLastTriggerValid(QString code);
+    bool isLastTriggerValid(QString code);    
+    bool areThereAuras(bool friendly);
 
 public:
     void setTransparency(Transparency value);
