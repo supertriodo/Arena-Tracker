@@ -47,8 +47,8 @@ private:
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
     qint64 lastMinionAddedTime=0;
-    int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements
-    Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons
+    int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements. Guarda ultimo trigger o power con obj
+    Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons. Guarda ultimo trigger, power o fatigue
     qint64 lastPowerTime=0;
     bool inGame;
     bool mouseInApp;
@@ -79,9 +79,9 @@ private:
     void completeUI();
     bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addAddonToLastTurn(QString code, int id1, int id2, int number=1);
+    void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number=1);
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
-    void addAddon(MinionGraphicsItem *minion, QString code, int id, int number=1);
+    void addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number=1);
     void addHeroDeadToLastTurn(bool playerWon);
     bool isLastPowerAddonValid();
     bool isLastMinionAddedValid();

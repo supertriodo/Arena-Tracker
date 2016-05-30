@@ -2505,10 +2505,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets, avoid draft
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Avanzar turno en fatigue
 //Addon colores
 //Jugar secreto
-//Evitar FROZEN=0, track SILENCED
+//No addons para atk/health si en la zona hay auras, dog, stormwind
+//Recuperar reinforcement en different board creados por spell con obj
+//Trigger play desconocido
+//Numero stack
 
 //Minions generados
 //D 12:32:49.4409880 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Recluta Mano de Plata id=97 zone=PLAY zonePos=6 cardId=CS2_101t player=1] tag=ZONE_POSITION value=7
@@ -2535,7 +2537,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //SPECTATOR GAMES
 //Si empiezan desde el principio todo correcto.
 //Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
-//  no causara problemas
+//  Problemas: En PlanHandler el heroe muerto puede ser incorrecto.
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

@@ -29,13 +29,21 @@ QRectF HeroGraphicsItem::boundingRect() const
 }
 
 
-void HeroGraphicsItem::processTagChange(QString tag, QString value)
+bool HeroGraphicsItem::processTagChange(QString tag, QString value)
 {
+    bool healing = false;
     if(tag == "ARMOR")
     {
-        this->armor = value.toInt();
+        int newArmor = value.toInt();
+        if(newArmor > this->armor)  healing = true;
+        this->armor = newArmor;
     }
-    MinionGraphicsItem::processTagChange(tag, value);
+    else
+    {
+        return MinionGraphicsItem::processTagChange(tag, value);
+    }
+    update();
+    return healing;
 }
 
 
@@ -152,7 +160,11 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
         }
 
-        painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));
+        QString addonPng;
+        if(addons[i].type == Addon::AddonDamage)    addonPng = ":Images/bgMinionAddonDamage.png";
+        else if(addons[i].type == Addon::AddonLife) addonPng = ":Images/bgMinionAddonLife.png";
+        else                                        addonPng = ":Images/bgMinionAddon.png";
+        painter->drawPixmap(moveX-35, moveY-35, QPixmap(addonPng));
     }
 }
 

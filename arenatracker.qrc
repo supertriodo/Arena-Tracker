@@ -111,5 +111,7 @@
         <file>Images/bgMinionAddon.png</file>
         <file>Images/arrowHeroAttack.png</file>
         <file>Images/bgFatigueAddon.png</file>
+        <file>Images/bgMinionAddonDamage.png</file>
+        <file>Images/bgMinionAddonLife.png</file>
     </qresource>
 </RCC>

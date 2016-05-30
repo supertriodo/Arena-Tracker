@@ -7,9 +7,12 @@
 class Addon
 {
 public:
+    enum AddonType { AddonNeutral, AddonDamage, AddonLife };
+
     QString code;
     int id;
     int number;
+    AddonType type;
 };
 
 
@@ -29,6 +32,7 @@ protected:
     bool friendly, exausted, playerTurn, dead, hero;
     bool shield, taunt, charge, stealth, frozen, windfury;
     QList<Addon> addons;
+    bool addonsStacked;
 
 public:
     static const int WIDTH = 142;
@@ -38,7 +42,7 @@ public:
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
-    void processTagChange(QString tag, QString value);
+    bool processTagChange(QString tag, QString value);
     void setPlayerTurn(bool playerTurn);
     void setDead(bool value);
     void changeZone(bool playerTurn);
@@ -47,10 +51,15 @@ public:
     int getId();
     bool isFriendly();
     void addAddon(Addon addon);
-    void addAddon(QString code, int id, int number=1);
+    void addAddon(QString code, int id, Addon::AddonType type, int number=1);
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();
+
+private:
+    void addAddonNeutral(Addon addon);
+    void addAddonDamageLife(Addon addon);
+    void stackAddons();
 };
 
 #endif // MINIONGRAPHICSITEM_H

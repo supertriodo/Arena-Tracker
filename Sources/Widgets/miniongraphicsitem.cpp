@@ -20,6 +20,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->exausted = true;
     this->dead = false;
     this->playerTurn = playerTurn;
+    this->addonsStacked = false;
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -48,6 +49,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy)
     this->exausted = copy->exausted;
     this->dead = copy->dead;
     this->playerTurn = copy->playerTurn;
+    this->addonsStacked = copy->addonsStacked;
     this->setPos(copy->pos());
 
     foreach(Addon addon, copy->addons)
@@ -115,27 +117,100 @@ void MinionGraphicsItem::setDead(bool value)
 }
 
 
-void MinionGraphicsItem::addAddon(QString code, int id, int number)
+void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, int number)
 {
     Addon addon;
     addon.code = code;
     addon.id = id;
+    addon.type = type;
     addon.number = number;
     this->addAddon(addon);
 }
 
 
 //Paso por valor para almacenar una copia de addon
+//Solo un addon por id fuente, sino un hechizo con objetivo que causa damage pondria 2 addons (objetivo y damage)
+//Muestra multiples addons life/damage.
+//Solo muestra un neutral por id, si no hay ningun damage/life del mismo code.
 void MinionGraphicsItem::addAddon(Addon addon)
+{
+    if(addon.type == Addon::AddonNeutral)   addAddonNeutral(addon);
+    else                                    addAddonDamageLife(addon);
+}
+
+
+void MinionGraphicsItem::addAddonNeutral(Addon addon)
 {
     foreach(Addon storedAddon, this->addons)
     {
-        //Solo un addon por id fuente, sino un hechizo con objetivo que causa damage pondria 2 addons (objetivo y damage)
         if(storedAddon.id == addon.id)  return;
+        if(storedAddon.code == addon.code && storedAddon.type != Addon::AddonNeutral)  return;
     }
-
     this->addons.append(addon);
     update();
+}
+
+
+void MinionGraphicsItem::addAddonDamageLife(Addon addon)
+{
+    //Eliminar neutrales
+    for(int i=0; i<addons.count(); i++)
+    {
+        if(addons[i].code == addon.code && addons[i].type == Addon::AddonNeutral)
+        {
+            addons.removeAt(i);
+            i--;
+        }
+    }
+
+    //Incluir addon
+    if(addonsStacked)
+    {
+        foreach(Addon storedAddon, this->addons)
+        {
+            if(storedAddon.code == addon.code && storedAddon.type == addon.type)
+            {
+                storedAddon.number += addon.number;
+                addon.number = 0;
+                break;
+            }
+        }
+        //Es nuevo
+        if(addon.number != 0)
+        {
+            addons.append(addon);
+        }
+    }
+    else
+    {
+        addons.append(addon);
+        if(addons.count()>4)    stackAddons();
+    }
+    update();
+}
+
+
+void MinionGraphicsItem::stackAddons()
+{
+    if(addonsStacked)   return;
+    addonsStacked = true;
+
+    for(int i=0; i<addons.count(); i++)
+    {
+        if(addons[i].type!=Addon::AddonNeutral)
+        {
+            for(int j=i+1; j<addons.count(); j++)
+            {
+                if( addons[i].code == addons[j].code &&
+                    addons[i].type == addons[j].type)
+                {
+                    addons[i].number += addons[j].number;
+                    addons.removeAt(j);
+                    j--;
+                }
+            }
+        }
+    }
 }
 
 
@@ -164,15 +239,24 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 }
 
 
-void MinionGraphicsItem::processTagChange(QString tag, QString value)
+bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
     qDebug()<<"TAG CHANGE -->"<<id<<tag<<value;
+    bool healing = false;
     if(tag == "DAMAGE")
     {
         int newDamage = value.toInt();
+        if(newDamage < this->damage)    healing = true;
         //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
         if(this->damage >= this->health && newDamage == 0)  this->dead = true;
         else                                                this->damage = newDamage;
+    }
+    if(tag == "TO_BE_DESTROYED")
+    {
+        //Despues de morir por TO_BE_DESTROYED, vuelve a 0.
+        if(value=="0")  this->dead = true;
+        //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
+        else            if(this->damage >= this->health)  this->dead = true;
     }
     else if(tag == "ATK")
     {
@@ -213,9 +297,10 @@ void MinionGraphicsItem::processTagChange(QString tag, QString value)
     }
     else
     {
-        return;
+        return healing;
     }
     update();
+    return healing;
 }
 
 
@@ -331,6 +416,10 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
             painter->drawEllipse(QPointF(moveX,moveY), 32, 32);
         }
 
-        painter->drawPixmap(moveX-35, moveY-35, QPixmap(":Images/bgMinionAddon.png"));
+        QString addonPng;
+        if(addons[i].type == Addon::AddonDamage)    addonPng = ":Images/bgMinionAddonDamage.png";
+        else if(addons[i].type == Addon::AddonLife) addonPng = ":Images/bgMinionAddonLife.png";
+        else                                        addonPng = ":Images/bgMinionAddon.png";
+        painter->drawPixmap(moveX-35, moveY-35, QPixmap(addonPng));
     }
 }

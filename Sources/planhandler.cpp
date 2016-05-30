@@ -426,27 +426,28 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     tagChange.tag = tag;
     tagChange.value = value;
 
+    bool healing = false;
     bool isDead = true;
     bool isHero = true;
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
     if(minion != NULL)
     {
         emit pDebug("Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        minion->processTagChange(tagChange.tag, tagChange.value);
+        healing = minion->processTagChange(tagChange.tag, tagChange.value);
         isDead = minion->isDead();
         isHero = false;
     }
     else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
     else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
     {
         emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
@@ -461,17 +462,21 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
 
 
     if(!isDead && isLastPowerAddonValid() &&
-        (
-            tag == "ATK" || tag == "HEALTH" ||
-            tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-            tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-            tag == "ARMOR" || tag == "DAMAGE" ||
-            tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
-        ) &&
         !(isHero && tag == "ATK" && value == "0") &&
         !(tag == "FROZEN" && value == "0"))
     {
-        addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
+        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+        }
+        else if(
+                   tag == "ATK" || tag == "HEALTH" ||
+                   tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
+               )
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+        }
     }
 }
 
@@ -483,6 +488,7 @@ void PlanHandler::checkPendingTagChanges()
     if(pendingTagChanges.isEmpty()) return;
 
     TagChange tagChange = pendingTagChanges.takeFirst();
+    bool healing = false;
     //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
     //Ejemplo Jefe de banda de diablillos ataca y mata a otro minion, el jefe produce un trigger que apareceria en el esbirro muerto.
     bool isDead = true;
@@ -492,19 +498,19 @@ void PlanHandler::checkPendingTagChanges()
     MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
     if(minion != NULL)
     {
-        minion->processTagChange(tagChange.tag, tagChange.value);
+        healing = minion->processTagChange(tagChange.tag, tagChange.value);
         isDead = minion->isDead();
         isHero = false;
     }
     else if(tagChange.friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
     {
-        nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
     else if(!tagChange.friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
     {
-        nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
@@ -513,17 +519,21 @@ void PlanHandler::checkPendingTagChanges()
     QString tag = tagChange.tag;
     QString value = tagChange.value;
     if(!isDead && isLastPowerAddonValid() &&
-        (
-            tag == "ATK" || tag == "HEALTH" ||
-            tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-            tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-            tag == "ARMOR" || tag == "DAMAGE" ||
-            tag == "CONTROLLER" || tag == "TO_BE_DESTROYED"
-        ) &&
         !(isHero && tag == "ATK" && value == "0") &&//Evita addons al perder un arma y cambiar el atk a 0
         !(tag == "FROZEN" && value == "0"))         //Evita addons por perder el frozen al final del turno
     {
-        addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id);
+        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED")
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+        }
+        else if(
+                   tag == "ATK" || tag == "HEALTH" ||
+                   tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED"
+               )
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+        }
     }
 }
 
@@ -632,7 +642,7 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
         //Ataque con carga de minion recien jugado
         else
         {
-            addAddon(attack->getEnd(false), code, id1);
+            addAddon(attack->getEnd(false), code, id1, Addon::AddonDamage);
             delete attack;
         }
     }
@@ -661,26 +671,26 @@ void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 
     Board *board = turnBoards.last();
 
-    if(friendly)    addAddon(board->playerHero, code, id);
-    else            addAddon(board->enemyHero, code, id);
+    if(friendly)    addAddon(board->playerHero, code, id, Addon::AddonNeutral);
+    else            addAddon(board->enemyHero, code, id, Addon::AddonNeutral);
 }
 
 
 void PlanHandler::playerCardObjPlayed(QString code, int id1, int id2)
 {
-    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2);
+    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
 void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 {
-    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2);
+    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
+void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number)
 {
     if(turnBoards.empty())  return;
 
@@ -688,11 +698,11 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
 
     if(board->playerHero!=NULL && board->playerHero->getId() == id2)
     {
-        addAddon(board->playerHero, code, id1, number);
+        addAddon(board->playerHero, code, id1, type, number);
     }
     else if(board->enemyHero!=NULL && board->enemyHero->getId() == id2)
     {
-        addAddon(board->enemyHero, code, id1, number);
+        addAddon(board->enemyHero, code, id1, type, number);
     }
     else
     {
@@ -700,7 +710,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
         int pos = findMinionPos(minionsList, id2);
         if(pos != -1)
         {
-            addAddon(minionsList->at(pos), code, id1, number);
+            addAddon(minionsList->at(pos), code, id1, type, number);
         }
         else
         {
@@ -708,7 +718,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
             pos = findMinionPos(minionsList, id2);
             if(pos != -1)
             {
-                addAddon(minionsList->at(pos), code, id1, number);
+                addAddon(minionsList->at(pos), code, id1, type, number);
             }
             else
             {
@@ -719,12 +729,12 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, int number)
 }
 
 
-void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, int number)
+void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number)
 {
     if(code == "FATIGUE")
     {
         emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id, number);
+        minion->addAddon(code, id, type, number);
     }
     else if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
     {
@@ -733,7 +743,7 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, int
     else
     {
         emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id, number);
+        minion->addAddon(code, id, type, number);
         emit checkCardImage(code, false);
     }
 }
