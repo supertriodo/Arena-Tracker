@@ -1857,6 +1857,16 @@ void MainWindow::test()
     planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
     planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->enemyCardObjPlayed("EX1_020", 4, 1);
+    planHandler->setLastTriggerId("CS2_034", "TRIGGER", 134, -1);
+    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2506,8 +2516,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets, avoid draft
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Jugar secreto
-//No addons para atk/health si en la zona hay auras, dog, stormwind TAG CHANGE --> 25 "AURA" "1"
-//Numero stack
 //tag=CANT_BE_DAMAGED
 
 //Minions generados

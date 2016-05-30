@@ -161,10 +161,31 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
 
         QString addonPng;
-        if(addons[i].type == Addon::AddonDamage)    addonPng = ":Images/bgMinionAddonDamage.png";
-        else if(addons[i].type == Addon::AddonLife) addonPng = ":Images/bgMinionAddonLife.png";
-        else                                        addonPng = ":Images/bgMinionAddon.png";
+        if(addons[i].type == Addon::AddonDamage)
+        {
+            addonPng = ":Images/bgMinionAddonDamage.png";
+            painter->setBrush(RED);
+        }
+        else if(addons[i].type == Addon::AddonLife)
+        {
+            addonPng = ":Images/bgMinionAddonLife.png";
+            painter->setBrush(GREEN);
+        }
+        else
+        {
+            addonPng = ":Images/bgMinionAddon.png";
+            painter->setBrush(WHITE);
+        }
         painter->drawPixmap(moveX-35, moveY-35, QPixmap(addonPng));
+
+        //Numero
+        if(addons[i].number > 1)
+        {
+            textWide = fm.width(QString::number(addons[i].number));
+            path = QPainterPath();
+            path.addText(moveX - textWide/2, moveY + textHigh/4, font, QString::number(addons[i].number));
+            painter->drawPath(path);
+        }
     }
 }
 
