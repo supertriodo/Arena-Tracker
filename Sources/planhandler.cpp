@@ -113,6 +113,7 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     QList<MinionGraphicsItem *> *minionsList = getMinionList(friendly, board);
     int pos = findMinionPos(minionsList, idCreator);
 
+
     //El padre es amigo
     if(pos != -1)
     {
@@ -121,11 +122,24 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
         minionsList->insert(pos+1, triggerMinion);
         addReinforceToLastTurn(creatorMinion, triggerMinion, board);
     }
-    //El padre no esta en el mismo board
     else
     {
-        emit pDebug("Triggered minion and creator are not on the same board. Ids: " +
-                    QString::number(idCreator) + " --> " + QString::number(minion->getId()), Warning);
+        QList<MinionGraphicsItem *> *opMinionsList = getMinionList(!friendly, board);
+        pos = findMinionPos(opMinionsList, idCreator);
+        //El padre es enemigo
+        if(pos != -1)
+        {
+            MinionGraphicsItem *creatorMinion = opMinionsList->at(pos);
+            triggerMinion = new MinionGraphicsItem(minion, true);
+            minionsList->append(triggerMinion);
+            addReinforceToLastTurn(creatorMinion, triggerMinion, board);
+        }
+        //El padre no esta en el board
+        else
+        {
+            emit pDebug("Triggered minion creator is not on the board. Ids: " +
+                        QString::number(idCreator) + " --> " + QString::number(minion->getId()), Warning);
+        }
     }
 
     //Update Board

@@ -2510,6 +2510,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //No addons para atk/health si en la zona hay auras, dog, stormwind TAG CHANGE --> 25 "AURA" "1"
 //Recuperar reinforcement en different board creados por spell con obj
 //Numero stack
+//tag=CANT_BE_DAMAGED
 
 //Minions generados
 //D 12:32:49.4409880 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Recluta Mano de Plata id=97 zone=PLAY zonePos=6 cardId=CS2_101t player=1] tag=ZONE_POSITION value=7
