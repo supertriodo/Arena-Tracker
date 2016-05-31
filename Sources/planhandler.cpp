@@ -245,7 +245,15 @@ void PlanHandler::stealMinion(bool friendly, int id, int pos)
         addMinion(!friendly, minion, pos);
         minion->changeZone(nowBoard->playerTurn);
 
-        copyMinionToLastTurn(!friendly, minion, id);
+        //Sepultar roba el esbirro en el log, y luego lo mata, lo evitamos. Usamos lastPowerAddon.code pq lastTrigger no guarda code.
+        if(this->lastPowerAddon.code != "LOE_104")
+        {
+            copyMinionToLastTurn(!friendly, minion, id);
+        }
+        else
+        {
+            emit pDebug("Avoid steal minion by Engrave.");
+        }
     }
 }
 
@@ -486,7 +494,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA"
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
             addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
@@ -543,7 +551,7 @@ void PlanHandler::checkPendingTagChanges()
         else if(
                    tag == "ATK" || tag == "HEALTH" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA"
+                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
             addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
@@ -755,7 +763,17 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
 
 bool PlanHandler::areThereAuras(bool friendly)
 {
+    //Check now board
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
+    foreach(MinionGraphicsItem *minion, *minionsList)
+    {
+        if(minion->isAura())    return true;
+    }
+
+    //Check last turn board
+    if(turnBoards.empty())  return false;
+    Board *board = turnBoards.last();
+    minionsList = getMinionList(friendly, board);
     foreach(MinionGraphicsItem *minion, *minionsList)
     {
         if(minion->isAura())    return true;
