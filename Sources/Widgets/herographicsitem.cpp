@@ -135,15 +135,15 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                 moveX = 0;
                 moveY = 30;
                 break;
-            case 1:
+            case 3:
                 moveX = 0;
                 moveY = -40;
                 break;
-            case 2:
+            case 1:
                 moveX = -30;
                 moveY = -5;
                 break;
-            case 3:
+            case 2:
                 moveX = 30;
                 moveY = -5;
                 break;

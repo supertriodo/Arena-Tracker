@@ -23,6 +23,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->addonsStacked = false;
     this->triggerMinion = false;
     this->aura = false;
+    this->zone = "PLAY";
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -55,6 +56,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->setPos(copy->pos());
     this->triggerMinion = triggerMinion;
     this->aura = copy->aura;
+    this->zone = "PLAY";
 
     foreach(Addon addon, copy->addons)
     {
@@ -133,6 +135,12 @@ void MinionGraphicsItem::setDead(bool value)
 }
 
 
+void MinionGraphicsItem::setId(int value)
+{
+    this->id = value;
+}
+
+
 void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, int number)
 {
     Addon addon;
@@ -170,12 +178,15 @@ void MinionGraphicsItem::addAddonNeutral(Addon addon)
 void MinionGraphicsItem::addAddonDamageLife(Addon addon)
 {
     //Eliminar neutrales
-    for(int i=0; i<addons.count(); i++)
+    if(addon.code != SWIPE)//Siempre queremos ver el objetivo de swipe
     {
-        if(addons[i].code == addon.code && addons[i].type == Addon::AddonNeutral)
+        for(int i=0; i<addons.count(); i++)
         {
-            addons.removeAt(i);
-            i--;
+            if(addons[i].code == addon.code && addons[i].type == Addon::AddonNeutral)
+            {
+                addons.removeAt(i);
+                i--;
+            }
         }
     }
 
@@ -230,12 +241,10 @@ void MinionGraphicsItem::stackAddons()
 }
 
 
-void MinionGraphicsItem::changeZone(bool playerTurn)
+void MinionGraphicsItem::changeZone()
 {
     this->friendly = !this->friendly;
-    this->playerTurn = this->friendly && playerTurn;
-    if(friendly && charge)      this->exausted = false;
-    else                        this->exausted = true;
+    this->exausted = !this->charge;
 }
 
 
@@ -258,21 +267,25 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
     qDebug()<<"TAG CHANGE -->"<<id<<tag<<value;
+
+    //Evita addons provocado por cambios despues de morir(en el log los minion vuelven a damage 0 y estado original justo antes de desaparecer de la zona)
+    //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
+    if(this->damage >= this->health || this->zone !="PLAY")
+    {
+        this->dead = true;
+    }
+
     bool healing = false;
     if(tag == "DAMAGE")
     {
         int newDamage = value.toInt();
         if(newDamage < this->damage)    healing = true;
-        //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
-        if(this->damage >= this->health && newDamage == 0)  this->dead = true;
-        else                                                this->damage = newDamage;
+        this->damage = newDamage;
     }
     if(tag == "TO_BE_DESTROYED")
     {
         //Despues de morir por TO_BE_DESTROYED, vuelve a 0.
         if(value=="0")  this->dead = true;
-        //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
-        else            if(this->damage >= this->health)  this->dead = true;
     }
     else if(tag == "ATK")
     {
@@ -310,10 +323,17 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "WINDFURY")
     {
         this->windfury = (value=="1");
+        return healing;
     }
     else if(tag == "AURA")
     {
         this->aura = (value=="1");
+        return healing;
+    }
+    else if (tag == "ZONE")
+    {
+        this->zone = value;
+        return healing;
     }
     else
     {
@@ -327,6 +347,8 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     Q_UNUSED(option);
+
+    if(triggerMinion)   painter->setOpacity(0.5);
 
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));
@@ -411,15 +433,15 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
                 moveX = 0;
                 moveY = 10;
                 break;
-            case 1:
+            case 3:
                 moveX = 0;
                 moveY = -40;
                 break;
-            case 2:
+            case 1:
                 moveX = -25;
                 moveY = -15;
                 break;
-            case 3:
+            case 2:
                 moveX = 25;
                 moveY = -15;
                 break;

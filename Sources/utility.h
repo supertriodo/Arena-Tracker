@@ -10,8 +10,52 @@
 #include <QNetworkRequest>
 #include <QScreen>
 
+//Secretos
+#define AVENGE QString("FP1_020")
+#define NOBLE_SACRIFICE QString("EX1_130")
+#define REPENTANCE QString("EX1_379")
+#define REDEMPTION QString("EX1_136")
+#define SACRED_TRIAL QString("LOE_027")
+#define EYE_FOR_AN_EYE QString("EX1_132")
+#define COMPETITIVE_SPIRIT QString("AT_073")
+
+#define FREEZING_TRAP QString("EX1_611")
+#define EXPLOSIVE_TRAP QString("EX1_610")
+#define BEAR_TRAP QString("AT_060")
+#define SNIPE QString("EX1_609")
+#define DART_TRAP QString("LOE_021")
+#define MISDIRECTION QString("EX1_533")
+#define SNAKE_TRAP QString("EX1_554")
+
+#define MIRROR_ENTITY QString("EX1_294")
+#define DDUPLICATE QString("FP1_018")
+#define ICE_BARRIER QString("EX1_289")
+#define EFFIGY QString("AT_002")
+#define VAPORIZE QString("EX1_594")
+#define COUNTERSPELL QString("EX1_287")
+#define SPELLBENDER QString("tt_010")
+#define ICE_BLOCK QString("EX1_295")
+
+//Cartas
 #define MAD_SCIENTIST "FP1_004"
 #define THE_COIN "GAME_005"
+#define SWIPE "CS2_012"
+#define ENGRAVE "LOE_104"
+#define FROTHING_BERSEKER "EX1_604"
+#define ARMORSMITH "EX1_402"
+#define KNIFE_JUGGLER "NEW1_019"
+#define ADDLED_GRIZZLY "OG_313"
+#define DARKSHIRE_COUNCILMAN "OG_113"
+#define ACIDMAW "AT_063"
+#define WRATHGUARD "AT_026"
+#define IMP_GANG_BOSS "BRM_006"
+#define AXE_FLINGER "BRM_016"
+#define DRAGON_EGG "BRM_022"
+#define ACOLYTE_OF_PAIN "EX1_007"
+#define GURUBASHI_BERSERKER "EX1_399"
+#define LIGHTWARDEN "EX1_001"
+#define TRUESILVER_CHAMPION "CS2_097"
+#define GOREHOWL "EX1_411"
 
 
 using namespace cv;

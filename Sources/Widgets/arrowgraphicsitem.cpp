@@ -151,27 +151,3 @@ void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

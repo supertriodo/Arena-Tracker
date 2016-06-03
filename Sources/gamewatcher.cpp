@@ -462,6 +462,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(4);
         bool isPlayer = (player.toInt() == playerID);
 
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + "): " + value + " Id: " + id, numLine);
+
         if(tag == "CLASS")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Secret hero: " + value + " Id: " + id, numLine);
@@ -472,9 +474,9 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" || tag == "CANT_BE_DAMAGED")
+                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
+                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE")
         {
-            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + "): " + value + " Id: " + id, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
         }
@@ -499,13 +501,14 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(6);
         bool isPlayer = (player.toInt() == playerID);
 
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value + " -- " + name, numLine);
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" || tag == "CANT_BE_DAMAGED")
+                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
+                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE")
         {
-            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value + " -- " + name, numLine);
             if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
             else            emit enemyMinionTagChange(id.toInt(), tag, value);
         }
@@ -662,6 +665,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 void GameWatcher::processZone(QString &line, qint64 numLine)
 {
+    if(powerState == noGame)   return;
+
     //Carta desconocida (Enemigo)
     if(line.contains(QRegularExpression(
         "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from "

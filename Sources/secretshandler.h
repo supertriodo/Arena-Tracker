@@ -8,31 +8,6 @@
 #include <QObject>
 
 
-//Secretos
-#define AVENGE QString("FP1_020")
-#define NOBLE_SACRIFICE QString("EX1_130")
-#define REPENTANCE QString("EX1_379")
-#define REDEMPTION QString("EX1_136")
-#define SACRED_TRIAL QString("LOE_027")
-#define EYE_FOR_AN_EYE QString("EX1_132")
-#define COMPETITIVE_SPIRIT QString("AT_073")
-
-#define FREEZING_TRAP QString("EX1_611")
-#define EXPLOSIVE_TRAP QString("EX1_610")
-#define BEAR_TRAP QString("AT_060")
-#define SNIPE QString("EX1_609")
-#define DART_TRAP QString("LOE_021")
-#define MISDIRECTION QString("EX1_533")
-#define SNAKE_TRAP QString("EX1_554")
-
-#define MIRROR_ENTITY QString("EX1_294")
-#define DDUPLICATE QString("FP1_018")
-#define ICE_BARRIER QString("EX1_289")
-#define EFFIGY QString("AT_002")
-#define VAPORIZE QString("EX1_594")
-#define COUNTERSPELL QString("EX1_287")
-#define SPELLBENDER QString("tt_010")
-#define ICE_BLOCK QString("EX1_295")
 
 class SecretTest
 {

@@ -35,6 +35,7 @@ protected:
     bool addonsStacked;
     bool triggerMinion;
     bool aura;
+    QString zone;
 
 public:
     static const int WIDTH = 142;
@@ -47,7 +48,7 @@ public:
     bool processTagChange(QString tag, QString value);
     void setPlayerTurn(bool playerTurn);
     void setDead(bool value);
-    void changeZone(bool playerTurn);
+    void changeZone();
     QString getCode();
     void setZonePos(bool friendly, int pos, int minionsZone);
     int getId();
@@ -58,7 +59,8 @@ public:
     bool isDead();
     bool isHero();
     bool isTriggerMinion();    
-    bool isAura();
+    bool isAura();    
+    void setId(int value);
 
 private:
     void addAddonNeutral(Addon addon);

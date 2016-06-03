@@ -1853,6 +1853,7 @@ void MainWindow::test()
     planHandler->zonePlayAttack("AT_003",11,4);
 
     planHandler->newTurn(false, 2);
+    planHandler->enemyMinionZonePlayAdd("EX1_020", 5, 1);
     planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
@@ -2514,17 +2515,40 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Hide Track secrets, avoid draft
+//Option - plan transitions
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Jugar secreto
-//tag=CANT_BE_DAMAGED test  add protege todo a 1
+//Esbirros creados por secretos
+//Cambiar poder heroe
+//resize plan directo
+//Eliminar bug rana verde, matar esbirro cuabdo --- GameWatcher(6977): Player: TAG_CHANGE(ZONE)=SETASIDE -- Leokk --DONE
+//Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
+//21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
+//21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
+//Mejorar valid list performance
 
-//Seproduce entre el PLAY y el POWER
+//Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
+//El addon es de la fuente que lo robo, es aceptable
+
+//Habra trigger que dan vida en medio de un ataque y haran que aparezca addon verde y rojo, al dar vida y perderla por el ataque.
+//Ej:True silver/Ice armor, es aceptable
+
+//Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad.
+//Dificil de arreglar, se cambia el damage antes del health.
+//Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
+
+//Se produce entre el PLAY y el POWER
 //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
+//GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
 
 //Cambio Heroe (Zone)
 //D 12:57:15.3458590 ZoneChangeList.ProcessChanges() - processing index=0 change=powerTask=[power=[type=TAG_CHANGE entity=
 //[id=88 cardId=BRM_027h name=Ragnaros, Señor del Fuego] tag=LINKED_ENTITY value=64] complete=False]
 //entity=[name=Ragnaros, Señor del Fuego id=88 zone=PLAY zonePos=0 cardId=BRM_027h player=1] srcZoneTag=INVALID srcPos= dstZoneTag=INVALID dstPos=
+
+
+
+
 
 
 //SPECTATOR GAMES

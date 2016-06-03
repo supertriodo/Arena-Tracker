@@ -18,6 +18,13 @@ public:
 };
 
 
+class ArmorRemover
+{
+public:
+    int idAddon, idHero;
+};
+
+
 class Board
 {
 public:
@@ -50,6 +57,7 @@ private:
     int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements. Guarda ultimo trigger o power con obj
     Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons. Guarda ultimo trigger, power o fatigue
     qint64 lastPowerTime=0;
+    ArmorRemover lastArmorRemoverIds;//idAddon=-1 -->None      //Evita doble damage en heroe (armadura y damage)
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -70,23 +78,26 @@ private:
     void removeMinion(bool friendly, int id);
     void addTagChange(int id, bool friendly, QString tag, QString value);
     void stealMinion(bool friendly, int id, int pos);
-    MinionGraphicsItem *takeMinion(bool friendly, int id);
+    MinionGraphicsItem *takeMinion(bool friendly, int id, bool stolen=false);
     void addHero(bool friendly, QString code, int id);
     void removeHero(Board *board, bool friendly);
     void resetBoard(Board *board);
     void updateButtons();
     void loadViewBoard();
     void completeUI();
-    bool findArrowPoint(ArrowGraphicsItem *arrow, bool isFrom, int id, Board *board);
+    bool findAttackPoint(ArrowGraphicsItem *attack, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
     void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, QString tag, int number=1);
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number=1);
     void addHeroDeadToLastTurn(bool playerWon);
-    bool isLastPowerAddonValid();
+    bool isLastPowerAddonValid(QString tag, QString value, int idTarget, bool isHero, bool healing);
     bool isLastMinionAddedValid();
     bool isLastTriggerValid(QString code);    
-    bool areThereAuras(bool friendly);
+    bool areThereAuras(bool friendly);    
+    bool isAddonMinionValid(QString code);
+    bool isAddonHeroValid(QString code);
+    bool isAddonCommonValid(QString code);
 
 public:
     void setTransparency(Transparency value);
