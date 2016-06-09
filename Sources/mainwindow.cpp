@@ -511,12 +511,24 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionPosChange(int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionPosChange(int,int)),
             planHandler, SLOT(enemyMinionPosChange(int,int)));
-    connect(gameWatcher, SIGNAL(playerMinionTagChange(int,QString,QString)),
-            planHandler, SLOT(playerMinionTagChange(int,QString,QString)));
-    connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString)),
-            planHandler, SLOT(enemyMinionTagChange(int,QString,QString)));
+    connect(gameWatcher, SIGNAL(playerMinionTagChange(int,QString,QString,QString)),
+            planHandler, SLOT(playerMinionTagChange(int,QString,QString,QString)));
+    connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString,QString)),
+            planHandler, SLOT(enemyMinionTagChange(int,QString,QString,QString)));
     connect(gameWatcher, SIGNAL(zonePlayAttack(QString, int,int)),
             planHandler, SLOT(zonePlayAttack(QString, int,int)));
+    connect(gameWatcher, SIGNAL(playerSecretPlayed(int,QString)),
+            planHandler, SLOT(playerSecretPlayed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
+            planHandler, SLOT(enemySecretPlayed(int,SecretHero)));
+    connect(gameWatcher, SIGNAL(playerSecretRevealed(int,QString)),
+            planHandler, SLOT(playerSecretRevealed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
+            planHandler, SLOT(enemySecretRevealed(int,QString)));
+    connect(gameWatcher, SIGNAL(playerSecretStolen(int,QString)),
+            planHandler, SLOT(playerSecretStolen(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
+            planHandler, SLOT(enemySecretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(logTurn()),
@@ -537,8 +549,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
             secretsHandler, SLOT(secretPlayed(int,SecretHero)));
-    connect(gameWatcher, SIGNAL(enemySecretStealed(int,QString)),
-            secretsHandler, SLOT(secretStealed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
+            secretsHandler, SLOT(secretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed()),
@@ -1857,17 +1869,24 @@ void MainWindow::test()
     planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->zonePlayAttack("AT_003",12,11);
     planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
-    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(11, "", "DAMAGE", "1");
     planHandler->enemyCardObjPlayed("EX1_020", 4, 1);
     planHandler->setLastTriggerId("CS2_034", "TRIGGER", 134, -1);
-    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(1, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
-    planHandler->playerMinionTagChange(11, "DAMAGE", "1");
+    planHandler->playerMinionTagChange(1, "","DAMAGE", "1");
+//    planHandler->playerMinionTagChange(93, "BRM_027h", "LINKED_ENTITY", "11");
+    planHandler->enemySecretPlayed(6, mage);
+    planHandler->enemySecretPlayed(7, mage);
+    planHandler->enemySecretPlayed(8, hunter);
+    planHandler->enemySecretPlayed(9, paladin);
+    planHandler->enemySecretPlayed(10, hunter);
+
+    planHandler->newTurn(false, 3);
+    planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
+    planHandler->enemyCardObjPlayed("CS1_042", 3, 12);
+    planHandler->enemyCardObjPlayed("AT_003", 1, 12);
+    planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
+    planHandler->enemySecretRevealed(7, "EX1_020");
+    planHandler->playerSecretStolen(10, "CS1_042");
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2516,37 +2535,37 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets, avoid draft
 //Option - plan transitions
+//Log ordenado
+//Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Jugar secreto
+//+/- cambios vida max/atk
 //Esbirros creados por secretos
 //Cambiar poder heroe
-//resize plan directo
 //Eliminar bug rana verde, matar esbirro cuabdo --- GameWatcher(6977): Player: TAG_CHANGE(ZONE)=SETASIDE -- Leokk --DONE
 //Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
 //21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
-//Mejorar valid list performance
+//Mediv hp CS2_034_H1
+//Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
+//Quitar escudo addondamage
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable
 
+//Viejo ojosombrio incrementa su ATK al aparecer otros murlocs, Si los murlocs nuevos son TRIGGERED,
+//el addon sobre ojosombrio sera incorrecto. Es aceptable
+
 //Habra trigger que dan vida en medio de un ataque y haran que aparezca addon verde y rojo, al dar vida y perderla por el ataque.
-//Ej:True silver/Ice armor, es aceptable
+//Ej:True silver/Ice armor, es aceptable -- DONE
 
 //Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad.
 //Dificil de arreglar, se cambia el damage antes del health.
 //Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
+//No vale la pena arreglarlo con excepciones. GameWatcher(3941): Player: TAG_CHANGE(ZONE)=GRAVEYARD -- Campeￃﾳn de Ventormenta -- Id: 35
 
 //Se produce entre el PLAY y el POWER
 //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
 //GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
-
-//Cambio Heroe (Zone)
-//D 12:57:15.3458590 ZoneChangeList.ProcessChanges() - processing index=0 change=powerTask=[power=[type=TAG_CHANGE entity=
-//[id=88 cardId=BRM_027h name=Ragnaros, Señor del Fuego] tag=LINKED_ENTITY value=64] complete=False]
-//entity=[name=Ragnaros, Señor del Fuego id=88 zone=PLAY zonePos=0 cardId=BRM_027h player=1] srcZoneTag=INVALID srcPos= dstZoneTag=INVALID dstPos=
-
-
 
 
 

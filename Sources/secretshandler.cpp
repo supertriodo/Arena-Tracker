@@ -96,7 +96,7 @@ void SecretsHandler::clearSecretsAnimating()
 }
 
 
-void SecretsHandler::secretStealed(int id, QString code)
+void SecretsHandler::secretStolen(int id, QString code)
 {
     ActiveSecret activeSecret;
     activeSecret.id = id;

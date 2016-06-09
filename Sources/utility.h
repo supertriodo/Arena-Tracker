@@ -56,6 +56,9 @@
 #define LIGHTWARDEN "EX1_001"
 #define TRUESILVER_CHAMPION "CS2_097"
 #define GOREHOWL "EX1_411"
+#define LEOKK "NEW1_033"
+#define LOREWALKER_CHO "EX1_100"
+#define NERUBIAN_PROPHET "OG_138"
 
 
 using namespace cv;

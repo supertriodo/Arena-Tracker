@@ -462,11 +462,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(4);
         bool isPlayer = (player.toInt() == playerID);
 
-        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + "): " + value + " Id: " + id, numLine);
 
         if(tag == "CLASS")
         {
-            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Secret hero: " + value + " Id: " + id, numLine);
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Secret hero = " + value +
+                        " -- Id: " + id, numLine);
             if(value == "MAGE")         secretHero = mage;
             else if(value == "HUNTER")  secretHero = hunter;
             else if(value == "PALADIN") secretHero = paladin;
@@ -475,10 +475,13 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                 tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE")
+                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
+                tag == "LINKED_ENTITY")
         {
-            if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
-            else            emit enemyMinionTagChange(id.toInt(), tag, value);
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
+                        " -- Id: " + id, numLine);
+            if(isPlayer)    emit playerMinionTagChange(id.toInt(), "", tag, value);
+            else            emit enemyMinionTagChange(id.toInt(), "", tag, value);
         }
     }
 
@@ -489,28 +492,30 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-        "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "Entity=\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
         "tag=(\\w+) value=(\\w+)"
         ), match))
     {
         QString name = match->captured(1);
         QString id = match->captured(2);
-        QString zone = match->captured(3);
+        QString cardId = match->captured(3);
         QString player = match->captured(4);
         QString tag = match->captured(5);
         QString value = match->captured(6);
         bool isPlayer = (player.toInt() == playerID);
 
-        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value + " -- " + name, numLine);
 
         if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                 tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE")
+                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
+                tag == "LINKED_ENTITY")
         {
-            if(isPlayer)    emit playerMinionTagChange(id.toInt(), tag, value);
-            else            emit enemyMinionTagChange(id.toInt(), tag, value);
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value +
+                        " -- " + name + " -- Id: " + id, numLine);
+            if(isPlayer)    emit playerMinionTagChange(id.toInt(), cardId, tag, value);
+            else            emit enemyMinionTagChange(id.toInt(), cardId, tag, value);
         }
     }
 
@@ -533,7 +538,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
-        emit pDebug("Trigger(" + blockType + ") desconocido: " + id1, numLine);
+        emit pDebug("Trigger(" + blockType + ") desconocido. Id: " + id1, numLine);
         emit specialCardTrigger("", blockType, id1.toInt(), -1);
     }
 
@@ -568,7 +573,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
-        emit pDebug("Trigger(" + blockType + "): " + name1 + (name2.isEmpty()?"":" --> " + name2), numLine);
+        emit pDebug("Trigger(" + blockType + "): " + name1 + " (" + cardId1 + ")" +
+                    (name2.isEmpty()?"":" --> " + name2 + " (" + cardId2 + ")"), numLine);
         emit specialCardTrigger(cardId1, blockType, id1.toInt(), id2.isEmpty()?-1:id2.toInt());
         if(isHeroPower(cardId1) && isPlayerTurn && player1.toInt()==playerID)     emit playerHeroPower();
 
@@ -742,8 +748,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         QString zoneTo = match->captured(7);
 
 
+        //Jugador juega secreto
+        if(zoneTo == "FRIENDLY SECRET" && zoneFrom != "OPPOSING SECRET")
+        {
+            emit pDebug("Player: Secret played: " + name + " ID: " + id, numLine);
+            emit playerSecretPlayed(id.toInt(), cardId);
+        }
+
         //Enemigo roba carta conocida
-        if(zoneTo == "OPPOSING HAND")
+        else if(zoneTo == "OPPOSING HAND")
         {
             if(zoneFrom == "OPPOSING DECK")
             {
@@ -802,11 +815,36 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
 
-        //Enemigo roba secreto (kezan mystic)
-        if(zoneFrom == "FRIENDLY SECRET" && zoneTo == "OPPOSING SECRET")
+        if(zoneFrom == "FRIENDLY SECRET")
         {
-            emit pDebug("Enemy: Secret stolen: " + name + " ID: " + id, numLine);
-            emit enemySecretStealed(id.toInt(), cardId);
+            //Enemigo roba secreto (kezan mystic)
+            if(zoneTo == "OPPOSING SECRET")
+            {
+                emit pDebug("Enemy: Secret stolen: " + name + " ID: " + id, numLine);
+                emit enemySecretStolen(id.toInt(), cardId);
+            }
+            //Jugador secreto desvelado
+            else
+            {
+                emit pDebug("Player: Secret revealed: " + name, numLine);
+                emit playerSecretRevealed(id.toInt(), cardId);
+            }
+        }
+
+        else if(zoneFrom == "OPPOSING SECRET")
+        {
+            //Jugador roba secreto (kezan mystic)
+            if(zoneTo == "FRIENDLY SECRET")
+            {
+                emit pDebug("Player: Secret stolen: " + name + " ID: " + id, numLine);
+                emit playerSecretStolen(id.toInt(), cardId);
+            }
+            //Enemigo secreto desvelado
+            else
+            {
+                emit pDebug("Enemy: Secret revealed: " + name, numLine);
+                emit enemySecretRevealed(id.toInt(), cardId);
+            }
         }
 
         //Enemigo juega carta conocida
@@ -834,13 +872,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
 
             emit enemyCardPlayed(id.toInt(), cardId);
-        }
-
-        //Enemigo secreto desvelado
-        else if(zoneFrom == "OPPOSING SECRET")
-        {
-            emit pDebug("Enemy: Secret revealed: " + name, numLine);
-            emit enemySecretRevealed(id.toInt(), cardId);
         }
 
         //Enemigo roba carta overdraw

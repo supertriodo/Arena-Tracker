@@ -29,7 +29,7 @@ protected:
     int origAttack, origHealth;
     int attack, health, id;
     int damage;
-    bool friendly, exausted, playerTurn, dead, hero;
+    bool friendly, exausted, playerTurn, dead, hero, toBeDestroyed;
     bool shield, taunt, charge, stealth, frozen, windfury;
     QList<Addon> addons;
     bool addonsStacked;

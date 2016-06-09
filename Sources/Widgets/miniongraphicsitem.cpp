@@ -19,6 +19,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->charge = false;
     this->exausted = true;
     this->dead = false;
+    this->toBeDestroyed = false;
     this->playerTurn = playerTurn;
     this->addonsStacked = false;
     this->triggerMinion = false;
@@ -29,6 +30,9 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     {
         processTagChange(value.toString(), "1");
     }
+
+    //Leokk AURA
+    if(code == LEOKK)   processTagChange("AURA", "1");
 }
 
 
@@ -51,6 +55,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->charge = copy->charge;
     this->exausted = copy->exausted;
     this->dead = copy->dead;
+    this->toBeDestroyed = copy->toBeDestroyed;
     this->playerTurn = copy->playerTurn;
     this->addonsStacked = copy->addonsStacked;
     this->setPos(copy->pos());
@@ -190,6 +195,17 @@ void MinionGraphicsItem::addAddonDamageLife(Addon addon)
         }
     }
 
+    //Evitar addon si existe del elemento contrario
+    Addon::AddonType opType = (addon.type == Addon::AddonDamage)?Addon::AddonLife:Addon::AddonDamage;
+    for(int i=0; i<addons.count(); i++)
+    {
+        if(addons[i].code == addon.code && addons[i].type == opType)
+        {
+            qDebug()<<"Avoid addon."<<addon.code<<"Oposite found in minion.";
+            return;
+        }
+    }
+
     //Incluir addon
     if(addonsStacked)
     {
@@ -270,7 +286,8 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 
     //Evita addons provocado por cambios despues de morir(en el log los minion vuelven a damage 0 y estado original justo antes de desaparecer de la zona)
     //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
-    if(this->damage >= this->health || this->zone !="PLAY")
+    //Despues de morir por TO_BE_DESTROYED, vuelve a 0.
+    if(this->damage >= this->health || this->zone !="PLAY" || this->toBeDestroyed)
     {
         this->dead = true;
     }
@@ -282,10 +299,10 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
         if(newDamage < this->damage)    healing = true;
         this->damage = newDamage;
     }
-    if(tag == "TO_BE_DESTROYED")
+    if(tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
     {
-        //Despues de morir por TO_BE_DESTROYED, vuelve a 0.
-        if(value=="0")  this->dead = true;
+        this->toBeDestroyed = true;
+        return healing;
     }
     else if(tag == "ATK")
     {

@@ -20,12 +20,66 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     :MinionGraphicsItem(copy)
 {
     this->armor = copy->armor;
+
+    foreach(SecretIcon secretIcon, copy->secretsList)
+    {
+        this->secretsList.append(secretIcon);
+    }
 }
 
 
 QRectF HeroGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
+}
+
+
+SecretHero HeroGraphicsItem::getSecretHero(int id)
+{
+    foreach(SecretIcon secretIcon, secretsList)
+    {
+        if(secretIcon.id == id)     return secretIcon.secretHero;
+    }
+    return unknown;
+}
+
+
+void HeroGraphicsItem::addSecret(int id, SecretHero secretHero)
+{
+    SecretIcon secretIcon;
+    secretIcon.id = id;
+    secretIcon.secretHero = secretHero;
+    secretIcon.code = "";
+    secretsList.append(secretIcon);
+    update();
+}
+
+
+void HeroGraphicsItem::removeSecret(int id)
+{
+    for(int i=0; i<secretsList.count(); i++)
+    {
+        if(secretsList[i].id == id)
+        {
+            secretsList.removeAt(i);
+            update();
+            return;
+        }
+    }
+}
+
+
+void HeroGraphicsItem::showSecret(int id, QString code)
+{
+    for(int i=0; i<secretsList.count(); i++)
+    {
+        if(secretsList[i].id == id)
+        {
+            secretsList[i].code = code;
+            update();
+            return;
+        }
+    }
 }
 
 
@@ -51,10 +105,13 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED(option);
 
-    QRectF target = QRectF( -80, -92, 160, 184);
-    QRectF source(34, 112, 240, 276);
-    QPixmap pixmap(Utility::hscardsPath() + "/" + code + ".png");
-    painter->drawPixmap(target, pixmap, source);
+    if(code.startsWith("HERO_"))
+    {
+        QRectF target = QRectF( -80, -92, 160, 184);
+        QRectF source(34, 112, 240, 276);
+        QPixmap pixmap(Utility::hscardsPath() + "/" + code + ".png");
+        painter->drawPixmap(target, pixmap, source);
+    }
 
 
     //Glow
@@ -124,6 +181,63 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
     }
 
+    //Secrets
+    for(int i=0; i<this->secretsList.count() && i<5; i++)
+    {
+        int moveX, moveY;
+        switch(i)
+        {
+            case 0:
+                moveX = 0;
+                moveY = -75;
+                break;
+            case 1:
+                moveX = -40;
+                moveY = -55;
+                break;
+            case 2:
+                moveX = 40;
+                moveY = -55;
+                break;
+            case 3:
+                moveX = -60;
+                moveY = -20;
+                break;
+            case 4:
+                moveX = 60;
+                moveY = -20;
+                break;
+        }
+
+        QPixmap pixmap;
+        SecretHero secretHero = this->secretsList[i].secretHero;
+        switch(secretHero)
+        {
+            case paladin:
+                pixmap = QPixmap(":Images/secretPaladin.png");
+                break;
+            case hunter:
+                pixmap = QPixmap(":Images/secretHunter.png");
+                break;
+            case mage:
+                pixmap = QPixmap(":Images/secretMage.png");
+                break;
+            default:
+                qDebug()<<"SECRET HERO UNKNOWN";
+                break;
+        }
+
+        painter->drawPixmap(moveX-20, moveY-20, 40, 40, pixmap);
+
+        QString secretCode = secretsList[i].code;
+        if(!secretCode.isEmpty())
+        {
+            painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + secretCode + ".png")));
+            painter->setBrushOrigin(QPointF(100+moveX,202+moveY));
+            painter->drawEllipse(QPointF(moveX,moveY), 16, 16);
+        }
+    }
+
     //Addons
     for(int i=0; i<this->addons.count() && i<4; i++)
     {
@@ -133,7 +247,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         {
             case 0:
                 moveX = 0;
-                moveY = 30;
+                moveY = 40;
                 break;
             case 3:
                 moveX = 0;
@@ -141,11 +255,11 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                 break;
             case 1:
                 moveX = -30;
-                moveY = -5;
+                moveY = 0;
                 break;
             case 2:
                 moveX = 30;
-                moveY = -5;
+                moveY = 0;
                 break;
         }
 

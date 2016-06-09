@@ -279,11 +279,11 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
     if(hero != NULL)
     {
         emit pDebug("Trying to add a hero with an existing one. Force remove old one.", Warning);
-        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->removeItem(hero);
         removeHero(nowBoard, friendly);
     }
 
     hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+
     if(viewBoard == nowBoard)
     {
         ui->planGraphicsView->scene()->addItem(hero);
@@ -306,6 +306,7 @@ void PlanHandler::removeHero(Board *board, bool friendly)
     }
     else
     {
+        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->removeItem(hero);
         delete hero;
 
         if(friendly)    board->playerHero = NULL;
@@ -429,15 +430,29 @@ bool PlanHandler::isLastMinionAddedValid()
 }
 
 
-void PlanHandler::playerMinionTagChange(int id, QString tag, QString value)
+void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QString value)
 {
-    addTagChange(id, true, tag, value);
+    if(tag == "LINKED_ENTITY" && !code.isEmpty() &&
+        nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == value.toInt())
+    {
+        addAddonToLastTurn(code, id, nowBoard->playerHero->getId(), Addon::AddonNeutral);
+        removeHero(nowBoard, true);
+        addHero(true, code, id);
+    }
+    else    addTagChange(id, true, tag, value);
 }
 
 
-void PlanHandler::enemyMinionTagChange(int id, QString tag, QString value)
+void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QString value)
 {
-    addTagChange(id, false, tag, value);
+    if(tag == "LINKED_ENTITY" && !code.isEmpty() &&
+        nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == value.toInt())
+    {
+        addAddonToLastTurn(code, id, nowBoard->enemyHero->getId(), Addon::AddonNeutral);
+        removeHero(nowBoard, false);
+        addHero(false, code, id);
+    }
+    else    addTagChange(id, false, tag, value);
 }
 
 
@@ -484,11 +499,11 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     }
 
 
-    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, isHero, healing))
+    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, tagChange.friendly, isHero, healing))
     {
         if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage, tag);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
 
             //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
             if(isHero && tag == "ARMOR" && value == "0")
@@ -504,7 +519,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
         }
     }
 }
@@ -547,11 +562,11 @@ void PlanHandler::checkPendingTagChanges()
 
     const QString tag = tagChange.tag;
     const QString value = tagChange.value;
-    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, isHero, healing))
+    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, tagChange.friendly, isHero, healing))
     {
         if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage, tag);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
 
             //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
             if(isHero && tag == "ARMOR" && value == "0")
@@ -567,28 +582,20 @@ void PlanHandler::checkPendingTagChanges()
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral, tag);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
         }
     }
 }
 
 
-bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget, bool isHero, bool healing)
+bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget, bool friendly, bool isHero, bool healing)
 {
     if(this->lastPowerAddon.id == -1)   return false;
-
-    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
-    if((now - this->lastPowerTime) > 6000)
-    {
-        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid OLD.");
-        this->lastPowerAddon.id = -1;
-        return false;
-    }
 
     //Evita addons al perder un arma y cambiar el atk a 0
     if(isHero && tag == "ATK" && value == "0")
     {
-        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid ATK/HEALTH with auras.");
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid ATK to 0 when losing a weapon.");
         return false;
     }
 
@@ -606,6 +613,43 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
     {
         emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid duplicate ARMOR+DAMAGE addons on hero.");
         this->lastArmorRemoverIds.idAddon = -1;
+        return false;
+    }
+
+    //Evita addons por cambio de ATK/HEALTH provocados por AURAS
+    if(!isHero && (tag == "ATK" || tag == "HEALTH") && areThereAuras(friendly))
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid ATK/HEALTH with auras.");
+        return false;
+    }
+
+    //Evita ENCHANTMENT
+    if(Utility::getCardAtribute(this->lastPowerAddon.code, "type").toString() == "ENCHANTMENT")
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid ENCHANTMENT.");
+        return false;
+    }
+
+    //Evita forbidden addons minion
+    if(!isHero && !isAddonMinionValid(this->lastPowerAddon.code))
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid invalid minion code.");
+        return false;
+    }
+
+    //Evita forbidden addons heroe
+    if(isHero && !isAddonHeroValid(this->lastPowerAddon.code))
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid invalid hero code.");
+        return false;
+    }
+
+    //Evita old TRIGGERS
+    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    if((now - this->lastPowerTime) > 6000)
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid OLD.");
+        this->lastPowerAddon.id = -1;
         return false;
     }
 
@@ -725,6 +769,8 @@ void PlanHandler::enemyWeaponZonePlayAdd(QString code, int id)
 
 void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 {
+    setLastTriggerId("", "", -1, -1);
+
     if(turnBoards.empty())  return;
 
     Board *board = turnBoards.last();
@@ -736,19 +782,19 @@ void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 
 void PlanHandler::playerCardObjPlayed(QString code, int id1, int id2)
 {
-    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral, "");
+    if(nowBoard->playerTurn)    addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
 void PlanHandler::enemyCardObjPlayed(QString code, int id1, int id2)
 {
-    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral, "");
+    if(!nowBoard->playerTurn)   addAddonToLastTurn(code, id1, id2, Addon::AddonNeutral);
     else                        emit pDebug("Minion addon registered in the wrong turn.");
 }
 
 
-void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, QString tag, int number)
+void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number)
 {
     if(turnBoards.empty())  return;
 
@@ -769,11 +815,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
         if(pos != -1)
         {
             MinionGraphicsItem *targetMinion = minionsList->at(pos);
-            if((tag == "ATK" || tag == "HEALTH") && areThereAuras(true))
-            {
-                emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH with auras.");
-            }
-            else    addAddon(targetMinion, code, id1, type, number);
+            addAddon(targetMinion, code, id1, type, number);
         }
         else
         {
@@ -782,11 +824,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
             if(pos != -1)
             {
                 MinionGraphicsItem *targetMinion = minionsList->at(pos);
-                if((tag == "ATK" || tag == "HEALTH") && areThereAuras(false))
-                {
-                    emit pDebug("Addon(" + QString::number(id2) + ")-->" + code + " Avoid ATK/HEALTH with auras.");
-                }
-                else    addAddon(targetMinion, code, id1, type, number);
+                addAddon(targetMinion, code, id1, type, number);
             }
             else
             {
@@ -797,7 +835,6 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
 }
 
 
-//Leokk no aparece en el Json asi que al crearlo no se le pondra AURA, no sera detectado por esta funcion
 bool PlanHandler::areThereAuras(bool friendly)
 {
     //Check now board
@@ -822,29 +859,9 @@ bool PlanHandler::areThereAuras(bool friendly)
 
 void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number)
 {
-    if(code == "FATIGUE")
-    {
-        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id, type, number);
-    }
-    else if(Utility::getCardAtribute(code, "type").toString() == "ENCHANTMENT")
-    {
-        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code + " Avoid ENCHANTMENT.");
-    }
-    else if(!minion->isHero() && !isAddonMinionValid(code))
-    {
-        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code + " Avoid invalid minion code.");
-    }
-    else if(minion->isHero() && !isAddonHeroValid(code))
-    {
-        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code + " Avoid invalid hero code.");
-    }
-    else
-    {
-        emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
-        minion->addAddon(code, id, type, number);
-        emit checkCardImage(code, false);
-    }
+    emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
+    minion->addAddon(code, id, type, number);
+    if(code != "FATIGUE")   emit checkCardImage(code, false);
 }
 
 
@@ -858,6 +875,8 @@ bool PlanHandler::isAddonCommonValid(QString code)
     forbiddenAddonList.append(FROTHING_BERSEKER);
     forbiddenAddonList.append(LIGHTWARDEN);
     forbiddenAddonList.append(GOREHOWL);
+    forbiddenAddonList.append(LOREWALKER_CHO);
+    forbiddenAddonList.append(NERUBIAN_PROPHET);
     return !forbiddenAddonList.contains(code);
 }
 
@@ -879,6 +898,70 @@ bool PlanHandler::isAddonMinionValid(QString code)
     forbiddenAddonList.append(EYE_FOR_AN_EYE);
     forbiddenAddonList.append(TRUESILVER_CHAMPION);
     return !forbiddenAddonList.contains(code) && isAddonCommonValid(code);
+}
+
+
+SecretHero PlanHandler::cardclassToSecrethero(CardClass cardClass)
+{
+    if(cardClass==MAGE)         return mage;
+    else if(cardClass==HUNTER)  return hunter;
+    else if(cardClass==PALADIN) return paladin;
+    else                        return unknown;
+}
+
+
+void PlanHandler::playerSecretPlayed(int id, QString code)
+{
+    if(nowBoard->playerHero == NULL) return;
+    DeckCard deckCard(code);
+    nowBoard->playerHero->addSecret(id, cardclassToSecrethero(deckCard.getCardClass()));
+}
+
+
+void PlanHandler::enemySecretPlayed(int id, SecretHero secretHero)
+{
+    if(nowBoard->enemyHero == NULL) return;
+    nowBoard->enemyHero->addSecret(id, secretHero);
+}
+
+
+void PlanHandler::playerSecretRevealed(int id, QString code)
+{
+    if(nowBoard->playerHero == NULL) return;
+    nowBoard->playerHero->removeSecret(id);
+
+    if(turnBoards.empty())  return;
+    Board *board = turnBoards.last();
+    board->playerHero->showSecret(id, code);
+}
+
+
+void PlanHandler::enemySecretRevealed(int id, QString code)
+{
+    if(nowBoard->enemyHero == NULL) return;
+    nowBoard->enemyHero->removeSecret(id);
+
+    if(turnBoards.empty())  return;
+    Board *board = turnBoards.last();
+    board->enemyHero->showSecret(id, code);
+}
+
+
+void PlanHandler::playerSecretStolen(int id, QString code)
+{
+    if(nowBoard->enemyHero == NULL) return;
+    SecretHero secretHero = nowBoard->enemyHero->getSecretHero(id);
+    enemySecretRevealed(id, code);
+    if(nowBoard->playerHero != NULL)    nowBoard->playerHero->addSecret(id, secretHero);
+}
+
+
+void PlanHandler::enemySecretStolen(int id, QString code)
+{
+    if(nowBoard->playerHero == NULL) return;
+    SecretHero secretHero = nowBoard->playerHero->getSecretHero(id);
+    playerSecretRevealed(id, code);
+    enemySecretPlayed(id, secretHero);
 }
 
 
@@ -1037,9 +1120,7 @@ void PlanHandler::reset()
     this->viewBoard = nowBoard;
     this->firstStoredTurn = 0;
     this->nowBoard->playerTurn = true;
-    this->lastTriggerId = -1;
-    this->lastPowerAddon.id = -1;
-    this->lastArmorRemoverIds.idAddon = -1;
+    setLastTriggerId("", "", -1, -1);
     updateButtons();
 
     resetBoard(nowBoard);
@@ -1151,6 +1232,14 @@ void PlanHandler::unlockPlanInterface()
 
     this->inGame = false;
     updateTransparency();
+
+    //Temporal
+    if(!turnBoards.isEmpty())
+    {
+        viewBoard = turnBoards.first();
+        loadViewBoard();
+        updateButtons();
+    }
 }
 
 

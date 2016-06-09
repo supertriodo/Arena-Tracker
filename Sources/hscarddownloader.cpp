@@ -18,7 +18,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero)
 {
     foreach(DownloadingCard downCard, gettingWebCards.values())
     {
-        if(downCard.code == code)
+        if(downCard.code == code && downCard.isHero == isHero)
         {
             emit pDebug("Skip download: " + code + " - Already downloading.");
             return;

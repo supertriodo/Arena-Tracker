@@ -87,17 +87,18 @@ private:
     void completeUI();
     bool findAttackPoint(ArrowGraphicsItem *attack, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
-    void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, QString tag, int number=1);
+    void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number=1);
     void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number=1);
     void addHeroDeadToLastTurn(bool playerWon);
-    bool isLastPowerAddonValid(QString tag, QString value, int idTarget, bool isHero, bool healing);
+    bool isLastPowerAddonValid(QString tag, QString value, int idTarget, bool friendly, bool isHero, bool healing);
     bool isLastMinionAddedValid();
     bool isLastTriggerValid(QString code);    
     bool areThereAuras(bool friendly);    
     bool isAddonMinionValid(QString code);
     bool isAddonHeroValid(QString code);
-    bool isAddonCommonValid(QString code);
+    bool isAddonCommonValid(QString code);    
+    SecretHero cardclassToSecrethero(CardClass cardClass);
 
 public:
     void setTransparency(Transparency value);
@@ -123,8 +124,8 @@ public slots:
     void enemyMinionZonePlayRemove(int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
-    void playerMinionTagChange(int id, QString tag, QString value);
-    void enemyMinionTagChange(int id, QString tag, QString value);
+    void playerMinionTagChange(int id, QString code, QString tag, QString value);
+    void enemyMinionTagChange(int id, QString code, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
     void playerWeaponZonePlayAdd(QString code, int id);
@@ -138,6 +139,12 @@ public slots:
     void unlockPlanInterface();
     void resetLastPowerAddon();
     void endGame(bool playerWon);
+    void playerSecretPlayed(int id, QString code);
+    void enemySecretPlayed(int id, SecretHero secretHero);
+    void playerSecretRevealed(int id, QString code);
+    void enemySecretRevealed(int id, QString code);
+    void playerSecretStolen(int id, QString code);
+    void enemySecretStolen(int id, QString code);
 
 private slots:
     void checkPendingTagChanges();

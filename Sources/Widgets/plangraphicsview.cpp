@@ -74,5 +74,12 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
 
-    fitInViewSmooth();
+    QRectF boardRect = this->scene()->sceneRect();
+    float zoomWidth = this->width()/boardRect.width();
+    float zoomHeight = this->height()/boardRect.height();
+    zoom = targetZoom = std::min(zoomWidth, zoomHeight);
+
+    QMatrix mtx;
+    mtx.scale(zoom, zoom);
+    this->setMatrix(mtx);
 }
