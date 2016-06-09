@@ -28,7 +28,7 @@ void ArrowGraphicsItem::setEnd(bool isFrom, MinionGraphicsItem *item)
         from = item;
         this->friendly = item->isFriendly();
 
-        if(item->isHero())
+        if(item->isHero() && arrowType==minionAttack)
         {
             this->arrowType = heroAttack;
             this->setZValue(3);

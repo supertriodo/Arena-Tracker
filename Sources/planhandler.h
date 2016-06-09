@@ -67,6 +67,7 @@ private:
     void updateTransparency();
     void updateZoneSpots(bool friendly, Board *board=NULL);
     QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
+    HeroGraphicsItem *getHero(bool friendly, Board *board=NULL);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
     MinionGraphicsItem *findMinion(bool friendly, int id);
     void addMinion(bool friendly, QString code, int id, int pos);

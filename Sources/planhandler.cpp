@@ -113,7 +113,6 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     QList<MinionGraphicsItem *> *minionsList = getMinionList(friendly, board);
     int pos = findMinionPos(minionsList, idCreator);
 
-
     //El padre es amigo
     if(pos != -1)
     {
@@ -126,6 +125,7 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     {
         QList<MinionGraphicsItem *> *opMinionsList = getMinionList(!friendly, board);
         pos = findMinionPos(opMinionsList, idCreator);
+
         //El padre es enemigo
         if(pos != -1)
         {
@@ -134,11 +134,24 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
             minionsList->append(triggerMinion);
             addReinforceToLastTurn(creatorMinion, triggerMinion, board);
         }
-        //El padre no esta en el board
         else
         {
-            emit pDebug("Triggered minion creator is not on the board. Ids: " +
-                        QString::number(idCreator) + " --> " + QString::number(minion->getId()), Warning);
+            HeroGraphicsItem *hero = getHero(friendly, board);
+
+            //El padre es un secreto amigo
+            if(hero!=NULL && hero->isYourSecret(idCreator))
+            {
+                triggerMinion = new MinionGraphicsItem(minion, true);
+                minionsList->append(triggerMinion);
+                addReinforceToLastTurn(hero, triggerMinion, board);
+            }
+
+            //El padre no esta en el board
+            else
+            {
+                emit pDebug("Triggered minion creator is not on the board. Ids: " +
+                            QString::number(idCreator) + " --> " + QString::number(minion->getId()));
+            }
         }
     }
 
@@ -340,6 +353,14 @@ QList<MinionGraphicsItem *> * PlanHandler::getMinionList(bool friendly, Board *b
     if(board == NULL)   board = nowBoard;
     if(friendly)    return &board->playerMinions;
     else            return &board->enemyMinions;
+}
+
+
+HeroGraphicsItem * PlanHandler::getHero(bool friendly, Board *board)
+{
+    if(board == NULL)   board = nowBoard;
+    if(friendly)    return board->playerHero;
+    else            return board->enemyHero;
 }
 
 
@@ -646,7 +667,7 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
 
     //Evita old TRIGGERS
     qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
-    if((now - this->lastPowerTime) > 6000)
+    if((now - this->lastPowerTime) > 8000)
     {
         emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid OLD.");
         this->lastPowerAddon.id = -1;

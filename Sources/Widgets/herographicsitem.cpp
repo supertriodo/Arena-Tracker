@@ -34,6 +34,16 @@ QRectF HeroGraphicsItem::boundingRect() const
 }
 
 
+bool HeroGraphicsItem::isYourSecret(int id)
+{
+    foreach(SecretIcon secretIcon, secretsList)
+    {
+        if(secretIcon.id == id)     return true;
+    }
+    return false;
+}
+
+
 SecretHero HeroGraphicsItem::getSecretHero(int id)
 {
     foreach(SecretIcon secretIcon, secretsList)
