@@ -5,6 +5,7 @@
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
 #include "Widgets/arrowgraphicsitem.h"
+#include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
 
@@ -32,6 +33,8 @@ public:
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
     QList<ArrowGraphicsItem *> arrows;
+    QList<QString> playerHandList;
+    QList<HandCard> enemyHandList;
     bool playerTurn;
     int numTurn = 0;//0 --> nowBoard
 };
@@ -69,7 +72,7 @@ private:
     QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
     HeroGraphicsItem *getHero(bool friendly, Board *board=NULL);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
-    MinionGraphicsItem *findMinion(bool friendly, int id);
+    MinionGraphicsItem *findMinion(bool friendly, int id, Board *board=NULL);
     void addMinion(bool friendly, QString code, int id, int pos);
     void addMinion(bool friendly, MinionGraphicsItem *minion, int pos);
     void addMinionTriggered(bool friendly, QString code, int id, int pos);
@@ -99,7 +102,8 @@ private:
     bool isAddonMinionValid(QString code);
     bool isAddonHeroValid(QString code);
     bool isAddonCommonValid(QString code);    
-    SecretHero cardclassToSecrethero(CardClass cardClass);
+    SecretHero cardclassToSecrethero(CardClass cardClass);    
+    void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);
 
 public:
     void setTransparency(Transparency value);

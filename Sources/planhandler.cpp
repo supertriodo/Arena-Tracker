@@ -374,9 +374,9 @@ int PlanHandler::findMinionPos(QList<MinionGraphicsItem *> * minionsList, int id
 }
 
 
-MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id)
+MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id, Board *board)
 {
-    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
+    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly, board);
     int pos = findMinionPos(minionsList, id);
     if(pos == -1)   return NULL;
     else            return minionsList->at(pos);
@@ -488,25 +488,26 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     bool healing = false;
     bool isDead = true;
     bool isHero = true;
-    MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
+    MinionGraphicsItem * minion = findMinion(friendly, id);
     if(minion != NULL)
     {
         emit pDebug("Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = minion->processTagChange(tagChange.tag, tagChange.value);
+        checkAtkHealthChange(minion, friendly, tag, value);
+        healing = minion->processTagChange(tag, value);
         isDead = minion->isDead();
         isHero = false;
     }
-    else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
+    else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->playerHero->processTagChange(tag, value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
-    else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
+    else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == id)
     {
         emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        healing = nowBoard->enemyHero->processTagChange(tag, value);
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
@@ -520,17 +521,18 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     }
 
 
-    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, tagChange.friendly, isHero, healing))
+    if(!isDead && isLastPowerAddonValid(tag, value, id, friendly, isHero, healing))
     {
-        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
+        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT" ||
+            (tag == "DIVINE_SHIELD" && value == "0"))
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, healing?Addon::AddonLife:Addon::AddonDamage);
 
             //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
             if(isHero && tag == "ARMOR" && value == "0")
             {
                 this->lastArmorRemoverIds.idAddon = this->lastPowerAddon.id;
-                this->lastArmorRemoverIds.idHero = tagChange.id;
+                this->lastArmorRemoverIds.idHero = id;
                 emit pDebug("Last armor remover set.");
             }
         }
@@ -540,7 +542,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, Addon::AddonNeutral);
         }
     }
 }
@@ -553,6 +555,11 @@ void PlanHandler::checkPendingTagChanges()
     if(pendingTagChanges.isEmpty()) return;
 
     TagChange tagChange = pendingTagChanges.takeFirst();
+    const int id = tagChange.id;
+    const bool friendly = tagChange.friendly;
+    const QString tag = tagChange.tag;
+    const QString value = tagChange.value;
+
     bool healing = false;
     //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
     //Ejemplo Jefe de banda de diablillos ataca y mata a otro minion, el jefe produce un trigger que apareceria en el esbirro muerto.
@@ -560,40 +567,44 @@ void PlanHandler::checkPendingTagChanges()
     //Evita addons al perder un arma y cambiar el atk a 0
     //Ejemplo ataque con arma a grubashi y gasta el arma.
     bool isHero = true;
-    MinionGraphicsItem * minion = findMinion(tagChange.friendly, tagChange.id);
+    MinionGraphicsItem * minion = findMinion(friendly, id);
     if(minion != NULL)
     {
-        healing = minion->processTagChange(tagChange.tag, tagChange.value);
+        emit pDebug("Pending Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        checkAtkHealthChange(minion, friendly, tag, value);
+        healing = minion->processTagChange(tag, value);
         isDead = minion->isDead();
         isHero = false;
     }
-    else if(tagChange.friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == tagChange.id)
+    else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
     {
-        healing = nowBoard->playerHero->processTagChange(tagChange.tag, tagChange.value);
+        emit pDebug("Pending Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        healing = nowBoard->playerHero->processTagChange(tag, value);
         isDead = nowBoard->playerHero->isDead();
         isHero = true;
     }
-    else if(!tagChange.friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == tagChange.id)
+    else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == id)
     {
-        healing = nowBoard->enemyHero->processTagChange(tagChange.tag, tagChange.value);
+        emit pDebug("Pending Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        healing = nowBoard->enemyHero->processTagChange(tag, value);
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
     else    return;
 
-    const QString tag = tagChange.tag;
-    const QString value = tagChange.value;
-    if(!isDead && isLastPowerAddonValid(tag, value, tagChange.id, tagChange.friendly, isHero, healing))
+
+    if(!isDead && isLastPowerAddonValid(tag, value, id, friendly, isHero, healing))
     {
-        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
+        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT" ||
+            (tag == "DIVINE_SHIELD" && value == "0"))
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, healing?Addon::AddonLife:Addon::AddonDamage);
 
             //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
             if(isHero && tag == "ARMOR" && value == "0")
             {
                 this->lastArmorRemoverIds.idAddon = this->lastPowerAddon.id;
-                this->lastArmorRemoverIds.idHero = tagChange.id;
+                this->lastArmorRemoverIds.idHero = id;
                 emit pDebug("Last armor remover set.");
             }
         }
@@ -603,7 +614,7 @@ void PlanHandler::checkPendingTagChanges()
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
         {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, Addon::AddonNeutral);
         }
     }
 }
@@ -675,6 +686,39 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
     }
 
     return true;
+}
+
+
+void PlanHandler::checkAtkHealthChange(MinionGraphicsItem * minion, bool friendly, QString tag, QString value)
+{
+    if(minion == NULL || minion->isDead())  return;
+
+    if(tag == "ATK")
+    {
+        if(turnBoards.empty())  return;
+
+        MinionGraphicsItem * minionLastTurn = findMinion(friendly, minion->getId(), turnBoards.last());
+        if(minionLastTurn == NULL)  return;
+
+        int attack = minion->getAttack();
+        int newAttack = value.toInt();
+
+        if(newAttack > attack)          minionLastTurn->setChangeAttack(MinionGraphicsItem::ChangePositive);
+        else if(newAttack < attack)     minionLastTurn->setChangeAttack(MinionGraphicsItem::ChangeNegative);
+    }
+    else if(tag == "HEALTH")
+    {
+        if(turnBoards.empty())  return;
+
+        MinionGraphicsItem * minionLastTurn = findMinion(friendly, minion->getId(), turnBoards.last());
+        if(minionLastTurn == NULL)  return;
+
+        int health = minion->getHealth();
+        int newHealth = value.toInt();
+
+        if(newHealth > health)          minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangePositive);
+        else if(newHealth < health)     minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangeNegative);
+    }
 }
 
 

@@ -1879,8 +1879,10 @@ void MainWindow::test()
     planHandler->enemySecretPlayed(8, hunter);
     planHandler->enemySecretPlayed(9, paladin);
     planHandler->enemySecretPlayed(10, hunter);
+    planHandler->playerMinionZonePlayRemove(1);
+    planHandler->playerMinionZonePlayRemove(3);
 
-    planHandler->newTurn(false, 3);
+    planHandler->newTurn(true, 3);
     planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
     planHandler->enemyCardObjPlayed("CS1_042", 3, 12);
     planHandler->enemyCardObjPlayed("AT_003", 1, 12);
@@ -2539,15 +2541,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //+/- cambios vida max/atk
-//Esbirros creados por secretos
 //Cambiar poder heroe
-//Eliminar bug rana verde, matar esbirro cuabdo --- GameWatcher(6977): Player: TAG_CHANGE(ZONE)=SETASIDE -- Leokk --DONE
 //Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
 //21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//Quitar escudo addondamage
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable
@@ -2573,7 +2572,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //SPECTATOR GAMES
 //Si empiezan desde el principio todo correcto.
 //Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
-//  Problemas: En PlanHandler el heroe muerto puede ser incorrecto.
+//  Problemas: En PlanHandler el heroe muerto siempre es el jugador
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS

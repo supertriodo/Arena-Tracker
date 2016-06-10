@@ -18,8 +18,10 @@ public:
 
 class MinionGraphicsItem : public QGraphicsItem
 {
-//Constructor
 public:
+    enum ValueChange { ChangePositive, ChangeNegative, ChangeNone };
+
+//Constructor
     MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
     MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMinion=false);
 
@@ -36,6 +38,7 @@ protected:
     bool triggerMinion;
     bool aura;
     QString zone;
+    ValueChange changeAttack, changeHealth;
 
 public:
     static const int WIDTH = 142;
@@ -61,6 +64,10 @@ public:
     bool isTriggerMinion();    
     bool isAura();    
     void setId(int value);
+    void setChangeAttack(ValueChange value);
+    void setChangeHealth(ValueChange value);
+    int getAttack();
+    int getHealth();
 
 private:
     void addAddonNeutral(Addon addon);

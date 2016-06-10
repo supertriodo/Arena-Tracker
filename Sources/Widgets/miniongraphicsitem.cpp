@@ -25,6 +25,8 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->triggerMinion = false;
     this->aura = false;
     this->zone = "PLAY";
+    this->changeAttack = ChangeNone;
+    this->changeHealth = ChangeNone;
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -62,6 +64,8 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->triggerMinion = triggerMinion;
     this->aura = copy->aura;
     this->zone = "PLAY";
+    this->changeAttack = copy->changeAttack;
+    this->changeHealth = copy->changeHealth;
 
     foreach(Addon addon, copy->addons)
     {
@@ -79,6 +83,18 @@ int MinionGraphicsItem::getId()
 QString MinionGraphicsItem::getCode()
 {
     return this->code;
+}
+
+
+int MinionGraphicsItem::getAttack()
+{
+    return attack;
+}
+
+
+int MinionGraphicsItem::getHealth()
+{
+    return health;
 }
 
 
@@ -146,6 +162,26 @@ void MinionGraphicsItem::setId(int value)
 }
 
 
+void MinionGraphicsItem::setChangeAttack(ValueChange value)
+{
+    if(changeAttack == ChangeNone)
+    {
+        changeAttack = value;
+        update();
+    }
+}
+
+
+void MinionGraphicsItem::setChangeHealth(ValueChange value)
+{
+    if(changeHealth == ChangeNone)
+    {
+        changeHealth = value;
+        update();
+    }
+}
+
+
 void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, int number)
 {
     Addon addon;
@@ -160,7 +196,7 @@ void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, i
 //Paso por valor para almacenar una copia de addon
 //Solo un addon por id fuente, sino un hechizo con objetivo que causa damage pondria 2 addons (objetivo y damage)
 //Muestra multiples addons life/damage.
-//Solo muestra un neutral por id, si no hay ningun damage/life del mismo code.
+//Solo muestra un neutral por id, si no hay ningun damage/life del mismo id.
 void MinionGraphicsItem::addAddon(Addon addon)
 {
     if(addon.type == Addon::AddonNeutral)   addAddonNeutral(addon);
@@ -173,7 +209,6 @@ void MinionGraphicsItem::addAddonNeutral(Addon addon)
     foreach(Addon storedAddon, this->addons)
     {
         if(storedAddon.id == addon.id)  return;
-        if(storedAddon.code == addon.code && storedAddon.type != Addon::AddonNeutral)  return;
     }
     this->addons.append(addon);
     update();
@@ -187,7 +222,7 @@ void MinionGraphicsItem::addAddonDamageLife(Addon addon)
     {
         for(int i=0; i<addons.count(); i++)
         {
-            if(addons[i].code == addon.code && addons[i].type == Addon::AddonNeutral)
+            if(addons[i].id == addon.id && addons[i].type == Addon::AddonNeutral)
             {
                 addons.removeAt(i);
                 i--;
@@ -436,7 +471,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Dead
     if(this->dead)
     {
-        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
+        painter->drawPixmap(-23, 25, 46, 50, QPixmap(":Images/bgMinionDead.png"));
     }
 
     //Addons
@@ -501,5 +536,45 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
             path.addText(moveX - textWide/2, moveY + textHigh/4, font, QString::number(addons[i].number));
             painter->drawPath(path);
         }
+    }
+
+    //Change ATK/HEALTH
+    if(changeAttack != ChangeNone)
+    {
+        QString symbol;
+        if(changeAttack == ChangePositive)
+        {
+            symbol = "+";
+            painter->setBrush(GREEN);
+        }
+        else
+        {
+            symbol = "-";
+            painter->setBrush(RED);
+        }
+
+        textWide = fm.width(symbol);
+        path = QPainterPath();
+        path.addText(-35 - textWide/2, 20 + textHigh/4, font, symbol);
+        painter->drawPath(path);
+    }
+    if(changeHealth != ChangeNone)
+    {
+        QString symbol;
+        if(changeHealth == ChangePositive)
+        {
+            symbol = "+";
+            painter->setBrush(GREEN);
+        }
+        else
+        {
+            symbol = "-";
+            painter->setBrush(RED);
+        }
+
+        textWide = fm.width(symbol);
+        path = QPainterPath();
+        path.addText(34 - textWide/2, 20 + textHigh/4, font, symbol);
+        painter->drawPath(path);
     }
 }
