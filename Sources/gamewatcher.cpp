@@ -766,6 +766,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
             emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
         }
+
+        //Jugador roba carta conocida
+        else if(zoneTo == "FRIENDLY HAND")
+        {
+            emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
+            emit playerCardDraw(id.toInt(), cardId);
+        }
+
         //Enemigo, nuevo minion en PLAY
         else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
         {
@@ -775,6 +783,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneFrom.isEmpty())     emit enemyMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
+
         //Jugador, nuevo minion en PLAY
         else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
         {
@@ -784,12 +793,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneFrom.isEmpty())     emit playerMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
         }
+
         //Enemigo, carga heroe
         else if(zoneTo == "OPPOSING PLAY (Hero)")
         {
             emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name, numLine);
             emit enemyHeroZonePlayAdd(cardId, id.toInt());
         }
+
         //Jugador, carga heroe
         else if(zoneTo == "FRIENDLY PLAY (Hero)")
         {
@@ -801,18 +812,22 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
+
         //Enemigo, equipa arma
         else if(zoneTo == "OPPOSING PLAY (Weapon)" && zoneFrom != "OPPOSING GRAVEYARD")//Al reemplazar un arma por otra, la antigua va, vuelve y va a graveyard.
         {
             emit pDebug("Enemy: Weapon moved to OPPOSING PLAY (Weapon): " + name, numLine);
             emit enemyWeaponZonePlayAdd(cardId, id.toInt());
         }
+
         //Jugador, equipa arma
         else if(zoneTo == "FRIENDLY PLAY (Weapon)" && zoneFrom != "FRIENDLY GRAVEYARD")
         {
             emit pDebug("Player: Weapon moved to FRIENDLY PLAY (Weapon): " + name, numLine);
             emit playerWeaponZonePlayAdd(cardId, id.toInt());
         }
+
+
 
 
         if(zoneFrom == "FRIENDLY SECRET")
@@ -921,6 +936,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit pDebug("Player: Starting card returned: " + name, numLine);
                 emit playerReturnToDeck(cardId);
             }
+
+            emit playerCardPlayed(id.toInt(), cardId);
         }
 
         //Enemigo esbirro muere

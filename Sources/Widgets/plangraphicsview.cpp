@@ -1,5 +1,6 @@
 #include "plangraphicsview.h"
 #include "herographicsitem.h"
+#include "cardgraphicsitem.h"
 #include <QtWidgets>
 
 PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
@@ -12,6 +13,12 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
     this->setScene(graphicsScene);
     this->reset();
     this->updateView(0);
+}
+
+
+int PlanGraphicsView::getSceneViewWidth()
+{
+    return width()/targetZoom;
 }
 
 
@@ -37,9 +44,10 @@ void PlanGraphicsView::updateView(int minionsZone)
     const int hMinion = MinionGraphicsItem::HEIGHT-5;//184
     const int wHero = HeroGraphicsItem::WIDTH;//160
     const int hHero = HeroGraphicsItem::HEIGHT;//184
+    const int hCards = 155;
 
-    this->scene()->setSceneRect(std::min(-wHero/2, -wMinion/2*minionsZone), -hMinion-hHero,
-                                std::max(wHero, wMinion*minionsZone), (hMinion+hHero)*2);
+    this->scene()->setSceneRect(std::min(-wHero/2, -wMinion/2*minionsZone), -hMinion-hHero-hCards,
+                                std::max(wHero, wMinion*minionsZone), (hMinion+hHero+hCards)*2);
     fitInViewSmooth();
 }
 
@@ -82,4 +90,6 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
     QMatrix mtx;
     mtx.scale(zoom, zoom);
     this->setMatrix(mtx);
+
+    emit sizeChanged();
 }

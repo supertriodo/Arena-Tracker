@@ -5,6 +5,7 @@
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
 #include "Widgets/arrowgraphicsitem.h"
+#include "Widgets/cardgraphicsitem.h"
 #include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
@@ -33,7 +34,7 @@ public:
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
     QList<ArrowGraphicsItem *> arrows;
-    QList<QString> playerHandList;
+    QList<CardGraphicsItem *> playerHandList;
     QList<HandCard> enemyHandList;
     bool playerTurn;
     int numTurn = 0;//0 --> nowBoard
@@ -68,7 +69,7 @@ private:
 //Metodos:
 private:
     void updateTransparency();
-    void updateZoneSpots(bool friendly, Board *board=NULL);
+    void updateMinionZoneSpots(bool friendly, Board *board=NULL);
     QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
     HeroGraphicsItem *getHero(bool friendly, Board *board=NULL);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
@@ -103,7 +104,9 @@ private:
     bool isAddonHeroValid(QString code);
     bool isAddonCommonValid(QString code);    
     SecretHero cardclassToSecrethero(CardClass cardClass);    
-    void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);
+    void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);    
+    void updateCardZoneSpots(bool friendly, Board *board=NULL);
+    int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -117,6 +120,9 @@ signals:
     void needMainWindowFade(bool fade);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
+
+private slots:
+    void updateViewCardZoneSpots();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
@@ -150,6 +156,8 @@ public slots:
     void enemySecretRevealed(int id, QString code);
     void playerSecretStolen(int id, QString code);
     void enemySecretStolen(int id, QString code);
+    void playerCardDraw(int id, QString code);
+    void playerCardPlayed(int id, QString code);
 
 private slots:
     void checkPendingTagChanges();

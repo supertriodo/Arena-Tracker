@@ -26,10 +26,14 @@ public:
     void updateView(int minionsZone);
     void reset();
     void removeAll();
+    int getSceneViewWidth();
 
 //Override events
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+
+signals:
+    void sizeChanged();
 
 private slots:
     void progressiveZoom();

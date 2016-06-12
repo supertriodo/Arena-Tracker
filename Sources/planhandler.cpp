@@ -38,6 +38,8 @@ void PlanHandler::completeUI()
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
             this, SLOT(showNextTurn()));
+    connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
+            this, SLOT(updateViewCardZoneSpots()));
 }
 
 
@@ -70,7 +72,7 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     minionsList->insert(pos, minion);
-    updateZoneSpots(friendly);
+    updateMinionZoneSpots(friendly);
 
     if(viewBoard == nowBoard)
     {
@@ -99,6 +101,7 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
     addMinion(friendly, minion, pos);
     if(this->lastTriggerId!=-1)     copyMinionToLastTurn(friendly, minion);
+    else                                emit pDebug("Triggered minion creator not set.");
     emit checkCardImage(code, false);
 }
 
@@ -106,6 +109,8 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
 void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion, int idCreator)
 {
     if(turnBoards.empty())  return;
+
+    emit pDebug("Triggered minion. Ids: " + QString::number(idCreator) + " --> " + QString::number(minion->getId()));
 
     MinionGraphicsItem *triggerMinion = NULL;
     if(idCreator == -1)     idCreator = this->lastTriggerId;
@@ -158,7 +163,7 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
     //Update Board
     if(triggerMinion != NULL)
     {
-        updateZoneSpots(friendly, board);
+        updateMinionZoneSpots(friendly, board);
 
         if(viewBoard == board)
         {
@@ -211,7 +216,7 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id, bool stolen)
     if(pos == -1)   return NULL;
 
     MinionGraphicsItem* minion = minionsList->takeAt(pos);
-    updateZoneSpots(friendly);
+    updateMinionZoneSpots(friendly);
 
     if(viewBoard == nowBoard)
     {
@@ -328,7 +333,7 @@ void PlanHandler::removeHero(Board *board, bool friendly)
 }
 
 
-void PlanHandler::updateZoneSpots(bool friendly, Board *board)
+void PlanHandler::updateMinionZoneSpots(bool friendly, Board *board)
 {
     if(board == NULL)   board = nowBoard;
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly, board);
@@ -429,7 +434,7 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
         {
             emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos));
             minionsList->move(oldPos, pos);
-            updateZoneSpots(friendly);
+            updateMinionZoneSpots(friendly);
         }
     }
     this->lastMinionAdded = NULL;
@@ -537,7 +542,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
             }
         }
         else if(
-                   tag == "ATK" || tag == "HEALTH" ||
+                   tag == "ATK" || tag == "HEALTH" || tag == "ZONE" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
@@ -609,7 +614,7 @@ void PlanHandler::checkPendingTagChanges()
             }
         }
         else if(
-                   tag == "ATK" || tag == "HEALTH" ||
+                   tag == "ATK" || tag == "HEALTH" || tag == "ZONE" ||
                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                    tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
                )
@@ -635,6 +640,13 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
     if(tag == "FROZEN" && value == "0")
     {
         emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid FROZEN lost in end turn.");
+        return false;
+    }
+
+    //Evita minions a ZONE PLAY
+    if(tag == "ZONE" && value == "PLAY")
+    {
+        emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid minion moved to PLAY.");
         return false;
     }
 
@@ -674,7 +686,7 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
     {
         emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid invalid hero code.");
         return false;
-    }
+    }    
 
     //Evita old TRIGGERS
     qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -1030,6 +1042,103 @@ void PlanHandler::enemySecretStolen(int id, QString code)
 }
 
 
+void PlanHandler::updateViewCardZoneSpots()
+{
+    updateCardZoneSpots(true, viewBoard);
+}
+
+
+void PlanHandler::updateCardZoneSpots(bool friendly, Board *board)
+{
+    if(board == NULL)   board = nowBoard;
+    QList<CardGraphicsItem *> *playerHandList = &board->playerHandList;
+    for(int i=0; i<playerHandList->count(); i++)
+    {
+       playerHandList->at(i)->setZonePos(friendly, i, playerHandList->count(), ui->planGraphicsView->getSceneViewWidth());
+    }
+}
+
+
+int PlanHandler::findCardPos(QList<CardGraphicsItem *> * cardsList, int id)
+{
+    for(int i=0; i<cardsList->count(); i++)
+    {
+        if(cardsList->at(i)->getId()==id) return i;
+    }
+    return -1;
+}
+
+
+//MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id, Board *board)
+//{
+//    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly, board);
+//    int pos = findMinionPos(minionsList, id);
+//    if(pos == -1)   return NULL;
+//    else            return minionsList->at(pos);
+//}
+
+
+void PlanHandler::playerCardDraw(int id, QString code)
+{
+    CardGraphicsItem *card = new CardGraphicsItem(code, id);
+    nowBoard->playerHandList.append(card);
+    updateCardZoneSpots(true);
+
+    if(viewBoard == nowBoard)
+    {
+        ui->planGraphicsView->scene()->addItem(card);
+//        ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+    }
+    emit checkCardImage(code, false);
+}
+
+
+//void PlanHandler::enemyCardDraw(int id, QString code)
+//{
+
+//}
+
+
+void PlanHandler::playerCardPlayed(int id, QString code)
+{
+    int pos = findCardPos(&nowBoard->playerHandList, id);
+
+    if(pos == -1)
+    {
+        emit pDebug("Player card played not found: " + QString::number(id) + " -- " + code);
+        return;
+    }
+
+    CardGraphicsItem *card = nowBoard->playerHandList.takeAt(pos);
+    updateCardZoneSpots(true);
+
+    if(viewBoard == nowBoard)
+    {
+        ui->planGraphicsView->scene()->removeItem(card);
+//        ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+    }
+
+    delete card;
+
+    //Set played last board
+    if(turnBoards.empty())  return;
+    Board *board = turnBoards.last();
+    pos = findCardPos(&board->playerHandList, id);
+    if(pos == -1)
+    {
+        emit pDebug("Player card played not found on last turn: " + QString::number(id) + " -- " + code);
+        return;
+    }
+    board->playerHandList.at(pos)->setPlayed();
+}
+
+
+//void PlanHandler::enemyCardPlayed(int id, QString code)
+//{
+
+//}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     //Update nowBoard
@@ -1075,6 +1184,11 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
         board->enemyMinions.append(new MinionGraphicsItem(minion));
     }
 
+    foreach(CardGraphicsItem * card, nowBoard->playerHandList)
+    {
+        board->playerHandList.append(new CardGraphicsItem(card));
+    }
+
     turnBoards.append(board);
 
 
@@ -1094,7 +1208,7 @@ void PlanHandler::resetLastPowerAddon()
 
 void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int idTarget)
 {
-    if(blockType == "TRIGGER")
+    if(blockType == "TRIGGER" || blockType == "JOUST")
     {
         if(isLastTriggerValid(code))    this->lastTriggerId = id;
         else                            emit pDebug("Trigger code is in the forbidden creator list: " + code, Warning);
@@ -1131,6 +1245,8 @@ bool PlanHandler::isLastTriggerValid(QString code)
     forbiddenCreatorList.append(KNIFE_JUGGLER);
     forbiddenCreatorList.append(ADDLED_GRIZZLY);
     forbiddenCreatorList.append(DARKSHIRE_COUNCILMAN);
+    forbiddenCreatorList.append(FROTHING_BERSEKER);
+    forbiddenCreatorList.append(THE_SKELETON_KNIGHT);
     return !forbiddenCreatorList.contains(code);
 }
 
@@ -1144,6 +1260,10 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
     foreach(MinionGraphicsItem * minion, viewBoard->enemyMinions)
     {
         minion->checkDownloadedCode(code);
+    }
+    foreach(CardGraphicsItem * card, viewBoard->playerHandList)
+    {
+        card->checkDownloadedCode(code);
     }
 
     if(viewBoard->playerHero != NULL)   viewBoard->playerHero->checkDownloadedCode(code);
@@ -1169,6 +1289,12 @@ void PlanHandler::resetBoard(Board *board)
     {
         ArrowGraphicsItem* arrow = board->arrows.takeFirst();
         delete arrow;
+    }
+
+    while(!board->playerHandList.empty())
+    {
+        CardGraphicsItem* card = board->playerHandList.takeFirst();
+        delete card;
     }
 
     if(board->playerHero != NULL)  removeHero(board, true);
@@ -1257,6 +1383,7 @@ void PlanHandler::showPrevTurn()
 void PlanHandler::loadViewBoard()
 {
     ui->planGraphicsView->removeAll();
+    updateViewCardZoneSpots();
 
     ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
     ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
@@ -1274,6 +1401,11 @@ void PlanHandler::loadViewBoard()
     foreach(ArrowGraphicsItem *arrow, viewBoard->arrows)
     {
         ui->planGraphicsView->scene()->addItem(arrow);
+    }
+
+    foreach(CardGraphicsItem *card, viewBoard->playerHandList)
+    {
+        ui->planGraphicsView->scene()->addItem(card);
     }
 
     ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));

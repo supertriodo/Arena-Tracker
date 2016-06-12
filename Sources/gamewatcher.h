@@ -104,7 +104,9 @@ signals:
     void playerReturnToDeck(QString code);
     void enemyKnownCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
+    void playerCardDraw(int id, QString code);
     void enemyCardPlayed(int id, QString code="");
+    void playerCardPlayed(int id, QString code);
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, SecretHero hero);
     void playerSecretPlayed(int id, QString code);

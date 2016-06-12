@@ -529,6 +529,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerSecretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
             planHandler, SLOT(enemySecretStolen(int,QString)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(int,QString)),
+            planHandler, SLOT(playerCardDraw(int,QString)));
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString)),
+            planHandler, SLOT(playerCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(logTurn()),
@@ -1881,6 +1885,8 @@ void MainWindow::test()
     planHandler->enemySecretPlayed(10, hunter);
     planHandler->playerMinionZonePlayRemove(1);
     planHandler->playerMinionZonePlayRemove(3);
+    planHandler->playerCardDraw(22, "AT_003");
+    planHandler->playerCardDraw(23, "CS1_042");
 
     planHandler->newTurn(true, 3);
     planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
@@ -1889,6 +1895,16 @@ void MainWindow::test()
     planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
     planHandler->enemySecretRevealed(7, "EX1_020");
     planHandler->playerSecretStolen(10, "CS1_042");
+    planHandler->playerCardPlayed(22, "AT_003");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardDraw(21, "EX1_020");
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2540,13 +2556,13 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Log ordenado
 //Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//+/- cambios vida max/atk
 //Cambiar poder heroe
 //Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
 //21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
+//EX1_554 Trampa culebras - forbidden common
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable

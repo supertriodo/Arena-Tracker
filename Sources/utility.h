@@ -59,6 +59,7 @@
 #define LEOKK "NEW1_033"
 #define LOREWALKER_CHO "EX1_100"
 #define NERUBIAN_PROPHET "OG_138"
+#define THE_SKELETON_KNIGHT "AT_128"
 
 
 using namespace cv;

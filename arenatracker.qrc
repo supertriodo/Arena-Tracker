@@ -113,5 +113,7 @@
         <file>Images/bgFatigueAddon.png</file>
         <file>Images/bgMinionAddonDamage.png</file>
         <file>Images/bgMinionAddonLife.png</file>
+        <file>Images/bgCardGlow.png</file>
+        <file>Images/bgCardUnknown.png</file>
     </qresource>
 </RCC>
