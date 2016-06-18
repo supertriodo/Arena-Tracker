@@ -1898,8 +1898,8 @@ void MainWindow::test()
     planHandler->playerCardDraw(24, "AT_002",2);
     planHandler->enemyCardDraw(22, "AT_003", "",2);
     planHandler->enemyCardDraw(23, "CS1_042", "",2);
-    planHandler->enemyCardDraw(21, "EX1_020", "",2);
-    planHandler->enemyCardDraw(21, "EX1_020", "",2);
+    planHandler->enemyCardDraw(21, "", "",2);
+    planHandler->enemyCardDraw(21, "", "",32);
     planHandler->enemyCardDraw(24, "AT_002", "",2);
 
     planHandler->newTurn(true, 3);

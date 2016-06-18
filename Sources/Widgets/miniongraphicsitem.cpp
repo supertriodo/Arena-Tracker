@@ -471,7 +471,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Dead
     if(this->dead)
     {
-        painter->drawPixmap(-23, 25, 46, 50, QPixmap(":Images/bgMinionDead.png"));
+        painter->drawPixmap(-23, 25, QPixmap(":Images/bgMinionDead.png"));
     }
 
     //Addons

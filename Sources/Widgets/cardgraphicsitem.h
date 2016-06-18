@@ -10,13 +10,13 @@ class CardGraphicsItem : public QGraphicsItem
 {
 //Constructor
 public:
-    CardGraphicsItem(int id, QString code, QString createdByCode);
+    CardGraphicsItem(int id, QString code, QString createdByCode, int turn);
     CardGraphicsItem(CardGraphicsItem *copy);
 
 //Variables
 private:
     QString code, createdByCode;
-    int id;
+    int id, turn;
     bool played, discard, draw;
     int heightShow;
 

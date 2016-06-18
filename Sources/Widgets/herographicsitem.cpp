@@ -188,7 +188,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     //Dead
     if(this->dead)
     {
-        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgMinionDead.png"));
+        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
     }
 
     //Secrets

@@ -4,13 +4,14 @@
 #include <QtWidgets>
 
 
-CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode)
+CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn)
 {
     this->code = code;
     this->createdByCode = createdByCode;
     this->id = id;
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
+    this->turn = turn;
 }
 
 
@@ -22,6 +23,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->discard = copy->discard;
     this->draw = copy->draw;
     this->heightShow = copy->heightShow;
+    this->turn = turn;
     this->setPos(copy->pos());
 }
 
@@ -95,9 +97,36 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     else if(discard)    painter->drawPixmap(-WIDTH/2, -heightShow/2-CARD_LIFT, QPixmap(":/Images/bgCardDiscard.png"), 0, 0, 190, heightShow+CARD_LIFT);
     if(draw)            painter->drawPixmap(-WIDTH/2, -heightShow/2, QPixmap(":/Images/bgCardDraw.png"), 0, 0, 190, heightShow);
 
-    if(code.isEmpty())      painter->drawPixmap(-81, -heightShow/2+15+((played||discard)&&!draw?-CARD_LIFT:0),
+    if(code.isEmpty())
+    {
+        painter->drawPixmap(-81, -heightShow/2+15+((played||discard)&&!draw?-CARD_LIFT:0),
                                                 QPixmap(":/Images/bgCardUnknown.png"), 0, 0, 168,
                                                 heightShow-15+((played||discard)&&!draw?CARD_LIFT:0));
+
+        //Turn
+        QFont font("Belwe Bd BT");
+        font.setPixelSize(40);
+        font.setBold(true);
+        font.setKerning(true);
+    #ifdef Q_OS_WIN
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+    #else
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+    #endif
+        painter->setFont(font);
+        QPen pen(BLACK);
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->setBrush(WHITE);
+        QString text = "T"+QString::number((this->turn+1)/2);
+        QFontMetrics fm(font);
+        int textWide = fm.width(text);
+        int textHigh = fm.height();
+        QPainterPath path;
+        path.addText(-35 - textWide/2, -heightShow/2 + 71 + textHigh/4, font, text);
+        painter->drawPath(path);
+    }
+
     else                    painter->drawPixmap(-WIDTH/2, -heightShow/2+((played||discard)&&!draw?-CARD_LIFT:0),
                                                 QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
                                                 heightShow+((played||discard)&&!draw?CARD_LIFT:0));

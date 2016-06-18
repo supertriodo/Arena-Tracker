@@ -1107,7 +1107,7 @@ void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int
 
 void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
 {
-    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode);
+    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn);
     getHandList(friendly)->append(card);
     updateCardZoneSpots(friendly);
 
