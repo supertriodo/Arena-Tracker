@@ -324,7 +324,6 @@ void PlanHandler::removeHero(Board *board, bool friendly)
     }
     else
     {
-        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->removeItem(hero);
         delete hero;
 
         if(friendly)    board->playerHero = NULL;
@@ -1058,10 +1057,10 @@ void PlanHandler::updateCardZoneSpots(bool friendly, Board *board)
 {
     if(board == NULL)   board = nowBoard;
     QList<CardGraphicsItem *> *handList = getHandList(friendly, board);
+    int viewWidth = ui->planGraphicsView->getSceneViewWidth();
+    int cardHeightShow = ui->planGraphicsView->getCardsViewHeight();
     for(int i=0; i<handList->count(); i++)
     {
-        int viewWidth = ui->planGraphicsView->getSceneViewWidth();
-        int cardHeightShow = ui->planGraphicsView->getCardsViewHeight();
         handList->at(i)->setZonePos(friendly, i, handList->count(), viewWidth, cardHeightShow);
     }
 }
@@ -1122,7 +1121,8 @@ void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdB
     if(board->numTurn == turn)
     {
         CardGraphicsItem *drawCard = new CardGraphicsItem(card);
-        drawCard->setDraw();
+        //Evitamos mostrar cartas robadas en el turno 1 pq el mulligan da problemas
+        if(turn != 1)   drawCard->setDraw();
         getHandList(friendly, board)->append(drawCard);
         updateCardZoneSpots(friendly, board);
         if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
@@ -1203,6 +1203,7 @@ void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
 void PlanHandler::lastEnemyHandCardIsCoin()
 {
     nowBoard->enemyHandList.last()->setCode(THE_COIN);
+    revealEnemyCardPrevTurns(nowBoard->enemyHandList.last()->getId(), THE_COIN);
 }
 
 

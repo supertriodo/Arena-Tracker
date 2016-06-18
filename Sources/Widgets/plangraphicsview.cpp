@@ -32,7 +32,6 @@ int PlanGraphicsView::getCardsViewHeight()
 
 void PlanGraphicsView::reset()
 {
-    this->zoom = this->targetZoom = 0;
     removeAll();
 }
 

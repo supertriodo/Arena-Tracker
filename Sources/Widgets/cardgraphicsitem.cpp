@@ -94,7 +94,11 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     if(played)          painter->drawPixmap(-WIDTH/2, -heightShow/2-CARD_LIFT, QPixmap(":/Images/bgCardGlow.png"), 0, 0, 190, heightShow+CARD_LIFT);
     else if(discard)    painter->drawPixmap(-WIDTH/2, -heightShow/2-CARD_LIFT, QPixmap(":/Images/bgCardDiscard.png"), 0, 0, 190, heightShow+CARD_LIFT);
     if(draw)            painter->drawPixmap(-WIDTH/2, -heightShow/2, QPixmap(":/Images/bgCardDraw.png"), 0, 0, 190, heightShow);
-    painter->drawPixmap(-WIDTH/2, -heightShow/2+((played||discard)&&!draw?-CARD_LIFT:0),
-                        QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
-                        heightShow+((played||discard)&&!draw?CARD_LIFT:0));
+
+    if(code.isEmpty())      painter->drawPixmap(-81, -heightShow/2+15+((played||discard)&&!draw?-CARD_LIFT:0),
+                                                QPixmap(":/Images/bgCardUnknown.png"), 0, 0, 168,
+                                                heightShow-15+((played||discard)&&!draw?CARD_LIFT:0));
+    else                    painter->drawPixmap(-WIDTH/2, -heightShow/2+((played||discard)&&!draw?-CARD_LIFT:0),
+                                                QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
+                                                heightShow+((played||discard)&&!draw?CARD_LIFT:0));
 }
