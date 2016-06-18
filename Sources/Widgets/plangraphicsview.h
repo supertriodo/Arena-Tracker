@@ -27,6 +27,7 @@ public:
     void reset();
     void removeAll();
     int getSceneViewWidth();
+    int getCardsViewHeight();
 
 //Override events
 protected:

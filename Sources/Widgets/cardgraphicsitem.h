@@ -3,19 +3,22 @@
 
 #include <QGraphicsItem>
 
+#define CARD_LIFT 10
+
 
 class CardGraphicsItem : public QGraphicsItem
 {
 //Constructor
 public:
-    CardGraphicsItem(QString code, int id);
+    CardGraphicsItem(int id, QString code, QString createdByCode);
     CardGraphicsItem(CardGraphicsItem *copy);
 
 //Variables
 private:
-    QString code;
+    QString code, createdByCode;
     int id;
-    bool played;
+    bool played, discard, draw;
+    int heightShow;
 
 public:
     static const int WIDTH = 182;
@@ -25,10 +28,13 @@ public:
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
-    void setZonePos(bool friendly, int pos, int cardsZone, int viewWidth);
+    void setZonePos(bool friendly, int pos, int cardsZone, int viewWidth, int cardHeightShow);
     int getId();
     void setPlayed();
     void checkDownloadedCode(QString code);
+    void setCode(QString code);
+    void setDiscard();
+    void setDraw();
 };
 
 #endif // CARDGRAPHICSITEM_H

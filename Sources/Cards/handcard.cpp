@@ -6,6 +6,7 @@ HandCard::HandCard(QString code) : DeckCard(code)
 {
     id = turn = 0;
     special = false;
+    createdByCode = "";
 }
 
 

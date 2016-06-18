@@ -35,7 +35,7 @@ public:
     HeroGraphicsItem * enemyHero = NULL;
     QList<ArrowGraphicsItem *> arrows;
     QList<CardGraphicsItem *> playerHandList;
-    QList<HandCard> enemyHandList;
+    QList<CardGraphicsItem *> enemyHandList;
     bool playerTurn;
     int numTurn = 0;//0 --> nowBoard
 };
@@ -107,6 +107,11 @@ private:
     void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);    
     void updateCardZoneSpots(bool friendly, Board *board=NULL);
     int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);
+    QList<CardGraphicsItem *> *getHandList(bool friendly, Board *board=NULL);
+    CardGraphicsItem *findCard(bool friendly, int id, Board *board=NULL);
+    void cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn);
+    void cardPlayed(bool friendly, int id, QString code, bool discard);
+    void revealEnemyCardPrevTurns(int id, QString code);
 
 public:
     void setTransparency(Transparency value);
@@ -156,8 +161,11 @@ public slots:
     void enemySecretRevealed(int id, QString code);
     void playerSecretStolen(int id, QString code);
     void enemySecretStolen(int id, QString code);
-    void playerCardDraw(int id, QString code);
-    void playerCardPlayed(int id, QString code);
+    void playerCardDraw(int id, QString code, int turn);
+    void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
+    void playerCardPlayed(int id, QString code, bool discard);
+    void enemyCardPlayed(int id, QString code, bool discard);
+    void lastEnemyHandCardIsCoin();
 
 private slots:
     void checkPendingTagChanges();

@@ -22,6 +22,14 @@ int PlanGraphicsView::getSceneViewWidth()
 }
 
 
+int PlanGraphicsView::getCardsViewHeight()
+{
+    const int hMinion = MinionGraphicsItem::HEIGHT-5;//184
+    const int hHero = HeroGraphicsItem::HEIGHT;//184
+    return (height()/targetZoom - hMinion*2 -hHero*2)/2;
+}
+
+
 void PlanGraphicsView::reset()
 {
     this->zoom = this->targetZoom = 0;

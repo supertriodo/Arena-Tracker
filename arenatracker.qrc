@@ -115,5 +115,7 @@
         <file>Images/bgMinionAddonLife.png</file>
         <file>Images/bgCardGlow.png</file>
         <file>Images/bgCardUnknown.png</file>
+        <file>Images/bgCardDiscard.png</file>
+        <file>Images/bgCardDraw.png</file>
     </qresource>
 </RCC>

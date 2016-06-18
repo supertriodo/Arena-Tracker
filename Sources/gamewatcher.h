@@ -77,7 +77,7 @@ private:
     void processPowerMulligan(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
-    void advanceTurn(bool playerDraw);
+    bool advanceTurn(bool playerDraw);
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);
@@ -104,9 +104,9 @@ signals:
     void playerReturnToDeck(QString code);
     void enemyKnownCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
-    void playerCardDraw(int id, QString code);
-    void enemyCardPlayed(int id, QString code="");
-    void playerCardPlayed(int id, QString code);
+    void playerCardToHand(int id, QString code, int turn);
+    void enemyCardPlayed(int id, QString code="", bool discard=false);
+    void playerCardPlayed(int id, QString code, bool discard=false);
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, SecretHero hero);
     void playerSecretPlayed(int id, QString code);

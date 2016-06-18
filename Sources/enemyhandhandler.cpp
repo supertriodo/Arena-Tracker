@@ -94,6 +94,11 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     {
         handCard.setCreatedByCode(this->lastCreatedByCode);
         emit checkCardImage(this->lastCreatedByCode);
+        emit enemyCardDraw(id, code, this->lastCreatedByCode, turn);
+    }
+    else
+    {
+        emit enemyCardDraw(id, code, "", turn);
     }
 
     handCard.draw();

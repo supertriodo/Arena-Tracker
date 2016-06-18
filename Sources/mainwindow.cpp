@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createCardDownloader();
     createPlanHandler();
-    createEnemyHandHandler();
+    createEnemyHandHandler();//-->PlanHandler
     createEnemyDeckHandler();//-->EnemyHandHandler
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->DeckHandler
@@ -357,6 +357,8 @@ void MainWindow::createEnemyHandHandler()
             this, SLOT(checkCardImage(QString)));
     connect(enemyHandHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
+    connect(enemyHandHandler, SIGNAL(enemyCardDraw(int,QString,QString,int)),
+            planHandler, SLOT(enemyCardDraw(int,QString,QString,int)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -456,7 +458,7 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(leaveArena()),
             deckHandler, SLOT(leaveArena()));
 
-    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
+    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
@@ -472,7 +474,7 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
     //Se llama desde enemyDeckHandler->enemyCardPlayed()
-//    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString)),
+//    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
 //            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
@@ -529,10 +531,14 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerSecretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
             planHandler, SLOT(enemySecretStolen(int,QString)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(int,QString)),
-            planHandler, SLOT(playerCardDraw(int,QString)));
-    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString)),
-            planHandler, SLOT(playerCardPlayed(int,QString)));
+    connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
+            planHandler, SLOT(playerCardDraw(int,QString,int)));
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
+            planHandler, SLOT(playerCardPlayed(int,QString,bool)));
+    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
+            planHandler, SLOT(enemyCardPlayed(int,QString,bool)));
+    connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
+            planHandler, SLOT(lastEnemyHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(logTurn()),
@@ -1885,8 +1891,16 @@ void MainWindow::test()
     planHandler->enemySecretPlayed(10, hunter);
     planHandler->playerMinionZonePlayRemove(1);
     planHandler->playerMinionZonePlayRemove(3);
-    planHandler->playerCardDraw(22, "AT_003");
-    planHandler->playerCardDraw(23, "CS1_042");
+    planHandler->playerCardDraw(22, "AT_003",2);
+    planHandler->playerCardDraw(23, "CS1_042",2);
+    planHandler->playerCardDraw(21, "EX1_020",2);
+    planHandler->playerCardDraw(21, "EX1_020",2);
+    planHandler->playerCardDraw(24, "AT_002",2);
+    planHandler->enemyCardDraw(22, "AT_003", "",2);
+    planHandler->enemyCardDraw(23, "CS1_042", "",2);
+    planHandler->enemyCardDraw(21, "EX1_020", "",2);
+    planHandler->enemyCardDraw(21, "EX1_020", "",2);
+    planHandler->enemyCardDraw(24, "AT_002", "",2);
 
     planHandler->newTurn(true, 3);
     planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
@@ -1895,16 +1909,11 @@ void MainWindow::test()
     planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
     planHandler->enemySecretRevealed(7, "EX1_020");
     planHandler->playerSecretStolen(10, "CS1_042");
-    planHandler->playerCardPlayed(22, "AT_003");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
-    planHandler->playerCardDraw(21, "EX1_020");
+    planHandler->playerCardPlayed(22, "AT_003", true);
+    planHandler->playerCardPlayed(24, "AT_002", false);
+    planHandler->enemyCardPlayed(22, "AT_003", false);
+    planHandler->enemyCardPlayed(24, "AT_002", true);
+
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
 }
@@ -2562,7 +2571,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//EX1_554 Trampa culebras - forbidden common
+//Cartas descartadas y mulligan en azul
+//Vigilar id secretos enemigos desvelados para revelar la carta
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable

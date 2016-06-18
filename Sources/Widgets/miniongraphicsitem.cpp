@@ -218,8 +218,8 @@ void MinionGraphicsItem::addAddonNeutral(Addon addon)
 void MinionGraphicsItem::addAddonDamageLife(Addon addon)
 {
     //Eliminar neutrales
-    if(addon.code != SWIPE)//Siempre queremos ver el objetivo de swipe
-    {
+    if(addon.code != SWIPE && addon.code != EXPLOSIVE_SHOT && addon.code != POWERSHOT)
+    {//Siempre queremos ver el objetivo de swipe/...
         for(int i=0; i<addons.count(); i++)
         {
             if(addons[i].id == addon.id && addons[i].type == Addon::AddonNeutral)

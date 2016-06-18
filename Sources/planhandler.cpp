@@ -954,6 +954,8 @@ bool PlanHandler::isAddonCommonValid(QString code)
     forbiddenAddonList.append(GOREHOWL);
     forbiddenAddonList.append(LOREWALKER_CHO);
     forbiddenAddonList.append(NERUBIAN_PROPHET);
+    forbiddenAddonList.append(SNAKE_TRAP);
+    forbiddenAddonList.append(ARMORED_WARHORSE);
     return !forbiddenAddonList.contains(code);
 }
 
@@ -974,6 +976,7 @@ bool PlanHandler::isAddonMinionValid(QString code)
     forbiddenAddonList.append(ARMORSMITH);
     forbiddenAddonList.append(EYE_FOR_AN_EYE);
     forbiddenAddonList.append(TRUESILVER_CHAMPION);
+    forbiddenAddonList.append(GLADIATORS_LONGBOW);
     return !forbiddenAddonList.contains(code) && isAddonCommonValid(code);
 }
 
@@ -1021,6 +1024,8 @@ void PlanHandler::enemySecretRevealed(int id, QString code)
     if(turnBoards.empty())  return;
     Board *board = turnBoards.last();
     board->enemyHero->showSecret(id, code);
+
+    revealEnemyCardPrevTurns(id, code);
 }
 
 
@@ -1045,16 +1050,19 @@ void PlanHandler::enemySecretStolen(int id, QString code)
 void PlanHandler::updateViewCardZoneSpots()
 {
     updateCardZoneSpots(true, viewBoard);
+    updateCardZoneSpots(false, viewBoard);
 }
 
 
 void PlanHandler::updateCardZoneSpots(bool friendly, Board *board)
 {
     if(board == NULL)   board = nowBoard;
-    QList<CardGraphicsItem *> *playerHandList = &board->playerHandList;
-    for(int i=0; i<playerHandList->count(); i++)
+    QList<CardGraphicsItem *> *handList = getHandList(friendly, board);
+    for(int i=0; i<handList->count(); i++)
     {
-       playerHandList->at(i)->setZonePos(friendly, i, playerHandList->count(), ui->planGraphicsView->getSceneViewWidth());
+        int viewWidth = ui->planGraphicsView->getSceneViewWidth();
+        int cardHeightShow = ui->planGraphicsView->getCardsViewHeight();
+        handList->at(i)->setZonePos(friendly, i, handList->count(), viewWidth, cardHeightShow);
     }
 }
 
@@ -1069,74 +1077,133 @@ int PlanHandler::findCardPos(QList<CardGraphicsItem *> * cardsList, int id)
 }
 
 
-//MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id, Board *board)
-//{
-//    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly, board);
-//    int pos = findMinionPos(minionsList, id);
-//    if(pos == -1)   return NULL;
-//    else            return minionsList->at(pos);
-//}
-
-
-void PlanHandler::playerCardDraw(int id, QString code)
+QList<CardGraphicsItem *> * PlanHandler::getHandList(bool friendly, Board *board)
 {
-    CardGraphicsItem *card = new CardGraphicsItem(code, id);
-    nowBoard->playerHandList.append(card);
-    updateCardZoneSpots(true);
-
-    if(viewBoard == nowBoard)
-    {
-        ui->planGraphicsView->scene()->addItem(card);
-//        ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
-    }
-    emit checkCardImage(code, false);
+    if(board == NULL)   board = nowBoard;
+    if(friendly)    return &board->playerHandList;
+    else            return &board->enemyHandList;
 }
 
 
-//void PlanHandler::enemyCardDraw(int id, QString code)
-//{
-
-//}
-
-
-void PlanHandler::playerCardPlayed(int id, QString code)
+CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 {
-    int pos = findCardPos(&nowBoard->playerHandList, id);
+    QList<CardGraphicsItem *> * handList = getHandList(friendly, board);
+    int pos = findCardPos(handList, id);
+    if(pos == -1)   return NULL;
+    else            return handList->at(pos);
+}
 
-    if(pos == -1)
-    {
-        emit pDebug("Player card played not found: " + QString::number(id) + " -- " + code);
-        return;
-    }
 
-    CardGraphicsItem *card = nowBoard->playerHandList.takeAt(pos);
-    updateCardZoneSpots(true);
+void PlanHandler::playerCardDraw(int id, QString code, int turn)
+{
+    cardDraw(true, id, code, "", turn);
+}
 
-    if(viewBoard == nowBoard)
-    {
-        ui->planGraphicsView->scene()->removeItem(card);
-//        ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
-    }
 
-    delete card;
+void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int turn)
+{
+    cardDraw(false, id, code, createdByCode, turn);
+}
 
-    //Set played last board
+
+void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
+{
+    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode);
+    getHandList(friendly)->append(card);
+    updateCardZoneSpots(friendly);
+
+    if(viewBoard == nowBoard)       ui->planGraphicsView->scene()->addItem(card);
+    if(!code.isEmpty())             emit checkCardImage(code, false);
+    if(!createdByCode.isEmpty())    emit checkCardImage(createdByCode, false);
+
+    //Show card draw last turn
     if(turnBoards.empty())  return;
     Board *board = turnBoards.last();
-    pos = findCardPos(&board->playerHandList, id);
-    if(pos == -1)
+    if(board->numTurn == turn)
     {
-        emit pDebug("Player card played not found on last turn: " + QString::number(id) + " -- " + code);
-        return;
+        CardGraphicsItem *drawCard = new CardGraphicsItem(card);
+        drawCard->setDraw();
+        getHandList(friendly, board)->append(drawCard);
+        updateCardZoneSpots(friendly, board);
+        if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
     }
-    board->playerHandList.at(pos)->setPlayed();
 }
 
 
-//void PlanHandler::enemyCardPlayed(int id, QString code)
-//{
+void PlanHandler::playerCardPlayed(int id, QString code, bool discard)
+{
+    cardPlayed(true, id, code, discard);
+}
 
-//}
+
+void PlanHandler::enemyCardPlayed(int id, QString code, bool discard)
+{
+    cardPlayed(false, id, code, discard);
+}
+
+
+void PlanHandler::cardPlayed(bool friendly, int id, QString code, bool discard)
+{
+    QList<CardGraphicsItem *> *handList = getHandList(friendly);
+    int pos = findCardPos(handList, id);
+
+    if(pos == -1)
+    {
+        emit pDebug((friendly?"Player":"Enemy") + QString(" card played not found: ") + QString::number(id) + " -- " + code);
+    }
+    else
+    {
+        CardGraphicsItem *card = handList->takeAt(pos);
+        updateCardZoneSpots(friendly);
+
+        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->removeItem(card);
+
+        delete card;
+    }
+
+    //Set played/discard last board
+    if(!turnBoards.empty())
+    {
+        Board *board = turnBoards.last();
+        CardGraphicsItem *card = findCard(friendly, id, board);
+
+        if(card == NULL)
+        {
+            emit pDebug((friendly?"Player":"Enemy") + QString(" card played not found on last turn: ") + QString::number(id) + " -- " + code);
+        }
+        else
+        {
+            if(discard)     card->setDiscard();
+            else            card->setPlayed();
+        }
+    }
+
+    //Reveal in all turns
+    if(!friendly && !code.isEmpty())
+    {
+        revealEnemyCardPrevTurns(id, code);
+    }
+}
+
+
+void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
+{
+    foreach(Board *board, turnBoards)
+    {
+        CardGraphicsItem *card = findCard(false, id, board);
+        if(card != NULL)
+        {
+            card->setCode(code);
+            emit checkCardImage(code, false);
+        }
+    }
+}
+
+
+void PlanHandler::lastEnemyHandCardIsCoin()
+{
+    nowBoard->enemyHandList.last()->setCode(THE_COIN);
+}
 
 
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
@@ -1187,6 +1254,11 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     foreach(CardGraphicsItem * card, nowBoard->playerHandList)
     {
         board->playerHandList.append(new CardGraphicsItem(card));
+    }
+
+    foreach(CardGraphicsItem * card, nowBoard->enemyHandList)
+    {
+        board->enemyHandList.append(new CardGraphicsItem(card));
     }
 
     turnBoards.append(board);
@@ -1265,6 +1337,10 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
     {
         card->checkDownloadedCode(code);
     }
+    foreach(CardGraphicsItem * card, viewBoard->enemyHandList)
+    {
+        card->checkDownloadedCode(code);
+    }
 
     if(viewBoard->playerHero != NULL)   viewBoard->playerHero->checkDownloadedCode(code);
     if(viewBoard->enemyHero != NULL)    viewBoard->enemyHero->checkDownloadedCode(code);
@@ -1294,6 +1370,12 @@ void PlanHandler::resetBoard(Board *board)
     while(!board->playerHandList.empty())
     {
         CardGraphicsItem* card = board->playerHandList.takeFirst();
+        delete card;
+    }
+
+    while(!board->enemyHandList.empty())
+    {
+        CardGraphicsItem* card = board->enemyHandList.takeFirst();
         delete card;
     }
 
@@ -1383,10 +1465,10 @@ void PlanHandler::showPrevTurn()
 void PlanHandler::loadViewBoard()
 {
     ui->planGraphicsView->removeAll();
+    ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
     updateViewCardZoneSpots();
 
     ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
-    ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
 
     foreach(MinionGraphicsItem *minion, viewBoard->playerMinions)
     {
@@ -1408,7 +1490,12 @@ void PlanHandler::loadViewBoard()
         ui->planGraphicsView->scene()->addItem(card);
     }
 
-    ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
+    foreach(CardGraphicsItem *card, viewBoard->enemyHandList)
+    {
+        ui->planGraphicsView->scene()->addItem(card);
+    }
+
+    ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
 }
 
 

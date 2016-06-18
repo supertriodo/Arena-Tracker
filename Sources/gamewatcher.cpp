@@ -584,8 +584,9 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         {
             if(blockType == "FATIGUE" && zone == "PLAY")
             {
-                advanceTurn(isPlayer);
+                bool advance = advanceTurn(isPlayer);
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Fatigue damage.", numLine);
+                if(advance)     emit newTurn(isPlayerTurn, turn);
             }
         }
 
@@ -687,16 +688,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo juega carta desconocida
         if(zoneFrom == "OPPOSING HAND")
         {
-            emit enemyCardPlayed(id.toInt());
-
             //Carta devuelta al mazo en Mulligan
             if(zoneTo == "OPPOSING DECK")
             {
                 emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
+                emit enemyCardPlayed(id.toInt(), "", true);
             }
             else
             {
                 emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
+                emit enemyCardPlayed(id.toInt());
             }
         }
 
@@ -713,9 +714,10 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Enemigo roba carta de deck
             if(zoneFrom == "OPPOSING DECK")
             {
-                advanceTurn(false);
+                bool advance = advanceTurn(false);
                 emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
                 emit enemyCardDraw(id.toInt(), turnReal);
+                if(advance)     emit newTurn(isPlayerTurn, turn);
             }
 
             else if(zoneFrom.isEmpty())
@@ -758,20 +760,24 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo roba carta conocida
         else if(zoneTo == "OPPOSING HAND")
         {
+            bool advance = false;
             if(zoneFrom == "OPPOSING DECK")
             {
-                advanceTurn(false);
+                advance = advanceTurn(false);
                 emit enemyKnownCardDraw(cardId);
             }
             emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
             emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
+            if(advance)     emit newTurn(isPlayerTurn, turn);
         }
 
         //Jugador roba carta conocida
         else if(zoneTo == "FRIENDLY HAND")
         {
+            bool advance = advanceTurn(true);
             emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
-            emit playerCardDraw(id.toInt(), cardId);
+            emit playerCardToHand(id.toInt(), cardId, turn);
+            if(advance)     emit newTurn(isPlayerTurn, turn);
         }
 
         //Enemigo, nuevo minion en PLAY
@@ -865,6 +871,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo juega carta conocida
         else if(zoneFrom == "OPPOSING HAND")
         {
+            bool discard = false;
+
             //Enemigo juega hechizo
             if(zoneTo.isEmpty())
             {
@@ -884,30 +892,35 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "OPPOSING GRAVEYARD")
             {
                 emit pDebug("Enemy: Card discarded: " + name + " ID: " + id, numLine);
+                discard = true;
             }
 
-            emit enemyCardPlayed(id.toInt(), cardId);
+            emit enemyCardPlayed(id.toInt(), cardId, discard);
         }
 
         //Enemigo roba carta overdraw
         else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
         {
-            advanceTurn(false);
+            bool advance = advanceTurn(false);
             emit pDebug("Enemy: Card overdraw: " + name, numLine);
             emit enemyKnownCardDraw(cardId);
+            if(advance)     emit newTurn(isPlayerTurn, turn);
         }
 
         //Jugador roba carta conocida
         else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
         {
-            advanceTurn(true);
+            bool advance = advanceTurn(true);
             emit pDebug("Player: Card drawn: " + name, numLine);
             emit playerCardDraw(cardId);
+            if(advance)     emit newTurn(isPlayerTurn, turn);
         }
 
         //Jugador juega carta conocida
         else if(zoneFrom == "FRIENDLY HAND")
         {
+            bool discard = false;
+
             //Jugador juega hechizo
             if(zoneTo.isEmpty())
             {
@@ -929,15 +942,17 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY GRAVEYARD")
             {
                 emit pDebug("Player: Card discarded: " + name, numLine);
+                discard = true;
             }
             //Carta devuelta al mazo en Mulligan
             else if(zoneTo == "FRIENDLY DECK")
             {
                 emit pDebug("Player: Starting card returned: " + name, numLine);
                 emit playerReturnToDeck(cardId);
+                discard = true;
             }
 
-            emit playerCardPlayed(id.toInt(), cardId);
+            emit playerCardPlayed(id.toInt(), cardId, discard);
         }
 
         //Enemigo esbirro muere
@@ -1098,9 +1113,9 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
 }
 
 
-void GameWatcher::advanceTurn(bool playerDraw)
+bool GameWatcher::advanceTurn(bool playerDraw)
 {
-    if(turnReal == turn)    return;
+    if(turnReal == turn)    return false;
 
     //Al jugar contra la maquina puede que se lea antes el fin de turno que el robo del inicio del turno
     //if(turn > turnReal+1)   turn = turnReal+1;
@@ -1113,7 +1128,8 @@ void GameWatcher::advanceTurn(bool playerDraw)
 
     //Al turno 1 dejamos que pase cualquiera asi dejamos el turno 0 para indicar cartas de mulligan
     //Solo avanza de turno al robar carta el jugador que le corresponde
-    if(turn == 1 || playerDraw == playerTurn || playerID == 0)
+    bool advance = (turn == 1 || playerDraw == playerTurn || playerID == 0);
+    if(advance)
     {
         turnReal = turn;
         emit pDebug("\nTurn: " + QString::number(turn) + " " + (playerTurn?"Player":"Enemy"), 0);
@@ -1121,7 +1137,6 @@ void GameWatcher::advanceTurn(bool playerDraw)
         isPlayerTurn = playerTurn;
 
         if(playerDraw)      emit clearDrawList();
-        emit newTurn(isPlayerTurn, turn);
 
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)
@@ -1130,6 +1145,7 @@ void GameWatcher::advanceTurn(bool playerDraw)
             emit cSpiritTested();
         }
     }
+    return advance;
 }
 
 
