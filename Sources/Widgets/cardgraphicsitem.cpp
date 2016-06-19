@@ -18,12 +18,13 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
 CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
 {
     this->code = copy->code;
+    this->createdByCode = copy->createdByCode;
     this->id = copy->id;
     this->played = copy->played;
     this->discard = copy->discard;
     this->draw = copy->draw;
     this->heightShow = copy->heightShow;
-    this->turn = turn;
+    this->turn = copy->turn;
     this->setPos(copy->pos());
 }
 
@@ -97,11 +98,27 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     else if(discard)    painter->drawPixmap(-WIDTH/2, -heightShow/2-CARD_LIFT, QPixmap(":/Images/bgCardDiscard.png"), 0, 0, 190, heightShow+CARD_LIFT);
     if(draw)            painter->drawPixmap(-WIDTH/2, -heightShow/2, QPixmap(":/Images/bgCardDraw.png"), 0, 0, 190, heightShow);
 
-    if(code.isEmpty())
+    if(!code.isEmpty())
+    {
+        painter->drawPixmap(-WIDTH/2, -heightShow/2+((played||discard)&&!draw?-CARD_LIFT:0),
+                            QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
+                            heightShow+((played||discard)&&!draw?CARD_LIFT:0));
+    }
+
+    else if(!createdByCode.isEmpty())
+    {
+        painter->drawPixmap(-48, -heightShow/2+24+((played||discard)&&!draw?-CARD_LIFT:0),
+                            QPixmap(Utility::hscardsPath() + "/" + createdByCode + ".png"), 49, 60, 101, 66);
+        painter->drawPixmap(-81, -heightShow/2+15+((played||discard)&&!draw?-CARD_LIFT:0),
+                            QPixmap(":/Images/bgCardCreatedBy.png"), 0, 0, 168,
+                            heightShow-15+((played||discard)&&!draw?CARD_LIFT:0));
+    }
+
+    else
     {
         painter->drawPixmap(-81, -heightShow/2+15+((played||discard)&&!draw?-CARD_LIFT:0),
-                                                QPixmap(":/Images/bgCardUnknown.png"), 0, 0, 168,
-                                                heightShow-15+((played||discard)&&!draw?CARD_LIFT:0));
+                            QPixmap(":/Images/bgCardUnknown.png"), 0, 0, 168,
+                            heightShow-15+((played||discard)&&!draw?CARD_LIFT:0));
 
         //Turn
         QFont font("Belwe Bd BT");
@@ -123,11 +140,10 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         int textWide = fm.width(text);
         int textHigh = fm.height();
         QPainterPath path;
-        path.addText(-35 - textWide/2, -heightShow/2 + 71 + textHigh/4, font, text);
+        path.addText(-35 - textWide/2, -heightShow/2 + 71 + +((played||discard)&&!draw?-CARD_LIFT:0) + textHigh/4, font, text);
         painter->drawPath(path);
     }
 
-    else                    painter->drawPixmap(-WIDTH/2, -heightShow/2+((played||discard)&&!draw?-CARD_LIFT:0),
-                                                QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
-                                                heightShow+((played||discard)&&!draw?CARD_LIFT:0));
+
+
 }

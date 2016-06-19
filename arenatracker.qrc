@@ -118,5 +118,6 @@
         <file>Images/bgCardDiscard.png</file>
         <file>Images/bgCardDraw.png</file>
         <file>Images/bgHeroDead.png</file>
+        <file>Images/bgCardCreatedBy.png</file>
     </qresource>
 </RCC>
