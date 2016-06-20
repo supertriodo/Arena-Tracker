@@ -4,6 +4,7 @@
 #include "Widgets/ui_extended.h"
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
+#include "Widgets/weapongraphicsitem.h"
 #include "Widgets/arrowgraphicsitem.h"
 #include "Widgets/cardgraphicsitem.h"
 #include "Cards/handcard.h"
@@ -33,6 +34,8 @@ public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
+    WeaponGraphicsItem * playerWeapon = NULL;
+    WeaponGraphicsItem * enemyWeapon = NULL;
     QList<ArrowGraphicsItem *> arrows;
     QList<CardGraphicsItem *> playerHandList;
     QList<CardGraphicsItem *> enemyHandList;
@@ -85,7 +88,7 @@ private:
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id, bool stolen=false);
     void addHero(bool friendly, QString code, int id);
-    void removeHero(Board *board, bool friendly);
+    void removeHero(bool friendly, Board *board=NULL);
     void resetBoard(Board *board);
     void updateButtons();
     void loadViewBoard();
@@ -111,7 +114,10 @@ private:
     CardGraphicsItem *findCard(bool friendly, int id, Board *board=NULL);
     void cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn);
     void cardPlayed(bool friendly, int id, QString code, bool discard);
-    void revealEnemyCardPrevTurns(int id, QString code);
+    void revealEnemyCardPrevTurns(int id, QString code);    
+    void addWeapon(bool friendly, QString code, int id);
+    void removeWeapon(bool friendly, int id=-1, Board *board=NULL);
+    void killWeaponLastTurn(bool friendly, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -166,6 +172,8 @@ public slots:
     void playerCardPlayed(int id, QString code, bool discard);
     void enemyCardPlayed(int id, QString code, bool discard);
     void lastEnemyHandCardIsCoin();
+    void playerWeaponZonePlayRemove(int id);
+    void enemyWeaponZonePlayRemove(int id);
 
 private slots:
     void checkPendingTagChanges();

@@ -501,6 +501,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerWeaponZonePlayAdd(QString, int)));
     connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString, int)),
             planHandler, SLOT(enemyWeaponZonePlayAdd(QString, int)));
+    connect(gameWatcher, SIGNAL(playerWeaponZonePlayRemove(int)),
+            planHandler, SLOT(playerWeaponZonePlayRemove(int)));
+    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayRemove(int)),
+            planHandler, SLOT(enemyWeaponZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(playerMinionZonePlayRemove(int)),
             planHandler, SLOT(playerMinionZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyMinionZonePlayRemove(int)),
@@ -1913,6 +1917,8 @@ void MainWindow::test()
     planHandler->playerCardPlayed(24, "AT_002", false);
     planHandler->enemyCardPlayed(22, "AT_003", false);
     planHandler->enemyCardPlayed(24, "AT_002", true);
+    planHandler->playerMinionTagChange(11, "AT_003", "ATK", "2");
+    planHandler->playerWeaponZonePlayAdd("FP1_021", 31);
 
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));

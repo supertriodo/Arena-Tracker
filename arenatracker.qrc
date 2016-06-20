@@ -119,5 +119,6 @@
         <file>Images/bgCardDraw.png</file>
         <file>Images/bgHeroDead.png</file>
         <file>Images/bgCardCreatedBy.png</file>
+        <file>Images/bgWeaponSimple.png</file>
     </qresource>
 </RCC>

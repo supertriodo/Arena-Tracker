@@ -297,7 +297,7 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
     if(hero != NULL)
     {
         emit pDebug("Trying to add a hero with an existing one. Force remove old one.", Warning);
-        removeHero(nowBoard, friendly);
+        removeHero(friendly);
     }
 
     hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
@@ -315,8 +315,9 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
 }
 
 
-void PlanHandler::removeHero(Board *board, bool friendly)
+void PlanHandler::removeHero(bool friendly, Board *board)
 {
+    if(board == NULL)   board = nowBoard;
     HeroGraphicsItem* hero = friendly?board->playerHero:board->enemyHero;
     if(hero == NULL)
     {
@@ -461,7 +462,7 @@ void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QStri
         nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == value.toInt())
     {
         addAddonToLastTurn(code, id, nowBoard->playerHero->getId(), Addon::AddonNeutral);
-        removeHero(nowBoard, true);
+        removeHero(true);
         addHero(true, code, id);
     }
     else    addTagChange(id, true, tag, value);
@@ -474,7 +475,7 @@ void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QStrin
         nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == value.toInt())
     {
         addAddonToLastTurn(code, id, nowBoard->enemyHero->getId(), Addon::AddonNeutral);
-        removeHero(nowBoard, false);
+        removeHero(false);
         addHero(false, code, id);
     }
     else    addTagChange(id, false, tag, value);
@@ -492,6 +493,8 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
     bool healing = false;
     bool isDead = true;
     bool isHero = true;
+
+    //Minions
     MinionGraphicsItem * minion = findMinion(friendly, id);
     if(minion != NULL)
     {
@@ -501,6 +504,8 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         isDead = minion->isDead();
         isHero = false;
     }
+
+    //Heroes
     else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
     {
         emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
@@ -515,6 +520,22 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
+
+    //Weapons
+    else if(friendly && nowBoard->playerWeapon!=NULL && nowBoard->playerWeapon->getId() == id)
+    {
+        emit pDebug("Tag Change Player Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->playerWeapon->processTagChange(tag, value);
+        return;
+    }
+    else if(!friendly && nowBoard->enemyWeapon!=NULL && nowBoard->enemyWeapon->getId() == id)
+    {
+        emit pDebug("Tag Change Enemy Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->enemyWeapon->processTagChange(tag, value);
+        return;
+    }
+
+
     else
     {
         QTimer::singleShot(1000, this, SLOT(checkPendingTagChanges()));
@@ -565,12 +586,10 @@ void PlanHandler::checkPendingTagChanges()
     const QString value = tagChange.value;
 
     bool healing = false;
-    //Evita addons provocado por cambio de damage al morir(en el log los minion vuelven a damage 0 justo antes de morir)
-    //Ejemplo Jefe de banda de diablillos ataca y mata a otro minion, el jefe produce un trigger que apareceria en el esbirro muerto.
     bool isDead = true;
-    //Evita addons al perder un arma y cambiar el atk a 0
-    //Ejemplo ataque con arma a grubashi y gasta el arma.
     bool isHero = true;
+
+    //Minions
     MinionGraphicsItem * minion = findMinion(friendly, id);
     if(minion != NULL)
     {
@@ -580,6 +599,8 @@ void PlanHandler::checkPendingTagChanges()
         isDead = minion->isDead();
         isHero = false;
     }
+
+    //Heroes
     else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
     {
         emit pDebug("Pending Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
@@ -594,6 +615,21 @@ void PlanHandler::checkPendingTagChanges()
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
     }
+
+    //Weapons
+    else if(friendly && nowBoard->playerWeapon!=NULL && nowBoard->playerWeapon->getId() == id)
+    {
+        emit pDebug("Pending Tag Change Player Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->playerWeapon->processTagChange(tag, value);
+        return;
+    }
+    else if(!friendly && nowBoard->enemyWeapon!=NULL && nowBoard->enemyWeapon->getId() == id)
+    {
+        emit pDebug("Pending Tag Change Enemy Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->enemyWeapon->processTagChange(tag, value);
+        return;
+    }
+
     else    return;
 
 
@@ -834,12 +870,14 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 void PlanHandler::playerWeaponZonePlayAdd(QString code, int id)
 {
     this->addWeaponAddonToLastTurn(true, code, id);
+    addWeapon(true, code, id);
 }
 
 
 void PlanHandler::enemyWeaponZonePlayAdd(QString code, int id)
 {
     this->addWeaponAddonToLastTurn(false, code, id);
+    addWeapon(false, code, id);
 }
 
 
@@ -853,6 +891,85 @@ void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
 
     if(friendly)    addAddon(board->playerHero, code, id, Addon::AddonNeutral);
     else            addAddon(board->enemyHero, code, id, Addon::AddonNeutral);
+}
+
+
+void PlanHandler::addWeapon(bool friendly, QString code, int id)
+{
+    qDebug()<<"NEW WEAPON --> id"<<id;
+    WeaponGraphicsItem* weapon = friendly?nowBoard->playerWeapon:nowBoard->enemyWeapon;
+
+    if(weapon != NULL)
+    {
+        emit pDebug("Trying to add a weapon with an existing one. Force remove old one.", Warning);
+        removeWeapon(friendly);
+    }
+
+    weapon = new WeaponGraphicsItem(code, id, friendly);
+
+    if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->addItem(weapon);
+
+    if(friendly)    nowBoard->playerWeapon = weapon;
+    else            nowBoard->enemyWeapon = weapon;
+
+    emit checkCardImage(code, false);
+}
+
+
+void PlanHandler::playerWeaponZonePlayRemove(int id)
+{
+    removeWeapon(true, id);
+    killWeaponLastTurn(true, id);
+}
+
+
+void PlanHandler::enemyWeaponZonePlayRemove(int id)
+{
+    removeWeapon(false, id);
+    killWeaponLastTurn(false, id);
+}
+
+
+void PlanHandler::removeWeapon(bool friendly, int id, Board *board)
+{
+    if(board == NULL)   board = nowBoard;
+    WeaponGraphicsItem* weapon = friendly?board->playerWeapon:board->enemyWeapon;
+    if(weapon == NULL)
+    {
+        emit pDebug("Trying to remove weapon NULL.", Warning);
+    }
+    else if(id == -1 || weapon->getId() == id)
+    {
+        delete weapon;
+
+        if(friendly)    board->playerWeapon = NULL;
+        else            board->enemyWeapon = NULL;
+    }
+    else
+    {
+        emit pDebug("Trying to remove a weapon different that equipped.", Warning);
+    }
+}
+
+
+void PlanHandler::killWeaponLastTurn(bool friendly, int id)
+{
+    if(turnBoards.empty())  return;
+
+    Board *board = turnBoards.last();
+    WeaponGraphicsItem* weapon = friendly?board->playerWeapon:board->enemyWeapon;
+    if(weapon == NULL)
+    {
+        emit pDebug("Trying to kill weapon NULL in last turn.", Warning);
+    }
+    else if(weapon->getId() == id)
+    {
+        weapon->setDead(true);
+    }
+    else
+    {
+        emit pDebug("Trying to kill a weapon different that equipped in last turn.", Warning);
+    }
 }
 
 
@@ -1242,6 +1359,11 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     if(nowBoard->enemyHero == NULL)     board->enemyHero = NULL;
     else                                board->enemyHero = new HeroGraphicsItem(nowBoard->enemyHero);
 
+    if(nowBoard->playerWeapon == NULL)  board->playerWeapon = NULL;
+    else                                board->playerWeapon = new WeaponGraphicsItem(nowBoard->playerWeapon);
+    if(nowBoard->enemyWeapon == NULL)   board->enemyWeapon = NULL;
+    else                                board->enemyWeapon = new WeaponGraphicsItem(nowBoard->enemyWeapon);
+
     foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
     {
         board->playerMinions.append(new MinionGraphicsItem(minion));
@@ -1343,6 +1465,9 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
         card->checkDownloadedCode(code);
     }
 
+    if(viewBoard->playerWeapon != NULL) viewBoard->playerWeapon->checkDownloadedCode(code);
+    if(viewBoard->enemyWeapon != NULL)  viewBoard->enemyWeapon->checkDownloadedCode(code);
+
     if(viewBoard->playerHero != NULL)   viewBoard->playerHero->checkDownloadedCode(code);
     if(viewBoard->enemyHero != NULL)    viewBoard->enemyHero->checkDownloadedCode(code);
 }
@@ -1380,8 +1505,11 @@ void PlanHandler::resetBoard(Board *board)
         delete card;
     }
 
-    if(board->playerHero != NULL)  removeHero(board, true);
-    if(board->enemyHero != NULL)   removeHero(board, false);
+    if(board->playerWeapon != NULL) removeWeapon(true, -1, board);
+    if(board->enemyWeapon != NULL)  removeWeapon(false, -1, board);
+
+    if(board->playerHero != NULL)  removeHero(true, board);
+    if(board->enemyHero != NULL)   removeHero(false, board);
 }
 
 
@@ -1495,6 +1623,9 @@ void PlanHandler::loadViewBoard()
     {
         ui->planGraphicsView->scene()->addItem(card);
     }
+
+    if(viewBoard->playerWeapon != NULL) ui->planGraphicsView->scene()->addItem(viewBoard->playerWeapon);
+    if(viewBoard->enemyWeapon != NULL)  ui->planGraphicsView->scene()->addItem(viewBoard->enemyWeapon);
 
     ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
 }

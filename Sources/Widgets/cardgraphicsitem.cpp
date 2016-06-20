@@ -67,7 +67,7 @@ void CardGraphicsItem::setDraw()
 
 void CardGraphicsItem::checkDownloadedCode(QString code)
 {
-    if(this->code == code)  update();
+    if(this->code == code || this->createdByCode == code)  update();
 }
 
 

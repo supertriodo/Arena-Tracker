@@ -10,6 +10,8 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->hero = false;
     this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    if(health <= 0) this->health = this->origHealth = Utility::getCardAtribute(code, "durability").toInt();
+
     this->damage = 0;
     this->shield = false;
     this->taunt = false;
@@ -60,12 +62,13 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->toBeDestroyed = copy->toBeDestroyed;
     this->playerTurn = copy->playerTurn;
     this->addonsStacked = copy->addonsStacked;
-    this->setPos(copy->pos());
     this->triggerMinion = triggerMinion;
     this->aura = copy->aura;
     this->zone = "PLAY";
     this->changeAttack = copy->changeAttack;
     this->changeHealth = copy->changeHealth;
+    this->setPos(copy->pos());
+    this->setZValue(copy->zValue());
 
     foreach(Addon addon, copy->addons)
     {
@@ -334,7 +337,7 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
         if(newDamage < this->damage)    healing = true;
         this->damage = newDamage;
     }
-    if(tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
+    else if(tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT")
     {
         this->toBeDestroyed = true;
         return healing;
@@ -400,7 +403,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 {
     Q_UNUSED(option);
 
-    if(triggerMinion)   painter->setOpacity(0.5);
+    if(triggerMinion)   painter->setOpacity(0.7);
 
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));

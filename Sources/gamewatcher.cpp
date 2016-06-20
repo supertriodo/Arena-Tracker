@@ -480,7 +480,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                 tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                 tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                tag == "LINKED_ENTITY")
+                tag == "LINKED_ENTITY" || tag == "DURABILITY")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
                         " -- Id: " + id, numLine);
@@ -514,7 +514,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                 tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                 tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                tag == "LINKED_ENTITY")
+                tag == "LINKED_ENTITY" || tag == "DURABILITY")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value +
                         " -- " + name + " -- Id: " + id, numLine);
@@ -991,6 +991,20 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(playerMinions>0) playerMinions--;
             emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
             if(zoneTo != "OPPOSING PLAY")   emit playerMinionZonePlayRemove(id.toInt());
+        }
+
+        //Enemigo, deshecha arma
+        else if(zoneFrom == "OPPOSING PLAY (Weapon)")
+        {
+            emit pDebug("Enemy: Weapon moved from OPPOSING PLAY (Weapon): " + name, numLine);
+            emit enemyWeaponZonePlayRemove(id.toInt());
+        }
+
+        //Jugador, deshecha arma
+        else if(zoneFrom == "FRIENDLY PLAY (Weapon)")
+        {
+            emit pDebug("Player: Weapon moved from FRIENDLY PLAY (Weapon): " + name, numLine);
+            emit playerWeaponZonePlayRemove(id.toInt());
         }
     }
 
