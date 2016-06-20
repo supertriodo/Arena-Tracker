@@ -28,6 +28,17 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
 }
 
 
+void HeroGraphicsItem::changeHero(QString code, int id)
+{
+    this->code = code;
+    this->id = id;
+    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    this->damage = 0;
+    this->armor = 0;
+}
+
+
 QRectF HeroGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);

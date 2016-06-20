@@ -110,10 +110,10 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
 {
     if(turnBoards.empty())  return;
 
-    emit pDebug("Triggered minion. Ids: " + QString::number(idCreator) + " --> " + QString::number(minion->getId()));
-
     MinionGraphicsItem *triggerMinion = NULL;
     if(idCreator == -1)     idCreator = this->lastTriggerId;
+    emit pDebug("Triggered minion. Ids: " + QString::number(idCreator) + " --> " + QString::number(minion->getId()));
+
     Board *board = turnBoards.last();
     QList<MinionGraphicsItem *> *minionsList = getMinionList(friendly, board);
     int pos = findMinionPos(minionsList, idCreator);
@@ -296,21 +296,21 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
 
     if(hero != NULL)
     {
-        emit pDebug("Trying to add a hero with an existing one. Force remove old one.", Warning);
-        removeHero(friendly);
+        hero->changeHero(code, id);
     }
-
-    hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
-
-    if(viewBoard == nowBoard)
+    else
     {
-        ui->planGraphicsView->scene()->addItem(hero);
-        ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+        hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+
+        if(viewBoard == nowBoard)
+        {
+            ui->planGraphicsView->scene()->addItem(hero);
+            ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+        }
+
+        if(friendly)    nowBoard->playerHero = hero;
+        else            nowBoard->enemyHero = hero;
     }
-
-    if(friendly)    nowBoard->playerHero = hero;
-    else            nowBoard->enemyHero = hero;
-
     emit checkCardImage(code, true);
 }
 
@@ -462,7 +462,6 @@ void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QStri
         nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == value.toInt())
     {
         addAddonToLastTurn(code, id, nowBoard->playerHero->getId(), Addon::AddonNeutral);
-        removeHero(true);
         addHero(true, code, id);
     }
     else    addTagChange(id, true, tag, value);
@@ -475,7 +474,6 @@ void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QStrin
         nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == value.toInt())
     {
         addAddonToLastTurn(code, id, nowBoard->enemyHero->getId(), Addon::AddonNeutral);
-        removeHero(false);
         addHero(false, code, id);
     }
     else    addTagChange(id, false, tag, value);
@@ -1442,6 +1440,7 @@ bool PlanHandler::isLastTriggerValid(QString code)
     forbiddenCreatorList.append(DARKSHIRE_COUNCILMAN);
     forbiddenCreatorList.append(FROTHING_BERSEKER);
     forbiddenCreatorList.append(THE_SKELETON_KNIGHT);
+    forbiddenCreatorList.append(SWORD_OF_JUSTICE);
     return !forbiddenCreatorList.contains(code);
 }
 

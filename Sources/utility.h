@@ -64,6 +64,8 @@
 #define EXPLOSIVE_SHOT "EX1_537"
 #define POWERSHOT "AT_056"
 #define ARMORED_WARHORSE "AT_108"
+#define SWORD_OF_JUSTICE "EX1_366"
+#define GRIMSCALE_ORACLE "EX1_508"
 
 
 using namespace cv;

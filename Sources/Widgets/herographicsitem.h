@@ -39,6 +39,7 @@ public:
     void showSecret(int id, QString code);
     SecretHero getSecretHero(int id);
     bool isYourSecret(int id);
+    void changeHero(QString code, int id);
 };
 
 #endif // HEROGRAPHICSITEM_H

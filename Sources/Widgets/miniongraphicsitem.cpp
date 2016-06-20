@@ -36,7 +36,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     }
 
     //Leokk AURA
-    if(code == LEOKK)   processTagChange("AURA", "1");
+    if(code == LEOKK || code == GRIMSCALE_ORACLE)   processTagChange("AURA", "1");
 }
 
 
@@ -403,7 +403,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 {
     Q_UNUSED(option);
 
-    if(triggerMinion)   painter->setOpacity(0.7);
+    if(triggerMinion)   painter->setOpacity(0.6);
 
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));
