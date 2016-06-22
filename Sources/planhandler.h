@@ -5,6 +5,7 @@
 #include "Widgets/miniongraphicsitem.h"
 #include "Widgets/herographicsitem.h"
 #include "Widgets/weapongraphicsitem.h"
+#include "Widgets/heropowergraphicsitem.h"
 #include "Widgets/arrowgraphicsitem.h"
 #include "Widgets/cardgraphicsitem.h"
 #include "Cards/handcard.h"
@@ -34,6 +35,8 @@ public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
     HeroGraphicsItem * playerHero = NULL;
     HeroGraphicsItem * enemyHero = NULL;
+    HeroPowerGraphicsItem * playerHeroPower = NULL;
+    HeroPowerGraphicsItem * enemyHeroPower = NULL;
     WeaponGraphicsItem * playerWeapon = NULL;
     WeaponGraphicsItem * enemyWeapon = NULL;
     QList<ArrowGraphicsItem *> arrows;
@@ -96,7 +99,6 @@ private:
     bool findAttackPoint(ArrowGraphicsItem *attack, bool isFrom, int id, Board *board);
     bool appendAttack(ArrowGraphicsItem *attack, Board *board);
     void addAddonToLastTurn(QString code, int id1, int id2, Addon::AddonType type, int number=1);
-    void addWeaponAddonToLastTurn(bool friendly, QString code, int id);
     void addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number=1);
     void addHeroDeadToLastTurn(bool playerWon);
     bool isLastPowerAddonValid(QString tag, QString value, int idTarget, bool friendly, bool isHero, bool healing);
@@ -118,6 +120,8 @@ private:
     void addWeapon(bool friendly, QString code, int id);
     void removeWeapon(bool friendly, int id=-1, Board *board=NULL);
     void killWeaponLastTurn(bool friendly, int id);
+    void removeHeroPower(bool friendly, Board *board);
+    void addHeroPower(bool friendly, QString code, int id);
 
 public:
     void setTransparency(Transparency value);
@@ -174,6 +178,8 @@ public slots:
     void lastEnemyHandCardIsCoin();
     void playerWeaponZonePlayRemove(int id);
     void enemyWeaponZonePlayRemove(int id);
+    void playerHeroPowerZonePlayAdd(QString code, int id);
+    void enemyHeroPowerZonePlayAdd(QString code, int id);
 
 private slots:
     void checkPendingTagChanges();

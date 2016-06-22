@@ -497,6 +497,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerHeroZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(enemyHeroZonePlayAdd(QString,int)),
             planHandler, SLOT(enemyHeroZonePlayAdd(QString,int)));
+    connect(gameWatcher, SIGNAL(playerHeroPowerZonePlayAdd(QString,int)),
+            planHandler, SLOT(playerHeroPowerZonePlayAdd(QString,int)));
+    connect(gameWatcher, SIGNAL(enemyHeroPowerZonePlayAdd(QString,int)),
+            planHandler, SLOT(enemyHeroPowerZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString, int)),
             planHandler, SLOT(playerWeaponZonePlayAdd(QString, int)));
     connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString, int)),
@@ -1872,6 +1876,7 @@ void MainWindow::test()
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+    planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);
 
     planHandler->newTurn(true, 1);
     planHandler->zonePlayAttack("AT_003",1,2);
@@ -1919,6 +1924,7 @@ void MainWindow::test()
     planHandler->enemyCardPlayed(24, "AT_002", true);
     planHandler->playerMinionTagChange(11, "AT_003", "ATK", "2");
     planHandler->playerWeaponZonePlayAdd("FP1_021", 31);
+    planHandler->enemyWeaponZonePlayAdd("FP1_021", 31);
 
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
@@ -2577,8 +2583,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//Cartas descartadas y mulligan en azul
 //Vigilar id secretos enemigos desvelados para revelar la carta
+//Mￃﾡquina de asedio (GVG_086) forbidden hero
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable

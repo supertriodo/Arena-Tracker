@@ -823,6 +823,20 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
 
+        //Enemigo, carga hero power
+        else if(zoneTo == "OPPOSING PLAY (Hero Power)")
+        {
+            emit pDebug("Enemy: Hero Power moved to OPPOSING PLAY (Hero Power): " + name, numLine);
+            emit enemyHeroPowerZonePlayAdd(cardId, id.toInt());
+        }
+
+        //Jugador, carga hero power
+        else if(zoneTo == "FRIENDLY PLAY (Hero Power)")
+        {
+            emit pDebug("Player: Hero Power moved to FRIENDLY PLAY (Hero Power): " + name, numLine);
+            emit playerHeroPowerZonePlayAdd(cardId, id.toInt());
+        }
+
         //Enemigo, equipa arma
         else if(zoneTo == "OPPOSING PLAY (Weapon)" && zoneFrom != "OPPOSING GRAVEYARD")//Al reemplazar un arma por otra, la antigua va, vuelve y va a graveyard.
         {

@@ -120,5 +120,8 @@
         <file>Images/bgHeroDead.png</file>
         <file>Images/bgCardCreatedBy.png</file>
         <file>Images/bgWeaponSimple.png</file>
+        <file>Images/bgHeroPower.png</file>
+        <file>Images/bgHeroPowerGlow.png</file>
+        <file>Images/bgHeroPowerClosed.png</file>
     </qresource>
 </RCC>

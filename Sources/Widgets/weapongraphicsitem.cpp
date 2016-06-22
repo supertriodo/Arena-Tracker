@@ -14,7 +14,7 @@ WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly)
     const int hHero = HeroGraphicsItem::HEIGHT;
     const int wHero = HeroGraphicsItem::WIDTH;
     int x = -wHero/2 - WIDTH/2 + 20;
-    int y = friendly?hMinion + hHero/2 + 15:-hMinion - hHero/2 - 15;
+    int y = friendly?hMinion + hHero/2 + 15:-hMinion - hHero/2 + 15;
     this->setPos(x, y);
     this->setZValue(-1);
 }

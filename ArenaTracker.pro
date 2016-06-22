@@ -49,7 +49,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/herographicsitem.cpp \
     Sources/Widgets/arrowgraphicsitem.cpp \
     Sources/Widgets/cardgraphicsitem.cpp \
-    Sources/Widgets/weapongraphicsitem.cpp
+    Sources/Widgets/weapongraphicsitem.cpp \
+    Sources/Widgets/heropowergraphicsitem.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -86,7 +87,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/herographicsitem.h \
     Sources/Widgets/arrowgraphicsitem.h \
     Sources/Widgets/cardgraphicsitem.h \
-    Sources/Widgets/weapongraphicsitem.h
+    Sources/Widgets/weapongraphicsitem.h \
+    Sources/Widgets/heropowergraphicsitem.h
 
 FORMS    += mainwindow.ui
 

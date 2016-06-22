@@ -519,6 +519,22 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         isHero = true;
     }
 
+    //Heroe Powers
+    else if(friendly && nowBoard->playerHeroPower!=NULL && nowBoard->playerHeroPower->getId() == id)
+    {
+        emit pDebug("Tag Change Player Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->playerHeroPower->processTagChange(tag, value);
+        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->playerHeroPower->processTagChange(tag, value);
+        return;
+    }
+    else if(!friendly && nowBoard->enemyHeroPower!=NULL && nowBoard->enemyHeroPower->getId() == id)
+    {
+        emit pDebug("Tag Change Enemy Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->enemyHeroPower->processTagChange(tag, value);
+        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->enemyHeroPower->processTagChange(tag, value);
+        return;
+    }
+
     //Weapons
     else if(friendly && nowBoard->playerWeapon!=NULL && nowBoard->playerWeapon->getId() == id)
     {
@@ -612,6 +628,22 @@ void PlanHandler::checkPendingTagChanges()
         healing = nowBoard->enemyHero->processTagChange(tag, value);
         isDead = nowBoard->enemyHero->isDead();
         isHero = true;
+    }
+
+    //Heroe Powers
+    else if(friendly && nowBoard->playerHeroPower!=NULL && nowBoard->playerHeroPower->getId() == id)
+    {
+        emit pDebug("Tag Change Player Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->playerHeroPower->processTagChange(tag, value);
+        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->playerHeroPower->processTagChange(tag, value);
+        return;
+    }
+    else if(!friendly && nowBoard->enemyHeroPower!=NULL && nowBoard->enemyHeroPower->getId() == id)
+    {
+        emit pDebug("Tag Change Enemy Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        nowBoard->enemyHeroPower->processTagChange(tag, value);
+        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->enemyHeroPower->processTagChange(tag, value);
+        return;
     }
 
     //Weapons
@@ -867,28 +899,13 @@ void PlanHandler::zonePlayAttack(QString code, int id1, int id2)
 
 void PlanHandler::playerWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddonToLastTurn(true, code, id);
     addWeapon(true, code, id);
 }
 
 
 void PlanHandler::enemyWeaponZonePlayAdd(QString code, int id)
 {
-    this->addWeaponAddonToLastTurn(false, code, id);
     addWeapon(false, code, id);
-}
-
-
-void PlanHandler::addWeaponAddonToLastTurn(bool friendly, QString code, int id)
-{
-    setLastTriggerId("", "", -1, -1);
-
-    if(turnBoards.empty())  return;
-
-    Board *board = turnBoards.last();
-
-    if(friendly)    addAddon(board->playerHero, code, id, Addon::AddonNeutral);
-    else            addAddon(board->enemyHero, code, id, Addon::AddonNeutral);
 }
 
 
@@ -911,6 +928,11 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     else            nowBoard->enemyWeapon = weapon;
 
     emit checkCardImage(code, false);
+    setLastTriggerId("", "", -1, -1);
+
+    //Add addon to last turn
+    HeroGraphicsItem* hero = friendly?nowBoard->playerHero:nowBoard->enemyHero;
+    if(hero != NULL)    addAddonToLastTurn(code, id, hero->getId(), Addon::AddonNeutral);
 }
 
 
@@ -967,6 +989,60 @@ void PlanHandler::killWeaponLastTurn(bool friendly, int id)
     else
     {
         emit pDebug("Trying to kill a weapon different that equipped in last turn.", Warning);
+    }
+}
+
+
+void PlanHandler::playerHeroPowerZonePlayAdd(QString code, int id)
+{
+    addHeroPower(true, code, id);
+}
+
+
+void PlanHandler::enemyHeroPowerZonePlayAdd(QString code, int id)
+{
+    addHeroPower(false, code, id);
+}
+
+
+void PlanHandler::addHeroPower(bool friendly, QString code, int id)
+{
+    qDebug()<<"NEW HERO POWER --> id"<<id;
+    HeroPowerGraphicsItem* heroPower = friendly?nowBoard->playerHeroPower:nowBoard->enemyHeroPower;
+
+    if(heroPower != NULL)
+    {
+        HeroGraphicsItem* hero = friendly?nowBoard->playerHero:nowBoard->enemyHero;
+        if(hero != NULL)    addAddonToLastTurn(code, id, hero->getId(), Addon::AddonNeutral);
+        heroPower->changeHeroPower(code, id);
+    }
+    else
+    {
+        heroPower = new HeroPowerGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+
+        if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->addItem(heroPower);
+
+        if(friendly)    nowBoard->playerHeroPower = heroPower;
+        else            nowBoard->enemyHeroPower = heroPower;
+    }
+    emit checkCardImage(code, false);
+}
+
+
+void PlanHandler::removeHeroPower(bool friendly, Board *board)
+{
+    if(board == NULL)   board = nowBoard;
+    HeroPowerGraphicsItem* heroPower = friendly?board->playerHeroPower:board->enemyHeroPower;
+    if(heroPower == NULL)
+    {
+        emit pDebug("Trying to remove Hero Power NULL.", Warning);
+    }
+    else
+    {
+        delete heroPower;
+
+        if(friendly)    board->playerHeroPower = NULL;
+        else            board->enemyHeroPower = NULL;
     }
 }
 
@@ -1337,16 +1413,19 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
         minion->setPlayerTurn(playerTurn);
     }
 
-    if(nowBoard->playerHero != NULL)      nowBoard->playerHero->setPlayerTurn(playerTurn);
-    if(nowBoard->enemyHero != NULL)      nowBoard->enemyHero->setPlayerTurn(playerTurn);
+    if(nowBoard->playerHero != NULL)        nowBoard->playerHero->setPlayerTurn(playerTurn);
+    if(nowBoard->enemyHero != NULL)         nowBoard->enemyHero->setPlayerTurn(playerTurn);
+
+    if(nowBoard->playerHeroPower != NULL)   nowBoard->playerHeroPower->setPlayerTurn(playerTurn);
+    if(nowBoard->enemyHeroPower != NULL)    nowBoard->enemyHeroPower->setPlayerTurn(playerTurn);
 
 
     //Store nowBoard
     if(this->firstStoredTurn == 0)
     {
         this->firstStoredTurn = numTurn;
-        updateButtons();
     }
+    updateButtons();
 
     Board *board = new Board();
     board->playerTurn = playerTurn;
@@ -1356,6 +1435,11 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     else                                board->playerHero = new HeroGraphicsItem(nowBoard->playerHero);
     if(nowBoard->enemyHero == NULL)     board->enemyHero = NULL;
     else                                board->enemyHero = new HeroGraphicsItem(nowBoard->enemyHero);
+
+    if(nowBoard->playerHeroPower == NULL)   board->playerHeroPower = NULL;
+    else                                    board->playerHeroPower = new HeroPowerGraphicsItem(nowBoard->playerHeroPower);
+    if(nowBoard->enemyHeroPower == NULL)    board->enemyHeroPower = NULL;
+    else                                    board->enemyHeroPower = new HeroPowerGraphicsItem(nowBoard->enemyHeroPower);
 
     if(nowBoard->playerWeapon == NULL)  board->playerWeapon = NULL;
     else                                board->playerWeapon = new WeaponGraphicsItem(nowBoard->playerWeapon);
@@ -1464,11 +1548,14 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
         card->checkDownloadedCode(code);
     }
 
-    if(viewBoard->playerWeapon != NULL) viewBoard->playerWeapon->checkDownloadedCode(code);
-    if(viewBoard->enemyWeapon != NULL)  viewBoard->enemyWeapon->checkDownloadedCode(code);
-
     if(viewBoard->playerHero != NULL)   viewBoard->playerHero->checkDownloadedCode(code);
     if(viewBoard->enemyHero != NULL)    viewBoard->enemyHero->checkDownloadedCode(code);
+
+    if(viewBoard->playerHeroPower != NULL)  viewBoard->playerHeroPower->checkDownloadedCode(code);
+    if(viewBoard->enemyHeroPower != NULL)   viewBoard->enemyHeroPower->checkDownloadedCode(code);
+
+    if(viewBoard->playerWeapon != NULL) viewBoard->playerWeapon->checkDownloadedCode(code);
+    if(viewBoard->enemyWeapon != NULL)  viewBoard->enemyWeapon->checkDownloadedCode(code);
 }
 
 
@@ -1504,11 +1591,14 @@ void PlanHandler::resetBoard(Board *board)
         delete card;
     }
 
-    if(board->playerWeapon != NULL) removeWeapon(true, -1, board);
-    if(board->enemyWeapon != NULL)  removeWeapon(false, -1, board);
-
     if(board->playerHero != NULL)  removeHero(true, board);
     if(board->enemyHero != NULL)   removeHero(false, board);
+
+    if(board->playerHeroPower != NULL)  removeHeroPower(true, board);
+    if(board->enemyHeroPower != NULL)   removeHeroPower(false, board);
+
+    if(board->playerWeapon != NULL) removeWeapon(true, -1, board);
+    if(board->enemyWeapon != NULL)  removeWeapon(false, -1, board);
 }
 
 
@@ -1622,6 +1712,9 @@ void PlanHandler::loadViewBoard()
     {
         ui->planGraphicsView->scene()->addItem(card);
     }
+
+    if(viewBoard->playerHeroPower != NULL)  ui->planGraphicsView->scene()->addItem(viewBoard->playerHeroPower);
+    if(viewBoard->enemyHeroPower != NULL)   ui->planGraphicsView->scene()->addItem(viewBoard->enemyHeroPower);
 
     if(viewBoard->playerWeapon != NULL) ui->planGraphicsView->scene()->addItem(viewBoard->playerWeapon);
     if(viewBoard->enemyWeapon != NULL)  ui->planGraphicsView->scene()->addItem(viewBoard->enemyWeapon);
