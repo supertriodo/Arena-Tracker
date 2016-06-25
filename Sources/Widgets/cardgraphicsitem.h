@@ -30,7 +30,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     void setZonePos(bool friendly, int pos, int cardsZone, int viewWidth, int cardHeightShow);
     int getId();
-    void setPlayed();
+    void setPlayed(bool played=true);
     void checkDownloadedCode(QString code);
     void setCode(QString code);
     void setDiscard();

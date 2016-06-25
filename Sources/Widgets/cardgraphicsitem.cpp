@@ -42,9 +42,9 @@ void CardGraphicsItem::setCode(QString code)
 }
 
 
-void CardGraphicsItem::setPlayed()
+void CardGraphicsItem::setPlayed(bool played)
 {
-    this->played = true;
+    this->played = played;
     prepareGeometryChange();
     update();
 }
@@ -79,6 +79,7 @@ QRectF CardGraphicsItem::boundingRect() const
 
 void CardGraphicsItem::setZonePos(bool friendly, int pos, int cardsZone, int viewWidth, int cardHeightShow)
 {
+    if(cardHeightShow > HEIGHT)     cardHeightShow = HEIGHT;
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     const int hHero = HeroGraphicsItem::HEIGHT;
     this->heightShow = cardHeightShow;

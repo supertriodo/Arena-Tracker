@@ -1154,6 +1154,7 @@ bool PlanHandler::isAddonHeroValid(QString code)
 {
     QList<QString> forbiddenAddonList;
     forbiddenAddonList.append(ACIDMAW);
+    forbiddenAddonList.append(SIEGE_ENGINE);
     return !forbiddenAddonList.contains(code) && isAddonCommonValid(code);
 }
 
@@ -1311,12 +1312,22 @@ void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdB
     Board *board = turnBoards.last();
     if(board->numTurn == turn)
     {
-        CardGraphicsItem *drawCard = new CardGraphicsItem(card);
-        //Evitamos mostrar cartas robadas en el turno 1 pq el mulligan da problemas
-        if(turn != 1)   drawCard->setDraw();
-        getHandList(friendly, board)->append(drawCard);
-        updateCardZoneSpots(friendly, board);
-        if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
+        CardGraphicsItem *drawCard = findCard(friendly, id, board);
+
+        if(drawCard == NULL)
+        {
+            drawCard = new CardGraphicsItem(card);
+            //Evitamos mostrar cartas robadas en el turno 1 pq el mulligan da problemas
+            if(turn != 1)   drawCard->setDraw();
+            getHandList(friendly, board)->append(drawCard);
+            updateCardZoneSpots(friendly, board);
+            if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
+        }
+        else
+        {
+            //Battlecry cancelado y vuelve a la mano
+            drawCard->setPlayed(false);
+        }
     }
 }
 

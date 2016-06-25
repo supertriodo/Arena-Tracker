@@ -571,6 +571,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(secretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             secretsHandler, SLOT(secretRevealed(int, QString)));
+    connect(gameWatcher, SIGNAL(playerSecretStolen(int, QString)),
+            secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed()),
             secretsHandler, SLOT(playerSpellPlayed()));
     connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
@@ -2577,14 +2579,15 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Log ordenado
 //Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Cambiar poder heroe
 //Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
 //21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
-//Mediv hp CS2_034_H1
+//Mediv hp CS2_034_H1, liadrin CS2_101_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//Vigilar id secretos enemigos desvelados para revelar la carta
-//Mￃﾡquina de asedio (GVG_086) forbidden hero
+
+
+//Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir.
+//Es aceptable
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo, es aceptable

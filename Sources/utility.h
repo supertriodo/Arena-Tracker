@@ -66,6 +66,7 @@
 #define ARMORED_WARHORSE "AT_108"
 #define SWORD_OF_JUSTICE "EX1_366"
 #define GRIMSCALE_ORACLE "EX1_508"
+#define SIEGE_ENGINE "GVG_086"
 
 
 using namespace cv;
