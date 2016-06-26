@@ -35,6 +35,7 @@ public:
     void setCode(QString code);
     void setDiscard();
     void setDraw();
+    bool isDiscard();
 };
 
 #endif // CARDGRAPHICSITEM_H

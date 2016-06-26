@@ -2586,6 +2586,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
 
 
+//Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto.
+
 //Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir.
 //Es aceptable
 

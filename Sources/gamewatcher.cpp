@@ -588,9 +588,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         {
             if(blockType == "FATIGUE" && zone == "PLAY")
             {
-                bool advance = advanceTurn(isPlayer);
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Fatigue damage.", numLine);
-                if(advance)     emit newTurn(isPlayerTurn, turnReal);
+                if(advanceTurn(isPlayer))       emit newTurn(isPlayerTurn, turnReal);
             }
         }
 
@@ -720,8 +719,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 bool advance = advanceTurn(false);
                 emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
+                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
                 emit enemyCardDraw(id.toInt(), turnReal);
-                if(advance)     emit newTurn(isPlayerTurn, turnReal);
+                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
             }
 
             else if(zoneFrom.isEmpty())
@@ -764,24 +764,30 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo roba carta conocida
         else if(zoneTo == "OPPOSING HAND")
         {
+            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
             bool advance = false;
             if(zoneFrom == "OPPOSING DECK")
             {
                 advance = advanceTurn(false);
                 emit enemyKnownCardDraw(cardId);
             }
-            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+            if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
             emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
+            if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
         }
 
         //Jugador roba carta conocida
         else if(zoneTo == "FRIENDLY HAND" && mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
         {
-            bool advance = advanceTurn(true);
             emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
+            bool advance = false;
+            if(zoneFrom == "FRIENDLY DECK")
+            {
+                advance = advanceTurn(true);
+            }
+            if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
             emit playerCardToHand(id.toInt(), cardId, turnReal);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
+            if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
         }
 
         //Enemigo, nuevo minion en PLAY
@@ -929,9 +935,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
         {
             bool advance = advanceTurn(true);
+            if(advance)     emit newTurn(isPlayerTurn, turnReal);
             emit pDebug("Player: Card drawn: " + name, numLine);
             emit playerCardDraw(cardId);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
         }
 
         //Jugador juega carta conocida

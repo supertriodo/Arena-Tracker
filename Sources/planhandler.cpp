@@ -1336,11 +1336,10 @@ void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdB
     {
         CardGraphicsItem *drawCard = findCard(friendly, id, board);
 
-        if(drawCard == NULL)
+        if(drawCard == NULL || drawCard->isDiscard())
         {
             drawCard = new CardGraphicsItem(card);
-            //Evitamos mostrar cartas robadas en el turno 1 pq el mulligan da problemas
-            if(turn != 1)   drawCard->setDraw();
+            drawCard->setDraw();
             getHandList(friendly, board)->append(drawCard);
             updateCardZoneSpots(friendly, board);
             if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);

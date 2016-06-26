@@ -31,6 +31,12 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
 }
 
 
+bool CardGraphicsItem::isDiscard()
+{
+    return this->discard;
+}
+
+
 int CardGraphicsItem::getId()
 {
     return this->id;
