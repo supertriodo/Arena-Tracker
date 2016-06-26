@@ -22,7 +22,7 @@ public:
 
 //Variables:
 private:
-    int armor;
+    int armor, minionsAttack;
     QList<SecretIcon> secretsList;
 
 public:
@@ -40,6 +40,7 @@ public:
     SecretHero getSecretHero(int id);
     bool isYourSecret(int id);
     void changeHero(QString code, int id);
+    void setMinionsAttack(int minionsAttack);
 };
 
 #endif // HEROGRAPHICSITEM_H

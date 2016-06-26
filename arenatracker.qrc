@@ -123,5 +123,6 @@
         <file>Images/bgHeroPower.png</file>
         <file>Images/bgHeroPowerGlow.png</file>
         <file>Images/bgHeroPowerClosed.png</file>
+        <file>Images/bgTotalAttack.png</file>
     </qresource>
 </RCC>

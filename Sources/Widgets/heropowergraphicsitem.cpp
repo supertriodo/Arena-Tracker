@@ -17,7 +17,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly
     int x = wHero/2 + WIDTH/2 - 20;
     int y = friendly?hMinion + hHero/2 + 20:-hMinion - hHero/2 + 15;
     this->setPos(x, y);
-    this->setZValue(-1);
+    this->setZValue(-40);
 }
 
 
@@ -87,8 +87,8 @@ void HeroPowerGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsI
     {
         //Card background
         painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));
-        painter->setBrushOrigin(QPointF(101,209));
-        painter->drawEllipse(QPointF(0,0), 40, 40);
+        painter->setBrushOrigin(QPointF(101,210));//99+2,204+6
+        painter->drawEllipse(QPointF(2,6), 40, 40);
 
         //Glow
         if(exausted)

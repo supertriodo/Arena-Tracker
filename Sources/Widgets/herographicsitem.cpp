@@ -8,11 +8,13 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->armor = 0;
     this->exausted = false;
     this->hero = true;
+    this->minionsAttack = 0;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
     int y = friendly?hMinion + HEIGHT/2:-hMinion - HEIGHT/2;
     this->setPos(x, y);
+    this->setZValue(-20);
 }
 
 
@@ -20,6 +22,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     :MinionGraphicsItem(copy)
 {
     this->armor = copy->armor;
+    this->minionsAttack = copy->minionsAttack;
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -32,7 +35,7 @@ void HeroGraphicsItem::changeHero(QString code, int id)
 {
     this->code = code;
     this->id = id;
-    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
+    this->attack = this->origAttack = 0;
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
     this->damage = 0;
     this->armor = 0;
@@ -40,9 +43,16 @@ void HeroGraphicsItem::changeHero(QString code, int id)
 }
 
 
+void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
+{
+    this->minionsAttack = minionsAttack;
+    update();
+}
+
+
 QRectF HeroGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
+    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 10, WIDTH + 30, HEIGHT + 10);
 }
 
 
@@ -167,10 +177,11 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     if(damage>0)                painter->setBrush(RED);
     else                        painter->setBrush(WHITE);
     QFontMetrics fm(font);
-    int textWide = fm.width(QString::number(health-damage));
+    QString text = QString::number(health-damage);
+    int textWide = fm.width(text);
     int textHigh = fm.height();
     QPainterPath path;
-    path.addText(70 - textWide/2, 55 + textHigh/4, font, QString::number(health-damage));
+    path.addText(70 - textWide/2, 55 + textHigh/4, font, text);
     painter->drawPath(path);
 
     //Attack
@@ -179,9 +190,10 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPixmap(-114, -4, QPixmap(":Images/bgHeroAttack.png"));
 
         painter->setBrush(WHITE);
-        textWide = fm.width(QString::number(attack));
+        text = QString::number(attack);
+        textWide = fm.width(text);
         path = QPainterPath();
-        path.addText(-66 - textWide/2, 55 + textHigh/4, font, QString::number(attack));
+        path.addText(-66 - textWide/2, 55 + textHigh/4, font, text);
         painter->drawPath(path);
     }
 
@@ -191,9 +203,10 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPixmap(41, -36, QPixmap(":Images/bgHeroArmor.png"));
 
         painter->setBrush(WHITE);
-        textWide = fm.width(QString::number(armor));
+        text = QString::number(armor);
+        textWide = fm.width(text);
         path = QPainterPath();
-        path.addText(70 - textWide/2, textHigh/4, font, QString::number(armor));
+        path.addText(70 - textWide/2, textHigh/4, font, text);
         painter->drawPath(path);
     }
 
@@ -322,6 +335,24 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             path.addText(moveX - textWide/2, moveY + textHigh/4, font, QString::number(addons[i].number));
             painter->drawPath(path);
         }
+    }
+
+    //Total attack
+    if(playerTurn==friendly)
+    {
+        painter->drawPixmap(-WIDTH/2-30, -HEIGHT/2-10, QPixmap(":Images/bgTotalAttack.png"));
+        int totalAttack = this->minionsAttack;
+        if(glow)
+        {
+            if(windfury)    totalAttack += attack*2;
+            else            totalAttack += attack;
+        }
+        text = QString::number(totalAttack);
+        textWide = fm.width(text);
+        path = QPainterPath();
+        path.addText(-WIDTH/2+18 - textWide/2, -HEIGHT/2+49 + textHigh/4, font, text);
+        painter->setBrush(WHITE);
+        painter->drawPath(path);
     }
 }
 

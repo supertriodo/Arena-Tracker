@@ -29,6 +29,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->zone = "PLAY";
     this->changeAttack = ChangeNone;
     this->changeHealth = ChangeNone;
+    this->setZValue(-50);
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -92,6 +93,14 @@ QString MinionGraphicsItem::getCode()
 int MinionGraphicsItem::getAttack()
 {
     return attack;
+}
+
+
+int MinionGraphicsItem::getPotencialDamage()
+{
+    if(exausted || frozen)  return 0;
+    else if(windfury)       return attack*2;
+    else                    return attack;
 }
 
 
@@ -378,7 +387,6 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "WINDFURY")
     {
         this->windfury = (value=="1");
-        return healing;
     }
     else if(tag == "AURA")
     {
@@ -451,18 +459,20 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(attack>origAttack)   painter->setBrush(GREEN);
     else                    painter->setBrush(WHITE);
     QFontMetrics fm(font);
-    int textWide = fm.width(QString::number(attack));
+    QString text = QString::number(attack);
+    int textWide = fm.width(text);
     int textHigh = fm.height();
     QPainterPath path;
-    path.addText(-35 - textWide/2, 46 + textHigh/4, font, QString::number(attack));
+    path.addText(-35 - textWide/2, 46 + textHigh/4, font, text);
     painter->drawPath(path);
 
     if(damage>0)                painter->setBrush(RED);
     else if(health>origHealth)  painter->setBrush(GREEN);
     else                        painter->setBrush(WHITE);
-    textWide = fm.width(QString::number(health-damage));
+    text = QString::number(health-damage);
+    textWide = fm.width(text);
     path = QPainterPath();
-    path.addText(34 - textWide/2, 46 + textHigh/4, font, QString::number(health-damage));
+    path.addText(34 - textWide/2, 46 + textHigh/4, font, text);
     painter->drawPath(path);
 
     //Shield
@@ -534,9 +544,10 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         //Numero
         if(addons[i].number > 1)
         {
-            textWide = fm.width(QString::number(addons[i].number));
+            text = QString::number(addons[i].number);
+            textWide = fm.width(text);
             path = QPainterPath();
-            path.addText(moveX - textWide/2, moveY + textHigh/4, font, QString::number(addons[i].number));
+            path.addText(moveX - textWide/2, moveY + textHigh/4, font, text);
             painter->drawPath(path);
         }
     }

@@ -122,6 +122,7 @@ private:
     void killWeaponLastTurn(bool friendly, int id);
     void removeHeroPower(bool friendly, Board *board);
     void addHeroPower(bool friendly, QString code, int id);
+    void updateMinionsAttack(bool friendly);
 
 public:
     void setTransparency(Transparency value);

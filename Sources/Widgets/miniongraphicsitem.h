@@ -67,7 +67,8 @@ public:
     void setChangeAttack(ValueChange value);
     void setChangeHealth(ValueChange value);
     int getAttack();
-    int getHealth();
+    int getHealth();    
+    int getPotencialDamage();
 
 private:
     void addAddonNeutral(Addon addon);

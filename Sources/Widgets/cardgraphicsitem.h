@@ -10,7 +10,7 @@ class CardGraphicsItem : public QGraphicsItem
 {
 //Constructor
 public:
-    CardGraphicsItem(int id, QString code, QString createdByCode, int turn);
+    CardGraphicsItem(int id, QString code, QString createdByCode, int turn, bool friendly);
     CardGraphicsItem(CardGraphicsItem *copy);
 
 //Variables

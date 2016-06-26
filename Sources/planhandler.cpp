@@ -73,12 +73,27 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
     minionsList->insert(pos, minion);
     updateMinionZoneSpots(friendly);
+    updateMinionsAttack(friendly);
 
     if(viewBoard == nowBoard)
     {
         ui->planGraphicsView->scene()->addItem(minion);
         ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+        updateViewCardZoneSpots();
     }
+}
+
+
+void PlanHandler::updateMinionsAttack(bool friendly)
+{
+    int minionsAttack = 0;
+    foreach(MinionGraphicsItem *minion, *getMinionList(friendly))
+    {
+        minionsAttack += minion->getPotencialDamage();
+    }
+
+    HeroGraphicsItem *hero = getHero(friendly);
+    if(hero != NULL)    hero->setMinionsAttack(minionsAttack);
 }
 
 
@@ -100,7 +115,7 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
 
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
     addMinion(friendly, minion, pos);
-    if(this->lastTriggerId!=-1)     copyMinionToLastTurn(friendly, minion);
+    if(this->lastTriggerId!=-1)         copyMinionToLastTurn(friendly, minion);
     else                                emit pDebug("Triggered minion creator not set.");
     emit checkCardImage(code, false);
 }
@@ -169,6 +184,7 @@ void PlanHandler::copyMinionToLastTurn(bool friendly, MinionGraphicsItem *minion
         {
             ui->planGraphicsView->scene()->addItem(triggerMinion);
             ui->planGraphicsView->updateView(std::max(board->playerMinions.count(), board->enemyMinions.count()));
+            updateViewCardZoneSpots();
         }
     }
 }
@@ -217,11 +233,13 @@ MinionGraphicsItem * PlanHandler::takeMinion(bool friendly, int id, bool stolen)
 
     MinionGraphicsItem* minion = minionsList->takeAt(pos);
     updateMinionZoneSpots(friendly);
+    updateMinionsAttack(friendly);
 
     if(viewBoard == nowBoard)
     {
         ui->planGraphicsView->scene()->removeItem(minion);
         ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+        updateViewCardZoneSpots();
     }
 
     //Marcar como dead minion en ultimo turno
@@ -306,6 +324,7 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
         {
             ui->planGraphicsView->scene()->addItem(hero);
             ui->planGraphicsView->updateView(std::max(nowBoard->playerMinions.count(), nowBoard->enemyMinions.count()));
+            updateViewCardZoneSpots();
         }
 
         if(friendly)    nowBoard->playerHero = hero;
@@ -501,6 +520,7 @@ void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value
         healing = minion->processTagChange(tag, value);
         isDead = minion->isDead();
         isHero = false;
+        if(tag == "ATK" || tag == "EXHAUSTED" || tag == "WINDFURY" || tag == "FROZEN")      updateMinionsAttack(friendly);
     }
 
     //Heroes
@@ -612,6 +632,7 @@ void PlanHandler::checkPendingTagChanges()
         healing = minion->processTagChange(tag, value);
         isDead = minion->isDead();
         isHero = false;
+        if(tag == "ATK" || tag == "EXHAUSTED" || tag == "WINDFURY" || tag == "FROZEN")      updateMinionsAttack(friendly);
     }
 
     //Heroes
@@ -1146,6 +1167,7 @@ bool PlanHandler::isAddonCommonValid(QString code)
     forbiddenAddonList.append(NERUBIAN_PROPHET);
     forbiddenAddonList.append(SNAKE_TRAP);
     forbiddenAddonList.append(ARMORED_WARHORSE);
+    forbiddenAddonList.append(DARKSHIRE_COUNCILMAN);
     return !forbiddenAddonList.contains(code);
 }
 
@@ -1299,7 +1321,7 @@ void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int
 
 void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
 {
-    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn);
+    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly);
     getHandList(friendly)->append(card);
     updateCardZoneSpots(friendly);
 
@@ -1697,8 +1719,6 @@ void PlanHandler::loadViewBoard()
     ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
     updateViewCardZoneSpots();
 
-    ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
-
     foreach(MinionGraphicsItem *minion, viewBoard->playerMinions)
     {
         ui->planGraphicsView->scene()->addItem(minion);
@@ -1730,6 +1750,7 @@ void PlanHandler::loadViewBoard()
     if(viewBoard->playerWeapon != NULL) ui->planGraphicsView->scene()->addItem(viewBoard->playerWeapon);
     if(viewBoard->enemyWeapon != NULL)  ui->planGraphicsView->scene()->addItem(viewBoard->enemyWeapon);
 
+    ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
     ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
 }
 

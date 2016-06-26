@@ -16,7 +16,7 @@ WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly)
     int x = -wHero/2 - WIDTH/2 + 20;
     int y = friendly?hMinion + hHero/2 + 15:-hMinion - hHero/2 + 15;
     this->setPos(x, y);
-    this->setZValue(-1);
+    this->setZValue(-40);
 }
 
 
@@ -82,18 +82,20 @@ void WeaponGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(attack>origAttack)   painter->setBrush(GREEN);
     else                    painter->setBrush(WHITE);
     QFontMetrics fm(font);
-    int textWide = fm.width(QString::number(attack));
+    QString text = QString::number(attack);
+    int textWide = fm.width(text);
     int textHigh = fm.height();
     QPainterPath path;
-    path.addText(-49 - textWide/2, 37 + textHigh/4, font, QString::number(attack));
+    path.addText(-49 - textWide/2, 37 + textHigh/4, font, text);
     painter->drawPath(path);
 
     if(damage>0)                painter->setBrush(RED);
     else if(durability>origDurability)  painter->setBrush(GREEN);
     else                        painter->setBrush(WHITE);
-    textWide = fm.width(QString::number(durability-damage));
+    text = QString::number(durability-damage);
+    textWide = fm.width(text);
     path = QPainterPath();
-    path.addText(47 - textWide/2, 37 + textHigh/4, font, QString::number(durability-damage));
+    path.addText(47 - textWide/2, 37 + textHigh/4, font, text);
     painter->drawPath(path);
 
     //Dead

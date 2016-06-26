@@ -4,7 +4,7 @@
 #include <QtWidgets>
 
 
-CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn)
+CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn, bool friendly)
 {
     this->code = code;
     this->createdByCode = createdByCode;
@@ -12,6 +12,7 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
     this->turn = turn;
+    friendly?this->setZValue(-10):this->setZValue(-30);
 }
 
 
@@ -26,6 +27,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->heightShow = copy->heightShow;
     this->turn = copy->turn;
     this->setPos(copy->pos());
+    this->setZValue(copy->zValue());
 }
 
 
