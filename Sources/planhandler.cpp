@@ -1430,8 +1430,19 @@ void PlanHandler::lastEnemyHandCardIsCoin()
 }
 
 
+void PlanHandler::fixTurn1Card()
+{
+    if(turnBoards.empty())  return;
+    Board *board = turnBoards.last();
+    QList<CardGraphicsItem *> *cardList = getHandList(board->playerTurn, board);
+    if(!cardList->isEmpty())     cardList->last()->setDraw(false);
+}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
+    if(numTurn == 2)    fixTurn1Card();
+
     //Update nowBoard
     nowBoard->playerTurn = playerTurn;
 

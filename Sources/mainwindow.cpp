@@ -2584,6 +2584,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1, liadrin CS2_101_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
+//Resources
+//D 10:48:46.1127070 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES value=3
+//D 10:48:46.1127200 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES_USED value=0
 
 
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto.

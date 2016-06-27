@@ -34,7 +34,7 @@ public:
     void checkDownloadedCode(QString code);
     void setCode(QString code);
     void setDiscard();
-    void setDraw();
+    void setDraw(bool drawn=true);
     bool isDiscard();
 };
 

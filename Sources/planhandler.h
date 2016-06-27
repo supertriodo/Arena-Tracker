@@ -123,6 +123,7 @@ private:
     void removeHeroPower(bool friendly, Board *board);
     void addHeroPower(bool friendly, QString code, int id);
     void updateMinionsAttack(bool friendly);
+    void fixTurn1Card();
 
 public:
     void setTransparency(Transparency value);

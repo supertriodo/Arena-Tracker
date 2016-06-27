@@ -66,9 +66,9 @@ void CardGraphicsItem::setDiscard()
 }
 
 
-void CardGraphicsItem::setDraw()
+void CardGraphicsItem::setDraw(bool drawn)
 {
-    this->draw = true;
+    this->draw = drawn;
     update();
 }
 
