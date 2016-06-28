@@ -525,6 +525,12 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerMinionTagChange(int,QString,QString,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionTagChange(int,QString,QString,QString)),
             planHandler, SLOT(enemyMinionTagChange(int,QString,QString,QString)));
+    connect(gameWatcher, SIGNAL(unknownTagChange(QString,QString)),
+            planHandler, SLOT(unknownTagChange(QString,QString)));
+    connect(gameWatcher, SIGNAL(playerTagChange(QString,QString)),
+            planHandler, SLOT(playerTagChange(QString,QString)));
+    connect(gameWatcher, SIGNAL(enemyTagChange(QString,QString)),
+            planHandler, SLOT(enemyTagChange(QString,QString)));
     connect(gameWatcher, SIGNAL(zonePlayAttack(QString, int,int)),
             planHandler, SLOT(zonePlayAttack(QString, int,int)));
     connect(gameWatcher, SIGNAL(playerSecretPlayed(int,QString)),
@@ -2579,9 +2585,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Log ordenado
 //Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Addon ooze cuando incluamos las armas y si id, tag LAST_AFFECTED_BY - funciona al eliminar un arma con windfury
-//21:49:49 - GameWatcher(19426): Trigger(POWER): Moco del pantano ￃﾡcido
-//21:49:49 - GameWatcher(19429): Enemy: TAG_CHANGE(LAST_AFFECTED_BY)=8 -- Hacha de guerra ￃﾭgnea
 //Mediv hp CS2_034_H1, liadrin CS2_101_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
 //Resources

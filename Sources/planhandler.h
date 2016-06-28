@@ -87,7 +87,7 @@ private:
     void addReinforceToLastTurn(MinionGraphicsItem *parent, MinionGraphicsItem *child, Board *board);
     void updateMinionPos(bool friendly, int id, int pos);
     void removeMinion(bool friendly, int id);
-    void addTagChange(int id, bool friendly, QString tag, QString value);
+    void addMinionTagChange(int id, bool friendly, QString tag, QString value);
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id, bool stolen=false);
     void addHero(bool friendly, QString code, int id);
@@ -123,7 +123,8 @@ private:
     void removeHeroPower(bool friendly, Board *board);
     void addHeroPower(bool friendly, QString code, int id);
     void updateMinionsAttack(bool friendly);
-    void fixTurn1Card();
+    void fixTurn1Card();    
+    void addTagChange(bool friendly, QString tag, QString value);
 
 public:
     void setTransparency(Transparency value);
@@ -182,6 +183,9 @@ public slots:
     void enemyWeaponZonePlayRemove(int id);
     void playerHeroPowerZonePlayAdd(QString code, int id);
     void enemyHeroPowerZonePlayAdd(QString code, int id);
+    void playerTagChange(QString tag, QString value);
+    void enemyTagChange(QString tag, QString value);
+    void unknownTagChange(QString tag, QString value);
 
 private slots:
     void checkPendingTagChanges();

@@ -483,7 +483,7 @@ void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QStri
         addAddonToLastTurn(code, id, nowBoard->playerHero->getId(), Addon::AddonNeutral);
         addHero(true, code, id);
     }
-    else    addTagChange(id, true, tag, value);
+    else    addMinionTagChange(id, true, tag, value);
 }
 
 
@@ -495,11 +495,11 @@ void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QStrin
         addAddonToLastTurn(code, id, nowBoard->enemyHero->getId(), Addon::AddonNeutral);
         addHero(false, code, id);
     }
-    else    addTagChange(id, false, tag, value);
+    else    addMinionTagChange(id, false, tag, value);
 }
 
 
-void PlanHandler::addTagChange(int id, bool friendly, QString tag, QString value)
+void PlanHandler::addMinionTagChange(int id, bool friendly, QString tag, QString value)
 {
     TagChange tagChange;
     tagChange.id = id;
@@ -817,6 +817,34 @@ void PlanHandler::checkAtkHealthChange(MinionGraphicsItem * minion, bool friendl
         if(newHealth > health)          minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangePositive);
         else if(newHealth < health)     minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangeNegative);
     }
+}
+
+
+void PlanHandler::playerTagChange(QString tag, QString value)
+{
+    addTagChange(true, tag, value);
+}
+
+
+void PlanHandler::enemyTagChange(QString tag, QString value)
+{
+    addTagChange(false, tag, value);
+}
+
+
+void PlanHandler::unknownTagChange(QString tag, QString value)
+{
+    addTagChange(!nowBoard->playerTurn, tag, value);
+    if(this->firstStoredTurn == 0)  addTagChange(nowBoard->playerTurn, tag, value);
+}
+
+
+void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
+{
+    HeroGraphicsItem *hero = getHero(friendly, NULL);
+    if(hero == NULL)        return;
+
+    if(tag == "RESOURCES")  hero->setResources(value.toInt());
 }
 
 
@@ -1444,6 +1472,18 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     if(numTurn == 2)    fixTurn1Card();
 
     //Update nowBoard
+    if(this->firstStoredTurn == 0)
+    {
+        this->firstStoredTurn = numTurn;
+
+        if(numTurn > 5 && nowBoard->playerHero->getResources() == 1)
+        {
+            nowBoard->playerHero->setResources(10);
+            nowBoard->enemyHero->setResources(10);
+        }
+    }
+    updateButtons();
+
     nowBoard->playerTurn = playerTurn;
 
     foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
@@ -1464,12 +1504,6 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
 
     //Store nowBoard
-    if(this->firstStoredTurn == 0)
-    {
-        this->firstStoredTurn = numTurn;
-    }
-    updateButtons();
-
     Board *board = new Board();
     board->playerTurn = playerTurn;
     board->numTurn = numTurn;

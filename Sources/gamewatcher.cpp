@@ -451,6 +451,35 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
+    //TAG_CHANGE conocido
+    //D 10:48:46.1127070 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES value=3
+    if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
+        "Entity=(.*) tag=(\\w+) value=(\\w+)"
+        ), match))
+    {
+        QString name = match->captured(1);
+        QString tag = match->captured(2);
+        QString value = match->captured(3);
+        bool isPlayer = (name == playerTag);
+
+        if(tag == "RESOURCES")
+        {
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
+                        " -- Name: " + name, numLine);
+            if(!playerTag.isEmpty())
+            {
+                if(isPlayer)    emit playerTagChange(tag, value);
+                else            emit enemyTagChange(tag, value);
+            }
+            else
+            {
+                emit unknownTagChange(tag, value);
+            }
+        }
+    }
+
+
     //TAG_CHANGE desconocido
     //Secret hero
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[id=43 cardId= type=INVALID zone=HAND zonePos=1 player=2] tag=CLASS value=PALADIN

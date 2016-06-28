@@ -9,6 +9,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->exausted = false;
     this->hero = true;
     this->minionsAttack = 0;
+    this->resources = 1;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
@@ -23,6 +24,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
 {
     this->armor = copy->armor;
     this->minionsAttack = copy->minionsAttack;
+    this->resources = copy->resources;
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -50,9 +52,22 @@ void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
 }
 
 
+void HeroGraphicsItem::setResources(int resources)
+{
+    this->resources = resources;
+    update();
+}
+
+
+int HeroGraphicsItem::getResources()
+{
+    return this->resources;
+}
+
+
 QRectF HeroGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 10, WIDTH + 30, HEIGHT + 10);
+    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 16, HEIGHT + 13);
 }
 
 
@@ -337,10 +352,19 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
     }
 
-    //Total attack
     if(playerTurn==friendly)
     {
-        painter->drawPixmap(-WIDTH/2-30, -HEIGHT/2-10, QPixmap(":Images/bgTotalAttack.png"));
+        //Mana
+        painter->drawPixmap(WIDTH/2-50, -HEIGHT/2+13, QPixmap(":Images/bgCrystal.png"));
+        text = QString::number(resources);
+        textWide = fm.width(text);
+        path = QPainterPath();
+        path.addText(WIDTH/2-17 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);
+        painter->setBrush(WHITE);
+        painter->drawPath(path);
+
+        //Total attack
+        painter->drawPixmap(-WIDTH/2-30, -HEIGHT/2-13, QPixmap(":Images/bgTotalAttack.png"));
         int totalAttack = this->minionsAttack;
         if(glow)
         {
@@ -350,7 +374,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         text = QString::number(totalAttack);
         textWide = fm.width(text);
         path = QPainterPath();
-        path.addText(-WIDTH/2+18 - textWide/2, -HEIGHT/2+49 + textHigh/4, font, text);
+        path.addText(-WIDTH/2+18 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);
         painter->setBrush(WHITE);
         painter->drawPath(path);
     }

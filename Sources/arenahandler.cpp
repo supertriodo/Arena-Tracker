@@ -63,7 +63,7 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
-    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+//    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
             this, SLOT(changedRow(QTreeWidgetItem*)));
