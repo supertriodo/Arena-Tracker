@@ -1,4 +1,5 @@
 #include "planhandler.h"
+#include "mainwindow.h"
 #include <QtWidgets>
 
 
@@ -8,6 +9,7 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->transparency = Opaque;
     this->inGame = false;
     this->mouseInApp = false;
+    this->sizePlan = false;
     this->nowBoard = new Board();
     this->nowBoard->playerHero = NULL;
     this->nowBoard->enemyHero = NULL;
@@ -38,6 +40,8 @@ void PlanHandler::completeUI()
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
             this, SLOT(showNextTurn()));
+    connect(ui->planButtonResize, SIGNAL(clicked()),
+            this, SLOT(resizePlan()));
     connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
             this, SLOT(updateViewCardZoneSpots()));
 }
@@ -1857,6 +1861,36 @@ void PlanHandler::endGame(bool playerWon)
 {
     addHeroDeadToLastTurn(playerWon);
     unlockPlanInterface();
+}
+
+
+bool PlanHandler::resetSizePlan()
+{
+    bool oldSizePlan = sizePlan;
+    sizePlan = false;
+    return oldSizePlan;
+}
+
+
+void PlanHandler::resizePlan(bool toggleSizePlan)
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    MainWindow *mainWindow = ((MainWindow*)parent());
+    QSize newSize;
+    if(toggleSizePlan)      sizePlan = !sizePlan;
+
+    if(!sizePlan)
+    {
+        settings.setValue("sizePlan", mainWindow->size());
+        newSize = settings.value("size", QSize(350, 400)).toSize();
+    }
+    else
+    {
+        settings.setValue("size", mainWindow->size());
+        newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
+    }
+
+    mainWindow->resize(newSize);
 }
 
 

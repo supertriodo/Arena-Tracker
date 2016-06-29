@@ -68,6 +68,7 @@ private:
     Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons. Guarda ultimo trigger, power o fatigue
     qint64 lastPowerTime=0;
     ArmorRemover lastArmorRemoverIds;//idAddon=-1 -->None      //Evita doble damage en heroe (armadura y damage)
+    bool sizePlan;
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
@@ -131,6 +132,7 @@ public:
     void setMouseInApp(bool value);
     void redrawDownloadedCardImage(QString code);
     void reset();
+    bool resetSizePlan();
 
 signals:
     void checkCardImage(QString code, bool isHero);
@@ -186,6 +188,7 @@ public slots:
     void playerTagChange(QString tag, QString value);
     void enemyTagChange(QString tag, QString value);
     void unknownTagChange(QString tag, QString value);
+    void resizePlan(bool toggleSizePlan=true);
 
 private slots:
     void checkPendingTagChanges();

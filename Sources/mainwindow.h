@@ -199,6 +199,7 @@ private slots:
     void logReset();
     void spreadCorrectTamCard();
     void completeArenaDeck();
+    void resizeChangingTab();
 };
 
 #endif // MAINWINDOW_H

@@ -744,6 +744,8 @@ void MainWindow::completeUI()
 
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(spreadMouseInApp()));
+        connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+                this, SLOT(resizeChangingTab()));
 
         ui->replayButton->hide();//TODO eliminar
 
@@ -817,6 +819,7 @@ void MainWindow::closeApp()
     //Check unsaved decks
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
     removeNonCompleteDraft();
+    resizeChangingTab();
     close();
 }
 
@@ -1224,6 +1227,12 @@ void MainWindow::spreadMouseInApp()
         else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
         else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     }
+}
+
+
+void MainWindow::resizeChangingTab()
+{
+    if(planHandler->resetSizePlan())    planHandler->resizePlan(false);
 }
 
 
