@@ -125,5 +125,10 @@
         <file>Images/bgHeroPowerClosed.png</file>
         <file>Images/bgTotalAttack.png</file>
         <file>Images/bgCrystal.png</file>
+        <file>Images/planFirst.png</file>
+        <file>Images/planLast.png</file>
+        <file>Images/planNext.png</file>
+        <file>Images/planPrev.png</file>
+        <file>Images/planResize.png</file>
     </qresource>
 </RCC>

@@ -194,6 +194,8 @@ private slots:
     void checkPendingTagChanges();
     void showNextTurn();
     void showPrevTurn();
+    void showFirstTurn();
+    void showLastTurn();
 };
 
 #endif // PLANHANDLER_H

@@ -75,6 +75,9 @@
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QPushButton" name="updateButton">
               <property name="enabled">
@@ -1253,24 +1256,87 @@
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutPlanButtons">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QPushButton" name="planButtonResize">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
-               <string>Resize</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="arenatracker.qrc">
+                <normaloff>:/Images/planResize.png</normaloff>:/Images/planResize.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="QPushButton" name="planButtonFirst">
               <property name="text">
-               <string>First</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planFirst.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="planButtonPrev">
               <property name="text">
-               <string>Prev</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planPrev.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -1293,16 +1359,73 @@
             <item>
              <widget class="QPushButton" name="planButtonNext">
               <property name="text">
-               <string>Next</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planNext.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="planButtonLast">
               <property name="text">
-               <string>Last</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planLast.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>

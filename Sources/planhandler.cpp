@@ -40,6 +40,10 @@ void PlanHandler::completeUI()
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
             this, SLOT(showNextTurn()));
+    connect(ui->planButtonFirst, SIGNAL(clicked()),
+            this, SLOT(showFirstTurn()));
+    connect(ui->planButtonLast, SIGNAL(clicked()),
+            this, SLOT(showLastTurn()));
     connect(ui->planButtonResize, SIGNAL(clicked()),
             this, SLOT(resizePlan()));
     connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
@@ -1710,8 +1714,10 @@ void PlanHandler::updateButtons()
     int viewTurn = viewBoard->numTurn;
     bool nextEnabled = viewTurn != 0;
     bool prevEnabled = (firstStoredTurn!=0 && viewTurn==0) || viewTurn>firstStoredTurn;
+    ui->planButtonLast->setEnabled(nextEnabled);
     ui->planButtonNext->setEnabled(nextEnabled);
     ui->planButtonPrev->setEnabled(prevEnabled);
+    ui->planButtonFirst->setEnabled(prevEnabled);
 
     QString color;
     if(viewBoard->playerTurn)    color = "#008000";
@@ -1755,6 +1761,38 @@ void PlanHandler::showPrevTurn()
     int lastTurn = firstStoredTurn + countTurns - 1;
     if(viewTurn == 0)       viewBoard = turnBoards[lastTurn-firstStoredTurn];
     else                    viewBoard = turnBoards[viewTurn-1-firstStoredTurn];
+
+    loadViewBoard();
+    updateButtons();
+}
+
+
+void PlanHandler::showLastTurn()
+{
+    int viewTurn = viewBoard->numTurn;
+    if(viewTurn == 0)
+    {
+        emit pDebug("Moving to last turn when in nowBoard. Last Turn button should be disabled.", Error);
+        updateButtons();
+        return;
+    }
+    viewBoard = nowBoard;
+
+    loadViewBoard();
+    updateButtons();
+}
+
+
+void PlanHandler::showFirstTurn()
+{
+    int viewTurn = viewBoard->numTurn;
+    if(viewTurn == firstStoredTurn)
+    {
+        emit pDebug("Moving to first turn when in first turn. First Turn button should be disabled.", Error);
+        updateButtons();
+        return;
+    }
+    viewBoard = turnBoards[0];
 
     loadViewBoard();
     updateButtons();
