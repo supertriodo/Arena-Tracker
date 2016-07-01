@@ -373,16 +373,26 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         QString cardId = match->captured(3);
         QString player = match->captured(4);
 
-        emit pDebug("Player: Starting card drawn: " + cardName, numLine);
-        emit playerCardDraw(cardId, true);
-        emit playerCardToHand(id.toInt(), cardId, 0);
-
         if(playerID == 0 || playerTag.isEmpty())
         {
             playerID = player.toInt();
             playerTag = (playerID == 1)?name1:name2;
             emit enemyHero((playerID == 1)?hero2:hero1);
             emit pDebug("Found playerID: " + player + " playerTag: " + playerTag, 0);
+        }
+
+        //Jugador
+        if(playerID == 0 || playerID == player.toInt())
+        {
+            emit pDebug("Player: Starting card drawn: " + cardName, numLine);
+            emit playerCardDraw(cardId, true);
+            emit playerCardToHand(id.toInt(), cardId, 0);
+        }
+        //Enemigo, Leviatan de llamas se roba como conocida
+        else
+        {
+            emit pDebug("Enemy: Starting card drawn: " + cardName, numLine);
+            emit enemyCardDraw(id.toInt(), 0, false, cardId);
         }
     }
 
@@ -791,7 +801,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Enemigo roba carta conocida
-        else if(zoneTo == "OPPOSING HAND")
+        else if(zoneTo == "OPPOSING HAND" && mulliganEnemyDone)
         {
             emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
             bool advance = false;
@@ -823,7 +833,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
         {
             enemyMinions++;
-            emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+            emit pDebug("Enemy: Minion moved to OPPOSING PLAY: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
             if(zoneFrom == "FRIENDLY PLAY") emit playerMinionZonePlaySteal(id.toInt(), zonePos.toInt());
             else if(zoneFrom.isEmpty())     emit enemyMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit enemyMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
@@ -833,7 +843,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "FRIENDLY PLAY" && zoneFrom != "FRIENDLY PLAY")
         {
             playerMinions++;
-            emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+            emit pDebug("Player: Minion moved to FRIENDLY PLAY: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
             if(zoneFrom == "OPPOSING PLAY") emit enemyMinionZonePlaySteal(id.toInt(), zonePos.toInt());
             else if(zoneFrom.isEmpty())     emit playerMinionZonePlayAddTriggered(cardId, id.toInt(), zonePos.toInt());
             else                            emit playerMinionZonePlayAdd(cardId, id.toInt(), zonePos.toInt());
@@ -842,14 +852,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo, carga heroe
         else if(zoneTo == "OPPOSING PLAY (Hero)")
         {
-            emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name, numLine);
+            emit pDebug("Enemy: Hero moved to OPPOSING PLAY (Hero): " + name + " ID: " + id, numLine);
             emit enemyHeroZonePlayAdd(cardId, id.toInt());
         }
 
         //Jugador, carga heroe
         else if(zoneTo == "FRIENDLY PLAY (Hero)")
         {
-            emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name, numLine);
+            emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name + " ID: " + id, numLine);
             if(playerID == 0)
             {
                 playerID = player.toInt();
@@ -861,28 +871,28 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo, carga hero power
         else if(zoneTo == "OPPOSING PLAY (Hero Power)")
         {
-            emit pDebug("Enemy: Hero Power moved to OPPOSING PLAY (Hero Power): " + name, numLine);
+            emit pDebug("Enemy: Hero Power moved to OPPOSING PLAY (Hero Power): " + name + " ID: " + id, numLine);
             emit enemyHeroPowerZonePlayAdd(cardId, id.toInt());
         }
 
         //Jugador, carga hero power
         else if(zoneTo == "FRIENDLY PLAY (Hero Power)")
         {
-            emit pDebug("Player: Hero Power moved to FRIENDLY PLAY (Hero Power): " + name, numLine);
+            emit pDebug("Player: Hero Power moved to FRIENDLY PLAY (Hero Power): " + name + " ID: " + id, numLine);
             emit playerHeroPowerZonePlayAdd(cardId, id.toInt());
         }
 
         //Enemigo, equipa arma
         else if(zoneTo == "OPPOSING PLAY (Weapon)" && zoneFrom != "OPPOSING GRAVEYARD")//Al reemplazar un arma por otra, la antigua va, vuelve y va a graveyard.
         {
-            emit pDebug("Enemy: Weapon moved to OPPOSING PLAY (Weapon): " + name, numLine);
+            emit pDebug("Enemy: Weapon moved to OPPOSING PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit enemyWeaponZonePlayAdd(cardId, id.toInt());
         }
 
         //Jugador, equipa arma
         else if(zoneTo == "FRIENDLY PLAY (Weapon)" && zoneFrom != "FRIENDLY GRAVEYARD")
         {
-            emit pDebug("Player: Weapon moved to FRIENDLY PLAY (Weapon): " + name, numLine);
+            emit pDebug("Player: Weapon moved to FRIENDLY PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit playerWeaponZonePlayAdd(cardId, id.toInt());
         }
 
@@ -900,7 +910,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Jugador secreto desvelado
             else
             {
-                emit pDebug("Player: Secret revealed: " + name, numLine);
+                emit pDebug("Player: Secret revealed: " + name + " ID: " + id, numLine);
                 emit playerSecretRevealed(id.toInt(), cardId);
             }
         }
@@ -916,7 +926,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Enemigo secreto desvelado
             else
             {
-                emit pDebug("Enemy: Secret revealed: " + name, numLine);
+                emit pDebug("Enemy: Secret revealed: " + name + " ID: " + id, numLine);
                 emit enemySecretRevealed(id.toInt(), cardId);
             }
         }
@@ -947,6 +957,17 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit pDebug("Enemy: Card discarded: " + name + " ID: " + id, numLine);
                 discard = true;
             }
+            //Carta devuelta al mazo en Mulligan, Leviatan de llamas
+            else if(zoneTo == "OPPOSING DECK")
+            {
+                emit pDebug("Enemy: Starting card returned: " + name + " ID: " + id, numLine);
+                discard = true;
+            }
+            else
+            {
+                emit pDebug("Enemy: Card moved from hand: " + name + " ID: " + id, numLine, Warning);
+                discard = true;
+            }
 
             emit enemyCardPlayed(id.toInt(), cardId, discard);
         }
@@ -955,7 +976,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
         {
             bool advance = advanceTurn(false);
-            emit pDebug("Enemy: Card overdraw: " + name, numLine);
+            emit pDebug("Enemy: Card overdraw: " + name + " ID: " + id, numLine);
             emit enemyKnownCardDraw(cardId);
             if(advance)     emit newTurn(isPlayerTurn, turnReal);
         }
@@ -965,7 +986,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             bool advance = advanceTurn(true);
             if(advance)     emit newTurn(isPlayerTurn, turnReal);
-            emit pDebug("Player: Card drawn: " + name, numLine);
+            emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
             emit playerCardDraw(cardId);
         }
 
@@ -977,31 +998,36 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Jugador juega hechizo
             if(zoneTo.isEmpty())
             {
-                emit pDebug("Player: Spell played: " + name, numLine);
+                emit pDebug("Player: Spell played: " + name + " ID: " + id, numLine);
                 if(isPlayerTurn)    emit playerSpellPlayed();
             }
             //Jugador juega esbirro
             else if(zoneTo == "FRIENDLY PLAY")
             {
-                emit pDebug("Player: Minion played: " + name + " Minions: " + QString::number(playerMinions), numLine);
+                emit pDebug("Player: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
                 if(isPlayerTurn)    emit playerMinionPlayed(playerMinions);
             }
             //Jugador juega arma
             else if(zoneTo == "FRIENDLY PLAY (Weapon)")
             {
-                emit pDebug("Player: Weapon played: " + name, numLine);
+                emit pDebug("Player: Weapon played: " + name + " ID: " + id, numLine);
             }
             //Jugador descarta carta
             else if(zoneTo == "FRIENDLY GRAVEYARD")
             {
-                emit pDebug("Player: Card discarded: " + name, numLine);
+                emit pDebug("Player: Card discarded: " + name + " ID: " + id, numLine);
                 discard = true;
             }
             //Carta devuelta al mazo en Mulligan
             else if(zoneTo == "FRIENDLY DECK")
             {
-                emit pDebug("Player: Starting card returned: " + name, numLine);
+                emit pDebug("Player: Starting card returned: " + name + " ID: " + id, numLine);
                 emit playerReturnToDeck(cardId);
+                discard = true;
+            }
+            else
+            {
+                emit pDebug("Player: Card moved from hand: " + name + " ID: " + id, numLine, Warning);
                 discard = true;
             }
 
@@ -1012,7 +1038,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneFrom == "OPPOSING PLAY" && zoneTo != "OPPOSING PLAY")
         {
             if(enemyMinions>0)  enemyMinions--;
-            emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " Minions: " + QString::number(enemyMinions), numLine);
+            emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
             if(zoneTo != "FRIENDLY PLAY")   emit enemyMinionZonePlayRemove(id.toInt());
 
             if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
@@ -1038,21 +1064,21 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneFrom == "FRIENDLY PLAY" && zoneTo != "FRIENDLY PLAY")
         {
             if(playerMinions>0) playerMinions--;
-            emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " Minions: " + QString::number(playerMinions), numLine);
+            emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
             if(zoneTo != "OPPOSING PLAY")   emit playerMinionZonePlayRemove(id.toInt());
         }
 
         //Enemigo, deshecha arma
         else if(zoneFrom == "OPPOSING PLAY (Weapon)")
         {
-            emit pDebug("Enemy: Weapon moved from OPPOSING PLAY (Weapon): " + name, numLine);
+            emit pDebug("Enemy: Weapon moved from OPPOSING PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit enemyWeaponZonePlayRemove(id.toInt());
         }
 
         //Jugador, deshecha arma
         else if(zoneFrom == "FRIENDLY PLAY (Weapon)")
         {
-            emit pDebug("Player: Weapon moved from FRIENDLY PLAY (Weapon): " + name, numLine);
+            emit pDebug("Player: Weapon moved from FRIENDLY PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit playerWeaponZonePlayRemove(id.toInt());
         }
     }
