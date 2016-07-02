@@ -110,6 +110,12 @@ int MinionGraphicsItem::getHealth()
 }
 
 
+int MinionGraphicsItem::getRemainingHealth()
+{
+    return health - damage;
+}
+
+
 bool MinionGraphicsItem::isFriendly()
 {
     return this->friendly;

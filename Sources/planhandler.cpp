@@ -1486,18 +1486,6 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     if(numTurn == 2)    fixTurn1Card();
 
     //Update nowBoard
-    if(this->firstStoredTurn == 0)
-    {
-        this->firstStoredTurn = numTurn;
-
-        if(numTurn > 5 && nowBoard->playerHero->getResources() == 1)
-        {
-            nowBoard->playerHero->setResources(10);
-            nowBoard->enemyHero->setResources(10);
-        }
-    }
-    updateButtons();
-
     nowBoard->playerTurn = playerTurn;
 
     foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
@@ -1516,6 +1504,17 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     if(nowBoard->playerHeroPower != NULL)   nowBoard->playerHeroPower->setPlayerTurn(playerTurn);
     if(nowBoard->enemyHeroPower != NULL)    nowBoard->enemyHeroPower->setPlayerTurn(playerTurn);
 
+    if(this->firstStoredTurn == 0)
+    {
+        this->firstStoredTurn = numTurn;
+
+        if(numTurn > 5 && nowBoard->playerHero->getResources() == 1)
+        {
+            nowBoard->playerHero->setResources(10);
+            nowBoard->enemyHero->setResources(10);
+        }
+    }
+    updateButtons();
 
     //Store nowBoard
     Board *board = new Board();
@@ -1560,9 +1559,9 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     turnBoards.append(board);
 
 
-    //Avanza en ultimo turno
-    int prevTurn = turnBoards.count()-2;
-    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
+//    //Avanza en ultimo turno
+//    int prevTurn = turnBoards.count()-2;
+//    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
 }
 
 
@@ -1798,7 +1797,7 @@ void PlanHandler::showFirstTurn()
         updateButtons();
         return;
     }
-    viewBoard = turnBoards[0];
+    viewBoard = turnBoards.first();
 
     loadViewBoard();
     updateButtons();
@@ -1865,13 +1864,7 @@ void PlanHandler::unlockPlanInterface()
     this->inGame = false;
     updateTransparency();
 
-    //Temporal
-    if(!turnBoards.isEmpty())
-    {
-        viewBoard = turnBoards.first();
-        loadViewBoard();
-        updateButtons();
-    }
+//    if(!turnBoards.isEmpty())   showFirstTurn();
 }
 
 
@@ -1901,8 +1894,17 @@ void PlanHandler::addHeroDeadToLastTurn(bool playerWon)
 }
 
 
-void PlanHandler::endGame(bool playerWon)
+bool PlanHandler::getWinner()
 {
+    if(nowBoard->playerHero != NULL && nowBoard->playerHero->getRemainingHealth()<=0)   return false;
+    if(nowBoard->enemyHero != NULL && nowBoard->enemyHero->getRemainingHealth()<=0)     return true;
+    return !nowBoard->playerTurn;
+}
+
+
+void PlanHandler::endGame(bool playerWon, bool playerUnknown)
+{
+    if(playerUnknown)   playerWon = getWinner();
     addHeroDeadToLastTurn(playerWon);
     unlockPlanInterface();
 }

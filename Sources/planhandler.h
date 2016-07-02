@@ -126,6 +126,7 @@ private:
     void updateMinionsAttack(bool friendly);
     void fixTurn1Card();    
     void addTagChange(bool friendly, QString tag, QString value);
+    bool getWinner();
 
 public:
     void setTransparency(Transparency value);
@@ -169,7 +170,7 @@ public slots:
     void lockPlanInterface();
     void unlockPlanInterface();
     void resetLastPowerAddon();
-    void endGame(bool playerWon);
+    void endGame(bool playerWon, bool playerUnknown);
     void playerSecretPlayed(int id, QString code);
     void enemySecretPlayed(int id, SecretHero secretHero);
     void playerSecretRevealed(int id, QString code);

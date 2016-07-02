@@ -209,7 +209,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         {
             emit pDebug("WON not found (PowerState = noGame)", 0);
             powerState = noGame;
-            emit endGame(false);
+            emit endGame();
         }
     }
 
@@ -228,7 +228,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         {
             emit pDebug("WON not found (PowerState = noGame)", 0);
             powerState = noGame;
-            emit endGame(false);
+            emit endGame();
         }
 
         emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
@@ -263,10 +263,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
                             "Entity=(.+) tag=PLAYSTATE value=WON"), match))
         {
-            powerState = noGame;
-            emit pDebug("Found WON (powerState = noGame).", numLine);
-
             winnerPlayer = match->captured(1);
+            powerState = noGame;
+            emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
 
             if(spectating || loadingScreenState == menu)
             {
@@ -280,7 +279,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 
             bool playerWon = (winnerPlayer == playerTag);
 
-            emit endGame(playerWon);
+            emit endGame(playerWon, playerTag.isEmpty());
         }
         //Turn
         //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=12

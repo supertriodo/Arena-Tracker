@@ -69,6 +69,7 @@ public:
     int getAttack();
     int getHealth();    
     int getPotencialDamage();
+    int getRemainingHealth();
 
 private:
     void addAddonNeutral(Addon addon);

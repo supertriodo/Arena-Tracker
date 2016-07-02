@@ -1240,7 +1240,7 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <property name="spacing">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="leftMargin">
            <number>10</number>
@@ -1267,6 +1267,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Swap size: Switch between normal size and custom plan size.</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1286,7 +1289,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="planHorizontalSpacer1">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1300,6 +1303,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="planButtonFirst">
+              <property name="toolTip">
+               <string>First turn</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1321,6 +1327,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="planButtonPrev">
+              <property name="toolTip">
+               <string>Previous turn</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1358,6 +1367,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="planButtonNext">
+              <property name="toolTip">
+               <string>Next turn</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1379,6 +1391,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="planButtonLast">
+              <property name="toolTip">
+               <string>Now</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -1399,7 +1414,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer_2">
+             <spacer name="planHorizontalSpacer2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1412,7 +1427,7 @@
              </spacer>
             </item>
             <item>
-             <spacer name="horizontalSpacer_3">
+             <spacer name="planHorizontalSpacer3">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
