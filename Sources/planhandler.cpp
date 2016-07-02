@@ -1065,6 +1065,9 @@ void PlanHandler::enemyHeroPowerZonePlayAdd(QString code, int id)
 void PlanHandler::addHeroPower(bool friendly, QString code, int id)
 {
     qDebug()<<"NEW HERO POWER --> id"<<id;
+    //Avoid fancy Hero Powers codes
+    if(code.endsWith("_H1"))    code = code.left(code.length()-3);
+
     HeroPowerGraphicsItem* heroPower = friendly?nowBoard->playerHeroPower:nowBoard->enemyHeroPower;
 
     if(heroPower != NULL)
@@ -1183,6 +1186,9 @@ bool PlanHandler::areThereAuras(bool friendly)
 
 void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Addon::AddonType type, int number)
 {
+    //Avoid fancy Hero Powers codes
+    if(code.endsWith("_H1"))    code = code.left(code.length()-3);
+
     emit pDebug("Addon(" + QString::number(minion->getId()) + ")-->" + code);
     minion->addAddon(code, id, type, number);
     if(code != "FATIGUE")   emit checkCardImage(code, false);

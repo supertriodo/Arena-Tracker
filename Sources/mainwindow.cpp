@@ -2594,28 +2594,21 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Log ordenado
 //Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Mediv hp CS2_034_H1, liadrin CS2_101_H1
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//Resources
-//D 10:48:46.1127070 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES value=3
-//D 10:48:46.1127200 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES_USED value=0
 
 
-//Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto.
+//REPLAY BUGS
+//Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
 
-//Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir.
-//Es aceptable
+//Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir. Aceptable
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
-//El addon es de la fuente que lo robo, es aceptable
+//El addon es de la fuente que lo robo. Aceptable
 
 //Viejo ojosombrio incrementa su ATK al aparecer otros murlocs, Si los murlocs nuevos son TRIGGERED,
-//el addon sobre ojosombrio sera incorrecto. Es aceptable
+//el addon sobre ojosombrio sera incorrecto. Aceptable
 
-//Habra trigger que dan vida en medio de un ataque y haran que aparezca addon verde y rojo, al dar vida y perderla por el ataque.
-//Ej:True silver/Ice armor, es aceptable -- DONE
-
-//Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad.
+//Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad. Aceptable
 //Dificil de arreglar, se cambia el damage antes del health.
 //Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
 //No vale la pena arreglarlo con excepciones. GameWatcher(3941): Player: TAG_CHANGE(ZONE)=GRAVEYARD -- Campeￃﾳn de Ventormenta -- Id: 35
@@ -2623,8 +2616,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Se produce entre el PLAY y el POWER
 //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
 //GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
-
-
 
 
 //SPECTATOR GAMES
