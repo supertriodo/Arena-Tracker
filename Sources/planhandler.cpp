@@ -21,6 +21,14 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
 PlanHandler::~PlanHandler()
 {
+    while(!turnBoards.empty())
+    {
+        Board *board = turnBoards.takeFirst();
+        resetBoard(board);
+        delete board;
+    }
+
+    resetBoard(nowBoard);
     delete nowBoard;
 }
 

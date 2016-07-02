@@ -5,6 +5,7 @@
 
 PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
+    this->targetZoom = this->zoom = 0;
     this->setStyleSheet("QGraphicsView{background-color: transparent;}");
 
     QGraphicsScene *graphicsScene = new QGraphicsScene(this);
@@ -38,6 +39,7 @@ void PlanGraphicsView::reset()
 
 void PlanGraphicsView::removeAll()
 {
+    if(this->scene() == NULL)   return;
     foreach(QGraphicsItem *item, this->scene()->items())
     {
         this->scene()->removeItem(item);
