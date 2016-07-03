@@ -1872,7 +1872,7 @@ void PlanHandler::unlockPlanInterface()
     this->inGame = false;
     updateTransparency();
 
-//    if(!turnBoards.isEmpty())   showFirstTurn();
+    if(!turnBoards.isEmpty())   showFirstTurn();
 }
 
 

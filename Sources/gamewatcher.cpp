@@ -567,21 +567,17 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //EffectCardId= EffectIndex=0 Target=0
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=(\\w+) zonePos=\\d+ player=(\\d+)\\] "
+        "Entity=\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] "
         "EffectCardId=\\w* EffectIndex=-?\\d+ "
         "Target="
         ), match))
     {
         QString blockType = match->captured(1);
-        QString id1 = match->captured(3);
-//        QString zone = match->captured(4);
-//        QString player1 = match->captured(6);
-//        bool isPlayer = (player1.toInt() == playerID);
-
+        QString id = match->captured(2);
 
         //ULTIMO TRIGGER SPECIAL CARDS, con o sin objetivo
-        emit pDebug("Trigger(" + blockType + ") desconocido. Id: " + id1, numLine);
-        emit specialCardTrigger("", blockType, id1.toInt(), -1);
+        emit pDebug("Trigger(" + blockType + ") desconocido. Id: " + id, numLine);
+        emit specialCardTrigger("", blockType, id.toInt(), -1);
     }
 
 

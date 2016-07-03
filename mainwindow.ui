@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -1304,7 +1304,7 @@
             <item>
              <widget class="QPushButton" name="planButtonFirst">
               <property name="toolTip">
-               <string>First turn</string>
+               <string/>
               </property>
               <property name="text">
                <string/>
@@ -1328,7 +1328,7 @@
             <item>
              <widget class="QPushButton" name="planButtonPrev">
               <property name="toolTip">
-               <string>Previous turn</string>
+               <string/>
               </property>
               <property name="text">
                <string/>
@@ -1368,7 +1368,7 @@
             <item>
              <widget class="QPushButton" name="planButtonNext">
               <property name="toolTip">
-               <string>Next turn</string>
+               <string/>
               </property>
               <property name="text">
                <string/>
@@ -1392,7 +1392,7 @@
             <item>
              <widget class="QPushButton" name="planButtonLast">
               <property name="toolTip">
-               <string>Now</string>
+               <string/>
               </property>
               <property name="text">
                <string/>
@@ -1576,7 +1576,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>435</width>
+               <width>216</width>
                <height>725</height>
               </rect>
              </property>

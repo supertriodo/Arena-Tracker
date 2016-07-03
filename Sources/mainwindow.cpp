@@ -2626,6 +2626,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
 //Cazar crash bug en drafting con 31 cartas
+//Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
+//ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND
+//ZoneChangeList.ProcessChanges() - id=87 local=False [name=¡Maldito! id=152 zone=HAND zonePos=6 cardId=LOE_007t player=2] zone from OPPOSING HAND ->
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
