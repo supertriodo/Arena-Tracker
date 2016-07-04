@@ -1918,6 +1918,12 @@ void PlanHandler::endGame(bool playerWon, bool playerUnknown)
 }
 
 
+bool PlanHandler::isSizePlan()
+{
+    return sizePlan;
+}
+
+
 bool PlanHandler::resetSizePlan()
 {
     bool oldSizePlan = sizePlan;

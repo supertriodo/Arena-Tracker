@@ -1331,9 +1331,9 @@ void MainWindow::resizeTabWidgets(QSize newSize)
         newWindowsFormation = H3;
     }
 
-    if(!this->splitWindow)  newWindowsFormation = H1;
+    if(!this->splitWindow || planHandler->isSizePlan())  newWindowsFormation = H1;
 
-    switch(windowsFormation)
+    switch(newWindowsFormation)
     {
         case None:
         case H1:
@@ -1367,6 +1367,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
     ui->tabWidgetV1->hide();
 
     QWidget * currentTab = ui->tabWidget->currentWidget();
+    disconnect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(resizeChangingTab()));
 
     switch(windowsFormation)
     {
@@ -1439,8 +1441,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabPlan, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
+                moveTabTo(ui->tabEnemyDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1478,6 +1480,9 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
     ui->tabWidget->setCurrentWidget(currentTab);
 
     this->calculateMinimumWidth();
+
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(resizeChangingTab()));
 }
 
 

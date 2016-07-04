@@ -134,6 +134,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     void reset();
     bool resetSizePlan();
+    bool isSizePlan();
 
 signals:
     void checkCardImage(QString code, bool isHero);

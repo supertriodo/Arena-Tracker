@@ -1,6 +1,7 @@
 #include "plangraphicsview.h"
 #include "herographicsitem.h"
 #include "cardgraphicsitem.h"
+#include <cmath>
 #include <QtWidgets>
 
 PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
@@ -78,7 +79,7 @@ void PlanGraphicsView::progressiveZoom()
     float advanceZoom = (zoomDiff>0)?ZOOM_SPEED:-ZOOM_SPEED;
     advanceZoom += zoomDiff/25;
     zoom += advanceZoom;
-    if(std::fabs(targetZoom - zoom) < ZOOM_SPEED)    zoom = targetZoom;
+    if(std::abs(targetZoom - zoom) < ZOOM_SPEED)    zoom = targetZoom;
     else                QTimer::singleShot(20, this, SLOT(progressiveZoom()));
 
     QMatrix mtx;
