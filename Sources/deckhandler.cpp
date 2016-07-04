@@ -1041,10 +1041,14 @@ void DeckHandler::loadDecks()
     emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
 
     //Load decks to loadDeckTreeWidget
+    int deckLoaded = 0;
     foreach(QString deckName, decksJson.keys())
     {
         addDeckToLoadTree(deckName);
+        deckLoaded++;
     }
+
+    if(deckLoaded > 50)     ui->loadDeckTreeWidget->collapseAll();
 }
 
 
