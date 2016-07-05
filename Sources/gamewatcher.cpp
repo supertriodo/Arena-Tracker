@@ -246,7 +246,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         winnerPlayer.clear();
         playerID = 0;
         playerTag.clear();
-        secretHero = unknown;
+        secretHero = INVALID_CLASS;
         playerMinions = 0;
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
@@ -509,9 +509,9 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Secret hero = " + value +
                         " -- Id: " + id, numLine);
-            if(value == "MAGE")         secretHero = mage;
-            else if(value == "HUNTER")  secretHero = hunter;
-            else if(value == "PALADIN") secretHero = paladin;
+            if(value == "MAGE")         secretHero = MAGE;
+            else if(value == "HUNTER")  secretHero = HUNTER;
+            else if(value == "PALADIN") secretHero = PALADIN;
         }
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
@@ -1235,25 +1235,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
     }
     return advance;
 }
-
-
-//SecretHero GameWatcher::getSecretHero(QString playerHero, QString enemyHero)
-//{
-//    SecretHero enemySecretHero = unknown;
-//    SecretHero playerSecretHero = unknown;
-
-//    if(enemyHero == QString("04"))  enemySecretHero = paladin;
-//    else if(enemyHero == QString("05"))  enemySecretHero = hunter;
-//    else if(enemyHero == QString("08"))  enemySecretHero = mage;
-
-//    if(playerHero == QString("04"))  playerSecretHero = paladin;
-//    else if(playerHero == QString("05"))  playerSecretHero = hunter;
-//    else if(playerHero == QString("08"))  playerSecretHero = mage;
-
-//    if(enemySecretHero != unknown)  return enemySecretHero;
-//    else if(playerSecretHero != unknown)  return playerSecretHero;
-//    else    return unknown;
-//}
 
 
 void GameWatcher::setSynchronized()

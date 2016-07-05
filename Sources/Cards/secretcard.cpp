@@ -5,13 +5,13 @@
 SecretCard::SecretCard() : DeckCard("")
 {
     treeItem = NULL;
-    hero = unknown;
+    hero = INVALID_CLASS;
 }
 
 SecretCard::SecretCard(QString code) : DeckCard(code)
 {
     treeItem = NULL;
-    hero = unknown;
+    hero = INVALID_CLASS;
 }
 
 SecretCard::~SecretCard()
@@ -43,22 +43,22 @@ void SecretCard::draw()
     painter.begin(&canvas);
     switch(hero)
     {
-        case mage:
+        case MAGE:
         painter.drawPixmap(5,4,QPixmap(":Images/secretMage.png"));
         painter.drawPixmap(186,4,QPixmap(":Images/secretMage.png"));
         break;
 
-        case hunter:
+        case HUNTER:
         painter.drawPixmap(5,4,QPixmap(":Images/secretHunter.png"));
         painter.drawPixmap(186,4,QPixmap(":Images/secretHunter.png"));
         break;
 
-        case paladin:
+        case PALADIN:
         painter.drawPixmap(5,4,QPixmap(":Images/secretPaladin.png"));
         painter.drawPixmap(186,4,QPixmap(":Images/secretPaladin.png"));
         break;
 
-        case unknown:
+        default:
         break;
     }
     painter.end();

@@ -109,7 +109,6 @@ private:
     bool isAddonMinionValid(QString code);
     bool isAddonHeroValid(QString code);
     bool isAddonCommonValid(QString code);    
-    SecretHero cardclassToSecrethero(CardClass cardClass);    
     void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);    
     void updateCardZoneSpots(bool friendly, Board *board=NULL);
     int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);
@@ -173,7 +172,7 @@ public slots:
     void resetLastPowerAddon();
     void endGame(bool playerWon, bool playerUnknown);
     void playerSecretPlayed(int id, QString code);
-    void enemySecretPlayed(int id, SecretHero secretHero);
+    void enemySecretPlayed(int id, CardClass secretHero);
     void playerSecretRevealed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void playerSecretStolen(int id, QString code);

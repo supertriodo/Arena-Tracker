@@ -100,7 +100,7 @@ void SecretsHandler::secretStolen(int id, QString code)
 {
     ActiveSecret activeSecret;
     activeSecret.id = id;
-    activeSecret.root.hero = unknown;
+    activeSecret.root.hero = INVALID_CLASS;
 
     activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
     activeSecret.root.treeItem->setExpanded(true);
@@ -116,7 +116,7 @@ void SecretsHandler::secretStolen(int id, QString code)
 }
 
 
-void SecretsHandler::secretPlayed(int id, SecretHero hero)
+void SecretsHandler::secretPlayed(int id, CardClass hero)
 {
     ActiveSecret activeSecret;
     activeSecret.id = id;
@@ -128,7 +128,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
 
     switch(hero)
     {
-        case paladin:
+        case PALADIN:
             activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
@@ -138,7 +138,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
-        case hunter:
+        case HUNTER:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             activeSecret.children.append(SecretCard(BEAR_TRAP));
@@ -148,7 +148,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
         break;
 
-        case mage:
+        case MAGE:
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
             activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
@@ -159,7 +159,7 @@ void SecretsHandler::secretPlayed(int id, SecretHero hero)
             activeSecret.children.append(SecretCard(ICE_BLOCK));
         break;
 
-        case unknown:
+        default:
         break;
     }
 

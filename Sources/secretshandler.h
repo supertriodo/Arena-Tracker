@@ -65,7 +65,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SecretsHandler");
 
 public slots:
-    void secretPlayed(int id, SecretHero hero);
+    void secretPlayed(int id, CardClass hero);
     void secretStolen(int id, QString code);
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();

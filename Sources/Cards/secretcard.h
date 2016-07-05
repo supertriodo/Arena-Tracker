@@ -4,8 +4,6 @@
 #include "deckcard.h"
 #include <QTreeWidgetItem>
 
-enum SecretHero { mage, hunter, paladin, unknown };
-
 class SecretCard : public DeckCard
 {
 public:
@@ -16,7 +14,7 @@ public:
 //Variables
 public:
     QTreeWidgetItem *treeItem;
-    SecretHero hero;
+    CardClass hero;
 
 //Metodos
 public:

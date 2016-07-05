@@ -12,7 +12,7 @@ class HeroGraphicsItem : public MinionGraphicsItem
     public:
         int id;
         QString code;
-        SecretHero secretHero;
+        CardClass secretHero;
     };
 
 //Constructor
@@ -34,10 +34,10 @@ public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     bool processTagChange(QString tag, QString value);
-    void addSecret(int id, SecretHero secretHero);
+    void addSecret(int id, CardClass secretHero);
     void removeSecret(int id);
     void showSecret(int id, QString code);
-    SecretHero getSecretHero(int id);
+    CardClass getSecretHero(int id);
     bool isYourSecret(int id);
     void changeHero(QString code, int id);
     void setMinionsAttack(int minionsAttack);

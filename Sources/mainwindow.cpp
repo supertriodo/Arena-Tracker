@@ -535,8 +535,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(zonePlayAttack(QString, int,int)));
     connect(gameWatcher, SIGNAL(playerSecretPlayed(int,QString)),
             planHandler, SLOT(playerSecretPlayed(int,QString)));
-    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
-            planHandler, SLOT(enemySecretPlayed(int,SecretHero)));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass)),
+            planHandler, SLOT(enemySecretPlayed(int,CardClass)));
     connect(gameWatcher, SIGNAL(playerSecretRevealed(int,QString)),
             planHandler, SLOT(playerSecretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
@@ -571,8 +571,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             secretsHandler, SLOT(resetSecretsInterface()));
-    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,SecretHero)),
-            secretsHandler, SLOT(secretPlayed(int,SecretHero)));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass)),
+            secretsHandler, SLOT(secretPlayed(int,CardClass)));
     connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
             secretsHandler, SLOT(secretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
@@ -2597,7 +2597,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Hide Track secrets, avoid draft
 //Option - plan transitions
 //Log ordenado
-//Eliminar enum SecretHero
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
 

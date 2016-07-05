@@ -52,7 +52,7 @@ private:
     LoadingScreenState loadingScreenState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
     int playerID;
-    SecretHero secretHero;
+    CardClass secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     int playerMinions;
     bool isPlayerTurn;
@@ -108,7 +108,7 @@ signals:
     void enemyCardPlayed(int id, QString code="", bool discard=false);
     void playerCardPlayed(int id, QString code, bool discard=false);
     void lastHandCardIsCoin();
-    void enemySecretPlayed(int id, SecretHero hero);
+    void enemySecretPlayed(int id, CardClass hero);
     void playerSecretPlayed(int id, QString code);
     void enemySecretStolen(int id, QString code);
     void playerSecretStolen(int id, QString code);

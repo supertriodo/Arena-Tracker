@@ -81,17 +81,17 @@ bool HeroGraphicsItem::isYourSecret(int id)
 }
 
 
-SecretHero HeroGraphicsItem::getSecretHero(int id)
+CardClass HeroGraphicsItem::getSecretHero(int id)
 {
     foreach(SecretIcon secretIcon, secretsList)
     {
         if(secretIcon.id == id)     return secretIcon.secretHero;
     }
-    return unknown;
+    return INVALID_CLASS;
 }
 
 
-void HeroGraphicsItem::addSecret(int id, SecretHero secretHero)
+void HeroGraphicsItem::addSecret(int id, CardClass secretHero)
 {
     SecretIcon secretIcon;
     secretIcon.id = id;
@@ -260,16 +260,16 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
 
         QPixmap pixmap;
-        SecretHero secretHero = this->secretsList[i].secretHero;
+        CardClass secretHero = this->secretsList[i].secretHero;
         switch(secretHero)
         {
-            case paladin:
+            case PALADIN:
                 pixmap = QPixmap(":Images/secretPaladin.png");
                 break;
-            case hunter:
+            case HUNTER:
                 pixmap = QPixmap(":Images/secretHunter.png");
                 break;
-            case mage:
+            case MAGE:
                 pixmap = QPixmap(":Images/secretMage.png");
                 break;
             default:

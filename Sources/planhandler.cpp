@@ -1244,24 +1244,15 @@ bool PlanHandler::isAddonMinionValid(QString code)
 }
 
 
-SecretHero PlanHandler::cardclassToSecrethero(CardClass cardClass)
-{
-    if(cardClass==MAGE)         return mage;
-    else if(cardClass==HUNTER)  return hunter;
-    else if(cardClass==PALADIN) return paladin;
-    else                        return unknown;
-}
-
-
 void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == NULL) return;
     DeckCard deckCard(code);
-    nowBoard->playerHero->addSecret(id, cardclassToSecrethero(deckCard.getCardClass()));
+    nowBoard->playerHero->addSecret(id, deckCard.getCardClass());
 }
 
 
-void PlanHandler::enemySecretPlayed(int id, SecretHero secretHero)
+void PlanHandler::enemySecretPlayed(int id, CardClass secretHero)
 {
     if(nowBoard->enemyHero == NULL) return;
     nowBoard->enemyHero->addSecret(id, secretHero);
@@ -1295,7 +1286,7 @@ void PlanHandler::enemySecretRevealed(int id, QString code)
 void PlanHandler::playerSecretStolen(int id, QString code)
 {
     if(nowBoard->enemyHero == NULL) return;
-    SecretHero secretHero = nowBoard->enemyHero->getSecretHero(id);
+    CardClass secretHero = nowBoard->enemyHero->getSecretHero(id);
     enemySecretRevealed(id, code);
     if(nowBoard->playerHero != NULL)    nowBoard->playerHero->addSecret(id, secretHero);
 }
@@ -1304,7 +1295,7 @@ void PlanHandler::playerSecretStolen(int id, QString code)
 void PlanHandler::enemySecretStolen(int id, QString code)
 {
     if(nowBoard->playerHero == NULL) return;
-    SecretHero secretHero = nowBoard->playerHero->getSecretHero(id);
+    CardClass secretHero = nowBoard->playerHero->getSecretHero(id);
     playerSecretRevealed(id, code);
     enemySecretPlayed(id, secretHero);
 }
