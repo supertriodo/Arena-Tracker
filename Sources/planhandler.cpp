@@ -24,11 +24,11 @@ PlanHandler::~PlanHandler()
     while(!turnBoards.empty())
     {
         Board *board = turnBoards.takeFirst();
-        resetBoard(board);
+        if(viewBoard != board)  resetBoard(board);
         delete board;
     }
 
-    resetBoard(nowBoard);
+    if(viewBoard != nowBoard)  resetBoard(nowBoard);
     delete nowBoard;
 }
 
