@@ -6,6 +6,8 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * Draft your arena with HearthArena advice.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/Draft.png)
+* Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
+![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * Upload your arena stats to your ArenaMastery account.
 ![Arena](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ArenaGames.png)
 * Save and organize your constructed decks.
