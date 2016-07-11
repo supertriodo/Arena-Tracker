@@ -10,6 +10,8 @@ LogLoader::LogLoader(QObject *parent) : QObject(parent)
     logComponentList.append("Power");
     logComponentList.append("Zone");
     logComponentList.append("Arena");
+
+    match = new QRegularExpressionMatch();
 }
 
 
@@ -61,6 +63,7 @@ void LogLoader::createLogWorker(QString logComponent)
 
 bool LogLoader::readSettings()
 {
+    sortLogs = true;
     return readLogsDirPath() && readLogConfigPath();
 }
 
@@ -275,6 +278,7 @@ LogLoader::~LogLoader()
 {
     foreach(LogWorker *worker, logWorkerMap.values())   delete worker;
     logWorkerMap.clear();
+    delete match;
 }
 
 
@@ -300,9 +304,26 @@ void LogLoader::sendLogWorkerFirstRun()
 void LogLoader::sendLogWorker()
 {
     foreach(QString logComponent, logComponentList)     logWorkerMap[logComponent]->readLog();
+    processDataLogs();
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
     if(updateTime < maxUpdateTime)  updateTime += UPDATE_TIME_STEP;
+}
+
+
+void LogLoader::processDataLogs()
+{
+    if(dataLogs.isEmpty())  return;
+
+    QList<qint64> timeStamps = dataLogs.keys();
+    qSort(timeStamps);
+
+    foreach(qint64 timeStamp, timeStamps)
+    {
+        DataLog dataLog = dataLogs[timeStamp];
+        emit newLogLineRead(dataLog.logComponent, dataLog.line, dataLog.numLine, dataLog.logSeek);
+    }
+    dataLogs.clear();
 }
 
 
@@ -337,11 +358,34 @@ QString LogLoader::getLogConfigPath()
 }
 
 
+void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
+{
+    if(line.contains(QRegularExpression("D (\\d+):(\\d+):(\\d+).(\\d+) (.*)"), match))
+    {
+        DataLog dataLog;
+        dataLog.logComponent = logComponent;
+        dataLog.line = match->captured(5);
+        dataLog.numLine = numLine;
+        dataLog.logSeek = logSeek;
+
+        qint64 timeStamp = QString(match->captured(1) + match->captured(2) + match->captured(3) + match->captured(4)).toLongLong();
+        while(dataLogs.contains(timeStamp))     timeStamp++;
+        dataLogs[timeStamp] = dataLog;
+    }
+    else
+    {
+        emit pDebug("Log timestamp invalid: " + line, Error);
+        emit newLogLineRead(logComponent, line, numLine, logSeek);
+    }
+}
+
+
 //LogWorker signal reemit
 void LogLoader::emitNewLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
-    updateTime = std::min(MIN_UPDATE_TIME,maxUpdateTime);
-    emit newLogLineRead(logComponent, line, numLine, logSeek);
+    updateTime = MIN_UPDATE_TIME;
+    if(sortLogs)    addToDataLogs(logComponent, line, numLine, logSeek);
+    else            emit newLogLineRead(logComponent, line, numLine, logSeek);
 }
 
 

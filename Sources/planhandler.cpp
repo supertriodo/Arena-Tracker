@@ -1558,9 +1558,9 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     turnBoards.append(board);
 
 
-//    //Avanza en ultimo turno
-//    int prevTurn = turnBoards.count()-2;
-//    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
+    //Avanza en ultimo turno
+    int prevTurn = turnBoards.count()-2;
+    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
 }
 
 

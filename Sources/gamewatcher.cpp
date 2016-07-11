@@ -932,7 +932,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             bool discard = false;
 
             //Enemigo juega hechizo
-            if(zoneTo.isEmpty())
+            if(zoneTo.isEmpty() || zoneTo == "OPPOSING SECRET")
             {
                 emit pDebug("Enemy: Spell played: " + name + " ID: " + id, numLine);
             }
@@ -991,7 +991,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             bool discard = false;
 
             //Jugador juega hechizo
-            if(zoneTo.isEmpty())
+            if(zoneTo.isEmpty() || zoneTo == "FRIENDLY SECRET")//En spectator mode los secretos van FRIENDLY HAND --> FRIENDLY SECRET
             {
                 emit pDebug("Player: Spell played: " + name + " ID: " + id, numLine);
                 if(isPlayerTurn)    emit playerSpellPlayed();

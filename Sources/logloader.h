@@ -10,6 +10,17 @@
 #define MAX_UPDATE_TIME 2000
 #define UPDATE_TIME_STEP 500
 
+
+class DataLog
+{
+public:
+    LogComponent logComponent;
+    QString line;
+    qint64 numLine;
+    qint64 logSeek;
+};
+
+
 class LogLoader : public QObject
 {
     Q_OBJECT
@@ -25,6 +36,9 @@ private:
     QMap<QString, LogWorker *>logWorkerMap;
     QList<QString> logComponentList;
     int updateTime, maxUpdateTime;
+    bool sortLogs;
+    QMap<qint64,DataLog> dataLogs;
+    QRegularExpressionMatch *match;
 
 //Metodos
 private:
@@ -38,6 +52,8 @@ private:
     void setMaxUpdateTime(int value);
     void createLogWorkers();
     void createLogWorker(QString logComponent);
+    void addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
+    void processDataLogs();
 
 public:
     bool init();
