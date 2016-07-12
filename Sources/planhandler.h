@@ -126,6 +126,7 @@ private:
     void fixTurn1Card();    
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();
+    void cardTagChange(int id, bool friendly, QString tag, QString value);
 
 public:
     void setTransparency(Transparency value);
@@ -190,6 +191,8 @@ public slots:
     void enemyTagChange(QString tag, QString value);
     void unknownTagChange(QString tag, QString value);
     void resizePlan(bool toggleSizePlan=true);
+    void playerCardTagChange(int id, QString code, QString tag, QString value);
+    void enemyCardTagChange(int id, QString code, QString tag, QString value);
 
 private slots:
     void checkPendingTagChanges();

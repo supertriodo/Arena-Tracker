@@ -18,6 +18,7 @@ private:
     QString code, createdByCode;
     int id, turn;
     bool played, discard, draw;
+    int origCost, cost;
     int heightShow;
 
 public:
@@ -36,6 +37,7 @@ public:
     void setDiscard();
     void setDraw(bool drawn=true);
     bool isDiscard();
+    void setCost(int cost);
 };
 
 #endif // CARDGRAPHICSITEM_H

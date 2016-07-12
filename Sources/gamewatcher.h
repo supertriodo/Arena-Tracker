@@ -136,6 +136,8 @@ signals:
     void enemyMinionPosChange(int id, int pos);
     void playerMinionTagChange(int id, QString code, QString tag, QString value);
     void enemyMinionTagChange(int id, QString code, QString tag, QString value);
+    void playerCardTagChange(int id, QString code, QString tag, QString value);
+    void enemyCardTagChange(int id, QString code, QString tag, QString value);
     void unknownTagChange(QString tag, QString value);
     void playerTagChange(QString tag, QString value);
     void enemyTagChange(QString tag, QString value);

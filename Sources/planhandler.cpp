@@ -491,6 +491,29 @@ bool PlanHandler::isLastMinionAddedValid()
 }
 
 
+void PlanHandler::playerCardTagChange(int id, QString code, QString tag, QString value)
+{
+    Q_UNUSED(code);
+    cardTagChange(id, true, tag, value);
+}
+
+
+void PlanHandler::enemyCardTagChange(int id, QString code, QString tag, QString value)
+{
+    Q_UNUSED(code);
+    cardTagChange(id, false, tag, value);
+}
+
+
+void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString value)
+{
+    CardGraphicsItem *card = findCard(friendly, id);
+    if(card == NULL)    return;
+
+    if(tag == "COST")   card->setCost(value.toInt());
+}
+
+
 void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QString value)
 {
     if(tag == "LINKED_ENTITY" && !code.isEmpty() &&

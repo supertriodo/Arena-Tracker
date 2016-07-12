@@ -534,30 +534,44 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-        "Entity=\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+        "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
         "tag=(\\w+) value=(\\w+)"
         ), match))
     {
         QString name = match->captured(1);
         QString id = match->captured(2);
-        QString cardId = match->captured(3);
-        QString player = match->captured(4);
-        QString tag = match->captured(5);
-        QString value = match->captured(6);
+        QString zone = match->captured(3);
+        QString cardId = match->captured(4);
+        QString player = match->captured(5);
+        QString tag = match->captured(6);
+        QString value = match->captured(7);
         bool isPlayer = (player.toInt() == playerID);
 
 
-        if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                tag == "LINKED_ENTITY" || tag == "DURABILITY")
+        if(zone == "PLAY")
         {
-            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")=" + value +
-                        " -- " + name + " -- Id: " + id, numLine);
-            if(isPlayer)    emit playerMinionTagChange(id.toInt(), cardId, tag, value);
-            else            emit enemyMinionTagChange(id.toInt(), cardId, tag, value);
+            if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
+                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                    tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
+                    tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
+                    tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
+                    tag == "LINKED_ENTITY" || tag == "DURABILITY")
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION TAG_CHANGE(" + tag + ")=" + value +
+                            " -- " + name + " -- Id: " + id, numLine);
+                if(isPlayer)    emit playerMinionTagChange(id.toInt(), cardId, tag, value);
+                else            emit enemyMinionTagChange(id.toInt(), cardId, tag, value);
+            }
+        }
+        else if(zone == "HAND")
+        {
+            if(tag == "COST")
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CARD TAG_CHANGE(" + tag + ")=" + value +
+                            " -- " + name + " -- Id: " + id, numLine);
+                if(isPlayer)    emit playerCardTagChange(id.toInt(), cardId, tag, value);
+                else            emit enemyCardTagChange(id.toInt(), cardId, tag, value);
+            }
         }
     }
 
