@@ -860,7 +860,8 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
     HeroGraphicsItem *hero = getHero(friendly, NULL);
     if(hero == NULL)        return;
 
-    if(tag == "RESOURCES")  hero->setResources(value.toInt());
+    if(tag == "RESOURCES")              hero->setResources(value.toInt());
+    else if(tag == "RESOURCES_USED")    hero->setResourcesUsed(value.toInt());
 }
 
 

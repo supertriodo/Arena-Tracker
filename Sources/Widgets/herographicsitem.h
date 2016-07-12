@@ -22,7 +22,7 @@ public:
 
 //Variables:
 private:
-    int armor, minionsAttack, resources;
+    int armor, minionsAttack, resources, resourcesUsed;
     QList<SecretIcon> secretsList;
 
 public:
@@ -43,6 +43,7 @@ public:
     void setMinionsAttack(int minionsAttack);
     void setResources(int resources);
     int getResources();
+    void setResourcesUsed(int resourcesUsed);
 };
 
 #endif // HEROGRAPHICSITEM_H

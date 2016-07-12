@@ -10,6 +10,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->hero = true;
     this->minionsAttack = 0;
     this->resources = 1;
+    this->resourcesUsed = 0;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
@@ -25,6 +26,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     this->armor = copy->armor;
     this->minionsAttack = copy->minionsAttack;
     this->resources = copy->resources;
+    this->resourcesUsed = copy->resourcesUsed;
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -48,6 +50,13 @@ void HeroGraphicsItem::changeHero(QString code, int id)
 void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
 {
     this->minionsAttack = minionsAttack;
+    update();
+}
+
+
+void HeroGraphicsItem::setResourcesUsed(int resourcesUsed)
+{
+    this->resourcesUsed = resourcesUsed;
     update();
 }
 
@@ -356,7 +365,9 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     {
         //Mana
         painter->drawPixmap(WIDTH/2-50, -HEIGHT/2+13, QPixmap(":Images/bgCrystal.png"));
-        text = QString::number(resources);
+
+        if(resourcesUsed == 0)      text = QString::number(resources);
+        else                        text = QString::number(resources-resourcesUsed) + "/" + QString::number(resources);
         textWide = fm.width(text);
         path = QPainterPath();
         path.addText(WIDTH/2-17 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);

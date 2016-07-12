@@ -2596,9 +2596,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Hide Track secrets, avoid draft
 //Option - plan transitions
-//Log ordenado
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
 
 
 //REPLAY BUGS
