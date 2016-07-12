@@ -1203,47 +1203,6 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Add
 }
 
 
-bool PlanHandler::isAddonCommonValid(QString code)
-{
-    QList<QString> forbiddenAddonList;
-    forbiddenAddonList.append(IMP_GANG_BOSS);
-    forbiddenAddonList.append(DRAGON_EGG);
-    forbiddenAddonList.append(ACOLYTE_OF_PAIN);
-    forbiddenAddonList.append(GURUBASHI_BERSERKER);
-    forbiddenAddonList.append(FROTHING_BERSEKER);
-    forbiddenAddonList.append(LIGHTWARDEN);
-    forbiddenAddonList.append(GOREHOWL);
-    forbiddenAddonList.append(LOREWALKER_CHO);
-    forbiddenAddonList.append(NERUBIAN_PROPHET);
-    forbiddenAddonList.append(SNAKE_TRAP);
-    forbiddenAddonList.append(ARMORED_WARHORSE);
-    forbiddenAddonList.append(DARKSHIRE_COUNCILMAN);
-    return !forbiddenAddonList.contains(code);
-}
-
-
-bool PlanHandler::isAddonHeroValid(QString code)
-{
-    QList<QString> forbiddenAddonList;
-    forbiddenAddonList.append(ACIDMAW);
-    forbiddenAddonList.append(SIEGE_ENGINE);
-    return !forbiddenAddonList.contains(code) && isAddonCommonValid(code);
-}
-
-
-bool PlanHandler::isAddonMinionValid(QString code)
-{
-    QList<QString> forbiddenAddonList;
-    forbiddenAddonList.append(WRATHGUARD);
-    forbiddenAddonList.append(AXE_FLINGER);
-    forbiddenAddonList.append(ARMORSMITH);
-    forbiddenAddonList.append(EYE_FOR_AN_EYE);
-    forbiddenAddonList.append(TRUESILVER_CHAMPION);
-    forbiddenAddonList.append(GLADIATORS_LONGBOW);
-    return !forbiddenAddonList.contains(code) && isAddonCommonValid(code);
-}
-
-
 void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == NULL) return;
@@ -1577,7 +1536,7 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     if(blockType == "TRIGGER" || blockType == "JOUST")
     {
         if(isLastTriggerValid(code))    this->lastTriggerId = id;
-        else                            emit pDebug("Trigger code is in the forbidden creator list: " + code, Warning);
+        else                            emit pDebug("Trigger creator code is in the forbidden list: " + code, Warning);
         this->lastPowerAddon.code = code;
         this->lastPowerAddon.id = id;
         this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
@@ -1602,19 +1561,6 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
         this->lastPowerAddon.id = -1;
     }
     this->lastArmorRemoverIds.idAddon = -1;
-}
-
-
-bool PlanHandler::isLastTriggerValid(QString code)
-{
-    QList<QString> forbiddenCreatorList;
-    forbiddenCreatorList.append(KNIFE_JUGGLER);
-    forbiddenCreatorList.append(ADDLED_GRIZZLY);
-    forbiddenCreatorList.append(DARKSHIRE_COUNCILMAN);
-    forbiddenCreatorList.append(FROTHING_BERSEKER);
-    forbiddenCreatorList.append(THE_SKELETON_KNIGHT);
-    forbiddenCreatorList.append(SWORD_OF_JUSTICE);
-    return !forbiddenCreatorList.contains(code);
 }
 
 
@@ -1984,4 +1930,56 @@ void PlanHandler::setMouseInApp(bool value)
 {
     this->mouseInApp = value;
     updateTransparency();
+}
+
+
+//Card exceptions
+bool PlanHandler::isAddonCommonValid(QString code)
+{
+    if(code == IMP_GANG_BOSS)           return false;
+    if(code == DRAGON_EGG)              return false;
+    if(code == ACOLYTE_OF_PAIN)         return false;
+    if(code == GURUBASHI_BERSERKER)     return false;
+    if(code == FROTHING_BERSEKER)       return false;
+    if(code == LIGHTWARDEN)             return false;
+    if(code == GOREHOWL)                return false;
+    if(code == LOREWALKER_CHO)          return false;
+    if(code == NERUBIAN_PROPHET)        return false;
+    if(code == SNAKE_TRAP)              return false;
+    if(code == ARMORED_WARHORSE)        return false;
+    if(code == DARKSHIRE_COUNCILMAN)    return false;
+    if(code == POLLUTED_HOARDER)        return false;
+    return true;
+}
+
+
+bool PlanHandler::isAddonHeroValid(QString code)
+{
+    if(code == ACIDMAW)                 return false;
+    if(code == SIEGE_ENGINE)            return false;
+    return isAddonCommonValid(code);
+}
+
+
+bool PlanHandler::isAddonMinionValid(QString code)
+{
+    if(code == WRATHGUARD)              return false;
+    if(code == AXE_FLINGER)             return false;
+    if(code == ARMORSMITH)              return false;
+    if(code == EYE_FOR_AN_EYE)          return false;
+    if(code == TRUESILVER_CHAMPION)     return false;
+    if(code == GLADIATORS_LONGBOW)      return false;
+    return isAddonCommonValid(code);
+}
+
+
+bool PlanHandler::isLastTriggerValid(QString code)
+{
+    if(code == KNIFE_JUGGLER)           return false;
+    if(code == ADDLED_GRIZZLY)          return false;
+    if(code == DARKSHIRE_COUNCILMAN)    return false;
+    if(code == FROTHING_BERSEKER)       return false;
+    if(code == THE_SKELETON_KNIGHT)     return false;
+    if(code == SWORD_OF_JUSTICE)        return false;
+    return true;
 }

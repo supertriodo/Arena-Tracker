@@ -2599,13 +2599,13 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Log ordenado
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Minion to zone hand and played se muestra muerto, se arreglara ordenando el log
-//Evitar que councilman produzca cartas. Arreglar listas forbidden.
 
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
 
 //Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir. Aceptable
+//Mismo problema con Experimentador gnomo al convertir un esbirro en pollo.
 
 //Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
 //El addon es de la fuente que lo robo. Aceptable

@@ -42,7 +42,8 @@ void EnemyHandHandler::completeUI()
 
 void EnemyHandHandler::setLastCreatedByCode(QString code)
 {
-    this->lastCreatedByCode = code;
+    if(isLastCreatedByCodeValid(code))      this->lastCreatedByCode = code;
+    else                                    emit pDebug("CreateBy code is in the forbidden list: " + code, Warning);
 }
 
 
@@ -289,4 +290,10 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
 }
 
 
+//Card exceptions
+bool EnemyHandHandler::isLastCreatedByCodeValid(QString code)
+{
+    if(code == DARKSHIRE_COUNCILMAN)    return false;
+    return true;
+}
 
