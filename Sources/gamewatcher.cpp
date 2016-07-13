@@ -807,7 +807,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
             else
             {
-                emit pDebug("Player: Starting card drawn: " + name + " ID: " + id, numLine);
+                emit pDebug("Player: Starting card to hand: " + name + " ID: " + id, numLine);
                 emit playerCardToHand(id.toInt(), cardId, 0);
             }
         }
@@ -848,6 +848,12 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 playerID = player.toInt();
                 emit enemyHero((playerID == 1)?hero2:hero1);
                 emit pDebug("Found playerID: " + player, numLine);
+
+                if(playerTag.isEmpty())
+                {
+                    playerTag = (playerID == 1)?name1:name2;
+                    if(!playerTag.isEmpty())    emit pDebug("Found playerTag: " + playerTag, numLine);
+                }
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }

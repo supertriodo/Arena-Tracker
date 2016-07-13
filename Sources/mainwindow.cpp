@@ -2614,22 +2614,24 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
 //No vale la pena arreglarlo con excepciones. GameWatcher(3941): Player: TAG_CHANGE(ZONE)=GRAVEYARD -- Campeￃﾳn de Ventormenta -- Id: 35
 
+//Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
+//ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND
+//ZoneChangeList.ProcessChanges() - id=87 local=False [name=¡Maldito! id=152 zone=HAND zonePos=6 cardId=LOE_007t player=2] zone from OPPOSING HAND ->
+
 //Se produce entre el PLAY y el POWER
 //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
 //GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
 
 
 //SPECTATOR GAMES
-//Si empiezan desde el principio todo correcto.
+//Si empiezan desde el principio todo correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
 //Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
-//  Problemas: En PlanHandler el heroe muerto siempre es el jugador
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
 //Cazar crash bug en drafting con 31 cartas
-//Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
-//ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND
-//ZoneChangeList.ProcessChanges() - id=87 local=False [name=¡Maldito! id=152 zone=HAND zonePos=6 cardId=LOE_007t player=2] zone from OPPOSING HAND ->
+//Solo mode da problemas con las cartas iniciales en el enemigo, son de turn 1 y no hay moneda.
+
 
 //REWARDS
 //Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
