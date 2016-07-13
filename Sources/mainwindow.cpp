@@ -1896,56 +1896,56 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
-    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
-    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
-    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
-    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
-    planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);
+//    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
+//    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
+//    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
+//    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
+//    planHandler->playerHeroZonePlayAdd("HERO_08", 11);
+//    planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
+//    planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);
 
-    planHandler->newTurn(true, 1);
-    planHandler->zonePlayAttack("AT_003",1,2);
-    planHandler->zonePlayAttack("AT_003",3,2);
-    planHandler->zonePlayAttack("AT_003",11,4);
+//    planHandler->newTurn(true, 1);
+//    planHandler->zonePlayAttack("AT_003",1,2);
+//    planHandler->zonePlayAttack("AT_003",3,2);
+//    planHandler->zonePlayAttack("AT_003",11,4);
 
-    planHandler->newTurn(false, 2);
-    planHandler->enemyMinionZonePlayAdd("EX1_020", 5, 1);
-    planHandler->zonePlayAttack("AT_003",12,11);
-    planHandler->zonePlayAttack("AT_003",12,11);
-    planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
-    planHandler->playerMinionTagChange(11, "", "DAMAGE", "1");
-    planHandler->enemyCardObjPlayed("EX1_020", 4, 1);
-    planHandler->setLastTriggerId("CS2_034", "TRIGGER", 134, -1);
-    planHandler->playerMinionTagChange(1, "","DAMAGE", "1");
-//    planHandler->playerMinionTagChange(93, "BRM_027h", "LINKED_ENTITY", "11");
-    planHandler->playerMinionZonePlayRemove(1);
-    planHandler->playerMinionZonePlayRemove(3);
-    planHandler->playerCardDraw(22, "AT_003",2);
-    planHandler->playerCardDraw(23, "CS1_042",2);
-    planHandler->playerCardDraw(21, "EX1_020",2);
-    planHandler->playerCardDraw(21, "EX1_020",2);
-    planHandler->playerCardDraw(24, "AT_002",2);
-    planHandler->enemyCardDraw(22, "AT_003", "",2);
-    planHandler->enemyCardDraw(23, "CS1_042", "",2);
-    planHandler->enemyCardDraw(21, "", "",2);
-    planHandler->enemyCardDraw(21, "", "",32);
-    planHandler->enemyCardDraw(24, "AT_002", "",2);
+//    planHandler->newTurn(false, 2);
+//    planHandler->enemyMinionZonePlayAdd("EX1_020", 5, 1);
+//    planHandler->zonePlayAttack("AT_003",12,11);
+//    planHandler->zonePlayAttack("AT_003",12,11);
+//    planHandler->setLastTriggerId("", "FATIGUE", 0, 0);
+//    planHandler->playerMinionTagChange(11, "", "DAMAGE", "1");
+//    planHandler->enemyCardObjPlayed("EX1_020", 4, 1);
+//    planHandler->setLastTriggerId("CS2_034", "TRIGGER", 134, -1);
+//    planHandler->playerMinionTagChange(1, "","DAMAGE", "1");
+////    planHandler->playerMinionTagChange(93, "BRM_027h", "LINKED_ENTITY", "11");
+//    planHandler->playerMinionZonePlayRemove(1);
+//    planHandler->playerMinionZonePlayRemove(3);
+//    planHandler->playerCardDraw(22, "AT_003",2);
+//    planHandler->playerCardDraw(23, "CS1_042",2);
+//    planHandler->playerCardDraw(21, "EX1_020",2);
+//    planHandler->playerCardDraw(21, "EX1_020",2);
+//    planHandler->playerCardDraw(24, "AT_002",2);
+//    planHandler->enemyCardDraw(22, "AT_003", "",2);
+//    planHandler->enemyCardDraw(23, "CS1_042", "",2);
+//    planHandler->enemyCardDraw(21, "", "",2);
+//    planHandler->enemyCardDraw(21, "", "",32);
+//    planHandler->enemyCardDraw(24, "AT_002", "",2);
 
-    planHandler->newTurn(true, 3);
-    planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
-    planHandler->enemyCardObjPlayed("CS1_042", 3, 12);
-    planHandler->enemyCardObjPlayed("AT_003", 1, 12);
-    planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
-    planHandler->enemySecretRevealed(7, "EX1_020");
-    planHandler->playerSecretStolen(10, "CS1_042");
-    planHandler->playerCardPlayed(22, "AT_003", true);
-    planHandler->playerCardPlayed(24, "AT_002", false);
-    planHandler->enemyCardPlayed(22, "AT_003", false);
-    planHandler->enemyCardPlayed(24, "AT_002", true);
-    planHandler->playerMinionTagChange(11, "AT_003", "ATK", "2");
-    planHandler->playerWeaponZonePlayAdd("FP1_021", 31);
-    planHandler->enemyWeaponZonePlayAdd("FP1_021", 31);
+//    planHandler->newTurn(true, 3);
+//    planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
+//    planHandler->enemyCardObjPlayed("CS1_042", 3, 12);
+//    planHandler->enemyCardObjPlayed("AT_003", 1, 12);
+//    planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
+//    planHandler->enemySecretRevealed(7, "EX1_020");
+//    planHandler->playerSecretStolen(10, "CS1_042");
+//    planHandler->playerCardPlayed(22, "AT_003", true);
+//    planHandler->playerCardPlayed(24, "AT_002", false);
+//    planHandler->enemyCardPlayed(22, "AT_003", false);
+//    planHandler->enemyCardPlayed(24, "AT_002", true);
+//    planHandler->playerMinionTagChange(11, "AT_003", "ATK", "2");
+//    planHandler->playerWeaponZonePlayAdd("FP1_021", 31);
+//    planHandler->enemyWeaponZonePlayAdd("FP1_021", 31);
 
 
 //    QTimer::singleShot(10000, this, SLOT(test2()));
@@ -2594,6 +2594,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
+//Hacer new turn en 2 fases
 
 
 //REPLAY BUGS

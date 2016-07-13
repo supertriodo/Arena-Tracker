@@ -1449,6 +1449,7 @@ void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
 
 void PlanHandler::lastEnemyHandCardIsCoin()
 {
+    if(nowBoard->enemyHandList.empty())     return;//En modo practica el mulligan enemigo termina antes de robar las cartas
     nowBoard->enemyHandList.last()->setCode(THE_COIN);
     revealEnemyCardPrevTurns(nowBoard->enemyHandList.last()->getId(), THE_COIN);
 }

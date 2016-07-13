@@ -296,6 +296,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             {
                 powerState = inGameState;
                 mulliganEnemyDone = mulliganPlayerDone = true;
+                emit clearDrawList(true);
                 emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganDone = true)", 0, Warning);
             }
         }
@@ -330,7 +331,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 
 void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 {
-    //Jugador/Enemigo names y firstPlayer
+    //Jugador/Enemigo names, playerTag y firstPlayer
     //GameState.DebugPrintEntityChoices() - id=1 Player=fayatime TaskList=3 ChoiceType=MULLIGAN CountMin=0 CountMax=5
     //GameState.DebugPrintEntityChoices() - id=2 Player=Винсент TaskList=4 ChoiceType=MULLIGAN CountMin=0 CountMax=3
     if(line.contains(QRegularExpression(
@@ -353,6 +354,12 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         }
         else    emit pDebug("Read invalid PlayerID value: " + player, numLine, Error);
 
+        if(playerTag.isEmpty() && playerID == player.toInt())
+        {
+            playerTag = (playerID == 1)?name1:name2;
+            emit pDebug("Found playerTag: " + playerTag, numLine);
+        }
+
         if(numCards == "3")
         {
             firstPlayer = playerName;
@@ -360,52 +367,6 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         }
     }
 
-    //Jugador roba carta inicial
-    //GameState.DebugPrintEntityChoices() -   Entities[0]=[name=Conjurador etéreo id=22 zone=HAND zonePos=1 cardId=LOE_003 player=1]
-    else if(line.contains(QRegularExpression(
-                "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
-                "\\[name=(.*) id=(\\d+) zone=HAND zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\]"
-                  ), match))
-    {
-        QString cardName = match->captured(1);
-        QString id = match->captured(2);
-        QString cardId = match->captured(3);
-        QString player = match->captured(4);
-
-        if(playerID == 0 || playerTag.isEmpty())
-        {
-            playerID = player.toInt();
-            playerTag = (playerID == 1)?name1:name2;
-            emit enemyHero((playerID == 1)?hero2:hero1);
-            emit pDebug("Found playerID: " + player + " playerTag: " + playerTag, 0);
-        }
-
-        //Jugador
-        if(playerID == 0 || playerID == player.toInt())
-        {
-            emit pDebug("Player: Starting card drawn: " + cardName, numLine);
-            emit playerCardDraw(cardId, true);
-            emit playerCardToHand(id.toInt(), cardId, 0);
-        }
-        //Enemigo, Leviatan de llamas se roba como conocida
-        else
-        {
-            emit pDebug("Enemy: Starting card drawn: " + cardName, numLine);
-            emit enemyCardDraw(id.toInt(), 0, false, cardId);
-        }
-    }
-
-    //Enemigo roba carta inicial
-    else if(line.contains(QRegularExpression(
-                  "GameState\\.DebugPrintEntityChoices\\(\\) - *Entities\\[\\d+\\]="
-                  "\\[id=(\\d+) cardId= type=INVALID zone=HAND zonePos=\\d+ player=\\d+\\]"
-                  ), match))
-    {
-        QString id = match->captured(1);
-
-        emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
-        emit enemyCardDraw(id.toInt());
-    }
 
     //MULLIGAN DONE
     //GameState.DebugPrintPower() -     TAG_CHANGE Entity=fayatime tag=MULLIGAN_STATE value=DONE
@@ -762,24 +723,29 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo roba carta desconocida
         else if(zoneTo == "OPPOSING HAND")
         {
-            //Enemigo roba carta de deck
-            if(zoneFrom == "OPPOSING DECK")
+            if(mulliganEnemyDone)
             {
-                bool advance = advanceTurn(false);
-                emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
-                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
-                emit enemyCardDraw(id.toInt(), turnReal);
-                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
-            }
-
-            else if(zoneFrom.isEmpty())
-            {
+                //Enemigo roba carta de deck
+                if(zoneFrom == "OPPOSING DECK")
+                {
+                    bool advance = advanceTurn(false);
+                    emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
+                    if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                    emit enemyCardDraw(id.toInt(), turnReal);
+                    if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                }
                 //Enemigo roba carta especial del vacio
-                if(mulliganEnemyDone)
+                else if(zoneFrom.isEmpty())
                 {
                     emit pDebug("Enemy: Special card drawn. ID: " + id, numLine);
                     emit enemyCardDraw(id.toInt(), turnReal, true);
                 }
+            }
+            else
+            {
+                //Enemigo roba starting card
+                emit pDebug("Enemy: Starting card drawn. ID: " + id, numLine);
+                emit enemyCardDraw(id.toInt());
             }
         }
     }
@@ -812,7 +778,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Enemigo roba carta conocida
         else if(zoneTo == "OPPOSING HAND" && mulliganEnemyDone)
         {
-            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
             bool advance = false;
             if(zoneFrom == "OPPOSING DECK")
             {
@@ -822,20 +787,29 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
             emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
             if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
         }
 
         //Jugador roba carta conocida
-        else if(zoneTo == "FRIENDLY HAND" && mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
+        else if(zoneTo == "FRIENDLY HAND")
         {
-            emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
-            bool advance = false;
-            if(zoneFrom == "FRIENDLY DECK")
+            if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
             {
-                advance = advanceTurn(true);
+                bool advance = false;
+                if(zoneFrom == "FRIENDLY DECK")
+                {
+                    advance = advanceTurn(true);
+                }
+                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                emit playerCardToHand(id.toInt(), cardId, turnReal);
+                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
             }
-            if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
-            emit playerCardToHand(id.toInt(), cardId, turnReal);
-            if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+            else
+            {
+                emit pDebug("Player: Starting card drawn: " + name + " ID: " + id, numLine);
+                emit playerCardToHand(id.toInt(), cardId, 0);
+            }
         }
 
         //Enemigo, nuevo minion en PLAY
@@ -872,6 +846,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(playerID == 0)
             {
                 playerID = player.toInt();
+                emit enemyHero((playerID == 1)?hero2:hero1);
                 emit pDebug("Found playerID: " + player, numLine);
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
@@ -993,10 +968,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Jugador roba carta conocida
         else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
         {
-            bool advance = advanceTurn(true);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
             emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
-            emit playerCardDraw(cardId);
+            emit playerCardDraw(cardId, !mulliganPlayerDone);
         }
 
         //Jugador juega carta conocida
