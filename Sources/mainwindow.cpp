@@ -2595,6 +2595,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Hacer new turn en 2 fases
+//The deck tracker card order seems to be class cards before neutral cards for each mana spot
+//instead the previous alphabetical order (ie. 1 mana Naturalize appears above 1 mana Argent Squire).
 
 
 //REPLAY BUGS
