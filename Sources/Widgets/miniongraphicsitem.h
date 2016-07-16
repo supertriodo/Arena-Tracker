@@ -68,7 +68,7 @@ public:
     void setChangeHealth(ValueChange value);
     int getAttack();
     int getHealth();    
-    int getPotencialDamage();
+    int getPotencialDamage(bool ignoreExausted=false);
     int getRemainingHealth();
 
 private:

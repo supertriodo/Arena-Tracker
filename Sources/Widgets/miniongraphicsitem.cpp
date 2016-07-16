@@ -96,11 +96,11 @@ int MinionGraphicsItem::getAttack()
 }
 
 
-int MinionGraphicsItem::getPotencialDamage()
+int MinionGraphicsItem::getPotencialDamage(bool ignoreExausted)
 {
-    if(exausted || frozen)  return 0;
-    else if(windfury)       return attack*2;
-    else                    return attack;
+    if(!ignoreExausted && (exausted || frozen))     return 0;
+    else if(windfury)                               return attack*2;
+    else                                            return attack;
 }
 
 

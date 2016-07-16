@@ -8,9 +8,10 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->armor = 0;
     this->exausted = false;
     this->hero = true;
-    this->minionsAttack = 0;
+    this->minionsAttack = this->minionsMaxAttack = 0;
     this->resources = 1;
     this->resourcesUsed = 0;
+    this->isNowBoard = true;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
@@ -25,8 +26,10 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
 {
     this->armor = copy->armor;
     this->minionsAttack = copy->minionsAttack;
+    this->minionsMaxAttack = copy->minionsMaxAttack;
     this->resources = copy->resources;
     this->resourcesUsed = copy->resourcesUsed;
+    this->isNowBoard = false;
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -50,6 +53,13 @@ void HeroGraphicsItem::changeHero(QString code, int id)
 void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
 {
     this->minionsAttack = minionsAttack;
+    update();
+}
+
+
+void HeroGraphicsItem::setMinionsMaxAttack(int minionsMaxAttack)
+{
+    this->minionsMaxAttack = minionsMaxAttack;
     update();
 }
 
@@ -361,28 +371,38 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
     }
 
-    if(playerTurn==friendly)
+    if(playerTurn == friendly || isNowBoard)
     {
         //Mana
         painter->drawPixmap(WIDTH/2-50, -HEIGHT/2+13, QPixmap(":Images/bgCrystal.png"));
 
-        if(resourcesUsed == 0)      text = QString::number(resources);
-        else                        text = QString::number(resources-resourcesUsed) + "/" + QString::number(resources);
+        if(playerTurn != friendly)      text = QString::number(resources);
+        else if(resourcesUsed == 0)     text = QString::number(resources);
+        else                            text = QString::number(resources-resourcesUsed) + "/" + QString::number(resources);
         textWide = fm.width(text);
         path = QPainterPath();
         path.addText(WIDTH/2-17 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);
         painter->setBrush(WHITE);
         painter->drawPath(path);
 
+
         //Total attack
         painter->drawPixmap(-WIDTH/2-30, -HEIGHT/2-13, QPixmap(":Images/bgTotalAttack.png"));
         int totalAttack = this->minionsAttack;
-        if(glow)
+        int totalMaxAttack = this->minionsMaxAttack;
+        if(windfury)
         {
-            if(windfury)    totalAttack += attack*2;
-            else            totalAttack += attack;
+            if(glow)    totalAttack += attack*2;
+            totalMaxAttack += attack*2;
         }
-        text = QString::number(totalAttack);
+        else
+        {
+            if(glow)    totalAttack += attack;
+            totalMaxAttack += attack;
+        }
+        if(playerTurn != friendly)              text = QString::number(totalMaxAttack);
+        else if(totalAttack == totalMaxAttack)  text = QString::number(totalAttack);
+        else                                    text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
         textWide = fm.width(text);
         path = QPainterPath();
         path.addText(-WIDTH/2+18 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);

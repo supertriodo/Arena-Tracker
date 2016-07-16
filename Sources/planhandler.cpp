@@ -103,13 +103,19 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
 void PlanHandler::updateMinionsAttack(bool friendly)
 {
     int minionsAttack = 0;
+    int minionsMaxAttack = 0;
     foreach(MinionGraphicsItem *minion, *getMinionList(friendly))
     {
-        minionsAttack += minion->getPotencialDamage();
+        minionsAttack += minion->getPotencialDamage(false);
+        minionsMaxAttack += minion->getPotencialDamage(true);
     }
 
     HeroGraphicsItem *hero = getHero(friendly);
-    if(hero != NULL)    hero->setMinionsAttack(minionsAttack);
+    if(hero != NULL)
+    {
+        hero->setMinionsAttack(minionsAttack);
+        hero->setMinionsMaxAttack(minionsMaxAttack);
+    }
 }
 
 
