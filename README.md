@@ -75,7 +75,7 @@ http://www.reddit.com/r/ArenaTracker/
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
-* (Mac) Download & install XCode
+* (Only Mac) Download & install XCode
  * https://developer.apple.com/downloads/?name=Xcode
 * Download & install QT Community.
  * http://www.qt.io/download-open-source/
@@ -90,7 +90,6 @@ http://www.reddit.com/r/ArenaTracker/
 * Open Qt Creator and open Arena Tracker project.
  * Open File or project... Look for ArenaTracker.pro
 * In the botton left set the build to Release and Run.
-* Copy HSCards directory to the build dir, to the same place the executable is.
  
 If you build on Mac check:
 * https://github.com/supertriodo/Arena-Tracker/issues/1
