@@ -65,6 +65,7 @@ private:
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);
+    void updateManaBounds();
 
 public:
     void reset();

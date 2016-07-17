@@ -14,12 +14,42 @@ DeckCard::DeckCard(QString code)
     setCode(code);
     listItem = NULL;
     total = remaining = 1;
+    topManaBound = bottomManaBound = false;
 }
 
 
 DeckCard::~DeckCard()
 {
 
+}
+
+
+void DeckCard::setManaBound(bool top)
+{
+    if(top)
+    {
+        if(!topManaBound)
+        {
+            topManaBound = true;
+            draw(false);
+        }
+    }
+    else
+    {
+        if(!bottomManaBound)
+        {
+            bottomManaBound = true;
+            draw(false);
+        }
+    }
+}
+
+
+void DeckCard::resetManaBounds()
+{
+    bool redraw = topManaBound || bottomManaBound;
+    topManaBound = bottomManaBound = false;
+    if(redraw)  draw(false);
 }
 
 
@@ -113,6 +143,12 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Borders
+        painter.setPen(GREEN);
+        painter.setBrush(BLACK);
+        if(topManaBound)        painter.drawRect(QRect(1, -1, 10, 6));
+        if(bottomManaBound)     painter.drawRect(QRect(1, 30, 10, 6));
 
         //Card
         QRectF target;

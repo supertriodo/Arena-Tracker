@@ -45,6 +45,9 @@ protected:
     static int cardHeight;
     static QMap<QString, QJsonObject> *cardsJson;
 
+private:
+    bool topManaBound, bottomManaBound;
+
 //Metodos
 protected:
     QPixmap draw(uint total, bool drawRarity=false, QColor nameColor=BLACK, bool resize=true);
@@ -64,6 +67,8 @@ public:
     CardClass getCardClass();
     int getCost();
     void setCode(QString code);
+    void setManaBound(bool top);
+    void resetManaBounds();
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);

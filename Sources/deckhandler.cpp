@@ -429,7 +429,11 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].total-=total;
     deckCardList[0].remaining = deckCardList[0].total;
     deckCardList[0].draw(true);
-    if(deckCardList[0].total == 0)  hideUnknown();
+    if(deckCardList[0].total == 0)
+    {
+        updateManaBounds();
+        hideUnknown();
+    }
 
     if(!this->inArena)   enableDeckButtonSave();
 
@@ -473,6 +477,28 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
     deckCardList.append(deckCard);
     ui->deckListWidget->addItem(deckCard.listItem);
     emit deckSizeChanged();
+}
+
+
+void DeckHandler::updateManaBounds()
+{
+    emit pDebug("Updating mana bounds.");
+
+    for(int i=1, mana=-1; i<deckCardList.length(); i++)
+    {
+        int manaCard = deckCardList[i].getCost();
+        deckCardList[i].resetManaBounds();
+
+        if(mana != manaCard)
+        {
+            if(i > 1 && mana < 6)
+            {
+                deckCardList[i-1].setManaBound(false);
+                deckCardList[i].setManaBound(true);
+            }
+            mana = manaCard;
+        }
+    }
 }
 
 
