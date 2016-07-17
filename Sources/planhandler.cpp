@@ -1016,6 +1016,8 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     }
 
     weapon = new WeaponGraphicsItem(code, id, friendly);
+    HeroGraphicsItem * heroNow = getHero(friendly);
+    if(heroNow != NULL)    heroNow->setHeroWeapon(weapon);
 
     if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->addItem(weapon);
 
@@ -1026,8 +1028,8 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     setLastTriggerId("", "", -1, -1);
 
     //Add addon to last turn
-    HeroGraphicsItem* hero = friendly?nowBoard->playerHero:nowBoard->enemyHero;
-    if(hero != NULL)    addAddonToLastTurn(code, id, hero->getId(), Addon::AddonNeutral);
+    HeroGraphicsItem* heroLast = friendly?nowBoard->playerHero:nowBoard->enemyHero;
+    if(heroLast != NULL)    addAddonToLastTurn(code, id, heroLast->getId(), Addon::AddonNeutral);
 }
 
 
@@ -1055,6 +1057,8 @@ void PlanHandler::removeWeapon(bool friendly, int id, Board *board)
     }
     else if(id == -1 || weapon->getId() == id)
     {
+        HeroGraphicsItem * heroNow = getHero(friendly, board);
+        if(heroNow != NULL)    heroNow->setHeroWeapon();
         delete weapon;
 
         if(friendly)    board->playerWeapon = NULL;

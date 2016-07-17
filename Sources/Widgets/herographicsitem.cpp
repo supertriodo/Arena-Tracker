@@ -12,6 +12,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->resources = 1;
     this->resourcesUsed = 0;
     this->isNowBoard = true;
+    this->heroWeapon = NULL;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
@@ -30,6 +31,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     this->resources = copy->resources;
     this->resourcesUsed = copy->resourcesUsed;
     this->isNowBoard = false;
+    this->heroWeapon = NULL; //No lo necesitamos en la copia, solo en nowBoard
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -60,6 +62,13 @@ void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
 void HeroGraphicsItem::setMinionsMaxAttack(int minionsMaxAttack)
 {
     this->minionsMaxAttack = minionsMaxAttack;
+    update();
+}
+
+
+void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon)
+{
+    this->heroWeapon = heroWeapon;
     update();
 }
 
@@ -392,13 +401,15 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         int totalMaxAttack = this->minionsMaxAttack;
         if(windfury)
         {
-            if(glow)    totalAttack += attack*2;
-            totalMaxAttack += attack*2;
+            if(glow)                                totalAttack += attack*2;
+            if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack()*2;
+            else                                    totalMaxAttack += attack*2;
         }
         else
         {
-            if(glow)    totalAttack += attack;
-            totalMaxAttack += attack;
+            if(glow)                                totalAttack += attack;
+            if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack();
+            else                                    totalMaxAttack += attack;
         }
         if(playerTurn != friendly)              text = QString::number(totalMaxAttack);
         else if(totalAttack == totalMaxAttack)  text = QString::number(totalAttack);

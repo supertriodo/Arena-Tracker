@@ -2,6 +2,7 @@
 #define HEROGRAPHICSITEM_H
 
 #include "miniongraphicsitem.h"
+#include "weapongraphicsitem.h"
 #include "../Cards/secretcard.h"
 
 
@@ -25,6 +26,7 @@ private:
     int armor, minionsAttack, minionsMaxAttack, resources, resourcesUsed;
     bool isNowBoard;
     QList<SecretIcon> secretsList;
+    WeaponGraphicsItem * heroWeapon;
 
 public:
     static const int WIDTH = 230;
@@ -46,6 +48,7 @@ public:
     int getResources();
     void setResourcesUsed(int resourcesUsed);
     void setMinionsMaxAttack(int minionsMaxAttack);
+    void setHeroWeapon(WeaponGraphicsItem * heroWeapon = NULL);
 };
 
 #endif // HEROGRAPHICSITEM_H
