@@ -122,7 +122,7 @@ private:
     void createDataDir();
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -192,6 +192,7 @@ private slots:
     void closeApp();
     void updateShowClassColor(bool checked);
     void updateShowSpellColor(bool checked);
+    void updateShowManaLimits(bool checked);
     void fadeBarAndButtons(bool fadeOut);
     void spreadMouseInApp();
     void currentArenaToWhiteAM(bool connected);

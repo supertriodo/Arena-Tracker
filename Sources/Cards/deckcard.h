@@ -46,7 +46,7 @@ protected:
     static QMap<QString, QJsonObject> *cardsJson;
 
 private:
-    bool topManaBound, bottomManaBound;
+    bool topManaLimit, bottomManaLimit;
 
 //Metodos
 protected:
@@ -67,8 +67,8 @@ public:
     CardClass getCardClass();
     int getCost();
     void setCode(QString code);
-    void setManaBound(bool top);
-    void resetManaBounds();
+    void setManaLimit(bool top);
+    void resetManaLimits();
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);

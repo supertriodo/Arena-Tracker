@@ -16,6 +16,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->mouseInApp = false;
     this->enemyDeckHandler = enemyDeckHandler;
     this->synchronized = false;
+    this->showManaLimits = false;
 
     completeUI();
 }
@@ -429,11 +430,8 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
     deckCardList[0].total-=total;
     deckCardList[0].remaining = deckCardList[0].total;
     deckCardList[0].draw(true);
-    if(deckCardList[0].total == 0)
-    {
-        updateManaBounds();
-        hideUnknown();
-    }
+    if(deckCardList[0].total == 0)  hideUnknown();
+    updateManaLimits();
 
     if(!this->inArena)   enableDeckButtonSave();
 
@@ -480,25 +478,33 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
 }
 
 
-void DeckHandler::updateManaBounds()
+void DeckHandler::updateManaLimits()
 {
-    emit pDebug("Updating mana bounds.");
+    if(!showManaLimits)  return;
 
     for(int i=1, mana=-1; i<deckCardList.length(); i++)
     {
         int manaCard = deckCardList[i].getCost();
-        deckCardList[i].resetManaBounds();
+        deckCardList[i].resetManaLimits();
 
         if(mana != manaCard)
         {
             if(i > 1 && mana < 6)
             {
-                deckCardList[i-1].setManaBound(false);
-                deckCardList[i].setManaBound(true);
+                deckCardList[i-1].setManaLimit(false);
+                deckCardList[i].setManaLimit(true);
             }
             mana = manaCard;
         }
     }
+}
+
+
+void DeckHandler::setShowManaLimits(bool value)
+{
+    this->showManaLimits = value;
+    if(showManaLimits)  updateManaLimits();
+    else                for(int i=1; i<deckCardList.length(); i++)     deckCardList[i].resetManaLimits();
 }
 
 
@@ -849,11 +855,6 @@ void DeckHandler::cardRemove()
         return;
     }
 
-//    int ret = QMessageBox::warning(ui->centralWidget, tr("Sure?"), tr("Remove (") +
-//            deckCardList[index].getName() +   tr(") from your deck?"),
-//            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok);
-//    if(ret == QMessageBox::Cancel)  return;
-
     ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
     delete deckCardList[index].listItem;
     deckCardList.removeAt(index);
@@ -862,6 +863,7 @@ void DeckHandler::cardRemove()
     deckCardList[0].remaining = deckCardList[0].total;
     if(deckCardList[0].total==1)    hideUnknown(false);
     deckCardList[0].draw(true);
+    updateManaLimits();
     enableDeckButtons();
 
     enableDeckButtonSave();
@@ -1132,10 +1134,15 @@ void DeckHandler::loadDeck(QString deckName)
     reset();
     QJsonObject jsonObjectDeck = decksJson[deckName].toObject();
 
+    //Desactiva showManaLimits durante la carga
+    bool oldShowManaLimits = showManaLimits;
+    showManaLimits = false;
     foreach(QString key, jsonObjectDeck.keys())
     {
         if(key != "hero")   newDeckCard(key, jsonObjectDeck[key].toInt());
     }
+    showManaLimits = oldShowManaLimits;
+    updateManaLimits();
 
     loadedDeckName = deckName;
     ui->deckLineEdit->setText(deckName);

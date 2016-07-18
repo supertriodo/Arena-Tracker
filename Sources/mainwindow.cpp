@@ -850,7 +850,7 @@ void MainWindow::closeApp()
 
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
-                               bool showClassColor, bool showSpellColor,
+                               bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool createGoldenCards, int maxGamesLog,
                                QString AMplayerEmail, QString AMpassword)
 {
@@ -895,6 +895,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
     ui->configCheckSpellColor->setChecked(showSpellColor);
     updateShowSpellColor(showSpellColor);
+
+    ui->configCheckManaLimits->setChecked(showManaLimits);
+    updateShowManaLimits(showManaLimits);
 
     //Hand
     //Slider            0  - Ns - 11
@@ -993,12 +996,13 @@ void MainWindow::readSettings()
         bool autoSize = settings.value("autoSize", true).toBool();
         bool showClassColor = settings.value("showClassColor", true).toBool();
         bool showSpellColor = settings.value("showSpellColor", true).toBool();
+        bool showManaLimits = settings.value("showManaLimits", true).toBool();
         bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
 
-        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
+        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
     }
     else
     {
@@ -1038,6 +1042,7 @@ void MainWindow::writeSettings()
         settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
         settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
+        settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
@@ -2388,6 +2393,12 @@ void MainWindow::updateShowSpellColor(bool checked)
 }
 
 
+void MainWindow::updateShowManaLimits(bool checked)
+{
+    deckHandler->setShowManaLimits(checked);
+}
+
+
 //Valores drawDisappear:
 //  -1  No show
 //  0   Turn
@@ -2531,6 +2542,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckAutoSize, SIGNAL(clicked()), this, SLOT(spreadCorrectTamCard()));
     connect(ui->configCheckClassColor, SIGNAL(clicked(bool)), this, SLOT(updateShowClassColor(bool)));
     connect(ui->configCheckSpellColor, SIGNAL(clicked(bool)), this, SLOT(updateShowSpellColor(bool)));
+    connect(ui->configCheckManaLimits, SIGNAL(clicked(bool)), this, SLOT(updateShowManaLimits(bool)));
 
     //Hand
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
@@ -2594,7 +2606,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Hacer new turn en 2 fases
+//Hacer new turn en 2 fases, arregla cost de carta recien robada
 //The deck tracker card order seems to be class cards before neutral cards for each mana spot
 //instead the previous alphabetical order (ie. 1 mana Naturalize appears above 1 mana Argent Squire).
 

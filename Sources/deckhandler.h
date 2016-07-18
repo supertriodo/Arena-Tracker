@@ -31,6 +31,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     bool drawAnimating;
+    bool showManaLimits;
     int drawDisappear;
     QTreeWidgetItem *loadDeckClasses[10];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
@@ -65,7 +66,7 @@ private:
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);
-    void updateManaBounds();
+    void updateManaLimits();
 
 public:
     void reset();
@@ -86,6 +87,7 @@ public:
     void loadDecks();
     bool askSaveDeck();
     void completeArenaDeck(QString draftLog);
+    void setShowManaLimits(bool value);
 
 signals:
     void checkCardImage(QString code);

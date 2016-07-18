@@ -3,8 +3,8 @@
 #include <QtWidgets>
 
 
-bool DeckCard::drawClassColor = true;
-bool DeckCard::drawSpellWeaponColor = true;
+bool DeckCard::drawClassColor = false;
+bool DeckCard::drawSpellWeaponColor = false;
 int DeckCard::cardHeight = 35;
 QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
@@ -14,7 +14,7 @@ DeckCard::DeckCard(QString code)
     setCode(code);
     listItem = NULL;
     total = remaining = 1;
-    topManaBound = bottomManaBound = false;
+    topManaLimit = bottomManaLimit = false;
 }
 
 
@@ -24,31 +24,31 @@ DeckCard::~DeckCard()
 }
 
 
-void DeckCard::setManaBound(bool top)
+void DeckCard::setManaLimit(bool top)
 {
     if(top)
     {
-        if(!topManaBound)
+        if(!topManaLimit)
         {
-            topManaBound = true;
+            topManaLimit = true;
             draw(false);
         }
     }
     else
     {
-        if(!bottomManaBound)
+        if(!bottomManaLimit)
         {
-            bottomManaBound = true;
+            bottomManaLimit = true;
             draw(false);
         }
     }
 }
 
 
-void DeckCard::resetManaBounds()
+void DeckCard::resetManaLimits()
 {
-    bool redraw = topManaBound || bottomManaBound;
-    topManaBound = bottomManaBound = false;
+    bool redraw = topManaLimit || bottomManaLimit;
+    topManaLimit = bottomManaLimit = false;
     if(redraw)  draw(false);
 }
 
@@ -147,8 +147,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         //Borders
         painter.setPen(GREEN);
         painter.setBrush(BLACK);
-        if(topManaBound)        painter.drawRect(QRect(1, -1, 10, 6));
-        if(bottomManaBound)     painter.drawRect(QRect(1, 30, 10, 6));
+        if(topManaLimit)        painter.drawRect(QRect(1, -1, 10, 6));
+        if(bottomManaLimit)     painter.drawRect(QRect(1, 30, 10, 6));
 
         //Card
         QRectF target;

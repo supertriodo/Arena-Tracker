@@ -1576,8 +1576,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>216</width>
-               <height>725</height>
+               <width>435</width>
+               <height>714</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1816,7 +1816,7 @@ transparent during a game</string>
                        <string>Dark Theme</string>
                       </property>
                       <property name="text">
-                       <string>Dark</string>
+                       <string>Dark Theme</string>
                       </property>
                      </widget>
                     </item>
@@ -1827,7 +1827,7 @@ transparent during a game</string>
 it'll split to show several tabs at once</string>
                       </property>
                       <property name="text">
-                       <string>Split</string>
+                       <string>Split Window</string>
                       </property>
                      </widget>
                     </item>
@@ -1838,7 +1838,7 @@ it'll split to show several tabs at once</string>
 in a new window</string>
                       </property>
                       <property name="text">
-                       <string>Deck</string>
+                       <string>Deck Window</string>
                       </property>
                      </widget>
                     </item>
@@ -1975,34 +1975,52 @@ in a new window</string>
                  <item>
                   <layout class="QHBoxLayout" name="configDeckHorizontalLayout2">
                    <item>
-                    <widget class="QCheckBox" name="configCheckAutoSize">
-                     <property name="toolTip">
-                      <string>Auto Size: Adapt card size to deck window size.</string>
-                     </property>
-                     <property name="text">
-                      <string>Auto</string>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout4">
+                     <item>
+                      <widget class="QCheckBox" name="configCheckAutoSize">
+                       <property name="toolTip">
+                        <string>Auto Size: Adapt card size to deck window size.</string>
+                       </property>
+                       <property name="text">
+                        <string>Auto Size</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="configCheckManaLimits">
+                       <property name="toolTip">
+                        <string>Mana Limits: Show marks to organize cards by mana cost.</string>
+                       </property>
+                       <property name="text">
+                        <string>Mana Limits</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="configCheckClassColor">
-                     <property name="toolTip">
-                      <string>Class Color: Show a colored background for class cards.</string>
-                     </property>
-                     <property name="text">
-                      <string>Class</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="configCheckSpellColor">
-                     <property name="toolTip">
-                      <string>Spell Color: Show text in color for spells and weapons.</string>
-                     </property>
-                     <property name="text">
-                      <string>Spell</string>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout5">
+                     <item>
+                      <widget class="QCheckBox" name="configCheckClassColor">
+                       <property name="toolTip">
+                        <string>Class Color: Show a colored background for class cards.</string>
+                       </property>
+                       <property name="text">
+                        <string>Class Color</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="configCheckSpellColor">
+                       <property name="toolTip">
+                        <string>Spell Color: Show text in color for spells and weapons.</string>
+                       </property>
+                       <property name="text">
+                        <string>Spell Color</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>

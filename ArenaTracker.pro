@@ -96,6 +96,8 @@ RESOURCES += \
     arenatracker.qrc \
     extra.qrc
 
+LIBS += -L./Libs
+
 win32: RC_ICONS = ArenaTracker.ico
 macx: ICON = ArenaTracker.icns
 
