@@ -453,7 +453,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
         {
-            if(deckCard.getType() != deckCardList[i].getType())
+            /*if(deckCard.getType() != deckCardList[i].getType())//Weapon-->Spells-->Minions
             {
                 if(deckCard.getType() == WEAPON || deckCardList[i].getType() == MINION)
                 {
@@ -463,7 +463,7 @@ void DeckHandler::insertDeckCard(DeckCard &deckCard)
                     return;
                 }
             }
-            else if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
+            else */if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
             {
                 deckCardList.insert(i, deckCard);
                 ui->deckListWidget->insertItem(i, deckCard.listItem);
