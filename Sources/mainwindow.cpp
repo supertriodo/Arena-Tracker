@@ -1872,11 +1872,18 @@ void MainWindow::checkGamesLogDir()
     filterName << "*.arenatracker";
     dir.setNameFilters(filterName);
 
-    QStringList files = dir.entryList().mid(maxGamesLog);
-    foreach(QString file, files)
+    QStringList files = dir.entryList();
+    int indexDraft = files.indexOf(QRegularExpression("DRAFT.*"));
+    pDebug("Last arena DRAFT: " + (indexDraft==-1?QString("Not Found"):files[indexDraft]));
+
+    for(int i=maxGamesLog; i<files.length(); i++)
     {
-        dir.remove(file);
-        pDebug(file + " removed.");
+        QString file = files[i];
+        if(!(i < indexDraft && file.contains("ARENA")) && !(i == indexDraft))
+        {
+            dir.remove(file);
+            pDebug(file + " removed.");
+        }
     }
 }
 

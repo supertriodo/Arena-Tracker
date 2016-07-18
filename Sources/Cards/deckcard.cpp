@@ -148,8 +148,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         //Borders
         painter.setPen(GREEN);
         painter.setBrush(BLACK);
-        if(topManaLimit)        painter.drawRect(QRect(1, -1, 10, 6));
-        if(bottomManaLimit)     painter.drawRect(QRect(1, 30, 10, 6));
+        if(topManaLimit)        painter.drawRect(QRect(1, -1, 8, 6));
+        if(bottomManaLimit)     painter.drawRect(QRect(1, 30, 8, 6));
 
         //Card
         QRectF target;
