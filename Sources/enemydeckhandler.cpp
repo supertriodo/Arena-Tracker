@@ -46,7 +46,7 @@ void EnemyDeckHandler::reset()
     deckCard.total = 30;
     deckCard.remaining = deckCard.total;
     deckCard.listItem = new QListWidgetItem();
-    deckCard.draw(true);
+    deckCard.draw();
     insertDeckCard(deckCard);
 
     emit pDebug("Deck list cleared.");
@@ -116,7 +116,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
             found = true;
             deckCardList[i].total+=total;
             deckCardList[i].remaining+=total;
-            deckCardList[i].draw(true);
+            deckCardList[i].draw();
             break;
         }
     }
@@ -137,12 +137,13 @@ void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(deckCard);
-        deckCard.draw(true);
+        deckCard.draw();
         emit checkCardImage(code);
     }
 
     deckCardList[0].total-=total;
-    deckCardList[0].draw(true);
+    deckCardList[0].remaining = deckCardList[0].total;
+    deckCardList[0].draw();
     if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
 
     emit pDebug("Add to deck: (" + QString::number(total) + ")" +
@@ -245,7 +246,7 @@ void EnemyDeckHandler::redrawClassCards()
     {
         if(deckCard.getCardClass()<9)
         {
-            deckCard.draw(true);
+            deckCard.draw();
         }
     }
 }
@@ -258,7 +259,7 @@ void EnemyDeckHandler::redrawSpellWeaponCards()
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
         {
-            deckCard.draw(true);
+            deckCard.draw();
         }
     }
 }
@@ -268,7 +269,7 @@ void EnemyDeckHandler::redrawAllCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        deckCard.draw(true);
+        deckCard.draw();
     }
 }
 
@@ -277,7 +278,7 @@ void EnemyDeckHandler::redrawDownloadedCardImage(QString code)
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.getCode() == code)  deckCard.draw(true);
+        if(deckCard.getCode() == code)  deckCard.draw();
     }
 }
 

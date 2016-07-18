@@ -343,7 +343,7 @@ void DeckHandler::reset()
     deckCard.total = 30;
     deckCard.remaining = deckCard.total;
     deckCard.listItem = new QListWidgetItem();
-    deckCard.draw(true);
+    deckCard.draw();
     insertDeckCard(deckCard); //Lanza emit deckSizeChanged();
 
     enableDeckButtons();
@@ -411,7 +411,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
             found = true;
             deckCardList[i].total+=total;
             deckCardList[i].remaining+=total;
-            deckCardList[i].draw(true);
+            deckCardList[i].draw();
             break;
         }
     }
@@ -423,13 +423,13 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(deckCard);
-        deckCard.draw(true);
+        deckCard.draw();
         emit checkCardImage(code);
     }
 
     deckCardList[0].total-=total;
     deckCardList[0].remaining = deckCardList[0].total;
-    deckCardList[0].draw(true);
+    deckCardList[0].draw();
     if(deckCardList[0].total == 0)  hideUnknown();
     updateManaLimits();
 
@@ -559,15 +559,10 @@ void DeckHandler::drawFromDeck(QString code)
     {
         if(it->getCode() == code)
         {
-            if(it->remaining>1)
+            if(it->remaining > 0)
             {
                 it->remaining--;
-                it->draw(false);
-            }
-            else if(it->remaining == 1)
-            {
-                it->remaining--;
-                it->drawGreyed(true);
+                it->draw();
             }
             //it->remaining == 0
             //Reajustamos el mazo si tiene unknown cards
@@ -576,10 +571,10 @@ void DeckHandler::drawFromDeck(QString code)
                 deckCardList[0].total--;
                 deckCardList[0].remaining = deckCardList[0].total;
                 if(deckCardList[0].total == 0)  hideUnknown();
-                else                            deckCardList[0].draw(true);
-                it->total++;
+                else                            deckCardList[0].draw();
 
-                it->drawGreyed(true);
+                it->total++;
+                it->draw();
 
                 emit pDebug("New card: " + it->getName() + ". " +
                             QString::number(it->remaining) + "/" + QString::number(it->total));
@@ -617,7 +612,7 @@ void DeckHandler::returnToDeck(QString code)
             if(it->remaining < it->total)
             {
                 it->remaining++;
-                it->draw(false);
+                it->draw();
                 emit pDebug("Return to deck: " + code + ". " +
                             QString::number(it->remaining) + "/" + QString::number(it->total));
             }
@@ -640,14 +635,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
     {
         if(it->getCode() == code)
         {
-            if(it->remaining > 0)
-            {
-                it->draw(false);
-            }
-            else
-            {
-                it->drawGreyed(true);
-            }
+            it->draw();
         }
     }
 
@@ -667,14 +655,7 @@ void DeckHandler::redrawClassCards()
     {
         if(deckCard.getCardClass()<9)
         {
-            if(deckCard.remaining > 0)
-            {
-                deckCard.draw(false);
-            }
-            else
-            {
-                deckCard.drawGreyed(true);
-            }
+            deckCard.draw();
         }
     }
 
@@ -695,14 +676,7 @@ void DeckHandler::redrawSpellWeaponCards()
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
         {
-            if(deckCard.remaining > 0)
-            {
-                deckCard.draw(false);
-            }
-            else
-            {
-                deckCard.drawGreyed(true);
-            }
+            deckCard.draw();
         }
     }
 
@@ -721,14 +695,7 @@ void DeckHandler::redrawAllCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.remaining > 0)
-        {
-            deckCard.draw(false);
-        }
-        else
-        {
-            deckCard.drawGreyed(true);
-        }
+        deckCard.draw();
     }
 
     foreach(DrawCard drawCard, drawCardList)
@@ -820,9 +787,9 @@ void DeckHandler::cardTotalMin()
     deckCardList[0].total++;
     deckCardList[0].remaining = deckCardList[0].total;
 
-    deckCardList[index].draw(true);
+    deckCardList[index].draw();
     if(deckCardList[0].total==1)    hideUnknown(false);
-    deckCardList[0].draw(true);
+    deckCardList[0].draw();
     enableDeckButtons();
 
     enableDeckButtonSave();
@@ -837,9 +804,9 @@ void DeckHandler::cardTotalPlus()
     deckCardList[0].total--;
     deckCardList[0].remaining = deckCardList[0].total;
 
-    deckCardList[index].draw(true);
+    deckCardList[index].draw();
     if(deckCardList[0].total==0)    hideUnknown();
-    else                            deckCardList[0].draw(true);
+    else                            deckCardList[0].draw();
     enableDeckButtons();
 
     enableDeckButtonSave();
@@ -862,7 +829,7 @@ void DeckHandler::cardRemove()
     deckCardList[0].total++;
     deckCardList[0].remaining = deckCardList[0].total;
     if(deckCardList[0].total==1)    hideUnknown(false);
-    deckCardList[0].draw(true);
+    deckCardList[0].draw();
     updateManaLimits();
     enableDeckButtons();
 
@@ -908,9 +875,9 @@ void DeckHandler::unlockDeckInterface()
     {
         if(it->total>0)
         {
-            it->draw(true);
-            it->listItem->setHidden(false);
             it->remaining = it->total;
+            it->draw();
+            it->listItem->setHidden(false);
         }
         else    it->listItem->setHidden(true);
     }

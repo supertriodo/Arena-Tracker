@@ -31,7 +31,7 @@ void DeckCard::setManaLimit(bool top)
         if(!topManaLimit)
         {
             topManaLimit = true;
-            draw(false);
+            draw();
         }
     }
     else
@@ -39,7 +39,7 @@ void DeckCard::setManaLimit(bool top)
         if(!bottomManaLimit)
         {
             bottomManaLimit = true;
-            draw(false);
+            draw();
         }
     }
 }
@@ -49,7 +49,7 @@ void DeckCard::resetManaLimits()
 {
     bool redraw = topManaLimit || bottomManaLimit;
     topManaLimit = bottomManaLimit = false;
-    if(redraw)  draw(false);
+    if(redraw)  draw();
 }
 
 
@@ -116,20 +116,21 @@ CardClass DeckCard::getClassFromString(QString value)
 }
 
 
-void DeckCard::draw(bool drawTotal)
+void DeckCard::draw()
 {
-    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK);
-
-    this->listItem->setIcon(QIcon(canvas));
+    if(remaining > 0)
+    {
+        QPixmap canvas = draw(remaining, false, BLACK);
+        this->listItem->setIcon(QIcon(canvas));
+    }
+    else
+    {
+        QPixmap canvas = draw(total, false, BLACK);
+        this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
+                                canvas.size(), QIcon::Disabled, QIcon::On)));
+    }
 }
 
-void DeckCard::drawGreyed(bool drawTotal)
-{
-    QPixmap canvas = draw(drawTotal?this->total:this->remaining, false, BLACK);
-
-    this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
-                            canvas.size(), QIcon::Disabled, QIcon::On)));
-}
 
 QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resize)
 {
