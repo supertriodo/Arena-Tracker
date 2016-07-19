@@ -62,10 +62,11 @@ http://www.reddit.com/r/ArenaTracker/
  * If you don't want Arena Tracker dir in your HOME dir, you can place it wherever you want and move Arena Tracker binary to the same place and Arena Tracker dir won't be created in your HOME anymore.
 * Sometimes ArenaTracker doesn't stay on top of Hearthstone.
  * I have seen this behaviour in windows. It seems to be related to a QT/Windows bug. Try to restart ArenaTracker.
-* I setup the app but it didn't upload my arena game/ it didn't start drafting.
+* I setup the app but it doesn't work/ it didn't upload my arena game/ it didn't start drafting.
  * This usually means Hearthstone is not writting in its log.
  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
  * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Reset the app (ctrl+r) and log.config will be recreated).
+ * (Only Linux) Arena Tracker is supposed to be run as a normal user (not root). If you run it as sudo you should remove ~/.config/Arena Tracker/Arena Tracker.conf if it belongs to root, and start Arena Tracker again and set the paths so the config file is recreated with your user as owner.
 * Drafting doesn't read next card.
  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
