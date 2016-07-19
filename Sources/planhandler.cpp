@@ -516,7 +516,24 @@ void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString valu
     CardGraphicsItem *card = findCard(friendly, id);
     if(card == NULL)    return;
 
-    if(tag == "COST")   card->setCost(value.toInt());
+    if(tag == "COST")
+    {
+        int cost = value.toInt();
+        card->setCost(cost);
+        reduceCostPrevTurn(id, friendly, cost);
+    }
+}
+
+
+void PlanHandler::reduceCostPrevTurn(int id, bool friendly, int cost)
+{
+    if(turnBoards.empty())  return;
+
+    Board *board = turnBoards.last();
+    if(board->playerTurn != friendly)   return;
+
+    CardGraphicsItem *card = findCard(friendly, id, board);
+    if(card != NULL)    card->reduceCost(cost);
 }
 
 

@@ -127,6 +127,7 @@ private:
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();
     void cardTagChange(int id, bool friendly, QString tag, QString value);
+    void reduceCostPrevTurn(int id, bool friendly, int cost);
 
 public:
     void setTransparency(Transparency value);

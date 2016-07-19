@@ -2612,10 +2612,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//Deck regalos
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 //Hacer new turn en 2 fases, arregla cost de carta recien robada
-//The deck tracker card order seems to be class cards before neutral cards for each mana spot
-//instead the previous alphabetical order (ie. 1 mana Naturalize appears above 1 mana Argent Squire).
 
 
 //REPLAY BUGS
@@ -2633,7 +2632,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad. Aceptable
 //Dificil de arreglar, se cambia el damage antes del health.
 //Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
-//No vale la pena arreglarlo con excepciones. GameWatcher(3941): Player: TAG_CHANGE(ZONE)=GRAVEYARD -- Campeￃﾳn de Ventormenta -- Id: 35
 
 //Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
 //ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND

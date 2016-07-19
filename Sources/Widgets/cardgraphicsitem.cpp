@@ -83,6 +83,15 @@ void CardGraphicsItem::setCost(int cost)
 }
 
 
+void CardGraphicsItem::reduceCost(int cost)
+{
+    if(!played && this->cost > cost)
+    {
+        this->cost = cost;
+        update();
+    }
+}
+
 
 void CardGraphicsItem::checkDownloadedCode(QString code)
 {
