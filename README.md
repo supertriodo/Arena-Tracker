@@ -13,7 +13,7 @@ https://github.com/supertriodo/Arena-Tracker/releases/latest
  * https://aur.archlinux.org/packages/arena-tracker/
 
 Extract the zip wherever you want and double click the executable, no installation required.
-If you want to run it from a terminal don't use sudo.
+(If you want to run it from a terminal don't use sudo.)
 
 Data used by Arena Tracker will be stored in USER/Arena Tracker with the following structure:
 * Arena Tracker\
