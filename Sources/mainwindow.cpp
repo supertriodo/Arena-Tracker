@@ -2458,24 +2458,22 @@ void MainWindow::updateMaxGamesLog(int value)
 {
     if(value == 0)
     {
-        copyGameLogs = false;
-        gameWatcher->setCopyGameLogs(false);
+        copyGameLogs = true;//false;//Siempre copiamos los logs de la sesion actual para poder completar el DRAFT actual.
     }
     else
     {
         copyGameLogs = true;
-        gameWatcher->setCopyGameLogs(true);
     }
+    gameWatcher->setCopyGameLogs(copyGameLogs);
 
     QString labelText;
     if(value == 100)
     {
         labelText = "ALL";
-
     }
     else if(value == 0)
     {
-        labelText = "OFF";
+        labelText = "MIN";
     }
     else
     {
@@ -2614,7 +2612,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //Deck regalos
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Hacer new turn en 2 fases, arregla cost de carta recien robada
 
 
 //REPLAY BUGS
