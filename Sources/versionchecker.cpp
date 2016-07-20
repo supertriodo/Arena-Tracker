@@ -30,7 +30,7 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
     QString target = reply->rawHeader("Location");
     QRegularExpressionMatch match;
     if(target.contains(QRegularExpression(
-        "^https://github.com/supertriodo/Arena-Tracker/releases/tag/(v\\d+\\.?\\d*)$"), &match))
+        "^https://github.com/supertriodo/Arena-Tracker/releases/tag/(.*)$"), &match))
     {
         QString latestVersion = match.captured(1);
 
