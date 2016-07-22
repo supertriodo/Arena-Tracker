@@ -25,7 +25,7 @@ enum CardClass {DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WA
 class DeckCard
 {
 public:
-    DeckCard(QString code);
+    DeckCard(QString code, bool outsider=false);
     ~DeckCard();
 
 //Variables
@@ -47,6 +47,7 @@ protected:
 
 private:
     bool topManaLimit, bottomManaLimit;
+    bool outsider;
 
 //Metodos
 protected:
@@ -68,6 +69,7 @@ public:
     void setCode(QString code);
     void setManaLimit(bool top);
     void resetManaLimits();
+    bool isOutsider();
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);

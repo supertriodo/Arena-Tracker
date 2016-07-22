@@ -812,6 +812,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
         }
 
+        //Jugador, OUTSIDER a deck
+        else if(zoneTo == "FRIENDLY DECK" && zoneFrom != "FRIENDLY HAND")
+        {
+            emit pDebug("Player: Outsider card to deck: " + name + " ID: " + id, numLine);
+            emit playerReturnToDeck(cardId);
+        }
+
         //Enemigo, nuevo minion en PLAY
         else if(zoneTo == "OPPOSING PLAY" && zoneFrom != "OPPOSING PLAY")
         {

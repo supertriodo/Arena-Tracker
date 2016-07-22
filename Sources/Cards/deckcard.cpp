@@ -9,18 +9,25 @@ int DeckCard::cardHeight = 35;
 QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
 
-DeckCard::DeckCard(QString code)
+DeckCard::DeckCard(QString code, bool outsider)
 {
     setCode(code);
     listItem = NULL;
     total = remaining = 1;
     topManaLimit = bottomManaLimit = false;
+    this->outsider = outsider;
 }
 
 
 DeckCard::~DeckCard()
 {
 
+}
+
+
+bool DeckCard::isOutsider()
+{
+    return this->outsider;
 }
 
 
@@ -166,6 +173,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         //Background and #cards
         if(nameColor!=BLACK)                            painter.setPen(QPen(nameColor));
         else if(drawRarity)                             painter.setPen(QPen(getRarityColor()));
+        else if(outsider)                               painter.setPen(QPen(VIOLET));
         else if(drawSpellWeaponColor && type==SPELL)    painter.setPen(QPen(YELLOW));
         else if(drawSpellWeaponColor && type==WEAPON)   painter.setPen(QPen(ORANGE));
         else                                            painter.setPen(QPen(WHITE));

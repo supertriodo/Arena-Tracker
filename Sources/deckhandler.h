@@ -44,7 +44,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code, bool mulligan);
-    void newDeckCard(QString code, int total=1, bool add=false);
+    void newDeckCard(QString code, int total=1, bool add=false, bool outsider=false);
     void drawFromDeck(QString code);
     void showDeckButtons();
     void hideDeckButtons();
@@ -101,6 +101,7 @@ public slots:
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
     void newDeckCardWeb(QString code, int total);
+    void newDeckCardOutsider(QString code);
     void showPlayerCardDraw(QString code, bool mulligan);
     void enableDeckButtons();
     void cardTotalMin();

@@ -384,7 +384,13 @@ void DeckHandler::newDeckCardWeb(QString code, int total)
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool add)
+void DeckHandler::newDeckCardOutsider(QString code)
+{
+    newDeckCard(code, 1, false, true);
+}
+
+
+void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider)
 {
     if(code.isEmpty())  return;
 
@@ -398,44 +404,50 @@ void DeckHandler::newDeckCard(QString code, int total, bool add)
 
     //Ya existe en el mazo
     bool found = false;
-    for(int i=0; i<deckCardList.length(); i++)
+    if(!outsider)
     {
-        if(deckCardList[i].getCode() == code)
+        for(int i=0; i<deckCardList.length(); i++)
         {
-            if(!add)
+            if(deckCardList[i].getCode() == code)
             {
-                emit pDebug((*cardsJson)[code].value("name").toString() + " already in deck.");
-                return;
-            }
+                if(!add)
+                {
+                    emit pDebug((*cardsJson)[code].value("name").toString() + " already in deck.");
+                    return;
+                }
 
-            found = true;
-            deckCardList[i].total+=total;
-            deckCardList[i].remaining+=total;
-            deckCardList[i].draw();
-            break;
+                found = true;
+                deckCardList[i].total+=total;
+                deckCardList[i].remaining+=total;
+                deckCardList[i].draw();
+                break;
+            }
         }
     }
 
     if(!found)
     {
-        DeckCard deckCard(code);
+        DeckCard deckCard(code, outsider);
         deckCard.total = total;
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(deckCard);
         deckCard.draw();
         emit checkCardImage(code);
+        updateManaLimits();
     }
 
-    deckCardList[0].total-=total;
-    deckCardList[0].remaining = deckCardList[0].total;
-    deckCardList[0].draw();
-    if(deckCardList[0].total == 0)  hideUnknown();
-    updateManaLimits();
+    if(!outsider)
+    {
+        deckCardList[0].total-=total;
+        deckCardList[0].remaining = deckCardList[0].total;
+        deckCardList[0].draw();
+        if(deckCardList[0].total == 0)  hideUnknown();
+    }
 
     if(!this->inArena)   enableDeckButtonSave();
 
-    emit pDebug("Add to deck: (" + QString::number(total) + ")" +
+    emit pDebug("Add to deck: (" + QString::number(total) + ")" + (outsider?QString("OUTSIDER"):QString("")) +
                 (*cardsJson)[code].value("name").toString());
 }
 
@@ -609,23 +621,15 @@ void DeckHandler::returnToDeck(QString code)
     {
         if(it->getCode() == code)
         {
-            if(it->remaining < it->total)
-            {
-                it->remaining++;
-                it->draw();
-                emit pDebug("Return to deck: " + code + ". " +
-                            QString::number(it->remaining) + "/" + QString::number(it->total));
-            }
-            else
-            {
-                emit pDebug("Not return to deck: " + code + ". Remaining=Total " +
-                            QString::number(it->remaining) + "/" + QString::number(it->total), Warning);
-            }
+            it->remaining++;
+            it->draw();
+            emit pDebug("Return to deck: " + code + ". " +
+                        QString::number(it->remaining) + "/" + QString::number(it->total));
             return;
         }
     }
 
-    emit pDebug("Not return to deck: " + code + ". Code not found", Warning);
+    newDeckCardOutsider(code);
 }
 
 
@@ -871,15 +875,23 @@ void DeckHandler::unlockDeckInterface()
 
     if(!synchronized)   return;
 
-    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    for(int i=0; i<deckCardList.length(); i++)
     {
-        if(it->total>0)
+        DeckCard *card = &deckCardList[i];
+        if(card->isOutsider())
         {
-            it->remaining = it->total;
-            it->draw();
-            it->listItem->setHidden(false);
+            ui->deckListWidget->removeItemWidget(card->listItem);
+            delete card->listItem;
+            deckCardList.removeAt(i);
+            i--;
         }
-        else    it->listItem->setHidden(true);
+        else if(card->total > 0)
+        {
+            card->remaining = card->total;
+            card->draw();
+            card->listItem->setHidden(false);
+        }
+        else    card->listItem->setHidden(true);
     }
 
     ui->deckListWidget->setFocusPolicy(Qt::ClickFocus);

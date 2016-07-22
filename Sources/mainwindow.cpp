@@ -2611,6 +2611,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Deck regalos
+//Borrar carta OUTSIDER al robarla
+//Usar TRIGGER para cartas desconocidas a deck
 //Windfury and tag NUM_ATTACKS_THIS_TURN
 
 
