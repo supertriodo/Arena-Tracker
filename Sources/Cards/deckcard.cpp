@@ -15,6 +15,9 @@ DeckCard::DeckCard(QString code, bool outsider)
     listItem = NULL;
     total = remaining = 1;
     topManaLimit = bottomManaLimit = false;
+    special = false;
+    createdByCode = "";
+    id = 0;
     this->outsider = outsider;
 }
 
@@ -83,6 +86,38 @@ void DeckCard::setCode(QString code)
 }
 
 
+//Reusamos cost/type/name/rarity para createdByCode
+void DeckCard::setCreatedByCode(QString code)
+{
+    if(!this->code.isEmpty()) return;
+
+    this->createdByCode = code;
+
+    if(!createdByCode.isEmpty())
+    {
+        cost = (*cardsJson)[code].value("cost").toInt();
+        type = getTypeFromString((*cardsJson)[code].value("type").toString());
+        name = (*cardsJson)[code].value("name").toString();
+        rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
+        cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
+    }
+    else
+    {
+        cost = -1;
+        type = INVALID_TYPE;
+        name = "unknown";
+        rarity = INVALID_RARITY;
+        cardClass = INVALID_CLASS;
+    }
+}
+
+
+QString DeckCard::getCreatedByCode()
+{
+    return this->createdByCode;
+}
+
+
 CardRarity DeckCard::getRarityFromString(QString value)
 {
     if(value == "FREE")             return COMMON;
@@ -108,7 +143,7 @@ CardType DeckCard::getTypeFromString(QString value)
 
 CardClass DeckCard::getClassFromString(QString value)
 {
-    if(value == "")      return NEUTRAL;
+    if(value == "")             return NEUTRAL;
     else if(value == "DRUID")   return DRUID;
     else if(value == "HUNTER")  return HUNTER;
     else if(value == "MAGE")    return MAGE;
@@ -125,17 +160,22 @@ CardClass DeckCard::getClassFromString(QString value)
 
 void DeckCard::draw()
 {
-    if(remaining > 0)
+    QPixmap canvas;
+
+    if(!this->createdByCode.isEmpty())
     {
-        QPixmap canvas = draw(remaining, false, BLACK);
-        this->listItem->setIcon(QIcon(canvas));
+        canvas = drawCreatedByCard();
     }
     else
     {
-        QPixmap canvas = draw(total, false, BLACK);
-        this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
-                                canvas.size(), QIcon::Disabled, QIcon::On)));
+        if(remaining > 0)   canvas = draw(remaining, false, BLACK);
+        else                canvas = draw(total, false, BLACK);
     }
+
+
+    if(remaining > 0)       this->listItem->setIcon(QIcon(canvas));
+    else                    this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
+                                    canvas.size(), QIcon::Disabled, QIcon::On)));
 }
 
 
@@ -265,6 +305,92 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
     //Adapt to size
     if(resize)  return resizeCardHeight(canvas);
     else        return canvas;
+}
+
+
+QPixmap DeckCard::drawCreatedByCard()
+{
+    QFont font("Belwe Bd BT");
+
+    QPixmap canvas(CARD_SIZE);
+    canvas.fill(Qt::transparent);
+    QPainter painter;
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Card
+        QRectF target = QRectF(113,6,100,25);;
+        QRectF source;
+
+        QFileInfo cardFI(Utility::hscardsPath() + "/" + createdByCode + ".png");
+        if(cardFI.exists())
+        {
+            if(type==MINION)        source = QRectF(48,72,100,25);
+            else                    source = QRectF(48,98,100,25);
+            painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + createdByCode + ".png"), source);
+        }
+        else
+        {
+            source = QRectF(63,18,100,25);
+            painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
+        }
+
+        //Background
+        painter.drawPixmap(0,0,QPixmap(":Images/handCard3.png"));
+
+        //BY
+        int fontSize = 15;
+        font.setPixelSize(fontSize);//11pt
+        font.setBold(true);
+        font.setKerning(true);
+#ifdef Q_OS_WIN
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+
+        QFontMetrics fm(font);
+        int textWide = fm.width("BY:");
+        int textHigh = fm.height();
+
+        painter.setFont(font);
+        painter.setBrush(BLACK);
+        painter.setPen(QPen(WHITE));
+
+        QPainterPath path;
+        path.addText(20 - textWide/2, 20 + textHigh/4, font, "BY:");
+        painter.drawPath(path);
+
+
+        //Name
+        textWide = fm.width(name);
+        int maxNameLong = 174;
+        while(textWide>maxNameLong)
+        {
+            fontSize--;
+            font.setPixelSize(fontSize);//<11pt
+            fm = QFontMetrics(font);
+            textWide = fm.width(name);
+            textHigh = fm.height();
+        }
+
+        painter.setFont(font);
+        painter.setPen(QPen(BLACK));
+
+        if(outsider)                                    painter.setBrush(VIOLET);
+        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
+        else                                            painter.setBrush(WHITE);
+
+        path = QPainterPath();
+        path.addText(34, 20 + textHigh/4, font, name);
+        painter.drawPath(path);
+    painter.end();
+
+    return resizeCardHeight(canvas);
 }
 
 

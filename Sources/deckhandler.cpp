@@ -17,6 +17,7 @@ DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
     this->enemyDeckHandler = enemyDeckHandler;
     this->synchronized = false;
     this->showManaLimits = false;
+    this->lastCreatedByCode = "";
 
     completeUI();
 }
@@ -384,18 +385,18 @@ void DeckHandler::newDeckCardWeb(QString code, int total)
 }
 
 
-void DeckHandler::newDeckCardOutsider(QString code)
+void DeckHandler::newDeckCardOutsider(QString code, int id)
 {
-    newDeckCard(code, 1, false, true);
+    newDeckCard(code, 1, false, true, id);
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider)
+void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, int id)
 {
-    if(code.isEmpty())  return;
+    if(code.isEmpty() && !outsider)  return;
 
     //Mazo completo
-    if(deckCardList[0].total < (uint)total)
+    if(!outsider && (deckCardList[0].total < (uint)total))
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
                     (*cardsJson)[code].value("name").toString(), Warning);
@@ -431,6 +432,19 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider)
         deckCard.total = total;
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
+
+        //Outsider
+        if(outsider)
+        {
+            deckCard.id = id;
+
+            if(code.isEmpty())
+            {
+                deckCard.special = true;
+                deckCard.setCreatedByCode(this->lastCreatedByCode);
+                emit checkCardImage(this->lastCreatedByCode);
+            }
+        }
         insertDeckCard(deckCard);
         deckCard.draw();
         emit checkCardImage(code);
@@ -447,7 +461,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider)
 
     if(!this->inArena)   enableDeckButtonSave();
 
-    emit pDebug("Add to deck: (" + QString::number(total) + ")" + (outsider?QString("OUTSIDER"):QString("")) +
+    emit pDebug("Add to deck" + (outsider?QString(" OUTSIDER"):QString("")) + ": (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());
 }
 
@@ -555,18 +569,39 @@ void DeckHandler::removeOldestDrawCard()
 }
 
 
-void DeckHandler::showPlayerCardDraw(QString code, bool mulligan)
+void DeckHandler::showPlayerCardDraw(QString code, int id, bool mulligan)
 {
     if(this->drawDisappear>=0)    newDrawCard(code, mulligan);
-    drawFromDeck(code);
+    drawFromDeck(code, id);
 }
 
 
-void DeckHandler::drawFromDeck(QString code)
+void DeckHandler::drawFromDeck(QString code, int id)
 {
     //Avoid special cards
     if(code == THE_COIN)    return;
 
+    //Check outsiders (por id), todos los outsiders tienen id
+    for(int i=1; i<deckCardList.length(); i++)
+    {
+        DeckCard *card = &deckCardList[i];
+        if(card->id == id)
+        {
+            if(card->remaining > 1)
+            {
+                card->remaining--;
+                card->draw();
+            }
+            else
+            {
+                removeFromDeck(i);
+                i--;
+            }
+            return;
+        }
+    }
+
+    //Check normal deck
     for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         if(it->getCode() == code)
@@ -578,7 +613,7 @@ void DeckHandler::drawFromDeck(QString code)
             }
             //it->remaining == 0
             //Reajustamos el mazo si tiene unknown cards
-            else if(deckCardList[0].total>0)
+            else if(deckCardList[0].total > 0 && !it->isOutsider())
             {
                 deckCardList[0].total--;
                 deckCardList[0].remaining = deckCardList[0].total;
@@ -605,7 +640,7 @@ void DeckHandler::drawFromDeck(QString code)
         emit pDebug("New card: " +
                           (*cardsJson)[code].value("name").toString() + ". 0/1");
         newDeckCard(code);
-        drawFromDeck(code);
+        drawFromDeck(code, id);
     }
     else
     {
@@ -615,21 +650,31 @@ void DeckHandler::drawFromDeck(QString code)
 }
 
 
-void DeckHandler::returnToDeck(QString code)
+void DeckHandler::returnToDeck(QString code, int id)
 {
-    for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+    if(!code.isEmpty())
     {
-        if(it->getCode() == code)
+        for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
         {
-            it->remaining++;
-            it->draw();
-            emit pDebug("Return to deck: " + code + ". " +
-                        QString::number(it->remaining) + "/" + QString::number(it->total));
-            return;
+            if(it->getCode() == code)
+            {
+                it->remaining++;
+                it->draw();
+                emit pDebug("Return to deck: " + code + ". " +
+                            QString::number(it->remaining) + "/" + QString::number(it->total));
+                return;
+            }
         }
     }
 
-    newDeckCardOutsider(code);
+    newDeckCardOutsider(code, id);
+}
+
+
+void DeckHandler::setLastCreatedByCode(QString code)
+{
+    if(isLastCreatedByCodeValid(code))      this->lastCreatedByCode = code;
+    else                                    emit pDebug("CreateBy code is in the forbidden list: " + code, Warning);
 }
 
 
@@ -637,7 +682,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 {
     for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
-        if(it->getCode() == code)
+        if(it->getCode() == code || it->getCreatedByCode() == code)
         {
             it->draw();
         }
@@ -826,19 +871,25 @@ void DeckHandler::cardRemove()
         return;
     }
 
-    ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
-    delete deckCardList[index].listItem;
-    deckCardList.removeAt(index);
+    removeFromDeck(index);
 
     deckCardList[0].total++;
     deckCardList[0].remaining = deckCardList[0].total;
     if(deckCardList[0].total==1)    hideUnknown(false);
     deckCardList[0].draw();
-    updateManaLimits();
     enableDeckButtons();
 
     enableDeckButtonSave();
     emit deckSizeChanged();
+}
+
+
+void DeckHandler::removeFromDeck(int index)
+{
+    ui->deckListWidget->removeItemWidget(deckCardList[index].listItem);
+    delete deckCardList[index].listItem;
+    deckCardList.removeAt(index);
+    updateManaLimits();
 }
 
 
@@ -864,6 +915,7 @@ void DeckHandler::lockDeckInterface()
 
     updateTransparency();
     clearDrawList(true);
+    this->lastCreatedByCode = "";
 }
 
 
@@ -880,9 +932,7 @@ void DeckHandler::unlockDeckInterface()
         DeckCard *card = &deckCardList[i];
         if(card->isOutsider())
         {
-            ui->deckListWidget->removeItemWidget(card->listItem);
-            delete card->listItem;
-            deckCardList.removeAt(i);
+            removeFromDeck(i);
             i--;
         }
         else if(card->total > 0)
@@ -1678,7 +1728,12 @@ QString DeckHandler::getCodeFromDraftLogLine(QString line)
 }
 
 
-
+//Card exceptions
+bool DeckHandler::isLastCreatedByCodeValid(QString code)
+{
+    if(code == DARKSHIRE_COUNCILMAN)    return false;
+    return true;
+}
 
 
 

@@ -443,10 +443,10 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(QString, bool)),
-            deckHandler, SLOT(showPlayerCardDraw(QString, bool)));
-    connect(gameWatcher, SIGNAL(playerReturnToDeck(QString)),
-            deckHandler, SLOT(returnToDeck(QString)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int, bool)),
+            deckHandler, SLOT(showPlayerCardDraw(QString, int, bool)));
+    connect(gameWatcher, SIGNAL(playerReturnToDeck(QString, int)),
+            deckHandler, SLOT(returnToDeck(QString, int)));
     connect(gameWatcher, SIGNAL(clearDrawList(bool)),
             deckHandler, SLOT(clearDrawList(bool)));
     connect(gameWatcher, SIGNAL(startGame()),
@@ -457,6 +457,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             deckHandler, SLOT(leaveArena()));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
+            deckHandler, SLOT(setLastCreatedByCode(QString)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
@@ -2610,10 +2612,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Deck regalos
-//Borrar carta OUTSIDER al robarla
-//Usar TRIGGER para cartas desconocidas a deck
 //Windfury and tag NUM_ATTACKS_THIS_TURN
+//Tooltip outsider created by
 
 
 //REPLAY BUGS

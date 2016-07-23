@@ -12,21 +12,14 @@ public:
 
 //Variables
 public:
-    int id;
     int turn;
-    bool special;
 
-protected:
-    QString createdByCode;
 
 //Metodos
 private:
     void drawDefaultHandCard();
-    void drawCreatedByHandCard();
 
 public:
     void draw();
-    void setCreatedByCode(QString code);
-    QString getCreatedByCode();
 };
 #endif // HANDCARD_H

@@ -36,6 +36,7 @@ private:
     QTreeWidgetItem *loadDeckClasses[10];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
     EnemyDeckHandler *enemyDeckHandler;
+    QString lastCreatedByCode;
 
 
 //Metodos
@@ -44,8 +45,8 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code, bool mulligan);
-    void newDeckCard(QString code, int total=1, bool add=false, bool outsider=false);
-    void drawFromDeck(QString code);
+    void newDeckCard(QString code, int total=1, bool add=false, bool outsider=false, int id=0);
+    void drawFromDeck(QString code, int id);
     void showDeckButtons();
     void hideDeckButtons();
     void saveDecksJsonFile();
@@ -67,6 +68,8 @@ private:
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);
     void updateManaLimits();
+    bool isLastCreatedByCodeValid(QString code);
+    void removeFromDeck(int index);
 
 public:
     void reset();
@@ -101,8 +104,8 @@ public slots:
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
     void newDeckCardWeb(QString code, int total);
-    void newDeckCardOutsider(QString code);
-    void showPlayerCardDraw(QString code, bool mulligan);
+    void newDeckCardOutsider(QString code, int id);
+    void showPlayerCardDraw(QString code, int id, bool mulligan);
     void enableDeckButtons();
     void cardTotalMin();
     void cardTotalPlus();
@@ -114,7 +117,8 @@ public slots:
     void enterArena();
     void leaveArena();
     void askCreateDeckPY();
-    void returnToDeck(QString code);
+    void returnToDeck(QString code, int id);
+    void setLastCreatedByCode(QString code);
 
 private slots:
     void removeOldestDrawCard();

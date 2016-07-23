@@ -748,6 +748,16 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyCardDraw(id.toInt());
             }
         }
+
+        //Jugador, OUTSIDER desconocido a deck
+        else if(zoneTo == "FRIENDLY DECK")
+        {
+            if(mulliganPlayerDone)
+            {
+                emit pDebug("Player: Outsider unknown card to deck. ID: " + id, numLine);
+                emit playerReturnToDeck("", id.toInt());
+            }
+        }
     }
 
 
@@ -816,7 +826,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneTo == "FRIENDLY DECK" && zoneFrom != "FRIENDLY HAND")
         {
             emit pDebug("Player: Outsider card to deck: " + name + " ID: " + id, numLine);
-            emit playerReturnToDeck(cardId);
+            emit playerReturnToDeck(cardId, id.toInt());
         }
 
         //Enemigo, nuevo minion en PLAY
@@ -979,10 +989,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Jugador roba carta conocida
+        //Maldición ancestral hace un FRIENDLY DECK --> EMPTY justo despues de meterse en el mazo. PRO
+        //El mono de Elise vacia el deck a empty y lo rellena de legendarias. CONTRA
         else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
         {
+            //El avance de turno ocurre generalmente en (zoneTo == "FRIENDLY HAND") pero en el caso de overdraw ocurrira aqui.
+            bool advance = advanceTurn(true);
+            if(advance)     emit newTurn(isPlayerTurn, turnReal);
             emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
-            emit playerCardDraw(cardId, !mulliganPlayerDone);
+            emit playerCardDraw(cardId, id.toInt(), !mulliganPlayerDone);
         }
 
         //Jugador juega carta conocida
@@ -1017,7 +1032,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY DECK")
             {
                 emit pDebug("Player: Starting card returned: " + name + " ID: " + id, numLine);
-                emit playerReturnToDeck(cardId);
+                emit playerReturnToDeck(cardId, id.toInt());
                 discard = true;
             }
             else

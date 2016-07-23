@@ -33,6 +33,9 @@ public:
     QListWidgetItem *listItem;
     uint total;
     uint remaining;
+    bool special;
+    int id;
+
 
 protected:
     QString code, name;
@@ -40,6 +43,7 @@ protected:
     CardType type;
     CardClass cardClass;
     int cost;
+    QString createdByCode;
 
     static bool drawClassColor, drawSpellWeaponColor;
     static int cardHeight;
@@ -52,6 +56,7 @@ private:
 //Metodos
 protected:
     QPixmap draw(uint total, bool drawRarity, QColor nameColor=BLACK, bool resize=true);
+    QPixmap drawCreatedByCard();
     QColor getRarityColor();
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);
@@ -70,6 +75,8 @@ public:
     void setManaLimit(bool top);
     void resetManaLimits();
     bool isOutsider();
+    void setCreatedByCode(QString code);
+    QString getCreatedByCode();
 
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);

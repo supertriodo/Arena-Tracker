@@ -26,6 +26,7 @@ void EnemyHandHandler::reset()
 {
     ui->enemyHandListWidget->clear();
     enemyHandList.clear();
+    this->lastCreatedByCode = "";
 }
 
 
