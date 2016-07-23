@@ -44,13 +44,13 @@ SOURCES += Sources/main.cpp\
     Sources/versionchecker.cpp \
     Sources/enemydeckhandler.cpp \
     Sources/planhandler.cpp \
-    Sources/Widgets/plangraphicsview.cpp \
-    Sources/Widgets/miniongraphicsitem.cpp \
-    Sources/Widgets/herographicsitem.cpp \
-    Sources/Widgets/arrowgraphicsitem.cpp \
-    Sources/Widgets/cardgraphicsitem.cpp \
-    Sources/Widgets/weapongraphicsitem.cpp \
-    Sources/Widgets/heropowergraphicsitem.cpp
+    Sources/Widgets/GraphicItems/arrowgraphicsitem.cpp \
+    Sources/Widgets/GraphicItems/cardgraphicsitem.cpp \
+    Sources/Widgets/GraphicItems/herographicsitem.cpp \
+    Sources/Widgets/GraphicItems/heropowergraphicsitem.cpp \
+    Sources/Widgets/GraphicItems/miniongraphicsitem.cpp \
+    Sources/Widgets/GraphicItems/weapongraphicsitem.cpp \
+    Sources/Widgets/plangraphicsview.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -82,13 +82,13 @@ HEADERS  += Sources/mainwindow.h \
     Sources/versionchecker.h \
     Sources/enemydeckhandler.h \
     Sources/planhandler.h \
-    Sources/Widgets/plangraphicsview.h \
-    Sources/Widgets/miniongraphicsitem.h \
-    Sources/Widgets/herographicsitem.h \
-    Sources/Widgets/arrowgraphicsitem.h \
-    Sources/Widgets/cardgraphicsitem.h \
-    Sources/Widgets/weapongraphicsitem.h \
-    Sources/Widgets/heropowergraphicsitem.h
+    Sources/Widgets/GraphicItems/arrowgraphicsitem.h \
+    Sources/Widgets/GraphicItems/cardgraphicsitem.h \
+    Sources/Widgets/GraphicItems/herographicsitem.h \
+    Sources/Widgets/GraphicItems/heropowergraphicsitem.h \
+    Sources/Widgets/GraphicItems/miniongraphicsitem.h \
+    Sources/Widgets/GraphicItems/weapongraphicsitem.h \
+    Sources/Widgets/plangraphicsview.h
 
 FORMS    += mainwindow.ui
 

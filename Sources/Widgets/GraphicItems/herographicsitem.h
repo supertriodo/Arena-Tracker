@@ -3,7 +3,7 @@
 
 #include "miniongraphicsitem.h"
 #include "weapongraphicsitem.h"
-#include "../Cards/secretcard.h"
+#include "../../Cards/secretcard.h"
 
 
 class HeroGraphicsItem : public MinionGraphicsItem

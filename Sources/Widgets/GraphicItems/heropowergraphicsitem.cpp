@@ -1,6 +1,6 @@
 #include "heropowergraphicsitem.h"
 #include "herographicsitem.h"
-#include "../utility.h"
+#include "../../utility.h"
 #include <QtWidgets>
 
 HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly, bool playerTurn)

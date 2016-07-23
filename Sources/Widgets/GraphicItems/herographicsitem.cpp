@@ -1,5 +1,5 @@
 #include "herographicsitem.h"
-#include "../utility.h"
+#include "../../utility.h"
 #include <QtWidgets>
 
 HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn)

@@ -1,7 +1,7 @@
 #include "arrowgraphicsitem.h"
 #include "miniongraphicsitem.h"
 #include "herographicsitem.h"
-#include "../utility.h"
+#include "../../utility.h"
 #include <QtWidgets>
 
 ArrowGraphicsItem::ArrowGraphicsItem(ArrowType arrowType)

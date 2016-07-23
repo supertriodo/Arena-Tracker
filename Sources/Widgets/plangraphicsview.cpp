@@ -1,6 +1,6 @@
 #include "plangraphicsview.h"
-#include "herographicsitem.h"
-#include "cardgraphicsitem.h"
+#include "GraphicItems/herographicsitem.h"
+#include "GraphicItems/cardgraphicsitem.h"
 #include <cmath>
 #include <QtWidgets>
 

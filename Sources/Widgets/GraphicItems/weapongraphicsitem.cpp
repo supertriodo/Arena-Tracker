@@ -1,6 +1,6 @@
 #include "weapongraphicsitem.h"
 #include "herographicsitem.h"
-#include "../utility.h"
+#include "../../utility.h"
 #include <QtWidgets>
 
 WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly)

@@ -1,5 +1,5 @@
 #include "miniongraphicsitem.h"
-#include "../utility.h"
+#include "../../utility.h"
 #include <QtWidgets>
 
 MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn)

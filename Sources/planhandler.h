@@ -2,12 +2,12 @@
 #define PLANHANDLER_H
 
 #include "Widgets/ui_extended.h"
-#include "Widgets/miniongraphicsitem.h"
-#include "Widgets/herographicsitem.h"
-#include "Widgets/weapongraphicsitem.h"
-#include "Widgets/heropowergraphicsitem.h"
-#include "Widgets/arrowgraphicsitem.h"
-#include "Widgets/cardgraphicsitem.h"
+#include "Widgets/GraphicItems/miniongraphicsitem.h"
+#include "Widgets/GraphicItems/herographicsitem.h"
+#include "Widgets/GraphicItems/weapongraphicsitem.h"
+#include "Widgets/GraphicItems/heropowergraphicsitem.h"
+#include "Widgets/GraphicItems/arrowgraphicsitem.h"
+#include "Widgets/GraphicItems/cardgraphicsitem.h"
 #include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
