@@ -68,6 +68,7 @@
 #define GRIMSCALE_ORACLE "EX1_508"
 #define SIEGE_ENGINE "GVG_086"
 #define POLLUTED_HOARDER "OG_323"
+#define FLAMEWAKER "BRM_002"
 
 
 using namespace cv;

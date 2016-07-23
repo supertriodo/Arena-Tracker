@@ -994,8 +994,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
         {
             //El avance de turno ocurre generalmente en (zoneTo == "FRIENDLY HAND") pero en el caso de overdraw ocurrira aqui.
-            bool advance = advanceTurn(true);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
+            if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
+            {
+                bool advance = advanceTurn(true);
+                if(advance)     emit newTurn(isPlayerTurn, turnReal);
+            }
             emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
             emit playerCardDraw(cardId, id.toInt(), !mulliganPlayerDone);
         }

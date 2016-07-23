@@ -295,6 +295,7 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
 bool EnemyHandHandler::isLastCreatedByCodeValid(QString code)
 {
     if(code == DARKSHIRE_COUNCILMAN)    return false;
+    else if(code == FLAMEWAKER)         return false;
     return true;
 }
 
