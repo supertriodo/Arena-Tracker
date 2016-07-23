@@ -1028,7 +1028,9 @@ void DeckHandler::setDrawDisappear(int value)
 
 void DeckHandler::findDeckCardEntered(QListWidgetItem * item)
 {
-    QString code = deckCardList[ui->deckListWidget->row(item)].getCode();
+    DeckCard deckCard = deckCardList[ui->deckListWidget->row(item)];
+    QString code = deckCard.getCode();
+    if(code.isEmpty())  code = deckCard.getCreatedByCode();
 
     QRect rectCard = ui->deckListWidget->visualItemRect(item);
     QPoint posCard = ui->deckListWidget->mapToGlobal(rectCard.topLeft());

@@ -2613,7 +2613,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Tooltip outsider created by
 
 
 //REPLAY BUGS
