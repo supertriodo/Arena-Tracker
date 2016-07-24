@@ -4,7 +4,7 @@
 #include <QtWidgets>
 
 
-CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn, bool friendly)
+CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn, bool friendly, GraphicsItemSender *graphicsItemSender)
 {
     this->code = code;
     this->createdByCode = createdByCode;
@@ -13,7 +13,9 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
     this->turn = turn;
+    this->graphicsItemSender = graphicsItemSender;
     friendly?this->setZValue(-10):this->setZValue(-30);
+    setAcceptHoverEvents(true);
 }
 
 
@@ -29,8 +31,10 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->draw = copy->draw;
     this->heightShow = copy->heightShow;
     this->turn = copy->turn;
+    this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
+    setAcceptHoverEvents(true);
 }
 
 
@@ -102,6 +106,15 @@ void CardGraphicsItem::checkDownloadedCode(QString code)
 QRectF CardGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -heightShow/2+(played||discard?-CARD_LIFT:0), WIDTH, heightShow+(played||discard?CARD_LIFT:0));
+}
+
+
+void CardGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent*)
+{
+    QRectF boundRect = boundingRect();
+    graphicsItemSender->sendPlanCardEntered((!code.isEmpty()?code:createdByCode),
+                        mapToScene(boundRect.topLeft()).toPoint(),
+                        mapToScene(boundRect.bottomRight()).toPoint());
 }
 
 

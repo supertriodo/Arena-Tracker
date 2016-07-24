@@ -16,6 +16,7 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->nowBoard->numTurn = 0;
     reset();
     completeUI();
+    createGraphicsItemSender();
 }
 
 
@@ -30,6 +31,8 @@ PlanHandler::~PlanHandler()
 
     if(viewBoard != nowBoard)  resetBoard(nowBoard);
     delete nowBoard;
+
+    delete graphicsItemSender;
 }
 
 
@@ -56,6 +59,14 @@ void PlanHandler::completeUI()
             this, SLOT(resizePlan()));
     connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
             this, SLOT(updateViewCardZoneSpots()));
+}
+
+
+void PlanHandler::createGraphicsItemSender()
+{
+    graphicsItemSender = new GraphicsItemSender(this, ui);
+    connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
+            this, SIGNAL(cardEntered(QString,QRect,int,int)));
 }
 
 
@@ -1372,7 +1383,7 @@ void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int
 
 void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
 {
-    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly);
+    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly, graphicsItemSender);
     getHandList(friendly)->append(card);
     updateCardZoneSpots(friendly);
 

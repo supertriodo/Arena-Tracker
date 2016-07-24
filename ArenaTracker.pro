@@ -50,7 +50,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/GraphicItems/heropowergraphicsitem.cpp \
     Sources/Widgets/GraphicItems/miniongraphicsitem.cpp \
     Sources/Widgets/GraphicItems/weapongraphicsitem.cpp \
-    Sources/Widgets/plangraphicsview.cpp
+    Sources/Widgets/plangraphicsview.cpp \
+    Sources/Widgets/GraphicItems/graphicsitemsender.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -88,7 +89,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/GraphicItems/heropowergraphicsitem.h \
     Sources/Widgets/GraphicItems/miniongraphicsitem.h \
     Sources/Widgets/GraphicItems/weapongraphicsitem.h \
-    Sources/Widgets/plangraphicsview.h
+    Sources/Widgets/plangraphicsview.h \
+    Sources/Widgets/GraphicItems/graphicsitemsender.h
 
 FORMS    += mainwindow.ui
 

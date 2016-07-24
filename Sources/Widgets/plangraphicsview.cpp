@@ -125,3 +125,10 @@ void PlanGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
     event->ignore();
 }
+
+
+void PlanGraphicsView::leaveEvent(QEvent * e)
+{
+    QGraphicsView::leaveEvent(e);
+    emit leave();
+}

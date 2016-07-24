@@ -8,6 +8,7 @@
 #include "Widgets/GraphicItems/heropowergraphicsitem.h"
 #include "Widgets/GraphicItems/arrowgraphicsitem.h"
 #include "Widgets/GraphicItems/cardgraphicsitem.h"
+#include "Widgets/GraphicItems/graphicsitemsender.h"
 #include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
@@ -72,6 +73,7 @@ private:
     bool inGame;
     bool mouseInApp;
     Transparency transparency;
+    GraphicsItemSender *graphicsItemSender;
 
 //Metodos:
 private:
@@ -128,6 +130,7 @@ private:
     bool getWinner();
     void cardTagChange(int id, bool friendly, QString tag, QString value);
     void reduceCostPrevTurn(int id, bool friendly, int cost);
+    void createGraphicsItemSender();
 
 public:
     void setTransparency(Transparency value);
@@ -139,7 +142,7 @@ public:
 
 signals:
     void checkCardImage(QString code, bool isHero);
-//    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
