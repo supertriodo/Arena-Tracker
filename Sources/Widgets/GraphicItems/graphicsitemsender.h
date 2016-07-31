@@ -14,13 +14,16 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
+    QString lastCode;
 
 //Metodos
 public:
     void sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight);
+    void sendPlanCardLeave();
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void cardLeave();
 };
 
 #endif // GRAPHICSITEMSENDER_H

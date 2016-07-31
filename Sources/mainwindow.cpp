@@ -396,6 +396,8 @@ void MainWindow::createCardWindow()
     connect(planHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
 
+    connect(planHandler, SIGNAL(cardLeave()),
+            cardWindow, SLOT(hide()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
             cardWindow, SLOT(hide()));
     connect(ui->deckListWidget, SIGNAL(leave()),
@@ -1928,6 +1930,11 @@ void MainWindow::test()
     planHandler->zonePlayAttack("AT_003",1,2);
     planHandler->zonePlayAttack("AT_003",3,2);
     planHandler->zonePlayAttack("AT_003",11,4);
+    planHandler->playerSecretPlayed(25, "EX1_611");
+    planHandler->playerSecretPlayed(26, "EX1_594");
+    planHandler->playerSecretPlayed(27, "EX1_294");
+    planHandler->playerSecretPlayed(28, "EX1_130");
+    planHandler->playerSecretPlayed(29, "EX1_136");
 
     planHandler->newTurn(false, 2);
     planHandler->enemyMinionZonePlayAdd("EX1_020", 5, 1);
@@ -1951,6 +1958,11 @@ void MainWindow::test()
     planHandler->enemyCardDraw(21, "", "",2);
     planHandler->enemyCardDraw(21, "", "",32);
     planHandler->enemyCardDraw(24, "AT_002", "",2);
+    planHandler->playerSecretRevealed(25, "EX1_611");
+    planHandler->playerSecretRevealed(26, "EX1_594");
+    planHandler->playerSecretRevealed(27, "EX1_294");
+    planHandler->playerSecretRevealed(28, "EX1_130");
+    planHandler->playerSecretRevealed(29, "EX1_136");
 
     planHandler->newTurn(true, 3);
     planHandler->enemyCardObjPlayed("EX1_020", 4, 12);

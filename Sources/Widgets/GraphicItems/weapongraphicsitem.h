@@ -7,7 +7,7 @@ class WeaponGraphicsItem : public MinionGraphicsItem
 {
 //Constructor
 public:
-    WeaponGraphicsItem(QString code, int id, bool friendly);
+    WeaponGraphicsItem(QString code, int id, bool friendly, GraphicsItemSender *graphicsItemSender);
     WeaponGraphicsItem(WeaponGraphicsItem *copy);
 
 //Variables:

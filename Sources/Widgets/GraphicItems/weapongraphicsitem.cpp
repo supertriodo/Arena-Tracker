@@ -3,8 +3,8 @@
 #include "../../utility.h"
 #include <QtWidgets>
 
-WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly)
-    :MinionGraphicsItem(code, id, friendly, false)
+WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly, GraphicsItemSender *graphicsItemSender)
+    :MinionGraphicsItem(code, id, friendly, false, graphicsItemSender)
 {
     this->durability = this->origDurability =
             this->health = this->origHealth =

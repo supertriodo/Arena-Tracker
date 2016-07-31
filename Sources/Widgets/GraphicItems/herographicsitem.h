@@ -18,7 +18,7 @@ class HeroGraphicsItem : public MinionGraphicsItem
 
 //Constructor
 public:
-    HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
+    HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender);
     HeroGraphicsItem(HeroGraphicsItem *copy);
 
 //Variables:
@@ -33,6 +33,11 @@ public:
     static const int HEIGHT = 184;
 
 //Metodos
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
+
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;

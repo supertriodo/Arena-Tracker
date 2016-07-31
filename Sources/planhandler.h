@@ -143,6 +143,7 @@ public:
 signals:
     void checkCardImage(QString code, bool isHero);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void cardLeave();
     void needMainWindowFade(bool fade);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");

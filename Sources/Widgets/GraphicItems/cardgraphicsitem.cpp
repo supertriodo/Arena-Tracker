@@ -118,6 +118,12 @@ void CardGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 }
 
 
+void CardGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+    graphicsItemSender->sendPlanCardLeave();
+}
+
+
 void CardGraphicsItem::setZonePos(bool friendly, int pos, int cardsZone, int viewWidth, int cardHeightShow)
 {
     if(cardHeightShow > HEIGHT)     cardHeightShow = HEIGHT;

@@ -3,11 +3,15 @@
 GraphicsItemSender::GraphicsItemSender(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
+    this->lastCode = "";
 }
 
 
 void GraphicsItemSender::sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight)
 {
+    if(code == lastCode)    return;
+
+    lastCode = code;
     rectCardTopLeft = ui->planGraphicsView->mapFromScene(rectCardTopLeft);
     rectCardTopLeft = ui->planGraphicsView->mapToGlobal(rectCardTopLeft);
     rectCardBottomRight = ui->planGraphicsView->mapFromScene(rectCardBottomRight);
@@ -18,4 +22,11 @@ void GraphicsItemSender::sendPlanCardEntered(QString code, QPoint rectCardTopLef
 
     QRect rect(planViewTopLeft.x(), rectCardTopLeft.y(), ui->planGraphicsView->width(), rectCardBottomRight.y()-rectCardTopLeft.y());
     emit cardEntered(code, rect, planViewTopLeft.y(), planViewBottom);
+}
+
+
+void GraphicsItemSender::sendPlanCardLeave()
+{
+    lastCode = "";
+    emit cardLeave();
 }

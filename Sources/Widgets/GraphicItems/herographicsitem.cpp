@@ -2,8 +2,8 @@
 #include "../../utility.h"
 #include <QtWidgets>
 
-HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn)
-    :MinionGraphicsItem(code, id, friendly, playerTurn)
+HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
+    :MinionGraphicsItem(code, id, friendly, playerTurn, graphicsItemSender)
 {
     this->armor = 0;
     this->exausted = false;
@@ -96,6 +96,88 @@ int HeroGraphicsItem::getResources()
 QRectF HeroGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 16, HEIGHT + 13);
+}
+
+
+void HeroGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+}
+
+
+void HeroGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+    graphicsItemSender->sendPlanCardLeave();
+}
+
+
+void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    QPointF posMouse = event->pos();
+    for(int i=std::min(3, addons.count()-1); i>=0; i--)
+    {
+        QString addonCode = this->addons[i].code;
+        QPoint posAddon;
+        switch(i)
+        {
+            case 0:
+                posAddon = QPoint(0, 40);
+                break;
+            case 3:
+                posAddon = QPoint(0, -40);
+                break;
+            case 1:
+                posAddon = QPoint(-30, 0);
+                break;
+            case 2:
+                posAddon = QPoint(30, 0);
+                break;
+        }
+
+        if(QLineF(posMouse, posAddon).length() < 30)
+        {
+            QRectF boundRect = boundingRect();
+            graphicsItemSender->sendPlanCardEntered(addonCode,
+                                mapToScene(boundRect.topLeft()).toPoint(),
+                                mapToScene(boundRect.bottomRight()).toPoint());
+            return;
+        }
+    }
+
+    for(int i=std::min(4, secretsList.count()-1); i>=0; i--)
+    {
+        QString secretCode = this->secretsList[i].code;
+        QPoint posSecret;
+
+        switch(i)
+        {
+            case 0:
+                posSecret = QPoint(0, -75);
+                break;
+            case 1:
+                posSecret = QPoint(-40, -55);
+                break;
+            case 2:
+                posSecret = QPoint(40, -55);
+                break;
+            case 3:
+                posSecret = QPoint(-60, -20);
+                break;
+            case 4:
+                posSecret = QPoint(60, -20);
+                break;
+        }
+
+        if(QLineF(posMouse, posSecret).length() < 16)
+        {
+            QRectF boundRect = boundingRect();
+            graphicsItemSender->sendPlanCardEntered(secretCode,
+                                mapToScene(boundRect.topLeft()).toPoint(),
+                                mapToScene(boundRect.bottomRight()).toPoint());
+            return;
+        }
+    }
+
+    graphicsItemSender->sendPlanCardLeave();
 }
 
 

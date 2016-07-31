@@ -2,7 +2,7 @@
 #include "../../utility.h"
 #include <QtWidgets>
 
-MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn)
+MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
 {
     this->code = code;
     this->id = id;
@@ -29,7 +29,9 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->zone = "PLAY";
     this->changeAttack = ChangeNone;
     this->changeHealth = ChangeNone;
+    this->graphicsItemSender = graphicsItemSender;
     this->setZValue(-50);
+    setAcceptHoverEvents(true);
 
     foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
     {
@@ -68,8 +70,10 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->zone = "PLAY";
     this->changeAttack = copy->changeAttack;
     this->changeHealth = copy->changeHealth;
+    this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
+    setAcceptHoverEvents(true);
 
     foreach(Addon addon, copy->addons)
     {
@@ -320,6 +324,61 @@ void MinionGraphicsItem::changeZone()
 QRectF MinionGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
+}
+
+
+void MinionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+    QRectF boundRect = boundingRect();
+    graphicsItemSender->sendPlanCardEntered(code,
+                        mapToScene(boundRect.topLeft()).toPoint(),
+                        mapToScene(boundRect.bottomRight()).toPoint());
+}
+
+
+void MinionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+    graphicsItemSender->sendPlanCardLeave();
+}
+
+
+void MinionGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    QPointF posMouse = event->pos();
+    for(int i=std::min(3, addons.count()-1); i>=0; i--)
+    {
+        QString addonCode = this->addons[i].code;
+        QPoint posAddon;
+        switch(i)
+        {
+            case 0:
+                posAddon = QPoint(0, 10);
+                break;
+            case 3:
+                posAddon = QPoint(0, -40);
+                break;
+            case 1:
+                posAddon = QPoint(-25, -15);
+                break;
+            case 2:
+                posAddon = QPoint(25, -15);
+                break;
+        }
+
+        if(QLineF(posMouse, posAddon).length() < 30)
+        {
+            QRectF boundRect = boundingRect();
+            graphicsItemSender->sendPlanCardEntered(addonCode,
+                                mapToScene(boundRect.topLeft()).toPoint(),
+                                mapToScene(boundRect.bottomRight()).toPoint());
+            return;
+        }
+    }
+
+    QRectF boundRect = boundingRect();
+    graphicsItemSender->sendPlanCardEntered(code,
+                        mapToScene(boundRect.topLeft()).toPoint(),
+                        mapToScene(boundRect.bottomRight()).toPoint());
 }
 
 

@@ -67,6 +67,8 @@ void PlanHandler::createGraphicsItemSender()
     graphicsItemSender = new GraphicsItemSender(this, ui);
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
             this, SIGNAL(cardEntered(QString,QRect,int,int)));
+    connect(graphicsItemSender, SIGNAL(cardLeave()),
+            this, SIGNAL(cardLeave()));
 }
 
 
@@ -86,7 +88,7 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
     qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
 
-    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
     addMinion(friendly, minion, pos);
     emit checkCardImage(code, false);
 }
@@ -146,7 +148,7 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
 {
     qDebug()<<"NEW MINION TRIGGERED--> id"<<id<<"pos"<<pos;
 
-    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+    MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
     addMinion(friendly, minion, pos);
     if(this->lastTriggerId!=-1)         copyMinionToLastTurn(friendly, minion);
     else                                emit pDebug("Triggered minion creator not set.");
@@ -351,7 +353,7 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
     }
     else
     {
-        hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+        hero = new HeroGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
 
         if(viewBoard == nowBoard)
         {
@@ -1043,7 +1045,7 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
         removeWeapon(friendly);
     }
 
-    weapon = new WeaponGraphicsItem(code, id, friendly);
+    weapon = new WeaponGraphicsItem(code, id, friendly, graphicsItemSender);
     HeroGraphicsItem * heroNow = getHero(friendly);
     if(heroNow != NULL)    heroNow->setHeroWeapon(weapon);
 

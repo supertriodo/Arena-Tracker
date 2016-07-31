@@ -2,6 +2,7 @@
 #define MINIONGRAPHICSITEM_H
 
 #include <QGraphicsItem>
+#include "graphicsitemsender.h"
 
 
 class Addon
@@ -22,7 +23,7 @@ public:
     enum ValueChange { ChangePositive, ChangeNegative, ChangeNone };
 
 //Constructor
-    MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
+    MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender);
     MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMinion=false);
 
 //Variables
@@ -39,12 +40,18 @@ protected:
     bool aura;
     QString zone;
     ValueChange changeAttack, changeHealth;
+    GraphicsItemSender *graphicsItemSender;
 
 public:
     static const int WIDTH = 142;
     static const int HEIGHT = 184;
 
 //Metodos
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
+
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
