@@ -462,6 +462,20 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         }
     }
 
+    //Dead Prob
+    if(deadProb != 0)
+    {
+        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
+
+        //Numero
+        painter->setBrush(RED);
+        text = QString::number((int)round(deadProb*100)) + "%";
+        textWide = fm.width(text);
+        path = QPainterPath();
+        path.addText(-textWide/2, textHigh/4, font, text);
+        painter->drawPath(path);
+    }
+
     if(playerTurn == friendly || isNowBoard)
     {
         //Mana

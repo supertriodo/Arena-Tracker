@@ -30,3 +30,15 @@ void GraphicsItemSender::sendPlanCardLeave()
     lastCode = "";
     emit cardLeave();
 }
+
+
+void GraphicsItemSender::sendResetDeadProbs()
+{
+    emit resetDeadProbs();
+}
+
+
+void GraphicsItemSender::sendCheckBomb(QString code)
+{
+    emit checkBomb(code);
+}

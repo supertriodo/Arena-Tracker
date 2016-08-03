@@ -41,6 +41,7 @@ protected:
     QString zone;
     ValueChange changeAttack, changeHealth;
     GraphicsItemSender *graphicsItemSender;
+    float deadProb;
 
 public:
     static const int WIDTH = 142;
@@ -77,6 +78,8 @@ public:
     int getHealth();    
     int getPotencialDamage(bool ignoreExausted=false);
     int getRemainingHealth();
+    void setDeadProb(float value=0);
+    int getHitsToDie();
 
 private:
     void addAddonNeutral(Addon addon);

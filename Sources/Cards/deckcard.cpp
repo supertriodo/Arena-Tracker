@@ -74,6 +74,7 @@ void DeckCard::setCode(QString code)
         name = (*cardsJson)[code].value("name").toString();
         rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
         cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
+        cardRace = getRaceFromString((*cardsJson)[code].value("race").toString());
     }
     else
     {
@@ -82,6 +83,7 @@ void DeckCard::setCode(QString code)
         name = "unknown";
         rarity = INVALID_RARITY;
         cardClass = INVALID_CLASS;
+        cardRace = INVALID_RACE;
     }
 }
 
@@ -100,6 +102,7 @@ void DeckCard::setCreatedByCode(QString code)
         name = (*cardsJson)[code].value("name").toString();
         rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
         cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
+        cardRace = getRaceFromString((*cardsJson)[code].value("race").toString());
     }
     else
     {
@@ -108,6 +111,7 @@ void DeckCard::setCreatedByCode(QString code)
         name = "unknown";
         rarity = INVALID_RARITY;
         cardClass = INVALID_CLASS;
+        cardRace = INVALID_RACE;
     }
 }
 
@@ -138,6 +142,36 @@ CardType DeckCard::getTypeFromString(QString value)
     else if(value == "HERO")        return HERO;
     else if(value == "HERO_POWER")  return HERO_POWER;
     else                            return INVALID_TYPE;
+}
+
+
+CardRace DeckCard::getRaceFromString(QString value)
+{
+    if(value == "BLOODELF")         return BLOODELF;
+    else if(value == "DRAENEI")     return DRAENEI;
+    else if(value == "DWARF")       return DWARF;
+    else if(value == "GNOME")       return GNOME;
+    else if(value == "GOBLIN")      return GOBLIN;
+    else if(value == "HUMAN")       return HUMAN;
+    else if(value == "NIGHTELF")    return NIGHTELF;
+    else if(value == "ORC")         return ORC;
+    else if(value == "TAUREN")      return TAUREN;
+    else if(value == "TROLL")       return TROLL;
+    else if(value == "UNDEAD")      return UNDEAD;
+    else if(value == "WORGEN")      return WORGEN;
+    else if(value == "GOBLIN2")     return GOBLIN2;
+    else if(value == "MURLOC")      return MURLOC;
+    else if(value == "DEMON")       return DEMON;
+    else if(value == "SCOURGE")     return SCOURGE;
+    else if(value == "MECHANICAL")  return MECHANICAL;
+    else if(value == "ELEMENTAL")   return ELEMENTAL;
+    else if(value == "OGRE")        return OGRE;
+    else if(value == "BEAST")       return BEAST;
+    else if(value == "TOTEM")       return TOTEM;
+    else if(value == "NERUBIAN")    return NERUBIAN;
+    else if(value == "PIRATE")      return PIRATE;
+    else if(value == "DRAGON")      return DRAGON;
+    else                            return INVALID_RACE;
 }
 
 
@@ -458,6 +492,12 @@ CardRarity DeckCard::getRarity()
 CardClass DeckCard::getCardClass()
 {
     return cardClass;
+}
+
+
+CardRace DeckCard::getRace()
+{
+    return cardRace;
 }
 
 

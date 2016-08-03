@@ -20,10 +20,14 @@ private:
 public:
     void sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight);
     void sendPlanCardLeave();
+    void sendResetDeadProbs();
+    void sendCheckBomb(QString code);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
+    void resetDeadProbs();
+    void checkBomb(QString code);
 };
 
 #endif // GRAPHICSITEMSENDER_H

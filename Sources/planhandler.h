@@ -131,6 +131,13 @@ private:
     void cardTagChange(int id, bool friendly, QString tag, QString value);
     void reduceCostPrevTurn(int id, bool friendly, int cost);
     void createGraphicsItemSender();
+    QMap<QString, float> bomb(QMap<QString, float> &oldStates);
+    QList<int> decodeBombState(QString state);
+    QString encodeBombState(QList<int> targets);
+    QList<float> bombDeads(QList<int> targets, int missiles);
+    bool isCardBomb(QString code, bool &playerIn, int &missiles);
+    bool isMechOnBoard();
+    int flamewakersOnBoard();
 
 public:
     void setTransparency(Transparency value);
@@ -205,6 +212,8 @@ private slots:
     void showPrevTurn();
     void showFirstTurn();
     void showLastTurn();
+    void resetDeadProbs();
+    void checkBomb(QString code);
 };
 
 #endif // PLANHANDLER_H

@@ -20,6 +20,8 @@
 enum CardRarity {INVALID_RARITY, COMMON, RARE, EPIC, LEGENDARY};
 enum CardType {INVALID_TYPE, HERO, MINION, SPELL, ENCHANTMENT, WEAPON, HERO_POWER};
 enum CardClass {DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, DREAM, INVALID_CLASS, NEUTRAL};
+enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,
+               WORGEN, GOBLIN2, MURLOC, DEMON, SCOURGE, MECHANICAL, ELEMENTAL, OGRE, BEAST, TOTEM, NERUBIAN, PIRATE, DRAGON};
 
 
 class DeckCard
@@ -42,6 +44,7 @@ protected:
     CardRarity rarity;
     CardType type;
     CardClass cardClass;
+    CardRace cardRace;
     int cost;
     QString createdByCode;
 
@@ -61,6 +64,7 @@ protected:
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);
     CardClass getClassFromString(QString value);
+    CardRace getRaceFromString(QString value);
     QPixmap resizeCardHeight(QPixmap &canvas);
 
 public:
@@ -70,6 +74,7 @@ public:
     QString getName();
     CardRarity getRarity();
     CardClass getCardClass();
+    CardRace getRace();
     int getCost();
     void setCode(QString code);
     void setManaLimit(bool top);

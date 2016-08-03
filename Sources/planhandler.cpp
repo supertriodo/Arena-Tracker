@@ -17,6 +17,10 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     reset();
     completeUI();
     createGraphicsItemSender();
+
+
+
+    bombDeads({30,1,3,8,1,4,2},19);
 }
 
 
@@ -69,6 +73,137 @@ void PlanHandler::createGraphicsItemSender()
             this, SIGNAL(cardEntered(QString,QRect,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
             this, SIGNAL(cardLeave()));
+    connect(graphicsItemSender, SIGNAL(resetDeadProbs()),
+            this, SLOT(resetDeadProbs()));
+    connect(graphicsItemSender, SIGNAL(checkBomb(QString)),
+            this, SLOT(checkBomb(QString)));
+}
+
+
+void PlanHandler::resetDeadProbs()
+{
+    if(nowBoard->playerHero != NULL)    nowBoard->playerHero->setDeadProb();
+    if(nowBoard->enemyHero != NULL)     nowBoard->enemyHero->setDeadProb();
+
+    foreach(MinionGraphicsItem *minion, *getMinionList(true))    minion->setDeadProb();
+    foreach(MinionGraphicsItem *minion, *getMinionList(false))   minion->setDeadProb();
+}
+
+
+void PlanHandler::checkBomb(QString code)
+{
+    if(code.isEmpty() || viewBoard!=nowBoard)   return;
+
+    bool playerIn;
+    int missiles;
+    if(!isCardBomb(code, playerIn, missiles))   return;
+
+    //Targets
+    if(nowBoard->enemyHero == NULL)             return;
+    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
+    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
+
+    HeroGraphicsItem *playerHero = NULL;
+    QList<MinionGraphicsItem *> *playerMinions = NULL;
+    if(playerIn)
+    {
+        if(nowBoard->playerHero == NULL)        return;
+        playerHero = nowBoard->playerHero;
+        playerMinions = getMinionList(true);
+    }
+
+    //Targets List
+    QList<int> targets;
+    targets.append(enemyHero->getHitsToDie());
+    foreach(MinionGraphicsItem *minion, *enemyMinions)          targets.append(minion->getHitsToDie());
+
+    if(playerIn)
+    {
+        targets.append(playerHero->getHitsToDie());
+        foreach(MinionGraphicsItem *minion, *playerMinions)     targets.append(minion->getHitsToDie());
+    }
+
+    //Get dead probs
+    QList<float> deadProbs = bombDeads(targets, missiles);
+    enemyHero->setDeadProb(deadProbs.takeFirst());
+    foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
+
+    if(playerIn)
+    {
+        playerHero->setDeadProb(deadProbs.takeFirst());
+        foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
+    }
+}
+
+
+bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
+{
+    missiles = 0;
+    playerIn = false;
+
+    if(code == MAD_BOMBER)
+    {
+        missiles = 3;
+        playerIn = true;
+    }
+    else if(code == MADDER_BOMBER)
+    {
+        missiles = 6;
+        playerIn = true;
+    }
+    else if(code == SPREADING_MADNESS)
+    {
+        missiles = 9;
+        playerIn = true;
+    }
+    else if(code == ARCANE_MISSILES)
+    {
+        missiles = 3;
+        playerIn = false;
+    }
+    else if(code == AVENGING_WRATH)
+    {
+        missiles = 8;
+        playerIn = false;
+    }
+    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
+    {
+        missiles = 4;
+        playerIn = false;
+    }
+
+    //Flamewakers, evitamos con SPREADING_MADNESS
+    int flamewakers = flamewakersOnBoard();
+    if(flamewakers > 0 && !playerIn && DeckCard(code).getType() == SPELL)
+    {
+        missiles += flamewakers * 2;
+    }
+
+    if(missiles > 0)    return true;
+    else                return false;
+}
+
+
+int PlanHandler::flamewakersOnBoard()
+{
+    int num = 0;
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(minion->getCode() == FLAMEWAKER)     num++;
+    }
+    return num;
+}
+
+
+bool PlanHandler::isMechOnBoard()
+{
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
+    }
+    return false;
 }
 
 
@@ -1995,6 +2130,80 @@ void PlanHandler::setMouseInApp(bool value)
 {
     this->mouseInApp = value;
     updateTransparency();
+}
+
+
+QList<float> PlanHandler::bombDeads(QList<int> targets, int missiles)
+{
+    QMap<QString, float> states;
+    states[encodeBombState(targets)] = 1;
+    for(int i=0; i<missiles; i++)           states = bomb(states);
+
+    QList<float> deadProbs;
+    for(int i=0; i<targets.count(); i++)    deadProbs.append(0);
+
+    foreach(QString state, states.keys())
+    {
+        float prob = states[state];
+        QList<int> targets = decodeBombState(state);
+        for(int i=0; i<targets.count(); i++)
+        {
+            if(targets[i] == 0)     deadProbs[i] += prob;
+        }
+    }
+
+    return deadProbs;
+}
+
+
+QList<int> PlanHandler::decodeBombState(QString state)
+{
+    QList<int> targets;
+    foreach(QString targetString, state.split(":"))  targets.append(targetString.toInt());
+    return targets;
+}
+
+
+QString PlanHandler::encodeBombState(QList<int> targets)
+{
+    QStringList targetsString;
+    foreach(int target, targets)      targetsString.append(QString::number(target));
+    return targetsString.join(":");
+}
+
+
+QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates)
+{
+    QMap<QString, float> newStates;
+
+    foreach(QString oldState, oldStates.keys())
+    {
+        float oldProb = oldStates[oldState];
+        QList<int> oldTargets = decodeBombState(oldState);
+
+        int livingTargets = 0;
+        for(int i=0; i<oldTargets.count(); i++)
+        {
+            if(oldTargets[i] > 0)   livingTargets++;
+        }
+
+        //Apply an attack to each living targets
+        for(int i=0; i<oldTargets.count(); i++)
+        {
+            if(oldTargets[i] > 0)
+            {
+                QList<int> newTargets(oldTargets);
+                newTargets[i]--;
+                QString newState = encodeBombState(newTargets);
+
+                //Update probabilities
+                float addProb = newStates.contains(newState)?newStates[newState]:0;
+                newStates[newState] = addProb + oldProb/livingTargets;
+            }
+        }
+    }
+
+    return newStates;
 }
 
 

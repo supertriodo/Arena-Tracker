@@ -21,6 +21,7 @@ private:
     bool played, discard, draw;
     int origCost, cost;
     int heightShow;
+    bool friendly;
     GraphicsItemSender *graphicsItemSender;
 
 public:

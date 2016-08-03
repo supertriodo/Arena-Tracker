@@ -29,6 +29,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->zone = "PLAY";
     this->changeAttack = ChangeNone;
     this->changeHealth = ChangeNone;
+    this->deadProb = 0;
     this->graphicsItemSender = graphicsItemSender;
     this->setZValue(-50);
     setAcceptHoverEvents(true);
@@ -70,6 +71,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->zone = "PLAY";
     this->changeAttack = copy->changeAttack;
     this->changeHealth = copy->changeHealth;
+    this->deadProb = 0;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
@@ -111,6 +113,13 @@ int MinionGraphicsItem::getPotencialDamage(bool ignoreExausted)
 int MinionGraphicsItem::getHealth()
 {
     return health;
+}
+
+
+int MinionGraphicsItem::getHitsToDie()
+{
+    if(shield)  return health + 1;
+    else        return health;
 }
 
 
@@ -201,6 +210,14 @@ void MinionGraphicsItem::setChangeHealth(ValueChange value)
         changeHealth = value;
         update();
     }
+}
+
+
+void MinionGraphicsItem::setDeadProb(float value)
+{
+    bool needUpdate = deadProb != value;
+    deadProb = value;
+    if(needUpdate)  update();
 }
 
 
@@ -654,6 +671,20 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         textWide = fm.width(symbol);
         path = QPainterPath();
         path.addText(34 - textWide/2, 20 + textHigh/4, font, symbol);
+        painter->drawPath(path);
+    }
+
+    //Dead Prob
+    if(deadProb != 0)
+    {
+        painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
+
+        //Numero
+        painter->setBrush(RED);
+        text = QString::number((int)round(deadProb*100)) + "%";
+        textWide = fm.width(text);
+        path = QPainterPath();
+        path.addText(-textWide/2, textHigh/4, font, text);
         painter->drawPath(path);
     }
 }

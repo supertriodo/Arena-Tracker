@@ -13,6 +13,7 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
     this->turn = turn;
+    this->friendly = friendly;
     this->graphicsItemSender = graphicsItemSender;
     friendly?this->setZValue(-10):this->setZValue(-30);
     setAcceptHoverEvents(true);
@@ -31,6 +32,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->draw = copy->draw;
     this->heightShow = copy->heightShow;
     this->turn = copy->turn;
+    this->friendly = copy->friendly;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
@@ -115,12 +117,14 @@ void CardGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent*)
     graphicsItemSender->sendPlanCardEntered((!code.isEmpty()?code:createdByCode),
                         mapToScene(boundRect.topLeft()).toPoint(),
                         mapToScene(boundRect.bottomRight()).toPoint());
+    if(friendly)    graphicsItemSender->sendCheckBomb(code);
 }
 
 
 void CardGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
     graphicsItemSender->sendPlanCardLeave();
+    if(friendly)    graphicsItemSender->sendResetDeadProbs();
 }
 
 
