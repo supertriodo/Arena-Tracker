@@ -12,6 +12,7 @@
 #include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
+#include <QFuture>
 
 
 class TagChange
@@ -74,6 +75,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     GraphicsItemSender *graphicsItemSender;
+    QFuture<QList<float>> *futureBombs;
 
 //Metodos:
 private:
@@ -214,6 +216,7 @@ private slots:
     void showLastTurn();
     void resetDeadProbs();
     void checkBomb(QString code);
+    void setDeadProbs();
 };
 
 #endif // PLANHANDLER_H
