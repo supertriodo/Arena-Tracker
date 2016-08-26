@@ -84,162 +84,6 @@ void PlanHandler::createGraphicsItemSender()
 }
 
 
-void PlanHandler::resetDeadProbs()
-{
-    if(nowBoard->playerHero != NULL)    nowBoard->playerHero->setDeadProb();
-    if(nowBoard->enemyHero != NULL)     nowBoard->enemyHero->setDeadProb();
-
-    foreach(MinionGraphicsItem *minion, *getMinionList(true))    minion->setDeadProb();
-    foreach(MinionGraphicsItem *minion, *getMinionList(false))   minion->setDeadProb();
-
-    if(futureBombs != NULL)
-    {
-        delete futureBombs;
-        futureBombs = NULL;
-    }
-}
-
-
-void PlanHandler::checkBomb(QString code)
-{
-    if(code.isEmpty() || viewBoard!=nowBoard || futureBombs != NULL)    return;
-
-    bool playerIn;
-    int missiles;
-    if(!isCardBomb(code, playerIn, missiles))   return;
-
-    //Targets
-    if(nowBoard->enemyHero == NULL)             return;
-    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
-    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
-
-    HeroGraphicsItem *playerHero = NULL;
-    QList<MinionGraphicsItem *> *playerMinions = NULL;
-    if(playerIn)
-    {
-        if(nowBoard->playerHero == NULL)        return;
-        playerHero = nowBoard->playerHero;
-        playerMinions = getMinionList(true);
-    }
-
-    //Targets List
-    QList<int> targets;
-    targets.append(enemyHero->getHitsToDie());
-    foreach(MinionGraphicsItem *minion, *enemyMinions)          targets.append(minion->getHitsToDie());
-
-    if(playerIn)
-    {
-        targets.append(playerHero->getHitsToDie());
-        foreach(MinionGraphicsItem *minion, *playerMinions)     targets.append(minion->getHitsToDie());
-    }
-
-    //Get dead probs
-    futureBombs = new QFuture<QList<float>>(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
-    QTimer::singleShot(10, this, SLOT(setDeadProbs()));
-}
-
-
-void PlanHandler::setDeadProbs()
-{
-    if(futureBombs == NULL)     return;
-
-    if(futureBombs->isFinished())
-    {
-        QList<float> deadProbs = futureBombs->result();
-        delete futureBombs;
-        futureBombs = NULL;
-
-        HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
-        QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
-        enemyHero->setDeadProb(deadProbs.takeFirst());
-        foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
-
-        if(!deadProbs.isEmpty())
-        {
-            HeroGraphicsItem *playerHero = nowBoard->playerHero;
-            QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-            playerHero->setDeadProb(deadProbs.takeFirst());
-            foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
-        }
-    }
-    else
-    {
-        QTimer::singleShot(100, this, SLOT(setDeadProbs()));
-    }
-}
-
-
-bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
-{
-    missiles = 0;
-    playerIn = false;
-
-    if(code == MAD_BOMBER)
-    {
-        missiles = 3;
-        playerIn = true;
-    }
-    else if(code == MADDER_BOMBER)
-    {
-        missiles = 6;
-        playerIn = true;
-    }
-    else if(code == SPREADING_MADNESS)
-    {
-        missiles = 9;
-        playerIn = true;
-    }
-    else if(code == ARCANE_MISSILES)
-    {
-        missiles = 3;
-        playerIn = false;
-    }
-    else if(code == AVENGING_WRATH)
-    {
-        missiles = 8;
-        playerIn = false;
-    }
-    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
-    {
-        missiles = 4;
-        playerIn = false;
-    }
-
-    //Flamewakers, evitamos con SPREADING_MADNESS
-    int flamewakers = flamewakersOnBoard();
-    if(flamewakers > 0 && !playerIn && DeckCard(code).getType() == SPELL)
-    {
-        missiles += flamewakers * 2;
-    }
-
-    if(missiles > 0)    return true;
-    else                return false;
-}
-
-
-int PlanHandler::flamewakersOnBoard()
-{
-    int num = 0;
-    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-    foreach(MinionGraphicsItem *minion, *playerMinions)
-    {
-        if(minion->getCode() == FLAMEWAKER)     num++;
-    }
-    return num;
-}
-
-
-bool PlanHandler::isMechOnBoard()
-{
-    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-    foreach(MinionGraphicsItem *minion, *playerMinions)
-    {
-        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
-    }
-    return false;
-}
-
-
 void PlanHandler::playerMinionZonePlayAdd(QString code, int id, int pos)
 {
     addMinion(true, code, id, pos-1);
@@ -2166,6 +2010,91 @@ void PlanHandler::setMouseInApp(bool value)
 }
 
 
+void PlanHandler::resetDeadProbs()
+{
+    if(nowBoard->playerHero != NULL)    nowBoard->playerHero->setDeadProb();
+    if(nowBoard->enemyHero != NULL)     nowBoard->enemyHero->setDeadProb();
+
+    foreach(MinionGraphicsItem *minion, *getMinionList(true))    minion->setDeadProb();
+    foreach(MinionGraphicsItem *minion, *getMinionList(false))   minion->setDeadProb();
+
+    if(futureBombs != NULL)
+    {
+        delete futureBombs;
+        futureBombs = NULL;
+    }
+}
+
+
+void PlanHandler::checkBomb(QString code)
+{
+    if(code.isEmpty() || viewBoard!=nowBoard || futureBombs != NULL)    return;
+
+    bool playerIn;
+    int missiles;
+    if(!isCardBomb(code, playerIn, missiles))   return;
+
+    //Targets
+    if(nowBoard->enemyHero == NULL)             return;
+    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
+    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
+
+    HeroGraphicsItem *playerHero = NULL;
+    QList<MinionGraphicsItem *> *playerMinions = NULL;
+    if(playerIn)
+    {
+        if(nowBoard->playerHero == NULL)        return;
+        playerHero = nowBoard->playerHero;
+        playerMinions = getMinionList(true);
+    }
+
+    //Targets List
+    QList<int> targets;
+    targets.append(enemyHero->getHitsToDie());
+    foreach(MinionGraphicsItem *minion, *enemyMinions)          targets.append(minion->getHitsToDie());
+
+    if(playerIn)
+    {
+        targets.append(playerHero->getHitsToDie());
+        foreach(MinionGraphicsItem *minion, *playerMinions)     targets.append(minion->getHitsToDie());
+    }
+
+    //Get dead probs
+    futureBombs = new QFuture<QList<float>>(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
+    QTimer::singleShot(10, this, SLOT(setDeadProbs()));
+}
+
+
+void PlanHandler::setDeadProbs()
+{
+    if(futureBombs == NULL)     return;
+
+    if(futureBombs->isFinished())
+    {
+        QList<float> deadProbs = futureBombs->result();
+        delete futureBombs;
+        futureBombs = NULL;
+
+        HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
+        QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
+        enemyHero->setDeadProb(deadProbs.takeFirst());
+        foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
+
+        if(!deadProbs.isEmpty())
+        {
+            HeroGraphicsItem *playerHero = nowBoard->playerHero;
+            QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+            playerHero->setDeadProb(deadProbs.takeFirst());
+            foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
+        }
+    }
+    else
+    {
+        QTimer::singleShot(100, this, SLOT(setDeadProbs()));
+    }
+}
+
+
 QList<float> PlanHandler::bombDeads(QList<int> targets, int missiles)
 {
     QMap<QString, float> states;
@@ -2237,6 +2166,78 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates)
     }
 
     return newStates;
+}
+
+
+int PlanHandler::flamewakersOnBoard()
+{
+    int num = 0;
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(minion->getCode() == FLAMEWAKER)     num++;
+    }
+    return num;
+}
+
+
+bool PlanHandler::isMechOnBoard()
+{
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
+    }
+    return false;
+}
+
+
+//Card bombs
+bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
+{
+    missiles = 0;
+    playerIn = false;
+
+    if(code == MAD_BOMBER)
+    {
+        missiles = 3;
+        playerIn = true;
+    }
+    else if(code == MADDER_BOMBER)
+    {
+        missiles = 6;
+        playerIn = true;
+    }
+    else if(code == SPREADING_MADNESS)
+    {
+        missiles = 9;
+        playerIn = true;
+    }
+    else if(code == ARCANE_MISSILES)
+    {
+        missiles = 3;
+        playerIn = false;
+    }
+    else if(code == AVENGING_WRATH)
+    {
+        missiles = 8;
+        playerIn = false;
+    }
+    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
+    {
+        missiles = 4;
+        playerIn = false;
+    }
+
+    //Flamewakers, evitamos con SPREADING_MADNESS
+    int flamewakers = flamewakersOnBoard();
+    if(flamewakers > 0 && !playerIn && DeckCard(code).getType() == SPELL)
+    {
+        missiles += flamewakers * 2;
+    }
+
+    if(missiles > 0)    return true;
+    else                return false;
 }
 
 

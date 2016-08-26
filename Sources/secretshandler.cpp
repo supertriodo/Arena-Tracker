@@ -144,6 +144,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero)
             activeSecret.children.append(SecretCard(BEAR_TRAP));
             activeSecret.children.append(SecretCard(SNIPE));
             activeSecret.children.append(SecretCard(DART_TRAP));
+            activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
         break;
@@ -359,6 +360,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
 void SecretsHandler::playerSpellPlayed()
 {
     discardSecretOptionNow(COUNTERSPELL);
+    discardSecretOptionNow(CAT_TRICK);
 }
 
 

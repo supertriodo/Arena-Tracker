@@ -118,8 +118,8 @@ int MinionGraphicsItem::getHealth()
 
 int MinionGraphicsItem::getHitsToDie()
 {
-    if(shield)  return health + 1;
-    else        return health;
+    if(shield)  return getRemainingHealth() + 1;
+    else        return getRemainingHealth();
 }
 
 

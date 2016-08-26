@@ -24,6 +24,7 @@
 #define BEAR_TRAP QString("AT_060")
 #define SNIPE QString("EX1_609")
 #define DART_TRAP QString("LOE_021")
+#define CAT_TRICK QString("KAR_004")
 #define MISDIRECTION QString("EX1_533")
 #define SNAKE_TRAP QString("EX1_554")
 
