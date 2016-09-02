@@ -2060,7 +2060,7 @@ void PlanHandler::checkBomb(QString code)
     }
 
     //Get dead probs
-    futureBombs = new QFuture<QList<float>>(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
+    futureBombs = new QFuture<QList<float> >(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
     QTimer::singleShot(10, this, SLOT(setDeadProbs()));
 }
 
