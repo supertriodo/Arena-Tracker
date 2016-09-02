@@ -2642,6 +2642,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
+//Misiles spell power
 
 
 //REPLAY BUGS
@@ -2687,7 +2688,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //NUEVAS CARTAS
 //Update Json cartas
-//Update Json heroes HA (Utility::heroToLogNumber) para saber el numero de cada heroe
+//Update Json heroes HA --> drafthandler.cpp
 //Update secrets
 //Update bombing cards
 
