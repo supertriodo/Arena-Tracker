@@ -121,9 +121,10 @@ Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
-* Andres Navarro: €15,00 EUR
+* Andres N: €15,00 EUR
+* Michael L: €10,00 EUR
 * OmariZi: €10,00 EUR
-* [Michael Bull](https://github.com/MikeBull94): €10,00 EUR
+* [Michael B](https://github.com/MikeBull94): €10,00 EUR
 * Dennis K: €5,00 EUR
 * Innotus: €5,00 EUR
  
