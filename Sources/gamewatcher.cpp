@@ -686,7 +686,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 {
     if(powerState == noGame)   return;
 
-    //Carta desconocida (Enemigo)
+    //Carta desconocida
     if(line.contains(QRegularExpression(
         "\\[id=(\\d+) cardId= type=INVALID zone=\\w+ zonePos=\\d+ player=\\d+\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"

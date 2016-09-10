@@ -393,7 +393,14 @@ void DeckHandler::newDeckCardOutsider(QString code, int id)
 
 void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, int id)
 {
-    if(code.isEmpty() && !outsider)  return;
+    if(outsider)
+    {
+        if(code.isEmpty() && this->lastCreatedByCode.isEmpty())     return;
+    }
+    else
+    {
+        if(code.isEmpty())  return;
+    }
 
     //Mazo completo
     if(!outsider && (deckCardList[0].total < (uint)total))
@@ -671,10 +678,11 @@ void DeckHandler::returnToDeck(QString code, int id)
 }
 
 
-void DeckHandler::setLastCreatedByCode(QString code)
+void DeckHandler::setLastCreatedByCode(QString code, QString blockType)
 {
-    if(isLastCreatedByCodeValid(code))      this->lastCreatedByCode = code;
-    else                                    emit pDebug("CreateBy code is in the forbidden list: " + code, Warning);
+    if(blockType == "JOUST")                this->lastCreatedByCode = "";
+    else if(isLastCreatedByCodeValid(code)) this->lastCreatedByCode = code;
+    else                                    emit pDebug("CreatedBy code is in the forbidden list: " + code, Warning);
 }
 
 

@@ -118,7 +118,7 @@ public slots:
     void leaveArena();
     void askCreateDeckPY();
     void returnToDeck(QString code, int id);
-    void setLastCreatedByCode(QString code);
+    void setLastCreatedByCode(QString code, QString blockType);
 
 private slots:
     void removeOldestDrawCard();

@@ -466,7 +466,7 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(leaveArena()),
             deckHandler, SLOT(leaveArena()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
-            deckHandler, SLOT(setLastCreatedByCode(QString)));
+            deckHandler, SLOT(setLastCreatedByCode(QString, QString)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
