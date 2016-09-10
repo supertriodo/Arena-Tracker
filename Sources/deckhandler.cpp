@@ -466,7 +466,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
         if(deckCardList[0].total == 0)  hideUnknown();
     }
 
-    if(!this->inArena)   enableDeckButtonSave();
+    if(!this->inArena && !outsider)   enableDeckButtonSave();
 
     emit pDebug("Add to deck" + (outsider?QString(" OUTSIDER"):QString("")) + ": (" + QString::number(total) + ")" +
                 (*cardsJson)[code].value("name").toString());
