@@ -15,8 +15,7 @@ public:
 
 //Variables
 public:
-    QRadioButton *radioItem;
-    QLabel *scoreItem;
+    QLabel *scoreItem, *cardItem;
     double score, tierScore;
 
 //Metodos

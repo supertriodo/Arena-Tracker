@@ -33,12 +33,6 @@ DraftHandler::~DraftHandler()
 void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
-    ui->radioButtonDraft1->setIconSize(10*CARD_SIZE);
-    ui->radioButtonDraft2->setIconSize(10*CARD_SIZE);
-    ui->radioButtonDraft3->setIconSize(10*CARD_SIZE);
-    ui->radioButtonDraft1->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
-    ui->radioButtonDraft2->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
-    ui->radioButtonDraft3->setStyleSheet("QRadioButton::indicator {width: 0px;height: 0px;}");
 
     QFont font("Belwe Bd BT");
     font.setPointSize(18);
@@ -46,9 +40,9 @@ void DraftHandler::completeUI()
     ui->labelDraft2->setFont(font);
     ui->labelDraft3->setFont(font);
 
-    draftCards[0].radioItem = ui->radioButtonDraft1;
-    draftCards[1].radioItem = ui->radioButtonDraft2;
-    draftCards[2].radioItem = ui->radioButtonDraft3;
+    draftCards[0].cardItem = ui->labelCard1;
+    draftCards[1].cardItem = ui->labelCard2;
+    draftCards[2].cardItem = ui->labelCard3;
     draftCards[0].scoreItem = ui->labelDraft1;
     draftCards[1].scoreItem = ui->labelDraft2;
     draftCards[2].scoreItem = ui->labelDraft3;
@@ -253,14 +247,6 @@ void DraftHandler::endDraft()
     emit pDebug("End draft.");
     emit pLog(tr("Draft: Draft ended."));
 
-    //Guardamos ultima carta
-//    for(int i=0; i<3; i++)
-//    {
-//        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
-//        {
-//            pickCard(draftCards[i]);
-//        }
-//    }
 
     //SizeDraft
     MainWindow *mainWindow = ((MainWindow*)parent());
@@ -330,34 +316,11 @@ void DraftHandler::captureDraft()
 
 bool DraftHandler::areNewCards(QString codes[3])
 {
-    //Util en avance automatico
-    /*if((codes[0]==draftCards[0].getCode() && codes[1]==draftCards[1].getCode()) ||
-        (codes[0]==draftCards[0].getCode() && codes[2]==draftCards[2].getCode()) ||
-        (codes[1]==draftCards[1].getCode() && codes[2]==draftCards[2].getCode()))
-    {
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    " Same codes.");
-        resetCodesCandidates();
-        nextCount = 0;
-        return false;
-    }
-    else */if(codes[0]=="" || codes[1]=="" || codes[2]=="")
+    if(codes[0]=="" || codes[1]=="" || codes[2]=="")
     {
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
                     codes[0] + "/" + codes[1] + "/" + codes[2] +
                     " Blank code.");
-        //Salida alternativa 10 blancos
-        //Util en avance automatico
-//        if(draftedCards.count()>=29)
-//        {
-//            if(nextCount < 10)
-//            {
-//                nextCount++;
-//                emit pDebug("Ending draft - " + QString::number(nextCount));
-//            }
-//            else                endDraft();
-//        }
         return false;
     }
     else if(!areSameRarity(codes))
@@ -488,11 +451,6 @@ void DraftHandler::showNewCards(QString codes[3])
     int intCodes[3];
     for(int i=0; i<3; i++)
     {
-//        if(draftCards[i].radioItem->isChecked() && !draftCards[i].getCode().isEmpty())
-//        {
-//            pickCard(draftCards[i]);
-//        }
-
         clearScore(draftCards[i].scoreItem);
         draftCards[i].setCode(codes[i]);
         draftCards[i].draw();
@@ -702,31 +660,6 @@ bool DraftHandler::findScreenRects()
 }
 
 
-//void DraftHandler::selectMouseCard()
-//{
-//    QList<QScreen *> screens = QGuiApplication::screens();
-//    QScreen *screen = screens[screenIndex];
-//    if (!screen) return;
-
-//    int xMouse = QCursor::pos(screen).x() - screen->geometry().x();
-//    int minDist = 9999;
-//    int pickedCard = 0;
-
-//    for(int i=0; i<3; i++)
-//    {
-//        int xCard = screenRects[i].x + screenRects[i].width/2;
-//        int dist = abs(xMouse - xCard);
-//        if(dist < minDist)
-//        {
-//            minDist = dist;
-//            pickedCard = i;
-//        }
-//    }
-
-//    draftCards[pickedCard].radioItem->setChecked(true);
-//}
-
-
 void DraftHandler::clearScore(QLabel *label, bool clearText)
 {
     if(clearText)   label->setText("");
@@ -845,9 +778,9 @@ void DraftHandler::redrawAllCards()
 
 void DraftHandler::updateTamCard(int value)
 {
-    ui->radioButtonDraft1->setMaximumHeight(value);
-    ui->radioButtonDraft2->setMaximumHeight(value);
-    ui->radioButtonDraft3->setMaximumHeight(value);
+    ui->labelCard1->setMaximumHeight(value);
+    ui->labelCard2->setMaximumHeight(value);
+    ui->labelCard3->setMaximumHeight(value);
 }
 
 

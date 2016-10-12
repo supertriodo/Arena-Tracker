@@ -795,13 +795,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QRadioButton" name="radioButtonDraft1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QLabel" name="labelCard1">
                <property name="text">
                 <string/>
                </property>
@@ -829,13 +823,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButtonDraft2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QLabel" name="labelCard2">
                <property name="text">
                 <string/>
                </property>
@@ -863,13 +851,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QRadioButton" name="radioButtonDraft3">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+              <widget class="QLabel" name="labelCard3">
                <property name="text">
                 <string/>
                </property>
