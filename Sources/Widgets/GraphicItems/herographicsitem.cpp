@@ -56,6 +56,7 @@ void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
 {
     this->minionsAttack = minionsAttack;
     update();
+    sendHeroTotalAttackChange();
 }
 
 
@@ -63,6 +64,7 @@ void HeroGraphicsItem::setMinionsMaxAttack(int minionsMaxAttack)
 {
     this->minionsMaxAttack = minionsMaxAttack;
     update();
+    sendHeroTotalAttackChange();
 }
 
 
@@ -70,6 +72,7 @@ void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon)
 {
     this->heroWeapon = heroWeapon;
     update();
+    sendHeroTotalAttackChange();
 }
 
 
@@ -251,10 +254,42 @@ bool HeroGraphicsItem::processTagChange(QString tag, QString value)
     }
     else
     {
-        return MinionGraphicsItem::processTagChange(tag, value);
+        bool ret = MinionGraphicsItem::processTagChange(tag, value);
+        if(tag == "ATK" || tag == "EXHAUSTED" || tag == "FROZEN" || tag == "WINDFURY")  sendHeroTotalAttackChange();
+        return ret;
     }
     update();
     return healing;
+}
+
+
+void HeroGraphicsItem::setPlayerTurn(bool playerTurn)
+{
+    MinionGraphicsItem::setPlayerTurn(playerTurn);
+    sendHeroTotalAttackChange();
+}
+
+
+void HeroGraphicsItem::sendHeroTotalAttackChange()
+{
+    int totalAttack = this->minionsAttack;
+    int totalMaxAttack = this->minionsMaxAttack;
+    bool glow = (!exausted && !frozen && (playerTurn==friendly) && attack>0);
+    if(windfury)
+    {
+        if(glow)                                totalAttack += attack*2;
+        if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack()*2;
+        else                                    totalMaxAttack += attack*2;
+    }
+    else
+    {
+        if(glow)                                totalAttack += attack;
+        if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack();
+        else                                    totalMaxAttack += attack;
+    }
+
+    if(playerTurn!=friendly)    totalAttack = totalMaxAttack;
+    graphicsItemSender->sendHeroTotalAttackChange(friendly, totalAttack, totalMaxAttack);
 }
 
 

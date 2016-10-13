@@ -38,6 +38,9 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
 
+private:
+    void sendHeroTotalAttackChange();
+
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
@@ -54,6 +57,7 @@ public:
     void setResourcesUsed(int resourcesUsed);
     void setMinionsMaxAttack(int minionsMaxAttack);
     void setHeroWeapon(WeaponGraphicsItem * heroWeapon = NULL);
+    void setPlayerTurn(bool playerTurn);
 };
 
 #endif // HEROGRAPHICSITEM_H

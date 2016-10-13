@@ -8,6 +8,7 @@
 #include <QMap>
 
 #define COIN QString("GAME_005")
+#define TAM_ATK_HERO 50
 
 class EnemyHandHandler : public QObject
 {
@@ -36,6 +37,8 @@ private:
     void convertKnownCard(QString &code, int quantity);
     bool isIDinHand(int id);
     bool isLastCreatedByCodeValid(QString code);
+    void showHeroAttack();
+    void hideHeroAttack();
 
 public:
     void redrawDownloadedCardImage(QString &code);
@@ -63,6 +66,7 @@ public slots:
     void unlockEnemyInterface();
     void convertDuplicates(QString code);
     void setLastCreatedByCode(QString code);
+    void drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack);
 
 private slots:
     void findHandCardEntered(QListWidgetItem *item);

@@ -36,6 +36,20 @@ void EnemyHandHandler::completeUI()
     ui->enemyHandListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
     ui->enemyHandListWidget->setMouseTracking(true);
 
+    ui->enemyAttackHeroLabel->setFixedHeight(TAM_ATK_HERO);
+    ui->enemyAttackRivalLabel->setFixedHeight(TAM_ATK_HERO);
+    QFont font("Belwe Bd BT");
+    font.setPixelSize(25);
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+    ui->enemyAttackVSLabel->setFont(font);
+    hideHeroAttack();
+
     connect(ui->enemyHandListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findHandCardEntered(QListWidgetItem*)));
 }
@@ -214,6 +228,7 @@ void EnemyHandHandler::redrawAllCards()
 void EnemyHandHandler::lockEnemyInterface()
 {
     this->inGame = true;
+    showHeroAttack();
     updateTransparency();
 
     reset();
@@ -223,7 +238,33 @@ void EnemyHandHandler::lockEnemyInterface()
 void EnemyHandHandler::unlockEnemyInterface()
 {
     this->inGame = false;
+    hideHeroAttack();
     updateTransparency();
+}
+
+
+void EnemyHandHandler::showHeroAttack()
+{
+    if(ui->enemyAttackHeroLabel->isHidden())
+    {
+        ui->tabEnemyLayout->removeItem(ui->horizontalLayoutEnemy);
+        ui->tabEnemyLayout->addItem(ui->horizontalLayoutEnemy);
+        ui->enemyAttackHeroLabel->setHidden(false);
+        ui->enemyAttackRivalLabel->setHidden(false);
+        ui->enemyAttackVSLabel->setHidden(false);
+
+        drawHeroTotalAttack(true, 0, 0);
+        drawHeroTotalAttack(false, 0, 0);
+    }
+}
+
+
+void EnemyHandHandler::hideHeroAttack()
+{
+    ui->enemyAttackHeroLabel->setHidden(true);
+    ui->enemyAttackRivalLabel->setHidden(true);
+    ui->enemyAttackVSLabel->setHidden(true);
+    ui->tabEnemyLayout->removeItem(ui->horizontalLayoutEnemy);
 }
 
 
@@ -288,6 +329,66 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
     int enemyHandListTop = ui->enemyHandListWidget->mapToGlobal(QPoint(0,0)).y();
     int enemyHandListBottom = ui->enemyHandListWidget->mapToGlobal(QPoint(0,ui->enemyHandListWidget->height())).y();
     emit cardEntered(code, globalRectCard, enemyHandListTop, enemyHandListBottom);
+}
+
+
+void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
+{
+    //Font
+    QFont font("Belwe Bd BT");
+    font.setPixelSize(TAM_ATK_HERO/1.5);
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+
+    QFontMetrics fm(font);
+    QString text;
+    if(totalAttack == totalMaxAttack)   text = QString::number(totalAttack);
+    else                                text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
+    int textWide = fm.width(text);
+    int textHigh = fm.height();
+
+
+    int widthCanvas = std::max(TAM_ATK_HERO, textWide);
+    QPixmap canvas(widthCanvas, TAM_ATK_HERO);
+    canvas.fill(Qt::transparent);
+    QPainter painter;
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Background
+        painter.drawPixmap((widthCanvas - TAM_ATK_HERO)/2, 0, TAM_ATK_HERO, TAM_ATK_HERO, QPixmap(":Images/bgTotalAttack.png"));
+
+        //Text
+        painter.setFont(font);
+        QPen pen(BLACK);
+        pen.setWidth(1);
+        painter.setPen(pen);
+        if(friendly)    painter.setBrush(GREEN);
+        else            painter.setBrush(RED);
+
+        QPainterPath path;
+        path.addText(widthCanvas/2 - 2 - textWide/2, 5*TAM_ATK_HERO/8 - 1 + textHigh/4, font, text);
+        painter.drawPath(path);
+    painter.end();
+
+    if(friendly)
+    {
+        ui->enemyAttackHeroLabel->setPixmap(canvas);
+        ui->enemyAttackHeroLabel->setFixedWidth(widthCanvas);
+    }
+    else
+    {
+        ui->enemyAttackRivalLabel->setPixmap(canvas);
+        ui->enemyAttackRivalLabel->setFixedWidth(widthCanvas);
+    }
 }
 
 

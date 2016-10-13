@@ -81,6 +81,8 @@ void PlanHandler::createGraphicsItemSender()
             this, SLOT(resetDeadProbs()));
     connect(graphicsItemSender, SIGNAL(checkBomb(QString)),
             this, SLOT(checkBomb(QString)));
+    connect(graphicsItemSender, SIGNAL(heroTotalAttackChange(bool,int,int)),
+            this, SIGNAL(heroTotalAttackChange(bool,int,int)));
 }
 
 

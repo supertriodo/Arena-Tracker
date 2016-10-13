@@ -359,6 +359,8 @@ void MainWindow::createEnemyHandHandler()
             this, SLOT(fadeBarAndButtons(bool)));
     connect(enemyHandHandler, SIGNAL(enemyCardDraw(int,QString,QString,int)),
             planHandler, SLOT(enemyCardDraw(int,QString,QString,int)));
+    connect(planHandler, SIGNAL(heroTotalAttackChange(bool,int,int)),
+            enemyHandHandler, SLOT(drawHeroTotalAttack(bool,int,int)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -760,8 +762,6 @@ void MainWindow::completeUI()
                 this, SLOT(spreadMouseInApp()));
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(resizeChangingTab()));
-
-        ui->replayButton->hide();//TODO eliminar
 
 
 #ifdef QT_DEBUG

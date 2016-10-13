@@ -42,3 +42,9 @@ void GraphicsItemSender::sendCheckBomb(QString code)
 {
     emit checkBomb(code);
 }
+
+
+void GraphicsItemSender::sendHeroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack)
+{
+    emit heroTotalAttackChange(friendly, totalAttack, totalMaxAttack);
+}
