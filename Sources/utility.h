@@ -138,6 +138,7 @@ public:
     static QString getLoadingScreenString(LoadingScreenState loadingScreen);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
+    static bool isLeftOfScreen(QPoint center);
 };
 
 #endif // UTILITY_H

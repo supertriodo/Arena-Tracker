@@ -1215,6 +1215,9 @@
            <widget class="MoveListWidget" name="drawListWidget"/>
           </item>
           <item>
+           <widget class="MoveListWidget" name="rngListWidget"/>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayoutEnemy">
             <item>
              <spacer name="enemyAttackHorizontalSpacer">

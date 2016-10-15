@@ -4,8 +4,11 @@
 #include "Widgets/ui_extended.h"
 #include "Cards/deckcard.h"
 #include "Cards/drawcard.h"
+#include "Cards/rngcard.h"
 #include "utility.h"
 #include "enemydeckhandler.h"
+#include "Widgets/bombwindow.h"
+#include "planhandler.h"
 #include <QObject>
 #include <QMap>
 #include <QSignalMapper>
@@ -16,13 +19,14 @@ class DeckHandler : public QObject
     Q_OBJECT
 
 public:
-    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler);
+    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler);
     ~DeckHandler();
 
 //Variables
 private:
     QList<DeckCard> deckCardList;
     QList<DrawCard> drawCardList;
+    QList<RngCard> rngCardList;
     Ui::Extended *ui;
     QMap<QString, QJsonObject> *cardsJson;
     QJsonObject decksJson;
@@ -31,12 +35,15 @@ private:
     bool mouseInApp;
     Transparency transparency;
     bool drawAnimating;
+    bool rngAnimating;
     bool showManaLimits;
     int drawDisappear;
     QTreeWidgetItem *loadDeckClasses[10];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
     EnemyDeckHandler *enemyDeckHandler;
+    PlanHandler *planHandler;
     QString lastCreatedByCode;
+    BombWindow *bombWindow;
 
 
 //Metodos
@@ -70,6 +77,10 @@ private:
     void updateManaLimits();
     bool isLastCreatedByCodeValid(QString code);
     void removeFromDeck(int index);
+    void clearRngList();
+    void createBombWindow();
+    void showBombWindow();
+    void newRngCard(QString code, int id);
 
 public:
     void reset();
@@ -119,6 +130,7 @@ public slots:
     void askCreateDeckPY();
     void returnToDeck(QString code, int id);
     void setLastCreatedByCode(QString code, QString blockType);
+    void removeRngCard(int id, QString code="");
 
 private slots:
     void removeOldestDrawCard();
@@ -142,6 +154,9 @@ private slots:
     void newCopyCurrentDeck();
     void newImportHearthHead();
     void newCopyEnemyDeck();
+    void adjustRngSize();
+    void clearRngAnimating();
+    void rngCardEntered(QListWidgetItem *item);
 };
 
 #endif // DECKHANDLER_H

@@ -13,6 +13,7 @@ QT_CONFIG -= no-pkg-config
 
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
+LIBS += -lz
 
 SOURCES += Sources/main.cpp\
     Sources/mainwindow.cpp \
@@ -51,7 +52,10 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/GraphicItems/miniongraphicsitem.cpp \
     Sources/Widgets/GraphicItems/weapongraphicsitem.cpp \
     Sources/Widgets/plangraphicsview.cpp \
-    Sources/Widgets/GraphicItems/graphicsitemsender.cpp
+    Sources/Widgets/GraphicItems/graphicsitemsender.cpp \
+    Sources/Utils/qcompressor.cpp \
+    Sources/Widgets/bombwindow.cpp \
+    Sources/Cards/rngcard.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -90,7 +94,10 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/GraphicItems/miniongraphicsitem.h \
     Sources/Widgets/GraphicItems/weapongraphicsitem.h \
     Sources/Widgets/plangraphicsview.h \
-    Sources/Widgets/GraphicItems/graphicsitemsender.h
+    Sources/Widgets/GraphicItems/graphicsitemsender.h \
+    Sources/Utils/qcompressor.h \
+    Sources/Widgets/bombwindow.h \
+    Sources/Cards/rngcard.h
 
 FORMS    += mainwindow.ui
 

@@ -388,3 +388,29 @@ QPixmap Utility::getTransformedImage(QPixmap image, QPointF pos, QPointF anchor,
 
     return rotImage;
 }
+
+
+bool Utility::isLeftOfScreen(QPoint center)
+{
+    int topScreen, bottomScreen, leftScreen, rightScreen;
+    int midX = center.x();
+    int midY = center.y();
+
+    foreach (QScreen *screen, QGuiApplication::screens())
+    {
+        if (!screen)    continue;
+        QRect screenRect = screen->geometry();
+        topScreen = screenRect.y();
+        bottomScreen = topScreen + screenRect.height();
+        leftScreen = screenRect.x();
+        rightScreen = leftScreen + screenRect.width();
+
+        if(midX < leftScreen || midX > rightScreen ||
+                midY < topScreen || midY > bottomScreen) continue;
+
+        if(midX-leftScreen > rightScreen-midX)  return false;
+        else                                    return true;
+    }
+
+    return true;
+}

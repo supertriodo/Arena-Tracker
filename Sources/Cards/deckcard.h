@@ -59,7 +59,7 @@ private:
 //Metodos
 protected:
     QPixmap draw(uint total, bool drawRarity, QColor nameColor=BLACK, bool resize=true);
-    QPixmap drawCreatedByCard();
+    QPixmap drawCustomCard(QString customCode, QString customText);
     QColor getRarityColor();
     CardRarity getRarityFromString(QString value);
     CardType getTypeFromString(QString value);

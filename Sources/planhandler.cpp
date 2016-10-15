@@ -1801,7 +1801,8 @@ void PlanHandler::showLastTurn()
     int viewTurn = viewBoard->numTurn;
     if(viewTurn == 0)
     {
-        emit pDebug("Moving to last turn when in nowBoard. Last Turn button should be disabled.", Error);
+        //Se llama antes de mostrar bomb window en enemy tab.
+        //emit pDebug("Moving to last turn when in nowBoard. Last Turn button should be disabled.", Error);
         updateButtons();
         return;
     }
@@ -2195,6 +2196,17 @@ bool PlanHandler::isMechOnBoard()
 
 
 //Card bombs
+bool PlanHandler::isCardBomb(QString code)
+{
+    if((code == MAD_BOMBER) || (code == MADDER_BOMBER) || (code == SPREADING_MADNESS) ||
+            (code == ARCANE_MISSILES) || (code == AVENGING_WRATH) || (code == GOBLIN_BLASTMAGE))
+    {
+        return true;
+    }
+    return false;
+}
+
+
 bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
 {
     missiles = 0;

@@ -36,27 +36,7 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
     }
 
     QPoint center = rectCard.center();
-    int midX = center.x();
-    int midY = center.y();
-    int topScreen, bottomScreen, leftScreen, rightScreen;
-    bool showAtLeft = false;
-
-    foreach (QScreen *screen, QGuiApplication::screens())
-    {
-        if (!screen)    continue;
-        QRect screenRect = screen->geometry();
-        topScreen = screenRect.y();
-        bottomScreen = topScreen + screenRect.height();
-        leftScreen = screenRect.x();
-        rightScreen = leftScreen + screenRect.width();
-
-        if(midX < leftScreen || midX > rightScreen ||
-                midY < topScreen || midY > bottomScreen) continue;
-
-        if(midX-leftScreen > rightScreen-midX)  showAtLeft=true;
-        else                                    showAtLeft=false;
-        break;
-    }
+    bool showAtLeft = !Utility::isLeftOfScreen(center);
 
     int winWidth = width();
     int winHeight = height();
@@ -66,12 +46,12 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
     if(showAtLeft)  moveX = rectCard.left()-winWidth;
     else            moveX = rectCard.right();
 
-    moveY = midY-winHeight/2;
+    moveY = center.y()-winHeight/2;
     if((maxTop!=-1) && (moveY<maxTop)) moveY=maxTop;
     else if((maxBottom!=-1) && ((moveY+winHeight)>maxBottom))
     {
         if((maxBottom-winHeight)<maxTop)    moveY=maxTop;
-        else                            moveY=maxBottom-winHeight;
+        else                                moveY=maxBottom-winHeight;
     }
 
     move(moveX, moveY);
@@ -79,3 +59,5 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
                          .scaled(winWidth, winHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     show();
 }
+
+

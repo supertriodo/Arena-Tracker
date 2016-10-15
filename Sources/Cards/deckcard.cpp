@@ -199,7 +199,7 @@ void DeckCard::draw()
 
     if(!this->createdByCode.isEmpty())
     {
-        canvas = drawCreatedByCard();
+        canvas = drawCustomCard(this->createdByCode, "BY:");
     }
     else
     {
@@ -343,7 +343,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
 }
 
 
-QPixmap DeckCard::drawCreatedByCard()
+QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
 {
     QFont font("Belwe Bd BT");
 
@@ -360,12 +360,12 @@ QPixmap DeckCard::drawCreatedByCard()
         QRectF target = QRectF(113,6,100,25);;
         QRectF source;
 
-        QFileInfo cardFI(Utility::hscardsPath() + "/" + createdByCode + ".png");
+        QFileInfo cardFI(Utility::hscardsPath() + "/" + customCode + ".png");
         if(cardFI.exists())
         {
             if(type==MINION)        source = QRectF(48,72,100,25);
             else                    source = QRectF(48,98,100,25);
-            painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + createdByCode + ".png"), source);
+            painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + customCode + ".png"), source);
         }
         else
         {
@@ -388,7 +388,7 @@ QPixmap DeckCard::drawCreatedByCard()
 #endif
 
         QFontMetrics fm(font);
-        int textWide = fm.width("BY:");
+        int textWide = fm.width(customText);
         int textHigh = fm.height();
 
         painter.setFont(font);
@@ -396,19 +396,19 @@ QPixmap DeckCard::drawCreatedByCard()
         painter.setPen(QPen(WHITE));
 
         QPainterPath path;
-        path.addText(20 - textWide/2, 20 + textHigh/4, font, "BY:");
+        path.addText(10, 20 + textHigh/4, font, customText);
         painter.drawPath(path);
 
 
         //Name
-        textWide = fm.width(name);
-        int maxNameLong = 174;
-        while(textWide>maxNameLong)
+        int nameWide = fm.width(name);
+        int maxNameLong = 194 - textWide;
+        while(nameWide>maxNameLong)
         {
             fontSize--;
             font.setPixelSize(fontSize);//<11pt
             fm = QFontMetrics(font);
-            textWide = fm.width(name);
+            nameWide = fm.width(name);
             textHigh = fm.height();
         }
 
@@ -421,7 +421,7 @@ QPixmap DeckCard::drawCreatedByCard()
         else                                            painter.setBrush(WHITE);
 
         path = QPainterPath();
-        path.addText(34, 20 + textHigh/4, font, name);
+        path.addText(14 + textWide, 20 + textHigh/4, font, name);
         painter.drawPath(path);
     painter.end();
 

@@ -4,17 +4,21 @@
 #include <cmath>
 #include <QtWidgets>
 
-PlanGraphicsView::PlanGraphicsView(QWidget *parent) : QGraphicsView(parent)
+PlanGraphicsView::PlanGraphicsView(QWidget *parent, QGraphicsScene *graphicsScene, bool showCards) : QGraphicsView(parent)
 {
     this->targetZoom = this->zoom = 0;
+    this->showCards = showCards;
     this->setStyleSheet("QGraphicsView{background-color: transparent;}");
 
-    QGraphicsScene *graphicsScene = new QGraphicsScene(this);
-    graphicsScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    if(graphicsScene == NULL)
+    {
+        graphicsScene = new QGraphicsScene(this);
+        graphicsScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    }
 
     this->setScene(graphicsScene);
     this->reset();
-    this->updateView(0);
+    if(showCards)   this->updateView(0);
 }
 
 
@@ -52,7 +56,7 @@ void PlanGraphicsView::updateView(int minionsZone)
 {
     const int wMinion = MinionGraphicsItem::WIDTH-5;//142
     const int hMinion = MinionGraphicsItem::HEIGHT-5;//184
-    const int wHero = HeroGraphicsItem::WIDTH;//160
+    const int wHero = HeroGraphicsItem::WIDTH+290;//160
     const int hHero = HeroGraphicsItem::HEIGHT;//184
     const int hCards = 155;
 
@@ -92,7 +96,7 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
 
-    QRectF boardRect = this->scene()->sceneRect();
+    QRectF boardRect = getBoardRect();
     float zoomWidth = this->width()/boardRect.width();
     float zoomHeight = this->height()/boardRect.height();
     zoom = targetZoom = std::min(zoomWidth, zoomHeight);
@@ -104,6 +108,20 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
     emit sizeChanged();
 }
 
+
+QRectF PlanGraphicsView::getBoardRect()
+{
+    if(showCards)   return this->scene()->sceneRect();
+    else
+    {
+        const int hCards = 155;
+        QRectF boardRect(this->scene()->sceneRect());
+        boardRect.setTop(boardRect.top() + hCards);
+        boardRect.setBottom(boardRect.bottom() - hCards);
+        this->setSceneRect(boardRect);
+        return boardRect;
+    }
+}
 
 void PlanGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
 {

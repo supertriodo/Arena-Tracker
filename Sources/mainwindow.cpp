@@ -330,7 +330,7 @@ void MainWindow::createEnemyDeckHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyDeckHandler);
+    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyDeckHandler, planHandler);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
@@ -455,6 +455,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString, int, bool)),
             deckHandler, SLOT(showPlayerCardDraw(QString, int, bool)));
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
+            deckHandler, SLOT(removeRngCard(int,QString)));
     connect(gameWatcher, SIGNAL(playerReturnToDeck(QString, int)),
             deckHandler, SLOT(returnToDeck(QString, int)));
     connect(gameWatcher, SIGNAL(clearDrawList(bool)),
@@ -1918,15 +1920,15 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
+//    deckHandler->newRngCard(MAD_BOMBER, 1);
+//    deckHandler->newRngCard(MADDER_BOMBER, 2);
+
+
 //    planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
 //    planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
 //    planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
 //    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 5, 1);
 //    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 6, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 5, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 6, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
 //    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
 //    planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
 //    planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
@@ -1991,7 +1993,7 @@ void MainWindow::test()
 //    planHandler->enemyWeaponZonePlayAdd("FP1_021", 31);
 
 
-//    QTimer::singleShot(10000, this, SLOT(test2()));
+//    QTimer::singleShot(2000, this, SLOT(test2()));
 }
 
 void MainWindow::test2()

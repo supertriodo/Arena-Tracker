@@ -11,12 +11,13 @@ class PlanGraphicsView : public QGraphicsView
     Q_OBJECT
 
 public:
-    PlanGraphicsView(QWidget *parent = 0);
+    PlanGraphicsView(QWidget *parent=0, QGraphicsScene *graphicsScene=NULL, bool showCards=true);
 
 //Variables
 private:
     float zoom;
     float targetZoom;
+    bool showCards;
 
 //Metodos
 private:
@@ -28,6 +29,7 @@ public:
     void removeAll();
     int getSceneViewWidth();
     int getCardsViewHeight();
+    QRectF getBoardRect();
 
 //Override events
 protected:

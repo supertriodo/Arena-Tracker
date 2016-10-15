@@ -148,6 +148,7 @@ public:
     void reset();
     bool resetSizePlan();
     bool isSizePlan();
+    bool isCardBomb(QString code);
 
 signals:
     void checkCardImage(QString code, bool isHero);
@@ -208,15 +209,15 @@ public slots:
     void resizePlan(bool toggleSizePlan=true);
     void playerCardTagChange(int id, QString code, QString tag, QString value);
     void enemyCardTagChange(int id, QString code, QString tag, QString value);
+    void resetDeadProbs();
+    void checkBomb(QString code);
+    void showLastTurn();
 
 private slots:
     void checkPendingTagChanges();
     void showNextTurn();
     void showPrevTurn();
     void showFirstTurn();
-    void showLastTurn();
-    void resetDeadProbs();
-    void checkBomb(QString code);
     void setDeadProbs();
 };
 
