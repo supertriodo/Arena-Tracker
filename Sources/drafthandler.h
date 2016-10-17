@@ -9,7 +9,7 @@
 #include <QObject>
 
 
-#define CAPTUREDRAFT_START_TIME         0
+#define CAPTUREDRAFT_START_TIME         500
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    2000
 
@@ -28,7 +28,6 @@ private:
     QMap<QString, cv::MatND> cardsHist;
     int cardsDownloading;
     DraftCard draftCards[3];
-    bool captureLoop;
     QString arenaHero;
     QList<int> draftedCards;
     QString codesCandidates[3];
@@ -42,6 +41,7 @@ private:
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
     bool learningMode;
+    QString justPickedCard;
 
 
 //Metodos
@@ -90,8 +90,6 @@ signals:
 public slots:
     void beginDraft(QString hero);
     void endDraft();
-    void pauseDraft();
-    void resumeDraft();
     void showNewRatings(QString tip, double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,
                         QString synergy1, QString synergy2, QString synergy3);

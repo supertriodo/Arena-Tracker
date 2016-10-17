@@ -7,7 +7,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->cardsDownloading = 0;
-    this->captureLoop = false;
     this->deckRating = 0;
     this->nextCount = 0;
     this->drafting = false;
@@ -92,7 +91,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     }
     qDebug() << "Num histograms BD:" << QString::number(hearthArenaCodes.count());
 
-    if(cardsDownloading==0) resumeDraft();
+    if(cardsDownloading==0) captureDraft();
     else
     {
         ui->progressBar->setMaximum(cardsDownloading);
@@ -113,7 +112,7 @@ void DraftHandler::reHistDownloadedCardImage(QString &code)
     if(cardsDownloading==0)
     {
         ui->progressBar->setVisible(false);
-        resumeDraft();
+        captureDraft();
     }
     else
     {
@@ -177,9 +176,6 @@ void DraftHandler::clearLists()
 
 void DraftHandler::beginDraft(QString hero)
 {
-    //Si ya hay un draft en proceso (captureDraft == true) se reiniciaran las listas
-    //y al hacer resumeDraft no se crearara otro loop ya que hay uno.
-
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
     {
@@ -201,39 +197,9 @@ void DraftHandler::beginDraft(QString hero)
 
     this->arenaHero = hero;
     this->drafting = true;
+    this->justPickedCard = "";
 
-    //Thread for initHistMaps
-    QFuture<void> future = QtConcurrent::run(this, &DraftHandler::initCodesAndHistMaps, hero);
-    ((MainWindow*)parent())->repaint();
-    future.waitForFinished();
-//    initCodesAndHistMaps(hero);
-}
-
-
-void DraftHandler::resumeDraft()
-{
-    if(!drafting)       return;
-    if(captureLoop) //Force draft con un draft activo
-    {
-        //return;   //Util si tenemos loopInfinitos
-    }
-
-    captureLoop = true;
-
-    emit pDebug("Resume draft.");
-//    emit pLog(tr("Draft: Draft resumed."));
-
-    QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
-}
-
-
-void DraftHandler::pauseDraft()
-{
-    if(!drafting)       return;
-    captureLoop = false;
-
-    emit pDebug("Pause draft.");
-//    emit pLog(tr("Draft: Draft paused."));
+    initCodesAndHistMaps(hero);
 }
 
 
@@ -268,8 +234,8 @@ void DraftHandler::endDraft()
 
     clearLists();
 
-    this->captureLoop = false;
     this->drafting = false;
+    this->justPickedCard = "";
 
     deleteDraftScoreWindow();
 
@@ -289,12 +255,8 @@ void DraftHandler::deleteDraftScoreWindow()
 
 void DraftHandler::captureDraft()
 {
-    if(!captureLoop)    return;
-    if(!drafting)   //Nunca ocurre(+seguridad)
-    {
-        captureLoop = false;
-        return;
-    }
+    justPickedCard = "";
+    if(!drafting)   return;
 
     if(screenRectsFound() || findScreenRects())
     {
@@ -398,11 +360,7 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
 void DraftHandler::pickCard(QString code)
 {
-    if(!drafting)
-    {
-        captureLoop = false;
-        return;
-    }
+    if(!drafting || justPickedCard==code)   return;
 
     if(code=="0" || code=="1" || code=="2")
     {
@@ -441,6 +399,7 @@ void DraftHandler::pickCard(QString code)
     emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
     emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
     emit newDeckCard(code);
+    this->justPickedCard = code;
 
     QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
 }
