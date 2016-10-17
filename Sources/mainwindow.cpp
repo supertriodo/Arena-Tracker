@@ -2532,14 +2532,17 @@ void MainWindow::updateAMConnectButton(int value)
         case 0:
             ui->configButtonMastery->setIcon(QIcon(":/Images/lose.png"));
             ui->configButtonMastery->setEnabled(true);
+            arenaHandler->setConnectedAM(false);
             break;
         case 1:
             ui->configButtonMastery->setIcon(QIcon(":/Images/win.png"));
             ui->configButtonMastery->setEnabled(true);
+            arenaHandler->setConnectedAM(true);
             break;
         case 2:
             ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
             ui->configButtonMastery->setEnabled(true);
+            arenaHandler->setConnectedAM(false);
             break;
     }
 }

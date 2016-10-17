@@ -1,4 +1,8 @@
 #include "arenahandler.h"
+#include "Utils/qcompressor.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QHttpMultiPart>
 #include <QtWidgets>
 
 ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extended *ui) : QObject(parent)
@@ -9,13 +13,18 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extend
     this->transparency = Opaque;
     this->theme = ThemeWhite;
     this->mouseInApp = false;
+    this->connectedAM = false;
+
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinished(QNetworkReply*)));
 
     completeUI();
 }
 
 ArenaHandler::~ArenaHandler()
 {
-
+    delete networkManager;
 }
 
 
@@ -63,7 +72,7 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
-//    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
             this, SLOT(changedRow(QTreeWidgetItem*)));
@@ -81,6 +90,7 @@ void ArenaHandler::createTreeWidget()
     for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
     adventureTreeItem = NULL;
     tavernBrawlTreeItem = NULL;
+    lastReplayUploaded = NULL;
 }
 
 
@@ -92,20 +102,147 @@ void ArenaHandler::deselectRow()
 
 void ArenaHandler::changedRow(QTreeWidgetItem *current)
 {
-    if(replayLogsMap.contains(current))     ui->replayButton->setEnabled(true);
-    else                                    ui->replayButton->setEnabled(false);
+    if(replayLogsMap.contains(current) && connectedAM)  ui->replayButton->setEnabled(true);
+    else                                                ui->replayButton->setEnabled(false);
+}
+
+
+void ArenaHandler::setConnectedAM(bool value)
+{
+    this->connectedAM = value;
 }
 
 
 void ArenaHandler::replayLog()
 {
-    if(!replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
+    if(!connectedAM || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
 
     QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
-    //Verifical logFileName existe
-    qDebug()<<Utility::gameslogPath() + "/" + logFileName;
+    qDebug()<<logFileName;
+
+    if(logFileName.startsWith("http://"))
+    {
+        QDesktopServices::openUrl(QUrl(logFileName));
+        return;
+    }
+
+    QString url = "";
+    if(logFileName.startsWith("DRAFT"))
+    {
+        url = "http://www.zerotoheroes.com/api/hearthstone/upload/draft/";
+    }
+    else if(logFileName.startsWith("ARENA"))
+    {
+        url = "http://www.zerotoheroes.com/api/hearthstone/upload/review/";
+    }
+    else
+    {
+        emit pDebug(logFileName + "isn't a draft or arena game.", Error);
+        return;
+    }
+
+
+    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+    QFile *file = new QFile(Utility::gameslogPath() + "/" + logFileName);
+    if(!file->open(QIODevice::ReadOnly))
+    {
+        emit pDebug("Failed to open " + Utility::gameslogPath() + "/" + logFileName);
+        return;
+    }
+
+    QHttpPart textPart;
+    textPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"data\"; filename=\""+file->fileName()+"\""));
+    textPart.setBodyDevice(file);
+    file->setParent(multiPart);
+
+    multiPart->append(textPart);
+
+    url += "ArenaTracker/" + ui->configLineEditMastery->text();
+    qDebug()<<url;
+    QNetworkRequest request;
+    request.setUrl(QUrl("http://www.zerotoheroes.com/api/hearthstone/upload/draft/ArenaTracker/triodo"));
+    QNetworkReply *reply = networkManager->post(request, multiPart);
+    multiPart->setParent(reply); //Delete the multiPart and the QFile with the reply
+
+    this->lastReplayUploaded = ui->arenaTreeWidget->currentItem();
+    emit pDebug("Uploading replay " + replayLogsMap[lastReplayUploaded] + " to " + "http://www.zerotoheroes.com");
+
+
+
+//    QFile infile(Utility::gameslogPath() + "/" + logFileName);
+//    infile.open(QIODevice::ReadOnly);
+//    QByteArray uncompressedData = infile.readAll();
+//    QByteArray compressedData;
+//    QCompressor::gzipCompress(uncompressedData, compressedData);
+
+//    QUrlQuery postData;
+//    postData.addQueryItem("data", compressedData);
+//    QNetworkRequest request(QUrl("http://www.zerotoheroes.com/api/hearthstone/upload/review/gzip"));
+//    request.setHeader(QNetworkRequest::ContentTypeHeader,
+//        "application/x-www-form-urlencoded");
+//    networkManager->post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+
+
 
     deselectRow();
+    ui->arenaTreeWidget->setSelectionMode(QAbstractItemView::NoSelection);
+}
+
+
+void ArenaHandler::replyFinished(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    ui->arenaTreeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    if(lastReplayUploaded == NULL)
+    {
+        emit pDebug("LastReplayUploaded is NULL");
+        return;
+    }
+
+    QString logFileName = replayLogsMap[lastReplayUploaded];
+    QByteArray jsonReply = reply->readAll();
+    qDebug()<<jsonReply;
+    if(jsonReply.isEmpty())
+    {
+        emit pDebug("No reply from zerotoheroes.com when uploading " + logFileName);
+        lastReplayUploaded = NULL;
+        return;
+    }
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonReply);
+    QJsonObject jsonObject = jsonDoc.object();
+    QJsonArray replayIds = jsonObject.value("reviewIds").toArray();
+    if(replayIds.isEmpty())
+    {
+        emit pDebug("No review id found in the reply " + jsonReply + " from zerotoheroes.com when uploading " + logFileName);
+        lastReplayUploaded = NULL;
+        return;
+    }
+    QString replayId = replayIds.first().toString();
+
+    emit pDebug("Replay " + logFileName + " uploaded to " + "http://www.zerotoheroes.com/r/hearthstone/" + replayId);
+    replayLogsMap[lastReplayUploaded] = "http://www.zerotoheroes.com/r/hearthstone/" + replayId;
+    setRowColor(lastReplayUploaded, SEA_GREEN);
+    lastReplayUploaded = NULL;
+
+    //Include replayId in fileName
+    QStringList logFileNameSplit = logFileName.split(".");
+    if(logFileNameSplit.length() != 2)
+    {
+        emit pDebug(logFileName + "has no extension correct format.");
+        return;
+    }
+    QString newLogFileName = logFileNameSplit[0] + "." + replayId + "." + logFileNameSplit[1];
+    if(QFile::rename(Utility::gameslogPath() + "/" + logFileName, Utility::gameslogPath() + "/" + newLogFileName))
+    {
+        emit pDebug("Replay " + logFileName + " renamed to " + newLogFileName);
+    }
+    else
+    {
+        emit pDebug("Failed replay " + logFileName + " rename to " + newLogFileName, Error);
+    }
 }
 
 
@@ -304,7 +441,8 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
             arenaCurrentGameList.at(i).isFirst == gameResult.isFirst &&
             arenaCurrentGameList.at(i).isWinner == gameResult.isWinner)
         {
-            setRowColor(item, GREEN);
+            if(replayLogsMap[item].startsWith("http://"))   setRowColor(item, SEA_GREEN);
+            else                                            setRowColor(item, GREEN);
             return;
         }
     }
@@ -385,7 +523,9 @@ void ArenaHandler::reshowArena(QString hero)
         setRowColor(arenaCurrent, YELLOW);
         return;
     }
-    setRowColor(arenaCurrent, GREEN);
+
+    if(replayLogsMap[arenaCurrent].startsWith("http://"))   setRowColor(arenaCurrent, SEA_GREEN);
+    else                                                    setRowColor(arenaCurrent, GREEN);
 }
 
 
@@ -686,7 +826,7 @@ void ArenaHandler::linkLogsToWebGames()
     {
         gameIndex --;
 
-        if(!file.contains(QRegularExpression("ARENA .* (\\w+)vs(\\w+) (WIN|LOSE).arenatracker"), &match)) return;
+        if(!file.contains(QRegularExpression("ARENA .* (\\w+)vs(\\w+) (WIN|LOSE)(.\\w+)?.arenatracker"), &match)) return;
         QString playerHero = match.captured(1);
         QString enemyHero = match.captured(2);
         bool isWinner = match.captured(3) == "WIN";
@@ -696,7 +836,15 @@ void ArenaHandler::linkLogsToWebGames()
         if(Utility::heroStringFromLogNumber(gameWeb.enemyHero) != enemyHero)  return;
         if(gameWeb.isWinner != isWinner)    return;
 
-        replayLogsMap[arenaCurrent->child(gameIndex)] = file;
+        if(match.captured(4).isEmpty())
+        {
+            replayLogsMap[arenaCurrent->child(gameIndex)] = file;
+        }
+        else
+        {
+            replayLogsMap[arenaCurrent->child(gameIndex)] = "http://www.zerotoheroes.com/r/hearthstone/" + match.captured(4).mid(1);
+            setRowColor(arenaCurrent->child(gameIndex), SEA_GREEN);
+        }
     }
 
     //Draft
@@ -707,12 +855,20 @@ void ArenaHandler::linkLogsToWebGames()
     if(dir.entryList().isEmpty())   return;
     QString file = dir.entryList().first();
 
-    if(!file.contains(QRegularExpression("DRAFT .* (\\w+).arenatracker"), &match)) return;
+    if(!file.contains(QRegularExpression("DRAFT .* (\\w+)(.\\w+)?.arenatracker"), &match)) return;
     QString playerHero = match.captured(1);
 
     if(Utility::heroStringFromLogNumber(arenaCurrentHero) != playerHero)  return;
 
-    replayLogsMap[arenaCurrent] = file;
+    if(match.captured(2).isEmpty())
+    {
+        replayLogsMap[arenaCurrent] = file;
+    }
+    else
+    {
+        replayLogsMap[arenaCurrent] = "http://www.zerotoheroes.com/r/hearthstone/" + match.captured(2).mid(1);
+        setRowColor(arenaCurrent, SEA_GREEN);
+    }
 }
 
 

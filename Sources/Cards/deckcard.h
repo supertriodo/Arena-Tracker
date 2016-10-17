@@ -6,6 +6,7 @@
 #include <QMap>
 
 #define GREEN QColor(50,175,50)
+#define SEA_GREEN QColor(50,150,120)
 #define RED QColor(255,0,0)
 #define YELLOW QColor(255,255,0)
 #define WHITE QColor(255,255,255)

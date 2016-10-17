@@ -7,6 +7,7 @@
 #include "deckhandler.h"
 #include "utility.h"
 #include <QObject>
+#include <QNetworkAccessManager>
 #include <QTreeWidgetItem>
 
 class ArenaHandler : public QObject
@@ -28,10 +29,13 @@ private:
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
     QMap<QTreeWidgetItem *, QString> replayLogsMap;
+    QTreeWidgetItem *lastReplayUploaded;
     bool noArena;
     bool mouseInApp;
     Transparency transparency;
     Theme theme;
+    QNetworkAccessManager *networkManager;
+    bool connectedAM;
 
 
 //Metodos
@@ -56,6 +60,7 @@ public:
     void deselectRow();
     void linkLogToDraft(QString logFileName);
     QString getArenaCurrentGameLog();
+    void setConnectedAM(bool value);
 
 signals:
     void pLog(QString line);
@@ -77,6 +82,9 @@ public slots:
     void syncArenaCurrent();
     void removeDuplicateArena();
     void linkLogsToWebGames();
+
+    //NetworkManager
+    void replyFinished(QNetworkReply *reply);
 
 private slots:
     void refresh();
