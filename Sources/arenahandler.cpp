@@ -72,7 +72,9 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
-    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    //TODO cambiar para activar replays
+//    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->replayButton->hide();
 
     connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
             this, SLOT(changedRow(QTreeWidgetItem*)));
@@ -102,8 +104,14 @@ void ArenaHandler::deselectRow()
 
 void ArenaHandler::changedRow(QTreeWidgetItem *current)
 {
-    if(replayLogsMap.contains(current) && connectedAM)  ui->replayButton->setEnabled(true);
-    else                                                ui->replayButton->setEnabled(false);
+    if(connectedAM && ui->arenaTreeWidget->selectionMode()!=QAbstractItemView::NoSelection && replayLogsMap.contains(current))
+    {
+        ui->replayButton->setEnabled(true);
+    }
+    else
+    {
+        ui->replayButton->setEnabled(false);
+    }
 }
 
 
@@ -115,7 +123,7 @@ void ArenaHandler::setConnectedAM(bool value)
 
 void ArenaHandler::replayLog()
 {
-    if(!connectedAM || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
+    if(!connectedAM || lastReplayUploaded != NULL || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
 
     QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
     qDebug()<<logFileName;
