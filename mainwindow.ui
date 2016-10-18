@@ -1642,7 +1642,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>714</height>
+               <height>744</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2100,7 +2100,7 @@ in a new window</string>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <layout class="QVBoxLayout" name="verticalLayout_13">
                  <property name="spacing">
                   <number>5</number>
                  </property>
@@ -2117,38 +2117,60 @@ in a new window</string>
                   <number>9</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="configLabelDrawTime">
-                   <property name="toolTip">
-                    <string>Draw: Time new cards drawn
+                  <layout class="QHBoxLayout" name="configHandHorizontalLayout1">
+                   <item>
+                    <widget class="QLabel" name="configLabelDrawTime">
+                     <property name="toolTip">
+                      <string>Draw: Time new cards drawn
 are shown on screen</string>
-                   </property>
-                   <property name="text">
-                    <string>Draw</string>
-                   </property>
-                  </widget>
+                     </property>
+                     <property name="text">
+                      <string>Draw</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="configSliderDrawTime">
+                     <property name="minimum">
+                      <number>0</number>
+                     </property>
+                     <property name="maximum">
+                      <number>11</number>
+                     </property>
+                     <property name="pageStep">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="configLabelDrawTimeValue">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
-                  <widget class="QSlider" name="configSliderDrawTime">
-                   <property name="minimum">
-                    <number>0</number>
-                   </property>
-                   <property name="maximum">
-                    <number>11</number>
-                   </property>
-                   <property name="pageStep">
-                    <number>1</number>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="configLabelDrawTimeValue">
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
+                  <layout class="QHBoxLayout" name="configHandHorizontalLayout2">
+                   <item>
+                    <widget class="QCheckBox" name="configCheckTotalAttack">
+                     <property name="text">
+                      <string>Total Attack</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="configCheckRngList">
+                     <property name="text">
+                      <string>RNG list</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>

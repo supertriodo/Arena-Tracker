@@ -37,6 +37,7 @@ private:
     bool drawAnimating;
     bool rngAnimating;
     bool showManaLimits;
+    bool showRngList;
     int drawDisappear;
     QTreeWidgetItem *loadDeckClasses[10];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
@@ -102,6 +103,7 @@ public:
     bool askSaveDeck();
     void completeArenaDeck(QString draftLog);
     void setShowManaLimits(bool value);
+    void setShowRngList(bool value);
 
 signals:
     void checkCardImage(QString code);

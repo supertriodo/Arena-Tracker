@@ -131,7 +131,7 @@ void DeckHandler::newRngCard(QString code, int id)
     ui->rngListWidget->addItem(rngCard.listItem);
     rngCard.draw();
     emit checkCardImage(code);
-    ui->rngListWidget->setHidden(false);
+    if(showRngList)     ui->rngListWidget->setHidden(false);
     QTimer::singleShot(10, this, SLOT(adjustRngSize()));
 }
 
@@ -192,6 +192,14 @@ void DeckHandler::clearRngAnimating()
 {
     this->rngAnimating = false;
     if(rngCardList.empty())    ui->rngListWidget->setHidden(true);
+}
+
+
+void DeckHandler::setShowRngList(bool value)
+{
+    this->showRngList = value;
+    if(!value)                      ui->rngListWidget->setHidden(true);
+    else if(!rngCardList.empty())   ui->rngListWidget->setHidden(false);
 }
 
 

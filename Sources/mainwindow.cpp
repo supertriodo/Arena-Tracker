@@ -863,6 +863,7 @@ void MainWindow::closeApp()
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
+                               bool showTotalAttack, bool showRngList,
                                bool createGoldenCards, int maxGamesLog,
                                QString AMplayerEmail, QString AMpassword)
 {
@@ -928,6 +929,12 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
             ui->configSliderDrawTime->setValue(this->drawDisappear);
             break;
     }
+
+    ui->configCheckTotalAttack->setChecked(showTotalAttack);
+    updateShowTotalAttack(showTotalAttack);
+
+    ui->configCheckRngList->setChecked(showRngList);
+    updateShowRngList(showRngList);
 
 
     //Draft
@@ -1009,12 +1016,15 @@ void MainWindow::readSettings()
         bool showClassColor = settings.value("showClassColor", true).toBool();
         bool showSpellColor = settings.value("showSpellColor", true).toBool();
         bool showManaLimits = settings.value("showManaLimits", true).toBool();
+        bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
+        bool showRngList = settings.value("showRngList", true).toBool();
         bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
         QString AMplayerEmail = settings.value("playerEmail", "").toString();
         QString AMpassword = settings.value("password", "").toString();
 
-        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
+        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
+                      createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
     }
     else
     {
@@ -1055,6 +1065,8 @@ void MainWindow::writeSettings()
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
         settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
         settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
+        settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
+        settings.setValue("showRngList", ui->configCheckRngList->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
         settings.setValue("playerEmail", ui->configLineEditMastery->text());
@@ -2473,6 +2485,18 @@ void MainWindow::updateTimeDraw(int value)
 }
 
 
+void MainWindow::updateShowTotalAttack(bool checked)
+{
+    enemyHandHandler->setShowAttackBar(checked);
+}
+
+
+void MainWindow::updateShowRngList(bool checked)
+{
+    deckHandler->setShowRngList(checked);
+}
+
+
 void MainWindow::toggleShowDraftOverlay()
 {
     this->showDraftOverlay = !this->showDraftOverlay;
@@ -2587,6 +2611,8 @@ void MainWindow::completeConfigTab()
 
     //Hand
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
+    connect(ui->configCheckTotalAttack, SIGNAL(clicked(bool)), this, SLOT(updateShowTotalAttack(bool)));
+    connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
 
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));

@@ -27,6 +27,7 @@ private:
     QString knownCard;
     int numKnownCards;
     QString lastCreatedByCode;
+    bool showAttackBar;
 
 
 //Metodos
@@ -39,6 +40,7 @@ private:
     bool isLastCreatedByCodeValid(QString code);
     void showHeroAttack();
     void hideHeroAttack();
+    void resetHeroAttack();
 
 public:
     void redrawDownloadedCardImage(QString &code);
@@ -49,6 +51,7 @@ public:
     void setMouseInApp(bool value);
     bool isFromEnemyDeck(int id);
     bool isEmpty();
+    void setShowAttackBar(bool value);
 
 signals:
     void checkCardImage(QString code);

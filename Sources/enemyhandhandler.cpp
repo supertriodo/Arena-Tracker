@@ -228,6 +228,7 @@ void EnemyHandHandler::redrawAllCards()
 void EnemyHandHandler::lockEnemyInterface()
 {
     this->inGame = true;
+    resetHeroAttack();
     showHeroAttack();
     updateTransparency();
 
@@ -243,18 +244,22 @@ void EnemyHandHandler::unlockEnemyInterface()
 }
 
 
+void EnemyHandHandler::resetHeroAttack()
+{
+    drawHeroTotalAttack(true, 0, 0);
+    drawHeroTotalAttack(false, 0, 0);
+}
+
+
 void EnemyHandHandler::showHeroAttack()
 {
-    if(ui->enemyAttackHeroLabel->isHidden())
+    if(ui->enemyAttackHeroLabel->isHidden() && inGame && showAttackBar)
     {
         ui->tabEnemyLayout->removeItem(ui->horizontalLayoutEnemy);
         ui->tabEnemyLayout->addItem(ui->horizontalLayoutEnemy);
         ui->enemyAttackHeroLabel->setHidden(false);
         ui->enemyAttackRivalLabel->setHidden(false);
         ui->enemyAttackVSLabel->setHidden(false);
-
-        drawHeroTotalAttack(true, 0, 0);
-        drawHeroTotalAttack(false, 0, 0);
     }
 }
 
@@ -265,6 +270,14 @@ void EnemyHandHandler::hideHeroAttack()
     ui->enemyAttackRivalLabel->setHidden(true);
     ui->enemyAttackVSLabel->setHidden(true);
     ui->tabEnemyLayout->removeItem(ui->horizontalLayoutEnemy);
+}
+
+
+void EnemyHandHandler::setShowAttackBar(bool value)
+{
+    this->showAttackBar = value;
+    if(value)   showHeroAttack();
+    else        hideHeroAttack();
 }
 
 
