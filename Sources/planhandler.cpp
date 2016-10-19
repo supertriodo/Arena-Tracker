@@ -933,8 +933,9 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
     HeroGraphicsItem *hero = getHero(friendly, NULL);
     if(hero == NULL)        return;
 
-    if(tag == "RESOURCES")              hero->setResources(value.toInt());
-    else if(tag == "RESOURCES_USED")    hero->setResourcesUsed(value.toInt());
+    if(tag == "RESOURCES")                  hero->setResources(value.toInt());
+    else if(tag == "RESOURCES_USED")        hero->setResourcesUsed(value.toInt());
+    else if(tag == "CURRENT_SPELLPOWER")    hero->setSpellDamage(value.toInt());
 }
 
 
@@ -2243,11 +2244,18 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
         playerIn = false;
     }
 
-    //Flamewakers, evitamos con SPREADING_MADNESS
-    int flamewakers = flamewakersOnBoard();
-    if(flamewakers > 0 && !playerIn && DeckCard(code).getType() == SPELL)
+    if(DeckCard(code).getType() == SPELL)
     {
-        missiles += flamewakers * 2;
+        //SpellDamage
+        HeroGraphicsItem *hero = getHero(true, NULL);
+        if(hero != NULL)            missiles += hero->getSpellDamage();
+
+        //Flamewakers, evitamos con SPREADING_MADNESS (!playerIn)
+        if(!playerIn)
+        {
+            int flamewakers = flamewakersOnBoard();
+            if(flamewakers > 0)     missiles += flamewakers * 2;
+        }
     }
 
     if(missiles > 0)    return true;

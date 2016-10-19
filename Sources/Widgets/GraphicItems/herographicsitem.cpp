@@ -11,6 +11,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->minionsAttack = this->minionsMaxAttack = 0;
     this->resources = 1;
     this->resourcesUsed = 0;
+    this->spellDamage = 0;
     this->isNowBoard = true;
     this->heroWeapon = NULL;
 
@@ -30,6 +31,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     this->minionsMaxAttack = copy->minionsMaxAttack;
     this->resources = copy->resources;
     this->resourcesUsed = copy->resourcesUsed;
+    this->spellDamage = copy->spellDamage;
     this->isNowBoard = false;
     this->heroWeapon = NULL; //No lo necesitamos en la copia, solo en nowBoard
 
@@ -76,6 +78,12 @@ void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon)
 }
 
 
+void HeroGraphicsItem::setSpellDamage(int spellDamage)
+{
+    this->spellDamage = spellDamage;
+}
+
+
 void HeroGraphicsItem::setResourcesUsed(int resourcesUsed)
 {
     this->resourcesUsed = resourcesUsed;
@@ -87,6 +95,12 @@ void HeroGraphicsItem::setResources(int resources)
 {
     this->resources = resources;
     update();
+}
+
+
+int HeroGraphicsItem::getSpellDamage()
+{
+    return this->spellDamage;
 }
 
 

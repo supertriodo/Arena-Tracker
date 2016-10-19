@@ -433,7 +433,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(3);
         bool isPlayer = (name == playerTag);
 
-        if(tag == "RESOURCES" || tag == "RESOURCES_USED")
+        if(tag == "RESOURCES" || tag == "RESOURCES_USED" || tag == "CURRENT_SPELLPOWER")
         {
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
                         " -- Name: " + name, numLine);
