@@ -8,7 +8,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/Draft.png)
 * Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
-* Check the odds of minions/heroes dying when using bombers or missiles.
+* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
 * Upload your arena stats to your ArenaMastery account.
 ![Arena](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ArenaGames.png)
