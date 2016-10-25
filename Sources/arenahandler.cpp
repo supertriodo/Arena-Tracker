@@ -126,7 +126,6 @@ void ArenaHandler::replayLog()
     if(!connectedAM || lastReplayUploaded != NULL || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
 
     QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
-    qDebug()<<logFileName;
 
     if(logFileName.startsWith("http://"))
     {
@@ -168,10 +167,11 @@ void ArenaHandler::replayLog()
 
     url += "ArenaTracker/" + ui->configLineEditMastery->text();
     qDebug()<<url;
+    url.replace("+", "%2B");    //Encode +
     QNetworkRequest request;
-    request.setUrl(QUrl("http://www.zerotoheroes.com/api/hearthstone/upload/draft/ArenaTracker/triodo"));
+    request.setUrl(QUrl(url).adjusted(QUrl::FullyEncoded));
     QNetworkReply *reply = networkManager->post(request, multiPart);
-    multiPart->setParent(reply); //Delete the multiPart and the QFile with the reply
+    multiPart->setParent(reply);
 
     this->lastReplayUploaded = ui->arenaTreeWidget->currentItem();
     emit pDebug("Uploading replay " + replayLogsMap[lastReplayUploaded] + " to " + "http://www.zerotoheroes.com");
@@ -251,6 +251,8 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     {
         emit pDebug("Failed replay " + logFileName + " rename to " + newLogFileName, Error);
     }
+
+    QDesktopServices::openUrl(QUrl("http://www.zerotoheroes.com/r/hearthstone/" + replayId));
 }
 
 
