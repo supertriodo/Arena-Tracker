@@ -697,6 +697,8 @@ GameResult WebUploader::createGameResult(const QRegularExpressionMatch &match, c
 
 void WebUploader::postRequest(QNetworkRequest request, QUrlQuery postData)
 {
-    networkManager->post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    QString encodedPostData = postData.toString(QUrl::FullyEncoded);
+    encodedPostData.replace("+", "%2B");
+    networkManager->post(request, encodedPostData.toUtf8());
 }
 

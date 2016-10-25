@@ -228,7 +228,9 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Borders
-        painter.setPen(GREEN);
+        QPen borderPen(GREEN);
+        borderPen.setWidth(2);
+        painter.setPen(borderPen);
         painter.setBrush(BLACK);
         if(topManaLimit)        painter.drawRect(QRect(1, -1, 8, 6));
         if(bottomManaLimit)     painter.drawRect(QRect(1, 30, 8, 6));
