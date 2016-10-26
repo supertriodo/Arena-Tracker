@@ -2673,7 +2673,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Windfury and tag NUM_ATTACKS_THIS_TURN
-//Misiles spell power
+//arena deck replay uploaded
+//rng list + fel reaver
 
 
 //REPLAY BUGS
