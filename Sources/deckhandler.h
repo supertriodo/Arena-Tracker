@@ -118,7 +118,8 @@ public slots:
     void newDeckCardDraft(QString code);
     void newDeckCardWeb(QString code, int total);
     void newDeckCardOutsider(QString code, int id);
-    void showPlayerCardDraw(QString code, int id, bool mulligan);
+    void playerCardDraw(QString code, int id);
+    void playerCardToHand(int id, QString code, int turn);
     void enableDeckButtons();
     void cardTotalMin();
     void cardTotalPlus();

@@ -700,11 +700,16 @@ void DeckHandler::removeOldestDrawCard()
 }
 
 
-void DeckHandler::showPlayerCardDraw(QString code, int id, bool mulligan)
+void DeckHandler::playerCardDraw(QString code, int id)
 {
-    if(this->drawDisappear>=0)          newDrawCard(code, mulligan);
-    if(planHandler->isCardBomb(code))   newRngCard(code, id);
     drawFromDeck(code, id);
+}
+
+
+void DeckHandler::playerCardToHand(int id, QString code, int turn)
+{
+    if(this->drawDisappear>=0)          newDrawCard(code, turn==0);
+    if(planHandler->isCardBomb(code))   newRngCard(code, id);
 }
 
 

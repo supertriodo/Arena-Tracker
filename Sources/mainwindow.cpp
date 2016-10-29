@@ -453,8 +453,10 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int, bool)),
-            deckHandler, SLOT(showPlayerCardDraw(QString, int, bool)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int)),
+            deckHandler, SLOT(playerCardDraw(QString, int)));
+    connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
+            deckHandler, SLOT(playerCardToHand(int,QString,int)));
     connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
             deckHandler, SLOT(removeRngCard(int,QString)));
     connect(gameWatcher, SIGNAL(playerReturnToDeck(QString, int)),

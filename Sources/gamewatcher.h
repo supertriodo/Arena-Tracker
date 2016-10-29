@@ -100,7 +100,7 @@ signals:
     void enemyHero(QString hero);
     void enterArena();
     void leaveArena();
-    void playerCardDraw(QString code, int id, bool mulligan=false);
+    void playerCardDraw(QString code, int id);
     void playerReturnToDeck(QString code, int id=0);
     void enemyKnownCardDraw(QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");

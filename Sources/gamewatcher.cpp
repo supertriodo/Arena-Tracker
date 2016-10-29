@@ -1000,7 +1000,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 if(advance)     emit newTurn(isPlayerTurn, turnReal);
             }
             emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
-            emit playerCardDraw(cardId, id.toInt(), !mulliganPlayerDone);
+            emit playerCardDraw(cardId, id.toInt());
         }
 
         //Jugador juega carta conocida
