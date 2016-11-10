@@ -49,6 +49,7 @@ private:
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
+    QString compressLog(QString logFileName);
 
 public:
     void setWebUploader(WebUploader *webUploader);
