@@ -121,6 +121,7 @@ Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
+* Clovis C: €15,00 EUR
 * Andres N: €15,00 EUR
 * Thorsten G: €10,00 EUR
 * Michael L: €10,00 EUR
