@@ -168,20 +168,6 @@ void EnemyHandHandler::hideEnemyCardPlayed(int id, QString code)
 }
 
 
-bool EnemyHandHandler::isFromEnemyDeck(int id)
-{
-    foreach(HandCard handCard, enemyHandList)
-    {
-        if(handCard.id == id)
-        {
-            if(handCard.special || !handCard.getCode().isEmpty())   return false;
-            else                                                    return true;
-        }
-    }
-    return false;
-}
-
-
 void EnemyHandHandler::redrawDownloadedCardImage(QString &code)
 {
     for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)

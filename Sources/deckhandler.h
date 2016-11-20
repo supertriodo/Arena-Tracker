@@ -19,7 +19,7 @@ class DeckHandler : public QObject
     Q_OBJECT
 
 public:
-    DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler);
+    DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler);
     ~DeckHandler();
 
 //Variables
@@ -28,7 +28,6 @@ private:
     QList<DrawCard> drawCardList;
     QList<RngCard> rngCardList;
     Ui::Extended *ui;
-    QMap<QString, QJsonObject> *cardsJson;
     QJsonObject decksJson;
     QString loadedDeckName;
     bool inGame, inArena, synchronized;

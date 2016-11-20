@@ -2,7 +2,6 @@
 #define ENEMYDECKHANDLER_H
 
 #include "Widgets/ui_extended.h"
-#include "enemyhandhandler.h"
 #include <QObject>
 #include <QMap>
 
@@ -11,15 +10,13 @@ class EnemyDeckHandler : public QObject
     Q_OBJECT
 
 public:
-    EnemyDeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler);
+    EnemyDeckHandler(QObject *parent, Ui::Extended *ui);
     ~EnemyDeckHandler();
 
 //Variables
 private:
     QList<DeckCard> deckCardList;
     Ui::Extended *ui;
-    EnemyHandHandler *enemyHandHandler;
-    QMap<QString, QJsonObject> *cardsJson;
     Transparency transparency;
     bool inGame, mouseInApp;
     CardClass enemyClass;
@@ -38,7 +35,7 @@ public:
 private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
-    void newDeckCard(QString card, int total=1, bool add=false);
+    void newDeckCard(QString card, int id, int total=1, bool add=true);
     void updateTransparency();
     void reset();
 
@@ -52,7 +49,7 @@ signals:
 public slots:
     void enemyCardPlayed(int id, QString code);
     void enemySecretRevealed(int id, QString code);
-    void enemyKnownCardDraw(QString code);
+    void enemyKnownCardDraw(int id, QString code);
     void setEnemyClass(QString hero);
     void lockEnemyDeckInterface();
     void unlockEnemyDeckInterface();

@@ -49,7 +49,6 @@ public:
     void redrawAllCards();
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
-    bool isFromEnemyDeck(int id);
     bool isEmpty();
     void setShowAttackBar(bool value);
 

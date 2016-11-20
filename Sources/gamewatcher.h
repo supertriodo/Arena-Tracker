@@ -102,7 +102,7 @@ signals:
     void leaveArena();
     void playerCardDraw(QString code, int id);
     void playerReturnToDeck(QString code, int id=0);
-    void enemyKnownCardDraw(QString code);
+    void enemyKnownCardDraw(int id, QString code);
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
     void playerCardToHand(int id, QString code, int turn);
     void enemyCardPlayed(int id, QString code="", bool discard=false);

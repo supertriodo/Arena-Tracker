@@ -1,11 +1,9 @@
 #include "deckhandler.h"
 #include <QtWidgets>
 
-DeckHandler::DeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
-                         Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler) : QObject(parent)
+DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler) : QObject(parent)
 {
     this->ui = ui;
-    this->cardsJson = cardsJson;
     this->inGame = false;
     this->inArena = false;
     this->transparency = Opaque;
@@ -530,7 +528,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     if(!outsider && (deckCardList[0].total < (uint)total))
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    (*cardsJson)[code].value("name").toString(), Warning);
+                    Utility::getCardAtribute(code, "name").toString(), Warning);
         return;
     }
 
@@ -544,7 +542,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
             {
                 if(!add)
                 {
-                    emit pDebug((*cardsJson)[code].value("name").toString() + " already in deck.");
+                    emit pDebug(Utility::getCardAtribute(code, "name").toString() + " already in deck.");
                     return;
                 }
 
@@ -593,7 +591,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     if(!this->inArena && !outsider)   enableDeckButtonSave();
 
     emit pDebug("Add to deck" + (outsider?QString(" OUTSIDER"):QString("")) + ": (" + QString::number(total) + ")" +
-                (*cardsJson)[code].value("name").toString());
+                Utility::getCardAtribute(code, "name").toString());
 }
 
 
@@ -775,14 +773,14 @@ void DeckHandler::drawFromDeck(QString code, int id)
     if(deckCardList[0].total>0)
     {
         emit pDebug("New card: " +
-                          (*cardsJson)[code].value("name").toString() + ". 0/1");
+                          Utility::getCardAtribute(code, "name").toString() + ". 0/1");
         newDeckCard(code);
         drawFromDeck(code, id);
     }
     else
     {
         emit pDebug("New card but deck is full. " +
-                      (*cardsJson)[code].value("name").toString(), Warning);
+                      Utility::getCardAtribute(code, "name").toString(), Warning);
     }
 }
 
@@ -1596,7 +1594,7 @@ void DeckHandler::importEnemyDeck()
 
     foreach(DeckCard deckCard, enemyDeckCardList)
     {
-        if(!deckCard.getCode().isEmpty())   newDeckCard(deckCard.getCode(), deckCard.total);
+        if(!deckCard.getCode().isEmpty() && !deckCard.isOutsider())  newDeckCard(deckCard.getCode(), deckCard.total);
     }
 }
 

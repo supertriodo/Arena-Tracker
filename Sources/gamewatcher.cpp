@@ -792,7 +792,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneFrom == "OPPOSING DECK")
             {
                 advance = advanceTurn(false);
-                emit enemyKnownCardDraw(cardId);
+                emit enemyKnownCardDraw(id.toInt(), cardId);
             }
             if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
             emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
@@ -984,7 +984,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             bool advance = advanceTurn(false);
             emit pDebug("Enemy: Card overdraw: " + name + " ID: " + id, numLine);
-            emit enemyKnownCardDraw(cardId);
+            emit enemyKnownCardDraw(id.toInt(), cardId);
             if(advance)     emit newTurn(isPlayerTurn, turnReal);
         }
 

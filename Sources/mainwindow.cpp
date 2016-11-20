@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardDownloader();
     createPlanHandler();
     createEnemyHandHandler();//-->PlanHandler
-    createEnemyDeckHandler();//-->EnemyHandHandler
+    createEnemyDeckHandler();
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->DeckHandler
     createSecretsHandler();//-->EnemyHandHandler
@@ -343,7 +343,7 @@ void MainWindow::createArenaHandler()
 
 void MainWindow::createEnemyDeckHandler()
 {
-    enemyDeckHandler = new EnemyDeckHandler(this, &cardsJson, ui, enemyHandHandler);
+    enemyDeckHandler = new EnemyDeckHandler(this, ui);
     connect(enemyDeckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(enemyDeckHandler, SIGNAL(needMainWindowFade(bool)),
@@ -357,7 +357,7 @@ void MainWindow::createEnemyDeckHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, &cardsJson, ui, enemyDeckHandler, planHandler);
+    deckHandler = new DeckHandler(this, ui, enemyDeckHandler, planHandler);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
@@ -505,8 +505,8 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
-    connect(gameWatcher, SIGNAL(enemyKnownCardDraw(QString)),
-            enemyDeckHandler, SLOT(enemyKnownCardDraw(QString)));
+    connect(gameWatcher, SIGNAL(enemyKnownCardDraw(int, QString)),
+            enemyDeckHandler, SLOT(enemyKnownCardDraw(int, QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyDeckHandler, SLOT(lockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -516,9 +516,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
-    //Se llama desde enemyDeckHandler->enemyCardPlayed()
-//    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
-//            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
+            enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),

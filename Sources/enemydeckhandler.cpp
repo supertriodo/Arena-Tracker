@@ -1,12 +1,9 @@
 #include "enemydeckhandler.h"
 #include <QtWidgets>
 
-EnemyDeckHandler::EnemyDeckHandler(QObject *parent, QMap<QString, QJsonObject> *cardsJson,
-                                   Ui::Extended *ui, EnemyHandHandler *enemyHandHandler) : QObject(parent)
+EnemyDeckHandler::EnemyDeckHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->cardsJson = cardsJson;
-    this->enemyHandHandler = enemyHandHandler;
     this->transparency = Opaque;
     this->enemyClass = INVALID_CLASS;
     this->lastSecretIdAdded = -1;
@@ -59,23 +56,17 @@ void EnemyDeckHandler::setEnemyClass(QString hero)
 }
 
 
-void EnemyDeckHandler::enemyKnownCardDraw(QString code)
+void EnemyDeckHandler::enemyKnownCardDraw(int id, QString code)
 {
     this->lastSecretIdAdded = -1;
-    newDeckCard(code, 1, true);
+    newDeckCard(code, id);
 }
 
 
 void EnemyDeckHandler::enemyCardPlayed(int id, QString code)
 {
     this->lastSecretIdAdded = -1;
-
-    if(enemyHandHandler->isFromEnemyDeck(id))
-    {
-        newDeckCard(code, 1, true);
-    }
-
-    enemyHandHandler->hideEnemyCardPlayed(id, code);
+    newDeckCard(code, id);
 }
 
 
@@ -85,11 +76,11 @@ void EnemyDeckHandler::enemySecretRevealed(int id, QString code)
     if(id == lastSecretIdAdded) return;
 
     this->lastSecretIdAdded = id;
-    newDeckCard(code, 1, true);
+    newDeckCard(code, id);
 }
 
 
-void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
+void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
 {
     if(code.isEmpty())  return;
 
@@ -97,19 +88,26 @@ void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
     if(deckCardList[0].total < (uint)total)
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    (*cardsJson)[code].value("name").toString(), Warning);
+                    Utility::getCardAtribute(code, "name").toString(), Warning);
         return;
     }
 
     //Ya existe en el mazo
+    bool outsider = (id > 67);
     bool found = false;
     for(int i=0; i<deckCardList.length(); i++)
     {
-        if(deckCardList[i].getCode() == code)
+        if(deckCardList[i].getCode() == code && deckCardList[i].isOutsider() == outsider)
         {
             if(!add)
             {
-                emit pDebug((*cardsJson)[code].value("name").toString() + " already in deck.");
+                emit pDebug(Utility::getCardAtribute(code, "name").toString() + " already in deck.");
+                return;
+            }
+
+            if(deckCardList[i].id == id)
+            {
+                emit pDebug("Card id=" + QString::number(id) + " already in deck.");
                 return;
             }
 
@@ -123,16 +121,17 @@ void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
 
     if(!found)
     {
-        DeckCard deckCard(code);
+        DeckCard deckCard(code, outsider);
         CardClass cardClass = deckCard.getCardClass();
 
-        if(enemyClass != INVALID_CLASS && cardClass != enemyClass && cardClass != NEUTRAL)
+        if(!outsider && enemyClass != INVALID_CLASS && cardClass != enemyClass && cardClass != NEUTRAL)
         {
             emit pDebug("Wrong class card: Not adding: (" + QString::number(total) + ") " +
-                        (*cardsJson)[code].value("name").toString(), Warning);
+                        Utility::getCardAtribute(code, "name").toString(), Warning);
             return;
         }
 
+        deckCard.id = id;
         deckCard.total = total;
         deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
@@ -141,13 +140,16 @@ void EnemyDeckHandler::newDeckCard(QString code, int total, bool add)
         emit checkCardImage(code);
     }
 
-    deckCardList[0].total-=total;
-    deckCardList[0].remaining = deckCardList[0].total;
-    deckCardList[0].draw();
-    if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+    if(!outsider)
+    {
+        deckCardList[0].total-=total;
+        deckCardList[0].remaining = deckCardList[0].total;
+        deckCardList[0].draw();
+        if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
+    }
 
-    emit pDebug("Add to deck: (" + QString::number(total) + ")" +
-                (*cardsJson)[code].value("name").toString());
+    emit pDebug("Add to deck: " + (outsider?QString("(outsider)"):QString("")) + "(" + QString::number(total) + ")" +
+                Utility::getCardAtribute(code, "name").toString());
 }
 
 
@@ -163,7 +165,7 @@ void EnemyDeckHandler::insertDeckCard(DeckCard &deckCard)
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
         {
-            if(deckCard.getType() != deckCardList[i].getType())
+            /*if(deckCard.getType() != deckCardList[i].getType())
             {
                 if(deckCard.getType() == WEAPON || deckCardList[i].getType() == MINION)
                 {
@@ -172,7 +174,7 @@ void EnemyDeckHandler::insertDeckCard(DeckCard &deckCard)
                     return;
                 }
             }
-            else if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
+            else */if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
             {
                 deckCardList.insert(i, deckCard);
                 ui->enemyDeckListWidget->insertItem(i, deckCard.listItem);
