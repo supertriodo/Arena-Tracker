@@ -6,8 +6,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/nonfree/features2d.hpp"
 
-QMap<QString, QJsonObject> * Utility::enCardsJson;
-QMap<QString, QJsonObject> * Utility::cardsJson;
+QMap<QString, QJsonObject> * Utility::cardsJson = NULL;
+QString Utility::localLang = "enUS";
 QString Utility::diacriticLetters;
 QStringList Utility::noDiacriticLetters;
 
@@ -118,15 +118,15 @@ QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
 
 QString Utility::cardEnNameFromCode(QString code)
 {
-    return (*enCardsJson)[code].value("name").toString();
+    return (*cardsJson)[code].value("name").toObject().value("enUS").toString();
 }
 
 
 QString Utility::cardEnCodeFromName(QString name)
 {
-    for (QMap<QString, QJsonObject>::const_iterator it = enCardsJson->cbegin(); it != enCardsJson->cend(); it++)
+    for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
-        if(it->value("name").toString() == name)
+        if(it->value("name").toObject().value("enUS").toString() == name)
         {
             if(!it->value("cost").isUndefined())    return it.key();
         }
@@ -140,7 +140,7 @@ QString Utility::cardLocalCodeFromName(QString name)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
-        if(it->value("name").toString() == name)
+        if(it->value("name").toObject().value(localLang).toString() == name)
         {
             if(!it->value("cost").isUndefined())    return it.key();
         }
@@ -152,7 +152,14 @@ QString Utility::cardLocalCodeFromName(QString name)
 
 QJsonValue Utility::getCardAtribute(QString code, QString attribute)
 {
-    return (*cardsJson)[code].value(attribute);
+    if(attribute == "text" || attribute == "name")
+    {
+        return (*cardsJson)[code].value(attribute).toObject().value(localLang);
+    }
+    else
+    {
+        return (*cardsJson)[code].value(attribute);
+    }
 }
 
 
@@ -198,14 +205,15 @@ QString Utility::extraPath()
 }
 
 
-void Utility::setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson)
-{
-    Utility::enCardsJson = enCardsJson;
-}
-
 void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {
     Utility::cardsJson = cardsJson;
+}
+
+
+void Utility::setLocalLang(QString localLang)
+{
+    Utility::localLang = localLang;
 }
 
 

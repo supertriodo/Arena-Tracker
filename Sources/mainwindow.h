@@ -20,6 +20,7 @@
 #define DIVIDE_TABS_H 500
 #define DIVIDE_TABS_H2 750
 #define DIVIDE_TABS_V 700
+#define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 
 
 namespace Ui {
@@ -55,7 +56,7 @@ private:
     SecretsHandler *secretsHandler;
     DraftHandler * draftHandler;
     CardWindow *cardWindow;
-    QMap<QString, QJsonObject> cardsJson, enCardsJson;
+    QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     WindowsFormation windowsFormation;
     QFile* atLogFile;
@@ -72,6 +73,7 @@ private:
     bool draftLearningMode;
     QString draftLogFile;
     bool copyGameLogs;
+    QNetworkAccessManager *networkManager;
 
 
 
@@ -108,7 +110,7 @@ private:
     void updateButtonsTheme();
     void updateTabWidgetsTheme();
     QString getHSLanguage();
-    void createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang);
+    void createCardsJsonMap(QByteArray jsonData);
     void resizeTopButtons(int right, int top);
     void resizeChecks(QSize size);
     void resizeTabWidgets(QSize newSize);
@@ -133,6 +135,8 @@ private:
     void spreadTamCard(int value);
     int getTamCard();
     int getAutoTamCard();
+    void createNetworkManager();
+    void initCardsJson();
 
 //Override events
 protected:
@@ -147,9 +151,6 @@ protected:
 
 //Slots
 public slots:
-    //LogLoader
-    void initCardsJson();
-
     //GameWatcher
     void showTabHeroOnNoArena();
     void resetDeck(bool deckRead=false);
@@ -171,6 +172,7 @@ public slots:
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="MainWindow");
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
+
 
 private slots:
     void test();void test2();
@@ -204,6 +206,8 @@ private slots:
     void resizeChangingTab();
     void updateShowTotalAttack(bool checked);
     void updateShowRngList(bool checked);
+    void setLocalLang();
+    void replyFinished(QNetworkReply *reply);
 };
 
 #endif // MAINWINDOW_H

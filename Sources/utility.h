@@ -106,8 +106,8 @@ public:
 
 //Variables
 private:
-    static QMap<QString, QJsonObject> *enCardsJson;   //en-us json
-    static QMap<QString, QJsonObject> *cardsJson;   //local json
+    static QMap<QString, QJsonObject> *cardsJson;
+    static QString localLang;
     static QString diacriticLetters;
     static QStringList noDiacriticLetters;
 
@@ -130,8 +130,8 @@ public:
     static QString cardEnNameFromCode(QString code);
     static QString cardEnCodeFromName(QString name);
     static QString cardLocalCodeFromName(QString name);
-    static void setEnCardsJson(QMap<QString, QJsonObject> *enCardsJson);
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
+    static void setLocalLang(QString localLang);
     static QString removeAccents(QString s);
     static void fadeInWidget(QWidget *widget);
     static void fadeOutWidget(QWidget *widget);

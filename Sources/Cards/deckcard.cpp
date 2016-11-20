@@ -6,7 +6,6 @@
 bool DeckCard::drawClassColor = false;
 bool DeckCard::drawSpellWeaponColor = false;
 int DeckCard::cardHeight = 35;
-QMap<QString, QJsonObject> * DeckCard::cardsJson;
 
 
 DeckCard::DeckCard(QString code, bool outsider)
@@ -69,12 +68,12 @@ void DeckCard::setCode(QString code)
 
     if(!code.isEmpty())
     {
-        cost = (*cardsJson)[code].value("cost").toInt();
-        type = getTypeFromString((*cardsJson)[code].value("type").toString());
-        name = (*cardsJson)[code].value("name").toString();
-        rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
-        cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
-        cardRace = getRaceFromString((*cardsJson)[code].value("race").toString());
+        cost = Utility::getCardAtribute(code, "cost").toInt();
+        type = getTypeFromString(Utility::getCardAtribute(code, "type").toString());
+        name = Utility::getCardAtribute(code, "name").toString();
+        rarity = getRarityFromString(Utility::getCardAtribute(code, "rarity").toString());
+        cardClass = getClassFromString(Utility::getCardAtribute(code, "playerClass").toString());
+        cardRace = getRaceFromString(Utility::getCardAtribute(code, "race").toString());
     }
     else
     {
@@ -97,12 +96,12 @@ void DeckCard::setCreatedByCode(QString code)
 
     if(!createdByCode.isEmpty())
     {
-        cost = (*cardsJson)[code].value("cost").toInt();
-        type = getTypeFromString((*cardsJson)[code].value("type").toString());
-        name = (*cardsJson)[code].value("name").toString();
-        rarity = getRarityFromString((*cardsJson)[code].value("rarity").toString());
-        cardClass = getClassFromString((*cardsJson)[code].value("playerClass").toString());
-        cardRace = getRaceFromString((*cardsJson)[code].value("race").toString());
+        cost = Utility::getCardAtribute(code, "cost").toInt();
+        type = getTypeFromString(Utility::getCardAtribute(code, "type").toString());
+        name = Utility::getCardAtribute(code, "name").toString();
+        rarity = getRarityFromString(Utility::getCardAtribute(code, "rarity").toString());
+        cardClass = getClassFromString(Utility::getCardAtribute(code, "playerClass").toString());
+        cardRace = getRaceFromString(Utility::getCardAtribute(code, "race").toString());
     }
     else
     {
@@ -501,12 +500,6 @@ CardClass DeckCard::getCardClass()
 CardRace DeckCard::getRace()
 {
     return cardRace;
-}
-
-
-void DeckCard::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
-{
-    DeckCard::cardsJson = cardsJson;
 }
 
 

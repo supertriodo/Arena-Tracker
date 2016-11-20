@@ -51,7 +51,6 @@ protected:
 
     static bool drawClassColor, drawSpellWeaponColor;
     static int cardHeight;
-    static QMap<QString, QJsonObject> *cardsJson;
 
 private:
     bool topManaLimit, bottomManaLimit;
@@ -84,7 +83,6 @@ public:
     void setCreatedByCode(QString code);
     QString getCreatedByCode();
 
-    static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);
     static void setCardHeight(int value);

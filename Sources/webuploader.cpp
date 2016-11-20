@@ -275,7 +275,7 @@ void WebUploader::replyFinished(QNetworkReply *reply)
     showWebState();
     reply->deleteLater();
 
-    if (reply->error() != QNetworkReply::NoError)
+    if(reply->error() != QNetworkReply::NoError)
     {
         if(webState == rewardsSent) webState = complete;
         if(webState == gameResultSent) webState = complete;

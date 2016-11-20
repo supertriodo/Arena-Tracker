@@ -56,19 +56,6 @@
         <file>Images/saveDeck.png</file>
         <file>Images/refresh.png</file>
         <file>Images/web.png</file>
-        <file>Json/cards.enUS.json</file>
-        <file>Json/cards.esES.json</file>
-        <file>Json/cards.deDE.json</file>
-        <file>Json/cards.esMX.json</file>
-        <file>Json/cards.frFR.json</file>
-        <file>Json/cards.itIT.json</file>
-        <file>Json/cards.jaJP.json</file>
-        <file>Json/cards.koKR.json</file>
-        <file>Json/cards.plPL.json</file>
-        <file>Json/cards.ptBR.json</file>
-        <file>Json/cards.ruRU.json</file>
-        <file>Json/cards.zhCN.json</file>
-        <file>Json/cards.zhTW.json</file>
         <file>Images/bgCard1Warrior.png</file>
         <file>Images/bgCard2Warrior.png</file>
         <file>Images/bgCard1Druid.png</file>
@@ -90,7 +77,6 @@
         <file>Images/createDeckPY.png</file>
         <file>Images/enemyDeck.png</file>
         <file>Images/unknown.png</file>
-        <file>Json/cards.thTH.json</file>
         <file>Images/replay.png</file>
         <file>Images/bgMinionSimple.png</file>
         <file>Images/bgMinionGlow.png</file>

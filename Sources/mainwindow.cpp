@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDataDir();
     createLogFile();
     completeUI();
+    initCardsJson();
 
     createCardDownloader();
     createPlanHandler();
@@ -86,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
 
 MainWindow::~MainWindow()
 {
+    if(networkManager != NULL)  delete networkManager;
     if(logLoader != NULL)       delete logLoader;
     if(gameWatcher != NULL)     delete gameWatcher;
     if(arenaHandler != NULL)    delete arenaHandler;
@@ -220,14 +222,9 @@ QString MainWindow::getHSLanguage()
 }
 
 
-void MainWindow::createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QString lang)
+void MainWindow::createCardsJsonMap(QByteArray jsonData)
 {
-    QFile jsonFile(":Json/cards." + lang + ".json");
-
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
-
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     QJsonArray jsonArray = jsonDoc.array();
     foreach(QJsonValue jsonCard, jsonArray)
     {
@@ -237,23 +234,53 @@ void MainWindow::createCardsJsonMap(QMap<QString, QJsonObject> &cardsJson, QStri
 }
 
 
-void MainWindow::initCardsJson()
+void MainWindow::replyFinished(QNetworkReply *reply)
 {
-    QString lang = getHSLanguage();
-    createCardsJsonMap(this->cardsJson, lang);
-    DeckCard::setCardsJson(&cardsJson);
-    Utility::setCardsJson(&cardsJson);
+    reply->deleteLater();
 
-
-    if(lang == "enUS")
+    if(reply->error() != QNetworkReply::NoError)
     {
-        Utility::setEnCardsJson(&cardsJson);
+        emit pDebug("Load Json cards --> Failed. Retrying...");
+        networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
     }
     else
     {
-        createCardsJsonMap(enCardsJson, "enUS");
-        Utility::setEnCardsJson(&enCardsJson);
+        if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
+        {
+            emit pDebug("Load Json cards --> Redirected to " + reply->rawHeader("Location"));
+            networkManager->get(QNetworkRequest(QUrl(reply->rawHeader("Location"))));
+        }
+        else
+        {
+            emit pDebug("Load Json cards --> Success.");
+            createCardsJsonMap(reply->readAll());
+        }
     }
+}
+
+
+void MainWindow::setLocalLang()
+{
+    QString lang = getHSLanguage();
+    Utility::setLocalLang(lang);
+}
+
+
+void MainWindow::initCardsJson()
+{
+    Utility::setCardsJson(&cardsJson);
+
+    createNetworkManager();
+    networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
+    emit pDebug("Load Json cards --> Trying " + QString(JSON_CARDS_URL));
+}
+
+
+void MainWindow::createNetworkManager()
+{
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 
@@ -654,7 +681,7 @@ void MainWindow::createLogLoader()
     connect(logLoader, SIGNAL(newLogLineRead(LogComponent, QString,qint64,qint64)),
             gameWatcher, SLOT(processLogLine(LogComponent, QString,qint64,qint64)));
     connect(logLoader, SIGNAL(logConfigSet()),
-            this, SLOT(initCardsJson()));
+            this, SLOT(setLocalLang()));
     connect(logLoader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
