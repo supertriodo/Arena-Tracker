@@ -72,19 +72,30 @@ bool LogWorker::isLogReset()
 }
 
 
-int LogWorker::readLine(QFile &file, QString &line)
+int LogWorker::readLine(QFile &file, QString &utf8Line)
 {
     char c;
     int lineLength = 0;
-    line = "";
+    QString line = "";
 
-    while(true)
+    bool end = false;
+    while(!end)
     {
-        if(!file.getChar(&c))    return -1;
+        if(!file.getChar(&c))
+        {
+            end = true;
+            lineLength = -1;
+        }
         line.append(c);
         lineLength++;
-        if(c == '\n')    return lineLength;
+        if(c == '\n')
+        {
+            end = true;
+        }
     }
+
+    utf8Line = QString(line.toUtf8());
+    return lineLength;
 }
 
 
@@ -141,7 +152,6 @@ void LogWorker::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fil
         return;
     }
 
-//    QFuture<void> future = QtConcurrent::run(this, &LogWorker::doCopyGameLog, logSeekCreate, logSeekWon, fileName);
     doCopyGameLog(logSeekCreate, logSeekWon, fileName);
 }
 
@@ -166,9 +176,8 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
         return;
     }
 
-    QTextStream s1(&logFile);
-    QTextStream s2(&logGame);
-    s1.seek(logSeekCreate);
+    QTextStream out(&logGame);
+    logFile.seek(logSeekCreate);
 
     char line[2048];
     int lineLenght;
@@ -176,7 +185,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
 
     while((gameLogSeek <= logSeekWon) && ((lineLenght = logFile.readLine(line, sizeof(line))) > 0))
     {
-        s2 << line;
+        out << QString(line).toUtf8();
         gameLogSeek += lineLenght;
     }
 
