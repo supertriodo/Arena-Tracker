@@ -98,7 +98,7 @@ private:
     void addHero(bool friendly, QString code, int id);
     void removeHero(bool friendly, Board *board=NULL);
     void resetBoard(Board *board);
-    void updateButtons();
+    void updateTurnLabel();
     void loadViewBoard();
     void completeUI();
     bool findAttackPoint(ArrowGraphicsItem *attack, bool isFrom, int id, Board *board);
@@ -140,6 +140,7 @@ private:
     bool isCardBomb(QString code, bool &playerIn, int &missiles);
     bool isMechOnBoard();
     int flamewakersOnBoard();
+    void updateTurnSlider();
 
 public:
     void setTransparency(Transparency value);
@@ -161,6 +162,10 @@ signals:
 
 private slots:
     void updateViewCardZoneSpots();
+    void checkPendingTagChanges();
+    void setDeadProbs();
+    void showSliderTurn(int turn);
+    void showFirstTurn();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
@@ -212,13 +217,6 @@ public slots:
     void resetDeadProbs();
     void checkBomb(QString code);
     void showLastTurn();
-
-private slots:
-    void checkPendingTagChanges();
-    void showNextTurn();
-    void showPrevTurn();
-    void showFirstTurn();
-    void setDeadProbs();
 };
 
 #endif // PLANHANDLER_H

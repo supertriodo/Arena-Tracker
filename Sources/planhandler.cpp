@@ -55,14 +55,12 @@ void PlanHandler::completeUI()
     int textWide = fm.width("T99");
     ui->planLabelTurn->setFixedWidth(textWide);
 
-    connect(ui->planButtonPrev, SIGNAL(clicked()),
-            this, SLOT(showPrevTurn()));
-    connect(ui->planButtonNext, SIGNAL(clicked()),
-            this, SLOT(showNextTurn()));
     connect(ui->planButtonFirst, SIGNAL(clicked()),
             this, SLOT(showFirstTurn()));
     connect(ui->planButtonLast, SIGNAL(clicked()),
             this, SLOT(showLastTurn()));
+    connect(ui->planTurnSlider, SIGNAL(valueChanged(int)),
+            this, SLOT(showSliderTurn(int)));
     connect(ui->planButtonResize, SIGNAL(clicked()),
             this, SLOT(resizePlan()));
     connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
@@ -1552,7 +1550,6 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
             nowBoard->enemyHero->setResources(10);
         }
     }
-    updateButtons();
 
     //Store nowBoard
     Board *board = new Board();
@@ -1596,10 +1593,10 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     turnBoards.append(board);
 
+    updateTurnSlider();
 
-    //Avanza en ultimo turno
-    int prevTurn = turnBoards.count()-2;
-    if(prevTurn>=0 && viewBoard==turnBoards[prevTurn])   showNextTurn();
+    //Avanza en now board
+    if(viewBoard==nowBoard)     showLastTurn();
 }
 
 
@@ -1727,7 +1724,6 @@ void PlanHandler::reset()
     this->firstStoredTurn = 0;
     this->nowBoard->playerTurn = true;
     setLastTriggerId("", "", -1, -1);
-    updateButtons();
 
     resetBoard(nowBoard);
     while(!turnBoards.empty())
@@ -1736,18 +1732,27 @@ void PlanHandler::reset()
         resetBoard(board);
         delete board;
     }
+
+    updateTurnSlider();
+    updateTurnLabel();
 }
 
 
-void PlanHandler::updateButtons()
+void PlanHandler::updateTurnSlider()
+{
+    //Despues de un reset min/max son 0. Al definir el primer turno se definira el min a firstStoresTurn.
+    //Esto cambiara el value y cargara al primer turno. Queremos que se siga mostrando nowBoard.
+    bool showNowBoard = false;
+    if(ui->planTurnSlider->maximum() == 0)  showNowBoard = true;
+    ui->planTurnSlider->setMinimum(firstStoredTurn);
+    ui->planTurnSlider->setMaximum(firstStoredTurn + turnBoards.count());
+    if(showNowBoard)    showLastTurn();
+}
+
+
+void PlanHandler::updateTurnLabel()
 {
     int viewTurn = viewBoard->numTurn;
-    bool nextEnabled = viewTurn != 0;
-    bool prevEnabled = (firstStoredTurn!=0 && viewTurn==0) || viewTurn>firstStoredTurn;
-    ui->planButtonLast->setEnabled(nextEnabled);
-    ui->planButtonNext->setEnabled(nextEnabled);
-    ui->planButtonPrev->setEnabled(prevEnabled);
-    ui->planButtonFirst->setEnabled(prevEnabled);
 
     QString color;
     if(viewBoard->playerTurn)    color = "#008000";
@@ -1759,74 +1764,26 @@ void PlanHandler::updateButtons()
 }
 
 
-void PlanHandler::showNextTurn()
+void PlanHandler::showSliderTurn(int turn)
 {
-    int viewTurn = viewBoard->numTurn;
-    if(viewTurn == 0)
-    {
-        emit pDebug("Moving to next turn when in nowBoard. Next Turn button should be disabled.", Error);
-        updateButtons();
-        return;
-    }
-    int countTurns = turnBoards.count();
-    int lastTurn = firstStoredTurn + countTurns - 1;
-    if(viewTurn < lastTurn) viewBoard = turnBoards[viewTurn+1-firstStoredTurn];
-    else                    viewBoard = nowBoard;
+    int lastTurn = firstStoredTurn + turnBoards.count() - 1;
+    if(turn > lastTurn)     viewBoard = nowBoard;
+    else                    viewBoard = turnBoards[turn-firstStoredTurn];
 
     loadViewBoard();
-    updateButtons();
-}
-
-
-void PlanHandler::showPrevTurn()
-{
-    int viewTurn = viewBoard->numTurn;
-    if(viewTurn == firstStoredTurn)
-    {
-        emit pDebug("Moving to prev turn with no prev turn. Prev Turn button should be disabled.", Error);
-        updateButtons();
-        return;
-    }
-    int countTurns = turnBoards.count();
-    int lastTurn = firstStoredTurn + countTurns - 1;
-    if(viewTurn == 0)       viewBoard = turnBoards[lastTurn-firstStoredTurn];
-    else                    viewBoard = turnBoards[viewTurn-1-firstStoredTurn];
-
-    loadViewBoard();
-    updateButtons();
-}
-
-
-void PlanHandler::showLastTurn()
-{
-    int viewTurn = viewBoard->numTurn;
-    if(viewTurn == 0)
-    {
-        //Se llama antes de mostrar bomb window en enemy tab.
-        //emit pDebug("Moving to last turn when in nowBoard. Last Turn button should be disabled.", Error);
-        updateButtons();
-        return;
-    }
-    viewBoard = nowBoard;
-
-    loadViewBoard();
-    updateButtons();
+    updateTurnLabel();
 }
 
 
 void PlanHandler::showFirstTurn()
 {
-    int viewTurn = viewBoard->numTurn;
-    if(viewTurn == firstStoredTurn)
-    {
-        emit pDebug("Moving to first turn when in first turn. First Turn button should be disabled.", Error);
-        updateButtons();
-        return;
-    }
-    viewBoard = turnBoards.first();
+    ui->planTurnSlider->setValue(firstStoredTurn);
+}
 
-    loadViewBoard();
-    updateButtons();
+
+void PlanHandler::showLastTurn()
+{
+    ui->planTurnSlider->setValue(firstStoredTurn + turnBoards.count());
 }
 
 
@@ -1976,7 +1933,7 @@ void PlanHandler::updateTransparency()
 {
     bool inTabPlan = ui->tabWidget->currentWidget() == ui->tabPlan;
 
-    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
+    if(!mouseInApp && transparency==Transparent)
     {
         ui->tabPlan->setAttribute(Qt::WA_NoBackground);
         ui->tabPlan->repaint();
