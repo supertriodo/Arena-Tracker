@@ -140,7 +140,7 @@ private:
     bool isCardBomb(QString code, bool &playerIn, int &missiles);
     bool isMechOnBoard();
     int flamewakersOnBoard();
-    void updateTurnSlider();
+    void updateTurnSliderRange();
 
 public:
     void setTransparency(Transparency value);
@@ -166,6 +166,8 @@ private slots:
     void setDeadProbs();
     void showSliderTurn(int turn);
     void showFirstTurn();
+    void showPrevTurn();
+    void showNextTurn();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

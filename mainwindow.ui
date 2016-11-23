@@ -1358,6 +1358,9 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
@@ -1365,22 +1368,6 @@
                </size>
               </property>
              </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="planLabelTurn">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="planButtonFirst">
@@ -1407,6 +1394,46 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="planButtonPrev">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planPrev.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="planLabelTurn">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QSlider" name="planTurnSlider">
               <property name="pageStep">
                <number>1</number>
@@ -1414,8 +1441,29 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="tickPosition">
-               <enum>QSlider::NoTicks</enum>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="planButtonNext">
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/planNext.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -1447,6 +1495,9 @@
              <spacer name="planHorizontalSpacer2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>

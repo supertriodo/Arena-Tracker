@@ -55,6 +55,10 @@ void PlanHandler::completeUI()
     int textWide = fm.width("T99");
     ui->planLabelTurn->setFixedWidth(textWide);
 
+    connect(ui->planButtonPrev, SIGNAL(clicked()),
+            this, SLOT(showPrevTurn()));
+    connect(ui->planButtonNext, SIGNAL(clicked()),
+            this, SLOT(showNextTurn()));
     connect(ui->planButtonFirst, SIGNAL(clicked()),
             this, SLOT(showFirstTurn()));
     connect(ui->planButtonLast, SIGNAL(clicked()),
@@ -1593,7 +1597,7 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     turnBoards.append(board);
 
-    updateTurnSlider();
+    updateTurnSliderRange();
 
     //Avanza en now board
     if(viewBoard==nowBoard)     showLastTurn();
@@ -1733,14 +1737,19 @@ void PlanHandler::reset()
         delete board;
     }
 
-    updateTurnSlider();
+    updateTurnSliderRange();
     updateTurnLabel();
+
+    ui->planButtonLast->setEnabled(false);
+    ui->planButtonNext->setEnabled(false);
+    ui->planButtonPrev->setEnabled(false);
+    ui->planButtonFirst->setEnabled(false);
 }
 
 
-void PlanHandler::updateTurnSlider()
+void PlanHandler::updateTurnSliderRange()
 {
-    //Despues de un reset min/max son 0. Al definir el primer turno se definira el min a firstStoresTurn.
+    //Despues de un reset min/max son 0. Al definir el primer turno se definira el min a firstStoredTurn.
     //Esto cambiara el value y cargara al primer turno. Queremos que se siga mostrando nowBoard.
     bool showNowBoard = false;
     if(ui->planTurnSlider->maximum() == 0)  showNowBoard = true;
@@ -1772,6 +1781,13 @@ void PlanHandler::showSliderTurn(int turn)
 
     loadViewBoard();
     updateTurnLabel();
+
+    bool prevEnabled = ui->planTurnSlider->minimum() != turn;
+    bool nextEnabled = ui->planTurnSlider->maximum() != turn;
+    ui->planButtonLast->setEnabled(nextEnabled);
+    ui->planButtonNext->setEnabled(nextEnabled);
+    ui->planButtonPrev->setEnabled(prevEnabled);
+    ui->planButtonFirst->setEnabled(prevEnabled);
 }
 
 
@@ -1784,6 +1800,18 @@ void PlanHandler::showFirstTurn()
 void PlanHandler::showLastTurn()
 {
     ui->planTurnSlider->setValue(firstStoredTurn + turnBoards.count());
+}
+
+
+void PlanHandler::showPrevTurn()
+{
+    ui->planTurnSlider->setValue(ui->planTurnSlider->value()-1);
+}
+
+
+void PlanHandler::showNextTurn()
+{
+    ui->planTurnSlider->setValue(ui->planTurnSlider->value()+1);
 }
 
 
