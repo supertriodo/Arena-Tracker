@@ -59,18 +59,28 @@ void CardGraphicsItem::setCode(QString code)
 }
 
 
+bool CardGraphicsItem::isPlayed()
+{
+    return this->played;
+}
+
+
 void CardGraphicsItem::setPlayed(bool played)
 {
     this->played = played;
-    prepareGeometryChange();
     update();
+}
+
+
+void CardGraphicsItem::togglePlayed()
+{
+    setPlayed(!this->played);
 }
 
 
 void CardGraphicsItem::setDiscard()
 {
     this->discard = true;
-    prepareGeometryChange();
     update();
 }
 
@@ -79,6 +89,12 @@ void CardGraphicsItem::setDraw(bool drawn)
 {
     this->draw = drawn;
     update();
+}
+
+
+int CardGraphicsItem::getCost()
+{
+    return this->cost;
 }
 
 
@@ -107,7 +123,7 @@ void CardGraphicsItem::checkDownloadedCode(QString code)
 
 QRectF CardGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2, -heightShow/2+(played||discard?-CARD_LIFT:0), WIDTH, heightShow+(played||discard?CARD_LIFT:0));
+    return QRectF( -WIDTH/2, -heightShow/2-CARD_LIFT, WIDTH, heightShow+CARD_LIFT);
 }
 
 
@@ -125,6 +141,12 @@ void CardGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
     graphicsItemSender->sendPlanCardLeave();
     if(friendly)    graphicsItemSender->sendResetDeadProbs();
+}
+
+
+void CardGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+{
+    graphicsItemSender->cardPress(this);
 }
 
 

@@ -32,6 +32,7 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -46,6 +47,9 @@ public:
     bool isDiscard();
     void setCost(int cost);
     void reduceCost(int cost);
+    void togglePlayed();
+    int getCost();
+    bool isPlayed();
 };
 
 #endif // CARDGRAPHICSITEM_H

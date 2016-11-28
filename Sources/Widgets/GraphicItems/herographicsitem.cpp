@@ -12,7 +12,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->resources = 1;
     this->resourcesUsed = 0;
     this->spellDamage = 0;
-    this->isNowBoard = true;
+    this->showAllInfo = true;
     this->heroWeapon = NULL;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
@@ -32,7 +32,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
     this->resources = copy->resources;
     this->resourcesUsed = copy->resourcesUsed;
     this->spellDamage = copy->spellDamage;
-    this->isNowBoard = false;
+    this->showAllInfo = false;
     this->heroWeapon = NULL; //No lo necesitamos en la copia, solo en nowBoard
 
     foreach(SecretIcon secretIcon, copy->secretsList)
@@ -51,6 +51,12 @@ void HeroGraphicsItem::changeHero(QString code, int id)
     this->damage = 0;
     this->armor = 0;
     update();
+}
+
+
+void HeroGraphicsItem::setShowAllInfo(bool value)
+{
+    this->showAllInfo = value;
 }
 
 
@@ -81,6 +87,13 @@ void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon)
 void HeroGraphicsItem::setSpellDamage(int spellDamage)
 {
     this->spellDamage = spellDamage;
+}
+
+
+void HeroGraphicsItem::addResourcesUsed(int value)
+{
+    this->resourcesUsed += value;
+    update();
 }
 
 
@@ -525,7 +538,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPath(path);
     }
 
-    if(playerTurn == friendly || isNowBoard)
+    if(playerTurn == friendly || showAllInfo)
     {
         //Mana
         painter->drawPixmap(WIDTH/2-50, -HEIGHT/2+13, QPixmap(":Images/bgCrystal.png"));

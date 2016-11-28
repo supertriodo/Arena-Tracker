@@ -62,6 +62,7 @@ private:
     QList<TagChange> pendingTagChanges;
     Board *nowBoard;
     Board *viewBoard;
+    Board *futureBoard;
     QList<Board *> turnBoards;
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
@@ -141,6 +142,8 @@ private:
     bool isMechOnBoard();
     int flamewakersOnBoard();
     void updateTurnSliderRange();
+    Board *copyBoard(Board *origBoard, int numTurn = 0);
+    void deleteFutureBoard();
 
 public:
     void setTransparency(Transparency value);
@@ -168,6 +171,7 @@ private slots:
     void showFirstTurn();
     void showPrevTurn();
     void showNextTurn();
+    void cardPress(CardGraphicsItem *card);
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

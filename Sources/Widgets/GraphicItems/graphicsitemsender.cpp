@@ -1,9 +1,17 @@
 #include "graphicsitemsender.h"
+#include "cardgraphicsitem.h"
+
 
 GraphicsItemSender::GraphicsItemSender(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->lastCode = "";
+}
+
+
+void GraphicsItemSender::sendPlanCardPress(CardGraphicsItem *card)
+{
+    emit cardPress(card);
 }
 
 

@@ -4,6 +4,8 @@
 #include <QObject>
 #include "../ui_extended.h"
 
+class CardGraphicsItem;
+
 class GraphicsItemSender : public QObject
 {
     Q_OBJECT
@@ -18,6 +20,7 @@ private:
 
 //Metodos
 public:
+    void sendPlanCardPress(CardGraphicsItem *card);
     void sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight);
     void sendPlanCardLeave();
     void sendResetDeadProbs();
@@ -25,6 +28,7 @@ public:
     void sendHeroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
 
 signals:
+    void cardPress(CardGraphicsItem *card);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();

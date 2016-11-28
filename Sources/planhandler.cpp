@@ -15,6 +15,8 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->nowBoard->playerHero = NULL;
     this->nowBoard->enemyHero = NULL;
     this->nowBoard->numTurn = 0;
+    this->viewBoard = NULL;
+    this->futureBoard = NULL;
     this->futureBombs = NULL;
     reset();
     completeUI();
@@ -75,6 +77,8 @@ void PlanHandler::completeUI()
 void PlanHandler::createGraphicsItemSender()
 {
     graphicsItemSender = new GraphicsItemSender(this, ui);
+    connect(graphicsItemSender, SIGNAL(cardPress(CardGraphicsItem*)),
+            this, SLOT(cardPress(CardGraphicsItem*)));
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
             this, SIGNAL(cardEntered(QString,QRect,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
@@ -1556,51 +1560,57 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     }
 
     //Store nowBoard
-    Board *board = new Board();
-    board->playerTurn = playerTurn;
-    board->numTurn = numTurn;
-
-    if(nowBoard->playerHero == NULL)    board->playerHero = NULL;
-    else                                board->playerHero = new HeroGraphicsItem(nowBoard->playerHero);
-    if(nowBoard->enemyHero == NULL)     board->enemyHero = NULL;
-    else                                board->enemyHero = new HeroGraphicsItem(nowBoard->enemyHero);
-
-    if(nowBoard->playerHeroPower == NULL)   board->playerHeroPower = NULL;
-    else                                    board->playerHeroPower = new HeroPowerGraphicsItem(nowBoard->playerHeroPower);
-    if(nowBoard->enemyHeroPower == NULL)    board->enemyHeroPower = NULL;
-    else                                    board->enemyHeroPower = new HeroPowerGraphicsItem(nowBoard->enemyHeroPower);
-
-    if(nowBoard->playerWeapon == NULL)  board->playerWeapon = NULL;
-    else                                board->playerWeapon = new WeaponGraphicsItem(nowBoard->playerWeapon);
-    if(nowBoard->enemyWeapon == NULL)   board->enemyWeapon = NULL;
-    else                                board->enemyWeapon = new WeaponGraphicsItem(nowBoard->enemyWeapon);
-
-    foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
-    {
-        board->playerMinions.append(new MinionGraphicsItem(minion));
-    }
-
-    foreach(MinionGraphicsItem * minion, nowBoard->enemyMinions)
-    {
-        board->enemyMinions.append(new MinionGraphicsItem(minion));
-    }
-
-    foreach(CardGraphicsItem * card, nowBoard->playerHandList)
-    {
-        board->playerHandList.append(new CardGraphicsItem(card));
-    }
-
-    foreach(CardGraphicsItem * card, nowBoard->enemyHandList)
-    {
-        board->enemyHandList.append(new CardGraphicsItem(card));
-    }
-
-    turnBoards.append(board);
+    turnBoards.append(copyBoard(nowBoard, numTurn));
 
     updateTurnSliderRange();
 
     //Avanza en now board
-    if(viewBoard==nowBoard)     showLastTurn();
+    if(viewBoard==nowBoard || viewBoard==futureBoard)   showLastTurn();
+}
+
+
+Board * PlanHandler::copyBoard(Board *origBoard, int numTurn)
+{
+    Board *board = new Board();
+    board->playerTurn = origBoard->playerTurn;
+    board->numTurn = numTurn;
+
+    if(origBoard->playerHero == NULL)    board->playerHero = NULL;
+    else                                board->playerHero = new HeroGraphicsItem(origBoard->playerHero);
+    if(origBoard->enemyHero == NULL)     board->enemyHero = NULL;
+    else                                board->enemyHero = new HeroGraphicsItem(origBoard->enemyHero);
+
+    if(origBoard->playerHeroPower == NULL)   board->playerHeroPower = NULL;
+    else                                    board->playerHeroPower = new HeroPowerGraphicsItem(origBoard->playerHeroPower);
+    if(origBoard->enemyHeroPower == NULL)    board->enemyHeroPower = NULL;
+    else                                    board->enemyHeroPower = new HeroPowerGraphicsItem(origBoard->enemyHeroPower);
+
+    if(origBoard->playerWeapon == NULL)  board->playerWeapon = NULL;
+    else                                board->playerWeapon = new WeaponGraphicsItem(origBoard->playerWeapon);
+    if(origBoard->enemyWeapon == NULL)   board->enemyWeapon = NULL;
+    else                                board->enemyWeapon = new WeaponGraphicsItem(origBoard->enemyWeapon);
+
+    foreach(MinionGraphicsItem * minion, origBoard->playerMinions)
+    {
+        board->playerMinions.append(new MinionGraphicsItem(minion));
+    }
+
+    foreach(MinionGraphicsItem * minion, origBoard->enemyMinions)
+    {
+        board->enemyMinions.append(new MinionGraphicsItem(minion));
+    }
+
+    foreach(CardGraphicsItem * card, origBoard->playerHandList)
+    {
+        board->playerHandList.append(new CardGraphicsItem(card));
+    }
+
+    foreach(CardGraphicsItem * card, origBoard->enemyHandList)
+    {
+        board->enemyHandList.append(new CardGraphicsItem(card));
+    }
+
+    return board;
 }
 
 
@@ -1675,6 +1685,53 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 }
 
 
+void PlanHandler::cardPress(CardGraphicsItem* card)
+{
+    if(!nowBoard->playerTurn)   return;
+
+    if(futureBoard == NULL)
+    {
+        if(nowBoard->playerHandList.contains(card))
+        {
+            //Create and move to futureBoard
+            futureBoard = copyBoard(nowBoard);
+            futureBoard->playerHero->setShowAllInfo();
+            futureBoard->enemyHero->setShowAllInfo();
+            viewBoard = futureBoard;
+            loadViewBoard();
+            ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
+            ui->planButtonLast->setEnabled(true);
+
+            //Update card
+            QList<CardGraphicsItem *> * handList = getHandList(true, futureBoard);
+            int pos = findCardPos(handList, card->getId());
+            if(pos == -1)
+            {
+                emit pDebug("ERROR: Clicked card not found in just created futureBoard.", Error);
+                return;
+            }
+
+            card = handList->at(pos);
+            card->togglePlayed();
+
+            //Update mana
+            futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+        }
+    }
+    else
+    {
+        if(futureBoard->playerHandList.contains(card))
+        {
+            //Update card
+            card->togglePlayed();
+
+            //Update mana
+            futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+        }
+    }
+}
+
+
 void PlanHandler::resetBoard(Board *board)
 {
     while(!board->playerMinions.empty())
@@ -1729,6 +1786,7 @@ void PlanHandler::reset()
     this->nowBoard->playerTurn = true;
     setLastTriggerId("", "", -1, -1);
 
+    if(futureBoard != NULL)     deleteFutureBoard();
     resetBoard(nowBoard);
     while(!turnBoards.empty())
     {
@@ -1738,12 +1796,20 @@ void PlanHandler::reset()
     }
 
     updateTurnSliderRange();
-    updateTurnLabel();
 
     ui->planButtonLast->setEnabled(false);
     ui->planButtonNext->setEnabled(false);
     ui->planButtonPrev->setEnabled(false);
     ui->planButtonFirst->setEnabled(false);
+}
+
+
+void PlanHandler::deleteFutureBoard()
+{
+    resetBoard(futureBoard);
+    delete futureBoard;
+    futureBoard = NULL;
+    ui->planButtonLast->setIcon(QIcon(":Images/planLast.png"));
 }
 
 
@@ -1768,8 +1834,9 @@ void PlanHandler::updateTurnLabel()
     else                        color = "#8B0000";
     ui->planLabelTurn->setStyleSheet("QLabel {background-color: transparent; color: " + color + ";}");
 
-    if(viewTurn==0) ui->planLabelTurn->setText("--");
-    else            ui->planLabelTurn->setText("T" + QString::number((viewTurn+1)/2));
+    if(viewBoard == nowBoard)           ui->planLabelTurn->setText("--");
+    else if(viewBoard == futureBoard)   ui->planLabelTurn->setText("++");
+    else                                ui->planLabelTurn->setText("T" + QString::number((viewTurn+1)/2));
 }
 
 
@@ -1780,7 +1847,6 @@ void PlanHandler::showSliderTurn(int turn)
     else                    viewBoard = turnBoards[turn-firstStoredTurn];
 
     loadViewBoard();
-    updateTurnLabel();
 
     bool prevEnabled = ui->planTurnSlider->minimum() != turn;
     bool nextEnabled = ui->planTurnSlider->maximum() != turn;
@@ -1788,6 +1854,8 @@ void PlanHandler::showSliderTurn(int turn)
     ui->planButtonNext->setEnabled(nextEnabled);
     ui->planButtonPrev->setEnabled(prevEnabled);
     ui->planButtonFirst->setEnabled(prevEnabled);
+
+    if(futureBoard != NULL)     deleteFutureBoard();
 }
 
 
@@ -1799,7 +1867,14 @@ void PlanHandler::showFirstTurn()
 
 void PlanHandler::showLastTurn()
 {
-    ui->planTurnSlider->setValue(firstStoredTurn + turnBoards.count());
+    if(ui->planTurnSlider->value() == firstStoredTurn + turnBoards.count())
+    {
+        showSliderTurn(firstStoredTurn + turnBoards.count());
+    }
+    else
+    {
+        ui->planTurnSlider->setValue(firstStoredTurn + turnBoards.count());
+    }
 }
 
 
@@ -1854,6 +1929,8 @@ void PlanHandler::loadViewBoard()
 
     ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
     ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
+
+    updateTurnLabel();
 }
 
 

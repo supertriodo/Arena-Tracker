@@ -24,7 +24,7 @@ public:
 //Variables:
 private:
     int armor, minionsAttack, minionsMaxAttack, resources, resourcesUsed, spellDamage;
-    bool isNowBoard;
+    bool showAllInfo;
     QList<SecretIcon> secretsList;
     WeaponGraphicsItem * heroWeapon;
 
@@ -60,6 +60,8 @@ public:
     void setPlayerTurn(bool playerTurn);
     void setSpellDamage(int spellDamage);
     int getSpellDamage();
+    void setShowAllInfo(bool value=true);
+    void addResourcesUsed(int value);
 };
 
 #endif // HEROGRAPHICSITEM_H
