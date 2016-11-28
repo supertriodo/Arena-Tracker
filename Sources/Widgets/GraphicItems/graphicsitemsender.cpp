@@ -9,12 +9,6 @@ GraphicsItemSender::GraphicsItemSender(QObject *parent, Ui::Extended *ui) : QObj
 }
 
 
-void GraphicsItemSender::sendPlanCardPress(CardGraphicsItem *card)
-{
-    emit cardPress(card);
-}
-
-
 void GraphicsItemSender::sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight)
 {
     if(code == lastCode)    return;

@@ -5,6 +5,7 @@
 #include "../ui_extended.h"
 
 class CardGraphicsItem;
+class HeroPowerGraphicsItem;
 
 class GraphicsItemSender : public QObject
 {
@@ -28,6 +29,7 @@ public:
     void sendHeroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
 
 signals:
+    void heroPowerPress(HeroPowerGraphicsItem *card);
     void cardPress(CardGraphicsItem *card);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();

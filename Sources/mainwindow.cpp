@@ -2701,7 +2701,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Rng list future board.
+//Rng list future board. Revisar con minion trading terminado.
 
 
 //REPLAY BUGS

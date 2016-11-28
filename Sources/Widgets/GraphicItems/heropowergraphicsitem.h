@@ -2,12 +2,13 @@
 #define HEROPOWERGRAPHICSITEM_H
 
 #include <QGraphicsItem>
+#include "graphicsitemsender.h"
 
 class HeroPowerGraphicsItem : public QGraphicsItem
 {
 public:
 //Constructor
-    HeroPowerGraphicsItem(QString code, int id, bool friendly, bool playerTurn);
+    HeroPowerGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender);
     HeroPowerGraphicsItem(HeroPowerGraphicsItem *copy);
 
 //Variables
@@ -16,12 +17,16 @@ private:
     int id;
     bool exausted;
     bool friendly, playerTurn;
+    GraphicsItemSender *graphicsItemSender;
 
 public:
     static const int WIDTH = 140;
     static const int HEIGHT = 134;
 
 //Metodos
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
+
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
@@ -30,6 +35,8 @@ public:
     void processTagChange(QString tag, QString value);
     int getId();
     void setPlayerTurn(bool playerTurn);
+    void toggleExausted();
+    bool isExausted();
 };
 
 #endif // HEROPOWERGRAPHICSITEM_H

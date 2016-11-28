@@ -144,6 +144,7 @@ private:
     void updateTurnSliderRange();
     Board *copyBoard(Board *origBoard, int numTurn = 0);
     void deleteFutureBoard();
+    void createFutureBoard();
 
 public:
     void setTransparency(Transparency value);
@@ -172,6 +173,7 @@ private slots:
     void showPrevTurn();
     void showNextTurn();
     void cardPress(CardGraphicsItem *card);
+    void heroPowerPress(HeroPowerGraphicsItem *heroPower);
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

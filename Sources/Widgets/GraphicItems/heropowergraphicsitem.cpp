@@ -3,12 +3,13 @@
 #include "../../utility.h"
 #include <QtWidgets>
 
-HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly, bool playerTurn)
+HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
 {
     this->code = code;
     this->id = id;
     this->exausted = false;
     this->friendly = friendly;
+    this->graphicsItemSender = graphicsItemSender;
     this->playerTurn = playerTurn;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
@@ -27,6 +28,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(HeroPowerGraphicsItem *copy)
     this->id = copy->id;
     this->exausted = copy->exausted;
     this->friendly = copy->friendly;
+    this->graphicsItemSender = copy->graphicsItemSender;
     this->playerTurn = copy->playerTurn;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
@@ -55,6 +57,19 @@ void HeroPowerGraphicsItem::setPlayerTurn(bool playerTurn)
 }
 
 
+void HeroPowerGraphicsItem::toggleExausted()
+{
+    this->exausted = !this->exausted;
+    update();
+}
+
+
+bool HeroPowerGraphicsItem::isExausted()
+{
+    return this->exausted;
+}
+
+
 void HeroPowerGraphicsItem::checkDownloadedCode(QString code)
 {
     if(this->code == code)  update();
@@ -64,6 +79,12 @@ void HeroPowerGraphicsItem::checkDownloadedCode(QString code)
 QRectF HeroPowerGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
+}
+
+
+void HeroPowerGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+{
+    graphicsItemSender->heroPowerPress(this);
 }
 
 

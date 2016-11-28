@@ -79,6 +79,8 @@ void PlanHandler::createGraphicsItemSender()
     graphicsItemSender = new GraphicsItemSender(this, ui);
     connect(graphicsItemSender, SIGNAL(cardPress(CardGraphicsItem*)),
             this, SLOT(cardPress(CardGraphicsItem*)));
+    connect(graphicsItemSender, SIGNAL(heroPowerPress(HeroPowerGraphicsItem*)),
+            this, SLOT(heroPowerPress(HeroPowerGraphicsItem*)));
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
             this, SIGNAL(cardEntered(QString,QRect,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
@@ -1171,7 +1173,7 @@ void PlanHandler::addHeroPower(bool friendly, QString code, int id)
     }
     else
     {
-        heroPower = new HeroPowerGraphicsItem(code, id, friendly, nowBoard->playerTurn);
+        heroPower = new HeroPowerGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
 
         if(viewBoard == nowBoard)   ui->planGraphicsView->scene()->addItem(heroPower);
 
@@ -1685,22 +1687,28 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 }
 
 
+void PlanHandler::createFutureBoard()
+{
+    futureBoard = copyBoard(nowBoard);
+    futureBoard->playerHero->setShowAllInfo();
+    futureBoard->enemyHero->setShowAllInfo();
+    viewBoard = futureBoard;
+    loadViewBoard();
+    ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
+    ui->planButtonLast->setEnabled(true);
+}
+
+
 void PlanHandler::cardPress(CardGraphicsItem* card)
 {
     if(!nowBoard->playerTurn)   return;
 
+    bool doToggle = false;
     if(futureBoard == NULL)
     {
         if(nowBoard->playerHandList.contains(card))
         {
-            //Create and move to futureBoard
-            futureBoard = copyBoard(nowBoard);
-            futureBoard->playerHero->setShowAllInfo();
-            futureBoard->enemyHero->setShowAllInfo();
-            viewBoard = futureBoard;
-            loadViewBoard();
-            ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
-            ui->planButtonLast->setEnabled(true);
+            createFutureBoard();
 
             //Update card
             QList<CardGraphicsItem *> * handList = getHandList(true, futureBoard);
@@ -1712,22 +1720,53 @@ void PlanHandler::cardPress(CardGraphicsItem* card)
             }
 
             card = handList->at(pos);
-            card->togglePlayed();
-
-            //Update mana
-            futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+            doToggle = true;
         }
     }
     else
     {
         if(futureBoard->playerHandList.contains(card))
         {
-            //Update card
-            card->togglePlayed();
-
-            //Update mana
-            futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+            doToggle = true;
         }
+    }
+
+    if(doToggle)
+    {
+        card->togglePlayed();
+        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+    }
+}
+
+
+void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower)
+{
+    if(!nowBoard->playerTurn)   return;
+
+    bool doToggle = false;
+    if(futureBoard == NULL)
+    {
+        if(nowBoard->playerHeroPower == heroPower)
+        {
+            createFutureBoard();
+
+            //Update hero power
+            heroPower = futureBoard->playerHeroPower;
+            doToggle = true;
+        }
+    }
+    else
+    {
+        if(futureBoard->playerHeroPower == heroPower)
+        {
+            doToggle = true;
+        }
+    }
+
+    if(doToggle)
+    {
+        heroPower->toggleExausted();
+        futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
     }
 }
 
