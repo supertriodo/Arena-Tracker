@@ -76,26 +76,19 @@ int LogWorker::readLine(QFile &file, QString &utf8Line)
 {
     char c;
     int lineLength = 0;
-    QString line = "";
+    QByteArray line;
 
-    bool end = false;
-    while(!end)
+    while(true)
     {
-        if(!file.getChar(&c))
-        {
-            end = true;
-            lineLength = -1;
-        }
+        if(!file.getChar(&c))    return -1;
         line.append(c);
         lineLength++;
         if(c == '\n')
         {
-            end = true;
+            utf8Line = QString::fromUtf8(line);
+            return lineLength;
         }
     }
-
-    utf8Line = QString(line.toUtf8());
-    return lineLength;
 }
 
 
@@ -185,7 +178,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
 
     while((gameLogSeek <= logSeekWon) && ((lineLenght = logFile.readLine(line, sizeof(line))) > 0))
     {
-        out << QString(line).toUtf8();
+        out << QString::fromUtf8(line);
         gameLogSeek += lineLenght;
     }
 
