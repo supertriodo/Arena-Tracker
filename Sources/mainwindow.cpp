@@ -2702,6 +2702,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 //TODO
 //Rng list future board. Revisar con minion trading terminado.
+//Verificar interaccion secretos: potion of polimorph + mirror entity
+//Redemption + getaway codo
+//snipe + hidden cache
 
 
 //REPLAY BUGS

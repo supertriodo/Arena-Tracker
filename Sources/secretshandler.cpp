@@ -135,6 +135,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero)
             activeSecret.children.append(SecretCard(REDEMPTION));
             activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
+            activeSecret.children.append(SecretCard(GETAWAY_KODO));
             activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
@@ -146,6 +147,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero)
             activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
+            activeSecret.children.append(SecretCard(HIDDEN_CACHE));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
         break;
 
@@ -153,6 +155,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero)
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
             activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
+            activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
             activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
@@ -386,7 +389,9 @@ void SecretsHandler::playerHeroPower()
 void SecretsHandler::playerMinionPlayed(int playerMinions)
 {
     discardSecretOptionNow(MIRROR_ENTITY);
+    discardSecretOptionNow(POTION_OF_POLIMORPH);
     discardSecretOptionNow(SNIPE);
+    discardSecretOptionNow(HIDDEN_CACHE);
 
     if(playerMinions>3)
     {
@@ -405,6 +410,7 @@ void SecretsHandler::enemyMinionDead(QString code)
     discardSecretOptionNow(DDUPLICATE);
     discardSecretOptionNow(EFFIGY);
     discardSecretOptionNow(REDEMPTION);
+    discardSecretOptionNow(GETAWAY_KODO);
 }
 
 
