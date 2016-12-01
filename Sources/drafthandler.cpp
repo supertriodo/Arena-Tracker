@@ -106,7 +106,7 @@ void DraftHandler::reHistDownloadedCardImage(QString &code)
 {
     if(cardsDownloading == 0)   return; //No hay drafting en proceso
 
-    cardsHist[code] = getHist(code);
+    if(!code.isEmpty())  cardsHist[code] = getHist(code);   //Empty card downloaded from hearthHead
     cardsDownloading--;
 
     if(cardsDownloading==0)

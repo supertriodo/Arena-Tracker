@@ -46,6 +46,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     QString code = downCard.code;
     bool isHero = downCard.isHero;
     gettingWebCards.remove(reply);
+    QByteArray data = reply->readAll();
     emit pDebug("Reply: " + code + " - Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
 
     if(reply->error() != QNetworkReply::NoError)
@@ -62,10 +63,16 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             downloadWebImage(code);
         }
     }
+    else if(data.isEmpty())
+    {
+        emit pDebug("Downloaded empty card image: " + code, Error);
+        emit pLog(tr("Web: Downloaded empty card image."));
+        emit downloaded("");
+    }
     else
     {
         QImage webImage;
-        webImage.loadFromData(reply->readAll());
+        webImage.loadFromData(data);
         if(!isHero)     webImage = webImage.scaledToWidth(200, Qt::TransformationMode::SmoothTransformation);
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
