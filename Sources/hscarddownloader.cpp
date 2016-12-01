@@ -26,8 +26,8 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero)
     }
 
     QString urlString;
-    if(isHero)  urlString = CARDS_URL + "heroes/" + code + ".png";
-    else        urlString = CARDS_URL + "cards/" + lang + "/medium/" + code + ".png";
+    if(isHero)  urlString = OLD_CARDS_URL + "heroes/" + code + ".png";
+    else        urlString = NEW_CARDS_URL + "cards/enus/" + code + ".png";
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     DownloadingCard downCard;
@@ -66,6 +66,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         QImage webImage;
         webImage.loadFromData(reply->readAll());
+        if(!isHero)     webImage = webImage.scaledToWidth(200, Qt::TransformationMode::SmoothTransformation);
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {

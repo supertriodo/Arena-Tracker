@@ -7,7 +7,8 @@
 #include <QNetworkReply>
 #include <QMap>
 
-#define CARDS_URL QString("http://wow.zamimg.com/images/hearthstone/")
+#define OLD_CARDS_URL QString("http://wow.zamimg.com/images/hearthstone/")
+#define NEW_CARDS_URL QString("http://media.services.zam.com/v1/media/byName/hs/")
 
 
 class DownloadingCard
