@@ -73,7 +73,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         QImage webImage;
         webImage.loadFromData(data);
-        if(!isHero)     webImage = webImage.scaledToWidth(200, Qt::TransformationMode::SmoothTransformation);
+        if(!isHero)     webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
