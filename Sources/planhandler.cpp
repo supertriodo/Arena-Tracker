@@ -1966,8 +1966,8 @@ void PlanHandler::loadViewBoard()
     if(viewBoard->playerWeapon != NULL) ui->planGraphicsView->scene()->addItem(viewBoard->playerWeapon);
     if(viewBoard->enemyWeapon != NULL)  ui->planGraphicsView->scene()->addItem(viewBoard->enemyWeapon);
 
-    ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
-    ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
+    if(viewBoard->playerHero !=NULL)    ui->planGraphicsView->scene()->addItem(viewBoard->playerHero);
+    if(viewBoard->enemyHero !=NULL)     ui->planGraphicsView->scene()->addItem(viewBoard->enemyHero);
 
     updateTurnLabel();
 }
