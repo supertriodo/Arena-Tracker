@@ -49,10 +49,11 @@ http://www.reddit.com/r/ArenaTracker/
  * (Mac) You need to play with Hearthstone in windows mode.
 * How can I import a deck from hearthstone to Arena Tracker?
  * [There are 3 ways.](https://github.com/supertriodo/Arena-Tracker/issues/12)
-* What does it mean when text cards are shown in yellow/orange?
+* What does it mean when text cards are shown in yellow/orange/purple?
  * Minions are shown in white.
  * Spells are shown in yellow.
  * Weapons are shown in orange.
+ * Cards that are temporarily part of the deck are shown in purple.
 * What does it mean when cards have a colored background?
  * It means they are class cards.
 * How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
