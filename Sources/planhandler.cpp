@@ -18,6 +18,7 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->viewBoard = NULL;
     this->futureBoard = NULL;
     this->futureBombs = NULL;
+    this->selectedMinion = NULL;
     reset();
     completeUI();
     createGraphicsItemSender();
@@ -81,8 +82,12 @@ void PlanHandler::createGraphicsItemSender()
             this, SLOT(cardPress(CardGraphicsItem*)));
     connect(graphicsItemSender, SIGNAL(heroPowerPress(HeroPowerGraphicsItem*)),
             this, SLOT(heroPowerPress(HeroPowerGraphicsItem*)));
+    connect(graphicsItemSender, SIGNAL(minionPress(MinionGraphicsItem*)),
+            this, SLOT(minionPress(MinionGraphicsItem*)));
+    connect(graphicsItemSender, SIGNAL(heroPress(HeroGraphicsItem*)),
+            this, SLOT(heroPress(HeroGraphicsItem*)));
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
-            this, SIGNAL(cardEntered(QString,QRect,int,int)));
+            this, SLOT(showCardTooltip(QString,QRect,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
             this, SIGNAL(cardLeave()));
     connect(graphicsItemSender, SIGNAL(resetDeadProbs()),
@@ -1696,6 +1701,7 @@ void PlanHandler::createFutureBoard()
     loadViewBoard();
     ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
     ui->planButtonLast->setEnabled(true);
+    emit cardLeave();   //Hide cards tooltips
 }
 
 
@@ -1710,7 +1716,7 @@ void PlanHandler::cardPress(CardGraphicsItem* card)
         {
             createFutureBoard();
 
-            //Update card
+            //Get card
             QList<CardGraphicsItem *> * handList = getHandList(true, futureBoard);
             int pos = findCardPos(handList, card->getId());
             if(pos == -1)
@@ -1750,7 +1756,7 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower)
         {
             createFutureBoard();
 
-            //Update hero power
+            //Get hero power
             heroPower = futureBoard->playerHeroPower;
             doToggle = true;
         }
@@ -1768,6 +1774,162 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower)
         heroPower->toggleExausted();
         futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
     }
+}
+
+
+void PlanHandler::minionPress(MinionGraphicsItem* minion)
+{
+    if(!nowBoard->playerTurn)   return;
+    if(minion->isDead())  return;
+
+    if(futureBoard == NULL)
+    {
+        if(nowBoard->playerMinions.contains(minion) && minion->getAttack()>0)
+        {
+            createFutureBoard();
+
+            //Get minion
+            QList<MinionGraphicsItem *> * minionList = getMinionList(true, futureBoard);
+            int pos = findMinionPos(minionList, minion->getId());
+            if(pos == -1)
+            {
+                emit pDebug("ERROR: Clicked minion not found in just created futureBoard.", Error);
+                return;
+            }
+
+            minion = minionList->at(pos);
+            selectedMinion = minion;
+            selectedMinion->selectMinion();
+        }
+    }
+    else
+    {
+        //Select minion
+        if(selectedMinion == NULL)
+        {
+            if(futureBoard->playerMinions.contains(minion) && minion->getAttack()>0)
+            {
+                selectedMinion = minion;
+                selectedMinion->selectMinion();
+            }
+        }
+        //Show attack
+        else
+        {
+            if(futureBoard->playerMinions.contains(minion) && minion->getAttack()>0)
+            {
+                //Deselect minion
+                if(selectedMinion == minion)
+                {
+                    selectedMinion->selectMinion(false);
+                    selectedMinion = NULL;
+                }
+                else
+                {
+                    selectedMinion->selectMinion(false);
+                    selectedMinion = minion;
+                    selectedMinion->selectMinion();
+                }
+            }
+            else if(futureBoard->enemyMinions.contains(minion))
+            {
+                //Show attack
+                ArrowGraphicsItem *attack = new ArrowGraphicsItem();
+                attack->setEnd(true, selectedMinion);//From
+                attack->setEnd(false, minion);//To
+                if(appendAttack(attack, futureBoard))
+                {
+                    if(viewBoard == futureBoard)    ui->planGraphicsView->scene()->addItem(attack);
+                }
+                else    delete attack;
+
+                //Damage minions
+                selectedMinion->damageMinion(minion->getAttack());
+                minion->damageMinion(selectedMinion->getAttack());
+
+                selectedMinion->setExausted();
+                selectedMinion->selectMinion(false);
+                selectedMinion = NULL;
+            }
+        }
+    }
+}
+
+
+void PlanHandler::heroPress(HeroGraphicsItem* hero)
+{
+    if(!nowBoard->playerTurn)   return;
+    if(hero->isDead())  return;
+
+    if(futureBoard == NULL)
+    {
+        if(nowBoard->playerHero == hero && hero->getAttack()>0)
+        {
+            createFutureBoard();
+
+            //Get hero
+            hero = futureBoard->playerHero;
+            selectedMinion = hero;
+            selectedMinion->selectMinion();
+        }
+    }
+    else
+    {
+        //Select hero
+        if(selectedMinion == NULL)
+        {
+            if(futureBoard->playerHero == hero && hero->getAttack()>0)
+            {
+                selectedMinion = hero;
+                selectedMinion->selectMinion();
+            }
+        }
+        //Show attack
+        else
+        {
+            if(futureBoard->playerHero == hero && hero->getAttack()>0)
+            {
+                //Deselect minion
+                if(selectedMinion == hero)
+                {
+                    selectedMinion->selectMinion(false);
+                    selectedMinion = NULL;
+                }
+                else
+                {
+                    selectedMinion->selectMinion(false);
+                    selectedMinion = hero;
+                    selectedMinion->selectMinion();
+                }
+            }
+            else if(futureBoard->enemyHero == hero)
+            {
+                //Show attack
+                ArrowGraphicsItem *attack = new ArrowGraphicsItem();
+                attack->setEnd(true, selectedMinion);//From
+                attack->setEnd(false, hero);//To
+                if(appendAttack(attack, futureBoard))
+                {
+                    if(viewBoard == futureBoard)    ui->planGraphicsView->scene()->addItem(attack);
+                }
+                else    delete attack;
+
+                //Damage minions
+                hero->damageMinion(selectedMinion->getAttack());
+
+                selectedMinion->setExausted();
+                selectedMinion->selectMinion(false);
+                selectedMinion = NULL;
+            }
+        }
+    }
+}
+
+
+void PlanHandler::showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom)
+{
+    //Avoid card tooltips in future board
+    if(viewBoard != futureBoard)    emit cardEntered(code, rectCard, maxTop, maxBottom);
 }
 
 
@@ -1848,6 +2010,7 @@ void PlanHandler::deleteFutureBoard()
     resetBoard(futureBoard);
     delete futureBoard;
     futureBoard = NULL;
+    selectedMinion = NULL;
     ui->planButtonLast->setIcon(QIcon(":Images/planLast.png"));
 }
 

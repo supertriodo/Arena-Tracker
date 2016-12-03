@@ -66,6 +66,7 @@ private:
     QList<Board *> turnBoards;
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
+    MinionGraphicsItem * selectedMinion;
     qint64 lastMinionAddedTime=0;
     int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements. Guarda ultimo trigger o power con obj
     Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons. Guarda ultimo trigger, power o fatigue
@@ -174,6 +175,9 @@ private slots:
     void showNextTurn();
     void cardPress(CardGraphicsItem *card);
     void heroPowerPress(HeroPowerGraphicsItem *heroPower);
+    void minionPress(MinionGraphicsItem *minion);
+    void heroPress(HeroGraphicsItem *hero);
+    void showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom);
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

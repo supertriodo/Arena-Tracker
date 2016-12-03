@@ -52,6 +52,7 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -80,6 +81,9 @@ public:
     int getRemainingHealth();
     void setDeadProb(float value=0);
     int getHitsToDie();
+    void selectMinion(bool isSelected=true);
+    void damageMinion(int damage);
+    void setExausted(bool value=true);
 
 private:
     void addAddonNeutral(Addon addon);

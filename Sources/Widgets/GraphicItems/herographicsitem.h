@@ -37,6 +37,7 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
 
 private:
     void sendHeroTotalAttackChange();

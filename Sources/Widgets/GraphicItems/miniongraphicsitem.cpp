@@ -215,9 +215,53 @@ void MinionGraphicsItem::setChangeHealth(ValueChange value)
 
 void MinionGraphicsItem::setDeadProb(float value)
 {
-    bool needUpdate = deadProb != value;
-    deadProb = value;
-    if(needUpdate)  update();
+    if(deadProb != value)
+    {
+        deadProb = value;
+        update();
+    }
+}
+
+
+void MinionGraphicsItem::setExausted(bool value)
+{
+    if(exausted != value)
+    {
+        exausted = value;
+        update();
+    }
+}
+
+
+void MinionGraphicsItem::selectMinion(bool isSelected)
+{
+    if(isSelected)
+    {
+        this->setScale(1.5);
+        this->setZValue(0);
+    }
+    else
+    {
+        this->setScale(1);
+        if(isHero())    this->setZValue(-20);
+        else            this->setZValue(-50);
+    }
+    update();
+}
+
+
+void MinionGraphicsItem::damageMinion(int damage)
+{
+    if(this->shield)
+    {
+        this->shield = false;
+    }
+    else
+    {
+        this->damage += damage;
+        if(this->damage >= this->health)    this->dead = true;
+    }
+    update();
 }
 
 
@@ -356,6 +400,12 @@ void MinionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 void MinionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
     graphicsItemSender->sendPlanCardLeave();
+}
+
+
+void MinionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+{
+    graphicsItemSender->minionPress(this);
 }
 
 

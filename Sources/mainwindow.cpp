@@ -1960,7 +1960,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    testPlan();
+    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
@@ -2701,10 +2701,14 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//Sustituir heroes sin retrato
+//Cartas en mano enemiga con buffs
 //Rng list future board. Revisar con minion trading terminado.
 //Verificar interaccion secretos: potion of polimorph + mirror entity
 //Redemption + getaway codo
 //snipe + hidden cache
+//Planificacion turno enemigo
+//Objetivos cartas/Hero power
 
 
 //REPLAY BUGS

@@ -6,6 +6,8 @@
 
 class CardGraphicsItem;
 class HeroPowerGraphicsItem;
+class MinionGraphicsItem;
+class HeroGraphicsItem;
 
 class GraphicsItemSender : public QObject
 {
@@ -31,6 +33,8 @@ public:
 signals:
     void heroPowerPress(HeroPowerGraphicsItem *card);
     void cardPress(CardGraphicsItem *card);
+    void minionPress(MinionGraphicsItem *minion);
+    void heroPress(HeroGraphicsItem *hero);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();

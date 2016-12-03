@@ -211,6 +211,12 @@ void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 }
 
 
+void HeroGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+{
+    graphicsItemSender->heroPress(this);
+}
+
+
 bool HeroGraphicsItem::isYourSecret(int id)
 {
     foreach(SecretIcon secretIcon, secretsList)
