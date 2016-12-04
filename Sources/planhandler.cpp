@@ -562,6 +562,10 @@ void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString valu
         card->setCost(cost);
         reduceCostPrevTurn(id, friendly, cost);
     }
+    else
+    {
+        card->processTagChange(tag, value);
+    }
 }
 
 

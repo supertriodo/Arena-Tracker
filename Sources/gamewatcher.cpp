@@ -526,7 +526,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         }
         else if(zone == "HAND")
         {
-            if(tag == "COST")
+            if(tag == "COST" || tag == "ATK" || tag == "HEALTH")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);

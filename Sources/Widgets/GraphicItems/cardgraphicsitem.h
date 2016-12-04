@@ -19,6 +19,8 @@ private:
     QString code, createdByCode;
     int id, turn;
     bool played, discard, draw;
+    int origAttack, origHealth;
+    int attack, health;
     int origCost, cost;
     int heightShow;
     bool friendly;
@@ -50,6 +52,7 @@ public:
     void togglePlayed();
     int getCost();
     bool isPlayed();
+    void processTagChange(QString tag, QString value);
 };
 
 #endif // CARDGRAPHICSITEM_H

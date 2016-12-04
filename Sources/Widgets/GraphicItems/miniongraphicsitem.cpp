@@ -461,7 +461,7 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 
 bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
-    qDebug()<<"TAG CHANGE -->"<<id<<tag<<value;
+    qDebug()<<"MINION TAG CHANGE -->"<<id<<tag<<value;
 
     //Evita addons provocado por cambios despues de morir(en el log los minion vuelven a damage 0 y estado original justo antes de desaparecer de la zona)
     //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
