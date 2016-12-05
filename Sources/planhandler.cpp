@@ -116,8 +116,20 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
     qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
 
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
+    updateMinionFromCard(minion);
     addMinion(friendly, minion, pos);
     emit checkCardImage(code, false);
+}
+
+
+void PlanHandler::updateMinionFromCard(MinionGraphicsItem * minion)
+{
+    CardGraphicsItem * card = findCard(minion->isFriendly(), minion->getId());
+    if(card == NULL)    emit pDebug("Minion not found in hand when ckecking its stats. Id: " + QString::number(minion->getId()), Warning);
+    else
+    {
+        minion->updateStatsFromCard(card);
+    }
 }
 
 

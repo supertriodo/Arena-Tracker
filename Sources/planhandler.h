@@ -146,6 +146,7 @@ private:
     Board *copyBoard(Board *origBoard, int numTurn = 0);
     void deleteFutureBoard();
     void createFutureBoard();
+    void updateMinionFromCard(MinionGraphicsItem *minion);
 
 public:
     void setTransparency(Transparency value);

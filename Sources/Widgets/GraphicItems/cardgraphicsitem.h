@@ -3,12 +3,15 @@
 
 #include <QGraphicsItem>
 #include "graphicsitemsender.h"
+#include "miniongraphicsitem.h"
 
 #define CARD_LIFT 10
 
 
 class CardGraphicsItem : public QGraphicsItem
 {
+friend class MinionGraphicsItem;
+
 //Constructor
 public:
     CardGraphicsItem(int id, QString code, QString createdByCode, int turn, bool friendly, GraphicsItemSender *graphicsItemSender);

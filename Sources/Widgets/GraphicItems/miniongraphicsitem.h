@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include "graphicsitemsender.h"
+#include "cardgraphicsitem.h"
 
 
 class Addon
@@ -84,6 +85,7 @@ public:
     void selectMinion(bool isSelected=true);
     void damageMinion(int damage);
     void setExausted(bool value=true);
+    void updateStatsFromCard(CardGraphicsItem *card);
 
 private:
     void addAddonNeutral(Addon addon);

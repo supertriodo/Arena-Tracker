@@ -459,6 +459,13 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 }
 
 
+void MinionGraphicsItem::updateStatsFromCard(CardGraphicsItem * card)
+{
+    if(card->attack != card->origAttack)    this->attack = card->attack;
+    if(card->health != card->origHealth)    this->health = card->health;
+}
+
+
 bool MinionGraphicsItem::processTagChange(QString tag, QString value)
 {
     qDebug()<<"MINION TAG CHANGE -->"<<id<<tag<<value;
