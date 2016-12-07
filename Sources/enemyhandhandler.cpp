@@ -137,6 +137,16 @@ bool EnemyHandHandler::isIDinHand(int id)
 }
 
 
+HandCard *EnemyHandHandler::getHandCard(int id)
+{
+    for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)
+    {
+        if(it->id == id)    return &(*it);
+    }
+    return NULL;
+}
+
+
 void EnemyHandHandler::lastHandCardIsCoin()
 {
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
@@ -391,11 +401,39 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
 }
 
 
+void EnemyHandHandler::buffHandCard(int id)
+{
+    HandCard * handCard = getHandCard(id);
+
+    if(handCard == NULL)
+    {
+        emit pDebug("ERROR: HandCard not found for buffing. Id: " + QString::number(id));
+        return;
+    }
+
+    int cardBuff = getCardBuff(this->lastCreatedByCode);
+    handCard->addBuff(cardBuff, cardBuff);
+    emit enemyCardBuff(id, cardBuff, cardBuff);
+}
+
+
 //Card exceptions
 bool EnemyHandHandler::isLastCreatedByCodeValid(QString code)
 {
     if(code == DARKSHIRE_COUNCILMAN)    return false;
-    else if(code == FLAMEWAKER)         return false;
+    if(code == FLAMEWAKER)              return false;
     return true;
+}
+
+
+int EnemyHandHandler::getCardBuff(QString code)
+{
+    if(code == DON_HANCHO)          return 5;
+    if(code == STOLEN_GOODS)        return 3;
+    if(code == SMUGGLERS_CRATE)     return 2;
+    if(code == HIDDEN_CACHE)        return 2;
+    if(code == SHAKY_ZYPGUNNER)     return 2;
+    if(code == GRIMY_GADGETEER)     return 2;
+    return 1;
 }
 

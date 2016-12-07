@@ -386,6 +386,8 @@ void MainWindow::createEnemyHandHandler()
             this, SLOT(fadeBarAndButtons(bool)));
     connect(enemyHandHandler, SIGNAL(enemyCardDraw(int,QString,QString,int)),
             planHandler, SLOT(enemyCardDraw(int,QString,QString,int)));
+    connect(enemyHandHandler, SIGNAL(enemyCardBuff(int,int,int)),
+            planHandler, SLOT(enemyCardBuff(int,int,int)));
     connect(planHandler, SIGNAL(heroTotalAttackChange(bool,int,int)),
             enemyHandHandler, SLOT(drawHeroTotalAttack(bool,int,int)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
@@ -522,6 +524,8 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
+    connect(gameWatcher, SIGNAL(buffHandCard(int)),
+            enemyHandHandler, SLOT(buffHandCard(int)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -1960,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    testPlan();
+//    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
@@ -2701,8 +2705,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//Taunt minions bug, json cards bug, just wait
+//Reset cards dir
 //Sustituir heroes sin retrato
-//Cartas en mano enemiga con buffs
 //Rng list future board. Revisar con minion trading terminado.
 //Verificar interaccion secretos: potion of polimorph + mirror entity
 //Redemption + getaway codo
@@ -2744,6 +2749,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Tab Config ScrollArea slider transparent CSS
 //Cazar crash bug en drafting con 31 cartas
 //Solo mode da problemas con las cartas iniciales en el enemigo, son de turn 1 y no hay moneda.
+//Baron seboso (Blubber baron) no tiene atk/health correctos en el replay ya que modifica sus atributos en mano y no usa TAG_CHANGE ARMS_DEALING
+//Acechador solitario (Forlorn Stalker), los minions que buffan tienen atk/health correctos por la misma razon.
 
 
 //REWARDS

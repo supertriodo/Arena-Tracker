@@ -230,6 +230,7 @@ public slots:
     void resetDeadProbs();
     void checkBomb(QString code);
     void showLastTurn();
+    void enemyCardBuff(int id, int buffAttack, int buffHealth);
 };
 
 #endif // PLANHANDLER_H

@@ -463,6 +463,8 @@ void MinionGraphicsItem::updateStatsFromCard(CardGraphicsItem * card)
 {
     if(card->attack != card->origAttack)    this->attack = card->attack;
     if(card->health != card->origHealth)    this->health = card->health;
+    this->attack += card->buffAttack;
+    this->health += card->buffHealth;
 }
 
 

@@ -25,6 +25,7 @@ private:
     int origAttack, origHealth;
     int attack, health;
     int origCost, cost;
+    int buffAttack, buffHealth;
     int heightShow;
     bool friendly;
     GraphicsItemSender *graphicsItemSender;
@@ -56,6 +57,7 @@ public:
     int getCost();
     bool isPlayed();
     void processTagChange(QString tag, QString value);
+    void addBuff(int addAttack, int addHealth);
 };
 
 #endif // CARDGRAPHICSITEM_H

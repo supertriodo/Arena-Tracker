@@ -13,6 +13,7 @@ public:
 //Variables
 public:
     int turn;
+    int buffAttack, buffHealth;
 
 
 //Metodos
@@ -21,5 +22,6 @@ private:
 
 public:
     void draw();
+    void addBuff(int addAttack, int addHealth);
 };
 #endif // HANDCARD_H

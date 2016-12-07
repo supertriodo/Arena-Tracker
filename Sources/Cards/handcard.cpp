@@ -5,12 +5,21 @@
 HandCard::HandCard(QString code) : DeckCard(code)
 {
     turn = 0;
+    buffAttack = buffHealth = 0;
 }
 
 
 HandCard::~HandCard()
 {
 
+}
+
+
+void HandCard::addBuff(int addAttack, int addHealth)
+{
+    buffAttack += addAttack;
+    buffHealth += addHealth;
+    draw();
 }
 
 
@@ -52,8 +61,9 @@ void HandCard::drawDefaultHandCard()
             font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
 #endif
 
+        QString text = "T" + QString::number((this->turn+1)/2);
         QFontMetrics fm(font);
-        int textWide = fm.width("T"+QString::number((this->turn+1)/2));
+        int textWide = fm.width(text);
         int textHigh = fm.height();
 
         painter.setFont(font);
@@ -61,8 +71,25 @@ void HandCard::drawDefaultHandCard()
         painter.setPen(QPen(BLACK));
 
         QPainterPath path;
-        path.addText(172 - textWide/2, 20 + textHigh/4, font, "T"+QString::number((this->turn+1)/2));
+        path.addText(172 - textWide/2, 20 + textHigh/4, font, text);
         painter.drawPath(path);
+
+        //Buff
+        if(buffAttack > 0 || buffHealth > 0)
+        {
+            font.setPixelSize(15);
+            text = "(+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth) + ")";
+            fm = QFontMetrics(font);
+            textWide = fm.width(text);
+            textHigh = fm.height();
+            painter.setFont(font);
+            painter.setBrush(BLACK);
+            painter.setPen(QPen(GREEN));
+
+            path = QPainterPath();
+            path.addText(45 - textWide/2, 19 + textHigh/4, font, text);
+            painter.drawPath(path);
+        }
     painter.end();
 
     this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));

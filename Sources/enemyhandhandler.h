@@ -41,6 +41,8 @@ private:
     void showHeroAttack();
     void hideHeroAttack();
     void resetHeroAttack();
+    HandCard *getHandCard(int id);
+    int getCardBuff(QString code);
 
 public:
     void redrawDownloadedCardImage(QString &code);
@@ -57,6 +59,7 @@ signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
+    void enemyCardBuff(int id, int buffAttack, int buffHealth);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyHandHandler");
 
@@ -69,6 +72,7 @@ public slots:
     void convertDuplicates(QString code);
     void setLastCreatedByCode(QString code);
     void drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack);
+    void buffHandCard(int id);
 
 private slots:
     void findHandCardEntered(QListWidgetItem *item);

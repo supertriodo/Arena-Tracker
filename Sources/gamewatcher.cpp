@@ -474,6 +474,13 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             else if(value == "HUNTER")  secretHero = HUNTER;
             else if(value == "PALADIN") secretHero = PALADIN;
         }
+        //Justo antes de jugarse ARMS_DEALING se pone a 0, si no lo evitamos el minion no se actualizara desde la carta
+        else if(tag == "ARMS_DEALING" && value.toInt() != 0)
+        {
+            emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
+                        " -- Id: " + id, numLine);
+            emit buffHandCard(id.toInt());
+        }
         else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                 tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
                 tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||

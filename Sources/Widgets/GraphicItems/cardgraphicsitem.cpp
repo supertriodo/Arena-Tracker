@@ -12,6 +12,7 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->cost = this->origCost = Utility::getCardAtribute(code, "cost").toInt();
     this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    this->buffAttack = this->buffHealth = 0;
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
     this->turn = turn;
@@ -33,6 +34,8 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->origAttack = copy->origAttack;
     this->health = copy->health;
     this->origHealth = copy->origHealth;
+    this->buffAttack = copy->buffAttack;
+    this->buffHealth = copy->buffHealth;
     this->played = copy->played;
     this->discard = copy->discard;
     this->draw = copy->draw;
@@ -118,6 +121,14 @@ void CardGraphicsItem::reduceCost(int cost)
         this->cost = cost;
         update();
     }
+}
+
+
+void CardGraphicsItem::addBuff(int addAttack, int addHealth)
+{
+    buffAttack += addAttack;
+    buffHealth += addHealth;
+    update();
 }
 
 
@@ -330,5 +341,22 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         QPainterPath path;
         path.addText(-35 - textWide/2, -heightShow/2 + 71 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
         painter->drawPath(path);
+
+        //Buff
+        if(buffAttack > 0 || buffHealth > 0)
+        {
+            font.setPixelSize(20);
+            text = "(+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth) + ")";
+            fm = QFontMetrics(font);
+            textWide = fm.width(text);
+            textHigh = fm.height();
+            painter->setFont(font);
+            painter->setBrush(BLACK);
+            painter->setPen(QPen(GREEN));
+
+            path = QPainterPath();
+            path.addText(35 - textWide/2, -heightShow/2 + 71 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
+            painter->drawPath(path);
+        }
     }
 }
