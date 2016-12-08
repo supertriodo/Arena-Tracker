@@ -35,6 +35,7 @@ private:
 
 //Metodos
 private:
+    void reuseOldHero(QString code);
 
 public:
     void downloadWebImage(QString code, bool isHero=false);

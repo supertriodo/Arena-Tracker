@@ -1964,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    testPlan();
+//    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
@@ -2705,7 +2705,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Taunt minions bug, json cards bug, just wait
+//coin mana
+//reset addon
 //Reset cards dir
 //Sustituir heroes sin retrato
 //Rng list future board. Revisar con minion trading terminado.
@@ -2713,7 +2714,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Redemption + getaway codo
 //snipe + hidden cache
 //Planificacion turno enemigo
-//Objetivos cartas/Hero power
+//Taunt minions bug, json cards bug, just wait
 
 
 //REPLAY BUGS

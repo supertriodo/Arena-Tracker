@@ -55,6 +55,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         {
             emit pDebug("Failed to download hero card image: " + code, Error);
             emit pLog(tr("Web: Failed to download hero card image."));
+            reuseOldHero(code);
         }
         else
         {
@@ -85,6 +86,26 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             emit pDebug("Card downloaded: " + code);
             emit downloaded(code);
         }
+    }
+}
+
+
+void HSCardDownloader::reuseOldHero(QString code)
+{
+    QString oldHeroCode = code.left(7);
+    QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");
+
+    if(heroFile.exists())
+    {
+        if(heroFile.copy(Utility::hscardsPath() + "/" + code + ".png"))
+        {
+            emit pDebug("Old hero reused: " + oldHeroCode);
+            emit downloaded(code);
+        }
+    }
+    else
+    {
+        emit pDebug("Old hero not found: " + oldHeroCode);
     }
 }
 
