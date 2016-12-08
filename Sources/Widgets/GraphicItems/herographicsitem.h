@@ -63,6 +63,7 @@ public:
     int getSpellDamage();
     void setShowAllInfo(bool value=true);
     void addResourcesUsed(int value);
+    int getAvailableResources();
 };
 
 #endif // HEROGRAPHICSITEM_H

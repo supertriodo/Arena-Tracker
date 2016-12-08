@@ -17,6 +17,7 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->heightShow = HEIGHT;
     this->turn = turn;
     this->friendly = friendly;
+    this->showTransparent = false;
     this->graphicsItemSender = graphicsItemSender;
     friendly?this->setZValue(-10):this->setZValue(-30);
     setAcceptHoverEvents(true);
@@ -42,6 +43,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->heightShow = copy->heightShow;
     this->turn = copy->turn;
     this->friendly = copy->friendly;
+    this->showTransparent = false;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
@@ -138,6 +140,14 @@ void CardGraphicsItem::addBuff(int addAttack, int addHealth)
 }
 
 
+void CardGraphicsItem::showManaPlayable(int mana)
+{
+    if(cost > mana)     this->showTransparent = true;
+    else                this->showTransparent = false;
+    update();
+}
+
+
 void CardGraphicsItem::checkDownloadedCode(QString code)
 {
     if(this->code == code || this->createdByCode == code)  update();
@@ -206,6 +216,8 @@ void CardGraphicsItem::processTagChange(QString tag, QString value)
 void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     Q_UNUSED(option);
+
+    if(showTransparent) painter->setOpacity(0.2);
 
     bool cardLifted = (played||discard)&&!draw;
     if(played)          painter->drawPixmap(-WIDTH/2, -heightShow/2-CARD_LIFT, QPixmap(":/Images/bgCardGlow.png"), 0, 0, 190, heightShow+CARD_LIFT);

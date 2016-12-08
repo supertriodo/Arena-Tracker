@@ -1736,6 +1736,15 @@ void PlanHandler::createFutureBoard()
 }
 
 
+void PlanHandler::showManaPlayableCards()
+{
+    int mana = futureBoard->playerHero->getAvailableResources();
+    foreach(CardGraphicsItem* card, futureBoard->playerHandList)
+    {
+        if(!card->isPlayed())   card->showManaPlayable(mana);
+    }
+}
+
 void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
 {
     if(!nowBoard->playerTurn)           return;
@@ -1772,8 +1781,9 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
     if(doToggle)
     {
         card->togglePlayed();
-        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
         selectedCode = (card->isPlayed()?card->getCode():"");
+        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+        showManaPlayableCards();
     }
 }
 
@@ -1806,8 +1816,9 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower, Qt::MouseButt
     if(doToggle)
     {
         heroPower->toggleExausted();
-        futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
         selectedCode = (heroPower->isExausted()?heroPower->getCode():"");
+        futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
+        showManaPlayableCards();
     }
 }
 
@@ -1835,6 +1846,7 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
             minion = minionList->at(pos);
             selectedMinion = minion;
             selectedMinion->selectMinion();
+            showManaPlayableCards();
         }
     }
     else
@@ -1917,6 +1929,7 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
             hero = futureBoard->playerHero;
             selectedMinion = hero;
             selectedMinion->selectMinion();
+            showManaPlayableCards();
         }
     }
     else

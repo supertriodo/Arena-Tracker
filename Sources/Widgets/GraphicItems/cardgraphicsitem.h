@@ -28,6 +28,7 @@ private:
     int buffAttack, buffHealth;
     int heightShow;
     bool friendly;
+    bool showTransparent;
     GraphicsItemSender *graphicsItemSender;
 
 public:
@@ -59,6 +60,7 @@ public:
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
     QString getCode();
+    void showManaPlayable(int mana);
 };
 
 #endif // CARDGRAPHICSITEM_H

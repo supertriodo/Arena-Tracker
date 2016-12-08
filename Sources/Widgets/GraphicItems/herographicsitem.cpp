@@ -104,6 +104,12 @@ void HeroGraphicsItem::setResourcesUsed(int resourcesUsed)
 }
 
 
+int HeroGraphicsItem::getAvailableResources()
+{
+    return resources - resourcesUsed;
+}
+
+
 void HeroGraphicsItem::setResources(int resources)
 {
     this->resources = resources;

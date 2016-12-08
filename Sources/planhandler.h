@@ -148,6 +148,7 @@ private:
     void deleteFutureBoard();
     void createFutureBoard();
     void updateMinionFromCard(MinionGraphicsItem *minion);
+    void showManaPlayableCards();
 
 public:
     void setTransparency(Transparency value);
