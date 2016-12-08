@@ -38,7 +38,7 @@ public:
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
-    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -58,6 +58,7 @@ public:
     bool isPlayed();
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
+    QString getCode();
 };
 
 #endif // CARDGRAPHICSITEM_H

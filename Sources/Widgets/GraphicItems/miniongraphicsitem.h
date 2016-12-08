@@ -53,7 +53,7 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
-    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -67,7 +67,7 @@ public:
     int getId();
     bool isFriendly();
     void addAddon(Addon addon);
-    void addAddon(QString code, int id, Addon::AddonType type, int number=1);
+    void addAddon(QString code, int id=-1, Addon::AddonType type=Addon::AddonType::AddonNeutral, int number=1);
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();

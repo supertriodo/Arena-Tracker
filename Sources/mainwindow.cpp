@@ -1964,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    testPlan();
+    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 

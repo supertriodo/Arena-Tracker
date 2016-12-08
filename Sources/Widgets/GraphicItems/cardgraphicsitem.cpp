@@ -68,6 +68,12 @@ void CardGraphicsItem::setCode(QString code)
 }
 
 
+QString CardGraphicsItem::getCode()
+{
+    return code;
+}
+
+
 bool CardGraphicsItem::isPlayed()
 {
     return this->played;
@@ -161,9 +167,9 @@ void CardGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 }
 
 
-void CardGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+void CardGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    graphicsItemSender->cardPress(this);
+    graphicsItemSender->cardPress(this, event->button());
 }
 
 

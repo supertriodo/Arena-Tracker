@@ -50,6 +50,12 @@ int HeroPowerGraphicsItem::getId()
 }
 
 
+QString HeroPowerGraphicsItem::getCode()
+{
+    return this->code;
+}
+
+
 void HeroPowerGraphicsItem::setPlayerTurn(bool playerTurn)
 {
     this->playerTurn = playerTurn;
@@ -82,9 +88,9 @@ QRectF HeroPowerGraphicsItem::boundingRect() const
 }
 
 
-void HeroPowerGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+void HeroPowerGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    graphicsItemSender->heroPowerPress(this);
+    graphicsItemSender->heroPowerPress(this, event->button());
 }
 
 

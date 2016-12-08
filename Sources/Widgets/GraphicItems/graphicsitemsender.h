@@ -31,10 +31,10 @@ public:
     void sendHeroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
 
 signals:
-    void heroPowerPress(HeroPowerGraphicsItem *card);
-    void cardPress(CardGraphicsItem *card);
-    void minionPress(MinionGraphicsItem *minion);
-    void heroPress(HeroGraphicsItem *hero);
+    void heroPowerPress(HeroPowerGraphicsItem *card, Qt::MouseButton mouseButton);
+    void cardPress(CardGraphicsItem *card, Qt::MouseButton mouseButton);
+    void minionPress(MinionGraphicsItem *minion, Qt::MouseButton mouseButton);
+    void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();

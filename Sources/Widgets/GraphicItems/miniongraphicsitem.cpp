@@ -269,9 +269,10 @@ void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, i
 {
     Addon addon;
     addon.code = code;
-    addon.id = id;
     addon.type = type;
     addon.number = number;
+    if(id == -1)    addon.id = -addons.count()-1;
+    else            addon.id = id;
     this->addAddon(addon);
 }
 
@@ -403,9 +404,9 @@ void MinionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 }
 
 
-void MinionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+void MinionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    graphicsItemSender->minionPress(this);
+    graphicsItemSender->minionPress(this, event->button());
 }
 
 

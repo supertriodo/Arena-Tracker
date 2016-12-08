@@ -67,6 +67,7 @@ private:
     int firstStoredTurn;// 0 unset
     MinionGraphicsItem * lastMinionAdded;
     MinionGraphicsItem * selectedMinion;
+    QString selectedCode;
     qint64 lastMinionAddedTime=0;
     int lastTriggerId;//-1 --> no trigger       //Used to create reinforcements. Guarda ultimo trigger o power con obj
     Addon lastPowerAddon;//Id=-1 --> no power   //Used to create addons. Guarda ultimo trigger, power o fatigue
@@ -174,10 +175,10 @@ private slots:
     void showFirstTurn();
     void showPrevTurn();
     void showNextTurn();
-    void cardPress(CardGraphicsItem *card);
-    void heroPowerPress(HeroPowerGraphicsItem *heroPower);
-    void minionPress(MinionGraphicsItem *minion);
-    void heroPress(HeroGraphicsItem *hero);
+    void cardPress(CardGraphicsItem *card, Qt::MouseButton mouseButton);
+    void heroPowerPress(HeroPowerGraphicsItem *heroPower, Qt::MouseButton mouseButton);
+    void minionPress(MinionGraphicsItem *minion, Qt::MouseButton mouseButton);
+    void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
     void showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom);
 
 public slots:

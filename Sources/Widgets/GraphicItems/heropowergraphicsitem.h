@@ -25,7 +25,7 @@ public:
 
 //Metodos
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -37,6 +37,7 @@ public:
     void setPlayerTurn(bool playerTurn);
     void toggleExausted();
     bool isExausted();
+    QString getCode();
 };
 
 #endif // HEROPOWERGRAPHICSITEM_H

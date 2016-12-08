@@ -211,9 +211,9 @@ void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 }
 
 
-void HeroGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent*)
+void HeroGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    graphicsItemSender->heroPress(this);
+    graphicsItemSender->heroPress(this, event->button());
 }
 
 
