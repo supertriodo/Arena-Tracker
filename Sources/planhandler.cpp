@@ -1782,8 +1782,12 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
     {
         card->togglePlayed();
         selectedCode = (card->isPlayed()?card->getCode():"");
-        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getCost():-card->getCost());
+        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getManaSpent():-card->getManaSpent());
         showManaPlayableCards();
+        if(futureBoard->playerHero->getAvailableResources() < 0)
+        {
+            card->setShowTransparent();
+        }
     }
 }
 
@@ -1861,6 +1865,8 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
         }
         else
         {
+            selectedCode = "";
+
             //Select minion
             if(selectedMinion == NULL)
             {
@@ -1944,6 +1950,8 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
         }
         else
         {
+            selectedCode = "";
+
             //Select hero
             if(selectedMinion == NULL)
             {

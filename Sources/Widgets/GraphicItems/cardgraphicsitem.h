@@ -55,12 +55,13 @@ public:
     void setCost(int cost);
     void reduceCost(int cost);
     void togglePlayed();
-    int getCost();
     bool isPlayed();
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
     QString getCode();
     void showManaPlayable(int mana);
+    int getManaSpent();
+    void setShowTransparent(bool value=true);
 };
 
 #endif // CARDGRAPHICSITEM_H

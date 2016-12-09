@@ -131,7 +131,7 @@ int HeroGraphicsItem::getResources()
 
 QRectF HeroGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 16, HEIGHT + 13);
+    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 30, HEIGHT + 13);
 }
 
 

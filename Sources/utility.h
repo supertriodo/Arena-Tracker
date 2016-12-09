@@ -84,6 +84,8 @@
 #define SHAKY_ZYPGUNNER "CFM_336"
 #define GRIMY_GADGETEER "CFM_754"
 #define DON_HANCHO "CFM_685"
+#define INNERVATE "EX1_169"
+#define COUNTERFEIT_COIN "CFM_630"
 
 
 using namespace cv;

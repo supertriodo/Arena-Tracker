@@ -109,12 +109,6 @@ void CardGraphicsItem::setDraw(bool drawn)
 }
 
 
-int CardGraphicsItem::getCost()
-{
-    return this->cost;
-}
-
-
 void CardGraphicsItem::setCost(int cost)
 {
     this->cost = cost;
@@ -145,6 +139,16 @@ void CardGraphicsItem::showManaPlayable(int mana)
     if(cost > mana)     this->showTransparent = true;
     else                this->showTransparent = false;
     update();
+}
+
+
+void CardGraphicsItem::setShowTransparent(bool value)
+{
+    if(showTransparent != value)
+    {
+        showTransparent = value;
+        update();
+    }
 }
 
 
@@ -377,4 +381,14 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->drawPath(path);
         }
     }
+}
+
+
+int CardGraphicsItem::getManaSpent()
+{
+    int saveMana = 0;
+    if(code == THE_COIN)                saveMana = 1;
+    else if(code == COUNTERFEIT_COIN)   saveMana = 1;
+    else if(code == INNERVATE)          saveMana = 2;
+    return cost - saveMana;
 }

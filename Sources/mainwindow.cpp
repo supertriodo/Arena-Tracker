@@ -1964,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    testPlan();
+    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
@@ -2705,6 +2705,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//bug total attck minions
+//bug ligts spawn
 //coin mana
 //reset addon
 //Reset cards dir
@@ -2761,10 +2763,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Descomentar en resizeTabWidgets (adjustToContents)
 
 //NUEVAS CARTAS
-//Update Json cartas
+//Update Json cartas --> Automatico
 //Update Json heroes HA --> drafthandler.cpp
 //Update secrets
 //Update bombing cards
+//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)
