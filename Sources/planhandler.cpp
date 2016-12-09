@@ -567,7 +567,12 @@ void PlanHandler::enemyCardTagChange(int id, QString code, QString tag, QString 
 void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString value)
 {
     CardGraphicsItem *card = findCard(friendly, id);
-    if(card == NULL)    return;
+    if(card == NULL)
+    {
+        //Try to find the minion on the board
+        addMinionTagChange(id, friendly, tag, value);
+        return;
+    }
 
     if(tag == "COST")
     {

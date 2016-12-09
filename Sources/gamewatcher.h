@@ -32,6 +32,14 @@ public:
 };
 
 
+class ShowEntity
+{
+public:
+    int id;
+    bool isPlayer;
+};
+
+
 
 class GameWatcher : public QObject
 {
@@ -65,6 +73,7 @@ private:
     qint64 logSeekCreate;
     bool copyGameLogs;
     bool spectating;
+    ShowEntity lastShowEntity;
 
 
 

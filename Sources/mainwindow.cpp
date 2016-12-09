@@ -2705,7 +2705,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//bug total attck minions
 //bug ligts spawn
 //reset addon
 //fix tooltips cards vacios

@@ -563,6 +563,42 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     }
 
 
+    //SHOW_ENTITY desconocido
+    //SHOW_ENTITY - Updating Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=58 zone=HAND zonePos=3 cardId= player=2] CardID=EX1_011
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *SHOW_ENTITY - Updating "
+        "Entity=\\[name=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
+        "CardID=\\w+"
+        ), match))
+    {
+        QString id = match->captured(1);
+        QString player = match->captured(2);
+        bool isPlayer = (player.toInt() == playerID);
+
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
+        lastShowEntity.id = id.toInt();
+        lastShowEntity.isPlayer = isPlayer;
+    }
+
+
+    //SHOW_ENTITY tag
+    //tag=HEALTH value=1
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *"
+        "tag=(\\w+) value=(\\w+)"
+        ), match))
+    {
+        QString tag = match->captured(1);
+        QString value = match->captured(2);
+
+        if(tag == "ATK" || tag == "HEALTH")
+        {
+            emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
+            if(lastShowEntity.isPlayer)     emit playerMinionTagChange(lastShowEntity.id, "", tag, value);
+            else                            emit enemyMinionTagChange(lastShowEntity.id, "", tag, value);
+        }
+    }
+
     //Jugador/Enemigo accion con/sin objetivo
     //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
     //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
