@@ -60,11 +60,11 @@ void HeroGraphicsItem::setShowAllInfo(bool value)
 }
 
 
-void HeroGraphicsItem::setMinionsAttack(int minionsAttack)
+void HeroGraphicsItem::setMinionsAttack(int minionsAttack, bool sendHandTab)
 {
     this->minionsAttack = minionsAttack;
     update();
-    sendHeroTotalAttackChange();
+    if(sendHandTab)     sendHeroTotalAttackChange();
 }
 
 

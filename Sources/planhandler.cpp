@@ -153,21 +153,21 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
 }
 
 
-void PlanHandler::updateMinionsAttack(bool friendly)
+void PlanHandler::updateMinionsAttack(bool friendly, Board *board)
 {
     int minionsAttack = 0;
     int minionsMaxAttack = 0;
-    foreach(MinionGraphicsItem *minion, *getMinionList(friendly))
+    foreach(MinionGraphicsItem *minion, *getMinionList(friendly, board))
     {
         minionsAttack += minion->getPotencialDamage(false);
-        minionsMaxAttack += minion->getPotencialDamage(true);
+        if(board == NULL)   minionsMaxAttack += minion->getPotencialDamage(true);
     }
 
-    HeroGraphicsItem *hero = getHero(friendly);
+    HeroGraphicsItem *hero = getHero(friendly, board);
     if(hero != NULL)
     {
-        hero->setMinionsAttack(minionsAttack);
-        hero->setMinionsMaxAttack(minionsMaxAttack);
+        hero->setMinionsAttack(minionsAttack, board == NULL);
+        if(board == NULL)   hero->setMinionsMaxAttack(minionsMaxAttack);
     }
 }
 
@@ -1911,6 +1911,7 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
                     minion->damageMinion(selectedMinion->getAttack());
 
                     selectedMinion->setExausted();
+                    if(!selectedMinion->isHero())   updateMinionsAttack(true, futureBoard);
                     selectedMinion->selectMinion(false);
                     selectedMinion = NULL;
                 }
@@ -1995,6 +1996,7 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
                     hero->damageMinion(selectedMinion->getAttack());
 
                     selectedMinion->setExausted();
+                    if(!selectedMinion->isHero())   updateMinionsAttack(true, futureBoard);
                     selectedMinion->selectMinion(false);
                     selectedMinion = NULL;
                 }

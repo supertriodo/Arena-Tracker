@@ -2707,10 +2707,10 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //TODO
 //bug total attck minions
 //bug ligts spawn
-//coin mana
 //reset addon
+//fix tooltips cards vacios
+//eliminar mover ventana en plan tab
 //Reset cards dir
-//Sustituir heroes sin retrato
 //Rng list future board. Revisar con minion trading terminado.
 //Verificar interaccion secretos: potion of polimorph + mirror entity
 //Redemption + getaway codo

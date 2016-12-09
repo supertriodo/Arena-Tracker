@@ -129,7 +129,7 @@ private:
     void killWeaponLastTurn(bool friendly, int id);
     void removeHeroPower(bool friendly, Board *board);
     void addHeroPower(bool friendly, QString code, int id);
-    void updateMinionsAttack(bool friendly);
+    void updateMinionsAttack(bool friendly, Board *board=NULL);
     void fixTurn1Card();    
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();

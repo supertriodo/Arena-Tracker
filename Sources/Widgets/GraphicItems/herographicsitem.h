@@ -52,7 +52,7 @@ public:
     CardClass getSecretHero(int id);
     bool isYourSecret(int id);
     void changeHero(QString code, int id);
-    void setMinionsAttack(int minionsAttack);
+    void setMinionsAttack(int minionsAttack, bool sendHandTab);
     void setResources(int resources);
     int getResources();
     void setResourcesUsed(int resourcesUsed);
