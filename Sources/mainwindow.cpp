@@ -1964,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-    testPlan();
+//    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
@@ -2705,9 +2705,10 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//bug ligts spawn
+//Cambiar buff cards en plan para que se vea mejor
 //reset addon
 //fix tooltips cards vacios
+//config --> no tooltips
 //eliminar mover ventana en plan tab
 //Reset cards dir
 //Rng list future board. Revisar con minion trading terminado.

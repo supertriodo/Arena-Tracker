@@ -563,6 +563,24 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     }
 
 
+    //SHOW_ENTITY conocido
+    //SHOW_ENTITY - Updating Entity=[name=Turbocerdo con pinchos id=18 zone=DECK zonePos=0 cardId=CFM_688 player=1] CardID=CFM_688
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *SHOW_ENTITY - Updating "
+        "Entity=\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "CardID=\\w+"
+        ), match))
+    {
+        QString id = match->captured(1);
+        QString player = match->captured(2);
+        bool isPlayer = (player.toInt() == playerID);
+
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
+        lastShowEntity.id = id.toInt();
+        lastShowEntity.isPlayer = isPlayer;
+    }
+
+
     //SHOW_ENTITY desconocido
     //SHOW_ENTITY - Updating Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=58 zone=HAND zonePos=3 cardId= player=2] CardID=EX1_011
     else if(line.contains(QRegularExpression(
@@ -576,6 +594,24 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         bool isPlayer = (player.toInt() == playerID);
 
         emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
+        lastShowEntity.id = id.toInt();
+        lastShowEntity.isPlayer = isPlayer;
+    }
+
+
+    //FULL_ENTITY conocido
+    //FULL_ENTITY - Updating [name=Recluta Mano de Plata id=95 zone=PLAY zonePos=3 cardId=CS2_101t player=2] CardID=CS2_101t
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *FULL_ENTITY - Updating "
+        "\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "CardID=\\w+"
+        ), match))
+    {
+        QString id = match->captured(1);
+        QString player = match->captured(2);
+        bool isPlayer = (player.toInt() == playerID);
+
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": FULL_ENTITY -- Id: " + id, numLine);
         lastShowEntity.id = id.toInt();
         lastShowEntity.isPlayer = isPlayer;
     }
