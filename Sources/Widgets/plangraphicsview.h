@@ -33,10 +33,10 @@ public:
 
 //Override events
 protected:
-    void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+//    void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+//    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+//    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+//    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
 

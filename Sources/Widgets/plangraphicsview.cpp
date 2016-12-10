@@ -123,26 +123,26 @@ QRectF PlanGraphicsView::getBoardRect()
     }
 }
 
-void PlanGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    QGraphicsView::mouseDoubleClickEvent(event);
-    event->ignore();
-}
-void PlanGraphicsView::mouseMoveEvent(QMouseEvent *event)
-{
-    QGraphicsView::mouseMoveEvent(event);
-    event->ignore();
-}
-void PlanGraphicsView::mousePressEvent(QMouseEvent *event)
-{
-    QGraphicsView::mousePressEvent(event);
-    event->ignore();
-}
-void PlanGraphicsView::mouseReleaseEvent(QMouseEvent *event)
-{
-    QGraphicsView::mouseReleaseEvent(event);
-    event->ignore();
-}
+//void PlanGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
+//{
+//    QGraphicsView::mouseDoubleClickEvent(event);
+//    event->ignore();
+//}
+//void PlanGraphicsView::mouseMoveEvent(QMouseEvent *event)
+//{
+//    QGraphicsView::mouseMoveEvent(event);
+//    event->ignore();
+//}
+//void PlanGraphicsView::mousePressEvent(QMouseEvent *event)
+//{
+//    QGraphicsView::mousePressEvent(event);
+//    event->ignore();
+//}
+//void PlanGraphicsView::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    QGraphicsView::mouseReleaseEvent(event);
+//    event->ignore();
+//}
 
 
 void PlanGraphicsView::leaveEvent(QEvent * e)
