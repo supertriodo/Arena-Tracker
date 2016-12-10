@@ -1964,6 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
+//    enemyHandHandler->showEnemyCardDraw(1, 1, false, "");
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }

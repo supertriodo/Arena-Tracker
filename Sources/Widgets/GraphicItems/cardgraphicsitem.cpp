@@ -377,7 +377,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             painter->setPen(QPen(GREEN));
 
             path = QPainterPath();
-            path.addText(35 - textWide/2, -heightShow/2 + 71 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
+            path.addText(-35 - textWide/2, -heightShow/2 + 40 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
             painter->drawPath(path);
         }
     }
