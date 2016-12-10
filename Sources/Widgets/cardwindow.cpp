@@ -6,6 +6,7 @@ CardWindow::CardWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     cardLabel = new QLabel(this);
+    alwaysHidden = false;
     setCentralWidget(cardLabel);
     setMinimumSize(0,0);
     resize(WCARD,HCARD);
@@ -20,15 +21,24 @@ CardWindow::~CardWindow()
 
 void CardWindow::scale(int value_x10)
 {
-    float value = value_x10/10.0;
-    setMinimumSize(0,0);
-    resize(value*WCARD, value*HCARD);
+    if(value_x10 < 10)
+    {
+        alwaysHidden = true;
+        hide();
+    }
+    else
+    {
+        alwaysHidden = false;
+        float value = value_x10/10.0;
+        setMinimumSize(0,0);
+        resize(value*WCARD, value*HCARD);
+    }
 }
 
 
 void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
-    if(code.isEmpty() ||
+    if(alwaysHidden || code.isEmpty() ||
         !QFileInfo(Utility::hscardsPath() + "/" + code + ".png").exists())
     {
         hide();
@@ -58,6 +68,7 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
     cardLabel->setPixmap(QPixmap(Utility::hscardsPath() + "/" + code + ".png").copy(5,34,WCARD,HCARD)
                          .scaled(winWidth, winHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     show();
+    qDebug()<<"SHOW CARD " << code;
 }
 
 

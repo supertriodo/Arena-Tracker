@@ -20,6 +20,7 @@ public:
 //Variables
 private:
     QLabel *cardLabel;
+    bool alwaysHidden;
 
 //Metodos
 public:

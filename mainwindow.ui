@@ -2012,7 +2012,7 @@ in a new window</string>
                      <item>
                       <widget class="QSlider" name="configSliderTooltipSize">
                        <property name="minimum">
-                        <number>10</number>
+                        <number>9</number>
                        </property>
                        <property name="maximum">
                         <number>15</number>

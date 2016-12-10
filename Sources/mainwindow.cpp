@@ -1964,7 +1964,7 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    enemyHandHandler->showEnemyCardDraw(1, 1, false, "");
+//    enemyHandHandler->showEnemyCardDraw(1, 1, false, "AT_003");
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
@@ -2451,7 +2451,9 @@ void MainWindow::updateTooltipScale(int value)
 {
     cardWindow->scale(value);
 
-    QString labelText = "x"+QString::number(value/10.0);
+    QString labelText;
+    if(value < 10)  labelText = "OFF";
+    else            labelText = "x"+QString::number(value/10.0);
     ui->configSliderTooltipSize->setToolTip(labelText);
     ui->configLabelDeckTooltip2->setText(labelText);
 }
@@ -2706,10 +2708,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Cambiar buff cards en plan para que se vea mejor
-//reset addon
-//fix tooltips cards vacios
-//config --> no tooltips
 //eliminar mover ventana en plan tab
 //Reset cards dir
 //Rng list future board. Revisar con minion trading terminado.
