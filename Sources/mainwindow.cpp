@@ -1874,16 +1874,8 @@ bool MainWindow::createDir(QString pathDir)
 
 void MainWindow::createDataDir()
 {
-    if(createDir(Utility::dataPath()))
-    {
-        //Rescue old decks json
-        QFile file(Utility::appPath() + "/HSCards/ArenaTrackerDecks.json");
-        if(file.exists())
-        {
-            file.copy(Utility::dataPath() + "/ArenaTrackerDecks.json");
-            pDebug("ArenaTrackerDecks.json recovered.");
-        }
-    }
+    createDir(Utility::dataPath());
+    removeHSCards();
     createDir(Utility::hscardsPath());
     createDir(Utility::gameslogPath());
     if(createDir(Utility::extraPath()))
@@ -1901,6 +1893,20 @@ void MainWindow::createDataDir()
     }
 
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
+}
+
+
+void MainWindow::removeHSCards()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString runVersion = settings.value("runVersion", "").toString();
+
+    if(runVersion != VERSION)
+    {
+        QDir cardsDir = QDir(Utility::hscardsPath());
+        cardsDir.removeRecursively();
+        emit pDebug(Utility::hscardsPath() + " removed.");
+    }
 }
 
 

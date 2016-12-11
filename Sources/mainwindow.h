@@ -137,6 +137,7 @@ private:
     int getAutoTamCard();
     void createNetworkManager();
     void initCardsJson();
+    void removeHSCards();
 
 //Override events
 protected:

@@ -11,6 +11,9 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
             this, SLOT(replyFinished(QNetworkReply*)));
 
     networkManager->get(QNetworkRequest(QUrl("https://github.com/supertriodo/Arena-Tracker/releases/latest")));
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("runVersion", VERSION);
 }
 
 
