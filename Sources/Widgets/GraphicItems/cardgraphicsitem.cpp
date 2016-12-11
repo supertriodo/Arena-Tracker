@@ -373,17 +373,19 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         //Buff
         if(buffAttack > 0 || buffHealth > 0)
         {
-            font.setPixelSize(20);
-            text = "(+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth) + ")";
+            font.setPixelSize(40);
+            text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
             fm = QFontMetrics(font);
             textWide = fm.width(text);
             textHigh = fm.height();
             painter->setFont(font);
             painter->setBrush(BLACK);
-            painter->setPen(QPen(GREEN));
+            pen = QPen(GREEN);
+            pen.setWidth(2);
+            painter->setPen(pen);
 
             path = QPainterPath();
-            path.addText(-35 - textWide/2, -heightShow/2 + 40 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
+            path.addText(-5 - textWide/2, -heightShow/2 + 133 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
             painter->drawPath(path);
         }
     }

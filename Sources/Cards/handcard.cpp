@@ -77,8 +77,8 @@ void HandCard::drawDefaultHandCard()
         //Buff
         if(buffAttack > 0 || buffHealth > 0)
         {
-            font.setPixelSize(15);
-            text = "(+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth) + ")";
+            font.setPixelSize(20);
+            text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
             fm = QFontMetrics(font);
             textWide = fm.width(text);
             textHigh = fm.height();
@@ -87,7 +87,7 @@ void HandCard::drawDefaultHandCard()
             painter.setPen(QPen(GREEN));
 
             path = QPainterPath();
-            path.addText(45 - textWide/2, 19 + textHigh/4, font, text);
+            path.addText(42 - textWide/2, 19 + textHigh/4, font, text);
             painter.drawPath(path);
         }
     painter.end();
