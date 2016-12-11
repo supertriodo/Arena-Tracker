@@ -2708,8 +2708,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Hero power transparente en futureboard
-//Evitar PlanHandler: Pending Tag Change Minion: Id: 79 - ZONE --> HAND
 //Reset cards dir
 //Planificacion turno enemigo
 

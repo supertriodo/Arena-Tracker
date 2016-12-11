@@ -693,13 +693,20 @@ void PlanHandler::addMinionTagChange(int id, bool friendly, QString tag, QString
         return;
     }
 
-
+    //Pending tag change
     else
     {
-        QTimer::singleShot(1000, this, SLOT(checkPendingTagChanges()));
-        pendingTagChanges.append(tagChange);
-        emit pDebug("Append Tag Change: Id: " + QString::number(id) + " - " + tag + " --> " + value +
-                    " - " + QString::number(pendingTagChanges.count()));
+        //Si un minion llega a la mano y es jugado rapido puede que reciba el ZONE = HAND y aparezca como muerto.
+        if(tag == "ZONE")
+        {
+            emit pDebug("Zone Tag Change not appended: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        }
+        else
+        {
+            QTimer::singleShot(1000, this, SLOT(checkPendingTagChanges()));
+            pendingTagChanges.append(tagChange);
+            emit pDebug("Append Tag Change: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        }
         return;
     }
 
