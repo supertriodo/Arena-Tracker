@@ -62,6 +62,7 @@ public:
     void showManaPlayable(int mana);
     int getManaSpent();
     void setShowTransparent(bool value=true);
+    bool isTransparent();
 };
 
 #endif // CARDGRAPHICSITEM_H

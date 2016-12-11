@@ -17,6 +17,7 @@ private:
     int id;
     bool exausted;
     bool friendly, playerTurn;
+    bool showTransparent;
     GraphicsItemSender *graphicsItemSender;
 
 public:
@@ -38,6 +39,9 @@ public:
     void toggleExausted();
     bool isExausted();
     QString getCode();
+    void showManaPlayable(int mana);
+    void setShowTransparent(bool value=true);
+    bool isTransparent();
 };
 
 #endif // HEROPOWERGRAPHICSITEM_H

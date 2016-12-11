@@ -17,6 +17,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly
     const int wHero = HeroGraphicsItem::WIDTH;
     int x = wHero/2 + WIDTH/2 - 20;
     int y = friendly?hMinion + hHero/2 + 20:-hMinion - hHero/2 + 20;
+    this->showTransparent = false;
     this->setPos(x, y);
     this->setZValue(-40);
 }
@@ -28,6 +29,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(HeroPowerGraphicsItem *copy)
     this->id = copy->id;
     this->exausted = copy->exausted;
     this->friendly = copy->friendly;
+    this->showTransparent = false;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->playerTurn = copy->playerTurn;
     this->setPos(copy->pos());
@@ -76,6 +78,30 @@ bool HeroPowerGraphicsItem::isExausted()
 }
 
 
+void HeroPowerGraphicsItem::showManaPlayable(int mana)
+{
+    if(2 > mana)     this->showTransparent = true;
+    else                this->showTransparent = false;
+    update();
+}
+
+
+void HeroPowerGraphicsItem::setShowTransparent(bool value)
+{
+    if(showTransparent != value)
+    {
+        showTransparent = value;
+        update();
+    }
+}
+
+
+bool HeroPowerGraphicsItem::isTransparent()
+{
+    return showTransparent;
+}
+
+
 void HeroPowerGraphicsItem::checkDownloadedCode(QString code)
 {
     if(this->code == code)  update();
@@ -109,6 +135,8 @@ void HeroPowerGraphicsItem::processTagChange(QString tag, QString value)
 void HeroPowerGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     Q_UNUSED(option);
+
+    if(showTransparent) painter->setOpacity(0.2);
 
     if(playerTurn == friendly)
     {

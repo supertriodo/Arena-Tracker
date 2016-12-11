@@ -1738,6 +1738,7 @@ void PlanHandler::createFutureBoard()
     ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
     ui->planButtonLast->setEnabled(true);
     emit cardLeave();   //Hide cards tooltips
+    showManaPlayableCards();
 }
 
 
@@ -1747,6 +1748,11 @@ void PlanHandler::showManaPlayableCards()
     foreach(CardGraphicsItem* card, futureBoard->playerHandList)
     {
         if(!card->isPlayed())   card->showManaPlayable(mana);
+    }
+
+    if(futureBoard->playerHeroPower != NULL && !futureBoard->playerHeroPower->isExausted())
+    {
+        futureBoard->playerHeroPower->showManaPlayable(mana);
     }
 }
 
@@ -1783,16 +1789,12 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
         }
     }
 
-    if(doToggle)
+    if(doToggle && !card->isTransparent())
     {
         card->togglePlayed();
         selectedCode = (card->isPlayed()?card->getCode():"");
         futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getManaSpent():-card->getManaSpent());
         showManaPlayableCards();
-        if(futureBoard->playerHero->getAvailableResources() < 0)
-        {
-            card->setShowTransparent();
-        }
     }
 }
 
@@ -1822,7 +1824,7 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower, Qt::MouseButt
         }
     }
 
-    if(doToggle)
+    if(doToggle && !heroPower->isTransparent())
     {
         heroPower->toggleExausted();
         selectedCode = (heroPower->isExausted()?heroPower->getCode():"");
@@ -1855,7 +1857,6 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
             minion = minionList->at(pos);
             selectedMinion = minion;
             selectedMinion->selectMinion();
-            showManaPlayableCards();
         }
     }
     else
@@ -1941,7 +1942,6 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
             hero = futureBoard->playerHero;
             selectedMinion = hero;
             selectedMinion->selectMinion();
-            showManaPlayableCards();
         }
     }
     else

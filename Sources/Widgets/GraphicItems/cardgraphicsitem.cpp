@@ -152,6 +152,12 @@ void CardGraphicsItem::setShowTransparent(bool value)
 }
 
 
+bool CardGraphicsItem::isTransparent()
+{
+    return showTransparent;
+}
+
+
 void CardGraphicsItem::checkDownloadedCode(QString code)
 {
     if(this->code == code || this->createdByCode == code)  update();

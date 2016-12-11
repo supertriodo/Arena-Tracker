@@ -2708,14 +2708,10 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//eliminar mover ventana en plan tab
+//Hero power transparente en futureboard
+//Evitar PlanHandler: Pending Tag Change Minion: Id: 79 - ZONE --> HAND
 //Reset cards dir
-//Rng list future board. Revisar con minion trading terminado.
-//Verificar interaccion secretos: potion of polimorph + mirror entity
-//Redemption + getaway codo
-//snipe + hidden cache
 //Planificacion turno enemigo
-//Taunt minions bug, json cards bug, just wait
 
 
 //REPLAY BUGS
