@@ -92,6 +92,8 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
 void HSCardDownloader::reuseOldHero(QString code)
 {
+    if(code.length() == 7)  return;
+
     QString oldHeroCode = code.left(7);
     QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");
 
@@ -106,6 +108,7 @@ void HSCardDownloader::reuseOldHero(QString code)
     else
     {
         emit pDebug("Old hero not found: " + oldHeroCode);
+        downloadWebImage(oldHeroCode, true);
     }
 }
 

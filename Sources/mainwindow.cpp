@@ -2715,7 +2715,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Reset cards dir
 //Planificacion turno enemigo
 
 
