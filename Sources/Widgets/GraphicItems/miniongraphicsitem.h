@@ -67,7 +67,7 @@ public:
     int getId();
     bool isFriendly();
     void addAddon(Addon addon);
-    void addAddon(QString code, int id=-1, Addon::AddonType type=Addon::AddonType::AddonNeutral, int number=1);
+    void addAddon(QString code, int id=-1, Addon::AddonType type=Addon::AddonNeutral, int number=1);
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();
