@@ -222,7 +222,7 @@ QString MainWindow::getHSLanguage()
 }
 
 
-void MainWindow::createCardsJsonMap(QByteArray jsonData)
+void MainWindow::createCardsJsonMap(QByteArray &jsonData)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     QJsonArray jsonArray = jsonDoc.array();
@@ -231,6 +231,21 @@ void MainWindow::createCardsJsonMap(QByteArray jsonData)
         QJsonObject jsonCardObject = jsonCard.toObject();
         cardsJson[jsonCardObject.value("id").toString()] = jsonCardObject;
     }
+}
+
+
+void MainWindow::createCardsJsonFile(QByteArray &jsonData)
+{
+    QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
+    if(!cardsJsonFile.open(QIODevice::WriteOnly))
+    {
+        emit pDebug("ERROR: Failed to create cards.json");
+        return;
+    }
+
+    QTextStream out(&cardsJsonFile);
+    out << jsonData;
+    cardsJsonFile.close();
 }
 
 
@@ -247,14 +262,48 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     {
         if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
         {
-            emit pDebug("Load Json cards --> Redirected to " + reply->rawHeader("Location"));
-            networkManager->get(QNetworkRequest(QUrl(reply->rawHeader("Location"))));
+            checkCardsJsonVersion(reply->rawHeader("Location"));
         }
         else
         {
-            emit pDebug("Load Json cards --> Success.");
-            createCardsJsonMap(reply->readAll());
+            emit pDebug("Load Json cards --> Download Success.");
+            QByteArray jsonData = reply->readAll();
+            createCardsJsonFile(jsonData);
+            createCardsJsonMap(jsonData);
         }
+    }
+}
+
+
+void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString storedCardsJsonVersion = settings.value("cardsJsonVersion", "").toString();
+    QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
+    emit pDebug("Load Json cards --> Latest version: " + cardsJsonVersion);
+    emit pDebug("Load Json cards --> Stored version: " + storedCardsJsonVersion);
+
+    //Need download
+    if(cardsJsonVersion != storedCardsJsonVersion || !cardsJsonFile.exists())
+    {
+        cardsJsonFile.remove();
+        settings.setValue("cardsJsonVersion", cardsJsonVersion);
+        networkManager->get(QNetworkRequest(QUrl(cardsJsonVersion)));
+        emit pDebug("Load Json cards --> Download from: " + cardsJsonVersion);
+    }
+
+    //Use local cards.json
+    else
+    {
+        emit pDebug("Load Json cards --> Use local cards.json");
+        if(!cardsJsonFile.open(QIODevice::ReadOnly))
+        {
+            emit pDebug("ERROR: Failed to open cards.json");
+            return;
+        }
+        QByteArray jsonData = cardsJsonFile.readAll();
+        cardsJsonFile.close();
+        createCardsJsonMap(jsonData);
     }
 }
 

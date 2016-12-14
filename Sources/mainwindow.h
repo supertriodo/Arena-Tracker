@@ -110,7 +110,7 @@ private:
     void updateButtonsTheme();
     void updateTabWidgetsTheme();
     QString getHSLanguage();
-    void createCardsJsonMap(QByteArray jsonData);
+    void createCardsJsonMap(QByteArray &jsonData);
     void resizeTopButtons(int right, int top);
     void resizeChecks(QSize size);
     void resizeTabWidgets(QSize newSize);
@@ -138,6 +138,8 @@ private:
     void createNetworkManager();
     void initCardsJson();
     void removeHSCards();
+    void checkCardsJsonVersion(QString cardsJsonVersion);
+    void createCardsJsonFile(QByteArray &jsonData);
 
 //Override events
 protected:
