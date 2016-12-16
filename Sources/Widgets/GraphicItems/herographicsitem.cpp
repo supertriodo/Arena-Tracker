@@ -146,6 +146,12 @@ void HeroGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 }
 
 
+void HeroGraphicsItem::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+    graphicsItemSender->heroWheel(this, (event->delta()>0?true:false));
+}
+
+
 void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
     QPointF posMouse = event->pos();
@@ -376,7 +382,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     if(damage>0)                painter->setBrush(RED);
     else                        painter->setBrush(WHITE);
     QFontMetrics fm(font);
-    QString text = QString::number(health-damage);
+    QString text = QString::number(health-std::max(0,damage));//Usamos damage negativo en future planning al establecer addons damage/life
     int textWide = fm.width(text);
     int textHigh = fm.height();
     QPainterPath path;

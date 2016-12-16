@@ -87,6 +87,10 @@ void PlanHandler::createGraphicsItemSender()
             this, SLOT(minionPress(MinionGraphicsItem*,Qt::MouseButton)));
     connect(graphicsItemSender, SIGNAL(heroPress(HeroGraphicsItem*,Qt::MouseButton)),
             this, SLOT(heroPress(HeroGraphicsItem*,Qt::MouseButton)));
+    connect(graphicsItemSender, SIGNAL(minionWheel(MinionGraphicsItem*,bool)),
+            this, SLOT(minionWheel(MinionGraphicsItem*,bool)));
+    connect(graphicsItemSender, SIGNAL(heroWheel(HeroGraphicsItem*,bool)),
+            this, SLOT(heroWheel(HeroGraphicsItem*,bool)));
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
             this, SLOT(showCardTooltip(QString,QRect,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
@@ -1871,20 +1875,19 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
         //Show addon
         if(mouseButton != Qt::LeftButton)
         {
-            if(!selectedCode.isEmpty() && (futureBoard->playerMinions.contains(minion) || futureBoard->enemyMinions.contains(minion)))
+            if(!selectedCode.isEmpty())
             {
-                minion->addAddon(selectedCode);
+                minion->addPlanningAddon(selectedCode, Addon::AddonNeutral);
             }
         }
         else
         {
-            selectedCode = "";
-
             //Select minion
             if(selectedMinion == NULL)
             {
                 if(futureBoard->playerMinions.contains(minion) && minion->getAttack()>0)
                 {
+                    selectedCode = "";
                     selectedMinion = minion;
                     selectedMinion->selectMinion();
                 }
@@ -1894,6 +1897,8 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
             {
                 if(futureBoard->playerMinions.contains(minion) && minion->getAttack()>0)
                 {
+                    selectedCode = "";
+
                     //Deselect minion
                     if(selectedMinion == minion)
                     {
@@ -1920,8 +1925,8 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
                     else    delete attack;
 
                     //Damage minions
-                    selectedMinion->damageMinion(minion->getAttack());
-                    minion->damageMinion(selectedMinion->getAttack());
+                    selectedMinion->damagePlanningMinion(minion->getAttack());
+                    minion->damagePlanningMinion(selectedMinion->getAttack());
 
                     selectedMinion->setExausted();
                     if(!selectedMinion->isHero())   updateMinionsAttack(true, futureBoard);
@@ -1956,20 +1961,19 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
         //Show addon
         if(mouseButton != Qt::LeftButton)
         {
-            if(!selectedCode.isEmpty() && (futureBoard->playerHero == hero || futureBoard->enemyHero == hero))
+            if(!selectedCode.isEmpty())
             {
-                hero->addAddon(selectedCode);
+                hero->addPlanningAddon(selectedCode, Addon::AddonNeutral);
             }
         }
         else
         {
-            selectedCode = "";
-
             //Select hero
             if(selectedMinion == NULL)
             {
                 if(futureBoard->playerHero == hero && hero->getAttack()>0)
                 {
+                    selectedCode = "";
                     selectedMinion = hero;
                     selectedMinion->selectMinion();
                 }
@@ -1979,6 +1983,8 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
             {
                 if(futureBoard->playerHero == hero && hero->getAttack()>0)
                 {
+                    selectedCode = "";
+
                     //Deselect minion
                     if(selectedMinion == hero)
                     {
@@ -2005,7 +2011,7 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
                     else    delete attack;
 
                     //Damage minions
-                    hero->damageMinion(selectedMinion->getAttack());
+                    hero->damagePlanningMinion(selectedMinion->getAttack());
 
                     selectedMinion->setExausted();
                     if(!selectedMinion->isHero())   updateMinionsAttack(true, futureBoard);
@@ -2014,6 +2020,24 @@ void PlanHandler::heroPress(HeroGraphicsItem* hero, Qt::MouseButton mouseButton)
                 }
             }
         }
+    }
+}
+
+
+void PlanHandler::minionWheel(MinionGraphicsItem* minion, bool up)
+{
+    if(!selectedCode.isEmpty())
+    {
+        minion->addPlanningAddon(selectedCode, (up?Addon::AddonLife:Addon::AddonDamage));
+    }
+}
+
+
+void PlanHandler::heroWheel(HeroGraphicsItem* hero, bool up)
+{
+    if(!selectedCode.isEmpty())
+    {
+        hero->addPlanningAddon(selectedCode, (up?Addon::AddonLife:Addon::AddonDamage));
     }
 }
 

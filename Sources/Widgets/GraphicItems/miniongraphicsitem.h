@@ -54,6 +54,7 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *) Q_DECL_OVERRIDE;
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+    void wheelEvent(QGraphicsSceneWheelEvent *event) Q_DECL_OVERRIDE;
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -67,7 +68,7 @@ public:
     int getId();
     bool isFriendly();
     void addAddon(Addon addon);
-    void addAddon(QString code, int id=-1, Addon::AddonType type=Addon::AddonNeutral, int number=1);
+    void addAddon(QString code, int id, Addon::AddonType type, int number=1);
     void checkDownloadedCode(QString code);
     bool isDead();
     bool isHero();
@@ -83,14 +84,16 @@ public:
     void setDeadProb(float value=0);
     int getHitsToDie();
     void selectMinion(bool isSelected=true);
-    void damageMinion(int damage);
+    void damagePlanningMinion(int damage=1);
     void setExausted(bool value=true);
     void updateStatsFromCard(CardGraphicsItem *card);
+    void addPlanningAddon(QString code, Addon::AddonType type);
 
 private:
     void addAddonNeutral(Addon addon);
     void addAddonDamageLife(Addon addon);
     void stackAddons();
+    void healPlanningMinion(bool allowRecoverShield=false);
 };
 
 #endif // MINIONGRAPHICSITEM_H

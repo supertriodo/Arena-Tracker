@@ -250,9 +250,9 @@ void MinionGraphicsItem::selectMinion(bool isSelected)
 }
 
 
-void MinionGraphicsItem::damageMinion(int damage)
+void MinionGraphicsItem::damagePlanningMinion(int damage)
 {
-    if(this->shield)
+    if(this->shield && this->damage >=0)
     {
         this->shield = false;
     }
@@ -265,14 +265,90 @@ void MinionGraphicsItem::damageMinion(int damage)
 }
 
 
+void MinionGraphicsItem::healPlanningMinion(bool allowRecoverShield)
+{
+    if(allowRecoverShield && this->damage == 0)
+    {
+        this->shield = true;
+    }
+    else
+    {
+        this->damage--;
+        if(this->damage < this->health)     this->dead = false;
+    }
+    update();
+}
+
+
+void MinionGraphicsItem::addPlanningAddon(QString code, Addon::AddonType type)
+{
+    Addon addon;
+    addon.code = code;
+    addon.id = -1;
+    addon.type = type;
+    addon.number = 1;
+
+    //Nuevo neutral
+    if(type == Addon::AddonNeutral)
+    {
+        this->addons.append(addon);
+        update();
+    }
+    else
+    {
+        //Actualizamos damage/life addon
+        for(int i=0; i<addons.count(); i++)
+        {
+            if(addons[i].code == addon.code && addons[i].type != Addon::AddonNeutral)
+            {
+                int number = 0;
+                if(addons[i].type == Addon::AddonDamage)    number -= addons[i].number;
+                else                                        number += addons[i].number;
+                if(addon.type == Addon::AddonDamage)        number -= addon.number;
+                else                                        number += addon.number;
+                if(number == 0)
+                {
+                    addons.removeAt(i);
+                    if(type == Addon::AddonLife)    healPlanningMinion(true);
+                    else                            damagePlanningMinion();
+                }
+                else
+                {
+                    if(number < 0)
+                    {
+                        addons[i].type = Addon::AddonDamage;
+                        addons[i].number = -number;
+                    }
+                    else
+                    {
+                        addons[i].type = Addon::AddonLife;
+                        addons[i].number = number;
+                    }
+
+                    if(type == Addon::AddonLife)    healPlanningMinion();
+                    else                            damagePlanningMinion();
+                }
+
+                update();
+                return;
+            }
+        }
+        //Nuevo damage/life addon
+        this->addons.append(addon);
+        if(type == Addon::AddonLife)    healPlanningMinion();
+        else                            damagePlanningMinion();
+        update();
+    }
+}
+
+
 void MinionGraphicsItem::addAddon(QString code, int id, Addon::AddonType type, int number)
 {
     Addon addon;
     addon.code = code;
+    addon.id = id;
     addon.type = type;
     addon.number = number;
-    if(id == -1)    addon.id = -addons.count()-1;
-    else            addon.id = id;
     this->addAddon(addon);
 }
 
@@ -407,6 +483,12 @@ void MinionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 void MinionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
     graphicsItemSender->minionPress(this, event->button());
+}
+
+
+void MinionGraphicsItem::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+    graphicsItemSender->minionWheel(this, (event->delta()>0?true:false));
 }
 
 
@@ -611,7 +693,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(damage>0)                painter->setBrush(RED);
     else if(health>origHealth)  painter->setBrush(GREEN);
     else                        painter->setBrush(WHITE);
-    text = QString::number(health-damage);
+    text = QString::number(health-std::max(0,damage));//Usamos damage negativo en future planning al establecer addons damage/life
     textWide = fm.width(text);
     path = QPainterPath();
     path.addText(34 - textWide/2, 46 + textHigh/4, font, text);

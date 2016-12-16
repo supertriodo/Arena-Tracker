@@ -181,6 +181,8 @@ private slots:
     void minionPress(MinionGraphicsItem *minion, Qt::MouseButton mouseButton);
     void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
     void showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void minionWheel(MinionGraphicsItem *minion, bool up);
+    void heroWheel(HeroGraphicsItem *hero, bool up);
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

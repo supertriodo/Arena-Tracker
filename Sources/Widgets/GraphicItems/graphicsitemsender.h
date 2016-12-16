@@ -34,7 +34,9 @@ signals:
     void heroPowerPress(HeroPowerGraphicsItem *card, Qt::MouseButton mouseButton);
     void cardPress(CardGraphicsItem *card, Qt::MouseButton mouseButton);
     void minionPress(MinionGraphicsItem *minion, Qt::MouseButton mouseButton);
+    void minionWheel(MinionGraphicsItem *minion, bool up);
     void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
+    void heroWheel(HeroGraphicsItem *hero, bool up);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();
