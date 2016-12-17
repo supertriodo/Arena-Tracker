@@ -2174,6 +2174,9 @@ are shown on screen</string>
                   <layout class="QHBoxLayout" name="configHandHorizontalLayout2">
                    <item>
                     <widget class="QCheckBox" name="configCheckTotalAttack">
+                     <property name="toolTip">
+                      <string>Total Attack: Show the sum of your minions + your hero attack.</string>
+                     </property>
                      <property name="text">
                       <string>Total Attack</string>
                      </property>
@@ -2181,6 +2184,10 @@ are shown on screen</string>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="configCheckRngList">
+                     <property name="toolTip">
+                      <string>RNG list: Show the cards in your hand which throw bombs/missiles.
+Hover your mouse over to check the odds of killing in the board.</string>
+                     </property>
                      <property name="text">
                       <string>RNG list</string>
                      </property>

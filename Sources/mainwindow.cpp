@@ -1603,35 +1603,44 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
 void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 {
     QIcon icon;
+    QString tooltip;
     if(widget == ui->tabArena)
     {
         icon = QIcon(":/Images/arena.png");
+        tooltip = "Games";
     }
     else if(widget == ui->tabDeck)
     {
         icon = QIcon(":/Images/deck.png");
+        tooltip = "Deck";
     }
     else if(widget == ui->tabEnemy)
     {
         icon = QIcon(":/Images/hand.png");
+        tooltip = "Enemy Hand";
     }
     else if(widget == ui->tabPlan)
     {
         icon = QIcon(":/Images/plan.png");
+        tooltip = "Replay";
     }
     else if(widget == ui->tabEnemyDeck)
     {
         icon = QIcon(":/Images/enemyDeck.png");
+        tooltip = "Enemy Deck";
     }
     else if(widget == ui->tabLog)
     {
         icon = QIcon(":/Images/log.png");
+        tooltip = "Log";
     }
     else if(widget == ui->tabConfig)
     {
         icon = QIcon(":/Images/config.png");
+        tooltip = "Preferences";
     }
     tabWidget->addTab(widget, icon, "");
+    tabWidget->setTabToolTip(tabWidget->count()-1, tooltip);
 }
 
 
