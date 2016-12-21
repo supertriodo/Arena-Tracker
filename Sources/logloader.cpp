@@ -68,6 +68,15 @@ bool LogLoader::readSettings()
 }
 
 
+QString LogLoader::findLinuxLogs(QString pattern)
+{
+    QProcess p;
+    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\"");
+    p.waitForFinished(-1);
+    return QString(p.readAll()).trimmed();
+}
+
+
 bool LogLoader::readLogsDirPath()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -81,11 +90,6 @@ bool LogLoader::readLogsDirPath()
             "<br/>1) Logs dir location (If not default)."
             "<br/>2) log.config location (If not default)."
             "<br/>3) Start Hearthstone (Restart if running).";
-#ifdef Q_OS_LINUX
-        instructions +=
-            "<br/><br/>In Linux you will have to locate manually Logs dir and log.config"
-            "<br/>Use this <a href='https://github.com/supertriodo/Arena-Tracker#first-run'>default dirs</a> as reference.";
-#endif
 
         QMessageBox msgBox(0);
         msgBox.setTextFormat(Qt::RichText);
@@ -102,6 +106,9 @@ bool LogLoader::readLogsDirPath()
 #endif
 #ifdef Q_OS_MAC
         initPath = "/Applications/Hearthstone";
+#endif
+#ifdef Q_OS_LINUX
+        initPath = findLinuxLogs("*/Program Files/Hearthstone");
 #endif
 
         if(!initPath.isEmpty())
@@ -199,6 +206,10 @@ QString LogLoader::createDefaultLogConfig()
 #endif
 #ifdef Q_OS_MAC
     initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
+#endif
+#ifdef Q_OS_LINUX
+    initPath = findLinuxLogs("*/Local Settings/Application Data/Blizzard/Hearthstone");
+    if(!initPath.isEmpty())     initPath += "/log.config";
 #endif
 
     if(initPath.isEmpty()) return "";
