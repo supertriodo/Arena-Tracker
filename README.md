@@ -47,6 +47,8 @@ http://www.reddit.com/r/ArenaTracker/
  * (Windows) Actually does. It's because Hearthstone fullscreen is just a borderless window.
  * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
  * (Mac) You need to play with Hearthstone in windows mode.
+* I have a drafting already started but Arena Tracker doesn't show HearthArena scores.
+ * When you start a new arena, Arena Tracker automatically helps you with the drafting, but if you already were in the middle of one when openning Arena Tracker you will have to tell the app to force a draft. This is done with the top left button "Force Draft" of the config tab 
 * How can I import a deck from hearthstone to Arena Tracker?
  * [There are 3 ways.](https://github.com/supertriodo/Arena-Tracker/issues/12)
 * What does it mean when text cards are shown in yellow/orange/purple?
