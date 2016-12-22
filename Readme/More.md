@@ -17,7 +17,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Save and organize your constructed decks.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
 * Import decks from webs using Cockatrice format.
-![Import](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/importDeck.gif)
+![Import](https://github.com/supertriodo/Arena-Tracker/blob/master/Extra/importDeck.gif)
 * Auto create decks in Hearthstone.
 * Upload your draft and games to [ZeroToHeroes](http://www.zerotoheroes.com/s/hearthstone) and improve with the community.
 
