@@ -102,8 +102,7 @@ HEADERS  += Sources/mainwindow.h \
 FORMS    += mainwindow.ui
 
 RESOURCES += \
-    arenatracker.qrc \
-    extra.qrc
+    arenatracker.qrc
 
 linux: LIBS += -L./Libs
 win32: RC_ICONS = ArenaTracker.ico

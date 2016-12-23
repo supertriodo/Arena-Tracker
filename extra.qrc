@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>Extra/arenaTemplate.png</file>
-        <file>Extra/collectionTemplate.png</file>
-        <file>Extra/deckBuilder.py</file>
-    </qresource>
-</RCC>
