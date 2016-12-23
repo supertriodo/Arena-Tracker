@@ -21,6 +21,7 @@
 #define DIVIDE_TABS_H2 750
 #define DIVIDE_TABS_V 700
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
+#define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 
 
 namespace Ui {
@@ -139,7 +140,7 @@ private:
     void initCardsJson();
     void removeHSCards();
     void checkCardsJsonVersion(QString cardsJsonVersion);
-    void createCardsJsonFile(QByteArray &jsonData);
+    void dumpOnFile(QByteArray &data, QString path);
 
 //Override events
 protected:

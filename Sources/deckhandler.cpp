@@ -214,7 +214,7 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
     action = newDeckMenu->addAction("Clone enemy deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newCopyEnemyDeck()));
 
-    action = newDeckMenu->addAction("Import HearthHead deck");
+    action = newDeckMenu->addAction("Import web deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
 
     button->setMenu(newDeckMenu);
@@ -1509,17 +1509,25 @@ void DeckHandler::newCopyEnemyDeck()
 
 bool DeckHandler::showHearthHeadHowTo()
 {
-    QString text =  "This option allows you to import a deck from HearthHead:<br/><br/>"
-            "1) Go to <a href='http://www.hearthhead.com/'>HearthHead.com</a> and choose the deck you want.<br/><br/>"
-            "2) Click Export -> Cockatrice and copy the text shown.<br/>"
-                    "*   There's no need to paste it anywhere.<br/><br/>"
-            "3) Ok this dialog and Arena Tracker will create the deck.";
+    QString text =  "<p align='center'>Copy a deck in Cockatrice format and click OK.</p>";
 
-    QMessageBox msgBox(0);
-    msgBox.setTextFormat(Qt::RichText);
+    QMessageBox msgBox((QMainWindow *)this->parent());
     msgBox.setText(text);
-    msgBox.setWindowTitle("Import HearthHead deck");
+    msgBox.setWindowTitle("Import web deck");
     msgBox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
+
+    QLabel label(&msgBox);
+    QGridLayout* layout = (QGridLayout*)msgBox.layout();
+    layout->addWidget(&label, 1, 1);
+    label.setWindowFlags(Qt::FramelessWindowHint);
+    label.setFixedSize(800, 439);
+    QString gifPath = Utility::extraPath() + "/importDeck.gif";
+    QPixmap p(gifPath);
+    label.setPixmap(p);
+    QMovie movie(gifPath);
+    label.setMovie(&movie);
+    movie.start();
+    label.show();
     msgBox.exec();
 
     if(msgBox.result() == QMessageBox::Ok)  return true;
@@ -1566,19 +1574,19 @@ void DeckHandler::importHearthHead()
             if(code.isEmpty())  code = Utility::cardEnCodeFromName(name);
         }
 
-        emit pDebug("Import HearthHead: " + line);
+        emit pDebug("Import cockatrice: " + line);
 
         if(code.isNull())
         {
-            emit pDebug("Import HearthHead: Bad Format.", Warning);
+            emit pDebug("Import cockatrice: Bad Format.", Warning);
         }
         else if(code.isEmpty())
         {
-            emit pDebug("Import HearthHead: Name: " + name + " not found in Jsons.", Warning);
+            emit pDebug("Import cockatrice: Name: " + name + " not found in Jsons.", Warning);
         }
         else if(numCards<1 || numCards>2)
         {
-            emit pDebug("Import HearthHead: Num cards: " + QString::number(numCards) + " is not correct.", Warning);
+            emit pDebug("Import cockatrice: Num cards: " + QString::number(numCards) + " is not correct.", Warning);
         }
         else
         {

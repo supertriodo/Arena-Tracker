@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
 
+    createNetworkManager();
     createDataDir();
     createLogFile();
     completeUI();
@@ -234,18 +235,17 @@ void MainWindow::createCardsJsonMap(QByteArray &jsonData)
 }
 
 
-void MainWindow::createCardsJsonFile(QByteArray &jsonData)
+void MainWindow::dumpOnFile(QByteArray &data, QString path)
 {
-    QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
-    if(!cardsJsonFile.open(QIODevice::WriteOnly))
+    QFile file(path);
+    if(!file.open(QIODevice::WriteOnly))
     {
-        emit pDebug("ERROR: Failed to create cards.json");
+        emit pDebug("ERROR: Failed to create " + path);
         return;
     }
 
-    QTextStream out(&cardsJsonFile);
-    out << jsonData;
-    cardsJsonFile.close();
+    file.write(data);
+    file.close();
 }
 
 
@@ -255,21 +255,34 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug("Load Json cards --> Failed. Retrying...");
-        networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
+        emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
+        networkManager->get(QNetworkRequest(reply->url()));
     }
     else
     {
-        if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
+        QString endUrl = reply->url().toString().split("/").last();
+
+        //Cards json
+        if(endUrl == "cards.json")
         {
-            checkCardsJsonVersion(reply->rawHeader("Location"));
+            if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
+            {
+                checkCardsJsonVersion(reply->rawHeader("Location"));
+            }
+            else
+            {
+                emit pDebug("Extra: Json Cards --> Download Success.");
+                QByteArray jsonData = reply->readAll();
+                dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
+                createCardsJsonMap(jsonData);
+            }
         }
+        //Extra files
         else
         {
-            emit pDebug("Load Json cards --> Download Success.");
-            QByteArray jsonData = reply->readAll();
-            createCardsJsonFile(jsonData);
-            createCardsJsonMap(jsonData);
+            pDebug("Extra: " + endUrl + " --> Download Success.");
+            QByteArray data = reply->readAll();
+            dumpOnFile(data, Utility::extraPath() + "/" + endUrl);
         }
     }
 }
@@ -280,8 +293,8 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString storedCardsJsonVersion = settings.value("cardsJsonVersion", "").toString();
     QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
-    emit pDebug("Load Json cards --> Latest version: " + cardsJsonVersion);
-    emit pDebug("Load Json cards --> Stored version: " + storedCardsJsonVersion);
+    emit pDebug("Extra: Json Cards --> Latest version: " + cardsJsonVersion);
+    emit pDebug("Extra: Json Cards --> Stored version: " + storedCardsJsonVersion);
 
     //Need download
     if(cardsJsonVersion != storedCardsJsonVersion || !cardsJsonFile.exists())
@@ -289,13 +302,13 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
         cardsJsonFile.remove();
         settings.setValue("cardsJsonVersion", cardsJsonVersion);
         networkManager->get(QNetworkRequest(QUrl(cardsJsonVersion)));
-        emit pDebug("Load Json cards --> Download from: " + cardsJsonVersion);
+        emit pDebug("Extra: Json Cards --> Download from: " + cardsJsonVersion);
     }
 
     //Use local cards.json
     else
     {
-        emit pDebug("Load Json cards --> Use local cards.json");
+        emit pDebug("Extra: Json Cards --> Use local cards.json");
         if(!cardsJsonFile.open(QIODevice::ReadOnly))
         {
             emit pDebug("ERROR: Failed to open cards.json");
@@ -318,10 +331,8 @@ void MainWindow::setLocalLang()
 void MainWindow::initCardsJson()
 {
     Utility::setCardsJson(&cardsJson);
-
-    createNetworkManager();
     networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
-    emit pDebug("Load Json cards --> Trying " + QString(JSON_CARDS_URL));
+    emit pDebug("Extra: Json Cards --> Trying " + QString(JSON_CARDS_URL));
 }
 
 
@@ -1936,19 +1947,21 @@ void MainWindow::createDataDir()
     removeHSCards();
     createDir(Utility::hscardsPath());
     createDir(Utility::gameslogPath());
-    if(createDir(Utility::extraPath()))
-    {
-        QFile file1(":Extra/deckBuilder.py");
-        file1.copy(Utility::extraPath() + "/deckBuilder.py");
+    createDir(Utility::extraPath());
 
-        QFile file2(":Extra/arenaTemplate.png");
-        file2.copy(Utility::extraPath() + "/arenaTemplate.png");
+    //Extra files
+    QFileInfo file;
+    file = QFileInfo(Utility::extraPath() + "/deckBuilder.py");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/deckBuilder.py"))));
 
-        QFile file3(":Extra/collectionTemplate.png");
-        file3.copy(Utility::extraPath() + "/collectionTemplate.png");
+    file = QFileInfo(Utility::extraPath() + "/arenaTemplate.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/arenaTemplate.png"))));
 
-        pDebug("Extra files created.");
-    }
+    file = QFileInfo(Utility::extraPath() + "/collectionTemplate.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/collectionTemplate.png"))));
+
+    file = QFileInfo(Utility::extraPath() + "/importDeck.gif");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/importDeck.gif"))));
 
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }
