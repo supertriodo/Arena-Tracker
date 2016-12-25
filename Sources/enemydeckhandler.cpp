@@ -35,6 +35,7 @@ void EnemyDeckHandler::completeUI()
 void EnemyDeckHandler::reset()
 {
     this->enemyClass = INVALID_CLASS;
+    this->firstOutsiderId = 68;
     this->lastSecretIdAdded = -1;
     ui->enemyDeckListWidget->clear();
     deckCardList.clear();
@@ -53,6 +54,12 @@ void EnemyDeckHandler::reset()
 void EnemyDeckHandler::setEnemyClass(QString hero)
 {
     this->enemyClass = Utility::heroFromLogNumber(hero);
+}
+
+
+void EnemyDeckHandler::setFirstOutsiderId(int id)
+{
+    this->firstOutsiderId = id;
 }
 
 
@@ -93,7 +100,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
     }
 
     //Ya existe en el mazo
-    bool outsider = (id > 67);
+    bool outsider = (id >= this->firstOutsiderId);
     bool found = false;
     for(int i=0; i<deckCardList.length(); i++)
     {

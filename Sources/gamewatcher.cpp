@@ -416,6 +416,19 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
             }
         }
     }
+
+
+    //GameState.DebugPrintEntityChoices() -   Entities[4]=[name=La moneda id=68 zone=HAND zonePos=5 cardId=GAME_005 player=2]
+    //GameState.DebugPrintEntityChoices() -   Entities[4]=[name=UNKNOWN ENTITY [cardType=INVALID] id=68 zone=HAND zonePos=5 cardId= player=1]
+    else if(line.contains(QRegularExpression(
+                "GameState\\.DebugPrintEntityChoices\\(\\) - *"
+                "Entities\\[4\\]=\\[name=.* id=(\\d+) zone=HAND zonePos=5 cardId=.* player=\\d+\\]"
+                  ), match))
+    {
+        QString id = match->captured(1);
+        emit pDebug("Coin ID: " + id, numLine);
+        emit coinIdFound(id.toInt());
+    }
 }
 
 

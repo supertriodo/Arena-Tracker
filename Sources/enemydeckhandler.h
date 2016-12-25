@@ -21,6 +21,7 @@ private:
     bool inGame, mouseInApp;
     CardClass enemyClass;
     int lastSecretIdAdded;
+    int firstOutsiderId;
 
 //Metodos
 public:
@@ -53,6 +54,7 @@ public slots:
     void setEnemyClass(QString hero);
     void lockEnemyDeckInterface();
     void unlockEnemyDeckInterface();
+    void setFirstOutsiderId(int id);
 
 private slots:
     void findDeckCardEntered(QListWidgetItem *item);

@@ -575,6 +575,8 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(unlockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(enemyHero(QString)),
             enemyDeckHandler, SLOT(setEnemyClass(QString)));
+    connect(gameWatcher, SIGNAL(coinIdFound(int)),
+            enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
 
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));

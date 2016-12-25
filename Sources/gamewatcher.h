@@ -169,6 +169,7 @@ signals:
     void gameLogComplete(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
     void arenaDeckRead();
     void buffHandCard(int id);
+    void coinIdFound(int id);
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
