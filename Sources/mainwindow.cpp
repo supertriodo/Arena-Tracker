@@ -1504,10 +1504,10 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
@@ -1516,8 +1516,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
@@ -1528,10 +1528,10 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
                 ui->tabWidget->show();
@@ -1541,8 +1541,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1554,10 +1554,10 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1568,8 +1568,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidgetH2);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1582,10 +1582,10 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             if(otherWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
+                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1595,8 +1595,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+                moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
                 moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
@@ -1625,7 +1625,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     else if(widget == ui->tabDeck)
     {
         icon = QIcon(":/Images/deck.png");
-        tooltip = "Deck";
+        tooltip = "Player Deck";
     }
     else if(widget == ui->tabEnemy)
     {
@@ -1650,7 +1650,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     else if(widget == ui->tabConfig)
     {
         icon = QIcon(":/Images/config.png");
-        tooltip = "Preferences";
+        tooltip = "Config";
     }
     tabWidget->addTab(widget, icon, "");
     tabWidget->setTabToolTip(tabWidget->count()-1, tooltip);
