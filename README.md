@@ -114,12 +114,13 @@ If you build on Mac check:
 
 
 ## More info:
-* http://www.reddit.com/r/ArenaTracker/
-* http://www.arenamastery.com/
-* http://www.heartharena.com/
-* http://www.hearthhead.com/
+* http://www.reddit.com/r/ArenaTracker
+* http://www.arenamastery.com
+* http://www.heartharena.com
+* http://www.hearthhead.com
+* http://www.hearthpwn.com
 * http://www.zerotoheroes.com/s/hearthstone
-* http://hearthstonejson.com/
+* http://hearthstonejson.com
 * Arena Tracker is a [HearthSim](http://hearthsim.info) project. Come join us in #hearthsim on chat.freenode.net.
 
 Thanks to all these projects ArenaTracker is possible.
