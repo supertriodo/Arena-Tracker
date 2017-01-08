@@ -248,7 +248,7 @@ void DeckHandler::createLoadDeckTreeWidget()
     loadDeckClasses[9]->setForeground(0, QBrush(QColor(Utility::getHeroColor(9))));
 
     connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(unselectClassItems()));
-    connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(hideDeckTreeWidget()));
+    connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(hideIfDeckSelected()));
 }
 
 
@@ -264,6 +264,14 @@ void DeckHandler::unselectClassItems()
     if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
     QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
     if(isItemClass(item))   ui->loadDeckTreeWidget->clearSelection();
+}
+
+
+void DeckHandler::hideIfDeckSelected()
+{
+    if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
+    QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
+    if(!isItemClass(item))  hideDeckTreeWidget();
 }
 
 

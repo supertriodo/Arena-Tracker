@@ -159,6 +159,7 @@ private slots:
     void adjustRngSize();
     void clearRngAnimating();
     void rngCardEntered(QListWidgetItem *item);
+    void hideIfDeckSelected();
 };
 
 #endif // DECKHANDLER_H
