@@ -2788,7 +2788,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Planificacion turno enemigo
 
 
 //REPLAY BUGS

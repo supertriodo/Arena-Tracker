@@ -109,13 +109,6 @@ void CardGraphicsItem::setDraw(bool drawn)
 }
 
 
-void CardGraphicsItem::setCost(int cost)
-{
-    this->cost = cost;
-    update();
-}
-
-
 void CardGraphicsItem::reduceCost(int cost)
 {
     if(!played && this->cost > cost)
@@ -211,7 +204,11 @@ void CardGraphicsItem::processTagChange(QString tag, QString value)
 {
     qDebug()<<"CARD TAG CHANGE -->"<<id<<tag<<value;
 
-    if(tag == "ATK")
+    if(tag == "COST")
+    {
+        this->cost = value.toInt();
+    }
+    else if(tag == "ATK")
     {
         this->attack = value.toInt();
     }

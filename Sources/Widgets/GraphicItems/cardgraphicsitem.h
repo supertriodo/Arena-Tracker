@@ -52,7 +52,6 @@ public:
     void setDiscard();
     void setDraw(bool drawn=true);
     bool isDiscard();
-    void setCost(int cost);
     void reduceCost(int cost);
     void togglePlayed();
     bool isPlayed();

@@ -59,7 +59,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QList<TagChange> pendingTagChanges;
+    QList<TagChange> pendingTagChanges, cardPendingTagChanges;
     Board *nowBoard;
     Board *viewBoard;
     Board *futureBoard;
@@ -134,7 +134,7 @@ private:
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();
     void cardTagChange(int id, bool friendly, QString tag, QString value);
-    void reduceCostPrevTurn(int id, bool friendly, int cost);
+    void cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value);
     void createGraphicsItemSender();
     QMap<QString, float> bomb(QMap<QString, float> &oldStates);
     QList<int> decodeBombState(QString state);
@@ -149,6 +149,7 @@ private:
     void createFutureBoard();
     void updateMinionFromCard(MinionGraphicsItem *minion);
     void showManaPlayableCards();
+    bool updateInPendingTagChange(int id, QString tag, QString value);
 
 public:
     void setTransparency(Transparency value);
@@ -183,6 +184,7 @@ private slots:
     void showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom);
     void minionWheel(MinionGraphicsItem *minion, bool up);
     void heroWheel(HeroGraphicsItem *hero, bool up);
+    void checkCardPendingTagChanges();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
