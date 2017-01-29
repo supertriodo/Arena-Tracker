@@ -1,5 +1,7 @@
 # Arena-Tracker
-Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
+Arena Tracker reads the Hearthstone log to give your all the info you need. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
+
+Too complicated? [Check the user guide.](https://www.gitbook.com/book/arena-tracker/arena-tracker-documentation/details)
 
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 
