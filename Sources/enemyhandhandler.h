@@ -41,10 +41,10 @@ private:
     void showHeroAttack();
     void hideHeroAttack();
     void resetHeroAttack();
-    HandCard *getHandCard(int id);
     int getCardBuff(QString code);
 
 public:
+    HandCard *getHandCard(int id);
     void redrawDownloadedCardImage(QString &code);
     void redrawClassCards();
     void redrawSpellWeaponCards();

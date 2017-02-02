@@ -1781,6 +1781,9 @@ taking control of mouse and keyboard.</string>
                    </item>
                    <item>
                     <widget class="QCheckBox" name="configCheckGoldenCards">
+                     <property name="toolTip">
+                      <string>Golden Cards: Prioritize golden cards on create deck action.</string>
+                     </property>
                      <property name="text">
                       <string>Golden Cards</string>
                      </property>

@@ -86,6 +86,7 @@
 #define DON_HANCHO "CFM_685"
 #define INNERVATE "EX1_169"
 #define COUNTERFEIT_COIN "CFM_630"
+#define KABAL_CHEMIST "CFM_619"
 
 
 using namespace cv;

@@ -790,22 +790,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         QString zoneTo = match->captured(3);
 
 
-        //Enemigo juega carta desconocida
-        if(zoneFrom == "OPPOSING HAND")
-        {
-            //Carta devuelta al mazo en Mulligan
-            if(zoneTo == "OPPOSING DECK")
-            {
-                emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
-                emit enemyCardPlayed(id.toInt(), "", true);
-            }
-            else
-            {
-                emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
-                emit enemyCardPlayed(id.toInt());
-            }
-        }
-
         //Enemigo juega secreto
         if(zoneTo == "OPPOSING SECRET")
         {
@@ -849,6 +833,23 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 emit pDebug("Player: Outsider unknown card to deck. ID: " + id, numLine);
                 emit playerReturnToDeck("", id.toInt());
+            }
+        }
+
+
+        //Enemigo juega carta desconocida
+        if(zoneFrom == "OPPOSING HAND")
+        {
+            //Carta devuelta al mazo en Mulligan
+            if(zoneTo == "OPPOSING DECK")
+            {
+                emit pDebug("Enemy: Starting card returned. ID: " + id, numLine);
+                emit enemyCardPlayed(id.toInt(), "", true);
+            }
+            else
+            {
+                emit pDebug("Enemy: Unknown card played. ID: " + id, numLine);
+                emit enemyCardPlayed(id.toInt());
             }
         }
     }

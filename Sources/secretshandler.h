@@ -3,6 +3,7 @@
 
 #include "Widgets/ui_extended.h"
 #include "Cards/secretcard.h"
+#include "enemyhandhandler.h"
 #include "utility.h"
 #include <QQueue>
 #include <QObject>
@@ -30,12 +31,13 @@ class SecretsHandler : public QObject
 {
     Q_OBJECT
 public:
-    SecretsHandler(QObject *parent, Ui::Extended *ui);
+    SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler);
     ~SecretsHandler();
 
 //Variables
 private:
     Ui::Extended *ui;
+    EnemyHandHandler *enemyHandHandler;
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
     bool synchronized;
@@ -49,6 +51,8 @@ private:
     void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
     void checkLastSecretOption(ActiveSecret &activeSecret);
+    void unknownSecretPlayed(int id, CardClass hero);
+    void knownSecretPlayed(int id, CardClass hero, QString code);
 
 public:
     void redrawDownloadedCardImage(QString code);

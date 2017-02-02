@@ -379,7 +379,7 @@ void MainWindow::createDraftHandler()
 
 void MainWindow::createSecretsHandler()
 {
-    secretsHandler = new SecretsHandler(this, ui);
+    secretsHandler = new SecretsHandler(this, ui, enemyHandHandler);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(duplicated(QString)),
@@ -2788,7 +2788,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-
+//Splash screen find linux
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable

@@ -1,9 +1,10 @@
 #include "secretshandler.h"
 #include <QtWidgets>
 
-SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
+SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler) : QObject(parent)
 {
     this->ui = ui;
+    this->enemyHandHandler = enemyHandHandler;
     this->synchronized = false;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
@@ -98,9 +99,33 @@ void SecretsHandler::clearSecretsAnimating()
 
 void SecretsHandler::secretStolen(int id, QString code)
 {
+    knownSecretPlayed(id, INVALID_CLASS, code);
+}
+
+
+void SecretsHandler::secretPlayed(int id, CardClass hero)
+{
+    HandCard *handCard = enemyHandHandler->getHandCard(id);
+
+    if(handCard != NULL)
+    {
+        QString createdByCode = handCard->getCreatedByCode();
+        if(createdByCode == KABAL_CHEMIST)
+        {
+            knownSecretPlayed(id, hero, POTION_OF_POLIMORPH);
+            return;
+        }
+    }
+
+    unknownSecretPlayed(id, hero);
+}
+
+
+void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
+{
     ActiveSecret activeSecret;
     activeSecret.id = id;
-    activeSecret.root.hero = INVALID_CLASS;
+    activeSecret.root.hero = hero;
 
     activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
     activeSecret.root.treeItem->setExpanded(true);
@@ -112,11 +137,14 @@ void SecretsHandler::secretStolen(int id, QString code)
 
     ui->secretsTreeWidget->setHidden(false);
 
+    //No puede haber dos secretos iguales
+    discardSecretOptionNow(code);
+
     adjustSize();
 }
 
 
-void SecretsHandler::secretPlayed(int id, CardClass hero)
+void SecretsHandler::unknownSecretPlayed(int id, CardClass hero)
 {
     ActiveSecret activeSecret;
     activeSecret.id = id;
