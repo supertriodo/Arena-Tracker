@@ -129,6 +129,24 @@ int HeroGraphicsItem::getResources()
 }
 
 
+void HeroGraphicsItem::damagePlanningMinion(int damage)
+{
+    if(damage > armor)
+    {
+        damage -= armor;
+        armor = 0;
+        MinionGraphicsItem::damagePlanningMinion(damage);
+    }
+    else
+    {
+        armor -= damage;
+        damage = 0;
+    }
+
+    update();
+}
+
+
 QRectF HeroGraphicsItem::boundingRect() const
 {
     return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 30, HEIGHT + 13);

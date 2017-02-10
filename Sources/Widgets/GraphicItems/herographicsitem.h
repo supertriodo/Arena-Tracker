@@ -65,6 +65,7 @@ public:
     void setShowAllInfo(bool value=true);
     void addResourcesUsed(int value);
     int getAvailableResources();
+    void damagePlanningMinion(int damage=1);
 };
 
 #endif // HEROGRAPHICSITEM_H
