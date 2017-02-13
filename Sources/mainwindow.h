@@ -141,6 +141,7 @@ private:
     void removeHSCards();
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void dumpOnFile(QByteArray &data, QString path);
+    void moveOldLinuxDataDir();//Temporal
 
 //Override events
 protected:

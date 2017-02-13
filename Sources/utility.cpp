@@ -183,7 +183,14 @@ QString Utility::dataPath()
 {
     QFileInfo dirInfo(appPath() + "/Arena Tracker");
     if(dirInfo.exists())   return dirInfo.absoluteFilePath();
-    else                    return QDir::homePath() + "/Arena Tracker";
+    else
+    {
+#ifdef Q_OS_LINUX
+        return QDir::homePath() + "/.local/share" + "/Arena Tracker";
+#else
+        return QDir::homePath() + "/Arena Tracker";
+#endif
+    }
 }
 
 

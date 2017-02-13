@@ -1945,6 +1945,10 @@ bool MainWindow::createDir(QString pathDir)
 
 void MainWindow::createDataDir()
 {
+#ifdef Q_OS_LINUX
+    moveOldLinuxDataDir();//Temporal
+#endif
+
     createDir(Utility::dataPath());
     removeHSCards();
     createDir(Utility::hscardsPath());
@@ -1979,6 +1983,24 @@ void MainWindow::removeHSCards()
         QDir cardsDir = QDir(Utility::hscardsPath());
         cardsDir.removeRecursively();
         emit pDebug(Utility::hscardsPath() + " removed.");
+    }
+}
+
+
+//Temporal
+void MainWindow::moveOldLinuxDataDir()
+{
+    QDir dir(QDir::homePath() + "/Arena Tracker");
+    if(dir.exists())
+    {
+        if(dir.rename(dir.absolutePath(), QDir::homePath() + "/.local/share" + "/Arena Tracker"))
+        {
+            pDebug("Data dir moved to ~/.local/share/Arena Tracker");
+        }
+        else
+        {
+            pDebug("ERROR: Data dir move to ~/.local/share/Arena Tracker failed.", Error);
+        }
     }
 }
 
