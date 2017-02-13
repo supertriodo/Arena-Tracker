@@ -116,5 +116,6 @@
         <file>Images/planNext.png</file>
         <file>Images/planPrev.png</file>
         <file>Images/planResize.png</file>
+        <file>Images/splash.png</file>
     </qresource>
 </RCC>

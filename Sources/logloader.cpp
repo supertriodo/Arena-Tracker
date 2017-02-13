@@ -84,19 +84,19 @@ bool LogLoader::readLogsDirPath()
 
     if(logsDirPath.isEmpty())
     {
-        emit pDebug("Show First Run instructions dialog.");
+//        emit pDebug("Show First Run instructions dialog.");
 
-        QString instructions = "The first time you run Arena Tracker you will be asked for:"
-            "<br/>1) Logs dir location (If not default)."
-            "<br/>2) log.config location (If not default)."
-            "<br/>3) Start Hearthstone (Restart if running).";
+//        QString instructions = "The first time you run Arena Tracker you will be asked for:"
+//            "<br/>1) Logs dir location (If not default)."
+//            "<br/>2) log.config location (If not default)."
+//            "<br/>3) Start Hearthstone (Restart if running).";
 
-        QMessageBox msgBox(0);
-        msgBox.setTextFormat(Qt::RichText);
-        msgBox.setText(instructions);
-        msgBox.setWindowTitle("Config Arena Tracker");
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.exec();
+//        QMessageBox msgBox(0);
+//        msgBox.setTextFormat(Qt::RichText);
+//        msgBox.setText(instructions);
+//        msgBox.setWindowTitle("Config Arena Tracker");
+//        msgBox.setStandardButtons(QMessageBox::Ok);
+//        msgBox.exec();
 
 
         QString initPath = "";
@@ -261,7 +261,7 @@ bool LogLoader::checkLogConfig()
 
     if(logConfigChanged)
     {
-        QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
+//        QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
     }
 
     return true;
