@@ -56,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
     readSettings();
     checkGamesLogDir();
     createVersionChecker();
+#ifdef Q_OS_LINUX
+    QTimer::singleShot(1000, this, SLOT(checkLinuxShortcut()));
+#endif
 }
 
 
@@ -1879,6 +1882,7 @@ void MainWindow::resetSettings()
         settings.setValue("logConfig", "");
         settings.setValue("playerTag", "");
         settings.setValue("sizeDraft", QSize(255, 600));
+        settings.setValue("shortcutAsked", false);
 
         resize(QSize(255, 600));
         move(QPoint(0,0));
@@ -1969,6 +1973,9 @@ void MainWindow::createDataDir()
     file = QFileInfo(Utility::extraPath() + "/importDeck.gif");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/importDeck.gif"))));
 
+    file = QFileInfo(Utility::extraPath() + "/icon.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
+
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }
 
@@ -2002,6 +2009,56 @@ void MainWindow::moveOldLinuxDataDir()
             pDebug("ERROR: Data dir move to ~/.local/share/Arena Tracker failed.", Error);
         }
     }
+}
+
+
+void MainWindow::checkLinuxShortcut()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    bool shortcutAsked = settings.value("shortcutAsked", false).toBool();
+
+    if(shortcutAsked) return;
+
+    settings.setValue("shortcutAsked", true);
+    int answer = QMessageBox::question(0, tr("Create shortcut?"), tr("Do you want to create a desktop shortcut\nand a menu item for Arena Tracker?"),
+                             QMessageBox::Yes, QMessageBox::No);
+    if(answer == QMessageBox::Yes)
+    {
+        createLinuxShortcut();
+    }
+}
+
+
+void MainWindow::createLinuxShortcut()
+{
+    //Menu Item shortcut
+    QFile shortcutFile(QDir::homePath() + "/.local/share/applications/Arena Tracker.desktop");
+    if(shortcutFile.exists())   shortcutFile.remove();
+    if(!shortcutFile.open(QIODevice::WriteOnly))
+    {
+        emit pDebug("ERROR: Cannot create Arena Tracker.desktop", Error);
+        emit pLog(tr("Log: ERROR:Arena Tracker.desktop"));
+        return;
+    }
+    shortcutFile.setPermissions(QFileDevice::ExeOwner | QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+
+    QTextStream out(&shortcutFile);
+
+    out << "[Desktop Entry]" << endl;
+    out << "Comment=" << endl;
+    out << "Terminal=false" << endl;
+    out << "Name=Arena Tracker" << endl;
+    out << "Type=Application" << endl;
+    out << "Exec=" + Utility::appPath() + "/ArenaTracker" << endl;
+    out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
+
+    shortcutFile.close();
+
+    //Desktop shortcut
+    QString desktopShorcutFilename = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/Arena Tracker.desktop";
+    QFile desktopShortcut(desktopShorcutFilename);
+    if(desktopShortcut.exists())    desktopShortcut.remove();
+    shortcutFile.copy(desktopShorcutFilename);
 }
 
 

@@ -22,6 +22,7 @@
 #define DIVIDE_TABS_V 700
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
+#define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 
 
 namespace Ui {
@@ -142,6 +143,7 @@ private:
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void dumpOnFile(QByteArray &data, QString path);
     void moveOldLinuxDataDir();//Temporal
+    void createLinuxShortcut();
 
 //Override events
 protected:
@@ -215,6 +217,7 @@ private slots:
     void updateShowRngList(bool checked);
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
+    void checkLinuxShortcut();
 };
 
 #endif // MAINWINDOW_H
