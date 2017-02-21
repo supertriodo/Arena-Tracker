@@ -2867,7 +2867,6 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Splash screen find linux
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable

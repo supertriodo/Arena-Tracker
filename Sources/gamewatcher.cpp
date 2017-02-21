@@ -261,11 +261,13 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=El tabernero tag=PLAYSTATE value=WON
         if(line.contains(QRegularExpression(
                             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-                            "Entity=(.+) tag=PLAYSTATE value=WON"), match))
+                            "Entity=(.+) tag=PLAYSTATE value=(WON|TIED)"), match))
         {
             winnerPlayer = match->captured(1);
+            bool tied = (match->captured(2) == "TIED");
             powerState = noGame;
-            emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
+            if(tied)    emit pDebug("Found TIED (powerState = noGame)", numLine);
+            else        emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
 
             if(spectating || loadingScreenState == menu)
             {
@@ -277,7 +279,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                 createGameResult(logFileName);
             }
 
-            bool playerWon = (winnerPlayer == playerTag);
+            bool playerWon = !tied && (winnerPlayer == playerTag);
 
             emit endGame(playerWon, playerTag.isEmpty());
         }
