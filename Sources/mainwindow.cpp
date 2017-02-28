@@ -650,7 +650,7 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(zonePlayAttack(QString, int,int)));
     connect(gameWatcher, SIGNAL(playerSecretPlayed(int,QString)),
             planHandler, SLOT(playerSecretPlayed(int,QString)));
-    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass)),
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass,LoadingScreenState)),
             planHandler, SLOT(enemySecretPlayed(int,CardClass)));
     connect(gameWatcher, SIGNAL(playerSecretRevealed(int,QString)),
             planHandler, SLOT(playerSecretRevealed(int,QString)));
@@ -686,8 +686,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             secretsHandler, SLOT(resetSecretsInterface()));
-    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass)),
-            secretsHandler, SLOT(secretPlayed(int,CardClass)));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass, LoadingScreenState)),
+            secretsHandler, SLOT(secretPlayed(int,CardClass, LoadingScreenState)));
     connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
             secretsHandler, SLOT(secretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),

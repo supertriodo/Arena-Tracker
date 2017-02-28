@@ -103,7 +103,7 @@ void SecretsHandler::secretStolen(int id, QString code)
 }
 
 
-void SecretsHandler::secretPlayed(int id, CardClass hero)
+void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
 {
     HandCard *handCard = enemyHandHandler->getHandCard(id);
 
@@ -113,11 +113,23 @@ void SecretsHandler::secretPlayed(int id, CardClass hero)
         if(createdByCode == KABAL_CHEMIST)
         {
             knownSecretPlayed(id, hero, POTION_OF_POLIMORPH);
-            return;
+        }
+        //CreatedBy card
+        else if(!createdByCode.isEmpty())
+        {
+            //Puede ser cualquier secreto
+            unknownSecretPlayed(id, hero, tavernBrawl);
+        }
+        //Deck card
+        else
+        {
+            unknownSecretPlayed(id, hero, loadingScreenState);
         }
     }
-
-    unknownSecretPlayed(id, hero);
+    else
+    {
+        unknownSecretPlayed(id, hero, loadingScreenState);
+    }
 }
 
 
@@ -144,7 +156,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 }
 
 
-void SecretsHandler::unknownSecretPlayed(int id, CardClass hero)
+void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
 {
     ActiveSecret activeSecret;
     activeSecret.id = id;
@@ -157,7 +169,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero)
     switch(hero)
     {
         case PALADIN:
-            activeSecret.children.append(SecretCard(AVENGE));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
@@ -171,7 +183,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero)
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             activeSecret.children.append(SecretCard(BEAR_TRAP));
-            activeSecret.children.append(SecretCard(SNIPE));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
             activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
@@ -181,7 +193,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero)
 
         case MAGE:
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-            activeSecret.children.append(SecretCard(DDUPLICATE));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
             activeSecret.children.append(SecretCard(EFFIGY));

@@ -51,7 +51,7 @@ private:
     void discardSecretOption(QString code, int delay=3000);
     void discardSecretOptionNow(QString code);
     void checkLastSecretOption(ActiveSecret &activeSecret);
-    void unknownSecretPlayed(int id, CardClass hero);
+    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void knownSecretPlayed(int id, CardClass hero, QString code);
 
 public:
@@ -69,7 +69,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SecretsHandler");
 
 public slots:
-    void secretPlayed(int id, CardClass hero);
+    void secretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void secretStolen(int id, QString code);
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();

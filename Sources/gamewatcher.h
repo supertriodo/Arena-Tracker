@@ -117,7 +117,7 @@ signals:
     void enemyCardPlayed(int id, QString code="", bool discard=false);
     void playerCardPlayed(int id, QString code, bool discard=false);
     void lastHandCardIsCoin();
-    void enemySecretPlayed(int id, CardClass hero);
+    void enemySecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void playerSecretPlayed(int id, QString code);
     void enemySecretStolen(int id, QString code);
     void playerSecretStolen(int id, QString code);

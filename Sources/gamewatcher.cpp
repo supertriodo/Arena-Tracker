@@ -796,7 +796,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         if(zoneTo == "OPPOSING SECRET")
         {
             emit pDebug("Enemy: Secret played. ID: " + id, numLine);
-            emit enemySecretPlayed(id.toInt(), secretHero);
+            emit enemySecretPlayed(id.toInt(), secretHero, loadingScreenState);
         }
 
         //Enemigo roba carta desconocida
