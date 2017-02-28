@@ -50,6 +50,7 @@ private:
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
     QString compressLog(QString logFileName);
+    void setWebButtonTooltip();
 
 public:
     void setWebUploader(WebUploader *webUploader);

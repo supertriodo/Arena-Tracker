@@ -33,6 +33,7 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
+    setWebButtonTooltip();
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));
@@ -57,6 +58,13 @@ void ArenaHandler::completeUI()
             this, SLOT(hideRewards()));
     connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
             this, SLOT(uploadRewards()));
+}
+
+
+void ArenaHandler::setWebButtonTooltip()
+{
+    QString month = QDate::currentDate().toString("MMMM");
+    ui->webButton->setToolTip("Show " + month + " arenas in Arena Mastery.");
 }
 
 
@@ -666,7 +674,10 @@ void ArenaHandler::openDonateWeb()
 
 void ArenaHandler::openAMWeb()
 {
-    QDesktopServices::openUrl(QUrl(WEB_URL));
+    QDate date = QDate::currentDate();
+    QDateTime dateTime(date.addDays(1 - date.day()));
+    qint64 epoch = dateTime.toMSecsSinceEpoch()/1000;
+    QDesktopServices::openUrl(QUrl(WEB_URL + "stats.php?date=" + QString::number(epoch)));
 }
 
 
