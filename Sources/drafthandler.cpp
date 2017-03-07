@@ -174,6 +174,18 @@ void DraftHandler::clearLists()
 }
 
 
+void DraftHandler::enterArena()
+{
+    if(drafting)    showOverlay();
+}
+
+
+void DraftHandler::leaveArena()
+{
+    if(drafting)    this->draftScoreWindow->hide();
+}
+
+
 void DraftHandler::beginDraft(QString hero)
 {
     int heroInt = hero.toInt();

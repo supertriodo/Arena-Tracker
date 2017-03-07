@@ -94,6 +94,8 @@ public slots:
                         double tierScore1, double tierScore2, double tierScore3,
                         QString synergy1, QString synergy2, QString synergy3);
     void pickCard(QString code);
+    void enterArena();
+    void leaveArena();
 
 private slots:
     void captureDraft();

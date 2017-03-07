@@ -724,6 +724,10 @@ void MainWindow::createGameWatcher()
             this, SLOT(resetDeck()));
     connect(gameWatcher,SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
+    connect(gameWatcher, SIGNAL(enterArena()),
+            draftHandler, SLOT(enterArena()));
+    connect(gameWatcher, SIGNAL(leaveArena()),
+            draftHandler, SLOT(leaveArena()));
 }
 
 
@@ -2867,6 +2871,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
+//Ocultar draft overlay al salir al menu
+//Mejorar reconocer cartas doradas
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable

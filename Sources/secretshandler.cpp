@@ -184,7 +184,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
-            activeSecret.children.append(SecretCard(DART_TRAP));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(HIDDEN_CACHE));
