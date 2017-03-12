@@ -7,7 +7,7 @@ Too complicated? [Check the User Guide.](https://www.gitbook.com/read/book/arena
 
 
 ## Download (Windows/Mac/Linux)
-https://github.com/supertriodo/Arena-Tracker/releases/latest
+[Download here](https://github.com/supertriodo/Arena-Tracker/releases/latest)
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
@@ -17,7 +17,7 @@ https://github.com/supertriodo/Arena-Tracker/releases/latest
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
 
-Data used by Arena Tracker will be stored in USER/Arena Tracker with the following structure:
+Data used by Arena Tracker will be stored in USER/Arena Tracker (Windows/Mac) or USER/.local/share/Arena Tracker (Linux) with the following structure:
 * Arena Tracker\
  * ArenaTrackerLog.txt     -- (Log created by Arena Tracker, used for debugging)
  * ArenaTrackerDecks.json  -- (Your deck collection in Arena Tracker)
