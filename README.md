@@ -11,6 +11,7 @@ Too complicated? [Check the User Guide.](https://www.gitbook.com/read/book/arena
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
+ * libpng12 needs to be installed on Ubuntu 16.10
 * For Arch Linux users there's a package in AUR maintained by the community
  * https://aur.archlinux.org/packages/arena-tracker/
 
