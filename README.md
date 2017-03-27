@@ -30,16 +30,16 @@ Data used by Arena Tracker will be stored in USER/Arena Tracker (Windows/Mac) or
 ##  First Run
 The first time you run Arena Tracker you will be asked for:
 
-* 1) Logs dir location (If not default).
+1) Logs dir location (If not default).
  * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Logs
  * Default (Mac): /Applications/Hearthstone/Logs
  * If the Logs dir doesn't exist create it.
-* 2) log.config location (If not default).
+2) log.config location (If not default).
  * Default (Win 7-10): USER\AppData\Local\Blizzard\Hearthstone\log.config
  * Default (Win XP/WINE): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
  * Default (Mac): ~/Library/Preferences/Blizzard/Hearthstone/log.config
  * If the file doesn't exist create an empty log.config in that dir.
-* 3) Restart Hearthstone (if you have it opened).
+3) Restart Hearthstone (if you have it opened).
 
 If you have problems installing it or using it I'm happy to help you on
 http://www.reddit.com/r/ArenaTracker/
