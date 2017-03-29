@@ -35,7 +35,7 @@ private:
     cv::Rect screenRects[3];
     int screenIndex;
     int nextCount;
-    bool drafting;
+    bool drafting, capturing;
     bool mouseInApp;
     Transparency transparency;
     DraftScoreWindow *draftScoreWindow;
@@ -67,6 +67,7 @@ private:
     void highlightScore(QLabel *label);
     void deleteDraftScoreWindow();
     void showOverlay();
+    void newCaptureDraftLoop(bool delayed=false);
 
 public:
     void reHistDownloadedCardImage(QString &code);

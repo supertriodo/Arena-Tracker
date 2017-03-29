@@ -10,6 +10,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->deckRating = 0;
     this->nextCount = 0;
     this->drafting = false;
+    this->capturing = false;
     this->transparency = Opaque;
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
@@ -91,7 +92,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     }
     qDebug() << "Num histograms BD:" << QString::number(hearthArenaCodes.count());
 
-    if(cardsDownloading==0) captureDraft();
+    if(cardsDownloading==0) newCaptureDraftLoop();
     else
     {
         ui->progressBar->setMaximum(cardsDownloading);
@@ -112,7 +113,7 @@ void DraftHandler::reHistDownloadedCardImage(QString &code)
     if(cardsDownloading==0)
     {
         ui->progressBar->setVisible(false);
-        captureDraft();
+        newCaptureDraftLoop();
     }
     else
     {
@@ -209,6 +210,7 @@ void DraftHandler::beginDraft(QString hero)
 
     this->arenaHero = hero;
     this->drafting = true;
+    this->capturing = false;
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
@@ -265,10 +267,25 @@ void DraftHandler::deleteDraftScoreWindow()
 }
 
 
+void DraftHandler::newCaptureDraftLoop(bool delayed)
+{
+    if(!capturing)
+    {
+        capturing = true;
+        if(delayed) QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+        else        captureDraft();
+    }
+}
+
+
 void DraftHandler::captureDraft()
 {
     justPickedCard = "";
-    if(!drafting)   return;
+    if(!drafting)
+    {
+        capturing = false;
+        return;
+    }
 
     if(screenRectsFound() || findScreenRects())
     {
@@ -278,8 +295,15 @@ void DraftHandler::captureDraft()
         QString codes[3];
         getBestMatchingCodes(screenCardsHist, codes);
 
-        if(areNewCards(codes))  showNewCards(codes);
-        else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        if(areNewCards(codes))
+        {
+            capturing = false;
+            showNewCards(codes);
+        }
+        else
+        {
+            QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        }
     }
     else
     {
@@ -317,7 +341,7 @@ bool DraftHandler::areNewCards(QString codes[3])
         nextCount = 0;
         return false;
     }
-    else if(nextCount < 3)
+    else if(nextCount < 1)
     {
         nextCount++;
         emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
@@ -372,7 +396,11 @@ bool DraftHandler::areSameRarity(QString codes[3])
 
 void DraftHandler::pickCard(QString code)
 {
-    if(!drafting || justPickedCard==code)   return;
+    if(!drafting || justPickedCard==code)
+    {
+        emit pDebug("WARNING: Duplicate pick code detected: " + code);
+        return;
+    }
 
     if(code=="0" || code=="1" || code=="2")
     {
@@ -413,7 +441,7 @@ void DraftHandler::pickCard(QString code)
     emit newDeckCard(code);
     this->justPickedCard = code;
 
-    QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+    newCaptureDraftLoop(true);
 }
 
 
@@ -532,7 +560,7 @@ void DraftHandler::getBestMatchingCodes(cv::MatND screenCardsHist[3], QString co
     //Minimo umbral
     for(int i=0; i<3; i++)
     {
-        if(bestMatch[i] < 0.5)   codes[i] = bestCodes[i];
+        if(bestMatch[i] < 0.6)      codes[i] = bestCodes[i];
     }
 }
 
