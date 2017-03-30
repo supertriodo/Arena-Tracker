@@ -35,13 +35,13 @@ private:
     cv::Rect screenRects[3];
     int screenIndex;
     int nextCount;
-    bool drafting, capturing;
+    bool drafting, capturing, leavingArena;
     bool mouseInApp;
     Transparency transparency;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
     bool learningMode;
-    QString justPickedCard;
+    QString justPickedCard; //Evita doble pick card en Arena.log
 
 
 //Metodos

@@ -11,6 +11,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->nextCount = 0;
     this->drafting = false;
     this->capturing = false;
+    this->leavingArena = false;
     this->transparency = Opaque;
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
@@ -177,13 +178,27 @@ void DraftHandler::clearLists()
 
 void DraftHandler::enterArena()
 {
-    if(drafting)    showOverlay();
+    if(drafting)
+    {
+        showOverlay();
+        if(draftCards[0].getCode().isEmpty())
+        {
+            newCaptureDraftLoop();
+        }
+    }
 }
 
 
 void DraftHandler::leaveArena()
 {
-    if(drafting)    this->draftScoreWindow->hide();
+    if(drafting)
+    {
+        if(capturing)
+        {
+            this->leavingArena = true;
+        }
+        this->draftScoreWindow->hide();
+    }
 }
 
 
@@ -211,6 +226,7 @@ void DraftHandler::beginDraft(QString hero)
     this->arenaHero = hero;
     this->drafting = true;
     this->capturing = false;
+    this->leavingArena = false;
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
@@ -283,6 +299,13 @@ void DraftHandler::captureDraft()
     justPickedCard = "";
     if(!drafting)
     {
+        capturing = false;
+        return;
+    }
+
+    if(leavingArena)
+    {
+        leavingArena = false;
         capturing = false;
         return;
     }
