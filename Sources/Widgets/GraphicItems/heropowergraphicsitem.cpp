@@ -68,6 +68,7 @@ void HeroPowerGraphicsItem::setPlayerTurn(bool playerTurn)
 void HeroPowerGraphicsItem::toggleExausted()
 {
     this->exausted = !this->exausted;
+    if(exausted)    this->showTransparent = false;
     update();
 }
 
@@ -127,6 +128,7 @@ void HeroPowerGraphicsItem::processTagChange(QString tag, QString value)
     if(tag == "EXHAUSTED")
     {
         this->exausted = (value=="1");
+        if(exausted)    this->showTransparent = false;
         update();
     }
 }

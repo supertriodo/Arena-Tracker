@@ -436,7 +436,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 
 void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 {
-    //TAG_CHANGE conocido
+    //TAG_CHANGE jugadores conocido
     //D 10:48:46.1127070 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES value=3
     if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "

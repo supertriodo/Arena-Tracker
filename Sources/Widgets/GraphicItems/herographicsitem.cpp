@@ -9,7 +9,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->exausted = false;
     this->hero = true;
     this->minionsAttack = this->minionsMaxAttack = 0;
-    this->resources = 1;
+    this->resources = 0;
     this->resourcesUsed = 0;
     this->spellDamage = 0;
     this->showAllInfo = true;
@@ -579,8 +579,8 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         //Mana
         painter->drawPixmap(WIDTH/2-50, -HEIGHT/2+13, QPixmap(":Images/bgCrystal.png"));
 
-        if(playerTurn != friendly)      text = QString::number(resources);
-        else if(resourcesUsed == 0)     text = QString::number(resources);
+        if(playerTurn != friendly)      text = QString::number(max(1,resources));
+        else if(resourcesUsed == 0)     text = QString::number(max(1,resources));
         else                            text = QString::number(resources-resourcesUsed) + "/" + QString::number(resources);
         textWide = fm.width(text);
         path = QPainterPath();

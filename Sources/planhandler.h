@@ -121,7 +121,7 @@ private:
     int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);
     QList<CardGraphicsItem *> *getHandList(bool friendly, Board *board=NULL);
     CardGraphicsItem *findCard(bool friendly, int id, Board *board=NULL);
-    void cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn);
+    CardGraphicsItem *cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn);
     void cardPlayed(bool friendly, int id, QString code, bool discard);
     void revealEnemyCardPrevTurns(int id, QString code);    
     void addWeapon(bool friendly, QString code, int id);
@@ -148,7 +148,8 @@ private:
     void deleteFutureBoard();
     void createFutureBoard();
     void updateMinionFromCard(MinionGraphicsItem *minion);
-    void showManaPlayableCards();
+    void showManaPlayableCards(Board *board);
+    void showManaPlayableCardsNextTurn(Board *board);
     bool updateInPendingTagChange(int id, QString tag, QString value);
 
 public:

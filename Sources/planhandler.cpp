@@ -1028,9 +1028,20 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
     HeroGraphicsItem *hero = getHero(friendly, NULL);
     if(hero == NULL)        return;
 
-    if(tag == "RESOURCES")                  hero->setResources(value.toInt());
-    else if(tag == "RESOURCES_USED")        hero->setResourcesUsed(value.toInt());
-    else if(tag == "CURRENT_SPELLPOWER")    hero->setSpellDamage(value.toInt());
+    if(tag == "RESOURCES")
+    {
+        hero->setResources(value.toInt());
+        if(friendly)    showManaPlayableCards(nowBoard);
+    }
+    else if(tag == "RESOURCES_USED")
+    {
+        hero->setResourcesUsed(value.toInt());
+        if(friendly)    showManaPlayableCards(nowBoard);
+    }
+    else if(tag == "CURRENT_SPELLPOWER")
+    {
+        hero->setSpellDamage(value.toInt());
+    }
 }
 
 
@@ -1483,7 +1494,15 @@ CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 
 void PlanHandler::playerCardDraw(int id, QString code, int turn)
 {
-    cardDraw(true, id, code, "", turn);
+    CardGraphicsItem *card = cardDraw(true, id, code, "", turn);
+
+    //Al robar una carta la volvemos transparente si no se puede jugar
+    //Queremos que las cartas en el mulligan se vean bien claras
+    if(turn != 0)
+    {
+        int mana = nowBoard->playerHero->getAvailableResources();
+        card->showManaPlayable(mana);
+    }
 }
 
 
@@ -1493,7 +1512,7 @@ void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int
 }
 
 
-void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
+CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
 {
     CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly, graphicsItemSender);
     getHandList(friendly)->append(card);
@@ -1504,26 +1523,30 @@ void PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdB
     if(!createdByCode.isEmpty())    emit checkCardImage(createdByCode, false);
 
     //Show card draw last turn
-    if(turnBoards.empty())  return;
-    Board *board = turnBoards.last();
-    if(board->numTurn == turn)
+    if(!turnBoards.empty())
     {
-        CardGraphicsItem *drawCard = findCard(friendly, id, board);
+        Board *board = turnBoards.last();
+        if(board->numTurn == turn)
+        {
+            CardGraphicsItem *drawCard = findCard(friendly, id, board);
 
-        if(drawCard == NULL || drawCard->isDiscard())
-        {
-            drawCard = new CardGraphicsItem(card);
-            drawCard->setDraw();
-            getHandList(friendly, board)->append(drawCard);
-            updateCardZoneSpots(friendly, board);
-            if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
-        }
-        else
-        {
-            //Battlecry cancelado y vuelve a la mano
-            drawCard->setPlayed(false);
+            if(drawCard == NULL || drawCard->isDiscard())
+            {
+                drawCard = new CardGraphicsItem(card);
+                drawCard->setDraw();
+                getHandList(friendly, board)->append(drawCard);
+                updateCardZoneSpots(friendly, board);
+                if(viewBoard == board)      ui->planGraphicsView->scene()->addItem(drawCard);
+            }
+            else
+            {
+                //Battlecry cancelado y vuelve a la mano
+                drawCard->setPlayed(false);
+            }
         }
     }
+
+    return card;
 }
 
 
@@ -1664,7 +1687,8 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     //Store nowBoard
     turnBoards.append(copyBoard(nowBoard, numTurn));
-
+    if(!playerTurn)     showManaPlayableCardsNextTurn(nowBoard);
+//    else                showManaPlayableCards(nowBoard);//No es necesario ya que RESOURCES_USED pasa a 0 y se hace alli
     updateTurnSliderRange();
 
     //Avanza en now board
@@ -1798,23 +1822,40 @@ void PlanHandler::createFutureBoard()
     ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
     ui->planButtonLast->setEnabled(true);
     emit cardLeave();   //Hide cards tooltips
-    showManaPlayableCards();
+    showManaPlayableCards(futureBoard);
 }
 
 
-void PlanHandler::showManaPlayableCards()
+void PlanHandler::showManaPlayableCards(Board *board)
 {
-    int mana = futureBoard->playerHero->getAvailableResources();
-    foreach(CardGraphicsItem* card, futureBoard->playerHandList)
+    int mana = board->playerHero->getAvailableResources();
+    foreach(CardGraphicsItem* card, board->playerHandList)
     {
         if(!card->isPlayed())   card->showManaPlayable(mana);
     }
 
-    if(futureBoard->playerHeroPower != NULL && !futureBoard->playerHeroPower->isExausted())
+    if(board->playerHeroPower != NULL && !board->playerHeroPower->isExausted())
     {
-        futureBoard->playerHeroPower->showManaPlayable(mana);
+        board->playerHeroPower->showManaPlayable(mana);
     }
 }
+
+
+void PlanHandler::showManaPlayableCardsNextTurn(Board *board)
+{
+    int mana = min(10,board->playerHero->getResources() + 1);
+    qDebug()<<board->playerHero->getResources();
+    foreach(CardGraphicsItem* card, board->playerHandList)
+    {
+        if(!card->isPlayed())   card->showManaPlayable(mana);
+    }
+
+    if(board->playerHeroPower != NULL && !board->playerHeroPower->isExausted())
+    {
+        board->playerHeroPower->showManaPlayable(mana);
+    }
+}
+
 
 void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
 {
@@ -1854,7 +1895,7 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
         card->togglePlayed();
         selectedCode = (card->isPlayed()?card->getCode():"");
         futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getManaSpent():-card->getManaSpent());
-        showManaPlayableCards();
+        showManaPlayableCards(futureBoard);
     }
 }
 
@@ -1889,7 +1930,7 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower, Qt::MouseButt
         heroPower->toggleExausted();
         selectedCode = (heroPower->isExausted()?heroPower->getCode():"");
         futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
-        showManaPlayableCards();
+        showManaPlayableCards(futureBoard);
     }
 }
 
