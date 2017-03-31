@@ -148,8 +148,10 @@ private:
     void deleteFutureBoard();
     void createFutureBoard();
     void updateMinionFromCard(MinionGraphicsItem *minion);
+    int getPotentialMana(Board *board);
     void showManaPlayableCards(Board *board);
-    void showManaPlayableCardsNextTurn(Board *board);
+    int getPotentialManaNextTurn();
+    void showManaPlayableCardsNextTurn();
     bool updateInPendingTagChange(int id, QString tag, QString value);
 
 public:

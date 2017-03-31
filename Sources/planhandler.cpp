@@ -1500,8 +1500,19 @@ void PlanHandler::playerCardDraw(int id, QString code, int turn)
     //Queremos que las cartas en el mulligan se vean bien claras
     if(turn != 0)
     {
-        int mana = nowBoard->playerHero->getAvailableResources();
-        card->showManaPlayable(mana);
+        int manaCard = card->getManaSpent();
+
+        //Revisamos solo esta carta
+        if(manaCard >= 0)
+        {
+            int mana = getPotentialMana(nowBoard);
+            card->showManaPlayable(mana);
+        }
+        //Revisamos todas las cartas, hemos robado una moneda
+        else
+        {
+            showManaPlayableCards(nowBoard);
+        }
     }
 }
 
@@ -1687,7 +1698,7 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     //Store nowBoard
     turnBoards.append(copyBoard(nowBoard, numTurn));
-    if(!playerTurn)     showManaPlayableCardsNextTurn(nowBoard);
+    if(!playerTurn)     showManaPlayableCardsNextTurn();
 //    else                showManaPlayableCards(nowBoard);//No es necesario ya que RESOURCES_USED pasa a 0 y se hace alli
     updateTurnSliderRange();
 
@@ -1826,9 +1837,25 @@ void PlanHandler::createFutureBoard()
 }
 
 
-void PlanHandler::showManaPlayableCards(Board *board)
+int PlanHandler::getPotentialMana(Board *board)
 {
     int mana = board->playerHero->getAvailableResources();
+    foreach(CardGraphicsItem* card, board->playerHandList)
+    {
+        if(!card->isPlayed())
+        {
+            int manaCard = card->getManaSpent();
+            if(manaCard < 0)    mana -= manaCard;
+        }
+    }
+
+    return mana;
+}
+
+
+void PlanHandler::showManaPlayableCards(Board *board)
+{
+    int mana = getPotentialMana(board);
     foreach(CardGraphicsItem* card, board->playerHandList)
     {
         if(!card->isPlayed())   card->showManaPlayable(mana);
@@ -1841,18 +1868,30 @@ void PlanHandler::showManaPlayableCards(Board *board)
 }
 
 
-void PlanHandler::showManaPlayableCardsNextTurn(Board *board)
+int PlanHandler::getPotentialManaNextTurn()
 {
-    int mana = min(10,board->playerHero->getResources() + 1);
-    qDebug()<<board->playerHero->getResources();
-    foreach(CardGraphicsItem* card, board->playerHandList)
+    int mana = nowBoard->playerHero->getResources() + 1;
+    foreach(CardGraphicsItem* card, nowBoard->playerHandList)
     {
-        if(!card->isPlayed())   card->showManaPlayable(mana);
+        int manaCard = card->getManaSpent();
+        if(manaCard < 0)    mana -= manaCard;
     }
 
-    if(board->playerHeroPower != NULL && !board->playerHeroPower->isExausted())
+    return min(10, mana);
+}
+
+
+void PlanHandler::showManaPlayableCardsNextTurn()
+{
+    int mana = getPotentialManaNextTurn();
+    foreach(CardGraphicsItem* card, nowBoard->playerHandList)
     {
-        board->playerHeroPower->showManaPlayable(mana);
+        card->showManaPlayable(mana);
+    }
+
+    if(nowBoard->playerHeroPower != NULL && !nowBoard->playerHeroPower->isExausted())
+    {
+        nowBoard->playerHeroPower->showManaPlayable(mana);
     }
 }
 
