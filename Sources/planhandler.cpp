@@ -588,6 +588,11 @@ void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString valu
     emit pDebug("Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
     card->processTagChange(tag, value);
     cardTagChangePrevTurn(id, friendly, tag, value);
+
+    if(friendly && tag == "COST")
+    {
+        showManaPlayableCardsAuto();
+    }
 }
 
 
@@ -613,6 +618,11 @@ void PlanHandler::checkCardPendingTagChanges()
     emit pDebug("Pending Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
     card->processTagChange(tag, value);
     cardTagChangePrevTurn(id, friendly, tag, value);
+
+    if(friendly && tag == "COST")
+    {
+        showManaPlayableCardsAuto();
+    }
 }
 
 
@@ -1031,11 +1041,15 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
     if(tag == "RESOURCES")
     {
         hero->setResources(value.toInt());
-        if(friendly)    showManaPlayableCards(nowBoard);
+        if(friendly)    showManaPlayableCardsAuto();
     }
     else if(tag == "RESOURCES_USED")
     {
         hero->setResourcesUsed(value.toInt());
+        //        13:08:35 - GameWatcher(11790): Player: TAG_CHANGE(RESOURCES)= 5 -- Name: triodo
+        //        13:08:35 - GameWatcher(11791): Player: TAG_CHANGE(RESOURCES_USED)= 0 -- Name: triodo
+        //El reinicio de los recursos del jugador se hace al final del turno enemigo por eso
+        //forzamos al que el de RESOURCES_USED sea para el turno actual del jugador.
         if(friendly)    showManaPlayableCards(nowBoard);
     }
     else if(tag == "CURRENT_SPELLPOWER")
@@ -1494,25 +1508,13 @@ CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 
 void PlanHandler::playerCardDraw(int id, QString code, int turn)
 {
-    CardGraphicsItem *card = cardDraw(true, id, code, "", turn);
+    cardDraw(true, id, code, "", turn);
 
     //Al robar una carta la volvemos transparente si no se puede jugar
     //Queremos que las cartas en el mulligan se vean bien claras
     if(turn != 0)
     {
-        int manaCard = card->getManaSpent();
-
-        //Revisamos solo esta carta
-        if(manaCard >= 0)
-        {
-            int mana = getPotentialMana(nowBoard);
-            card->showManaPlayable(mana);
-        }
-        //Revisamos todas las cartas, hemos robado una moneda
-        else
-        {
-            showManaPlayableCards(nowBoard);
-        }
+        showManaPlayableCardsAuto();
     }
 }
 
@@ -1698,8 +1700,7 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     //Store nowBoard
     turnBoards.append(copyBoard(nowBoard, numTurn));
-    if(!playerTurn)     showManaPlayableCardsNextTurn();
-//    else                showManaPlayableCards(nowBoard);//No es necesario ya que RESOURCES_USED pasa a 0 y se hace alli
+    showManaPlayableCardsAuto();
     updateTurnSliderRange();
 
     //Avanza en now board
@@ -1893,6 +1894,13 @@ void PlanHandler::showManaPlayableCardsNextTurn()
     {
         nowBoard->playerHeroPower->showManaPlayable(mana);
     }
+}
+
+
+void PlanHandler::showManaPlayableCardsAuto()
+{
+    if(!nowBoard->playerTurn)   showManaPlayableCardsNextTurn();
+    else                        showManaPlayableCards(nowBoard);
 }
 
 

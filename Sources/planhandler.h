@@ -135,6 +135,7 @@ private:
     bool getWinner();
     void cardTagChange(int id, bool friendly, QString tag, QString value);
     void cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value);
+    bool updateInPendingTagChange(int id, QString tag, QString value);
     void createGraphicsItemSender();
     QMap<QString, float> bomb(QMap<QString, float> &oldStates);
     QList<int> decodeBombState(QString state);
@@ -152,7 +153,7 @@ private:
     void showManaPlayableCards(Board *board);
     int getPotentialManaNextTurn();
     void showManaPlayableCardsNextTurn();
-    bool updateInPendingTagChange(int id, QString tag, QString value);
+    void showManaPlayableCardsAuto();
 
 public:
     void setTransparency(Transparency value);
