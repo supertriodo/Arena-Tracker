@@ -1265,6 +1265,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)       resetSettings();
+#ifdef Q_OS_LINUX
+            else if(event->key() == Qt::Key_S)  askLinuxShortcut();
+#endif
             else if(event->key() == Qt::Key_1)  draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
@@ -2021,9 +2024,16 @@ void MainWindow::checkLinuxShortcut()
     QSettings settings("Arena Tracker", "Arena Tracker");
     bool shortcutAsked = settings.value("shortcutAsked", false).toBool();
 
-    if(shortcutAsked) return;
+    if(!shortcutAsked)
+    {
+        settings.setValue("shortcutAsked", true);
+        askLinuxShortcut();
+    }
+}
 
-    settings.setValue("shortcutAsked", true);
+
+void MainWindow::askLinuxShortcut()
+{
     int answer = QMessageBox::question(0, tr("Create shortcut?"), tr("Do you want to create a desktop shortcut\nand a menu item for Arena Tracker?"),
                              QMessageBox::Yes, QMessageBox::No);
     if(answer == QMessageBox::Yes)
@@ -2035,6 +2045,23 @@ void MainWindow::checkLinuxShortcut()
 
 void MainWindow::createLinuxShortcut()
 {
+    QProcess p;
+    QString pattern = "*/ArenaTracker.AppImage";
+    QString trash =  "*/.local/share/Trash/*";
+    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
+    p.waitForFinished(-1);
+    QString appImagePath = QString(p.readAll()).trimmed();
+    if(appImagePath.contains("\n") || appImagePath.isEmpty())
+    {
+        emit pDebug("WARNING: Cannot create shorcut. " +
+                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+        emit pLog("Shortcut: Cannot create shorcut. " +
+                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+        return;
+    }
+
     //Menu Item shortcut
     QFile shortcutFile(QDir::homePath() + "/.local/share/applications/Arena Tracker.desktop");
     if(shortcutFile.exists())   shortcutFile.remove();
@@ -2053,7 +2080,7 @@ void MainWindow::createLinuxShortcut()
     out << "Terminal=false" << endl;
     out << "Name=Arena Tracker" << endl;
     out << "Type=Application" << endl;
-    out << "Exec=" + Utility::appPath() + "/ArenaTracker" << endl;
+    out << "Exec=" + appImagePath << endl;
     out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
 
     shortcutFile.close();
@@ -2063,6 +2090,9 @@ void MainWindow::createLinuxShortcut()
     QFile desktopShortcut(desktopShorcutFilename);
     if(desktopShortcut.exists())    desktopShortcut.remove();
     shortcutFile.copy(desktopShorcutFilename);
+
+    emit pDebug("Desktop and menu shorcut created pointing to " + appImagePath);
+    emit pLog("Shortcut: Desktop and menu shorcut created pointing to " + appImagePath);
 }
 
 
@@ -2871,8 +2901,11 @@ LoadingScreenState MainWindow::getLoadingScreen()
 
 
 //TODO
-//Ocultar draft overlay al salir al menu
-//Mejorar reconocer cartas doradas
+//Move to secrets --> config option
+//Secrets tooltip en plan tab.
+//Play around cards en plan tab.
+//Enlaces al gitbook en cada tab.
+//Verificador de acciones de log.
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
@@ -2924,6 +2957,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Update bombing cards
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
 //Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
+
+//Mana bind -- test
+//Volcano -- Demasiados misiles
+
+//STANDARD CYCLE
+//Remove secrets rotating out
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)
