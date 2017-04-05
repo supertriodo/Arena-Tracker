@@ -44,6 +44,8 @@ private:
     PlanHandler *planHandler;
     QString lastCreatedByCode;
     BombWindow *bombWindow;
+    //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+    QMap<int,QString> cardId2Code;
 
 
 //Metodos

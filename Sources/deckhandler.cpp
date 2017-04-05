@@ -728,7 +728,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
     for(int i=1; i<deckCardList.length(); i++)
     {
         DeckCard *card = &deckCardList[i];
-        if(card->id == id)
+        if(card->isOutsider() && card->id == id)
         {
             if(card->remaining > 1)
             {
@@ -774,6 +774,10 @@ void DeckHandler::drawFromDeck(QString code, int id)
                 emit pDebug("New card but deck is full. " + it->getName() + ". " +
                             QString::number(it->remaining) + "/" + QString::number(it->total), Warning);
             }
+
+            //Id -- Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+            cardId2Code[id] = code;
+
             return;
         }
     }
@@ -795,6 +799,12 @@ void DeckHandler::drawFromDeck(QString code, int id)
 
 void DeckHandler::returnToDeck(QString code, int id)
 {
+    //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+    if(code.isEmpty() && cardId2Code.contains(id))
+    {
+        code = cardId2Code[id];
+    }
+
     if(!code.isEmpty())
     {
         for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
@@ -1110,14 +1120,21 @@ void DeckHandler::unlockDeckInterface()
             removeFromDeck(i);
             i--;
         }
-        else if(card->total > 0)
+        else
         {
-            card->remaining = card->total;
-            card->draw();
-            card->listItem->setHidden(false);
+            card->id = 0;
+
+            if(card->total > 0)
+            {
+                card->remaining = card->total;
+                card->draw();
+                card->listItem->setHidden(false);
+            }
+            else    card->listItem->setHidden(true);
         }
-        else    card->listItem->setHidden(true);
     }
+
+    cardId2Code.clear();
 
     ui->deckListWidget->setFocusPolicy(Qt::ClickFocus);
     ui->deckListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
