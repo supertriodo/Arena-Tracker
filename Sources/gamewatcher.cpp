@@ -269,9 +269,9 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             if(tied)    emit pDebug("Found TIED (powerState = noGame)", numLine);
             else        emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
 
-            if(spectating || loadingScreenState == menu)
+            if(spectating || loadingScreenState == menu || tied)
             {
-                emit pDebug("CreateGameResult: Avoid spectator game result.", 0);
+                emit pDebug("CreateGameResult: Avoid spectator/tied game result.", 0);
             }
             else
             {
@@ -858,9 +858,10 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 
 
     //[name=Marca de Y'Shaarj id=44 zone=HAND zonePos=0 cardId=OG_048 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND
+    //[name=Aliento de dragón id=14 zone=DECK zonePos=1 cardId= player=1] zone from FRIENDLY HAND -> FRIENDLY DECK
     //Carta conocida
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w+) player=(\\d+)\\] zone from "
+        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w*) player=(\\d+)\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
