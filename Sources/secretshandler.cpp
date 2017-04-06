@@ -173,16 +173,16 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
-            activeSecret.children.append(SecretCard(SACRED_TRIAL));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(GETAWAY_KODO));
-            activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
         case HUNTER:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
-            activeSecret.children.append(SecretCard(BEAR_TRAP));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
@@ -196,9 +196,10 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
-            activeSecret.children.append(SecretCard(EFFIGY));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
+            activeSecret.children.append(SecretCard(MANA_BIND));
             activeSecret.children.append(SecretCard(SPELLBENDER));
             activeSecret.children.append(SecretCard(ICE_BLOCK));
         break;
@@ -403,6 +404,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
 void SecretsHandler::playerSpellPlayed()
 {
     discardSecretOptionNow(COUNTERSPELL);
+    discardSecretOptionNow(MANA_BIND);
     discardSecretOptionNow(CAT_TRICK);
 }
 

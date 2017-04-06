@@ -37,6 +37,7 @@
 #define EFFIGY QString("AT_002")
 #define VAPORIZE QString("EX1_594")
 #define COUNTERSPELL QString("EX1_287")
+#define MANA_BIND QString("UNG_024")
 #define SPELLBENDER QString("tt_010")
 #define ICE_BLOCK QString("EX1_295")
 
