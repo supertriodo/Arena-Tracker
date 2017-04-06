@@ -579,10 +579,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
     //SHOW_ENTITY conocido
+    //SHOW_ENTITY - Updating Entity=[name=Maestra de secta id=50 zone=DECK zonePos=0 cardId= player=2] CardID=EX1_595
     //SHOW_ENTITY - Updating Entity=[name=Turbocerdo con pinchos id=18 zone=DECK zonePos=0 cardId=CFM_688 player=1] CardID=CFM_688
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *SHOW_ENTITY - Updating "
-        "Entity=\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "Entity=\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
         "CardID=\\w+"
         ), match))
     {
