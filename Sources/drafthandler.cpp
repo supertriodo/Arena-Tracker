@@ -808,9 +808,9 @@ void DraftHandler::updateTamCard(int value)
 
 //Construir json de HearthArena
 //1) Copiar line (var cards = ...)
+//EL RESTO LO HACE EL SCRIPT
 //2) Eliminar al principio ("\")
 //3) Eliminar al final (\"";)
-//EL RESTO LO HACE EL SCRIPT
 //4) Eliminar (\\\\\\\") Problemas con " en descripciones.
 //(Ancien Spirit - Chaman)
 //(Explorer's Hat - Hunter)
