@@ -2906,6 +2906,8 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
+//Mostrar unicos secretos en plan descubiertos
+//Test mana bind + counterspell, 1 cs, 2 mb, si solo salta cs, mb tiene que ser delay. Si saltan los dos, dejarlos como now.
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
