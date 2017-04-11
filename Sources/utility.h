@@ -151,6 +151,7 @@ public:
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
     static bool isLeftOfScreen(QPoint center);
+    static bool isFromStandardSet(QString code);
 };
 
 #endif // UTILITY_H

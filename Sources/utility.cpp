@@ -163,6 +163,23 @@ QJsonValue Utility::getCardAtribute(QString code, QString attribute)
 }
 
 
+bool Utility::isFromStandardSet(QString code)
+{
+    QString cardSet = getCardAtribute(code, "set").toString();
+
+    if( cardSet == "CORE" || cardSet == "EXPERT1" ||
+        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
+        cardSet == "UNGORO" )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();

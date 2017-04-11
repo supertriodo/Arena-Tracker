@@ -77,18 +77,22 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     for(QJsonObject::const_iterator it=jsonAllCodes.constBegin(); it!=jsonAllCodes.constEnd(); it++)
     {
         QString code = it.value().toObject().value("image").toString();
-        hearthArenaCodes[code] = it.key().toInt();
 
-        QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
-        if(cardFile.exists())
+        if(Utility::isFromStandardSet(code))
         {
-            cardsHist[code] = getHist(code);
-        }
-        else
-        {
-            //La bajamos de HearthHead
-            emit checkCardImage(code);
-            cardsDownloading++;
+            hearthArenaCodes[code] = it.key().toInt();
+
+            QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
+            if(cardFile.exists())
+            {
+                cardsHist[code] = getHist(code);
+            }
+            else
+            {
+                //La bajamos de HearthHead
+                emit checkCardImage(code);
+                cardsDownloading++;
+            }
         }
     }
     qDebug() << "Num histograms BD:" << QString::number(hearthArenaCodes.count());
