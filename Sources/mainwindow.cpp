@@ -2045,22 +2045,24 @@ void MainWindow::askLinuxShortcut()
 
 void MainWindow::createLinuxShortcut()
 {
-    QProcess p;
-    QString pattern = "*/ArenaTracker.AppImage";
-    QString trash =  "*/.local/share/Trash/*";
-    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
-    p.waitForFinished(-1);
-    QString appImagePath = QString(p.readAll()).trimmed();
-    if(appImagePath.contains("\n") || appImagePath.isEmpty())
-    {
-        emit pDebug("WARNING: Cannot create shorcut. " +
-                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-        emit pLog("Shortcut: Cannot create shorcut. " +
-                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-        return;
-    }
+//    QProcess p;
+//    QString pattern = "*/ArenaTracker.AppImage";
+//    QString trash =  "*/.local/share/Trash/*";
+//    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
+//    p.waitForFinished(-1);
+//    QString appImagePath = QString(p.readAll()).trimmed();
+//    if(appImagePath.contains("\n") || appImagePath.isEmpty())
+//    {
+//        emit pDebug("WARNING: Cannot create shorcut. " +
+//                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+//                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+//        emit pLog("Shortcut: Cannot create shorcut. " +
+//                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+//                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+//        return;
+//    }
+
+    QString appImagePath = Utility::appPath() + "/ArenaTracker";
 
     //Menu Item shortcut
     QFile shortcutFile(QDir::homePath() + "/.local/share/applications/Arena Tracker.desktop");
@@ -2907,7 +2909,9 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
 //Mostrar unicos secretos en plan descubiertos
-//Test mana bind + counterspell, 1 cs, 2 mb, si solo salta cs, mb tiene que ser delay. Si saltan los dos, dejarlos como now.
+//Revisar github con cambios ultimo release
+//Macro auto create debug
+//Mandar a pending tag changes durante 5 segundos, mana blind
 
 //REPLAY BUGS
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
@@ -2959,6 +2963,7 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Update bombing cards
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
 //Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//Update Utility::isFromStandardSet(QString code)
 
 //Mana bind -- test
 //Volcano -- Demasiados misiles
