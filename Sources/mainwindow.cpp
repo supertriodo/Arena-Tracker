@@ -387,6 +387,8 @@ void MainWindow::createSecretsHandler()
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(duplicated(QString)),
             enemyHandHandler, SLOT(convertDuplicates(QString)));
+    connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
+            planHandler, SLOT(enemyIsolatedSecret(int,QString)));
     connect(secretsHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -2198,7 +2200,7 @@ void MainWindow::testPlan()
     planHandler->playerSecretPlayed(26, "EX1_594");
     planHandler->playerSecretPlayed(27, "EX1_294");
     planHandler->playerSecretPlayed(28, "EX1_130");
-    planHandler->playerSecretPlayed(29, "EX1_136");
+    planHandler->enemySecretPlayed(29, MAGE);
 
     planHandler->newTurn(false, 2);
     planHandler->enemyMinionZonePlayAdd("AT_007", 5, 1);
@@ -2221,22 +2223,10 @@ void MainWindow::testPlan()
     planHandler->playerSecretRevealed(26, "EX1_594");
     planHandler->playerSecretRevealed(27, "EX1_294");
     planHandler->playerSecretRevealed(28, "EX1_130");
-    planHandler->playerSecretRevealed(29, "EX1_136");
 
     planHandler->newTurn(true, 3);
-    planHandler->enemyCardObjPlayed("EX1_020", 4, 12);
-    planHandler->enemyCardObjPlayed("CS1_042", 3, 12);
-    planHandler->enemyCardObjPlayed("AT_003", 1, 12);
-    planHandler->enemyCardObjPlayed("AT_042t2", 2, 12);
-    planHandler->enemySecretRevealed(7, "EX1_020");
-    planHandler->playerSecretStolen(10, "CS1_042");
-//    planHandler->playerCardPlayed(22, "AT_003", true);
-//    planHandler->playerCardPlayed(24, "AT_002", false);
-    planHandler->enemyCardPlayed(22, "AT_003", false);
-    planHandler->enemyCardPlayed(24, "AT_002", true);
-    planHandler->playerMinionTagChange(11, "AT_003", "ATK", "2");
-    planHandler->playerWeaponZonePlayAdd("FP1_021", 31);
-    planHandler->enemyWeaponZonePlayAdd("FP1_021", 31);
+    planHandler->enemyIsolatedSecret(29, "EX1_136");
+
 }
 
 

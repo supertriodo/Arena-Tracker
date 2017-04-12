@@ -148,6 +148,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
     activeSecretList.append(activeSecret);
 
     ui->secretsTreeWidget->setHidden(false);
+    emit isolatedSecret(activeSecret.id, activeSecret.root.getCode());
 
     //No puede haber dos secretos iguales
     discardSecretOptionNow(code);
@@ -394,6 +395,7 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
         activeSecret.root.draw();
         activeSecret.root.treeItem->removeChild(activeSecret.children.first().treeItem);
         activeSecret.children.clear();
+        emit isolatedSecret(activeSecret.id, activeSecret.root.getCode());
 
         //No puede haber dos secretos iguales
         discardSecretOptionNow(activeSecret.root.getCode());

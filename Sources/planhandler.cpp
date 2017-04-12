@@ -1441,6 +1441,13 @@ void PlanHandler::enemySecretRevealed(int id, QString code)
 }
 
 
+void PlanHandler::enemyIsolatedSecret(int id, QString code)
+{
+    if(nowBoard->enemyHero == NULL) return;
+    nowBoard->enemyHero->showSecret(id, code);
+}
+
+
 void PlanHandler::playerSecretStolen(int id, QString code)
 {
     if(nowBoard->enemyHero == NULL) return;

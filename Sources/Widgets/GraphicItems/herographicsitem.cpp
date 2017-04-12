@@ -37,6 +37,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
+        secretIcon.code = ""; //Los secretos pueden estar desvelados en nowBoard si solo tienen una opcion.
         this->secretsList.append(secretIcon);
     }
 }

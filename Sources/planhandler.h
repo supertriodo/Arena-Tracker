@@ -241,6 +241,7 @@ public slots:
     void checkBomb(QString code);
     void showLastTurn();
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
+    void enemyIsolatedSecret(int id, QString code);
 };
 
 #endif // PLANHANDLER_H
