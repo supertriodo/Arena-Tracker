@@ -47,7 +47,7 @@ http://www.reddit.com/r/ArenaTracker/
 
 ## FAQ
 * Does it work with Hearthstone in fullscreen?
-  * (Windows) Actually does. It's because Hearthstone fullscreen is just a borderless window.
+  * (Windows) You need to play with Hearthstone in windows mode.
   * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
   * (Mac) You need to play with Hearthstone in windows mode.
 * I have a drafting already started but Arena Tracker doesn't show HearthArena scores.
@@ -65,6 +65,8 @@ http://www.reddit.com/r/ArenaTracker/
   * It means they are class cards.
 * How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
   * With the app selected press ctrl+r
+* How do I recreate the shortcut on Linux?
+  * With the app selected press ctrl+s
 * How can I back-up my data.
   * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in USER/Arena Tracker/ArenaTrackerDecks.json
 * I don't want an Arena Tracker dir messing around in my HOME dir!
