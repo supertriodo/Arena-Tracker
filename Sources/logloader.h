@@ -59,6 +59,7 @@ private:
 public:
     bool init();
     QString getLogConfigPath();
+    QString getLogsDirPath();
 
 //Signals
 signals:

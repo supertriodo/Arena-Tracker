@@ -1265,12 +1265,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if(event->modifiers()&Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_R)       resetSettings();
-#ifdef Q_OS_LINUX
-            else if(event->key() == Qt::Key_S)  askLinuxShortcut();
-#endif
             else if(event->key() == Qt::Key_1)  draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
+#ifdef Q_OS_LINUX
+            else if(event->key() == Qt::Key_S)  askLinuxShortcut();
+#endif
+#ifdef QT_DEBUG
+            else if(event->key() == Qt::Key_D)  createDebugPack();
+#endif
         }
     }
 }
@@ -2902,6 +2905,41 @@ LoadingScreenState MainWindow::getLoadingScreen()
 }
 
 
+void MainWindow::createDebugPack()
+{
+    QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm-ss");
+    QString dirPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/ATbugs/" + timeStamp;
+    QDir dir(dirPath);
+    dir.mkpath(dirPath);
+
+    QList<QScreen *> screens = QGuiApplication::screens();
+    for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
+    {
+        QScreen *screen = screens[screenIndex];
+        if (!screen)    continue;
+
+        QRect rect = screen->geometry();
+        QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+        image.save(dirPath + "/screenshot.png");
+    }
+
+    QFile atLog(Utility::dataPath() + "/ArenaTrackerLog.txt");
+    atLog.copy(dirPath + "/ArenaTrackerLog.txt");
+
+    QString hsLogsPath = logLoader->getLogsDirPath();
+    QFile arenaLog(hsLogsPath + "/Arena.log");
+    arenaLog.copy(dirPath + "/Arena.log");
+    QFile loadingScreenLog(hsLogsPath + "/LoadingScreen.log");
+    loadingScreenLog.copy(dirPath + "/LoadingScreen.log");
+    QFile powerLog(hsLogsPath + "/Power.log");
+    powerLog.copy(dirPath + "/Power.log");
+    QFile zoneLog(hsLogsPath + "/Zone.log");
+    zoneLog.copy(dirPath + "/Zone.log");
+
+    emit pDebug("Bug pack " + dirPath + " created.");
+}
+
+
 //TODO
 //Move to secrets --> config option
 //Secrets tooltip en plan tab.
@@ -2909,11 +2947,12 @@ LoadingScreenState MainWindow::getLoadingScreen()
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
 //Mostrar unicos secretos en plan descubiertos
-//Revisar github con cambios ultimo release
-//Macro auto create debug
-//Mandar a pending tag changes durante 5 segundos, mana blind
+//Revisar gitbook con cambios ultimo release, FAQ y plan
+
 
 //REPLAY BUGS
+//Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
+
 //Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
 
 //Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir. Aceptable

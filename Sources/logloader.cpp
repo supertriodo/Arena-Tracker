@@ -369,6 +369,12 @@ QString LogLoader::getLogConfigPath()
 }
 
 
+QString LogLoader::getLogsDirPath()
+{
+    return this->logsDirPath;
+}
+
+
 void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
     if(line.contains(QRegularExpression("D (\\d+):(\\d+):(\\d+).(\\d+) (.*)"), match))

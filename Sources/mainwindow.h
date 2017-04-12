@@ -145,6 +145,7 @@ private:
     void moveOldLinuxDataDir();//Temporal
     void askLinuxShortcut();
     void createLinuxShortcut();
+    void createDebugPack();
 
 //Override events
 protected:
