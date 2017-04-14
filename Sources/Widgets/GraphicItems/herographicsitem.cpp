@@ -23,7 +23,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
 }
 
 
-HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
+HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     :MinionGraphicsItem(copy)
 {
     this->armor = copy->armor;
@@ -37,7 +37,10 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy)
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
-        secretIcon.code = ""; //Los secretos pueden estar desvelados en nowBoard si solo tienen una opcion.
+        if(!copySecretCodes)
+        {
+            secretIcon.code = ""; //Los secretos pueden estar desvelados en nowBoard si solo tienen una opcion.
+        }
         this->secretsList.append(secretIcon);
     }
 }

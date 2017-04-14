@@ -145,7 +145,7 @@ private:
     bool isMechOnBoard();
     int flamewakersOnBoard();
     void updateTurnSliderRange();
-    Board *copyBoard(Board *origBoard, int numTurn = 0);
+    Board *copyBoard(Board *origBoard, int numTurn = 0, bool copySecretCodes=false);
     void deleteFutureBoard();
     void createFutureBoard();
     void updateMinionFromCard(MinionGraphicsItem *minion);

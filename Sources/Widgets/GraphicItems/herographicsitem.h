@@ -19,7 +19,7 @@ class HeroGraphicsItem : public MinionGraphicsItem
 //Constructor
 public:
     HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender);
-    HeroGraphicsItem(HeroGraphicsItem *copy);
+    HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes=false);
 
 //Variables:
 private:

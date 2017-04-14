@@ -2949,7 +2949,6 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Secretos descubiertos en planning
 //Revisar gitbook con cambios ultimo release, FAQ y plan
 
 

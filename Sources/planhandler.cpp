@@ -1717,7 +1717,7 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 }
 
 
-Board * PlanHandler::copyBoard(Board *origBoard, int numTurn)
+Board * PlanHandler::copyBoard(Board *origBoard, int numTurn, bool copySecretCodes)
 {
     Board *board = new Board();
     board->playerTurn = origBoard->playerTurn;
@@ -1726,7 +1726,7 @@ Board * PlanHandler::copyBoard(Board *origBoard, int numTurn)
     if(origBoard->playerHero == NULL)    board->playerHero = NULL;
     else                                board->playerHero = new HeroGraphicsItem(origBoard->playerHero);
     if(origBoard->enemyHero == NULL)     board->enemyHero = NULL;
-    else                                board->enemyHero = new HeroGraphicsItem(origBoard->enemyHero);
+    else                                board->enemyHero = new HeroGraphicsItem(origBoard->enemyHero, copySecretCodes);//Lo usamos al crear el futureBoard, solo es necesario para el enemigo ya que los secretos amigos de nowBoard nunca estaran desvelados ni isolated.
 
     if(origBoard->playerHeroPower == NULL)   board->playerHeroPower = NULL;
     else                                    board->playerHeroPower = new HeroPowerGraphicsItem(origBoard->playerHeroPower);
@@ -1835,7 +1835,7 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 
 void PlanHandler::createFutureBoard()
 {
-    futureBoard = copyBoard(nowBoard);
+    futureBoard = copyBoard(nowBoard, 0, true);
     futureBoard->playerHero->setShowAllInfo();
     futureBoard->enemyHero->setShowAllInfo();
     viewBoard = futureBoard;
