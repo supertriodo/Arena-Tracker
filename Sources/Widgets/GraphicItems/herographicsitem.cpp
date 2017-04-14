@@ -232,16 +232,16 @@ void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
         {
             QRectF boundRect = boundingRect();
 
-            if(secretCode.isEmpty())
+            if(!secretCode.isEmpty())
             {
-                int secretId = this->secretsList[i].id;
-                graphicsItemSender->sendPlanSecretEntered(secretId,
+                graphicsItemSender->sendPlanCardEntered(secretCode,
                                     mapToScene(boundRect.topLeft()).toPoint(),
                                     mapToScene(boundRect.bottomRight()).toPoint());
             }
-            else
+            else if(!friendly)
             {
-                graphicsItemSender->sendPlanCardEntered(secretCode,
+                int secretId = this->secretsList[i].id;
+                graphicsItemSender->sendPlanSecretEntered(secretId,
                                     mapToScene(boundRect.topLeft()).toPoint(),
                                     mapToScene(boundRect.bottomRight()).toPoint());
             }

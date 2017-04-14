@@ -2946,8 +2946,6 @@ void MainWindow::createDebugPack()
 
 
 //TODO
-//Move to secrets --> config option
-//Secrets tooltip en plan tab.
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
