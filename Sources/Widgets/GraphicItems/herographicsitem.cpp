@@ -231,9 +231,20 @@ void HeroGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
         if(QLineF(posMouse, posSecret).length() < 16)
         {
             QRectF boundRect = boundingRect();
-            graphicsItemSender->sendPlanCardEntered(secretCode,
-                                mapToScene(boundRect.topLeft()).toPoint(),
-                                mapToScene(boundRect.bottomRight()).toPoint());
+
+            if(secretCode.isEmpty())
+            {
+                int secretId = this->secretsList[i].id;
+                graphicsItemSender->sendPlanSecretEntered(secretId,
+                                    mapToScene(boundRect.topLeft()).toPoint(),
+                                    mapToScene(boundRect.bottomRight()).toPoint());
+            }
+            else
+            {
+                graphicsItemSender->sendPlanCardEntered(secretCode,
+                                    mapToScene(boundRect.topLeft()).toPoint(),
+                                    mapToScene(boundRect.bottomRight()).toPoint());
+            }
             return;
         }
     }

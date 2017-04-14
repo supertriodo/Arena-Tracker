@@ -60,6 +60,7 @@ public:
     void redrawSpellWeaponCards();
     void redrawAllCards();
     void setSynchronized();
+    QStringList getSecretOptionCodes(int id);
 
 signals:
     void checkCardImage(QString code);

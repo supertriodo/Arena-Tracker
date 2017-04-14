@@ -55,7 +55,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/GraphicItems/graphicsitemsender.cpp \
     Sources/Utils/qcompressor.cpp \
     Sources/Widgets/bombwindow.cpp \
-    Sources/Cards/rngcard.cpp
+    Sources/Cards/rngcard.cpp \
+    Sources/Widgets/secretswindow.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -97,7 +98,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/GraphicItems/graphicsitemsender.h \
     Sources/Utils/qcompressor.h \
     Sources/Widgets/bombwindow.h \
-    Sources/Cards/rngcard.h
+    Sources/Cards/rngcard.h \
+    Sources/Widgets/secretswindow.h
 
 FORMS    += mainwindow.ui
 

@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
+    createSecretsWindow();//-->PlanHandler -->SecretsHandler
 
     readSettings();
     checkGamesLogDir();
@@ -512,6 +513,17 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(hide()));
     connect(ui->planGraphicsView, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
+}
+
+
+void MainWindow::createSecretsWindow()
+{
+    secretsWindow = new SecretsWindow(this, secretsHandler);
+    connect(planHandler, SIGNAL(secretEntered(int,QRect,int,int)),
+            secretsWindow, SLOT(loadSecret(int,QRect,int,int)));
+
+    connect(planHandler, SIGNAL(cardLeave()),
+            secretsWindow, SLOT(hide()));
 }
 
 
@@ -2167,6 +2179,8 @@ void MainWindow::test()
 //    enemyHandHandler->buffHandCard(1);
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
+
+//    secretsHandler->secretPlayed(30, MAGE, arena);
 }
 
 
@@ -2226,6 +2240,7 @@ void MainWindow::testPlan()
 
     planHandler->newTurn(true, 3);
     planHandler->enemyIsolatedSecret(29, "EX1_136");
+    planHandler->enemySecretPlayed(30, MAGE);
 
 }
 
@@ -2936,7 +2951,7 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Mostrar unicos secretos en plan descubiertos
+//Secretos descubiertos en planning
 //Revisar gitbook con cambios ultimo release, FAQ y plan
 
 

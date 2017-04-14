@@ -526,7 +526,6 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
 }
 
 
-
 void SecretsHandler::findSecretCardEntered(QTreeWidgetItem * item)
 {
     QString code;
@@ -553,7 +552,24 @@ void SecretsHandler::findSecretCardEntered(QTreeWidgetItem * item)
 }
 
 
+QStringList SecretsHandler::getSecretOptionCodes(int id)
+{
+    foreach(ActiveSecret secret, activeSecretList)
+    {
+        if(secret.id == id)
+        {
+            if(secret.children.isEmpty())   return QStringList(secret.root.getCode());
 
+            QStringList codes;
+            foreach(SecretCard secretCard, secret.children)
+            {
+                codes.append(secretCard.getCode());
+            }
+            return codes;
+        }
+    }
+    return QStringList();
+}
 
 
 

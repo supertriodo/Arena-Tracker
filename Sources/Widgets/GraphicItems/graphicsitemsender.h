@@ -19,12 +19,17 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QString lastCode;
+    QString lastCode; //Evita enviar continuamente signals mientras el raton se mueve dentro del secreto.
+    int lastId;
 
-//Metodos
+    //Metodos
+private:
+    QRect getRectCard(QPoint rectCardTopLeft, QPoint rectCardBottomRight, int &maxTop, int &maxBottom);
+
 public:
     void sendPlanCardPress(CardGraphicsItem *card);
     void sendPlanCardEntered(QString code, QPoint rectCardTopLeft, QPoint rectCardBottomRight);
+    void sendPlanSecretEntered(int id, QPoint rectCardTopLeft, QPoint rectCardBottomRight);
     void sendPlanCardLeave();
     void sendResetDeadProbs();
     void sendCheckBomb(QString code);
@@ -38,6 +43,7 @@ signals:
     void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
     void heroWheel(HeroGraphicsItem *hero, bool up);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void secretEntered(int id, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();
     void checkBomb(QString code);

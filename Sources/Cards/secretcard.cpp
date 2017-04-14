@@ -63,5 +63,12 @@ void SecretCard::draw()
     }
     painter.end();
 
-    this->treeItem->setIcon(0, QIcon(resizeCardHeight(canvas)));
+    if(this->listItem != NULL)
+    {
+        this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
+    }
+    if(this->treeItem != NULL)
+    {
+        this->treeItem->setIcon(0, QIcon(resizeCardHeight(canvas)));
+    }
 }
