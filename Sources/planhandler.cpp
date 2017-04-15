@@ -1051,7 +1051,7 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
         //        13:08:35 - GameWatcher(11790): Player: TAG_CHANGE(RESOURCES)= 5 -- Name: triodo
         //        13:08:35 - GameWatcher(11791): Player: TAG_CHANGE(RESOURCES_USED)= 0 -- Name: triodo
         //El reinicio de los recursos del jugador se hace al final del turno enemigo por eso
-        //forzamos al que el de RESOURCES_USED sea para el turno actual del jugador.
+        //forzamos a que el de RESOURCES_USED sea para el turno actual del jugador.
         if(friendly)    showManaPlayableCards(nowBoard);
     }
     else if(tag == "CURRENT_SPELLPOWER")
@@ -1649,7 +1649,7 @@ void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
         CardGraphicsItem *card = findCard(false, id, board);
         if(card != NULL)
         {
-            card->setCode(code);
+            card->changeCode(code);
             emit checkCardImage(code, false);
         }
     }
@@ -1659,7 +1659,7 @@ void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
 void PlanHandler::lastEnemyHandCardIsCoin()
 {
     if(nowBoard->enemyHandList.empty())     return;//En modo practica el mulligan enemigo termina antes de robar las cartas
-    nowBoard->enemyHandList.last()->setCode(THE_COIN);
+    nowBoard->enemyHandList.last()->changeCode(THE_COIN);
     revealEnemyCardPrevTurns(nowBoard->enemyHandList.last()->getId(), THE_COIN);
 }
 
@@ -1670,6 +1670,28 @@ void PlanHandler::fixTurn1Card()
     Board *board = turnBoards.last();
     QList<CardGraphicsItem *> *cardList = getHandList(board->playerTurn, board);
     if(!cardList->isEmpty())     cardList->last()->setDraw(false);
+}
+
+
+void PlanHandler::playerCardCodeChange(int id, QString newCode)
+{
+    CardGraphicsItem *card = findCard(true, id);
+
+    if(card != NULL)
+    {
+        emit pDebug("Player card Id: " + QString::number(id) + " changed Code: " + card->getCode() + " --> " + newCode);
+        card->changeCode(newCode);
+        emit checkCardImage(newCode, false);
+
+//No es necesario ya que se hace justo antes de cambiar de turno, y en este ya se llama.
+//Ademas esto ocurre justa despues de cambiar los RESOURCES del jugador pero antes de cambiar el turno, asi que el Auto
+//no serviria ya que haria el calculo como si fuese el turno enemigo pero con los nuevos RESOURCES
+//        showManaPlayableCardsAuto();
+    }
+    else
+    {
+        emit pDebug("Player card Id: " + QString::number(id) + " not found in player hand.");
+    }
 }
 
 

@@ -150,6 +150,7 @@ signals:
     void unknownTagChange(QString tag, QString value);
     void playerTagChange(QString tag, QString value);
     void enemyTagChange(QString tag, QString value);
+    void playerCardCodeChange(int id, QString newCode);
     void enemyMinionDead(QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo);
     void zonePlayAttack(QString code, int id1, int id2);

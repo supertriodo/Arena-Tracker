@@ -48,7 +48,6 @@ public:
     int getId();
     void setPlayed(bool played=true);
     void checkDownloadedCode(QString code);
-    void setCode(QString code);
     void setDiscard();
     void setDraw(bool drawn=true);
     bool isDiscard();
@@ -62,6 +61,7 @@ public:
     int getManaSpent();
     void setShowTransparent(bool value=true);
     bool isTransparent();
+    void changeCode(QString newCode);
 };
 
 #endif // CARDGRAPHICSITEM_H

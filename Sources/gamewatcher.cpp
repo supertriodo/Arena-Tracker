@@ -619,7 +619,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
     //FULL_ENTITY - Updating [name=Recluta Mano de Plata id=95 zone=PLAY zonePos=3 cardId=CS2_101t player=2] CardID=CS2_101t
     else if(line.contains(QRegularExpression(
         "PowerTaskList\\.DebugPrintPower\\(\\) - *FULL_ENTITY - Updating "
-        "\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] "
+        "\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
         "CardID=\\w+"
         ), match))
     {
@@ -630,6 +630,32 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": FULL_ENTITY -- Id: " + id, numLine);
         lastShowEntity.id = id.toInt();
         lastShowEntity.isPlayer = isPlayer;
+    }
+
+
+    //CHANGE_ENTITY conocido
+    //CHANGE_ENTITY - Updating Entity=[name=Aullavísceras id=53 zone=HAND zonePos=3 cardId=EX1_411 player=2] CardID=OG_031
+    else if(line.contains(QRegularExpression(
+        "PowerTaskList\\.DebugPrintPower\\(\\) - *CHANGE_ENTITY - Updating Entity="
+        "\\[name=.* id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
+        "CardID=(\\w+)"
+        ), match))
+    {
+        QString id = match->captured(1);
+        QString zone = match->captured(2);
+        QString player = match->captured(3);
+        QString newCardId = match->captured(4);
+        bool isPlayer = (player.toInt() == playerID);
+
+        emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CHANGE_ENTITY -- Id: " + id +
+                    " to Code: " + newCardId + " in Zone: " + zone, numLine);
+        lastShowEntity.id = id.toInt();
+        lastShowEntity.isPlayer = isPlayer;
+
+        if(isPlayer && zone == "HAND")
+        {
+            emit playerCardCodeChange(id.toInt(), newCardId);
+        }
     }
 
 
@@ -649,6 +675,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             if(lastShowEntity.isPlayer)     emit playerMinionTagChange(lastShowEntity.id, "", tag, value);
             else                            emit enemyMinionTagChange(lastShowEntity.id, "", tag, value);
         }
+        //En un futuro quizas haya que distinguir entre cambios en zone HAND o PLAY, por ahora son siempre cambios en PLAY
     }
 
     //Jugador/Enemigo accion con/sin objetivo

@@ -51,6 +51,18 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
 }
 
 
+void CardGraphicsItem::changeCode(QString newCode)
+{
+    this->code = newCode;
+    this->createdByCode = "";
+    this->cost = this->origCost = Utility::getCardAtribute(code, "cost").toInt();
+    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    this->buffAttack = this->buffHealth = 0;
+    update();
+}
+
+
 bool CardGraphicsItem::isDiscard()
 {
     return this->discard;
@@ -60,13 +72,6 @@ bool CardGraphicsItem::isDiscard()
 int CardGraphicsItem::getId()
 {
     return this->id;
-}
-
-
-void CardGraphicsItem::setCode(QString code)
-{
-    this->code = code;
-    update();
 }
 
 

@@ -243,6 +243,7 @@ public slots:
     void showLastTurn();
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
     void enemyIsolatedSecret(int id, QString code);
+    void playerCardCodeChange(int id, QString newCode);
 };
 
 #endif // PLANHANDLER_H

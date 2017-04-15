@@ -680,6 +680,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerCardPlayed(int,QString,bool)));
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             planHandler, SLOT(enemyCardPlayed(int,QString,bool)));
+    connect(gameWatcher, SIGNAL(playerCardCodeChange(int,QString)),
+            planHandler, SLOT(playerCardCodeChange(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             planHandler, SLOT(lastEnemyHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
