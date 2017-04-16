@@ -1490,7 +1490,10 @@ void PlanHandler::updateCardZoneSpots(bool friendly, Board *board)
 
 int PlanHandler::findCardPos(QList<CardGraphicsItem *> * cardsList, int id)
 {
-    for(int i=0; i<cardsList->count(); i++)
+    //Hacemos la busqueda de derecha a izquierda.
+    //En el turno mulligan puede ser que este la misma carta (id) dos veces en la mano pq la hayas hecho mulligan y robada en turno 1.
+    //Queremos que devuelva la que no ha sido descartada (la mas a la derecha).
+    for(int i=cardsList->count()-1; i>=0; i--)
     {
         if(cardsList->at(i)->getId()==id) return i;
     }
