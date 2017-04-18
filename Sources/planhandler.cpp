@@ -1518,6 +1518,20 @@ CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 }
 
 
+void PlanHandler::convertManaBinded(QString code)
+{
+    QList<CardGraphicsItem *> * enemyHandList = getHandList(false);
+    if(enemyHandList->empty())   return;
+
+    CardGraphicsItem * card = enemyHandList->last();
+    if(card->getCreatedByCode() == MANA_BIND)
+    {
+        card->changeCode(code);
+        emit pDebug("Mana Bind Secret: Make last special card " + code);
+    }
+}
+
+
 void PlanHandler::playerCardDraw(int id, QString code, int turn)
 {
     cardDraw(true, id, code, "", turn);

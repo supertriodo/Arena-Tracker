@@ -42,7 +42,7 @@ private:
     QQueue<SecretTest> secretTests;
     bool synchronized;
     bool secretsAnimating;
-    QString lastMinionDead;
+    QString lastMinionDead, lastSpellPlayed;
 
 
 //Metodos
@@ -65,6 +65,7 @@ public:
 signals:
     void checkCardImage(QString code);
     void duplicated(QString code);
+    void manaBinded(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void isolatedSecret(int id, QString code);
     void pLog(QString line);
@@ -75,7 +76,7 @@ public slots:
     void secretStolen(int id, QString code);
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();
-    void playerSpellPlayed();
+    void playerSpellPlayed(QString code);
     void playerSpellObjPlayed();
     void playerMinionPlayed(int playerMinions);
     void enemyMinionDead(QString code);

@@ -70,6 +70,7 @@ public slots:
     void lockEnemyInterface();
     void unlockEnemyInterface();
     void convertDuplicates(QString code);
+    void convertManaBinded(QString code);
     void setLastCreatedByCode(QString code);
     void drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack);
     void buffHandCard(int id);

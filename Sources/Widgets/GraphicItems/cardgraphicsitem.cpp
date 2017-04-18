@@ -54,7 +54,6 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
 void CardGraphicsItem::changeCode(QString newCode)
 {
     this->code = newCode;
-    this->createdByCode = "";
     this->cost = this->origCost = Utility::getCardAtribute(code, "cost").toInt();
     this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
@@ -78,6 +77,12 @@ int CardGraphicsItem::getId()
 QString CardGraphicsItem::getCode()
 {
     return code;
+}
+
+
+QString CardGraphicsItem::getCreatedByCode()
+{
+    return createdByCode;
 }
 
 

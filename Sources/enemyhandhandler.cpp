@@ -65,6 +65,21 @@ void EnemyHandHandler::setLastCreatedByCode(QString code)
 void EnemyHandHandler::convertDuplicates(QString code)
 {
     convertKnownCard(code, 2);
+    emit pDebug("Duplicate Secret: Next 2 special cards will be " + code);
+}
+void EnemyHandHandler::convertManaBinded(QString code)
+{
+    //Con Mana Bind primero se roba la carta y luego se revela el secreto
+    //No podemos usar el mismo metodo que con duplicate
+    if(enemyHandList.empty())   return;
+
+    HandCard& card = enemyHandList.last();
+    if(card.special && card.getCreatedByCode() == MANA_BIND)
+    {
+        card.setCode(code);
+        card.draw();
+        emit pDebug("Mana Bind Secret: Make last special card " + code);
+    }
 }
 void EnemyHandHandler::convertKnownCard(QString &code, int quantity)
 {

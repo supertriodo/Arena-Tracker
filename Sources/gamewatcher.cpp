@@ -1136,7 +1136,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneTo.isEmpty() || zoneTo == "FRIENDLY SECRET")//En spectator mode los secretos van FRIENDLY HAND --> FRIENDLY SECRET
             {
                 emit pDebug("Player: Spell played: " + name + " ID: " + id, numLine);
-                if(isPlayerTurn)    emit playerSpellPlayed();
+                if(isPlayerTurn)    emit playerSpellPlayed(cardId);
             }
             //Jugador juega esbirro
             else if(zoneTo == "FRIENDLY PLAY")

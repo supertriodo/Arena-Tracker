@@ -388,6 +388,10 @@ void MainWindow::createSecretsHandler()
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(duplicated(QString)),
             enemyHandHandler, SLOT(convertDuplicates(QString)));
+    connect(secretsHandler, SIGNAL(manaBinded(QString)),
+            enemyHandHandler, SLOT(convertManaBinded(QString)));
+    connect(secretsHandler, SIGNAL(manaBinded(QString)),
+            planHandler, SLOT(convertManaBinded(QString)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
     connect(secretsHandler, SIGNAL(pLog(QString)),
@@ -710,8 +714,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSecretStolen(int, QString)),
             secretsHandler, SLOT(secretRevealed(int, QString)));
-    connect(gameWatcher, SIGNAL(playerSpellPlayed()),
-            secretsHandler, SLOT(playerSpellPlayed()));
+    connect(gameWatcher, SIGNAL(playerSpellPlayed(QString)),
+            secretsHandler, SLOT(playerSpellPlayed(QString)));
     connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
             secretsHandler, SLOT(playerSpellObjPlayed()));
     connect(gameWatcher, SIGNAL(playerMinionPlayed(int)),
@@ -2951,7 +2955,7 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Revisar gitbook con cambios ultimo release, FAQ y plan
+//Revelar copias, bind, tea y pod
 
 
 //REPLAY BUGS

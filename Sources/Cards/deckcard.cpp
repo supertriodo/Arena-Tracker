@@ -196,7 +196,7 @@ void DeckCard::draw()
 {
     QPixmap canvas;
 
-    if(!this->createdByCode.isEmpty())
+    if(!this->createdByCode.isEmpty() && this->code.isEmpty())
     {
         canvas = drawCustomCard(this->createdByCode, "BY:");
     }

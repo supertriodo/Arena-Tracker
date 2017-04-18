@@ -8,6 +8,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->synchronized = false;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
+    this->lastSpellPlayed = "";
 
     completeUI();
 }
@@ -46,7 +47,13 @@ void SecretsHandler::resetLastMinionDead(QString code, QString subType)
 {
     (void) code;
     //Duplica el primer esbirro que muera despues de una accion del usuario (!TRIGGER)
-    if(subType != "TRIGGER")   this->lastMinionDead.clear();
+    if(subType != "TRIGGER")
+    {
+        this->lastMinionDead.clear();
+
+        //El ManaBind es rebelado justo antes del POWER del hechizo lanzado
+        if(subType != "PLAY")   this->lastSpellPlayed.clear();
+    }
 }
 
 
@@ -333,7 +340,8 @@ void SecretsHandler::secretRevealed(int id, QString code)
 
 
     //Duplicates en Hand
-    if(code == DDUPLICATE && !lastMinionDead.isEmpty())  emit duplicated(lastMinionDead);
+    if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit duplicated(lastMinionDead);
+    else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit manaBinded(lastSpellPlayed);
 }
 
 
@@ -403,8 +411,10 @@ void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
 }
 
 
-void SecretsHandler::playerSpellPlayed()
+void SecretsHandler::playerSpellPlayed(QString code)
 {
+    if(lastSpellPlayed.isEmpty())    lastSpellPlayed = code;
+
     discardSecretOptionNow(COUNTERSPELL);
     discardSecretOptionNow(MANA_BIND);
     discardSecretOptionNow(CAT_TRICK);

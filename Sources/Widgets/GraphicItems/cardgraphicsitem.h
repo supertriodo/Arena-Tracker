@@ -57,6 +57,7 @@ public:
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
     QString getCode();
+    QString getCreatedByCode();
     void showManaPlayable(int mana);
     int getManaSpent();
     void setShowTransparent(bool value=true);

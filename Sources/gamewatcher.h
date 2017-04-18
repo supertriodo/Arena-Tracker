@@ -123,7 +123,7 @@ signals:
     void playerSecretStolen(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void playerSecretRevealed(int id, QString code);
-    void playerSpellPlayed();
+    void playerSpellPlayed(QString code);
     void playerMinionPlayed(int playerMinions);
     void playerMinionZonePlayAdd(QString code, int id, int pos);
     void enemyMinionZonePlayAdd(QString code, int id, int pos);

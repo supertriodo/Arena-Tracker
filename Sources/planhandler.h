@@ -244,6 +244,7 @@ public slots:
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
     void enemyIsolatedSecret(int id, QString code);
     void playerCardCodeChange(int id, QString newCode);
+    void convertManaBinded(QString code);
 };
 
 #endif // PLANHANDLER_H
