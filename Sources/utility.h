@@ -88,6 +88,8 @@
 #define INNERVATE "EX1_169"
 #define COUNTERFEIT_COIN "CFM_630"
 #define KABAL_CHEMIST "CFM_619"
+#define MIMIC_POD "UNG_060"
+#define THISTLE_TEA "OG_073"
 
 
 using namespace cv;

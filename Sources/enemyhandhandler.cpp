@@ -10,6 +10,7 @@ EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::Extended *ui) : QObject(
     this->numKnownCards = 0;
     this->lastCreatedByCode = "";
     this->mouseInApp = false;
+    this->gettingLinkCards = false;
 
     completeUI();
 }
@@ -19,6 +20,7 @@ EnemyHandHandler::~EnemyHandHandler()
 {
     ui->enemyHandListWidget->clear();
     enemyHandList.clear();
+    linkIdsList.clear();
 }
 
 
@@ -78,6 +80,8 @@ void EnemyHandHandler::convertManaBinded(QString code)
     {
         card.setCode(code);
         card.draw();
+        emit revealEnemyCard(card.id, code);
+        emit checkCardImage(code);
         emit pDebug("Mana Bind Secret: Make last special card " + code);
     }
 }
@@ -85,6 +89,46 @@ void EnemyHandHandler::convertKnownCard(QString &code, int quantity)
 {
     this->knownCard = code;
     this->numKnownCards = quantity;
+}
+
+
+void EnemyHandHandler::linkNextCards()
+{
+    this->gettingLinkCards = true;
+    this->linkIdsList.clear();
+}
+
+
+void EnemyHandHandler::linkCards(HandCard& card)
+{
+    //Special cards, 2do en adelante
+    if(card.special)
+    {
+        card.linkIdsList = QList<int>(linkIdsList);
+
+        for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)
+        {
+            if(linkIdsList.contains(it->id))
+            {
+                it->linkIdsList.append(card.id);
+            }
+        }
+        linkIdsList.append(card.id);
+    }
+    else
+    {
+        //1er carta
+        if(linkIdsList.isEmpty())
+        {
+            linkIdsList.append(card.id);
+        }
+        //Esta carta no es del link
+        else
+        {
+            gettingLinkCards = false;
+            linkIdsList.clear();
+        }
+    }
 }
 
 
@@ -132,6 +176,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
         emit enemyCardDraw(id, code, "", turn);
     }
 
+    if(gettingLinkCards)    linkCards(handCard);
     handCard.draw();
     enemyHandList.append(handCard);
 
@@ -165,22 +210,27 @@ HandCard *EnemyHandHandler::getHandCard(int id)
 void EnemyHandHandler::lastHandCardIsCoin()
 {
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
-    enemyHandList.last().setCode(COIN);
-    enemyHandList.last().draw();
 
+    HandCard& coin = enemyHandList.last();
+    coin.setCode(COIN);
+    coin.draw();
+
+    emit revealEnemyCard(coin.id, COIN);
     emit checkCardImage(COIN);
 }
 
 
 void EnemyHandHandler::hideEnemyCardPlayed(int id, QString code)
 {
-    (void) code;
+    if(isClonerCard(code))  linkNextCards();
 
     int i=0;
     for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++, i++)
     {
         if(it->id == id)
         {
+            if(!it->linkIdsList.isEmpty())     revealLinkedCards(code, it->linkIdsList);
+
             delete it->listItem;
             enemyHandList.removeAt(i);
 
@@ -188,6 +238,21 @@ void EnemyHandHandler::hideEnemyCardPlayed(int id, QString code)
             if(enemyHandList.isEmpty())  updateTransparency();
 
             return;
+        }
+    }
+}
+
+
+void EnemyHandHandler::revealLinkedCards(QString code, QList<int> &ids)
+{
+    for (QList<HandCard>::iterator it = enemyHandList.begin(); it != enemyHandList.end(); it++)
+    {
+        if(ids.contains(it->id))
+        {
+            it->setCode(code);
+            it->draw();
+            emit revealEnemyCard(it->id, code);
+            emit checkCardImage(code);
         }
     }
 }
@@ -450,5 +515,13 @@ int EnemyHandHandler::getCardBuff(QString code)
     if(code == SHAKY_ZYPGUNNER)     return 2;
     if(code == GRIMY_GADGETEER)     return 2;
     return 1;
+}
+
+
+bool EnemyHandHandler::isClonerCard(QString code)
+{
+    if(code == MIMIC_POD)   return true;
+    if(code == THISTLE_TEA) return true;
+    return false;
 }
 

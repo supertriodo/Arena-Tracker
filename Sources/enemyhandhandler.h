@@ -28,6 +28,8 @@ private:
     int numKnownCards;
     QString lastCreatedByCode;
     bool showAttackBar;
+    QList<int> linkIdsList;
+    bool gettingLinkCards;
 
 
 //Metodos
@@ -42,6 +44,10 @@ private:
     void hideHeroAttack();
     void resetHeroAttack();
     int getCardBuff(QString code);
+    void linkCards(HandCard &card);
+    void revealLinkedCards(QString code, QList<int> &ids);
+    bool isClonerCard(QString code);
+    void linkNextCards();
 
 public:
     HandCard *getHandCard(int id);
@@ -58,6 +64,7 @@ signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
+    void revealEnemyCard(int id, QString code);
     void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
     void pLog(QString line);

@@ -227,7 +227,6 @@ public slots:
     void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
     void playerCardPlayed(int id, QString code, bool discard);
     void enemyCardPlayed(int id, QString code, bool discard);
-    void lastEnemyHandCardIsCoin();
     void playerWeaponZonePlayRemove(int id);
     void enemyWeaponZonePlayRemove(int id);
     void playerHeroPowerZonePlayAdd(QString code, int id);
@@ -244,7 +243,7 @@ public slots:
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
     void enemyIsolatedSecret(int id, QString code);
     void playerCardCodeChange(int id, QString newCode);
-    void convertManaBinded(QString code);
+    void revealEnemyCard(int id, QString code);
 };
 
 #endif // PLANHANDLER_H

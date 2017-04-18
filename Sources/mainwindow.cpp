@@ -390,8 +390,6 @@ void MainWindow::createSecretsHandler()
             enemyHandHandler, SLOT(convertDuplicates(QString)));
     connect(secretsHandler, SIGNAL(manaBinded(QString)),
             enemyHandHandler, SLOT(convertManaBinded(QString)));
-    connect(secretsHandler, SIGNAL(manaBinded(QString)),
-            planHandler, SLOT(convertManaBinded(QString)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
     connect(secretsHandler, SIGNAL(pLog(QString)),
@@ -458,6 +456,8 @@ void MainWindow::createEnemyHandHandler()
             planHandler, SLOT(enemyCardDraw(int,QString,QString,int)));
     connect(enemyHandHandler, SIGNAL(enemyCardBuff(int,int,int)),
             planHandler, SLOT(enemyCardBuff(int,int,int)));
+    connect(enemyHandHandler, SIGNAL(revealEnemyCard(int,QString)),
+            planHandler, SLOT(revealEnemyCard(int,QString)));
     connect(planHandler, SIGNAL(heroTotalAttackChange(bool,int,int)),
             enemyHandHandler, SLOT(drawHeroTotalAttack(bool,int,int)));
     connect(enemyHandHandler, SIGNAL(pLog(QString)),
@@ -686,8 +686,6 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(enemyCardPlayed(int,QString,bool)));
     connect(gameWatcher, SIGNAL(playerCardCodeChange(int,QString)),
             planHandler, SLOT(playerCardCodeChange(int,QString)));
-    connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
-            planHandler, SLOT(lastEnemyHandCardIsCoin()));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             planHandler, SLOT(newTurn(bool, int)));
     connect(gameWatcher, SIGNAL(logTurn()),
@@ -2181,12 +2179,8 @@ void MainWindow::completeArenaDeck()
 
 void MainWindow::test()
 {
-//    enemyHandHandler->showEnemyCardDraw(1, 1, false, "");
-//    enemyHandHandler->buffHandCard(1);
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
-
-//    secretsHandler->secretPlayed(30, MAGE, arena);
 }
 
 

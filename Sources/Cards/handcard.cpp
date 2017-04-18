@@ -6,6 +6,7 @@ HandCard::HandCard(QString code) : DeckCard(code)
 {
     turn = 0;
     buffAttack = buffHealth = 0;
+    linkIdsList.clear();
 }
 
 

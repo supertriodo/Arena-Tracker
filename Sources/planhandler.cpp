@@ -1518,17 +1518,15 @@ CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 }
 
 
-void PlanHandler::convertManaBinded(QString code)
+void PlanHandler::revealEnemyCard(int id, QString code)
 {
-    QList<CardGraphicsItem *> * enemyHandList = getHandList(false);
-    if(enemyHandList->empty())   return;
-
-    CardGraphicsItem * card = enemyHandList->last();
-    if(card->getCreatedByCode() == MANA_BIND)
+    CardGraphicsItem *card = findCard(false, id);
+    if(card != NULL)
     {
         card->changeCode(code);
-        emit pDebug("Mana Bind Secret: Make last special card " + code);
+        emit checkCardImage(code, false);
     }
+    revealEnemyCardPrevTurns(id, code);
 }
 
 
@@ -1670,14 +1668,6 @@ void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
             emit checkCardImage(code, false);
         }
     }
-}
-
-
-void PlanHandler::lastEnemyHandCardIsCoin()
-{
-    if(nowBoard->enemyHandList.empty())     return;//En modo practica el mulligan enemigo termina antes de robar las cartas
-    nowBoard->enemyHandList.last()->changeCode(THE_COIN);
-    revealEnemyCardPrevTurns(nowBoard->enemyHandList.last()->getId(), THE_COIN);
 }
 
 

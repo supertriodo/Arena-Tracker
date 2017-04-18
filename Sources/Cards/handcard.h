@@ -14,6 +14,7 @@ public:
 public:
     int turn;
     int buffAttack, buffHealth;
+    QList<int> linkIdsList;
 
 
 //Metodos
