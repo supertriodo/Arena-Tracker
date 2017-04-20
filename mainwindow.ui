@@ -1658,7 +1658,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>744</height>
+               <height>770</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1867,6 +1867,17 @@ transparent during a game</string>
                       </property>
                       <property name="text">
                        <string>Opaque</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="configRadioFramed">
+                      <property name="toolTip">
+                       <string>Framed: Show window frames which makes streaming with OBS easier.
+Changing to/from Framed need a restart to fully take effective.</string>
+                      </property>
+                      <property name="text">
+                       <string>Framed</string>
                       </property>
                      </widget>
                     </item>

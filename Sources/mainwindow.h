@@ -149,6 +149,7 @@ private:
     void askLinuxShortcut();
     void createLinuxShortcut();
     void createDebugPack();
+    void showWindowFrame(bool showFrame=true);
 
 //Override events
 protected:
@@ -196,6 +197,7 @@ private slots:
     void transparentAlways();
     void transparentAuto();
     void transparentNever();
+    void transparentFramed();
     void toggleDeckWindow();
     void updateTimeDraw(int value);
     void updateTamCard(int value);

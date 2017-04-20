@@ -111,6 +111,7 @@ MainWindow::~MainWindow()
 void MainWindow::createSecondaryWindow()
 {
     this->otherWindow = new MainWindow(0, this);
+    this->otherWindow->showWindowFrame(transparency == Framed);
     calculateDeckWindowMinimumWidth();
     deckHandler->setTransparency(Transparent);
     updateMainUITheme();
@@ -908,6 +909,7 @@ void MainWindow::completeUI()
     else
     {
         this->setWindowIcon(QIcon(":/Images/icon.png"));
+        this->setWindowTitle("Deck");
 
         setCentralWidget(this->otherWindow->ui->tabDeck);
         this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
@@ -959,27 +961,6 @@ void MainWindow::closeApp()
 }
 
 
-//void MainWindow::completeHeroButtons()
-//{
-//    QSignalMapper* mapper = new QSignalMapper(this);
-//    QString heroes[9] = {"Warrior", "Shaman", "Rogue",
-//                         "Paladin", "Hunter", "Druid",
-//                         "Warlock", "Mage", "Priest"};
-//    QPushButton *heroButtons[9] = {ui->heroButton1, ui->heroButton2, ui->heroButton3,
-//                                  ui->heroButton4, ui->heroButton5, ui->heroButton6,
-//                                  ui->heroButton7, ui->heroButton8, ui->heroButton9};
-
-//    for(int i=0; i<9; i++)
-//    {
-//        mapper->setMapping(heroButtons[i], heroes[i]);
-//        connect(heroButtons[i], SIGNAL(clicked()), mapper, SLOT(map()));
-//        heroButtons[i]->setToolTip(heroes[i]);
-//    }
-
-//    connect(mapper, SIGNAL(mapped(QString)), this, SLOT(confirmNewArenaDraft(QString)));
-//}
-
-
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList,
@@ -1000,6 +981,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
             break;
         case Opaque:
             ui->configRadioOpaque->setChecked(true);
+            break;
+        case Framed:
+            ui->configRadioFramed->setChecked(true);
             break;
         default:
             transparency = AutoTransparent;
@@ -1149,12 +1133,12 @@ void MainWindow::readSettings()
     {
         pos = settings.value("pos2", QPoint(0,0)).toPoint();
         size = settings.value("size2", QSize(255, 600)).toSize();
+        this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
 
         this->splitWindow = false;
-        this->transparency = Transparent;
         this->theme = ThemeBlack;
     }
-    this->setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->windowsFormation = None;
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
@@ -2325,9 +2309,16 @@ void MainWindow::transparentNever()
 }
 
 
+void MainWindow::transparentFramed()
+{
+    spreadTransparency(Framed);
+}
+
+
 void MainWindow::spreadTransparency(Transparency newTransparency)
 {
     this->transparency = newTransparency;
+    if(otherWindow != NULL)     otherWindow->transparency = newTransparency;
 
     deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
     enemyDeckHandler->setTransparency(this->transparency);
@@ -2336,6 +2327,23 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     arenaHandler->setTransparency(this->transparency);
     draftHandler->setTransparency(this->transparency);
     updateOtherTabsTransparency();
+
+    showWindowFrame(transparency == Framed);
+    if(otherWindow != NULL) otherWindow->showWindowFrame(transparency == Framed);
+}
+
+
+void MainWindow::showWindowFrame(bool showFrame)
+{
+    if(showFrame)
+    {
+        this->setWindowFlags(Qt::Window);
+    }
+    else
+    {
+        this->setWindowFlags(Qt::Window|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    }
+    this->show();
 }
 
 
@@ -2376,6 +2384,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioTransparent->setStyleSheet(radioCSS);
         ui->configRadioAuto->setStyleSheet(radioCSS);
         ui->configRadioOpaque->setStyleSheet(radioCSS);
+        ui->configRadioFramed->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
         ui->configCheckGoldenCards->setStyleSheet(checkCSS);
@@ -2418,6 +2427,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
         ui->configRadioOpaque->setStyleSheet("");
+        ui->configRadioFramed->setStyleSheet("");
 
         ui->configCheckGoldenCards->setStyleSheet("");
         ui->configCheckDarkTheme->setStyleSheet("");
@@ -2835,6 +2845,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioTransparent, SIGNAL(clicked()), this, SLOT(transparentAlways()));
     connect(ui->configRadioAuto, SIGNAL(clicked()), this, SLOT(transparentAuto()));
     connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
+    connect(ui->configRadioFramed, SIGNAL(clicked()), this, SLOT(transparentFramed()));
 
     connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
     connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
@@ -2949,7 +2960,6 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Revelar copias, bind, tea y pod
 
 
 //REPLAY BUGS

@@ -2538,7 +2538,7 @@ void PlanHandler::updateTransparency()
         ui->tabPlan->repaint();
 
         //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
-        if(inTabPlan && transparency!=Opaque)
+        if(inTabPlan && (transparency == Transparent || transparency == AutoTransparent))
         {
             emit needMainWindowFade(true);
         }

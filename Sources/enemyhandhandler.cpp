@@ -367,7 +367,7 @@ void EnemyHandHandler::updateTransparency()
         ui->tabEnemy->repaint();
 
         //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
-        if(inTabEnemy && transparency!=Opaque)
+        if(inTabEnemy && (transparency == Transparent || transparency == AutoTransparent))
         {
             emit needMainWindowFade(true);
         }

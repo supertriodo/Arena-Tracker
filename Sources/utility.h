@@ -97,7 +97,7 @@ using namespace cv;
 #define ANIMATION_TIME 750
 
 enum DebugLevel { Normal, Warning, Error };
-enum Transparency { Transparent, AutoTransparent, Opaque };
+enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum Theme { ThemeWhite, ThemeBlack };
 enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
