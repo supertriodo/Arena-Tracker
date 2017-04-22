@@ -2960,6 +2960,9 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
+//Mostrar debug imagen al pulsar ctrl-D
+//Test mana bind copied secret and enemy play it, should be isolated
+//Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 
 //REPLAY BUGS
