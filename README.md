@@ -13,8 +13,7 @@ Too complicated? [Check the User Guide.](https://www.gitbook.com/read/book/arena
 * Tested on Ubuntu/Linux Mint
   * libpng12 needs to be installed on Ubuntu 16.10
   * If you have problems with dependencies, try the AppImage binary.
-  * For Arch Linux users there's a package in AUR maintained by the community
-  * https://aur.archlinux.org/packages/arena-tracker/
+  * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by the community.
 
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
