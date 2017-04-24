@@ -41,8 +41,7 @@ The first time you run Arena Tracker you will be asked for:
  * If the file doesn't exist create an empty log.config in that dir.
 3) Restart Hearthstone (if you have it opened).
 
-If you have problems installing it or using it I'm happy to help you on
-http://www.reddit.com/r/ArenaTracker/
+If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
 
 ## FAQ
