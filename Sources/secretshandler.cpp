@@ -177,22 +177,22 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(AVENGE));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SACRED_TRIAL));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(GETAWAY_KODO));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
         case HUNTER:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(HIDDEN_CACHE));
@@ -201,10 +201,10 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
 
         case MAGE:
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(EFFIGY));
+//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(MANA_BIND));

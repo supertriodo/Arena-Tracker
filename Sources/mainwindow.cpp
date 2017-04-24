@@ -1275,6 +1275,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #endif
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_D)  createDebugPack();
+            else if(event->key() == Qt::Key_Z)  this->resize(QSize(544, 715));
 #endif
         }
     }
@@ -2937,6 +2938,10 @@ void MainWindow::createDebugPack()
         QRect rect = screen->geometry();
         QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
         image.save(dirPath + "/screenshot.png");
+
+        cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
+        cv::resize(mat, mat, cv::Size(1280, 720));
+        cv::imshow("Screenshot", mat);
     }
 
     QFile atLog(Utility::dataPath() + "/ArenaTrackerLog.txt");
@@ -2960,7 +2965,6 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Mostrar debug imagen al pulsar ctrl-D
 //Test mana bind copied secret and enemy play it, should be isolated
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
