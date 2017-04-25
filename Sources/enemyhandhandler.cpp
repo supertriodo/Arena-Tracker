@@ -64,27 +64,32 @@ void EnemyHandHandler::setLastCreatedByCode(QString code)
 }
 
 
-void EnemyHandHandler::convertDuplicates(QString code)
+void EnemyHandHandler::revealCreatedByCard(QString code, QString createdByCode, int quantity)
 {
-    convertKnownCard(code, 2);
-    emit pDebug("Duplicate Secret: Next 2 special cards will be " + code);
-}
-void EnemyHandHandler::convertManaBinded(QString code)
-{
-    //Con Mana Bind primero se roba la carta y luego se revela el secreto
-    //No podemos usar el mismo metodo que con duplicate
-    if(enemyHandList.empty())   return;
+    emit pDebug("Revealing next " + QString::number(quantity) + " card/s. CreatedBy: " + createdByCode + " as " + code);
+    int numHandCards = enemyHandList.count();
 
-    HandCard& card = enemyHandList.last();
-    if(card.special && card.getCreatedByCode() == MANA_BIND)
+    if(numHandCards >= quantity)
     {
-        card.setCode(code);
-        card.draw();
-        emit revealEnemyCard(card.id, code);
-        emit checkCardImage(code);
-        emit pDebug("Mana Bind Secret: Make last special card " + code);
+        for(int i=0; i<quantity; i++)
+        {
+            HandCard& card = enemyHandList[numHandCards-1-i];
+            if(card.special && card.getCreatedByCode() == createdByCode)
+            {
+                card.setCode(code);
+                card.draw();
+                emit revealEnemyCard(card.id, code);
+                emit checkCardImage(code);
+                emit pDebug("Revealed card. Id: " + QString::number(card.id) + " CreatedBy: " + createdByCode + " as " + code);
+            }
+        }
     }
 }
+
+
+//Ya no se usa, pero puede ser util en el futuro.
+//Sirve para convertir las n siguientes special cards robadas en el codigo especificado
+//Se usaba para duplicate, pero ahora las cartas se roban antes de revelarse el secreto
 void EnemyHandHandler::convertKnownCard(QString &code, int quantity)
 {
     this->knownCard = code;

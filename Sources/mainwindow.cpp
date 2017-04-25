@@ -387,10 +387,8 @@ void MainWindow::createSecretsHandler()
     secretsHandler = new SecretsHandler(this, ui, enemyHandHandler);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(secretsHandler, SIGNAL(duplicated(QString)),
-            enemyHandHandler, SLOT(convertDuplicates(QString)));
-    connect(secretsHandler, SIGNAL(manaBinded(QString)),
-            enemyHandHandler, SLOT(convertManaBinded(QString)));
+    connect(secretsHandler, SIGNAL(revealCreatedByCard(QString,QString,int)),
+            enemyHandHandler, SLOT(revealCreatedByCard(QString,QString,int)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
     connect(secretsHandler, SIGNAL(pLog(QString)),
@@ -2968,7 +2966,6 @@ void MainWindow::createDebugPack()
 
 //Include lightforge tier list.
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Mostrar carta devuelta por get away kodo en hand.
 
 
 //REPLAY BUGS

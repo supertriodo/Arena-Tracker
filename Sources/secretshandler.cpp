@@ -165,6 +165,8 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 
 void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
 {
+    Q_UNUSED(loadingScreenState);
+
     ActiveSecret activeSecret;
     activeSecret.id = id;
     activeSecret.root.hero = hero;
@@ -338,9 +340,10 @@ void SecretsHandler::secretRevealed(int id, QString code)
     emit pDebug("Secret revealed: " + code);
 
 
-    //Duplicates en Hand
-    if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit duplicated(lastMinionDead);
-    else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit manaBinded(lastSpellPlayed);
+    //Reveal cards in Hand
+    if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit revealCreatedByCard(lastMinionDead, code, 2);
+    else if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())  emit revealCreatedByCard(lastMinionDead, code, 1);
+    else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
 }
 
 

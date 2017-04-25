@@ -1055,7 +1055,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit playerSecretStolen(id.toInt(), cardId);
             }
             //Enemigo secreto desvelado
-            else
+            else if(zoneTo != "OPPOSING SECRET")
             {
                 emit pDebug("Enemy: Secret revealed: " + name + " ID: " + id, numLine);
                 emit enemySecretRevealed(id.toInt(), cardId);

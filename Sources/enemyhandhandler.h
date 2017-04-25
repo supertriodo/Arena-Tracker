@@ -76,8 +76,7 @@ public slots:
     void hideEnemyCardPlayed(int id, QString code);
     void lockEnemyInterface();
     void unlockEnemyInterface();
-    void convertDuplicates(QString code);
-    void convertManaBinded(QString code);
+    void revealCreatedByCard(QString code, QString createdByCode, int quantity);
     void setLastCreatedByCode(QString code);
     void drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack);
     void buffHandCard(int id);

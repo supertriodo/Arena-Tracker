@@ -64,9 +64,8 @@ public:
 
 signals:
     void checkCardImage(QString code);
-    void duplicated(QString code);
-    void manaBinded(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
+    void revealCreatedByCard(QString code, QString createdByCode, int quantity);
     void isolatedSecret(int id, QString code);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SecretsHandler");
