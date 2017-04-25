@@ -154,6 +154,7 @@ public:
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
     static bool isLeftOfScreen(QPoint center);
     static bool isFromStandardSet(QString code);
+    static bool isASecret(QString code);
 };
 
 #endif // UTILITY_H

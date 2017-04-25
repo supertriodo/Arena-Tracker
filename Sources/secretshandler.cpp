@@ -116,18 +116,17 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
 
     if(handCard != NULL)
     {
+        QString code = handCard->getCode();
         QString createdByCode = handCard->getCreatedByCode();
-        if(createdByCode == KABAL_CHEMIST)
+
+        if(!code.isEmpty() && Utility::isASecret(code))
+        {
+            knownSecretPlayed(id, hero, code);
+        }
+        else if(createdByCode == KABAL_CHEMIST)
         {
             knownSecretPlayed(id, hero, POTION_OF_POLIMORPH);
         }
-        //CreatedBy card
-        else if(!createdByCode.isEmpty())
-        {
-            //Puede ser cualquier secreto
-            unknownSecretPlayed(id, hero, tavernBrawl);
-        }
-        //Deck card
         else
         {
             unknownSecretPlayed(id, hero, loadingScreenState);

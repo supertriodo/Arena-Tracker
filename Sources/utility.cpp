@@ -180,6 +180,18 @@ bool Utility::isFromStandardSet(QString code)
 }
 
 
+bool Utility::isASecret(QString code)
+{
+    QJsonArray mechanics = getCardAtribute(code, "mechanics").toArray();
+
+    foreach(QJsonValue mechanic, mechanics)
+    {
+        if(mechanic.toString() == "SECRET") return true;
+    }
+    return false;
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();

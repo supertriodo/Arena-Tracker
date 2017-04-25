@@ -2965,8 +2965,10 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-//Test mana bind copied secret and enemy play it, should be isolated
+
+//Include lightforge tier list.
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+//Mostrar carta devuelta por get away kodo en hand.
 
 
 //REPLAY BUGS
