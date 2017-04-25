@@ -1,7 +1,7 @@
 # Arena-Tracker
 Arena Tracker reads the Hearthstone log to give your all the info you need. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
 
-Too complicated? [Check the User Guide.](https://www.gitbook.com/read/book/arena-tracker/arena-tracker-documentation)
+Too complicated? [Check the User Guide](https://www.gitbook.com/read/book/arena-tracker/arena-tracker-documentation) maintained by [Berserker](https://www.gitbook.com/@nicolasvillavicencio).
 
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 
@@ -12,8 +12,8 @@ Too complicated? [Check the User Guide.](https://www.gitbook.com/read/book/arena
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
   * libpng12 needs to be installed on Ubuntu 16.10
-  * For Arch Linux users there's a package in AUR maintained by the community
-  * https://aur.archlinux.org/packages/arena-tracker/
+  * If you have problems with dependencies, try the AppImage binary.
+  * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by [Strit](https://github.com/Strit).
 
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
@@ -41,8 +41,7 @@ The first time you run Arena Tracker you will be asked for:
  * If the file doesn't exist create an empty log.config in that dir.
 3) Restart Hearthstone (if you have it opened).
 
-If you have problems installing it or using it I'm happy to help you on
-http://www.reddit.com/r/ArenaTracker/
+If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
 
 ## FAQ
@@ -133,6 +132,7 @@ Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
+* King Karuso: €50,00 EUR
 * Pavel G: €15,00 EUR
 * Clovis C: €15,00 EUR
 * Andres N: €15,00 EUR
