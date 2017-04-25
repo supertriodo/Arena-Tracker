@@ -132,6 +132,7 @@ Thanks to all these projects ArenaTracker is possible.
 
 
 ## Top donors:
+* King Karuso: €50,00 EUR
 * Pavel G: €15,00 EUR
 * Clovis C: €15,00 EUR
 * Andres N: €15,00 EUR
