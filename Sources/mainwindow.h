@@ -22,6 +22,8 @@
 #define DIVIDE_TABS_H2 750
 #define DIVIDE_TABS_V 700
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
+#define LIGHTFORGE_VERSION_URL "https://raw.githubusercontent.com/rembound/Arena-Helper/master/data/version.json"
+#define LIGHTFORGE_JSON_URL "https://raw.githubusercontent.com/rembound/Arena-Helper/master/data/cardtier.json"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 
@@ -150,6 +152,9 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
+    QString getLightForgeVersionFromJson(QByteArray &jsonData);
+    void checkLightForgeVersion(QString lightForgeJsonVersion);
+    void initLightForgeJson();
 
 //Override events
 protected:

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogFile();
     completeUI();
     initCardsJson();
+    initLightForgeJson();
 
     createCardDownloader();
     createPlanHandler();
@@ -282,6 +283,19 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 createCardsJsonMap(jsonData);
             }
         }
+        //Light Forge version
+        else if(endUrl == "version.json")
+        {
+            QByteArray jsonData = reply->readAll();
+            checkLightForgeVersion(getLightForgeVersionFromJson(jsonData));
+        }
+        //Light Forge json
+        else if(endUrl == "cardtier.json")
+        {
+            emit pDebug("Extra: Json LightForge --> Download Success.");
+            QByteArray jsonData = reply->readAll();
+            dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+        }
         //Extra files
         else
         {
@@ -337,7 +351,46 @@ void MainWindow::initCardsJson()
 {
     Utility::setCardsJson(&cardsJson);
     networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
-    emit pDebug("Extra: Json Cards --> Trying " + QString(JSON_CARDS_URL));
+    emit pDebug("Extra: Json Cards --> Trying: " + QString(JSON_CARDS_URL));
+}
+
+
+QString MainWindow::getLightForgeVersionFromJson(QByteArray &jsonData)
+{
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+    return jsonDoc.object().value("tierlist").toString();
+}
+
+
+void MainWindow::checkLightForgeVersion(QString lightForgeJsonVersion)
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString storedLightForgeJsonVersion = settings.value("lightForgeJsonVersion", "").toString();
+    QFile lightForgeJsonFile(Utility::extraPath() + "/lightForge.json");
+    emit pDebug("Extra: Json LightForge --> Latest version: " + lightForgeJsonVersion);
+    emit pDebug("Extra: Json LightForge --> Stored version: " + storedLightForgeJsonVersion);
+
+    //Need download
+    if(lightForgeJsonVersion != storedLightForgeJsonVersion || !lightForgeJsonFile.exists())
+    {
+        lightForgeJsonFile.remove();
+        settings.setValue("lightForgeJsonVersion", lightForgeJsonVersion);
+        networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
+        emit pDebug("Extra: Json LightForge --> Download from: " + QString(LIGHTFORGE_JSON_URL));
+    }
+
+    //Use local lightForge.json
+    else
+    {
+        emit pDebug("Extra: Json LightForge --> Use local lightForge.json");
+    }
+}
+
+
+void MainWindow::initLightForgeJson()
+{
+    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_VERSION_URL)));
+    emit pDebug("Extra: Json LightForge --> Get version from: " + QString(LIGHTFORGE_VERSION_URL));
 }
 
 
@@ -2963,9 +3016,9 @@ void MainWindow::createDebugPack()
 //Play around cards en plan tab.
 //Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
-
-//Include lightforge tier list.
+//HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+//Include lightforge tier list.
 
 
 //REPLAY BUGS
