@@ -35,13 +35,13 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
         scoresPushButton[i]->setMinimumHeight(0);
         scoresPushButton[i]->setMaximumHeight(0);
-        scoresPushButton[i]->setMinimumWidth(scoreWidth);
+        scoresPushButton[i]->setFixedWidth(scoreWidth);
         scoresPushButton[i]->setFont(font);
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
         scoresPushButton2[i]->setMinimumHeight(0);
         scoresPushButton2[i]->setMaximumHeight(0);
-        scoresPushButton2[i]->setMinimumWidth(scoreWidth);
+        scoresPushButton2[i]->setFixedWidth(scoreWidth);
         scoresPushButton2[i]->setFont(font);
 
         horLayoutScores->addStretch();
@@ -102,6 +102,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
                                  QString synergy1, QString synergy2, QString synergy3,
                                  DraftMethod draftMethod)
 {
+    double bestRating = std::max(std::max(rating1, rating2), rating3);
     double ratings[3] = {rating1, rating2, rating3};
     QString synergies[3] = {synergy1, synergy2, synergy3};
 
@@ -109,7 +110,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
     {
         if(draftMethod == LightForge)
         {
-            scoresPushButton[i]->setScore(ratings[i]);
+            scoresPushButton[i]->setScore(ratings[i], ratings[i]==bestRating);
 
             QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
             animation->setDuration(ANIMATION_TIME);
@@ -128,7 +129,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         }
         else if(draftMethod == HearthArena)
         {
-            scoresPushButton2[i]->setScore(ratings[i]);
+            scoresPushButton2[i]->setScore(ratings[i], ratings[i]==bestRating);
 
             QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton2[i], "maximumHeight");
             animation->setDuration(ANIMATION_TIME);

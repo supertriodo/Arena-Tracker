@@ -5,6 +5,7 @@ ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton
 {
     this->learningMode = false;
     this->learningShow = false;
+    this->isBestScore = false;
     this->draftMethod = draftMethod;
 }
 
@@ -15,7 +16,7 @@ void ScoreButton::leaveEvent(QEvent * e)
     if(learningMode)
     {
         learningShow = false;
-        setScore(score);
+        draw();
     }
     QPushButton::leaveEvent(e);
 }
@@ -27,7 +28,7 @@ void ScoreButton::enterEvent(QEvent * e)
     if(learningMode)
     {
         learningShow = true;
-        setScore(score);
+        draw();
     }
     QPushButton::enterEvent(e);
 }
@@ -36,7 +37,7 @@ void ScoreButton::enterEvent(QEvent * e)
 void ScoreButton::setLearningMode(bool value)
 {
     this->learningMode = value;
-    this->setScore(score);
+    draw();
 }
 
 
@@ -66,10 +67,17 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
 }
 
 
-void ScoreButton::setScore(double score)
+void ScoreButton::setScore(double score, bool isBestScore)
+{
+    this->score = score;
+    this->isBestScore = isBestScore;
+    draw();
+}
+
+
+void ScoreButton::draw()
 {
     bool hideScore = learningMode && !learningShow;
-    this->score = score;
 
     int r, g, b;
     getScoreColor(r, g, b, score);
@@ -87,10 +95,11 @@ void ScoreButton::setScore(double score)
 
             "border-style: solid;border-color: black;" +
 
-            "border-width: " + QString::number(width()/20) + "px;border-radius: "
-            + QString::number(width()/3) + "px;" +
+//            "border-width: " + QString::number(width()/20) + "px;" +
+            "border-radius: " + QString::number(width()/3) + "px;" +
 
-            getBackgroundImageCSS() + "}");
+            (isBestScore?getBackgroundImageCSS():"") + "}");
+    this->update();
 }
 
 
