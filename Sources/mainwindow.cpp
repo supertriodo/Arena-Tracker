@@ -3018,6 +3018,7 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+//Nuevo icono drafting
 //Include lightforge tier list.
 
 

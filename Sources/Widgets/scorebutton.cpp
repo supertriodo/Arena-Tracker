@@ -1,10 +1,11 @@
 #include "scorebutton.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent) : QPushButton(parent)
+ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton(parent)
 {
     this->learningMode = false;
     this->learningShow = false;
+    this->draftMethod = draftMethod;
 }
 
 
@@ -39,14 +40,39 @@ void ScoreButton::setLearningMode(bool value)
 }
 
 
+QString ScoreButton::getBackgroundImageCSS()
+{
+    switch(draftMethod)
+    {
+        case None:
+            return "";
+        case HearthArena:
+            return "border-image: url(ha50.png) 0 0 0 0 stretch stretch;";
+        case LightForge:
+            return "border-image: url(lf50.png) 0 0 0 0 stretch stretch;";
+    }
+    return "";
+}
+
+
+void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
+{
+    int rating255 = 0;
+    if(draftMethod == HearthArena)      rating255 = std::max(std::min((int)(score*2.55), 255), 0);
+    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)((score-50)*2.55), 255), 0);
+    r = std::min(255, (255 - rating255)*2);
+    g = std::min(255,rating255*2);
+    b = 0;
+}
+
+
 void ScoreButton::setScore(double score)
 {
     bool hideScore = learningMode && !learningShow;
     this->score = score;
-    int rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    int r = std::min(255, (255 - rating255)*2);
-    int g = std::min(255,rating255*2);
-    int b = 0;
+
+    int r, g, b;
+    getScoreColor(r, g, b, score);
 
     if(hideScore)    this->setText("?");
     else                this->setText(QString::number((int)score));
@@ -54,6 +80,7 @@ void ScoreButton::setScore(double score)
                           "stop: 0 black, "
                           "stop: 0.5 rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +"), "
                           "stop: 1 black);";
+
     this->setStyleSheet(
             "QPushButton{background-color: " + (hideScore?"black;":gradientCSS) +
             "color: " + (hideScore?"white;":"black;") +
@@ -61,7 +88,9 @@ void ScoreButton::setScore(double score)
             "border-style: solid;border-color: black;" +
 
             "border-width: " + QString::number(width()/20) + "px;border-radius: "
-            + QString::number(width()/3) + "px;}");
+            + QString::number(width()/3) + "px;" +
+
+            getBackgroundImageCSS() + "}");
 }
 
 

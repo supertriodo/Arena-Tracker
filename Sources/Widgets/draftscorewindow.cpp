@@ -32,14 +32,21 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget);
+        scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
         scoresPushButton[i]->setMinimumHeight(0);
         scoresPushButton[i]->setMaximumHeight(0);
         scoresPushButton[i]->setMinimumWidth(scoreWidth);
         scoresPushButton[i]->setFont(font);
 
+        scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
+        scoresPushButton2[i]->setMinimumHeight(0);
+        scoresPushButton2[i]->setMaximumHeight(0);
+        scoresPushButton2[i]->setMinimumWidth(scoreWidth);
+        scoresPushButton2[i]->setFont(font);
+
         horLayoutScores->addStretch();
         horLayoutScores->addWidget(scoresPushButton[i]);
+        horLayoutScores->addWidget(scoresPushButton2[i]);
         horLayoutScores->addStretch();
 
 
@@ -86,52 +93,75 @@ void DraftScoreWindow::setLearningMode(bool value)
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i]->setLearningMode(value);
+        scoresPushButton2[i]->setLearningMode(value);
     }
 }
 
 
 void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
-                                 QString synergy1, QString synergy2, QString synergy3)
+                                 QString synergy1, QString synergy2, QString synergy3,
+                                 DraftMethod draftMethod)
 {
     double ratings[3] = {rating1, rating2, rating3};
     QString synergies[3] = {synergy1, synergy2, synergy3};
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setScore(ratings[i]);
-
-        QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
-        animation->setDuration(ANIMATION_TIME);
-        animation->setStartValue(scoresPushButton[i]->maximumHeight());
-        animation->setEndValue(scoreWidth);
-        animation->setEasingCurve(QEasingCurve::OutBounce);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-
-        animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
-        animation->setDuration(ANIMATION_TIME);
-        animation->setStartValue(scoresPushButton[i]->minimumHeight());
-        animation->setEndValue(scoreWidth);
-        animation->setEasingCurve(QEasingCurve::OutBounce);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-        if(i == 0)  connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
-
-
-        //Insert synergies
-        synergiesListWidget[i]->clear();
-        synergiesDeckCardLists[i].clear();
-
-        QStringList synergiesList = synergies[i].split(" / ", QString::SkipEmptyParts);
-        foreach(QString name, synergiesList)
+        if(draftMethod == LightForge)
         {
-            QString code;
-            int total = getCard(name, code);
-            DeckCard deckCard(code);
-            deckCard.total = deckCard.remaining = total;
-            deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
-            deckCard.draw();
-            synergiesDeckCardLists[i].append(deckCard);
+            scoresPushButton[i]->setScore(ratings[i]);
+
+            QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
+            animation->setDuration(ANIMATION_TIME);
+            animation->setStartValue(scoresPushButton[i]->maximumHeight());
+            animation->setEndValue(scoreWidth);
+            animation->setEasingCurve(QEasingCurve::OutBounce);
+            animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+
+            animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
+            animation->setDuration(ANIMATION_TIME);
+            animation->setStartValue(scoresPushButton[i]->minimumHeight());
+            animation->setEndValue(scoreWidth);
+            animation->setEasingCurve(QEasingCurve::OutBounce);
+            animation->start(QPropertyAnimation::DeleteWhenStopped);
+        }
+        else if(draftMethod == HearthArena)
+        {
+            scoresPushButton2[i]->setScore(ratings[i]);
+
+            QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton2[i], "maximumHeight");
+            animation->setDuration(ANIMATION_TIME);
+            animation->setStartValue(scoresPushButton2[i]->maximumHeight());
+            animation->setEndValue(scoreWidth);
+            animation->setEasingCurve(QEasingCurve::OutBounce);
+            animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+
+            animation = new QPropertyAnimation(scoresPushButton2[i], "minimumHeight");
+            animation->setDuration(ANIMATION_TIME);
+            animation->setStartValue(scoresPushButton2[i]->minimumHeight());
+            animation->setEndValue(scoreWidth);
+            animation->setEasingCurve(QEasingCurve::OutBounce);
+            animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+            if(i == 0)  connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+
+            //Insert synergies
+            synergiesListWidget[i]->clear();
+            synergiesDeckCardLists[i].clear();
+
+            QStringList synergiesList = synergies[i].split(" / ", QString::SkipEmptyParts);
+            foreach(QString name, synergiesList)
+            {
+                QString code;
+                int total = getCard(name, code);
+                DeckCard deckCard(code);
+                deckCard.total = deckCard.remaining = total;
+                deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
+                deckCard.draw();
+                synergiesDeckCardLists[i].append(deckCard);
+            }
         }
     }
 }
@@ -172,8 +202,21 @@ void DraftScoreWindow::hideScores()
         animation->setEasingCurve(QEasingCurve::Linear);
         animation->start(QPropertyAnimation::DeleteWhenStopped);
 
-        connect(animation, SIGNAL(finished()),
-                this, SLOT(update()));
+        animation = new QPropertyAnimation(scoresPushButton2[i], "maximumHeight");
+        animation->setDuration(ANIMATION_TIME/2);
+        animation->setStartValue(scoresPushButton2[i]->maximumHeight());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::Linear);
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+        animation = new QPropertyAnimation(scoresPushButton2[i], "minimumHeight");
+        animation->setDuration(ANIMATION_TIME/2);
+        animation->setStartValue(scoresPushButton2[i]->minimumHeight());
+        animation->setEndValue(0);
+        animation->setEasingCurve(QEasingCurve::Linear);
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+        if(i==0)    connect(animation, SIGNAL(finished()), this, SLOT(update()));
 
         hideSynergies(i);
     }

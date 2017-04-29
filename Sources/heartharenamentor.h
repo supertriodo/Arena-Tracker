@@ -28,7 +28,7 @@ public:
 signals:
     void newTip(QString tip, double rating1, double rating2, double rating3,
                 double tierScore1, double tierScore2, double tierScore3,
-                QString synergy1, QString synergy2, QString synergy3);
+                QString synergy1, QString synergy2, QString synergy3, DraftMethod draftMethod);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HearthArenaMentor");
 

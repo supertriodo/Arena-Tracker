@@ -23,6 +23,7 @@ public:
 //Variables
 private:
     ScoreButton *scoresPushButton[3];
+    ScoreButton *scoresPushButton2[3];
     MoveListWidget *synergiesListWidget[3];
     QList<DeckCard> synergiesDeckCardLists[3];
     int scoreWidth;
@@ -34,7 +35,7 @@ private:
     int getCard(QString &name, QString &code);
 
 public:
-    void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3);
+    void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3, DraftMethod draftMethod);
     void hideScores();
     void setLearningMode(bool value);
 

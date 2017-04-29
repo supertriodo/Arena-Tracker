@@ -13,6 +13,7 @@
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    2000
 
+
 class DraftHandler : public QObject
 {
     Q_OBJECT
@@ -25,6 +26,7 @@ private:
     Ui::Extended *ui;
     HearthArenaMentor *hearthArenaMentor;
     QMap<QString, int> hearthArenaCodes;
+    QMap<QString, int> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
     int cardsDownloading;
     DraftCard draftCards[3];
@@ -93,7 +95,7 @@ public slots:
     void endDraft();
     void showNewRatings(QString tip, double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,
-                        QString synergy1, QString synergy2, QString synergy3);
+                        QString synergy1, QString synergy2, QString synergy3, DraftMethod draftMethod);
     void pickCard(QString code);
     void enterArena();
     void leaveArena();
