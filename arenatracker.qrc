@@ -117,5 +117,9 @@
         <file>Images/planPrev.png</file>
         <file>Images/planResize.png</file>
         <file>Images/splash.png</file>
+        <file>Images/bgScoreButtonHA.png</file>
+        <file>Images/bgScoreButtonLF.png</file>
+        <file>Images/bgScoreHA.png</file>
+        <file>Images/bgScoreLF.png</file>
     </qresource>
 </RCC>

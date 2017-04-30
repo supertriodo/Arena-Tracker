@@ -101,7 +101,7 @@ enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum Theme { ThemeWhite, ThemeBlack };
 enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
-enum DraftMethod { None, HearthArena, LightForge };
+enum DraftMethod { None, HearthArena, LightForge, All };
 
 
 

@@ -15,8 +15,8 @@ public:
 
 //Variables
 public:
-    QLabel *scoreItem, *cardItem;
-    double score, tierScore;
+    QLabel *scoreLFitem, *scoreHAitem, *cardItem;
+    double tierScore;
 
 //Metodos
 public:

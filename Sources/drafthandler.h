@@ -40,10 +40,12 @@ private:
     bool drafting, capturing, leavingArena;
     bool mouseInApp;
     Transparency transparency;
+    Theme theme;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
+    DraftMethod draftMethod;
 
 
 //Metodos
@@ -65,8 +67,8 @@ private:
     bool screenRectsFound();
     bool findScreenRects();
     void removeTabHero();
-    void clearScore(QLabel *label, bool clearText=true);
-    void highlightScore(QLabel *label);
+    void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
+    void highlightScore(QLabel *label, DraftMethod draftMethod);
     void deleteDraftScoreWindow();
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
@@ -79,6 +81,8 @@ public:
     void setLearningMode(bool value);
     void redrawAllCards();
     void updateTamCard(int value);
+    void setDraftMethod(DraftMethod draftMethod);
+    void setTheme(Theme theme);
 
 signals:
     void checkCardImage(QString code);

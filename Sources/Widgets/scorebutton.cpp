@@ -45,14 +45,13 @@ QString ScoreButton::getBackgroundImageCSS()
 {
     switch(draftMethod)
     {
-        case None:
-            return "";
         case HearthArena:
-            return "border-image: url(ha50.png) 0 0 0 0 stretch stretch;";
+            return "border-image: url(:/Images/bgScoreButtonHA.png) 0 0 0 0 stretch stretch;";
         case LightForge:
-            return "border-image: url(lf50.png) 0 0 0 0 stretch stretch;";
+            return "border-image: url(:/Images/bgScoreButtonLF.png) 0 0 0 0 stretch stretch;";
+        default:
+            return "";
     }
-    return "";
 }
 
 
@@ -95,10 +94,10 @@ void ScoreButton::draw()
 
             "border-style: solid;border-color: black;" +
 
-//            "border-width: " + QString::number(width()/20) + "px;" +
+            "border-width: 1px;" +
             "border-radius: " + QString::number(width()/3) + "px;" +
 
-            (isBestScore?getBackgroundImageCSS():"") + "}");
+            ((isBestScore&&!hideScore)?getBackgroundImageCSS():"") + "}");
     this->update();
 }
 

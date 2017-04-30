@@ -13,8 +13,10 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->capturing = false;
     this->leavingArena = false;
     this->transparency = Opaque;
+    this->theme = ThemeWhite;
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
+    this->draftMethod = All;
 
     for(int i=0; i<3; i++)
     {
@@ -36,17 +38,23 @@ void DraftHandler::completeUI()
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
 
     QFont font("Belwe Bd BT");
-    font.setPointSize(18);
-    ui->labelDraft1->setFont(font);
-    ui->labelDraft2->setFont(font);
-    ui->labelDraft3->setFont(font);
+    font.setPixelSize(24);
+    ui->labelLFscore1->setFont(font);
+    ui->labelLFscore2->setFont(font);
+    ui->labelLFscore3->setFont(font);
+    ui->labelHAscore1->setFont(font);
+    ui->labelHAscore2->setFont(font);
+    ui->labelHAscore3->setFont(font);
 
     draftCards[0].cardItem = ui->labelCard1;
     draftCards[1].cardItem = ui->labelCard2;
     draftCards[2].cardItem = ui->labelCard3;
-    draftCards[0].scoreItem = ui->labelDraft1;
-    draftCards[1].scoreItem = ui->labelDraft2;
-    draftCards[2].scoreItem = ui->labelDraft3;
+    draftCards[0].scoreLFitem = ui->labelLFscore1;
+    draftCards[1].scoreLFitem = ui->labelLFscore2;
+    draftCards[2].scoreLFitem = ui->labelLFscore3;
+    draftCards[0].scoreHAitem = ui->labelHAscore1;
+    draftCards[1].scoreHAitem = ui->labelHAscore2;
+    draftCards[2].scoreHAitem = ui->labelHAscore3;
 }
 
 
@@ -166,7 +174,8 @@ void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreItem);
+        clearScore(draftCards[i].scoreLFitem, LightForge);
+        clearScore(draftCards[i].scoreHAitem, HearthArena);
         draftCards[i].setCode("");
         draftCards[i].draw();
     }
@@ -484,7 +493,8 @@ void DraftHandler::pickCard(QString code)
     //Clear cards and score
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreItem);
+        clearScore(draftCards[i].scoreLFitem, LightForge);
+        clearScore(draftCards[i].scoreHAitem, HearthArena);
         draftCards[i].setCode("");
         draftCards[i].draw();
     }
@@ -507,7 +517,8 @@ void DraftHandler::showNewCards(QString codes[3])
     //Load cards
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreItem);
+        clearScore(draftCards[i].scoreLFitem, LightForge);
+        clearScore(draftCards[i].scoreHAitem, HearthArena);
         draftCards[i].setCode(codes[i]);
         draftCards[i].draw();
     }
@@ -554,17 +565,28 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
 
     for(int i=0; i<3; i++)
     {
-        draftCards[i].score = ratings[i];
-        draftCards[i].tierScore = tierScore[i];
-        draftCards[i].scoreItem->setText(QString::number((int)ratings[i]) +
-                                        " -- (" + QString::number((int)tierScore[i]) + ")");
-        if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreItem);
+        //TierScore for deck average
+        if(draftMethod == this->draftMethod || (this->draftMethod == All && draftMethod == HearthArena))
+        {
+            draftCards[i].tierScore = tierScore[i];
+        }
 
-        if(learningMode)    draftCards[i].scoreItem->hide();
-        else                draftCards[i].scoreItem->show();
+        //Update score label
+        if(draftMethod == LightForge)
+        {
+            draftCards[i].scoreLFitem->setText(QString::number((int)ratings[i]));
+            if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreLFitem, draftMethod);
+        }
+        else if(draftMethod == HearthArena)
+        {
+            draftCards[i].scoreHAitem->setText(QString::number((int)ratings[i]) +
+                                            " -- (" + QString::number((int)tierScore[i]) + ")");
+            if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreHAitem, draftMethod);
+        }
     }
 
-    if(!learningMode)    ui->textBrowserDraft->setText(tip);
+    if(!learningMode && draftMethod == HearthArena &&
+        (this->draftMethod == HearthArena || this->draftMethod == All))     ui->textBrowserDraft->setText(tip);
 
     //Mostrar score
     draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3, draftMethod);
@@ -730,10 +752,14 @@ bool DraftHandler::findScreenRects()
 }
 
 
-void DraftHandler::clearScore(QLabel *label, bool clearText)
+void DraftHandler::clearScore(QLabel *label, DraftMethod draftMethod, bool clearText)
 {
     if(clearText)   label->setText("");
-    else if(label->styleSheet() == "QLabel {background-color: transparent; color: rgb(50,175,50);}") return;
+    else if(label->styleSheet().contains("background-image"))
+    {
+        highlightScore(label, draftMethod);
+        return;
+    }
 
     if(!mouseInApp && transparency == Transparent)
     {
@@ -746,9 +772,26 @@ void DraftHandler::clearScore(QLabel *label, bool clearText)
 }
 
 
-void DraftHandler::highlightScore(QLabel *label)
+void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 {
-    label->setStyleSheet("QLabel {background-color: transparent; color: rgb(50,175,50);}");
+    QString backgroundImage = "";
+    if(draftMethod == LightForge)           backgroundImage = ":/Images/bgScoreLF.png";
+    else if(draftMethod == HearthArena)     backgroundImage = ":/Images/bgScoreHA.png";
+    label->setStyleSheet("QLabel {background-color: transparent; color: " +
+                         QString(theme==ThemeBlack||(!mouseInApp && transparency == Transparent)?"white":"black") + ";"
+                         "background-image: url(" + backgroundImage + "); background-repeat: no-repeat; background-position: center; }");
+}
+
+
+void DraftHandler::setTheme(Theme theme)
+{
+    this->theme = theme;
+
+    for(int i=0; i<3; i++)
+    {
+        if(draftCards[i].scoreLFitem->styleSheet().contains("background-image"))    highlightScore(draftCards[i].scoreLFitem, LightForge);
+        if(draftCards[i].scoreHAitem->styleSheet().contains("background-image"))    highlightScore(draftCards[i].scoreHAitem, HearthArena);
+    }
 }
 
 
@@ -781,10 +824,13 @@ void DraftHandler::setTransparency(Transparency value)
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
 
-    //Clear score labels
-    clearScore(ui->labelDraft1, false);
-    clearScore(ui->labelDraft2, false);
-    clearScore(ui->labelDraft3, false);
+    //Update score labels
+    clearScore(ui->labelLFscore1, LightForge, false);
+    clearScore(ui->labelLFscore2, LightForge, false);
+    clearScore(ui->labelLFscore3, LightForge, false);
+    clearScore(ui->labelHAscore1, HearthArena, false);
+    clearScore(ui->labelHAscore2, HearthArena, false);
+    clearScore(ui->labelHAscore3, HearthArena, false);
 }
 
 
@@ -821,16 +867,52 @@ void DraftHandler::setLearningMode(bool value)
     {
         for(int i=0; i<3; i++)
         {
-            draftCards[i].scoreItem->hide();
+            draftCards[i].scoreLFitem->hide();
+            draftCards[i].scoreHAitem->hide();
         }
         ui->textBrowserDraft->setText("");
     }
     else
     {
-        for(int i=0; i<3; i++)
-        {
-            draftCards[i].scoreItem->show();
-        }
+        setDraftMethod(this->draftMethod);
+    }
+}
+
+
+void DraftHandler::setDraftMethod(DraftMethod draftMethod)
+{
+    this->draftMethod = draftMethod;
+
+    switch(draftMethod)
+    {
+        case All:
+            for(int i=0; i<3; i++)
+            {
+                draftCards[i].scoreLFitem->show();
+                draftCards[i].scoreHAitem->show();
+            }
+            break;
+        case LightForge:
+            for(int i=0; i<3; i++)
+            {
+                draftCards[i].scoreLFitem->show();
+                draftCards[i].scoreHAitem->hide();
+            }
+            break;
+        case HearthArena:
+            for(int i=0; i<3; i++)
+            {
+                draftCards[i].scoreLFitem->hide();
+                draftCards[i].scoreHAitem->show();
+            }
+            break;
+        default:
+            for(int i=0; i<3; i++)
+            {
+                draftCards[i].scoreLFitem->hide();
+                draftCards[i].scoreHAitem->hide();
+            }
+            break;
     }
 }
 

@@ -802,13 +802,28 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="labelDraft1">
+              <widget class="QLabel" name="labelLFscore1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelHAscore1">
                <property name="font">
                 <font>
                  <pointsize>18</pointsize>
@@ -830,13 +845,28 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="labelDraft2">
+              <widget class="QLabel" name="labelLFscore2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelHAscore2">
                <property name="font">
                 <font>
                  <pointsize>18</pointsize>
@@ -858,13 +888,28 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="labelDraft3">
+              <widget class="QLabel" name="labelLFscore3">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelHAscore3">
                <property name="font">
                 <font>
                  <pointsize>18</pointsize>

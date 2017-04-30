@@ -2541,6 +2541,7 @@ void MainWindow::spreadTheme()
     updateMainUITheme();
     arenaHandler->setTheme(this->theme);
     deckHandler->setTheme(this->theme);
+    draftHandler->setTheme(this->theme);
 }
 
 
