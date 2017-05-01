@@ -82,6 +82,21 @@ QString Utility::heroStringFromLogNumber(QString hero)
 }
 
 
+QString Utility::heroString2FromLogNumber(QString hero)
+{
+    if(hero == QString("06"))       return "Druid";
+    else if(hero == QString("05"))  return "Hunter";
+    else if(hero == QString("08"))  return "Mage";
+    else if(hero == QString("04"))  return "Paladin";
+    else if(hero == QString("09"))  return "Priest";
+    else if(hero == QString("03"))  return "Rogue";
+    else if(hero == QString("02"))  return "Shaman";
+    else if(hero == QString("07"))  return "Warlock";
+    else if(hero == QString("01"))  return "Warrior";
+    else                            return "";
+}
+
+
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {

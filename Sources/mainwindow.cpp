@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogFile();
     completeUI();
     initCardsJson();
-    initLightForgeJson();
+    downloadLightForgeJson();
 
     createCardDownloader();
     createPlanHandler();
@@ -266,7 +266,8 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     }
     else
     {
-        QString endUrl = reply->url().toString().split("/").last();
+        QString fullUrl = reply->url().toString();
+        QString endUrl = fullUrl.split("/").last();
 
         //Cards json
         if(endUrl == "cards.json")
@@ -283,14 +284,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 createCardsJsonMap(jsonData);
             }
         }
-        //Light Forge version
-        else if(endUrl == "version.json")
-        {
-            QByteArray jsonData = reply->readAll();
-            checkLightForgeVersion(getLightForgeVersionFromJson(jsonData));
-        }
+//        //Light Forge version
+//        else if(endUrl == "version.json")
+//        {
+//            QByteArray jsonData = reply->readAll();
+//            checkLightForgeVersion(getLightForgeVersionFromJson(jsonData));
+//        }
         //Light Forge json
-        else if(endUrl == "cardtier.json")
+        else if(fullUrl == LIGHTFORGE_JSON_URL)
         {
             emit pDebug("Extra: Json LightForge --> Download Success.");
             QByteArray jsonData = reply->readAll();
@@ -355,43 +356,48 @@ void MainWindow::initCardsJson()
 }
 
 
-QString MainWindow::getLightForgeVersionFromJson(QByteArray &jsonData)
+//QString MainWindow::getLightForgeVersionFromJson(QByteArray &jsonData)
+//{
+//    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+//    return jsonDoc.object().value("tierlist").toString();
+//}
+
+
+//void MainWindow::checkLightForgeVersion(QString lightForgeJsonVersion)
+//{
+//    QSettings settings("Arena Tracker", "Arena Tracker");
+//    QString storedLightForgeJsonVersion = settings.value("lightForgeJsonVersion", "").toString();
+//    QFile lightForgeJsonFile(Utility::extraPath() + "/lightForge.json");
+//    emit pDebug("Extra: Json LightForge --> Latest version: " + lightForgeJsonVersion);
+//    emit pDebug("Extra: Json LightForge --> Stored version: " + storedLightForgeJsonVersion);
+
+//    //Need download
+//    if(lightForgeJsonVersion != storedLightForgeJsonVersion || !lightForgeJsonFile.exists())
+//    {
+//        settings.setValue("lightForgeJsonVersion", lightForgeJsonVersion);
+//        downloadLightForgeJson();
+//    }
+
+//    //Use local lightForge.json
+//    else
+//    {
+//        emit pDebug("Extra: Json LightForge --> Use local lightForge.json");
+//    }
+//}
+
+
+void MainWindow::downloadLightForgeJson()
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-    return jsonDoc.object().value("tierlist").toString();
+    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
+    emit pDebug("Extra: Json LightForge --> Download from: " + QString(LIGHTFORGE_JSON_URL));
 }
 
 
-void MainWindow::checkLightForgeVersion(QString lightForgeJsonVersion)
-{
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    QString storedLightForgeJsonVersion = settings.value("lightForgeJsonVersion", "").toString();
-    QFile lightForgeJsonFile(Utility::extraPath() + "/lightForge.json");
-    emit pDebug("Extra: Json LightForge --> Latest version: " + lightForgeJsonVersion);
-    emit pDebug("Extra: Json LightForge --> Stored version: " + storedLightForgeJsonVersion);
-
-    //Need download
-    if(lightForgeJsonVersion != storedLightForgeJsonVersion || !lightForgeJsonFile.exists())
-    {
-        lightForgeJsonFile.remove();
-        settings.setValue("lightForgeJsonVersion", lightForgeJsonVersion);
-        networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
-        emit pDebug("Extra: Json LightForge --> Download from: " + QString(LIGHTFORGE_JSON_URL));
-    }
-
-    //Use local lightForge.json
-    else
-    {
-        emit pDebug("Extra: Json LightForge --> Use local lightForge.json");
-    }
-}
-
-
-void MainWindow::initLightForgeJson()
-{
-    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_VERSION_URL)));
-    emit pDebug("Extra: Json LightForge --> Get version from: " + QString(LIGHTFORGE_VERSION_URL));
-}
+//void MainWindow::initLightForgeJson()
+//{
+//    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_VERSION_URL)));
+//    emit pDebug("Extra: Json LightForge --> Get version from: " + QString(LIGHTFORGE_VERSION_URL));
+//}
 
 
 void MainWindow::createNetworkManager()

@@ -14,6 +14,13 @@
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    2000
 
 
+class LFtier
+{
+public:
+    int score = 0;
+    int maxCard = -1;
+};
+
 class DraftHandler : public QObject
 {
     Q_OBJECT
@@ -26,7 +33,7 @@ private:
     Ui::Extended *ui;
     HearthArenaMentor *hearthArenaMentor;
     QMap<QString, int> hearthArenaCodes;
-    QMap<QString, int> lightForgeTiers;
+    QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
     int cardsDownloading;
     DraftCard draftCards[3];
@@ -74,6 +81,8 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void updateTipVisibility();
+    void initHearthArenaCodes(QString &hero);
+    void initLightForgeTiers(const QString &heroString);
 
 public:
     void reHistDownloadedCardImage(QString &code);

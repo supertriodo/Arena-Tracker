@@ -70,15 +70,10 @@ void DraftHandler::createHearthArenaMentor()
 }
 
 
-void DraftHandler::initCodesAndHistMaps(QString &hero)
+void DraftHandler::initHearthArenaCodes(QString &hero)
 {
-    cardsDownloading = 0;
-    lightForgeTiers.clear();
     hearthArenaCodes.clear();
-    cardsHist.clear();
 
-
-    //HearthArena
     QFile jsonHAFile(":Json/"+hero+".json");
     jsonHAFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonHAFile.readAll());
@@ -107,31 +102,67 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
         }
     }
 
+    emit pDebug("HearthArena Cards: " + QString::number(hearthArenaCodes.count()));
+}
 
-    //LightForge
-    QFile jsonLFFile(Utility::extraPath() + "/lightForge.json");
-    jsonLFFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    jsonDoc = QJsonDocument::fromJson(jsonLFFile.readAll());
-    jsonLFFile.close();
-    const QJsonArray jsonLFCodes = jsonDoc.array();
-    for(QJsonValue jsonCard: jsonLFCodes)
+
+void DraftHandler::initLightForgeTiers(const QString &heroString)
+{
+    lightForgeTiers.clear();
+
+    QFile jsonFile(Utility::extraPath() + "/lightForge.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    const QJsonArray jsonCardsArray = jsonDoc.object().value("Cards").toArray();
+    for(QJsonValue jsonCard: jsonCardsArray)
     {
-        QString code = jsonCard.toObject().value("id").toString();
+        QJsonObject jsonCardObject = jsonCard.toObject();
+        QString code = jsonCardObject.value("CardId").toString();
 
         if(hearthArenaCodes.contains(code))
         {
-            QString ratingS = jsonCard.toObject().value("value").toArray().at(hero.toInt()-1).toString();
-            QRegExp rx("(\\d+)");
-            if(rx.indexIn(ratingS) > -1)
+            const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
+            for(QJsonValue jsonScore: jsonScoresArray)
             {
-                lightForgeTiers[code] = rx.cap(1).toInt();
+                QJsonObject jsonScoreObject = jsonScore.toObject();
+                QString hero = jsonScoreObject.value("Hero").toString();
+
+                if(hero == NULL || hero == heroString)
+                {
+                    LFtier lfTier;
+                    lfTier.score = (int)jsonScoreObject.value("Score").toDouble();
+
+                    if(jsonScoreObject.value("StopAfterFirst").toBool())
+                    {
+                        lfTier.maxCard = 1;
+                    }
+                    else if(jsonScoreObject.value("StopAfterSecond").toBool())
+                    {
+                        lfTier.maxCard = 2;
+                    }
+                    else
+                    {
+                        lfTier.maxCard = -1;
+                    }
+
+                    lightForgeTiers[code] = lfTier;
+                }
             }
         }
     }
 
     emit pDebug("LightForge Cards: " + QString::number(lightForgeTiers.count()));
-    emit pDebug("HearthArena Cards: " + QString::number(hearthArenaCodes.count()));
+}
 
+
+void DraftHandler::initCodesAndHistMaps(QString &hero)
+{
+    cardsDownloading = 0;
+    cardsHist.clear();
+
+    initHearthArenaCodes(hero);
+    initLightForgeTiers(Utility::heroString2FromLogNumber(hero));
 
     //Wait for cards
     if(cardsDownloading==0) newCaptureDraftLoop();
@@ -527,9 +558,9 @@ void DraftHandler::showNewCards(QString codes[3])
 
 
     //LightForge
-    int rating1 = lightForgeTiers[codes[0]];
-    int rating2 = lightForgeTiers[codes[1]];
-    int rating3 = lightForgeTiers[codes[2]];
+    int rating1 = lightForgeTiers[codes[0]].score;
+    int rating2 = lightForgeTiers[codes[1]].score;
+    int rating3 = lightForgeTiers[codes[2]].score;
     showNewRatings("", rating1, rating2, rating3, rating1, rating2, rating3, "", "", "", LightForge);
 
 

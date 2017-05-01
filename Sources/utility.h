@@ -134,6 +134,7 @@ public:
     static QString heroToLogNumber(CardClass cardClass);
     static CardClass heroFromLogNumber(QString hero);
     static QString heroStringFromLogNumber(QString hero);
+    static QString heroString2FromLogNumber(QString hero);
     static QString getHeroColor(int order);
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);
