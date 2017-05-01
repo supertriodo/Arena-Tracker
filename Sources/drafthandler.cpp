@@ -585,8 +585,7 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         }
     }
 
-    if(!learningMode && draftMethod == HearthArena &&
-        (this->draftMethod == HearthArena || this->draftMethod == All))     ui->textBrowserDraft->setText(tip);
+    if(draftMethod == HearthArena)  ui->textBrowserDraft->setText(tip);
 
     //Mostrar score
     draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3, draftMethod);
@@ -738,6 +737,7 @@ bool DraftHandler::findScreenRects()
         QSize sizeCard(screenRects[0].width, screenRects[0].height);
         draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
         draftScoreWindow->setLearningMode(this->learningMode);
+        draftScoreWindow->setDraftMethod(this->draftMethod);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -863,6 +863,38 @@ void DraftHandler::setLearningMode(bool value)
     this->learningMode = value;
     if(this->draftScoreWindow != NULL)  draftScoreWindow->setLearningMode(value);
 
+    updateTipVisibility();
+    updateScoresVisibility();
+}
+
+
+void DraftHandler::setDraftMethod(DraftMethod value)
+{
+    this->draftMethod = value;
+    if(draftScoreWindow != NULL)    draftScoreWindow->setDraftMethod(value);
+
+    updateTipVisibility();
+    updateScoresVisibility();
+}
+
+
+void DraftHandler::updateTipVisibility()
+{
+    if(!learningMode && (this->draftMethod == HearthArena || this->draftMethod == All))
+    {
+        ui->textBrowserDraft->show();
+        ui->draftVerticalSpacer->changeSize(20, 20, QSizePolicy::Minimum, QSizePolicy::Preferred);
+    }
+    else
+    {
+        ui->textBrowserDraft->hide();
+        ui->draftVerticalSpacer->changeSize(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    }
+}
+
+
+void DraftHandler::updateScoresVisibility()
+{
     if(learningMode)
     {
         for(int i=0; i<3; i++)
@@ -870,49 +902,40 @@ void DraftHandler::setLearningMode(bool value)
             draftCards[i].scoreLFitem->hide();
             draftCards[i].scoreHAitem->hide();
         }
-        ui->textBrowserDraft->setText("");
     }
     else
     {
-        setDraftMethod(this->draftMethod);
-    }
-}
-
-
-void DraftHandler::setDraftMethod(DraftMethod draftMethod)
-{
-    this->draftMethod = draftMethod;
-
-    switch(draftMethod)
-    {
-        case All:
-            for(int i=0; i<3; i++)
-            {
-                draftCards[i].scoreLFitem->show();
-                draftCards[i].scoreHAitem->show();
-            }
-            break;
-        case LightForge:
-            for(int i=0; i<3; i++)
-            {
-                draftCards[i].scoreLFitem->show();
-                draftCards[i].scoreHAitem->hide();
-            }
-            break;
-        case HearthArena:
-            for(int i=0; i<3; i++)
-            {
-                draftCards[i].scoreLFitem->hide();
-                draftCards[i].scoreHAitem->show();
-            }
-            break;
-        default:
-            for(int i=0; i<3; i++)
-            {
-                draftCards[i].scoreLFitem->hide();
-                draftCards[i].scoreHAitem->hide();
-            }
-            break;
+        switch(draftMethod)
+        {
+            case All:
+                for(int i=0; i<3; i++)
+                {
+                    draftCards[i].scoreLFitem->show();
+                    draftCards[i].scoreHAitem->show();
+                }
+                break;
+            case LightForge:
+                for(int i=0; i<3; i++)
+                {
+                    draftCards[i].scoreLFitem->show();
+                    draftCards[i].scoreHAitem->hide();
+                }
+                break;
+            case HearthArena:
+                for(int i=0; i<3; i++)
+                {
+                    draftCards[i].scoreLFitem->hide();
+                    draftCards[i].scoreHAitem->show();
+                }
+                break;
+            default:
+                for(int i=0; i<3; i++)
+                {
+                    draftCards[i].scoreLFitem->hide();
+                    draftCards[i].scoreHAitem->hide();
+                }
+                break;
+        }
     }
 }
 

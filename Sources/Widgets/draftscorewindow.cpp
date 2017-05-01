@@ -98,6 +98,42 @@ void DraftScoreWindow::setLearningMode(bool value)
 }
 
 
+void DraftScoreWindow::setDraftMethod(DraftMethod draftMethod)
+{
+    switch(draftMethod)
+    {
+        case All:
+            for(int i=0; i<3; i++)
+            {
+                scoresPushButton[i]->show();
+                scoresPushButton2[i]->show();
+            }
+            break;
+        case LightForge:
+            for(int i=0; i<3; i++)
+            {
+                scoresPushButton[i]->show();
+                scoresPushButton2[i]->hide();
+            }
+            break;
+        case HearthArena:
+            for(int i=0; i<3; i++)
+            {
+                scoresPushButton[i]->hide();
+                scoresPushButton2[i]->show();
+            }
+            break;
+        default:
+            for(int i=0; i<3; i++)
+            {
+                scoresPushButton[i]->hide();
+                scoresPushButton2[i]->hide();
+            }
+            break;
+    }
+}
+
+
 void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
                                  QString synergy1, QString synergy2, QString synergy3,
                                  DraftMethod draftMethod)
@@ -281,20 +317,6 @@ void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
     int synergyListBottom = listWidget->mapToGlobal(QPoint(0,listWidget->height())).y();
     emit cardEntered(code, globalRectCard, synergyListTop, synergyListBottom);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

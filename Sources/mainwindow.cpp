@@ -1098,6 +1098,24 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
 
+    switch(draftMethod)
+    {
+        case HearthArena:
+            ui->configRadioHA->setChecked(true);
+            break;
+        case LightForge:
+            ui->configRadioLF->setChecked(true);
+            break;
+        case All:
+            ui->configRadioCombined->setChecked(true);
+            break;
+        default:
+            draftMethod = HearthArena;
+            ui->configRadioHA->setChecked(true);
+            break;
+    }
+    spreadDraftMethod(draftMethod);
+
     //Zero To Heroes
     ui->configSliderZero->setValue(maxGamesLog);
     updateMaxGamesLog(maxGamesLog);
@@ -1165,6 +1183,7 @@ void MainWindow::readSettings()
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
+        this->draftMethod = (DraftMethod)settings.value("draftMethod", HearthArena).toInt();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         bool autoSize = settings.value("autoSize", true).toBool();
         bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -1214,6 +1233,7 @@ void MainWindow::writeSettings()
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
+        settings.setValue("draftMethod", (int)this->draftMethod);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
         settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
         settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
@@ -2419,6 +2439,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
         ui->configBoxMastery->setStyleSheet(groupBoxCSS);
         ui->configBoxZero->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraftExtra->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
         ui->configLabelDeckNormal->setStyleSheet(labelCSS);
@@ -2437,6 +2459,9 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioAuto->setStyleSheet(radioCSS);
         ui->configRadioOpaque->setStyleSheet(radioCSS);
         ui->configRadioFramed->setStyleSheet(radioCSS);
+        ui->configRadioHA->setStyleSheet(radioCSS);
+        ui->configRadioLF->setStyleSheet(radioCSS);
+        ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
         ui->configCheckGoldenCards->setStyleSheet(checkCSS);
@@ -2464,6 +2489,9 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraft->setStyleSheet("");
         ui->configBoxMastery->setStyleSheet("");
         ui->configBoxZero->setStyleSheet("");
+        ui->configBoxDraftMethod->setStyleSheet("");
+        ui->configBoxDraftExtra->setStyleSheet("");
+
 
         ui->configLabelDeckNormal->setStyleSheet("");
         ui->configLabelDeckNormal2->setStyleSheet("");
@@ -2480,6 +2508,9 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioAuto->setStyleSheet("");
         ui->configRadioOpaque->setStyleSheet("");
         ui->configRadioFramed->setStyleSheet("");
+        ui->configRadioHA->setStyleSheet("");
+        ui->configRadioLF->setStyleSheet("");
+        ui->configRadioCombined->setStyleSheet("");
 
         ui->configCheckGoldenCards->setStyleSheet("");
         ui->configCheckDarkTheme->setStyleSheet("");
@@ -2813,6 +2844,31 @@ void MainWindow::toggleDraftLearningMode()
 }
 
 
+void MainWindow::draftMethodHA()
+{
+    spreadDraftMethod(HearthArena);
+}
+
+
+void MainWindow::draftMethodLF()
+{
+    spreadDraftMethod(LightForge);
+}
+
+
+void MainWindow::draftMethodCombined()
+{
+    spreadDraftMethod(All);
+}
+
+
+void MainWindow::spreadDraftMethod(DraftMethod draftMethod)
+{
+    this->draftMethod = draftMethod;
+    draftHandler->setDraftMethod(draftMethod);
+}
+
+
 void MainWindow::updateMaxGamesLog(int value)
 {
     if(value == 0)
@@ -2920,6 +2976,9 @@ void MainWindow::completeConfigTab()
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+    connect(ui->configRadioHA, SIGNAL(clicked()), this, SLOT(draftMethodHA()));
+    connect(ui->configRadioLF, SIGNAL(clicked()), this, SLOT(draftMethodLF()));
+    connect(ui->configRadioCombined, SIGNAL(clicked()), this, SLOT(draftMethodCombined()));
 
     //Zero To Heroes
     connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
@@ -3093,3 +3152,17 @@ void MainWindow::createDebugPack()
 //Coger el color de una parte clara de un carta de clase
 //Colores->Colorear...(4 opcion por abajo)
 //Colores->Tono y saturacion...(2 opcion) Luminosidad +50
+
+//NUEVOS CONTROLES CONFIG TAB
+//readSettings --> Cargar valores
+//initConfigTab --> Actualizar UI con valores cargados
+//updateOtherTabsTransparency --> CSS nuevos controles
+//completeConfigTab --> Connect controles - funciones y crear funciones
+//writeSettings --> Guardar valores
+
+
+
+
+
+
+

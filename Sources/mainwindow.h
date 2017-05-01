@@ -69,6 +69,7 @@ private:
     bool splitWindow;
     bool mouseInApp;
     Transparency transparency;
+    DraftMethod draftMethod;
     Theme theme;
     bool oneWindow;
     bool isMainWindow;
@@ -155,6 +156,7 @@ private:
     QString getLightForgeVersionFromJson(QByteArray &jsonData);
     void checkLightForgeVersion(QString lightForgeJsonVersion);
     void initLightForgeJson();
+    void spreadDraftMethod(DraftMethod draftMethod);
 
 //Override events
 protected:
@@ -230,6 +232,9 @@ private slots:
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
     void checkLinuxShortcut();
+    void draftMethodHA();
+    void draftMethodLF();
+    void draftMethodCombined();
 };
 
 #endif // MAINWINDOW_H

@@ -72,6 +72,8 @@ private:
     void deleteDraftScoreWindow();
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
+    void updateScoresVisibility();
+    void updateTipVisibility();
 
 public:
     void reHistDownloadedCardImage(QString &code);
@@ -81,7 +83,7 @@ public:
     void setLearningMode(bool value);
     void redrawAllCards();
     void updateTamCard(int value);
-    void setDraftMethod(DraftMethod draftMethod);
+    void setDraftMethod(DraftMethod value);
     void setTheme(Theme theme);
 
 signals:

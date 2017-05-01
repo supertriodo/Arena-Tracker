@@ -1740,7 +1740,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>770</height>
+               <height>866</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2319,24 +2319,72 @@ Hover your mouse over to check the odds of killing in the board.</string>
                   <number>9</number>
                  </property>
                  <item>
-                  <widget class="QCheckBox" name="configCheckOverlay">
-                   <property name="toolTip">
-                    <string>Overlay: Show/Hide drafting overlay</string>
+                  <widget class="QGroupBox" name="configBoxDraftMethod">
+                   <property name="title">
+                    <string>Assistant</string>
                    </property>
-                   <property name="text">
-                    <string>Overlay</string>
-                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_16">
+                    <item>
+                     <widget class="QRadioButton" name="configRadioHA">
+                      <property name="toolTip">
+                       <string>HearthArena</string>
+                      </property>
+                      <property name="text">
+                       <string>HearthArena</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="configRadioLF">
+                      <property name="toolTip">
+                       <string>LightForge</string>
+                      </property>
+                      <property name="text">
+                       <string>LightForge</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="configRadioCombined">
+                      <property name="toolTip">
+                       <string>Combined: Show advice from both: HearthArena and the LightForge.</string>
+                      </property>
+                      <property name="text">
+                       <string>Combined</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QCheckBox" name="configCheckLearning">
-                   <property name="toolTip">
-                    <string>Learning: This mode will temporarily hide
+                  <widget class="QGroupBox" name="configBoxDraftExtra">
+                   <property name="title">
+                    <string/>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_15">
+                    <item>
+                     <widget class="QCheckBox" name="configCheckOverlay">
+                      <property name="toolTip">
+                       <string>Overlay: Show/Hide drafting overlay</string>
+                      </property>
+                      <property name="text">
+                       <string>Overlay</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="configCheckLearning">
+                      <property name="toolTip">
+                       <string>Learning: This mode will temporarily hide
 card scores during the draft.</string>
-                   </property>
-                   <property name="text">
-                    <string>Learning</string>
-                   </property>
+                      </property>
+                      <property name="text">
+                       <string>Learning</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                 </layout>
