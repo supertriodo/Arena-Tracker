@@ -88,7 +88,10 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
     }
 
     emit pDebug("Tip: " + tip);
-    emit newTip(tip,ratings[0],ratings[1],ratings[2],tierScore[0],tierScore[1],tierScore[2],synergies[0],synergies[1],synergies[2],HearthArena);
+    emit newTip(tip, ratings[0], ratings[1], ratings[2],
+            tierScore[0], tierScore[1], tierScore[2],
+            synergies[0], synergies[1], synergies[2],
+            -1, -1, -1, HearthArena);
 }
 
 

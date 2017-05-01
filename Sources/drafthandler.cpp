@@ -61,8 +61,8 @@ void DraftHandler::completeUI()
 void DraftHandler::createHearthArenaMentor()
 {
     hearthArenaMentor = new HearthArenaMentor(this);
-    connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,double,double,double,QString,QString,QString,DraftMethod)),
-            this, SLOT(showNewRatings(QString,double,double,double,double,double,double,QString,QString,QString,DraftMethod)));
+    connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,double,double,double,QString,QString,QString,int,int,int,DraftMethod)),
+            this, SLOT(showNewRatings(QString,double,double,double,double,double,double,QString,QString,QString,int,int,int,DraftMethod)));
     connect(hearthArenaMentor, SIGNAL(pLog(QString)),
             this, SIGNAL(pLog(QString)));
     connect(hearthArenaMentor, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -561,7 +561,14 @@ void DraftHandler::showNewCards(QString codes[3])
     int rating1 = lightForgeTiers[codes[0]].score;
     int rating2 = lightForgeTiers[codes[1]].score;
     int rating3 = lightForgeTiers[codes[2]].score;
-    showNewRatings("", rating1, rating2, rating3, rating1, rating2, rating3, "", "", "", LightForge);
+    int maxCard1 = lightForgeTiers[codes[0]].maxCard;
+    int maxCard2 = lightForgeTiers[codes[1]].maxCard;
+    int maxCard3 = lightForgeTiers[codes[2]].maxCard;
+    showNewRatings("", rating1, rating2, rating3,
+                   rating1, rating2, rating3,
+                   "", "", "",
+                   maxCard1, maxCard2, maxCard3,
+                   LightForge);
 
 
     //HearthArena
@@ -588,10 +595,12 @@ void DraftHandler::updateBoxTitle(double cardRating)
 void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, double rating3,
                                   double tierScore1, double tierScore2, double tierScore3,
                                   QString synergy1, QString synergy2, QString synergy3,
+                                  int maxCard1, int maxCard2, int maxCard3,
                                   DraftMethod draftMethod)
 {
     double ratings[3] = {rating1,rating2,rating3};
     double tierScore[3] = {tierScore1, tierScore2, tierScore3};
+    int maxCards[3] = {maxCard1, maxCard2, maxCard3};
     double maxRating = std::max(std::max(rating1,rating2),rating3);
 
     for(int i=0; i<3; i++)
@@ -605,13 +614,14 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         //Update score label
         if(draftMethod == LightForge)
         {
-            draftCards[i].scoreLFitem->setText(QString::number((int)ratings[i]));
+            draftCards[i].scoreLFitem->setText(QString::number((int)ratings[i]) +
+                                               (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreLFitem, draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
             draftCards[i].scoreHAitem->setText(QString::number((int)ratings[i]) +
-                                            " -- (" + QString::number((int)tierScore[i]) + ")");
+                                            " - (" + QString::number((int)tierScore[i]) + ")");
             if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreHAitem, draftMethod);
         }
     }
