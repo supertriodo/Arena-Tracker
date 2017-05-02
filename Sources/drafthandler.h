@@ -94,6 +94,7 @@ public:
     void updateTamCard(int value);
     void setDraftMethod(DraftMethod value);
     void setTheme(Theme theme);
+    void craftGoldenCopy(int cardIndex);
 
 signals:
     void checkCardImage(QString code);

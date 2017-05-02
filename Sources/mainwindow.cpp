@@ -4,6 +4,7 @@
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
+#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 using namespace cv;
@@ -1353,6 +1354,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)  this->resize(QSize(544, 715));
+            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
+            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
+            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
 #endif
         }
     }
@@ -3084,8 +3088,9 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Nuevo icono drafting
-//Include lightforge tier list.
+//Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
+//Mejorar reconocimiento drafting con dropdown lists.
+//Script y inicio drafting asincrono
 
 
 //REPLAY BUGS

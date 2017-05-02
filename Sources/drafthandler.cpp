@@ -1000,6 +1000,29 @@ void DraftHandler::updateTamCard(int value)
 }
 
 
+void DraftHandler::craftGoldenCopy(int cardIndex)
+{
+    QString code = draftCards[cardIndex].getCode();
+    if(!drafting || code.isEmpty())  return;
+
+    //Lanza script
+    QProcess p;
+    QStringList params;
+
+    params << QDir::toNativeSeparators(Utility::extraPath() + "/goldenCrafter.py");
+    params << Utility::removeAccents(draftCards[cardIndex].getName());//Card Name
+
+    emit pDebug("Start script:\n" + params.join(" - "));
+
+#ifdef Q_OS_WIN
+    p.start("python", params);
+#else
+    p.start("python3", params);
+#endif
+    p.waitForFinished(-1);
+}
+
+
 //Construir json de HearthArena
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT
