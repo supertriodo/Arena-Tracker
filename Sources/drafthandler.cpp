@@ -17,6 +17,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
+    this->futureFindScreenRects = NULL;
 
     for(int i=0; i<3; i++)
     {
@@ -30,6 +31,12 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 DraftHandler::~DraftHandler()
 {
     delete hearthArenaMentor;
+
+    if(futureFindScreenRects != NULL)
+    {
+        delete futureFindScreenRects;
+        futureFindScreenRects = NULL;
+    }
 }
 
 
@@ -359,15 +366,18 @@ void DraftHandler::deleteDraftScoreWindow()
 
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
-    if(!capturing)
+    if(!capturing && drafting)
     {
         capturing = true;
-        if(delayed) QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
-        else        captureDraft();
+
+        if(!screenRectsFound())     findScreenRectsThread();
+        else if(delayed)            QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+        else                        captureDraft();
     }
 }
 
 
+//Screen Rects detectados
 void DraftHandler::captureDraft()
 {
     justPickedCard = "";
@@ -384,27 +394,20 @@ void DraftHandler::captureDraft()
         return;
     }
 
-    if(screenRectsFound() || findScreenRects())
+    cv::MatND screenCardsHist[3];
+    getScreenCardsHist(screenCardsHist);
+
+    QString codes[3];
+    getBestMatchingCodes(screenCardsHist, codes);
+
+    if(areNewCards(codes))
     {
-        cv::MatND screenCardsHist[3];
-        getScreenCardsHist(screenCardsHist);
-
-        QString codes[3];
-        getBestMatchingCodes(screenCardsHist, codes);
-
-        if(areNewCards(codes))
-        {
-            capturing = false;
-            showNewCards(codes);
-        }
-        else
-        {
-            QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
-        }
+        capturing = false;
+        showNewCards(codes);
     }
     else
     {
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(captureDraft()));
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
 }
 
@@ -741,8 +744,51 @@ bool DraftHandler::screenRectsFound()
 }
 
 
-bool DraftHandler::findScreenRects()
+void DraftHandler::findScreenRectsThread()
 {
+    if(futureFindScreenRects != NULL) return;
+    futureFindScreenRects = new QFuture<ScreenDetection>(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    QTimer::singleShot(100, this, SLOT(checkFindScreenRectsThread()));
+}
+
+
+void DraftHandler::checkFindScreenRectsThread()
+{
+    if(futureFindScreenRects == NULL)     return;
+
+    if(futureFindScreenRects->isFinished())
+    {
+        ScreenDetection screenDetection = futureFindScreenRects->result();
+        delete futureFindScreenRects;
+        futureFindScreenRects = NULL;
+
+        if(screenDetection.screenIndex == -1)
+        {
+            QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(findScreenRectsThread()));
+        }
+        else
+        {
+            this->screenIndex = screenDetection.screenIndex;
+            for(int i=0; i<3; i++)
+            {
+                this->screenRects[i] = screenDetection.screenRects[i];
+            }
+
+            createDraftScoreWindow();
+            captureDraft();
+        }
+    }
+    else
+    {
+        QTimer::singleShot(100, this, SLOT(checkFindScreenRectsThread()));
+    }
+}
+
+
+ScreenDetection DraftHandler::findScreenRects()
+{
+    ScreenDetection screenDetection;
+
     std::vector<Point2f> templatePoints(6);
     templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
     templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
@@ -761,35 +807,36 @@ bool DraftHandler::findScreenRects()
         //Calculamos screenRect
         for(int i=0; i<3; i++)
         {
-            screenRects[i]=cv::Rect(screenPoints[i*2], screenPoints[i*2+1]);
-            emit pDebug("ScreenRect: " +
-                        QString::number(screenRects[i].x) + "/" +
-                        QString::number(screenRects[i].y) + "/" +
-                        QString::number(screenRects[i].width) + "/" +
-                        QString::number(screenRects[i].height));
+            screenDetection.screenRects[i]=cv::Rect(screenPoints[i*2], screenPoints[i*2+1]);
         }
 
-        //Creamos draftScoreWindow
-        deleteDraftScoreWindow();
-        QPoint topLeft(screenRects[0].x, screenRects[0].y);
-        QPoint bottomRight(screenRects[2].x+screenRects[2].width,
-                screenRects[2].y+screenRects[2].height);
-        QRect draftRect(topLeft, bottomRight);
-        QSize sizeCard(screenRects[0].width, screenRects[0].height);
-        draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
-        draftScoreWindow->setLearningMode(this->learningMode);
-        draftScoreWindow->setDraftMethod(this->draftMethod);
-
-        connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
-                this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
-        connect(draftScoreWindow, SIGNAL(cardLeave()),
-                this, SIGNAL(overlayCardLeave()));
-
-        showOverlay();
-
-        return true;
+        screenDetection.screenIndex = screenIndex;
+        return screenDetection;
     }
-    return false;
+
+    screenDetection.screenIndex = -1;
+    return screenDetection;
+}
+
+
+void DraftHandler::createDraftScoreWindow()
+{
+    deleteDraftScoreWindow();
+    QPoint topLeft(screenRects[0].x, screenRects[0].y);
+    QPoint bottomRight(screenRects[2].x+screenRects[2].width,
+            screenRects[2].y+screenRects[2].height);
+    QRect draftRect(topLeft, bottomRight);
+    QSize sizeCard(screenRects[0].width, screenRects[0].height);
+    draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+    draftScoreWindow->setLearningMode(this->learningMode);
+    draftScoreWindow->setDraftMethod(this->draftMethod);
+
+    connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
+            this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
+    connect(draftScoreWindow, SIGNAL(cardLeave()),
+            this, SIGNAL(overlayCardLeave()));
+
+    showOverlay();
 }
 
 

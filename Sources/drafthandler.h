@@ -7,6 +7,7 @@
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
 #include <QObject>
+#include <QFuture>
 
 
 #define CAPTUREDRAFT_START_TIME         500
@@ -19,6 +20,13 @@ class LFtier
 public:
     int score = 0;
     int maxCard = -1;
+};
+
+class ScreenDetection
+{
+public:
+    cv::Rect screenRects[3];
+    int screenIndex = -1;
 };
 
 class DraftHandler : public QObject
@@ -53,6 +61,7 @@ private:
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
+    QFuture<ScreenDetection> *futureFindScreenRects;
 
 
 //Metodos
@@ -72,7 +81,7 @@ private:
     void resetCodesCandidates();    
     void updateBoxTitle(double cardRating);
     bool screenRectsFound();
-    bool findScreenRects();
+    ScreenDetection findScreenRects();
     void removeTabHero();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
     void highlightScore(QLabel *label, DraftMethod draftMethod);
@@ -83,6 +92,7 @@ private:
     void updateTipVisibility();
     void initHearthArenaCodes(QString &hero);
     void initLightForgeTiers(const QString &heroString);
+    void createDraftScoreWindow();
 
 public:
     void reHistDownloadedCardImage(QString &code);
@@ -119,6 +129,8 @@ public slots:
 
 private slots:
     void captureDraft();
+    void findScreenRectsThread();
+    void checkFindScreenRectsThread();
 };
 
 #endif // DRAFTHANDLER_H
