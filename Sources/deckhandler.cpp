@@ -1,4 +1,5 @@
 #include "deckhandler.h"
+#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler) : QObject(parent)
@@ -18,6 +19,7 @@ DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *en
     this->synchronized = false;
     this->showManaLimits = false;
     this->lastCreatedByCode = "";
+    this->futureDeckBuilderPY = NULL;
 
     completeUI();
 }
@@ -28,6 +30,12 @@ DeckHandler::~DeckHandler()
     deckCardList.clear();
     drawCardList.clear();
     delete bombWindow;
+
+    if(futureDeckBuilderPY != NULL)
+    {
+        delete futureDeckBuilderPY;
+        futureDeckBuilderPY = NULL;
+    }
 }
 
 
@@ -1728,7 +1736,33 @@ void DeckHandler::hideManageDecksButtons()
 }
 
 
-bool DeckHandler::deckBuilderPY()
+void DeckHandler::deckBuilderPYthread()
+{
+    if(futureDeckBuilderPY != NULL) return;
+    futureDeckBuilderPY = new QFuture<QString>(QtConcurrent::run(this, &DeckHandler::deckBuilderPY));
+    QTimer::singleShot(1000, this, SLOT(checkDeckBuilderPYthread()));
+}
+
+
+void DeckHandler::checkDeckBuilderPYthread()
+{
+    if(futureDeckBuilderPY == NULL)     return;
+
+    if(futureDeckBuilderPY->isFinished())
+    {
+        QString message = futureDeckBuilderPY->result();
+        delete futureDeckBuilderPY;
+        futureDeckBuilderPY = NULL;
+        emit pDebug(message);
+    }
+    else
+    {
+        QTimer::singleShot(1000, this, SLOT(checkDeckBuilderPYthread()));
+    }
+}
+
+
+QString DeckHandler::deckBuilderPY()
 {
     //Detecta zonas en pantalla
     std::vector<Point2f> screenPoints;
@@ -1755,9 +1789,7 @@ bool DeckHandler::deckBuilderPY()
 
     if(screenPoints.empty())
     {
-        emit pDebug("DeckBuilder: Collection template not found on main screen.");
-        emit pLog("Deck Builder: Hearthstone not found on main screen.");
-        return false;
+        return "DeckBuilder: Collection template not found on main screen.";
     }
 
 
@@ -1781,8 +1813,6 @@ bool DeckHandler::deckBuilderPY()
         params << Utility::removeAccents(deckCard.getName()) << QString::number(deckCard.total);
     }
 
-    emit pDebug("Start script:\n" + params.join(" - "));
-
 #ifdef Q_OS_WIN
     p.start("python", params);
 #else
@@ -1790,8 +1820,7 @@ bool DeckHandler::deckBuilderPY()
 #endif
     p.waitForFinished(-1);
 
-    emit pDebug("End script:\n" + p.readAll());
-    return true;
+    return "DeckBuilderPY:\n" + params.join(" - ") + "\n" + p.readAll();
 }
 
 
@@ -1810,7 +1839,7 @@ void DeckHandler::askCreateDeckPY()
 
     msgBox.exec();
 
-    if(msgBox.clickedButton() == button1)           deckBuilderPY();
+    if(msgBox.clickedButton() == button1)           deckBuilderPYthread();
     else if(msgBox.clickedButton() == button3)      showInstallPY();
 }
 

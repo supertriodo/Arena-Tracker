@@ -46,6 +46,7 @@ private:
     BombWindow *bombWindow;
     //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
     QMap<int,QString> cardId2Code;
+    QFuture<QString> *futureDeckBuilderPY;
 
 
 //Metodos
@@ -71,7 +72,8 @@ private:
     bool newDeck(bool reset);
     void importHearthHead();
     bool showHearthHeadHowTo();
-    bool deckBuilderPY();
+    QString deckBuilderPY();
+    void deckBuilderPYthread();
     void showInstallPY();
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
@@ -162,6 +164,7 @@ private slots:
     void clearRngAnimating();
     void rngCardEntered(QListWidgetItem *item);
     void hideIfDeckSelected();
+    void checkDeckBuilderPYthread();
 };
 
 #endif // DECKHANDLER_H
