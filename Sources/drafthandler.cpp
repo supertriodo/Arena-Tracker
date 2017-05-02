@@ -17,7 +17,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
-    this->futureFindScreenRects = NULL;
 
     for(int i=0; i<3; i++)
     {
@@ -26,17 +25,13 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
     createHearthArenaMentor();
     completeUI();
+
+    connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
 }
 
 DraftHandler::~DraftHandler()
 {
     delete hearthArenaMentor;
-
-    if(futureFindScreenRects != NULL)
-    {
-        delete futureFindScreenRects;
-        futureFindScreenRects = NULL;
-    }
 }
 
 
@@ -370,7 +365,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
     {
         capturing = true;
 
-        if(!screenRectsFound())     findScreenRectsThread();
+        if(!screenRectsFound())     startFindScreenRects();
         else if(delayed)            QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
         else                        captureDraft();
     }
@@ -744,43 +739,30 @@ bool DraftHandler::screenRectsFound()
 }
 
 
-void DraftHandler::findScreenRectsThread()
+void DraftHandler::startFindScreenRects()
 {
-    if(futureFindScreenRects != NULL) return;
-    futureFindScreenRects = new QFuture<ScreenDetection>(QtConcurrent::run(this, &DraftHandler::findScreenRects));
-    QTimer::singleShot(100, this, SLOT(checkFindScreenRectsThread()));
+    if(!futureFindScreenRects.isRunning()) futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
 }
 
 
-void DraftHandler::checkFindScreenRectsThread()
+void DraftHandler::finishFindScreenRects()
 {
-    if(futureFindScreenRects == NULL)     return;
+    ScreenDetection screenDetection = futureFindScreenRects.result();
 
-    if(futureFindScreenRects->isFinished())
+    if(screenDetection.screenIndex == -1)
     {
-        ScreenDetection screenDetection = futureFindScreenRects->result();
-        delete futureFindScreenRects;
-        futureFindScreenRects = NULL;
-
-        if(screenDetection.screenIndex == -1)
-        {
-            QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(findScreenRectsThread()));
-        }
-        else
-        {
-            this->screenIndex = screenDetection.screenIndex;
-            for(int i=0; i<3; i++)
-            {
-                this->screenRects[i] = screenDetection.screenRects[i];
-            }
-
-            createDraftScoreWindow();
-            captureDraft();
-        }
+        QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(startFindScreenRects()));
     }
     else
     {
-        QTimer::singleShot(100, this, SLOT(checkFindScreenRectsThread()));
+        this->screenIndex = screenDetection.screenIndex;
+        for(int i=0; i<3; i++)
+        {
+            this->screenRects[i] = screenDetection.screenRects[i];
+        }
+
+        createDraftScoreWindow();
+        captureDraft();
     }
 }
 

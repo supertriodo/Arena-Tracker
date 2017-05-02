@@ -7,7 +7,7 @@
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
 #include <QObject>
-#include <QFuture>
+#include <QFutureWatcher>
 
 
 #define CAPTUREDRAFT_START_TIME         500
@@ -61,7 +61,7 @@ private:
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
-    QFuture<ScreenDetection> *futureFindScreenRects;
+    QFutureWatcher<ScreenDetection> futureFindScreenRects;
 
 
 //Metodos
@@ -129,8 +129,8 @@ public slots:
 
 private slots:
     void captureDraft();
-    void findScreenRectsThread();
-    void checkFindScreenRectsThread();
+    void finishFindScreenRects();
+    void startFindScreenRects();
 };
 
 #endif // DRAFTHANDLER_H
