@@ -27,6 +27,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
+    connect(&futureInitLightForgeTiers, SIGNAL(finished()), this, SLOT(finishInitLightForgeTiers()));
 }
 
 DraftHandler::~DraftHandler()
@@ -108,9 +109,9 @@ void DraftHandler::initHearthArenaCodes(QString &hero)
 }
 
 
-void DraftHandler::initLightForgeTiers(const QString &heroString)
+QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroString)
 {
-    lightForgeTiers.clear();
+    QMap<QString, LFtier> lightForgeTiers;
 
     QFile jsonFile(Utility::extraPath() + "/lightForge.json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -122,39 +123,50 @@ void DraftHandler::initLightForgeTiers(const QString &heroString)
         QJsonObject jsonCardObject = jsonCard.toObject();
         QString code = jsonCardObject.value("CardId").toString();
 
-        if(hearthArenaCodes.contains(code))
+        const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
+        for(QJsonValue jsonScore: jsonScoresArray)
         {
-            const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
-            for(QJsonValue jsonScore: jsonScoresArray)
+            QJsonObject jsonScoreObject = jsonScore.toObject();
+            QString hero = jsonScoreObject.value("Hero").toString();
+
+            if(hero == NULL || hero == heroString)
             {
-                QJsonObject jsonScoreObject = jsonScore.toObject();
-                QString hero = jsonScoreObject.value("Hero").toString();
+                LFtier lfTier;
+                lfTier.score = (int)jsonScoreObject.value("Score").toDouble();
 
-                if(hero == NULL || hero == heroString)
+                if(jsonScoreObject.value("StopAfterFirst").toBool())
                 {
-                    LFtier lfTier;
-                    lfTier.score = (int)jsonScoreObject.value("Score").toDouble();
-
-                    if(jsonScoreObject.value("StopAfterFirst").toBool())
-                    {
-                        lfTier.maxCard = 1;
-                    }
-                    else if(jsonScoreObject.value("StopAfterSecond").toBool())
-                    {
-                        lfTier.maxCard = 2;
-                    }
-                    else
-                    {
-                        lfTier.maxCard = -1;
-                    }
-
-                    lightForgeTiers[code] = lfTier;
+                    lfTier.maxCard = 1;
                 }
+                else if(jsonScoreObject.value("StopAfterSecond").toBool())
+                {
+                    lfTier.maxCard = 2;
+                }
+                else
+                {
+                    lfTier.maxCard = -1;
+                }
+
+                lightForgeTiers[code] = lfTier;
             }
         }
     }
 
+    return lightForgeTiers;
+}
+
+
+void DraftHandler::startInitLightForgeTiers(const QString &heroString)
+{
+    if(!futureInitLightForgeTiers.isRunning())  futureInitLightForgeTiers.setFuture(QtConcurrent::run(this, &DraftHandler::initLightForgeTiers, heroString));
+}
+
+
+void DraftHandler::finishInitLightForgeTiers()
+{
+    this->lightForgeTiers = futureInitLightForgeTiers.result();
     emit pDebug("LightForge Cards: " + QString::number(lightForgeTiers.count()));
+    newCaptureDraftLoop();
 }
 
 
@@ -164,8 +176,8 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     cardsHist.clear();
 
     startFindScreenRects();
+    startInitLightForgeTiers(Utility::heroString2FromLogNumber(hero));
     initHearthArenaCodes(hero);
-    initLightForgeTiers(Utility::heroString2FromLogNumber(hero));
 
     //Wait for cards
     if(cardsDownloading==0) newCaptureDraftLoop();
@@ -363,7 +375,9 @@ void DraftHandler::deleteDraftScoreWindow()
 
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
-    if(!capturing && drafting && screenFound() && cardsDownloading==0)
+    if(!capturing && drafting &&
+        screenFound() && cardsDownloading==0 &&
+        !lightForgeTiers.empty() && !hearthArenaCodes.empty())
     {
         capturing = true;
 

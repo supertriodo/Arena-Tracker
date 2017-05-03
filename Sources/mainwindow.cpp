@@ -3090,7 +3090,6 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
-//Script y inicio drafting asincrono
 
 
 //REPLAY BUGS
@@ -3171,7 +3170,18 @@ void MainWindow::createDebugPack()
 //completeConfigTab --> Connect controles - funciones y crear funciones
 //writeSettings --> Guardar valores
 
-
+//NUEVA HEBRA
+//QFutureWatcher<QString> futureFUNCION;
+//connect(&futureFUNCION, SIGNAL(finished()), this, SLOT(finishFUNCION()));
+//void DeckHandler::startFUNCION()
+//{
+//    if(!futureFUNCION.isRunning()) futureFUNCION.setFuture(QtConcurrent::run(this, &DeckHandler::FUNCION));
+//}
+//void DeckHandler::finishFUNCION()
+//{
+//    QString message = futureFUNCION.result();
+//    emit pDebug(message);
+//}
 
 
 

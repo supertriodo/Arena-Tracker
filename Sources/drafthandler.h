@@ -62,6 +62,7 @@ private:
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
+    QFutureWatcher<QMap<QString, LFtier>> futureInitLightForgeTiers;
 
 
 //Metodos
@@ -91,8 +92,9 @@ private:
     void updateScoresVisibility();
     void updateTipVisibility();
     void initHearthArenaCodes(QString &hero);
-    void initLightForgeTiers(const QString &heroString);
+    QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow();
+    void startInitLightForgeTiers(const QString &heroString);
 
 public:
     void reHistDownloadedCardImage(QString &code);
@@ -131,6 +133,7 @@ private slots:
     void captureDraft();
     void finishFindScreenRects();
     void startFindScreenRects();
+    void finishInitLightForgeTiers();
 };
 
 #endif // DRAFTHANDLER_H
