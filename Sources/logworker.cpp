@@ -1,5 +1,4 @@
 #include "logworker.h"
-#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 

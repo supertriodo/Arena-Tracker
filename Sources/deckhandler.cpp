@@ -19,9 +19,10 @@ DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *en
     this->synchronized = false;
     this->showManaLimits = false;
     this->lastCreatedByCode = "";
-    this->futureDeckBuilderPY = NULL;
 
     completeUI();
+
+    connect(&futureDeckBuilderPY, SIGNAL(finished()), this, SLOT(finishDeckBuilderPYthread()));
 }
 
 DeckHandler::~DeckHandler()
@@ -30,12 +31,6 @@ DeckHandler::~DeckHandler()
     deckCardList.clear();
     drawCardList.clear();
     delete bombWindow;
-
-    if(futureDeckBuilderPY != NULL)
-    {
-        delete futureDeckBuilderPY;
-        futureDeckBuilderPY = NULL;
-    }
 }
 
 
@@ -1736,29 +1731,16 @@ void DeckHandler::hideManageDecksButtons()
 }
 
 
-void DeckHandler::deckBuilderPYthread()
+void DeckHandler::startDeckBuilderPY()
 {
-    if(futureDeckBuilderPY != NULL) return;
-    futureDeckBuilderPY = new QFuture<QString>(QtConcurrent::run(this, &DeckHandler::deckBuilderPY));
-    QTimer::singleShot(1000, this, SLOT(checkDeckBuilderPYthread()));
+    if(!futureDeckBuilderPY.isRunning()) futureDeckBuilderPY.setFuture(QtConcurrent::run(this, &DeckHandler::deckBuilderPY));
 }
 
 
-void DeckHandler::checkDeckBuilderPYthread()
+void DeckHandler::finishDeckBuilderPY()
 {
-    if(futureDeckBuilderPY == NULL)     return;
-
-    if(futureDeckBuilderPY->isFinished())
-    {
-        QString message = futureDeckBuilderPY->result();
-        delete futureDeckBuilderPY;
-        futureDeckBuilderPY = NULL;
-        emit pDebug(message);
-    }
-    else
-    {
-        QTimer::singleShot(1000, this, SLOT(checkDeckBuilderPYthread()));
-    }
+    QString message = futureDeckBuilderPY.result();
+    emit pDebug(message);
 }
 
 
@@ -1839,7 +1821,7 @@ void DeckHandler::askCreateDeckPY()
 
     msgBox.exec();
 
-    if(msgBox.clickedButton() == button1)           deckBuilderPYthread();
+    if(msgBox.clickedButton() == button1)           startDeckBuilderPY();
     else if(msgBox.clickedButton() == button3)      showInstallPY();
 }
 

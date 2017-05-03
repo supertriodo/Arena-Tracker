@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QMap>
 #include <QSignalMapper>
+#include <QFutureWatcher>
 
 
 class DeckHandler : public QObject
@@ -46,7 +47,7 @@ private:
     BombWindow *bombWindow;
     //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
     QMap<int,QString> cardId2Code;
-    QFuture<QString> *futureDeckBuilderPY;
+    QFutureWatcher<QString> futureDeckBuilderPY;
 
 
 //Metodos
@@ -73,7 +74,7 @@ private:
     void importHearthHead();
     bool showHearthHeadHowTo();
     QString deckBuilderPY();
-    void deckBuilderPYthread();
+    void startDeckBuilderPY();
     void showInstallPY();
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
@@ -164,7 +165,7 @@ private slots:
     void clearRngAnimating();
     void rngCardEntered(QListWidgetItem *item);
     void hideIfDeckSelected();
-    void checkDeckBuilderPYthread();
+    void finishDeckBuilderPY();
 };
 
 #endif // DECKHANDLER_H
