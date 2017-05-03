@@ -163,6 +163,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     cardsDownloading = 0;
     cardsHist.clear();
 
+    startFindScreenRects();
     initHearthArenaCodes(hero);
     initLightForgeTiers(Utility::heroString2FromLogNumber(hero));
 
@@ -247,6 +248,7 @@ void DraftHandler::clearLists()
         screenRects[i]=cv::Rect(0,0,0,0);
     }
 
+    screenIndex = -1;
     deckRating = 0;
     nextCount = 0;
 }
@@ -361,12 +363,11 @@ void DraftHandler::deleteDraftScoreWindow()
 
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
-    if(!capturing && drafting)
+    if(!capturing && drafting && screenFound() && cardsDownloading==0)
     {
         capturing = true;
 
-        if(!screenRectsFound())     startFindScreenRects();
-        else if(delayed)            QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+        if(delayed)            QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
         else                        captureDraft();
     }
 }
@@ -732,16 +733,16 @@ cv::MatND DraftHandler::getHist(cv::Mat &srcBase)
 }
 
 
-bool DraftHandler::screenRectsFound()
+bool DraftHandler::screenFound()
 {
-    if(screenRects[0].width != 0)   return true;
-    else                            return false;
+    if(screenIndex != -1)   return true;
+    else                    return false;
 }
 
 
 void DraftHandler::startFindScreenRects()
 {
-    if(!futureFindScreenRects.isRunning()) futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    if(!futureFindScreenRects.isRunning() && drafting)  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
 }
 
 
@@ -751,6 +752,7 @@ void DraftHandler::finishFindScreenRects()
 
     if(screenDetection.screenIndex == -1)
     {
+        this->screenIndex = -1;
         QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(startFindScreenRects()));
     }
     else
@@ -762,7 +764,7 @@ void DraftHandler::finishFindScreenRects()
         }
 
         createDraftScoreWindow();
-        captureDraft();
+        newCaptureDraftLoop();
     }
 }
 
@@ -778,7 +780,7 @@ ScreenDetection DraftHandler::findScreenRects()
 
 
     QList<QScreen *> screens = QGuiApplication::screens();
-    for(screenIndex=0; screenIndex<screens.count(); screenIndex++)
+    for(int screenIndex=0; screenIndex<screens.count(); screenIndex++)
     {
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;

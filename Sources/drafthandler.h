@@ -12,7 +12,7 @@
 
 #define CAPTUREDRAFT_START_TIME         500
 #define CAPTUREDRAFT_LOOP_TIME          200
-#define CAPTUREDRAFT_LOOP_FLANN_TIME    2000
+#define CAPTUREDRAFT_LOOP_FLANN_TIME    200
 
 
 class LFtier
@@ -80,7 +80,7 @@ private:
     void createHearthArenaMentor();    
     void resetCodesCandidates();    
     void updateBoxTitle(double cardRating);
-    bool screenRectsFound();
+    bool screenFound();
     ScreenDetection findScreenRects();
     void removeTabHero();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);

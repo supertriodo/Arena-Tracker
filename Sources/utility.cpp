@@ -308,7 +308,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
     if(!img_object.data)
     {
-        qDebug() << "Cannot find" << templateImage;
+        qDebug() << "Utility: Cannot find" << templateImage;
         return screenPoints;
     }
     Mat img_scene;
@@ -345,7 +345,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
       if( dist < min_dist ) min_dist = dist;
     }
 
-    qDebug()<< "DraftHandler: FLANN min dist:" <<min_dist;
+    qDebug()<< "Utility: FLANN min dist:" <<min_dist;
 
     //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist )
     std::vector< DMatch > good_matches;
@@ -354,7 +354,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     { if( matches[i].distance < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
        { good_matches.push_back( matches[i]); }
     }
-    qDebug()<< "DraftHandler: FLANN Keypoints buenos:" <<good_matches.size();
+    qDebug()<< "Utility: FLANN Keypoints buenos:" <<good_matches.size();
     if(good_matches.size() < 10)    return screenPoints;
 
 
