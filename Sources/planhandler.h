@@ -12,7 +12,7 @@
 #include "Cards/handcard.h"
 #include "utility.h"
 #include <QObject>
-#include <QFuture>
+#include <QFutureWatcher>
 
 
 class TagChange
@@ -78,7 +78,8 @@ private:
     bool mouseInApp;
     Transparency transparency;
     GraphicsItemSender *graphicsItemSender;
-    QFuture<QList<float> > *futureBombs;
+    QFutureWatcher<QList<float>> futureBombs;
+    bool abortFutureBombs;
 
 //Metodos:
 private:

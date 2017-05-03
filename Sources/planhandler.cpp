@@ -17,12 +17,13 @@ PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->nowBoard->numTurn = 0;
     this->viewBoard = NULL;
     this->futureBoard = NULL;
-    this->futureBombs = NULL;
     this->selectedMinion = NULL;
     this->selectedCode = "";
     reset();
     completeUI();
     createGraphicsItemSender();
+
+    connect(&futureBombs, SIGNAL(finished()), this, SLOT(setDeadProbs()));
 }
 
 
@@ -39,12 +40,6 @@ PlanHandler::~PlanHandler()
     delete nowBoard;
 
     delete graphicsItemSender;
-
-    if(futureBombs != NULL)
-    {
-        delete futureBombs;
-        futureBombs = NULL;
-    }
 }
 
 
@@ -2578,17 +2573,13 @@ void PlanHandler::resetDeadProbs()
     foreach(MinionGraphicsItem *minion, *getMinionList(true))    minion->setDeadProb();
     foreach(MinionGraphicsItem *minion, *getMinionList(false))   minion->setDeadProb();
 
-    if(futureBombs != NULL)
-    {
-        delete futureBombs;
-        futureBombs = NULL;
-    }
+    if(futureBombs.isRunning())     abortFutureBombs = true;
 }
 
 
 void PlanHandler::checkBomb(QString code)
 {
-    if(code.isEmpty() || viewBoard!=nowBoard || futureBombs != NULL)    return;
+    if(code.isEmpty() || viewBoard!=nowBoard)   return;
 
     bool playerIn;
     int missiles;
@@ -2620,37 +2611,28 @@ void PlanHandler::checkBomb(QString code)
     }
 
     //Get dead probs
-    futureBombs = new QFuture<QList<float> >(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
-    QTimer::singleShot(10, this, SLOT(setDeadProbs()));
+    futureBombs.setFuture(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
+    abortFutureBombs = false;
 }
 
 
 void PlanHandler::setDeadProbs()
 {
-    if(futureBombs == NULL)     return;
+    if(abortFutureBombs)    return;
 
-    if(futureBombs->isFinished())
+    QList<float> deadProbs = futureBombs.result();
+
+    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
+    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
+    enemyHero->setDeadProb(deadProbs.takeFirst());
+    foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
+
+    if(!deadProbs.isEmpty())
     {
-        QList<float> deadProbs = futureBombs->result();
-        delete futureBombs;
-        futureBombs = NULL;
-
-        HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
-        QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
-        enemyHero->setDeadProb(deadProbs.takeFirst());
-        foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
-
-        if(!deadProbs.isEmpty())
-        {
-            HeroGraphicsItem *playerHero = nowBoard->playerHero;
-            QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-            playerHero->setDeadProb(deadProbs.takeFirst());
-            foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
-        }
-    }
-    else
-    {
-        QTimer::singleShot(100, this, SLOT(setDeadProbs()));
+        HeroGraphicsItem *playerHero = nowBoard->playerHero;
+        QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+        playerHero->setDeadProb(deadProbs.takeFirst());
+        foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
     }
 }
 

@@ -22,7 +22,7 @@ DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *en
 
     completeUI();
 
-    connect(&futureDeckBuilderPY, SIGNAL(finished()), this, SLOT(finishDeckBuilderPYthread()));
+    connect(&futureDeckBuilderPY, SIGNAL(finished()), this, SLOT(finishDeckBuilderPY()));
 }
 
 DeckHandler::~DeckHandler()
