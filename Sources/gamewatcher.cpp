@@ -901,6 +901,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         QString zoneFrom = match->captured(6);
         QString zoneTo = match->captured(7);
 
+        if(cardId.isEmpty())    cardId = Utility::cardLocalCodeFromName(name);
+
 
         //Jugador juega secreto
         if(zoneTo == "FRIENDLY SECRET" && zoneFrom != "OPPOSING SECRET")
