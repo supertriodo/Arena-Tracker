@@ -3090,6 +3090,7 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
+//En force draft mantener lista cartas drafted para HA
 
 
 //REPLAY BUGS
