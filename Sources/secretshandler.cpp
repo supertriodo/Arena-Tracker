@@ -119,14 +119,22 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         QString code = handCard->getCode();
         QString createdByCode = handCard->getCreatedByCode();
 
+        //Secreto conocido
         if(!code.isEmpty() && Utility::isASecret(code))
         {
             knownSecretPlayed(id, hero, code);
         }
+        //Pocion de polimorfia
         else if(createdByCode == KABAL_CHEMIST)
         {
             knownSecretPlayed(id, hero, POTION_OF_POLIMORPH);
         }
+        //Discover card, puede ser cualquier secreto standard, incluido los baneados de arena
+        else if(!createdByCode.isEmpty())
+        {
+            unknownSecretPlayed(id, hero, constructed);
+        }
+        //Deck Card
         else
         {
             unknownSecretPlayed(id, hero, loadingScreenState);
@@ -192,7 +200,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
 //            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));
+            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
 //            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
