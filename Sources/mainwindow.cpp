@@ -960,8 +960,13 @@ void MainWindow::completeUI()
 #endif
 
 #ifdef Q_OS_LINUX
-        pLog(tr("Settings: Platform: Linux"));
-        pDebug("Platform: Linux");
+    #ifdef APPIMAGE
+        pLog(tr("Settings: Platform: Linux AppImage"));
+        pDebug("Platform: Linux AppImage");
+    #else
+        pLog(tr("Settings: Platform: Linux Static"));
+        pDebug("Platform: Linux Static");
+    #endif
 #endif
     }
     else
@@ -2132,24 +2137,26 @@ void MainWindow::askLinuxShortcut()
 
 void MainWindow::createLinuxShortcut()
 {
-//    QProcess p;
-//    QString pattern = "*/ArenaTracker.AppImage";
-//    QString trash =  "*/.local/share/Trash/*";
-//    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
-//    p.waitForFinished(-1);
-//    QString appImagePath = QString(p.readAll()).trimmed();
-//    if(appImagePath.contains("\n") || appImagePath.isEmpty())
-//    {
-//        emit pDebug("WARNING: Cannot create shorcut. " +
-//                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-//                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-//        emit pLog("Shortcut: Cannot create shorcut. " +
-//                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-//                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-//        return;
-//    }
-
+#ifdef APPIMAGE
+    QProcess p;
+    QString pattern = "*/ArenaTracker.AppImage";
+    QString trash =  "*/.local/share/Trash/*";
+    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
+    p.waitForFinished(-1);
+    QString appImagePath = QString(p.readAll()).trimmed();
+    if(appImagePath.contains("\n") || appImagePath.isEmpty())
+    {
+        emit pDebug("WARNING: Cannot create shorcut. " +
+                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+        emit pLog("Shortcut: Cannot create shorcut. " +
+                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
+                    " ArenaTracker.AppImage found in Home: " + appImagePath);
+        return;
+    }
+#else
     QString appImagePath = Utility::appPath() + "/ArenaTracker";
+#endif
 
     //Menu Item shortcut
     QFile shortcutFile(QDir::homePath() + "/.local/share/applications/Arena Tracker.desktop");
@@ -3091,6 +3098,7 @@ void MainWindow::createDebugPack()
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
 //En force draft mantener lista cartas drafted para HA
+//Borrar score window al salir
 
 
 //REPLAY BUGS

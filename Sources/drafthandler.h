@@ -62,7 +62,7 @@ private:
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
-    QFutureWatcher<QMap<QString, LFtier>> futureInitLightForgeTiers;
+    QFutureWatcher<QMap<QString, LFtier> > futureInitLightForgeTiers;
 
 
 //Metodos

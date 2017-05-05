@@ -78,7 +78,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     GraphicsItemSender *graphicsItemSender;
-    QFutureWatcher<QList<float>> futureBombs;
+    QFutureWatcher<QList<float> > futureBombs;
     bool abortFutureBombs;
 
 //Metodos:
