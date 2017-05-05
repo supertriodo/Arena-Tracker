@@ -3098,7 +3098,6 @@ void MainWindow::createDebugPack()
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
 //En force draft mantener lista cartas drafted para HA
-//Borrar score window al salir
 
 
 //REPLAY BUGS

@@ -33,6 +33,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 DraftHandler::~DraftHandler()
 {
     delete hearthArenaMentor;
+    deleteDraftScoreWindow();
 }
 
 
