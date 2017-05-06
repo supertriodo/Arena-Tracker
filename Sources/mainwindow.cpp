@@ -2357,7 +2357,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
         pDebug("Manual draft: " + hero);
         pLog(tr("Menu: Force draft: ") + hero);
         QString heroLog = Utility::heroToLogNumber(hero);
-        draftHandler->beginDraft(heroLog);
+        draftHandler->beginDraft(heroLog, deckHandler->getDeckCardList());
     }
 }
 
@@ -3097,7 +3097,7 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
-//En force draft mantener lista cartas drafted para HA
+//Guardar sizeDraft si estamos en Draft y cerrramos
 
 
 //REPLAY BUGS

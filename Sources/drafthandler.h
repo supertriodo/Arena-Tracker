@@ -72,7 +72,7 @@ private:
     cv::MatND getHist(cv::Mat &srcBase);
     void initCodesAndHistMaps(QString &hero);
     void resetTab();
-    void clearLists();
+    void clearLists(bool keepDraftedCards);
     void getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void getBestMatchingCodes(cv::MatND screenCardsHist[3], QString codes[3]);
     bool areNewCards(QString codes[3]);
@@ -80,7 +80,7 @@ private:
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
     void resetCodesCandidates();    
-    void updateBoxTitle(double cardRating);
+    void updateBoxTitle(double cardRating=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void removeTabHero();
@@ -95,6 +95,7 @@ private:
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow();
     void startInitLightForgeTiers(const QString &heroString);
+    void initDraftedCards(QList<DeckCard> deckCardList);
 
 public:
     void reHistDownloadedCardImage(QString &code);
@@ -119,7 +120,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
 public slots:
-    void beginDraft(QString hero);
+    void beginDraft(QString hero, QList<DeckCard> deckCardList=QList<DeckCard>());
     void endDraft();
     void showNewRatings(QString tip, double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,

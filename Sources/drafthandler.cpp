@@ -248,12 +248,17 @@ void DraftHandler::resetTab()
 }
 
 
-void DraftHandler::clearLists()
+void DraftHandler::clearLists(bool keepDraftedCards)
 {
     hearthArenaCodes.clear();
     lightForgeTiers.clear();
     cardsHist.clear();
-    draftedCards.clear();
+
+    if(!keepDraftedCards)
+    {
+        draftedCards.clear();
+        deckRating = 0;
+    }
 
     for(int i=0; i<3; i++)
     {
@@ -262,7 +267,6 @@ void DraftHandler::clearLists()
     }
 
     screenIndex = -1;
-    deckRating = 0;
     nextCount = 0;
 }
 
@@ -293,7 +297,24 @@ void DraftHandler::leaveArena()
 }
 
 
-void DraftHandler::beginDraft(QString hero)
+void DraftHandler::initDraftedCards(QList<DeckCard> deckCardList)
+{
+    if(!draftedCards.isEmpty()) return;
+
+    for(DeckCard card: deckCardList)
+    {
+        if(card.getCode().isEmpty())    continue;
+        for(uint i=0; i<card.total; i++)
+        {
+            draftedCards.append(hearthArenaCodes[card.getCode()]);
+        }
+    }
+
+    emit pDebug("DraftedCards starts with " + QString::number(draftedCards.count()) + " cards.");
+}
+
+
+void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 {
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
@@ -312,7 +333,7 @@ void DraftHandler::beginDraft(QString hero)
     emit draftStarted();
 
     resetTab();
-    clearLists();
+    clearLists(true);
 
     this->arenaHero = hero;
     this->drafting = true;
@@ -321,6 +342,8 @@ void DraftHandler::beginDraft(QString hero)
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
+    initDraftedCards(deckCardList);
+    updateBoxTitle();
 }
 
 
@@ -353,7 +376,7 @@ void DraftHandler::endDraft()
     //Set updateTime in log
     emit draftEnded();
 
-    clearLists();
+    clearLists(false);
 
     this->drafting = false;
     this->justPickedCard = "";
@@ -600,7 +623,7 @@ void DraftHandler::updateBoxTitle(double cardRating)
 {
     deckRating += cardRating;
     int numCards = draftedCards.count();
-    int actualRating = (int)(deckRating/numCards);
+    int actualRating = (numCards==0)?0:(int)(deckRating/numCards);
     ui->groupBoxDraft->setTitle(QString("DECK RATING: " + QString::number(actualRating) +
                                         " (" + QString::number(numCards) + "/30)"));
 }

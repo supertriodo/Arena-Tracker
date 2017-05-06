@@ -108,6 +108,7 @@ public:
     void completeArenaDeck(QString draftLog);
     void setShowManaLimits(bool value);
     void setShowRngList(bool value);
+    QList<DeckCard> getDeckCardList();
 
 signals:
     void checkCardImage(QString code);
