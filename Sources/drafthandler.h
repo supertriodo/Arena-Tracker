@@ -108,6 +108,7 @@ public:
     void setDraftMethod(DraftMethod value);
     void setTheme(Theme theme);
     void craftGoldenCopy(int cardIndex);
+    bool isDrafting();
 
 signals:
     void checkCardImage(QString code);

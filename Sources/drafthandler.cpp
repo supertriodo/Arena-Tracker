@@ -1092,6 +1092,12 @@ void DraftHandler::craftGoldenCopy(int cardIndex)
 }
 
 
+bool DraftHandler::isDrafting()
+{
+    return this->drafting;
+}
+
+
 //Construir json de HearthArena
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT

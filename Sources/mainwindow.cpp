@@ -1020,6 +1020,7 @@ void MainWindow::closeApp()
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
     removeNonCompleteDraft();
     resizeChangingTab();
+    draftHandler->endDraft();
     close();
 }
 
@@ -3095,9 +3096,9 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+//Support import web github
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
-//Guardar sizeDraft si estamos en Draft y cerrramos
 
 
 //REPLAY BUGS
