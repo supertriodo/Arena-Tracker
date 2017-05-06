@@ -5,14 +5,19 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 {
     this->setTabBar(new MoveTabBar(this));
     this->hide();
+    this->tabSize = 32;
 }
 
 
-void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment)
+void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment, int maxWidth, bool resizing)
 {
     QString foregroundColor = (theme==ThemeWhite)?"black":"white";
     QString backgroundColor = (theme==ThemeWhite)?"#F0F0F0":"black";
     QString borderColor = (theme==ThemeWhite)?"#0F4F0F":"#0F4F0F";
+    int tabSize = std::max(24, std::min(32, maxWidth/std::max(1, this->count()) - 14));
+
+    if(resizing && (tabSize == this->tabSize)) return;
+    this->tabSize = tabSize;
 
     this->setStyleSheet(
         "QTabBar::tab:selected {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
@@ -21,8 +26,11 @@ void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment)
         "QTabWidget::pane {border-color: transparent; background: " + backgroundColor + ";}"
         "QTabWidget::pane {position: absolute;top: -38px;}"
         "QTabBar::tab {border: 2px solid " + borderColor + ";"
-            "padding: 5px;background: " + borderColor + "; color: " + foregroundColor + "; height: 24px; width: 32px}"
+            "padding: 5px;background: " + borderColor + "; color: " + foregroundColor +
+            "; height: 24px; width: " + QString::number(tabSize) + "px}"
     );
+
+    if(resizing)    tabBar()->setIconSize(QSize(tabSize, tabSize));
 }
 
 

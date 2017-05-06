@@ -8,9 +8,12 @@
 
 class MoveTabWidget : public QTabWidget
 {
+private:
+    int tabSize;
+
 public:
     MoveTabWidget(QWidget *parent = 0);
-    void setTheme(Theme theme, QString tabBarAlignment);
+    void setTheme(Theme theme, QString tabBarAlignment, int maxWidth, bool resizing);
 };
 
 

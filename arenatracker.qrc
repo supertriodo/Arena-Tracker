@@ -121,5 +121,6 @@
         <file>Images/bgScoreButtonLF.png</file>
         <file>Images/bgScoreHA.png</file>
         <file>Images/bgScoreLF.png</file>
+        <file>Images/games.png</file>
     </qresource>
 </RCC>

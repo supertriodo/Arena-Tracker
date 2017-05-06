@@ -1493,8 +1493,10 @@ void MainWindow::resizeChecks(QSize size)
         int left = widget->pos().x();
         int right = left + widget->width();
 
+        updateTabWidgetsTheme(true);
         resizeTopButtons(right, top);
         ui->resizeButton->move(right-24, bottom-24);
+        calculateMinimumWidth();
 
         if(otherWindow == NULL) spreadCorrectTamCard();
     }
@@ -1514,7 +1516,7 @@ void MainWindow::resizeChecks(QSize size)
 
 void MainWindow::resizeTopButtons(int right, int top)
 {
-    int limitWidth = ui->tabWidget->tabBar()->width() + 48;
+    int limitWidth = ui->tabWidget->tabBar()->width() + BIG_BUTTONS_H;
 
     int buttonsWidth;
     bool smallButtons = this->width() < limitWidth;
@@ -1722,7 +1724,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     QString tooltip;
     if(widget == ui->tabArena)
     {
-        icon = QIcon(":/Images/arena.png");
+        icon = QIcon(":/Images/games.png");
         tooltip = "Games";
     }
     else if(widget == ui->tabDeck)
@@ -2594,12 +2596,12 @@ void MainWindow::spreadTheme()
 }
 
 
-void MainWindow::updateTabWidgetsTheme()
+void MainWindow::updateTabWidgetsTheme(bool resizing)
 {
-    ui->tabWidget->setTheme(this->theme, "left");
-    ui->tabWidgetH2->setTheme(this->theme, "center");
-    ui->tabWidgetH3->setTheme(this->theme, "center");
-    ui->tabWidgetV1->setTheme(this->theme, "left");
+    ui->tabWidget->setTheme(this->theme, "left", width() - BIG_BUTTONS_H, resizing);
+    ui->tabWidgetH2->setTheme(this->theme, "center", width() - BIG_BUTTONS_H, resizing);
+    ui->tabWidgetH3->setTheme(this->theme, "center", width() - BIG_BUTTONS_H, resizing);
+    ui->tabWidgetV1->setTheme(this->theme, "left", width() - BIG_BUTTONS_H, resizing);
 }
 
 

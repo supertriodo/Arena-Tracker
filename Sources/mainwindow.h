@@ -21,6 +21,7 @@
 #define DIVIDE_TABS_H 500
 #define DIVIDE_TABS_H2 750
 #define DIVIDE_TABS_V 700
+#define BIG_BUTTONS_H 48
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 //#define LIGHTFORGE_VERSION_URL "https://raw.githubusercontent.com/rembound/Arena-Helper/master/data/version.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
@@ -116,7 +117,7 @@ private:
     void spreadTheme();
     void updateMainUITheme();
     void updateButtonsTheme();
-    void updateTabWidgetsTheme();
+    void updateTabWidgetsTheme(bool resizing=false);
     QString getHSLanguage();
     void createCardsJsonMap(QByteArray &jsonData);
     void resizeTopButtons(int right, int top);
