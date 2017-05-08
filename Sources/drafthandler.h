@@ -48,8 +48,10 @@ private:
     QMap<QString, cv::MatND> cardsHist;
     int cardsDownloading;
     DraftCard draftCards[3];
-    QMap<QString, DraftCard> draftCardMaps[3];
-    QMap<double, QString> bestMatchesMaps[3];
+    //Guarda los mejores candidatos de esta iteracion
+    QMap<QString, DraftCard> draftCardMaps[3];  //[Code(_premium)] --> DraftCard
+    //Se crea al final de la iteracion para ordenar los candidatos por match score
+    QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
     QString arenaHero;
     QList<int> draftedCards;
@@ -77,7 +79,7 @@ private:
 //Metodos
 private:
     void completeUI();
-    cv::MatND getHist(QString &code);
+    cv::MatND getHist(const QString &code);
     cv::MatND getHist(cv::Mat &srcBase);
     void initCodesAndHistMaps(QString &hero);
     void resetTab();
@@ -106,9 +108,11 @@ private:
     bool areCardsDetected();
     void buildBestMatchesMaps();
     void getBestCards(DraftCard bestCards[3]);
+    void addCardHist(QString code, bool premium);
+    QString degoldCode(QString fileName);
 
 public:
-    void reHistDownloadedCardImage(QString &code);
+    void reHistDownloadedCardImage(const QString &code);
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setShowDraftOverlay(bool value);

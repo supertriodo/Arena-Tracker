@@ -27,7 +27,11 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero)
 
     QString urlString;
     if(isHero)  urlString = OLD_CARDS_URL + "heroes/" + code + ".png";
-    else        urlString = NEW_CARDS_URL + "cards/enus/" + code + ".png";
+    else
+    {
+        if(code.endsWith("_premium"))   urlString = NEW_CARDS_URL + "cards/enus/animated/" + code + ".gif";
+        else                            urlString = NEW_CARDS_URL + "cards/enus/" + code + ".png";
+    }
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     DownloadingCard downCard;

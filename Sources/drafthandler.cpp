@@ -92,22 +92,29 @@ void DraftHandler::initHearthArenaCodes(QString &hero)
         if(Utility::isFromStandardSet(code) && !bannedInArena)
         {
             hearthArenaCodes[code] = it.key().toInt();
-
-            QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
-            if(cardFile.exists())
-            {
-                cardsHist[code] = getHist(code);
-            }
-            else
-            {
-                //La bajamos de HearthHead
-                emit checkCardImage(code);
-                cardsDownloading++;
-            }
+            addCardHist(code, false);
+            addCardHist(code, true);
         }
     }
 
     emit pDebug("HearthArena Cards: " + QString::number(hearthArenaCodes.count()));
+}
+
+
+void DraftHandler::addCardHist(QString code, bool premium)
+{
+    QString fileNameCode = premium?(code + "_premium"): code;
+    QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
+    if(cardFile.exists())
+    {
+        cardsHist[fileNameCode] = getHist(fileNameCode);
+    }
+    else
+    {
+        //La bajamos de HearthHead
+        emit checkCardImage(fileNameCode);
+        cardsDownloading++;
+    }
 }
 
 
@@ -193,11 +200,11 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
 }
 
 
-void DraftHandler::reHistDownloadedCardImage(QString &code)
+void DraftHandler::reHistDownloadedCardImage(const QString &code)
 {
     if(cardsDownloading == 0)   return; //No hay drafting en proceso
 
-    if(!code.isEmpty())  cardsHist[code] = getHist(code);   //Empty card downloaded from hearthHead
+    if(!code.isEmpty())  cardsHist[code] = getHist(code);
     cardsDownloading--;
 
     if(cardsDownloading==0)
@@ -495,14 +502,14 @@ void DraftHandler::buildBestMatchesMaps()
         double match = bestMatchesMaps[i].firstKey();
         QString code = bestMatchesMaps[i].first();
         QString name = draftCardMaps[i][code].getName();
-        qDebug()<<name<<match/numCaptured;
+        qDebug()<<code<<name<<match/numCaptured;
     }
 }
 
 
 void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
-    double bestMatch = 1.0 * numCaptured;
+    double bestMatch = numCaptured;
     int bestIndex;
     QString bestCode;
 
@@ -702,18 +709,22 @@ void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
     bigCards[1] = screenCapture(screenRects[1]);
     bigCards[2] = screenCapture(screenRects[2]);
 
-    cv::Mat screenCards[3];
-    cv::resize(bigCards[0], screenCards[0], cv::Size(80, 80));
-    cv::resize(bigCards[1], screenCards[1], cv::Size(80, 80));
-    cv::resize(bigCards[2], screenCards[2], cv::Size(80, 80));
 
 //#ifdef QT_DEBUG
-//    cv::imshow("Card1", screenCards[0]);
-//    cv::imshow("Card2", screenCards[1]);
-//    cv::imshow("Card3", screenCards[2]);
+//    cv::imshow("Card1", bigCards[0]);
+//    cv::imshow("Card2", bigCards[1]);
+//    cv::imshow("Card3", bigCards[2]);
 //#endif
 
-    for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(screenCards[i]);
+    for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(bigCards[i]);
+}
+
+
+QString DraftHandler::degoldCode(QString fileName)
+{
+    QString code = fileName;
+    if(code.endsWith("_premium"))   code.chop(8);
+    return code;
 }
 
 
@@ -748,7 +759,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             if(!draftCardMaps[i].contains(code))
             {
                 newCardsFound = true;
-                draftCardMaps[i].insert(code, DraftCard(code));
+                draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
                 draftCardMaps[i][code].addQualityMatch(match + this->numCaptured);
             }
         }
@@ -768,7 +779,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         for(QString code: draftCardMaps[i].keys())
         {
             DraftCard card = draftCardMaps[i][code];
-            qDebug()<<"["<<i<<"]"<<card.getName()<<" -- "<<
+            qDebug()<<"["<<i<<"]"<<code<<card.getName()<<" -- "<<
                       ((int)(card.getSumQualityMatches()*1000))/1000.0<<" -- "<<
                       ((int)(card.getSumQualityMatches()/std::max(1,numCaptured)*1000))/1000.0;
         }
@@ -776,10 +787,12 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 }
 
 
-cv::MatND DraftHandler::getHist(QString &code)
+cv::MatND DraftHandler::getHist(const QString &code)
 {
     cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
-    cv::Mat srcBase = fullCard(cv::Rect(60,71,80,80));
+    cv::Mat srcBase;
+    if(code.endsWith("_premium"))   srcBase = fullCard(cv::Rect(57,71,80,80));
+    else                            srcBase = fullCard(cv::Rect(60,71,80,80));
     return getHist(srcBase);
 }
 
