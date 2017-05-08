@@ -10,7 +10,7 @@
 #include <QFutureWatcher>
 
 
-#define CAPTUREDRAFT_START_TIME         500
+#define CAPTUREDRAFT_START_TIME         1500
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    200
 
@@ -45,13 +45,15 @@ private:
     QMap<QString, cv::MatND> cardsHist;
     int cardsDownloading;
     DraftCard draftCards[3];
+    QMap<QString, DraftCard> draftCardMaps[3];
+    QMap<double, QString> bestMatchesMaps[3];
+    bool cardDetected[3];
     QString arenaHero;
     QList<int> draftedCards;
-    QString codesCandidates[3];
     double deckRating;
     cv::Rect screenRects[3];
     int screenIndex;
-    int nextCount;
+    int numCaptured;
     bool drafting, capturing, leavingArena;
     bool mouseInApp;
     Transparency transparency;
@@ -63,6 +65,10 @@ private:
     DraftMethod draftMethod;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QFutureWatcher<QMap<QString, LFtier> > futureInitLightForgeTiers;
+    QLabel *labelCard[3];
+    QLabel *labelLFscore[3];
+    QLabel *labelHAscore[3];
+    double shownTierScores[3];
 
 
 //Metodos
@@ -74,12 +80,9 @@ private:
     void resetTab();
     void clearLists(bool keepDraftedCards);
     void getScreenCardsHist(cv::MatND screenCardsHist[3]);
-    void getBestMatchingCodes(cv::MatND screenCardsHist[3], QString codes[3]);
-    bool areNewCards(QString codes[3]);
     bool areSameRarity(QString codes[]);
     void showNewCards(QString codes[3]);
     void createHearthArenaMentor();    
-    void resetCodesCandidates();    
     void updateBoxTitle(double cardRating=0);
     bool screenFound();
     ScreenDetection findScreenRects();
@@ -96,6 +99,10 @@ private:
     void createDraftScoreWindow();
     void startInitLightForgeTiers(const QString &heroString);
     void initDraftedCards(QList<DeckCard> deckCardList);
+    void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
+    double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
+    bool areCardsDetected();
+    void buildBestMatchesMaps();
 
 public:
     void reHistDownloadedCardImage(QString &code);

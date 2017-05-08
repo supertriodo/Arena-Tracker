@@ -8,7 +8,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->ui = ui;
     this->cardsDownloading = 0;
     this->deckRating = 0;
-    this->nextCount = 0;
+    this->numCaptured = 0;
     this->drafting = false;
     this->capturing = false;
     this->leavingArena = false;
@@ -20,7 +20,8 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
     for(int i=0; i<3; i++)
     {
-        screenRects[i]=cv::Rect(0,0,0,0);
+        screenRects[i] = cv::Rect(0,0,0,0);
+        cardDetected[i] = false;
     }
 
     createHearthArenaMentor();
@@ -50,15 +51,15 @@ void DraftHandler::completeUI()
     ui->labelHAscore2->setFont(font);
     ui->labelHAscore3->setFont(font);
 
-    draftCards[0].cardItem = ui->labelCard1;
-    draftCards[1].cardItem = ui->labelCard2;
-    draftCards[2].cardItem = ui->labelCard3;
-    draftCards[0].scoreLFitem = ui->labelLFscore1;
-    draftCards[1].scoreLFitem = ui->labelLFscore2;
-    draftCards[2].scoreLFitem = ui->labelLFscore3;
-    draftCards[0].scoreHAitem = ui->labelHAscore1;
-    draftCards[1].scoreHAitem = ui->labelHAscore2;
-    draftCards[2].scoreHAitem = ui->labelHAscore3;
+    labelCard[0] = ui->labelCard1;
+    labelCard[1] = ui->labelCard2;
+    labelCard[2] = ui->labelCard3;
+    labelLFscore[0] = ui->labelLFscore1;
+    labelLFscore[1] = ui->labelLFscore2;
+    labelLFscore[2] = ui->labelLFscore3;
+    labelHAscore[0] = ui->labelHAscore1;
+    labelHAscore[1] = ui->labelHAscore2;
+    labelHAscore[2] = ui->labelHAscore3;
 }
 
 
@@ -221,10 +222,10 @@ void DraftHandler::resetTab()
 {
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreLFitem, LightForge);
-        clearScore(draftCards[i].scoreHAitem, HearthArena);
+        clearScore(labelLFscore[i], LightForge);
+        clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
-        draftCards[i].draw();
+        draftCards[i].draw(labelCard[i]);
     }
 
     ui->textBrowserDraft->setText("");
@@ -262,12 +263,14 @@ void DraftHandler::clearLists(bool keepDraftedCards)
 
     for(int i=0; i<3; i++)
     {
-        codesCandidates[i] = "";
         screenRects[i]=cv::Rect(0,0,0,0);
+        cardDetected[i] = false;
+        draftCardMaps[i].clear();
+        bestMatchesMaps[i].clear();
     }
 
     screenIndex = -1;
-    nextCount = 0;
+    numCaptured = 0;
 }
 
 
@@ -405,7 +408,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
     {
         capturing = true;
 
-        if(delayed)            QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+        if(delayed)                 QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
         else                        captureDraft();
     }
 }
@@ -431,12 +434,16 @@ void DraftHandler::captureDraft()
     cv::MatND screenCardsHist[3];
     getScreenCardsHist(screenCardsHist);
 
-    QString codes[3];
-    getBestMatchingCodes(screenCardsHist, codes);
 
-    if(areNewCards(codes))
+    mapBestMatchingCodes(screenCardsHist);
+
+    if(areCardsDetected())
     {
         capturing = false;
+        buildBestMatchesMaps();
+
+        QString codes[3];
+        for(int i=0; i<3; i++)  codes[i] = bestMatchesMaps[i].first();
         showNewCards(codes);
     }
     else
@@ -446,60 +453,50 @@ void DraftHandler::captureDraft()
 }
 
 
-bool DraftHandler::areNewCards(QString codes[3])
-{
-    if(codes[0]=="" || codes[1]=="" || codes[2]=="")
-    {
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    " Blank code.");
-        return false;
-    }
-    else if(!areSameRarity(codes))
-    {
-        resetCodesCandidates();
-        nextCount = 0;
-        return false;
-    }
-    else if(codes[0]!=codesCandidates[0] ||
-            codes[1]!=codesCandidates[1] ||
-            codes[2]!=codesCandidates[2])
-    {
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    " New candidates.");
-        for(int i=0; i<3; i++)
-        {
-            codesCandidates[i]=codes[i];
-        }
-        nextCount = 0;
-        return false;
-    }
-    else if(nextCount < 1)
-    {
-        nextCount++;
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    " New candidates - " + QString::number(nextCount));
-        return false;
-    }
-    else
-    {
-        emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                    codes[0] + "/" + codes[1] + "/" + codes[2] +
-                    " New codes.");
-        resetCodesCandidates();
-        nextCount = 0;
-        return true;
-    }
-}
-
-
-void DraftHandler::resetCodesCandidates()
+bool DraftHandler::areCardsDetected()
 {
     for(int i=0; i<3; i++)
     {
-        codesCandidates[i]="";
+        if(!cardDetected[i] && (numCaptured > 2) && (getMinMatch(draftCardMaps[i]) < (0.4 + numCaptured*0.01)))
+        {
+            cardDetected[i] = true;
+        }
+    }
+
+    //Borrar
+    qDebug()<<"Captured: "<<numCaptured<<endl;
+
+    return (cardDetected[0] && cardDetected[1] && cardDetected[2]) || numCaptured > 30;
+}
+
+
+double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
+{
+    double minMatch = numCaptured;
+    for(DraftCard card: draftCardMaps.values())
+    {
+        double match = card.getSumQualityMatches();
+        if(match < minMatch)    minMatch = card.getSumQualityMatches();
+    }
+    return minMatch/numCaptured;
+}
+
+
+void DraftHandler::buildBestMatchesMaps()
+{
+    for(int i=0; i<3; i++)
+    {
+        for(QString code: draftCardMaps[i].keys())
+        {
+            double match = draftCardMaps[i][code].getSumQualityMatches();
+            bestMatchesMaps[i].insertMulti(match, code);
+        }
+
+        //Borrar
+        double match = bestMatchesMaps[i].firstKey();
+        QString code = bestMatchesMaps[i].first();
+        QString name = draftCardMaps[i][code].getName();
+        qDebug()<<name<<match/numCaptured;
     }
 }
 
@@ -552,7 +549,7 @@ void DraftHandler::pickCard(QString code)
             if(draftCards[i].getCode() == code)
             {
                 draftCard = draftCards[i];
-                updateBoxTitle(draftCard.tierScore);
+                updateBoxTitle(shownTierScores[i]);
                 break;
             }
         }
@@ -561,14 +558,17 @@ void DraftHandler::pickCard(QString code)
     //Clear cards and score
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreLFitem, LightForge);
-        clearScore(draftCards[i].scoreHAitem, HearthArena);
+        clearScore(labelLFscore[i], LightForge);
+        clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
-        draftCards[i].draw();
+        draftCards[i].draw(labelCard[i]);
+        cardDetected[i] = false;
+        draftCardMaps[i].clear();
+        bestMatchesMaps[i].clear();
     }
 
+    this->numCaptured = 0;
     ui->textBrowserDraft->setText("");
-
     draftScoreWindow->hideScores();
 
     emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
@@ -585,10 +585,10 @@ void DraftHandler::showNewCards(QString codes[3])
     //Load cards
     for(int i=0; i<3; i++)
     {
-        clearScore(draftCards[i].scoreLFitem, LightForge);
-        clearScore(draftCards[i].scoreHAitem, HearthArena);
+        clearScore(labelLFscore[i], LightForge);
+        clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode(codes[i]);
-        draftCards[i].draw();
+        draftCards[i].draw(labelCard[i]);
     }
 
     ui->textBrowserDraft->setText("");
@@ -645,21 +645,21 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         //TierScore for deck average
         if(draftMethod == this->draftMethod || (this->draftMethod == All && draftMethod == HearthArena))
         {
-            draftCards[i].tierScore = tierScore[i];
+            shownTierScores[i] = tierScore[i];
         }
 
         //Update score label
         if(draftMethod == LightForge)
         {
-            draftCards[i].scoreLFitem->setText(QString::number((int)ratings[i]) +
+            labelLFscore[i]->setText(QString::number((int)ratings[i]) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
-            if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreLFitem, draftMethod);
+            if(maxRating == ratings[i])     highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
-            draftCards[i].scoreHAitem->setText(QString::number((int)ratings[i]) +
+            labelHAscore[i]->setText(QString::number((int)ratings[i]) +
                                             " - (" + QString::number((int)tierScore[i]) + ")");
-            if(maxRating == ratings[i])     highlightScore(draftCards[i].scoreHAitem, draftMethod);
+            if(maxRating == ratings[i])     highlightScore(labelHAscore[i], draftMethod);
         }
     }
 
@@ -702,35 +702,61 @@ void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 }
 
 
-void DraftHandler::getBestMatchingCodes(cv::MatND screenCardsHist[3], QString codes[3])
+void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 {
-    double bestMatch[3];
-    QString bestCodes[3];
+    bool newCardsFound = false;
 
     for(int i=0; i<3; i++)
     {
-        //Init best
-        bestCodes[i] = cardsHist.firstKey();
-        bestMatch[i] = compareHist(screenCardsHist[i], cardsHist.first(), 3);
-
+        QMap<double, QString> bestMatchesMap;
         for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
         {
             double match = compareHist(screenCardsHist[i], it.value(), 3);
+            QString code = it.key();
+            bestMatchesMap.insertMulti(match, code);
 
-            //Gana menor
-            if(bestMatch[i] > match)
+            //Actualizamos DraftCardMaps con los nuevos resultados
+            if(draftCardMaps[i].contains(code))
             {
-                bestMatch[i] = match;
-                bestCodes[i] = it.key();
+                if(numCaptured == 0)    draftCardMaps[i][code].setQualityMatch(match);
+                else                    draftCardMaps[i][code].addQualityMatch(match);
+            }
+        }
+
+        //Incluimos en DraftCardMaps los mejores 5 matches, si no han sido ya actualizados por estar en el map.
+        QList<double> bestMatchesList = bestMatchesMap.keys();
+        for(int j=0; j<5 && j<bestMatchesList.count(); j++)
+        {
+            double match = bestMatchesList.at(j);
+            QString code = bestMatchesMap[match];
+
+            if(!draftCardMaps[i].contains(code))
+            {
+                newCardsFound = true;
+                draftCardMaps[i].insert(code, DraftCard(code));
+                draftCardMaps[i][code].addQualityMatch(match + this->numCaptured);
             }
         }
     }
 
 
-    //Minimo umbral
+    //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 5 mejores posiciones
+    if(!(numCaptured == 0 && newCardsFound))
+    {
+        this->numCaptured++;
+    }
+
+    //Borrar
     for(int i=0; i<3; i++)
     {
-        if(bestMatch[i] < 0.6)      codes[i] = bestCodes[i];
+        qDebug()<<endl;
+        for(QString code: draftCardMaps[i].keys())
+        {
+            DraftCard card = draftCardMaps[i][code];
+            qDebug()<<"["<<i<<"]"<<card.getName()<<" -- "<<
+                      ((int)(card.getSumQualityMatches()*1000))/1000.0<<" -- "<<
+                      ((int)(card.getSumQualityMatches()/std::max(1,numCaptured)*1000))/1000.0;
+        }
     }
 }
 
@@ -899,8 +925,8 @@ void DraftHandler::setTheme(Theme theme)
 
     for(int i=0; i<3; i++)
     {
-        if(draftCards[i].scoreLFitem->styleSheet().contains("background-image"))    highlightScore(draftCards[i].scoreLFitem, LightForge);
-        if(draftCards[i].scoreHAitem->styleSheet().contains("background-image"))    highlightScore(draftCards[i].scoreHAitem, HearthArena);
+        if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
+        if(labelHAscore[i]->styleSheet().contains("background-image"))      highlightScore(labelHAscore[i], HearthArena);
     }
 }
 
@@ -1009,8 +1035,8 @@ void DraftHandler::updateScoresVisibility()
     {
         for(int i=0; i<3; i++)
         {
-            draftCards[i].scoreLFitem->hide();
-            draftCards[i].scoreHAitem->hide();
+            labelLFscore[i]->hide();
+            labelHAscore[i]->hide();
         }
     }
     else
@@ -1020,29 +1046,29 @@ void DraftHandler::updateScoresVisibility()
             case All:
                 for(int i=0; i<3; i++)
                 {
-                    draftCards[i].scoreLFitem->show();
-                    draftCards[i].scoreHAitem->show();
+                    labelLFscore[i]->show();
+                    labelHAscore[i]->show();
                 }
                 break;
             case LightForge:
                 for(int i=0; i<3; i++)
                 {
-                    draftCards[i].scoreLFitem->show();
-                    draftCards[i].scoreHAitem->hide();
+                    labelLFscore[i]->show();
+                    labelHAscore[i]->hide();
                 }
                 break;
             case HearthArena:
                 for(int i=0; i<3; i++)
                 {
-                    draftCards[i].scoreLFitem->hide();
-                    draftCards[i].scoreHAitem->show();
+                    labelLFscore[i]->hide();
+                    labelHAscore[i]->show();
                 }
                 break;
             default:
                 for(int i=0; i<3; i++)
                 {
-                    draftCards[i].scoreLFitem->hide();
-                    draftCards[i].scoreHAitem->hide();
+                    labelLFscore[i]->hide();
+                    labelHAscore[i]->hide();
                 }
                 break;
         }
@@ -1056,7 +1082,7 @@ void DraftHandler::redrawAllCards()
 
     for(int i=0; i<3; i++)
     {
-        draftCards[i].draw();
+        draftCards[i].draw(labelCard[i]);
     }
 }
 

@@ -14,13 +14,15 @@ public:
     ~DraftCard();
 
 //Variables
-public:
-    QLabel *scoreLFitem, *scoreHAitem, *cardItem;
-    double tierScore;
+private:
+    double sumQualityMatches;
 
 //Metodos
 public:
-    void draw();
+    void draw(QLabel *label);
+    void addQualityMatch(double matchScore);
+    double getSumQualityMatches();
+    void setQualityMatch(double matchScore);
 };
 
 #endif // DRAFTCARD_H
