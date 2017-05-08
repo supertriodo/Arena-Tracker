@@ -433,8 +433,6 @@ void DraftHandler::captureDraft()
 
     cv::MatND screenCardsHist[3];
     getScreenCardsHist(screenCardsHist);
-
-
     mapBestMatchingCodes(screenCardsHist);
 
     if(areCardsDetected())
@@ -442,9 +440,9 @@ void DraftHandler::captureDraft()
         capturing = false;
         buildBestMatchesMaps();
 
-        QString codes[3];
-        for(int i=0; i<3; i++)  codes[i] = bestMatchesMaps[i].first();
-        showNewCards(codes);
+        DraftCard bestCards[3];
+        getBestCards(bestCards);
+        showNewCards(bestCards);
     }
     else
     {
@@ -457,7 +455,8 @@ bool DraftHandler::areCardsDetected()
 {
     for(int i=0; i<3; i++)
     {
-        if(!cardDetected[i] && (numCaptured > 2) && (getMinMatch(draftCardMaps[i]) < (0.4 + numCaptured*0.01)))
+        if(!cardDetected[i] && (numCaptured > 2) &&
+            (getMinMatch(draftCardMaps[i]) < (CARD_ACCEPTED_THRESHOLD + numCaptured*CARD_ACCEPTED_THRESHOLD_INCREASE)))
         {
             cardDetected[i] = true;
         }
@@ -501,27 +500,43 @@ void DraftHandler::buildBestMatchesMaps()
 }
 
 
-bool DraftHandler::areSameRarity(QString codes[3])
+void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
-    CardRarity raritySample = INVALID_RARITY;
+    double bestMatch = 1.0 * numCaptured;
+    int bestIndex;
+    QString bestCode;
 
     for(int i=0; i<3; i++)
     {
-        DeckCard deckCard(codes[i]);
-        CardRarity rarity = deckCard.getRarity();
-
-        if(raritySample == INVALID_RARITY)  raritySample = rarity;
-
-        if(raritySample != rarity)
+        double match = bestMatchesMaps[i].firstKey();
+        QString code = bestMatchesMaps[i].first();
+        if(match < bestMatch)
         {
-            emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
-                        codes[0] + "/" + codes[1] + "/" + codes[2] +
-                        " Different rarity codes: " + QString::number(raritySample) + "/" + QString::number(rarity));
-            return false;
+            bestMatch = match;
+            bestIndex = i;
+            bestCode = code;
         }
     }
 
-    return true;
+    CardRarity bestRarity = draftCardMaps[bestIndex][bestCode].getRarity();
+    qDebug()<<"Best code:"<<bestCode<<bestMatch/numCaptured<<bestIndex;
+
+    for(int i=0; i<3; i++)
+    {
+        for(QString code: bestMatchesMaps[i].values())
+        {
+            if(draftCardMaps[i][code].getRarity() == bestRarity)
+            {
+                bestCards[i] = draftCardMaps[i][code];
+                qDebug()<<"Choose" << code << "same rarity.";
+                break;
+            }
+            else
+            {
+                qDebug()<<"Skip" << code << "different rarity.";
+            }
+        }
+    }
 }
 
 
@@ -580,14 +595,14 @@ void DraftHandler::pickCard(QString code)
 }
 
 
-void DraftHandler::showNewCards(QString codes[3])
+void DraftHandler::showNewCards(DraftCard bestCards[3])
 {
     //Load cards
     for(int i=0; i<3; i++)
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
-        draftCards[i].setCode(codes[i]);
+        draftCards[i] = bestCards[i];
         draftCards[i].draw(labelCard[i]);
     }
 
@@ -595,12 +610,12 @@ void DraftHandler::showNewCards(QString codes[3])
 
 
     //LightForge
-    int rating1 = lightForgeTiers[codes[0]].score;
-    int rating2 = lightForgeTiers[codes[1]].score;
-    int rating3 = lightForgeTiers[codes[2]].score;
-    int maxCard1 = lightForgeTiers[codes[0]].maxCard;
-    int maxCard2 = lightForgeTiers[codes[1]].maxCard;
-    int maxCard3 = lightForgeTiers[codes[2]].maxCard;
+    int rating1 = lightForgeTiers[bestCards[0].getCode()].score;
+    int rating2 = lightForgeTiers[bestCards[1].getCode()].score;
+    int rating3 = lightForgeTiers[bestCards[2].getCode()].score;
+    int maxCard1 = lightForgeTiers[bestCards[0].getCode()].maxCard;
+    int maxCard2 = lightForgeTiers[bestCards[1].getCode()].maxCard;
+    int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
     showNewRatings("", rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    "", "", "",
@@ -612,7 +627,7 @@ void DraftHandler::showNewCards(QString codes[3])
     int intCodes[3];
     for(int i=0; i<3; i++)
     {
-        intCodes[i] = hearthArenaCodes[codes[i]];
+        intCodes[i] = hearthArenaCodes[bestCards[i].getCode()];
     }
 
     hearthArenaMentor->askCardsRating(arenaHero, draftedCards, intCodes);

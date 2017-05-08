@@ -14,6 +14,9 @@
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    200
 
+#define CARD_ACCEPTED_THRESHOLD             0.35
+#define CARD_ACCEPTED_THRESHOLD_INCREASE    0.01
+
 
 class LFtier
 {
@@ -80,8 +83,7 @@ private:
     void resetTab();
     void clearLists(bool keepDraftedCards);
     void getScreenCardsHist(cv::MatND screenCardsHist[3]);
-    bool areSameRarity(QString codes[]);
-    void showNewCards(QString codes[3]);
+    void showNewCards(DraftCard bestCards[]);
     void createHearthArenaMentor();    
     void updateBoxTitle(double cardRating=0);
     bool screenFound();
@@ -103,6 +105,7 @@ private:
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
     void buildBestMatchesMaps();
+    void getBestCards(DraftCard bestCards[3]);
 
 public:
     void reHistDownloadedCardImage(QString &code);
