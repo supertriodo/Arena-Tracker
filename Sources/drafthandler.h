@@ -15,7 +15,7 @@
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    200
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
-#define CARD_ACCEPTED_THRESHOLD_INCREASE    0.01
+#define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
 
 
 class LFtier
@@ -84,7 +84,7 @@ private:
     void initCodesAndHistMaps(QString &hero);
     void resetTab();
     void clearLists(bool keepDraftedCards);
-    void getScreenCardsHist(cv::MatND screenCardsHist[3]);
+    bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
     void createHearthArenaMentor();    
     void updateBoxTitle(double cardRating=0);

@@ -425,7 +425,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
 void DraftHandler::captureDraft()
 {
     justPickedCard = "";
-    if(!drafting)
+    if(!drafting || !capturing)
     {
         capturing = false;
         return;
@@ -439,7 +439,11 @@ void DraftHandler::captureDraft()
     }
 
     cv::MatND screenCardsHist[3];
-    getScreenCardsHist(screenCardsHist);
+    if(!getScreenCardsHist(screenCardsHist))
+    {
+        capturing = false;
+        return;
+    }
     mapBestMatchingCodes(screenCardsHist);
 
     if(areCardsDetected())
@@ -692,11 +696,12 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
 }
 
 
-void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
+bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 {
     QList<QScreen *> screens = QGuiApplication::screens();
+    if(screenIndex >= screens.count() || screenIndex < 0)  return false;
     QScreen *screen = screens[screenIndex];
-    if (!screen) return;
+    if (!screen) return false;
 
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
@@ -717,6 +722,7 @@ void DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 //#endif
 
     for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(bigCards[i]);
+    return true;
 }
 
 
@@ -845,6 +851,7 @@ void DraftHandler::finishFindScreenRects()
     if(screenDetection.screenIndex == -1)
     {
         this->screenIndex = -1;
+        emit pDebug("Hearthstone arena screen not found. Retrying...");
         QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(startFindScreenRects()));
     }
     else
@@ -854,6 +861,8 @@ void DraftHandler::finishFindScreenRects()
         {
             this->screenRects[i] = screenDetection.screenRects[i];
         }
+
+        emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
 
         createDraftScoreWindow();
         newCaptureDraftLoop();
