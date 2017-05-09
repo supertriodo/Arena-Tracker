@@ -3101,7 +3101,7 @@ void MainWindow::createDebugPack()
 //Support import web github
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
-//Salir arena mientras esta reconociendo
+//Salir arena mientras esta reconociendo, reiniciar listas.
 
 
 //REPLAY BUGS

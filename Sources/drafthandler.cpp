@@ -288,7 +288,7 @@ void DraftHandler::enterArena()
         showOverlay();
         if(draftCards[0].getCode().isEmpty())
         {
-            newCaptureDraftLoop();
+            newCaptureDraftLoop(true);
         }
     }
 }
@@ -347,7 +347,6 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     this->arenaHero = hero;
     this->drafting = true;
-    this->capturing = false;
     this->leavingArena = false;
     this->justPickedCard = "";
 
@@ -425,13 +424,10 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
 void DraftHandler::captureDraft()
 {
     justPickedCard = "";
-    if(!drafting || !capturing)
-    {
-        capturing = false;
-        return;
-    }
 
-    if(leavingArena)
+    if(leavingArena || !drafting ||
+        !screenFound() || cardsDownloading!=0 ||
+        lightForgeTiers.empty() || hearthArenaCodes.empty())
     {
         leavingArena = false;
         capturing = false;
@@ -514,7 +510,7 @@ void DraftHandler::buildBestMatchesMaps()
 void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
     double bestMatch = numCaptured;
-    int bestIndex;
+    int bestIndex = 0;
     QString bestCode;
 
     for(int i=0; i<3; i++)
