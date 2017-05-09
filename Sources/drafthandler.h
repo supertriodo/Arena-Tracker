@@ -14,7 +14,7 @@
 #define CAPTUREDRAFT_LOOP_TIME          200
 #define CAPTUREDRAFT_LOOP_FLANN_TIME    200
 
-#define CARD_ACCEPTED_THRESHOLD             0.0035
+#define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
 
 
@@ -82,7 +82,7 @@ private:
     cv::MatND getHist(const QString &code);
     cv::MatND getHist(cv::Mat &srcBase);
     void initCodesAndHistMaps(QString &hero);
-    void resetTab();
+    void resetTab(bool alreadyDrafting);
     void clearLists(bool keepDraftedCards);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
@@ -90,7 +90,6 @@ private:
     void updateBoxTitle(double cardRating=0);
     bool screenFound();
     ScreenDetection findScreenRects();
-    void removeTabHero();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
     void highlightScore(QLabel *label, DraftMethod draftMethod);
     void deleteDraftScoreWindow();

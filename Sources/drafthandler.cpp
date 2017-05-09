@@ -219,13 +219,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &code)
 }
 
 
-void DraftHandler::removeTabHero()
-{
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabHero));
-}
-
-
-void DraftHandler::resetTab()
+void DraftHandler::resetTab(bool alreadyDrafting)
 {
     for(int i=0; i<3; i++)
     {
@@ -236,23 +230,25 @@ void DraftHandler::resetTab()
     }
 
     ui->textBrowserDraft->setText("");
-    ui->groupBoxDraft->setTitle("");
+    updateBoxTitle();
 
-    //SizePreDraft
-    MainWindow *mainWindow = ((MainWindow*)parent());
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("size", mainWindow->size());
+    if(!alreadyDrafting)
+    {
+        //SizePreDraft
+        MainWindow *mainWindow = ((MainWindow*)parent());
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        settings.setValue("size", mainWindow->size());
 
-    //Show Tab
-    mainWindow->resize(mainWindow->width() + 30, mainWindow->height());
-    removeTabHero();
-    ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/arena.png"), "");
+        //Show Tab
+        mainWindow->resize(mainWindow->width() + 30, mainWindow->height());
+        ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/arena.png"), "");
+        mainWindow->calculateMinimumWidth();
+
+        //SizeDraft
+        QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
+        mainWindow->resize(sizeDraft);
+    }
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
-    mainWindow->calculateMinimumWidth();
-
-    //SizeDraft
-    QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
-    mainWindow->resize(sizeDraft);
 }
 
 
@@ -301,6 +297,15 @@ void DraftHandler::leaveArena()
         if(capturing)
         {
             this->leavingArena = true;
+            this->numCaptured = 0;
+
+            //Clear guessed cards
+            for(int i=0; i<3; i++)
+            {
+                cardDetected[i] = false;
+                draftCardMaps[i].clear();
+                bestMatchesMaps[i].clear();
+            }
         }
         this->draftScoreWindow->hide();
     }
@@ -326,6 +331,7 @@ void DraftHandler::initDraftedCards(QList<DeckCard> deckCardList)
 
 void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 {
+    bool alreadyDrafting = drafting;
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
     {
@@ -342,7 +348,6 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     //Set updateTime in log / Hide card Window
     emit draftStarted();
 
-    resetTab();
     clearLists(true);
 
     this->arenaHero = hero;
@@ -352,14 +357,12 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     initCodesAndHistMaps(hero);
     initDraftedCards(deckCardList);
-    updateBoxTitle();
+    resetTab(alreadyDrafting);
 }
 
 
 void DraftHandler::endDraft()
 {
-    removeTabHero();
-
     if(!drafting)    return;
 
     emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());

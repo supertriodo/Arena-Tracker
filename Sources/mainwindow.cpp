@@ -1496,7 +1496,6 @@ void MainWindow::resizeChecks(QSize size)
         updateTabWidgetsTheme(true);
         resizeTopButtons(right, top);
         ui->resizeButton->move(right-24, bottom-24);
-        calculateMinimumWidth();
 
         if(otherWindow == NULL) spreadCorrectTamCard();
     }
@@ -1766,7 +1765,8 @@ void MainWindow::calculateMinimumWidth()
 {
     if(isMainWindow)
     {
-        int minWidth = ui->tabWidget->tabBar()->width() + 19;
+        //El menor ancho de una tab es 38 y el menor de los botones 19;
+        int minWidth = ui->tabWidget->count()*38 + 19;
         this->setMinimumWidth(minWidth);
     }
 }
@@ -3101,7 +3101,7 @@ void MainWindow::createDebugPack()
 //Support import web github
 //Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
 //Mejorar reconocimiento drafting con dropdown lists.
-//Salir arena mientras esta reconociendo, reiniciar listas.
+//Split window + draft + log
 
 
 //REPLAY BUGS
