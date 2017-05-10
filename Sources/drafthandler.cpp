@@ -247,6 +247,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         //SizeDraft
         QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
         mainWindow->resize(sizeDraft);
+        mainWindow->resizeTabWidgets();
     }
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
 }

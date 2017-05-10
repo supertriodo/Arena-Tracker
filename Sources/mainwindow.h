@@ -18,12 +18,12 @@
 #include <QMainWindow>
 #include <QJsonObject>
 
-#define DIVIDE_TABS_H 500
-#define DIVIDE_TABS_H2 750
-#define DIVIDE_TABS_V 700
+#define DIVIDE_TABS_H 444
+#define DIVIDE_TABS_H2 666
+#define DIVIDE_TABS_V 500
 #define BIG_BUTTONS_H 48
+#define SMALL_BUTTONS_H 19
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
-//#define LIGHTFORGE_VERSION_URL "https://raw.githubusercontent.com/rembound/Arena-Helper/master/data/version.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
@@ -89,6 +89,7 @@ private:
 public:
     void calculateMinimumWidth();
     LoadingScreenState getLoadingScreen();
+    void resizeTabWidgets();
 
 private:
     void createLogLoader();

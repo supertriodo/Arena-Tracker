@@ -117,9 +117,7 @@ void MainWindow::createSecondaryWindow()
     calculateDeckWindowMinimumWidth();
     deckHandler->setTransparency(Transparent);
     updateMainUITheme();
-
-    this->windowsFormation = None;
-    this->resizeChecks(this->size());
+    this->resizeTabWidgets();
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
@@ -134,9 +132,7 @@ void MainWindow::destroySecondaryWindow()
     deckHandler->setTransparency(this->transparency);
 
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
-    this->windowsFormation = None;
-    this->resize(this->width() + 30, this->height());
-    this->resize(this->width() - 30, this->height());
+    this->resizeTabWidgets();
 }
 
 
@@ -1493,7 +1489,6 @@ void MainWindow::resizeChecks(QSize size)
         int left = widget->pos().x();
         int right = left + widget->width();
 
-        updateTabWidgetsTheme(true);
         resizeTopButtons(right, top);
         ui->resizeButton->move(right-24, bottom-24);
 
@@ -1521,7 +1516,7 @@ void MainWindow::resizeTopButtons(int right, int top)
     bool smallButtons = this->width() < limitWidth;
     if(smallButtons)
     {
-        buttonsWidth = 19;
+        buttonsWidth = SMALL_BUTTONS_H;
         ui->closeButton->move(right-buttonsWidth, top);
         ui->minimizeButton->move(right-buttonsWidth, top+buttonsWidth);
     }
@@ -1585,6 +1580,14 @@ void MainWindow::resizeTabWidgets(QSize newSize)
     }
 
     if(newWindowsFormation != windowsFormation) resizeTabWidgets(newWindowsFormation);
+    else                                        updateTabWidgetsTheme(true);
+}
+
+
+//Fuerza los checks sin cambiar la formacion
+void MainWindow::resizeTabWidgets()
+{
+    resizeTabWidgets(windowsFormation);
 }
 
 
@@ -1648,7 +1651,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
+                if(draftHandler->isDrafting())  ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
+                else                            moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
             }
@@ -1663,7 +1667,8 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
                 moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
                 moveTabTo(ui->tabPlan, ui->tabWidget);
                 moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
+                if(draftHandler->isDrafting())  ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
+                else                            moveTabTo(ui->tabLog, ui->tabWidget);
                 ui->tabWidget->show();
                 ui->tabWidgetH2->show();
                 ui->tabWidgetH3->show();
@@ -1710,6 +1715,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
     }
     ui->tabWidget->setCurrentWidget(currentTab);
 
+    updateTabWidgetsTheme(true);
     this->calculateMinimumWidth();
 
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
@@ -1766,7 +1772,7 @@ void MainWindow::calculateMinimumWidth()
     if(isMainWindow)
     {
         //El menor ancho de una tab es 38 y el menor de los botones 19;
-        int minWidth = ui->tabWidget->count()*38 + 19;
+        int minWidth = ui->tabWidget->count()*38 + SMALL_BUTTONS_H;
         this->setMinimumWidth(minWidth);
     }
 }
@@ -2598,10 +2604,16 @@ void MainWindow::spreadTheme()
 
 void MainWindow::updateTabWidgetsTheme(bool resizing)
 {
-    ui->tabWidget->setTheme(this->theme, "left", width() - BIG_BUTTONS_H, resizing);
-    ui->tabWidgetH2->setTheme(this->theme, "center", width() - BIG_BUTTONS_H, resizing);
-    ui->tabWidgetH3->setTheme(this->theme, "center", width() - BIG_BUTTONS_H, resizing);
-    ui->tabWidgetV1->setTheme(this->theme, "left", width() - BIG_BUTTONS_H, resizing);
+    int maxWidthH1 = ui->tabWidget->width();
+    maxWidthH1 -= (windowsFormation == H1 || windowsFormation == V2)?SMALL_BUTTONS_H:2;
+    ui->tabWidget->setTheme(this->theme, "left", maxWidthH1, resizing);
+
+    if(!resizing)
+    {
+        ui->tabWidgetH2->setTheme(this->theme, "center", ui->tabWidgetH2->width(), resizing);
+        ui->tabWidgetH3->setTheme(this->theme, "center", ui->tabWidgetH3->width(), resizing);
+        ui->tabWidgetV1->setTheme(this->theme, "left", ui->tabWidgetV1->width(), resizing);
+    }
 }
 
 
@@ -3099,9 +3111,10 @@ void MainWindow::createDebugPack()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Support import web github
-//Nuevo icono drafting, iconos mas pequenos, reducir ancho minimo.
-//Mejorar reconocimiento drafting con dropdown lists.
-//Split window + draft + log
+//Mensajes de capture
+//Piromanther
+//tip HA a la izq
+
 
 
 //REPLAY BUGS

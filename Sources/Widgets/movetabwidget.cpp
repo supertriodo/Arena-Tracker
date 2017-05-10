@@ -17,7 +17,6 @@ void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment, int maxWidth,
     int tabSize = std::max(24, std::min(32, maxWidth/std::max(1, this->count()) - 14));
 
     if(resizing && (tabSize == this->tabSize)) return;
-    this->tabSize = tabSize;
 
     this->setStyleSheet(
         "QTabBar::tab:selected {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
@@ -30,7 +29,8 @@ void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment, int maxWidth,
             "; height: 24px; width: " + QString::number(tabSize) + "px}"
     );
 
-    if(resizing)    tabBar()->setIconSize(QSize(tabSize, tabSize));
+    if(tabSize != this->tabSize)    tabBar()->setIconSize(QSize(tabSize, tabSize));
+    this->tabSize = tabSize;
 }
 
 
