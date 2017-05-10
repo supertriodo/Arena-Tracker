@@ -3112,9 +3112,6 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Support import web github
 //Mensajes de capture
-//Piromanther
-//tip HA a la izq
-
 
 
 //REPLAY BUGS
