@@ -44,45 +44,8 @@ The first time you run Arena Tracker you will be asked for:
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
 
-## FAQ
-* Does it work with Hearthstone in fullscreen?
-  * (Windows) You need to play with Hearthstone in windows mode.
-  * (Linux) In Linux Mint I start Hearthstone in windows mode and when it's loaded I use ctrl-enter to enter fullscreen, this way Arena Tracker keep on top of Hearthstone while Hearthstone is in fullscreen.
-  * (Mac) You need to play with Hearthstone in windows mode.
-* I have a drafting already started but Arena Tracker doesn't show HearthArena scores.
-  * When you start a new arena, Arena Tracker automatically helps you with the drafting, but if you already were in the middle of one when openning Arena Tracker you will have to tell the app to force a draft. This is done with the top left button "Force Draft" of the config tab.
-* When drafting: What do the numbers in the brackets mean? The numbers next to the actual rating of the card.
-  * In brackets you can find the tier score, It's the basic score of the card without any modification by sinergies or curve or other things. It represent the score of the card as if it would be the first pick of the arena run.
-* How can I import a deck from hearthstone to Arena Tracker?
-  * [There are 3 ways.](https://github.com/supertriodo/Arena-Tracker/issues/12)
-* What does it mean when text cards are shown in yellow/orange/purple?
-  * Minions are shown in white.
-  * Spells are shown in yellow.
-  * Weapons are shown in orange.
-  * Cards that are temporarily part of the deck are shown in purple.
-* What does it mean when cards have a colored background?
-  * It means they are class cards.
-* How do I reset the app so I can set the config info again? Or move the app to its initial position and size.
-  * With the app selected press ctrl+r
-* How do I recreate the shortcut on Linux?
-  * With the app selected press ctrl+s
-* How can I back-up my data.
-  * Your arena stats are kept online in Arena Mastery. The only data kept locally is your constructed deck collection, they are stored in USER/Arena Tracker/ArenaTrackerDecks.json
-* I don't want an Arena Tracker dir messing around in my HOME dir!
-  * If you don't want Arena Tracker dir in your HOME dir, you can place it wherever you want and move Arena Tracker binary to the same place and Arena Tracker dir won't be created in your HOME anymore.
-* Sometimes ArenaTracker doesn't stay on top of Hearthstone.
-  * I have seen this behaviour in windows. It seems to be related to a QT/Windows bug. Try to restart ArenaTracker.
-* I setup the app but it doesn't work/ it didn't upload my arena game/ it didn't start drafting.
-  * This usually means Hearthstone is not writting in its log.
-  * Did you forget to restart Hearthstone after the initial config of Arena Tracker?
-  * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Reset the app (ctrl+r) and log.config will be recreated).
-  * (Only Linux) Arena Tracker is supposed to be run as a normal user (not root). If you run it as sudo you should remove ~/.config/Arena Tracker/Arena Tracker.conf if it belongs to root, and start Arena Tracker again and set the paths so the config file is recreated with your user as owner.
-* Drafting doesn't read next card.
-  * Once you start an arena draft you cannot move hearthstone window until the end of the draft.
-  * After picking a card move the mouse to the zone below or above the card so the next one can be read.
-  * If you use other trackers they can conflict configuring [log.config](https://github.com/supertriodo/Arena-Tracker/issues/8) (Reset the app (ctrl+r) and log.config will be recreated).
-* I can't browse hidden .dirs when looking for log.config/output_log.txt in the file browser.
-  * The file browser shown is OS dependent. In Linux Mint for instance you can use ctrl-h to show hidden dirs/files.
+## [FAQ](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/faq.html)
+
 
 
 ## Build from source (Windows/Linux/Mac) (Only advanced users)
