@@ -1859,7 +1859,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
     {
         if(file == "DraftHandler")
         {
-            if(logLine.contains("New codes"))
+            if(logLine.contains("New codes") || logLine.contains("Pick card"))
             {
                 copyLogLine = true;
             }
@@ -1868,10 +1868,6 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
                 copyLogLine = true;
                 endDraftLog = true;
             }
-        }
-        else if(file == "GameWatcher" && logLine.contains("Pick card"))
-        {
-            copyLogLine = true;
         }
 
         if(copyLogLine)
@@ -1916,15 +1912,18 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
     QString logLine = "";
     QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
 
-    if(line[0]==QChar('\n'))
+    while(line.length() > 0 && line[0]==QChar('\n'))
     {
         line.remove(0, 1);
         logLine += '\n';
     }
 
-    logLine += timeStamp + " - " + file;
-    if(numLine > 0) logLine += "(" + QString::number(numLine) + ")";
-    logLine += ": " + line;
+    if(!line.isEmpty())
+    {
+        logLine += timeStamp + " - " + file;
+        if(numLine > 0) logLine += "(" + QString::number(numLine) + ")";
+        logLine += ": " + line;
+    }
 
     qDebug().noquote() << logLine;
 
@@ -3106,11 +3105,11 @@ void MainWindow::createDebugPack()
 
 //TODO
 //Play around cards en plan tab.
-//Enlaces al gitbook en cada tab.
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Support import web github
+//New stats system.
 //Mensajes de capture
 
 

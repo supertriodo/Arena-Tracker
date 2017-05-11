@@ -473,9 +473,6 @@ bool DraftHandler::areCardsDetected()
         }
     }
 
-    //Borrar
-    qDebug()<<"Captured: "<<numCaptured<<endl;
-
     return (cardDetected[0] && cardDetected[1] && cardDetected[2]) || numCaptured > 30;
 }
 
@@ -501,12 +498,6 @@ void DraftHandler::buildBestMatchesMaps()
             double match = draftCardMaps[i][code].getSumQualityMatches();
             bestMatchesMaps[i].insertMulti(match, code);
         }
-
-        //Borrar
-        double match = bestMatchesMaps[i].firstKey();
-        QString code = bestMatchesMaps[i].first();
-        QString name = draftCardMaps[i][code].getName();
-        qDebug()<<code<<name<<match/numCaptured;
     }
 }
 
@@ -530,24 +521,35 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
     }
 
     CardRarity bestRarity = draftCardMaps[bestIndex][bestCode].getRarity();
-    qDebug()<<"Best code:"<<bestCode<<bestMatch/numCaptured<<bestIndex;
+    emit pDebug("");
 
     for(int i=0; i<3; i++)
     {
-        for(QString code: bestMatchesMaps[i].values())
+        QList<double> bestMatchesList = bestMatchesMaps[i].keys();
+        QList<QString> bestCodesList = bestMatchesMaps[i].values();
+        for(int j=0; j<bestMatchesList.count(); j++)
         {
+            double match = bestMatchesList[j];
+            QString code = bestCodesList[j];
+            QString name = draftCardMaps[i][code].getName();
+            QString cardInfo = code + " " + name + " " +
+                    QString::number(((int)(match/std::max(1,numCaptured)*1000))/1000.0);
             if(draftCardMaps[i][code].getRarity() == bestRarity)
             {
                 bestCards[i] = draftCardMaps[i][code];
-                qDebug()<<"Choose" << code << "same rarity.";
+                emit pDebug("Choose: " + cardInfo);
                 break;
             }
             else
             {
-                qDebug()<<"Skip" << code << "different rarity.";
+                emit pDebug("Skip: " + cardInfo + " (Different rarity)");
             }
         }
     }
+
+    emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+                bestCards[0].getCode() + "/" + bestCards[1].getCode() +
+                "/" + bestCards[2].getCode() + " New codes.");
 }
 
 
@@ -597,7 +599,7 @@ void DraftHandler::pickCard(QString code)
     ui->textBrowserDraft->setText("");
     draftScoreWindow->hideScores();
 
-    emit pDebug("Card picked: (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
+    emit pDebug("Pick card: " + code);
     emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
     emit newDeckCard(code);
     this->justPickedCard = code;
@@ -778,7 +780,8 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         this->numCaptured++;
     }
 
-    //Borrar
+
+#ifdef QT_DEBUG
     for(int i=0; i<3; i++)
     {
         qDebug()<<endl;
@@ -790,6 +793,8 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
                       ((int)(card.getSumQualityMatches()/std::max(1,numCaptured)*1000))/1000.0;
         }
     }
+    qDebug()<<"Captured: "<<numCaptured<<endl;
+#endif
 }
 
 
