@@ -150,15 +150,11 @@ private:
     void removeHSCards();
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void dumpOnFile(QByteArray &data, QString path);
-    void moveOldLinuxDataDir();//Temporal
     void askLinuxShortcut();
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
-//    QString getLightForgeVersionFromJson(QByteArray &jsonData);
-//    void checkLightForgeVersion(QString lightForgeJsonVersion);
     void downloadLightForgeJson();
-//    void initLightForgeJson();
     void spreadDraftMethod(DraftMethod draftMethod);
 
 //Override events

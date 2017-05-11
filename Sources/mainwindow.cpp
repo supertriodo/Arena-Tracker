@@ -281,12 +281,6 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 createCardsJsonMap(jsonData);
             }
         }
-//        //Light Forge version
-//        else if(endUrl == "version.json")
-//        {
-//            QByteArray jsonData = reply->readAll();
-//            checkLightForgeVersion(getLightForgeVersionFromJson(jsonData));
-//        }
         //Light Forge json
         else if(fullUrl == LIGHTFORGE_JSON_URL)
         {
@@ -353,48 +347,11 @@ void MainWindow::initCardsJson()
 }
 
 
-//QString MainWindow::getLightForgeVersionFromJson(QByteArray &jsonData)
-//{
-//    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-//    return jsonDoc.object().value("tierlist").toString();
-//}
-
-
-//void MainWindow::checkLightForgeVersion(QString lightForgeJsonVersion)
-//{
-//    QSettings settings("Arena Tracker", "Arena Tracker");
-//    QString storedLightForgeJsonVersion = settings.value("lightForgeJsonVersion", "").toString();
-//    QFile lightForgeJsonFile(Utility::extraPath() + "/lightForge.json");
-//    emit pDebug("Extra: Json LightForge --> Latest version: " + lightForgeJsonVersion);
-//    emit pDebug("Extra: Json LightForge --> Stored version: " + storedLightForgeJsonVersion);
-
-//    //Need download
-//    if(lightForgeJsonVersion != storedLightForgeJsonVersion || !lightForgeJsonFile.exists())
-//    {
-//        settings.setValue("lightForgeJsonVersion", lightForgeJsonVersion);
-//        downloadLightForgeJson();
-//    }
-
-//    //Use local lightForge.json
-//    else
-//    {
-//        emit pDebug("Extra: Json LightForge --> Use local lightForge.json");
-//    }
-//}
-
-
 void MainWindow::downloadLightForgeJson()
 {
     networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
     emit pDebug("Extra: Json LightForge --> Download from: " + QString(LIGHTFORGE_JSON_URL));
 }
-
-
-//void MainWindow::initLightForgeJson()
-//{
-//    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_VERSION_URL)));
-//    emit pDebug("Extra: Json LightForge --> Get version from: " + QString(LIGHTFORGE_VERSION_URL));
-//}
 
 
 void MainWindow::createNetworkManager()
@@ -2056,12 +2013,8 @@ bool MainWindow::createDir(QString pathDir)
 
 void MainWindow::createDataDir()
 {
-#ifdef Q_OS_LINUX
-    moveOldLinuxDataDir();//Temporal
-#endif
-
     createDir(Utility::dataPath());
-    removeHSCards();
+//    removeHSCards();
     createDir(Utility::hscardsPath());
     createDir(Utility::gameslogPath());
     createDir(Utility::extraPath());
@@ -2097,24 +2050,6 @@ void MainWindow::removeHSCards()
         QDir cardsDir = QDir(Utility::hscardsPath());
         cardsDir.removeRecursively();
         emit pDebug(Utility::hscardsPath() + " removed.");
-    }
-}
-
-
-//Temporal
-void MainWindow::moveOldLinuxDataDir()
-{
-    QDir dir(QDir::homePath() + "/Arena Tracker");
-    if(dir.exists())
-    {
-        if(dir.rename(dir.absolutePath(), QDir::homePath() + "/.local/share" + "/Arena Tracker"))
-        {
-            pDebug("Data dir moved to ~/.local/share/Arena Tracker");
-        }
-        else
-        {
-            pDebug("ERROR: Data dir move to ~/.local/share/Arena Tracker failed.", Error);
-        }
     }
 }
 
