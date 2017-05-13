@@ -5,9 +5,10 @@
 #include <QHttpMultiPart>
 #include <QtWidgets>
 
-ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extended *ui) : QObject(parent)
+ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, Ui::Extended *ui) : QObject(parent)
 {
     this->webUploader = NULL;
+    this->trackobotUploader = trackobotUploader;
     this->deckHandler = deckHandler;
     this->ui = ui;
     this->transparency = Opaque;
@@ -33,12 +34,11 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-    setWebButtonTooltip();
 
     connect(ui->updateButton, SIGNAL(clicked()),
             this, SLOT(refresh()));
     connect(ui->webButton, SIGNAL(clicked()),
-            this, SLOT(openAMWeb()));
+            this, SLOT(openTBProfile()));
     connect(ui->replayButton, SIGNAL(clicked()),
             this, SLOT(replayLog()));
     connect(ui->donateButton, SIGNAL(clicked()),
@@ -58,13 +58,6 @@ void ArenaHandler::completeUI()
             this, SLOT(hideRewards()));
     connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
             this, SLOT(uploadRewards()));
-}
-
-
-void ArenaHandler::setWebButtonTooltip()
-{
-    QString month = QDate::currentDate().toString("MMMM");
-    ui->webButton->setToolTip("Show " + month + " arenas in Arena Mastery.");
 }
 
 
@@ -672,12 +665,9 @@ void ArenaHandler::openDonateWeb()
 }
 
 
-void ArenaHandler::openAMWeb()
+void ArenaHandler::openTBProfile()
 {
-    QDate date = QDate::currentDate();
-    QDateTime dateTime(date.addDays(1 - date.day()));
-    qint64 epoch = dateTime.toMSecsSinceEpoch()/1000;
-    QDesktopServices::openUrl(QUrl(WEB_URL + "stats.php?date=" + QString::number(epoch)));
+    trackobotUploader->openTBProfile();
 }
 
 

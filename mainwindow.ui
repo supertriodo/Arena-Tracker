@@ -132,7 +132,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Open web Arena Mastery.</string>
+               <string>Open Track-o-bot profile.</string>
               </property>
               <property name="text">
                <string/>

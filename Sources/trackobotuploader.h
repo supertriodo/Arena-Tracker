@@ -32,6 +32,7 @@ private:
 
 public:
     bool isConnected();
+    void openTBProfile();
 
 signals:
     void pLog(QString line);

@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initCardsJson();
     downloadLightForgeJson();
 
+    createTrackobotUploader();
     createCardDownloader();
     createPlanHandler();
     createEnemyHandHandler();//-->PlanHandler
@@ -51,12 +52,11 @@ MainWindow::MainWindow(QWidget *parent) :
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->DeckHandler
     createSecretsHandler();//-->EnemyHandHandler
-    createArenaHandler();//-->DeckHandler
+    createArenaHandler();//-->DeckHandler -->TrackobotUploader
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
     createSecretsWindow();//-->PlanHandler -->SecretsHandler
-    createTrackobotUploader();
 
     readSettings();
     checkGamesLogDir();
@@ -413,7 +413,7 @@ void MainWindow::createSecretsHandler()
 
 void MainWindow::createArenaHandler()
 {
-    arenaHandler = new ArenaHandler(this, deckHandler, ui);
+    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, ui);
     connect(arenaHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

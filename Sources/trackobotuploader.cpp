@@ -43,6 +43,11 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("New user settings --> Download failed.");
         }
+        else if(noParamsUrl == TRACKOBOT_PROFILE_URL)
+        {
+            emit pDebug("Getting profile url failed.");
+            tryConnect();
+        }
         else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results failed.");
@@ -61,6 +66,12 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::dataPath() + "/TrackobotUser.json");
             loadUserSettings();
+        }
+        else if(noParamsUrl == TRACKOBOT_PROFILE_URL)
+        {
+            QString profileUrl = QJsonDocument::fromJson(reply->readAll()).object().value("url").toString();
+            emit pDebug("Getting profile url success. Opening: " + profileUrl);
+            QDesktopServices::openUrl(QUrl(profileUrl));
         }
         else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
         {
@@ -125,6 +136,14 @@ void TrackobotUploader::tryConnect()
 }
 
 
+void TrackobotUploader::openTBProfile()
+{
+    QNetworkRequest request(QUrl(TRACKOBOT_PROFILE_URL + QString("?username=") + this->username +
+                                 QString("&token=") + this->token));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    networkManager->post(request, "");
+    emit pDebug("Getting profile url...");
+}
 
 
 

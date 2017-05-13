@@ -6,6 +6,7 @@
 #include "webuploader.h"
 #include "deckhandler.h"
 #include "utility.h"
+#include "trackobotuploader.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QTreeWidgetItem>
@@ -14,12 +15,13 @@ class ArenaHandler : public QObject
 {
     Q_OBJECT
 public:
-    ArenaHandler(QObject *parent, DeckHandler *deckHandler, Ui::Extended *ui);
+    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, Ui::Extended *ui);
     ~ArenaHandler();
 
 //Variables
 private:
     WebUploader *webUploader;
+    TrackobotUploader *trackobotUploader;
     DeckHandler *deckHandler;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
@@ -50,7 +52,6 @@ private:
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
     QString compressLog(QString logFileName);
-    void setWebButtonTooltip();
 
 public:
     void setWebUploader(WebUploader *webUploader);
@@ -93,9 +94,9 @@ private slots:
     void openDonateWeb();
     void hideRewards();
     void uploadRewards();
-    void openAMWeb();
     void changedRow(QTreeWidgetItem *current);
     void replayLog();
+    void openTBProfile();
 };
 
 #endif // ARENAHANDLER_H
