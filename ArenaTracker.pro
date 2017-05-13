@@ -56,7 +56,8 @@ SOURCES += Sources/main.cpp\
     Sources/Utils/qcompressor.cpp \
     Sources/Widgets/bombwindow.cpp \
     Sources/Cards/rngcard.cpp \
-    Sources/Widgets/secretswindow.cpp
+    Sources/Widgets/secretswindow.cpp \
+    Sources/trackobotuploader.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -99,7 +100,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Utils/qcompressor.h \
     Sources/Widgets/bombwindow.h \
     Sources/Cards/rngcard.h \
-    Sources/Widgets/secretswindow.h
+    Sources/Widgets/secretswindow.h \
+    Sources/trackobotuploader.h
 
 FORMS    += mainwindow.ui
 

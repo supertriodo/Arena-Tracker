@@ -473,7 +473,7 @@ bool DraftHandler::areCardsDetected()
         }
     }
 
-    return (cardDetected[0] && cardDetected[1] && cardDetected[2]) || numCaptured > 30;
+    return (cardDetected[0] && cardDetected[1] && cardDetected[2]);
 }
 
 

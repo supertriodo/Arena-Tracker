@@ -13,6 +13,7 @@
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "drafthandler.h"
+#include "trackobotuploader.h"
 #include "Widgets/cardwindow.h"
 #include "Widgets/secretswindow.h"
 #include <QMainWindow>
@@ -63,6 +64,7 @@ private:
     DraftHandler * draftHandler;
     CardWindow *cardWindow;
     SecretsWindow *secretsWindow;
+    TrackobotUploader *trackobotUploader;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     WindowsFormation windowsFormation;
@@ -106,6 +108,7 @@ private:
     void createDraftHandler();
     void createWebUploader();
     void createVersionChecker();
+    void createTrackobotUploader();
     void readSettings();
     void writeSettings();
     void completeUI();
@@ -149,7 +152,6 @@ private:
     void initCardsJson();
     void removeHSCards();
     void checkCardsJsonVersion(QString cardsJsonVersion);
-    void dumpOnFile(QByteArray &data, QString path);
     void askLinuxShortcut();
     void createLinuxShortcut();
     void createDebugPack();

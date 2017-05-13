@@ -158,6 +158,7 @@ public:
     static bool isLeftOfScreen(QPoint center);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);
+    static void dumpOnFile(QByteArray &data, QString path);
 };
 
 #endif // UTILITY_H

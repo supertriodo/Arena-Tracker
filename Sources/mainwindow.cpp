@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     deckHandler = NULL;
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
+    trackobotUploader = NULL;
 
     createNetworkManager();
     createDataDir();
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
     createSecretsWindow();//-->PlanHandler -->SecretsHandler
+    createTrackobotUploader();
 
     readSettings();
     checkGamesLogDir();
@@ -80,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     deckHandler = NULL;
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
+    trackobotUploader = NULL;
     isMainWindow = false;
     mouseInApp = false;
     copyGameLogs = false;
@@ -94,18 +97,19 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
 
 MainWindow::~MainWindow()
 {
-    if(networkManager != NULL)  delete networkManager;
-    if(logLoader != NULL)       delete logLoader;
-    if(gameWatcher != NULL)     delete gameWatcher;
-    if(arenaHandler != NULL)    delete arenaHandler;
-    if(webUploader != NULL)     delete webUploader;
-    if(cardDownloader != NULL)  delete cardDownloader;
-    if(enemyDeckHandler != NULL) delete enemyDeckHandler;
-    if(enemyHandHandler != NULL) delete enemyHandHandler;
-    if(draftHandler != NULL)    delete draftHandler;
-    if(deckHandler != NULL)     delete deckHandler;
-    if(secretsHandler != NULL)  delete secretsHandler;
-    if(ui != NULL)              delete ui;
+    if(networkManager != NULL)      delete networkManager;
+    if(logLoader != NULL)           delete logLoader;
+    if(gameWatcher != NULL)         delete gameWatcher;
+    if(arenaHandler != NULL)        delete arenaHandler;
+    if(webUploader != NULL)         delete webUploader;
+    if(cardDownloader != NULL)      delete cardDownloader;
+    if(enemyDeckHandler != NULL)    delete enemyDeckHandler;
+    if(enemyHandHandler != NULL)    delete enemyHandHandler;
+    if(draftHandler != NULL)        delete draftHandler;
+    if(deckHandler != NULL)         delete deckHandler;
+    if(secretsHandler != NULL)      delete secretsHandler;
+    if(trackobotUploader != NULL)   delete trackobotUploader;
+    if(ui != NULL)                  delete ui;
     closeLogFile();
 }
 
@@ -238,20 +242,6 @@ void MainWindow::createCardsJsonMap(QByteArray &jsonData)
 }
 
 
-void MainWindow::dumpOnFile(QByteArray &data, QString path)
-{
-    QFile file(path);
-    if(!file.open(QIODevice::WriteOnly))
-    {
-        emit pDebug("ERROR: Failed to create " + path);
-        return;
-    }
-
-    file.write(data);
-    file.close();
-}
-
-
 void MainWindow::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -277,7 +267,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             {
                 emit pDebug("Extra: Json Cards --> Download Success.");
                 QByteArray jsonData = reply->readAll();
-                dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
+                Utility::dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
                 createCardsJsonMap(jsonData);
             }
         }
@@ -286,14 +276,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("Extra: Json LightForge --> Download Success.");
             QByteArray jsonData = reply->readAll();
-            dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
         }
         //Extra files
         else
         {
             pDebug("Extra: " + endUrl + " --> Download Success.");
             QByteArray data = reply->readAll();
-            dumpOnFile(data, Utility::extraPath() + "/" + endUrl);
+            Utility::dumpOnFile(data, Utility::extraPath() + "/" + endUrl);
         }
     }
 }
@@ -368,6 +358,16 @@ void MainWindow::createVersionChecker()
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createTrackobotUploader()
+{
+    trackobotUploader = new TrackobotUploader(this);
+    connect(trackobotUploader, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
@@ -3045,7 +3045,6 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Support import web github
 //New stats system.
-//Mensajes de capture
 
 
 //REPLAY BUGS

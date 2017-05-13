@@ -473,3 +473,18 @@ bool Utility::isLeftOfScreen(QPoint center)
 
     return true;
 }
+
+
+void Utility::dumpOnFile(QByteArray &data, QString path)
+{
+    QFile file(path);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        qDebug()<<"ERROR: Failed to create" << path;
+        return;
+    }
+
+    file.write(data);
+    file.close();
+}
+

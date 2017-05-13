@@ -1,7 +1,6 @@
 #include "webuploader.h"
 #include "utility.h"
 #include <QNetworkCookieJar>
-#include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtWidgets>
 
