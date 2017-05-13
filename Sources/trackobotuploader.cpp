@@ -32,22 +32,44 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 
+    QString fullUrl = reply->url().toString();
+    QString noParamsUrl = fullUrl.split("?").first();
+
     if(reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
-//        networkManager->get(QNetworkRequest(reply->url()));
-    }
-    else
-    {
-        QString fullUrl = reply->url().toString();
-        QString endUrl = fullUrl.split("/").last();
+        emit pDebug(reply->url().toString() + " --> Failed.");
 
         if(fullUrl == TRACKOBOT_NEWUSER_URL)
         {
-            emit pDebug("New user settings --> Download Success.");
+            emit pDebug("New user settings --> Download failed.");
+        }
+        else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
+        {
+            emit pDebug("Upload Results failed.");
+            tryConnect();
+        }
+        else if(noParamsUrl == TRACKOBOT_LOGIN_URL)
+        {
+            emit pDebug("Login failed.");
+        }
+    }
+    else
+    {
+        if(fullUrl == TRACKOBOT_NEWUSER_URL)
+        {
+            emit pDebug("New user settings --> Download success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::dataPath() + "/TrackobotUser.json");
             loadUserSettings();
+        }
+        else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
+        {
+            emit pDebug("Upload Results success.");
+        }
+        else if(noParamsUrl == TRACKOBOT_LOGIN_URL)
+        {
+            this->connected = true;
+            emit pDebug("Login success.");
         }
     }
 }
@@ -87,10 +109,20 @@ void TrackobotUploader::loadUserSettings()
     this->username = jsonUserObject.value("username").toString();
     this->token = jsonUserObject.value("password").toString();
     emit pDebug("User settings loaded.");
+    tryConnect();
 }
 
 
+void TrackobotUploader::tryConnect()
+{
+    delete networkManager->cookieJar();
+    networkManager->setCookieJar(new QNetworkCookieJar());
+    networkManager->get(QNetworkRequest(QUrl(TRACKOBOT_LOGIN_URL + QString("?username=") + this->username +
+                                             QString("&token=") + this->token)));
 
+    this->connected = false;
+    emit pDebug("Checking connection...");
+}
 
 
 

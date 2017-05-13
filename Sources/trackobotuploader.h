@@ -7,6 +7,9 @@
 #include <QNetworkRequest>
 
 #define TRACKOBOT_NEWUSER_URL "https://trackobot.com/users.json"
+#define TRACKOBOT_LOGIN_URL "https://trackobot.com/profile/history.json"
+#define TRACKOBOT_RESULTS_URL "https://trackobot.com/profile/results.json"
+#define TRACKOBOT_PROFILE_URL "https://trackobot.com/one_time_auth.json"
 
 class TrackobotUploader : public QObject
 {
@@ -25,6 +28,7 @@ private:
 //Metodos
 private:
     void loadUserSettings();
+    void tryConnect();
 
 public:
     bool isConnected();
