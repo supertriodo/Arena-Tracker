@@ -90,6 +90,7 @@
 #define KABAL_CHEMIST "CFM_619"
 #define MIMIC_POD "UNG_060"
 #define THISTLE_TEA "OG_073"
+#define BITTERTIDE_HYDRA "UNG_087"
 
 
 using namespace cv;

@@ -667,6 +667,7 @@ void ArenaHandler::openDonateWeb()
 
 void ArenaHandler::openTBProfile()
 {
+    if(trackobotUploader == NULL)   return;
     trackobotUploader->openTBProfile();
 }
 

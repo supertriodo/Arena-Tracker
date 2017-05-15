@@ -2802,6 +2802,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
 
 
 //Card exceptions
+//Esbirros que no pueden poner addons ni en otros esbirros ni en heroes
 bool PlanHandler::isAddonCommonValid(QString code)
 {
     if(code == IMP_GANG_BOSS)           return false;
@@ -2821,6 +2822,7 @@ bool PlanHandler::isAddonCommonValid(QString code)
 }
 
 
+//Esbirros que no pueden poner addons en heroes
 bool PlanHandler::isAddonHeroValid(QString code)
 {
     if(code == ACIDMAW)                 return false;
@@ -2829,6 +2831,7 @@ bool PlanHandler::isAddonHeroValid(QString code)
 }
 
 
+//Esbirros que no pueden poner addons en otros esbirros
 bool PlanHandler::isAddonMinionValid(QString code)
 {
     if(code == WRATHGUARD)              return false;
@@ -2837,10 +2840,12 @@ bool PlanHandler::isAddonMinionValid(QString code)
     if(code == EYE_FOR_AN_EYE)          return false;
     if(code == TRUESILVER_CHAMPION)     return false;
     if(code == GLADIATORS_LONGBOW)      return false;
+    if(code == BITTERTIDE_HYDRA)        return false;
     return isAddonCommonValid(code);
 }
 
 
+//Esbirros que no pueden crear otros esbirros
 bool PlanHandler::isLastTriggerValid(QString code)
 {
     if(code == KNIFE_JUGGLER)           return false;
