@@ -5,14 +5,14 @@
 
 TrackobotUploader::TrackobotUploader(QObject *parent) : QObject(parent)
 {
-    username = token = "";
+    username = password = "";
     connected = false;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
-    QTimer::singleShot(1, this, SLOT(checkUserSettings()));
+    QTimer::singleShot(1, this, SLOT(checkAccount()));
 }
 
 
@@ -33,7 +33,6 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
     reply->deleteLater();
 
     QString fullUrl = reply->url().toString();
-    QString noParamsUrl = fullUrl.split("?").first();
 
     if(reply->error() != QNetworkReply::NoError)
     {
@@ -41,108 +40,161 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
 
         if(fullUrl == TRACKOBOT_NEWUSER_URL)
         {
-            emit pDebug("New user settings --> Download failed.");
+            emit pDebug("New account --> Download failed.");
         }
-        else if(noParamsUrl == TRACKOBOT_PROFILE_URL)
+        else if(fullUrl == TRACKOBOT_PROFILE_URL)
         {
             emit pDebug("Getting profile url failed.");
-            tryConnect();
         }
-        else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
+        else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results failed.");
-            tryConnect();
-        }
-        else if(noParamsUrl == TRACKOBOT_LOGIN_URL)
-        {
-            emit pDebug("Login failed.");
         }
     }
     else
     {
         if(fullUrl == TRACKOBOT_NEWUSER_URL)
         {
-            emit pDebug("New user settings --> Download success.");
+            emit pDebug("New account --> Download success.");
             QByteArray jsonData = reply->readAll();
-            Utility::dumpOnFile(jsonData, Utility::dataPath() + "/TrackobotUser.json");
-            loadUserSettings();
+            if(loadAccount(jsonData))   saveAccount();
         }
-        else if(noParamsUrl == TRACKOBOT_PROFILE_URL)
+        else if(fullUrl == TRACKOBOT_PROFILE_URL)
         {
             QString profileUrl = QJsonDocument::fromJson(reply->readAll()).object().value("url").toString();
             emit pDebug("Getting profile url success. Opening: " + profileUrl);
             QDesktopServices::openUrl(QUrl(profileUrl));
         }
-        else if(noParamsUrl == TRACKOBOT_RESULTS_URL)
+        else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
+            qDebug()<<reply->readAll();
             emit pDebug("Upload Results success.");
         }
-        else if(noParamsUrl == TRACKOBOT_LOGIN_URL)
-        {
-            this->connected = true;
-            emit pDebug("Login success.");
-        }
     }
 }
 
 
-void TrackobotUploader::checkUserSettings()
+void TrackobotUploader::saveAccount()
 {
-    QFileInfo file(Utility::dataPath() + "/TrackobotUser.json");
-
-    if(file.exists())   loadUserSettings();
-    else
+    QFile file(Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE);
+    if(!file.open(QIODevice::WriteOnly))
     {
-        emit pDebug("User settings missing --> Download from: " + QString(TRACKOBOT_NEWUSER_URL));
-        networkManager->post(QNetworkRequest(QUrl(TRACKOBOT_NEWUSER_URL)), "");
+        emit pDebug("Cannot open " + QString(TRACKOBOT_ACCOUNT_FILE) + " file.");
+        return;
     }
+
+    QDataStream out(&file);
+    out.setVersion( QDataStream::Qt_4_8 );
+    out << this->username;
+    out << this->password;
+    out << "https://trackobot.com";
+    emit pDebug("New account " + this->username + " --> Saved.");
 }
 
 
-void TrackobotUploader::loadUserSettings()
+bool TrackobotUploader::loadAccount(QByteArray jsonData)
 {
-    QFile file(Utility::dataPath() + "/TrackobotUser.json");
-    if(!file.exists())
-    {
-        emit pDebug("ERROR: TrackobotUser.json doesn't exists.");
-        return;
-    }
-
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        emit pDebug("ERROR: Failed to open TrackobotUser.json");
-        return;
-    }
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(file.readAll());
-    file.close();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     QJsonObject jsonUserObject = jsonDoc.object();
     this->username = jsonUserObject.value("username").toString();
-    this->token = jsonUserObject.value("password").toString();
-    emit pDebug("User settings loaded.");
-    tryConnect();
+    this->password = jsonUserObject.value("password").toString();
+
+    if(!username.isEmpty() && !password.isEmpty())
+    {
+        emit pDebug("New account " + this->username + " --> Loaded.");
+        this->connected = true;
+    }
+    else
+    {
+        emit pDebug(jsonData + " has an invalid format.");
+        this->connected = false;
+    }
+
+    return this->connected;
 }
 
 
-void TrackobotUploader::tryConnect()
+bool TrackobotUploader::loadAccount()
 {
-    delete networkManager->cookieJar();
-    networkManager->setCookieJar(new QNetworkCookieJar());
-    networkManager->get(QNetworkRequest(QUrl(TRACKOBOT_LOGIN_URL + QString("?username=") + this->username +
-                                             QString("&token=") + this->token)));
+    QFile file(Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        emit pDebug("Cannot open " + QString(TRACKOBOT_ACCOUNT_FILE) + " file.");
+        return false;
+    }
 
-    this->connected = false;
-    emit pDebug("Checking connection...");
+    QDataStream in(&file);
+    QString webserviceUrl;
+    in.setVersion(QDataStream::Qt_4_8);
+    in >> this->username;
+    in >> this->password;
+    in >> webserviceUrl;
+
+    if(!username.isEmpty() && !password.isEmpty())
+    {
+        emit pDebug("Account " + this->username + " --> Loaded.");
+        this->connected = true;
+    }
+    else
+    {
+        emit pDebug(QString(TRACKOBOT_ACCOUNT_FILE) + " file has an invalid format.");
+        this->connected = false;
+    }
+
+    return this->connected;
+}
+
+
+void TrackobotUploader::checkAccount()
+{
+    QFileInfo file(Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE);
+
+    if(file.exists())   loadAccount();
+    else
+    {
+        emit pDebug("Account missing --> Download from: " + QString(TRACKOBOT_NEWUSER_URL));
+        QNetworkRequest request(QUrl(TRACKOBOT_NEWUSER_URL));
+        networkManager->post(request, "");
+    }
+}
+
+
+QString TrackobotUploader::credentials()
+{
+    return "Basic " + (this->username + ":" + this->password).toLatin1().toBase64();
 }
 
 
 void TrackobotUploader::openTBProfile()
 {
-    QNetworkRequest request(QUrl(TRACKOBOT_PROFILE_URL + QString("?username=") + this->username +
-                                 QString("&token=") + this->token));
+    QNetworkRequest request(QUrl(TRACKOBOT_PROFILE_URL));
+    request.setRawHeader( "Authorization", credentials().toLatin1());
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     networkManager->post(request, "");
     emit pDebug("Getting profile url...");
+}
+
+
+void TrackobotUploader::uploadResult()
+{
+    QJsonObject result;
+    result[ "coin" ]     = false;//( order == ORDER_SECOND );
+    result[ "hero" ]     = "priest";//CLASS_NAMES[ hero ];
+    result[ "opponent" ] = "mage";//CLASS_NAMES[ opponent ];
+    result[ "win" ]      = true;//( outcome == OUTCOME_VICTORY );
+    result[ "mode" ]     = "arena";//MODE_NAMES[ mode ];
+    result[ "duration" ] = 300;//duration;
+    result[ "added" ]    = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
+
+    QJsonObject params;
+    params[ "result" ] = result;
+    QByteArray data = QJsonDocument( params ).toJson();
+
+
+    QNetworkRequest request(QUrl(TRACKOBOT_RESULTS_URL));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    networkManager->post(request, data);
+    emit pDebug("Uploading result...");
 }
 
 

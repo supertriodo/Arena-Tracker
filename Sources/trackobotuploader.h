@@ -7,9 +7,9 @@
 #include <QNetworkRequest>
 
 #define TRACKOBOT_NEWUSER_URL "https://trackobot.com/users.json"
-#define TRACKOBOT_LOGIN_URL "https://trackobot.com/profile/history.json"
 #define TRACKOBOT_RESULTS_URL "https://trackobot.com/profile/results.json"
 #define TRACKOBOT_PROFILE_URL "https://trackobot.com/one_time_auth.json"
+#define TRACKOBOT_ACCOUNT_FILE "Account.track-o-bot"
 
 class TrackobotUploader : public QObject
 {
@@ -21,18 +21,21 @@ public:
 //Variables
 private:
     QNetworkAccessManager *networkManager;
-    QString username, token;
+    QString username, password;
     bool connected;
 
 
 //Metodos
 private:
-    void loadUserSettings();
-    void tryConnect();
+    bool loadAccount();
+    void saveAccount();
+    bool loadAccount(QByteArray jsonData);
+    QString credentials();
 
 public:
     bool isConnected();
     void openTBProfile();
+    void uploadResult();
 
 signals:
     void pLog(QString line);
@@ -41,7 +44,7 @@ signals:
 public slots:
 
 private slots:
-    void checkUserSettings();
+    void checkAccount();
     void replyFinished(QNetworkReply *reply);
 };
 

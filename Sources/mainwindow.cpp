@@ -3044,6 +3044,8 @@ void MainWindow::createDebugPack()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //Support import web github
+//Revisar replayLogsMap y su conexion con AM
+//Completar deck con ultimo draft sin conexion con AM
 //New stats system.
 
 
