@@ -5,11 +5,14 @@
 #include <QHttpMultiPart>
 #include <QtWidgets>
 
-ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, Ui::Extended *ui) : QObject(parent)
+ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
+                           TrackobotUploader *trackobotUploader, PlanHandler *planHandler,
+                           Ui::Extended *ui) : QObject(parent)
 {
     this->webUploader = NULL;
     this->trackobotUploader = trackobotUploader;
     this->deckHandler = deckHandler;
+    this->planHandler = planHandler;
     this->ui = ui;
     this->transparency = Opaque;
     this->theme = ThemeWhite;
@@ -288,7 +291,7 @@ void ArenaHandler::setWebUploader(WebUploader *webUploader)
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch)
 {
     QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
 
@@ -311,10 +314,10 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
     }
 
     //Trackobot upload
-    if(trackobotUploader != NULL &&
+    if(trackobotUploader != NULL && planHandler != NULL &&
             (loadingScreen == arena || loadingScreen == constructed || loadingScreen == friendly))
     {
-        trackobotUploader->uploadResult(gameResult, loadingScreen, QDateTime::currentSecsSinceEpoch()-50);
+        trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, planHandler->getJsonCardHistory());
     }
 }
 

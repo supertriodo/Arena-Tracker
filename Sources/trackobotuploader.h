@@ -36,7 +36,7 @@ private:
 public:
     bool isConnected();
     void openTBProfile();
-    void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch);
+    void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QJsonArray cardHistory);
 
 signals:
     void pLog(QString line);

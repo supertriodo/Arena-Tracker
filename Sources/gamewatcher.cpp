@@ -255,6 +255,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         playerMinions = 0;
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
+        startGameEpoch = QDateTime::currentSecsSinceEpoch();
 
         emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en el mulligan de practica
         emit startGame();
@@ -1308,7 +1309,7 @@ void GameWatcher::createGameResult(QString logFileName)
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    emit newGameResult(gameResult, loadingScreenState, logFileName);
+    emit newGameResult(gameResult, loadingScreenState, logFileName, startGameEpoch);
 }
 
 

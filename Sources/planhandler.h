@@ -164,6 +164,7 @@ public:
     bool resetSizePlan();
     bool isSizePlan();
     bool isCardBomb(QString code);
+    QJsonArray getJsonCardHistory();
 
 signals:
     void checkCardImage(QString code, bool isHero);

@@ -15,7 +15,7 @@ class ArenaHandler : public QObject
 {
     Q_OBJECT
 public:
-    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, Ui::Extended *ui);
+    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, PlanHandler *planHandler, Ui::Extended *ui);
     ~ArenaHandler();
 
 //Variables
@@ -23,6 +23,7 @@ private:
     WebUploader *webUploader;
     TrackobotUploader *trackobotUploader;
     DeckHandler *deckHandler;
+    PlanHandler *planHandler;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
     QTreeWidgetItem *constructedTreeItem[9];
@@ -71,7 +72,7 @@ signals:
 
 public slots:
     //GameWatcher
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch);
     bool newArena(QString hero);
     void showRewards();
 

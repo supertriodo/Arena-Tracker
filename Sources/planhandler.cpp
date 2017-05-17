@@ -2801,6 +2801,32 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
 }
 
 
+QJsonArray PlanHandler::getJsonCardHistory()
+{
+    QJsonArray cardHistory;
+
+    for(const Board *board: turnBoards)
+    {
+        QJsonObject item;
+        item[ "turn" ] = (board->numTurn + 1)/2;
+        item[ "player" ] = board->playerTurn?"me":"opponent";
+
+        for(CardGraphicsItem *card: (board->playerTurn?board->playerHandList:board->enemyHandList))
+        {
+            if(card->isPlayed())
+            {
+                item[ "card_id" ] = card->getCode();
+                cardHistory.append(item);
+            }
+        }
+    }
+
+    return cardHistory;
+}
+
+
+
+
 //Card exceptions
 //Esbirros que no pueden poner addons ni en otros esbirros ni en heroes
 bool PlanHandler::isAddonCommonValid(QString code)

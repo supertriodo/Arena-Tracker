@@ -175,29 +175,18 @@ void TrackobotUploader::openTBProfile()
 }
 
 
-void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch)
+void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen,
+                                     qint64 startGameEpoch, QJsonArray cardHistory)
 {
     QJsonObject result;
-    result[ "coin" ]     = !gameResult.isFirst;//true;//( order == ORDER_SECOND );*
-    result[ "hero" ]     = Utility::heroStringFromLogNumber(gameResult.playerHero).toLower();//"priest";//CLASS_NAMES[ hero ];*
-    result[ "opponent" ] = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();//"mage";//CLASS_NAMES[ opponent ];*
-    result[ "win" ]      = gameResult.isWinner;//true;//( outcome == OUTCOME_VICTORY );*
-    result[ "mode" ]     = Utility::getLoadingScreenString(loadingScreen).toLower();//modeString(loadingScreen);//"arena";//MODE_NAMES[ mode ];*
-    result[ "duration" ] = QDateTime::currentSecsSinceEpoch() - startGameEpoch;//300;//duration;
-    result[ "added" ]    = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
-
-//    QJsonArray card_history;
-//    QJsonObject item;
-//    item[ "turn" ] = 1;
-//    item[ "player" ] = "me";
-//    item[ "card_id" ] = MANA_BIND;
-//    card_history.append(item);
-
-//    item[ "turn" ] = 1;
-//    item[ "player" ] = "opponent";
-//    item[ "card_id" ] = SPREADING_MADNESS;
-//    card_history.append(item);
-//    result[ "card_history" ] = card_history;
+    result["coin"]          = !gameResult.isFirst;
+    result["hero"]          = Utility::heroStringFromLogNumber(gameResult.playerHero).toLower();
+    result["opponent"]      = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();
+    result["win"]           = gameResult.isWinner;
+    result["mode"]          = Utility::getLoadingScreenString(loadingScreen).toLower();
+    result["duration"]      = QDateTime::currentSecsSinceEpoch() - startGameEpoch;
+    result["added"]         = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
+    result["card_history"]  = cardHistory;
 
     QJsonObject params;
     params[ "result" ] = result;

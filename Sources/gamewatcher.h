@@ -74,6 +74,7 @@ private:
     bool copyGameLogs;
     bool spectating;
     ShowEntity lastShowEntity;
+    qint64 startGameEpoch;
 
 
 
@@ -100,7 +101,7 @@ public:
     void setCopyGameLogs(bool value);
 
 signals:
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch);
     void newArena(QString hero);
     void inRewards();
     void newDeckCard(QString card);

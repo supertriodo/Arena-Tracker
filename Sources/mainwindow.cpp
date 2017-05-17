@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->DeckHandler
     createSecretsHandler();//-->EnemyHandHandler
-    createArenaHandler();//-->DeckHandler -->TrackobotUploader
+    createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
@@ -413,7 +413,7 @@ void MainWindow::createSecretsHandler()
 
 void MainWindow::createArenaHandler()
 {
-    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, ui);
+    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
     connect(arenaHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -566,8 +566,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState, QString)),
-            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState, QString)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState, QString, qint64)),
+            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState, QString, qint64)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     connect(gameWatcher, SIGNAL(inRewards()),
@@ -2197,28 +2197,6 @@ void MainWindow::test()
 {
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
-
-//    GameResult gameResult;
-//    gameResult.isFirst = true;
-//    gameResult.isWinner = true;
-//    gameResult.enemyHero = "01";
-//    gameResult.playerHero = "02";
-//    arenaHandler->newGameResult(gameResult, arena, "");
-//    gameResult.enemyHero = "03";
-//    gameResult.playerHero = "04";
-//    arenaHandler->newGameResult(gameResult, friendly, "");
-//    gameResult.enemyHero = "05";
-//    gameResult.playerHero = "06";
-//    arenaHandler->newGameResult(gameResult, constructed, "");
-//    gameResult.isFirst = false;
-//    gameResult.isWinner = false;
-//    gameResult.enemyHero = "07";
-//    gameResult.playerHero = "08";
-//    arenaHandler->newGameResult(gameResult, adventure, "");
-//    gameResult.enemyHero = "09";
-//    gameResult.playerHero = "09";
-//    arenaHandler->newGameResult(gameResult, menu, "");
-//    arenaHandler->newGameResult(gameResult, tavernBrawl, "");
 }
 
 
