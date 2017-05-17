@@ -2197,6 +2197,28 @@ void MainWindow::test()
 {
 //    testPlan();
 //    QTimer::singleShot(2000, this, SLOT(testDelay()));
+
+//    GameResult gameResult;
+//    gameResult.isFirst = true;
+//    gameResult.isWinner = true;
+//    gameResult.enemyHero = "01";
+//    gameResult.playerHero = "02";
+//    arenaHandler->newGameResult(gameResult, arena, "");
+//    gameResult.enemyHero = "03";
+//    gameResult.playerHero = "04";
+//    arenaHandler->newGameResult(gameResult, friendly, "");
+//    gameResult.enemyHero = "05";
+//    gameResult.playerHero = "06";
+//    arenaHandler->newGameResult(gameResult, constructed, "");
+//    gameResult.isFirst = false;
+//    gameResult.isWinner = false;
+//    gameResult.enemyHero = "07";
+//    gameResult.playerHero = "08";
+//    arenaHandler->newGameResult(gameResult, adventure, "");
+//    gameResult.enemyHero = "09";
+//    gameResult.playerHero = "09";
+//    arenaHandler->newGameResult(gameResult, menu, "");
+//    arenaHandler->newGameResult(gameResult, tavernBrawl, "");
 }
 
 

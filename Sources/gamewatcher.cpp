@@ -136,6 +136,11 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
             loadingScreenState = tavernBrawl;
             emit pDebug("Entering TAVERN (loadingScreenState = tavernBrawl).", numLine);
         }
+        else if(currMode == "FRIENDLY")
+        {
+            loadingScreenState = friendly;
+            emit pDebug("Entering FRIENDLY (loadingScreenState = friendly).", numLine);
+        }
     }
 }
 

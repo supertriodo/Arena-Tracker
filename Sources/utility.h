@@ -100,7 +100,7 @@ using namespace cv;
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum Theme { ThemeWhite, ThemeBlack };
-enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl };
+enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl, friendly };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
 enum DraftMethod { HearthArena, LightForge, All };
 

@@ -122,12 +122,21 @@ QString Utility::getHeroLogNumber(int order)
 
 QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
 {
-    if(loadingScreen == menu)               return "MENU";
-    else if(loadingScreen == arena)         return "ARENA";
-    else if(loadingScreen == constructed)   return "RANKED";
-    else if(loadingScreen == adventure)     return "SOLO";
-    else if(loadingScreen == tavernBrawl)   return "BRAWL";
-    else                                    return "";
+    switch(loadingScreen)
+    {
+        case arena:
+            return "ARENA";
+        case constructed:
+            return "RANKED";
+        case adventure:
+            return "SOLO";
+        case tavernBrawl:
+            return "BRAWL";
+        case friendly:
+            return "FRIENDLY";
+        default:
+            return "UNKNOWN";
+    }
 }
 
 

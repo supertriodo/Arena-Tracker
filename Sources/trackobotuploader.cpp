@@ -175,16 +175,29 @@ void TrackobotUploader::openTBProfile()
 }
 
 
-void TrackobotUploader::uploadResult()
+void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch)
 {
     QJsonObject result;
-    result[ "coin" ]     = false;//( order == ORDER_SECOND );
-    result[ "hero" ]     = "priest";//CLASS_NAMES[ hero ];
-    result[ "opponent" ] = "mage";//CLASS_NAMES[ opponent ];
-    result[ "win" ]      = true;//( outcome == OUTCOME_VICTORY );
-    result[ "mode" ]     = "arena";//MODE_NAMES[ mode ];
-    result[ "duration" ] = 300;//duration;
+    result[ "coin" ]     = !gameResult.isFirst;//true;//( order == ORDER_SECOND );*
+    result[ "hero" ]     = Utility::heroStringFromLogNumber(gameResult.playerHero).toLower();//"priest";//CLASS_NAMES[ hero ];*
+    result[ "opponent" ] = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();//"mage";//CLASS_NAMES[ opponent ];*
+    result[ "win" ]      = gameResult.isWinner;//true;//( outcome == OUTCOME_VICTORY );*
+    result[ "mode" ]     = Utility::getLoadingScreenString(loadingScreen).toLower();//modeString(loadingScreen);//"arena";//MODE_NAMES[ mode ];*
+    result[ "duration" ] = QDateTime::currentSecsSinceEpoch() - startGameEpoch;//300;//duration;
     result[ "added" ]    = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
+
+//    QJsonArray card_history;
+//    QJsonObject item;
+//    item[ "turn" ] = 1;
+//    item[ "player" ] = "me";
+//    item[ "card_id" ] = MANA_BIND;
+//    card_history.append(item);
+
+//    item[ "turn" ] = 1;
+//    item[ "player" ] = "opponent";
+//    item[ "card_id" ] = SPREADING_MADNESS;
+//    card_history.append(item);
+//    result[ "card_history" ] = card_history;
 
     QJsonObject params;
     params[ "result" ] = result;
@@ -192,6 +205,7 @@ void TrackobotUploader::uploadResult()
 
 
     QNetworkRequest request(QUrl(TRACKOBOT_RESULTS_URL));
+    request.setRawHeader( "Authorization", credentials().toLatin1());
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     networkManager->post(request, data);
     emit pDebug("Uploading result...");

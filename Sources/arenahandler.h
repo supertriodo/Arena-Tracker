@@ -26,7 +26,7 @@ private:
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
     QTreeWidgetItem *constructedTreeItem[9];
-    QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem;
+    QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem;
     QString arenaCurrentHero;
     QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena

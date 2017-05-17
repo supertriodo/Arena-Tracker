@@ -91,6 +91,7 @@ void ArenaHandler::createTreeWidget()
     for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
     adventureTreeItem = NULL;
     tavernBrawlTreeItem = NULL;
+    friendlyTreeItem = NULL;
     lastReplayUploaded = NULL;
 }
 
@@ -293,6 +294,7 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 
     if(item != NULL && !logFileName.isEmpty())  replayLogsMap[item] = logFileName;
 
+    //Arena Mastery upload
     if(loadingScreen == arena && webUploader!=NULL && webUploader->isConnected())
     {
         QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
@@ -306,6 +308,13 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
             currentArenaToWhite();
         }
         else if(item != NULL)   setRowColor(item, RED);
+    }
+
+    //Trackobot upload
+    if(trackobotUploader != NULL &&
+            (loadingScreen == arena || loadingScreen == constructed || loadingScreen == friendly))
+    {
+        trackobotUploader->uploadResult(gameResult, loadingScreen, QDateTime::currentSecsSinceEpoch()-50);
     }
 }
 
@@ -424,6 +433,20 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 
             item = new QTreeWidgetItem(tavernBrawlTreeItem);
             updateWinLose(gameResult.isWinner, tavernBrawlTreeItem);
+        break;
+
+        case friendly:
+            emit pDebug("Create GameResult from friendly.");
+            emit pLog(tr("Log: New friendly game."));
+
+            if(friendlyTreeItem == NULL)
+            {
+                emit pDebug("Create Category friendly.");
+                friendlyTreeItem = createTopLevelItem("Friendly", "", false);
+            }
+
+            item = new QTreeWidgetItem(friendlyTreeItem);
+            updateWinLose(gameResult.isWinner, friendlyTreeItem);
         break;
     }
 

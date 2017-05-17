@@ -2,6 +2,7 @@
 #define TRACKOBOTUPLOADER_H
 
 #include "utility.h"
+#include "gamewatcher.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -35,7 +36,7 @@ private:
 public:
     bool isConnected();
     void openTBProfile();
-    void uploadResult();
+    void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch);
 
 signals:
     void pLog(QString line);
