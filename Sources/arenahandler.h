@@ -48,11 +48,12 @@ private:
     void setRowColor(QTreeWidgetItem *item, QColor color);
     QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
-    void allToWhite();
+    void updateWhiteRows();
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
     QString compressLog(QString logFileName);
+    bool isRowWhite(QTreeWidgetItem *item);
 
 public:
     void setWebUploader(WebUploader *webUploader);

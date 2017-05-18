@@ -659,6 +659,12 @@ QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 }
 
 
+bool ArenaHandler::isRowWhite(QTreeWidgetItem *item)
+{
+    return (getRowColor(item) == WHITE);
+}
+
+
 bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 {
     return (getRowColor(item) != RED);
@@ -810,7 +816,7 @@ void ArenaHandler::uploadRewards()
 }
 
 
-void ArenaHandler::allToWhite()
+void ArenaHandler::updateWhiteRows()
 {
     int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
     for(int i=0; i<numTopItems; i++)
@@ -819,9 +825,9 @@ void ArenaHandler::allToWhite()
         int numItems = item->childCount();
         for(int j=0; j<numItems; j++)
         {
-            setRowColor(item->child(j), WHITE);
+            if(isRowWhite(item->child(j))) setRowColor(item->child(j), WHITE);
         }
-        setRowColor(item, WHITE);
+        if(isRowWhite(item))    setRowColor(item, WHITE);
     }
 }
 
@@ -849,7 +855,7 @@ void ArenaHandler::setTransparency(Transparency value)
             (transparencyChanged || this->transparency == Transparent ))
     {
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
-        allToWhite();
+        updateWhiteRows();
 
         //Solo recargamos arenaMastery si la transparencia se ha cambiado, no cuando el raton entra y sale.
         if(transparencyChanged && ui->updateButton->isEnabled())
@@ -874,7 +880,7 @@ void ArenaHandler::setTheme(Theme theme)
     this->theme = theme;
 
     //Change arenaTreeWidget normal color to (BLACK/WHITE)
-    allToWhite();
+    updateWhiteRows();
 
     if(ui->updateButton->isEnabled())
     {

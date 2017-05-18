@@ -3060,6 +3060,7 @@ void MainWindow::createDebugPack()
 //Test upload zero2heroes y color green sea
 //Eliminar ArenaMastery connection.
 //Asociar Zero2Heroes con trackobot account.
+//test trackobot app + AT juntos y comparar uploads, probar usar hero power.
 
 
 //REPLAY BUGS
