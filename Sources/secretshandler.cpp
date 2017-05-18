@@ -5,7 +5,6 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
 {
     this->ui = ui;
     this->enemyHandHandler = enemyHandHandler;
-    this->synchronized = false;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
     this->lastSpellPlayed = "";
@@ -34,12 +33,6 @@ void SecretsHandler::completeUI()
 
     connect(ui->secretsTreeWidget, SIGNAL(itemEntered(QTreeWidgetItem*,int)),
             this, SLOT(findSecretCardEntered(QTreeWidgetItem*)));
-}
-
-
-void SecretsHandler::setSynchronized()
-{
-    this->synchronized = true;
 }
 
 

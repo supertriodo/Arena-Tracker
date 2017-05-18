@@ -12,8 +12,6 @@ GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
     turn = turnReal = 0;
     logSeekCreate = -1;
 
-    synchronized = false;
-
     match = new QRegularExpressionMatch();
 }
 
@@ -1385,12 +1383,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
         }
     }
     return advance;
-}
-
-
-void GameWatcher::setSynchronized()
-{
-    this->synchronized = true;
 }
 
 

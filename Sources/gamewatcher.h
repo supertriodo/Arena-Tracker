@@ -69,7 +69,6 @@ private:
     //no aparezcan como parte del nuevo turno
     int turn, turnReal;
     bool mulliganEnemyDone, mulliganPlayerDone;
-    bool synchronized;
     qint64 logSeekCreate;
     bool copyGameLogs;
     bool spectating;
@@ -96,7 +95,6 @@ private:
 
 public:
     void reset();
-    void setSynchronized();
     LoadingScreenState getLoadingScreen();
     void setCopyGameLogs(bool value);
 

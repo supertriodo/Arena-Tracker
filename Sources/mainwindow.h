@@ -192,7 +192,6 @@ private slots:
     void test();
     void testPlan();
     void testDelay();
-    void synchronizedDone();
     void confirmNewArenaDraft(QString hero);
     void toggleSplitWindow();
     void transparentAlways();
@@ -225,6 +224,7 @@ private slots:
     void draftMethodHA();
     void draftMethodLF();
     void draftMethodCombined();
+    void spreadTransparency();
 };
 
 #endif // MAINWINDOW_H

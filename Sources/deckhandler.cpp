@@ -16,11 +16,11 @@ DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *en
     this->mouseInApp = false;
     this->enemyDeckHandler = enemyDeckHandler;
     this->planHandler = planHandler;
-    this->synchronized = false;
     this->showManaLimits = false;
     this->lastCreatedByCode = "";
 
     completeUI();
+    unlockDeckInterface();
 
     connect(&futureDeckBuilderPY, SIGNAL(finished()), this, SLOT(finishDeckBuilderPY()));
 }
@@ -415,14 +415,6 @@ void DeckHandler::enableDeckButtonSave(bool enable)
 //    else        emit pDebug("Save button disabled");
     if(inArena) enable = false;
     ui->deckButtonSave->setEnabled(enable);
-}
-
-
-void DeckHandler::setSynchronized()
-{
-    this->synchronized = true;
-    if(this->inGame)    lockDeckInterface();
-    else                unlockDeckInterface();
 }
 
 
@@ -1093,8 +1085,6 @@ void DeckHandler::lockDeckInterface()
 
     this->inGame = true;
 
-    if(!synchronized)   return;
-
     for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
         it->remaining = it->total;
@@ -1119,8 +1109,6 @@ void DeckHandler::unlockDeckInterface()
     emit pDebug("Unlock deck interface.");
 
     this->inGame = false;
-
-    if(!synchronized)   return;
 
     for(int i=0; i<deckCardList.length(); i++)
     {

@@ -31,7 +31,7 @@ private:
     Ui::Extended *ui;
     QJsonObject decksJson;
     QString loadedDeckName;
-    bool inGame, inArena, synchronized;
+    bool inGame, inArena;
     bool mouseInApp;
     Transparency transparency;
     bool drawAnimating;
@@ -102,7 +102,6 @@ public:
     void setGreyedHeight(int value);
     void setCardHeight(int value);
     void setDrawDisappear(int value);
-    void setSynchronized();
     void loadDecks();
     bool askSaveDeck();
     void completeArenaDeck(QString draftLog);

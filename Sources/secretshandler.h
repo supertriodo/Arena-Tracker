@@ -40,7 +40,6 @@ private:
     EnemyHandHandler *enemyHandHandler;
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
-    bool synchronized;
     bool secretsAnimating;
     QString lastMinionDead, lastSpellPlayed;
 
@@ -59,7 +58,6 @@ public:
     void redrawClassCards();
     void redrawSpellWeaponCards();
     void redrawAllCards();
-    void setSynchronized();
     QStringList getSecretOptionCodes(int id);
 
 signals:

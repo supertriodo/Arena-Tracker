@@ -761,7 +761,9 @@ void MainWindow::createLogLoader()
 {
     logLoader = new LogLoader(this);
     connect(logLoader, SIGNAL(synchronized()),
-            this, SLOT(synchronizedDone()));
+            this, SLOT(test()));
+    connect(logLoader, SIGNAL(synchronized()),
+            this, SLOT(spreadTransparency()));
     connect(logLoader, SIGNAL(logReset()),
             this, SLOT(logReset()));
     connect(logLoader, SIGNAL(newLogLineRead(LogComponent, QString,qint64,qint64)),
@@ -782,19 +784,6 @@ void MainWindow::createLogLoader()
             logLoader, SLOT(setUpdateTimeMin()));
 
     if(!logLoader->init())  QTimer::singleShot(1, this, SLOT(closeApp()));
-}
-
-
-void MainWindow::synchronizedDone()
-{
-    gameWatcher->setSynchronized();
-    secretsHandler->setSynchronized();
-    deckHandler->setSynchronized();
-
-    spreadTransparency(this->transparency);
-
-    //Test
-    QTimer::singleShot(5000, this, SLOT(test()));
 }
 
 
@@ -2267,6 +2256,12 @@ void MainWindow::transparentFramed()
 }
 
 
+void MainWindow::spreadTransparency()
+{
+    spreadTransparency(this->transparency);
+}
+
+
 void MainWindow::spreadTransparency(Transparency newTransparency)
 {
     this->transparency = newTransparency;
@@ -2915,8 +2910,7 @@ void MainWindow::createDebugPack()
 //QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
 //QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
 //Test log con varios games y un draft, no se crean logs ni se empieza el draft.
-//Eliminar synchronizedDone
-//Variables en initConfig warning para AM
+//Variables en initConfig warning para AM / Export AM
 
 
 //REPLAY BUGS
