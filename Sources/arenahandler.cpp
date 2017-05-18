@@ -76,7 +76,6 @@ void ArenaHandler::createTreeWidget()
     arenaHomeless->setHidden(true);
 
     arenaCurrent = NULL;
-    arenaPrevious = NULL;
     arenaCurrentHero = "";
 
     for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
@@ -350,7 +349,6 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             {
                 emit pDebug("Create GameResult from arena in arenaCurrent.");
                 item = new QTreeWidgetItem(arenaCurrent);
-                arenaCurrentGameList.append(gameResult);
                 updateWinLose(gameResult.isWinner, arenaCurrent);
             }
         break;
@@ -495,13 +493,6 @@ void ArenaHandler::showArenaLog(const QString &logFileName)
 void ArenaHandler::showArena(QString hero)
 {
     emit pDebug("Show Arena.");
-
-    //Pasamos la gameList a previous
-    arenaPreviousGameList.clear();
-    arenaPreviousGameList = arenaCurrentGameList;
-    arenaCurrentGameList = QList<GameResult>();
-    arenaPrevious = arenaCurrent;
-
     arenaCurrentHero = QString(hero);
     arenaCurrent = createTopLevelItem("Arena", arenaCurrentHero, true);
 }

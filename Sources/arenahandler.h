@@ -27,12 +27,10 @@ private:
     DeckHandler *deckHandler;
     PlanHandler *planHandler;
     Ui::Extended *ui;
-    QTreeWidgetItem *arenaHomeless, *arenaCurrent, *arenaPrevious;
+    QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QTreeWidgetItem *constructedTreeItem[9];
     QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem;
     QString arenaCurrentHero;
-    QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
-    QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
     QMap<QTreeWidgetItem *, QString> replayLogsMap;
     QTreeWidgetItem *lastReplayUploaded;
     bool mouseInApp;

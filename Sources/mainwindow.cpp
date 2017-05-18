@@ -2900,15 +2900,9 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Recarga web al cambiar theme
+
 //Test manual draft
-//Eliminar ArenaMastery connection.
 //test trackobot app + AT juntos y comparar uploads, probar usar hero power.
-//Remove void ArenaHandler::currentArenaToWhite()
-//Rewards
-//Eliminar ArenaPrevious
-//QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
-//QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
 //Test log con varios games y un draft, no se crean logs ni se empieza el draft.
 //Variables en initConfig warning para AM / Export AM
 
