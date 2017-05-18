@@ -116,19 +116,19 @@ void ArenaHandler::replayLog()
     if(logFileName.contains(QRegularExpression(".*\\.(\\w+)\\.arenatracker"), &match))
     {
         QString replayId = match.captured(1);
-        emit pDebug("Opening: http://www.zerotoheroes.com/r/hearthstone/" + replayId);
-        QDesktopServices::openUrl(QUrl("http://www.zerotoheroes.com/r/hearthstone/" + replayId));
+        emit pDebug("Opening: " + QString(Z2H_VIEW_REPLAY_URL) + replayId);
+        QDesktopServices::openUrl(QUrl(Z2H_VIEW_REPLAY_URL + replayId));
         return;
     }
 
     QString url = "";
     if(logFileName.startsWith("DRAFT"))
     {
-        url = "http://www.zerotoheroes.com/api/hearthstone/upload/draft/";
+        url = Z2H_UPLOAD_DRAFT_URL;
     }
     else if(logFileName.startsWith("ARENA"))
     {
-        url = "http://www.zerotoheroes.com/api/hearthstone/upload/game/";
+        url = Z2H_UPLOAD_GAME_URL;
     }
     else
     {
@@ -162,7 +162,8 @@ void ArenaHandler::replayLog()
     multiPart->setParent(reply);
 
     this->lastReplayUploaded = ui->arenaTreeWidget->currentItem();
-    emit pDebug("Uploading replay " + replayLogsMap[lastReplayUploaded] + (logFileName=="temp.gz"?"(gzipped)":"") + " to " + "http://www.zerotoheroes.com");
+    emit pDebug("Uploading replay " + replayLogsMap[lastReplayUploaded] + (logFileName=="temp.gz"?"(gzipped)":"") +
+                " to " + url);
 
     deselectRow();
     ui->arenaTreeWidget->setSelectionMode(QAbstractItemView::NoSelection);
@@ -233,7 +234,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     }
     QString replayId = replayIds.first().toString();
 
-    emit pDebug("Replay " + logFileName + " uploaded to " + "http://www.zerotoheroes.com/r/hearthstone/" + replayId);
+    emit pDebug("Replay " + logFileName + " uploaded to " + Z2H_VIEW_REPLAY_URL + replayId);
 
     //Include replayId in fileName
     QStringList logFileNameSplit = logFileName.split(".");
@@ -256,8 +257,8 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
 
     lastReplayUploaded = NULL;
 
-    emit pDebug("Opening: http://www.zerotoheroes.com/r/hearthstone/" + replayId);
-    QDesktopServices::openUrl(QUrl("http://www.zerotoheroes.com/r/hearthstone/" + replayId));
+    emit pDebug("Opening: " + QString(Z2H_VIEW_REPLAY_URL) + replayId);
+    QDesktopServices::openUrl(QUrl(Z2H_VIEW_REPLAY_URL + replayId));
 }
 
 

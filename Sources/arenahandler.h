@@ -10,6 +10,10 @@
 #include <QNetworkAccessManager>
 #include <QTreeWidgetItem>
 
+#define Z2H_UPLOAD_DRAFT_URL    "https://www.zerotoheroes.com/api/hearthstone/upload/draft/"
+#define Z2H_UPLOAD_GAME_URL     "https://www.zerotoheroes.com/api/hearthstone/upload/game/"
+#define Z2H_VIEW_REPLAY_URL     "https://www.zerotoheroes.com/r/hearthstone/"
+
 class ArenaHandler : public QObject
 {
     Q_OBJECT
