@@ -24,15 +24,15 @@ Utility::~Utility()
 
 QString Utility::heroToLogNumber(const QString &hero)
 {
-    if(hero.compare("Druid")==0)        return QString("06");
-    else if(hero.compare("Hunter")==0)  return QString("05");
-    else if(hero.compare("Mage")==0)    return QString("08");
-    else if(hero.compare("Paladin")==0) return QString("04");
-    else if(hero.compare("Priest")==0)  return QString("09");
-    else if(hero.compare("Rogue")==0)   return QString("03");
-    else if(hero.compare("Shaman")==0)  return QString("02");
-    else if(hero.compare("Warlock")==0) return QString("07");
-    else if(hero.compare("Warrior")==0) return QString("01");
+    if(hero.toLower().compare("druid")==0)        return QString("06");
+    else if(hero.toLower().compare("hunter")==0)  return QString("05");
+    else if(hero.toLower().compare("mage")==0)    return QString("08");
+    else if(hero.toLower().compare("paladin")==0) return QString("04");
+    else if(hero.toLower().compare("priest")==0)  return QString("09");
+    else if(hero.toLower().compare("rogue")==0)   return QString("03");
+    else if(hero.toLower().compare("shaman")==0)  return QString("02");
+    else if(hero.toLower().compare("warlock")==0) return QString("07");
+    else if(hero.toLower().compare("warrior")==0) return QString("01");
     else return QString();
 }
 
@@ -120,7 +120,7 @@ QString Utility::getHeroLogNumber(int order)
 }
 
 
-QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
+QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
 {
     switch(loadingScreen)
     {
@@ -137,6 +137,17 @@ QString Utility::getLoadingScreenString(LoadingScreenState loadingScreen)
         default:
             return "UNKNOWN";
     }
+}
+
+
+LoadingScreenState Utility::getLoadingScreenFromString(QString loadingScreenString)
+{
+    if(loadingScreenString == "ARENA")          return arena;
+    else if(loadingScreenString == "RANKED")    return constructed;
+    else if(loadingScreenString == "SOLO")      return adventure;
+    else if(loadingScreenString == "BRAWL")     return tavernBrawl;
+    else if(loadingScreenString == "FRIENDLY")  return friendly;
+    else                                        return unknown;
 }
 
 

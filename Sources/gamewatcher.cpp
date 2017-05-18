@@ -1328,7 +1328,8 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
 
     QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
     QString win = (winnerPlayer == playerTag)?"WIN":"LOSE";
-    QString gameMode = Utility::getLoadingScreenString(loadingScreenState);
+    QString coin = (firstPlayer == playerTag)?"FIRST":"COIN";
+    QString gameMode = Utility::getLoadingScreenToString(loadingScreenState);
     QString playerHero, enemyHero;
     if(playerID == 1)
     {
@@ -1340,7 +1341,7 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
         playerHero = Utility::heroStringFromLogNumber(hero2);
         enemyHero = Utility::heroStringFromLogNumber(hero1);
     }
-    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win + ".arenatracker";
+    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win + " " + coin + ".arenatracker";
 
 
     emit pDebug("Game log ready to be copied.", 0);

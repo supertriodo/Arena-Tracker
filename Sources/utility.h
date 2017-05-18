@@ -100,7 +100,7 @@ using namespace cv;
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum Theme { ThemeWhite, ThemeBlack };
-enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl, friendly };
+enum LoadingScreenState { menu, arena, constructed, adventure, tavernBrawl, friendly, unknown };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logInvalid };
 enum DraftMethod { HearthArena, LightForge, All };
 
@@ -153,7 +153,8 @@ public:
     static QString removeAccents(QString s);
     static void fadeInWidget(QWidget *widget);
     static void fadeOutWidget(QWidget *widget);
-    static QString getLoadingScreenString(LoadingScreenState loadingScreen);
+    static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
+    static LoadingScreenState getLoadingScreenFromString(QString loadingScreenString);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
     static bool isLeftOfScreen(QPoint center);

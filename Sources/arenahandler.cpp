@@ -279,7 +279,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
 }
 
 
-void ArenaHandler::linkLogToDraft(QString logFileName)
+void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 {
     if(arenaCurrent != NULL && !logFileName.isEmpty())  replayLogsMap[arenaCurrent] = logFileName;
 }
@@ -451,9 +451,33 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             item = new QTreeWidgetItem(friendlyTreeItem);
             updateWinLose(gameResult.isWinner, friendlyTreeItem);
         break;
+
+        default:
+        break;
     }
 
     return item;
+}
+
+
+QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
+{
+    QRegularExpressionMatch match;
+    if(logFileName.contains(QRegularExpression("(\\w+) \\w+-\\d+ \\d+-\\d+ (\\w+)vs(\\w+) (WIN|LOSE) (FIRST|COIN)\\.arenatracker"), &match))
+    {
+        GameResult gameResult;
+        LoadingScreenState loadingScreen = Utility::getLoadingScreenFromString(match.captured(1));
+        gameResult.playerHero = Utility::heroToLogNumber(match.captured(2));
+        gameResult.enemyHero = Utility::heroToLogNumber(match.captured(3));
+        gameResult.isWinner = match.captured(4)=="WIN";
+        gameResult.isFirst = match.captured(5)=="FIRST";
+
+        QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
+        if(item != NULL)    replayLogsMap[item] = logFileName;
+        return item;
+    }
+
+    return NULL;
 }
 
 
@@ -496,7 +520,7 @@ void ArenaHandler::reshowGameResult(GameResult gameResult)
             arenaCurrentGameList.at(i).isFirst == gameResult.isFirst &&
             arenaCurrentGameList.at(i).isWinner == gameResult.isWinner)
         {
-            if(replayLogsMap[item].contains(QRegularExpression("ARENA .* \\w+vs\\w+ (WIN|LOSE)\\.\\w+\\.arenatracker")))
+            if(replayLogsMap[item].contains(QRegularExpression("ARENA .*\\.\\w+\\.arenatracker")))
             {
                 setRowColor(item, SEA_GREEN);
             }
@@ -527,6 +551,18 @@ bool ArenaHandler::newArena(QString hero)
     }
     else    enableRefreshButton(false);
     return true;
+}
+
+
+void ArenaHandler::showArenaLog(const QString &logFileName)
+{
+    QRegularExpressionMatch match;
+    if(logFileName.contains(QRegularExpression("DRAFT \\w+-\\d+ \\d+-\\d+ (\\w+)\\.arenatracker"), &match))
+    {
+        QString playerHero = Utility::heroToLogNumber(match.captured(1));
+        showArena(playerHero);
+        linkDraftLogToArenaCurrent(logFileName);
+    }
 }
 
 
@@ -585,7 +621,7 @@ void ArenaHandler::reshowArena(QString hero)
         return;
     }
 
-    if(replayLogsMap[arenaCurrent].contains(QRegularExpression("DRAFT .* \\w+\\.\\w+\\.arenatracker")))
+    if(replayLogsMap[arenaCurrent].contains(QRegularExpression("DRAFT .*\\.\\w+\\.arenatracker")))
     {
         setRowColor(arenaCurrent, SEA_GREEN);
     }
@@ -839,88 +875,6 @@ void ArenaHandler::setTheme(Theme theme)
         ui->updateButton->setEnabled(false);
         if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
     }
-}
-
-//Elimina la penultima arena si es igual a la ultima.
-//La arena en log es la misma que la arena leida de web.
-void ArenaHandler::removeDuplicateArena()
-{
-    emit pDebug("Try to remove dulicate arena.");
-
-    if(noArena) return;
-    if(arenaCurrentGameList.count() != arenaPreviousGameList.count())   return;
-
-    for(int i=0; i<arenaCurrentGameList.count(); i++)
-    {
-        GameResult previous = arenaPreviousGameList[i];
-        GameResult current = arenaCurrentGameList[i];
-
-        if(previous.playerHero != current.playerHero)   return;
-        if(previous.enemyHero != current.enemyHero)     return;
-        if(previous.isFirst != current.isFirst)         return;
-        if(previous.isWinner != current.isWinner)       return;
-    }
-
-    //Remove Previous Arena
-    arenaPreviousGameList.clear();
-    if(arenaCurrent == NULL)                return;
-    if(arenaPrevious == NULL)               return;
-    if(arenaPrevious->text(0) != "Arena")   return;
-
-    delete arenaPrevious;
-    arenaPrevious = NULL;
-    emit pDebug("Dulicate arena found and removed.");
-}
-
-
-void ArenaHandler::linkLogsToWebGames()
-{
-    emit pDebug("Link logs to web games.");
-
-    QRegularExpressionMatch match;
-
-    QDir dir(Utility::gameslogPath());
-    dir.setFilter(QDir::Files);
-    dir.setSorting(QDir::Time);
-
-    //Games
-    QStringList arenaFilter;
-    arenaFilter << "ARENA*.arenatracker";
-    dir.setNameFilters(arenaFilter);
-
-    QStringList files = dir.entryList().mid(0, arenaCurrentGameList.count());
-    int gameIndex = arenaCurrentGameList.count();
-    foreach(QString file, files)
-    {
-        gameIndex --;
-
-        if(!file.contains(QRegularExpression("ARENA .* (\\w+)vs(\\w+) (WIN|LOSE)(\\.\\w+)?\\.arenatracker"), &match)) return;
-        QString playerHero = match.captured(1);
-        QString enemyHero = match.captured(2);
-        bool isWinner = match.captured(3) == "WIN";
-
-        GameResult gameWeb = arenaCurrentGameList[gameIndex];
-        if(Utility::heroStringFromLogNumber(gameWeb.playerHero) != playerHero)  return;
-        if(Utility::heroStringFromLogNumber(gameWeb.enemyHero) != enemyHero)  return;
-        if(gameWeb.isWinner != isWinner)    return;
-
-        replayLogsMap[arenaCurrent->child(gameIndex)] = file;
-    }
-
-    //Draft
-    QStringList draftFilter;
-    draftFilter << "DRAFT*.arenatracker";
-    dir.setNameFilters(draftFilter);
-
-    if(dir.entryList().isEmpty())   return;
-    QString file = dir.entryList().first();
-
-    if(!file.contains(QRegularExpression("DRAFT .* (\\w+)(\\.\\w+)?\\.arenatracker"), &match)) return;
-    QString playerHero = match.captured(1);
-
-    if(Utility::heroStringFromLogNumber(arenaCurrentHero) != playerHero)  return;
-
-    replayLogsMap[arenaCurrent] = file;
 }
 
 

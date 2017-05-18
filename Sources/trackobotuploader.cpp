@@ -183,7 +183,7 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
     result["hero"]          = Utility::heroStringFromLogNumber(gameResult.playerHero).toLower();
     result["opponent"]      = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();
     result["win"]           = gameResult.isWinner;
-    result["mode"]          = Utility::getLoadingScreenString(loadingScreen).toLower();
+    result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
     result["duration"]      = QDateTime::currentSecsSinceEpoch() - startGameEpoch;
     result["added"]         = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
     result["card_history"]  = cardHistory;

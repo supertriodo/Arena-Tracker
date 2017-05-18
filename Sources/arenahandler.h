@@ -62,9 +62,11 @@ public:
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
     void deselectRow();
-    void linkLogToDraft(QString logFileName);
+    void linkDraftLogToArenaCurrent(QString logFileName);
     QString getArenaCurrentGameLog();
     void setConnectedAM(bool value);
+    QTreeWidgetItem *showGameResultLog(const QString &logFileName);
+    void showArenaLog(const QString &logFileName);
 
 signals:
     void pLog(QString line);
@@ -84,8 +86,6 @@ public slots:
     void showNoArena();
     void enableRefreshButton(bool enable=true);
     void syncArenaCurrent();
-    void removeDuplicateArena();
-    void linkLogsToWebGames();
 
     //NetworkManager
     void replyFinished(QNetworkReply *reply);

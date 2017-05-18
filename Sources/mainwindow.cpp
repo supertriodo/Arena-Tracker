@@ -854,10 +854,6 @@ void MainWindow::createWebUploader()
             this, SLOT(updateAMConnectButton(bool)));
     connect(webUploader, SIGNAL(connectionTried(bool)),
             this, SLOT(currentArenaToWhiteAM(bool)));
-    connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
-            arenaHandler, SLOT(removeDuplicateArena()));
-    connect(webUploader, SIGNAL(loadArenaCurrentFinished()),
-            arenaHandler, SLOT(linkLogsToWebGames()));
     connect(webUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1844,7 +1840,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
         if(endDraftLog)
         {
             pDebug("End DraftLog: " + draftLogFile);
-            if(arenaHandler != NULL)    arenaHandler->linkLogToDraft(draftLogFile);
+            if(arenaHandler != NULL)    arenaHandler->linkDraftLogToArenaCurrent(draftLogFile);
             draftLogFile = "";
         }
     }
@@ -2163,10 +2159,22 @@ void MainWindow::checkGamesLogDir()
     int indexDraft = files.indexOf(QRegularExpression("DRAFT.*"));
     pDebug("Last arena DRAFT: " + (indexDraft==-1?QString("Not Found"):files[indexDraft]));
 
-    for(int i=maxGamesLog; i<files.length(); i++)
+    for(int i=files.length()-1; i>=0; i--)
     {
         QString file = files[i];
-        if(!(i < indexDraft && file.contains("ARENA")) && !(i == indexDraft))
+        //Current arena game
+        if(i < indexDraft && file.contains("ARENA"))
+        {
+            emit pDebug("Show GameResut: " + file);
+            arenaHandler->showGameResultLog(file);
+        }
+        //Current arena draft
+        else if(i == indexDraft)
+        {
+            emit pDebug("Show Arena: " + file);
+            arenaHandler->showArenaLog(file);
+        }
+        else if(i >= maxGamesLog)
         {
             dir.remove(file);
             pDebug(file + " removed.");
@@ -3043,10 +3051,15 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Support import web github
 //Revisar replayLogsMap y su conexion con AM
 //Completar deck con ultimo draft sin conexion con AM
 //New stats system.
+//Recarga web al cambiar theme
+//Load games start and link to log
+//Test manual draft
+//Test upload zero2heroes y color green sea
+//Eliminar ArenaMastery connection.
+//Asociar Zero2Heroes con trackobot account.
 
 
 //REPLAY BUGS
