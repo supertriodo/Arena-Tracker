@@ -979,24 +979,18 @@ void DraftHandler::setTransparency(Transparency value)
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabHero->setAttribute(Qt::WA_NoBackground);
-        ui->tabHero->repaint();
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
 
-        ui->heroLabel->setStyleSheet("QLabel{background-color: transparent; color: white;}");
         ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
     else
     {
-        ui->tabHero->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabHero->repaint();
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
 
-        ui->heroLabel->setStyleSheet("");
         ui->textBrowserDraft->setStyleSheet("");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");

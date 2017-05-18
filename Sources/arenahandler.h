@@ -3,7 +3,6 @@
 
 #include "Widgets/ui_extended.h"
 #include "gamewatcher.h"
-#include "webuploader.h"
 #include "deckhandler.h"
 #include "utility.h"
 #include "trackobotuploader.h"
@@ -20,7 +19,6 @@ public:
 
 //Variables
 private:
-    WebUploader *webUploader;
     TrackobotUploader *trackobotUploader;
     DeckHandler *deckHandler;
     PlanHandler *planHandler;
@@ -33,12 +31,10 @@ private:
     QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
     QMap<QTreeWidgetItem *, QString> replayLogsMap;
     QTreeWidgetItem *lastReplayUploaded;
-    bool noArena;
     bool mouseInApp;
     Transparency transparency;
     Theme theme;
     QNetworkAccessManager *networkManager;
-    bool connectedAM;
 
 
 //Metodos
@@ -54,18 +50,16 @@ private:
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
     QString compressLog(QString logFileName);
     bool isRowWhite(QTreeWidgetItem *item);
+    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    void showArena(QString hero);
 
 public:
-    void setWebUploader(WebUploader *webUploader);
-    bool isNoArena();
-    void currentArenaToWhite();
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme(Theme theme);
     void deselectRow();
     void linkDraftLogToArenaCurrent(QString logFileName);
-    QString getArenaCurrentGameLog();
-    void setConnectedAM(bool value);
+    QString getArenaCurrentDraftLog();
     QTreeWidgetItem *showGameResultLog(const QString &logFileName);
     void showArenaLog(const QString &logFileName);
 
@@ -79,23 +73,12 @@ public slots:
     bool newArena(QString hero);
     void showRewards();
 
-    //WebUploader
-    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    void showArena(QString hero);
-    void reshowGameResult(GameResult gameResult);
-    void reshowArena(QString hero);
-    void showNoArena();
-    void enableRefreshButton(bool enable=true);
-    void syncArenaCurrent();
-
     //NetworkManager
     void replyFinished(QNetworkReply *reply);
 
 private slots:
-    void refresh();
     void openDonateWeb();
     void hideRewards();
-    void uploadRewards();
     void changedRow(QTreeWidgetItem *current);
     void replayLog();
     void openTBProfile();

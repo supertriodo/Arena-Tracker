@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     draftLogFile = "";
     cardHeight = -1;
 
-    webUploader = NULL;//NULL indica que estamos leyendo el old log (primera lectura)
     logLoader = NULL;
     gameWatcher = NULL;
     arenaHandler = NULL;
@@ -75,7 +74,6 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     logLoader = NULL;
     gameWatcher = NULL;
     arenaHandler = NULL;
-    webUploader = NULL;
     cardDownloader = NULL;
     enemyHandHandler = NULL;
     draftHandler = NULL;
@@ -101,7 +99,6 @@ MainWindow::~MainWindow()
     if(logLoader != NULL)           delete logLoader;
     if(gameWatcher != NULL)         delete gameWatcher;
     if(arenaHandler != NULL)        delete arenaHandler;
-    if(webUploader != NULL)         delete webUploader;
     if(cardDownloader != NULL)      delete cardDownloader;
     if(enemyDeckHandler != NULL)    delete enemyDeckHandler;
     if(enemyHandHandler != NULL)    delete enemyHandHandler;
@@ -379,8 +376,6 @@ void MainWindow::createDraftHandler()
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardDraft(QString)));
-    connect(draftHandler, SIGNAL(draftEnded()),
-            this, SLOT(uploadDeck()));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),
@@ -559,6 +554,10 @@ void MainWindow::createGameWatcher()
 {
     gameWatcher = new GameWatcher(this);
 
+    connect(gameWatcher, SIGNAL(newArena(QString)),
+            this, SLOT(resetDeckDontRead()));
+    connect(gameWatcher, SIGNAL(needResetDeck()),
+            this, SLOT(resetDeck()));
     connect(gameWatcher, SIGNAL(arenaDeckRead()),
             this, SLOT(completeArenaDeck()));
     connect(gameWatcher, SIGNAL(pLog(QString)),
@@ -743,33 +742,18 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
-    //Connect en synchronizedDone
-//    connect(gameWatcher,SIGNAL(newArena(QString)),
-//            draftHandler, SLOT(beginDraft(QString)));
-    connect(gameWatcher,SIGNAL(activeDraftDeck()),
+    connect(gameWatcher, SIGNAL(newArena(QString)),
+            draftHandler, SLOT(beginDraft(QString)));
+    connect(gameWatcher, SIGNAL(activeDraftDeck()),
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
+    connect(gameWatcher, SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
             draftHandler, SLOT(endDraft()));
-    connect(gameWatcher,SIGNAL(needResetDeck()),
-            this, SLOT(resetDeck()));
-    connect(gameWatcher,SIGNAL(pickCard(QString)),
+    connect(gameWatcher, SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
     connect(gameWatcher, SIGNAL(enterArena()),
             draftHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             draftHandler, SLOT(leaveArena()));
-}
-
-
-void MainWindow::showTabHeroOnNoArena()
-{
-    if(webUploader == NULL) return;
-    if(arenaHandler->isNoArena())
-    {
-        ui->tabWidget->addTab(ui->tabHero, "Draft");
-        ui->tabWidget->setCurrentWidget(ui->tabHero);
-        this->calculateMinimumWidth();
-    }
 }
 
 
@@ -788,10 +772,8 @@ void MainWindow::createLogLoader()
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-
-    //Connect en synchronizedDone
-//    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
-//            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
+    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
+            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
 
     //Connect de draftHandler
     connect(draftHandler, SIGNAL(draftEnded()),
@@ -805,63 +787,14 @@ void MainWindow::createLogLoader()
 
 void MainWindow::synchronizedDone()
 {
-    createWebUploader();
     gameWatcher->setSynchronized();
     secretsHandler->setSynchronized();
     deckHandler->setSynchronized();
 
     spreadTransparency(this->transparency);
 
-    //Connections after synchronized
-    connect(gameWatcher,SIGNAL(newArena(QString)),
-            draftHandler, SLOT(beginDraft(QString)));
-    connect(gameWatcher, SIGNAL(newArena(QString)),
-            this, SLOT(resetDeckDontRead()));
-    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
-            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
-
-
     //Test
     QTimer::singleShot(5000, this, SLOT(test()));
-}
-
-
-void MainWindow::currentArenaToWhiteAM(bool connected)
-{
-    if(connected) arenaHandler->currentArenaToWhite();
-}
-
-
-void MainWindow::createWebUploader()
-{
-    if(webUploader != NULL)   return;
-    webUploader = new WebUploader(this);
-    connect(webUploader, SIGNAL(loadedGameResult(GameResult, LoadingScreenState)),
-            arenaHandler, SLOT(showGameResult(GameResult, LoadingScreenState)));
-    connect(webUploader, SIGNAL(loadedArena(QString)),
-            arenaHandler, SLOT(showArena(QString)));
-    connect(webUploader, SIGNAL(reloadedGameResult(GameResult)),
-            arenaHandler, SLOT(reshowGameResult(GameResult)));
-    connect(webUploader, SIGNAL(reloadedArena(QString)),
-            arenaHandler, SLOT(reshowArena(QString)));
-    connect(webUploader, SIGNAL(synchronized()),
-            arenaHandler, SLOT(enableRefreshButton()));
-    connect(webUploader, SIGNAL(synchronized()),
-            arenaHandler, SLOT(syncArenaCurrent()));
-    connect(webUploader, SIGNAL(noArenaFound()),
-            arenaHandler, SLOT(showNoArena()));
-    connect(webUploader, SIGNAL(connectionTried(bool)),
-            this, SLOT(updateAMConnectButton(bool)));
-    connect(webUploader, SIGNAL(connectionTried(bool)),
-            this, SLOT(currentArenaToWhiteAM(bool)));
-    connect(webUploader, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
-    connect(webUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
-            this, SLOT(pDebug(QString,DebugLevel,QString)));
-
-
-    arenaHandler->setWebUploader(webUploader);
-    tryConnectAM();
 }
 
 
@@ -1081,10 +1014,6 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     //Zero To Heroes
     ui->configSliderZero->setValue(maxGamesLog);
     updateMaxGamesLog(maxGamesLog);
-
-    //Arena Mastery
-    ui->configLineEditMastery->setText(AMplayerEmail);
-    ui->configLineEditMastery2->setText(AMpassword);
 }
 
 
@@ -1205,8 +1134,6 @@ void MainWindow::writeSettings()
         settings.setValue("showRngList", ui->configCheckRngList->isChecked());
         settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
-        settings.setValue("playerEmail", ui->configLineEditMastery->text());
-        settings.setValue("password", ui->configLineEditMastery2->text());
     }
     else
     {
@@ -1979,21 +1906,6 @@ void MainWindow::closeLogFile()
 }
 
 
-void MainWindow::uploadDeck()
-{
-    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
-    if(deckCardList != NULL)
-    {
-        gameWatcher->setDeckRead();
-        if(webUploader != NULL)     webUploader->uploadDeck(deckCardList);
-    }
-    else
-    {
-        gameWatcher->setDeckRead(false);
-    }
-}
-
-
 bool MainWindow::createDir(QString pathDir)
 {
     QFileInfo dirInfo(pathDir);
@@ -2187,7 +2099,7 @@ void MainWindow::completeArenaDeck()
 {
     if(arenaHandler == NULL)    return;
 
-    QString arenaCurrentGameLog = arenaHandler->getArenaCurrentGameLog();
+    QString arenaCurrentGameLog = arenaHandler->getArenaCurrentDraftLog();
     if(arenaCurrentGameLog.isEmpty())
     {
         pDebug("Completing Arena Deck: No draft log.");
@@ -2405,7 +2317,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet(groupBoxCSS);
         ui->configBoxHand->setStyleSheet(groupBoxCSS);
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
-        ui->configBoxMastery->setStyleSheet(groupBoxCSS);
         ui->configBoxZero->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftExtra->setStyleSheet(groupBoxCSS);
@@ -2417,8 +2328,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDeckTooltip2->setStyleSheet(labelCSS);
         ui->configLabelDrawTime->setStyleSheet(labelCSS);
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
-        ui->configLabelMastery->setStyleSheet(labelCSS);
-        ui->configLabelMastery2->setStyleSheet(labelCSS);
         ui->configLabelZero->setStyleSheet(labelCSS);
         ui->configLabelZero2->setStyleSheet(labelCSS);
 
@@ -2455,7 +2364,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet("");
         ui->configBoxHand->setStyleSheet("");
         ui->configBoxDraft->setStyleSheet("");
-        ui->configBoxMastery->setStyleSheet("");
         ui->configBoxZero->setStyleSheet("");
         ui->configBoxDraftMethod->setStyleSheet("");
         ui->configBoxDraftExtra->setStyleSheet("");
@@ -2467,8 +2375,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDeckTooltip2->setStyleSheet("");
         ui->configLabelDrawTime->setStyleSheet("");
         ui->configLabelDrawTimeValue->setStyleSheet("");
-        ui->configLabelMastery->setStyleSheet("");
-        ui->configLabelMastery2->setStyleSheet("");
         ui->configLabelZero->setStyleSheet("");
         ui->configLabelZero2->setStyleSheet("");
 
@@ -2874,49 +2780,6 @@ void MainWindow::updateMaxGamesLog(int value)
 }
 
 
-void MainWindow::updateAMConnectButton(bool isConnected)
-{
-    if(isConnected) updateAMConnectButton(1);
-    else            updateAMConnectButton(0);
-}
-
-
-void MainWindow::updateAMConnectButton(int value)
-{
-    switch(value)
-    {
-        case 0:
-            ui->configButtonMastery->setIcon(QIcon(":/Images/lose.png"));
-            ui->configButtonMastery->setEnabled(true);
-            arenaHandler->setConnectedAM(false);
-            break;
-        case 1:
-            ui->configButtonMastery->setIcon(QIcon(":/Images/win.png"));
-            ui->configButtonMastery->setEnabled(true);
-            arenaHandler->setConnectedAM(true);
-            break;
-        case 2:
-            ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
-            ui->configButtonMastery->setEnabled(true);
-            arenaHandler->setConnectedAM(false);
-            break;
-    }
-}
-
-
-void MainWindow::tryConnectAM()
-{
-    if(webUploader == NULL) return;
-    if(arenaHandler == NULL)return;
-    if(ui->configLineEditMastery->text().isEmpty())     return;
-    if(ui->configLineEditMastery2->text().isEmpty())    return;
-
-    ui->configButtonMastery->setIcon(QIcon(":/Images/refresh.png"));
-    ui->configButtonMastery->setEnabled(false);
-    webUploader->tryConnect(ui->configLineEditMastery->text(), ui->configLineEditMastery2->text());
-}
-
-
 void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
@@ -2956,15 +2819,6 @@ void MainWindow::completeConfigTab()
 
     //Zero To Heroes
     connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
-
-    //Arena Mastery
-    connect(ui->configLineEditMastery, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
-    connect(ui->configLineEditMastery, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
-
-    connect(ui->configLineEditMastery2, SIGNAL(textChanged(QString)), this, SLOT(updateAMConnectButton()));
-    connect(ui->configLineEditMastery2, SIGNAL(returnPressed()), this, SLOT(tryConnectAM()));
-
-    connect(ui->configButtonMastery, SIGNAL(clicked()), this, SLOT(tryConnectAM()));
 
 
     completeHighResConfigTab();
@@ -3051,16 +2905,18 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Revisar replayLogsMap y su conexion con AM
-//Completar deck con ultimo draft sin conexion con AM
-//New stats system.
 //Recarga web al cambiar theme
-//Load games start and link to log
 //Test manual draft
-//Test upload zero2heroes y color green sea
 //Eliminar ArenaMastery connection.
-//Asociar Zero2Heroes con trackobot account.
 //test trackobot app + AT juntos y comparar uploads, probar usar hero power.
+//Remove void ArenaHandler::currentArenaToWhite()
+//Rewards
+//Eliminar ArenaPrevious
+//QList<GameResult> arenaCurrentGameList; //Se usa en reshowGameResult
+//QList<GameResult> arenaPreviousGameList; //Se usa en removeDuplicateArena
+//Test log con varios games y un draft, no se crean logs ni se empieza el draft.
+//Eliminar synchronizedDone
+//Variables en initConfig warning para AM
 
 
 //REPLAY BUGS

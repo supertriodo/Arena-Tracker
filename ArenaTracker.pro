@@ -20,7 +20,6 @@ SOURCES += Sources/main.cpp\
     Sources/logloader.cpp \
     Sources/logworker.cpp \
     Sources/gamewatcher.cpp \
-    Sources/webuploader.cpp \
     Sources/hscarddownloader.cpp \
     Sources/deckhandler.cpp \
     Sources/enemyhandhandler.cpp \
@@ -63,7 +62,6 @@ HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
     Sources/logworker.h \
     Sources/gamewatcher.h \
-    Sources/webuploader.h \
     Sources/hscarddownloader.h \
     Sources/deckhandler.h \
     Sources/enemyhandhandler.h \

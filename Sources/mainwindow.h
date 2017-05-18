@@ -3,7 +3,6 @@
 
 #include "logloader.h"
 #include "gamewatcher.h"
-#include "webuploader.h"
 #include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "enemydeckhandler.h"
@@ -53,7 +52,6 @@ private:
     Ui::Extended *ui;
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
-    WebUploader *webUploader;
     HSCardDownloader *cardDownloader;
     EnemyDeckHandler *enemyDeckHandler;
     DeckHandler *deckHandler;
@@ -106,7 +104,6 @@ private:
     void createPlanHandler();
     void createSecretsHandler();
     void createDraftHandler();
-    void createWebUploader();
     void createVersionChecker();
     void createTrackobotUploader();
     void readSettings();
@@ -150,7 +147,7 @@ private:
     int getAutoTamCard();
     void createNetworkManager();
     void initCardsJson();
-    void removeHSCards();
+    void removeHSCards();   //Desactivado: Remove HSCards when upgrading version
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void askLinuxShortcut();
     void createLinuxShortcut();
@@ -173,7 +170,6 @@ protected:
 //Slots
 public slots:
     //GameWatcher
-    void showTabHeroOnNoArena();
     void resetDeck(bool deckRead=false);
     void resetDeckDontRead();
 
@@ -182,9 +178,6 @@ public slots:
 
     //HSCardDownloader
     void redrawDownloadedCardImage(QString code);
-
-    //DraftHandler
-    void uploadDeck();
 
     //Widgets
     void resizeSlot(QSize size);
@@ -213,16 +206,12 @@ private slots:
     void toggleTheme();
     void toggleDraftLearningMode();
     void updateTooltipScale(int value);
-    void updateAMConnectButton(int value=2);
-    void updateAMConnectButton(bool isConnected);
-    void tryConnectAM();
     void closeApp();
     void updateShowClassColor(bool checked);
     void updateShowSpellColor(bool checked);
     void updateShowManaLimits(bool checked);
     void fadeBarAndButtons(bool fadeOut);
     void spreadMouseInApp();
-    void currentArenaToWhiteAM(bool connected);
     void updateMaxGamesLog(int value);
     void logReset();
     void spreadCorrectTamCard();

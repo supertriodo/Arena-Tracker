@@ -9,7 +9,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
                            TrackobotUploader *trackobotUploader, PlanHandler *planHandler,
                            Ui::Extended *ui) : QObject(parent)
 {
-    this->webUploader = NULL;
     this->trackobotUploader = trackobotUploader;
     this->deckHandler = deckHandler;
     this->planHandler = planHandler;
@@ -17,7 +16,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
     this->transparency = Opaque;
     this->theme = ThemeWhite;
     this->mouseInApp = false;
-    this->connectedAM = false;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
@@ -38,8 +36,6 @@ void ArenaHandler::completeUI()
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
 
-    connect(ui->updateButton, SIGNAL(clicked()),
-            this, SLOT(refresh()));
     connect(ui->webButton, SIGNAL(clicked()),
             this, SLOT(openTBProfile()));
     connect(ui->replayButton, SIGNAL(clicked()),
@@ -54,13 +50,6 @@ void ArenaHandler::completeUI()
     ui->lineEditPlainCard->setMinimumWidth(1);
     ui->lineEditGoldCard->setMinimumWidth(1);
     hideRewards();
-
-    connect(ui->rewardsNoButton, SIGNAL(clicked(bool)),
-            this, SLOT(hideRewards()));
-    connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
-            this, SLOT(hideRewards()));
-    connect(ui->rewardsYesButton, SIGNAL(clicked(bool)),
-            this, SLOT(uploadRewards()));
 }
 
 
@@ -89,7 +78,6 @@ void ArenaHandler::createTreeWidget()
     arenaCurrent = NULL;
     arenaPrevious = NULL;
     arenaCurrentHero = "";
-    noArena = false;
 
     for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
     adventureTreeItem = NULL;
@@ -115,12 +103,6 @@ void ArenaHandler::changedRow(QTreeWidgetItem *current)
     {
         ui->replayButton->setEnabled(false);
     }
-}
-
-
-void ArenaHandler::setConnectedAM(bool value)
-{
-    this->connectedAM = value;
 }
 
 
@@ -285,33 +267,11 @@ void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 }
 
 
-void ArenaHandler::setWebUploader(WebUploader *webUploader)
-{
-    this->webUploader = webUploader;
-}
-
-
 void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch)
 {
     QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
 
     if(item != NULL && !logFileName.isEmpty())  replayLogsMap[item] = logFileName;
-
-    //Arena Mastery upload
-    if(loadingScreen == arena && webUploader!=NULL && webUploader->isConnected())
-    {
-        QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
-        bool uploadSuccess;
-        if(deckCardList != NULL)    uploadSuccess=webUploader->uploadNewGameResult(gameResult,deckCardList);
-        else                            uploadSuccess=webUploader->uploadNewGameResult(gameResult);
-
-        if(uploadSuccess)
-        {
-            enableRefreshButton(false);
-            currentArenaToWhite();
-        }
-        else if(item != NULL)   setRowColor(item, RED);
-    }
 
     //Trackobot upload
     if(trackobotUploader != NULL && planHandler != NULL &&
@@ -511,50 +471,9 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 }
 
 
-void ArenaHandler::reshowGameResult(GameResult gameResult)
-{
-    if(arenaCurrent == NULL)    return;
-    if(!isRowOk(arenaCurrent))  return;//Imposible
-
-    for(int i=0; i<arenaCurrent->childCount(); i++)
-    {
-        QTreeWidgetItem *item = arenaCurrent->child(i);
-        QColor statusColor = getRowColor(item);
-        if((statusColor == RED || statusColor == WHITE || statusColor == TRANSPARENT) &&
-            arenaCurrentGameList.at(i).enemyHero == gameResult.enemyHero &&
-            arenaCurrentGameList.at(i).isFirst == gameResult.isFirst &&
-            arenaCurrentGameList.at(i).isWinner == gameResult.isWinner)
-        {
-            if(replayLogsMap[item].contains(QRegularExpression("ARENA .*\\.\\w+\\.arenatracker")))
-            {
-                setRowColor(item, SEA_GREEN);
-            }
-            else
-            {
-                setRowColor(item, GREEN);
-            }
-            return;
-        }
-    }
-
-    QTreeWidgetItem *item = showGameResult(gameResult, arena);
-    if(item != NULL)    setRowColor(item, YELLOW);
-}
-
-
 bool ArenaHandler::newArena(QString hero)
 {
     showArena(hero);
-
-    if(webUploader==NULL || !webUploader->isConnected())
-    {
-    }
-    else if(!webUploader->uploadNewArena(hero))
-    {
-        setRowColor(arenaCurrent, RED);
-        return false;
-    }
-    else    enableRefreshButton(false);
     return true;
 }
 
@@ -576,65 +495,14 @@ void ArenaHandler::showArena(QString hero)
 {
     emit pDebug("Show Arena.");
 
-    if(noArena)
-    {
-        QTreeWidgetItem *item = ui->arenaTreeWidget->takeTopLevelItem(ui->arenaTreeWidget->topLevelItemCount()-1);
-        delete item;
-        noArena = false;
-        //La gameList se paso a previous en el showNoArena
-    }
-    else
-    {
-        //Pasamos la gameList a previous
-        arenaPreviousGameList.clear();
-        arenaPreviousGameList = arenaCurrentGameList;
-        arenaCurrentGameList = QList<GameResult>();
-        arenaPrevious = arenaCurrent;
-    }
-
-    arenaCurrentHero = QString(hero);
-    arenaCurrent = createTopLevelItem("Arena", arenaCurrentHero, true);
-}
-
-
-void ArenaHandler::showNoArena()
-{
-    if(noArena) return;
-
-    emit pDebug("Show no arena.");
-
     //Pasamos la gameList a previous
     arenaPreviousGameList.clear();
     arenaPreviousGameList = arenaCurrentGameList;
     arenaCurrentGameList = QList<GameResult>();
     arenaPrevious = arenaCurrent;
 
-    QTreeWidgetItem *item = new QTreeWidgetItem(ui->arenaTreeWidget);
-    item->setText(0, "None");
-    setRowColor(item, GREEN);
-    arenaCurrent = NULL;
-    arenaCurrentHero = "";
-    noArena = true;
-}
-
-
-void ArenaHandler::reshowArena(QString hero)
-{
-    if(arenaCurrent == NULL || arenaCurrentHero != hero)
-    {
-        showArena(hero);
-        setRowColor(arenaCurrent, YELLOW);
-        return;
-    }
-
-    if(replayLogsMap[arenaCurrent].contains(QRegularExpression("DRAFT .*\\.\\w+\\.arenatracker")))
-    {
-        setRowColor(arenaCurrent, SEA_GREEN);
-    }
-    else
-    {
-        setRowColor(arenaCurrent, GREEN);
-    }
+    arenaCurrentHero = QString(hero);
+    arenaCurrent = createTopLevelItem("Arena", arenaCurrentHero, true);
 }
 
 
@@ -671,65 +539,6 @@ bool ArenaHandler::isRowOk(QTreeWidgetItem *item)
 }
 
 
-void ArenaHandler::refresh()
-{
-    currentArenaToWhite();
-
-    emit pDebug("\nRefresh Button.");
-    ui->updateButton->setEnabled(false);
-
-    if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
-}
-
-
-void ArenaHandler::currentArenaToWhite()
-{
-    if(arenaCurrent != NULL)
-    {
-        setRowColor(arenaCurrent, WHITE);
-
-        //Iniciamos a blanco todas las partidas que no esten en rojo
-        for(int i=0; i<arenaCurrent->childCount(); i++)
-        {
-            setRowColor(arenaCurrent->child(i), WHITE);
-        }
-    }
-}
-
-
-void ArenaHandler::syncArenaCurrent()
-{
-    int wins = 0;
-    int loses = 0;
-
-    if(arenaCurrent != NULL)
-    {
-        for(int i=0; i<arenaCurrent->childCount(); i++)
-        {
-            QColor color = getRowColor(arenaCurrent->child(i));
-            if(color == WHITE || color == RED)
-            {
-                setRowColor(arenaCurrent->child(i), RED);
-            }
-            else
-            {
-                arenaCurrentGameList[i].isWinner?wins++:loses++;
-            }
-        }
-
-        arenaCurrent->setText(2, QString::number(wins));
-        arenaCurrent->setText(3, QString::number(loses));
-        emit pDebug("Recalculate arena win/loses (Web sync).");
-    }
-}
-
-
-void ArenaHandler::enableRefreshButton(bool enable)
-{
-    ui->updateButton->setEnabled(enable);
-}
-
-
 void ArenaHandler::openDonateWeb()
 {
     QDesktopServices::openUrl(QUrl(
@@ -743,12 +552,6 @@ void ArenaHandler::openTBProfile()
 {
     if(trackobotUploader == NULL)   return;
     trackobotUploader->openTBProfile();
-}
-
-
-bool ArenaHandler::isNoArena()
-{
-    return noArena;
 }
 
 
@@ -799,23 +602,6 @@ void ArenaHandler::showRewards()
 }
 
 
-void ArenaHandler::uploadRewards()
-{
-    ArenaRewards arenaRewards;
-
-    arenaRewards.gold = ui->lineEditGold->text().toInt();
-    arenaRewards.dust = ui->lineEditArcaneDust->text().toInt();
-    arenaRewards.packs = ui->lineEditPack->text().toInt();
-    arenaRewards.plainCards = ui->lineEditPlainCard->text().toInt();
-    arenaRewards.goldCards = ui->lineEditGoldCard->text().toInt();
-
-    if(webUploader!=NULL && webUploader->isConnected() && webUploader->uploadArenaRewards(arenaRewards))
-    {
-        enableRefreshButton(false);
-    }
-}
-
-
 void ArenaHandler::updateWhiteRows()
 {
     int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
@@ -856,13 +642,6 @@ void ArenaHandler::setTransparency(Transparency value)
     {
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
         updateWhiteRows();
-
-        //Solo recargamos arenaMastery si la transparencia se ha cambiado, no cuando el raton entra y sale.
-        if(transparencyChanged && ui->updateButton->isEnabled())
-        {
-            ui->updateButton->setEnabled(false);
-            if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
-        }
     }
 }
 
@@ -881,16 +660,10 @@ void ArenaHandler::setTheme(Theme theme)
 
     //Change arenaTreeWidget normal color to (BLACK/WHITE)
     updateWhiteRows();
-
-    if(ui->updateButton->isEnabled())
-    {
-        ui->updateButton->setEnabled(false);
-        if(webUploader!=NULL && webUploader->isConnected())     webUploader->refresh();
-    }
 }
 
 
-QString ArenaHandler::getArenaCurrentGameLog()
+QString ArenaHandler::getArenaCurrentDraftLog()
 {
     if(replayLogsMap.contains(arenaCurrent))    return replayLogsMap[arenaCurrent];
     else                                        return "";
