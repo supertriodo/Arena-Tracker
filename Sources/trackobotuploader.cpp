@@ -28,6 +28,12 @@ bool TrackobotUploader::isConnected()
 }
 
 
+QString TrackobotUploader::getUsername()
+{
+    return this->username;
+}
+
+
 void TrackobotUploader::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();

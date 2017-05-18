@@ -107,7 +107,7 @@ void ArenaHandler::deselectRow()
 
 void ArenaHandler::changedRow(QTreeWidgetItem *current)
 {
-    if(connectedAM && ui->arenaTreeWidget->selectionMode()!=QAbstractItemView::NoSelection && replayLogsMap.contains(current))
+    if(trackobotUploader->isConnected() && ui->arenaTreeWidget->selectionMode()!=QAbstractItemView::NoSelection && replayLogsMap.contains(current))
     {
         ui->replayButton->setEnabled(true);
     }
@@ -126,7 +126,7 @@ void ArenaHandler::setConnectedAM(bool value)
 
 void ArenaHandler::replayLog()
 {
-    if(!connectedAM || lastReplayUploaded != NULL || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
+    if(!trackobotUploader->isConnected() || lastReplayUploaded != NULL || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
 
     QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
     QRegularExpressionMatch match;
@@ -172,7 +172,7 @@ void ArenaHandler::replayLog()
 
     multiPart->append(textPart);
 
-    url += "ArenaTracker/" + ui->configLineEditMastery->text();
+    url += "ArenaTracker/" + trackobotUploader->getUsername();
     url.replace("+", "%2B");    //Encode +
     QNetworkRequest request;
     request.setUrl(QUrl(url).adjusted(QUrl::FullyEncoded));
@@ -463,7 +463,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
 {
     QRegularExpressionMatch match;
-    if(logFileName.contains(QRegularExpression("(\\w+) \\w+-\\d+ \\d+-\\d+ (\\w+)vs(\\w+) (WIN|LOSE) (FIRST|COIN)\\.arenatracker"), &match))
+    if(logFileName.contains(QRegularExpression("(\\w+) \\w+-\\d+ \\d+-\\d+ (\\w+)vs(\\w+) (WIN|LOSE) (FIRST|COIN)(\\.\\w+)?\\.arenatracker"), &match))
     {
         GameResult gameResult;
         LoadingScreenState loadingScreen = Utility::getLoadingScreenFromString(match.captured(1));
@@ -473,7 +473,12 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         gameResult.isFirst = match.captured(5)=="FIRST";
 
         QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
-        if(item != NULL)    replayLogsMap[item] = logFileName;
+        if(item != NULL)
+        {
+            replayLogsMap[item] = logFileName;
+            if(!match.captured(6).isEmpty())    setRowColor(item, SEA_GREEN);
+
+        }
         return item;
     }
 
@@ -557,10 +562,11 @@ bool ArenaHandler::newArena(QString hero)
 void ArenaHandler::showArenaLog(const QString &logFileName)
 {
     QRegularExpressionMatch match;
-    if(logFileName.contains(QRegularExpression("DRAFT \\w+-\\d+ \\d+-\\d+ (\\w+)\\.arenatracker"), &match))
+    if(logFileName.contains(QRegularExpression("DRAFT \\w+-\\d+ \\d+-\\d+ (\\w+)(\\.\\w+)?\\.arenatracker"), &match))
     {
         QString playerHero = Utility::heroToLogNumber(match.captured(1));
         showArena(playerHero);
+        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, SEA_GREEN);
         linkDraftLogToArenaCurrent(logFileName);
     }
 }
