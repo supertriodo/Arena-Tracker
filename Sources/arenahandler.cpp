@@ -131,7 +131,7 @@ void ArenaHandler::replayLog()
     }
     else
     {
-        emit pDebug(logFileName + "isn't a draft or arena game.", Error);
+        emit pDebug(logFileName + " isn't a draft or arena game.", Error);
         return;
     }
 
@@ -422,7 +422,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
 {
     QRegularExpressionMatch match;
-    if(logFileName.contains(QRegularExpression("(\\w+) \\w+-\\d+ \\d+-\\d+ (\\w+)vs(\\w+) (WIN|LOSE) (FIRST|COIN)(\\.\\w+)?\\.arenatracker"), &match))
+    if(logFileName.contains(QRegularExpression("(\\w+) \\w+-\\d+ \\d+-\\d+ (\\w*)vs(\\w*) (WIN|LOSE) (FIRST|COIN)(\\.\\w+)?\\.arenatracker"), &match))
     {
         GameResult gameResult;
         LoadingScreenState loadingScreen = Utility::getLoadingScreenFromString(match.captured(1));

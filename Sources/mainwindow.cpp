@@ -2045,9 +2045,9 @@ void MainWindow::checkGamesLogDir()
     if(maxGamesLog == 100)
     {
         pDebug("GamesLog: Keep ALL.");
-        return;
+        maxGamesLog = std::numeric_limits<int>::max();
     }
-    pDebug("GamesLog: Keep recent " + QString::number(maxGamesLog) + ".");
+    else    pDebug("GamesLog: Keep recent " + QString::number(maxGamesLog) + ".");
 
     QDir dir(Utility::gameslogPath());
     dir.setFilter(QDir::Files);
@@ -2063,19 +2063,19 @@ void MainWindow::checkGamesLogDir()
     for(int i=files.length()-1; i>=0; i--)
     {
         QString file = files[i];
-        //Current arena game
-        if(i < indexDraft && file.contains("ARENA"))
-        {
-            emit pDebug("Show GameResut: " + file);
-            arenaHandler->showGameResultLog(file);
-        }
-        //Current arena draft
-        else if(i == indexDraft)
+        //Current arena draft or kept draft
+        if((file.startsWith("DRAFT") && i < maxGamesLog) || i == indexDraft)
         {
             emit pDebug("Show Arena: " + file);
             arenaHandler->showArenaLog(file);
         }
-        else if(i >= maxGamesLog)
+        //Current arena game or kept other games
+        else if((file.startsWith("ARENA") && i < indexDraft) || (i < maxGamesLog))
+        {
+            emit pDebug("Show GameResut: " + file);
+            arenaHandler->showGameResultLog(file);
+        }
+        else
         {
             dir.remove(file);
             pDebug(file + " removed.");
@@ -2901,10 +2901,8 @@ void MainWindow::createDebugPack()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
-//Test manual draft
-//test trackobot app + AT juntos y comparar uploads, probar usar hero power.
-//Test log con varios games y un draft, no se crean logs ni se empieza el draft.
 //Variables en initConfig warning para AM / Export AM
+//Zero2H upload non arena games
 
 
 //REPLAY BUGS
