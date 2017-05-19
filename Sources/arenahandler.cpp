@@ -125,14 +125,9 @@ void ArenaHandler::replayLog()
     {
         url = Z2H_UPLOAD_DRAFT_URL;
     }
-    else if(logFileName.startsWith("ARENA"))
-    {
-        url = Z2H_UPLOAD_GAME_URL;
-    }
     else
     {
-        emit pDebug(logFileName + " isn't a draft or arena game.", Error);
-        return;
+        url = Z2H_UPLOAD_GAME_URL;
     }
 
 

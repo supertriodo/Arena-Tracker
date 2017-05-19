@@ -1518,8 +1518,7 @@
                    <item>
                     <widget class="QPushButton" name="configButtonForceDraft">
                      <property name="toolTip">
-                      <string>Force Draft: Start a new arena draft from the beginning.
-It'll clear any drafting progress.</string>
+                      <string>Force Draft: Start a new arena draft from the beginning.</string>
                      </property>
                      <property name="text">
                       <string/>

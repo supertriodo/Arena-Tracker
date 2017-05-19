@@ -2902,7 +2902,6 @@ void MainWindow::createDebugPack()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //Variables en initConfig warning para AM / Export AM
-//Zero2H upload non arena games
 
 
 //REPLAY BUGS
