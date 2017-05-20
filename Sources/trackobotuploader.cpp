@@ -73,7 +73,6 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         }
         else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
-            qDebug()<<reply->readAll();
             emit pDebug("Upload Results success.");
         }
     }

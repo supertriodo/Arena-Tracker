@@ -899,8 +899,7 @@ void MainWindow::closeApp()
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList,
-                               bool createGoldenCards, int maxGamesLog,
-                               QString AMplayerEmail, QString AMpassword)
+                               bool createGoldenCards, int maxGamesLog)
 {
     //Actions
     ui->configCheckGoldenCards->setChecked(createGoldenCards);
@@ -1073,11 +1072,9 @@ void MainWindow::readSettings()
         bool showRngList = settings.value("showRngList", true).toBool();
         bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
-        QString AMplayerEmail = settings.value("playerEmail", "").toString();
-        QString AMpassword = settings.value("password", "").toString();
 
         initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      createGoldenCards, maxGamesLog, AMplayerEmail, AMpassword);
+                      createGoldenCards, maxGamesLog);
     }
     else
     {
@@ -2900,8 +2897,6 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-
-//Variables en initConfig warning para AM / Export AM
 
 
 //REPLAY BUGS

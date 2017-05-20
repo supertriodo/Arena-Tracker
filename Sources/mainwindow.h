@@ -135,7 +135,7 @@ private:
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList,
-                       bool createGoldenCards, int maxGamesLog, QString AMplayerEmail, QString AMpassword);
+                       bool createGoldenCards, int maxGamesLog);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
