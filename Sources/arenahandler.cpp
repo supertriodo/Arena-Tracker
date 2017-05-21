@@ -272,7 +272,7 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
     if(trackobotUploader != NULL && planHandler != NULL &&
             (loadingScreen == arena || loadingScreen == constructed || loadingScreen == friendly))
     {
-        trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, planHandler->getJsonCardHistory());
+        trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, QDateTime::currentDateTime(), planHandler->getJsonCardHistory());
     }
 }
 

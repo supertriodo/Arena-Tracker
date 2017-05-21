@@ -3,10 +3,12 @@
 #include <QNetworkReply>
 #include <QtWidgets>
 
-TrackobotUploader::TrackobotUploader(QObject *parent) : QObject(parent)
+
+TrackobotUploader::TrackobotUploader(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     username = password = "";
     connected = false;
+    this->ui = ui;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
@@ -34,6 +36,13 @@ QString TrackobotUploader::getUsername()
 }
 
 
+void TrackobotUploader::advanceProgressBar()
+{
+    ui->progressBar->setValue(ui->progressBar->value()+1);
+    if(ui->progressBar->value() == ui->progressBar->maximum())  ui->progressBar->setVisible(false);
+}
+
+
 void TrackobotUploader::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -55,6 +64,13 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results failed.");
+
+            if(!arenaItemXlsList.isEmpty())
+            {
+                ArenaItem arenaItem = arenaItemXlsList.takeFirst();
+                uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+            }
+            if(ui->progressBar->isVisible())    advanceProgressBar();
         }
     }
     else
@@ -74,6 +90,13 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results success.");
+
+            if(!arenaItemXlsList.isEmpty())
+            {
+                ArenaItem arenaItem = arenaItemXlsList.takeFirst();
+                uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+            }
+            if(ui->progressBar->isVisible())    advanceProgressBar();
         }
     }
 }
@@ -181,7 +204,7 @@ void TrackobotUploader::openTBProfile()
 
 
 void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen,
-                                     qint64 startGameEpoch, QJsonArray cardHistory)
+                                     qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory)
 {
     QJsonObject result;
     result["coin"]          = !gameResult.isFirst;
@@ -190,7 +213,7 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
     result["win"]           = gameResult.isWinner;
     result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
     result["duration"]      = QDateTime::currentSecsSinceEpoch() - startGameEpoch;
-    result["added"]         = QDateTime::currentDateTime().toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
+    result["added"]         = dateTime.toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
     result["card_history"]  = cardHistory;
 
     QJsonObject params;
@@ -206,7 +229,110 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
 }
 
 
+QString TrackobotUploader::getStringCellXls(struct st_row::st_row_data* row, int col)
+{
+    if(col < row->fcell || col >= row->lcell)   return "";
+    struct st_cell::st_cell_data* cell = &row->cells.cell[col];
+    if(cell->id != 0x0201 && cell->str!=NULL)
+    {
+        return QString((const char*)cell->str);
+    }
+    return "";
+}
 
+
+bool TrackobotUploader::isRowGameXls(struct st_row::st_row_data* row)
+{
+    return getStringCellXls(row, 2).startsWith("Game");
+}
+
+
+QDateTime TrackobotUploader::getRowDateXls(struct st_row::st_row_data* row)
+{
+    QLocale locale  = QLocale(QLocale::English, QLocale::UnitedStates);
+    return locale.toDateTime(getStringCellXls(row, 0), "MMM dd, yyyy");
+}
+
+
+QList<ArenaItem> TrackobotUploader::extractXls(xlsWorkBook* pWB)
+{
+    xlsWorkSheet* pWS = xls_getWorkSheet(pWB,0);
+    xls_parseWorkSheet(pWS);
+
+    struct st_row::st_row_data* row;
+    WORD t;
+    QDateTime dateTime;
+    QString playerHero;
+    QList<ArenaItem> arenaItemList;
+
+    for (t=0;t<=pWS->rows.lastrow;t++)
+    {
+        row=&pWS->rows.row[t];
+
+        if(isRowGameXls(row))
+        {
+            if(!playerHero.isEmpty())
+            {
+                ArenaItem arenaItem;
+                arenaItem.dateTime = dateTime;
+                arenaItem.gameResult.playerHero = playerHero;
+                arenaItem.gameResult.enemyHero = Utility::heroToLogNumber(
+                            getStringCellXls(row, 3).mid(3).toLower()
+                            );
+                arenaItem.gameResult.isWinner = (getStringCellXls(row, 4) == "Win");
+                arenaItem.gameResult.isFirst = (getStringCellXls(row, 5) == "Play First");
+
+                if(!arenaItem.gameResult.enemyHero.isEmpty())   arenaItemList.append(arenaItem);
+            }
+        }
+        else
+        {
+            dateTime = getRowDateXls(row);
+            if(dateTime.isValid())
+            {
+                playerHero = Utility::heroToLogNumber(getStringCellXls(row, 1).toLower());
+            }
+            else
+            {
+                playerHero = "";
+            }
+        }
+    }
+
+    return arenaItemList;
+}
+
+
+void TrackobotUploader::uploadXls(QString fileName)
+{
+    if(!arenaItemXlsList.isEmpty())
+    {
+        //TODO
+        return;
+    }
+
+    xlsWorkBook* pWB = xls_open(fileName.toUtf8(),"UTF-8");
+
+    if(pWB == NULL)
+    {
+        //TODO
+        qDebug()<<"not valid";
+    }
+    else
+    {
+        arenaItemXlsList = extractXls(pWB);
+        if(arenaItemXlsList.isEmpty())  return;
+
+        //Show progress bar
+        ui->progressBar->setMaximum(arenaItemXlsList.count());
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setValue(0);
+        ui->progressBar->setVisible(true);
+
+        ArenaItem arenaItem = arenaItemXlsList.takeFirst();
+        uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+    }
+}
 
 
 

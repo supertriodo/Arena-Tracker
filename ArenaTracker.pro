@@ -56,7 +56,12 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/bombwindow.cpp \
     Sources/Cards/rngcard.cpp \
     Sources/Widgets/secretswindow.cpp \
-    Sources/trackobotuploader.cpp
+    Sources/trackobotuploader.cpp \
+    Sources/LibXls/endian.c \
+    Sources/LibXls/getopt.c \
+    Sources/LibXls/ole.c \
+    Sources/LibXls/xls.c \
+    Sources/LibXls/xlstool.c
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -99,7 +104,16 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/bombwindow.h \
     Sources/Cards/rngcard.h \
     Sources/Widgets/secretswindow.h \
-    Sources/trackobotuploader.h
+    Sources/trackobotuploader.h \
+    Sources/LibXls/brdb.c.h \
+    Sources/LibXls/brdb.h \
+    Sources/LibXls/endian.h \
+    Sources/LibXls/ole.h \
+    Sources/LibXls/xls.h \
+    Sources/LibXls/xlsstruct.h \
+    Sources/LibXls/xlstool.h \
+    Sources/LibXls/xlstypes.h \
+    Sources/LibXls/config.h
 
 FORMS    += mainwindow.ui
 

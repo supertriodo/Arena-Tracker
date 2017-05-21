@@ -60,6 +60,9 @@ MainWindow::MainWindow(QWidget *parent) :
     readSettings();
     checkGamesLogDir();
     createVersionChecker();
+
+    setAcceptDrops(true);
+
 #ifdef Q_OS_LINUX
     QTimer::singleShot(1000, this, SLOT(checkLinuxShortcut()));
 #endif
@@ -361,7 +364,7 @@ void MainWindow::createVersionChecker()
 
 void MainWindow::createTrackobotUploader()
 {
-    trackobotUploader = new TrackobotUploader(this);
+    trackobotUploader = new TrackobotUploader(this, ui);
     connect(trackobotUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1244,6 +1247,30 @@ void MainWindow::changeEvent(QEvent * event)
             }
         }
 
+    }
+}
+
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    foreach(const QUrl &url, e->mimeData()->urls())
+    {
+        QString fileName = url.toLocalFile();
+
+        if(fileName.endsWith(".xls"))
+        {
+            //TODO
+            trackobotUploader->uploadXls(fileName);
+            break;
+        }
     }
 }
 
@@ -2897,7 +2924,11 @@ void MainWindow::createDebugPack()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-
+//Al quitar deck window botones minimizar siguen grandes.
+//Mensajes y pdebug()
+//Actualizar cuenta trackobot con dragdrop
+//Valgrind xls
+//Signal progressbar
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

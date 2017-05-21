@@ -166,6 +166,8 @@ protected:
     void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void dragEnterEvent(QDragEnterEvent *e) Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent *e) Q_DECL_OVERRIDE;
 
 //Slots
 public slots:
