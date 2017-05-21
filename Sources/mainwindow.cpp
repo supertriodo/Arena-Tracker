@@ -2204,7 +2204,6 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-//    planHandler->reset();
 }
 
 
@@ -2934,6 +2933,13 @@ void MainWindow::showProgressBar(int maximum)
     ui->progressBar->setValue(0);
     ui->progressBar->setFormat("");
     ui->progressBar->setVisible(true);
+
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(0);
+    animation->setEndValue(ui->progressBar->height());
+    animation->setEasingCurve(QEasingCurve::OutQuad);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
 
@@ -2943,8 +2949,31 @@ void MainWindow::advanceProgressBar(QString text)
     {
         ui->progressBar->setValue(ui->progressBar->value()+1);
         ui->progressBar->setFormat(text);
-        if(ui->progressBar->value() == ui->progressBar->maximum())  ui->progressBar->setVisible(false);
+        if(ui->progressBar->value() == ui->progressBar->maximum())
+        {
+            hideProgressBar();
+        }
     }
+}
+
+
+void MainWindow::hideProgressBar()
+{
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->progressBar->height());
+    animation->setEndValue(0);
+    animation->setEasingCurve(QEasingCurve::OutQuad);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(
+        animation, &QPropertyAnimation::finished,
+        [=]()
+        {
+            ui->progressBar->setVisible(false);
+            ui->progressBar->setMaximumHeight(16777215);
+        }
+    );
 }
 
 
@@ -2958,9 +2987,9 @@ void MainWindow::advanceProgressBar(QString text)
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Signal progressbar
-//Definir #0F4F0F
 //Animacion ProgressBar
 //Bug load deck window y deck window
+//Expander UI blanco
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
