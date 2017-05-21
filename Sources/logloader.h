@@ -66,6 +66,7 @@ signals:
     void synchronized();
     void logReset();
     void logConfigSet();
+    void showMessageProgressBar(QString text);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 

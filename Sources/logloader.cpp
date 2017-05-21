@@ -84,21 +84,6 @@ bool LogLoader::readLogsDirPath()
 
     if(logsDirPath.isEmpty())
     {
-//        emit pDebug("Show First Run instructions dialog.");
-
-//        QString instructions = "The first time you run Arena Tracker you will be asked for:"
-//            "<br/>1) Logs dir location (If not default)."
-//            "<br/>2) log.config location (If not default)."
-//            "<br/>3) Start Hearthstone (Restart if running).";
-
-//        QMessageBox msgBox(0);
-//        msgBox.setTextFormat(Qt::RichText);
-//        msgBox.setText(instructions);
-//        msgBox.setWindowTitle("Config Arena Tracker");
-//        msgBox.setStandardButtons(QMessageBox::Ok);
-//        msgBox.exec();
-
-
         QString initPath = "";
         logsDirPath = "";
 #ifdef Q_OS_WIN
@@ -143,7 +128,7 @@ bool LogLoader::readLogsDirPath()
         settings.setValue("logsDirPath", "");
         emit pDebug("Logs dir not found.");
         emit pLog(tr("Log: Logs dir not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information(0, tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information((QWidget*)this->parent(), tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
         return false;
     }
     return true;
@@ -189,7 +174,7 @@ bool LogLoader::readLogConfigPath()
         settings.setValue("logConfig", "");
         emit pDebug("log.config not found.");
         emit pLog(tr("Log: log.config not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information(0, tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information((QWidget*)this->parent(), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
         return false;
     }
 
@@ -244,7 +229,7 @@ bool LogLoader::checkLogConfig()
         emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
-        QMessageBox::information(0, tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information((QWidget*)this->parent(), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
         return false;
     }
 
@@ -261,7 +246,7 @@ bool LogLoader::checkLogConfig()
 
     if(logConfigChanged)
     {
-//        QMessageBox::information(0, tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
+//        QMessageBox::information((QWidget*)this->parent(), tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
     }
 
     return true;

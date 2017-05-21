@@ -1861,7 +1861,7 @@ void DeckHandler::showInstallPY()
             "*   sudo pip3 install pyautogui<br/><br/>";
 #endif
 
-    QMessageBox msgBox(0);
+    QMessageBox msgBox((QWidget*)this->parent());
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setText(instructions1 + instructions2 + instructions3);
     msgBox.setWindowTitle("Create Deck in Hearthstone (How to Use/Install)");

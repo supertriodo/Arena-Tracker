@@ -785,6 +785,8 @@ void MainWindow::createLogLoader()
             gameWatcher, SLOT(processLogLine(LogComponent, QString,qint64,qint64)));
     connect(logLoader, SIGNAL(logConfigSet()),
             this, SLOT(setLocalLang()));
+    connect(logLoader, SIGNAL(showMessageProgressBar(QString)),
+            this, SLOT(showMessageProgressBar(QString)));
     connect(logLoader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1885,7 +1887,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
 
 void MainWindow::resetSettings()
 {
-    int ret = QMessageBox::warning(0, tr("Reset settings"),
+    int ret = QMessageBox::warning(this, tr("Reset settings"),
                                    tr("Do you want to reset Arena Tracker settings?"),
                                    QMessageBox::Ok | QMessageBox::Cancel);
 
@@ -2004,7 +2006,7 @@ void MainWindow::checkLinuxShortcut()
 
 void MainWindow::askLinuxShortcut()
 {
-    int answer = QMessageBox::question(0, tr("Create shortcut?"), tr("Do you want to create a desktop shortcut\nand a menu item for Arena Tracker?"),
+    int answer = QMessageBox::question(this, tr("Create shortcut?"), tr("Do you want to create a desktop shortcut\nand a menu item for Arena Tracker?"),
                              QMessageBox::Yes, QMessageBox::No);
     if(answer == QMessageBox::Yes)
     {
