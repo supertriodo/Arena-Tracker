@@ -90,6 +90,7 @@ void TrackobotUploader::uploadNextXlsResult()
     QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
                     Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
     emit advanceProgressBar(text);
+    if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar("All games uploaded");
 }
 
 
@@ -314,7 +315,7 @@ void TrackobotUploader::uploadXls(QString fileName)
         arenaItemXlsList = extractXls(pWB);
         if(arenaItemXlsList.isEmpty())  return;
 
-        emit showProgressBar(arenaItemXlsList.count());
+        emit startProgressBar(arenaItemXlsList.count());
         uploadNextXlsResult();
     }
 }

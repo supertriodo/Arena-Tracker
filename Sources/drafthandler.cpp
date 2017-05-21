@@ -190,7 +190,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
 
     //Wait for cards
     if(cardsDownloading==0) newCaptureDraftLoop();
-    else                    emit showProgressBar(cardsDownloading);
+    else                    emit startProgressBar(cardsDownloading);
 }
 
 
@@ -201,7 +201,11 @@ void DraftHandler::reHistDownloadedCardImage(const QString &code)
     if(!code.isEmpty())  cardsHist[code] = getHist(code);
     cardsDownloading--;
     emit advanceProgressBar(code + " downloaded");
-    if(cardsDownloading==0) newCaptureDraftLoop();
+    if(cardsDownloading==0)
+    {
+        emit showMessageProgressBar("All cards downloaded");
+        newCaptureDraftLoop();
+    }
 }
 
 

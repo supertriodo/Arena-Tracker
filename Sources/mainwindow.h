@@ -155,7 +155,7 @@ private:
     void showWindowFrame(bool showFrame=true);
     void downloadLightForgeJson();
     void spreadDraftMethod(DraftMethod draftMethod);
-    void hideProgressBar();
+    void showProgressBar();
 
 //Override events
 protected:
@@ -228,8 +228,10 @@ private slots:
     void draftMethodLF();
     void draftMethodCombined();
     void spreadTransparency();
-    void showProgressBar(int maximum);
-    void advanceProgressBar(QString text="");
+    void startProgressBar(int maximum);
+    void advanceProgressBar(QString text);
+    void showMessageProgressBar(QString text, int hideDelay = 5000);
+    void hideProgressBar();
 };
 
 #endif // MAINWINDOW_H

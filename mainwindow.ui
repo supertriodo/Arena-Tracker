@@ -2199,9 +2199,9 @@ to upload to www.zerotoheroes.com</string>
       </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
+        <pointsize>12</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
        </font>
       </property>
       <property name="value">

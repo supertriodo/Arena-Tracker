@@ -365,10 +365,12 @@ void MainWindow::createVersionChecker()
 void MainWindow::createTrackobotUploader()
 {
     trackobotUploader = new TrackobotUploader(this);
-    connect(trackobotUploader, SIGNAL(showProgressBar(int)),
-            this, SLOT(showProgressBar(int)));
+    connect(trackobotUploader, SIGNAL(startProgressBar(int)),
+            this, SLOT(startProgressBar(int)));
     connect(trackobotUploader, SIGNAL(advanceProgressBar(QString)),
             this, SLOT(advanceProgressBar(QString)));
+    connect(trackobotUploader, SIGNAL(showMessageProgressBar(QString)),
+            this, SLOT(showMessageProgressBar(QString)));
     connect(trackobotUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -379,10 +381,12 @@ void MainWindow::createTrackobotUploader()
 void MainWindow::createDraftHandler()
 {
     draftHandler = new DraftHandler(this, ui);
-    connect(draftHandler, SIGNAL(showProgressBar(int)),
-            this, SLOT(showProgressBar(int)));
+    connect(draftHandler, SIGNAL(startProgressBar(int)),
+            this, SLOT(startProgressBar(int)));
     connect(draftHandler, SIGNAL(advanceProgressBar(QString)),
             this, SLOT(advanceProgressBar(QString)));
+    connect(draftHandler, SIGNAL(showMessageProgressBar(QString)),
+            this, SLOT(showMessageProgressBar(QString)));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -817,6 +821,8 @@ void MainWindow::completeUI()
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
         ui->progressBar->setVisible(false);
+        ui->progressBar->setMaximum(100);
+        ui->progressBar->setValue(100);
 
         completeConfigTab();
 
@@ -2520,8 +2526,8 @@ void MainWindow::updateMainUITheme()
                 "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; width: 3px; height: 3px; background: green;}"
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                "QProgressBar {border: 2px solid " + DARK_GREEN_H + "; color: white; background-color: " + DARK_GREEN_H + ";}"
-                "QProgressBar::chunk {background-color: green;}"
+                "QProgressBar {border: 2px solid green; color: white; background-color: green;}"
+                "QProgressBar::chunk {background-color: " + DARK_GREEN_H + ";}"
 
                 "QDialog {background: black;}"
                 "QPushButton {background: " + DARK_GREEN_H + "; color: white;}"
@@ -2926,12 +2932,50 @@ void MainWindow::createDebugPack()
 }
 
 
-void MainWindow::showProgressBar(int maximum)
+void MainWindow::showMessageProgressBar(QString text, int hideDelay)
+{
+    if(ui->progressBar->value() != ui->progressBar->maximum())
+    {
+        emit pDebug("Progress bar message received while counting. " + text, Warning);
+        return;
+    }
+
+    ui->progressBar->setFormat(text);
+
+    if(!ui->progressBar->isVisible())   showProgressBar();
+    QTimer::singleShot(hideDelay, this, SLOT(hideProgressBar()));
+}
+
+
+void MainWindow::startProgressBar(int maximum)
 {
     ui->progressBar->setMaximum(maximum);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
     ui->progressBar->setFormat("");
+
+    if(!ui->progressBar->isVisible())   showProgressBar();
+}
+
+
+void MainWindow::advanceProgressBar(QString text)
+{
+    if(ui->progressBar->value() < ui->progressBar->maximum())
+    {
+        ui->progressBar->setValue(ui->progressBar->value()+1);
+        ui->progressBar->setFormat(text);
+    }
+}
+
+
+void MainWindow::showProgressBar()
+{
+    if(ui->progressBar->isVisible())
+    {
+        pDebug("Trying to show progress bar already shown.", Warning);
+        return;
+    }
+
     ui->progressBar->setVisible(true);
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
@@ -2943,22 +2987,20 @@ void MainWindow::showProgressBar(int maximum)
 }
 
 
-void MainWindow::advanceProgressBar(QString text)
-{
-    if(ui->progressBar->value() < ui->progressBar->maximum())
-    {
-        ui->progressBar->setValue(ui->progressBar->value()+1);
-        ui->progressBar->setFormat(text);
-        if(ui->progressBar->value() == ui->progressBar->maximum())
-        {
-            hideProgressBar();
-        }
-    }
-}
-
-
 void MainWindow::hideProgressBar()
 {
+    if(ui->progressBar->value() != ui->progressBar->maximum())
+    {
+        pDebug("Trying to hide progress bar while counting.", Warning);
+        return;
+    }
+
+    if(!ui->progressBar->isVisible())
+    {
+        pDebug("Trying to hide progress bar already hidden.", Warning);
+        return;
+    }
+
     QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->progressBar->height());
@@ -2982,12 +3024,11 @@ void MainWindow::hideProgressBar()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+
 //Al quitar deck window botones minimizar siguen grandes.
 //Mensajes y pdebug()
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
-//Signal progressbar
-//Animacion ProgressBar
 //Bug load deck window y deck window
 //Expander UI blanco
 
