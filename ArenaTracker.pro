@@ -113,7 +113,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/LibXls/xlsstruct.h \
     Sources/LibXls/xlstool.h \
     Sources/LibXls/xlstypes.h \
-    Sources/LibXls/config.h
+    Sources/LibXls/config.h \
+    Sources/constants.h
 
 FORMS    += mainwindow.ui
 

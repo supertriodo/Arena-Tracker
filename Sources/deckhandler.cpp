@@ -1191,7 +1191,7 @@ void DeckHandler::setTheme(Theme value)
     }
     else
     {
-        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: #F0F0F0; outline: 0;}");
+        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: " + WHITY_H + "; outline: 0;}");
     }
 
     bombWindow->setTheme(value);

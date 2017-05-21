@@ -2337,7 +2337,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->tabConfig->repaint();
 
         QString groupBoxCSS =
-                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
         ui->configBoxActions->setStyleSheet(groupBoxCSS);
         ui->configBoxUI->setStyleSheet(groupBoxCSS);
@@ -2501,7 +2501,7 @@ void MainWindow::updateMainUITheme()
     if(theme == ThemeWhite)
     {
         mainCSS +=
-                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
+                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
                 "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
                 "QTextEdit {background: transparent;}"
@@ -2511,24 +2511,24 @@ void MainWindow::updateMainUITheme()
     else
     {
         mainCSS +=
-                "QMenu {background-color: #0F4F0F; color: white;}"
+                "QMenu {background-color: " + DARK_GREEN_H + "; color: white;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
                 "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
-                "QScrollBar::handle:vertical {background: #0F4F0F; min-height: 20px;}"
-                "QScrollBar::add-line:vertical {border: 2px solid green;background: #0F4F0F; height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
-                "QScrollBar::sub-line:vertical {border: 2px solid green;background: #0F4F0F; height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
+                "QScrollBar::handle:vertical {background: " + DARK_GREEN_H + "; min-height: 20px;}"
+                "QScrollBar::add-line:vertical {border: 2px solid green;background: " + DARK_GREEN_H + "; height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
+                "QScrollBar::sub-line:vertical {border: 2px solid green;background: " + DARK_GREEN_H + "; height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
                 "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; width: 3px; height: 3px; background: green;}"
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                "QProgressBar {border: 2px solid #0F4F0F; color: white; background-color: #0F4F0F;}"
+                "QProgressBar {border: 2px solid " + DARK_GREEN_H + "; color: white; background-color: " + DARK_GREEN_H + ";}"
                 "QProgressBar::chunk {background-color: green;}"
 
                 "QDialog {background: black;}"
-                "QPushButton {background: #0F4F0F; color: white;}"
+                "QPushButton {background: " + DARK_GREEN_H + "; color: white;}"
                 "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
 
-                "QGroupBox {border: 2px solid #0F4F0F; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
                 "QLabel {background-color: transparent; color: white;}"
                 "QTextBrowser {background-color: transparent; color: white;}"
@@ -2536,7 +2536,7 @@ void MainWindow::updateMainUITheme()
                 "QCheckBox {background-color: transparent; color: white;}"
                 "QTextEdit{background-color: transparent; color: white;}"
 
-                "QLineEdit {border: 2px solid rgb(50,175,50);border-radius: 5px;background: #0F4F0F; color: white;selection-background-color: black;}"
+                "QLineEdit {border: 2px solid rgb(50,175,50);border-radius: 5px;background: " + DARK_GREEN_H + "; color: white;selection-background-color: black;}"
                 ;
     }
     this->setStyleSheet(mainCSS);
@@ -2548,17 +2548,17 @@ void MainWindow::updateButtonsTheme()
 {
     if(theme == ThemeWhite)
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
-                                       "QPushButton:hover {background: #0F4F0F;}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: #F0F0F0; border: none;}"
-                                          "QPushButton:hover {background: #0F4F0F;}");
+        ui->closeButton->setStyleSheet("QPushButton {background: " + WHITY_H + "; border: none;}"
+                                       "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: " + WHITY_H + "; border: none;}"
+                                          "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
     }
     else
     {
         ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: #0F4F0F;}");
+                                       "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                          "QPushButton:hover {background: #0F4F0F;}");
+                                          "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
     }
 }
 
@@ -2960,6 +2960,7 @@ void MainWindow::advanceProgressBar(QString text)
 //Signal progressbar
 //Definir #0F4F0F
 //Animacion ProgressBar
+//Bug load deck window y deck window
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
