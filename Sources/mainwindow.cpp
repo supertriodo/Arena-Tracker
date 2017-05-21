@@ -1283,8 +1283,15 @@ void MainWindow::dropEvent(QDropEvent *e)
 
         if(fileName.endsWith(".xls"))
         {
-            //TODO
-            trackobotUploader->uploadXls(fileName);
+            pDebug("Dropped " + fileName);
+            int answer = QMessageBox::question(this, tr("Upload XLS?"),
+                            tr("Do you want to upload all the games included on this XLS file to your track-o-bot account?"
+                               "\nKeep in mind the XLS needs to follow Arena Mastery export XLS format."),
+                                     QMessageBox::Yes, QMessageBox::No);
+            if(answer == QMessageBox::Yes)
+            {
+                trackobotUploader->uploadXls(fileName);
+            }
             break;
         }
     }
@@ -3027,12 +3034,13 @@ void MainWindow::hideProgressBar()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
-//Al quitar deck window botones minimizar siguen grandes.
-//Mensajes y pdebug()
+//Video howto export and link en messageBox
+//Bug al quitar deck window botones minimizar siguen grandes.
+//Mensajes y pdebug() upload
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Bug load deck window y deck window
-//Expander UI blanco
+//Bug expander UI blanco
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

@@ -299,7 +299,7 @@ void TrackobotUploader::uploadXls(QString fileName)
 {
     if(!arenaItemXlsList.isEmpty())
     {
-        //TODO
+        emit pDebug("Trying to upload a new Xls file while still busy with the last one.", Warning);
         return;
     }
 
@@ -307,8 +307,8 @@ void TrackobotUploader::uploadXls(QString fileName)
 
     if(pWB == NULL)
     {
-        //TODO
-        qDebug()<<"not valid";
+        emit pDebug("Xls invalid file: " + fileName, Warning);
+        emit showMessageProgressBar("XLS invalid");
     }
     else
     {
