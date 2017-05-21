@@ -228,7 +228,7 @@ private slots:
     void draftMethodCombined();
     void spreadTransparency();
     void showProgressBar(int maximum);
-    void advanceProgressBar();
+    void advanceProgressBar(QString text);
 };
 
 #endif // MAINWINDOW_H

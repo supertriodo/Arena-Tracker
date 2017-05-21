@@ -56,13 +56,7 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results failed.");
-
-            if(!arenaItemXlsList.isEmpty())
-            {
-                ArenaItem arenaItem = arenaItemXlsList.takeFirst();
-                uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
-                emit advanceProgressBar();
-            }
+            if(!arenaItemXlsList.isEmpty()) uploadNextXlsResult();
         }
     }
     else
@@ -82,15 +76,20 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         else if(fullUrl == TRACKOBOT_RESULTS_URL)
         {
             emit pDebug("Upload Results success.");
-
-            if(!arenaItemXlsList.isEmpty())
-            {
-                ArenaItem arenaItem = arenaItemXlsList.takeFirst();
-                uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
-                emit advanceProgressBar();
-            }
+            if(!arenaItemXlsList.isEmpty()) uploadNextXlsResult();
         }
     }
+}
+
+
+void TrackobotUploader::uploadNextXlsResult()
+{
+    ArenaItem arenaItem = arenaItemXlsList.takeFirst();
+    GameResult gameResult = arenaItem.gameResult;
+    uploadResult(gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+    QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
+                    Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
+    emit advanceProgressBar(text);
 }
 
 
@@ -316,9 +315,7 @@ void TrackobotUploader::uploadXls(QString fileName)
         if(arenaItemXlsList.isEmpty())  return;
 
         emit showProgressBar(arenaItemXlsList.count());
-        ArenaItem arenaItem = arenaItemXlsList.takeFirst();
-        uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
-        emit advanceProgressBar();
+        uploadNextXlsResult();
     }
 }
 

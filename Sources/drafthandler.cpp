@@ -200,7 +200,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &code)
 
     if(!code.isEmpty())  cardsHist[code] = getHist(code);
     cardsDownloading--;
-    emit advanceProgressBar();
+    emit advanceProgressBar(code + " downloaded");
     if(cardsDownloading==0) newCaptureDraftLoop();
 }
 

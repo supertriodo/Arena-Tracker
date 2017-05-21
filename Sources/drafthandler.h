@@ -130,7 +130,7 @@ signals:
     void draftEnded();
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();
-    void advanceProgressBar();
+    void advanceProgressBar(QString text);
     void showProgressBar(int maximum);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");

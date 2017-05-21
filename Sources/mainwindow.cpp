@@ -367,8 +367,8 @@ void MainWindow::createTrackobotUploader()
     trackobotUploader = new TrackobotUploader(this);
     connect(trackobotUploader, SIGNAL(showProgressBar(int)),
             this, SLOT(showProgressBar(int)));
-    connect(trackobotUploader, SIGNAL(advanceProgressBar()),
-            this, SLOT(advanceProgressBar()));
+    connect(trackobotUploader, SIGNAL(advanceProgressBar(QString)),
+            this, SLOT(advanceProgressBar(QString)));
     connect(trackobotUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -381,8 +381,8 @@ void MainWindow::createDraftHandler()
     draftHandler = new DraftHandler(this, ui);
     connect(draftHandler, SIGNAL(showProgressBar(int)),
             this, SLOT(showProgressBar(int)));
-    connect(draftHandler, SIGNAL(advanceProgressBar()),
-            this, SLOT(advanceProgressBar()));
+    connect(draftHandler, SIGNAL(advanceProgressBar(QString)),
+            this, SLOT(advanceProgressBar(QString)));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -2521,8 +2521,8 @@ void MainWindow::updateMainUITheme()
                 "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; width: 3px; height: 3px; background: green;}"
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                "QProgressBar {background-color: black;}"
-                "QProgressBar::chunk {background-color: #0F4F0F;}"
+                "QProgressBar {border: 2px solid #0F4F0F; color: white; background-color: #0F4F0F;}"
+                "QProgressBar::chunk {background-color: green;}"
 
                 "QDialog {background: black;}"
                 "QPushButton {background: #0F4F0F; color: white;}"
@@ -2932,15 +2932,17 @@ void MainWindow::showProgressBar(int maximum)
     ui->progressBar->setMaximum(maximum);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
+    ui->progressBar->setFormat("");
     ui->progressBar->setVisible(true);
 }
 
 
-void MainWindow::advanceProgressBar()
+void MainWindow::advanceProgressBar(QString text)
 {
     if(ui->progressBar->value() < ui->progressBar->maximum())
     {
         ui->progressBar->setValue(ui->progressBar->value()+1);
+        ui->progressBar->setFormat(text);
         if(ui->progressBar->value() == ui->progressBar->maximum())  ui->progressBar->setVisible(false);
     }
 }
@@ -2956,6 +2958,8 @@ void MainWindow::advanceProgressBar()
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Signal progressbar
+//Definir #0F4F0F
+//Animacion ProgressBar
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

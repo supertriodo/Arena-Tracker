@@ -50,6 +50,7 @@ private:
     bool isRowGameXls(st_row::st_row_data *row);
     QDateTime getRowDateXls(st_row::st_row_data *row);
     QList<ArenaItem> extractXls(xlsWorkBook *pWB);
+    void uploadNextXlsResult();
 
 public:
     bool isConnected();
@@ -59,7 +60,7 @@ public:
     void uploadXls(QString fileName);
 
 signals:
-    void advanceProgressBar();
+    void advanceProgressBar(QString text);
     void showProgressBar(int maximum);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TrackobotUploader");
