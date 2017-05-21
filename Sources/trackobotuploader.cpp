@@ -4,11 +4,10 @@
 #include <QtWidgets>
 
 
-TrackobotUploader::TrackobotUploader(QObject *parent, Ui::Extended *ui) : QObject(parent)
+TrackobotUploader::TrackobotUploader(QObject *parent) : QObject(parent)
 {
     username = password = "";
     connected = false;
-    this->ui = ui;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
@@ -33,13 +32,6 @@ bool TrackobotUploader::isConnected()
 QString TrackobotUploader::getUsername()
 {
     return this->username;
-}
-
-
-void TrackobotUploader::advanceProgressBar()
-{
-    ui->progressBar->setValue(ui->progressBar->value()+1);
-    if(ui->progressBar->value() == ui->progressBar->maximum())  ui->progressBar->setVisible(false);
 }
 
 
@@ -69,8 +61,8 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
             {
                 ArenaItem arenaItem = arenaItemXlsList.takeFirst();
                 uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+                emit advanceProgressBar();
             }
-            if(ui->progressBar->isVisible())    advanceProgressBar();
         }
     }
     else
@@ -95,8 +87,8 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
             {
                 ArenaItem arenaItem = arenaItemXlsList.takeFirst();
                 uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+                emit advanceProgressBar();
             }
-            if(ui->progressBar->isVisible())    advanceProgressBar();
         }
     }
 }
@@ -323,27 +315,12 @@ void TrackobotUploader::uploadXls(QString fileName)
         arenaItemXlsList = extractXls(pWB);
         if(arenaItemXlsList.isEmpty())  return;
 
-        //Show progress bar
-        ui->progressBar->setMaximum(arenaItemXlsList.count());
-        ui->progressBar->setMinimum(0);
-        ui->progressBar->setValue(0);
-        ui->progressBar->setVisible(true);
-
+        emit showProgressBar(arenaItemXlsList.count());
         ArenaItem arenaItem = arenaItemXlsList.takeFirst();
         uploadResult(arenaItem.gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+        emit advanceProgressBar();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

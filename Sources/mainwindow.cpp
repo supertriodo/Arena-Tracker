@@ -364,7 +364,11 @@ void MainWindow::createVersionChecker()
 
 void MainWindow::createTrackobotUploader()
 {
-    trackobotUploader = new TrackobotUploader(this, ui);
+    trackobotUploader = new TrackobotUploader(this);
+    connect(trackobotUploader, SIGNAL(showProgressBar(int)),
+            this, SLOT(showProgressBar(int)));
+    connect(trackobotUploader, SIGNAL(advanceProgressBar()),
+            this, SLOT(advanceProgressBar()));
     connect(trackobotUploader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -375,6 +379,10 @@ void MainWindow::createTrackobotUploader()
 void MainWindow::createDraftHandler()
 {
     draftHandler = new DraftHandler(this, ui);
+    connect(draftHandler, SIGNAL(showProgressBar(int)),
+            this, SLOT(showProgressBar(int)));
+    connect(draftHandler, SIGNAL(advanceProgressBar()),
+            this, SLOT(advanceProgressBar()));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -2916,6 +2924,25 @@ void MainWindow::createDebugPack()
     zoneLog.copy(dirPath + "/Zone.log");
 
     emit pDebug("Bug pack " + dirPath + " created.");
+}
+
+
+void MainWindow::showProgressBar(int maximum)
+{
+    ui->progressBar->setMaximum(maximum);
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setValue(0);
+    ui->progressBar->setVisible(true);
+}
+
+
+void MainWindow::advanceProgressBar()
+{
+    if(ui->progressBar->value() < ui->progressBar->maximum())
+    {
+        ui->progressBar->setValue(ui->progressBar->value()+1);
+        if(ui->progressBar->value() == ui->progressBar->maximum())  ui->progressBar->setVisible(false);
+    }
 }
 
 
