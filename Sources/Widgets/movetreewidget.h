@@ -2,6 +2,7 @@
 #define MOVETREEWIDGET_H
 
 
+#include "../utility.h"
 #include <QObject>
 #include <QTreeWidget>
 
@@ -11,6 +12,7 @@ class MoveTreeWidget : public QTreeWidget
 
 public:
     MoveTreeWidget(QWidget *parent = 0);
+    void setTheme(Theme theme);
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

@@ -3073,9 +3073,7 @@ void MainWindow::hideProgressBar()
 
 //Video howto export and link en messageBox
 //Bug al quitar deck window botones minimizar siguen grandes.
-//Valgrind xls
 //Bug load deck window y deck window
-//Bug expander UI blanco
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

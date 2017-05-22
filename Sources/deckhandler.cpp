@@ -1183,18 +1183,10 @@ void DeckHandler::setMouseInApp(bool value)
 }
 
 
-void DeckHandler::setTheme(Theme value)
+void DeckHandler::setTheme(Theme theme)
 {
-    if(value == ThemeBlack)
-    {
-        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: black; outline: 0;}");
-    }
-    else
-    {
-        ui->loadDeckTreeWidget->setStyleSheet("QTreeView{background-color: " + WHITY_H + "; outline: 0;}");
-    }
-
-    bombWindow->setTheme(value);
+    ui->loadDeckTreeWidget->setTheme(theme);
+    bombWindow->setTheme(theme);
 }
 
 

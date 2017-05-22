@@ -122,5 +122,7 @@
         <file>Images/bgScoreHA.png</file>
         <file>Images/bgScoreLF.png</file>
         <file>Images/games.png</file>
+        <file>Images/branchClosed.png</file>
+        <file>Images/branchOpen.png</file>
     </qresource>
 </RCC>

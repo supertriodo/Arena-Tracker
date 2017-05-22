@@ -9,7 +9,14 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     font.setKerning(true);
     this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
-    this->setStyleSheet("QTreeView{background-color: transparent; outline: 0;}");
+    this->setStyleSheet("QTreeView{background-color: transparent; outline: 0;}"
+
+    "QTreeView::branch:has-children:!has-siblings:closed,"
+    "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
+
+    "QTreeView::branch:open:has-children:!has-siblings,"
+    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(:/Images/branchOpen.png);}");
+
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -19,6 +26,18 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     this->setAnimated(true);
     this->setHeaderHidden(true);
     this->header()->close();
+}
+
+
+void MoveTreeWidget::setTheme(Theme theme)
+{
+    this->setStyleSheet("QTreeView{background-color: " + (theme==ThemeBlack?"black":WHITY_H) + "; outline: 0;}"
+
+    "QTreeView::branch:has-children:!has-siblings:closed,"
+    "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
+
+    "QTreeView::branch:open:has-children:!has-siblings,"
+    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(:/Images/branchOpen.png);}");
 }
 
 
