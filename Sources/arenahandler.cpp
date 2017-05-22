@@ -229,6 +229,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     QString replayId = replayIds.first().toString();
 
     emit pDebug("Replay " + logFileName + " uploaded to " + Z2H_VIEW_REPLAY_URL + replayId);
+    emit showMessageProgressBar("Replay uploaded");
 
     //Include replayId in fileName
     QStringList logFileNameSplit = logFileName.split(".");

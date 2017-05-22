@@ -424,6 +424,8 @@ void MainWindow::createSecretsHandler()
 void MainWindow::createArenaHandler()
 {
     arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
+    connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
+            this, SLOT(showMessageProgressBar(QString)));
     connect(arenaHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

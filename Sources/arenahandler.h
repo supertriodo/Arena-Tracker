@@ -66,6 +66,7 @@ public:
     void showArenaLog(const QString &logFileName);
 
 signals:
+    void showMessageProgressBar(QString text);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="ArenaHandler");
 

@@ -218,6 +218,10 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     networkManager->post(request, data);
     emit pDebug("Uploading result...");
+
+    QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
+                    Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
+    if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar(text);
 }
 
 
