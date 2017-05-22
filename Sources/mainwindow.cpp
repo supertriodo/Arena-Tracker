@@ -2558,7 +2558,7 @@ void MainWindow::updateMainUITheme()
         mainCSS +=
                 "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
-                "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
+                "QToolTip {border: 2px solid " + DARK_GREEN_H + "; border-radius: 2px; color: " + DARK_GREEN_H + ";}"
                 "QTextEdit {background: transparent;}"
                 "QLineEdit {border: 1px solid black;border-radius: 5px;background: white;}"
                 ;
@@ -2581,7 +2581,7 @@ void MainWindow::updateMainUITheme()
 
                 "QDialog {background: black;}"
                 "QPushButton {background: " + DARK_GREEN_H + "; color: white;}"
-                "QToolTip {border: 2px solid green; border-radius: 2px; color: green;}"
+                "QToolTip {border: 2px solid " + DARK_GREEN_H + "; border-radius: 2px; color: " + DARK_GREEN_H + ";}"
 
                 "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
@@ -2591,7 +2591,7 @@ void MainWindow::updateMainUITheme()
                 "QCheckBox {background-color: transparent; color: white;}"
                 "QTextEdit{background-color: transparent; color: white;}"
 
-                "QLineEdit {border: 2px solid rgb(50,175,50);border-radius: 5px;background: " + DARK_GREEN_H + "; color: white;selection-background-color: black;}"
+                "QLineEdit {border: 2px solid " + GREEN_H + ";border-radius: 5px;background: " + DARK_GREEN_H + "; color: white;selection-background-color: black;}"
                 ;
     }
     this->setStyleSheet(mainCSS);

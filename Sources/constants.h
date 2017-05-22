@@ -3,6 +3,7 @@
 
 //Colores
 #define GREEN QColor(50,175,50)
+#define GREEN_H QString("#32AF32")
 #define SEA_GREEN QColor(50,150,120)
 #define DARK_GREEN QColor(15,79,15)
 #define DARK_GREEN_H QString("#0F4F0F")
