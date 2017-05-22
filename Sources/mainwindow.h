@@ -156,6 +156,7 @@ private:
     void downloadLightForgeJson();
     void spreadDraftMethod(DraftMethod draftMethod);
     void showProgressBar();
+    bool askImportXls();
 
 //Override events
 protected:

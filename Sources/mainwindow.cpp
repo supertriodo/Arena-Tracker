@@ -1284,17 +1284,35 @@ void MainWindow::dropEvent(QDropEvent *e)
         if(fileName.endsWith(".xls"))
         {
             pDebug("Dropped " + fileName);
-            int answer = QMessageBox::question(this, tr("Upload XLS?"),
-                            tr("Do you want to upload all the games included on this XLS file to your track-o-bot account?"
-                               "\nKeep in mind the XLS needs to follow Arena Mastery export XLS format."),
-                                     QMessageBox::Yes, QMessageBox::No);
-            if(answer == QMessageBox::Yes)
+
+            if(askImportXls())
             {
                 trackobotUploader->uploadXls(fileName);
             }
             break;
         }
     }
+}
+
+
+bool MainWindow::askImportXls()
+{
+    QString text =  "Do you want to upload all the games included"
+                    " on this XLS file to your track-o-bot account?"
+                    "<br><br>Keep in mind the XLS needs to follow Arena Mastery export XLS format."
+                    "<br><a href='https://www.youtube.com/watch?v=ZnuwB35GYMY'>Check this video.</a>";
+
+    //TODO video
+    QMessageBox msgBox(this);
+    msgBox.setText(text);
+    msgBox.setWindowTitle("Upload XLS");
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    msgBox.exec();
+
+    if(msgBox.result() == QMessageBox::Yes) return true;
+    else                                    return false;
 }
 
 
@@ -3036,7 +3054,7 @@ void MainWindow::hideProgressBar()
 
 //Video howto export and link en messageBox
 //Bug al quitar deck window botones minimizar siguen grandes.
-//Mensajes y pdebug() upload
+//Mensajes progressbar para upload result and upload zero2hero
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Bug load deck window y deck window
