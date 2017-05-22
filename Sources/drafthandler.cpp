@@ -200,7 +200,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &code)
 
     if(!code.isEmpty())  cardsHist[code] = getHist(code);
     cardsDownloading--;
-    emit advanceProgressBar(code + " downloaded");
+    emit advanceProgressBar(code.split("_premium").first() + " downloaded");
     if(cardsDownloading==0)
     {
         emit showMessageProgressBar("All cards downloaded");

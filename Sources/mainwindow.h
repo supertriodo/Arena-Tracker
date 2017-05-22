@@ -155,7 +155,7 @@ private:
     void showWindowFrame(bool showFrame=true);
     void downloadLightForgeJson();
     void spreadDraftMethod(DraftMethod draftMethod);
-    void showProgressBar();
+    void showProgressBar(bool animated=true);
     bool askImportXls();
 
 //Override events

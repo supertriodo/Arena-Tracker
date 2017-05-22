@@ -830,7 +830,7 @@ void MainWindow::completeUI()
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
         QFont font("Sans Serif");
-        font.setPixelSize(14);
+        font.setPixelSize(16);
         ui->progressBar->setFont(font);
         ui->progressBar->setVisible(false);
         ui->progressBar->setMaximum(100);
@@ -2992,7 +2992,7 @@ void MainWindow::showMessageProgressBar(QString text, int hideDelay)
 
     ui->progressBar->setFormat(text);
 
-    if(!ui->progressBar->isVisible())   showProgressBar();
+    if(!ui->progressBar->isVisible())   showProgressBar(true);
     QTimer::singleShot(hideDelay, this, SLOT(hideProgressBar()));
 }
 
@@ -3004,7 +3004,7 @@ void MainWindow::startProgressBar(int maximum)
     ui->progressBar->setValue(0);
     ui->progressBar->setFormat("");
 
-    if(!ui->progressBar->isVisible())   showProgressBar();
+    if(!ui->progressBar->isVisible())   showProgressBar(false);
 }
 
 
@@ -3018,7 +3018,7 @@ void MainWindow::advanceProgressBar(QString text)
 }
 
 
-void MainWindow::showProgressBar()
+void MainWindow::showProgressBar(bool animated)
 {
     if(ui->progressBar->isVisible())
     {
@@ -3028,12 +3028,19 @@ void MainWindow::showProgressBar()
 
     ui->progressBar->setVisible(true);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(0);
-    animation->setEndValue(ui->progressBar->height());
-    animation->setEasingCurve(QEasingCurve::OutQuad);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
+    if(animated)
+    {
+        QPropertyAnimation *animation = new QPropertyAnimation(ui->progressBar, "maximumHeight");
+        animation->setDuration(ANIMATION_TIME);
+        animation->setStartValue(0);
+        animation->setEndValue(ui->progressBar->height());
+        animation->setEasingCurve(QEasingCurve::OutQuad);
+        animation->start(QPropertyAnimation::DeleteWhenStopped);
+    }
+    else
+    {
+        ui->progressBar->setMaximumHeight(16777215);
+    }
 }
 
 
@@ -3076,7 +3083,6 @@ void MainWindow::hideProgressBar()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //Video howto export and link en messageBox
-//Bug al quitar deck window botones minimizar siguen grandes.
 //Bug load deck window y deck window
 
 //REPLAY BUGS
