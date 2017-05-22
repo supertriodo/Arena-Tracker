@@ -1738,6 +1738,8 @@ void MainWindow::calculateMinimumWidth()
 //Fija la anchura de la ventana de deck.
 void MainWindow::calculateDeckWindowMinimumWidth()
 {
+    //Si deckListWidget esta oculto el sizehint sera erroneo
+    if(ui->deckListWidget->height() == 0)   return;
     if(this->otherWindow!=NULL && deckHandler!= NULL)
     {
         int deckWidth = this->otherWindow->width() - ui->deckListWidget->width() + ui->deckListWidget->sizeHintForColumn(0);
@@ -3083,7 +3085,7 @@ void MainWindow::hideProgressBar()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //Video howto export and link en messageBox
-//Bug load deck window y deck window
+
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
