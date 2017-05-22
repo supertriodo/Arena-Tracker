@@ -109,6 +109,7 @@ void TrackobotUploader::saveAccount()
     out << this->password;
     out << "https://trackobot.com";
     emit pDebug("New account " + this->username + " --> Saved.");
+    emit showMessageProgressBar("New track-o-bot account");
 }
 
 
@@ -116,27 +117,36 @@ bool TrackobotUploader::loadAccount(QByteArray jsonData)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     QJsonObject jsonUserObject = jsonDoc.object();
-    this->username = jsonUserObject.value("username").toString();
-    this->password = jsonUserObject.value("password").toString();
+    QString username, password;
+    username = jsonUserObject.value("username").toString();
+    password = jsonUserObject.value("password").toString();
 
     if(!username.isEmpty() && !password.isEmpty())
     {
-        emit pDebug("New account " + this->username + " --> Loaded.");
+        this->username = username;
+        this->password = password;
         this->connected = true;
+        emit pDebug("New account " + this->username + " --> Loaded.");
+        return true;
     }
     else
     {
         emit pDebug(jsonData + " has an invalid format.");
-        this->connected = false;
+        return false;
     }
-
-    return this->connected;
 }
 
 
-bool TrackobotUploader::loadAccount()
+void TrackobotUploader::importAccount(QString fileName)
 {
-    QFile file(Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE);
+    if(loadAccount(fileName))   saveAccount();
+}
+
+
+bool TrackobotUploader::loadAccount(QString fileName)
+{
+    if(fileName.isEmpty())  fileName = Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE;
+    QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
     {
         emit pDebug("Cannot open " + QString(TRACKOBOT_ACCOUNT_FILE) + " file.");
@@ -144,24 +154,26 @@ bool TrackobotUploader::loadAccount()
     }
 
     QDataStream in(&file);
-    QString webserviceUrl;
+    QString username, password, webserviceUrl;
     in.setVersion(QDataStream::Qt_4_8);
-    in >> this->username;
-    in >> this->password;
+    in >> username;
+    in >> password;
     in >> webserviceUrl;
 
     if(!username.isEmpty() && !password.isEmpty())
     {
-        emit pDebug("Account " + this->username + " --> Loaded.");
+        this->username = username;
+        this->password = password;
         this->connected = true;
+        emit pDebug("Account " + this->username + " --> Loaded.");
+        return true;
     }
     else
     {
-        emit pDebug(QString(TRACKOBOT_ACCOUNT_FILE) + " file has an invalid format.");
-        this->connected = false;
+        emit pDebug(fileName + " file has an invalid format.");
+        emit showMessageProgressBar("Invalid track-o-bot account");
+        return false;
     }
-
-    return this->connected;
 }
 
 

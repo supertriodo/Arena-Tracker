@@ -824,6 +824,9 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
+        QFont font("Sans Serif");
+        font.setPixelSize(14);
+        ui->progressBar->setFont(font);
         ui->progressBar->setVisible(false);
         ui->progressBar->setMaximum(100);
         ui->progressBar->setValue(100);
@@ -1282,14 +1285,25 @@ void MainWindow::dropEvent(QDropEvent *e)
     foreach(const QUrl &url, e->mimeData()->urls())
     {
         QString fileName = url.toLocalFile();
+        pDebug("Dropped " + fileName);
 
         if(fileName.endsWith(".xls"))
         {
-            pDebug("Dropped " + fileName);
-
             if(askImportXls())
             {
                 trackobotUploader->uploadXls(fileName);
+            }
+            break;
+        }
+        else if(fileName.endsWith(".track-o-bot"))
+        {
+            int answer = QMessageBox::question(this, "Import track-o-bot account?",
+                            "Do you want to use this new track-o-bot account"
+                            "\nas your default account?",
+                            QMessageBox::Yes, QMessageBox::No);
+            if(answer == QMessageBox::Yes)
+            {
+                trackobotUploader->importAccount(fileName);
             }
             break;
         }
@@ -3056,7 +3070,6 @@ void MainWindow::hideProgressBar()
 
 //Video howto export and link en messageBox
 //Bug al quitar deck window botones minimizar siguen grandes.
-//Mensajes progressbar para upload result and upload zero2hero
 //Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Bug load deck window y deck window

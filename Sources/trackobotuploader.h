@@ -42,7 +42,7 @@ private:
 
 //Metodos
 private:
-    bool loadAccount();
+    bool loadAccount(QString fileName="");
     void saveAccount();
     bool loadAccount(QByteArray jsonData);
     QString credentials();
@@ -58,6 +58,7 @@ public:
     void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory);
     QString getUsername();
     void uploadXls(QString fileName);
+    void importAccount(QString fileName);
 
 signals:
     void advanceProgressBar(QString text);
