@@ -125,6 +125,7 @@ void MainWindow::createSecondaryWindow()
     deckHandler->setTransparency(Transparent);
     updateMainUITheme();
     this->resizeTabWidgets();
+    this->resizeChecks();
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
@@ -140,6 +141,7 @@ void MainWindow::destroySecondaryWindow()
 
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     this->resizeTabWidgets();
+    this->resizeChecks();
 }
 
 
@@ -1424,13 +1426,14 @@ void MainWindow::resizeSlot(QSize size)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
-    resizeChecks(this->size());
+    resizeChecks();
     event->accept();
 }
 
 
-void MainWindow::resizeChecks(QSize size)
+void MainWindow::resizeChecks()
 {
+    QSize size = this->size();
     QWidget *widget = this->centralWidget();
 
     if(isMainWindow)
@@ -1538,6 +1541,7 @@ void MainWindow::resizeTabWidgets(QSize newSize)
 
 
 //Fuerza los checks sin cambiar la formacion
+//Habra que llamarlo siempre que se añada o quite una tab
 void MainWindow::resizeTabWidgets()
 {
     resizeTabWidgets(windowsFormation);
@@ -2306,7 +2310,7 @@ void MainWindow::toggleSplitWindow()
 
 void MainWindow::spreadSplitWindow()
 {
-    resizeTabWidgets(this->size());
+    resizeChecks();
 
     if(isMainWindow && otherWindow != NULL)
     {

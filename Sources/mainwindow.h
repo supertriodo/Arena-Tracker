@@ -122,7 +122,7 @@ private:
     QString getHSLanguage();
     void createCardsJsonMap(QByteArray &jsonData);
     void resizeTopButtons(int right, int top);
-    void resizeChecks(QSize size);
+    void resizeChecks();
     void resizeTabWidgets(QSize newSize);
     void resizeTabWidgets(WindowsFormation newWindowsFormation);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget);

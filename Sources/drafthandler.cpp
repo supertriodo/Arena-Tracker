@@ -230,9 +230,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         settings.setValue("size", mainWindow->size());
 
         //Show Tab
-        mainWindow->resize(mainWindow->width() + 30, mainWindow->height());
         ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(":/Images/arena.png"), "");
-        mainWindow->calculateMinimumWidth();
 
         //SizeDraft
         QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
