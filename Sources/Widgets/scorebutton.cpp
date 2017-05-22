@@ -7,6 +7,7 @@ ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton
     this->learningShow = false;
     this->isBestScore = false;
     this->draftMethod = draftMethod;
+    this->score = 0;
 }
 
 
@@ -81,7 +82,7 @@ void ScoreButton::draw()
     int r, g, b;
     getScoreColor(r, g, b, score);
 
-    if(hideScore)    this->setText("?");
+    if(hideScore)       this->setText("?");
     else                this->setText(QString::number((int)score));
     QString gradientCSS = "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
                           "stop: 0 black, "

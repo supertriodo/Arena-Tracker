@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
+    windowsFormation = None;
 
     logLoader = NULL;
     gameWatcher = NULL;
@@ -89,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
+    windowsFormation = None;
     otherWindow = primaryWindow;
 
     completeUI();
@@ -111,6 +113,7 @@ MainWindow::~MainWindow()
     if(trackobotUploader != NULL)   delete trackobotUploader;
     if(ui != NULL)                  delete ui;
     closeLogFile();
+    QFontDatabase::removeAllApplicationFonts();
 }
 
 
@@ -3070,7 +3073,6 @@ void MainWindow::hideProgressBar()
 
 //Video howto export and link en messageBox
 //Bug al quitar deck window botones minimizar siguen grandes.
-//Actualizar cuenta trackobot con dragdrop
 //Valgrind xls
 //Bug load deck window y deck window
 //Bug expander UI blanco

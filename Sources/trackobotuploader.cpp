@@ -86,10 +86,10 @@ void TrackobotUploader::uploadNextXlsResult()
 {
     ArenaItem arenaItem = arenaItemXlsList.takeFirst();
     GameResult gameResult = arenaItem.gameResult;
-    uploadResult(gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
     QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
                     Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
     emit advanceProgressBar(text);
+    uploadResult(gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
     if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar("All games uploaded");
 }
 
@@ -307,6 +307,9 @@ QList<ArenaItem> TrackobotUploader::extractXls(xlsWorkBook* pWB)
         }
     }
 
+    xls_close_WS(pWS);
+    emit pDebug("Extracted " + QString::number(arenaItemList.count()) + " games from the XLS file.");
+
     return arenaItemList;
 }
 
@@ -329,6 +332,7 @@ void TrackobotUploader::uploadXls(QString fileName)
     else
     {
         arenaItemXlsList = extractXls(pWB);
+        xls_close_WB(pWB);
         if(arenaItemXlsList.isEmpty())  return;
 
         emit startProgressBar(arenaItemXlsList.count());
