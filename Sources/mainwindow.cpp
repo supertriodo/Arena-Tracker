@@ -591,8 +591,9 @@ void MainWindow::createGameWatcher()
             arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState, QString, qint64)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
-    connect(gameWatcher, SIGNAL(inRewards()),
-            arenaHandler, SLOT(showRewards()));
+    //Rewards input disabled with track-o-bot stats
+//    connect(gameWatcher, SIGNAL(inRewards()),
+//            arenaHandler, SLOT(showRewards()));
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
