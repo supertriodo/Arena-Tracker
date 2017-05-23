@@ -157,6 +157,7 @@ private:
     void spreadDraftMethod(DraftMethod draftMethod);
     void showProgressBar(bool animated=true);
     bool askImportXls();
+    bool askImportAccount();
 
 //Override events
 protected:

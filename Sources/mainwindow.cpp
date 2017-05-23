@@ -1302,11 +1302,7 @@ void MainWindow::dropEvent(QDropEvent *e)
         }
         else if(fileName.endsWith(".track-o-bot"))
         {
-            int answer = QMessageBox::question(this, "Import track-o-bot account?",
-                            "Do you want to use this new track-o-bot account"
-                            "\nas your default account?",
-                            QMessageBox::Yes, QMessageBox::No);
-            if(answer == QMessageBox::Yes)
+            if(askImportAccount())
             {
                 trackobotUploader->importAccount(fileName);
             }
@@ -1316,17 +1312,36 @@ void MainWindow::dropEvent(QDropEvent *e)
 }
 
 
+bool MainWindow::askImportAccount()
+{
+    QString text =  "Do you want to use this new track-o-bot account"
+                    "<br>as your default account?"
+                    "<br><a href='https://www.youtube.com/watch?v=DfIat7UR7Tc'>VIDEO</a>";
+
+    QMessageBox msgBox(this);
+    msgBox.setText(text);
+    msgBox.setWindowTitle("Import track-o-bot account?");
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setIcon(QMessageBox::Question);
+    msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    msgBox.exec();
+
+    if(msgBox.result() == QMessageBox::Yes) return true;
+    else                                    return false;
+}
+
+
 bool MainWindow::askImportXls()
 {
     QString text =  "Do you want to upload all the games included"
-                    " on this XLS file to your track-o-bot account?"
-                    "<br><br>Keep in mind the XLS needs to follow Arena Mastery export XLS format."
-                    "<br><a href='https://www.youtube.com/watch?v=ZnuwB35GYMY'>Check this video.</a>";
+                    "<br>on this XLS file to your track-o-bot account?"
+                    "<br><br>Keep in mind the XLS needs to follow"
+                    "<br>Arena Mastery export XLS format."
+                    "<br><a href='https://www.youtube.com/watch?v=LOB1sBU1AOA'>VIDEO</a>";
 
-    //TODO video
     QMessageBox msgBox(this);
     msgBox.setText(text);
-    msgBox.setWindowTitle("Upload XLS");
+    msgBox.setWindowTitle("Upload XLS?");
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setIcon(QMessageBox::Question);
     msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
@@ -3083,8 +3098,6 @@ void MainWindow::hideProgressBar()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-
-//Video howto export and link en messageBox
 
 
 //REPLAY BUGS
