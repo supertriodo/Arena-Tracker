@@ -123,8 +123,16 @@ RESOURCES += \
 
 linux: LIBS += -L/home/triodo/Documentos/ArenaTracker/Libs
 win32: RC_ICONS = ArenaTracker.ico
-macx: ICON = ArenaTracker.icns
+macx
+{
+    ICON = ArenaTracker.icns
+    LIBS += -liconv
+}
 
 #Deploy MAC
+#First time errors
+#(opencv development package not found)         Add PATH --> :/usr/local/bin
+
+#Everytime
 #1 Compilar
-#2 ~/Qt/5.6/clang_64/bin/macdeployqt ArenaTracker.app
+#2 ~/Qt/5.8/clang_64/bin/macdeployqt ArenaTracker.app

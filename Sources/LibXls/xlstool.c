@@ -59,7 +59,7 @@ extern int xls_debug;
 
 static void xls_showBOUNDSHEET(void* bsheet);
 
-static const DWORD colors[] =
+static const uint32_t colors[] =
     {
         0x000000,
         0xFFFFFF,
@@ -204,11 +204,11 @@ void verbose(char* str)
         printf("libxls : %s\n",str);
 }
 
-BYTE *utf8_decode(BYTE *str, DWORD len, char *encoding)
+BYTE *utf8_decode(BYTE *str, uint32_t len, char *encoding)
 {
 	int utf8_chars = 0;
 	BYTE *ret;
-    DWORD i;
+    uint32_t i;
 	
 	for(i=0; i<len; ++i) {
 		if(str[i] & (BYTE)0x80) {
@@ -221,7 +221,7 @@ BYTE *utf8_decode(BYTE *str, DWORD len, char *encoding)
 		memcpy(ret, str, len);
 		ret[len] = 0;
 	} else {
-        DWORD i;
+        uint32_t i;
         BYTE *out;
 		// UTF-8 encoding inline
 		ret = (BYTE *)malloc(len+utf8_chars+1);
@@ -373,7 +373,7 @@ BYTE* unicode_decode(const BYTE *s, int len, size_t *newlen, const char* to_enc)
 BYTE* get_string(BYTE *s, BYTE is2, BYTE is5ver, char *charset)
 {
     WORD ln;
-    DWORD ofs;
+    uint32_t ofs;
     BYTE flag;
     BYTE* str;
     BYTE* ret;
@@ -406,8 +406,8 @@ BYTE* get_string(BYTE *s, BYTE is2, BYTE is5ver, char *charset)
     }
     if (flag&0x4)
     {
-		// DWORD sz;
-        // sz=*(DWORD*)(str+ofs); // unused
+        // uint32_t sz;
+        // sz=*(uint32_t*)(str+ofs); // unused
         ofs+=4;
     }
     if(flag & 0x1)
@@ -437,7 +437,7 @@ BYTE* get_string(BYTE *s, BYTE is2, BYTE is5ver, char *charset)
     return ret;
 }
 
-DWORD xls_getColor(const WORD color,WORD def)
+uint32_t xls_getColor(const WORD color,WORD def)
 {
     int cor=8;
     int size = 64 - cor;
@@ -712,8 +712,8 @@ char* xls_getCSS(xlsWorkBook* pWB)
     WORD size;
     char fontname[255];
     struct st_xf_data* xf;
-    DWORD background;
-    DWORD i;
+    uint32_t background;
+    uint32_t i;
 
     char *ret = malloc(65535);
     char *buf = malloc(4096);

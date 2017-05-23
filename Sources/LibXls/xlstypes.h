@@ -37,7 +37,7 @@
 
 typedef unsigned char		BYTE;
 typedef uint16_t			WORD;
-typedef uint32_t			DWORD;
+//typedef uint32_t			DWORD;
 
 #ifdef NO_ALIGN
 typedef uint16_t			WORD_UA;

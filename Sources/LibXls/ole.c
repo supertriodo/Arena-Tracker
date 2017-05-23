@@ -48,10 +48,10 @@ extern int xls_debug;
 
 //#define OLE_DEBUG
 
-//static const DWORD MSATSECT		= 0xFFFFFFFC;	// -4
-//static const DWORD FATSECT		= 0xFFFFFFFD;	// -3
-static const DWORD ENDOFCHAIN	= 0xFFFFFFFE;	// -2
-static const DWORD FREESECT		= 0xFFFFFFFF;	// -1
+//static const uint32_t MSATSECT		= 0xFFFFFFFC;	// -4
+//static const uint32_t FATSECT		= 0xFFFFFFFD;	// -3
+static const uint32_t ENDOFCHAIN	= 0xFFFFFFFE;	// -2
+static const uint32_t FREESECT		= 0xFFFFFFFF;	// -1
 
 static size_t sector_pos(OLE2* ole2, size_t sid);
 static int sector_read(OLE2* ole2, BYTE *buffer, size_t sid);
@@ -65,7 +65,7 @@ void ole2_bufread(OLE2Stream* olest)
 	assert(olest);
 	assert(olest->ole);
 
-    if ((DWORD)olest->fatpos!=ENDOFCHAIN)
+    if ((uint32_t)olest->fatpos!=ENDOFCHAIN)
     {
 		if(olest->sfat) {
 			assert(olest->ole->SSAT);
@@ -147,7 +147,7 @@ size_t ole2_read(void* buf,size_t size,size_t count,OLE2Stream* olest)
 		}
 		assert(didReadCount <= totalReadCount);
 		//printf("  if(fatpos=0x%X==EOC=0x%X) && (pos=%d >= bufsize=%d)\n", olest->fatpos, ENDOFCHAIN, olest->pos, olest->bufsize);
-		if (((DWORD)olest->fatpos == ENDOFCHAIN) && (olest->pos >= olest->bufsize))
+        if (((uint32_t)olest->fatpos == ENDOFCHAIN) && (olest->pos >= olest->bufsize))
 		{
 			olest->eof=1;
 		}
@@ -173,7 +173,7 @@ size_t ole2_read(void* buf,size_t size,size_t count,OLE2Stream* olest)
 }
 
 // Open stream in logical ole file
-OLE2Stream* ole2_sopen(OLE2* ole,DWORD start, size_t size)
+OLE2Stream* ole2_sopen(OLE2* ole,uint32_t start, size_t size)
 {
     OLE2Stream* olest=NULL;
 
@@ -204,7 +204,7 @@ OLE2Stream* ole2_sopen(OLE2* ole,DWORD start, size_t size)
 }
 
 // Move in stream
-void ole2_seek(OLE2Stream* olest,DWORD ofs)
+void ole2_seek(OLE2Stream* olest,uint32_t ofs)
 {
 	if(olest->sfat) {
 		ldiv_t div_rez=ldiv(ofs,olest->ole->lssector);
@@ -392,7 +392,7 @@ OLE2* ole2_open(const BYTE *file)
 #endif
 			} else
 			if(pss->type == PS_USER_ROOT) {
-				DWORD sector, k, blocks;
+                uint32_t sector, k, blocks;
 				BYTE *wptr;
 				
 				blocks = (pss->size + (ole->lsector - 1)) / ole->lsector;	// count partial
@@ -493,7 +493,7 @@ static size_t read_MSAT(OLE2* ole2, OLE2Header* oleh)
 
     // Add additionnal sectors of the MSAT
     {
-        DWORD sid = ole2->difstart;
+        uint32_t sid = ole2->difstart;
 
 		BYTE *sector = malloc(ole2->lsector);
 		//printf("sid=%u (0x%x) sector=%u\n", sid, sid, ole2->lsector);
@@ -506,7 +506,7 @@ static size_t read_MSAT(OLE2* ole2, OLE2Header* oleh)
            // read content
            for (posInSector = 0; posInSector < (ole2->lsector-4)/4; posInSector++)
 		   {
-              DWORD s = *(DWORD_UA *)(sector + posInSector*4);
+              uint32_t s = *(DWORD_UA *)(sector + posInSector*4);
               //printf("   s[%d]=%d (0x%x)\n", posInSector, s, s);
 
               if (s != FREESECT)
@@ -533,10 +533,10 @@ static size_t read_MSAT(OLE2* ole2, OLE2Header* oleh)
 
 	// read in short table
 	if(ole2->sfatstart != ENDOFCHAIN) {
-		DWORD sector, k;
+        uint32_t sector, k;
 		BYTE *wptr;
 		
-		ole2->SSecID = (DWORD *)malloc(ole2->csfat*ole2->lsector);
+        ole2->SSecID = (uint32_t *)malloc(ole2->csfat*ole2->lsector);
 		sector = ole2->sfatstart;
 		wptr=(BYTE*)ole2->SSecID;
 		for(k=0; k<ole2->csfat; ++k) {

@@ -55,8 +55,8 @@ int xls_debug;
 static double NumFromRk(DWORD_UA drk);
 static xls_formula_handler formula_handler;
 
-extern void xls_addSST(xlsWorkBook* pWB,SST* sst,DWORD size);
-extern void xls_appendSST(xlsWorkBook* pWB,BYTE* buf,DWORD size);
+extern void xls_addSST(xlsWorkBook* pWB,SST* sst,uint32_t size);
+extern void xls_appendSST(xlsWorkBook* pWB,BYTE* buf,uint32_t size);
 extern void xls_addFormat(xlsWorkBook* pWB,FORMAT* format);
 extern BYTE* xls_addSheet(xlsWorkBook* pWB,BOUNDSHEET* bs);
 extern void xls_addRow(xlsWorkSheet* pWS,ROW* row);
@@ -117,7 +117,7 @@ int xls(int debug)
     return 1;
 }
 
-void xls_addSST(xlsWorkBook* pWB,SST* sst,DWORD size)
+void xls_addSST(xlsWorkBook* pWB,SST* sst,uint32_t size)
 {
     verbose("xls_addSST");
 
@@ -132,12 +132,12 @@ void xls_addSST(xlsWorkBook* pWB,SST* sst,DWORD size)
     xls_appendSST(pWB,&sst->strings,size-8);
 }
 
-void xls_appendSST(xlsWorkBook* pWB,BYTE* buf,DWORD size)
+void xls_appendSST(xlsWorkBook* pWB,BYTE* buf,uint32_t size)
 {
-    DWORD ln;	// String character count
-    DWORD ofs;	// Current offset in SST buffer
-    DWORD rt;	// Count of rich text formatting runs
-    DWORD sz;	// Size of asian phonetic settings block
+    uint32_t ln;	// String character count
+    uint32_t ofs;	// Current offset in SST buffer
+    uint32_t rt;	// Count of rich text formatting runs
+    uint32_t sz;	// Size of asian phonetic settings block
     BYTE flag;	// String flags
     BYTE* ret;
 
@@ -330,7 +330,7 @@ static double NumFromRk(DWORD_UA drk)
 BYTE* xls_addSheet(xlsWorkBook* pWB, BOUNDSHEET *bs)
 {
 	BYTE* name;
-	DWORD filepos;
+    uint32_t filepos;
 	BYTE visible, type;
 
 	filepos = bs->filepos;
@@ -408,7 +408,7 @@ void xls_addRow(xlsWorkSheet* pWS,ROW* row)
 
 void xls_makeTable(xlsWorkSheet* pWS)
 {
-    DWORD i,t;
+    uint32_t i,t;
     struct st_row_data* tmp;
     verbose ("xls_makeTable");
 
@@ -1034,8 +1034,8 @@ void xls_preparseWorkSheet(xlsWorkSheet* pWS)
 
 void xls_formatColumn(xlsWorkSheet* pWS)
 {
-    DWORD i,t,ii;
-    DWORD fcol,lcol;
+    uint32_t i,t,ii;
+    uint32_t fcol,lcol;
 
     for (i=0;i<pWS->colinfo.count;i++)
     {
@@ -1113,7 +1113,7 @@ void xls_parseWorkSheet(xlsWorkSheet* pWS)
 			break;
 		case 0x00D7:
 			if(xls_debug > 10) {
-				DWORD *foo = (DWORD_UA *)buf;
+                uint32_t *foo = (DWORD_UA *)buf;
                 WORD *goo;
 				int i;
                 printf("DBCELL: size %d\n", tmp.size);
@@ -1125,7 +1125,7 @@ void xls_parseWorkSheet(xlsWorkSheet* pWS)
 			break;
         case 0x020B:		//INDEX
 			if(xls_debug > 10) {
-				DWORD *foo = (DWORD_UA *)buf;
+                uint32_t *foo = (DWORD_UA *)buf;
                 int i;
 				printf("INDEX: size %d\n", tmp.size);
 				for(i=0; i<5; ++i) printf("FOO[%d]=%4.4x %u\n", i, foo[i], foo[i]);
@@ -1315,7 +1315,7 @@ void xls_close_WB(xlsWorkBook* pWB)
 
     // Sheets
     {
-        DWORD i;
+        uint32_t i;
         for(i=0; i<pWB->sheets.count; ++i) {
             free(pWB->sheets.sheet[i].name);
         }
@@ -1324,7 +1324,7 @@ void xls_close_WB(xlsWorkBook* pWB)
 
     // SST
     {
-        DWORD i;
+        uint32_t i;
         for(i=0; i<pWB->sst.count; ++i) {
             free(pWB->sst.string[i].str);
         }
@@ -1338,7 +1338,7 @@ void xls_close_WB(xlsWorkBook* pWB)
 
     // fonts
     {
-        DWORD i;
+        uint32_t i;
         for(i=0; i<pWB->fonts.count; ++i) {
             free(pWB->fonts.font[i].name);
         }
@@ -1347,7 +1347,7 @@ void xls_close_WB(xlsWorkBook* pWB)
 
     // formats
     {
-        DWORD i;
+        uint32_t i;
         for(i=0; i<pWB->formats.count; ++i) {
             free(pWB->formats.format[i].value);
         }
@@ -1368,7 +1368,7 @@ void xls_close_WS(xlsWorkSheet* pWS)
 
     // ROWS
     {
-        DWORD i, j;
+        uint32_t i, j;
         for(j=0; j<=pWS->rows.lastrow; ++j) {
             struct st_row_data *row = &pWS->rows.row[j];
             for(i=0; i<row->cells.count; ++i) {

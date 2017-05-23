@@ -54,8 +54,8 @@ typedef struct BIFF
     WORD type;
     WORD id_make;
     WORD year;
-    DWORD flags;
-    DWORD min_ver;
+    uint32_t flags;
+    uint32_t min_ver;
     BYTE buf[100];
 }
 BIFF;
@@ -76,7 +76,7 @@ WIND1;
 
 typedef struct BOUNDSHEET
 {
-    DWORD	filepos;
+    uint32_t	filepos;
     BYTE	type;
     BYTE	visible;
     BYTE	name[];
@@ -184,8 +184,8 @@ typedef LABEL LABELSST;
 
 typedef struct SST
 {
-    DWORD	num;
-    DWORD	numofstr;
+    uint32_t	num;
+    uint32_t	numofstr;
     BYTE	strings;
 }
 SST;
@@ -212,8 +212,8 @@ typedef struct XF8
     BYTE	rotation;
     BYTE	ident;
     BYTE	usedattr;
-    DWORD	linestyle;
-    DWORD	linecolor;
+    uint32_t	linestyle;
+    uint32_t	linecolor;
     WORD	groundcolor;
 }
 XF8;
@@ -275,10 +275,10 @@ FORMAT;
 
 typedef	struct st_sheet
 {
-    DWORD count;        // Count of sheets
+    uint32_t count;        // Count of sheets
     struct st_sheet_data
     {
-        DWORD filepos;
+        uint32_t filepos;
         BYTE visibility;
         BYTE type;
         BYTE* name;
@@ -289,7 +289,7 @@ st_sheet;
 
 typedef	struct st_font
 {
-    DWORD count;		// Count of FONT's
+    uint32_t count;		// Count of FONT's
     struct st_font_data
     {
         WORD	height;
@@ -308,7 +308,7 @@ st_font;
 
 typedef struct st_format
 {
-    DWORD count;		// Count of FORMAT's
+    uint32_t count;		// Count of FORMAT's
     struct st_format_data
     {
          WORD index;
@@ -320,7 +320,7 @@ st_format;
 
 typedef	struct st_xf
 {
-    DWORD count;	// Count of XF
+    uint32_t count;	// Count of XF
     //	XF** xf;
     struct st_xf_data
     {
@@ -331,8 +331,8 @@ typedef	struct st_xf
         BYTE	rotation;
         BYTE	ident;
         BYTE	usedattr;
-        DWORD	linestyle;
-        DWORD	linecolor;
+        uint32_t	linestyle;
+        uint32_t	linecolor;
         WORD	groundcolor;
     }
     * xf;
@@ -342,12 +342,12 @@ st_xf;
 
 typedef	struct st_sst
 {
-    DWORD count;
-    DWORD lastid;
-    DWORD continued;
-    DWORD lastln;
-    DWORD lastrt;
-    DWORD lastsz;
+    uint32_t count;
+    uint32_t lastid;
+    uint32_t continued;
+    uint32_t lastln;
+    uint32_t lastrt;
+    uint32_t lastsz;
     struct str_sst_string
     {
         BYTE* str;
@@ -359,7 +359,7 @@ st_sst;
 
 typedef	struct st_cell
 {
-    DWORD count;
+    uint32_t count;
     struct st_cell_data
     {
         WORD	id;
@@ -381,7 +381,7 @@ st_cell;
 
 typedef	struct st_row
 {
-    //	DWORD count;
+    //	uint32_t count;
     WORD lastcol;	// numCols - 1
     WORD lastrow;	// numRows - 1
     struct st_row_data
@@ -402,7 +402,7 @@ st_row;
 
 typedef	struct st_colinfo
 {
-    DWORD count;				//Count of COLINFO
+    uint32_t count;				//Count of COLINFO
     struct st_colinfo_data
     {
         WORD	first;
@@ -442,7 +442,7 @@ xlsWorkBook;
 
 typedef struct xlsWorkSheet
 {
-    DWORD		filepos;
+    uint32_t		filepos;
     WORD		defcolwidth;
     st_row		rows;
     xlsWorkBook *workbook;

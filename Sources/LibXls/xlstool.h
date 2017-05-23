@@ -35,10 +35,10 @@
 extern void dumpbuf(BYTE* fname,long size,BYTE* buf);
 extern void verbose(char* str);
 
-extern BYTE *utf8_decode(BYTE *str, DWORD len, char *encoding);
+extern BYTE *utf8_decode(BYTE *str, uint32_t len, char *encoding);
 extern BYTE* unicode_decode(const BYTE *s, int len, size_t *newlen, const char* encoding);
 extern BYTE* get_string(BYTE *s,BYTE is2, BYTE isUnicode, char *charset);
-extern DWORD xls_getColor(const WORD color,WORD def);
+extern uint32_t xls_getColor(const WORD color,WORD def);
 
 extern void xls_showBookInfo(xlsWorkBook* pWB);
 extern void xls_showROW(struct st_row_data* row);
