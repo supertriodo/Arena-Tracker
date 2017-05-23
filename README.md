@@ -58,7 +58,7 @@ If you have problems installing it or using it I'm happy to help you on [reddit]
   * On Ubuntu I followed this guide: (changing the version of ovencv to v2.4.11)
    http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/
   * On Mac I followed this guide:
-   https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/
+   https://www.learnopencv.com/configuring-qt-for-opencv-on-osx/
 * Download or clone Arena Tracker source code.
   * https://github.com/supertriodo/Arena-Tracker/archive/master.zip
 * Open Qt Creator and open Arena Tracker project.
