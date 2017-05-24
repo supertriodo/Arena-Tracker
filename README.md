@@ -11,7 +11,7 @@ Too complicated? [Check the User Guide](https://www.gitbook.com/read/book/arena-
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
-  * libpng12 needs to be installed on Ubuntu 16.10
+  * libpng12, libxcb-xinerama0 need to be installed.
   * If you have problems with dependencies, try the AppImage binary.
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by [Strit](https://github.com/Strit).
 
