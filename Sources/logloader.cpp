@@ -311,12 +311,8 @@ void LogLoader::processDataLogs()
 {
     if(dataLogs.isEmpty())  return;
 
-    QList<qint64> timeStamps = dataLogs.keys();
-    qSort(timeStamps);
-
-    foreach(qint64 timeStamp, timeStamps)
+    for(const DataLog dataLog: dataLogs.values())
     {
-        DataLog dataLog = dataLogs[timeStamp];
         emit newLogLineRead(dataLog.logComponent, dataLog.line, dataLog.numLine, dataLog.logSeek);
     }
     dataLogs.clear();
@@ -371,8 +367,7 @@ void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 nu
         dataLog.logSeek = logSeek;
 
         qint64 timeStamp = QString(match->captured(1) + match->captured(2) + match->captured(3) + match->captured(4)).toLongLong();
-        while(dataLogs.contains(timeStamp))     timeStamp++;
-        dataLogs[timeStamp] = dataLog;
+        dataLogs.insertMulti(timeStamp, dataLog);
     }
     else
     {
