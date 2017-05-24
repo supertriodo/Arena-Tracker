@@ -81,15 +81,21 @@ If you build on Mac check:
 * v1.1: https://www.youtube.com/watch?v=MyeUy9RSY7E
 
 
-## More info:
+## Reddit:
 * http://www.reddit.com/r/ArenaTracker
-* http://www.arenamastery.com
+
+
+## Thanks to:
+* http://thelightforge.com/TierList
 * http://www.heartharena.com
 * http://www.hearthhead.com
 * http://www.hearthpwn.com
 * http://www.zerotoheroes.com/s/hearthstone
 * http://hearthstonejson.com
-* Arena Tracker is a [HearthSim](http://hearthsim.info) project. Come join us in #hearthsim on chat.freenode.net.
+* https://sourceforge.net/projects/libxls/
+* https://github.com/stevschmid/track-o-bot
+* https://github.com/probonopd/linuxdeployqt
+* Arena Tracker is a [HearthSim](http://hearthsim.info) project. Join us on [Discord](https://discord.gg/jDSGFhT).
 
 Thanks to all these projects ArenaTracker is possible.
 
