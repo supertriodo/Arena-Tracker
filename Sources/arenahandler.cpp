@@ -78,7 +78,8 @@ void ArenaHandler::createTreeWidget()
     arenaCurrent = NULL;
     arenaCurrentHero = "";
 
-    for(int i=0; i<9; i++)  constructedTreeItem[i]=NULL;
+    for(int i=0; i<9; i++)  rankedTreeItem[i]=NULL;
+    casualTreeItem = NULL;
     adventureTreeItem = NULL;
     tavernBrawlTreeItem = NULL;
     friendlyTreeItem = NULL;
@@ -271,7 +272,7 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 
     //Trackobot upload
     if(trackobotUploader != NULL && planHandler != NULL &&
-            (loadingScreen == arena || loadingScreen == constructed || loadingScreen == friendly))
+            (loadingScreen == arena || loadingScreen == ranked || loadingScreen == casual || loadingScreen == friendly))
     {
         trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, QDateTime::currentDateTime(), planHandler->getJsonCardHistory());
     }
@@ -349,20 +350,34 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             }
         break;
 
-        case constructed:
-            emit pDebug("Create GameResult from constructed with hero " + gameResult.playerHero + ".");
+        case ranked:
+            emit pDebug("Create GameResult from ranked with hero " + gameResult.playerHero + ".");
             emit pLog(tr("Log: New ranked game."));
 
             if(indexHero<0||indexHero>8)  return NULL;
 
-            if(constructedTreeItem[indexHero] == NULL)
+            if(rankedTreeItem[indexHero] == NULL)
             {
-                emit pDebug("Create Category constructed[" + QString::number(indexHero) + "].");
-                constructedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
+                emit pDebug("Create Category ranked[" + QString::number(indexHero) + "].");
+                rankedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
             }
 
-            item = new QTreeWidgetItem(constructedTreeItem[indexHero]);
-            updateWinLose(gameResult.isWinner, constructedTreeItem[indexHero]);
+            item = new QTreeWidgetItem(rankedTreeItem[indexHero]);
+            updateWinLose(gameResult.isWinner, rankedTreeItem[indexHero]);
+        break;
+
+        case casual:
+            emit pDebug("Create GameResult from casual.");
+            emit pLog(tr("Log: New casual game."));
+
+            if(casualTreeItem == NULL)
+            {
+                emit pDebug("Create Category casual.");
+                casualTreeItem = createTopLevelItem("Casual", "", false);
+            }
+
+            item = new QTreeWidgetItem(casualTreeItem);
+            updateWinLose(gameResult.isWinner, casualTreeItem);
         break;
 
         case adventure:

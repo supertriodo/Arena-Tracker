@@ -28,8 +28,8 @@ private:
     PlanHandler *planHandler;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
-    QTreeWidgetItem *constructedTreeItem[9];
-    QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem;
+    QTreeWidgetItem *rankedTreeItem[9];
+    QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem, *casualTreeItem;
     QString arenaCurrentHero;
     QMap<QTreeWidgetItem *, QString> replayLogsMap;
     QTreeWidgetItem *lastReplayUploaded;

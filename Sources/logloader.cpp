@@ -10,6 +10,7 @@ LogLoader::LogLoader(QObject *parent) : QObject(parent)
     logComponentList.append("Power");
     logComponentList.append("Zone");
     logComponentList.append("Arena");
+    logComponentList.append("Asset");
 
     match = new QRegularExpressionMatch();
 }
@@ -246,7 +247,7 @@ bool LogLoader::checkLogConfig()
 
     if(logConfigChanged)
     {
-//        QMessageBox::information((QWidget*)this->parent(), tr("Restart Hearthstone"), tr("log.config has been modified.\nStart Hearthstone (Restart if running)."));
+        emit showMessageProgressBar("Restart Hearthstone");
     }
 
     return true;
@@ -358,7 +359,7 @@ QString LogLoader::getLogsDirPath()
 
 void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
-    if(line.contains(QRegularExpression("D (\\d+):(\\d+):(\\d+).(\\d+) (.*)"), match))
+    if(line.contains(QRegularExpression("(\\d+):(\\d+):(\\d+).(\\d+) (.*)"), match))
     {
         DataLog dataLog;
         dataLog.logComponent = logComponent;

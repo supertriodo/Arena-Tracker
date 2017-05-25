@@ -36,6 +36,10 @@ void LogWorker::initLogComponent(QString logComponentString)
     {
         this->logComponent = logArena;
     }
+    else if(logComponentString == "Asset")
+    {
+        this->logComponent = logAsset;
+    }
     else
     {
         this->logComponent = logInvalid;

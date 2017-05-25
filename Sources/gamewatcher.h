@@ -69,9 +69,9 @@ private:
     //no aparezcan como parte del nuevo turno
     int turn, turnReal;
     bool mulliganEnemyDone, mulliganPlayerDone;
-    qint64 logSeekCreate;
+    qint64 logSeekCreate, logSeekWon;
     bool copyGameLogs;
-    bool spectating;
+    bool spectating, tied;
     ShowEntity lastShowEntity;
     qint64 startGameEpoch;
 
@@ -81,6 +81,7 @@ private:
 private:
     void createGameResult(QString logFileName);
     void processLoadingScreen(QString &line, qint64 numLine);
+    void processAsset(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine, qint64 logSeek);
     void processPowerMulligan(QString &line, qint64 numLine);
@@ -90,7 +91,7 @@ private:
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);
-    QString createGameLog(qint64 logSeekWon);
+    QString createGameLog();
 
 
 public:

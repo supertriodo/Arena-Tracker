@@ -125,7 +125,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         //Discover card, puede ser cualquier secreto standard, incluido los baneados de arena
         else if(!createdByCode.isEmpty())
         {
-            unknownSecretPlayed(id, hero, constructed);
+            unknownSecretPlayed(id, hero, ranked);
         }
         //Deck Card
         else

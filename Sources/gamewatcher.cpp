@@ -4,14 +4,7 @@
 
 GameWatcher::GameWatcher(QObject *parent) : QObject(parent)
 {
-    powerState = noGame;
-    arenaState = noDeckRead;
-    loadingScreenState = menu;
-    mulliganEnemyDone = false;
-    spectating = false;
-    turn = turnReal = 0;
-    logSeekCreate = -1;
-
+    reset();
     match = new QRegularExpressionMatch();
 }
 
@@ -27,8 +20,12 @@ void GameWatcher::reset()
     powerState = noGame;
     arenaState = noDeckRead;
     loadingScreenState = menu;
+    mulliganEnemyDone = mulliganPlayerDone = false;
+    turn = turnReal = 0;
     spectating = false;
     logSeekCreate = -1;
+    logSeekWon = -1;
+    tied = true;
     emit pDebug("Reset (powerState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
 }
@@ -36,21 +33,26 @@ void GameWatcher::reset()
 
 void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
-    if(logComponent == logLoadingScreen)
+    switch(logComponent)
     {
-        processLoadingScreen(line, numLine);
-    }
-    else if(logComponent == logArena)
-    {
-        processArena(line, numLine);
-    }
-    else if(logComponent == logPower)
-    {
-        processPower(line, numLine, logSeek);
-    }
-    else if(logComponent == logZone)
-    {
-        processZone(line, numLine);
+        case logPower:
+            processPower(line, numLine, logSeek);
+        break;
+        case logZone:
+            processZone(line, numLine);
+        break;
+        case logLoadingScreen:
+            processLoadingScreen(line, numLine);
+        break;
+        case logArena:
+            processArena(line, numLine);
+        break;
+        case logAsset:
+            processAsset(line, numLine);
+        break;
+        case logInvalid:
+            emit pDebug("Unknown log component read.", Warning);
+        break;
     }
 }
 
@@ -98,6 +100,21 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         QString currMode = match->captured(2);
         emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
 
+        //Create result, avoid first run
+        if(prevMode == "GAMEPLAY" && logSeekCreate != -1 && logSeekWon != -1)
+        {
+            if(spectating || loadingScreenState == menu || tied)
+            {
+                emit pDebug("CreateGameResult: Avoid spectator/tied game result.", 0);
+            }
+            else
+            {
+                QString logFileName = createGameLog();
+                createGameResult(logFileName);
+            }
+            spectating = false;
+        }
+
         if(currMode == "DRAFT")
         {
             loadingScreenState = arena;
@@ -121,8 +138,8 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         }
         else if(currMode == "TOURNAMENT")
         {
-            loadingScreenState = constructed;
-            emit pDebug("Entering CONSTRUCTED (loadingScreenState = constructed).", numLine);
+            loadingScreenState = casual;
+            emit pDebug("Entering CASUAL/RANKED (loadingScreenState = casual).", numLine);
         }
         else if(currMode == "ADVENTURE")
         {
@@ -145,6 +162,20 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
                 emit leaveArena();//leaveArena deckHandler
             }
         }
+    }
+}
+
+
+void GameWatcher::processAsset(QString &line, qint64 numLine)
+{
+    if(powerState != noGame)   return;
+
+    //Definimos RANKED solo si venimos de loadScreen TOURNAMENT y
+    //acabamos de encontrar el WON pero aun no hemos createResult
+    if(loadingScreenState == casual && logSeekWon != -1 && line.contains("name=rank_window"))
+    {
+        loadingScreenState = ranked;
+        emit pDebug("On RANKED (loadingScreenState = ranked).", numLine);
     }
 }
 
@@ -206,13 +237,28 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
 }
 
 
+//Ejemplo spectate
+//11:22:01 - GameWatcher(1): Start Spectator Game.
+//11:22:01 - GameWatcher(3): Found CREATE_GAME (powerState = heroType1State)
+//11:22:04 - GameWatcher(22): LoadingScreen: HUB -> GAMEPLAY
+//Juego arena
+//20:58:25 - GameWatcher(27229): Found WON (powerState = noGame): Dappo
+//20:58:35 - GameWatcher(27255): End Spectator Game.
+//20:58:36 - GameWatcher(346): LoadingScreen: GAMEPLAY -> HUB
+//20:58:36 - GameWatcher: CreateGameResult: Avoid spectator/tied game result.
+//20:58:36 - GameWatcher(346): Entering MENU (loadingScreenState = menu).
+//Nuevo juego arena
+//20:58:54 - GameWatcher(27256): Start Spectator Game.
+//20:58:56 - GameWatcher(27258): Found CREATE_GAME (powerState = heroType1State)
+//20:58:56 - GameWatcher(376): LoadingScreen: HUB -> GAMEPLAY
+
 void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 {
     //================== End Spectator Game ==================
     if(line.contains("End Spectator Game"))
     {
         emit pDebug("End Spectator Game.", numLine);
-        spectating = false;
+//        spectating = false;//Se pondra a false despues de haberse creado el resultado en LoadingScreen: GAMEPLAY -> HUB
 
         if(powerState != noGame)
         {
@@ -260,6 +306,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
         startGameEpoch = QDateTime::currentSecsSinceEpoch();
+        tied = true;//Si no se encuentra WON no se llamara a createGameResult() pq tried sigue siendo true
 
         emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en el mulligan de practica
         emit startGame();
@@ -274,23 +321,13 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
                             "Entity=(.+) tag=PLAYSTATE value=(WON|TIED)"), match))
         {
             winnerPlayer = match->captured(1);
-            bool tied = (match->captured(2) == "TIED");
+            tied = (match->captured(2) == "TIED");
             powerState = noGame;
+            logSeekWon = logSeek;
             if(tied)    emit pDebug("Found TIED (powerState = noGame)", numLine);
             else        emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
 
-            if(spectating || loadingScreenState == menu || tied)
-            {
-                emit pDebug("CreateGameResult: Avoid spectator/tied game result.", 0);
-            }
-            else
-            {
-                QString logFileName = createGameLog(logSeek);
-                createGameResult(logFileName);
-            }
-
             bool playerWon = !tied && (winnerPlayer == playerTag);
-
             emit endGame(playerWon, playerTag.isEmpty());
         }
         //Turn
@@ -1317,7 +1354,7 @@ void GameWatcher::createGameResult(QString logFileName)
 }
 
 
-QString GameWatcher::createGameLog(qint64 logSeekWon)
+QString GameWatcher::createGameLog()
 {
     if(!copyGameLogs)
     {
@@ -1326,7 +1363,13 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
     }
     if(logSeekCreate == -1)
     {
-        emit pDebug("Cannot create match log. Found WON but not CREATE_GAME", 0);
+        emit pDebug("Cannot create match log. Not found CREATE_GAME", 0);
+        return "";
+    }
+
+    if(logSeekWon == -1)
+    {
+        emit pDebug("Cannot create match log. Not found WON ", 0);
         return "";
     }
 
@@ -1351,6 +1394,7 @@ QString GameWatcher::createGameLog(qint64 logSeekWon)
     emit pDebug("Game log ready to be copied.", 0);
     emit gameLogComplete(logSeekCreate, logSeekWon, fileName);
     logSeekCreate = -1;
+    logSeekWon = -1;
 
     return fileName;
 }

@@ -126,7 +126,7 @@ QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
     {
         case arena:
             return "ARENA";
-        case constructed:
+        case ranked:
             return "RANKED";
         case adventure:
             return "SOLO";
@@ -134,6 +134,8 @@ QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
             return "BRAWL";
         case friendly:
             return "FRIENDLY";
+        case casual:
+            return "CASUAL";
         default:
             return "UNKNOWN";
     }
@@ -143,10 +145,11 @@ QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
 LoadingScreenState Utility::getLoadingScreenFromString(QString loadingScreenString)
 {
     if(loadingScreenString == "ARENA")          return arena;
-    else if(loadingScreenString == "RANKED")    return constructed;
+    else if(loadingScreenString == "RANKED")    return ranked;
     else if(loadingScreenString == "SOLO")      return adventure;
     else if(loadingScreenString == "BRAWL")     return tavernBrawl;
     else if(loadingScreenString == "FRIENDLY")  return friendly;
+    else if(loadingScreenString == "CASUAL")    return casual;
     else                                        return unknown;
 }
 
