@@ -415,7 +415,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(friendlyTreeItem == NULL)
             {
                 emit pDebug("Create Category friendly.");
-                friendlyTreeItem = createTopLevelItem("Friendly", "", false);
+                friendlyTreeItem = createTopLevelItem("Duel", "", false);
             }
 
             item = new QTreeWidgetItem(friendlyTreeItem);
