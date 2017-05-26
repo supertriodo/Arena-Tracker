@@ -3106,10 +3106,8 @@ void MainWindow::hideProgressBar()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Scores no minimizan
 //Deck draft del heroe correcto
 //Split window tam cards
-//Aumenta carta con doble click
 //Update FAQ and more images
 
 

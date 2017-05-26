@@ -62,6 +62,8 @@ void DeckHandler::completeUI()
 
     connect(ui->deckListWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(enableDeckButtons()));
+    connect(ui->deckListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            this, SLOT(cardTotalPlus(QListWidgetItem*)));
     connect(ui->deckListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findDeckCardEntered(QListWidgetItem*)));
     connect(ui->deckListWidget, SIGNAL(xLeave()),
@@ -1067,6 +1069,21 @@ void DeckHandler::cardRemove()
 
     enableDeckButtonSave();
     emit deckSizeChanged();
+}
+
+
+void DeckHandler::cardTotalPlus(QListWidgetItem *item)
+{
+    item->setSelected(true);
+    int index = ui->deckListWidget->row(item);
+    if(index > 0 &&
+        deckCardList.first().total > 0 &&
+        (inArena |
+            ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != LEGENDARY))
+        ))
+    {
+        cardTotalPlus();
+    }
 }
 
 

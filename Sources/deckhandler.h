@@ -166,6 +166,7 @@ private slots:
     void rngCardEntered(QListWidgetItem *item);
     void hideIfDeckSelected();
     void finishDeckBuilderPY();
+    void cardTotalPlus(QListWidgetItem *item);
 };
 
 #endif // DECKHANDLER_H
