@@ -4,7 +4,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
-* Draft your arena with HearthArena advice.
+* Draft your arena with HearthArena or LightForge advice, or why not both.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
 * Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
