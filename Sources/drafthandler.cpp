@@ -1148,6 +1148,18 @@ bool DraftHandler::isDrafting()
 }
 
 
+void DraftHandler::minimizeScoreWindow()
+{
+    if(this->draftScoreWindow != NULL)  draftScoreWindow->showMinimized();
+}
+
+
+void DraftHandler::deMinimizeScoreWindow()
+{
+    if(this->draftScoreWindow != NULL)  draftScoreWindow->setWindowState(Qt::WindowActive);
+}
+
+
 //Construir json de HearthArena
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT

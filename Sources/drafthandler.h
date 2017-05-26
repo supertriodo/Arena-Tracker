@@ -122,6 +122,7 @@ public:
     void setTheme(Theme theme);
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
+    void deMinimizeScoreWindow();
 
 signals:
     void checkCardImage(QString code);
@@ -146,6 +147,7 @@ public slots:
     void pickCard(QString code);
     void enterArena();
     void leaveArena();
+    void minimizeScoreWindow();
 
 private slots:
     void captureDraft();

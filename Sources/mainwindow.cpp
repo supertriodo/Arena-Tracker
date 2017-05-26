@@ -407,6 +407,9 @@ void MainWindow::createDraftHandler()
             this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    connect(ui->minimizeButton, SIGNAL(clicked()),
+            draftHandler, SLOT(minimizeScoreWindow()));
 }
 
 
@@ -1271,6 +1274,10 @@ void MainWindow::changeEvent(QEvent * event)
             if(this->otherWindow != NULL)
             {
                 this->otherWindow->setWindowState(Qt::WindowActive);
+            }
+            if(this->draftHandler != NULL)
+            {
+                this->draftHandler->deMinimizeScoreWindow();
             }
         }
 
