@@ -5,7 +5,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * Draft your arena with HearthArena advice.
-![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/Draft.png)
+![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
 * Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * Plan your turn beforehand. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
