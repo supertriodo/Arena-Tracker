@@ -30,6 +30,7 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setIndentation(5);
     ui->secretsTreeWidget->setItemsExpandable(false);
     ui->secretsTreeWidget->setMouseTracking(true);
+    ui->secretsTreeWidget->setFixedHeight(0);
 
     connect(ui->secretsTreeWidget, SIGNAL(itemEntered(QTreeWidgetItem*,int)),
             this, SLOT(findSecretCardEntered(QTreeWidgetItem*)));
@@ -74,14 +75,14 @@ void SecretsHandler::adjustSize()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->secretsTreeWidget->minimumHeight());
     animation->setEndValue(height);
-    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     QPropertyAnimation *animation2 = new QPropertyAnimation(ui->secretsTreeWidget, "maximumHeight");
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(ui->secretsTreeWidget->maximumHeight());
     animation2->setEndValue(height);
-    animation2->setEasingCurve(QEasingCurve::OutBounce);
+    animation2->setEasingCurve(SHOW_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     this->secretsAnimating = true;

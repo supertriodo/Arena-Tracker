@@ -2219,7 +2219,7 @@ void MainWindow::completeArenaDeck()
 void MainWindow::test()
 {
 //    testPlan();
-//    QTimer::singleShot(2000, this, SLOT(testDelay()));
+//    QTimer::singleShot(5000, this, SLOT(testDelay()));
 }
 
 
@@ -2286,6 +2286,7 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
+//    this->secretsHandler->secretPlayed(1, MAGE, arena);
 }
 
 
@@ -3060,7 +3061,7 @@ void MainWindow::showProgressBar(bool animated)
         animation->setDuration(ANIMATION_TIME);
         animation->setStartValue(0);
         animation->setEndValue(ui->progressBar->height());
-        animation->setEasingCurve(QEasingCurve::OutQuad);
+        animation->setEasingCurve(SHOW_EASING_CURVE);
         animation->start(QPropertyAnimation::DeleteWhenStopped);
     }
     else
@@ -3088,7 +3089,7 @@ void MainWindow::hideProgressBar()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->progressBar->height());
     animation->setEndValue(0);
-    animation->setEasingCurve(QEasingCurve::OutQuad);
+    animation->setEasingCurve(HIDE_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(
@@ -3110,7 +3111,6 @@ void MainWindow::hideProgressBar()
 
 //New web
 //Download all cards
-//Animacion sin rebote
 
 
 //REPLAY BUGS

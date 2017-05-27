@@ -427,7 +427,7 @@ void Utility::fadeInWidget(QWidget * widget)
     a->setDuration(ANIMATION_TIME);
     a->setStartValue(0);
     a->setEndValue(1);
-    a->setEasingCurve(QEasingCurve::OutBack);
+    a->setEasingCurve(SHOW_EASING_CURVE);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
@@ -448,7 +448,7 @@ void Utility::fadeOutWidget(QWidget * widget)
     a->setDuration(ANIMATION_TIME);
     a->setStartValue(1);
     a->setEndValue(0);
-    a->setEasingCurve(QEasingCurve::OutBack);
+    a->setEasingCurve(SHOW_EASING_CURVE);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 

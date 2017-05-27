@@ -47,6 +47,7 @@ void DeckHandler::completeUI()
     ui->drawListWidget->setHidden(true);
     ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->drawListWidget->setFixedHeight(0);
     ui->drawListWidget->setMouseTracking(true);
 
     ui->deckListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -175,14 +176,14 @@ void DeckHandler::adjustRngSize()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->rngListWidget->minimumHeight());
     animation->setEndValue(height);
-    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     QPropertyAnimation *animation2 = new QPropertyAnimation(ui->rngListWidget, "maximumHeight");
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(ui->rngListWidget->maximumHeight());
     animation2->setEndValue(height);
-    animation2->setEasingCurve(QEasingCurve::OutBounce);
+    animation2->setEasingCurve(SHOW_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     this->rngAnimating = true;
@@ -301,14 +302,13 @@ void DeckHandler::showDeckTreeWidget()
     ui->loadDeckTreeWidget->setHidden(false);
     ui->loadDeckTreeWidget->clearSelection();
     int totalHeight = ui->deckListWidget->height();
-    QEasingCurve easingCurve = QEasingCurve::OutCubic;
 
     //Show DeckTreeWidget
     QPropertyAnimation *animation = new QPropertyAnimation(ui->loadDeckTreeWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight());
     animation->setEndValue(totalHeight);
-    animation->setEasingCurve(easingCurve);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation, SIGNAL(finished()),
@@ -318,7 +318,7 @@ void DeckHandler::showDeckTreeWidget()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->loadDeckTreeWidget->minimumHeight()+2);
     animation->setEndValue(totalHeight+2);
-    animation->setEasingCurve(easingCurve);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation, SIGNAL(finished()),
@@ -329,7 +329,7 @@ void DeckHandler::showDeckTreeWidget()
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(totalHeight);
     animation2->setEndValue(0);
-    animation2->setEasingCurve(easingCurve);
+    animation2->setEasingCurve(SHOW_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation2, SIGNAL(finished()),
@@ -359,14 +359,13 @@ void DeckHandler::hideDeckTreeWidget()
     ui->deckButtonLoad->setEnabled(false);
     ui->deckListWidget->setHidden(false);
     int totalHeight = ui->loadDeckTreeWidget->height();
-    QEasingCurve easingCurve = QEasingCurve::InCubic;
 
     //Show DeckListWidget
     QPropertyAnimation *animation = new QPropertyAnimation(ui->deckListWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->deckListWidget->minimumHeight());
     animation->setEndValue(totalHeight);
-    animation->setEasingCurve(easingCurve);
+    animation->setEasingCurve(HIDE_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation, SIGNAL(finished()),
@@ -376,7 +375,7 @@ void DeckHandler::hideDeckTreeWidget()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->deckListWidget->minimumHeight()+2);
     animation->setEndValue(totalHeight+2);
-    animation->setEasingCurve(easingCurve);
+    animation->setEasingCurve(HIDE_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation, SIGNAL(finished()),
@@ -387,7 +386,7 @@ void DeckHandler::hideDeckTreeWidget()
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(totalHeight);
     animation2->setEndValue(0);
-    animation2->setEasingCurve(easingCurve);
+    animation2->setEasingCurve(HIDE_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(animation2, SIGNAL(finished()),
@@ -438,14 +437,14 @@ void DeckHandler::adjustDrawSize()
     animation->setDuration(ANIMATION_TIME);
     animation->setStartValue(ui->drawListWidget->minimumHeight());
     animation->setEndValue(height);
-    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     QPropertyAnimation *animation2 = new QPropertyAnimation(ui->drawListWidget, "maximumHeight");
     animation2->setDuration(ANIMATION_TIME);
     animation2->setStartValue(ui->drawListWidget->maximumHeight());
     animation2->setEndValue(height);
-    animation2->setEasingCurve(QEasingCurve::OutBounce);
+    animation2->setEasingCurve(SHOW_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
 
     this->drawAnimating = true;
@@ -1222,8 +1221,7 @@ void DeckHandler::clearDrawList(bool forceClear)
 
     ui->drawListWidget->clear();
     ui->drawListWidget->setHidden(true);
-    ui->drawListWidget->setMinimumHeight(0);
-    ui->drawListWidget->setMaximumHeight(0);
+    ui->drawListWidget->setFixedHeight(0);
     drawCardList.clear();
 
     emit pDebug("Clear Draw List.");
