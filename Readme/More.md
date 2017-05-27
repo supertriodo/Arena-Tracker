@@ -12,8 +12,8 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
 * Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Upload your arena stats to your ArenaMastery account.
-![Arena](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ArenaGames.png)
+* Upload your stats to your track-o-bot account.
+![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
 * Save and organize your constructed decks.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
 * Import decks from webs using Cockatrice format.
