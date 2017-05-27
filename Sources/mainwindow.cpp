@@ -1545,12 +1545,13 @@ void MainWindow::resizeTabWidgets(QSize newSize)
             break;
 
         case H2:
-            ui->tabWidgetH2->setFixedWidth(this->width()/2);
+            if(otherWindow == NULL) ui->tabWidgetH2->setFixedWidth(222);
+            else                    ui->tabWidgetH2->setFixedWidth(230);//Hand tab necesita 230 para los secretos
             break;
 
         case H3:
-            ui->tabWidgetH2->setFixedWidth(this->width()/3);
-            ui->tabWidgetH3->setFixedWidth(this->width()/3);
+            ui->tabWidgetH2->setFixedWidth(222);
+            ui->tabWidgetH3->setFixedWidth(230);//Hand tab necesita 230 para los secretos
             break;
 
         case V2:
@@ -3106,9 +3107,10 @@ void MainWindow::hideProgressBar()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//Deck draft del heroe correcto
-//Split window tam cards
-//Update FAQ and more images
+
+//New web
+//Download all cards
+//Animacion sin rebote
 
 
 //REPLAY BUGS
