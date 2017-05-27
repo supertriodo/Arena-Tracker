@@ -305,7 +305,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         playerMinions = 0;
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
-        startGameEpoch = QDateTime::currentSecsSinceEpoch();
+        startGameEpoch = QDateTime::currentMSecsSinceEpoch()/1000;
         tied = true;//Si no se encuentra WON no se llamara a createGameResult() pq tried sigue siendo true
 
         emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en el mulligan de practica

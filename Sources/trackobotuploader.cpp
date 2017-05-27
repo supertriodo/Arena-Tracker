@@ -89,7 +89,7 @@ void TrackobotUploader::uploadNextXlsResult()
     QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
                     Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
     emit advanceProgressBar(text);
-    uploadResult(gameResult, arena, QDateTime::currentSecsSinceEpoch(), arenaItem.dateTime, QJsonArray());
+    uploadResult(gameResult, arena, QDateTime::currentMSecsSinceEpoch()/1000, arenaItem.dateTime, QJsonArray());
     if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar("All games uploaded");
 }
 
@@ -216,7 +216,7 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
     result["opponent"]      = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();
     result["win"]           = gameResult.isWinner;
     result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
-    result["duration"]      = QDateTime::currentSecsSinceEpoch() - startGameEpoch;
+    result["duration"]      = QDateTime::currentMSecsSinceEpoch()/1000 - startGameEpoch;
     result["added"]         = dateTime.toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
     result["card_history"]  = cardHistory;
 
