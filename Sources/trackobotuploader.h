@@ -62,7 +62,7 @@ public:
 
 signals:
     void advanceProgressBar(QString text);
-    void startProgressBar(int maximum);
+    void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TrackobotUploader");

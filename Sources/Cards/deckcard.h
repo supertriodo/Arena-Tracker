@@ -66,6 +66,7 @@ public:
     QString getName();
     CardRarity getRarity();
     CardClass getCardClass();
+    QString getHeroLogNumber();
     CardRace getRace();
     int getCost();
     void setCode(QString code);

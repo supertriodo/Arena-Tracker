@@ -46,7 +46,7 @@ private:
     QMap<QString, int> hearthArenaCodes;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
-    int cardsDownloading;
+    QStringList cardsDownloading;
     DraftCard draftCards[3];
     //Guarda los mejores candidatos de esta iteracion
     QMap<QString, DraftCard> draftCardMaps[3];  //[Code(_premium)] --> DraftCard
@@ -109,9 +109,10 @@ private:
     void getBestCards(DraftCard bestCards[3]);
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
+    QStringList getHeroArenaCodes(const QString &hero);
 
 public:
-    void reHistDownloadedCardImage(const QString &code);
+    void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setShowDraftOverlay(bool value);
@@ -123,6 +124,7 @@ public:
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
     void deMinimizeScoreWindow();
+    QStringList getAllArenaCodes();
 
 signals:
     void checkCardImage(QString code);
@@ -132,7 +134,7 @@ signals:
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();
     void advanceProgressBar(QString text);
-    void startProgressBar(int maximum);
+    void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");

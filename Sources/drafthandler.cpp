@@ -6,7 +6,6 @@
 DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->cardsDownloading = 0;
     this->deckRating = 0;
     this->numCaptured = 0;
     this->drafting = false;
@@ -75,6 +74,45 @@ void DraftHandler::createHearthArenaMentor()
 }
 
 
+QStringList DraftHandler::getAllArenaCodes()
+{
+    QStringList codeList;
+    codeList.append(getHeroArenaCodes("01"));
+    codeList.append(getHeroArenaCodes("02"));
+    codeList.append(getHeroArenaCodes("03"));
+    codeList.append(getHeroArenaCodes("04"));
+    codeList.append(getHeroArenaCodes("05"));
+    codeList.append(getHeroArenaCodes("06"));
+    codeList.append(getHeroArenaCodes("07"));
+    codeList.append(getHeroArenaCodes("08"));
+    codeList.append(getHeroArenaCodes("09"));
+    codeList.removeDuplicates();
+    return codeList;
+}
+
+
+QStringList DraftHandler::getHeroArenaCodes(const QString &hero)
+{
+    QStringList codeList;
+    QFile jsonHAFile(":Json/"+hero+".json");
+    jsonHAFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonHAFile.readAll());
+    jsonHAFile.close();
+    QJsonObject jsonHACodes = jsonDoc.object();
+    for(QJsonObject::const_iterator it=jsonHACodes.constBegin(); it!=jsonHACodes.constEnd(); it++)
+    {
+        QString code = it.value().toObject().value("image").toString();
+        bool bannedInArena = it.value().toObject().value("bannedInArena").toBool();
+
+        if(Utility::isFromStandardSet(code) && !bannedInArena)
+        {
+            codeList.append(code);
+        }
+    }
+    return codeList;
+}
+
+
 void DraftHandler::initHearthArenaCodes(QString &hero)
 {
     hearthArenaCodes.clear();
@@ -113,7 +151,7 @@ void DraftHandler::addCardHist(QString code, bool premium)
     {
         //La bajamos de HearthHead
         emit checkCardImage(fileNameCode);
-        cardsDownloading++;
+        cardsDownloading.append(fileNameCode);
     }
 }
 
@@ -181,7 +219,7 @@ void DraftHandler::finishInitLightForgeTiers()
 
 void DraftHandler::initCodesAndHistMaps(QString &hero)
 {
-    cardsDownloading = 0;
+    cardsDownloading.clear();
     cardsHist.clear();
 
     startFindScreenRects();
@@ -189,19 +227,19 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     initHearthArenaCodes(hero);
 
     //Wait for cards
-    if(cardsDownloading==0) newCaptureDraftLoop();
-    else                    emit startProgressBar(cardsDownloading);
+    if(cardsDownloading.isEmpty())  newCaptureDraftLoop();
+    else                            emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
 }
 
 
-void DraftHandler::reHistDownloadedCardImage(const QString &code)
+void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb)
 {
-    if(cardsDownloading == 0)   return; //No hay drafting en proceso
+    if(!cardsDownloading.contains(fileNameCode)) return; //No forma parte del drafting
 
-    if(!code.isEmpty())  cardsHist[code] = getHist(code);
-    cardsDownloading--;
-    emit advanceProgressBar(code.split("_premium").first() + " downloaded");
-    if(cardsDownloading==0)
+    if(!fileNameCode.isEmpty() && !missingOnWeb)  cardsHist[fileNameCode] = getHist(fileNameCode);
+    cardsDownloading.removeOne(fileNameCode);
+    emit advanceProgressBar(fileNameCode.split("_premium").first() + " downloaded");
+    if(cardsDownloading.isEmpty())
     {
         emit showMessageProgressBar("All cards downloaded");
         newCaptureDraftLoop();
@@ -401,7 +439,7 @@ void DraftHandler::deleteDraftScoreWindow()
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
     if(!capturing && drafting &&
-        screenFound() && cardsDownloading==0 &&
+        screenFound() && cardsDownloading.isEmpty() &&
         !lightForgeTiers.empty() && !hearthArenaCodes.empty())
     {
         capturing = true;
@@ -418,7 +456,7 @@ void DraftHandler::captureDraft()
     justPickedCard = "";
 
     if(leavingArena || !drafting ||
-        !screenFound() || cardsDownloading!=0 ||
+        !screenFound() || !cardsDownloading.isEmpty() ||
         lightForgeTiers.empty() || hearthArenaCodes.empty())
     {
         leavingArena = false;

@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef Q_OS_LINUX
     QTimer::singleShot(1000, this, SLOT(checkLinuxShortcut()));
 #endif
+    QTimer::singleShot(1000, this, SLOT(downloadAllArenaCodes()));
 }
 
 
@@ -370,8 +371,8 @@ void MainWindow::createVersionChecker()
 void MainWindow::createTrackobotUploader()
 {
     trackobotUploader = new TrackobotUploader(this);
-    connect(trackobotUploader, SIGNAL(startProgressBar(int)),
-            this, SLOT(startProgressBar(int)));
+    connect(trackobotUploader, SIGNAL(startProgressBar(int, QString)),
+            this, SLOT(startProgressBar(int, QString)));
     connect(trackobotUploader, SIGNAL(advanceProgressBar(QString)),
             this, SLOT(advanceProgressBar(QString)));
     connect(trackobotUploader, SIGNAL(showMessageProgressBar(QString)),
@@ -386,8 +387,8 @@ void MainWindow::createTrackobotUploader()
 void MainWindow::createDraftHandler()
 {
     draftHandler = new DraftHandler(this, ui);
-    connect(draftHandler, SIGNAL(startProgressBar(int)),
-            this, SLOT(startProgressBar(int)));
+    connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
+            this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(QString)),
             this, SLOT(advanceProgressBar(QString)));
     connect(draftHandler, SIGNAL(showMessageProgressBar(QString)),
@@ -568,6 +569,8 @@ void MainWindow::createCardDownloader()
     cardDownloader = new HSCardDownloader(this);
     connect(cardDownloader, SIGNAL(downloaded(QString)),
             this, SLOT(redrawDownloadedCardImage(QString)));
+    connect(cardDownloader, SIGNAL(missingOnWeb(QString)),
+            this, SLOT(missingOnWeb(QString)));
     connect(cardDownloader, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(cardDownloader, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -1959,6 +1962,12 @@ void MainWindow::redrawDownloadedCardImage(QString code)
 }
 
 
+void MainWindow::missingOnWeb(QString code)
+{
+    draftHandler->reHistDownloadedCardImage(code, true);
+}
+
+
 void MainWindow::resetSettings()
 {
     int ret = QMessageBox::warning(this, tr("Reset settings"),
@@ -2286,7 +2295,6 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-//    this->secretsHandler->secretPlayed(1, MAGE, arena);
 }
 
 
@@ -3024,12 +3032,12 @@ void MainWindow::showMessageProgressBar(QString text, int hideDelay)
 }
 
 
-void MainWindow::startProgressBar(int maximum)
+void MainWindow::startProgressBar(int maximum, QString text)
 {
     ui->progressBar->setMaximum(maximum);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setValue(0);
-    ui->progressBar->setFormat("");
+    ui->progressBar->setFormat(text);
 
     if(!ui->progressBar->isVisible())   showProgressBar(false);
 }
@@ -3100,6 +3108,19 @@ void MainWindow::hideProgressBar()
             ui->progressBar->setMaximumHeight(16777215);
         }
     );
+}
+
+
+void MainWindow::downloadAllArenaCodes()
+{
+    if(draftHandler == NULL)    return;
+
+    QStringList codeList = draftHandler->getAllArenaCodes();
+    for(const QString code: codeList)
+    {
+        checkCardImage(code);
+        checkCardImage(code + "_premium");
+    }
 }
 
 

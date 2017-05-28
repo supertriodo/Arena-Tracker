@@ -14,8 +14,25 @@ HSCardDownloader::~HSCardDownloader()
 }
 
 
-void HSCardDownloader::downloadWebImage(QString code, bool isHero)
+void HSCardDownloader::forceNextDownload()
 {
+    if(!pendingDownloads.isEmpty())
+    {
+        downloadWebImage(pendingDownloads.takeFirst(), true);
+        QTimer::singleShot(FORCE_NEXT_DOWNLOAD, this, SLOT(forceNextDownload()));
+    }
+}
+
+
+void HSCardDownloader::downloadWebImage(DownloadingCard downCard, bool force)
+{
+    downloadWebImage(downCard.code, downCard.isHero, force);
+}
+
+
+void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force)
+{
+    //Already downloading
     foreach(DownloadingCard downCard, gettingWebCards.values())
     {
         if(downCard.code == code && downCard.isHero == isHero)
@@ -23,6 +40,28 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero)
             emit pDebug("Skip download: " + code + " - Already downloading.");
             return;
         }
+    }
+
+    //Already planned to download (Eliminamos el antiguo download en pending)
+    for(int i=0; i<pendingDownloads.count(); i++)
+    {
+        DownloadingCard pendingCard = pendingDownloads[i];
+        if(pendingCard.code == code && pendingCard.isHero == isHero)
+        {
+            pendingDownloads.removeAt(i);
+            break;
+        }
+    }
+
+    DownloadingCard downCard;
+    downCard.code = code;
+    downCard.isHero = isHero;
+
+    if(!force && gettingWebCards.count() >= MAX_DOWNLOADS)
+    {
+        if(pendingDownloads.isEmpty())      QTimer::singleShot(FORCE_NEXT_DOWNLOAD, this, SLOT(forceNextDownload()));
+        pendingDownloads.prepend(downCard);
+        return;
     }
 
     QString urlString;
@@ -34,11 +73,9 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero)
     }
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
-    DownloadingCard downCard;
-    downCard.code = code;
-    downCard.isHero = isHero;
     gettingWebCards[reply] = downCard;
-    emit pDebug("Downloading: " + code + " - Web Cards remaining(+1): " + QString::number(gettingWebCards.count()));
+    emit pDebug("Downloading: " + code + " - (" + QString::number(gettingWebCards.count()) +
+                ") - " + QString::number(pendingDownloads.count()));
 }
 
 
@@ -46,13 +83,18 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 {
     reply->deleteLater();
 
+    if(!gettingWebCards.contains(reply))    return;
+
     DownloadingCard downCard = gettingWebCards[reply];
     QString code = downCard.code;
     bool isHero = downCard.isHero;
     gettingWebCards.remove(reply);
-    QByteArray data = reply->readAll();
-    emit pDebug("Reply: " + code + " - Web Cards remaining(-1): " + QString::number(gettingWebCards.count()));
 
+    emit pDebug("Reply: " + code + " - (" + QString::number(gettingWebCards.count()) +
+                ") - " + QString::number(pendingDownloads.count()));
+
+
+    QByteArray data = reply->readAll();
     if(reply->error() != QNetworkReply::NoError)
     {
         if(isHero)
@@ -72,7 +114,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         emit pDebug("Downloaded empty card image: " + code, Error);
         emit pLog(tr("Web: Downloaded empty card image."));
-        emit downloaded("");
+        emit missingOnWeb(code);
     }
     else
     {
@@ -90,6 +132,12 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             emit pDebug("Card downloaded: " + code);
             emit downloaded(code);
         }
+    }
+
+    //Next download
+    if(!pendingDownloads.isEmpty() && gettingWebCards.count() < MAX_DOWNLOADS)
+    {
+        downloadWebImage(pendingDownloads.takeFirst());
     }
 }
 

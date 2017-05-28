@@ -335,7 +335,7 @@ void TrackobotUploader::uploadXls(QString fileName)
         xls_close_WB(pWB);
         if(arenaItemXlsList.isEmpty())  return;
 
-        emit startProgressBar(arenaItemXlsList.count());
+        emit startProgressBar(arenaItemXlsList.count(), "");
         uploadNextXlsResult();
     }
 }

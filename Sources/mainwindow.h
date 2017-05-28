@@ -230,10 +230,12 @@ private slots:
     void draftMethodLF();
     void draftMethodCombined();
     void spreadTransparency();
-    void startProgressBar(int maximum);
+    void startProgressBar(int maximum, QString text);
     void advanceProgressBar(QString text);
     void showMessageProgressBar(QString text, int hideDelay = 5000);
     void hideProgressBar();
+    void downloadAllArenaCodes();
+    void missingOnWeb(QString code);
 };
 
 #endif // MAINWINDOW_H
