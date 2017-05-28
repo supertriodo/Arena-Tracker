@@ -48,6 +48,7 @@ public:
 signals:
     void downloaded(QString code);
     void missingOnWeb(QString code);
+    void allCardsDownloaded();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HSCardDownloader");
 

@@ -139,6 +139,12 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         downloadWebImage(pendingDownloads.takeFirst());
     }
+
+    //All cards downloaded
+    if(pendingDownloads.isEmpty() && gettingWebCards.isEmpty())
+    {
+        emit allCardsDownloaded();
+    }
 }
 
 

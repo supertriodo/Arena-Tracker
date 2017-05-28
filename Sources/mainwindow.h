@@ -158,6 +158,7 @@ private:
     void showProgressBar(bool animated=true);
     bool askImportXls();
     bool askImportAccount();
+    void checkFirstRunNewVersion();
 
 //Override events
 protected:
@@ -179,7 +180,7 @@ public slots:
     void resetDeckDontRead();
 
     //Multi Handlers
-    void checkCardImage(QString code, bool isHero=false);
+    bool checkCardImage(QString code, bool isHero=false);
 
     //HSCardDownloader
     void redrawDownloadedCardImage(QString code);
@@ -236,6 +237,8 @@ private slots:
     void hideProgressBar();
     void downloadAllArenaCodes();
     void missingOnWeb(QString code);
+    void allCardsDownloaded();
+    void init();
 };
 
 #endif // MAINWINDOW_H
