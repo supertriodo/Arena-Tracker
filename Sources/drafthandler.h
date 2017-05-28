@@ -131,6 +131,8 @@ signals:
     void newDeckCard(QString code);
     void draftStarted();
     void draftEnded();
+    void downloadStarted();
+    void downloadEnded();
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();
     void advanceProgressBar(QString text);

@@ -227,8 +227,15 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     initHearthArenaCodes(hero);
 
     //Wait for cards
-    if(cardsDownloading.isEmpty())  newCaptureDraftLoop();
-    else                            emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
+    if(cardsDownloading.isEmpty())
+    {
+        newCaptureDraftLoop();
+    }
+    else
+    {
+        emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
+        emit downloadStarted();
+    }
 }
 
 
@@ -242,6 +249,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
     if(cardsDownloading.isEmpty())
     {
         emit showMessageProgressBar("All cards downloaded");
+        emit downloadEnded();
         newCaptureDraftLoop();
     }
 }

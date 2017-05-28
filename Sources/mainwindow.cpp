@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createEnemyHandHandler();//-->PlanHandler
     createEnemyDeckHandler();
     createDeckHandler();//-->EnemyDeckHandler
-    createDraftHandler();//-->DeckHandler
+    createDraftHandler();//-->DeckHandler -->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
     createGameWatcher();//-->A lot
@@ -408,6 +408,11 @@ void MainWindow::createDraftHandler()
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardDraft(QString)));
+
+    connect(draftHandler, SIGNAL(downloadStarted()),
+            cardDownloader, SLOT(setFastMode()));
+    connect(draftHandler, SIGNAL(downloadEnded()),
+            cardDownloader, SLOT(setSlowMode()));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),

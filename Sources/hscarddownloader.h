@@ -10,7 +10,7 @@
 #define OLD_CARDS_URL QString("http://wow.zamimg.com/images/hearthstone/")
 #define NEW_CARDS_URL QString("http://media.services.zam.com/v1/media/byName/hs/")
 #define MAX_DOWNLOADS 10
-#define FORCE_NEXT_DOWNLOAD 500
+#define FORCE_NEXT_DOWNLOAD 100
 
 
 class DownloadingCard
@@ -34,6 +34,7 @@ private:
     QMap<QNetworkReply *, DownloadingCard> gettingWebCards;
     QString lang;
     QList<DownloadingCard> pendingDownloads;
+    bool fastMode;
 
 
 //Metodos
@@ -54,6 +55,8 @@ signals:
 
 public slots:
     void saveWebImage(QNetworkReply * reply);
+    void setFastMode(bool fastMode=true);
+    void setSlowMode();
 
 private slots:
     void forceNextDownload();
