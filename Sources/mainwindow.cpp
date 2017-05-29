@@ -2978,16 +2978,18 @@ void MainWindow::createDebugPack()
 
 void MainWindow::showMessageProgressBar(QString text, int hideDelay)
 {
+    ui->progressBar->setFormat(text);
+
     if(ui->progressBar->value() != ui->progressBar->maximum())
     {
         emit pDebug("Progress bar message received while counting. " + text, Warning);
-        return;
+        if(!ui->progressBar->isVisible())   showProgressBar(false);
     }
-
-    ui->progressBar->setFormat(text);
-
-    if(!ui->progressBar->isVisible())   showProgressBar(true);
-    QTimer::singleShot(hideDelay, this, SLOT(hideProgressBar()));
+    else
+    {
+        if(!ui->progressBar->isVisible())   showProgressBar(true);
+        QTimer::singleShot(hideDelay, this, SLOT(hideProgressBar()));
+    }
 }
 
 
@@ -3068,7 +3070,15 @@ void MainWindow::hideProgressBar()
         animation, &QPropertyAnimation::finished,
         [=]()
         {
-            ui->progressBar->setVisible(false);
+            if(ui->progressBar->value() != ui->progressBar->maximum())
+            {
+                pDebug("Finish hiding progress bar while counting.", Warning);
+                ui->progressBar->setVisible(true);
+            }
+            else
+            {
+                ui->progressBar->setVisible(false);
+            }
             ui->progressBar->setMaximumHeight(16777215);
         }
     );
