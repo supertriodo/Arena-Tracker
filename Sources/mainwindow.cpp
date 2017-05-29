@@ -3101,9 +3101,13 @@ void MainWindow::downloadAllArenaCodes()
 void MainWindow::allCardsDownloaded()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("allCardsDownloaded", true);
-    showMessageProgressBar("All cards downloaded");
-    emit pDebug("All arena cards have been downloaded.");
+    bool allCardsDownloaded = settings.value("allCardsDownloaded", false).toBool();
+    if(!allCardsDownloaded)
+    {
+        settings.setValue("allCardsDownloaded", true);
+        showMessageProgressBar("All cards downloaded");
+        emit pDebug("All arena cards have been downloaded.");
+    }
 }
 
 

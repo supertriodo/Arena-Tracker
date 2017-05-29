@@ -342,7 +342,7 @@ void DraftHandler::leaveArena()
                 bestMatchesMaps[i].clear();
             }
         }
-        this->draftScoreWindow->hide();
+        if(draftScoreWindow != NULL)    draftScoreWindow->hide();
     }
 }
 
@@ -631,7 +631,7 @@ void DraftHandler::pickCard(QString code)
 
     this->numCaptured = 0;
     ui->textBrowserDraft->setText("");
-    draftScoreWindow->hideScores();
+    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
     emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
@@ -728,7 +728,10 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
     if(draftMethod == HearthArena)  ui->textBrowserDraft->setText(tip);
 
     //Mostrar score
-    draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3, draftMethod);
+    if(draftScoreWindow != NULL)
+    {
+        draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3, draftMethod);
+    }
 }
 
 
