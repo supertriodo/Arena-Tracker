@@ -119,7 +119,7 @@ MainWindow::~MainWindow()
 void MainWindow::init()
 {
     spreadTransparency();
-    downloadAllArenaCodes();
+//    downloadAllArenaCodes();  //Connect en completeUI
 
 #ifdef Q_OS_LINUX
     checkLinuxShortcut();
@@ -256,6 +256,8 @@ void MainWindow::createCardsJsonMap(QByteArray &jsonData)
         QJsonObject jsonCardObject = jsonCard.toObject();
         cardsJson[jsonCardObject.value("id").toString()] = jsonCardObject;
     }
+
+    emit cardsJsonReady();
 }
 
 
@@ -857,12 +859,19 @@ void MainWindow::completeUI()
         ui->progressBar->setMaximum(100);
         ui->progressBar->setValue(100);
 
+        ui->progressBarMini->setFixedHeight(8);
+        ui->progressBarMini->setVisible(false);
+        ui->progressBarMini->setMaximum(100);
+        ui->progressBarMini->setValue(100);
+
         completeConfigTab();
 
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(spreadMouseInApp()));
         connect(ui->tabWidget, SIGNAL(currentChanged(int)),
                 this, SLOT(resizeChangingTab()));
+        connect(this, SIGNAL(cardsJsonReady()),
+                this, SLOT(downloadAllArenaCodes()));
 
 
 #ifdef QT_DEBUG
@@ -1975,12 +1984,14 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     planHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
+    if(!allCardsDownloadList.isEmpty())     this->updateProgressAllCardsDownload(code);
 }
 
 
 void MainWindow::missingOnWeb(QString code)
 {
     draftHandler->reHistDownloadedCardImage(code, true);
+    if(!allCardsDownloadList.isEmpty())     this->updateProgressAllCardsDownload(code);
 }
 
 
@@ -3059,6 +3070,36 @@ void MainWindow::hideProgressBar()
 }
 
 
+void MainWindow::startProgressBarMini(int maximum)
+{
+    ui->progressBarMini->setMaximum(maximum);
+    ui->progressBarMini->setMinimum(0);
+    ui->progressBarMini->setValue(0);
+    ui->progressBarMini->setVisible(true);
+}
+
+
+void MainWindow::hideProgressBarMini()
+{
+    advanceProgressBarMini(0);
+}
+
+
+void MainWindow::advanceProgressBarMini(int remaining)
+{
+    if(remaining <= 0)
+    {
+        ui->progressBarMini->setVisible(false);
+        ui->progressBarMini->setValue(ui->progressBarMini->maximum());
+    }
+    else
+    {
+        if(remaining > ui->progressBarMini->maximum())  ui->progressBarMini->setMaximum(remaining);
+        ui->progressBarMini->setValue(ui->progressBarMini->maximum()-remaining);
+    }
+}
+
+
 void MainWindow::checkFirstRunNewVersion()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -3084,16 +3125,35 @@ void MainWindow::downloadAllArenaCodes()
     else
     {
         emit pDebug("Downloading all arena cards.");
-        allCardsDownloaded = true;
+        allCardsDownloadList.clear();
         QStringList codeList = draftHandler->getAllArenaCodes();
         for(const QString code: codeList)
         {
-            allCardsDownloaded = checkCardImage(code) && allCardsDownloaded;
-            allCardsDownloaded = checkCardImage(code + "_premium") && allCardsDownloaded;
+            if(!checkCardImage(code))
+            {
+                allCardsDownloadList.append(code);
+            }
+            if(!checkCardImage(code + "_premium"))
+            {
+                allCardsDownloadList.append(code + "_premium");
+            }
         }
 
-        if(allCardsDownloaded)  this->allCardsDownloaded();
-        else                    showMessageProgressBar("Downloading cards...");
+        if(allCardsDownloadList.isEmpty())  this->allCardsDownloaded();
+        else
+        {
+            startProgressBarMini(allCardsDownloadList.count());
+            showMessageProgressBar("Downloading cards...");
+        }
+    }
+}
+
+
+void MainWindow::updateProgressAllCardsDownload(QString code)
+{
+    if(allCardsDownloadList.removeOne(code))
+    {
+        advanceProgressBarMini(allCardsDownloadList.count());
     }
 }
 
@@ -3105,6 +3165,8 @@ void MainWindow::allCardsDownloaded()
     if(!allCardsDownloaded)
     {
         settings.setValue("allCardsDownloaded", true);
+        allCardsDownloadList.clear();
+        hideProgressBarMini();
         showMessageProgressBar("All cards downloaded");
         emit pDebug("All arena cards have been downloaded.");
     }
@@ -3114,7 +3176,7 @@ void MainWindow::allCardsDownloaded()
 void MainWindow::test()
 {
 //    testPlan();
-//    QTimer::singleShot(5000, this, SLOT(testDelay()));
+//    QTimer::singleShot(2000, this, SLOT(testDelay()));
 }
 
 

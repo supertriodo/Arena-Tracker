@@ -2215,6 +2215,16 @@ to upload to www.zerotoheroes.com</string>
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QProgressBar" name="progressBarMini">
+      <property name="value">
+       <number>24</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>

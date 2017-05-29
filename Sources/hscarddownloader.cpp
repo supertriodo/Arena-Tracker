@@ -99,10 +99,9 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
     if(!gettingWebCards.contains(reply))    return;
 
-    DownloadingCard downCard = gettingWebCards[reply];
+    DownloadingCard downCard = gettingWebCards.take(reply);
     QString code = downCard.code;
     bool isHero = downCard.isHero;
-    gettingWebCards.remove(reply);
 
     emit pDebug("Reply: " + code + " - (" + QString::number(gettingWebCards.count()) +
                 ") - " + QString::number(pendingDownloads.count()));

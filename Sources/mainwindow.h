@@ -82,6 +82,7 @@ private:
     QString draftLogFile;
     bool copyGameLogs;
     QNetworkAccessManager *networkManager;
+    QStringList allCardsDownloadList;
 
 
 
@@ -159,6 +160,10 @@ private:
     bool askImportXls();
     bool askImportAccount();
     void checkFirstRunNewVersion();
+    void startProgressBarMini(int maximum);
+    void hideProgressBarMini();
+    void advanceProgressBarMini(int remaining);
+    void updateProgressAllCardsDownload(QString code);
 
 //Override events
 protected:
@@ -172,6 +177,10 @@ protected:
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
     void dragEnterEvent(QDragEnterEvent *e) Q_DECL_OVERRIDE;
     void dropEvent(QDropEvent *e) Q_DECL_OVERRIDE;
+
+//Signals
+signals:
+    void cardsJsonReady();
 
 //Slots
 public slots:
