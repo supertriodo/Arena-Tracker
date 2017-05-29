@@ -88,7 +88,7 @@ void TrackobotUploader::uploadNextXlsResult()
     GameResult gameResult = arenaItem.gameResult;
     QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
                     Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
-    emit advanceProgressBar(text);
+    emit advanceProgressBar(arenaItemXlsList.count(), text);
     uploadResult(gameResult, arena, QDateTime::currentMSecsSinceEpoch()/1000, arenaItem.dateTime, QJsonArray());
     if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar("All games uploaded");
 }

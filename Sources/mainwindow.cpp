@@ -386,8 +386,8 @@ void MainWindow::createTrackobotUploader()
     trackobotUploader = new TrackobotUploader(this);
     connect(trackobotUploader, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
-    connect(trackobotUploader, SIGNAL(advanceProgressBar(QString)),
-            this, SLOT(advanceProgressBar(QString)));
+    connect(trackobotUploader, SIGNAL(advanceProgressBar(int, QString)),
+            this, SLOT(advanceProgressBar(int, QString)));
     connect(trackobotUploader, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(trackobotUploader, SIGNAL(pLog(QString)),
@@ -402,8 +402,8 @@ void MainWindow::createDraftHandler()
     draftHandler = new DraftHandler(this, ui);
     connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
-    connect(draftHandler, SIGNAL(advanceProgressBar(QString)),
-            this, SLOT(advanceProgressBar(QString)));
+    connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
+            this, SLOT(advanceProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
@@ -3002,13 +3002,18 @@ void MainWindow::startProgressBar(int maximum, QString text)
 }
 
 
-void MainWindow::advanceProgressBar(QString text)
+void MainWindow::advanceProgressBar(int remaining, QString text)
 {
-    if(ui->progressBar->value() < ui->progressBar->maximum())
+    if(remaining <= 0)
     {
-        ui->progressBar->setValue(ui->progressBar->value()+1);
-        ui->progressBar->setFormat(text);
+        ui->progressBar->setValue(ui->progressBar->maximum());
     }
+    else
+    {
+        if(remaining > ui->progressBar->maximum())  ui->progressBar->setMaximum(remaining);
+        ui->progressBar->setValue(ui->progressBar->maximum()-remaining);
+    }
+    ui->progressBar->setFormat(text);
 }
 
 
@@ -3253,7 +3258,6 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
-//Download all cards
 
 
 //REPLAY BUGS

@@ -61,7 +61,7 @@ public:
     void importAccount(QString fileName);
 
 signals:
-    void advanceProgressBar(QString text);
+    void advanceProgressBar(int remaining, QString text);
     void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text);
     void pLog(QString line);

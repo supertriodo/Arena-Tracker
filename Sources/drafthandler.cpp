@@ -245,7 +245,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
 
     if(!fileNameCode.isEmpty() && !missingOnWeb)  cardsHist[fileNameCode] = getHist(fileNameCode);
     cardsDownloading.removeOne(fileNameCode);
-    emit advanceProgressBar(fileNameCode.split("_premium").first() + " downloaded");
+    emit advanceProgressBar(cardsDownloading.count(), fileNameCode.split("_premium").first() + " downloaded");
     if(cardsDownloading.isEmpty())
     {
         emit showMessageProgressBar("All cards downloaded");
