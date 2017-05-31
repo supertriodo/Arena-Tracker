@@ -525,3 +525,15 @@ void DeckCard::setCardHeight(int value)
 {
     DeckCard::cardHeight = value;
 }
+
+
+int DeckCard::getCardHeight()
+{
+    return DeckCard::cardHeight;
+}
+
+
+int DeckCard::getCardWidth()
+{
+    return (cardHeight<=35)?218:cardHeight/35.0*218;
+}

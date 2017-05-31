@@ -902,7 +902,7 @@ void MainWindow::completeUI()
     else
     {
         this->setWindowIcon(QIcon(":/Images/icon.png"));
-        this->setWindowTitle("Deck");
+        this->setWindowTitle("AT Deck");
 
         setCentralWidget(this->otherWindow->ui->tabDeck);
         this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);

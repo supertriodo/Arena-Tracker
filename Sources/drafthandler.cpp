@@ -1157,6 +1157,8 @@ void DraftHandler::redrawAllCards()
     {
         draftCards[i].draw(labelCard[i]);
     }
+
+    if(draftScoreWindow != NULL)    draftScoreWindow->redrawSynergyCards();
 }
 
 

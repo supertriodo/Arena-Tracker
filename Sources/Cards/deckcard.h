@@ -79,6 +79,8 @@ public:
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);
     static void setCardHeight(int value);
+    static int getCardHeight();
+    static int getCardWidth();
 };
 
 #endif // DECKCARD_H

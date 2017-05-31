@@ -55,7 +55,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setMinimumHeight(0);
         synergiesListWidget[i]->setMaximumHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        synergiesListWidget[i]->setIconSize(QSize(std::min(218, synergyWidth),35));
+        synergiesListWidget[i]->setIconSize(QSize(synergyWidth, synergyWidth/218.0*35));
         synergiesListWidget[i]->setMouseTracking(true);
 
         connect(synergiesListWidget[i], SIGNAL(itemEntered(QListWidgetItem*)),
@@ -67,7 +67,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         verLayoutSynergy->addStretch();
 
         horLayoutSynergies->addStretch();
-        if(synergyWidth > 218)  horLayoutSynergies->addSpacing(std::min(30, synergyWidth-218));
         horLayoutSynergies->addLayout(verLayoutSynergy);
         horLayoutSynergies->addStretch();
     }
@@ -75,6 +74,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2*scoreWidth; //Extra scoreWidth
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowTitle("AT Scores");
 }
 
 
@@ -273,14 +273,7 @@ void DraftScoreWindow::showSynergies()
 
 void DraftScoreWindow::showSynergies(int index)
 {
-    //Calcula height
-    int rowHeight = synergiesListWidget[index]->sizeHintForRow(0);
-    int rows = synergiesListWidget[index]->count();
-    int height = rows*rowHeight + 2*synergiesListWidget[index]->frameWidth();
-    if(height>maxSynergyHeight)    height = maxSynergyHeight;
-
-    synergiesListWidget[index]->setMinimumHeight(height);
-    synergiesListWidget[index]->setMaximumHeight(height);
+    resizeSynergyList(index);
     synergiesListWidget[index]->show();
 }
 
@@ -288,6 +281,33 @@ void DraftScoreWindow::showSynergies(int index)
 void DraftScoreWindow::hideSynergies(int index)
 {
     synergiesListWidget[index]->hide();
+}
+
+
+void DraftScoreWindow::redrawSynergyCards()
+{
+    for(int i=0; i<3; i++)
+    {
+        for(DeckCard &deckCard: synergiesDeckCardLists[i])
+        {
+            deckCard.draw();
+        }
+        resizeSynergyList(i);
+    }
+}
+
+
+void DraftScoreWindow::resizeSynergyList(int index)
+{
+    QListWidget *list = synergiesListWidget[index];
+    int rowHeight = list->sizeHintForRow(0);
+    int rows = list->count();
+    int height = rows*rowHeight + 2*list->frameWidth();
+    if(height>maxSynergyHeight)    height = maxSynergyHeight;
+    int width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+
+    list->setFixedWidth(width);
+    list->setFixedHeight(height);
 }
 
 
