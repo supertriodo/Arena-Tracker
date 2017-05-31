@@ -423,6 +423,11 @@ void DraftHandler::endDraft()
     //Set updateTime in log
     emit draftEnded();
 
+    //Show Deck Score
+    int numCards = draftedCards.count();
+    int deckScore = (numCards==0)?0:(int)(deckRating/numCards);
+    emit showMessageProgressBar("Deck Score: " + QString::number(deckScore), 10000);
+
     clearLists(false);
 
     this->drafting = false;
@@ -686,7 +691,7 @@ void DraftHandler::updateBoxTitle(double cardRating)
     deckRating += cardRating;
     int numCards = draftedCards.count();
     int actualRating = (numCards==0)?0:(int)(deckRating/numCards);
-    ui->groupBoxDraft->setTitle(QString("DECK RATING: " + QString::number(actualRating) +
+    ui->groupBoxDraft->setTitle(QString("Deck Score: " + QString::number(actualRating) +
                                         " (" + QString::number(numCards) + "/30)"));
 }
 
@@ -707,7 +712,7 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         //TierScore for deck average
         if(draftMethod == this->draftMethod || (this->draftMethod == All && draftMethod == HearthArena))
         {
-            shownTierScores[i] = tierScore[i];
+            shownTierScores[i] = ratings[i];
         }
 
         //Update score label

@@ -404,8 +404,8 @@ void MainWindow::createDraftHandler()
             this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
             this, SLOT(advanceProgressBar(int, QString)));
-    connect(draftHandler, SIGNAL(showMessageProgressBar(QString)),
-            this, SLOT(showMessageProgressBar(QString)));
+    connect(draftHandler, SIGNAL(showMessageProgressBar(QString, int)),
+            this, SLOT(showMessageProgressBar(QString, int)));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -3191,7 +3191,7 @@ void MainWindow::allCardsDownloaded()
 void MainWindow::test()
 {
 //    testPlan();
-//    QTimer::singleShot(2000, this, SLOT(testDelay()));
+//    QTimer::singleShot(20000, this, SLOT(testDelay()));
 }
 
 

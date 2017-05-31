@@ -137,7 +137,7 @@ signals:
     void overlayCardLeave();
     void advanceProgressBar(int remaining, QString text);
     void startProgressBar(int maximum, QString text);
-    void showMessageProgressBar(QString text);
+    void showMessageProgressBar(QString text, int hideDelay = 5000);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
