@@ -29,6 +29,7 @@ private:
 protected:
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 
 public:
     void setScore(double score, bool isBest);

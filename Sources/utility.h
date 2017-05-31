@@ -9,6 +9,7 @@
 #include <QUrlQuery>
 #include <QNetworkRequest>
 #include <QScreen>
+#include <QPropertyAnimation>
 
 
 using namespace cv;
@@ -71,8 +72,8 @@ public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setLocalLang(QString localLang);
     static QString removeAccents(QString s);
-    static void fadeInWidget(QWidget *widget);
-    static void fadeOutWidget(QWidget *widget);
+    static QPropertyAnimation *fadeInWidget(QWidget *widget);
+    static QPropertyAnimation *fadeOutWidget(QWidget *widget);
     static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
     static LoadingScreenState getLoadingScreenFromString(QString loadingScreenString);
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches=false);

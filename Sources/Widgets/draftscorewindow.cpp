@@ -23,6 +23,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     QWidget *centralWidget = new QWidget(this);
     QFont font("Belwe Bd BT");
     font.setPixelSize(scoreWidth/2);
+    font.setBold(true);
+    font.setKerning(true);
 
     QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *horLayoutScores = new QHBoxLayout();
@@ -33,16 +35,23 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
-        scoresPushButton[i]->setMinimumHeight(0);
-        scoresPushButton[i]->setMaximumHeight(0);
+        scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         scoresPushButton[i]->setFont(font);
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
-        scoresPushButton2[i]->setMinimumHeight(0);
-        scoresPushButton2[i]->setMaximumHeight(0);
+        scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
         scoresPushButton2[i]->setFont(font);
+
+        //Opacity effects
+        QGraphicsOpacityEffect *effect;
+        effect = new QGraphicsOpacityEffect(scoresPushButton[i]);
+        effect->setOpacity(0);
+        scoresPushButton[i]->setGraphicsEffect(effect);
+        effect = new QGraphicsOpacityEffect(scoresPushButton2[i]);
+        effect->setOpacity(0);
+        scoresPushButton2[i]->setGraphicsEffect(effect);
 
         horLayoutScores->addStretch();
         horLayoutScores->addWidget(scoresPushButton[i]);
@@ -52,11 +61,11 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
         QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
         synergiesListWidget[i] = new MoveListWidget(centralWidget);
-        synergiesListWidget[i]->setMinimumHeight(0);
-        synergiesListWidget[i]->setMaximumHeight(0);
+        synergiesListWidget[i]->setFixedHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setIconSize(QSize(synergyWidth, synergyWidth/218.0*35));
         synergiesListWidget[i]->setMouseTracking(true);
+        hideSynergies(i);
 
         connect(synergiesListWidget[i], SIGNAL(itemEntered(QListWidgetItem*)),
                 this, SLOT(findSynergyCardEntered(QListWidgetItem*)));
@@ -147,42 +156,14 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
         if(draftMethod == LightForge)
         {
             scoresPushButton[i]->setScore(ratings[i], ratings[i]==bestRating);
-
-            QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
-            animation->setDuration(ANIMATION_TIME);
-            animation->setStartValue(scoresPushButton[i]->maximumHeight());
-            animation->setEndValue(scoreWidth);
-            animation->setEasingCurve(SHOW_EASING_CURVE);
-            animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-
-            animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
-            animation->setDuration(ANIMATION_TIME);
-            animation->setStartValue(scoresPushButton[i]->minimumHeight());
-            animation->setEndValue(scoreWidth);
-            animation->setEasingCurve(SHOW_EASING_CURVE);
-            animation->start(QPropertyAnimation::DeleteWhenStopped);
+            Utility::fadeInWidget(scoresPushButton[i]);
         }
         else if(draftMethod == HearthArena)
         {
             scoresPushButton2[i]->setScore(ratings[i], ratings[i]==bestRating);
+            QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
-            QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton2[i], "maximumHeight");
-            animation->setDuration(ANIMATION_TIME);
-            animation->setStartValue(scoresPushButton2[i]->maximumHeight());
-            animation->setEndValue(scoreWidth);
-            animation->setEasingCurve(SHOW_EASING_CURVE);
-            animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-
-            animation = new QPropertyAnimation(scoresPushButton2[i], "minimumHeight");
-            animation->setDuration(ANIMATION_TIME);
-            animation->setStartValue(scoresPushButton2[i]->minimumHeight());
-            animation->setEndValue(scoreWidth);
-            animation->setEasingCurve(SHOW_EASING_CURVE);
-            animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-            if(i == 0)  connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+            if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
 
             //Insert synergies
             synergiesListWidget[i]->clear();
@@ -225,35 +206,10 @@ void DraftScoreWindow::hideScores()
 {
     for(int i=0; i<3; i++)
     {
-        QPropertyAnimation *animation = new QPropertyAnimation(scoresPushButton[i], "maximumHeight");
-        animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoresPushButton[i]->maximumHeight());
-        animation->setEndValue(0);
-        animation->setEasingCurve(HIDE_EASING_CURVE);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
+        QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
+        Utility::fadeOutWidget(scoresPushButton2[i]);
 
-        animation = new QPropertyAnimation(scoresPushButton[i], "minimumHeight");
-        animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoresPushButton[i]->minimumHeight());
-        animation->setEndValue(0);
-        animation->setEasingCurve(HIDE_EASING_CURVE);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-        animation = new QPropertyAnimation(scoresPushButton2[i], "maximumHeight");
-        animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoresPushButton2[i]->maximumHeight());
-        animation->setEndValue(0);
-        animation->setEasingCurve(HIDE_EASING_CURVE);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-        animation = new QPropertyAnimation(scoresPushButton2[i], "minimumHeight");
-        animation->setDuration(ANIMATION_TIME/2);
-        animation->setStartValue(scoresPushButton2[i]->minimumHeight());
-        animation->setEndValue(0);
-        animation->setEasingCurve(HIDE_EASING_CURVE);
-        animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-        if(i==0)    connect(animation, SIGNAL(finished()), this, SLOT(update()));
+        if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
 
         hideSynergies(i);
     }

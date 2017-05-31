@@ -82,12 +82,12 @@ void ScoreButton::draw()
     int r, g, b;
     getScoreColor(r, g, b, score);
 
-    if(hideScore)       this->setText("?");
-    else                this->setText(QString::number((int)score));
+    QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
+    QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
     QString gradientCSS = "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
-                          "stop: 0 black, "
-                          "stop: 0.5 rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +"), "
-                          "stop: 1 black);";
+                          "stop: 0 " + rgbMid + ", "
+                          "stop: 0.5 " + rgb + ", "
+                          "stop: 1 " + rgbMid + ");";
 
     this->setStyleSheet(
             "QPushButton{background-color: " + (hideScore?"black;":gradientCSS) +
@@ -95,11 +95,38 @@ void ScoreButton::draw()
 
             "border-style: solid;border-color: black;" +
 
-            "border-width: 1px;" +
+            "border-width: " + QString::number(this->font().pixelSize()/12) + "px;" +
             "border-radius: " + QString::number(width()/3) + "px;" +
 
             ((isBestScore&&!hideScore)?getBackgroundImageCSS():"") + "}");
     this->update();
+}
+
+
+void ScoreButton::paintEvent(QPaintEvent *event)
+{
+    QPushButton::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+
+    const QFont &font = this->font();
+    QPen pen(BLACK);
+    pen.setWidth(font.pixelSize()/12);
+    painter.setPen(pen);
+    painter.setBrush(WHITE);
+
+    bool hideScore = learningMode && !learningShow;
+    QString text = hideScore?"?":QString::number((int)score);
+    QFontMetrics fm = QFontMetrics(font);
+    int textWide = fm.width(text);
+    int textHigh = fm.height();
+
+    QPainterPath path;
+    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh/4, this->font(), text);
+    painter.drawPath(path);
 }
 
 
