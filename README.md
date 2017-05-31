@@ -11,24 +11,26 @@ Too complicated? [Check the User Guide](https://www.gitbook.com/read/book/arena-
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
-  * libpng12, libxcb-xinerama0 need to be installed.
-  * If you have problems with dependencies, try the AppImage binary.
+  * I suggest downloading ArenaTracker.AppImage
+  * libpng12, libxcb-xinerama0 need to be installed on Ubuntu 16.04 LTS
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by [Strit](https://github.com/Strit).
 
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
 
-Data used by Arena Tracker will be stored in USER/Arena Tracker (Windows/Mac) or USER/.local/share/Arena Tracker (Linux) with the following structure:
+Data used by Arena Tracker will be stored in `USER/Arena Tracker` (Windows/Mac) or `USER/.local/share/Arena Tracker` (Linux) with the following structure:
 * Arena Tracker\
   * ArenaTrackerLog.txt     -- (Log created by Arena Tracker, used for debugging)
   * ArenaTrackerDecks.json  -- (Your deck collection in Arena Tracker)
   * Extra\                  -- (Template and scripts used by Arena Tracker)
   * Games Drafts Logs\      -- (Logs of Games/Drafts to upload to Zero To Heroes)
   * Hearthstone Cards\      -- (Hearthstone cards images)
+  
+Arena Tracker will need to download all Hearthstone card images onto Hearthstone Cards dir. This is done in the background while you use it. If Hearthhead.com servers are slow you can manually download Hearthstone Cards.zip from the [latest release](https://github.com/supertriodo/Arena-Tracker/releases/latest) and override `USER/Arena Tracker/Hearthstone Cards` dir with the one included in the zip.
 
 
 ##  First Run
-The first time you run Arena Tracker you will be asked for:
+On Windows and Mac: Arena Tracker setup is done automatically unless you didn't install Hearthstone in its default dir. In that case the first time you run Arena Tracker you will be asked for:
 
 1) Logs dir location (If not default).
  * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Logs
@@ -40,6 +42,8 @@ The first time you run Arena Tracker you will be asked for:
  * Default (Mac): ~/Library/Preferences/Blizzard/Hearthstone/log.config
  * If the file doesn't exist create an empty log.config in that dir.
 3) Restart Hearthstone (if you have it opened).
+
+On Linux: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations.
 
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
@@ -112,6 +116,7 @@ Thanks to all these projects ArenaTracker is possible.
 * Michael L: €10,00 EUR
 * OmariZi: €10,00 EUR
 * [Michael B](https://github.com/MikeBull94): €10,00 EUR
+* Raido M: €5,00 EUR
 * Philip W: €5,00 EUR
 * John K: €5,00 EUR
 * Marcos P: €5,00 EUR
