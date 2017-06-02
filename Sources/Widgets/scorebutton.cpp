@@ -60,7 +60,7 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
 {
     int rating255 = 0;
     if(draftMethod == HearthArena)      rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)((score-50)*2.55), 255), 0);
+    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)((score)*2.55), 255), 0);
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255,rating255*2);
     b = 0;

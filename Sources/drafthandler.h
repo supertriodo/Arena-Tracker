@@ -110,6 +110,7 @@ private:
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
     QStringList getHeroArenaCodes(const QString &hero);
+    int normalizeLFscore(int score);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

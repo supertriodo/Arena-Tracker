@@ -33,7 +33,7 @@ private:
 //Metodos
 private:
     int getCard(QString &name, QString &code);
-    void resizeSynergyList(int index);
+    void resizeSynergyList();
 
 public:
     void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3, DraftMethod draftMethod);
@@ -47,7 +47,6 @@ signals:
     void cardLeave();
 
 private slots:
-    void showSynergies(int index);
     void hideSynergies(int index);
     void showSynergies();
     void findSynergyCardEntered(QListWidgetItem *item);

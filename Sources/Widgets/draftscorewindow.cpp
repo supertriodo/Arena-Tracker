@@ -218,18 +218,13 @@ void DraftScoreWindow::hideScores()
 
 void DraftScoreWindow::showSynergies()
 {
+    resizeSynergyList();
+
     for(int i=0; i<3; i++)
     {
-        showSynergies(i);
+        synergiesListWidget[i]->show();
     }
     this->update();
-}
-
-
-void DraftScoreWindow::showSynergies(int index)
-{
-    resizeSynergyList(index);
-    synergiesListWidget[index]->show();
 }
 
 
@@ -247,22 +242,33 @@ void DraftScoreWindow::redrawSynergyCards()
         {
             deckCard.draw();
         }
-        resizeSynergyList(i);
     }
+    resizeSynergyList();
 }
 
 
-void DraftScoreWindow::resizeSynergyList(int index)
+void DraftScoreWindow::resizeSynergyList()
 {
-    QListWidget *list = synergiesListWidget[index];
-    int rowHeight = list->sizeHintForRow(0);
-    int rows = list->count();
-    int height = rows*rowHeight + 2*list->frameWidth();
-    if(height>maxSynergyHeight)    height = maxSynergyHeight;
-    int width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+    int width = 0;
+    for(int i=0; i<3; i++)
+    {
+        QListWidget *list = synergiesListWidget[i];
+        int rowHeight = list->sizeHintForRow(0);
+        int rows = list->count();
+        int height = rows*rowHeight + 2*list->frameWidth();
+        if(height>maxSynergyHeight)    height = maxSynergyHeight;
 
-    list->setFixedWidth(width);
-    list->setFixedHeight(height);
+        list->setFixedHeight(height);
+        if(rows>0)  width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+    }
+
+    if(width>0)
+    {
+        for(int i=0; i<3; i++)
+        {
+            synergiesListWidget[i]->setFixedWidth(width);
+        }
+    }
 }
 
 

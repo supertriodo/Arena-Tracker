@@ -647,6 +647,12 @@ void DraftHandler::pickCard(QString code)
 }
 
 
+int DraftHandler::normalizeLFscore(int score)
+{
+    return score - 40;
+}
+
+
 void DraftHandler::showNewCards(DraftCard bestCards[3])
 {
     //Load cards
@@ -662,9 +668,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
     //LightForge
-    int rating1 = lightForgeTiers[bestCards[0].getCode()].score;
-    int rating2 = lightForgeTiers[bestCards[1].getCode()].score;
-    int rating3 = lightForgeTiers[bestCards[2].getCode()].score;
+    int rating1 = normalizeLFscore(lightForgeTiers[bestCards[0].getCode()].score);
+    int rating2 = normalizeLFscore(lightForgeTiers[bestCards[1].getCode()].score);
+    int rating3 = normalizeLFscore(lightForgeTiers[bestCards[2].getCode()].score);
     int maxCard1 = lightForgeTiers[bestCards[0].getCode()].maxCard;
     int maxCard2 = lightForgeTiers[bestCards[1].getCode()].maxCard;
     int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
