@@ -520,7 +520,7 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
             emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
                         ". Minion already in place.");
         }
-        else if(pos >= minionsList->count())
+        else if(pos >= minionsList->count() || pos < 0)
         {
             emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
                         ". Minion ouside list bounds. Count: " + QString::number(minionsList->count()), Error);

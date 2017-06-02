@@ -1284,20 +1284,24 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         QString id = match->captured(2);
         QString player = match->captured(3);
         QString zonePos = match->captured(4);
+        int zonePosInt = zonePos.toInt();
 
-        //Jugador esbirro cambia pos
-        if(player.toInt() == playerID)
+        if(zonePosInt>0)//En patch 8.2.0 los esbirros se mueven siempre a 0 y luego a su posicion
         {
-//            emit pDebug("Player: New minion pos: " +
-//                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
-            emit playerMinionPosChange(id.toInt(), zonePos.toInt());
-        }
-        //Enemigo esbirro cambia pos
-        else
-        {
-//            emit pDebug("Enemy: New minion pos: " +
-//                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
-            emit enemyMinionPosChange(id.toInt(), zonePos.toInt());
+            //Jugador esbirro cambia pos
+            if(player.toInt() == playerID)
+            {
+    //            emit pDebug("Player: New minion pos: " +
+    //                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+                emit playerMinionPosChange(id.toInt(), zonePosInt);
+            }
+            //Enemigo esbirro cambia pos
+            else
+            {
+    //            emit pDebug("Enemy: New minion pos: " +
+    //                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+                emit enemyMinionPosChange(id.toInt(), zonePosInt);
+            }
         }
     }
 }

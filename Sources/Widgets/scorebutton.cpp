@@ -95,7 +95,7 @@ void ScoreButton::draw()
 
             "border-style: solid;border-color: black;" +
 
-            "border-width: " + QString::number(this->font().pixelSize()/14+1) + "px;" +
+            "border-width: 1px;" +
             "border-radius: " + QString::number(width()/3) + "px;" +
 
             ((isBestScore&&!hideScore)?getBackgroundImageCSS():"") + "}");
@@ -114,7 +114,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 
     const QFont &font = this->font();
     QPen pen(BLACK);
-    pen.setWidth(font.pixelSize()/14);
+    pen.setWidth(font.pixelSize()/20);
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
