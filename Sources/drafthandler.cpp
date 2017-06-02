@@ -712,7 +712,7 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         //TierScore for deck average
         if(draftMethod == this->draftMethod || (this->draftMethod == All && draftMethod == HearthArena))
         {
-            shownTierScores[i] = ratings[i];
+            shownTierScores[i] = tierScore[i];
         }
 
         //Update score label

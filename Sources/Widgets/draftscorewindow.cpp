@@ -5,7 +5,7 @@
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    scoreWidth = sizeCard.width()*0.7;
+    scoreWidth = sizeCard.width()*0.6;
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
@@ -24,7 +24,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     QFont font("Belwe Bd BT");
     font.setPixelSize(scoreWidth/2);
     font.setBold(true);
-    font.setKerning(true);
 
     QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *horLayoutScores = new QHBoxLayout();
