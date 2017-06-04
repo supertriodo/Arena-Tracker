@@ -61,7 +61,8 @@ SOURCES += Sources/main.cpp\
     Sources/LibXls/getopt.c \
     Sources/LibXls/ole.c \
     Sources/LibXls/xls.c \
-    Sources/LibXls/xlstool.c
+    Sources/LibXls/xlstool.c \
+    Sources/Utils/deckstringhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -114,7 +115,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/LibXls/xlstool.h \
     Sources/LibXls/xlstypes.h \
     Sources/LibXls/config.h \
-    Sources/constants.h
+    Sources/constants.h \
+    Sources/Utils/deckstringhandler.h
 
 FORMS    += mainwindow.ui
 
