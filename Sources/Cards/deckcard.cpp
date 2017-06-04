@@ -192,6 +192,18 @@ CardClass DeckCard::getClassFromString(QString value)
 }
 
 
+void DeckCard::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y)
+{
+    QFontMetrics fm(font);
+    int textWide = fm.width(text);
+    int textHigh = fm.height();
+
+    QPainterPath path;
+    path.addText(x - textWide/2, y + textHigh/4, font, text);
+    painter.drawPath(path);
+}
+
+
 void DeckCard::draw()
 {
     QPixmap canvas;
@@ -216,6 +228,13 @@ void DeckCard::draw()
 QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resize)
 {
     QFont font("Belwe Bd BT");
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
 
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
@@ -247,12 +266,15 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         else    painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + code + ".png"), source);
 
         //Background and #cards
-        if(nameColor!=BLACK)                            painter.setPen(QPen(nameColor));
-        else if(drawRarity)                             painter.setPen(QPen(getRarityColor()));
-        else if(outsider)                               painter.setPen(QPen(VIOLET));
-        else if(drawSpellWeaponColor && type==SPELL)    painter.setPen(QPen(YELLOW));
-        else if(drawSpellWeaponColor && type==WEAPON)   painter.setPen(QPen(ORANGE));
-        else                                            painter.setPen(QPen(WHITE));
+        painter.setPen(QPen(BLACK));
+
+        if(nameColor!=BLACK)                            painter.setBrush(nameColor);
+        else if(drawRarity)                             painter.setBrush(getRarityColor());
+        else if(outsider)                               painter.setBrush(VIOLET);
+        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
+        else                                            painter.setBrush(WHITE);
+
 
         int maxNameLong;
         if(total == 1 && rarity != LEGENDARY)
@@ -268,14 +290,12 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             if(total > 1)
             {
                 font.setPixelSize(22);//16pt
-                painter.setFont(font);
-                painter.drawText(QRectF(190,6,26,24), Qt::AlignCenter, QString::number(total));
+                drawShadowText(painter, font, QString::number(total), 202, 19);
             }
             else
             {
                 font.setPixelSize(28);//20pt
-                painter.setFont(font);
-                painter.drawText(QRectF(190,9,26,24), Qt::AlignCenter, "*");
+                drawShadowText(painter, font, "*", 202, 19+5);
             }
         }
 
@@ -284,23 +304,21 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         if(name == "unknown")
         {
             font.setPixelSize(14);//10pt
-            painter.setFont(font);
-            painter.setPen(QPen(BLACK));
-            painter.drawText(QRectF(34,7,154,23), Qt::AlignVCenter, "Unknown");
+            painter.setPen(QPen(DARK_GREEN));
+            painter.setBrush(BLACK);
+
+            QFontMetrics fm(font);
+            int textHigh = fm.height();
+
+            QPainterPath path;
+            path.addText(34, 20 + textHigh/4, font, "Unknown");
+            painter.drawPath(path);
         }
         else
         {
             //Name
             int fontSize = 15;
             font.setPixelSize(fontSize);//11pt
-            font.setBold(true);
-            font.setKerning(true);
-
-#ifdef Q_OS_WIN
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
-#else
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
-#endif
 
             QFontMetrics fm(font);
             int textWide = fm.width(name);
@@ -314,10 +332,6 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
                 textHigh = fm.height();
             }
 
-            painter.setFont(font);
-            painter.setBrush(painter.pen().color());
-            painter.setPen(QPen(BLACK));
-
             QPainterPath path;
             path.addText(34, 20 + textHigh/4, font, name);
             painter.drawPath(path);
@@ -326,15 +340,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             //Mana cost
             int manaSize = cost>9?26:18+1.5*cost;
             font.setPixelSize(manaSize);//20pt | 14 + cost
-            painter.setFont(font);
-
-            fm = QFontMetrics(font);
-            textWide = fm.width(QString::number(cost));
-            textHigh = fm.height();
-
-            path = QPainterPath();
-            path.addText(13 - textWide/2, 20 + textHigh/4, font, QString::number(cost));
-            painter.drawPath(path);
+            drawShadowText(painter, font, QString::number(cost), 13, 20);
         }
     painter.end();
 
@@ -347,6 +353,13 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
 QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
 {
     QFont font("Belwe Bd BT");
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
 
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
@@ -380,19 +393,11 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         //BY
         int fontSize = 15;
         font.setPixelSize(fontSize);//11pt
-        font.setBold(true);
-        font.setKerning(true);
-#ifdef Q_OS_WIN
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
-#else
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
-#endif
 
         QFontMetrics fm(font);
         int textWide = fm.width(customText);
         int textHigh = fm.height();
 
-        painter.setFont(font);
         painter.setBrush(BLACK);
         painter.setPen(QPen(WHITE));
 
@@ -413,7 +418,6 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
             textHigh = fm.height();
         }
 
-        painter.setFont(font);
         painter.setPen(QPen(BLACK));
 
         if(outsider)                                    painter.setBrush(VIOLET);

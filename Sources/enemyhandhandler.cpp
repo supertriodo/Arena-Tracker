@@ -430,7 +430,7 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
 {
     //Font
     QFont font("Belwe Bd BT");
-    font.setPixelSize(TAM_ATK_HERO/1.5);
+    font.setPixelSize(TAM_ATK_HERO/2.0);
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN
@@ -466,10 +466,10 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
         pen.setWidth(1);
         painter.setPen(pen);
         if(friendly)    painter.setBrush(GREEN);
-        else            painter.setBrush(RED);
+        else            painter.setBrush(SOFT_RED);
 
         QPainterPath path;
-        path.addText(widthCanvas/2 - 2 - textWide/2, 5*TAM_ATK_HERO/8 - 1 + textHigh/4, font, text);
+        path.addText(widthCanvas/2 - textWide/2 - 1, 5*TAM_ATK_HERO/8 + textHigh/4 - 1 , font, text);
         painter.drawPath(path);
     painter.end();
 
