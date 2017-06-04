@@ -116,6 +116,7 @@ Thanks to all these projects ArenaTracker is possible.
 * Michael L: €10,00 EUR
 * OmariZi: €10,00 EUR
 * [Michael B](https://github.com/MikeBull94): €10,00 EUR
+* Bandcamp: €5,00 EUR
 * Oliver S: €5,00 EUR
 * Raido M: €5,00 EUR
 * Philip W: €5,00 EUR
