@@ -3275,9 +3275,9 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
+//Deck string decript
 //score button con borde y background
 //check spellbender target hero
-//Test turno plan, VS label
 
 
 //REPLAY BUGS
