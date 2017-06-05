@@ -9,6 +9,7 @@
 #define DARK_GREEN_H QString("#0F4F0F")
 #define RED QColor(255,0,0)
 #define SOFT_RED QColor(255,40,40)
+#define SOFT_RED_H QString("#FF2828")
 #define YELLOW QColor(255,255,0)
 #define WHITE QColor(255,255,255)
 #define WHITY QColor(240,240,240)

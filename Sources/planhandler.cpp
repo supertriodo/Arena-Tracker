@@ -2317,8 +2317,8 @@ void PlanHandler::updateTurnLabel()
     int viewTurn = viewBoard->numTurn;
 
     QString color;
-    if(viewBoard->playerTurn)    color = "#008000";
-    else                        color = "#8B0000";
+    if(viewBoard->playerTurn)   color = GREEN_H;
+    else                        color = SOFT_RED_H;
     ui->planLabelTurn->setStyleSheet("QLabel {background-color: transparent; color: " + color + ";}");
 
     if(viewBoard == nowBoard)           ui->planLabelTurn->setText("--");
