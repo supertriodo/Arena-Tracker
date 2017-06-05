@@ -124,5 +124,6 @@
         <file>Images/games.png</file>
         <file>Images/branchClosed.png</file>
         <file>Images/branchOpen.png</file>
+        <file>Fonts/LuckiestGuy.ttf</file>
     </qresource>
 </RCC>

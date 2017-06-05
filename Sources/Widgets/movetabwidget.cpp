@@ -37,8 +37,6 @@ void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment, int maxWidth,
 
 MoveTabBar::MoveTabBar(QWidget *parent) : QTabBar(parent)
 {
-    QFont font("Sans Serif", 10);
-    this->setFont(font);
     this->setIconSize(QSize(32,32));
 }
 

@@ -39,7 +39,7 @@ void HandCard::draw()
 
 void HandCard::drawDefaultHandCard()
 {
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;

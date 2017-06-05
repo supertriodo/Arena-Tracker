@@ -666,7 +666,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
 
     //Attack/Health
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     font.setPixelSize(45);
     font.setBold(true);
     font.setKerning(true);

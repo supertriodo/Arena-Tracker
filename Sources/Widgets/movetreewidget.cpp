@@ -3,10 +3,8 @@
 
 MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 {
-    QFont font("Belwe Bd BT");
+    QFont font(BIG_FONT);
     font.setPixelSize(20);
-    font.setBold(true);
-    font.setKerning(true);
     this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
     this->setStyleSheet("QTreeView{background-color: transparent; outline: 0;}"

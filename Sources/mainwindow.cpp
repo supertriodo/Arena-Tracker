@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::Extended)
 {
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
+    QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
+
     ui->setupUi(this);
 
     atLogFile = NULL;
@@ -838,6 +840,11 @@ void MainWindow::completeUI()
 {
     if(isMainWindow)
     {
+        //Main font
+        QFont font(BIG_FONT);
+        font.setPixelSize(15);
+        QApplication::setFont(font);
+
         ui->tabWidget->clear();
         ui->tabWidget->hide();
 
@@ -852,7 +859,6 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        QFont font("Sans Serif");
         font.setPixelSize(16);
         ui->progressBar->setFont(font);
         ui->progressBar->setVisible(false);
@@ -3192,6 +3198,7 @@ void MainWindow::test()
 {
 //    testPlan();
 //    QTimer::singleShot(20000, this, SLOT(testDelay()));
+//    showMessageProgressBar("Testing downloads...", 10000);
 }
 
 
@@ -3268,6 +3275,9 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
+//score button con borde y background
+//check spellbender target hero
+//Test turno plan, VS label
 
 
 //REPLAY BUGS

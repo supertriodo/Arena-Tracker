@@ -45,10 +45,8 @@ PlanHandler::~PlanHandler()
 
 void PlanHandler::completeUI()
 {
-    QFont font("Belwe Bd BT");
+    QFont font(BIG_FONT);
     font.setPixelSize(24);
-    font.setBold(true);
-    font.setKerning(true);
     ui->planLabelTurn->setFont(font);
     QFontMetrics fm(font);
     int textWide = fm.width("T99");

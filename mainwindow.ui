@@ -41,12 +41,6 @@
       </property>
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
-        <property name="font">
-         <font>
-          <family>Sans Serif</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
         <property name="currentIndex">
          <number>0</number>
         </property>
@@ -209,12 +203,6 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="font">
-                 <font>
-                  <family>Belwe Bd BT</family>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
                 <property name="frame">
                  <bool>true</bool>
                 </property>
@@ -243,12 +231,6 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Belwe Bd BT</family>
-                  <pointsize>14</pointsize>
-                 </font>
                 </property>
                 <property name="frame">
                  <bool>true</bool>
@@ -316,12 +298,6 @@
                   <height>16777215</height>
                  </size>
                 </property>
-                <property name="font">
-                 <font>
-                  <family>Belwe Bd BT</family>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
                 <property name="frame">
                  <bool>true</bool>
                 </property>
@@ -351,12 +327,6 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="font">
-                 <font>
-                  <family>Belwe Bd BT</family>
-                  <pointsize>14</pointsize>
-                 </font>
-                </property>
                 <property name="frame">
                  <bool>true</bool>
                 </property>
@@ -385,12 +355,6 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Belwe Bd BT</family>
-                  <pointsize>14</pointsize>
-                 </font>
                 </property>
                 <property name="frame">
                  <bool>true</bool>
@@ -476,17 +440,8 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="font">
-               <font>
-                <family>Belwe Bd BT</family>
-                <pointsize>12</pointsize>
-               </font>
-              </property>
               <property name="title">
                <string/>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
               </property>
               <property name="flat">
                <bool>true</bool>
@@ -522,11 +477,6 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -537,11 +487,6 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelHAscore1">
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -565,11 +510,6 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -580,11 +520,6 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelHAscore2">
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -608,11 +543,6 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -623,11 +553,6 @@
                </item>
                <item>
                 <widget class="QLabel" name="labelHAscore3">
-                 <property name="font">
-                  <font>
-                   <pointsize>18</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -691,12 +616,6 @@
                 <width>16777215</width>
                 <height>16777215</height>
                </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Sans Serif</family>
-                <pointsize>10</pointsize>
-               </font>
               </property>
              </widget>
             </item>
@@ -1405,12 +1324,6 @@
               <height>16777215</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
             <property name="acceptDrops">
              <bool>false</bool>
             </property>
@@ -1467,7 +1380,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>764</height>
+               <height>810</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2196,13 +2109,6 @@ to upload to www.zerotoheroes.com</string>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
       </property>
       <property name="value">
        <number>24</number>

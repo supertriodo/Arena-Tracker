@@ -398,7 +398,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     //Health
     painter->drawPixmap(36, -6, QPixmap(":Images/bgHeroLife.png"));
 
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     font.setPixelSize(45);
     font.setBold(true);
     font.setKerning(true);

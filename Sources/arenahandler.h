@@ -54,6 +54,7 @@ private:
     bool isRowWhite(QTreeWidgetItem *item);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void showArena(QString hero);
+    void completeRewardsUI();
 
 public:
     void setMouseInApp(bool value);

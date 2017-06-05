@@ -40,15 +40,8 @@ void EnemyHandHandler::completeUI()
 
     ui->enemyAttackHeroLabel->setFixedHeight(TAM_ATK_HERO);
     ui->enemyAttackRivalLabel->setFixedHeight(TAM_ATK_HERO);
-    QFont font("Belwe Bd BT");
+    QFont font(BIG_FONT);
     font.setPixelSize(25);
-    font.setBold(true);
-    font.setKerning(true);
-#ifdef Q_OS_WIN
-    font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
-#else
-    font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
-#endif
     ui->enemyAttackVSLabel->setFont(font);
     hideHeroAttack();
 
@@ -429,7 +422,7 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
 void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
 {
     //Font
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     font.setPixelSize(TAM_ATK_HERO/2.0);
     font.setBold(true);
     font.setKerning(true);

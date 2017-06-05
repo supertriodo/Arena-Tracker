@@ -125,7 +125,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     int textHigh = fm.height();
 
     QPainterPath path;
-    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh/4, this->font(), text);
+    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, this->font(), text);
     painter.drawPath(path);
 }
 

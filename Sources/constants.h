@@ -19,6 +19,10 @@
 #define ORANGE QColor(255,165,0)
 #define TRANSPARENT QColor(0,0,0,0)
 
+//Fuentes
+#define HS_FONT "Belwe Bd BT"
+#define BIG_FONT "Luckiest Guy"
+
 
 //Secretos
 #define AVENGE QString("FP1_020")

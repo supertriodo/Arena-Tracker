@@ -227,7 +227,7 @@ void DeckCard::draw()
 
 QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resize)
 {
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN
@@ -352,7 +352,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
 
 QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
 {
-    QFont font("Belwe Bd BT");
+    QFont font(HS_FONT);
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN

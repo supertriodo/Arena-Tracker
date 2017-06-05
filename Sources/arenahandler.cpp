@@ -34,6 +34,9 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
 
+    QFont font(BIG_FONT);
+    font.setPixelSize(12);
+    ui->logTextEdit->setFont(font);
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
 
     connect(ui->webButton, SIGNAL(clicked()),
@@ -43,7 +46,20 @@ void ArenaHandler::completeUI()
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SLOT(openDonateWeb()));
 
-    //Rewards UI
+    completeRewardsUI();
+}
+
+
+void ArenaHandler::completeRewardsUI()
+{
+    QFont font(BIG_FONT);
+    font.setPixelSize(20);
+    ui->lineEditGold->setFont(font);
+    ui->lineEditArcaneDust->setFont(font);
+    ui->lineEditPack->setFont(font);
+    ui->lineEditPlainCard->setFont(font);
+    ui->lineEditGoldCard->setFont(font);
+
     ui->lineEditGold->setMinimumWidth(1);
     ui->lineEditArcaneDust->setMinimumWidth(1);
     ui->lineEditPack->setMinimumWidth(1);

@@ -41,7 +41,7 @@ void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
 
-    QFont font("Belwe Bd BT");
+    QFont font(BIG_FONT);
     font.setPixelSize(24);
     ui->labelLFscore1->setFont(font);
     ui->labelLFscore2->setFont(font);
@@ -49,6 +49,9 @@ void DraftHandler::completeUI()
     ui->labelHAscore1->setFont(font);
     ui->labelHAscore2->setFont(font);
     ui->labelHAscore3->setFont(font);
+
+    font.setPixelSize(12);
+    ui->textBrowserDraft->setFont(font);
 
     labelCard[0] = ui->labelCard1;
     labelCard[1] = ui->labelCard2;

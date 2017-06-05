@@ -126,7 +126,7 @@ void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         QString text = "x" + QString::number(this->numAttacks);
         QPoint midPoint = line.p1() + QPoint(line.dx()/2, line.dy()/2);
 
-        QFont font("Belwe Bd BT");
+        QFont font(HS_FONT);
         font.setPixelSize(45);
         font.setBold(true);
         font.setKerning(true);
