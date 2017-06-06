@@ -201,6 +201,33 @@ QJsonValue Utility::getCardAtribute(QString code, QString attribute)
 }
 
 
+QString Utility::getCodeFromCardAttribute(QString attribute, QJsonValue value)
+{
+    if(attribute == "text" || attribute == "name")
+    {
+        for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
+        {
+            if(it->value(attribute).toObject().value(localLang) == value)
+            {
+                return it.key();
+            }
+        }
+    }
+    else
+    {
+        for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
+        {
+            if(it->value(attribute) == value)
+            {
+                return it.key();
+            }
+        }
+    }
+
+    return "";
+}
+
+
 bool Utility::isFromStandardSet(QString code)
 {
     QString cardSet = getCardAtribute(code, "set").toString();

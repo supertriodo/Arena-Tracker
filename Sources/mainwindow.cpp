@@ -4,6 +4,7 @@
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
+#include "Utils/deckstringhandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -3199,6 +3200,8 @@ void MainWindow::test()
 //    testPlan();
 //    QTimer::singleShot(20000, this, SLOT(testDelay()));
 //    showMessageProgressBar("Testing downloads...", 10000);
+    QByteArray deckString = "AAECAYO6AgSfA+0FkbwChsICDbQBnALtAs0DiAWbBdQFiAf4B90IkrYC+L0C/MECAA==";
+    DeckStringHandler dsh(deckString);
 }
 
 
@@ -3278,6 +3281,7 @@ void MainWindow::testDelay()
 //Deck string decript
 //score button con borde y background
 //check spellbender target hero
+//getCardAtribute
 
 
 //REPLAY BUGS

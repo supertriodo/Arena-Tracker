@@ -82,6 +82,7 @@ public:
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);
     static void dumpOnFile(QByteArray &data, QString path);
+    static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
 };
 
 #endif // UTILITY_H
