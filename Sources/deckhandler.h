@@ -71,8 +71,7 @@ private:
     void showDeckTreeWidget();
     void addNewDeckMenu(QPushButton *button);
     bool newDeck(bool reset);
-    void importHearthHead();
-    bool showHearthHeadHowTo();
+    void importDeckString();
     QString deckBuilderPY();
     void startDeckBuilderPY();
     void showInstallPY();
@@ -114,6 +113,7 @@ signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void deckSizeChanged();
+    void showMessageProgressBar(QString text);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
@@ -159,7 +159,7 @@ private slots:
     void toggleLoadDeckTreeWidget();
     void newEmptyDeck();
     void newCopyCurrentDeck();
-    void newImportHearthHead();
+    void newImportDeckString();
     void newCopyEnemyDeck();
     void adjustRngSize();
     void clearRngAnimating();
@@ -167,6 +167,7 @@ private slots:
     void hideIfDeckSelected();
     void finishDeckBuilderPY();
     void cardTotalPlus(QListWidgetItem *item);
+    void exportDeckString();
 };
 
 #endif // DECKHANDLER_H

@@ -1,4 +1,5 @@
 #include "deckhandler.h"
+#include "Utils/deckstringhandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -220,8 +221,11 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
     action = newDeckMenu->addAction("Clone enemy deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newCopyEnemyDeck()));
 
-    action = newDeckMenu->addAction("Import web deck");
-    connect(action, SIGNAL(triggered()), this, SLOT(newImportHearthHead()));
+    action = newDeckMenu->addAction("Import HS deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(newImportDeckString()));
+
+    action = newDeckMenu->addAction("Export HS deck");
+    connect(action, SIGNAL(triggered()), this, SLOT(exportDeckString()));
 
     button->setMenu(newDeckMenu);
 }
@@ -1525,43 +1529,15 @@ void DeckHandler::newCopyCurrentDeck()
 }
 
 
-void DeckHandler::newImportHearthHead()
+void DeckHandler::newImportDeckString()
 {
-    if(newDeck(true) && showHearthHeadHowTo())  importHearthHead();
+    if(newDeck(true))   importDeckString();
 }
 
 
 void DeckHandler::newCopyEnemyDeck()
 {
     if(newDeck(true))   importEnemyDeck();
-}
-
-
-bool DeckHandler::showHearthHeadHowTo()
-{
-    QString text =  "<p align='center'>Copy a deck in Cockatrice format and click OK.</p>";
-
-    QMessageBox msgBox((QMainWindow *)this->parent());
-    msgBox.setText(text);
-    msgBox.setWindowTitle("Import web deck");
-    msgBox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
-
-    QLabel label(&msgBox);
-    QGridLayout* layout = (QGridLayout*)msgBox.layout();
-    layout->addWidget(&label, 1, 1);
-    label.setWindowFlags(Qt::FramelessWindowHint);
-    label.setFixedSize(800, 439);
-    QString gifPath = Utility::extraPath() + "/importDeck.gif";
-    QPixmap p(gifPath);
-    label.setPixmap(p);
-    QMovie movie(gifPath);
-    label.setMovie(&movie);
-    movie.start();
-    label.show();
-    msgBox.exec();
-
-    if(msgBox.result() == QMessageBox::Ok)  return true;
-    else                                    return false;
 }
 
 
@@ -1580,49 +1556,55 @@ bool DeckHandler::newDeck(bool reset)
 }
 
 
-void DeckHandler::importHearthHead()
+void DeckHandler::importDeckString()
 {
-    QString data = QApplication::clipboard()->text();
-    QStringList dataLines = data.split('\n');
+    QString deckName;
+    QString text = QApplication::clipboard()->text();
+    QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(text, deckName);
 
-    QRegularExpressionMatch match;
-    this->reset();
-
-    foreach(QString line, dataLines)
+    if(deckList.isEmpty())
     {
-        QString name;
-        QString code;
-        int numCards = 0;
-
-        //2 Arcane Missiles
-        if(line.contains(QRegularExpression("^(\\d+) +([^ ].*)$"), &match))
-        {
-            numCards = match.captured(1).toInt();
-            name = match.captured(2);
-
-            code = Utility::cardLocalCodeFromName(name);
-            if(code.isEmpty())  code = Utility::cardEnCodeFromName(name);
-        }
-
-        emit pDebug("Import cockatrice: " + line);
-
-        if(code.isNull())
-        {
-            emit pDebug("Import cockatrice: Bad Format.", Warning);
-        }
-        else if(code.isEmpty())
-        {
-            emit pDebug("Import cockatrice: Name: " + name + " not found in Jsons.", Warning);
-        }
-        else if(numCards<1 || numCards>2)
-        {
-            emit pDebug("Import cockatrice: Num cards: " + QString::number(numCards) + " is not correct.", Warning);
-        }
-        else
-        {
-            newDeckCard(code, numCards);
-        }
+        emit showMessageProgressBar("Invalid HS deck");
+        emit pDebug("Invalid HS deck");
+        return;
     }
+
+    for(const CodeAndCount &codeAndCount: deckList)
+    {
+        QString code = codeAndCount.code;
+        int count = codeAndCount.count;
+        newDeckCard(code, count);
+    }
+
+    if(!deckName.isEmpty())     ui->deckLineEdit->setText(deckName);
+    emit showMessageProgressBar("HS deck imported");
+    emit pDebug("HS deck imported");
+}
+
+
+void DeckHandler::exportDeckString()
+{
+    QList<CodeAndCount> deckList;
+    for(DeckCard &deckCard: deckCardList)
+    {
+        QString code = deckCard.getCode();
+        int count = deckCard.total;
+        if(!code.isEmpty())     deckList.append(CodeAndCount(code, count));
+    }
+
+    QString deckName = ui->deckLineEdit->text();
+    QString text = DeckStringHandler::writeDeckString(deckList, deckName);
+
+    if(text.isEmpty())
+    {
+        emit showMessageProgressBar("Invalid HS deck");
+        emit pDebug("Invalid HS deck");
+        return;
+    }
+
+    QApplication::clipboard()->setText(text);
+    emit showMessageProgressBar("HS deck copied");
+    emit pDebug("HS deck copied");
 }
 
 

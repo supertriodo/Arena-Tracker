@@ -4,7 +4,6 @@
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
-#include "Utils/deckstringhandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -484,6 +483,8 @@ void MainWindow::createDeckHandler()
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
+    connect(deckHandler, SIGNAL(showMessageProgressBar(QString)),
+            this, SLOT(showMessageProgressBar(QString)));
     connect(deckHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -3200,15 +3201,6 @@ void MainWindow::test()
 //    testPlan();
 //    QTimer::singleShot(20000, this, SLOT(testDelay()));
 //    showMessageProgressBar("Testing downloads...", 10000);
-
-//    QList<CodeAndCount> deckList;
-//    deckList.append(CodeAndCount(FLAMEWAKER, 30));
-
-//    QByteArray deckString = "AAECAf0GAp20ApDHAg6BAo8GngfQB8IItqwCiq0C9q4CnbICw7QClr0CocIC3cICkscCAA==";//DeckStringHandler::writeDeckString(deckList);
-//    qDebug()<<deckString;
-//    deckList = DeckStringHandler::readDeckString(deckString);
-//    qDebug()<<deckList.count();
-//    qDebug()<<DeckStringHandler::writeDeckString(deckList);
 }
 
 
@@ -3289,6 +3281,7 @@ void MainWindow::testDelay()
 //score button con borde y background
 //check spellbender target hero
 //getCardAtribute
+//Eliminar Utility::extraPath() + "/importDeck.gif"
 
 
 //REPLAY BUGS
