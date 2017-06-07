@@ -3200,8 +3200,15 @@ void MainWindow::test()
 //    testPlan();
 //    QTimer::singleShot(20000, this, SLOT(testDelay()));
 //    showMessageProgressBar("Testing downloads...", 10000);
-    QByteArray deckString = "AAECAYO6AgSfA+0FkbwChsICDbQBnALtAs0DiAWbBdQFiAf4B90IkrYC+L0C/MECAA==";
-    DeckStringHandler dsh(deckString);
+
+//    QList<CodeAndCount> deckList;
+//    deckList.append(CodeAndCount(FLAMEWAKER, 30));
+
+//    QByteArray deckString = "AAECAf0GAp20ApDHAg6BAo8GngfQB8IItqwCiq0C9q4CnbICw7QClr0CocIC3cICkscCAA==";//DeckStringHandler::writeDeckString(deckList);
+//    qDebug()<<deckString;
+//    deckList = DeckStringHandler::readDeckString(deckString);
+//    qDebug()<<deckList.count();
+//    qDebug()<<DeckStringHandler::writeDeckString(deckList);
 }
 
 
@@ -3325,12 +3332,6 @@ void MainWindow::testDelay()
 //id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
 
 
-//REWARDS
-//Despues de cada newGameResult se carga checkArenaCurrentReload que si ha terminado la arena enviara un showNoArena a ArenaHandler.
-//Esto reinicia las variables y si luego subimos los rewards va a fallar porque no hay arenaCurrent.
-//Para reactivar los rewards habra que arreglar esto. Reactivar paso de gameResultSent a reloadArenaCurrent en replyFinished
-//Descomentar en resizeTabWidgets (adjustToContents)
-
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json heroes HA --> drafthandler.cpp
@@ -3340,11 +3341,9 @@ void MainWindow::testDelay()
 //Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
 
-//Mana bind -- test
-//Volcano -- Demasiados misiles
-
 //STANDARD CYCLE
 //Remove secrets rotating out
+//Actualizar Utility::isFromStandardSet(code)
 
 //NUEVOS HEROES
 //Evitar Asset hero powers (GameWatcher 201)

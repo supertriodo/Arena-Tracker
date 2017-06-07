@@ -2,39 +2,17 @@
 #include "../utility.h"
 #include <QtWidgets>
 
-DeckStringHandler::DeckStringHandler()
-{
-
-}
 
 
-DeckStringHandler::DeckStringHandler(QByteArray encodedDeckString)
-{
-    this->valid = parseDeckString(encodedDeckString);
-}
-
-
-DeckStringHandler::~DeckStringHandler()
-{
-
-}
-
-
-QList<CodeAndCount> DeckStringHandler::getDeck()
-{
-    return this->deck;
-}
-
-
-bool DeckStringHandler::parseDeckString(QByteArray &encodedDeckString)
+QList<CodeAndCount> DeckStringHandler::readDeckString(const QByteArray &encodedDeckString)
 {
     QList<quint64> cardsx1;
     QList<quint64> cardsx2;
     QMap<quint64, quint64> cardsxN;
     QByteArray data = QByteArray::fromBase64(encodedDeckString);
 
-    if(takeChar(data) != 0x0)                   return false;
-    if(readVarint(data) != DECKSTRING_VERSION)  return false;
+    if(takeChar(data) != 0x0)                   return QList<CodeAndCount>();
+    if(readVarint(data) != DECKSTRING_VERSION)  return QList<CodeAndCount>();
 
     readVarint(data);//Format
 
@@ -67,35 +45,124 @@ bool DeckStringHandler::parseDeckString(QByteArray &encodedDeckString)
 }
 
 
-bool DeckStringHandler::buildDeck(QList<quint64> &cardsx1, QList<quint64> &cardsx2, QMap<quint64, quint64> &cardsxN)
+QByteArray DeckStringHandler::writeDeckString(const QList<CodeAndCount> &deckList)
 {
+    QList<quint64> cardsx1;
+    QList<quint64> cardsx2;
+    QMap<quint64, quint64> cardsxN;
+    if(!debuildDeck(cardsx1, cardsx2, cardsxN, deckList))   return "";
+
+    QByteArray data;
+    data.append((char)0x0);
+    writeVarint(DECKSTRING_VERSION, data);
+
+    writeVarint(getFormat(deckList), data);
+
+    quint64 hero = getHeroe(deckList);
+    if(hero == 0)   return "";
+    writeVarint(1, data);
+    writeVarint(hero, data);
+
     qSort(cardsx1);
+    writeVarint(cardsx1.count(), data);
     for(const quint64 &id: cardsx1)
     {
-        QString code = getCode(id);
-        if(code.isEmpty())  return false;
-        else    deck.append(CodeAndCount(code, 1));
-        qDebug()<<Utility::getCardAtribute(code, "name").toString()<<1;
+        writeVarint(id, data);
     }
 
     qSort(cardsx2);
+    writeVarint(cardsx2.count(), data);
     for(const quint64 &id: cardsx2)
     {
-        QString code = getCode(id);
-        if(code.isEmpty())  return false;
-        else    deck.append(CodeAndCount(code, 2));
-        qDebug()<<Utility::getCardAtribute(code, "name").toString()<<2;
+        writeVarint(id, data);
     }
 
     QList<quint64> cardsxNList = cardsxN.keys();
     qSort(cardsxNList);
+    writeVarint(cardsxNList.count(), data);
     for(const quint64 &id: cardsxNList)
+    {
+        quint64 count = cardsxN[id];
+        writeVarint(id, data);
+        writeVarint(count, data);
+    }
+
+    return data.toBase64();
+}
+
+
+FormatType DeckStringHandler::getFormat(const QList<CodeAndCount> &deckList)
+{
+    for(const CodeAndCount& codeAndCount: deckList)
+    {
+        QString code = codeAndCount.code;
+        if(!Utility::isFromStandardSet(code))   return FT_WILD;
+    }
+    return FT_STANDARD;
+}
+
+quint64 DeckStringHandler::getHeroe(const QList<CodeAndCount> &deckList)
+{
+    for(const CodeAndCount& codeAndCount: deckList)
+    {
+        QString code = codeAndCount.code;
+        DeckCard deckCard(code);
+        QString hero = Utility::heroToLogNumber(deckCard.getCardClass());
+        if(!hero.isEmpty())     return getId("HERO_" + hero);
+    }
+    return 0;
+}
+
+
+QList<CodeAndCount> DeckStringHandler::buildDeck(const QList<quint64> &cardsx1, const QList<quint64> &cardsx2, const QMap<quint64, quint64> &cardsxN)
+{
+    QList<CodeAndCount> deckList;
+
+    for(const quint64 &id: cardsx1)
+    {
+        QString code = getCode(id);
+        if(code.isEmpty())  return QList<CodeAndCount>();
+        else    deckList.append(CodeAndCount(code, 1));
+    }
+
+    for(const quint64 &id: cardsx2)
+    {
+        QString code = getCode(id);
+        if(code.isEmpty())  return QList<CodeAndCount>();
+        else    deckList.append(CodeAndCount(code, 2));
+    }
+
+    for(const quint64 &id: cardsxN.keys())
     {
         QString code = getCode(id);
         int count = cardsxN[id];
-        if(code.isEmpty())  return false;
-        else    deck.append(CodeAndCount(code, count));
-        qDebug()<<Utility::getCardAtribute(code, "name").toString()<<count;
+        if(code.isEmpty())  return QList<CodeAndCount>();
+        else    deckList.append(CodeAndCount(code, count));
+    }
+    return deckList;
+}
+
+
+bool DeckStringHandler::debuildDeck(QList<quint64> &cardsx1, QList<quint64> &cardsx2, QMap<quint64, quint64> &cardsxN,
+                                    const QList<CodeAndCount> &deckList)
+{
+    for(const CodeAndCount& codeAndCount: deckList)
+    {
+        quint64 id = getId(codeAndCount.code);
+        if(id == 0)     return false;
+        int count = codeAndCount.count;
+        switch(count)
+        {
+            case 1:
+                cardsx1.append(id);
+                break;
+            case 2:
+                cardsx2.append(id);
+                break;
+            default:
+                cardsxN[id] = count;
+                break;
+        }
     }
     return true;
 }
@@ -115,49 +182,30 @@ QString DeckStringHandler::getCode(const quint64 &dbfId)
 }
 
 
-/**
- * Encodes an unsigned variable-length integer using the MSB algorithm.
- * This function assumes that the value is stored as little endian.
- * @param value The input value. Any standard integer type is allowed.
- * @param output A pointer to a piece of reserved memory. Must have a minimum size dependent on the input size (32 bit = 5 bytes, 64 bit = 10 bytes).
- * @return The number of bytes used in the output memory.
- */
-//template<typename int_t = uint64_t>
+quint64 DeckStringHandler::getId(const QString &code)
+{
+    return Utility::getCardAtribute(code, "dbfId").toVariant().toULongLong();
+}
+
+
 void DeckStringHandler::writeVarint(quint64 value, QByteArray &stream)
 {
-//    int outputSize = 0;
-    //While more than 7 bits of data are left, occupy the last output byte
-    // and set the next byte flag
     while (value > 127) {
-        //|128: Set the next byte flag
-//        output[outputSize] = ((uint8_t)(value & 127)) | 128;
         stream.append(((uint8_t)(value & 127)) | 128);
-        //Remove the seven bits we just wrote
         value >>= 7;
-//        outputSize++;
     }
-//    output[outputSize++] = ((uint8_t)value) & 127;
     stream.append(((uint8_t)value) & 127);
 }
-/**
- * Decodes an unsigned variable-length integer using the MSB algorithm.
- * @param value A variable-length encoded integer of arbitrary size.
- * @param inputSize How many bytes are
- */
-//template<typename int_t = uint64_t>
+
+
 quint64 DeckStringHandler::readVarint(QByteArray &stream)
 {
     quint64 value = 0;
     int i = 0;
-//    int_t ret = 0;
     while(!stream.isEmpty())
-//    for(size_t i = 0; i < inputSize; i++)
     {
         char byte = takeChar(stream);
-//        ret |= (input[i] & 127) << (7 * i);
         value |= (byte & 127) << (7 * i);
-        //If the next-byte flag is set
-//        if(!(input[i] & 128))   break;
         if(!(byte & 128))   return value;
         i++;
     }

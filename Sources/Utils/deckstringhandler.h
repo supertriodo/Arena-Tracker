@@ -19,28 +19,21 @@ public:
 
 class DeckStringHandler
 {
-//Constructor
-public:
-    DeckStringHandler();
-    DeckStringHandler(QByteArray encodedDeckString);
-    ~DeckStringHandler();
-
-//Variables
-private:
-    QList<CodeAndCount> deck;
-    bool valid;
-
 //Metodos
 private:
-    void writeVarint(quint64 value, QByteArray &stream);
-    quint64 readVarint(QByteArray &stream);
-    char takeChar(QByteArray &stream);
-    QString getCode(const quint64 &dbfId);
-    bool buildDeck(QList<quint64> &cardsx1, QList<quint64> &cardsx2, QMap<quint64, quint64> &cardsxN);
-    bool parseDeckString(QByteArray &encodedDeckString);
+    static void writeVarint(quint64 value, QByteArray &stream);
+    static quint64 readVarint(QByteArray &stream);
+    static char takeChar(QByteArray &stream);
+    static QString getCode(const quint64 &dbfId);
+    static quint64 getId(const QString &code);
+    static QList<CodeAndCount> buildDeck(const QList<quint64> &cardsx1, const QList<quint64> &cardsx2, const QMap<quint64, quint64> &cardsxN);
+    static bool debuildDeck(QList<quint64> &cardsx1, QList<quint64> &cardsx2, QMap<quint64, quint64> &cardsxN, const QList<CodeAndCount> &deckList);
+    static FormatType getFormat(const QList<CodeAndCount> &deckList);
+    static quint64 getHeroe(const QList<CodeAndCount> &deckList);
 
 public:
-    QList<CodeAndCount> getDeck();
+    static QList<CodeAndCount> readDeckString(const QByteArray &encodedDeckString);
+    static QByteArray writeDeckString(const QList<CodeAndCount> &deckList);
 };
 
 #endif // DECKSTRINGHANDLER_H
