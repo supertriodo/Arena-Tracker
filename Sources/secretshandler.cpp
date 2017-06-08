@@ -388,14 +388,20 @@ void SecretsHandler::discardSecretOptionNow(QString code)
 
 void SecretsHandler::discardSecretOption(QString code, int delay)
 {
-    if(activeSecretList.isEmpty())  return;
+    if(activeSecretList.isEmpty()){}
+    else if(activeSecretList.count() == 1)
+    {
+        discardSecretOptionNow(code);
+    }
+    else
+    {
+        SecretTest secretTest;
+        secretTest.code = code;
+        secretTest.secretRevealedLastSecond = false;
+        secretTests.enqueue(secretTest);
 
-    SecretTest secretTest;
-    secretTest.code = code;
-    secretTest.secretRevealedLastSecond = false;
-    secretTests.enqueue(secretTest);
-
-    QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
+        QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
+    }
 }
 
 
@@ -425,16 +431,9 @@ void SecretsHandler::playerSpellPlayed(QString code)
 }
 
 
-/*
- * COUNTERSPELL no crea la primera linea en el log al desvelarse, solo la segunda que aparece cuando la animacion se completa
- * Eso hace que el caso de comprobacion de SPELLBENDER tenga que ser de mas delay.
- * No queremos que SPELLBENDER se descarte de un segundo secreto cuando al lanzar un hechizo el primer secreto
- * desvela COUNTERSPELL
- */
-
 void SecretsHandler::playerSpellObjPlayed()
 {
-    discardSecretOption(SPELLBENDER, 7000);//Ocultado por COUNTERSPELL
+    discardSecretOption(SPELLBENDER);//Ocultado por COUNTERSPELL
 }
 
 

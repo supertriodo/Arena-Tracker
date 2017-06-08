@@ -790,7 +790,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
                         }
-                        else if(isPlayer && isPlayerTurn)    emit playerSpellObjPlayed();
+                        else if(isPlayer && isPlayerTurn && !cardId2.startsWith("HERO"))    emit playerSpellObjPlayed();
                     }
                     else
                     {
