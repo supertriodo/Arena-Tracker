@@ -2090,9 +2090,6 @@ void MainWindow::createDataDir()
     file = QFileInfo(Utility::extraPath() + "/collectionTemplate.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/collectionTemplate.png"))));
 
-    file = QFileInfo(Utility::extraPath() + "/importDeck.gif");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/importDeck.gif"))));
-
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
 
@@ -3277,11 +3274,10 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
-//Deck string decript
 //score button con borde y background
 //check spellbender target hero
 //getCardAtribute
-//Eliminar Utility::extraPath() + "/importDeck.gif"
+//Eliminar autocreatedeck
 
 
 //REPLAY BUGS
