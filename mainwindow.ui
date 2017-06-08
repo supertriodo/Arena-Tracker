@@ -1380,7 +1380,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>810</height>
+               <height>787</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1467,48 +1467,6 @@
                       </size>
                      </property>
                     </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_11">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QPushButton" name="configButtonCreateDeckPY">
-                     <property name="toolTip">
-                      <string>Auto Create Deck: Create in Hearthstone your current deck,
-taking control of mouse and keyboard.</string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="icon">
-                      <iconset>
-                       <normalon>:/Images/createDeckPY.png</normalon>
-                      </iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>48</width>
-                       <height>48</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="configCheckGoldenCards">
-                     <property name="toolTip">
-                      <string>Golden Cards: Prioritize golden cards on create deck action.</string>
-                     </property>
-                     <property name="text">
-                      <string>Golden Cards</string>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </item>

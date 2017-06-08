@@ -492,10 +492,6 @@ void MainWindow::createDeckHandler()
     connect(deckHandler, SIGNAL(deckSizeChanged()),
             this, SLOT(spreadCorrectTamCard()));
 
-    //connect de completeConfigTab
-    connect(ui->configButtonCreateDeckPY, SIGNAL(clicked()),
-            deckHandler, SLOT(askCreateDeckPY()));
-
     deckHandler->loadDecks();
 }
 
@@ -965,12 +961,8 @@ void MainWindow::closeApp()
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
-                               bool showTotalAttack, bool showRngList,
-                               bool createGoldenCards, int maxGamesLog)
+                               bool showTotalAttack, bool showRngList, int maxGamesLog)
 {
-    //Actions
-    ui->configCheckGoldenCards->setChecked(createGoldenCards);
-
     //UI
     switch(transparency)
     {
@@ -1137,11 +1129,10 @@ void MainWindow::readSettings()
         bool showManaLimits = settings.value("showManaLimits", true).toBool();
         bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
         bool showRngList = settings.value("showRngList", true).toBool();
-        bool createGoldenCards = settings.value("createGoldenCards", false).toBool();
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
 
         initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      createGoldenCards, maxGamesLog);
+                      maxGamesLog);
     }
     else
     {
@@ -1185,7 +1176,6 @@ void MainWindow::writeSettings()
         settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
         settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
         settings.setValue("showRngList", ui->configCheckRngList->isChecked());
-        settings.setValue("createGoldenCards", ui->configCheckGoldenCards->isChecked());
         settings.setValue("maxGamesLog", ui->configSliderZero->value());
     }
     else
@@ -2081,14 +2071,9 @@ void MainWindow::createDataDir()
 
     //Extra files
     QFileInfo file;
-    file = QFileInfo(Utility::extraPath() + "/deckBuilder.py");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/deckBuilder.py"))));
 
     file = QFileInfo(Utility::extraPath() + "/arenaTemplate.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/arenaTemplate.png"))));
-
-    file = QFileInfo(Utility::extraPath() + "/collectionTemplate.png");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/collectionTemplate.png"))));
 
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
@@ -2422,7 +2407,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
-        ui->configCheckGoldenCards->setStyleSheet(checkCSS);
         ui->configCheckDarkTheme->setStyleSheet(checkCSS);
         ui->configCheckWindowSplit->setStyleSheet(checkCSS);
         ui->configCheckDeckWindow->setStyleSheet(checkCSS);
@@ -2467,7 +2451,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioLF->setStyleSheet("");
         ui->configRadioCombined->setStyleSheet("");
 
-        ui->configCheckGoldenCards->setStyleSheet("");
         ui->configCheckDarkTheme->setStyleSheet("");
         ui->configCheckWindowSplit->setStyleSheet("");
         ui->configCheckDeckWindow->setStyleSheet("");
@@ -3277,7 +3260,6 @@ void MainWindow::testDelay()
 //score button con borde y background
 //check spellbender target hero
 //getCardAtribute
-//Eliminar autocreatedeck
 
 
 //REPLAY BUGS
