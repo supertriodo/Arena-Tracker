@@ -68,12 +68,12 @@ void DeckCard::setCode(QString code)
 
     if(!code.isEmpty())
     {
-        cost = Utility::getCardAtribute(code, "cost").toInt();
-        type = getTypeFromString(Utility::getCardAtribute(code, "type").toString());
-        name = Utility::getCardAtribute(code, "name").toString();
-        rarity = getRarityFromString(Utility::getCardAtribute(code, "rarity").toString());
-        cardClass = getClassFromString(Utility::getCardAtribute(code, "playerClass").toString());
-        cardRace = getRaceFromString(Utility::getCardAtribute(code, "race").toString());
+        cost = Utility::getCardAttribute(code, "cost").toInt();
+        type = getTypeFromString(Utility::getCardAttribute(code, "type").toString());
+        name = Utility::getCardAttribute(code, "name").toString();
+        rarity = getRarityFromString(Utility::getCardAttribute(code, "rarity").toString());
+        cardClass = getClassFromString(Utility::getCardAttribute(code, "playerClass").toString());
+        cardRace = getRaceFromString(Utility::getCardAttribute(code, "race").toString());
     }
     else
     {
@@ -96,12 +96,12 @@ void DeckCard::setCreatedByCode(QString code)
 
     if(!createdByCode.isEmpty())
     {
-        cost = Utility::getCardAtribute(code, "cost").toInt();
-        type = getTypeFromString(Utility::getCardAtribute(code, "type").toString());
-        name = Utility::getCardAtribute(code, "name").toString();
-        rarity = getRarityFromString(Utility::getCardAtribute(code, "rarity").toString());
-        cardClass = getClassFromString(Utility::getCardAtribute(code, "playerClass").toString());
-        cardRace = getRaceFromString(Utility::getCardAtribute(code, "race").toString());
+        cost = Utility::getCardAttribute(code, "cost").toInt();
+        type = getTypeFromString(Utility::getCardAttribute(code, "type").toString());
+        name = Utility::getCardAttribute(code, "name").toString();
+        rarity = getRarityFromString(Utility::getCardAttribute(code, "rarity").toString());
+        cardClass = getClassFromString(Utility::getCardAttribute(code, "playerClass").toString());
+        cardRace = getRaceFromString(Utility::getCardAttribute(code, "race").toString());
     }
     else
     {

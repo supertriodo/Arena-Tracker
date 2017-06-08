@@ -943,7 +943,7 @@ bool PlanHandler::isLastPowerAddonValid(QString tag, QString value, int idTarget
     }
 
     //Evita ENCHANTMENT
-    if(Utility::getCardAtribute(this->lastPowerAddon.code, "type").toString() == "ENCHANTMENT")
+    if(Utility::getCardAttribute(this->lastPowerAddon.code, "type").toString() == "ENCHANTMENT")
     {
         emit pDebug("Addon(" + QString::number(idTarget) + ")-->" + this->lastPowerAddon.code + " Avoid ENCHANTMENT.");
         return false;

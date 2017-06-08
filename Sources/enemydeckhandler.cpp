@@ -95,7 +95,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
     if(deckCardList[0].total < (uint)total)
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    Utility::getCardAtribute(code, "name").toString(), Warning);
+                    Utility::getCardAttribute(code, "name").toString(), Warning);
         return;
     }
 
@@ -108,7 +108,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
         {
             if(!add)
             {
-                emit pDebug(Utility::getCardAtribute(code, "name").toString() + " already in deck.");
+                emit pDebug(Utility::getCardAttribute(code, "name").toString() + " already in deck.");
                 return;
             }
 
@@ -134,7 +134,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
         if(!outsider && enemyClass != INVALID_CLASS && cardClass != enemyClass && cardClass != NEUTRAL)
         {
             emit pDebug("Wrong class card: Not adding: (" + QString::number(total) + ") " +
-                        Utility::getCardAtribute(code, "name").toString(), Warning);
+                        Utility::getCardAttribute(code, "name").toString(), Warning);
             return;
         }
 
@@ -156,7 +156,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
     }
 
     emit pDebug("Add to deck: " + (outsider?QString("(outsider)"):QString("")) + "(" + QString::number(total) + ")" +
-                Utility::getCardAtribute(code, "name").toString());
+                Utility::getCardAttribute(code, "name").toString());
 }
 
 

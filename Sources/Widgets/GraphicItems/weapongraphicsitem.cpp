@@ -8,7 +8,7 @@ WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly, Grap
 {
     this->durability = this->origDurability =
             this->health = this->origHealth =
-            Utility::getCardAtribute(code, "durability").toInt();
+            Utility::getCardAttribute(code, "durability").toInt();
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     const int hHero = HeroGraphicsItem::HEIGHT;

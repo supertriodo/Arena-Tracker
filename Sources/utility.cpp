@@ -188,7 +188,7 @@ QString Utility::cardLocalCodeFromName(QString name)
 }
 
 
-QJsonValue Utility::getCardAtribute(QString code, QString attribute)
+QJsonValue Utility::getCardAttribute(QString code, QString attribute)
 {
     if(attribute == "text" || attribute == "name")
     {
@@ -230,7 +230,7 @@ QString Utility::getCodeFromCardAttribute(QString attribute, QJsonValue value)
 
 bool Utility::isFromStandardSet(QString code)
 {
-    QString cardSet = getCardAtribute(code, "set").toString();
+    QString cardSet = getCardAttribute(code, "set").toString();
 
     if( cardSet == "CORE" || cardSet == "EXPERT1" ||
         cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
@@ -247,7 +247,7 @@ bool Utility::isFromStandardSet(QString code)
 
 bool Utility::isASecret(QString code)
 {
-    QJsonArray mechanics = getCardAtribute(code, "mechanics").toArray();
+    QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
 
     foreach(QJsonValue mechanic, mechanics)
     {

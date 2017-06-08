@@ -264,7 +264,7 @@ QString DeckStringHandler::getCode(const quint64 &dbfId)
 
 quint64 DeckStringHandler::getId(const QString &code)
 {
-    return Utility::getCardAtribute(code, "dbfId").toVariant().toULongLong();
+    return Utility::getCardAttribute(code, "dbfId").toVariant().toULongLong();
 }
 
 

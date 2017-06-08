@@ -3259,7 +3259,6 @@ void MainWindow::testDelay()
 //New web
 //score button con borde y background
 //check spellbender target hero
-//getCardAtribute
 
 
 //REPLAY BUGS

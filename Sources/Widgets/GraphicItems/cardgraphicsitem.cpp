@@ -9,9 +9,9 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->code = code;
     this->createdByCode = createdByCode;
     this->id = id;
-    this->cost = this->origCost = Utility::getCardAtribute(code, "cost").toInt();
-    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
-    this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    this->cost = this->origCost = Utility::getCardAttribute(code, "cost").toInt();
+    this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->buffAttack = this->buffHealth = 0;
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
@@ -54,9 +54,9 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
 void CardGraphicsItem::changeCode(QString newCode)
 {
     this->code = newCode;
-    this->cost = this->origCost = Utility::getCardAtribute(code, "cost").toInt();
-    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
-    this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
+    this->cost = this->origCost = Utility::getCardAttribute(code, "cost").toInt();
+    this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->buffAttack = this->buffHealth = 0;
     update();
 }

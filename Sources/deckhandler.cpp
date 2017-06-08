@@ -541,7 +541,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     if(!outsider && (deckCardList[0].total < (uint)total))
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    Utility::getCardAtribute(code, "name").toString(), Warning);
+                    Utility::getCardAttribute(code, "name").toString(), Warning);
         return;
     }
 
@@ -555,7 +555,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
             {
                 if(!add)
                 {
-                    emit pDebug(Utility::getCardAtribute(code, "name").toString() + " already in deck.");
+                    emit pDebug(Utility::getCardAttribute(code, "name").toString() + " already in deck.");
                     return;
                 }
 
@@ -604,7 +604,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     if(!this->inArena && !outsider)   enableDeckButtonSave();
 
     emit pDebug("Add to deck" + (outsider?QString(" OUTSIDER"):QString("")) + ": (" + QString::number(total) + ")" +
-                Utility::getCardAtribute(code, "name").toString());
+                Utility::getCardAttribute(code, "name").toString());
 }
 
 
@@ -790,14 +790,14 @@ void DeckHandler::drawFromDeck(QString code, int id)
     if(deckCardList[0].total>0)
     {
         emit pDebug("New card: " +
-                          Utility::getCardAtribute(code, "name").toString() + ". 0/1");
+                          Utility::getCardAttribute(code, "name").toString() + ". 0/1");
         newDeckCard(code);
         drawFromDeck(code, id);
     }
     else
     {
         emit pDebug("New card but deck is full. " +
-                      Utility::getCardAtribute(code, "name").toString(), Warning);
+                      Utility::getCardAttribute(code, "name").toString(), Warning);
     }
 }
 

@@ -8,9 +8,9 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->id = id;
     this->friendly = friendly;
     this->hero = false;
-    this->attack = this->origAttack = Utility::getCardAtribute(code, "attack").toInt();
-    this->health = this->origHealth = Utility::getCardAtribute(code, "health").toInt();
-    if(health <= 0) this->health = this->origHealth = Utility::getCardAtribute(code, "durability").toInt();
+    this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
+    if(health <= 0) this->health = this->origHealth = Utility::getCardAttribute(code, "durability").toInt();
 
     this->damage = 0;
     this->shield = false;
@@ -34,7 +34,7 @@ MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool
     this->setZValue(-50);
     setAcceptHoverEvents(true);
 
-    foreach(QJsonValue value, Utility::getCardAtribute(code, "mechanics").toArray())
+    foreach(QJsonValue value, Utility::getCardAttribute(code, "mechanics").toArray())
     {
         processTagChange(value.toString(), "1");
     }
