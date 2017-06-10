@@ -42,27 +42,13 @@ void ScoreButton::setLearningMode(bool value)
 }
 
 
-QString ScoreButton::getBackgroundImageCSS()
-{
-    switch(draftMethod)
-    {
-        case HearthArena:
-            return "border-image: url(:/Images/bgScoreButtonHA.png) 0 0 0 0 stretch stretch;";
-        case LightForge:
-            return "border-image: url(:/Images/bgScoreButtonLF.png) 0 0 0 0 stretch stretch;";
-        default:
-            return "";
-    }
-}
-
-
 void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
 {
     int rating255 = 0;
     if(draftMethod == HearthArena)      rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)((score)*2.55), 255), 0);
+    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)(score*2.55), 255), 0);
     r = std::min(255, (255 - rating255)*2);
-    g = std::min(255,rating255*2);
+    g = std::min(255, rating255*2);
     b = 0;
 }
 
@@ -84,21 +70,16 @@ void ScoreButton::draw()
 
     QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
     QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
-    QString gradientCSS = "qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "
+    QString gradientCSS = "qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, "
                           "stop: 0 " + rgbMid + ", "
                           "stop: 0.5 " + rgb + ", "
                           "stop: 1 " + rgbMid + ");";
 
     this->setStyleSheet(
             "QPushButton{background-color: " + (hideScore?"black;":gradientCSS) +
-            "color: " + (hideScore?"white;":"black;") +
-
-            "border-style: solid;border-color: black;" +
-
-            "border-width: 1px;" +
-            "border-radius: " + QString::number(width()/3) + "px;" +
-
-            ((isBestScore&&!hideScore)?getBackgroundImageCSS():"") + "}");
+            "border-style: solid; border-color: transparent;" +
+            "border-width: " + QString::number(width()/3) + "px;" +
+            "border-radius: " + QString::number(width()/2) + "px;}");
     this->update();
 }
 
@@ -112,21 +93,48 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
 
-    const QFont &font = this->font();
+    QFont font(BIG_FONT);
+    if(score > 99)  font.setPixelSize(width()/3);
+    else            font.setPixelSize(width()/2.5);
+
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
     bool hideScore = learningMode && !learningShow;
-    QString text = hideScore?"?":QString::number((int)score);
-    QFontMetrics fm = QFontMetrics(font);
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
+    if(hideScore)
+    {
+        QRect target(0, 0, this->width(), this->height());
+        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haClose.png"));
+        else                                painter.drawPixmap(target, QPixmap(":/Images/lfClose.png"));
+    }
+    else
+    {
+        if(isBestScore)
+        {
+            QRect target(0, 0, width(), height());
+            if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haBest.png"));
+            else                                painter.drawPixmap(target, QPixmap(":/Images/lfBest.png"));
+        }
 
-    QPainterPath path;
-    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.3, this->font(), text);
-    painter.drawPath(path);
+        QString text = QString::number((int)score);
+        QFontMetrics fm = QFontMetrics(font);
+        int textWide = fm.width(text);
+        int textHigh = fm.height();
+
+        QPainterPath path;
+#ifdef Q_OS_WIN
+        path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.3, font, text);
+#else
+        path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, font, text);
+#endif
+        painter.drawPath(path);
+
+        QRect target(0, 0, width(), height());
+        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haOpen.png"));
+        else                                painter.drawPixmap(target, QPixmap(":/Images/lfOpen.png"));
+    }
 }
 
 

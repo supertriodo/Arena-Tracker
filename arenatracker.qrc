@@ -117,13 +117,17 @@
         <file>Images/planPrev.png</file>
         <file>Images/planResize.png</file>
         <file>Images/splash.png</file>
-        <file>Images/bgScoreButtonHA.png</file>
-        <file>Images/bgScoreButtonLF.png</file>
         <file>Images/bgScoreHA.png</file>
         <file>Images/bgScoreLF.png</file>
         <file>Images/games.png</file>
         <file>Images/branchClosed.png</file>
         <file>Images/branchOpen.png</file>
         <file>Fonts/LuckiestGuy.ttf</file>
+        <file>Images/lfBest.png</file>
+        <file>Images/lfClose.png</file>
+        <file>Images/lfOpen.png</file>
+        <file>Images/haBest.png</file>
+        <file>Images/haClose.png</file>
+        <file>Images/haOpen.png</file>
     </qresource>
 </RCC>

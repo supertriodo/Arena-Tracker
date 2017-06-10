@@ -21,9 +21,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
 
     QWidget *centralWidget = new QWidget(this);
-    QFont font(BIG_FONT);
-    font.setPixelSize(scoreWidth/2);
-
     QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
     QHBoxLayout *horLayoutScores = new QHBoxLayout();
     QHBoxLayout *horLayoutSynergies = new QHBoxLayout();
@@ -35,12 +32,10 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
-        scoresPushButton[i]->setFont(font);
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
-        scoresPushButton2[i]->setFont(font);
 
         //Opacity effects
         QGraphicsOpacityEffect *effect;

@@ -22,7 +22,6 @@ private:
 
 //Metodos
 private:
-    QString getBackgroundImageCSS();
     void getScoreColor(int &r, int &g, int &b, double score);
     void draw();
 
