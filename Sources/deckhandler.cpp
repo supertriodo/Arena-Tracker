@@ -213,17 +213,17 @@ void DeckHandler::addNewDeckMenu(QPushButton *button)
     QAction *action = newDeckMenu->addAction("New empty deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newEmptyDeck()));
 
+    action = newDeckMenu->addAction("New from clipboard");
+    connect(action, SIGNAL(triggered()), this, SLOT(newImportDeckString()));
+
+    action = newDeckMenu->addAction("Copy");
+    connect(action, SIGNAL(triggered()), this, SLOT(exportDeckString()));
+
     action = newDeckMenu->addAction("Clone current deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newCopyCurrentDeck()));
 
     action = newDeckMenu->addAction("Clone enemy deck");
     connect(action, SIGNAL(triggered()), this, SLOT(newCopyEnemyDeck()));
-
-    action = newDeckMenu->addAction("Import HS deck");
-    connect(action, SIGNAL(triggered()), this, SLOT(newImportDeckString()));
-
-    action = newDeckMenu->addAction("Export HS deck");
-    connect(action, SIGNAL(triggered()), this, SLOT(exportDeckString()));
 
     button->setMenu(newDeckMenu);
 }
@@ -1575,8 +1575,8 @@ void DeckHandler::importDeckString()
     }
 
     if(!deckName.isEmpty())     ui->deckLineEdit->setText(deckName);
-    emit showMessageProgressBar("HS deck imported");
-    emit pDebug("HS deck imported");
+    emit showMessageProgressBar("HS deck created");
+    emit pDebug("HS deck created");
 }
 
 
