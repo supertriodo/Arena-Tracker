@@ -94,8 +94,8 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::TextAntialiasing);
 
     QFont font(BIG_FONT);
-    if(score > 99)  font.setPixelSize(width()/3);
-    else            font.setPixelSize(width()/2.5);
+    if(score > 99)  font.setPixelSize(width()/3.2);
+    else            font.setPixelSize(width()/2.7);
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
