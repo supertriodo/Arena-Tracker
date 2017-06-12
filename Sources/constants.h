@@ -4,21 +4,15 @@
 //Colores
 #define GREEN QColor(50,175,50)
 #define GREEN_H QString("#32AF32")
-#define SEA_GREEN QColor(50,150,120)
-#define DARK_GREEN QColor(15,79,15)
-#define DARK_GREEN_H QString("#0F4F0F")
 #define RED QColor(255,0,0)
 #define SOFT_RED QColor(255,40,40)
 #define SOFT_RED_H QString("#FF2828")
 #define YELLOW QColor(255,255,0)
 #define WHITE QColor(255,255,255)
-#define WHITY QColor(240,240,240)
-#define WHITY_H QString("#F0F0F0")
 #define BLACK QColor(0,0,0)
 #define BLUE QColor(0,191,255)
 #define VIOLET QColor(186,85,211)
 #define ORANGE QColor(255,165,0)
-#define TRANSPARENT QColor(0,0,0,0)
 
 //Fuentes
 #define HS_FONT "Belwe Bd BT"

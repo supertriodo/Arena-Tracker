@@ -4,6 +4,7 @@
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
+#include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -2376,7 +2377,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->tabConfig->repaint();
 
         QString groupBoxCSS =
-                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
         ui->configBoxActions->setStyleSheet(groupBoxCSS);
         ui->configBoxUI->setStyleSheet(groupBoxCSS);
@@ -2414,6 +2415,10 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSpellColor->setStyleSheet(checkCSS);
         ui->configCheckOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
+        ui->configCheckAutoSize->setStyleSheet(checkCSS);
+        ui->configCheckManaLimits->setStyleSheet(checkCSS);
+        ui->configCheckTotalAttack->setStyleSheet(checkCSS);
+        ui->configCheckRngList->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
     }
@@ -2458,6 +2463,10 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSpellColor->setStyleSheet("");
         ui->configCheckOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
+        ui->configCheckAutoSize->setStyleSheet("");
+        ui->configCheckManaLimits->setStyleSheet("");
+        ui->configCheckTotalAttack->setStyleSheet("");
+        ui->configCheckRngList->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
     }
@@ -2538,9 +2547,10 @@ void MainWindow::updateMainUITheme()
     if(theme == ThemeWhite)
     {
         mainCSS +=
-                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: black;}"
+                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; margin-top: 5px; "
+                    "background-color: transparent; color: black;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
-                "QToolTip {border: 2px solid " + DARK_GREEN_H + "; border-radius: 2px; color: " + DARK_GREEN_H + ";}"
+                "QToolTip {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
                 "QTextEdit {background: transparent;}"
                 "QLineEdit {border: 1px solid black;border-radius: 5px;background: white;}"
                 ;
@@ -2548,24 +2558,30 @@ void MainWindow::updateMainUITheme()
     else
     {
         mainCSS +=
-                "QMenu {background-color: " + DARK_GREEN_H + "; color: white;}"
+                "QMenu {background-color: " + ThemeHandler::themeColor1() + "; color: white;}"
                 "QMenu::item:selected {background-color: black; color: white;}"
 
-                "QScrollBar:vertical {background-color: black; border: 2px solid green; width: 15px; margin: 15px 0px 15px 0px;}"
-                "QScrollBar::handle:vertical {background: " + DARK_GREEN_H + "; min-height: 20px;}"
-                "QScrollBar::add-line:vertical {border: 2px solid green;background: " + DARK_GREEN_H + "; height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
-                "QScrollBar::sub-line:vertical {border: 2px solid green;background: " + DARK_GREEN_H + "; height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
-                "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; width: 3px; height: 3px; background: green;}"
+                "QScrollBar:vertical {background-color: black; border: 2px solid " + ThemeHandler::themeColor2() + "; "
+                    "width: 15px; margin: 15px 0px 15px 0px;}"
+                "QScrollBar::handle:vertical {background: " + ThemeHandler::themeColor1() + "; min-height: 20px;}"
+                "QScrollBar::add-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                    "height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
+                "QScrollBar::sub-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                    "height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
+                "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; "
+                    "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                "QProgressBar {border: 2px solid green; color: white; background-color: green;}"
-                "QProgressBar::chunk {background-color: " + DARK_GREEN_H + ";}"
+                "QProgressBar {border: 2px solid " + ThemeHandler::themeColor2() + "; color: white; "
+                    "background-color: " + ThemeHandler::themeColor2() + ";}"
+                "QProgressBar::chunk {background-color: " + ThemeHandler::themeColor1() + ";}"
 
                 "QDialog {background: black;}"
-                "QPushButton {background: " + DARK_GREEN_H + "; color: white;}"
-                "QToolTip {border: 2px solid " + DARK_GREEN_H + "; border-radius: 2px; color: " + DARK_GREEN_H + ";}"
+                "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: white;}"
+                "QToolTip {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
 
-                "QGroupBox {border: 2px solid " + DARK_GREEN_H + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; "
+                    "margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
                 "QLabel {background-color: transparent; color: white;}"
                 "QTextBrowser {background-color: transparent; color: white;}"
@@ -2573,7 +2589,8 @@ void MainWindow::updateMainUITheme()
                 "QCheckBox {background-color: transparent; color: white;}"
                 "QTextEdit{background-color: transparent; color: white;}"
 
-                "QLineEdit {border: 2px solid " + GREEN_H + ";border-radius: 5px;background: " + DARK_GREEN_H + "; color: white;selection-background-color: black;}"
+                "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::themeColor1() + "; "
+                    "color: white;selection-background-color: black;}"
                 ;
     }
     this->setStyleSheet(mainCSS);
@@ -2585,17 +2602,17 @@ void MainWindow::updateButtonsTheme()
 {
     if(theme == ThemeWhite)
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: " + WHITY_H + "; border: none;}"
-                                       "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: " + WHITY_H + "; border: none;}"
-                                          "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
+        ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+                                       "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+                                          "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
     }
     else
     {
         ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
+                                       "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
         ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                          "QPushButton:hover {background: " + DARK_GREEN_H + ";}");
+                                          "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
     }
 }
 
@@ -3257,8 +3274,7 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
-//score button con borde y background
-//check spellbender target hero
+//mana limits png
 
 
 //REPLAY BUGS

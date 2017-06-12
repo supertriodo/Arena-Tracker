@@ -1,4 +1,5 @@
 #include "bombwindow.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 BombWindow::BombWindow(QWidget *parent, QGraphicsScene *graphicsScene) :
@@ -26,7 +27,7 @@ void BombWindow::setTheme(Theme value)
     }
     else
     {
-        graphicsView->setStyleSheet("QGraphicsView{background-color: " + WHITY_H + ";}");
+        graphicsView->setStyleSheet("QGraphicsView{background-color: " + ThemeHandler::bgColor() + ";}");
     }
 }
 

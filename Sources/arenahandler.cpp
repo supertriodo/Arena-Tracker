@@ -1,5 +1,6 @@
 #include "arenahandler.h"
 #include "Utils/qcompressor.h"
+#include "themehandler.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
@@ -260,7 +261,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     {
         emit pDebug("Replay " + logFileName + " renamed to " + newLogFileName);
         replayLogsMap[lastReplayUploaded] = newLogFileName;
-        setRowColor(lastReplayUploaded, SEA_GREEN);
+        setRowColor(lastReplayUploaded, QColor(ThemeHandler::themeColor2()));
     }
     else
     {
@@ -462,7 +463,7 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         if(item != NULL)
         {
             replayLogsMap[item] = logFileName;
-            if(!match.captured(6).isEmpty())    setRowColor(item, SEA_GREEN);
+            if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::themeColor2()));
 
         }
         return item;
@@ -511,7 +512,7 @@ void ArenaHandler::showArenaLog(const QString &logFileName)
     {
         QString playerHero = Utility::heroToLogNumber(match.captured(1));
         showArena(playerHero);
-        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, SEA_GREEN);
+        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::themeColor2()));
         linkDraftLogToArenaCurrent(logFileName);
     }
 }
@@ -528,7 +529,7 @@ void ArenaHandler::showArena(QString hero)
 void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 {
     if(theme == ThemeWhite && (transparency != Transparent || mouseInApp))
-        if(color == WHITE)  color = BLACK;
+        if(color == WHITE)  color = QColor(ThemeHandler::fgColor());
 
     for(int i=0;i<5;i++)
     {
@@ -541,7 +542,7 @@ QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 {
     QColor color = item->foreground(0).color();
 
-    if(color == BLACK)      color = WHITE;
+    if(color == QColor(ThemeHandler::fgColor()))      color = WHITE;
     return color;
 }
 

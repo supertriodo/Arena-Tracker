@@ -1,4 +1,5 @@
 #include "movetabwidget.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
@@ -12,8 +13,8 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 void MoveTabWidget::setTheme(Theme theme, QString tabBarAlignment, int maxWidth, bool resizing)
 {
     QString foregroundColor = (theme==ThemeWhite)?"black":"white";
-    QString backgroundColor = (theme==ThemeWhite)?WHITY_H:"black";
-    QString borderColor = (theme==ThemeWhite)?DARK_GREEN_H:DARK_GREEN_H;
+    QString backgroundColor = (theme==ThemeWhite)?ThemeHandler::bgColor():"black";
+    QString borderColor = (theme==ThemeWhite)?ThemeHandler::themeColor1():ThemeHandler::themeColor1();
     int tabSize = std::max(24, std::min(32, maxWidth/std::max(1, this->count()) - 14));
 
     if(resizing && (tabSize == this->tabSize)) return;
