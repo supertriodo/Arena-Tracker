@@ -13,7 +13,7 @@ private:
 
 public:
     MoveTabWidget(QWidget *parent = 0);
-    void setTheme(Theme theme, QString tabBarAlignment, int maxWidth, bool resizing);
+    void setTheme(QString tabBarAlignment, int maxWidth, bool resizing);
 };
 
 

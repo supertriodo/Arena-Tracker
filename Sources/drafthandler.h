@@ -62,7 +62,6 @@ private:
     bool drafting, capturing, leavingArena;
     bool mouseInApp;
     Transparency transparency;
-    Theme theme;
     DraftScoreWindow *draftScoreWindow;
     bool showDraftOverlay;
     bool learningMode;
@@ -121,7 +120,7 @@ public:
     void redrawAllCards();
     void updateTamCard(int value);
     void setDraftMethod(DraftMethod value);
-    void setTheme(Theme theme);
+    void setTheme();
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
     void deMinimizeScoreWindow();

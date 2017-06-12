@@ -305,8 +305,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         if(name == "unknown")
         {
             font.setPixelSize(14);//10pt
-            painter.setPen(QPen(QColor(ThemeHandler::themeColor1())));
-            painter.setBrush(BLACK);
+            painter.setPen(QPen(BLACK));
+            painter.setBrush(QColor(ThemeHandler::themeColor1()));
 
             QFontMetrics fm(font);
             int textHigh = fm.height();

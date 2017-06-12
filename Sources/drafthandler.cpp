@@ -1,5 +1,6 @@
 #include "drafthandler.h"
 #include "mainwindow.h"
+#include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -12,7 +13,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->capturing = false;
     this->leavingArena = false;
     this->transparency = Opaque;
-    this->theme = ThemeWhite;
     this->draftScoreWindow = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
@@ -1007,15 +1007,13 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
     if(draftMethod == LightForge)           backgroundImage = ":/Images/bgScoreLF.png";
     else if(draftMethod == HearthArena)     backgroundImage = ":/Images/bgScoreHA.png";
     label->setStyleSheet("QLabel {background-color: transparent; color: " +
-                         QString(theme==ThemeBlack||(!mouseInApp && transparency == Transparent)?"white":"black") + ";"
+                         QString((!mouseInApp && transparency == Transparent)?"white":ThemeHandler::fgColor()) + ";"
                          "background-image: url(" + backgroundImage + "); background-repeat: no-repeat; background-position: center; }");
 }
 
 
-void DraftHandler::setTheme(Theme theme)
+void DraftHandler::setTheme()
 {
-    this->theme = theme;
-
     for(int i=0; i<3; i++)
     {
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);

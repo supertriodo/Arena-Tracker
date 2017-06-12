@@ -21,7 +21,7 @@ private:
 
 //Metodos
 public:
-    void setTheme(Theme value);
+    void setTheme();
     void showAt(QRect rectTab);
 
 signals:

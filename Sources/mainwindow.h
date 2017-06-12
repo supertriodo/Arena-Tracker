@@ -71,7 +71,6 @@ private:
     bool mouseInApp;
     Transparency transparency;
     DraftMethod draftMethod;
-    Theme theme;
     bool oneWindow;
     bool isMainWindow;
     MainWindow *otherWindow;
@@ -116,7 +115,7 @@ private:
     void spreadSplitWindow();
     void spreadTransparency(Transparency newTransparency);
     void updateOtherTabsTransparency();
-    void spreadTheme();
+    void spreadTheme(bool themeBlack);
     void updateMainUITheme();
     void updateButtonsTheme();
     void updateTabWidgetsTheme(bool resizing=false);
@@ -135,7 +134,7 @@ private:
     void createDataDir();
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool themeBlack);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();

@@ -28,9 +28,9 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 }
 
 
-void MoveTreeWidget::setTheme(Theme theme)
+void MoveTreeWidget::setTheme()
 {
-    this->setStyleSheet("QTreeView{background-color: " + (theme==ThemeBlack?"black":ThemeHandler::bgColor()) + "; outline: 0;}"
+    this->setStyleSheet("QTreeView{background-color: " + ThemeHandler::bgColor() + "; outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"

@@ -19,16 +19,9 @@ BombWindow::~BombWindow()
 }
 
 
-void BombWindow::setTheme(Theme value)
+void BombWindow::setTheme()
 {
-    if(value == ThemeBlack)
-    {
-        graphicsView->setStyleSheet("QGraphicsView{background-color: black;}");
-    }
-    else
-    {
-        graphicsView->setStyleSheet("QGraphicsView{background-color: " + ThemeHandler::bgColor() + ";}");
-    }
+    graphicsView->setStyleSheet("QGraphicsView{background-color: " + ThemeHandler::bgColor() + ";}");
 }
 
 

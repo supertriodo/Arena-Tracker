@@ -93,7 +93,7 @@ public:
     int getNumCardRows();
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
-    void setTheme(Theme value);
+    void setTheme();
     void setGreyedHeight(int value);
     void setCardHeight(int value);
     void setDrawDisappear(int value);

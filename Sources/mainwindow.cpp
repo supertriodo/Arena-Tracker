@@ -962,7 +962,8 @@ void MainWindow::closeApp()
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
-                               bool showTotalAttack, bool showRngList, int maxGamesLog)
+                               bool showTotalAttack, bool showRngList, int maxGamesLog,
+                               bool themeBlack)
 {
     //UI
     switch(transparency)
@@ -985,7 +986,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
             break;
     }
 
-    if(this->theme == ThemeBlack) ui->configCheckDarkTheme->setChecked(true);
+    if(themeBlack) ui->configCheckDarkTheme->setChecked(true);
     if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
     if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
@@ -1112,8 +1113,8 @@ void MainWindow::readSettings()
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
-        this->theme = (Theme)settings.value("theme", ThemeBlack).toInt();
-        spreadTheme();
+        bool themeBlack = settings.value("theme", 1).toInt() == 1;
+        spreadTheme(themeBlack);
 
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
@@ -1133,7 +1134,7 @@ void MainWindow::readSettings()
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
 
         initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      maxGamesLog);
+                      maxGamesLog, themeBlack);
     }
     else
     {
@@ -1142,7 +1143,6 @@ void MainWindow::readSettings()
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
 
         this->splitWindow = false;
-        this->theme = ThemeBlack;
     }
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->windowsFormation = None;
@@ -1163,7 +1163,7 @@ void MainWindow::writeSettings()
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
         settings.setValue("transparent", (int)this->transparency);
-        settings.setValue("theme", (int)this->theme);
+        settings.setValue("theme", ui->configCheckDarkTheme->isChecked()?1:0);
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
         settings.setValue("cardHeight", ui->configSliderCardSize->value());
         settings.setValue("drawDisappear", this->drawDisappear);
@@ -2377,7 +2377,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->tabConfig->repaint();
 
         QString groupBoxCSS =
-                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
         ui->configBoxActions->setStyleSheet(groupBoxCSS);
         ui->configBoxUI->setStyleSheet(groupBoxCSS);
@@ -2508,18 +2508,22 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 
 void MainWindow::toggleTheme()
 {
-    if(this->theme == ThemeWhite)   this->theme = ThemeBlack;
-    else                            this->theme = ThemeWhite;
-    spreadTheme();
+    bool themeBlack = ui->configCheckDarkTheme->isChecked();
+    spreadTheme(themeBlack);
 }
 
 
-void MainWindow::spreadTheme()
+void MainWindow::spreadTheme(bool themeBlack)
 {
+    arenaHandler->prepareThemeChange();
+    ThemeHandler::loadTheme(themeBlack);
     updateMainUITheme();
-    arenaHandler->setTheme(this->theme);
-    deckHandler->setTheme(this->theme);
-    draftHandler->setTheme(this->theme);
+    arenaHandler->setTheme();
+    deckHandler->setTheme();
+    draftHandler->setTheme();
+    deckHandler->redrawAllCards();
+    enemyDeckHandler->redrawAllCards();
+    enemyHandHandler->redrawAllCards();
 }
 
 
@@ -2527,13 +2531,13 @@ void MainWindow::updateTabWidgetsTheme(bool resizing)
 {
     int maxWidthH1 = ui->tabWidget->width();
     maxWidthH1 -= (windowsFormation == H1 || windowsFormation == V2)?SMALL_BUTTONS_H:2;
-    ui->tabWidget->setTheme(this->theme, "left", maxWidthH1, resizing);
+    ui->tabWidget->setTheme("left", maxWidthH1, resizing);
 
     if(!resizing)
     {
-        ui->tabWidgetH2->setTheme(this->theme, "center", ui->tabWidgetH2->width(), resizing);
-        ui->tabWidgetH3->setTheme(this->theme, "center", ui->tabWidgetH3->width(), resizing);
-        ui->tabWidgetV1->setTheme(this->theme, "left", ui->tabWidgetV1->width(), resizing);
+        ui->tabWidgetH2->setTheme("center", ui->tabWidgetH2->width(), resizing);
+        ui->tabWidgetH3->setTheme("center", ui->tabWidgetH3->width(), resizing);
+        ui->tabWidgetV1->setTheme("left", ui->tabWidgetV1->width(), resizing);
     }
 }
 
@@ -2544,55 +2548,42 @@ void MainWindow::updateMainUITheme()
     updateButtonsTheme();
 
     QString mainCSS = "";
-    if(theme == ThemeWhite)
-    {
-        mainCSS +=
-                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; margin-top: 5px; "
-                    "background-color: transparent; color: black;}"
-                "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
-                "QToolTip {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
-                "QTextEdit {background: transparent;}"
-                "QLineEdit {border: 1px solid black;border-radius: 5px;background: white;}"
-                ;
-    }
-    else
-    {
-        mainCSS +=
-                "QMenu {background-color: " + ThemeHandler::themeColor1() + "; color: white;}"
-                "QMenu::item:selected {background-color: black; color: white;}"
+    mainCSS +=
+            "QMenu {background-color: " + ThemeHandler::bgColor() + "; color: " + ThemeHandler::fgColor() + ";}"
+            "QMenu::item:selected {background-color: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
 
-                "QScrollBar:vertical {background-color: black; border: 2px solid " + ThemeHandler::themeColor2() + "; "
-                    "width: 15px; margin: 15px 0px 15px 0px;}"
-                "QScrollBar::handle:vertical {background: " + ThemeHandler::themeColor1() + "; min-height: 20px;}"
-                "QScrollBar::add-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
-                    "height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
-                "QScrollBar::sub-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
-                    "height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
-                "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid black; "
-                    "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
-                "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
+            "QScrollBar:vertical {background-color: " + ThemeHandler::bgColor() + "; border: 2px solid " + ThemeHandler::themeColor2() + "; "
+                "width: 15px; margin: 15px 0px 15px 0px;}"
+            "QScrollBar::handle:vertical {background: " + ThemeHandler::themeColor1() + "; min-height: 20px;}"
+            "QScrollBar::add-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                "height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
+            "QScrollBar::sub-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                "height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
+            "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid " + ThemeHandler::bgColor() + "; "
+                "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
+            "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-                "QProgressBar {border: 2px solid " + ThemeHandler::themeColor2() + "; color: white; "
-                    "background-color: " + ThemeHandler::themeColor2() + ";}"
-                "QProgressBar::chunk {background-color: " + ThemeHandler::themeColor1() + ";}"
+            "QProgressBar {border: 2px solid " + ThemeHandler::themeColor2() + "; color: " + ThemeHandler::fgColor() + "; "
+                "background-color: " + ThemeHandler::themeColor2() + ";}"
+            "QProgressBar::chunk {background-color: " + ThemeHandler::themeColor1() + ";}"
 
-                "QDialog {background: black;}"
-                "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: white;}"
-                "QToolTip {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
+            "QDialog {background: " + ThemeHandler::bgColor() + ";}"
+            "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
+            "QToolTip {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
 
-                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor1() + "; border-radius: 5px; "
-                    "margin-top: 5px; background-color: transparent; color: white;}"
-                "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
-                "QLabel {background-color: transparent; color: white;}"
-                "QTextBrowser {background-color: transparent; color: white;}"
-                "QRadioButton {background-color: transparent; color: white;}"
-                "QCheckBox {background-color: transparent; color: white;}"
-                "QTextEdit{background-color: transparent; color: white;}"
+            "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; "
+                "margin-top: 5px; background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
+            "QLabel {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QTextBrowser {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QRadioButton {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QCheckBox {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QTextEdit{background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
 
-                "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::themeColor1() + "; "
-                    "color: white;selection-background-color: black;}"
-                ;
-    }
+            "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::bgColor() + "; "
+                "color: " + ThemeHandler::fgColor() + ";selection-background-color: " + ThemeHandler::bgColor() + ";}"
+            ;
+
     this->setStyleSheet(mainCSS);
     if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
 }
@@ -2600,20 +2591,10 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateButtonsTheme()
 {
-    if(theme == ThemeWhite)
-    {
-        ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
-                                       "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
-                                          "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-    }
-    else
-    {
-        ui->closeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                       "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: black; border: none;}"
-                                          "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-    }
+    ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+                                   "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
+    ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+                                      "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
 }
 
 
@@ -3197,7 +3178,7 @@ void MainWindow::test()
 {
 //    testPlan();
 //    QTimer::singleShot(20000, this, SLOT(testDelay()));
-//    showMessageProgressBar("Testing downloads...", 10000);
+    showMessageProgressBar("Testing downloads...", 10000);
 }
 
 
@@ -3275,6 +3256,7 @@ void MainWindow::testDelay()
 
 //New web
 //mana limits png
+//Fix games uploaded colors
 
 
 //REPLAY BUGS

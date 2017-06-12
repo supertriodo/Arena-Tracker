@@ -35,7 +35,6 @@ private:
     QTreeWidgetItem *lastReplayUploaded;
     bool mouseInApp;
     Transparency transparency;
-    Theme theme;
     QNetworkAccessManager *networkManager;
 
 
@@ -43,10 +42,10 @@ private:
 private:
     void completeUI();
     void createTreeWidget();
-    void setRowColor(QTreeWidgetItem *item, QColor color);
+    void setRowColor(QTreeWidgetItem *item, QColor color, bool forceWhite=false);
     QColor getRowColor(QTreeWidgetItem *item);
     bool isRowOk(QTreeWidgetItem *item);
-    void updateWhiteRows();
+    void updateWhiteRows(bool forceWhite=false);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
@@ -59,12 +58,13 @@ private:
 public:
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
-    void setTheme(Theme theme);
+    void setTheme();
     void deselectRow();
     void linkDraftLogToArenaCurrent(QString logFileName);
     QString getArenaCurrentDraftLog();
     QTreeWidgetItem *showGameResultLog(const QString &logFileName);
     void showArenaLog(const QString &logFileName);
+    void prepareThemeChange();
 
 signals:
     void showMessageProgressBar(QString text);

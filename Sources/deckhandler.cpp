@@ -1201,10 +1201,10 @@ void DeckHandler::setMouseInApp(bool value)
 }
 
 
-void DeckHandler::setTheme(Theme theme)
+void DeckHandler::setTheme()
 {
-    ui->loadDeckTreeWidget->setTheme(theme);
-    bombWindow->setTheme(theme);
+    ui->loadDeckTreeWidget->setTheme();
+    bombWindow->setTheme();
 }
 
 

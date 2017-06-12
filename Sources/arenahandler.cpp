@@ -15,7 +15,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
     this->planHandler = planHandler;
     this->ui = ui;
     this->transparency = Opaque;
-    this->theme = ThemeWhite;
     this->mouseInApp = false;
 
     networkManager = new QNetworkAccessManager(this);
@@ -261,7 +260,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     {
         emit pDebug("Replay " + logFileName + " renamed to " + newLogFileName);
         replayLogsMap[lastReplayUploaded] = newLogFileName;
-        setRowColor(lastReplayUploaded, QColor(ThemeHandler::themeColor2()));
+        setRowColor(lastReplayUploaded, QColor(ThemeHandler::themeColor1()));
     }
     else
     {
@@ -463,7 +462,7 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         if(item != NULL)
         {
             replayLogsMap[item] = logFileName;
-            if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::themeColor2()));
+            if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::themeColor1()));
 
         }
         return item;
@@ -512,7 +511,7 @@ void ArenaHandler::showArenaLog(const QString &logFileName)
     {
         QString playerHero = Utility::heroToLogNumber(match.captured(1));
         showArena(playerHero);
-        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::themeColor2()));
+        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::themeColor1()));
         linkDraftLogToArenaCurrent(logFileName);
     }
 }
@@ -526,10 +525,10 @@ void ArenaHandler::showArena(QString hero)
 }
 
 
-void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
+void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color, bool forceWhite)
 {
-    if(theme == ThemeWhite && (transparency != Transparent || mouseInApp))
-        if(color == WHITE)  color = QColor(ThemeHandler::fgColor());
+    if((transparency != Transparent || mouseInApp) && !forceWhite && color == WHITE)
+        color = QColor(ThemeHandler::fgColor());
 
     for(int i=0;i<5;i++)
     {
@@ -622,7 +621,7 @@ void ArenaHandler::showRewards()
 }
 
 
-void ArenaHandler::updateWhiteRows()
+void ArenaHandler::updateWhiteRows(bool forceWhite)
 {
     int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
     for(int i=0; i<numTopItems; i++)
@@ -631,10 +630,16 @@ void ArenaHandler::updateWhiteRows()
         int numItems = item->childCount();
         for(int j=0; j<numItems; j++)
         {
-            if(isRowWhite(item->child(j))) setRowColor(item->child(j), WHITE);
+            if(isRowWhite(item->child(j))) setRowColor(item->child(j), WHITE, forceWhite);
         }
-        if(isRowWhite(item))    setRowColor(item, WHITE);
+        if(isRowWhite(item))    setRowColor(item, WHITE, forceWhite);
     }
+}
+
+
+void ArenaHandler::prepareThemeChange()
+{
+    updateWhiteRows(true);
 }
 
 
@@ -654,11 +659,10 @@ void ArenaHandler::setTransparency(Transparency value)
         ui->tabArena->repaint();
     }
 
-    //Habra que cambiar los colores en theme blanco si:
+    //Habra que cambiar los colores si:
     //1) La transparencia se ha cambiado
     //2) El raton ha salido/entrado y estamos en transparente
-    if(theme == ThemeWhite &&
-            (transparencyChanged || this->transparency == Transparent ))
+    if(transparencyChanged || this->transparency == Transparent )
     {
         //Change arenaTreeWidget normal color to (BLACK/WHITE)
         updateWhiteRows();
@@ -674,10 +678,8 @@ void ArenaHandler::setMouseInApp(bool value)
 
 
 //Blanco opaco usa un theme diferente a los otros 3
-void ArenaHandler::setTheme(Theme theme)
+void ArenaHandler::setTheme()
 {
-    this->theme = theme;
-
     //Change arenaTreeWidget normal color to (BLACK/WHITE)
     updateWhiteRows();
 }
