@@ -2377,7 +2377,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->tabConfig->repaint();
 
         QString groupBoxCSS =
-                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; margin-top: 5px; background-color: transparent; color: white;}"
+                "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; margin-top: 5px; " +
+                    ThemeHandler::bgWidgets() + " color: white;}"
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
         ui->configBoxActions->setStyleSheet(groupBoxCSS);
         ui->configBoxUI->setStyleSheet(groupBoxCSS);
@@ -2420,7 +2421,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
         ui->configCheckRngList->setStyleSheet(checkCSS);
 
-        ui->logTextEdit->setStyleSheet("QTextEdit{background-color: transparent; color: white;}");
+        ui->logTextEdit->setStyleSheet("QTextEdit{" + ThemeHandler::bgWidgets() + " color: white;}");
     }
     else
     {
@@ -2515,7 +2516,6 @@ void MainWindow::toggleTheme()
 
 void MainWindow::spreadTheme(bool themeBlack)
 {
-    arenaHandler->prepareThemeChange();
     ThemeHandler::loadTheme(themeBlack);
     updateMainUITheme();
     arenaHandler->setTheme();
@@ -2549,17 +2549,17 @@ void MainWindow::updateMainUITheme()
 
     QString mainCSS = "";
     mainCSS +=
-            "QMenu {background-color: " + ThemeHandler::bgColor() + "; color: " + ThemeHandler::fgColor() + ";}"
+            "QMenu {" + ThemeHandler::bgApp() + "; color: " + ThemeHandler::fgColor() + ";}"
             "QMenu::item:selected {background-color: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
 
-            "QScrollBar:vertical {background-color: " + ThemeHandler::bgColor() + "; border: 2px solid " + ThemeHandler::themeColor2() + "; "
+            "QScrollBar:vertical {background-color: transparent; border: 2px solid " + ThemeHandler::themeColor2() + "; "
                 "width: 15px; margin: 15px 0px 15px 0px;}"
             "QScrollBar::handle:vertical {background: " + ThemeHandler::themeColor1() + "; min-height: 20px;}"
             "QScrollBar::add-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
                 "height: 15px; subcontrol-position: bottom; subcontrol-origin: margin;}"
             "QScrollBar::sub-line:vertical {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
                 "height: 15px; subcontrol-position: top; subcontrol-origin: margin;}"
-            "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid " + ThemeHandler::bgColor() + "; "
+            "QScrollBar:up-arrow:vertical, QScrollBar::down-arrow:vertical {border: 2px solid " + ThemeHandler::themeColor1() + "; "
                 "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
             "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
@@ -2567,21 +2567,21 @@ void MainWindow::updateMainUITheme()
                 "background-color: " + ThemeHandler::themeColor2() + ";}"
             "QProgressBar::chunk {background-color: " + ThemeHandler::themeColor1() + ";}"
 
-            "QDialog {background: " + ThemeHandler::bgColor() + ";}"
+            "QDialog {" + ThemeHandler::bgApp() + ";}"
             "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
             "QToolTip {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
 
             "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; "
-                "margin-top: 5px; background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+                "margin-top: 5px; " + ThemeHandler::bgWidgets() + " color: " + ThemeHandler::fgColor() + ";}"
             "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}"
             "QLabel {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
-            "QTextBrowser {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QTextBrowser {" + ThemeHandler::bgWidgets() + " color: " + ThemeHandler::fgColor() + ";}"
             "QRadioButton {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
             "QCheckBox {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
-            "QTextEdit{background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
+            "QTextEdit{" + ThemeHandler::bgWidgets() + " color: " + ThemeHandler::fgColor() + ";}"
 
-            "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::bgColor() + "; "
-                "color: " + ThemeHandler::fgColor() + ";selection-background-color: " + ThemeHandler::bgColor() + ";}"
+            "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::themeColor1() + "; "
+                "color: " + ThemeHandler::fgColor() + ";selection-background-color: " + ThemeHandler::themeColor1() + ";}"
             ;
 
     this->setStyleSheet(mainCSS);
@@ -2591,9 +2591,9 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateButtonsTheme()
 {
-    ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+    ui->closeButton->setStyleSheet("QPushButton {background: transparent; border: none;}"
                                    "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-    ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgColor() + "; border: none;}"
+    ui->minimizeButton->setStyleSheet("QPushButton {background: transparent; border: none;}"
                                       "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
 }
 

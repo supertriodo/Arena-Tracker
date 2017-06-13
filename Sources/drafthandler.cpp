@@ -1031,8 +1031,9 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
 
-        ui->textBrowserDraft->setStyleSheet("QTextBrowser{background-color: transparent; color: white;}");
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
+        ui->textBrowserDraft->setStyleSheet("QTextBrowser{" + ThemeHandler::bgWidgets() + " color: white;}");
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
+                                            " color: " + ThemeHandler::fgColor() + ";}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
     else
@@ -1041,7 +1042,8 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->repaint();
 
         ui->textBrowserDraft->setStyleSheet("");
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; background-color: transparent; color: rgb(50,175,50);}"
+        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
+                                            " color: " + ThemeHandler::fgColor() + ";}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
 

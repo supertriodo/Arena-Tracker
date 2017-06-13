@@ -8,7 +8,7 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     font.setPixelSize(20);
     this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
-    this->setStyleSheet("QTreeView{background-color: transparent; outline: 0;}"
+    this->setStyleSheet("QTreeView{" + ThemeHandler::bgWidgets() + " outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
@@ -30,7 +30,7 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 
 void MoveTreeWidget::setTheme()
 {
-    this->setStyleSheet("QTreeView{background-color: " + ThemeHandler::bgColor() + "; outline: 0;}"
+    this->setStyleSheet("QTreeView{" + ThemeHandler::bgApp() + "; outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"

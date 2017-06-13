@@ -42,18 +42,18 @@ private:
 private:
     void completeUI();
     void createTreeWidget();
-    void setRowColor(QTreeWidgetItem *item, QColor color, bool forceWhite=false);
+    void setRowColor(QTreeWidgetItem *item, QColor color);
     QColor getRowColor(QTreeWidgetItem *item);
-    bool isRowOk(QTreeWidgetItem *item);
-    void updateWhiteRows(bool forceWhite=false);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
     QString compressLog(QString logFileName);
-    bool isRowWhite(QTreeWidgetItem *item);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void showArena(QString hero);
     void completeRewardsUI();
+    bool isOnZ2H(QString &logFileName, QRegularExpressionMatch &match);
+    void redrawRow(QTreeWidgetItem *item);
+    void redrawAllRows();
 
 public:
     void setMouseInApp(bool value);
@@ -64,7 +64,6 @@ public:
     QString getArenaCurrentDraftLog();
     QTreeWidgetItem *showGameResultLog(const QString &logFileName);
     void showArenaLog(const QString &logFileName);
-    void prepareThemeChange();
 
 signals:
     void showMessageProgressBar(QString text);

@@ -1,6 +1,7 @@
 #include "plangraphicsview.h"
 #include "GraphicItems/herographicsitem.h"
 #include "GraphicItems/cardgraphicsitem.h"
+#include "../themehandler.h"
 #include <cmath>
 #include <QtWidgets>
 
@@ -8,7 +9,7 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent, QGraphicsScene *graphicsScen
 {
     this->targetZoom = this->zoom = 0;
     this->showCards = showCards;
-    this->setStyleSheet("QGraphicsView{background-color: transparent;}");
+    this->setStyleSheet("QGraphicsView{" + ThemeHandler::bgWidgets() + "}");
 
     if(graphicsScene == NULL)
     {

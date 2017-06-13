@@ -12,21 +12,19 @@ MoveTabWidget::MoveTabWidget(QWidget *parent) : QTabWidget(parent)
 
 void MoveTabWidget::setTheme(QString tabBarAlignment, int maxWidth, bool resizing)
 {
-    QString foregroundColor = ThemeHandler::fgColor();
-    QString backgroundColor = ThemeHandler::bgColor();
     QString borderColor = ThemeHandler::themeColor1();
     int tabSize = std::max(24, std::min(32, maxWidth/std::max(1, this->count()) - 14));
 
     if(resizing && (tabSize == this->tabSize)) return;
 
     this->setStyleSheet(
-        "QTabBar::tab:selected {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
-        "QTabBar::tab:hover {background: " + backgroundColor + ";border-bottom-color: " + backgroundColor + ";}"
+        "QTabBar::tab:selected {background: transparent; border-bottom-color: transparent;}"
+        "QTabBar::tab:hover {background: transparent; border-bottom-color: transparent;}"
         "QTabWidget::tab-bar {alignment: " + tabBarAlignment + ";}"
-        "QTabWidget::pane {border-color: transparent; background: " + backgroundColor + ";}"
+        "QTabWidget::pane {border-color: transparent; " + ThemeHandler::bgApp() + ";}"
         "QTabWidget::pane {position: absolute;top: -38px;}"
         "QTabBar::tab {border: 2px solid " + borderColor + ";"
-            "padding: 5px;background: " + borderColor + "; color: " + foregroundColor +
+            "padding: 5px;background: " + borderColor +
             "; height: 24px; width: " + QString::number(tabSize) + "px}"
     );
 

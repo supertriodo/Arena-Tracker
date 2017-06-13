@@ -9,17 +9,17 @@ ThemeHandler::ThemeHandler()
 }
 
 
-QString ThemeHandler::bgColor()
+QString ThemeHandler::bgApp()
 {
-    if(themeBlack)  return "black";
-    else            return "yellow";
+    if(themeBlack)  return "background-color: black;";
+    else            return "background-image: url(./fondo2.jpg);";
 }
 
 
 QString ThemeHandler::fgColor()
 {
     if(themeBlack)  return "white";
-    else            return "black";
+    else            return "white";
 }
 
 
@@ -28,7 +28,7 @@ QString ThemeHandler::themeColor1()
 //#define DARK_GREEN_H QString("#0F4F0F")
 //    return QString("#0F4F0F");
     if(themeBlack)  return QString("#0F4F0F");
-    else            return "orange";
+    else            return "purple";
 }
 
 
@@ -38,6 +38,13 @@ QString ThemeHandler::themeColor2()
 //    return QString("#32AF32");
     if(themeBlack)  return QString("#32AF32");
     else            return "red";
+}
+
+
+QString ThemeHandler::bgWidgets()
+{
+    if(themeBlack)  return "background-color: transparent;";
+    else            return "background-image: url(./trans50.png);";
 }
 
 
