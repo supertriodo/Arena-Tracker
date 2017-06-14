@@ -23,7 +23,7 @@ void MoveTabWidget::setTheme(QString tabBarAlignment, int maxWidth, bool resizin
         "QTabBar::tab:selected {background: transparent; border-bottom-color: transparent;}"
         "QTabBar::tab:hover {background: transparent; border-bottom-color: transparent;}"
         "QTabWidget::pane { " + ThemeHandler::bgApp() + ThemeHandler::borderApp(transparent) +
-            "border-color: transparent; position: absolute; top: -38px;}"
+            "position: absolute; top: -38px;}"
         "QTabBar::tab {border: 2px solid " + borderColor + ";"
             "padding: 5px;background: " + borderColor +
             "; height: 24px; width: " + QString::number(tabSize) + "px}";

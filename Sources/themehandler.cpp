@@ -31,11 +31,11 @@ QString ThemeHandler::borderApp(bool transparent)
         borderImage = "url(./border2.png)";
     }
 
-    if(borderWidth == 0 || borderImage.isEmpty())   return "";
+    if(borderWidth == 0 || borderImage.isEmpty())   return "border-color: transparent;";
     else
     {
-        if(transparent)     return "border-image: url(./transparent.png) " + borderWidth + "; border-width: " + borderWidth + ";";
-        else                return "border-image: " + borderImage + " " + borderWidth + "; border-width: " + borderWidth + ";";
+        if(transparent)     return "border-color: transparent; border-width: " + borderWidth + "px; border-style: solid;";
+        else                return "border-image: " + borderImage + " " + borderWidth + "; border-width: " + borderWidth + "px;";
     }
 }
 
