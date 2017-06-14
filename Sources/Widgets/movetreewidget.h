@@ -12,7 +12,7 @@ class MoveTreeWidget : public QTreeWidget
 
 public:
     MoveTreeWidget(QWidget *parent = 0);
-    void setTheme();
+    void setTheme(bool standAlone);
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

@@ -674,6 +674,7 @@ void ArenaHandler::setMouseInApp(bool value)
 void ArenaHandler::setTheme()
 {
     redrawAllRows();
+    ui->arenaTreeWidget->setTheme(false);
 }
 
 

@@ -118,7 +118,7 @@ private:
     void spreadTheme(bool themeBlack);
     void updateMainUITheme();
     void updateButtonsTheme();
-    void updateTabWidgetsTheme(bool resizing=false);
+    void updateTabWidgetsTheme(bool transparent, bool resizing);
     QString getHSLanguage();
     void createCardsJsonMap(QByteArray &jsonData);
     void resizeTopButtons(int right, int top);

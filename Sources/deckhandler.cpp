@@ -1203,7 +1203,7 @@ void DeckHandler::setMouseInApp(bool value)
 
 void DeckHandler::setTheme()
 {
-    ui->loadDeckTreeWidget->setTheme();
+    ui->loadDeckTreeWidget->setTheme(true);
     bombWindow->setTheme();
 }
 

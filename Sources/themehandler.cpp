@@ -16,6 +16,37 @@ QString ThemeHandler::bgApp()
 }
 
 
+QString ThemeHandler::borderApp(bool transparent)
+{
+    QString borderWidth;
+    QString borderImage;
+
+    if(themeBlack)
+    {
+
+    }
+    else
+    {
+        borderWidth = "12";
+        borderImage = "url(./border2.png)";
+    }
+
+    if(borderWidth == 0 || borderImage.isEmpty())   return "";
+    else
+    {
+        if(transparent)     return "border-image: url(./transparent.png) " + borderWidth + "; border-width: " + borderWidth + ";";
+        else                return "border-image: " + borderImage + " " + borderWidth + "; border-width: " + borderWidth + ";";
+    }
+}
+
+
+int ThemeHandler::borderWidth()
+{
+    if(themeBlack)  return 0;
+    else            return 12;
+}
+
+
 QString ThemeHandler::fgColor()
 {
     if(themeBlack)  return "white";
@@ -44,7 +75,7 @@ QString ThemeHandler::themeColor2()
 QString ThemeHandler::bgWidgets()
 {
     if(themeBlack)  return "background-color: transparent;";
-    else            return "background-image: url(./trans50.png);";
+    else            return "background-color: rgba(0,0,0,100);";
 }
 
 

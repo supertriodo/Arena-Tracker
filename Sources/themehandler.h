@@ -14,6 +14,8 @@ private:
 
 public:
     static QString bgApp();
+    static QString borderApp(bool transparent);
+    static int borderWidth();
     static QString fgColor();
     static QString themeColor1();
     static QString themeColor2();

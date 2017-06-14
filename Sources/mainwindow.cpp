@@ -1493,7 +1493,7 @@ void MainWindow::resizeChecks()
         int left = widget->pos().x();
         int right = left + widget->width();
 
-        resizeTopButtons(right, top);
+        resizeTopButtons(right - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
         ui->resizeButton->move(right-24, bottom-24);
 
         if(otherWindow == NULL) spreadCorrectTamCard();
@@ -1517,7 +1517,7 @@ void MainWindow::resizeTopButtons(int right, int top)
     int limitWidth = ui->tabWidget->tabBar()->width() + BIG_BUTTONS_H;
 
     int buttonsWidth;
-    bool smallButtons = this->width() < limitWidth;
+    bool smallButtons = (this->width() - ThemeHandler::borderWidth()*2) < limitWidth;
     if(smallButtons)
     {
         buttonsWidth = SMALL_BUTTONS_H;
@@ -1585,7 +1585,7 @@ void MainWindow::resizeTabWidgets(QSize newSize)
     }
 
     if(newWindowsFormation != windowsFormation) resizeTabWidgets(newWindowsFormation);
-    else                                        updateTabWidgetsTheme(true);
+    else                                        updateTabWidgetsTheme(false, true);
 }
 
 
@@ -1721,7 +1721,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
     }
     ui->tabWidget->setCurrentWidget(currentTab);
 
-    updateTabWidgetsTheme(true);
+    updateTabWidgetsTheme(false, true);
     this->calculateMinimumWidth();
 
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
@@ -1778,7 +1778,7 @@ void MainWindow::calculateMinimumWidth()
     if(isMainWindow)
     {
         //El menor ancho de una tab es 38 y el menor de los botones 19;
-        int minWidth = ui->tabWidget->count()*38 + SMALL_BUTTONS_H;
+        int minWidth = ui->tabWidget->count()*38 + SMALL_BUTTONS_H + ThemeHandler::borderWidth()*2;
         this->setMinimumWidth(minWidth);
     }
 }
@@ -2504,6 +2504,8 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
         Utility::fadeInWidget(ui->closeButton);
         Utility::fadeInWidget(ui->resizeButton);
     }
+
+    updateTabWidgetsTheme(fadeOut, false);//Si usamos un theme con bordes los oculta
 }
 
 
@@ -2524,27 +2526,29 @@ void MainWindow::spreadTheme(bool themeBlack)
     deckHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
+    resizeChecks();//Recoloca botones -X
+    calculateMinimumWidth();//Si hay borde cambia el minimumWidth
 }
 
 
-void MainWindow::updateTabWidgetsTheme(bool resizing)
+void MainWindow::updateTabWidgetsTheme(bool transparent, bool resizing)
 {
-    int maxWidthH1 = ui->tabWidget->width();
+    int maxWidthH1 = ui->tabWidget->width() - ThemeHandler::borderWidth()*2;
     maxWidthH1 -= (windowsFormation == H1 || windowsFormation == V2)?SMALL_BUTTONS_H:2;
-    ui->tabWidget->setTheme("left", maxWidthH1, resizing);
+    ui->tabWidget->setTheme("left", maxWidthH1, resizing, transparent);
 
     if(!resizing)
     {
-        ui->tabWidgetH2->setTheme("center", ui->tabWidgetH2->width(), resizing);
-        ui->tabWidgetH3->setTheme("center", ui->tabWidgetH3->width(), resizing);
-        ui->tabWidgetV1->setTheme("left", ui->tabWidgetV1->width(), resizing);
+        ui->tabWidgetH2->setTheme("center", ui->tabWidgetH2->width(), resizing, transparent);
+        ui->tabWidgetH3->setTheme("center", ui->tabWidgetH3->width(), resizing, transparent);
+        ui->tabWidgetV1->setTheme("left", ui->tabWidgetV1->width(), resizing, transparent);
     }
 }
 
 
 void MainWindow::updateMainUITheme()
 {
-    updateTabWidgetsTheme();
+    updateTabWidgetsTheme(false, false);
     updateButtonsTheme();
 
     QString mainCSS = "";
@@ -3257,6 +3261,8 @@ void MainWindow::testDelay()
 //New web
 //mana limits png
 //Fix games uploaded colors
+//Test bomb window
+//SecretsTreeWidget y all listWidgets son transparentes
 
 
 //REPLAY BUGS
