@@ -23,7 +23,7 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 
 void MoveTreeWidget::setTheme(bool standAlone)
 {
-    this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgApp():ThemeHandler::bgWidgets()) + "; outline: 0;}"
+    this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgApp()+ThemeHandler::borderApp(false):ThemeHandler::bgWidgets()) + "; outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
