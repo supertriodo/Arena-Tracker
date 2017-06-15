@@ -411,7 +411,7 @@
          <attribute name="title">
           <string>Draft</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="spacing">
            <number>5</number>
           </property>
@@ -428,7 +428,7 @@
            <number>10</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" name="draftHorizontalLayout">
+           <layout class="QVBoxLayout" name="draftVerticalLayout">
             <item>
              <widget class="QGroupBox" name="groupBoxDraft">
               <property name="enabled">
@@ -565,38 +565,21 @@
              </widget>
             </item>
             <item>
-             <spacer name="draftHorizontalSpacer2">
+             <spacer name="draftVerticalSpacer">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>20</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="draftVerticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="draftHorizontalLayout2">
             <item>
              <widget class="QTextBrowser" name="textBrowserDraft">
               <property name="sizePolicy">
@@ -619,23 +602,20 @@
               </property>
              </widget>
             </item>
-            <item>
-             <spacer name="draftHorizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Expanding</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
+          </item>
+          <item>
+           <spacer name="draftHorizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
