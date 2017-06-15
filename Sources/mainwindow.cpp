@@ -2554,8 +2554,11 @@ void MainWindow::updateMainUITheme()
 
     QString mainCSS = "";
     mainCSS +=
-            "QMenu {" + ThemeHandler::bgApp() + "; color: " + ThemeHandler::fgColor() + ";}"
-            "QMenu::item:selected {background-color: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
+            "QMenu {" + ThemeHandler::bgApp() + ThemeHandler::borderApp(false) + "; color: " + ThemeHandler::fgMenuColor() + ";}"
+            "QMenu::item {padding: 2px 25px 2px 20px;border: 1px solid " + ThemeHandler::borderItemMenuColor() + ";}"
+            "QMenu::item:selected {background-color: " + ThemeHandler::bgSelectedItemMenuColor() + "; "
+                "color: " + ThemeHandler::fgSelectedItemMenuColor() + "; "
+                "border-color: " + ThemeHandler::bgSelectedItemMenuColor() + ";}"
 
             "QScrollBar:vertical {background-color: transparent; border: 2px solid " + ThemeHandler::themeColor2() + "; "
                 "width: 15px; margin: 15px 0px 15px 0px;}"

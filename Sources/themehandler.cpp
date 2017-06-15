@@ -11,6 +11,8 @@ QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
 QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
 QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
+QString ThemeHandler::fgMenuColor_;
+QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -89,6 +91,30 @@ QString ThemeHandler::hoverTopButtonsColor()
 }
 
 
+QString ThemeHandler::fgMenuColor()
+{
+    return fgMenuColor_;
+}
+
+
+QString ThemeHandler::borderItemMenuColor()
+{
+    return borderItemMenuColor_;
+}
+
+
+QString ThemeHandler::bgSelectedItemMenuColor()
+{
+    return bgSelectedItemMenuColor_;
+}
+
+
+QString ThemeHandler::fgSelectedItemMenuColor()
+{
+    return fgSelectedItemMenuColor_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -96,6 +122,8 @@ void ThemeHandler::reset()
     fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
     bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
     bgTopButtonsColor_ = hoverTopButtonsColor_ = "";
+    fgMenuColor_ = "";
+    borderItemMenuColor_ = bgSelectedItemMenuColor_ = fgSelectedItemMenuColor_ = "";
 }
 
 
@@ -127,6 +155,9 @@ void ThemeHandler::loadTheme(bool themeBlack)
         bgTabsColor_ = "blue";
         bgTopButtonsColor_ = "rgba(0,0,0,100)";
         hoverTopButtonsColor_ = "yellow";
+        borderItemMenuColor_ = "blue";
+        bgSelectedItemMenuColor_ = "yellow";
+        fgSelectedItemMenuColor_ = "black";
     }
 
 
@@ -182,4 +213,8 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(bgTabsColor_.isEmpty())          bgTabsColor_ = themeColor1_;
     if(bgTopButtonsColor_.isEmpty())    bgTopButtonsColor_ = "transparent";
     if(hoverTopButtonsColor_.isEmpty()) hoverTopButtonsColor_ = themeColor1_;
+    if(fgMenuColor_.isEmpty())          fgMenuColor_ = fgColor_;
+    if(borderItemMenuColor_.isEmpty())  borderItemMenuColor_ = "transparent";
+    if(bgSelectedItemMenuColor_.isEmpty())  bgSelectedItemMenuColor_ = themeColor1_;
+    if(fgSelectedItemMenuColor_.isEmpty())  fgSelectedItemMenuColor_ = fgColor_;
 }

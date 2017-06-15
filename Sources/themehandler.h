@@ -21,6 +21,8 @@ private:
     static QString bgWidgets_;
     static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
     static QString bgTopButtonsColor_, hoverTopButtonsColor_;
+    static QString fgMenuColor_;
+    static QString borderItemMenuColor_, bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
 
 
 //Metodos
@@ -41,6 +43,10 @@ public:
     static QString selectedTabsColor();
     static QString bgTopButtonsColor();
     static QString hoverTopButtonsColor();
+    static QString fgMenuColor();
+    static QString borderItemMenuColor();
+    static QString bgSelectedItemMenuColor();
+    static QString fgSelectedItemMenuColor();
 };
 
 #endif // THEMEHANDLER_H
