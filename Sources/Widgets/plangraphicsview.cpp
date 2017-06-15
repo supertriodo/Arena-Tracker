@@ -9,7 +9,6 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent, QGraphicsScene *graphicsScen
 {
     this->targetZoom = this->zoom = 0;
     this->showCards = showCards;
-    this->setStyleSheet("QGraphicsView{" + ThemeHandler::bgWidgets() + "}");
 
     if(graphicsScene == NULL)
     {
@@ -20,6 +19,12 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent, QGraphicsScene *graphicsScen
     this->setScene(graphicsScene);
     this->reset();
     if(showCards)   this->updateView(0);
+}
+
+
+void PlanGraphicsView::setTheme(bool standAlone)
+{
+    this->setStyleSheet("QGraphicsView{" + (standAlone?ThemeHandler::bgApp():ThemeHandler::bgWidgets()) + "}");
 }
 
 

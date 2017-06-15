@@ -10,7 +10,14 @@ public:
 
 
 private:
-    static bool themeBlack;
+    static QString bgApp_;
+    static QString borderApp_;
+    static QString borderTransparent_;
+    static int borderWidth_;
+    static QString fgColor_;
+    static QString themeColor1_;
+    static QString themeColor2_;
+    static QString bgWidgets_;
 
 public:
     static QString bgApp();

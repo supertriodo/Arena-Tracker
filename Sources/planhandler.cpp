@@ -2289,6 +2289,12 @@ void PlanHandler::reset()
 }
 
 
+void PlanHandler::setTheme()
+{
+    ui->planGraphicsView->setTheme(false);
+}
+
+
 void PlanHandler::deleteFutureBoard()
 {
     resetBoard(futureBoard);

@@ -2523,6 +2523,7 @@ void MainWindow::spreadTheme(bool themeBlack)
     arenaHandler->setTheme();
     deckHandler->setTheme();
     draftHandler->setTheme();
+    planHandler->setTheme();
     deckHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();

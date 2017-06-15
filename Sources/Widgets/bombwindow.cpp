@@ -21,7 +21,7 @@ BombWindow::~BombWindow()
 
 void BombWindow::setTheme()
 {
-    graphicsView->setStyleSheet("QGraphicsView{" + ThemeHandler::bgApp() + ";}");
+    graphicsView->setTheme(true);
 }
 
 

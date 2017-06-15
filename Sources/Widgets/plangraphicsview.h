@@ -30,6 +30,7 @@ public:
     int getSceneViewWidth();
     int getCardsViewHeight();
     QRectF getBoardRect();
+    void setTheme(bool standAlone);
 
 //Override events
 protected:

@@ -1,7 +1,14 @@
 #include "themehandler.h"
 #include <QtWidgets>
 
-bool ThemeHandler::themeBlack;
+QString ThemeHandler::bgApp_;
+QString ThemeHandler::borderApp_;
+QString ThemeHandler::borderTransparent_;
+int ThemeHandler::borderWidth_;
+QString ThemeHandler::fgColor_;
+QString ThemeHandler::themeColor1_;
+QString ThemeHandler::themeColor2_;
+QString ThemeHandler::bgWidgets_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -11,75 +18,111 @@ ThemeHandler::ThemeHandler()
 
 QString ThemeHandler::bgApp()
 {
-    if(themeBlack)  return "background-color: black;";
-    else            return "background-image: url(./fondo2.jpg);";
+    return bgApp_;
 }
 
 
 QString ThemeHandler::borderApp(bool transparent)
 {
-    QString borderWidth;
-    QString borderImage;
-
-    if(themeBlack)
-    {
-
-    }
-    else
-    {
-        borderWidth = "12";
-        borderImage = "url(./border2.png)";
-    }
-
-    if(borderWidth == 0 || borderImage.isEmpty())   return "border-color: transparent;";
-    else
-    {
-        if(transparent)     return "border-color: transparent; border-width: " + borderWidth + "px; border-style: solid;";
-        else                return "border-image: " + borderImage + " " + borderWidth + "; border-width: " + borderWidth + "px;";
-    }
+    if(transparent)     return borderTransparent_;
+    else                return borderApp_;
 }
 
 
 int ThemeHandler::borderWidth()
 {
-    if(themeBlack)  return 0;
-    else            return 12;
+    return borderWidth_;
 }
 
 
 QString ThemeHandler::fgColor()
 {
-    if(themeBlack)  return "white";
-    else            return "white";
+    return fgColor_;
 }
 
 
 QString ThemeHandler::themeColor1()
 {
-//#define DARK_GREEN_H QString("#0F4F0F")
-//    return QString("#0F4F0F");
-    if(themeBlack)  return QString("#0F4F0F");
-    else            return "purple";
+    return themeColor1_;
 }
 
 
 QString ThemeHandler::themeColor2()
 {
-//#define GREEN_H QString("#32AF32")
-//    return QString("#32AF32");
-    if(themeBlack)  return QString("#32AF32");
-    else            return "red";
+    return themeColor2_;
 }
 
 
 QString ThemeHandler::bgWidgets()
 {
-    if(themeBlack)  return "background-color: transparent;";
-    else            return "background-color: rgba(0,0,0,100);";
+    return bgWidgets_;
 }
 
 
 void ThemeHandler::loadTheme(bool themeBlack)
 {
-    ThemeHandler::themeBlack = themeBlack;
+    if(themeBlack)
+    {
+        bgApp_ = "black";
+        borderWidth_ = 0;
+        borderApp_ = "";
+        bgWidgets_ = "";
+        fgColor_ = "white";
+        themeColor1_ = "#0F4F0F";
+        themeColor2_ = "#32AF32";
+    }
+    else
+    {
+        bgApp_ = "fondo2.jpg";
+        borderWidth_ = 12;
+        borderApp_ = "border2.png";
+        bgWidgets_ = "rgba(0,0,0,100)";
+        fgColor_ = "white";
+        themeColor1_ = "purple";
+        themeColor2_ = "red";
+    }
+
+
+    //Background
+    if(bgApp_.isEmpty())
+    {
+        bgApp_ = "background-color: transparent;";
+    }
+    else if(bgApp_.contains("."))
+    {
+        bgApp_ = "background-image: url(./" + bgApp_ + ");";
+    }
+    else
+    {
+        bgApp_ = "background-color: " + bgApp_ + ";";
+    }
+
+
+    //Border
+    QString borderWidthS = QString::number(borderWidth_);
+    borderTransparent_ = "border-color: transparent; border-width: " + borderWidthS + "px; border-style: solid;";
+    if(borderApp_.isEmpty())
+    {
+        borderWidth_ = 0;
+        borderApp_ = borderTransparent_ = "border-color: transparent;";
+    }
+    else if(borderApp_.contains("."))
+    {
+        borderApp_ = "border-image: url(./" + borderApp_ + ") " + borderWidthS + "; border-width: " + borderWidthS + "px;";
+    }
+    else
+    {
+        borderApp_ = "border-color: " + borderApp_ + "; border-width: " + borderWidthS + "px; border-style: solid;";
+    }
+
+
+    //Background widgets
+    if(bgWidgets_.isEmpty())
+    {
+        bgWidgets_ = "background-color: transparent;";
+    }
+    else
+    {
+        bgWidgets_ = "background-color: " + bgWidgets_ + ";";
+    }
 }
