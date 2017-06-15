@@ -9,6 +9,7 @@ QString ThemeHandler::fgColor_;
 QString ThemeHandler::themeColor1_;
 QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
+QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -59,8 +60,36 @@ QString ThemeHandler::bgWidgets()
 }
 
 
+QString ThemeHandler::bgTabsColor()
+{
+    return bgTabsColor_;
+}
+
+QString ThemeHandler::hoverTabsColor()
+{
+    return hoverTabsColor_;
+}
+
+
+QString ThemeHandler::selectedTabsColor()
+{
+    return selectedTabsColor_;
+}
+
+
+void ThemeHandler::reset()
+{
+    bgApp_ = borderApp_ = borderTransparent_;
+    borderWidth_ = 0;
+    fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
+    bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
+}
+
+
 void ThemeHandler::loadTheme(bool themeBlack)
 {
+    reset();
+
     if(themeBlack)
     {
         bgApp_ = "black";
@@ -80,13 +109,16 @@ void ThemeHandler::loadTheme(bool themeBlack)
         fgColor_ = "white";
         themeColor1_ = "purple";
         themeColor2_ = "red";
+        hoverTabsColor_ = "rgba(0,0,0,100)";
+        selectedTabsColor_ = "red";
+        bgTabsColor_ = "blue";
     }
 
 
     //Background
     if(bgApp_.isEmpty())
     {
-        bgApp_ = "background-color: transparent;";
+        bgApp_ = "background-color: black;";
     }
     else if(bgApp_.contains("."))
     {
@@ -125,4 +157,12 @@ void ThemeHandler::loadTheme(bool themeBlack)
     {
         bgWidgets_ = "background-color: " + bgWidgets_ + ";";
     }
+
+    //Default values
+    if(fgColor_.isEmpty())              fgColor_ = "white";
+    if(themeColor1_.isEmpty())          themeColor1_ = "transparent";
+    if(themeColor2_.isEmpty())          themeColor2_ = "transparent";
+    if(hoverTabsColor_.isEmpty())       hoverTabsColor_ = "transparent";
+    if(selectedTabsColor_.isEmpty())    selectedTabsColor_ = "transparent";
+    if(bgTabsColor_.isEmpty())          bgTabsColor_ = themeColor1_;
 }

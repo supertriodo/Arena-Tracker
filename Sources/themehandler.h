@@ -9,6 +9,7 @@ public:
     ThemeHandler();
 
 
+//Variables
 private:
     static QString bgApp_;
     static QString borderApp_;
@@ -18,6 +19,12 @@ private:
     static QString themeColor1_;
     static QString themeColor2_;
     static QString bgWidgets_;
+    static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
+
+
+//Metodos
+private:
+    static void reset();
 
 public:
     static QString bgApp();
@@ -28,6 +35,9 @@ public:
     static QString themeColor2();
     static void loadTheme(bool themeBlack);
     static QString bgWidgets();
+    static QString bgTabsColor();
+    static QString hoverTabsColor();
+    static QString selectedTabsColor();
 };
 
 #endif // THEMEHANDLER_H
