@@ -805,7 +805,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
 void DeckHandler::returnToDeck(QString code, int id)
 {
     //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
-    if(code.isEmpty() && cardId2Code.contains(id))
+    if(cardId2Code.contains(id))
     {
         code = cardId2Code[id];
     }

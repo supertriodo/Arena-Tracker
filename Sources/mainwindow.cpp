@@ -3295,6 +3295,7 @@ void MainWindow::testDelay()
 
 //SPECTATOR GAMES
 //Si empiezan desde el principio todo correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
+//Por lo tanto no seran restadas del mazo, y si son devueltas en el mulligan apareceran como OUTSIDERS
 //Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
 
 //BUGS CONOCIDOS
