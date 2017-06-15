@@ -2596,10 +2596,10 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateButtonsTheme()
 {
-    ui->closeButton->setStyleSheet("QPushButton {background: transparent; border: none;}"
-                                   "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
-    ui->minimizeButton->setStyleSheet("QPushButton {background: transparent; border: none;}"
-                                      "QPushButton:hover {background: " + ThemeHandler::themeColor1() + ";}");
+    ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                   "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+    ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                      "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
 }
 
 

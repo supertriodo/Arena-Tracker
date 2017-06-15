@@ -20,6 +20,7 @@ private:
     static QString themeColor2_;
     static QString bgWidgets_;
     static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
+    static QString bgTopButtonsColor_, hoverTopButtonsColor_;
 
 
 //Metodos
@@ -38,6 +39,8 @@ public:
     static QString bgTabsColor();
     static QString hoverTabsColor();
     static QString selectedTabsColor();
+    static QString bgTopButtonsColor();
+    static QString hoverTopButtonsColor();
 };
 
 #endif // THEMEHANDLER_H

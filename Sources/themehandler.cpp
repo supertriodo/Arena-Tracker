@@ -10,6 +10,7 @@ QString ThemeHandler::themeColor1_;
 QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
 QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
+QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -77,12 +78,24 @@ QString ThemeHandler::selectedTabsColor()
 }
 
 
+QString ThemeHandler::bgTopButtonsColor()
+{
+    return bgTopButtonsColor_;
+}
+
+QString ThemeHandler::hoverTopButtonsColor()
+{
+    return hoverTopButtonsColor_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
     borderWidth_ = 0;
     fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
     bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
+    bgTopButtonsColor_ = hoverTopButtonsColor_ = "";
 }
 
 
@@ -112,6 +125,8 @@ void ThemeHandler::loadTheme(bool themeBlack)
         hoverTabsColor_ = "rgba(0,0,0,100)";
         selectedTabsColor_ = "red";
         bgTabsColor_ = "blue";
+        bgTopButtonsColor_ = "rgba(0,0,0,100)";
+        hoverTopButtonsColor_ = "yellow";
     }
 
 
@@ -165,4 +180,6 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(hoverTabsColor_.isEmpty())       hoverTabsColor_ = "transparent";
     if(selectedTabsColor_.isEmpty())    selectedTabsColor_ = "transparent";
     if(bgTabsColor_.isEmpty())          bgTabsColor_ = themeColor1_;
+    if(bgTopButtonsColor_.isEmpty())    bgTopButtonsColor_ = "transparent";
+    if(hoverTopButtonsColor_.isEmpty()) hoverTopButtonsColor_ = themeColor1_;
 }
