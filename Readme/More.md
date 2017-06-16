@@ -9,6 +9,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Upload your stats to your track-o-bot account.
 ![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
 * Save and organize your constructed decks.
+* Import/export your deck with Hearthstone.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
 * Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
@@ -16,12 +17,9 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
 * Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Import decks from webs using Cockatrice format.
-![Import](https://github.com/supertriodo/Arena-Tracker/blob/master/Extra/importDeck.gif)
-* Auto create decks in Hearthstone.
 * Upload your draft and games to [ZeroToHeroes](http://www.zerotoheroes.com/s/hearthstone) and improve with the community.
 
-Arena Tracker is free and open source. Made by one person(me) in his spare time.
+Arena Tracker is free and open source.
 
 My Hearthstone ID: triodo#2541 (EU region)
 
