@@ -2577,7 +2577,8 @@ void MainWindow::updateMainUITheme()
 
             "QDialog {" + ThemeHandler::bgApp() + ";}"
             "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"
-            "QToolTip {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 2px; color: " + ThemeHandler::themeColor1() + ";}"
+            "QToolTip {border: 2px solid " + ThemeHandler::borderTooltipColor() + "; border-radius: 2px; "
+                "color: " + ThemeHandler::fgTooltipColor() + "; background: " + ThemeHandler::bgTooltipColor() + ";}"
 
             "QGroupBox {border: 2px solid " + ThemeHandler::themeColor2() + "; border-radius: 5px; "
                 "margin-top: 5px; " + ThemeHandler::bgWidgets() + " color: " + ThemeHandler::fgColor() + ";}"
@@ -3253,7 +3254,7 @@ void MainWindow::testPlan()
 void MainWindow::testDelay()
 {
     showMessageProgressBar("Testing downloads...", 10000);
-    secretsHandler->secretPlayed(1, MAGE, arena);
+//    secretsHandler->secretPlayed(1, MAGE, arena);
 }
 
 

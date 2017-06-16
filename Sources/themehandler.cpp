@@ -17,6 +17,7 @@ QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColo
 int ThemeHandler::borderDecksWidth_;
 QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
 QString ThemeHandler::bgSelectedItemListColor_, ThemeHandler::fgSelectedItemListColor_;
+QString ThemeHandler::borderTooltipColor_, ThemeHandler::bgTooltipColor_, ThemeHandler::fgTooltipColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -155,6 +156,21 @@ QString ThemeHandler::fgSelectedItemListColor()
 }
 
 
+QString ThemeHandler::borderTooltipColor()
+{
+    return borderTooltipColor_;
+}
+
+QString ThemeHandler::bgTooltipColor()
+{
+    return bgTooltipColor_;
+}
+
+QString ThemeHandler::fgTooltipColor()
+{
+    return fgTooltipColor_;
+}
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -168,6 +184,7 @@ void ThemeHandler::reset()
     borderDecksWidth_ = 0;
     bgDecks_ = borderDecks_ = "";
     bgSelectedItemListColor_ = fgSelectedItemListColor_ = "";
+    borderTooltipColor_ = bgTooltipColor_ = fgTooltipColor_ = "";
 }
 
 
@@ -208,6 +225,9 @@ void ThemeHandler::loadTheme(bool themeBlack)
         bgDecks_ = "fondo2.jpg";
         borderDecks_ = "blue";
         borderDecksWidth_ = 10;
+        borderTooltipColor_ = "grey";
+        bgTooltipColor_ = "silver";
+        fgTooltipColor_ = "white";
     }
 
 
@@ -333,4 +353,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(fgSelectedItemMenuColor_.isEmpty())  fgSelectedItemMenuColor_ = fgColor_;
     if(bgSelectedItemListColor_.isEmpty())  bgSelectedItemListColor_ = themeColor1_;
     if(fgSelectedItemListColor_.isEmpty())  fgSelectedItemListColor_ = fgColor_;
+    if(borderTooltipColor_.isEmpty())   borderTooltipColor_ = themeColor2_;
+    if(bgTooltipColor_.isEmpty())       bgTooltipColor_ = themeColor1_;
+    if(fgTooltipColor_.isEmpty())       fgTooltipColor_ = fgColor_;
 }
