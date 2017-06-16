@@ -2589,8 +2589,10 @@ void MainWindow::updateMainUITheme()
             "QCheckBox {background-color: transparent; color: " + ThemeHandler::fgColor() + ";}"
             "QTextEdit{" + ThemeHandler::bgWidgets() + " color: " + ThemeHandler::fgColor() + ";}"
 
-            "QLineEdit {border: 2px solid " + ThemeHandler::themeColor2() + ";border-radius: 5px;background: " + ThemeHandler::themeColor1() + "; "
-                "color: " + ThemeHandler::fgColor() + ";selection-background-color: " + ThemeHandler::themeColor1() + ";}"
+            "QLineEdit {border: 2px solid " + ThemeHandler::borderLineEditColor() + ";border-radius: 5px; "
+                "background: " + ThemeHandler::bgLineEditColor() + "; color: " + ThemeHandler::fgLineEditColor() + "; "
+                "selection-background-color: " + ThemeHandler::bgSelectionLineEditColor() + "; "
+                "selection-color: " + ThemeHandler::fgSelectionLineEditColor() + ";}"
             ;
 
     this->setStyleSheet(mainCSS);

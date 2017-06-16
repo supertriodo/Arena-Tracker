@@ -19,6 +19,8 @@ QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
 QString ThemeHandler::bgSelectedItemListColor_, ThemeHandler::fgSelectedItemListColor_;
 QString ThemeHandler::borderTooltipColor_, ThemeHandler::bgTooltipColor_, ThemeHandler::fgTooltipColor_;
 QString ThemeHandler::borderProgressBarColor_, ThemeHandler::bgProgressBarColor_, ThemeHandler::fgProgressBarColor_, ThemeHandler::chunkProgressBarColor_;
+QString ThemeHandler::borderLineEditColor_, ThemeHandler::bgLineEditColor_, ThemeHandler::fgLineEditColor_;
+QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEditColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -199,6 +201,36 @@ QString ThemeHandler::chunkProgressBarColor()
 }
 
 
+QString ThemeHandler::borderLineEditColor()
+{
+    return borderLineEditColor_;
+}
+
+
+QString ThemeHandler::bgLineEditColor()
+{
+    return bgLineEditColor_;
+}
+
+
+QString ThemeHandler::fgLineEditColor()
+{
+    return fgLineEditColor_;
+}
+
+
+QString ThemeHandler::bgSelectionLineEditColor()
+{
+    return bgSelectionLineEditColor_;
+}
+
+
+QString ThemeHandler::fgSelectionLineEditColor()
+{
+    return fgSelectionLineEditColor_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -214,6 +246,8 @@ void ThemeHandler::reset()
     bgSelectedItemListColor_ = fgSelectedItemListColor_ = "";
     borderTooltipColor_ = bgTooltipColor_ = fgTooltipColor_ = "";
     borderProgressBarColor_ = bgProgressBarColor_ = fgProgressBarColor_ = chunkProgressBarColor_ = "";
+    borderLineEditColor_ = bgLineEditColor_ = fgLineEditColor_ = "";
+    bgSelectionLineEditColor_ = fgSelectionLineEditColor_ = "";
 }
 
 
@@ -261,6 +295,11 @@ void ThemeHandler::loadTheme(bool themeBlack)
         bgProgressBarColor_ = "blue";
         chunkProgressBarColor_ = "red";
         fgProgressBarColor_ = "yellow";
+        borderLineEditColor_ = "red";
+        bgLineEditColor_ = "orange";
+        fgLineEditColor_ = "yellow";
+        bgSelectionLineEditColor_ = "grey";
+        fgSelectionLineEditColor_ = "black";
     }
 
 
@@ -393,4 +432,9 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(bgProgressBarColor_.isEmpty())       bgProgressBarColor_ = themeColor2_;
     if(fgProgressBarColor_.isEmpty())       fgProgressBarColor_ = fgColor_;
     if(chunkProgressBarColor_.isEmpty())    chunkProgressBarColor_ = themeColor1_;
+    if(borderLineEditColor_.isEmpty())      borderLineEditColor_ = themeColor2_;
+    if(bgLineEditColor_.isEmpty())          bgLineEditColor_ = themeColor1_;
+    if(fgLineEditColor_.isEmpty())          fgLineEditColor_ = fgColor_;
+    if(bgSelectionLineEditColor_.isEmpty()) bgSelectionLineEditColor_ = fgColor_;
+    if(fgSelectionLineEditColor_.isEmpty()) fgSelectionLineEditColor_ = themeColor1_;
 }
