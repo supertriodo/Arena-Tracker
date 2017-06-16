@@ -15,7 +15,6 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setFocusPolicy(Qt::NoFocus);
-    this->setAnimated(true);
     this->setHeaderHidden(true);
     this->header()->close();
 }
@@ -34,6 +33,8 @@ void MoveTreeWidget::setTheme(bool standAlone)
     "QTreeView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
     "QTreeView::branch:selected {background-color: " + ThemeHandler::bgSelectedItemListColor() + "; }"
     );
+
+    this->setAnimated(!standAlone);
 }
 
 
