@@ -16,6 +16,7 @@ QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenu_, ThemeHandler::borderM
 QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
 int ThemeHandler::borderDecksWidth_;
 QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
+QString ThemeHandler::bgSelectedItemListColor_, ThemeHandler::fgSelectedItemListColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -142,6 +143,18 @@ QString ThemeHandler::borderDecks()
 }
 
 
+QString ThemeHandler::bgSelectedItemListColor()
+{
+    return bgSelectedItemListColor_;
+}
+
+
+QString ThemeHandler::fgSelectedItemListColor()
+{
+    return fgSelectedItemListColor_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -154,6 +167,7 @@ void ThemeHandler::reset()
     borderItemMenuColor_ = bgSelectedItemMenuColor_ = fgSelectedItemMenuColor_ = "";
     borderDecksWidth_ = 0;
     bgDecks_ = borderDecks_ = "";
+    bgSelectedItemListColor_ = fgSelectedItemListColor_ = "";
 }
 
 
@@ -317,4 +331,6 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(borderItemMenuColor_.isEmpty())  borderItemMenuColor_ = "transparent";
     if(bgSelectedItemMenuColor_.isEmpty())  bgSelectedItemMenuColor_ = themeColor1_;
     if(fgSelectedItemMenuColor_.isEmpty())  fgSelectedItemMenuColor_ = fgColor_;
+    if(bgSelectedItemListColor_.isEmpty())  bgSelectedItemListColor_ = themeColor1_;
+    if(fgSelectedItemListColor_.isEmpty())  fgSelectedItemListColor_ = fgColor_;
 }

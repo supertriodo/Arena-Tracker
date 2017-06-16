@@ -29,7 +29,11 @@ void MoveTreeWidget::setTheme(bool standAlone)
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
 
     "QTreeView::branch:open:has-children:!has-siblings,"
-    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(:/Images/branchOpen.png);}");
+    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(:/Images/branchOpen.png);}"
+
+    "QTreeView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
+    "QTreeView::branch:selected {background-color: " + ThemeHandler::bgSelectedItemListColor() + "; }"
+    );
 }
 
 

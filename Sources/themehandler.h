@@ -26,6 +26,7 @@ private:
     static QString borderItemMenuColor_, bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
     static int borderDecksWidth_;
     static QString bgDecks_, borderDecks_;
+    static QString bgSelectedItemListColor_, fgSelectedItemListColor_;
 
 
 //Metodos
@@ -54,6 +55,8 @@ public:
     static QString borderMenu();
     static QString bgDecks();
     static QString borderDecks();
+    static QString bgSelectedItemListColor();
+    static QString fgSelectedItemListColor();
 };
 
 #endif // THEMEHANDLER_H
