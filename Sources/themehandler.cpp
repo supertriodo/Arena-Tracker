@@ -14,6 +14,8 @@ QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
 int ThemeHandler::borderMenuWidth_;
 QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenu_, ThemeHandler::borderMenu_;
 QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
+int ThemeHandler::borderDecksWidth_;
+QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -128,6 +130,18 @@ QString ThemeHandler::borderMenu()
 }
 
 
+QString ThemeHandler::bgDecks()
+{
+    return bgDecks_;
+}
+
+
+QString ThemeHandler::borderDecks()
+{
+    return borderDecks_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -138,6 +152,8 @@ void ThemeHandler::reset()
     borderMenuWidth_ = 0;
     fgMenuColor_ = bgMenu_ = borderMenu_ = "";
     borderItemMenuColor_ = bgSelectedItemMenuColor_ = fgSelectedItemMenuColor_ = "";
+    borderDecksWidth_ = 0;
+    bgDecks_ = borderDecks_ = "";
 }
 
 
@@ -175,6 +191,9 @@ void ThemeHandler::loadTheme(bool themeBlack)
         bgMenu_ = "pink";
         borderMenu_ = "grey";
         borderMenuWidth_ = 10;
+        bgDecks_ = "fondo2.jpg";
+        borderDecks_ = "blue";
+        borderDecksWidth_ = 10;
     }
 
 
@@ -251,6 +270,38 @@ void ThemeHandler::loadTheme(bool themeBlack)
     else
     {
         borderMenu_ = "border-color: " + borderMenu_ + "; border-width: " + borderMenuWidthS + "px; border-style: solid;";
+    }
+
+
+    //Background Decks
+    if(bgDecks_.isEmpty())
+    {
+        bgDecks_ = bgApp_;
+    }
+    else if(bgDecks_.contains("."))
+    {
+        bgDecks_ = "background-image: url(./" + bgDecks_ + ");";
+    }
+    else
+    {
+        bgDecks_ = "background-color: " + bgDecks_ + ";";
+    }
+
+
+    //Border Decks
+    QString borderDecksWidthS = QString::number(borderDecksWidth_);
+    if(borderDecks_.isEmpty())
+    {
+        borderDecksWidth_ = 0;
+        borderDecks_ = "border-color: transparent;";
+    }
+    else if(borderDecks_.contains("."))
+    {
+        borderDecks_ = "border-image: url(./" + borderDecks_ + ") " + borderDecksWidthS + "; border-width: " + borderDecksWidthS + "px;";
+    }
+    else
+    {
+        borderDecks_ = "border-color: " + borderDecks_ + "; border-width: " + borderDecksWidthS + "px; border-style: solid;";
     }
 
     //Default values
