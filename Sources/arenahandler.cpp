@@ -612,7 +612,7 @@ void ArenaHandler::showRewards()
 void ArenaHandler::redrawRow(QTreeWidgetItem *item)
 {
     QRegularExpressionMatch match;
-    QString logFileName = replayLogsMap[item];
+    QString logFileName = replayLogsMap.value(item, "");
 
     if(isOnZ2H(logFileName, match)) setRowColor(item, ThemeHandler::themeColor1());
     else

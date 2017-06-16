@@ -204,7 +204,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
     }
     else
     {
-        bgApp_ = "fondo2.jpg";
+        bgApp_ = "uglybg.jpg";
         borderWidth_ = 12;
         borderApp_ = "border2.png";
         bgWidgets_ = "rgba(0,0,0,100)";
