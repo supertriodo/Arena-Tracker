@@ -1,20 +1,30 @@
 #include "movelistwidget.h"
 #include "../Cards/deckcard.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 MoveListWidget::MoveListWidget(QWidget *parent) : QListWidget(parent)
 {
     this->setFrameShape(QFrame::NoFrame);
     this->setIconSize(10*CARD_SIZE);
-    this->setStyleSheet("QListView{background-color: transparent; outline: 0;}"
-                                        "QListView::item{padding: -1px;}");
-
+    this->setTheme();
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setFocusPolicy(Qt::NoFocus);
+}
+
+
+void MoveListWidget::setTheme()
+{
+    this->setStyleSheet(
+        "QListView{background-color: transparent; outline: 0;}"
+        "QListView::item{padding: -1px;}"
+        "QListView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; "
+            "color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
+    );
 }
 
 

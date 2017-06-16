@@ -3185,8 +3185,7 @@ void MainWindow::allCardsDownloaded()
 void MainWindow::test()
 {
 //    testPlan();
-//    QTimer::singleShot(20000, this, SLOT(testDelay()));
-    showMessageProgressBar("Testing downloads...", 10000);
+    QTimer::singleShot(5000, this, SLOT(testDelay()));
 }
 
 
@@ -3253,6 +3252,8 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
+    showMessageProgressBar("Testing downloads...", 10000);
+    secretsHandler->secretPlayed(1, MAGE, arena);
 }
 
 

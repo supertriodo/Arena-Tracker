@@ -18,6 +18,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
 
+public:
+    void setTheme();
+
 signals:
     void xLeave();
     void leave();
