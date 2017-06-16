@@ -2571,9 +2571,9 @@ void MainWindow::updateMainUITheme()
                 "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
             "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
-            "QProgressBar {border: 2px solid " + ThemeHandler::themeColor2() + "; color: " + ThemeHandler::fgColor() + "; "
-                "background-color: " + ThemeHandler::themeColor2() + ";}"
-            "QProgressBar::chunk {background-color: " + ThemeHandler::themeColor1() + ";}"
+            "QProgressBar {border: 2px solid " + ThemeHandler::borderProgressBarColor() + "; color: " + ThemeHandler::fgProgressBarColor() + "; "
+                "background-color: " + ThemeHandler::bgProgressBarColor() + ";}"
+            "QProgressBar::chunk {background-color: " + ThemeHandler::chunkProgressBarColor() + ";}"
 
             "QDialog {" + ThemeHandler::bgApp() + ";}"
             "QPushButton {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgColor() + ";}"

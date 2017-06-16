@@ -18,6 +18,7 @@ int ThemeHandler::borderDecksWidth_;
 QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
 QString ThemeHandler::bgSelectedItemListColor_, ThemeHandler::fgSelectedItemListColor_;
 QString ThemeHandler::borderTooltipColor_, ThemeHandler::bgTooltipColor_, ThemeHandler::fgTooltipColor_;
+QString ThemeHandler::borderProgressBarColor_, ThemeHandler::bgProgressBarColor_, ThemeHandler::fgProgressBarColor_, ThemeHandler::chunkProgressBarColor_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -161,15 +162,42 @@ QString ThemeHandler::borderTooltipColor()
     return borderTooltipColor_;
 }
 
+
 QString ThemeHandler::bgTooltipColor()
 {
     return bgTooltipColor_;
 }
 
+
 QString ThemeHandler::fgTooltipColor()
 {
     return fgTooltipColor_;
 }
+
+
+QString ThemeHandler::borderProgressBarColor()
+{
+    return borderProgressBarColor_;
+}
+
+
+QString ThemeHandler::bgProgressBarColor()
+{
+    return bgProgressBarColor_;
+}
+
+
+QString ThemeHandler::fgProgressBarColor()
+{
+    return fgProgressBarColor_;
+}
+
+
+QString ThemeHandler::chunkProgressBarColor()
+{
+    return chunkProgressBarColor_;
+}
+
 
 void ThemeHandler::reset()
 {
@@ -185,6 +213,7 @@ void ThemeHandler::reset()
     bgDecks_ = borderDecks_ = "";
     bgSelectedItemListColor_ = fgSelectedItemListColor_ = "";
     borderTooltipColor_ = bgTooltipColor_ = fgTooltipColor_ = "";
+    borderProgressBarColor_ = bgProgressBarColor_ = fgProgressBarColor_ = chunkProgressBarColor_ = "";
 }
 
 
@@ -228,6 +257,10 @@ void ThemeHandler::loadTheme(bool themeBlack)
         borderTooltipColor_ = "grey";
         bgTooltipColor_ = "silver";
         fgTooltipColor_ = "white";
+        borderProgressBarColor_ = "green";
+        bgProgressBarColor_ = "blue";
+        chunkProgressBarColor_ = "red";
+        fgProgressBarColor_ = "yellow";
     }
 
 
@@ -356,4 +389,8 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(borderTooltipColor_.isEmpty())   borderTooltipColor_ = themeColor2_;
     if(bgTooltipColor_.isEmpty())       bgTooltipColor_ = themeColor1_;
     if(fgTooltipColor_.isEmpty())       fgTooltipColor_ = fgColor_;
+    if(borderProgressBarColor_.isEmpty())   borderProgressBarColor_ = themeColor2_;
+    if(bgProgressBarColor_.isEmpty())       bgProgressBarColor_ = themeColor2_;
+    if(fgProgressBarColor_.isEmpty())       fgProgressBarColor_ = fgColor_;
+    if(chunkProgressBarColor_.isEmpty())    chunkProgressBarColor_ = themeColor1_;
 }

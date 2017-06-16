@@ -28,6 +28,7 @@ private:
     static QString bgDecks_, borderDecks_;
     static QString bgSelectedItemListColor_, fgSelectedItemListColor_;
     static QString borderTooltipColor_, bgTooltipColor_, fgTooltipColor_;
+    static QString borderProgressBarColor_, bgProgressBarColor_, fgProgressBarColor_, chunkProgressBarColor_;
 
 
 //Metodos
@@ -61,6 +62,10 @@ public:
     static QString borderTooltipColor();
     static QString bgTooltipColor();
     static QString fgTooltipColor();
+    static QString borderProgressBarColor();
+    static QString bgProgressBarColor();
+    static QString fgProgressBarColor();
+    static QString chunkProgressBarColor();
 };
 
 #endif // THEMEHANDLER_H
