@@ -2554,7 +2554,7 @@ void MainWindow::updateMainUITheme()
 
     QString mainCSS = "";
     mainCSS +=
-            "QMenu {" + ThemeHandler::bgApp() + ThemeHandler::borderApp(false) + "; color: " + ThemeHandler::fgMenuColor() + ";}"
+            "QMenu {" + ThemeHandler::bgMenu() + ThemeHandler::borderMenu() + "; color: " + ThemeHandler::fgMenuColor() + ";}"
             "QMenu::item {padding: 2px 25px 2px 20px;border: 1px solid " + ThemeHandler::borderItemMenuColor() + ";}"
             "QMenu::item:selected {background-color: " + ThemeHandler::bgSelectedItemMenuColor() + "; "
                 "color: " + ThemeHandler::fgSelectedItemMenuColor() + "; "

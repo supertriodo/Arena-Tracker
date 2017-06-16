@@ -21,7 +21,8 @@ private:
     static QString bgWidgets_;
     static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
     static QString bgTopButtonsColor_, hoverTopButtonsColor_;
-    static QString fgMenuColor_;
+    static int borderMenuWidth_;
+    static QString fgMenuColor_, bgMenu_, borderMenu_;
     static QString borderItemMenuColor_, bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
 
 
@@ -47,6 +48,8 @@ public:
     static QString borderItemMenuColor();
     static QString bgSelectedItemMenuColor();
     static QString fgSelectedItemMenuColor();
+    static QString bgMenu();
+    static QString borderMenu();
 };
 
 #endif // THEMEHANDLER_H

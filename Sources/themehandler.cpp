@@ -11,7 +11,8 @@ QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
 QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
 QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
-QString ThemeHandler::fgMenuColor_;
+int ThemeHandler::borderMenuWidth_;
+QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenu_, ThemeHandler::borderMenu_;
 QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
 
 ThemeHandler::ThemeHandler()
@@ -115,6 +116,18 @@ QString ThemeHandler::fgSelectedItemMenuColor()
 }
 
 
+QString ThemeHandler::bgMenu()
+{
+    return bgMenu_;
+}
+
+
+QString ThemeHandler::borderMenu()
+{
+    return borderMenu_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -122,7 +135,8 @@ void ThemeHandler::reset()
     fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
     bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
     bgTopButtonsColor_ = hoverTopButtonsColor_ = "";
-    fgMenuColor_ = "";
+    borderMenuWidth_ = 0;
+    fgMenuColor_ = bgMenu_ = borderMenu_ = "";
     borderItemMenuColor_ = bgSelectedItemMenuColor_ = fgSelectedItemMenuColor_ = "";
 }
 
@@ -158,6 +172,9 @@ void ThemeHandler::loadTheme(bool themeBlack)
         borderItemMenuColor_ = "blue";
         bgSelectedItemMenuColor_ = "yellow";
         fgSelectedItemMenuColor_ = "black";
+        bgMenu_ = "pink";
+        borderMenu_ = "grey";
+        borderMenuWidth_ = 10;
     }
 
 
@@ -202,6 +219,38 @@ void ThemeHandler::loadTheme(bool themeBlack)
     else
     {
         bgWidgets_ = "background-color: " + bgWidgets_ + ";";
+    }
+
+
+    //Background Menu
+    if(bgMenu_.isEmpty())
+    {
+        bgMenu_ = bgApp_;
+    }
+    else if(bgMenu_.contains("."))
+    {
+        bgMenu_ = "background-image: url(./" + bgMenu_ + ");";
+    }
+    else
+    {
+        bgMenu_ = "background-color: " + bgMenu_ + ";";
+    }
+
+
+    //Border Menu
+    QString borderMenuWidthS = QString::number(borderMenuWidth_);
+    if(borderMenu_.isEmpty())
+    {
+        borderMenuWidth_ = 0;
+        borderMenu_ = "border-color: transparent;";
+    }
+    else if(borderMenu_.contains("."))
+    {
+        borderMenu_ = "border-image: url(./" + borderMenu_ + ") " + borderMenuWidthS + "; border-width: " + borderMenuWidthS + "px;";
+    }
+    else
+    {
+        borderMenu_ = "border-color: " + borderMenu_ + "; border-width: " + borderMenuWidthS + "px; border-style: solid;";
     }
 
     //Default values
