@@ -1,6 +1,7 @@
 #include "cardgraphicsitem.h"
 #include "herographicsitem.h"
 #include "../../utility.h"
+#include "../../themehandler.h"
 #include <QtWidgets>
 
 
@@ -254,7 +255,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                             0, 0, 66, 66);
 
             //Mana cost
-            QFont font(HS_FONT);
+            QFont font(ThemeHandler::cardsFont());
             font.setPixelSize(45);
             font.setBold(true);
             font.setKerning(true);
@@ -284,7 +285,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                             QPixmap(":/Images/bgHeroAttack.png"),
                             0, 0, 85, 98);
 
-            QFont font(HS_FONT);
+            QFont font(ThemeHandler::cardsFont());
             font.setPixelSize(40);
             font.setBold(true);
             font.setKerning(true);
@@ -314,7 +315,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                             QPixmap(":/Images/bgHeroLife.png"),
                             0, 0, 70, 98);
 
-            QFont font(HS_FONT);
+            QFont font(ThemeHandler::cardsFont());
             font.setPixelSize(40);
             font.setBold(true);
             font.setKerning(true);
@@ -355,7 +356,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                             heightShow-15+(cardLifted?CARD_LIFT:0));
 
         //Turn
-        QFont font(HS_FONT);
+        QFont font(ThemeHandler::cardsFont());
         font.setPixelSize(40);
         font.setBold(true);
         font.setKerning(true);

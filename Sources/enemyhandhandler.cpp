@@ -1,4 +1,5 @@
 #include "enemyhandhandler.h"
+#include "themehandler.h"
 #include <QtWidgets>
 
 EnemyHandHandler::EnemyHandHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
@@ -40,9 +41,7 @@ void EnemyHandHandler::completeUI()
 
     ui->enemyAttackHeroLabel->setFixedHeight(TAM_ATK_HERO);
     ui->enemyAttackRivalLabel->setFixedHeight(TAM_ATK_HERO);
-    QFont font(BIG_FONT);
-    font.setPixelSize(25);
-    ui->enemyAttackVSLabel->setFont(font);
+
     hideHeroAttack();
 
     connect(ui->enemyHandListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
@@ -383,6 +382,14 @@ void EnemyHandHandler::updateTransparency()
 }
 
 
+void EnemyHandHandler::setTheme()
+{
+    QFont font(ThemeHandler::bigFont());
+    font.setPixelSize(25);
+    ui->enemyAttackVSLabel->setFont(font);
+}
+
+
 void EnemyHandHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
@@ -422,8 +429,8 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
 void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
 {
     //Font
-    QFont font(HS_FONT);
-    font.setPixelSize(TAM_ATK_HERO/2.0);
+    QFont font(ThemeHandler::cardsFont());
+    font.setPixelSize(TAM_ATK_HERO/1.5);
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN

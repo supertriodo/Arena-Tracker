@@ -16,7 +16,7 @@
 
 //Fuentes
 #define HS_FONT "Belwe Bd BT"
-#define BIG_FONT "Luckiest Guy"
+#define LG_FONT "Luckiest Guy"
 
 
 //Secretos

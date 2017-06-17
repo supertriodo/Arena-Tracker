@@ -839,11 +839,6 @@ void MainWindow::completeUI()
 {
     if(isMainWindow)
     {
-        //Main font
-        QFont font(BIG_FONT);
-        font.setPixelSize(15);
-        QApplication::setFont(font);
-
         ui->tabWidget->clear();
         ui->tabWidget->hide();
 
@@ -858,8 +853,6 @@ void MainWindow::completeUI()
         ui->tabWidgetV1->setTabBarAutoHide(true);
         ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        font.setPixelSize(16);
-        ui->progressBar->setFont(font);
         ui->progressBar->setVisible(false);
         ui->progressBar->setMaximum(100);
         ui->progressBar->setValue(100);
@@ -2524,6 +2517,7 @@ void MainWindow::spreadTheme(bool themeBlack)
     deckHandler->setTheme();
     draftHandler->setTheme();
     planHandler->setTheme();
+    enemyHandHandler->setTheme();
     deckHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
@@ -2549,6 +2543,12 @@ void MainWindow::updateTabWidgetsTheme(bool transparent, bool resizing)
 
 void MainWindow::updateMainUITheme()
 {
+    QFont font(ThemeHandler::defaultFont());
+    font.setPixelSize(15);
+    QApplication::setFont(font);
+    font.setPixelSize(16);
+    ui->progressBar->setFont(font);
+
     updateTabWidgetsTheme(false, false);
     updateButtonsTheme();
 

@@ -4,9 +4,6 @@
 
 MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 {
-    QFont font(BIG_FONT);
-    font.setPixelSize(20);
-    this->setFont(font);
     this->setFrameShape(QFrame::NoFrame);
     setTheme(false);
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -22,6 +19,10 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 
 void MoveTreeWidget::setTheme(bool standAlone)
 {
+    QFont font(ThemeHandler::bigFont());
+    font.setPixelSize(20);
+    this->setFont(font);
+
     this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgDecks()+ThemeHandler::borderDecks():ThemeHandler::bgWidgets()) + "; outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"

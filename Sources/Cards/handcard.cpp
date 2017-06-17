@@ -1,4 +1,5 @@
 #include "handcard.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 
@@ -39,7 +40,7 @@ void HandCard::draw()
 
 void HandCard::drawDefaultHandCard()
 {
-    QFont font(HS_FONT);
+    QFont font(ThemeHandler::cardsFont());
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;

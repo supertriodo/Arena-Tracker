@@ -1,4 +1,5 @@
 #include "themehandler.h"
+#include "constants.h"
 #include <QtWidgets>
 
 QString ThemeHandler::bgApp_;
@@ -21,6 +22,7 @@ QString ThemeHandler::borderTooltipColor_, ThemeHandler::bgTooltipColor_, ThemeH
 QString ThemeHandler::borderProgressBarColor_, ThemeHandler::bgProgressBarColor_, ThemeHandler::fgProgressBarColor_, ThemeHandler::chunkProgressBarColor_;
 QString ThemeHandler::borderLineEditColor_, ThemeHandler::bgLineEditColor_, ThemeHandler::fgLineEditColor_;
 QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEditColor_;
+QString ThemeHandler::defaultFont_, ThemeHandler::cardsFont_, ThemeHandler::bigFont_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -231,6 +233,24 @@ QString ThemeHandler::fgSelectionLineEditColor()
 }
 
 
+QString ThemeHandler::defaultFont()
+{
+    return defaultFont_;
+}
+
+
+QString ThemeHandler::cardsFont()
+{
+    return cardsFont_;
+}
+
+
+QString ThemeHandler::bigFont()
+{
+    return bigFont_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -248,6 +268,7 @@ void ThemeHandler::reset()
     borderProgressBarColor_ = bgProgressBarColor_ = fgProgressBarColor_ = chunkProgressBarColor_ = "";
     borderLineEditColor_ = bgLineEditColor_ = fgLineEditColor_ = "";
     bgSelectionLineEditColor_ = fgSelectionLineEditColor_ = "";
+    defaultFont_ = cardsFont_ = bigFont_ = "";
 }
 
 
@@ -267,7 +288,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
     }
     else
     {
-        bgApp_ = "uglybg.jpg";
+        bgApp_ = "fondo2.jpg";
         borderWidth_ = 12;
         borderApp_ = "border2.png";
         bgWidgets_ = "rgba(0,0,0,100)";
@@ -300,6 +321,12 @@ void ThemeHandler::loadTheme(bool themeBlack)
         fgLineEditColor_ = "yellow";
         bgSelectionLineEditColor_ = "grey";
         fgSelectionLineEditColor_ = "black";
+        QFontDatabase::addApplicationFont("./PermanentMarker.ttf");
+        QFontDatabase::addApplicationFont("./IndieFlower.ttf");
+        QFontDatabase::addApplicationFont("./Mogra.ttf");
+        cardsFont_ = "Permanent Marker";
+        defaultFont_ = "Indie Flower";
+        bigFont_ = "Mogra";
     }
 
 
@@ -437,4 +464,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(fgLineEditColor_.isEmpty())          fgLineEditColor_ = fgColor_;
     if(bgSelectionLineEditColor_.isEmpty()) bgSelectionLineEditColor_ = fgColor_;
     if(fgSelectionLineEditColor_.isEmpty()) fgSelectionLineEditColor_ = themeColor1_;
+    if(defaultFont_.isEmpty())              defaultFont_ = LG_FONT;
+    if(bigFont_.isEmpty())                  bigFont_ = defaultFont_;
+    if(cardsFont_.isEmpty())                cardsFont_ = HS_FONT;
 }

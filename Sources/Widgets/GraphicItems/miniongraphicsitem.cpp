@@ -1,5 +1,6 @@
 #include "miniongraphicsitem.h"
 #include "../../utility.h"
+#include "../../themehandler.h"
 #include <QtWidgets>
 
 MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
@@ -666,7 +667,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
 
     //Attack/Health
-    QFont font(HS_FONT);
+    QFont font(ThemeHandler::cardsFont());
     font.setPixelSize(45);
     font.setBold(true);
     font.setKerning(true);

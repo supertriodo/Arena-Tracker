@@ -1,5 +1,6 @@
 #include "planhandler.h"
 #include "mainwindow.h"
+#include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -45,13 +46,6 @@ PlanHandler::~PlanHandler()
 
 void PlanHandler::completeUI()
 {
-    QFont font(BIG_FONT);
-    font.setPixelSize(24);
-    ui->planLabelTurn->setFont(font);
-    QFontMetrics fm(font);
-    int textWide = fm.width("T99");
-    ui->planLabelTurn->setFixedWidth(textWide);
-
     connect(ui->planButtonPrev, SIGNAL(clicked()),
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
@@ -2291,6 +2285,13 @@ void PlanHandler::reset()
 
 void PlanHandler::setTheme()
 {
+    QFont font(ThemeHandler::bigFont());
+    font.setPixelSize(24);
+    ui->planLabelTurn->setFont(font);
+    QFontMetrics fm(font);
+    int textWide = fm.width("T99");
+    ui->planLabelTurn->setFixedWidth(textWide);
+
     ui->planGraphicsView->setTheme(false);
 }
 

@@ -59,6 +59,7 @@ public:
     void setMouseInApp(bool value);
     bool isEmpty();
     void setShowAttackBar(bool value);
+    void setTheme();
 
 signals:
     void checkCardImage(QString code);

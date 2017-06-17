@@ -31,6 +31,7 @@ private:
     static QString borderProgressBarColor_, bgProgressBarColor_, fgProgressBarColor_, chunkProgressBarColor_;
     static QString borderLineEditColor_, bgLineEditColor_, fgLineEditColor_;
     static QString bgSelectionLineEditColor_, fgSelectionLineEditColor_;
+    static QString defaultFont_, cardsFont_, bigFont_;
 
 
 //Metodos
@@ -73,6 +74,9 @@ public:
     static QString fgLineEditColor();
     static QString bgSelectionLineEditColor();
     static QString fgSelectionLineEditColor();
+    static QString defaultFont();
+    static QString cardsFont();
+    static QString bigFont();
 };
 
 #endif // THEMEHANDLER_H

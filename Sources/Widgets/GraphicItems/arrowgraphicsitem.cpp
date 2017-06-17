@@ -2,6 +2,7 @@
 #include "miniongraphicsitem.h"
 #include "herographicsitem.h"
 #include "../../utility.h"
+#include "../../themehandler.h"
 #include <QtWidgets>
 
 ArrowGraphicsItem::ArrowGraphicsItem(ArrowType arrowType)
@@ -126,7 +127,7 @@ void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         QString text = "x" + QString::number(this->numAttacks);
         QPoint midPoint = line.p1() + QPoint(line.dx()/2, line.dy()/2);
 
-        QFont font(HS_FONT);
+        QFont font(ThemeHandler::cardsFont());
         font.setPixelSize(45);
         font.setBold(true);
         font.setKerning(true);

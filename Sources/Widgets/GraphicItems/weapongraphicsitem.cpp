@@ -1,6 +1,7 @@
 #include "weapongraphicsitem.h"
 #include "herographicsitem.h"
 #include "../../utility.h"
+#include "../../themehandler.h"
 #include <QtWidgets>
 
 WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly, GraphicsItemSender *graphicsItemSender)
@@ -65,7 +66,7 @@ void WeaponGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawPixmap(-WIDTH/2, -HEIGHT/2, QPixmap(":/Images/bgWeaponSimple.png"));
 
     //Attack/Durability
-    QFont font(HS_FONT);
+    QFont font(ThemeHandler::cardsFont());
     font.setPixelSize(45);
     font.setBold(true);
     font.setKerning(true);

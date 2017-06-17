@@ -34,9 +34,6 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
 
-    QFont font(BIG_FONT);
-    font.setPixelSize(12);
-    ui->logTextEdit->setFont(font);
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
 
     connect(ui->webButton, SIGNAL(clicked()),
@@ -52,14 +49,6 @@ void ArenaHandler::completeUI()
 
 void ArenaHandler::completeRewardsUI()
 {
-    QFont font(BIG_FONT);
-    font.setPixelSize(20);
-    ui->lineEditGold->setFont(font);
-    ui->lineEditArcaneDust->setFont(font);
-    ui->lineEditPack->setFont(font);
-    ui->lineEditPlainCard->setFont(font);
-    ui->lineEditGoldCard->setFont(font);
-
     ui->lineEditGold->setMinimumWidth(1);
     ui->lineEditArcaneDust->setMinimumWidth(1);
     ui->lineEditPack->setMinimumWidth(1);
@@ -673,6 +662,17 @@ void ArenaHandler::setMouseInApp(bool value)
 //Blanco opaco usa un theme diferente a los otros 3
 void ArenaHandler::setTheme()
 {
+    QFont font(ThemeHandler::defaultFont());
+    font.setPixelSize(12);
+    ui->logTextEdit->setFont(font);
+
+    font.setPixelSize(20);
+    ui->lineEditGold->setFont(font);
+    ui->lineEditArcaneDust->setFont(font);
+    ui->lineEditPack->setFont(font);
+    ui->lineEditPlainCard->setFont(font);
+    ui->lineEditGoldCard->setFont(font);
+
     redrawAllRows();
     ui->arenaTreeWidget->setTheme(false);
 }

@@ -41,18 +41,6 @@ void DraftHandler::completeUI()
 {
     ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
 
-    QFont font(BIG_FONT);
-    font.setPixelSize(24);
-    ui->labelLFscore1->setFont(font);
-    ui->labelLFscore2->setFont(font);
-    ui->labelLFscore3->setFont(font);
-    ui->labelHAscore1->setFont(font);
-    ui->labelHAscore2->setFont(font);
-    ui->labelHAscore3->setFont(font);
-
-    font.setPixelSize(12);
-    ui->textBrowserDraft->setFont(font);
-
     labelCard[0] = ui->labelCard1;
     labelCard[1] = ui->labelCard2;
     labelCard[2] = ui->labelCard3;
@@ -1014,6 +1002,19 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 
 void DraftHandler::setTheme()
 {
+    QFont font(ThemeHandler::bigFont());
+    font.setPixelSize(24);
+    ui->labelLFscore1->setFont(font);
+    ui->labelLFscore2->setFont(font);
+    ui->labelLFscore3->setFont(font);
+    ui->labelHAscore1->setFont(font);
+    ui->labelHAscore2->setFont(font);
+    ui->labelHAscore3->setFont(font);
+
+    font = QFont(ThemeHandler::defaultFont());
+    font.setPixelSize(12);
+    ui->textBrowserDraft->setFont(font);
+
     for(int i=0; i<3; i++)
     {
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
