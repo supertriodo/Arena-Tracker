@@ -82,6 +82,7 @@ public:
     static bool isASecret(QString code);
     static void dumpOnFile(QByteArray &data, QString path);
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
+    static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter);
 };
 
 #endif // UTILITY_H

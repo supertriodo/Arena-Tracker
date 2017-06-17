@@ -683,22 +683,14 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     if(attack>origAttack)   painter->setBrush(GREEN);
     else                    painter->setBrush(WHITE);
-    QFontMetrics fm(font);
     QString text = QString::number(attack);
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
-    QPainterPath path;
-    path.addText(-35 - textWide/2, 46 + textHigh/4, font, text);
-    painter->drawPath(path);
+    Utility::drawShadowText(*painter, font, text, -35, 46, true);
 
     if(damage>0)                painter->setBrush(RED);
     else if(health>origHealth)  painter->setBrush(GREEN);
     else                        painter->setBrush(WHITE);
     text = QString::number(health-std::max(0,damage));//Usamos damage negativo en future planning al establecer addons damage/life
-    textWide = fm.width(text);
-    path = QPainterPath();
-    path.addText(34 - textWide/2, 46 + textHigh/4, font, text);
-    painter->drawPath(path);
+    Utility::drawShadowText(*painter, font, text, 34, 46, true);
 
     //Shield
     if(this->shield)
@@ -770,10 +762,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         if(addons[i].number > 1)
         {
             text = QString::number(addons[i].number);
-            textWide = fm.width(text);
-            path = QPainterPath();
-            path.addText(moveX - textWide/2, moveY + textHigh/4, font, text);
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, text, moveX, moveY, true);
         }
     }
 
@@ -792,10 +781,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
             painter->setBrush(RED);
         }
 
-        textWide = fm.width(symbol);
-        path = QPainterPath();
-        path.addText(-35 - textWide/2, 20 + textHigh/4, font, symbol);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, symbol, -35, 20, true);
     }
     if(changeHealth != ChangeNone)
     {
@@ -811,10 +797,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
             painter->setBrush(RED);
         }
 
-        textWide = fm.width(symbol);
-        path = QPainterPath();
-        path.addText(34 - textWide/2, 20 + textHigh/4, font, symbol);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, symbol, 34, 20, true);
     }
 
     //Dead Prob
@@ -825,9 +808,6 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         //Numero
         painter->setBrush(RED);
         text = QString::number((int)round(deadProb*100)) + "%";
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(-textWide/2, textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, 0, 0, true);
     }
 }

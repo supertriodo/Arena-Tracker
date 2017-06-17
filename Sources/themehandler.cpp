@@ -324,7 +324,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
         QFontDatabase::addApplicationFont("./PermanentMarker.ttf");
         QFontDatabase::addApplicationFont("./IndieFlower.ttf");
         QFontDatabase::addApplicationFont("./Mogra.ttf");
-        cardsFont_ = "Permanent Marker";
+        cardsFont_ = LG_FONT;//"Mogra";//"Indie Flower";//"Permanent Marker";
         defaultFont_ = "Indie Flower";
         bigFont_ = "Mogra";
     }

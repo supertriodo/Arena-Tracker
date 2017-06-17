@@ -444,7 +444,6 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
     if(totalAttack == totalMaxAttack)   text = QString::number(totalAttack);
     else                                text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
     int textWide = fm.width(text);
-    int textHigh = fm.height();
 
 
     int widthCanvas = std::max(TAM_ATK_HERO, textWide);
@@ -468,9 +467,7 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
         if(friendly)    painter.setBrush(GREEN);
         else            painter.setBrush(SOFT_RED);
 
-        QPainterPath path;
-        path.addText(widthCanvas/2 - textWide/2 - 1, 5*TAM_ATK_HERO/8 + textHigh/4 - 1 , font, text);
-        painter.drawPath(path);
+        Utility::drawShadowText(painter, font, text, widthCanvas/2 - 1, 5*TAM_ATK_HERO/8 - 1, true);
     painter.end();
 
     if(friendly)

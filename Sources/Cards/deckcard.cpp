@@ -193,18 +193,6 @@ CardClass DeckCard::getClassFromString(QString value)
 }
 
 
-void DeckCard::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y)
-{
-    QFontMetrics fm(font);
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
-
-    QPainterPath path;
-    path.addText(x - textWide/2, y + textHigh/4, font, text);
-    painter.drawPath(path);
-}
-
-
 void DeckCard::draw()
 {
     QPixmap canvas;
@@ -291,12 +279,12 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             if(total > 1)
             {
                 font.setPixelSize(22);//16pt
-                drawShadowText(painter, font, QString::number(total), 202, 19);
+                Utility::drawShadowText(painter, font, QString::number(total), 202, 19, true);
             }
             else
             {
                 font.setPixelSize(28);//20pt
-                drawShadowText(painter, font, "*", 202, 19+5);
+                Utility::drawShadowText(painter, font, "*", 202, 19+5, true);
             }
         }
 
@@ -307,13 +295,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             font.setPixelSize(14);//10pt
             painter.setPen(QPen(BLACK));
             painter.setBrush(QColor(ThemeHandler::themeColor1()));
-
-            QFontMetrics fm(font);
-            int textHigh = fm.height();
-
-            QPainterPath path;
-            path.addText(34, 20 + textHigh/4, font, "Unknown");
-            painter.drawPath(path);
+            Utility::drawShadowText(painter, font, "Unknown", 34, 20, false);
         }
         else
         {
@@ -323,25 +305,20 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
 
             QFontMetrics fm(font);
             int textWide = fm.width(name);
-            int textHigh = fm.height();
             while(textWide>maxNameLong)
             {
                 fontSize--;
                 font.setPixelSize(fontSize);//<11pt
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
-                textHigh = fm.height();
             }
 
-            QPainterPath path;
-            path.addText(34, 20 + textHigh/4, font, name);
-            painter.drawPath(path);
-
+            Utility::drawShadowText(painter, font, name, 34, 20, false);
 
             //Mana cost
             int manaSize = cost>9?26:18+1.5*cost;
             font.setPixelSize(manaSize);//20pt | 14 + cost
-            drawShadowText(painter, font, QString::number(cost), 13, 20);
+            Utility::drawShadowText(painter, font, QString::number(cost), 13, 20, true);
         }
     painter.end();
 
@@ -394,29 +371,22 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         //BY
         int fontSize = 15;
         font.setPixelSize(fontSize);//11pt
-
         QFontMetrics fm(font);
-        int textWide = fm.width(customText);
-        int textHigh = fm.height();
-
+        int customTextWide = fm.width(customText);
         painter.setBrush(BLACK);
         painter.setPen(QPen(WHITE));
-
-        QPainterPath path;
-        path.addText(10, 20 + textHigh/4, font, customText);
-        painter.drawPath(path);
+        Utility::drawShadowText(painter, font, customText, 10, 20, false);
 
 
         //Name
         int nameWide = fm.width(name);
-        int maxNameLong = 194 - textWide;
+        int maxNameLong = 194 - customTextWide;
         while(nameWide>maxNameLong)
         {
             fontSize--;
             font.setPixelSize(fontSize);//<11pt
             fm = QFontMetrics(font);
             nameWide = fm.width(name);
-            textHigh = fm.height();
         }
 
         painter.setPen(QPen(BLACK));
@@ -426,9 +396,7 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
         else                                            painter.setBrush(WHITE);
 
-        path = QPainterPath();
-        path.addText(14 + textWide, 20 + textHigh/4, font, name);
-        painter.drawPath(path);
+        Utility::drawShadowText(painter, font, name, 14 + customTextWide, 20, false);
     painter.end();
 
     return resizeCardHeight(canvas);

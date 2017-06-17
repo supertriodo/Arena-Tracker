@@ -64,33 +64,20 @@ void HandCard::drawDefaultHandCard()
 #endif
 
         QString text = "T" + QString::number((this->turn+1)/2);
-        QFontMetrics fm(font);
-        int textWide = fm.width(text);
-        int textHigh = fm.height();
-
         painter.setFont(font);
         painter.setBrush(WHITE);
         painter.setPen(QPen(BLACK));
-
-        QPainterPath path;
-        path.addText(172 - textWide/2, 20 + textHigh/4, font, text);
-        painter.drawPath(path);
+        Utility::drawShadowText(painter, font, text, 172, 20, true);
 
         //Buff
         if(buffAttack > 0 || buffHealth > 0)
         {
             font.setPixelSize(20);
             text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
-            fm = QFontMetrics(font);
-            textWide = fm.width(text);
-            textHigh = fm.height();
             painter.setFont(font);
             painter.setBrush(BLACK);
             painter.setPen(QPen(GREEN));
-
-            path = QPainterPath();
-            path.addText(42 - textWide/2, 19 + textHigh/4, font, text);
-            painter.drawPath(path);
+            Utility::drawShadowText(painter, font, text, 42, 19, true);
         }
     painter.end();
 

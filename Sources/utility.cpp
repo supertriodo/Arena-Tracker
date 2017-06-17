@@ -540,3 +540,15 @@ void Utility::dumpOnFile(QByteArray &data, QString path)
     file.close();
 }
 
+
+void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter)
+{
+    QFontMetrics fm(font);
+    int textWide = fm.width(text);
+    int textHigh = fm.height();
+
+    QPainterPath path;
+    path.addText(x - (alignCenter?textWide/2:0), y + textHigh/4, font, text);
+    painter.drawPath(path);
+}
+

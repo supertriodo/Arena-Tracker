@@ -141,13 +141,7 @@ void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         pen.setWidth(2);
         painter->setPen(pen);
         painter->setBrush(WHITE);
-
-        QFontMetrics fm(font);
-        int textWide = fm.width(text);
-        int textHigh = fm.height();
-        QPainterPath path;
-        path.addText(midPoint.x() - textWide/2, midPoint.y() + textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, midPoint.x(), midPoint.y(), true);
     }
 }
 

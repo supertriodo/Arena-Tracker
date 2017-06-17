@@ -271,12 +271,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             if(cost > origCost)         painter->setBrush(RED);
             else                        painter->setBrush(GREEN);
             QString text = QString::number(cost);
-            QFontMetrics fm(font);
-            int textWide = fm.width(text);
-            int textHigh = fm.height();
-            QPainterPath path;
-            path.addText(-WIDTH/2 + 25 - textWide/2, -heightShow/2+(cardLifted?-CARD_LIFT:0) + 28 + textHigh/4, font, text);
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, text, -WIDTH/2 + 25, -heightShow/2+(cardLifted?-CARD_LIFT:0) + 28, true);
         }
 
         if(attack != origAttack)
@@ -301,12 +296,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             if(attack < origAttack)     painter->setBrush(RED);
             else                        painter->setBrush(GREEN);
             QString text = QString::number(attack);
-            QFontMetrics fm(font);
-            int textWide = fm.width(text);
-            int textHigh = fm.height();
-            QPainterPath path;
-            path.addText(-WIDTH/2 + 26 - textWide/2, -heightShow/2 + 233 + (cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, text, -WIDTH/2 + 26, -heightShow/2 + 233 + (cardLifted?-CARD_LIFT:0), true);
         }
 
         if(health != origHealth)
@@ -331,12 +321,7 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             if(health < origHealth)     painter->setBrush(RED);
             else                        painter->setBrush(GREEN);
             QString text = QString::number(health);
-            QFontMetrics fm(font);
-            int textWide = fm.width(text);
-            int textHigh = fm.height();
-            QPainterPath path;
-            path.addText(-WIDTH/2 + 163 - textWide/2, -heightShow/2 + 233 + (cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, text, -WIDTH/2 + 163, -heightShow/2 + 233 + (cardLifted?-CARD_LIFT:0), true);
         }
     }
 
@@ -371,30 +356,19 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->setPen(pen);
         painter->setBrush(WHITE);
         QString text = "T"+QString::number((this->turn+1)/2);
-        QFontMetrics fm(font);
-        int textWide = fm.width(text);
-        int textHigh = fm.height();
-        QPainterPath path;
-        path.addText(-35 - textWide/2, -heightShow/2 + 71 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, -35, -heightShow/2 + 71 + (cardLifted?-CARD_LIFT:0), true);
 
         //Buff
         if(buffAttack > 0 || buffHealth > 0)
         {
             font.setPixelSize(40);
             text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
-            fm = QFontMetrics(font);
-            textWide = fm.width(text);
-            textHigh = fm.height();
             painter->setFont(font);
             painter->setBrush(BLACK);
             pen = QPen(GREEN);
             pen.setWidth(2);
             painter->setPen(pen);
-
-            path = QPainterPath();
-            path.addText(-5 - textWide/2, -heightShow/2 + 133 + +(cardLifted?-CARD_LIFT:0) + textHigh/4, font, text);
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, text, -5, -heightShow/2 + 133 + (cardLifted?-CARD_LIFT:0), true);
         }
     }
 }

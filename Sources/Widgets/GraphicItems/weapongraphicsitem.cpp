@@ -82,22 +82,14 @@ void WeaponGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     if(attack>origAttack)   painter->setBrush(GREEN);
     else                    painter->setBrush(WHITE);
-    QFontMetrics fm(font);
     QString text = QString::number(attack);
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
-    QPainterPath path;
-    path.addText(-49 - textWide/2, 37 + textHigh/4, font, text);
-    painter->drawPath(path);
+    Utility::drawShadowText(*painter, font, text, -49, 37, true);
 
     if(damage>0)                painter->setBrush(RED);
     else if(durability>origDurability)  painter->setBrush(GREEN);
     else                        painter->setBrush(WHITE);
     text = QString::number(durability-damage);
-    textWide = fm.width(text);
-    path = QPainterPath();
-    path.addText(47 - textWide/2, 37 + textHigh/4, font, text);
-    painter->drawPath(path);
+    Utility::drawShadowText(*painter, font, text, 47, 37, true);
 
     //Dead
     if(this->dead)

@@ -58,7 +58,6 @@ protected:
     CardClass getClassFromString(QString value);
     CardRace getRaceFromString(QString value);
     QPixmap resizeCardHeight(QPixmap &canvas);
-    void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y);
 
 public:
     void draw();

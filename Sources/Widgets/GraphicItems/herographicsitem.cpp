@@ -415,13 +415,8 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     if(damage>0)                painter->setBrush(RED);
     else                        painter->setBrush(WHITE);
-    QFontMetrics fm(font);
     QString text = QString::number(health-std::max(0,damage));//Usamos damage negativo en future planning al establecer addons damage/life
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
-    QPainterPath path;
-    path.addText(70 - textWide/2, 55 + textHigh/4, font, text);
-    painter->drawPath(path);
+    Utility::drawShadowText(*painter, font, text, 70, 55, true);
 
     //Attack
     if(attack > 0)
@@ -430,10 +425,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
         painter->setBrush(WHITE);
         text = QString::number(attack);
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(-66 - textWide/2, 55 + textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, -66, 55, true);
     }
 
     //Armor
@@ -443,10 +435,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
         painter->setBrush(WHITE);
         text = QString::number(armor);
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(70 - textWide/2, textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, 70, 0, true);
     }
 
     //Dead
@@ -569,10 +558,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         //Numero
         if(addons[i].number > 1)
         {
-            textWide = fm.width(QString::number(addons[i].number));
-            path = QPainterPath();
-            path.addText(moveX - textWide/2, moveY + textHigh/4, font, QString::number(addons[i].number));
-            painter->drawPath(path);
+            Utility::drawShadowText(*painter, font, QString::number(addons[i].number), moveX, moveY, true);
         }
     }
 
@@ -584,10 +570,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         //Numero
         painter->setBrush(RED);
         text = QString::number((int)round(deadProb*100)) + "%";
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(-textWide/2, textHigh/4, font, text);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, 0, 0, true);
     }
 
     if(playerTurn == friendly || showAllInfo)
@@ -598,11 +581,8 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         if(playerTurn != friendly)      text = QString::number(max(1,resources));
         else if(resourcesUsed == 0)     text = QString::number(max(1,resources));
         else                            text = QString::number(resources-resourcesUsed) + "/" + QString::number(resources);
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(WIDTH/2-17 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);
         painter->setBrush(WHITE);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, WIDTH/2-17, -HEIGHT/2+46, true);
 
 
         //Total attack
@@ -624,11 +604,8 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         if(playerTurn != friendly)              text = QString::number(totalMaxAttack);
         else if(totalAttack == totalMaxAttack)  text = QString::number(totalAttack);
         else                                    text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
-        textWide = fm.width(text);
-        path = QPainterPath();
-        path.addText(-WIDTH/2+18 - textWide/2, -HEIGHT/2+46 + textHigh/4, font, text);
         painter->setBrush(WHITE);
-        painter->drawPath(path);
+        Utility::drawShadowText(*painter, font, text, -WIDTH/2+18, -HEIGHT/2+46, true);
     }
 }
 
