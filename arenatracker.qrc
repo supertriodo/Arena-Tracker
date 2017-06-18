@@ -129,5 +129,6 @@
         <file>Images/haBest.png</file>
         <file>Images/haClose.png</file>
         <file>Images/haOpen.png</file>
+        <file>Images/legendaryStar.png</file>
     </qresource>
 </RCC>

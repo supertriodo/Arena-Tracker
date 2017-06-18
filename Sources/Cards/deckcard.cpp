@@ -283,8 +283,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             }
             else
             {
-                font.setPixelSize(28);//20pt
-                Utility::drawShadowText(painter, font, "*", 202, 19+5, true);
+                painter.drawPixmap(195, 8, QPixmap(":Images/legendaryStar.png"));
             }
         }
 
