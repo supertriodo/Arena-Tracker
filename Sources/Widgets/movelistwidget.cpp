@@ -21,7 +21,7 @@ void MoveListWidget::setTheme()
 {
     this->setStyleSheet(
         "QListView{background-color: transparent; outline: 0;}"
-        "QListView::item{padding: -1px;}"
+        "QListView::item{padding: 0px;}"
         "QListView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; "
             "color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
     );

@@ -130,5 +130,6 @@
         <file>Images/haClose.png</file>
         <file>Images/haOpen.png</file>
         <file>Images/legendaryStar.png</file>
+        <file>Images/manaLimit.png</file>
     </qresource>
 </RCC>
