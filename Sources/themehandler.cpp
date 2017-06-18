@@ -23,6 +23,7 @@ QString ThemeHandler::borderProgressBarColor_, ThemeHandler::bgProgressBarColor_
 QString ThemeHandler::borderLineEditColor_, ThemeHandler::bgLineEditColor_, ThemeHandler::fgLineEditColor_;
 QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEditColor_;
 QString ThemeHandler::defaultFont_, ThemeHandler::cardsFont_, ThemeHandler::bigFont_;
+int ThemeHandler::cardsFontOffsetY_;
 
 ThemeHandler::ThemeHandler()
 {
@@ -251,6 +252,12 @@ QString ThemeHandler::bigFont()
 }
 
 
+int ThemeHandler::cardsFontOffsetY()
+{
+    return cardsFontOffsetY_;
+}
+
+
 void ThemeHandler::reset()
 {
     bgApp_ = borderApp_ = borderTransparent_;
@@ -269,6 +276,7 @@ void ThemeHandler::reset()
     borderLineEditColor_ = bgLineEditColor_ = fgLineEditColor_ = "";
     bgSelectionLineEditColor_ = fgSelectionLineEditColor_ = "";
     defaultFont_ = cardsFont_ = bigFont_ = "";
+    cardsFontOffsetY_ = 0;
 }
 
 
@@ -324,9 +332,10 @@ void ThemeHandler::loadTheme(bool themeBlack)
         QFontDatabase::addApplicationFont("./PermanentMarker.ttf");
         QFontDatabase::addApplicationFont("./IndieFlower.ttf");
         QFontDatabase::addApplicationFont("./Mogra.ttf");
-        cardsFont_ = LG_FONT;//"Mogra";//"Indie Flower";//"Permanent Marker";
+        cardsFont_ = /*LG_FONT;*//*"Mogra";*/"Indie Flower";//"Permanent Marker";
         defaultFont_ = "Indie Flower";
         bigFont_ = "Mogra";
+        cardsFontOffsetY_ = 5;
     }
 
 

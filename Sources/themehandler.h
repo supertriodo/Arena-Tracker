@@ -32,6 +32,7 @@ private:
     static QString borderLineEditColor_, bgLineEditColor_, fgLineEditColor_;
     static QString bgSelectionLineEditColor_, fgSelectionLineEditColor_;
     static QString defaultFont_, cardsFont_, bigFont_;
+    static int cardsFontOffsetY_;
 
 
 //Metodos
@@ -77,6 +78,7 @@ public:
     static QString defaultFont();
     static QString cardsFont();
     static QString bigFont();
+    static int cardsFontOffsetY();
 };
 
 #endif // THEMEHANDLER_H

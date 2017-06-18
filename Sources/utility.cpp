@@ -1,4 +1,5 @@
 #include "utility.h"
+#include "themehandler.h"
 #include <QtWidgets>
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/core.hpp"
@@ -547,8 +548,10 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
     int textWide = fm.width(text);
     int textHigh = fm.height();
 
+    double offsetY = 0.25 - ThemeHandler::cardsFontOffsetY()/100.0;
+
     QPainterPath path;
-    path.addText(x - (alignCenter?textWide/2:0), y + textHigh/4, font, text);
+    path.addText(x - (alignCenter?textWide/2:0), y + textHigh*offsetY, font, text);
     painter.drawPath(path);
 }
 
