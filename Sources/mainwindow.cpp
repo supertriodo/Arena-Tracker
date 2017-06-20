@@ -2677,7 +2677,11 @@ void MainWindow::spreadTamCard(int value)
 
     if(enemyDeckHandler != NULL)    enemyDeckHandler->redrawAllCards();
     if(secretsHandler != NULL)      secretsHandler->redrawAllCards();
-    if(enemyHandHandler != NULL)    enemyHandHandler->redrawAllCards();
+    if(enemyHandHandler != NULL)
+    {
+        enemyHandHandler->redrawAllCards();
+        enemyHandHandler->redrawTotalAttack();
+    }
 
     if(draftHandler != NULL)
     {
@@ -3264,6 +3268,8 @@ void MainWindow::testPlan()
 void MainWindow::testDelay()
 {
     showMessageProgressBar("Testing downloads...", 10000);
+//    enemyHandHandler->drawHeroTotalAttack(true, 10, 10);
+//    enemyHandHandler->drawHeroTotalAttack(false, 10, 10);
 //    secretsHandler->secretPlayed(1, MAGE, arena);
 }
 

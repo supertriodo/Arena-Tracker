@@ -8,7 +8,6 @@
 #include <QMap>
 
 #define COIN QString("GAME_005")
-#define TAM_ATK_HERO 50
 
 class EnemyHandHandler : public QObject
 {
@@ -30,6 +29,7 @@ private:
     bool showAttackBar;
     QList<int> linkIdsList;
     bool gettingLinkCards;
+    int playerTotalAttack, playerTotalMaxAttack, enemyTotalAttack, enemyTotalMaxAttack;
 
 
 //Metodos
@@ -60,6 +60,7 @@ public:
     bool isEmpty();
     void setShowAttackBar(bool value);
     void setTheme();
+    void redrawTotalAttack();
 
 signals:
     void checkCardImage(QString code);

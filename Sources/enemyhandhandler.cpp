@@ -39,9 +39,6 @@ void EnemyHandHandler::completeUI()
     ui->enemyHandListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
     ui->enemyHandListWidget->setMouseTracking(true);
 
-    ui->enemyAttackHeroLabel->setFixedHeight(TAM_ATK_HERO);
-    ui->enemyAttackRivalLabel->setFixedHeight(TAM_ATK_HERO);
-
     hideHeroAttack();
 
     connect(ui->enemyHandListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
@@ -387,6 +384,8 @@ void EnemyHandHandler::setTheme()
     QFont font(ThemeHandler::bigFont());
     font.setPixelSize(25);
     ui->enemyAttackVSLabel->setFont(font);
+
+    redrawTotalAttack();
 }
 
 
@@ -426,11 +425,26 @@ void EnemyHandHandler::findHandCardEntered(QListWidgetItem * item)
 }
 
 
+void EnemyHandHandler::redrawTotalAttack()
+{
+    if(!ui->enemyAttackHeroLabel->isHidden())
+    {
+        drawHeroTotalAttack(true, playerTotalAttack, playerTotalMaxAttack);
+    }
+    if(!ui->enemyAttackRivalLabel->isHidden())
+    {
+        drawHeroTotalAttack(false, enemyTotalAttack, enemyTotalMaxAttack);
+    }
+}
+
+
 void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
 {
+    int tamAtkHero = DeckCard::getCardHeight()*1.7;
+
     //Font
     QFont font(ThemeHandler::cardsFont());
-    font.setPixelSize(TAM_ATK_HERO/1.5);
+    font.setPixelSize(tamAtkHero/1.5);
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN
@@ -446,8 +460,8 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
     int textWide = fm.width(text);
 
 
-    int widthCanvas = std::max(TAM_ATK_HERO, textWide);
-    QPixmap canvas(widthCanvas, TAM_ATK_HERO);
+    int widthCanvas = std::max(tamAtkHero, textWide);
+    QPixmap canvas(widthCanvas, tamAtkHero);
     canvas.fill(Qt::transparent);
     QPainter painter;
     painter.begin(&canvas);
@@ -457,7 +471,7 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Background
-        painter.drawPixmap((widthCanvas - TAM_ATK_HERO)/2, 0, TAM_ATK_HERO, TAM_ATK_HERO, QPixmap(":Images/bgTotalAttack.png"));
+        painter.drawPixmap((widthCanvas - tamAtkHero)/2, 0, tamAtkHero, tamAtkHero, QPixmap(":Images/bgTotalAttack.png"));
 
         //Text
         painter.setFont(font);
@@ -467,18 +481,24 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
         if(friendly)    painter.setBrush(GREEN);
         else            painter.setBrush(SOFT_RED);
 
-        Utility::drawShadowText(painter, font, text, widthCanvas/2 - 1, 5*TAM_ATK_HERO/8 - 1, true);
+        Utility::drawShadowText(painter, font, text, widthCanvas/2 - 1, 5*tamAtkHero/8 - 1, true);
     painter.end();
 
     if(friendly)
     {
         ui->enemyAttackHeroLabel->setPixmap(canvas);
         ui->enemyAttackHeroLabel->setFixedWidth(widthCanvas);
+        ui->enemyAttackHeroLabel->setFixedHeight(tamAtkHero);
+        this->playerTotalAttack = totalAttack;
+        this->playerTotalMaxAttack = totalMaxAttack;
     }
     else
     {
         ui->enemyAttackRivalLabel->setPixmap(canvas);
         ui->enemyAttackRivalLabel->setFixedWidth(widthCanvas);
+        ui->enemyAttackRivalLabel->setFixedHeight(tamAtkHero);
+        this->enemyTotalAttack = totalAttack;
+        this->enemyTotalMaxAttack = totalMaxAttack;
     }
 }
 
