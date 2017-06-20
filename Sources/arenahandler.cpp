@@ -319,7 +319,7 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, b
 
     item->setExpanded(true);
     item->setText(0, title);
-    if(!hero.isEmpty())     item->setIcon(1, QIcon(":Images/hero" + hero + ".png"));
+    if(!hero.isEmpty())     item->setIcon(1, QIcon(ThemeHandler::heroFile(hero)));
     item->setText(2, "0");
     item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
     item->setText(3, "0");
@@ -474,17 +474,16 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
     QTreeWidgetItem *item = createGameInCategory(gameResult, loadingScreen);
     if(item == NULL)    return NULL;
 
-    item->setIcon(0, QIcon(":Images/" +
-                           (gameResult.playerHero==""?("secretHunter"):("hero"+gameResult.playerHero))
-                           + ".png"));
+    QString iconFile = (gameResult.playerHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.playerHero));
+    item->setIcon(0, QIcon(iconFile));
     item->setText(0, "vs");
     item->setTextAlignment(0, Qt::AlignHCenter|Qt::AlignVCenter);
-    item->setIcon(1, QIcon(":Images/" +
-                           (gameResult.enemyHero==""?("secretHunter"):("hero"+gameResult.enemyHero))
-                           + ".png"));
+
+    iconFile = (gameResult.enemyHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.enemyHero));
+    item->setIcon(1, QIcon(iconFile));
     if(!gameResult.enemyName.isEmpty())     item->setToolTip(1, gameResult.enemyName);
-    item->setIcon(2, QIcon(gameResult.isFirst?":Images/first.png":":Images/coin.png"));
-    item->setIcon(3, QIcon(gameResult.isWinner?":Images/win.png":":Images/lose.png"));
+    item->setIcon(2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
+    item->setIcon(3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
 
     setRowColor(item, ThemeHandler::fgColor());
 
@@ -662,6 +661,9 @@ void ArenaHandler::setMouseInApp(bool value)
 //Blanco opaco usa un theme diferente a los otros 3
 void ArenaHandler::setTheme()
 {
+    ui->replayButton->setIcon(QIcon(ThemeHandler::buttonGamesReplayFile()));
+    ui->webButton->setIcon(QIcon(ThemeHandler::buttonGamesWebFile()));
+
     QFont font(ThemeHandler::defaultFont());
     font.setPixelSize(12);
     ui->logTextEdit->setFont(font);

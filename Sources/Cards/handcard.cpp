@@ -51,7 +51,7 @@ void HandCard::drawDefaultHandCard()
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Background
-        painter.drawPixmap(0,0,QPixmap(this->special?":Images/handCard2.png":":Images/handCard1.png"));
+        painter.drawPixmap(0,0,QPixmap(this->special?ThemeHandler::handCardBYUnknownFile():ThemeHandler::handCardFile()));
 
         //Turn
         font.setPixelSize(25);//18

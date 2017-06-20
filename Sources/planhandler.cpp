@@ -1856,7 +1856,7 @@ void PlanHandler::createFutureBoard()
     futureBoard->enemyHero->setShowAllInfo();
     viewBoard = futureBoard;
     loadViewBoard();
-    ui->planButtonLast->setIcon(QIcon(":Images/refresh.png"));
+    ui->planButtonLast->setIcon(QIcon(ThemeHandler::buttonPlanRefreshFile()));
     ui->planButtonLast->setEnabled(true);
     emit cardLeave();   //Hide cards tooltips
     showManaPlayableCards(futureBoard);
@@ -2285,6 +2285,13 @@ void PlanHandler::reset()
 
 void PlanHandler::setTheme()
 {
+    if(futureBoard == NULL) ui->planButtonLast->setIcon(QIcon(ThemeHandler::buttonPlanLastFile()));
+    else                    ui->planButtonLast->setIcon(QIcon(ThemeHandler::buttonPlanRefreshFile()));
+    ui->planButtonNext->setIcon(QIcon(ThemeHandler::buttonPlanNextFile()));
+    ui->planButtonPrev->setIcon(QIcon(ThemeHandler::buttonPlanPrevFile()));
+    ui->planButtonFirst->setIcon(QIcon(ThemeHandler::buttonPlanFirstFile()));
+    ui->planButtonResize->setIcon(QIcon(ThemeHandler::buttonPlanResizeFile()));
+
     QFont font(ThemeHandler::bigFont());
     font.setPixelSize(24);
     ui->planLabelTurn->setFont(font);
@@ -2303,7 +2310,7 @@ void PlanHandler::deleteFutureBoard()
     futureBoard = NULL;
     selectedMinion = NULL;
     selectedCode = "";
-    ui->planButtonLast->setIcon(QIcon(":Images/planLast.png"));
+    ui->planButtonLast->setIcon(QIcon(ThemeHandler::buttonPlanLastFile()));
 }
 
 

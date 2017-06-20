@@ -916,7 +916,6 @@ void MainWindow::completeUIButtons()
     {
         ui->closeButton = new QPushButton("", this);
         ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->closeButton->setIcon(QIcon(":/Images/close.png"));
         ui->closeButton->setFlat(true);
         connect(ui->closeButton, SIGNAL(clicked()),
                 this, SLOT(closeApp()));
@@ -924,7 +923,6 @@ void MainWindow::completeUIButtons()
 
         ui->minimizeButton = new QPushButton("", this);
         ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->minimizeButton->setIcon(QIcon(":/Images/minimize.png"));
         ui->minimizeButton->setFlat(true);
         connect(ui->minimizeButton, SIGNAL(clicked()),
                 this, SLOT(showMinimized()));
@@ -935,7 +933,6 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     ui->resizeButton->resize(24, 24);
     ui->resizeButton->setIconSize(QSize(24, 24));
-    ui->resizeButton->setIcon(QIcon(":/Images/resize.png"));
     ui->resizeButton->setFlat(true);
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
@@ -1728,37 +1725,37 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     QString tooltip;
     if(widget == ui->tabArena)
     {
-        icon = QIcon(":/Images/games.png");
+        icon = QIcon(ThemeHandler::tabGamesFile());
         tooltip = "Games";
     }
     else if(widget == ui->tabDeck)
     {
-        icon = QIcon(":/Images/deck.png");
+        icon = QIcon(ThemeHandler::tabDeckFile());
         tooltip = "Player Deck";
     }
     else if(widget == ui->tabEnemy)
     {
-        icon = QIcon(":/Images/hand.png");
+        icon = QIcon(ThemeHandler::tabHandFile());
         tooltip = "Enemy Hand";
     }
     else if(widget == ui->tabPlan)
     {
-        icon = QIcon(":/Images/plan.png");
+        icon = QIcon(ThemeHandler::tabPlanFile());
         tooltip = "Replay";
     }
     else if(widget == ui->tabEnemyDeck)
     {
-        icon = QIcon(":/Images/enemyDeck.png");
+        icon = QIcon(ThemeHandler::tabEnemyDeckFile());
         tooltip = "Enemy Deck";
     }
     else if(widget == ui->tabLog)
     {
-        icon = QIcon(":/Images/log.png");
+        icon = QIcon(ThemeHandler::tabLogFile());
         tooltip = "Log";
     }
     else if(widget == ui->tabConfig)
     {
-        icon = QIcon(":/Images/config.png");
+        icon = QIcon(ThemeHandler::tabConfigFile());
         tooltip = "Config";
     }
     tabWidget->addTab(widget, icon, "");
@@ -2250,7 +2247,7 @@ void MainWindow::addDraftMenu(QPushButton *button)
 
     for(int i=0; i<9; i++)
     {
-        QAction *action = newArenaMenu->addAction(QIcon(":/Images/hero" + Utility::getHeroLogNumber(i) + ".png"), Utility::getHeroName(i));
+        QAction *action = newArenaMenu->addAction(Utility::getHeroName(i));
         mapper->setMapping(action, Utility::getHeroName(i));
         connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
     }
@@ -2606,6 +2603,17 @@ void MainWindow::updateButtonsTheme()
                                    "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
     ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
                                       "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+
+    ui->closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
+    ui->minimizeButton->setIcon(QIcon(ThemeHandler::buttonMinimizeFile()));
+    ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
+    ui->configButtonForceDraft->setIcon(QIcon(ThemeHandler::buttonForceDraftFile()));
+
+    QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
+    for(int i=0; i<actions.count(); i++)
+    {
+        actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+    }
 }
 
 
@@ -3267,10 +3275,12 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
-//mana limits png
-//Fix games uploaded colors
 //Test bomb window
-//SecretsTreeWidget y all listWidgets son transparentes
+//Theme bgTotalAttack, hacer redraw al cambiar theme y eliminar TAM_ATK_HERO
+//LLamar resizeTabWidgets para repintar las tabs al cambiar theme
+//Draft Scores al cambiar theme
+//Unificar :Images y :/Images
+//Test plan buttons theme en planning y en replay last button es diferente
 
 
 //REPLAY BUGS

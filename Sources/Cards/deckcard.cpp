@@ -243,7 +243,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         if(total == 1 && rarity != LEGENDARY)   target = QRectF(113,6,100,25);
         else                                    target = QRectF(100,6,100,25);
 
-        if(name == "unknown")   painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
+        if(name == "unknown")   painter.drawPixmap(target, QPixmap(ThemeHandler::unknownFile()), source);
         else    painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + code + ".png"), source);
 
         //Background and #cards
@@ -261,12 +261,12 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         if(total == 1 && rarity != LEGENDARY)
         {
             maxNameLong = 174;
-            painter.drawPixmap(0,0,QPixmap(":Images/bgCard1" + (drawClassColor?Utility::getHeroName(cardClass):QString("")) + ".png"));
+            painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard1File(cardClass):ThemeHandler::bgCard1File()));
         }
         else
         {
             maxNameLong = 155;
-            painter.drawPixmap(0,0,QPixmap(":Images/bgCard2" + (drawClassColor?Utility::getHeroName(cardClass):QString("")) + ".png"));
+            painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass):ThemeHandler::bgCard2File()));
 
             if(total > 1)
             {
@@ -275,7 +275,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             }
             else
             {
-                painter.drawPixmap(195, 8, QPixmap(":Images/legendaryStar.png"));
+                painter.drawPixmap(195, 8, QPixmap(ThemeHandler::starFile()));
             }
         }
 
@@ -313,11 +313,11 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         }
 
         //Borders
-        QPixmap pixmap(":/Images/manaLimit.png");
+        QPixmap pixmap(ThemeHandler::manaLimitFile());
         int pixmapHMid = pixmap.height()/2;
         int pixmapW = pixmap.width();
-        if(topManaLimit)        painter.drawPixmap(0, 0, QPixmap(":/Images/manaLimit.png"), 0, pixmapHMid, pixmapW, pixmapHMid);
-        if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, QPixmap(":/Images/manaLimit.png"), 0, 0, pixmapW, pixmapHMid);
+        if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+        if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
     painter.end();
 
     //Adapt to size
@@ -360,11 +360,11 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         else
         {
             source = QRectF(63,18,100,25);
-            painter.drawPixmap(target, QPixmap(":Images/unknown.png"), source);
+            painter.drawPixmap(target, QPixmap(ThemeHandler::unknownFile()), source);
         }
 
         //Background
-        painter.drawPixmap(0,0,QPixmap(":Images/handCard3.png"));
+        painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardBYFile()));
 
         //BY
         int fontSize = 15;

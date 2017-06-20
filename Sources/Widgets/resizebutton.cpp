@@ -6,7 +6,6 @@ ResizeButton::ResizeButton(QWidget *parent) : QPushButton(parent)
     mainWindow = parent;
 
     this->setIconSize(QSize(24,24));
-    this->setIcon(QIcon(":/Images/resize.png"));
     this->setFixedSize(QSize(26,26));
 }
 

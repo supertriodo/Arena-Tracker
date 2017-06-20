@@ -1,5 +1,6 @@
 #include "secretcard.h"
 #include "../utility.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 SecretCard::SecretCard() : DeckCard("")
@@ -35,7 +36,7 @@ void SecretCard::draw()
 
         painter.begin(&canvas);
             painter.fillRect(canvas.rect(), Qt::black);
-            painter.drawPixmap(0,0,QPixmap(":Images/handCard1.png"));
+            painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardFile()));
         painter.end();
     }
 

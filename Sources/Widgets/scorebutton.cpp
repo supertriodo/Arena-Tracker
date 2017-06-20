@@ -1,4 +1,5 @@
 #include "scorebutton.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton(parent)
@@ -106,16 +107,16 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     if(hideScore)
     {
         QRect target(0, 0, this->width(), this->height());
-        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haClose.png"));
-        else                                painter.drawPixmap(target, QPixmap(":/Images/lfClose.png"));
+        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haCloseFile()));
+        else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfCloseFile()));
     }
     else
     {
         if(isBestScore)
         {
             QRect target(0, 0, width(), height());
-            if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haBest.png"));
-            else                                painter.drawPixmap(target, QPixmap(":/Images/lfBest.png"));
+            if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haBestFile()));
+            else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfBestFile()));
         }
 
         QString text = QString::number((int)score);
@@ -132,8 +133,8 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         painter.drawPath(path);
 
         QRect target(0, 0, width(), height());
-        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(":/Images/haOpen.png"));
-        else                                painter.drawPixmap(target, QPixmap(":/Images/lfOpen.png"));
+        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haOpenFile()));
+        else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfOpenFile()));
     }
 }
 

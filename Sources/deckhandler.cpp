@@ -1,5 +1,6 @@
 #include "deckhandler.h"
 #include "Utils/deckstringhandler.h"
+#include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
@@ -244,7 +245,6 @@ void DeckHandler::createLoadDeckTreeWidget()
         loadDeckClasses[i]->setHidden(true);
         loadDeckClasses[i]->setExpanded(true);
         loadDeckClasses[i]->setText(0, Utility::getHeroName(i));
-        loadDeckClasses[i]->setIcon(0, QIcon(":/Images/hero" + Utility::getHeroLogNumber(i) + ".png"));
         loadDeckClasses[i]->setForeground(0, QBrush(QColor(Utility::getHeroColor(i))));
     }
 
@@ -1203,9 +1203,24 @@ void DeckHandler::setMouseInApp(bool value)
 
 void DeckHandler::setTheme()
 {
+    ui->deckButtonDeleteDeck->setIcon(QIcon(ThemeHandler::buttonRemoveDeckFile()));
+    ui->deckButtonLoad->setIcon(QIcon(ThemeHandler::buttonLoadDeckFile()));
+    ui->deckButtonNew->setIcon(QIcon(ThemeHandler::buttonNewDeckFile()));
+    ui->deckButtonSave->setIcon(QIcon(ThemeHandler::buttonSaveDeckFile()));
+
+    ui->deckButtonMin->setIcon(QIcon(ThemeHandler::buttonMinFile()));
+    ui->deckButtonPlus->setIcon(QIcon(ThemeHandler::buttonPlusFile()));
+    ui->deckButtonRemove->setIcon(QIcon(ThemeHandler::buttonRemoveFile()));
+
+
     ui->loadDeckTreeWidget->setTheme(true);
     ui->deckListWidget->setTheme();
     bombWindow->setTheme();
+
+    for(int i=0; i<9; i++)
+    {
+        loadDeckClasses[i]->setIcon(0, QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+    }
 }
 
 

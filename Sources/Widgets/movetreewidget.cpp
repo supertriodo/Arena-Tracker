@@ -26,10 +26,10 @@ void MoveTreeWidget::setTheme(bool standAlone)
     this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgDecks()+ThemeHandler::borderDecks():ThemeHandler::bgWidgets()) + "; outline: 0;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
-    "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(:/Images/branchClosed.png);}"
+    "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(" + ThemeHandler::branchClosedFile() + ");}"
 
     "QTreeView::branch:open:has-children:!has-siblings,"
-    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(:/Images/branchOpen.png);}"
+    "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(" + ThemeHandler::branchOpenFile() + ");}"
 
     "QTreeView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
     "QTreeView::branch:selected {background-color: " + ThemeHandler::bgSelectedItemListColor() + "; }"
