@@ -34,6 +34,7 @@ QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_;
 QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, ThemeHandler::buttonPlanRefreshFile_;
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
 QString ThemeHandler::bgCard1Files_[10], ThemeHandler::bgCard2Files_[10], ThemeHandler::heroFiles_[9];
+QString ThemeHandler::bgTotalAttackFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
 QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
 QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
@@ -465,6 +466,12 @@ QString ThemeHandler::heroFile(QString heroLog)
 }
 
 
+QString ThemeHandler::bgTotalAttackFile()
+{
+    return bgTotalAttackFile_;
+}
+
+
 QString ThemeHandler::branchClosedFile()
 {
     return branchClosedFile_;
@@ -604,6 +611,7 @@ void ThemeHandler::reset()
     for(QString &bgCard1File_: bgCard1Files_)   bgCard1File_ = "";
     for(QString &bgCard2File_: bgCard2Files_)   bgCard2File_ = "";
     for(QString &heroFile_: heroFiles_)         heroFile_ = "";
+    bgTotalAttackFile_ = "";
     branchClosedFile_ = branchOpenFile_ = "";
     coinFile_ = firstFile_ = "";
     loseFile_ = winFile_ = "";
@@ -846,7 +854,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
         {
             if(bgCard1Files_[9].isEmpty())
             {
-                bgCard1Files_[i] = ":Images/bgCard1" + heroes[i] + ".png";
+                bgCard1Files_[i] = ":/Images/bgCard1" + heroes[i] + ".png";
             }
             else
             {
@@ -858,7 +866,7 @@ void ThemeHandler::loadTheme(bool themeBlack)
         {
             if(bgCard2Files_[9].isEmpty())
             {
-                bgCard2Files_[i] = ":Images/bgCard2" + heroes[i] + ".png";
+                bgCard2Files_[i] = ":/Images/bgCard2" + heroes[i] + ".png";
             }
             else
             {
@@ -866,26 +874,27 @@ void ThemeHandler::loadTheme(bool themeBlack)
             }
         }
 
-        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":Images/hero" + heroesLog[i] + ".png";
+        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + heroesLog[i] + ".png";
     }
-    if(bgCard1Files_[9].isEmpty())      bgCard1Files_[9] = ":Images/bgCard1.png";
-    if(bgCard2Files_[9].isEmpty())      bgCard2Files_[9] = ":Images/bgCard2.png";
+    if(bgCard1Files_[9].isEmpty())      bgCard1Files_[9] = ":/Images/bgCard1.png";
+    if(bgCard2Files_[9].isEmpty())      bgCard2Files_[9] = ":/Images/bgCard2.png";
+    if(bgTotalAttackFile_.isEmpty())    bgTotalAttackFile_ = ":/Images/bgTotalAttack.png";
     if(branchClosedFile_.isEmpty())     branchClosedFile_ = ":/Images/branchClosed.png";
     if(branchOpenFile_.isEmpty())       branchOpenFile_ = ":/Images/branchOpen.png";
-    if(coinFile_.isEmpty())             coinFile_ = ":Images/coin.png";
-    if(firstFile_.isEmpty())            firstFile_ = ":Images/first.png";
-    if(loseFile_.isEmpty())             loseFile_ = ":Images/lose.png";
-    if(winFile_.isEmpty())              winFile_ = ":Images/win.png";
+    if(coinFile_.isEmpty())             coinFile_ = ":/Images/coin.png";
+    if(firstFile_.isEmpty())            firstFile_ = ":/Images/first.png";
+    if(loseFile_.isEmpty())             loseFile_ = ":/Images/lose.png";
+    if(winFile_.isEmpty())              winFile_ = ":/Images/win.png";
     if(haBestFile_.isEmpty())           haBestFile_ = ":/Images/haBest.png";
     if(haCloseFile_.isEmpty())          haCloseFile_ = ":/Images/haClose.png";
     if(haOpenFile_.isEmpty())           haOpenFile_ = ":/Images/haOpen.png";
     if(lfBestFile_.isEmpty())           lfBestFile_ = ":/Images/lfBest.png";
     if(lfCloseFile_.isEmpty())          lfCloseFile_ = ":/Images/lfClose.png";
     if(lfOpenFile_.isEmpty())           lfOpenFile_ = ":/Images/lfOpen.png";
-    if(handCardFile_.isEmpty())         handCardFile_ = ":Images/handCard1.png";
-    if(handCardBYFile_.isEmpty())       handCardBYFile_ = ":Images/handCard3.png";
-    if(handCardBYUnknownFile_.isEmpty())handCardBYUnknownFile_ = ":Images/handCard2.png";
-    if(starFile_.isEmpty())             starFile_ = ":Images/legendaryStar.png";
+    if(handCardFile_.isEmpty())         handCardFile_ = ":/Images/handCard1.png";
+    if(handCardBYFile_.isEmpty())       handCardBYFile_ = ":/Images/handCard3.png";
+    if(handCardBYUnknownFile_.isEmpty())handCardBYUnknownFile_ = ":/Images/handCard2.png";
+    if(starFile_.isEmpty())             starFile_ = ":/Images/legendaryStar.png";
     if(manaLimitFile_.isEmpty())        manaLimitFile_ = ":/Images/manaLimit.png";
-    if(unknownFile_.isEmpty())          unknownFile_ = ":Images/unknown.png";
+    if(unknownFile_.isEmpty())          unknownFile_ = ":/Images/unknown.png";
 }

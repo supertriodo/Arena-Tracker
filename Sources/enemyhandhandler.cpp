@@ -471,7 +471,7 @@ void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int t
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Background
-        painter.drawPixmap((widthCanvas - tamAtkHero)/2, 0, tamAtkHero, tamAtkHero, QPixmap(":Images/bgTotalAttack.png"));
+        painter.drawPixmap((widthCanvas - tamAtkHero)/2, 0, tamAtkHero, tamAtkHero, QPixmap(ThemeHandler::bgTotalAttackFile()));
 
         //Text
         painter.setFont(font);

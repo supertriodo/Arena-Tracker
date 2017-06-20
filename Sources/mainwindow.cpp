@@ -3282,7 +3282,6 @@ void MainWindow::testDelay()
 
 //New web
 //Test bomb window
-//Theme bgTotalAttack, hacer redraw al cambiar theme y eliminar TAM_ATK_HERO
 //LLamar resizeTabWidgets para repintar las tabs al cambiar theme
 //Draft Scores al cambiar theme
 //Unificar :Images y :/Images

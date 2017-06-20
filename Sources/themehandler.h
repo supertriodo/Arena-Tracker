@@ -43,6 +43,7 @@ private:
     static QString buttonPlanFirstFile_, buttonPlanLastFile_, buttonPlanRefreshFile_;
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
     static QString bgCard1Files_[10], bgCard2Files_[10], heroFiles_[9];
+    static QString bgTotalAttackFile_;
     static QString branchClosedFile_, branchOpenFile_;
     static QString coinFile_, firstFile_;
     static QString loseFile_, winFile_;
@@ -145,6 +146,7 @@ public:
     static QString unknownFile();
     static QString buttonGamesWebFile();
     static QString winFile();
+    static QString bgTotalAttackFile();
 };
 
 #endif // THEMEHANDLER_H
