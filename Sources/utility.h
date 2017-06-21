@@ -83,6 +83,7 @@ public:
     static void dumpOnFile(QByteArray &data, QString path);
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter);
+    static QString themesPath();
 };
 
 #endif // UTILITY_H

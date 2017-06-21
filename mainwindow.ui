@@ -1360,7 +1360,7 @@
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>787</height>
+               <height>789</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1564,6 +1564,9 @@ Changing to/from Framed need a restart to fully take effective.</string>
                     <property name="bottomMargin">
                      <number>9</number>
                     </property>
+                    <item>
+                     <widget class="QComboBox" name="configComboTheme"/>
+                    </item>
                     <item>
                      <widget class="QCheckBox" name="configCheckDarkTheme">
                       <property name="toolTip">

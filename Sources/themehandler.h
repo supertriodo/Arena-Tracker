@@ -5,9 +5,6 @@
 
 class ThemeHandler
 {
-public:
-    ThemeHandler();
-
 
 //Variables
 private:
@@ -55,9 +52,11 @@ private:
 
 //Metodos
 private:
-    static void reset();
+//    static void reset();
+    static void loadThemeValues(QByteArray jsonData);
 
 public:
+    static void defaultEmptyValues();
     static QString bgApp();
     static QString borderApp(bool transparent);
     static int borderWidth();
@@ -147,6 +146,7 @@ public:
     static QString buttonGamesWebFile();
     static QString winFile();
     static QString bgTotalAttackFile();
+    static bool loadTheme(QString theme);
 };
 
 #endif // THEMEHANDLER_H

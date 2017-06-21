@@ -1,5 +1,6 @@
 #include "themehandler.h"
 #include "constants.h"
+#include "utility.h"
 #include <QtWidgets>
 
 QString ThemeHandler::bgApp_;
@@ -42,11 +43,6 @@ QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haO
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
-
-ThemeHandler::ThemeHandler()
-{
-
-}
 
 
 QString ThemeHandler::bgApp()
@@ -579,10 +575,10 @@ QString ThemeHandler::unknownFile()
     return unknownFile_;
 }
 
-
+/*
 void ThemeHandler::reset()
 {
-    bgApp_ = borderApp_ = borderTransparent_;
+    bgApp_ = borderApp_ = borderTransparent_ = "";
     borderWidth_ = 0;
     fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
     bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
@@ -620,8 +616,180 @@ void ThemeHandler::reset()
     handCardFile_ = handCardBYFile_ = handCardBYUnknownFile_ = "";
     starFile_ = manaLimitFile_ = unknownFile_ = "";
 }
+*/
+
+void ThemeHandler::loadThemeValues(QByteArray jsonData)
+{
+    QJsonObject jsonObject = QJsonDocument::fromJson(jsonData).object();
+
+    //"-----FONTS-----": 0,
+    defaultFont_ = jsonObject.value("defaultFont").toString("");
+    bigFont_ = jsonObject.value("bigFont").toString("");
+    cardsFont_ = jsonObject.value("cardsFont").toString("");
+    cardsFontOffsetY_ = jsonObject.value("cardsFontOffsetY").toInt(0);
+
+    //"-----MAIN COLORS-----": 0,
+    bgApp_ = jsonObject.value("bgAppCF").toString("");
+    fgColor_ = jsonObject.value("fgColor").toString("");
+    borderApp_ = jsonObject.value("borderAppCF").toString("");
+    borderWidth_ = jsonObject.value("borderWidth").toInt(0);
+    themeColor1_ = jsonObject.value("theme1Color").toString("");
+    themeColor2_ = jsonObject.value("theme2Color").toString("");
+    bgWidgets_ = jsonObject.value("bgWidgetsColor").toString("");
+
+    //"-----MIN CLOSE RESIZE-----": 0,
+    bgTopButtonsColor_ = jsonObject.value("bgTopButtonsColor").toString("");
+    hoverTopButtonsColor_ = jsonObject.value("hoverTopButtonsColor").toString("");
+    buttonMinimizeFile_ = jsonObject.value("buttonMinimizeFile").toString("");
+    buttonCloseFile_ = jsonObject.value("buttonCloseFile").toString("");
+    buttonResizeFile_ = jsonObject.value("buttonResizeFile").toString("");
+
+    //"-----TABS-----": 0,
+    bgTabsColor_ = jsonObject.value("bgTabsColor").toString("");
+    hoverTabsColor_ = jsonObject.value("hoverTabsColor").toString("");
+    selectedTabsColor_ = jsonObject.value("selectedTabsColor").toString("");
+    tabArenaFile_ = jsonObject.value("tabArenaFile").toString("");
+    tabGamesFile_ = jsonObject.value("tabGamesFile").toString("");
+    tabHandFile_ = jsonObject.value("tabHandFile").toString("");
+    tabDeckFile_ = jsonObject.value("tabDeckFile").toString("");
+    tabEnemyDeckFile_ = jsonObject.value("tabEnemyDeckFile").toString("");
+    tabPlanFile_ = jsonObject.value("tabPlanFile").toString("");
+    tabConfigFile_ = jsonObject.value("tabConfigFile").toString("");
+    tabLogFile_ = jsonObject.value("tabLogFile").toString("");
+
+    //"-----DECK WINDOW-----": 0,
+    buttonNewDeckFile_ = jsonObject.value("buttonNewDeckFile").toString("");
+    buttonLoadDeckFile_ = jsonObject.value("buttonLoadDeckFile").toString("");
+    buttonSaveDeckFile_ = jsonObject.value("buttonSaveDeckFile").toString("");
+    buttonRemoveDeckFile_ = jsonObject.value("buttonRemoveDeckFile").toString("");
+    buttonRemoveFile_ = jsonObject.value("buttonRemoveFile").toString("");
+    buttonMinFile_ = jsonObject.value("buttonMinFile").toString("");
+    buttonPlusFile_ = jsonObject.value("buttonPlusFile").toString("");
+
+    unknownFile_ = jsonObject.value("unknownFile").toString("");
+    starFile_ = jsonObject.value("starFile").toString("");
+    manaLimitFile_ = jsonObject.value("manaLimitFile").toString("");
+
+    bgCard1Files_[9] = jsonObject.value("bgCard1File").toString("");
+    bgCard1Files_[0] = jsonObject.value("bgCard1DruidFile").toString("");
+    bgCard1Files_[1] = jsonObject.value("bgCard1HunterFile").toString("");
+    bgCard1Files_[2] = jsonObject.value("bgCard1MageFile").toString("");
+    bgCard1Files_[3] = jsonObject.value("bgCard1PaladinFile").toString("");
+    bgCard1Files_[4] = jsonObject.value("bgCard1PriestFile").toString("");
+    bgCard1Files_[5] = jsonObject.value("bgCard1RogueFile").toString("");
+    bgCard1Files_[6] = jsonObject.value("bgCard1ShamanFile").toString("");
+    bgCard1Files_[7] = jsonObject.value("bgCard1WarlockFile").toString("");
+    bgCard1Files_[8] = jsonObject.value("bgCard1WarriorFile").toString("");
+
+    bgCard2Files_[9] = jsonObject.value("bgCard2File").toString("");
+    bgCard2Files_[0] = jsonObject.value("bgCard2DruidFile").toString("");
+    bgCard2Files_[1] = jsonObject.value("bgCard2HunterFile").toString("");
+    bgCard2Files_[2] = jsonObject.value("bgCard2MageFile").toString("");
+    bgCard2Files_[3] = jsonObject.value("bgCard2PaladinFile").toString("");
+    bgCard2Files_[4] = jsonObject.value("bgCard2PriestFile").toString("");
+    bgCard2Files_[5] = jsonObject.value("bgCard2RogueFile").toString("");
+    bgCard2Files_[6] = jsonObject.value("bgCard2ShamanFile").toString("");
+    bgCard2Files_[7] = jsonObject.value("bgCard2WarlockFile").toString("");
+    bgCard2Files_[8] = jsonObject.value("bgCard2WarriorFile").toString("");
+
+    //"-----GAMES TAB-----": 0,
+    buttonGamesReplayFile_ = jsonObject.value("buttonGamesReplayFile").toString("");
+    buttonGamesWebFile_ = jsonObject.value("buttonGamesWebFile").toString("");
+
+    branchClosedFile_ = jsonObject.value("branchClosedFile").toString("");
+    branchOpenFile_ = jsonObject.value("branchOpenFile").toString("");
+
+    coinFile_ = jsonObject.value("coinFile").toString("");
+    firstFile_ = jsonObject.value("firstFile").toString("");
+    loseFile_ = jsonObject.value("loseFile").toString("");
+    winFile_ = jsonObject.value("winFile").toString("");
+
+    heroFiles_[0] = jsonObject.value("heroDruidFile").toString("");
+    heroFiles_[1] = jsonObject.value("heroHunterFile").toString("");
+    heroFiles_[2] = jsonObject.value("heroMageFile").toString("");
+    heroFiles_[3] = jsonObject.value("heroPaladinFile").toString("");
+    heroFiles_[4] = jsonObject.value("heroPriestFile").toString("");
+    heroFiles_[5] = jsonObject.value("heroRogueFile").toString("");
+    heroFiles_[6] = jsonObject.value("heroShamanFile").toString("");
+    heroFiles_[7] = jsonObject.value("heroWarlockFile").toString("");
+    heroFiles_[8] = jsonObject.value("heroWarriorFile").toString("");
+
+    //"-----ENEMY HAND TAB-----": 0,
+    handCardFile_ = jsonObject.value("handCardFile").toString("");
+    handCardBYFile_ = jsonObject.value("handCardBYFile").toString("");
+    handCardBYUnknownFile_ = jsonObject.value("handCardBYUnknownFile").toString("");
+    bgTotalAttackFile_ = jsonObject.value("bgTotalAttackFile").toString("");
+
+    //"-----REPLAY TAB-----": 0,
+    buttonPlanResizeFile_ = jsonObject.value("buttonPlanResizeFile").toString("");
+    buttonPlanFirstFile_ = jsonObject.value("buttonPlanFirstFile").toString("");
+    buttonPlanPrevFile_ = jsonObject.value("buttonPlanPrevFile").toString("");
+    buttonPlanNextFile_ = jsonObject.value("buttonPlanNextFile").toString("");
+    buttonPlanLastFile_ = jsonObject.value("buttonPlanLastFile").toString("");
+    buttonPlanRefreshFile_ = jsonObject.value("buttonPlanRefreshFile").toString("");
+
+    //"-----DRAFT OVERLAY-----": 0,
+    haBestFile_ = jsonObject.value("haBestFile").toString("");
+    haCloseFile_ = jsonObject.value("haCloseFile").toString("");
+    haOpenFile_ = jsonObject.value("haOpenFile").toString("");
+    lfBestFile_ = jsonObject.value("lfBestFile").toString("");
+    lfCloseFile_ = jsonObject.value("lfCloseFile").toString("");
+    lfOpenFile_ = jsonObject.value("lfOpenFile").toString("");
+
+    //"-----FORCE DRAFT MENU-----": 0,
+    buttonForceDraftFile_ = jsonObject.value("buttonForceDraftFile").toString("");
+    bgMenu_ = jsonObject.value("bgMenuCF").toString("");
+    fgMenuColor_ = jsonObject.value("fgMenuColor").toString("");
+    borderMenu_ = jsonObject.value("borderMenuCF").toString("");
+    borderMenuWidth_ = jsonObject.value("borderMenuWidth").toInt(0);
+    borderItemMenuColor_ = jsonObject.value("borderItemMenuColor").toString("");
+    bgSelectedItemMenuColor_ = jsonObject.value("bgSelectedItemMenuColor").toString("");
+    fgSelectedItemMenuColor_ = jsonObject.value("fgSelectedItemMenuColor").toString("");
+
+    //"-----TOOLTIPS-----": 0,
+    bgTooltipColor_ = jsonObject.value("bgTooltipColor").toString("");
+    fgTooltipColor_ = jsonObject.value("fgTooltipColor").toString("");
+    borderTooltipColor_ = jsonObject.value("borderTooltipColor").toString("");
+
+    //"-----PROGRESS BAR-----": 0,
+    bgProgressBarColor_ = jsonObject.value("bgProgressBarColor").toString("");
+    fgProgressBarColor_ = jsonObject.value("fgProgressBarColor").toString("");
+    borderProgressBarColor_ = jsonObject.value("borderProgressBarColor").toString("");
+    chunkProgressBarColor_ = jsonObject.value("chunkProgressBarColor").toString("");
+
+    //"-----LOAD DECKS-----": 0,
+    bgDecks_ = jsonObject.value("bgDecksCF").toString("");
+    borderDecks_ = jsonObject.value("borderDecksCF").toString("");
+    borderDecksWidth_ = jsonObject.value("borderDecksWidth").toInt(0);
+    bgSelectedItemListColor_ = jsonObject.value("bgSelectedItemListColor").toString("");
+    fgSelectedItemListColor_ = jsonObject.value("fgSelectedItemListColor").toString("");
+
+    //"-----DECK NAME LINE EDIT-----": 0,
+    bgLineEditColor_ = jsonObject.value("bgLineEditColor").toString("");
+    fgLineEditColor_ = jsonObject.value("fgLineEditColor").toString("");
+    borderLineEditColor_ = jsonObject.value("borderLineEditColor").toString("");
+    bgSelectionLineEditColor_ = jsonObject.value("bgSelectionLineEditColor").toString("");
+    fgSelectionLineEditColor_ = jsonObject.value("fgSelectionLineEditColor").toString("");
+}
 
 
+bool ThemeHandler::loadTheme(QString theme)
+{
+    QFileInfo themeDir(Utility::themesPath() + "/" + theme);
+    if(!themeDir.exists() || !themeDir.isDir()) return false;
+
+    QFile jsonFile(themeDir.filePath() + "/theme.json");
+    if(!jsonFile.exists() || !jsonFile.open(QIODevice::ReadOnly))   return false;
+
+    QByteArray jsonData = jsonFile.readAll();
+    jsonFile.close();
+    loadThemeValues(jsonData);
+    defaultEmptyValues();
+    return true;
+}
+
+
+/*
 void ThemeHandler::loadTheme(bool themeBlack)
 {
     reset();
@@ -629,9 +797,6 @@ void ThemeHandler::loadTheme(bool themeBlack)
     if(themeBlack)
     {
         bgApp_ = "black";
-        borderWidth_ = 0;
-        borderApp_ = "";
-        bgWidgets_ = "";
         fgColor_ = "white";
         themeColor1_ = "#0F4F0F";
         themeColor2_ = "#32AF32";
@@ -674,13 +839,19 @@ void ThemeHandler::loadTheme(bool themeBlack)
         QFontDatabase::addApplicationFont("./PermanentMarker.ttf");
         QFontDatabase::addApplicationFont("./IndieFlower.ttf");
         QFontDatabase::addApplicationFont("./Mogra.ttf");
-        cardsFont_ = /*LG_FONT;*//*"Mogra";*/"Indie Flower";//"Permanent Marker";
+        cardsFont_ = "Indie Flower";//"Permanent Marker";
         defaultFont_ = "Indie Flower";
         bigFont_ = "Mogra";
         cardsFontOffsetY_ = 5;
     }
 
+    defaultEmptyValues();
+}
+*/
 
+
+void ThemeHandler::defaultEmptyValues()
+{
     //Background
     if(bgApp_.isEmpty())
     {
@@ -790,8 +961,8 @@ void ThemeHandler::loadTheme(bool themeBlack)
 
     //Default values
     if(fgColor_.isEmpty())                  fgColor_ = "white";
-    if(themeColor1_.isEmpty())              themeColor1_ = "transparent";
-    if(themeColor2_.isEmpty())              themeColor2_ = "transparent";
+    if(themeColor1_.isEmpty())              themeColor1_ = "grey";
+    if(themeColor2_.isEmpty())              themeColor2_ = "silver";
     if(hoverTabsColor_.isEmpty())           hoverTabsColor_ = "transparent";
     if(selectedTabsColor_.isEmpty())        selectedTabsColor_ = "transparent";
     if(bgTabsColor_.isEmpty())              bgTabsColor_ = themeColor1_;

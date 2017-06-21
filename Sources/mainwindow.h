@@ -162,6 +162,7 @@ private:
     void hideProgressBarMini();
     void advanceProgressBarMini(int remaining);
     void updateProgressAllCardsDownload(QString code);
+    void completeConfigComboTheme();
 
 //Override events
 protected:
@@ -246,6 +247,7 @@ private slots:
     void missingOnWeb(QString code);
     void allCardsDownloaded();
     void init();
+    void loadTheme(QString theme);
 };
 
 #endif // MAINWINDOW_H

@@ -839,6 +839,7 @@ void MainWindow::completeUI()
 {
     if(isMainWindow)
     {
+        ThemeHandler::defaultEmptyValues();
         ui->tabWidget->clear();
         ui->tabWidget->hide();
 
@@ -2059,6 +2060,7 @@ void MainWindow::createDataDir()
     }
     createDir(Utility::gameslogPath());
     createDir(Utility::extraPath());
+    createDir(Utility::themesPath());
 
     //Extra files
     QFileInfo file;
@@ -2508,7 +2510,7 @@ void MainWindow::toggleTheme()
 
 void MainWindow::spreadTheme(bool themeBlack)
 {
-    ThemeHandler::loadTheme(themeBlack);
+//    if(themeBlack)  ThemeHandler::loadTheme(themeBlack);
     updateMainUITheme();
     arenaHandler->setTheme();
     deckHandler->setTheme();
@@ -2865,6 +2867,19 @@ void MainWindow::updateMaxGamesLog(int value)
 }
 
 
+void MainWindow::completeConfigComboTheme()
+{
+    QDir themesDir(Utility::themesPath());
+    for(const QFileInfo &themeFI : themesDir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot))
+    {
+        ui->configComboTheme->addItem(themeFI.fileName());
+    }
+
+    connect(ui->configComboTheme, SIGNAL(activated(QString)),
+            this, SLOT(loadTheme(QString)));
+}
+
+
 void MainWindow::completeConfigTab()
 {
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
@@ -2881,6 +2896,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
     connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
     connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
+    completeConfigComboTheme();
 
     //Deck
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
@@ -3197,6 +3213,20 @@ void MainWindow::allCardsDownloaded()
 }
 
 
+void MainWindow::loadTheme(QString theme)
+{
+    if(ThemeHandler::loadTheme(theme))
+    {
+        showMessageProgressBar("Theme " + theme + " loaded");
+        spreadTheme(false);
+    }
+    else
+    {
+        showMessageProgressBar("Theme " + theme + " invalid");
+    }
+}
+
+
 void MainWindow::test()
 {
 //    testPlan();
@@ -3284,8 +3314,8 @@ void MainWindow::testDelay()
 //Test bomb window
 //LLamar resizeTabWidgets para repintar las tabs al cambiar theme
 //Draft Scores al cambiar theme
-//Unificar :Images y :/Images
 //Test plan buttons theme en planning y en replay last button es diferente
+//Revisar primera linea spreadTheme
 
 
 //REPLAY BUGS

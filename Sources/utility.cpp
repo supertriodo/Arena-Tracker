@@ -307,6 +307,12 @@ QString Utility::extraPath()
 }
 
 
+QString Utility::themesPath()
+{
+    return dataPath() + "/Themes";
+}
+
+
 void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {
     Utility::cardsJson = cardsJson;
