@@ -618,7 +618,23 @@ void ThemeHandler::reset()
 }
 */
 
-void ThemeHandler::loadThemeValues(QByteArray jsonData)
+QString ThemeHandler::loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key)
+{
+    QString file = jsonObject.value(key).toString("");
+    if(file.isEmpty())  return "";
+    else                return themePath + file;
+}
+
+
+QString ThemeHandler::loadThemeCF(const QString &themePath, QJsonObject &jsonObject, const QString &key)
+{
+    QString file = jsonObject.value(key).toString("");
+    if(file.contains("."))  return themePath + file;
+    else                    return file;
+}
+
+
+void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonData)
 {
     QJsonObject jsonObject = QJsonDocument::fromJson(jsonData).object();
 
@@ -629,9 +645,9 @@ void ThemeHandler::loadThemeValues(QByteArray jsonData)
     cardsFontOffsetY_ = jsonObject.value("cardsFontOffsetY").toInt(0);
 
     //"-----MAIN COLORS-----": 0,
-    bgApp_ = jsonObject.value("bgAppCF").toString("");
+    bgApp_ = loadThemeCF(themePath, jsonObject, "bgAppCF");
     fgColor_ = jsonObject.value("fgColor").toString("");
-    borderApp_ = jsonObject.value("borderAppCF").toString("");
+    borderApp_ = loadThemeCF(themePath, jsonObject, "borderAppCF");
     borderWidth_ = jsonObject.value("borderWidth").toInt(0);
     themeColor1_ = jsonObject.value("theme1Color").toString("");
     themeColor2_ = jsonObject.value("theme2Color").toString("");
@@ -640,107 +656,107 @@ void ThemeHandler::loadThemeValues(QByteArray jsonData)
     //"-----MIN CLOSE RESIZE-----": 0,
     bgTopButtonsColor_ = jsonObject.value("bgTopButtonsColor").toString("");
     hoverTopButtonsColor_ = jsonObject.value("hoverTopButtonsColor").toString("");
-    buttonMinimizeFile_ = jsonObject.value("buttonMinimizeFile").toString("");
-    buttonCloseFile_ = jsonObject.value("buttonCloseFile").toString("");
-    buttonResizeFile_ = jsonObject.value("buttonResizeFile").toString("");
+    buttonMinimizeFile_ = loadThemeFile(themePath, jsonObject, "buttonMinimizeFile");
+    buttonCloseFile_ = loadThemeFile(themePath, jsonObject, "buttonCloseFile");
+    buttonResizeFile_ = loadThemeFile(themePath, jsonObject, "buttonResizeFile");
 
     //"-----TABS-----": 0,
     bgTabsColor_ = jsonObject.value("bgTabsColor").toString("");
     hoverTabsColor_ = jsonObject.value("hoverTabsColor").toString("");
     selectedTabsColor_ = jsonObject.value("selectedTabsColor").toString("");
-    tabArenaFile_ = jsonObject.value("tabArenaFile").toString("");
-    tabGamesFile_ = jsonObject.value("tabGamesFile").toString("");
-    tabHandFile_ = jsonObject.value("tabHandFile").toString("");
-    tabDeckFile_ = jsonObject.value("tabDeckFile").toString("");
-    tabEnemyDeckFile_ = jsonObject.value("tabEnemyDeckFile").toString("");
-    tabPlanFile_ = jsonObject.value("tabPlanFile").toString("");
-    tabConfigFile_ = jsonObject.value("tabConfigFile").toString("");
-    tabLogFile_ = jsonObject.value("tabLogFile").toString("");
+    tabArenaFile_ = loadThemeFile(themePath, jsonObject, "tabArenaFile");
+    tabGamesFile_ = loadThemeFile(themePath, jsonObject, "tabGamesFile");
+    tabHandFile_ = loadThemeFile(themePath, jsonObject, "tabHandFile");
+    tabDeckFile_ = loadThemeFile(themePath, jsonObject, "tabDeckFile");
+    tabEnemyDeckFile_ = loadThemeFile(themePath, jsonObject, "tabEnemyDeckFile");
+    tabPlanFile_ = loadThemeFile(themePath, jsonObject, "tabPlanFile");
+    tabConfigFile_ = loadThemeFile(themePath, jsonObject, "tabConfigFile");
+    tabLogFile_ = loadThemeFile(themePath, jsonObject, "tabLogFile");
 
     //"-----DECK WINDOW-----": 0,
-    buttonNewDeckFile_ = jsonObject.value("buttonNewDeckFile").toString("");
-    buttonLoadDeckFile_ = jsonObject.value("buttonLoadDeckFile").toString("");
-    buttonSaveDeckFile_ = jsonObject.value("buttonSaveDeckFile").toString("");
-    buttonRemoveDeckFile_ = jsonObject.value("buttonRemoveDeckFile").toString("");
-    buttonRemoveFile_ = jsonObject.value("buttonRemoveFile").toString("");
-    buttonMinFile_ = jsonObject.value("buttonMinFile").toString("");
-    buttonPlusFile_ = jsonObject.value("buttonPlusFile").toString("");
+    buttonNewDeckFile_ = loadThemeFile(themePath, jsonObject, "buttonNewDeckFile");
+    buttonLoadDeckFile_ = loadThemeFile(themePath, jsonObject, "buttonLoadDeckFile");
+    buttonSaveDeckFile_ = loadThemeFile(themePath, jsonObject, "buttonSaveDeckFile");
+    buttonRemoveDeckFile_ = loadThemeFile(themePath, jsonObject, "buttonRemoveDeckFile");
+    buttonRemoveFile_ = loadThemeFile(themePath, jsonObject, "buttonRemoveFile");
+    buttonMinFile_ = loadThemeFile(themePath, jsonObject, "buttonMinFile");
+    buttonPlusFile_ = loadThemeFile(themePath, jsonObject, "buttonPlusFile");
 
-    unknownFile_ = jsonObject.value("unknownFile").toString("");
-    starFile_ = jsonObject.value("starFile").toString("");
-    manaLimitFile_ = jsonObject.value("manaLimitFile").toString("");
+    unknownFile_ = loadThemeFile(themePath, jsonObject, "unknownFile");
+    starFile_ = loadThemeFile(themePath, jsonObject, "starFile");
+    manaLimitFile_ = loadThemeFile(themePath, jsonObject, "manaLimitFile");
 
-    bgCard1Files_[9] = jsonObject.value("bgCard1File").toString("");
-    bgCard1Files_[0] = jsonObject.value("bgCard1DruidFile").toString("");
-    bgCard1Files_[1] = jsonObject.value("bgCard1HunterFile").toString("");
-    bgCard1Files_[2] = jsonObject.value("bgCard1MageFile").toString("");
-    bgCard1Files_[3] = jsonObject.value("bgCard1PaladinFile").toString("");
-    bgCard1Files_[4] = jsonObject.value("bgCard1PriestFile").toString("");
-    bgCard1Files_[5] = jsonObject.value("bgCard1RogueFile").toString("");
-    bgCard1Files_[6] = jsonObject.value("bgCard1ShamanFile").toString("");
-    bgCard1Files_[7] = jsonObject.value("bgCard1WarlockFile").toString("");
-    bgCard1Files_[8] = jsonObject.value("bgCard1WarriorFile").toString("");
+    bgCard1Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard1File");
+    bgCard1Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
+    bgCard1Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard1HunterFile");
+    bgCard1Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard1MageFile");
+    bgCard1Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard1PaladinFile");
+    bgCard1Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard1PriestFile");
+    bgCard1Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard1RogueFile");
+    bgCard1Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard1ShamanFile");
+    bgCard1Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard1WarlockFile");
+    bgCard1Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard1WarriorFile");
 
-    bgCard2Files_[9] = jsonObject.value("bgCard2File").toString("");
-    bgCard2Files_[0] = jsonObject.value("bgCard2DruidFile").toString("");
-    bgCard2Files_[1] = jsonObject.value("bgCard2HunterFile").toString("");
-    bgCard2Files_[2] = jsonObject.value("bgCard2MageFile").toString("");
-    bgCard2Files_[3] = jsonObject.value("bgCard2PaladinFile").toString("");
-    bgCard2Files_[4] = jsonObject.value("bgCard2PriestFile").toString("");
-    bgCard2Files_[5] = jsonObject.value("bgCard2RogueFile").toString("");
-    bgCard2Files_[6] = jsonObject.value("bgCard2ShamanFile").toString("");
-    bgCard2Files_[7] = jsonObject.value("bgCard2WarlockFile").toString("");
-    bgCard2Files_[8] = jsonObject.value("bgCard2WarriorFile").toString("");
+    bgCard2Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard2File");
+    bgCard2Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard2DruidFile");
+    bgCard2Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard2HunterFile");
+    bgCard2Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard2MageFile");
+    bgCard2Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard2PaladinFile");
+    bgCard2Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard2PriestFile");
+    bgCard2Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard2RogueFile");
+    bgCard2Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard2ShamanFile");
+    bgCard2Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard2WarlockFile");
+    bgCard2Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
 
     //"-----GAMES TAB-----": 0,
-    buttonGamesReplayFile_ = jsonObject.value("buttonGamesReplayFile").toString("");
-    buttonGamesWebFile_ = jsonObject.value("buttonGamesWebFile").toString("");
+    buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
+    buttonGamesWebFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesWebFile");
 
-    branchClosedFile_ = jsonObject.value("branchClosedFile").toString("");
-    branchOpenFile_ = jsonObject.value("branchOpenFile").toString("");
+    branchClosedFile_ = loadThemeFile(themePath, jsonObject, "branchClosedFile");
+    branchOpenFile_ = loadThemeFile(themePath, jsonObject, "branchOpenFile");
 
-    coinFile_ = jsonObject.value("coinFile").toString("");
-    firstFile_ = jsonObject.value("firstFile").toString("");
-    loseFile_ = jsonObject.value("loseFile").toString("");
-    winFile_ = jsonObject.value("winFile").toString("");
+    coinFile_ = loadThemeFile(themePath, jsonObject, "coinFile");
+    firstFile_ = loadThemeFile(themePath, jsonObject, "firstFile");
+    loseFile_ = loadThemeFile(themePath, jsonObject, "loseFile");
+    winFile_ = loadThemeFile(themePath, jsonObject, "winFile");
 
-    heroFiles_[0] = jsonObject.value("heroDruidFile").toString("");
-    heroFiles_[1] = jsonObject.value("heroHunterFile").toString("");
-    heroFiles_[2] = jsonObject.value("heroMageFile").toString("");
-    heroFiles_[3] = jsonObject.value("heroPaladinFile").toString("");
-    heroFiles_[4] = jsonObject.value("heroPriestFile").toString("");
-    heroFiles_[5] = jsonObject.value("heroRogueFile").toString("");
-    heroFiles_[6] = jsonObject.value("heroShamanFile").toString("");
-    heroFiles_[7] = jsonObject.value("heroWarlockFile").toString("");
-    heroFiles_[8] = jsonObject.value("heroWarriorFile").toString("");
+    heroFiles_[0] = loadThemeFile(themePath, jsonObject, "heroDruidFile");
+    heroFiles_[1] = loadThemeFile(themePath, jsonObject, "heroHunterFile");
+    heroFiles_[2] = loadThemeFile(themePath, jsonObject, "heroMageFile");
+    heroFiles_[3] = loadThemeFile(themePath, jsonObject, "heroPaladinFile");
+    heroFiles_[4] = loadThemeFile(themePath, jsonObject, "heroPriestFile");
+    heroFiles_[5] = loadThemeFile(themePath, jsonObject, "heroRogueFile");
+    heroFiles_[6] = loadThemeFile(themePath, jsonObject, "heroShamanFile");
+    heroFiles_[7] = loadThemeFile(themePath, jsonObject, "heroWarlockFile");
+    heroFiles_[8] = loadThemeFile(themePath, jsonObject, "heroWarriorFile");
 
     //"-----ENEMY HAND TAB-----": 0,
-    handCardFile_ = jsonObject.value("handCardFile").toString("");
-    handCardBYFile_ = jsonObject.value("handCardBYFile").toString("");
-    handCardBYUnknownFile_ = jsonObject.value("handCardBYUnknownFile").toString("");
-    bgTotalAttackFile_ = jsonObject.value("bgTotalAttackFile").toString("");
+    handCardFile_ = loadThemeFile(themePath, jsonObject, "handCardFile");
+    handCardBYFile_ = loadThemeFile(themePath, jsonObject, "handCardBYFile");
+    handCardBYUnknownFile_ = loadThemeFile(themePath, jsonObject, "handCardBYUnknownFile");
+    bgTotalAttackFile_ = loadThemeFile(themePath, jsonObject, "bgTotalAttackFile");
 
     //"-----REPLAY TAB-----": 0,
-    buttonPlanResizeFile_ = jsonObject.value("buttonPlanResizeFile").toString("");
-    buttonPlanFirstFile_ = jsonObject.value("buttonPlanFirstFile").toString("");
-    buttonPlanPrevFile_ = jsonObject.value("buttonPlanPrevFile").toString("");
-    buttonPlanNextFile_ = jsonObject.value("buttonPlanNextFile").toString("");
-    buttonPlanLastFile_ = jsonObject.value("buttonPlanLastFile").toString("");
-    buttonPlanRefreshFile_ = jsonObject.value("buttonPlanRefreshFile").toString("");
+    buttonPlanResizeFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanResizeFile");
+    buttonPlanFirstFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanFirstFile");
+    buttonPlanPrevFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanPrevFile");
+    buttonPlanNextFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanNextFile");
+    buttonPlanLastFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanLastFile");
+    buttonPlanRefreshFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanRefreshFile");
 
     //"-----DRAFT OVERLAY-----": 0,
-    haBestFile_ = jsonObject.value("haBestFile").toString("");
-    haCloseFile_ = jsonObject.value("haCloseFile").toString("");
-    haOpenFile_ = jsonObject.value("haOpenFile").toString("");
-    lfBestFile_ = jsonObject.value("lfBestFile").toString("");
-    lfCloseFile_ = jsonObject.value("lfCloseFile").toString("");
-    lfOpenFile_ = jsonObject.value("lfOpenFile").toString("");
+    haBestFile_ = loadThemeFile(themePath, jsonObject, "haBestFile");
+    haCloseFile_ = loadThemeFile(themePath, jsonObject, "haCloseFile");
+    haOpenFile_ = loadThemeFile(themePath, jsonObject, "haOpenFile");
+    lfBestFile_ = loadThemeFile(themePath, jsonObject, "lfBestFile");
+    lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
+    lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
 
     //"-----FORCE DRAFT MENU-----": 0,
-    buttonForceDraftFile_ = jsonObject.value("buttonForceDraftFile").toString("");
-    bgMenu_ = jsonObject.value("bgMenuCF").toString("");
+    buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
+    bgMenu_ = loadThemeCF(themePath, jsonObject, "bgMenuCF");
     fgMenuColor_ = jsonObject.value("fgMenuColor").toString("");
-    borderMenu_ = jsonObject.value("borderMenuCF").toString("");
+    borderMenu_ = loadThemeCF(themePath, jsonObject, "borderMenuCF");
     borderMenuWidth_ = jsonObject.value("borderMenuWidth").toInt(0);
     borderItemMenuColor_ = jsonObject.value("borderItemMenuColor").toString("");
     bgSelectedItemMenuColor_ = jsonObject.value("bgSelectedItemMenuColor").toString("");
@@ -758,8 +774,8 @@ void ThemeHandler::loadThemeValues(QByteArray jsonData)
     chunkProgressBarColor_ = jsonObject.value("chunkProgressBarColor").toString("");
 
     //"-----LOAD DECKS-----": 0,
-    bgDecks_ = jsonObject.value("bgDecksCF").toString("");
-    borderDecks_ = jsonObject.value("borderDecksCF").toString("");
+    bgDecks_ = loadThemeCF(themePath, jsonObject, "bgDecksCF");
+    borderDecks_ = loadThemeCF(themePath, jsonObject, "borderDecksCF");
     borderDecksWidth_ = jsonObject.value("borderDecksWidth").toInt(0);
     bgSelectedItemListColor_ = jsonObject.value("bgSelectedItemListColor").toString("");
     fgSelectedItemListColor_ = jsonObject.value("fgSelectedItemListColor").toString("");
@@ -783,7 +799,7 @@ bool ThemeHandler::loadTheme(QString theme)
 
     QByteArray jsonData = jsonFile.readAll();
     jsonFile.close();
-    loadThemeValues(jsonData);
+    loadThemeValues(themeDir.filePath() + "/", jsonData);
     defaultEmptyValues();
     return true;
 }
@@ -859,7 +875,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(bgApp_.contains("."))
     {
-        bgApp_ = "background-image: url(./" + bgApp_ + ");";
+        bgApp_ = "background-image: url(" + bgApp_ + ");";
     }
     else
     {
@@ -877,7 +893,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(borderApp_.contains("."))
     {
-        borderApp_ = "border-image: url(./" + borderApp_ + ") " + borderWidthS + "; border-width: " + borderWidthS + "px;";
+        borderApp_ = "border-image: url(" + borderApp_ + ") " + borderWidthS + "; border-width: " + borderWidthS + "px;";
     }
     else
     {
@@ -903,7 +919,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(bgMenu_.contains("."))
     {
-        bgMenu_ = "background-image: url(./" + bgMenu_ + ");";
+        bgMenu_ = "background-image: url(" + bgMenu_ + ");";
     }
     else
     {
@@ -920,7 +936,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(borderMenu_.contains("."))
     {
-        borderMenu_ = "border-image: url(./" + borderMenu_ + ") " + borderMenuWidthS + "; border-width: " + borderMenuWidthS + "px;";
+        borderMenu_ = "border-image: url(" + borderMenu_ + ") " + borderMenuWidthS + "; border-width: " + borderMenuWidthS + "px;";
     }
     else
     {
@@ -935,7 +951,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(bgDecks_.contains("."))
     {
-        bgDecks_ = "background-image: url(./" + bgDecks_ + ");";
+        bgDecks_ = "background-image: url(" + bgDecks_ + ");";
     }
     else
     {
@@ -952,7 +968,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(borderDecks_.contains("."))
     {
-        borderDecks_ = "border-image: url(./" + borderDecks_ + ") " + borderDecksWidthS + "; border-width: " + borderDecksWidthS + "px;";
+        borderDecks_ = "border-image: url(" + borderDecks_ + ") " + borderDecksWidthS + "; border-width: " + borderDecksWidthS + "px;";
     }
     else
     {

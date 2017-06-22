@@ -2521,6 +2521,7 @@ void MainWindow::spreadTheme(bool themeBlack)
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     resizeChecks();//Recoloca botones -X
+    resizeTabWidgets();
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
 }
 

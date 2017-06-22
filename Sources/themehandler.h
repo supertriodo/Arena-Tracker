@@ -2,6 +2,7 @@
 #define THEMEHANDLER_H
 
 #include <QString>
+#include <QJsonObject>
 
 class ThemeHandler
 {
@@ -53,7 +54,9 @@ private:
 //Metodos
 private:
 //    static void reset();
-    static void loadThemeValues(QByteArray jsonData);
+    static void loadThemeValues(const QString &themePath, QByteArray &jsonData);
+    static QString loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key);
+    static QString loadThemeCF(const QString &themePath, QJsonObject &jsonObject, const QString &key);
 
 public:
     static void defaultEmptyValues();
