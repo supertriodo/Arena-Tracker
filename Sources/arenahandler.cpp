@@ -255,7 +255,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     {
         emit pDebug("Replay " + logFileName + " renamed to " + newLogFileName);
         replayLogsMap[lastReplayUploaded] = newLogFileName;
-        setRowColor(lastReplayUploaded, QColor(ThemeHandler::themeColor1()));
+        setRowColor(lastReplayUploaded, QColor(ThemeHandler::gamesOnZ2HColor()));
     }
     else
     {
@@ -457,7 +457,7 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         if(item != NULL)
         {
             replayLogsMap[item] = logFileName;
-            if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::themeColor1()));
+            if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::gamesOnZ2HColor()));
 
         }
         return item;
@@ -505,7 +505,7 @@ void ArenaHandler::showArenaLog(const QString &logFileName)
     {
         QString playerHero = Utility::heroToLogNumber(match.captured(1));
         showArena(playerHero);
-        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::themeColor1()));
+        if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::gamesOnZ2HColor()));
         linkDraftLogToArenaCurrent(logFileName);
     }
 }
@@ -602,7 +602,7 @@ void ArenaHandler::redrawRow(QTreeWidgetItem *item)
     QRegularExpressionMatch match;
     QString logFileName = replayLogsMap.value(item, "");
 
-    if(isOnZ2H(logFileName, match)) setRowColor(item, ThemeHandler::themeColor1());
+    if(isOnZ2H(logFileName, match)) setRowColor(item, ThemeHandler::gamesOnZ2HColor());
     else
     {
         bool isTransparent = transparency == Transparent && !mouseInApp;

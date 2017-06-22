@@ -25,6 +25,7 @@ QString ThemeHandler::borderLineEditColor_, ThemeHandler::bgLineEditColor_, Them
 QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEditColor_;
 QString ThemeHandler::defaultFont_, ThemeHandler::cardsFont_, ThemeHandler::bigFont_;
 int ThemeHandler::cardsFontOffsetY_;
+QString ThemeHandler::gamesOnZ2HColor_;
 QString ThemeHandler::tabArenaFile_, ThemeHandler::tabConfigFile_, ThemeHandler::tabDeckFile_, ThemeHandler::tabEnemyDeckFile_;
 QString ThemeHandler::tabGamesFile_, ThemeHandler::tabHandFile_, ThemeHandler::tabLogFile_, ThemeHandler::tabPlanFile_;
 QString ThemeHandler::buttonRemoveDeckFile_, ThemeHandler::buttonLoadDeckFile_, ThemeHandler::buttonNewDeckFile_, ThemeHandler::buttonSaveDeckFile_;
@@ -269,6 +270,12 @@ QString ThemeHandler::bigFont()
 int ThemeHandler::cardsFontOffsetY()
 {
     return cardsFontOffsetY_;
+}
+
+
+QString ThemeHandler::gamesOnZ2HColor()
+{
+    return gamesOnZ2HColor_;
 }
 
 
@@ -575,48 +582,6 @@ QString ThemeHandler::unknownFile()
     return unknownFile_;
 }
 
-/*
-void ThemeHandler::reset()
-{
-    bgApp_ = borderApp_ = borderTransparent_ = "";
-    borderWidth_ = 0;
-    fgColor_ = themeColor1_ = themeColor2_ = bgWidgets_ = "";
-    bgTabsColor_ = hoverTabsColor_ = selectedTabsColor_ = "";
-    bgTopButtonsColor_ = hoverTopButtonsColor_ = "";
-    borderMenuWidth_ = 0;
-    fgMenuColor_ = bgMenu_ = borderMenu_ = "";
-    borderItemMenuColor_ = bgSelectedItemMenuColor_ = fgSelectedItemMenuColor_ = "";
-    borderDecksWidth_ = 0;
-    bgDecks_ = borderDecks_ = "";
-    bgSelectedItemListColor_ = fgSelectedItemListColor_ = "";
-    borderTooltipColor_ = bgTooltipColor_ = fgTooltipColor_ = "";
-    borderProgressBarColor_ = bgProgressBarColor_ = fgProgressBarColor_ = chunkProgressBarColor_ = "";
-    borderLineEditColor_ = bgLineEditColor_ = fgLineEditColor_ = "";
-    bgSelectionLineEditColor_ = fgSelectionLineEditColor_ = "";
-    defaultFont_ = cardsFont_ = bigFont_ = "";
-    cardsFontOffsetY_ = 0;
-    tabArenaFile_ = tabConfigFile_ = tabDeckFile_ = tabEnemyDeckFile_ = "";
-    tabGamesFile_ = tabHandFile_ = tabLogFile_ = tabPlanFile_ = "";
-    buttonRemoveDeckFile_ = buttonLoadDeckFile_ = buttonNewDeckFile_ = buttonSaveDeckFile_ = "";
-    buttonMinFile_ = buttonPlusFile_ = buttonRemoveFile_ = "";
-    buttonCloseFile_ = buttonMinimizeFile_ = buttonResizeFile_ = "";
-    buttonForceDraftFile_ = "";
-    buttonGamesReplayFile_ = buttonGamesWebFile_ = "";
-    buttonPlanFirstFile_ = buttonPlanLastFile_ = buttonPlanRefreshFile_ = "";
-    buttonPlanPrevFile_ = buttonPlanNextFile_ = buttonPlanResizeFile_ = "";
-    for(QString &bgCard1File_: bgCard1Files_)   bgCard1File_ = "";
-    for(QString &bgCard2File_: bgCard2Files_)   bgCard2File_ = "";
-    for(QString &heroFile_: heroFiles_)         heroFile_ = "";
-    bgTotalAttackFile_ = "";
-    branchClosedFile_ = branchOpenFile_ = "";
-    coinFile_ = firstFile_ = "";
-    loseFile_ = winFile_ = "";
-    haBestFile_ = haCloseFile_ = haOpenFile_ = "";
-    lfBestFile_ = lfCloseFile_ = lfOpenFile_ = "";
-    handCardFile_ = handCardBYFile_ = handCardBYUnknownFile_ = "";
-    starFile_ = manaLimitFile_ = unknownFile_ = "";
-}
-*/
 
 QString ThemeHandler::loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key)
 {
@@ -709,6 +674,8 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     bgCard2Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
 
     //"-----GAMES TAB-----": 0,
+    gamesOnZ2HColor_ = jsonObject.value("gamesOnZ2HColor").toString("");
+
     buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
     buttonGamesWebFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesWebFile");
 
@@ -1005,6 +972,7 @@ void ThemeHandler::defaultEmptyValues()
     if(defaultFont_.isEmpty())              defaultFont_ = LG_FONT;
     if(bigFont_.isEmpty())                  bigFont_ = defaultFont_;
     if(cardsFont_.isEmpty())                cardsFont_ = HS_FONT;
+    if(gamesOnZ2HColor_.isEmpty())          gamesOnZ2HColor_ = themeColor2_;
     if(tabArenaFile_.isEmpty())             tabArenaFile_ = ":/Images/arena.png";
     if(tabConfigFile_.isEmpty())            tabConfigFile_ = ":/Images/config.png";
     if(tabDeckFile_.isEmpty())              tabDeckFile_ = ":/Images/deck.png";

@@ -31,6 +31,7 @@ private:
     static QString bgSelectionLineEditColor_, fgSelectionLineEditColor_;
     static QString defaultFont_, cardsFont_, bigFont_;
     static int cardsFontOffsetY_;
+    static QString gamesOnZ2HColor_;
     static QString tabArenaFile_, tabConfigFile_, tabDeckFile_, tabEnemyDeckFile_;
     static QString tabGamesFile_, tabHandFile_, tabLogFile_, tabPlanFile_;
     static QString buttonRemoveDeckFile_, buttonLoadDeckFile_, buttonNewDeckFile_, buttonSaveDeckFile_;
@@ -150,6 +151,7 @@ public:
     static QString winFile();
     static QString bgTotalAttackFile();
     static bool loadTheme(QString theme);
+    static QString gamesOnZ2HColor();
 };
 
 #endif // THEMEHANDLER_H
