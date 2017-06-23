@@ -3317,6 +3317,7 @@ void MainWindow::testDelay()
 //Draft Scores al cambiar theme
 //Test plan buttons theme en planning y en replay last button es diferente
 //Revisar primera linea spreadTheme
+//Split window considerar borde para min ancho
 
 
 //REPLAY BUGS

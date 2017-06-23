@@ -57,7 +57,8 @@ private:
 //    static void reset();
     static void loadThemeValues(const QString &themePath, QByteArray &jsonData);
     static QString loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key);
-    static QString loadThemeCF(const QString &themePath, QJsonObject &jsonObject, const QString &key);
+    static QString loadThemeCF(const QString &themePath, QJsonObject &jsonObject, const QString &key);    
+    static QString loadThemeFont(const QString &themePath, QJsonObject &jsonObject, const QString &key);
 
 public:
     static void defaultEmptyValues();

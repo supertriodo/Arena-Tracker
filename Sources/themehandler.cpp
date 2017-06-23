@@ -599,14 +599,26 @@ QString ThemeHandler::loadThemeCF(const QString &themePath, QJsonObject &jsonObj
 }
 
 
+QString ThemeHandler::loadThemeFont(const QString &themePath, QJsonObject &jsonObject, const QString &key)
+{
+    QString file = jsonObject.value(key).toString("");
+    if(file.isEmpty())  return "";
+    else
+    {
+        QFontDatabase::addApplicationFont(themePath + file);
+        return file.split("/").last().split(".").first();
+    }
+}
+
+
 void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonData)
 {
     QJsonObject jsonObject = QJsonDocument::fromJson(jsonData).object();
 
     //"-----FONTS-----": 0,
-    defaultFont_ = jsonObject.value("defaultFont").toString("");
-    bigFont_ = jsonObject.value("bigFont").toString("");
-    cardsFont_ = jsonObject.value("cardsFont").toString("");
+    defaultFont_ = loadThemeFont(themePath, jsonObject, "defaultFont");
+    bigFont_ = loadThemeFont(themePath, jsonObject, "bigFont");
+    cardsFont_ = loadThemeFont(themePath, jsonObject, "cardsFont");
     cardsFontOffsetY_ = jsonObject.value("cardsFontOffsetY").toInt(0);
 
     //"-----MAIN COLORS-----": 0,
