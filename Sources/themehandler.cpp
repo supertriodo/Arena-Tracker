@@ -44,6 +44,7 @@ QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haO
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
+bool ThemeHandler::manaLimitBehind_;
 
 
 QString ThemeHandler::bgApp()
@@ -583,6 +584,12 @@ QString ThemeHandler::unknownFile()
 }
 
 
+bool ThemeHandler::manaLimitBehind()
+{
+    return manaLimitBehind_;
+}
+
+
 QString ThemeHandler::loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key)
 {
     QString file = jsonObject.value(key).toString("");
@@ -662,6 +669,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     unknownFile_ = loadThemeFile(themePath, jsonObject, "unknownFile");
     starFile_ = loadThemeFile(themePath, jsonObject, "starFile");
     manaLimitFile_ = loadThemeFile(themePath, jsonObject, "manaLimitFile");
+    manaLimitBehind_ = jsonObject.value("manaLimitBehind").toBool(true);
 
     bgCard1Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard1File");
     bgCard1Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
@@ -731,7 +739,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
 
-    //"-----FORCE DRAFT MENU-----": 0,
+    //"-----MENU BUTTONS-----": 0,
     buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
     bgMenu_ = loadThemeCF(themePath, jsonObject, "bgMenuCF");
     fgMenuColor_ = jsonObject.value("fgMenuColor").toString("");

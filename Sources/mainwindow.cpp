@@ -2596,27 +2596,35 @@ void MainWindow::updateMainUITheme()
             ;
 
     this->setStyleSheet(mainCSS);
-    if(otherWindow!=NULL)   otherWindow->setStyleSheet(mainCSS);
+    if(otherWindow!=NULL)
+    {
+        otherWindow->setStyleSheet(mainCSS);
+        otherWindow->updateButtonsTheme();
+    }
 }
 
 
 void MainWindow::updateButtonsTheme()
 {
-    ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
-                                   "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
-    ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
-                                      "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
-
-    ui->closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
-    ui->minimizeButton->setIcon(QIcon(ThemeHandler::buttonMinimizeFile()));
-    ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
-    ui->configButtonForceDraft->setIcon(QIcon(ThemeHandler::buttonForceDraftFile()));
-
-    QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
-    for(int i=0; i<actions.count(); i++)
+    if(isMainWindow)
     {
-        actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+        ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                       "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+        ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                          "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+
+        ui->closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
+        ui->minimizeButton->setIcon(QIcon(ThemeHandler::buttonMinimizeFile()));
+        ui->configButtonForceDraft->setIcon(QIcon(ThemeHandler::buttonForceDraftFile()));
+
+        QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
+        for(int i=0; i<actions.count(); i++)
+        {
+            actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+        }
     }
+
+    ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
 }
 
 
@@ -3318,6 +3326,7 @@ void MainWindow::testDelay()
 //Test plan buttons theme en planning y en replay last button es diferente
 //Revisar primera linea spreadTheme
 //Split window considerar borde para min ancho
+//Repintar games al cambiar de theme
 
 
 //REPLAY BUGS

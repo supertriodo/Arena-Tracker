@@ -234,6 +234,16 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setRenderHint(QPainter::TextAntialiasing);
 
+        //Borders behind
+        if(ThemeHandler::manaLimitBehind())
+        {
+            QPixmap pixmap(ThemeHandler::manaLimitFile());
+            int pixmapHMid = pixmap.height()/2;
+            int pixmapW = pixmap.width();
+            if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+            if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+        }
+
         //Card
         QRectF target;
         QRectF source;
@@ -310,14 +320,17 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             int manaSize = cost>9?26:18+1.5*cost;
             font.setPixelSize(manaSize);//20pt | 14 + cost
             Utility::drawShadowText(painter, font, QString::number(cost), 13, 20, true);
-        }
 
-        //Borders
-        QPixmap pixmap(ThemeHandler::manaLimitFile());
-        int pixmapHMid = pixmap.height()/2;
-        int pixmapW = pixmap.width();
-        if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
-        if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+            //Borders front
+            if(!ThemeHandler::manaLimitBehind())
+            {
+                QPixmap pixmap(ThemeHandler::manaLimitFile());
+                int pixmapHMid = pixmap.height()/2;
+                int pixmapW = pixmap.width();
+                if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+                if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+            }
+        }
     painter.end();
 
     //Adapt to size

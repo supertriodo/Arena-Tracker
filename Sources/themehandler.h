@@ -50,17 +50,18 @@ private:
     static QString lfBestFile_, lfCloseFile_, lfOpenFile_;
     static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
+    static bool manaLimitBehind_;
 
 
 //Metodos
 private:
-//    static void reset();
     static void loadThemeValues(const QString &themePath, QByteArray &jsonData);
     static QString loadThemeFile(const QString &themePath, QJsonObject &jsonObject, const QString &key);
     static QString loadThemeCF(const QString &themePath, QJsonObject &jsonObject, const QString &key);    
     static QString loadThemeFont(const QString &themePath, QJsonObject &jsonObject, const QString &key);
 
 public:
+    static bool loadTheme(QString theme);
     static void defaultEmptyValues();
     static QString bgApp();
     static QString borderApp(bool transparent);
@@ -151,8 +152,8 @@ public:
     static QString buttonGamesWebFile();
     static QString winFile();
     static QString bgTotalAttackFile();
-    static bool loadTheme(QString theme);
     static QString gamesOnZ2HColor();
+    static bool manaLimitBehind();
 };
 
 #endif // THEMEHANDLER_H
