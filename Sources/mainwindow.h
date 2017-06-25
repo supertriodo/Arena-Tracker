@@ -134,7 +134,7 @@ private:
     void createDataDir();
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool themeBlack);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, QString theme);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -164,6 +164,7 @@ private:
     void updateProgressAllCardsDownload(QString code);
     void completeConfigComboTheme();
     void redrawAllGames();
+    void initConfigTheme(QString theme);
 
 //Override events
 protected:
@@ -217,7 +218,6 @@ private slots:
     void updateTimeDraw(int value);
     void updateTamCard(int value);
     void toggleShowDraftOverlay();
-    void toggleTheme();
     void toggleDraftLearningMode();
     void updateTooltipScale(int value);
     void closeApp();
@@ -248,7 +248,7 @@ private slots:
     void missingOnWeb(QString code);
     void allCardsDownloaded();
     void init();
-    void loadTheme(QString theme);
+    void loadTheme(QString theme, bool initTheme=false);
 };
 
 #endif // MAINWINDOW_H

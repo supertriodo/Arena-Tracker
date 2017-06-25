@@ -951,10 +951,26 @@ void MainWindow::closeApp()
 }
 
 
+void MainWindow::initConfigTheme(QString theme)
+{
+    int index = ui->configComboTheme->findText(theme);
+    if(index == -1)
+    {
+        theme = "Purple";
+        ui->configComboTheme->setCurrentText(theme);
+    }
+    else
+    {
+        ui->configComboTheme->setCurrentIndex(index);
+    }
+    loadTheme(theme, true);
+}
+
+
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               bool themeBlack)
+                               QString theme)
 {
     //UI
     switch(transparency)
@@ -977,7 +993,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
             break;
     }
 
-    if(themeBlack) ui->configCheckDarkTheme->setChecked(true);
+    initConfigTheme(theme);
     if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
     if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
@@ -1104,8 +1120,7 @@ void MainWindow::readSettings()
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
-        bool themeBlack = settings.value("theme", 1).toInt() == 1;
-        spreadTheme(false);
+        QString theme = settings.value("theme", "Purple").toString();
 
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
@@ -1125,7 +1140,7 @@ void MainWindow::readSettings()
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
 
         initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      maxGamesLog, themeBlack);
+                      maxGamesLog, theme);
     }
     else
     {
@@ -1154,7 +1169,7 @@ void MainWindow::writeSettings()
         settings.setValue("size", size());
         settings.setValue("splitWindow", this->splitWindow);
         settings.setValue("transparent", (int)this->transparency);
-        settings.setValue("theme", ui->configCheckDarkTheme->isChecked()?1:0);
+        settings.setValue("theme", ui->configComboTheme->currentText());
         settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
         settings.setValue("cardHeight", ui->configSliderCardSize->value());
         settings.setValue("drawDisappear", this->drawDisappear);
@@ -2401,7 +2416,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
-        ui->configCheckDarkTheme->setStyleSheet(checkCSS);
         ui->configCheckWindowSplit->setStyleSheet(checkCSS);
         ui->configCheckDeckWindow->setStyleSheet(checkCSS);
         ui->configCheckClassColor->setStyleSheet(checkCSS);
@@ -2449,7 +2463,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioLF->setStyleSheet("");
         ui->configRadioCombined->setStyleSheet("");
 
-        ui->configCheckDarkTheme->setStyleSheet("");
         ui->configCheckWindowSplit->setStyleSheet("");
         ui->configCheckDeckWindow->setStyleSheet("");
         ui->configCheckClassColor->setStyleSheet("");
@@ -2498,11 +2511,6 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
     }
 
     updateTabWidgetsTheme(fadeOut, false);//Si usamos un theme con bordes los oculta
-}
-
-
-void MainWindow::toggleTheme()
-{
 }
 
 
@@ -2590,7 +2598,7 @@ void MainWindow::updateMainUITheme()
 
     QString mainCSS = "";
     mainCSS +=
-            "QMenu {" + ThemeHandler::bgMenu() + ThemeHandler::borderMenu() + "; color: " + ThemeHandler::fgMenuColor() + ";}"
+            "QMenu {" + ThemeHandler::bgMenu() + ThemeHandler::borderMenu() + " color: " + ThemeHandler::fgMenuColor() + ";}"
             "QMenu::item {padding: 2px 25px 2px 20px;border: 1px solid " + ThemeHandler::borderItemMenuColor() + ";}"
             "QMenu::item:selected {background-color: " + ThemeHandler::bgSelectedItemMenuColor() + "; "
                 "color: " + ThemeHandler::fgSelectedItemMenuColor() + "; "
@@ -2629,6 +2637,11 @@ void MainWindow::updateMainUITheme()
                 "background: " + ThemeHandler::bgLineEditColor() + "; color: " + ThemeHandler::fgLineEditColor() + "; "
                 "selection-background-color: " + ThemeHandler::bgSelectionLineEditColor() + "; "
                 "selection-color: " + ThemeHandler::fgSelectionLineEditColor() + ";}"
+
+            "QComboBox {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgMenuColor() + ";"
+                "selection-background-color: " + ThemeHandler::themeColor2() + ";"
+                "selection-color: "+ ThemeHandler::fgSelectedItemMenuColor() +";}"
+            "QComboBox QAbstractItemView{background: " + ThemeHandler::themeColor1() + ";}"
             ;
 
     this->setStyleSheet(mainCSS);
@@ -2920,6 +2933,8 @@ void MainWindow::completeConfigComboTheme()
         ui->configComboTheme->addItem(themeFI.fileName());
     }
 
+    ui->configComboTheme->setEditable(false);
+
     connect(ui->configComboTheme, SIGNAL(activated(QString)),
             this, SLOT(loadTheme(QString)));
 }
@@ -2938,7 +2953,6 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
     connect(ui->configRadioFramed, SIGNAL(clicked()), this, SLOT(transparentFramed()));
 
-    connect(ui->configCheckDarkTheme, SIGNAL(clicked()), this, SLOT(toggleTheme()));
     connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
     connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
     completeConfigComboTheme();
@@ -3258,16 +3272,17 @@ void MainWindow::allCardsDownloaded()
 }
 
 
-void MainWindow::loadTheme(QString theme)
+void MainWindow::loadTheme(QString theme, bool initTheme)
 {
     if(ThemeHandler::loadTheme(theme))
     {
-        showMessageProgressBar("Theme " + theme + " loaded");
-        spreadTheme(true);
+        spreadTheme(!initTheme);
+        if(!initTheme)  showMessageProgressBar("Theme " + theme + " loaded");
     }
     else
     {
-        showMessageProgressBar("Theme " + theme + " invalid");
+        if(initTheme)   spreadTheme(!initTheme);
+        else            showMessageProgressBar("Theme " + theme + " invalid");
     }
 }
 
@@ -3363,6 +3378,8 @@ void MainWindow::testDelay()
 //Revisar primera linea spreadTheme
 //Split window considerar borde para min ancho
 //Repintar games al cambiar de theme
+//Durante el draft la draft tab no cambia theme
+//Terminar write theme y css theme
 
 
 //REPLAY BUGS
