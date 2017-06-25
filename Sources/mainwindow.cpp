@@ -1105,7 +1105,7 @@ void MainWindow::readSettings()
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
         bool themeBlack = settings.value("theme", 1).toInt() == 1;
-        spreadTheme(themeBlack);
+        spreadTheme(false);
 
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();
@@ -2503,14 +2503,49 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 
 void MainWindow::toggleTheme()
 {
-    bool themeBlack = ui->configCheckDarkTheme->isChecked();
-    spreadTheme(themeBlack);
 }
 
 
-void MainWindow::spreadTheme(bool themeBlack)
+void MainWindow::redrawAllGames()
 {
-//    if(themeBlack)  ThemeHandler::loadTheme(themeBlack);
+    emit pDebug("Redraw all games.");
+    arenaHandler->clearAllGames();
+
+    QFileInfo dirInfo(Utility::gameslogPath());
+    if(!dirInfo.exists())
+    {
+        pDebug("Cannot check GamesLog dir. Dir doesn't exist.");
+        return;
+    }
+
+    QDir dir(Utility::gameslogPath());
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Time);
+    QStringList filterName;
+    filterName << "*.arenatracker";
+    dir.setNameFilters(filterName);
+
+    QStringList files = dir.entryList();
+
+    for(int i=files.length()-1; i>=0; i--)
+    {
+        QString file = files[i];
+        if(file.startsWith("DRAFT"))
+        {
+            emit pDebug("Show Arena: " + file);
+            arenaHandler->showArenaLog(file);
+        }
+        else
+        {
+            emit pDebug("Show GameResut: " + file);
+            arenaHandler->showGameResultLog(file);
+        }
+    }
+}
+
+
+void MainWindow::spreadTheme(bool redrawAllGames)
+{
     updateMainUITheme();
     arenaHandler->setTheme();
     deckHandler->setTheme();
@@ -2520,6 +2555,7 @@ void MainWindow::spreadTheme(bool themeBlack)
     deckHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
+    if(redrawAllGames) this->redrawAllGames();
     resizeChecks();//Recoloca botones -X
     resizeTabWidgets();
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
@@ -3227,7 +3263,7 @@ void MainWindow::loadTheme(QString theme)
     if(ThemeHandler::loadTheme(theme))
     {
         showMessageProgressBar("Theme " + theme + " loaded");
-        spreadTheme(false);
+        spreadTheme(true);
     }
     else
     {
@@ -3306,7 +3342,7 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-    showMessageProgressBar("Testing downloads...", 10000);
+//    showMessageProgressBar("Testing downloads...", 10000);
 //    enemyHandHandler->drawHeroTotalAttack(true, 10, 10);
 //    enemyHandHandler->drawHeroTotalAttack(false, 10, 10);
 //    secretsHandler->secretPlayed(1, MAGE, arena);

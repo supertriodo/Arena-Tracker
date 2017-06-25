@@ -64,6 +64,7 @@ public:
     QString getArenaCurrentDraftLog();
     QTreeWidgetItem *showGameResultLog(const QString &logFileName);
     void showArenaLog(const QString &logFileName);
+    void clearAllGames();
 
 signals:
     void showMessageProgressBar(QString text);

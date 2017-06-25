@@ -115,7 +115,7 @@ private:
     void spreadSplitWindow();
     void spreadTransparency(Transparency newTransparency);
     void updateOtherTabsTransparency();
-    void spreadTheme(bool themeBlack);
+    void spreadTheme(bool redrawAllGames);
     void updateMainUITheme();
     void updateButtonsTheme();
     void updateTabWidgetsTheme(bool transparent, bool resizing);
@@ -163,6 +163,7 @@ private:
     void advanceProgressBarMini(int remaining);
     void updateProgressAllCardsDownload(QString code);
     void completeConfigComboTheme();
+    void redrawAllGames();
 
 //Override events
 protected:

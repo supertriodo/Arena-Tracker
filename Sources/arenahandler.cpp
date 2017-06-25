@@ -658,6 +658,30 @@ void ArenaHandler::setMouseInApp(bool value)
 }
 
 
+void ArenaHandler::clearAllGames()
+{
+    ui->arenaTreeWidget->clear();
+
+    replayLogsMap.clear();
+
+    arenaHomeless = new QTreeWidgetItem(ui->arenaTreeWidget);
+    arenaHomeless->setExpanded(true);
+    arenaHomeless->setText(0, "Arena");
+    arenaHomeless->setHidden(true);
+    setRowColor(arenaHomeless, ThemeHandler::fgColor());
+
+    arenaCurrent = NULL;
+    arenaCurrentHero = "";
+
+    for(int i=0; i<9; i++)  rankedTreeItem[i]=NULL;
+    casualTreeItem = NULL;
+    adventureTreeItem = NULL;
+    tavernBrawlTreeItem = NULL;
+    friendlyTreeItem = NULL;
+    lastReplayUploaded = NULL;
+}
+
+
 //Blanco opaco usa un theme diferente a los otros 3
 void ArenaHandler::setTheme()
 {
@@ -675,8 +699,9 @@ void ArenaHandler::setTheme()
     ui->lineEditPlainCard->setFont(font);
     ui->lineEditGoldCard->setFont(font);
 
-    redrawAllRows();
     ui->arenaTreeWidget->setTheme(false);
+
+    setRowColor(arenaHomeless, ThemeHandler::fgColor());
 }
 
 
