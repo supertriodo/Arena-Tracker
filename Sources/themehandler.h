@@ -19,9 +19,8 @@ private:
     static QString bgWidgets_;
     static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
     static QString bgTopButtonsColor_, hoverTopButtonsColor_;
-    static int borderMenuWidth_;
-    static QString fgMenuColor_, bgMenu_, borderMenu_;
-    static QString borderItemMenuColor_, bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
+    static QString fgMenuColor_, bgMenuColor_;
+    static QString bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
     static int borderDecksWidth_;
     static QString bgDecks_, borderDecks_;
     static QString bgSelectedItemListColor_, fgSelectedItemListColor_;
@@ -69,7 +68,6 @@ public:
     static QString fgColor();
     static QString themeColor1();
     static QString themeColor2();
-    static void loadTheme(bool themeBlack);
     static QString bgWidgets();
     static QString bgTabsColor();
     static QString hoverTabsColor();
@@ -77,11 +75,9 @@ public:
     static QString bgTopButtonsColor();
     static QString hoverTopButtonsColor();
     static QString fgMenuColor();
-    static QString borderItemMenuColor();
     static QString bgSelectedItemMenuColor();
     static QString fgSelectedItemMenuColor();
-    static QString bgMenu();
-    static QString borderMenu();
+    static QString bgMenuColor();
     static QString bgDecks();
     static QString borderDecks();
     static QString bgSelectedItemListColor();

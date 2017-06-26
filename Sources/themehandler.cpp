@@ -13,9 +13,8 @@ QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
 QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
 QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
-int ThemeHandler::borderMenuWidth_;
-QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenu_, ThemeHandler::borderMenu_;
-QString ThemeHandler::borderItemMenuColor_, ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
+QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenuColor_;
+QString ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
 int ThemeHandler::borderDecksWidth_;
 QString ThemeHandler::bgDecks_, ThemeHandler::borderDecks_;
 QString ThemeHandler::bgSelectedItemListColor_, ThemeHandler::fgSelectedItemListColor_;
@@ -124,12 +123,6 @@ QString ThemeHandler::fgMenuColor()
 }
 
 
-QString ThemeHandler::borderItemMenuColor()
-{
-    return borderItemMenuColor_;
-}
-
-
 QString ThemeHandler::bgSelectedItemMenuColor()
 {
     return bgSelectedItemMenuColor_;
@@ -142,15 +135,9 @@ QString ThemeHandler::fgSelectedItemMenuColor()
 }
 
 
-QString ThemeHandler::bgMenu()
+QString ThemeHandler::bgMenuColor()
 {
-    return bgMenu_;
-}
-
-
-QString ThemeHandler::borderMenu()
-{
-    return borderMenu_;
+    return bgMenuColor_;
 }
 
 
@@ -739,13 +726,10 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
 
-    //"-----MENU BUTTONS-----": 0,
+    //"-----MENU LISTS-----": 0,
     buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
-    bgMenu_ = loadThemeCF(themePath, jsonObject, "bgMenuCF");
+    bgMenuColor_ = jsonObject.value("bgMenuColor").toString("");//loadThemeCF(themePath, jsonObject, "bgMenuCF");
     fgMenuColor_ = jsonObject.value("fgMenuColor").toString("");
-    borderMenu_ = loadThemeCF(themePath, jsonObject, "borderMenuCF");
-    borderMenuWidth_ = jsonObject.value("borderMenuWidth").toInt(0);
-    borderItemMenuColor_ = jsonObject.value("borderItemMenuColor").toString("");
     bgSelectedItemMenuColor_ = jsonObject.value("bgSelectedItemMenuColor").toString("");
     fgSelectedItemMenuColor_ = jsonObject.value("fgSelectedItemMenuColor").toString("");
 
@@ -790,67 +774,6 @@ bool ThemeHandler::loadTheme(QString theme)
     defaultEmptyValues();
     return true;
 }
-
-
-/*
-void ThemeHandler::loadTheme(bool themeBlack)
-{
-    reset();
-
-    if(themeBlack)
-    {
-        bgApp_ = "black";
-        fgColor_ = "white";
-        themeColor1_ = "#0F4F0F";
-        themeColor2_ = "#32AF32";
-    }
-    else
-    {
-        bgApp_ = "fondo2.jpg";
-        borderWidth_ = 12;
-        borderApp_ = "border2.png";
-        bgWidgets_ = "rgba(0,0,0,100)";
-        fgColor_ = "white";
-        themeColor1_ = "purple";
-        themeColor2_ = "red";
-        hoverTabsColor_ = "rgba(0,0,0,100)";
-        selectedTabsColor_ = "red";
-        bgTabsColor_ = "blue";
-        bgTopButtonsColor_ = "rgba(0,0,0,100)";
-        hoverTopButtonsColor_ = "yellow";
-        borderItemMenuColor_ = "blue";
-        bgSelectedItemMenuColor_ = "yellow";
-        fgSelectedItemMenuColor_ = "black";
-        bgMenu_ = "pink";
-        borderMenu_ = "grey";
-        borderMenuWidth_ = 10;
-        bgDecks_ = "fondo2.jpg";
-        borderDecks_ = "blue";
-        borderDecksWidth_ = 10;
-        borderTooltipColor_ = "grey";
-        bgTooltipColor_ = "silver";
-        fgTooltipColor_ = "white";
-        borderProgressBarColor_ = "green";
-        bgProgressBarColor_ = "blue";
-        chunkProgressBarColor_ = "red";
-        fgProgressBarColor_ = "yellow";
-        borderLineEditColor_ = "red";
-        bgLineEditColor_ = "orange";
-        fgLineEditColor_ = "yellow";
-        bgSelectionLineEditColor_ = "grey";
-        fgSelectionLineEditColor_ = "black";
-        QFontDatabase::addApplicationFont("./PermanentMarker.ttf");
-        QFontDatabase::addApplicationFont("./IndieFlower.ttf");
-        QFontDatabase::addApplicationFont("./Mogra.ttf");
-        cardsFont_ = "Indie Flower";//"Permanent Marker";
-        defaultFont_ = "Indie Flower";
-        bigFont_ = "Mogra";
-        cardsFontOffsetY_ = 5;
-    }
-
-    defaultEmptyValues();
-}
-*/
 
 
 void ThemeHandler::defaultEmptyValues()
@@ -899,38 +822,6 @@ void ThemeHandler::defaultEmptyValues()
     }
 
 
-    //Background Menu
-    if(bgMenu_.isEmpty())
-    {
-        bgMenu_ = bgApp_;
-    }
-    else if(bgMenu_.contains("."))
-    {
-        bgMenu_ = "background-image: url(" + bgMenu_ + ");";
-    }
-    else
-    {
-        bgMenu_ = "background-color: " + bgMenu_ + ";";
-    }
-
-
-    //Border Menu
-    QString borderMenuWidthS = QString::number(borderMenuWidth_);
-    if(borderMenu_.isEmpty())
-    {
-        borderMenuWidth_ = 0;
-        borderMenu_ = "border-color: transparent;";
-    }
-    else if(borderMenu_.contains("."))
-    {
-        borderMenu_ = "border-image: url(" + borderMenu_ + ") " + borderMenuWidthS + "; border-width: " + borderMenuWidthS + "px;";
-    }
-    else
-    {
-        borderMenu_ = "border-color: " + borderMenu_ + "; border-width: " + borderMenuWidthS + "px; border-style: solid;";
-    }
-
-
     //Background Decks
     if(bgDecks_.isEmpty())
     {
@@ -971,9 +862,9 @@ void ThemeHandler::defaultEmptyValues()
     if(bgTabsColor_.isEmpty())              bgTabsColor_ = themeColor1_;
     if(bgTopButtonsColor_.isEmpty())        bgTopButtonsColor_ = "transparent";
     if(hoverTopButtonsColor_.isEmpty())     hoverTopButtonsColor_ = themeColor1_;
+    if(bgMenuColor_.isEmpty())              bgMenuColor_ = themeColor1_;
     if(fgMenuColor_.isEmpty())              fgMenuColor_ = fgColor_;
-    if(borderItemMenuColor_.isEmpty())      borderItemMenuColor_ = "transparent";
-    if(bgSelectedItemMenuColor_.isEmpty())  bgSelectedItemMenuColor_ = themeColor1_;
+    if(bgSelectedItemMenuColor_.isEmpty())  bgSelectedItemMenuColor_ = themeColor2_;
     if(fgSelectedItemMenuColor_.isEmpty())  fgSelectedItemMenuColor_ = fgColor_;
     if(bgSelectedItemListColor_.isEmpty())  bgSelectedItemListColor_ = themeColor1_;
     if(fgSelectedItemListColor_.isEmpty())  fgSelectedItemListColor_ = fgColor_;

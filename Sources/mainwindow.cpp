@@ -2598,8 +2598,8 @@ void MainWindow::updateMainUITheme()
 
     QString mainCSS = "";
     mainCSS +=
-            "QMenu {" + ThemeHandler::bgMenu() + ThemeHandler::borderMenu() + " color: " + ThemeHandler::fgMenuColor() + ";}"
-            "QMenu::item {padding: 2px 25px 2px 20px;border: 1px solid " + ThemeHandler::borderItemMenuColor() + ";}"
+            "QMenu {background: " + ThemeHandler::bgMenuColor() + "; color: " + ThemeHandler::fgMenuColor() + ";}"
+            "QMenu::item {padding: 2px 25px 2px 20px;border: 1px solid transparent;}"
             "QMenu::item:selected {background-color: " + ThemeHandler::bgSelectedItemMenuColor() + "; "
                 "color: " + ThemeHandler::fgSelectedItemMenuColor() + "; "
                 "border-color: " + ThemeHandler::bgSelectedItemMenuColor() + ";}"
@@ -2638,10 +2638,10 @@ void MainWindow::updateMainUITheme()
                 "selection-background-color: " + ThemeHandler::bgSelectionLineEditColor() + "; "
                 "selection-color: " + ThemeHandler::fgSelectionLineEditColor() + ";}"
 
-            "QComboBox {background: " + ThemeHandler::themeColor1() + "; color: " + ThemeHandler::fgMenuColor() + ";"
-                "selection-background-color: " + ThemeHandler::themeColor2() + ";"
+            "QComboBox {background: " + ThemeHandler::bgMenuColor() + "; color: " + ThemeHandler::fgMenuColor() + ";"
+                "selection-background-color: " + ThemeHandler::bgSelectedItemMenuColor() + ";"
                 "selection-color: "+ ThemeHandler::fgSelectedItemMenuColor() +";}"
-            "QComboBox QAbstractItemView{background: " + ThemeHandler::themeColor1() + ";}"
+            "QComboBox QAbstractItemView{background: " + ThemeHandler::bgMenuColor() + ";}"
             ;
 
     this->setStyleSheet(mainCSS);
@@ -3377,9 +3377,7 @@ void MainWindow::testDelay()
 //Test plan buttons theme en planning y en replay last button es diferente
 //Revisar primera linea spreadTheme
 //Split window considerar borde para min ancho
-//Repintar games al cambiar de theme
 //Durante el draft la draft tab no cambia theme
-//Terminar write theme y css theme
 
 
 //REPLAY BUGS
