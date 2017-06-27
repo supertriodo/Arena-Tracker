@@ -3372,12 +3372,9 @@ void MainWindow::testDelay()
 
 //New web
 //Test bomb window
-//LLamar resizeTabWidgets para repintar las tabs al cambiar theme
 //Draft Scores al cambiar theme
 //Test plan buttons theme en planning y en replay last button es diferente
-//Revisar primera linea spreadTheme
 //Split window considerar borde para min ancho
-//Durante el draft la draft tab no cambia theme
 
 
 //REPLAY BUGS

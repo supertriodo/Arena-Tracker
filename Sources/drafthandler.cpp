@@ -1020,6 +1020,10 @@ void DraftHandler::setTheme()
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
         if(labelHAscore[i]->styleSheet().contains("background-image"))      highlightScore(labelHAscore[i], HearthArena);
     }
+
+    //Change Arena draft icon
+    int index = ui->tabWidget->indexOf(ui->tabDraft);
+    if(index >= 0)  ui->tabWidget->setTabIcon(index, QIcon(ThemeHandler::tabArenaFile()));
 }
 
 
