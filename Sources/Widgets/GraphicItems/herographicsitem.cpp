@@ -34,7 +34,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     this->resourcesUsed = copy->resourcesUsed;
     this->spellDamage = copy->spellDamage;
     this->showAllInfo = false;
-    this->heroWeapon = NULL; //No lo necesitamos en la copia, solo en nowBoard
+    this->heroWeapon = NULL; //Al copiar el weapon en copyBoard se lo asignaremos al heroe a traves de setHeroWeapon()
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -81,11 +81,11 @@ void HeroGraphicsItem::setMinionsMaxAttack(int minionsMaxAttack)
 }
 
 
-void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon)
+void HeroGraphicsItem::setHeroWeapon(WeaponGraphicsItem *heroWeapon, bool isNowBoard)
 {
     this->heroWeapon = heroWeapon;
     update();
-    sendHeroTotalAttackChange();
+    if(isNowBoard)  sendHeroTotalAttackChange();
 }
 
 

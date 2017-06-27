@@ -1739,20 +1739,28 @@ Board * PlanHandler::copyBoard(Board *origBoard, int numTurn, bool copySecretCod
     board->playerTurn = origBoard->playerTurn;
     board->numTurn = numTurn;
 
-    if(origBoard->playerHero == NULL)    board->playerHero = NULL;
-    else                                board->playerHero = new HeroGraphicsItem(origBoard->playerHero);
-    if(origBoard->enemyHero == NULL)     board->enemyHero = NULL;
-    else                                board->enemyHero = new HeroGraphicsItem(origBoard->enemyHero, copySecretCodes);//Lo usamos al crear el futureBoard, solo es necesario para el enemigo ya que los secretos amigos de nowBoard nunca estaran desvelados ni isolated.
+    if(origBoard->playerHero == NULL)       board->playerHero = NULL;
+    else                                    board->playerHero = new HeroGraphicsItem(origBoard->playerHero);
+    if(origBoard->enemyHero == NULL)        board->enemyHero = NULL;
+    else                                    board->enemyHero = new HeroGraphicsItem(origBoard->enemyHero, copySecretCodes);//Lo usamos al crear el futureBoard, solo es necesario para el enemigo ya que los secretos amigos de nowBoard nunca estaran desvelados ni isolated.
 
-    if(origBoard->playerHeroPower == NULL)   board->playerHeroPower = NULL;
+    if(origBoard->playerHeroPower == NULL)  board->playerHeroPower = NULL;
     else                                    board->playerHeroPower = new HeroPowerGraphicsItem(origBoard->playerHeroPower);
-    if(origBoard->enemyHeroPower == NULL)    board->enemyHeroPower = NULL;
+    if(origBoard->enemyHeroPower == NULL)   board->enemyHeroPower = NULL;
     else                                    board->enemyHeroPower = new HeroPowerGraphicsItem(origBoard->enemyHeroPower);
 
-    if(origBoard->playerWeapon == NULL)  board->playerWeapon = NULL;
-    else                                board->playerWeapon = new WeaponGraphicsItem(origBoard->playerWeapon);
-    if(origBoard->enemyWeapon == NULL)   board->enemyWeapon = NULL;
-    else                                board->enemyWeapon = new WeaponGraphicsItem(origBoard->enemyWeapon);
+    if(origBoard->playerWeapon == NULL)     board->playerWeapon = NULL;
+    else
+    {
+        board->playerWeapon = new WeaponGraphicsItem(origBoard->playerWeapon);
+        if(board->playerHero != NULL)       board->playerHero->setHeroWeapon(board->playerWeapon, false);
+    }
+    if(origBoard->enemyWeapon == NULL)      board->enemyWeapon = NULL;
+    else
+    {
+        board->enemyWeapon = new WeaponGraphicsItem(origBoard->enemyWeapon);
+        if(board->enemyHero != NULL)       board->enemyHero->setHeroWeapon(board->enemyWeapon, false);
+    }
 
     foreach(MinionGraphicsItem * minion, origBoard->playerMinions)
     {

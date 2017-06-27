@@ -58,7 +58,7 @@ public:
     int getResources();
     void setResourcesUsed(int resourcesUsed);
     void setMinionsMaxAttack(int minionsMaxAttack);
-    void setHeroWeapon(WeaponGraphicsItem * heroWeapon = NULL);
+    void setHeroWeapon(WeaponGraphicsItem * heroWeapon = NULL, bool isNowBoard = true);
     void setPlayerTurn(bool playerTurn);
     void setSpellDamage(int spellDamage);
     int getSpellDamage();
