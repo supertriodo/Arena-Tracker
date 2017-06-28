@@ -452,8 +452,7 @@ QString ThemeHandler::heroFile(int order)
 
 QString ThemeHandler::heroFile(QString heroLog)
 {
-    int order = heroLog.toInt() - 1;
-    return heroFile(order);
+    return heroFile(Utility::heroLogNumber2HeroOrder(heroLog));
 }
 
 
@@ -913,7 +912,6 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonPlanResizeFile_.isEmpty())     buttonPlanResizeFile_ = ":/Images/planResize.png";
 
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
-    QString heroesLog[9] = {"01", "02", "03", "04", "05", "06", "07", "08", "09"};
     for(int i=0; i<9; i++)
     {
         if(bgCard1Files_[i].isEmpty())
@@ -940,7 +938,7 @@ void ThemeHandler::defaultEmptyValues()
             }
         }
 
-        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + heroesLog[i] + ".png";
+        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + Utility::getHeroLogNumber(i) + ".png";
     }
     if(bgCard1Files_[9].isEmpty())      bgCard1Files_[9] = ":/Images/bgCard1.png";
     if(bgCard2Files_[9].isEmpty())      bgCard2Files_[9] = ":/Images/bgCard2.png";

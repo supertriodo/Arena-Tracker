@@ -121,6 +121,15 @@ QString Utility::getHeroLogNumber(int order)
 }
 
 
+int Utility::heroLogNumber2HeroOrder(QString heroLog)
+{
+    int heroeOrder[9] = {8, 6, 5, 3, 1, 0, 7, 2, 4};
+    int heroLogInt = heroLog.toInt() - 1;
+    if(heroLogInt < 0 || heroLogInt > 8)    return 0;
+    else                                    return heroeOrder[heroLogInt];
+}
+
+
 QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
 {
     switch(loadingScreen)
