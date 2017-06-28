@@ -1576,13 +1576,13 @@ void MainWindow::resizeTabWidgets(QSize newSize)
             break;
 
         case H2:
-            if(otherWindow == NULL) ui->tabWidgetH2->setFixedWidth(222);
-            else                    ui->tabWidgetH2->setFixedWidth(230);//Hand tab necesita 230 para los secretos
+            if(otherWindow == NULL) ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
+            else                    ui->tabWidgetH2->setFixedWidth(230 + ThemeHandler::borderWidth()*2);//Hand tab necesita 230 para los secretos
             break;
 
         case H3:
-            ui->tabWidgetH2->setFixedWidth(222);
-            ui->tabWidgetH3->setFixedWidth(230);//Hand tab necesita 230 para los secretos
+            ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
+            ui->tabWidgetH3->setFixedWidth(230 + ThemeHandler::borderWidth()*2);//Hand tab necesita 230 para los secretos
             break;
 
         case V2:
@@ -3374,7 +3374,6 @@ void MainWindow::testDelay()
 //Test bomb window
 //Draft Scores al cambiar theme
 //Test plan buttons theme en planning y en replay last button es diferente
-//Split window considerar borde para min ancho
 
 
 //REPLAY BUGS
