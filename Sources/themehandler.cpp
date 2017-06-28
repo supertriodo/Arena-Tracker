@@ -681,9 +681,11 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
 
     //"-----GAMES TAB-----": 0,
     gamesOnZ2HColor_ = jsonObject.value("gamesOnZ2HColor").toString("");
-
     buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
     buttonGamesWebFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesWebFile");
+
+    bgSelectedItemListColor_ = jsonObject.value("bgSelectedItemListColor").toString("");
+    fgSelectedItemListColor_ = jsonObject.value("fgSelectedItemListColor").toString("");
 
     branchClosedFile_ = loadThemeFile(themePath, jsonObject, "branchClosedFile");
     branchOpenFile_ = loadThemeFile(themePath, jsonObject, "branchOpenFile");
@@ -727,7 +729,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
 
     //"-----MENU LISTS-----": 0,
     buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
-    bgMenuColor_ = jsonObject.value("bgMenuColor").toString("");//loadThemeCF(themePath, jsonObject, "bgMenuCF");
+    bgMenuColor_ = jsonObject.value("bgMenuColor").toString("");
     fgMenuColor_ = jsonObject.value("fgMenuColor").toString("");
     bgSelectedItemMenuColor_ = jsonObject.value("bgSelectedItemMenuColor").toString("");
     fgSelectedItemMenuColor_ = jsonObject.value("fgSelectedItemMenuColor").toString("");
@@ -747,8 +749,6 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     bgDecks_ = loadThemeCF(themePath, jsonObject, "bgDecksCF");
     borderDecks_ = loadThemeCF(themePath, jsonObject, "borderDecksCF");
     borderDecksWidth_ = jsonObject.value("borderDecksWidth").toInt(0);
-    bgSelectedItemListColor_ = jsonObject.value("bgSelectedItemListColor").toString("");
-    fgSelectedItemListColor_ = jsonObject.value("fgSelectedItemListColor").toString("");
 
     //"-----DECK NAME LINE EDIT-----": 0,
     bgLineEditColor_ = jsonObject.value("bgLineEditColor").toString("");
