@@ -3371,9 +3371,6 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //New web
-//Test bomb window
-//Draft Scores al cambiar theme
-//Test plan buttons theme en planning y en replay last button es diferente
 
 
 //REPLAY BUGS

@@ -1019,6 +1019,7 @@ void DraftHandler::setTheme()
     {
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
         if(labelHAscore[i]->styleSheet().contains("background-image"))      highlightScore(labelHAscore[i], HearthArena);
+        draftCards[i].draw(labelCard[i]);
     }
 
     //Change Arena draft icon
