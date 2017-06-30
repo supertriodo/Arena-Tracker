@@ -5,9 +5,11 @@
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
 #include "themehandler.h"
+#include "Utils/libzippp.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
+using namespace libzippp;
 using namespace cv;
 
 
@@ -42,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createNetworkManager();
     createDataDir();
+    downloadExtraFiles();
+    downloadThemes();
     createLogFile();
     completeUI();
     initCardsJson();
@@ -299,6 +303,15 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Json LightForge --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+        }
+        //Themes json
+        else if(endUrl == "Themes.json")
+        {
+            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+            for(const QString &key: jsonObject.keys())
+            {
+                qDebug()<<key<<jsonObject.value(key).toInt();
+            }
         }
         //Extra files
         else
@@ -2077,7 +2090,12 @@ void MainWindow::createDataDir()
     createDir(Utility::extraPath());
     createDir(Utility::themesPath());
 
-    //Extra files
+    pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
+}
+
+
+void MainWindow::downloadExtraFiles()
+{
     QFileInfo file;
 
     file = QFileInfo(Utility::extraPath() + "/arenaTemplate.png");
@@ -2085,8 +2103,12 @@ void MainWindow::createDataDir()
 
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
+}
 
-    pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
+
+void MainWindow::downloadThemes()
+{
+    networkManager->get(QNetworkRequest(QUrl(THEMES_URL + QString("/Themes.json"))));
 }
 
 
@@ -3287,6 +3309,36 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 }
 
 
+void MainWindow::unZip(QString zipName, QString targetPath)
+{
+    ZipArchive zf(zipName.toStdString());
+    zf.open(ZipArchive::READ_ONLY);
+
+    vector<ZipEntry> entries = zf.getEntries();
+    vector<ZipEntry>::iterator it;
+    for(it=entries.begin() ; it!=entries.end(); ++it)
+    {
+        ZipEntry entry = *it;
+        QString name = entry.getName().data();
+        int size = entry.getSize();
+        if(name.endsWith('/'))
+        {
+            createDir(targetPath + "/" + name);
+        }
+        else
+        {
+            char* binaryData = (char *)entry.readAsBinary();
+            QByteArray byteArray(binaryData, size);
+            Utility::dumpOnFile(byteArray, targetPath + "/" + name);
+            emit pDebug("Unzipped " + name);
+            delete[] binaryData;
+        }
+    }
+
+    zf.close();
+}
+
+
 void MainWindow::test()
 {
 //    testPlan();
@@ -3361,6 +3413,26 @@ void MainWindow::testDelay()
 //    enemyHandHandler->drawHeroTotalAttack(true, 10, 10);
 //    enemyHandHandler->drawHeroTotalAttack(false, 10, 10);
 //    secretsHandler->secretPlayed(1, MAGE, arena);
+
+
+//    TAR *pTar;
+//    char *tarFilename = "purple.tar";
+//    char *srcDir = "Purple";
+//    char *extractTo = "./Purple";
+
+//    tar_open(&pTar, tarFilename, NULL, O_WRONLY | O_CREAT, 0644, TAR_GNU);
+//    tar_append_tree(pTar, srcDir, extractTo);
+//    tar_close(pTar);
+
+
+//    char *extractTo = "./extract";
+
+//    tar_open(&pTar, tarFilename, NULL, O_RDONLY, 0644, TAR_GNU);
+//    tar_extract_all(pTar, extractTo);
+//    tar_close(pTar);
+
+
+//    unZip("Purple.zip", ".");
 }
 
 

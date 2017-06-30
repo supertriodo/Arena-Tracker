@@ -12,7 +12,7 @@ TEMPLATE = app
 QT_CONFIG -= no-pkg-config
 
 CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+PKGCONFIG += opencv libzip
 LIBS += -lz
 
 SOURCES += Sources/main.cpp\
@@ -63,7 +63,8 @@ SOURCES += Sources/main.cpp\
     Sources/LibXls/xls.c \
     Sources/LibXls/xlstool.c \
     Sources/Utils/deckstringhandler.cpp \
-    Sources/themehandler.cpp
+    Sources/themehandler.cpp \
+    Sources/Utils/libzippp.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -118,7 +119,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/LibXls/config.h \
     Sources/constants.h \
     Sources/Utils/deckstringhandler.h \
-    Sources/themehandler.h
+    Sources/themehandler.h \
+    Sources/Utils/libzippp.h
 
 FORMS    += mainwindow.ui
 

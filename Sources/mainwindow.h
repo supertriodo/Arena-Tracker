@@ -27,6 +27,7 @@
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
+#define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
 
 
 namespace Ui {
@@ -165,6 +166,9 @@ private:
     void completeConfigComboTheme();
     void redrawAllGames();
     void initConfigTheme(QString theme);
+    void unZip(QString zipName, QString targetPath);
+    void downloadExtraFiles();
+    void downloadThemes();
 
 //Override events
 protected:
