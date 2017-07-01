@@ -169,6 +169,7 @@ private:
     void unZip(QString zipName, QString targetPath);
     void downloadExtraFiles();
     void downloadThemes();
+    void downloadTheme(QString theme, int version);
 
 //Override events
 protected:

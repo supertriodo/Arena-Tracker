@@ -310,8 +310,18 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
             for(const QString &key: jsonObject.keys())
             {
-                qDebug()<<key<<jsonObject.value(key).toInt();
+                downloadTheme(key, jsonObject.value(key).toInt());
             }
+        }
+        //Theme zip
+        else if(fullUrl.contains(THEMES_URL) && endUrl.endsWith(".zip"))
+        {
+            pDebug("Themes: " + endUrl + " --> Download Success.");
+            QByteArray data = reply->readAll();
+            Utility::dumpOnFile(data, Utility::themesPath() + "/" + endUrl);
+            unZip(Utility::themesPath() + "/" + endUrl, Utility::themesPath());
+            QFile zipFile(Utility::themesPath() + "/" + endUrl);
+            zipFile.remove();
         }
         //Extra files
         else
@@ -2112,6 +2122,35 @@ void MainWindow::downloadThemes()
 }
 
 
+void MainWindow::downloadTheme(QString theme, int version)
+{
+    bool needDownload = false;
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    int storedVersion = settings.value(theme + "Theme", 0).toInt();
+
+    QFileInfo dirInfo(Utility::themesPath() + "/" + theme);
+    if(!dirInfo.exists())           needDownload = true;
+    if(version != storedVersion)    needDownload = true;
+
+    emit pDebug("Themes: " + theme + ": Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+    if(needDownload)
+    {
+        if(dirInfo.exists())
+        {
+            QDir dir(Utility::themesPath() + "/" + theme);
+            dir.removeRecursively();
+            emit pDebug("Themes: " + Utility::themesPath() + "/" + theme + " removed.");
+        }
+
+        settings.setValue(theme + "Theme", version);
+        networkManager->get(QNetworkRequest(QUrl(QString(THEMES_URL) + "/" + theme + ".zip")));
+        emit pDebug("Themes: " + theme + ".zip --> Download from: " + THEMES_URL);
+    }
+}
+
+
 void MainWindow::removeHSCards()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -3413,26 +3452,6 @@ void MainWindow::testDelay()
 //    enemyHandHandler->drawHeroTotalAttack(true, 10, 10);
 //    enemyHandHandler->drawHeroTotalAttack(false, 10, 10);
 //    secretsHandler->secretPlayed(1, MAGE, arena);
-
-
-//    TAR *pTar;
-//    char *tarFilename = "purple.tar";
-//    char *srcDir = "Purple";
-//    char *extractTo = "./Purple";
-
-//    tar_open(&pTar, tarFilename, NULL, O_WRONLY | O_CREAT, 0644, TAR_GNU);
-//    tar_append_tree(pTar, srcDir, extractTo);
-//    tar_close(pTar);
-
-
-//    char *extractTo = "./extract";
-
-//    tar_open(&pTar, tarFilename, NULL, O_RDONLY, 0644, TAR_GNU);
-//    tar_extract_all(pTar, extractTo);
-//    tar_close(pTar);
-
-
-//    unZip("Purple.zip", ".");
 }
 
 
