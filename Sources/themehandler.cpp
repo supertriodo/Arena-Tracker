@@ -44,6 +44,7 @@ QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfO
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
 bool ThemeHandler::manaLimitBehind_;
+QString ThemeHandler::themeLoaded_;
 
 
 QString ThemeHandler::bgApp()
@@ -771,7 +772,14 @@ bool ThemeHandler::loadTheme(QString theme)
     jsonFile.close();
     loadThemeValues(themeDir.filePath() + "/", jsonData);
     defaultEmptyValues();
+    themeLoaded_ = theme;
     return true;
+}
+
+
+QString ThemeHandler::themeLoaded()
+{
+    return themeLoaded_;
 }
 
 
@@ -854,8 +862,8 @@ void ThemeHandler::defaultEmptyValues()
 
     //Default values
     if(fgColor_.isEmpty())                  fgColor_ = "white";
-    if(themeColor1_.isEmpty())              themeColor1_ = "grey";
-    if(themeColor2_.isEmpty())              themeColor2_ = "silver";
+    if(themeColor1_.isEmpty())              themeColor1_ = "#0F4F0F";
+    if(themeColor2_.isEmpty())              themeColor2_ = "#32AF32";
     if(hoverTabsColor_.isEmpty())           hoverTabsColor_ = "transparent";
     if(selectedTabsColor_.isEmpty())        selectedTabsColor_ = "transparent";
     if(bgTabsColor_.isEmpty())              bgTabsColor_ = themeColor1_;

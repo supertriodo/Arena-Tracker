@@ -44,12 +44,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     createNetworkManager();
     createDataDir();
-    downloadExtraFiles();
-    downloadThemes();
     createLogFile();
     completeUI();
     initCardsJson();
     downloadLightForgeJson();
+    downloadExtraFiles();
+    downloadThemes();
 
     createTrackobotUploader();
     createCardDownloader();
@@ -322,6 +322,21 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             unZip(Utility::themesPath() + "/" + endUrl, Utility::themesPath());
             QFile zipFile(Utility::themesPath() + "/" + endUrl);
             zipFile.remove();
+
+            QString theme = endUrl.left(endUrl.length()-4);
+            if(ui->configComboTheme->findText(theme) == -1)
+            {
+                ui->configComboTheme->addItem(theme);
+            }
+            if(ThemeHandler::themeLoaded() == theme)
+            {
+                loadTheme(theme);
+            }
+            else if(ThemeHandler::themeLoaded().isEmpty() && theme == DEFAULT_THEME)
+            {
+                ui->configComboTheme->setCurrentText(theme);
+                loadTheme(theme);
+            }
         }
         //Extra files
         else
@@ -979,7 +994,7 @@ void MainWindow::initConfigTheme(QString theme)
     int index = ui->configComboTheme->findText(theme);
     if(index == -1)
     {
-        theme = "Purple";
+        theme = DEFAULT_THEME;
         ui->configComboTheme->setCurrentText(theme);
     }
     else
@@ -1143,7 +1158,7 @@ void MainWindow::readSettings()
 
         this->splitWindow = settings.value("splitWindow", false).toBool();
         this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
-        QString theme = settings.value("theme", "Purple").toString();
+        QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
         int numWindows = settings.value("numWindows", 2).toInt();
         if(numWindows == 2) createSecondaryWindow();

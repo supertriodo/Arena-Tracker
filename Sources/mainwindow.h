@@ -23,6 +23,7 @@
 #define DIVIDE_TABS_V 500
 #define BIG_BUTTONS_H 48
 #define SMALL_BUTTONS_H 19
+#define DEFAULT_THEME "Purple"
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"

@@ -50,6 +50,7 @@ private:
     static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
     static bool manaLimitBehind_;
+    static QString themeLoaded_;
 
 
 //Metodos
@@ -150,6 +151,7 @@ public:
     static QString bgTotalAttackFile();
     static QString gamesOnZ2HColor();
     static bool manaLimitBehind();
+    static QString themeLoaded();
 };
 
 #endif // THEMEHANDLER_H
