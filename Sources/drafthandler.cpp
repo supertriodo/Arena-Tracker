@@ -268,6 +268,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 
         //Show Tab
         ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(ThemeHandler::tabArenaFile()), "");
+        ui->tabWidget->setTabToolTip(0, "Draft");
 
         //SizeDraft
         QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
