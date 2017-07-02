@@ -792,7 +792,7 @@ void ThemeHandler::defaultEmptyValues()
     }
     else if(bgApp_.contains("."))
     {
-        bgApp_ = "background-image: url(" + bgApp_ + ");";
+        bgApp_ = "background-image: url(" + bgApp_ + ");background-position: center;";
     }
     else
     {
