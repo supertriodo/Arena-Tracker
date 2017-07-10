@@ -3519,6 +3519,7 @@ void MainWindow::testDelay()
 //Acechador solitario (Forlorn Stalker), los minions que buffan tienen atk/health correctos por la misma razon.
 //Cartas a mano sin code, arreglado obteniendo el code del nombre:
 //id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
+//Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
 
 
 //NUEVAS CARTAS

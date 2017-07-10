@@ -1167,9 +1167,10 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Jugador roba carta conocida
-        //Maldición ancestral hace un FRIENDLY DECK --> EMPTY justo despues de meterse en el mazo. PRO
-        //El mono de Elise vacia el deck a empty y lo rellena de legendarias. CONTRA
-        else if(zoneFrom == "FRIENDLY DECK" && !zoneTo.isEmpty())
+        //Maldición ancestral hace un FRIENDLY DECK --> EMPTY justo despues de meterse en el mazo. CONTRA
+        //El mono de Elise vacia el deck a empty y lo rellena de legendarias. PRO
+        //Explorar un'goro vacia el deck a empty y lo rellena de explorar un'goro. PRO
+        else if(zoneFrom == "FRIENDLY DECK"/* && !zoneTo.isEmpty()*/)
         {
             //El avance de turno ocurre generalmente en (zoneTo == "FRIENDLY HAND") pero en el caso de overdraw ocurrira aqui.
             if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
