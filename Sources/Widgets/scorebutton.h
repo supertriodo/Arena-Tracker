@@ -33,6 +33,10 @@ protected:
 public:
     void setScore(double score, bool isBest);
     void setLearningMode(bool value);
+    void setLearningShow(bool value);
+
+signals:
+    void spreadLearningShow(bool value);
 };
 
 #endif // SCOREBUTTON_H

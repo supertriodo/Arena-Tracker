@@ -50,6 +50,7 @@ private slots:
     void hideSynergies(int index);
     void showSynergies();
     void findSynergyCardEntered(QListWidgetItem *item);
+    void spreadLearningShow(bool value);
 };
 
 #endif // DRAFTSCOREWINDOW_H

@@ -14,11 +14,9 @@ ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton
 
 void ScoreButton::leaveEvent(QEvent * e)
 {
-    setFlat(true);
     if(learningMode)
     {
-        learningShow = false;
-        draw();
+        emit spreadLearningShow(false);
     }
     QPushButton::leaveEvent(e);
 }
@@ -26,13 +24,18 @@ void ScoreButton::leaveEvent(QEvent * e)
 
 void ScoreButton::enterEvent(QEvent * e)
 {
-    setFlat(false);
     if(learningMode)
     {
-        learningShow = true;
-        draw();
+        emit spreadLearningShow(true);
     }
     QPushButton::enterEvent(e);
+}
+
+
+void ScoreButton::setLearningShow(bool value)
+{
+    learningShow = value;
+    draw();
 }
 
 

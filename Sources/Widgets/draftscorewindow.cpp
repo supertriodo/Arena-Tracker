@@ -32,10 +32,14 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
+        connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
+                this, SLOT(spreadLearningShow(bool)));
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
+        connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
+                this, SLOT(spreadLearningShow(bool)));
 
         //Opacity effects
         QGraphicsOpacityEffect *effect;
@@ -96,6 +100,16 @@ void DraftScoreWindow::setLearningMode(bool value)
     {
         scoresPushButton[i]->setLearningMode(value);
         scoresPushButton2[i]->setLearningMode(value);
+    }
+}
+
+
+void DraftScoreWindow::spreadLearningShow(bool value)
+{
+    for(int i=0; i<3; i++)
+    {
+        scoresPushButton[i]->setLearningShow(value);
+        scoresPushButton2[i]->setLearningShow(value);
     }
 }
 
