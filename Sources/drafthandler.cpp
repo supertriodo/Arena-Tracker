@@ -909,7 +909,7 @@ void DraftHandler::finishFindScreenRects()
 
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
 
-        createDraftScoreWindow();
+        createDraftScoreWindow(screenDetection.screenScale);
         newCaptureDraftLoop();
     }
 }
@@ -931,7 +931,8 @@ ScreenDetection DraftHandler::findScreenRects()
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen("arenaTemplate.png", screen, templatePoints);
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen("arenaTemplate.png", screen,
+                                                                          templatePoints, screenDetection.screenScale);
         if(screenPoints.empty())    continue;
 
         //Calculamos screenRect
@@ -949,14 +950,14 @@ ScreenDetection DraftHandler::findScreenRects()
 }
 
 
-void DraftHandler::createDraftScoreWindow()
+void DraftHandler::createDraftScoreWindow(const QPointF &screenScale)
 {
     deleteDraftScoreWindow();
-    QPoint topLeft(screenRects[0].x, screenRects[0].y);
-    QPoint bottomRight(screenRects[2].x+screenRects[2].width,
-            screenRects[2].y+screenRects[2].height);
+    QPoint topLeft(screenRects[0].x * screenScale.x(), screenRects[0].y * screenScale.y());
+    QPoint bottomRight(screenRects[2].x * screenScale.x() + screenRects[2].width * screenScale.x(),
+            screenRects[2].y * screenScale.y() + screenRects[2].height * screenScale.y());
     QRect draftRect(topLeft, bottomRight);
-    QSize sizeCard(screenRects[0].width, screenRects[0].height);
+    QSize sizeCard(screenRects[0].width * screenScale.x(), screenRects[0].height * screenScale.y());
     draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
     draftScoreWindow->setLearningMode(this->learningMode);
     draftScoreWindow->setDraftMethod(this->draftMethod);

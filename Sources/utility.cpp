@@ -362,13 +362,17 @@ QString Utility::removeAccents(QString s)
 }
 
 
-std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, bool showMatches)
+std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, QPointF &screenScale)
 {
     std::vector<Point2f> screenPoints;
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
 
+    //Screen scale
+    screenScale.setX(rect.width() / (float)image.width());
+    screenScale.setY(rect.height() / (float)image.height());
+
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
     cv::Mat screenCapture = mat.clone();
 
     Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
@@ -441,7 +445,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     perspectiveTransform(templatePoints, screenPoints, H);
 
     //Show matches
-    if(showMatches)
+    if(false)
     {
         Mat img_matches;
         drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,

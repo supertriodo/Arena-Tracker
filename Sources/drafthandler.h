@@ -30,6 +30,7 @@ class ScreenDetection
 public:
     cv::Rect screenRects[3];
     int screenIndex = -1;
+    QPointF screenScale = QPointF(0,0);
 };
 
 class DraftHandler : public QObject
@@ -98,7 +99,7 @@ private:
     void updateTipVisibility();
     void initHearthArenaCodes(QString &hero);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
-    void createDraftScoreWindow();
+    void createDraftScoreWindow(const QPointF &screenScale);
     void startInitLightForgeTiers(const QString &heroString);
     void initDraftedCards(QList<DeckCard> deckCardList);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
