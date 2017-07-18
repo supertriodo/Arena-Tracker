@@ -4,7 +4,7 @@
 #include "utility.h"
 #include <QNetworkAccessManager>
 
-#define VERSION QString("v5.2")
+#define VERSION QString("v5.21")
 
 
 class VersionChecker : public QObject
