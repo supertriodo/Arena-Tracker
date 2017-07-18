@@ -3,7 +3,6 @@
 
 #include "Widgets/ui_extended.h"
 #include "Cards/draftcard.h"
-#include "heartharenamentor.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
 #include <QObject>
@@ -43,7 +42,6 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    HearthArenaMentor *hearthArenaMentor;
     QMap<QString, int> hearthArenaCodes;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
@@ -69,7 +67,6 @@ private:
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
-    QFutureWatcher<QMap<QString, LFtier> > futureInitLightForgeTiers;
     QLabel *labelCard[3];
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
@@ -86,7 +83,6 @@ private:
     void clearLists(bool keepDraftedCards);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void createHearthArenaMentor();    
     void updateBoxTitle(double cardRating=0);
     bool screenFound();
     ScreenDetection findScreenRects();
@@ -97,10 +93,9 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void updateTipVisibility();
-    void initHearthArenaCodes(QString &hero);
+    void initHearthArenaCodes(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow(const QPointF &screenScale);
-    void startInitLightForgeTiers(const QString &heroString);
     void initDraftedCards(QList<DeckCard> deckCardList);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -109,7 +104,6 @@ private:
     void getBestCards(DraftCard bestCards[3]);
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
-    QStringList getHeroArenaCodes(const QString &hero);
     int normalizeLFscore(int score);
 
 public:
@@ -158,7 +152,6 @@ private slots:
     void captureDraft();
     void finishFindScreenRects();
     void startFindScreenRects();
-    void finishInitLightForgeTiers();
 };
 
 #endif // DRAFTHANDLER_H

@@ -23,16 +23,13 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
         cardDetected[i] = false;
     }
 
-    createHearthArenaMentor();
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
-    connect(&futureInitLightForgeTiers, SIGNAL(finished()), this, SLOT(finishInitLightForgeTiers()));
 }
 
 DraftHandler::~DraftHandler()
 {
-    delete hearthArenaMentor;
     deleteDraftScoreWindow();
 }
 
@@ -53,77 +50,42 @@ void DraftHandler::completeUI()
 }
 
 
-void DraftHandler::createHearthArenaMentor()
-{
-    hearthArenaMentor = new HearthArenaMentor(this);
-    connect(hearthArenaMentor, SIGNAL(newTip(QString,double,double,double,double,double,double,QString,QString,QString,int,int,int,DraftMethod)),
-            this, SLOT(showNewRatings(QString,double,double,double,double,double,double,QString,QString,QString,int,int,int,DraftMethod)));
-    connect(hearthArenaMentor, SIGNAL(pLog(QString)),
-            this, SIGNAL(pLog(QString)));
-    connect(hearthArenaMentor, SIGNAL(pDebug(QString,DebugLevel,QString)),
-            this, SIGNAL(pDebug(QString,DebugLevel,QString)));
-}
-
-
 QStringList DraftHandler::getAllArenaCodes()
 {
     QStringList codeList;
-    codeList.append(getHeroArenaCodes("01"));
-    codeList.append(getHeroArenaCodes("02"));
-    codeList.append(getHeroArenaCodes("03"));
-    codeList.append(getHeroArenaCodes("04"));
-    codeList.append(getHeroArenaCodes("05"));
-    codeList.append(getHeroArenaCodes("06"));
-    codeList.append(getHeroArenaCodes("07"));
-    codeList.append(getHeroArenaCodes("08"));
-    codeList.append(getHeroArenaCodes("09"));
-    codeList.removeDuplicates();
-    return codeList;
-}
 
-
-QStringList DraftHandler::getHeroArenaCodes(const QString &hero)
-{
-    QStringList codeList;
-    QFile jsonHAFile(":Json/"+hero+".json");
-    jsonHAFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonHAFile.readAll());
-    jsonHAFile.close();
-    QJsonObject jsonHACodes = jsonDoc.object();
-    for(QJsonObject::const_iterator it=jsonHACodes.constBegin(); it!=jsonHACodes.constEnd(); it++)
+    QFile jsonFile(Utility::extraPath() + "/lightForge.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    const QJsonArray jsonCardsArray = jsonDoc.object().value("Cards").toArray();
+    for(QJsonValue jsonCard: jsonCardsArray)
     {
-        QString code = it.value().toObject().value("image").toString();
-        bool bannedInArena = it.value().toObject().value("bannedInArena").toBool();
-
-        if(Utility::isFromStandardSet(code) && !bannedInArena)
-        {
-            codeList.append(code);
-        }
+        QJsonObject jsonCardObject = jsonCard.toObject();
+        QString code = jsonCardObject.value("CardId").toString();
+        codeList.append(code);
     }
+
     return codeList;
 }
 
 
-void DraftHandler::initHearthArenaCodes(QString &hero)
+void DraftHandler::initHearthArenaCodes(const QString &heroString)
 {
     hearthArenaCodes.clear();
 
-    QFile jsonHAFile(":Json/"+hero+".json");
-    jsonHAFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonHAFile.readAll());
-    jsonHAFile.close();
-    QJsonObject jsonHACodes = jsonDoc.object();
-    for(QJsonObject::const_iterator it=jsonHACodes.constBegin(); it!=jsonHACodes.constEnd(); it++)
-    {
-        QString code = it.value().toObject().value("image").toString();
-        bool bannedInArena = it.value().toObject().value("bannedInArena").toBool();
+    QFile jsonFile(Utility::extraPath() + "/hearthArena.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    QJsonObject jsonNamesObject = jsonDoc.object().value(heroString).toObject();
 
-        if(Utility::isFromStandardSet(code) && !bannedInArena)
-        {
-            hearthArenaCodes[code] = it.key().toInt();
-            addCardHist(code, false);
-            addCardHist(code, true);
-        }
+    for(const QString &code: lightForgeTiers.keys())
+    {
+        QString name = Utility::cardEnNameFromCode(code);
+        int score = jsonNamesObject.value(name).toInt();
+        hearthArenaCodes[code] = score;
+        if(score == 0)  emit pDebug("HearthArena missing: " + name);
     }
 
     emit pDebug("HearthArena Cards: " + QString::number(hearthArenaCodes.count()));
@@ -185,26 +147,18 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
                     lfTier.maxCard = -1;
                 }
 
+                if(!lightForgeTiers.contains(code))
+                {
+                    addCardHist(code, false);
+                    addCardHist(code, true);
+                }
                 lightForgeTiers[code] = lfTier;
             }
         }
     }
 
-    return lightForgeTiers;
-}
-
-
-void DraftHandler::startInitLightForgeTiers(const QString &heroString)
-{
-    if(!futureInitLightForgeTiers.isRunning())  futureInitLightForgeTiers.setFuture(QtConcurrent::run(this, &DraftHandler::initLightForgeTiers, heroString));
-}
-
-
-void DraftHandler::finishInitLightForgeTiers()
-{
-    this->lightForgeTiers = futureInitLightForgeTiers.result();
     emit pDebug("LightForge Cards: " + QString::number(lightForgeTiers.count()));
-    newCaptureDraftLoop();
+    return lightForgeTiers;
 }
 
 
@@ -214,8 +168,9 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     cardsHist.clear();
 
     startFindScreenRects();
-    startInitLightForgeTiers(Utility::heroString2FromLogNumber(hero));
-    initHearthArenaCodes(hero);
+    const QString heroString = Utility::heroString2FromLogNumber(hero);
+    this->lightForgeTiers = initLightForgeTiers(heroString);
+    initHearthArenaCodes(heroString);
 
     //Wait for cards
     if(cardsDownloading.isEmpty())
@@ -674,13 +629,14 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
     //HearthArena
-    int intCodes[3];
-    for(int i=0; i<3; i++)
-    {
-        intCodes[i] = hearthArenaCodes[bestCards[i].getCode()];
-    }
-
-    hearthArenaMentor->askCardsRating(arenaHero, draftedCards, intCodes);
+    rating1 = hearthArenaCodes[bestCards[0].getCode()];
+    rating2 = hearthArenaCodes[bestCards[1].getCode()];
+    rating3 = hearthArenaCodes[bestCards[2].getCode()];
+    showNewRatings("", rating1, rating2, rating3,
+                   rating1, rating2, rating3,
+                   "", "", "",
+                   -1, -1, -1,
+                   HearthArena);
 }
 
 
@@ -723,7 +679,7 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
         else if(draftMethod == HearthArena)
         {
             labelHAscore[i]->setText(QString::number((int)ratings[i]) +
-                                            " - (" + QString::number((int)tierScore[i]) + ")");
+                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(maxRating == ratings[i])     highlightScore(labelHAscore[i], draftMethod);
         }
     }

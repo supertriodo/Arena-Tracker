@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     completeUI();
     initCardsJson();
     downloadLightForgeJson();
+    downloadHearthArenaVersion();
     downloadExtraFiles();
     downloadThemes();
 
@@ -303,6 +304,19 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Json LightForge --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+        }
+        //Hearth Arena version
+        else if(endUrl == "haVersion.json")
+        {
+            int haVersion = QJsonDocument::fromJson(reply->readAll()).object().value("haVersion").toInt();
+            downloadHearthArenaJson(haVersion);
+        }
+        //Hearth Arena json
+        else if(endUrl == "hearthArena.json")
+        {
+            emit pDebug("Extra: Json HearthArena --> Download Success.");
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/hearthArena.json");
         }
         //Themes json
         else if(endUrl == "Themes.json")
@@ -2128,6 +2142,41 @@ void MainWindow::downloadExtraFiles()
 
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
+}
+
+
+void MainWindow::downloadHearthArenaVersion()
+{
+    networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/haVersion.json"))));
+}
+
+
+void MainWindow::downloadHearthArenaJson(int version)
+{
+    bool needDownload = false;
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    int storedVersion = settings.value("haVersion", 0).toInt();
+
+    QFileInfo fileInfo(Utility::extraPath() + "/hearthArena.json");
+    if(!fileInfo.exists())          needDownload = true;
+    if(version != storedVersion)    needDownload = true;
+
+    emit pDebug("Extra: Json HearthArena: Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+    if(needDownload)
+    {
+        if(fileInfo.exists())
+        {
+            QFile file(Utility::extraPath() + "/hearthArena.json");
+            file.remove();
+            emit pDebug("Extra: Json HearthArena removed.");
+        }
+
+        settings.setValue("haVersion", version);
+        networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/hearthArena.json"))));
+        emit pDebug("Extra: Json HearthArena --> Download from: " + QString(HA_URL) + QString("/hearthArena.json"));
+    }
 }
 
 
