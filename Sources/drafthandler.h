@@ -92,7 +92,6 @@ private:
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
-    void updateTipVisibility();
     void initHearthArenaCodes(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow(const QPointF &screenScale);
@@ -139,7 +138,7 @@ signals:
 public slots:
     void beginDraft(QString hero, QList<DeckCard> deckCardList=QList<DeckCard>());
     void endDraft();
-    void showNewRatings(QString tip, double rating1, double rating2, double rating3,
+    void showNewRatings(double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,
                         QString synergy1, QString synergy2, QString synergy3,
                         int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod);

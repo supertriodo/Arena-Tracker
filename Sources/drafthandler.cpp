@@ -36,8 +36,6 @@ DraftHandler::~DraftHandler()
 
 void DraftHandler::completeUI()
 {
-    ui->textBrowserDraft->setFrameShape(QFrame::NoFrame);
-
     labelCard[0] = ui->labelCard1;
     labelCard[1] = ui->labelCard2;
     labelCard[2] = ui->labelCard3;
@@ -211,7 +209,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         draftCards[i].draw(labelCard[i]);
     }
 
-    ui->textBrowserDraft->setText("");
     updateBoxTitle();
 
     if(!alreadyDrafting)
@@ -582,7 +579,6 @@ void DraftHandler::pickCard(QString code)
     }
 
     this->numCaptured = 0;
-    ui->textBrowserDraft->setText("");
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
@@ -611,8 +607,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         draftCards[i].draw(labelCard[i]);
     }
 
-    ui->textBrowserDraft->setText("");
-
 
     //LightForge
     int rating1 = normalizeLFscore(lightForgeTiers[bestCards[0].getCode()].score);
@@ -621,7 +615,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     int maxCard1 = lightForgeTiers[bestCards[0].getCode()].maxCard;
     int maxCard2 = lightForgeTiers[bestCards[1].getCode()].maxCard;
     int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
-    showNewRatings("", rating1, rating2, rating3,
+    showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    "", "", "",
                    maxCard1, maxCard2, maxCard3,
@@ -632,7 +626,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     rating1 = hearthArenaCodes[bestCards[0].getCode()];
     rating2 = hearthArenaCodes[bestCards[1].getCode()];
     rating3 = hearthArenaCodes[bestCards[2].getCode()];
-    showNewRatings("", rating1, rating2, rating3,
+    showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    "", "", "",
                    -1, -1, -1,
@@ -650,7 +644,7 @@ void DraftHandler::updateBoxTitle(double cardRating)
 }
 
 
-void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, double rating3,
+void DraftHandler::showNewRatings(double rating1, double rating2, double rating3,
                                   double tierScore1, double tierScore2, double tierScore3,
                                   QString synergy1, QString synergy2, QString synergy3,
                                   int maxCard1, int maxCard2, int maxCard3,
@@ -683,8 +677,6 @@ void DraftHandler::showNewRatings(QString tip, double rating1, double rating2, d
             if(maxRating == ratings[i])     highlightScore(labelHAscore[i], draftMethod);
         }
     }
-
-    if(draftMethod == HearthArena)  ui->textBrowserDraft->setText(tip);
 
     //Mostrar score
     if(draftScoreWindow != NULL)
@@ -971,7 +963,6 @@ void DraftHandler::setTheme()
 
     font = QFont(ThemeHandler::defaultFont());
     font.setPixelSize(12);
-    ui->textBrowserDraft->setFont(font);
 
     for(int i=0; i<3; i++)
     {
@@ -995,7 +986,6 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
 
-        ui->textBrowserDraft->setStyleSheet("QTextBrowser{" + ThemeHandler::bgWidgets() + " color: white;}");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
                                             " color: " + ThemeHandler::fgColor() + ";}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
@@ -1005,7 +995,6 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
 
-        ui->textBrowserDraft->setStyleSheet("");
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
                                             " color: " + ThemeHandler::fgColor() + ";}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
@@ -1050,7 +1039,6 @@ void DraftHandler::setLearningMode(bool value)
     this->learningMode = value;
     if(this->draftScoreWindow != NULL)  draftScoreWindow->setLearningMode(value);
 
-    updateTipVisibility();
     updateScoresVisibility();
 }
 
@@ -1060,23 +1048,7 @@ void DraftHandler::setDraftMethod(DraftMethod value)
     this->draftMethod = value;
     if(draftScoreWindow != NULL)    draftScoreWindow->setDraftMethod(value);
 
-    updateTipVisibility();
     updateScoresVisibility();
-}
-
-
-void DraftHandler::updateTipVisibility()
-{
-    if(!learningMode && (this->draftMethod == HearthArena || this->draftMethod == All))
-    {
-        ui->textBrowserDraft->show();
-        ui->draftVerticalSpacer->changeSize(20, 20, QSizePolicy::Minimum, QSizePolicy::Preferred);
-    }
-    else
-    {
-        ui->textBrowserDraft->hide();
-        ui->draftVerticalSpacer->changeSize(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    }
 }
 
 
