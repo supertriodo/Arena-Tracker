@@ -3524,9 +3524,11 @@ void MainWindow::testDelay()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-
 //New web
 
+//Eliminar HA draftedCards y renombrar hacodes a scores.
+//Theme nuevos iconos y documentar
+//Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

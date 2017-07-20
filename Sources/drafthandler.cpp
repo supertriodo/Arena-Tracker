@@ -23,6 +23,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
         cardDetected[i] = false;
     }
 
+    createDraftItemCounters();
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
@@ -31,6 +32,40 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 DraftHandler::~DraftHandler()
 {
     deleteDraftScoreWindow();
+    deleteDraftItemCounters();
+}
+
+
+void DraftHandler::createDraftItemCounters()
+{
+    horLayoutRaces1 = new QHBoxLayout();
+    horLayoutRaces2 = new QHBoxLayout();
+
+    raceCounters = new DraftItemCounter *[V_NUM_RACES];
+    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("elementalRace.png"));
+    raceCounters[V_BEAST] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("beastRace.png"));
+    raceCounters[V_MURLOC] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("murlocRace.png"));
+    raceCounters[V_DRAGON] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("dragonRace.png"));
+
+    raceCounters[V_PIRATE] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("pirateRace.png"));
+    raceCounters[V_MECHANICAL] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("mechanicalRace.png"));
+    raceCounters[V_DEMON] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("demonRace.png"));
+    raceCounters[V_TOTEM] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("totemRace.png"));
+
+    horLayoutRaces1->addStretch();
+    horLayoutRaces2->addStretch();
+    ui->draftVerticalLayout->addLayout(horLayoutRaces1);
+    ui->draftVerticalLayout->addLayout(horLayoutRaces2);
+}
+
+
+void DraftHandler::deleteDraftItemCounters()
+{
+    for(int i=0; i<V_NUM_RACES; i++)
+    {
+        delete raceCounters[i];
+    }
+    delete []raceCounters;
 }
 
 
@@ -227,6 +262,13 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         mainWindow->resize(sizeDraft);
         mainWindow->resizeTabWidgets();
     }
+
+    //Reset race counters and its layouts
+    for(int i=0; i<V_NUM_RACES; i++)
+    {
+        raceCounters[i]->reset();
+    }
+
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
 }
 
@@ -565,6 +607,7 @@ void DraftHandler::pickCard(QString code)
             }
         }
     }
+    updateRaceCounters(draftCard);
 
     //Clear cards and score
     for(int i=0; i<3; i++)
@@ -587,6 +630,41 @@ void DraftHandler::pickCard(QString code)
     this->justPickedCard = code;
 
     newCaptureDraftLoop(true);
+}
+
+
+void DraftHandler::updateRaceCounters(DraftCard &draftCard)
+{
+    CardRace cardRace = draftCard.getRace();
+    switch(cardRace)
+    {
+        case MURLOC:
+            raceCounters[V_MURLOC]->increase();
+            break;
+        case DEMON:
+            raceCounters[V_DEMON]->increase();
+            break;
+        case MECHANICAL:
+            raceCounters[V_MECHANICAL]->increase();
+            break;
+        case ELEMENTAL:
+            raceCounters[V_ELEMENTAL]->increase();
+            break;
+        case BEAST:
+            raceCounters[V_BEAST]->increase();
+            break;
+        case TOTEM:
+            raceCounters[V_TOTEM]->increase();
+            break;
+        case PIRATE:
+            raceCounters[V_PIRATE]->increase();
+            break;
+        case DRAGON:
+            raceCounters[V_DRAGON]->increase();
+            break;
+        default:
+            break;
+    }
 }
 
 
@@ -987,7 +1065,7 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->repaint();
 
         ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
-                                            " color: " + ThemeHandler::fgColor() + ";}"
+                                            " color: white;}"
                                          "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
     }
     else
@@ -1007,6 +1085,12 @@ void DraftHandler::setTransparency(Transparency value)
     clearScore(ui->labelHAscore1, HearthArena, false);
     clearScore(ui->labelHAscore2, HearthArena, false);
     clearScore(ui->labelHAscore3, HearthArena, false);
+
+    //Update race counters
+    for(int i=0; i<V_NUM_RACES; i++)
+    {
+        raceCounters[i]->setTransparency(transparency, mouseInApp);
+    }
 }
 
 

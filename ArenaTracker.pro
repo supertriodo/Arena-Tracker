@@ -64,7 +64,8 @@ SOURCES += Sources/main.cpp\
     Sources/LibXls/xlstool.c \
     Sources/Utils/deckstringhandler.cpp \
     Sources/themehandler.cpp \
-    Sources/Utils/libzippp.cpp
+    Sources/Utils/libzippp.cpp \
+    Sources/Widgets/draftitemcounter.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -120,7 +121,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/constants.h \
     Sources/Utils/deckstringhandler.h \
     Sources/themehandler.h \
-    Sources/Utils/libzippp.h
+    Sources/Utils/libzippp.h \
+    Sources/Widgets/draftitemcounter.h
 
 FORMS    += mainwindow.ui
 

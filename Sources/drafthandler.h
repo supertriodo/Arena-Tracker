@@ -5,6 +5,7 @@
 #include "Cards/draftcard.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
+#include "Widgets/draftitemcounter.h"
 #include <QObject>
 #include <QFutureWatcher>
 
@@ -15,6 +16,9 @@
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
+
+
+enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
 
 
 class LFtier
@@ -71,6 +75,8 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     double shownTierScores[3];
+    DraftItemCounter **raceCounters;
+    QHBoxLayout *horLayoutRaces1, *horLayoutRaces2;
 
 
 //Metodos
@@ -104,6 +110,9 @@ private:
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
     int normalizeLFscore(int score);
+    void createDraftItemCounters();
+    void deleteDraftItemCounters();
+    void updateRaceCounters(DraftCard &draftCard);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
