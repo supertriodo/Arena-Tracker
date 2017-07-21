@@ -112,6 +112,7 @@ Thanks to all these projects ArenaTracker is possible.
 * Morgan K: €20,00 EUR
 * Pavel G: €15,00 EUR
 * Andres N: €15,00 EUR
+* Brieuc A: €10,00 EUR
 * Neil G: €10,00 EUR
 * Raymond B: €10,00 EUR
 * Eero V: €10,00 EUR
