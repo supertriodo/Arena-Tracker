@@ -16,12 +16,13 @@ public:
 private:
     QLabel labelIcon, labelCounter;
     int counter;
+    QList<DeckCard> deckCardList;
 
 //Metodos
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
-    bool increase();
+    void increase(const QString &code);
     bool isHidden();
 
 signals:

@@ -277,16 +277,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         mainWindow->resizeTabWidgets();
     }
 
-    //Reset counters
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        cardTypeCounters[i]->reset();
-    }
-    for(int i=0; i<V_NUM_RACES; i++)
-    {
-        raceCounters[i]->reset();
-    }
-
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
 }
 
@@ -313,6 +303,16 @@ void DraftHandler::clearLists(bool keepDraftedCards)
 
     screenIndex = -1;
     numCaptured = 0;
+
+    //Reset counters
+    for(int i=0; i<V_NUM_TYPES; i++)
+    {
+        cardTypeCounters[i]->reset();
+    }
+    for(int i=0; i<V_NUM_RACES; i++)
+    {
+        raceCounters[i]->reset();
+    }
 }
 
 
@@ -658,28 +658,28 @@ void DraftHandler::updateRaceCounters(DraftCard &draftCard)
     switch(cardRace)
     {
         case MURLOC:
-            raceCounters[V_MURLOC]->increase();
+            raceCounters[V_MURLOC]->increase(draftCard.getCode());
             break;
         case DEMON:
-            raceCounters[V_DEMON]->increase();
+            raceCounters[V_DEMON]->increase(draftCard.getCode());
             break;
         case MECHANICAL:
-            raceCounters[V_MECHANICAL]->increase();
+            raceCounters[V_MECHANICAL]->increase(draftCard.getCode());
             break;
         case ELEMENTAL:
-            raceCounters[V_ELEMENTAL]->increase();
+            raceCounters[V_ELEMENTAL]->increase(draftCard.getCode());
             break;
         case BEAST:
-            raceCounters[V_BEAST]->increase();
+            raceCounters[V_BEAST]->increase(draftCard.getCode());
             break;
         case TOTEM:
-            raceCounters[V_TOTEM]->increase();
+            raceCounters[V_TOTEM]->increase(draftCard.getCode());
             break;
         case PIRATE:
-            raceCounters[V_PIRATE]->increase();
+            raceCounters[V_PIRATE]->increase(draftCard.getCode());
             break;
         case DRAGON:
-            raceCounters[V_DRAGON]->increase();
+            raceCounters[V_DRAGON]->increase(draftCard.getCode());
             break;
         default:
             break;
@@ -693,13 +693,13 @@ void DraftHandler::updateCardTypeCounters(DraftCard &draftCard)
     switch(cardType)
     {
         case MINION:
-            cardTypeCounters[V_MINION]->increase();
+            cardTypeCounters[V_MINION]->increase(draftCard.getCode());
             break;
         case SPELL:
-            cardTypeCounters[V_SPELL]->increase();
+            cardTypeCounters[V_SPELL]->increase(draftCard.getCode());
             break;
         case WEAPON:
-            cardTypeCounters[V_WEAPON]->increase();
+            cardTypeCounters[V_WEAPON]->increase(draftCard.getCode());
             break;
         default:
             break;
