@@ -38,8 +38,14 @@ DraftHandler::~DraftHandler()
 
 void DraftHandler::createDraftItemCounters()
 {
+    horLayoutCardTypes = new QHBoxLayout();
     horLayoutRaces1 = new QHBoxLayout();
     horLayoutRaces2 = new QHBoxLayout();
+
+    cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("minionsCounter.png"));
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("spellsCounter.png"));
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("weaponsCounter.png"));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
     raceCounters[V_ELEMENTAL] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("elementalRace.png"));
@@ -52,8 +58,10 @@ void DraftHandler::createDraftItemCounters()
     raceCounters[V_DEMON] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("demonRace.png"));
     raceCounters[V_TOTEM] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("totemRace.png"));
 
+    horLayoutCardTypes->addStretch();
     horLayoutRaces1->addStretch();
     horLayoutRaces2->addStretch();
+    ui->draftVerticalLayout->addLayout(horLayoutCardTypes);
     ui->draftVerticalLayout->addLayout(horLayoutRaces1);
     ui->draftVerticalLayout->addLayout(horLayoutRaces2);
 }
@@ -61,6 +69,12 @@ void DraftHandler::createDraftItemCounters()
 
 void DraftHandler::deleteDraftItemCounters()
 {
+    for(int i=0; i<V_NUM_TYPES; i++)
+    {
+        delete cardTypeCounters[i];
+    }
+    delete []cardTypeCounters;
+
     for(int i=0; i<V_NUM_RACES; i++)
     {
         delete raceCounters[i];
@@ -263,7 +277,11 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         mainWindow->resizeTabWidgets();
     }
 
-    //Reset race counters and its layouts
+    //Reset counters
+    for(int i=0; i<V_NUM_TYPES; i++)
+    {
+        cardTypeCounters[i]->reset();
+    }
     for(int i=0; i<V_NUM_RACES; i++)
     {
         raceCounters[i]->reset();
@@ -608,6 +626,7 @@ void DraftHandler::pickCard(QString code)
         }
     }
     updateRaceCounters(draftCard);
+    updateCardTypeCounters(draftCard);
 
     //Clear cards and score
     for(int i=0; i<3; i++)
@@ -661,6 +680,26 @@ void DraftHandler::updateRaceCounters(DraftCard &draftCard)
             break;
         case DRAGON:
             raceCounters[V_DRAGON]->increase();
+            break;
+        default:
+            break;
+    }
+}
+
+
+void DraftHandler::updateCardTypeCounters(DraftCard &draftCard)
+{
+    CardType cardType = draftCard.getType();
+    switch(cardType)
+    {
+        case MINION:
+            cardTypeCounters[V_MINION]->increase();
+            break;
+        case SPELL:
+            cardTypeCounters[V_SPELL]->increase();
+            break;
+        case WEAPON:
+            cardTypeCounters[V_WEAPON]->increase();
             break;
         default:
             break;
@@ -1087,6 +1126,11 @@ void DraftHandler::setTransparency(Transparency value)
     clearScore(ui->labelHAscore3, HearthArena, false);
 
     //Update race counters
+    for(int i=0; i<V_NUM_TYPES; i++)
+    {
+        cardTypeCounters[i]->setTransparency(transparency, mouseInApp);
+    }
+
     for(int i=0; i<V_NUM_RACES; i++)
     {
         raceCounters[i]->setTransparency(transparency, mouseInApp);

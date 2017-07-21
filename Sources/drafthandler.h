@@ -19,6 +19,7 @@
 
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
+enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 
 
 class LFtier
@@ -75,8 +76,8 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     double shownTierScores[3];
-    DraftItemCounter **raceCounters;
-    QHBoxLayout *horLayoutRaces1, *horLayoutRaces2;
+    DraftItemCounter **raceCounters, **cardTypeCounters;
+    QHBoxLayout *horLayoutRaces1, *horLayoutRaces2, *horLayoutCardTypes;
 
 
 //Metodos
@@ -113,6 +114,7 @@ private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
     void updateRaceCounters(DraftCard &draftCard);
+    void updateCardTypeCounters(DraftCard &draftCard);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
