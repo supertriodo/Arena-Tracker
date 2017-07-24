@@ -4,7 +4,7 @@
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap) : QObject(parent)
 {
     labelIcon.setPixmap(pixmap);
-    labelCounter.setFixedWidth(10);
+    labelCounter.setFixedWidth(15);
     hLayout->addWidget(&labelIcon);
     hLayout->addWidget(&labelCounter);
 

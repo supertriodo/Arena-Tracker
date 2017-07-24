@@ -116,6 +116,10 @@ private:
     void updateRaceCounters(DraftCard &draftCard);
     void updateCardTypeCounters(DraftCard &draftCard);
     void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
+    void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
+    void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
+    bool isSpellSyn(QString &code);
+    bool isWeaponSyn(QString &code);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

@@ -738,6 +738,25 @@ void DraftHandler::updateCardTypeCounters(DraftCard &draftCard)
         default:
             break;
     }
+
+    QString code = draftCard.getCode();
+    if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->increaseSyn(code);
+    if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->increaseSyn(code);
+}
+
+
+bool DraftHandler::isSpellSyn(QString &code)
+{
+    return  Utility::cardEnTextFromCode(code).toLower().contains("spell") &&
+            !Utility::cardEnTextFromCode(code).toLower().contains("spell power") &&
+            !Utility::cardEnTextFromCode(code).toLower().contains("can't be targeted by spells");
+}
+
+
+bool DraftHandler::isWeaponSyn(QString &code)
+{
+    return  Utility::cardEnTextFromCode(code).toLower().contains("weapon") &&
+            !Utility::cardEnTextFromCode(code).toLower().contains("opponent's weapon");
 }
 
 
@@ -789,6 +808,34 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
 void DraftHandler::getSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
+{
+    getCardTypeSynergies(draftCard, synergies);
+    getRaceSynergies(draftCard, synergies);
+}
+
+
+void DraftHandler::getCardTypeSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
+{
+    CardType cardType = draftCard.getType();
+    switch(cardType)
+    {
+        case SPELL:
+            cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+            break;
+        case WEAPON:
+            cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
+            break;
+        default:
+            break;
+    }
+
+    QString code = draftCard.getCode();
+    if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->insertCards(synergies);
+    if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->insertCards(synergies);
+}
+
+
+void DraftHandler::getRaceSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
 {
     CardRace cardRace = draftCard.getRace();
     switch(cardRace)
