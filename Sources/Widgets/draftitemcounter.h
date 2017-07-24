@@ -16,7 +16,7 @@ public:
 private:
     QLabel labelIcon, labelCounter;
     int counter;
-    QList<DeckCard> deckCardList;
+    QList<DeckCard> deckCardList, deckCardListSyn;
 
 //Metodos
 public:
@@ -24,6 +24,9 @@ public:
     void setTransparency(Transparency transparency, bool mouseInApp);
     void increase(const QString &code);
     bool isHidden();
+    void insertCards(QMap<QString, int> &synergies);
+    void increaseSyn(const QString &code);
+    void insertSynCards(QMap<QString, int> &synergies);
 
 signals:
 

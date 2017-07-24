@@ -85,6 +85,7 @@ public:
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter);
     static QString themesPath();
     static int heroLogNumber2HeroOrder(QString heroLog);
+    static QString cardEnTextFromCode(QString code);
 };
 
 #endif // UTILITY_H

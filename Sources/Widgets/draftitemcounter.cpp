@@ -16,6 +16,7 @@ void DraftItemCounter::reset()
 {
     this->counter = 0;
     this->deckCardList.clear();
+    this->deckCardListSyn.clear();
     labelCounter.setText("0");
     labelIcon.setHidden(true);
     labelCounter.setHidden(true);
@@ -62,6 +63,53 @@ void DraftItemCounter::increase(const QString &code)
     {
         labelIcon.setHidden(false);
         labelCounter.setHidden(false);
+    }
+}
+
+
+void DraftItemCounter::increaseSyn(const QString &code)
+{
+    bool duplicatedCard = false;
+    for(DeckCard &deckCard: deckCardListSyn)
+    {
+        if(deckCard.getCode() == code)
+        {
+            deckCard.total++;
+            deckCard.remaining = deckCard.total;
+            duplicatedCard = true;
+            break;
+        }
+    }
+
+    if(!duplicatedCard)
+    {
+        deckCardListSyn.append(DeckCard(code));
+    }
+}
+
+
+void DraftItemCounter::insertCards(QMap<QString,int> &synergies)
+{
+    for(DeckCard &deckCard: deckCardList)
+    {
+        QString code = deckCard.getCode();
+        if(!synergies.contains(code))
+        {
+            synergies[code] = deckCard.total;
+        }
+    }
+}
+
+
+void DraftItemCounter::insertSynCards(QMap<QString,int> &synergies)
+{
+    for(DeckCard &deckCard: deckCardListSyn)
+    {
+        QString code = deckCard.getCode();
+        if(!synergies.contains(code))
+        {
+            synergies[code] = deckCard.total;
+        }
     }
 }
 

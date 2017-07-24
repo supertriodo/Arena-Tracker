@@ -115,7 +115,7 @@ private:
     void deleteDraftItemCounters();
     void updateRaceCounters(DraftCard &draftCard);
     void updateCardTypeCounters(DraftCard &draftCard);
-    void getSynergies(DraftCard bestCards[], QMap<QString, int> synergies[]);
+    void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

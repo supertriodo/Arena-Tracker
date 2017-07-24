@@ -170,6 +170,12 @@ QString Utility::cardEnNameFromCode(QString code)
 }
 
 
+QString Utility::cardEnTextFromCode(QString code)
+{
+    return (*cardsJson)[code].value("text").toObject().value("enUS").toString();
+}
+
+
 QString Utility::cardEnCodeFromName(QString name)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
