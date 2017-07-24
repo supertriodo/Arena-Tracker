@@ -734,7 +734,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
-                   "", "", "",
                    maxCard1, maxCard2, maxCard3,
                    LightForge);
 
@@ -745,9 +744,21 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     rating3 = hearthArenaCodes[bestCards[2].getCode()];
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
-                   "", "", "",
                    -1, -1, -1,
                    HearthArena);
+
+    //Synergies
+    QMap<QString,int> synergies[3];
+    getSynergies(bestCards, synergies);
+    draftScoreWindow->setSynergies(synergies);
+}
+
+
+void DraftHandler::getSynergies(DraftCard bestCards[3], QMap<QString,int> synergies[3])
+{
+//    synergies[0]["CFM_025"]=1;
+//    synergies[1]["CFM_061"]=2;
+//    synergies[2]["CFM_039"]=3;
 }
 
 
@@ -763,7 +774,6 @@ void DraftHandler::updateBoxTitle(double cardRating)
 
 void DraftHandler::showNewRatings(double rating1, double rating2, double rating3,
                                   double tierScore1, double tierScore2, double tierScore3,
-                                  QString synergy1, QString synergy2, QString synergy3,
                                   int maxCard1, int maxCard2, int maxCard3,
                                   DraftMethod draftMethod)
 {
@@ -798,7 +808,7 @@ void DraftHandler::showNewRatings(double rating1, double rating2, double rating3
     //Mostrar score
     if(draftScoreWindow != NULL)
     {
-        draftScoreWindow->setScores(rating1, rating2, rating3, synergy1, synergy2, synergy3, draftMethod);
+        draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod);
     }
 }
 

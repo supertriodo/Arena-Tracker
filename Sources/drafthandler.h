@@ -115,6 +115,7 @@ private:
     void deleteDraftItemCounters();
     void updateRaceCounters(DraftCard &draftCard);
     void updateCardTypeCounters(DraftCard &draftCard);
+    void getSynergies(DraftCard bestCards[], QMap<QString, int> synergies[]);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
@@ -151,7 +152,6 @@ public slots:
     void endDraft();
     void showNewRatings(double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,
-                        QString synergy1, QString synergy2, QString synergy3,
                         int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod);
     void pickCard(QString code);
     void enterArena();

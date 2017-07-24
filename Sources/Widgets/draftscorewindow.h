@@ -36,11 +36,12 @@ private:
     void resizeSynergyList();
 
 public:
-    void setScores(double rating1, double rating2, double rating3, QString synergy1, QString synergy2, QString synergy3, DraftMethod draftMethod);
+    void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);
     void hideScores();
     void setLearningMode(bool value);
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
+    void setSynergies(QMap<QString, int> synergies[]);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

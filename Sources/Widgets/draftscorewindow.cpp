@@ -151,12 +151,10 @@ void DraftScoreWindow::setDraftMethod(DraftMethod draftMethod)
 
 
 void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
-                                 QString synergy1, QString synergy2, QString synergy3,
                                  DraftMethod draftMethod)
 {
     double bestRating = std::max(std::max(rating1, rating2), rating3);
     double ratings[3] = {rating1, rating2, rating3};
-    QString synergies[3] = {synergy1, synergy2, synergy3};
 
     for(int i=0; i<3; i++)
     {
@@ -171,22 +169,26 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
             if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+        }
+    }
+}
 
-            //Insert synergies
-            synergiesListWidget[i]->clear();
-            synergiesDeckCardLists[i].clear();
 
-            QStringList synergiesList = synergies[i].split(" / ", QString::SkipEmptyParts);
-            foreach(QString name, synergiesList)
-            {
-                QString code;
-                int total = getCard(name, code);
-                DeckCard deckCard(code);
-                deckCard.total = deckCard.remaining = total;
-                deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
-                deckCard.draw();
-                synergiesDeckCardLists[i].append(deckCard);
-            }
+void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3])
+{
+    for(int i=0; i<3; i++)
+    {
+        synergiesListWidget[i]->clear();
+        synergiesDeckCardLists[i].clear();
+
+        for(const QString &code: synergies[i].keys())
+        {
+            int total = synergies[i][code];
+            DeckCard deckCard(code);
+            deckCard.total = deckCard.remaining = total;
+            deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
+            deckCard.draw();
+            synergiesDeckCardLists[i].append(deckCard);
         }
     }
 }
@@ -239,6 +241,8 @@ void DraftScoreWindow::showSynergies()
 void DraftScoreWindow::hideSynergies(int index)
 {
     synergiesListWidget[index]->hide();
+    synergiesListWidget[index]->clear();
+    synergiesDeckCardLists[index].clear();
 }
 
 
