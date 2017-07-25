@@ -114,7 +114,13 @@ void DraftItemCounter::insertSynCards(QMap<QString,int> &synergies)
 }
 
 
-bool DraftItemCounter::isHidden()
+bool DraftItemCounter::isEmpty()
 {
     return counter == 0;
+}
+
+
+int DraftItemCounter::count()
+{
+    return counter;
 }

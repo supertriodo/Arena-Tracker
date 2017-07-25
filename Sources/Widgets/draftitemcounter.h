@@ -23,10 +23,11 @@ public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
     void increase(const QString &code);
-    bool isHidden();
+    bool isEmpty();
     void insertCards(QMap<QString, int> &synergies);
     void increaseSyn(const QString &code);
     void insertSynCards(QMap<QString, int> &synergies);
+    int count();
 
 signals:
 

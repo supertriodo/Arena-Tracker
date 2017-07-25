@@ -59,7 +59,6 @@ private:
     QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
     QString arenaHero;
-    QList<int> draftedCards;
     double deckRating;
     cv::Rect screenRects[3];
     int screenIndex;
@@ -88,7 +87,7 @@ private:
     cv::MatND getHist(cv::Mat &srcBase);
     void initCodesAndHistMaps(QString &hero);
     void resetTab(bool alreadyDrafting);
-    void clearLists(bool keepDraftedCards);
+    void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
     void updateBoxTitle(double cardRating=0);
@@ -103,7 +102,7 @@ private:
     void initHearthArenaCodes(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow(const QPointF &screenScale);
-    void initDraftedCards(QList<DeckCard> deckCardList);
+    void initCounters(QList<DeckCard> deckCardList);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
@@ -114,8 +113,8 @@ private:
     int normalizeLFscore(int score);
     void createDraftItemCounters();
     void deleteDraftItemCounters();
-    void updateRaceCounters(DraftCard &draftCard);
-    void updateCardTypeCounters(DraftCard &draftCard);
+    void updateRaceCounters(DeckCard &deckCard);
+    void updateCardTypeCounters(DeckCard &deckCard);
     void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
@@ -142,6 +141,8 @@ private:
     bool isDragonSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
+
+    int draftedCardsCount();
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

@@ -306,17 +306,26 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 }
 
 
-void DraftHandler::clearLists(bool keepDraftedCards)
+void DraftHandler::clearLists(bool keepCounters)
 {
     hearthArenaCodes.clear();
     lightForgeTiers.clear();
     synergyCodes.clear();
     cardsHist.clear();
 
-    if(!keepDraftedCards)
+    if(!keepCounters)
     {
-        draftedCards.clear();
         deckRating = 0;
+
+        //Reset counters
+        for(int i=0; i<V_NUM_TYPES; i++)
+        {
+            cardTypeCounters[i]->reset();
+        }
+        for(int i=0; i<V_NUM_RACES; i++)
+        {
+            raceCounters[i]->reset();
+        }
     }
 
     for(int i=0; i<3; i++)
@@ -329,16 +338,6 @@ void DraftHandler::clearLists(bool keepDraftedCards)
 
     screenIndex = -1;
     numCaptured = 0;
-
-    //Reset counters
-    for(int i=0; i<V_NUM_TYPES; i++)
-    {
-        cardTypeCounters[i]->reset();
-    }
-    for(int i=0; i<V_NUM_RACES; i++)
-    {
-        raceCounters[i]->reset();
-    }
 }
 
 
@@ -377,20 +376,31 @@ void DraftHandler::leaveArena()
 }
 
 
-void DraftHandler::initDraftedCards(QList<DeckCard> deckCardList)
+int DraftHandler::draftedCardsCount()
 {
-    if(!draftedCards.isEmpty()) return;
+    int num = 0;
+    for(int i=0; i<V_NUM_TYPES; i++)
+    {
+        num += cardTypeCounters[i]->count();
+    }
+    return num;
+}
+
+
+void DraftHandler::initCounters(QList<DeckCard> deckCardList)
+{
+    if(draftedCardsCount() > 0) return;
 
     for(DeckCard card: deckCardList)
     {
-        if(card.getCode().isEmpty())    continue;
         for(uint i=0; i<card.total; i++)
         {
-            draftedCards.append(hearthArenaCodes[card.getCode()]);
+            updateRaceCounters(card);
+            updateCardTypeCounters(card);
         }
     }
 
-    emit pDebug("DraftedCards starts with " + QString::number(draftedCards.count()) + " cards.");
+    emit pDebug("Counters starts with " + QString::number(draftedCardsCount()) + " cards.");
 }
 
 
@@ -421,7 +431,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
-    initDraftedCards(deckCardList);
+    initCounters(deckCardList);
     resetTab(alreadyDrafting);
 }
 
@@ -454,7 +464,7 @@ void DraftHandler::endDraft()
     emit draftEnded();
 
     //Show Deck Score
-    int numCards = draftedCards.count();
+    int numCards = draftedCardsCount();
     int deckScore = (numCards==0)?0:(int)(deckRating/numCards);
     emit showMessageProgressBar("Deck Score: " + QString::number(deckScore), 10000);
 
@@ -616,7 +626,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
         }
     }
 
-    emit pDebug("(" + QString::number(draftedCards.count()) + ") " +
+    emit pDebug("(" + QString::number(draftedCardsCount()) + ") " +
                 bestCards[0].getCode() + "/" + bestCards[1].getCode() +
                 "/" + bestCards[2].getCode() + " New codes.");
 }
@@ -636,19 +646,13 @@ void DraftHandler::pickCard(QString code)
     }
 
     DraftCard draftCard;
-
-    if(hearthArenaCodes.contains(code))
+    for(int i=0; i<3; i++)
     {
-        draftedCards.push_back(hearthArenaCodes[code]);
-
-        for(int i=0; i<3; i++)
+        if(draftCards[i].getCode() == code)
         {
-            if(draftCards[i].getCode() == code)
-            {
-                draftCard = draftCards[i];
-                updateBoxTitle(shownTierScores[i]);
-                break;
-            }
+            draftCard = draftCards[i];
+            updateBoxTitle(shownTierScores[i]);
+            break;
         }
     }
     updateRaceCounters(draftCard);
@@ -670,7 +674,7 @@ void DraftHandler::pickCard(QString code)
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
-    emit pLog(tr("Draft:") + " (" + QString::number(draftedCards.count()) + ")" + draftCard.getName());
+    emit pLog(tr("Draft:") + " (" + QString::number(draftedCardsCount()) + ")" + draftCard.getName());
     emit newDeckCard(code);
     this->justPickedCard = code;
 
@@ -678,10 +682,10 @@ void DraftHandler::pickCard(QString code)
 }
 
 
-void DraftHandler::updateRaceCounters(DraftCard &draftCard)
+void DraftHandler::updateRaceCounters(DeckCard &deckCard)
 {
-    QString code = draftCard.getCode();
-    CardRace cardRace = draftCard.getRace();
+    QString code = deckCard.getCode();
+    CardRace cardRace = deckCard.getRace();
     switch(cardRace)
     {
         case MURLOC:
@@ -732,10 +736,10 @@ void DraftHandler::updateRaceCounters(DraftCard &draftCard)
 }
 
 
-void DraftHandler::updateCardTypeCounters(DraftCard &draftCard)
+void DraftHandler::updateCardTypeCounters(DeckCard &deckCard)
 {
-    QString code = draftCard.getCode();
-    CardType cardType = draftCard.getType();
+    QString code = deckCard.getCode();
+    CardType cardType = deckCard.getType();
     switch(cardType)
     {
         case MINION:
@@ -1070,7 +1074,7 @@ void DraftHandler::getRaceSynergies(DraftCard &draftCard, QMap<QString,int> &syn
 void DraftHandler::updateBoxTitle(double cardRating)
 {
     deckRating += cardRating;
-    int numCards = draftedCards.count();
+    int numCards = draftedCardsCount();
     int actualRating = (numCards==0)?0:(int)(deckRating/numCards);
     ui->groupBoxDraft->setTitle(QString("Deck Score: " + QString::number(actualRating) +
                                         " (" + QString::number(numCards) + "/30)"));
