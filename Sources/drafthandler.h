@@ -48,7 +48,7 @@ public:
 private:
     Ui::Extended *ui;
     QMap<QString, QList<QString>> synergyCodes;
-    QMap<QString, int> hearthArenaCodes;
+    QMap<QString, int> hearthArenaTiers;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
     QStringList cardsDownloading;
@@ -99,7 +99,7 @@ private:
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
-    void initHearthArenaCodes(const QString &heroString);
+    void initHearthArenaTiers(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow(const QPointF &screenScale);
     void initCounters(QList<DeckCard> deckCardList);

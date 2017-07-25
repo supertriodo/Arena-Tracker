@@ -3530,7 +3530,6 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //New web
 
-//Eliminar HA draftedCards y renombrar hacodes a scores.
 //Theme nuevos iconos y documentar
 //Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
 //Discover, draw, to your hand

@@ -117,9 +117,9 @@ QStringList DraftHandler::getAllArenaCodes()
 }
 
 
-void DraftHandler::initHearthArenaCodes(const QString &heroString)
+void DraftHandler::initHearthArenaTiers(const QString &heroString)
 {
-    hearthArenaCodes.clear();
+    hearthArenaTiers.clear();
 
     QFile jsonFile(Utility::extraPath() + "/hearthArena.json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -131,11 +131,11 @@ void DraftHandler::initHearthArenaCodes(const QString &heroString)
     {
         QString name = Utility::cardEnNameFromCode(code);
         int score = jsonNamesObject.value(name).toInt();
-        hearthArenaCodes[code] = score;
+        hearthArenaTiers[code] = score;
         if(score == 0)  emit pDebug("HearthArena missing: " + name);
     }
 
-    emit pDebug("HearthArena Cards: " + QString::number(hearthArenaCodes.count()));
+    emit pDebug("HearthArena Cards: " + QString::number(hearthArenaTiers.count()));
 }
 
 
@@ -241,7 +241,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     startFindScreenRects();
     const QString heroString = Utility::heroString2FromLogNumber(hero);
     this->lightForgeTiers = initLightForgeTiers(heroString);
-    initHearthArenaCodes(heroString);
+    initHearthArenaTiers(heroString);
     initSynergyCodes();
 
     //Wait for cards
@@ -308,7 +308,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 
 void DraftHandler::clearLists(bool keepCounters)
 {
-    hearthArenaCodes.clear();
+    hearthArenaTiers.clear();
     lightForgeTiers.clear();
     synergyCodes.clear();
     cardsHist.clear();
@@ -493,7 +493,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
     if(!capturing && drafting &&
         screenFound() && cardsDownloading.isEmpty() &&
-        !lightForgeTiers.empty() && !hearthArenaCodes.empty())
+        !lightForgeTiers.empty() && !hearthArenaTiers.empty())
     {
         capturing = true;
 
@@ -510,7 +510,7 @@ void DraftHandler::captureDraft()
 
     if(leavingArena || !drafting ||
         !screenFound() || !cardsDownloading.isEmpty() ||
-        lightForgeTiers.empty() || hearthArenaCodes.empty())
+        lightForgeTiers.empty() || hearthArenaTiers.empty())
     {
         leavingArena = false;
         capturing = false;
@@ -971,9 +971,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
     //HearthArena
-    rating1 = hearthArenaCodes[bestCards[0].getCode()];
-    rating2 = hearthArenaCodes[bestCards[1].getCode()];
-    rating3 = hearthArenaCodes[bestCards[2].getCode()];
+    rating1 = hearthArenaTiers[bestCards[0].getCode()];
+    rating2 = hearthArenaTiers[bestCards[1].getCode()];
+    rating3 = hearthArenaTiers[bestCards[2].getCode()];
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    -1, -1, -1,
