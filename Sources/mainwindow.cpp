@@ -3512,10 +3512,14 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-//    showMessageProgressBar("Testing downloads...", 10000);
-//    enemyHandHandler->drawHeroTotalAttack(true, 10, 10);
-//    enemyHandHandler->drawHeroTotalAttack(false, 10, 10);
-//    secretsHandler->secretPlayed(1, MAGE, arena);
+//    for(const QString &code: Utility::cardsJson->keys())
+//    {
+//        if(Utility::isFromStandardSet(code) && draftHandler->isDragonSyn(code))
+//        {
+//            QString text = Utility::cardEnTextFromCode(code).toLower();
+//            qDebug()<<code<<"-->"<<Utility::cardEnNameFromCode(code)<<"-->"<<text;
+//        }
+//    }
 }
 
 
@@ -3529,6 +3533,9 @@ void MainWindow::testDelay()
 //Eliminar HA draftedCards y renombrar hacodes a scores.
 //Theme nuevos iconos y documentar
 //Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
+//Discover, draw, to your hand
+
+
 
 //REPLAY BUGS
 //Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable

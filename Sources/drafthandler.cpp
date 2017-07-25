@@ -209,6 +209,30 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
 }
 
 
+void DraftHandler::initSynergyCodes()
+{
+    synergyCodes.clear();
+
+    QFile jsonFile(Utility::extraPath() + "/synergies.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    QJsonObject jsonObject = jsonDoc.object();
+
+    for(const QString &code: jsonObject.keys())
+    {
+        synergyCodes[code];
+        QJsonArray synergies = jsonObject.value(code).toArray();
+        for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+        {
+            synergyCodes[code].append(it->toString());
+        }
+    }
+
+    emit pDebug("Synergy Cards: " + QString::number(synergyCodes.count()));
+}
+
+
 void DraftHandler::initCodesAndHistMaps(QString &hero)
 {
     cardsDownloading.clear();
@@ -218,6 +242,7 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
     const QString heroString = Utility::heroString2FromLogNumber(hero);
     this->lightForgeTiers = initLightForgeTiers(heroString);
     initHearthArenaCodes(heroString);
+    initSynergyCodes();
 
     //Wait for cards
     if(cardsDownloading.isEmpty())
@@ -285,6 +310,7 @@ void DraftHandler::clearLists(bool keepDraftedCards)
 {
     hearthArenaCodes.clear();
     lightForgeTiers.clear();
+    synergyCodes.clear();
     cardsHist.clear();
 
     if(!keepDraftedCards)
@@ -654,109 +680,258 @@ void DraftHandler::pickCard(QString code)
 
 void DraftHandler::updateRaceCounters(DraftCard &draftCard)
 {
+    QString code = draftCard.getCode();
     CardRace cardRace = draftCard.getRace();
     switch(cardRace)
     {
         case MURLOC:
-            raceCounters[V_MURLOC]->increase(draftCard.getCode());
+            raceCounters[V_MURLOC]->increase(code);
             break;
         case DEMON:
-            raceCounters[V_DEMON]->increase(draftCard.getCode());
+            raceCounters[V_DEMON]->increase(code);
             break;
         case MECHANICAL:
-            raceCounters[V_MECHANICAL]->increase(draftCard.getCode());
+            raceCounters[V_MECHANICAL]->increase(code);
             break;
         case ELEMENTAL:
-            raceCounters[V_ELEMENTAL]->increase(draftCard.getCode());
+            raceCounters[V_ELEMENTAL]->increase(code);
             break;
         case BEAST:
-            raceCounters[V_BEAST]->increase(draftCard.getCode());
+            raceCounters[V_BEAST]->increase(code);
             break;
         case TOTEM:
-            raceCounters[V_TOTEM]->increase(draftCard.getCode());
+            raceCounters[V_TOTEM]->increase(code);
             break;
         case PIRATE:
-            raceCounters[V_PIRATE]->increase(draftCard.getCode());
+            raceCounters[V_PIRATE]->increase(code);
             break;
         case DRAGON:
-            raceCounters[V_DRAGON]->increase(draftCard.getCode());
+            raceCounters[V_DRAGON]->increase(code);
             break;
         default:
             break;
     }
 
-    QString code = draftCard.getCode();
-    if(Utility::cardEnTextFromCode(code).toLower().contains("murloc"))
-    {
-        raceCounters[V_MURLOC]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("demon"))
-    {
-        raceCounters[V_DEMON]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("mech"))
-    {
-        raceCounters[V_MECHANICAL]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("elemental"))
-    {
-        raceCounters[V_ELEMENTAL]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("beast"))
-    {
-        raceCounters[V_BEAST]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("totem"))
-    {
-        raceCounters[V_TOTEM]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("pirate"))
-    {
-        raceCounters[V_PIRATE]->increaseSyn(code);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("dragon"))
-    {
-        raceCounters[V_DRAGON]->increaseSyn(code);
-    }
+    if(isMurlocGen(code))   raceCounters[V_MURLOC]->increase(code);
+    if(isDemonGen(code))    raceCounters[V_DEMON]->increase(code);
+    if(isMechGen(code))     raceCounters[V_MECHANICAL]->increase(code);
+    if(isElementalGen(code))raceCounters[V_ELEMENTAL]->increase(code);
+    if(isBeastGen(code))    raceCounters[V_BEAST]->increase(code);
+    if(isTotemGen(code))    raceCounters[V_TOTEM]->increase(code);
+    if(isPirateGen(code))   raceCounters[V_PIRATE]->increase(code);
+    if(isDragonGen(code))   raceCounters[V_DRAGON]->increase(code);
+
+    if(isMurlocSyn(code))   raceCounters[V_MURLOC]->increaseSyn(code);
+    if(isDemonSyn(code))    raceCounters[V_DEMON]->increaseSyn(code);
+    if(isMechSyn(code))     raceCounters[V_MECHANICAL]->increaseSyn(code);
+    if(isElementalSyn(code))raceCounters[V_ELEMENTAL]->increaseSyn(code);
+    if(isBeastSyn(code))    raceCounters[V_BEAST]->increaseSyn(code);
+    if(isTotemSyn(code))    raceCounters[V_TOTEM]->increaseSyn(code);
+    if(isPirateSyn(code))   raceCounters[V_PIRATE]->increaseSyn(code);
+    if(isDragonSyn(code))   raceCounters[V_DRAGON]->increaseSyn(code);
 }
 
 
 void DraftHandler::updateCardTypeCounters(DraftCard &draftCard)
 {
+    QString code = draftCard.getCode();
     CardType cardType = draftCard.getType();
     switch(cardType)
     {
         case MINION:
-            cardTypeCounters[V_MINION]->increase(draftCard.getCode());
+            cardTypeCounters[V_MINION]->increase(code);
             break;
         case SPELL:
-            cardTypeCounters[V_SPELL]->increase(draftCard.getCode());
+            cardTypeCounters[V_SPELL]->increase(code);
             break;
         case WEAPON:
-            cardTypeCounters[V_WEAPON]->increase(draftCard.getCode());
+            cardTypeCounters[V_WEAPON]->increase(code);
             break;
         default:
             break;
     }
 
-    QString code = draftCard.getCode();
+    if(isSpellGen(code))    cardTypeCounters[V_SPELL]->increase(code);
+    if(isWeaponGen(code))   cardTypeCounters[V_WEAPON]->increase(code);
+
     if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->increaseSyn(code);
     if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->increaseSyn(code);
 }
 
 
-bool DraftHandler::isSpellSyn(QString &code)
+bool DraftHandler::isSpellSyn(const QString &code)
 {
-    return  Utility::cardEnTextFromCode(code).toLower().contains("spell") &&
-            !Utility::cardEnTextFromCode(code).toLower().contains("spell power") &&
-            !Utility::cardEnTextFromCode(code).toLower().contains("can't be targeted by spells");
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spell");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  (text.contains("spell") && !text.contains("spell damage") && !text.contains("can't be targeted by spells"));
+    }
 }
 
 
-bool DraftHandler::isWeaponSyn(QString &code)
+bool DraftHandler::isWeaponSyn(const QString &code)
 {
-    return  Utility::cardEnTextFromCode(code).toLower().contains("weapon") &&
-            !Utility::cardEnTextFromCode(code).toLower().contains("opponent's weapon");
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("weapon");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("weapon") && !text.contains("opponent's weapon");
+    }
+}
+bool DraftHandler::isMurlocSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("murloc");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("murloc");
+    }
+}
+bool DraftHandler::isDemonSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("demon");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("demon");
+    }
+}
+bool DraftHandler::isMechSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("mech");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("mech");
+    }
+}
+bool DraftHandler::isElementalSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("elemental");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("elemental");
+    }
+}
+bool DraftHandler::isBeastSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("beast");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("beast");
+    }
+}
+bool DraftHandler::isTotemSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("totem");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("totem");
+    }
+}
+bool DraftHandler::isPirateSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("pirate");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("pirate");
+    }
+}
+bool DraftHandler::isDragonSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("dragon");
+    }
+    else
+    {
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        return  text.contains("dragon");
+    }
+}
+
+
+bool DraftHandler::isSpellGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("spellGen");
+    return false;
+}
+bool DraftHandler::isWeaponGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("weaponGen");
+    return false;
+}
+bool DraftHandler::isMurlocGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("murlocGen");
+    return false;
+}
+bool DraftHandler::isDemonGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("demonGen");
+    return false;
+}
+bool DraftHandler::isMechGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("mechGen");
+    return false;
+}
+bool DraftHandler::isElementalGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("elementalGen");
+    return false;
+}
+bool DraftHandler::isBeastGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("beastGen");
+    return false;
+}
+bool DraftHandler::isTotemGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("totemGen");
+    return false;
+}
+bool DraftHandler::isPirateGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("pirateGen");
+    return false;
+}
+bool DraftHandler::isDragonGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("dragonGen");
+    return false;
 }
 
 
@@ -816,6 +991,7 @@ void DraftHandler::getSynergies(DraftCard &draftCard, QMap<QString,int> &synergi
 
 void DraftHandler::getCardTypeSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
 {
+    QString code = draftCard.getCode();
     CardType cardType = draftCard.getType();
     switch(cardType)
     {
@@ -829,7 +1005,9 @@ void DraftHandler::getCardTypeSynergies(DraftCard &draftCard, QMap<QString,int> 
             break;
     }
 
-    QString code = draftCard.getCode();
+    if(isSpellGen(code))    cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+    if(isWeaponGen(code))   cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
+
     if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->insertCards(synergies);
     if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->insertCards(synergies);
 }
@@ -837,6 +1015,7 @@ void DraftHandler::getCardTypeSynergies(DraftCard &draftCard, QMap<QString,int> 
 
 void DraftHandler::getRaceSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
 {
+    QString code = draftCard.getCode();
     CardRace cardRace = draftCard.getRace();
     switch(cardRace)
     {
@@ -868,39 +1047,23 @@ void DraftHandler::getRaceSynergies(DraftCard &draftCard, QMap<QString,int> &syn
             break;
     }
 
-    QString code = draftCard.getCode();
-    if(Utility::cardEnTextFromCode(code).toLower().contains("murloc"))
-    {
-        raceCounters[V_MURLOC]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("demon"))
-    {
-        raceCounters[V_DEMON]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("mech"))
-    {
-        raceCounters[V_MECHANICAL]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("elemental"))
-    {
-        raceCounters[V_ELEMENTAL]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("beast"))
-    {
-        raceCounters[V_BEAST]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("totem"))
-    {
-        raceCounters[V_TOTEM]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("pirate"))
-    {
-        raceCounters[V_PIRATE]->insertCards(synergies);
-    }
-    if(Utility::cardEnTextFromCode(code).toLower().contains("dragon"))
-    {
-        raceCounters[V_DRAGON]->insertCards(synergies);
-    }
+    if(isMurlocGen(code))   raceCounters[V_MURLOC]->insertSynCards(synergies);
+    if(isDemonGen(code))    raceCounters[V_DEMON]->insertSynCards(synergies);
+    if(isMechGen(code))     raceCounters[V_MECHANICAL]->insertSynCards(synergies);
+    if(isElementalGen(code))raceCounters[V_ELEMENTAL]->insertSynCards(synergies);
+    if(isBeastGen(code))    raceCounters[V_BEAST]->insertSynCards(synergies);
+    if(isTotemGen(code))    raceCounters[V_TOTEM]->insertSynCards(synergies);
+    if(isPirateGen(code))   raceCounters[V_PIRATE]->insertSynCards(synergies);
+    if(isDragonGen(code))   raceCounters[V_DRAGON]->insertSynCards(synergies);
+
+    if(isMurlocSyn(code))   raceCounters[V_MURLOC]->insertCards(synergies);
+    if(isDemonSyn(code))    raceCounters[V_DEMON]->insertCards(synergies);
+    if(isMechSyn(code))     raceCounters[V_MECHANICAL]->insertCards(synergies);
+    if(isElementalSyn(code))raceCounters[V_ELEMENTAL]->insertCards(synergies);
+    if(isBeastSyn(code))    raceCounters[V_BEAST]->insertCards(synergies);
+    if(isTotemSyn(code))    raceCounters[V_TOTEM]->insertCards(synergies);
+    if(isPirateSyn(code))   raceCounters[V_PIRATE]->insertCards(synergies);
+    if(isDragonSyn(code))   raceCounters[V_DRAGON]->insertCards(synergies);
 }
 
 

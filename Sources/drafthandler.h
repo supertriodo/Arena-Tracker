@@ -47,6 +47,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
+    QMap<QString, QList<QString>> synergyCodes;
     QMap<QString, int> hearthArenaCodes;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
@@ -118,8 +119,29 @@ private:
     void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
-    bool isSpellSyn(QString &code);
-    bool isWeaponSyn(QString &code);
+    void initSynergyCodes();
+
+    bool isSpellGen(const QString &code);
+    bool isWeaponGen(const QString &code);
+    bool isMurlocGen(const QString &code);
+    bool isDemonGen(const QString &code);
+    bool isMechGen(const QString &code);
+    bool isElementalGen(const QString &code);
+    bool isBeastGen(const QString &code);
+    bool isTotemGen(const QString &code);
+    bool isPirateGen(const QString &code);
+    bool isDragonGen(const QString &code);
+
+    bool isMurlocSyn(const QString &code);
+    bool isDemonSyn(const QString &code);
+    bool isMechSyn(const QString &code);
+    bool isElementalSyn(const QString &code);
+    bool isBeastSyn(const QString &code);
+    bool isTotemSyn(const QString &code);
+    bool isPirateSyn(const QString &code);
+    bool isDragonSyn(const QString &code);
+    bool isSpellSyn(const QString &code);
+    bool isWeaponSyn(const QString &code);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
