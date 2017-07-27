@@ -772,7 +772,7 @@ bool DraftHandler::isSpellSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("spell");
+        return synergyCodes[code].contains("spellSyn");
     }
     else
     {
@@ -786,7 +786,7 @@ bool DraftHandler::isWeaponSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("weapon");
+        return synergyCodes[code].contains("weaponSyn");
     }
     else
     {
@@ -798,7 +798,7 @@ bool DraftHandler::isMurlocSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("murloc");
+        return synergyCodes[code].contains("murlocSyn");
     }
     else
     {
@@ -810,7 +810,7 @@ bool DraftHandler::isDemonSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("demon");
+        return synergyCodes[code].contains("demonSyn");
     }
     else
     {
@@ -822,7 +822,7 @@ bool DraftHandler::isMechSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("mech");
+        return synergyCodes[code].contains("mechSyn");
     }
     else
     {
@@ -834,7 +834,7 @@ bool DraftHandler::isElementalSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("elemental");
+        return synergyCodes[code].contains("elementalSyn");
     }
     else
     {
@@ -846,7 +846,7 @@ bool DraftHandler::isBeastSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("beast");
+        return synergyCodes[code].contains("beastSyn");
     }
     else
     {
@@ -858,7 +858,7 @@ bool DraftHandler::isTotemSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("totem");
+        return synergyCodes[code].contains("totemSyn");
     }
     else
     {
@@ -870,7 +870,7 @@ bool DraftHandler::isPirateSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("pirate");
+        return synergyCodes[code].contains("pirateSyn");
     }
     else
     {
@@ -882,7 +882,7 @@ bool DraftHandler::isDragonSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("dragon");
+        return synergyCodes[code].contains("dragonSyn");
     }
     else
     {
