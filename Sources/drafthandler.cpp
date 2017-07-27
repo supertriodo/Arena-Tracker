@@ -391,12 +391,11 @@ void DraftHandler::initCounters(QList<DeckCard> deckCardList)
 {
     if(draftedCardsCount() > 0) return;
 
-    for(DeckCard card: deckCardList)
+    for(DeckCard deckCard: deckCardList)
     {
-        for(uint i=0; i<card.total; i++)
+        for(uint i=0; i<deckCard.total; i++)
         {
-            updateRaceCounters(card);
-            updateCardTypeCounters(card);
+            updateCounters(deckCard);
         }
     }
 
@@ -655,8 +654,7 @@ void DraftHandler::pickCard(QString code)
             break;
         }
     }
-    updateRaceCounters(draftCard);
-    updateCardTypeCounters(draftCard);
+    updateCounters(draftCard);
 
     //Clear cards and score
     for(int i=0; i<3; i++)
@@ -679,6 +677,13 @@ void DraftHandler::pickCard(QString code)
     this->justPickedCard = code;
 
     newCaptureDraftLoop(true);
+}
+
+
+void DraftHandler::updateCounters(DeckCard &deckCard)
+{
+    updateRaceCounters(deckCard);
+    updateCardTypeCounters(deckCard);
 }
 
 

@@ -3524,7 +3524,6 @@ void MainWindow::testDelay()
 
 
 //TODO
-//Play around cards en plan tab.
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones

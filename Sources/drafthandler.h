@@ -143,6 +143,7 @@ private:
     bool isWeaponSyn(const QString &code);
 
     int draftedCardsCount();
+    void updateCounters(DeckCard &deckCard);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
