@@ -22,7 +22,7 @@ private:
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
-    void increase(const QString &code);
+    void increase(const QString &code, bool count=true);
     bool isEmpty();
     void insertCards(QMap<QString, int> &synergies);
     void increaseSyn(const QString &code);

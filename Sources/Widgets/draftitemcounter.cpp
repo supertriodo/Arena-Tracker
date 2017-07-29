@@ -4,7 +4,6 @@
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap) : QObject(parent)
 {
     labelIcon.setPixmap(pixmap);
-    labelCounter.setFixedWidth(15);
     hLayout->addWidget(&labelIcon);
     hLayout->addWidget(&labelCounter);
 
@@ -38,7 +37,7 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 }
 
 
-void DraftItemCounter::increase(const QString &code)
+void DraftItemCounter::increase(const QString &code, bool count)
 {
     bool duplicatedCard = false;
     for(DeckCard &deckCard: deckCardList)
@@ -57,12 +56,15 @@ void DraftItemCounter::increase(const QString &code)
         deckCardList.append(DeckCard(code));
     }
 
-    this->counter++;
-    labelCounter.setText(QString::number(counter));
-    if(counter == 1)
+    if(count)
     {
-        labelIcon.setHidden(false);
-        labelCounter.setHidden(false);
+        this->counter++;
+        labelCounter.setText(QString::number(counter));
+        if(counter == 1)
+        {
+            labelIcon.setHidden(false);
+            labelCounter.setHidden(false);
+        }
     }
 }
 

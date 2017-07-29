@@ -3512,12 +3512,18 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
+//    int num = 0;
 //    for(const QString &code: Utility::cardsJson->keys())
 //    {
-//        if(Utility::isFromStandardSet(code) && draftHandler->isDragonSyn(code))
+//        DeckCard deckCard(code);
+//        QString text = Utility::cardEnTextFromCode(code).toLower();
+//        int attack = Utility::getCardAttribute(code, "attack").toInt();
+//        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+//        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+//        if(Utility::isFromStandardSet(code) && //text.contains("damage") &&
+//                draftHandler->isReachGen(deckCard))
 //        {
-//            QString text = Utility::cardEnTextFromCode(code).toLower();
-//            qDebug()<<code<<"-->"<<Utility::cardEnNameFromCode(code)<<"-->"<<text;
+//            qDebug()<<++num<<code<<"-->"<<Utility::cardEnNameFromCode(code)<<"-->"<<text;
 //        }
 //    }
 }
@@ -3531,7 +3537,6 @@ void MainWindow::testDelay()
 
 //Theme nuevos iconos y documentar
 //Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
-//Discover, draw, to your hand
 
 
 

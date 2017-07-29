@@ -20,6 +20,10 @@
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
+enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
+                       V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
+                       /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD, V_ENRAGED,
+                       V_FREEZE, V_OVERLOAD, V_SECRET, V_STEALTH, */V_NUM_MECHANICS};
 
 
 class LFtier
@@ -76,8 +80,9 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     double shownTierScores[3];
-    DraftItemCounter **raceCounters, **cardTypeCounters;
+    DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     QHBoxLayout *horLayoutRaces1, *horLayoutRaces2, *horLayoutCardTypes;
+    QHBoxLayout *horLayoutMechanics1, *horLayoutMechanics2;
 
 
 //Metodos
@@ -119,7 +124,11 @@ private:
     void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void initSynergyCodes();
+    int draftedCardsCount();
+    void updateCounters(DeckCard &deckCard);
+    void updateMechanicCounters(DeckCard &deckCard);
 
+//public:
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code);
     bool isMurlocGen(const QString &code);
@@ -130,6 +139,14 @@ private:
     bool isTotemGen(const QString &code);
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
+    bool isDiscoverDrawGen(const QString &code);
+    bool isTauntGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isAoeGen(const QString &code);
+    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
+    bool isDestroyGen(const QString &code);
+    bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                   const QString &text, const CardType &cardType, int attack);
+    bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -141,9 +158,6 @@ private:
     bool isDragonSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
-
-    int draftedCardsCount();
-    void updateCounters(DeckCard &deckCard);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
