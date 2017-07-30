@@ -61,6 +61,19 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 }
 
 
+void DraftItemCounter::increase()
+{
+    if(labelIcon != NULL && labelCounter != NULL)
+    {
+        this->counter++;
+        labelCounter->setText(QString::number(counter));
+        if(counter == 1)
+        {
+            labelIcon->setHidden(false);
+            labelCounter->setHidden(false);
+        }
+    }
+}
 void DraftItemCounter::increase(const QString &code, bool count)
 {
     bool duplicatedCard = false;

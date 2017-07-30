@@ -142,7 +142,8 @@ private:
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
     bool isDiscoverDrawGen(const QString &code);
-    bool isTauntGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isTaunt(const QString &code, const QJsonArray &mechanics);
+    bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
     bool isAoeGen(const QString &code);
     bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
     bool isDestroyGen(const QString &code);
@@ -164,6 +165,7 @@ private:
     bool isEnrageSyn(const QString &code, const QString &text);
     bool isPingSyn(const QString &code);
     bool isAoeSyn(const QString &code);
+    bool isTauntSyn(const QString &code);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

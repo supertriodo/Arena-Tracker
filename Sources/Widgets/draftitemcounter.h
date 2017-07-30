@@ -24,6 +24,7 @@ private:
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
+    void increase();
     void increase(const QString &code, bool count=true);
     bool isEmpty();
     void insertCards(QMap<QString, int> &synergies);

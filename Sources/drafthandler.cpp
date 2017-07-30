@@ -771,7 +771,8 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
     if(isDiscoverDrawGen(code))                                             mechanicCounters[V_DISCOVER_DRAW]->increase(code);
-    if(isTauntGen(code, mechanics, referencedTags))                         mechanicCounters[V_TAUNT]->increase(code);
+    if(isTaunt(code, mechanics))                                            mechanicCounters[V_TAUNT]->increase(code);
+    else if(isTauntGen(code, referencedTags))                               mechanicCounters[V_TAUNT]->increase();
     if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->increase(code);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->increase(code);
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -779,9 +780,10 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
 
-    if(isAoeSyn(code))          mechanicCounters[V_AOE]->increaseSyn(code);
-    if(isPingSyn(code))         mechanicCounters[V_PING]->increaseSyn(code);
-    if(isEnrageSyn(code,text))  mechanicCounters[V_ENRAGED]->increaseSyn(code);
+    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
+    if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
+    if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
+    if(isEnrageSyn(code,text))                                              mechanicCounters[V_ENRAGED]->increaseSyn(code);
 }
 
 
@@ -936,6 +938,14 @@ bool DraftHandler::isAoeSyn(const QString &code)
     }
     return false;
 }
+bool DraftHandler::isTauntSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("tauntSyn");
+    }
+    return false;
+}
 
 
 bool DraftHandler::isSpellGen(const QString &code)
@@ -1010,13 +1020,28 @@ bool DraftHandler::isDiscoverDrawGen(const QString &code)
                 (text.contains("to your hand") && !text.contains("return"));
     }
 }
-bool DraftHandler::isTauntGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+bool DraftHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("taunt");
+    }
+    else if(mechanics.contains(QJsonValue("TAUNT")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool DraftHandler::isTauntGen(const QString &code, const QJsonArray &referencedTags)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("tauntGen");
     }
-    else if(mechanics.contains(QJsonValue("TAUNT")) || referencedTags.contains(QJsonValue("TAUNT")))
+    else if(referencedTags.contains(QJsonValue("TAUNT")))
     {
         return true;
     }
@@ -1262,13 +1287,15 @@ void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> 
     CardType cardType = draftCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
+    if(isTaunt(code, mechanics))                                            mechanicCounters[V_TAUNT]->insertSynCards(synergies);
     if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->insertSynCards(synergies);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
 
-    if(isAoeSyn(code))                                  mechanicCounters[V_AOE]->insertCards(synergies);
-    if(isPingSyn(code))                                 mechanicCounters[V_PING]->insertCards(synergies);
-    if(isEnrageSyn(code, text))                         mechanicCounters[V_ENRAGED]->insertCards(synergies);
+    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->insertCards(synergies);
+    if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->insertCards(synergies);
+    if(isPingSyn(code))                                                     mechanicCounters[V_PING]->insertCards(synergies);
+    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->insertCards(synergies);
 }
 
 
