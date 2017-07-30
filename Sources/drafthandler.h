@@ -163,6 +163,7 @@ private:
     bool isWeaponSyn(const QString &code);
     bool isEnrageSyn(const QString &code, const QString &text);
     bool isPingSyn(const QString &code);
+    bool isAoeSyn(const QString &code);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

@@ -779,6 +779,7 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
 
+    if(isAoeSyn(code))          mechanicCounters[V_AOE]->increaseSyn(code);
     if(isPingSyn(code))         mechanicCounters[V_PING]->increaseSyn(code);
     if(isEnrageSyn(code,text))  mechanicCounters[V_ENRAGED]->increaseSyn(code);
 }
@@ -924,6 +925,14 @@ bool DraftHandler::isPingSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("pingSyn");
+    }
+    return false;
+}
+bool DraftHandler::isAoeSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("aoeSyn");
     }
     return false;
 }
@@ -1253,9 +1262,11 @@ void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> 
     CardType cardType = draftCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
+    if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->insertSynCards(synergies);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
 
+    if(isAoeSyn(code))                                  mechanicCounters[V_AOE]->insertCards(synergies);
     if(isPingSyn(code))                                 mechanicCounters[V_PING]->insertCards(synergies);
     if(isEnrageSyn(code, text))                         mechanicCounters[V_ENRAGED]->insertCards(synergies);
 }
