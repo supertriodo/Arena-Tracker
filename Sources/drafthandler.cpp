@@ -74,6 +74,7 @@ void DraftHandler::createDraftItemCounters()
 
     mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
+    mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutRaces1->addStretch();
@@ -781,6 +782,7 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
+    if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -1211,6 +1213,21 @@ bool DraftHandler::isOverloadGen(const QString &code)
         return overload > 0;
     }
 }
+bool DraftHandler::isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("jadeGolemGen");
+    }
+    else if(mechanics.contains(QJsonValue("JADE_GOLEM")) || referencedTags.contains(QJsonValue("JADE_GOLEM")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 int DraftHandler::normalizeLFscore(int score)
@@ -1315,6 +1332,7 @@ void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> 
     CardType cardType = draftCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
+    if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
     if(isTaunt(code, mechanics))                                            mechanicCounters[V_TAUNT]->insertSynCards(synergies);
     if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->insertSynCards(synergies);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
