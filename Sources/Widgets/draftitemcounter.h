@@ -12,10 +12,11 @@ class DraftItemCounter : public QObject
 public:
     DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap);
     DraftItemCounter(QObject *parent);
+    ~DraftItemCounter();
 
 //Variables
 private:
-    QLabel labelIcon, labelCounter;
+    QLabel *labelIcon, *labelCounter;
     int counter;
     QList<DeckCard> deckCardList, deckCardListSyn;
 

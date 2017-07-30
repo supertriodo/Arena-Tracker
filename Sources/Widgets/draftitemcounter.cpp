@@ -3,9 +3,11 @@
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap) : QObject(parent)
 {
-    labelIcon.setPixmap(pixmap);
-    hLayout->addWidget(&labelIcon);
-    hLayout->addWidget(&labelCounter);
+    labelIcon = new QLabel();
+    labelCounter = new QLabel();
+    labelIcon->setPixmap(pixmap);
+    hLayout->addWidget(labelIcon);
+    hLayout->addWidget(labelCounter);
 
     reset();
 }
@@ -13,7 +15,16 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixma
 
 DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
 {
+    labelIcon = NULL;
+    labelCounter = NULL;
     reset();
+}
+
+
+DraftItemCounter::~DraftItemCounter()
+{
+    if(labelIcon != NULL)       delete labelIcon;
+    if(labelCounter != NULL)    delete labelCounter;
 }
 
 
@@ -22,23 +33,30 @@ void DraftItemCounter::reset()
     this->counter = 0;
     this->deckCardList.clear();
     this->deckCardListSyn.clear();
-    labelCounter.setText("0");
-    labelIcon.setHidden(true);
-    labelCounter.setHidden(true);
+
+    if(labelIcon != NULL && labelCounter != NULL)
+    {
+        labelCounter->setText("0");
+        labelIcon->setHidden(true);
+        labelCounter->setHidden(true);
+    }
 }
 
 
 void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInApp)
 {
-    if(!mouseInApp && transparency == Transparent)
+    if(labelIcon != NULL && labelCounter != NULL)
     {
-        labelIcon.setStyleSheet("QLabel {background-color: transparent; color: white;}");
-        labelCounter.setStyleSheet("QLabel {background-color: transparent; color: white;}");
-    }
-    else
-    {
-        labelIcon.setStyleSheet("");
-        labelCounter.setStyleSheet("");
+        if(!mouseInApp && transparency == Transparent)
+        {
+            labelIcon->setStyleSheet("QLabel {background-color: transparent; color: white;}");
+            labelCounter->setStyleSheet("QLabel {background-color: transparent; color: white;}");
+        }
+        else
+        {
+            labelIcon->setStyleSheet("");
+            labelCounter->setStyleSheet("");
+        }
     }
 }
 
@@ -62,14 +80,14 @@ void DraftItemCounter::increase(const QString &code, bool count)
         deckCardList.append(DeckCard(code));
     }
 
-    if(count)
+    if(labelIcon != NULL && labelCounter != NULL && count)
     {
         this->counter++;
-        labelCounter.setText(QString::number(counter));
+        labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
-            labelIcon.setHidden(false);
-            labelCounter.setHidden(false);
+            labelIcon->setHidden(false);
+            labelCounter->setHidden(false);
         }
     }
 }
