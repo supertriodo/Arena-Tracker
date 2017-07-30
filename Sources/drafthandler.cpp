@@ -73,6 +73,7 @@ void DraftHandler::createDraftItemCounters()
     mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("reachMechanic.png"));
 
     mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
+    mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutRaces1->addStretch();
@@ -779,11 +780,13 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
             || isDestroyGen(code))                                          mechanicCounters[V_DAMAGE_DESTROY]->increase(code);
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
+    if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
-    if(isEnrageSyn(code,text))                                              mechanicCounters[V_ENRAGED]->increaseSyn(code);
+    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
+    if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
 }
 
 
@@ -919,6 +922,19 @@ bool DraftHandler::isEnrageSyn(const QString &code, const QString &text)
             !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
     {
         return true;
+    }
+    return false;
+}
+bool DraftHandler::isOverloadSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("overloadSyn");
+    }
+    else if(text.contains("overload"))
+    {
+        int overload = Utility::getCardAttribute(code, "overload").toInt();
+        return overload == 0;
     }
     return false;
 }
@@ -1183,6 +1199,18 @@ bool DraftHandler::isEnrageGen(const QString &code, const QJsonArray &mechanics,
         return false;
     }
 }
+bool DraftHandler::isOverloadGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("overloadGen");
+    }
+    else
+    {
+        int overload = Utility::getCardAttribute(code, "overload").toInt();
+        return overload > 0;
+    }
+}
 
 
 int DraftHandler::normalizeLFscore(int score)
@@ -1291,11 +1319,13 @@ void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> 
     if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->insertSynCards(synergies);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+    if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->insertCards(synergies);
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->insertCards(synergies);
     if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->insertCards(synergies);
+    if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->insertCards(synergies);
 }
 
 
