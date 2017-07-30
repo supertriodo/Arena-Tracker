@@ -27,6 +27,9 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
+
+    //TODO
+//    initSynergyCodes();
 }
 
 DraftHandler::~DraftHandler()
@@ -62,12 +65,14 @@ void DraftHandler::createDraftItemCounters()
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
     mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("aoeMechanic.png"));
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("drawMechanic.png"));
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("tauntMechanic.png"));
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("drawMechanic.png"));
 
     mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("pingMechanic.png"));
     mechanicCounters[V_DAMAGE_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("damageMechanic.png"));
     mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("reachMechanic.png"));
+
+    mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutRaces1->addStretch();
@@ -772,6 +777,9 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
             || isDestroyGen(code))                                          mechanicCounters[V_DAMAGE_DESTROY]->increase(code);
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
+    if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
+
+    if(isEnrageSyn(code,text))  mechanicCounters[V_ENRAGED]->increaseSyn(code);
 }
 
 
@@ -896,6 +904,19 @@ bool DraftHandler::isDragonSyn(const QString &code)
         QString text = Utility::cardEnTextFromCode(code).toLower();
         return  text.contains("dragon");
     }
+}
+bool DraftHandler::isEnrageSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("enrageSyn");
+    }
+    else if(text.contains("deal") && text.contains("1 damage") &&
+            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
+    {
+        return true;
+    }
+    return false;
 }
 
 
@@ -1022,7 +1043,7 @@ bool DraftHandler::isPingGen(const QString &code, const QJsonArray &mechanics, c
     }
     //Anything that deals damage (no pings)
     else if(text.contains("deal") && text.contains("1 damage") &&
-            !text.contains("all") && !text.contains("random") && !text.contains("hero"))
+            !text.contains("random") && !text.contains("hero"))
     {
         return true;
     }
@@ -1044,7 +1065,7 @@ bool DraftHandler::isReachGen(const QString &code, const QJsonArray &mechanics, 
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("reachGen");
+        return synergyCodes[code].contains("reachGen") || synergyCodes[code].contains("weaponGen") || synergyCodes[code].contains("stealthGen");
     }
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
@@ -1052,10 +1073,11 @@ bool DraftHandler::isReachGen(const QString &code, const QJsonArray &mechanics, 
     {
         return true;
     }
-    //Charge minions
+    //Charge and stealth minions
     else if(cardType == MINION)
     {
-        if(mechanics.contains(QJsonValue("CHARGE")) || referencedTags.contains(QJsonValue("CHARGE")))
+        if(mechanics.contains(QJsonValue("CHARGE")) || referencedTags.contains(QJsonValue("CHARGE")) ||
+            mechanics.contains(QJsonValue("STEALTH")) || referencedTags.contains(QJsonValue("STEALTH")))
         {
             return !text.contains("gain <b>charge</b>") && !text.contains("can't attack heroes");
         }
@@ -1101,6 +1123,21 @@ bool DraftHandler::isDestroyGen(const QString &code)
         QString text = Utility::cardEnTextFromCode(code).toLower();
         return  text.contains("destroy") && text.contains("minion") &&
                 !text.contains("all");
+    }
+}
+bool DraftHandler::isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("enrageGen");
+    }
+    else if(mechanics.contains(QJsonValue("ENRAGED")) || referencedTags.contains(QJsonValue("ENRAGED")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -1156,6 +1193,7 @@ void DraftHandler::getSynergies(DraftCard &draftCard, QMap<QString,int> &synergi
 {
     getCardTypeSynergies(draftCard, synergies);
     getRaceSynergies(draftCard, synergies);
+    getMechanicSynergies(draftCard, synergies);
 }
 
 
@@ -1194,6 +1232,19 @@ void DraftHandler::getRaceSynergies(DraftCard &draftCard, QMap<QString,int> &syn
     if(isTotemSyn(code))    raceCounters[V_TOTEM]->insertCards(synergies);
     if(isPirateSyn(code))   raceCounters[V_PIRATE]->insertCards(synergies);
     if(isDragonSyn(code))   raceCounters[V_DRAGON]->insertCards(synergies);
+}
+
+
+void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> &synergies)
+{
+    QString code = draftCard.getCode();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+    QString text = Utility::cardEnTextFromCode(code).toLower();
+
+    if(isEnrageGen(code, mechanics, referencedTags))    mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+
+    if(isEnrageSyn(code, text))                         mechanicCounters[V_ENRAGED]->insertCards(synergies);
 }
 
 

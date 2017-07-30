@@ -42,7 +42,7 @@ public:
     ~Utility();
 
 //Variables
-private:
+private://TODO
     static QMap<QString, QJsonObject> *cardsJson;
     static QString localLang;
     static QString diacriticLetters;

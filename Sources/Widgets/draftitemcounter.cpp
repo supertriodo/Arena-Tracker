@@ -11,6 +11,12 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixma
 }
 
 
+DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
+{
+    reset();
+}
+
+
 void DraftItemCounter::reset()
 {
     this->counter = 0;

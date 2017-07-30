@@ -22,7 +22,8 @@ enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
-                       /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD, V_ENRAGED,
+                       V_ENRAGED,
+                       /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD,
                        V_FREEZE, V_OVERLOAD, V_SECRET, V_STEALTH, */V_NUM_MECHANICS};
 
 
@@ -123,6 +124,7 @@ private:
     void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
+    void getMechanicSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
     void initSynergyCodes();
     int draftedCardsCount();
     void updateCounters(DeckCard &deckCard);
@@ -147,6 +149,7 @@ private:
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType);
+    bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -158,6 +161,7 @@ private:
     bool isDragonSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
+    bool isEnrageSyn(const QString &code, const QString &text);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

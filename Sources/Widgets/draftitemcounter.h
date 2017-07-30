@@ -11,6 +11,7 @@ class DraftItemCounter : public QObject
     Q_OBJECT
 public:
     DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap);
+    DraftItemCounter(QObject *parent);
 
 //Variables
 private:
