@@ -130,7 +130,7 @@ private:
     void updateCounters(DeckCard &deckCard);
     void updateMechanicCounters(DeckCard &deckCard);
 
-//public:
+//public://TODO
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code);
     bool isMurlocGen(const QString &code);
@@ -162,6 +162,7 @@ private:
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
     bool isEnrageSyn(const QString &code, const QString &text);
+    bool isPingSyn(const QString &code);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

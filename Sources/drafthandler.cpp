@@ -779,6 +779,7 @@ void DraftHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
 
+    if(isPingSyn(code))         mechanicCounters[V_PING]->increaseSyn(code);
     if(isEnrageSyn(code,text))  mechanicCounters[V_ENRAGED]->increaseSyn(code);
 }
 
@@ -915,6 +916,14 @@ bool DraftHandler::isEnrageSyn(const QString &code, const QString &text)
             !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
     {
         return true;
+    }
+    return false;
+}
+bool DraftHandler::isPingSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("pingSyn");
     }
     return false;
 }
@@ -1241,9 +1250,13 @@ void DraftHandler::getMechanicSynergies(DraftCard &draftCard, QMap<QString,int> 
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
+    CardType cardType = draftCard.getType();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
 
-    if(isEnrageGen(code, mechanics, referencedTags))    mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
+    if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
 
+    if(isPingSyn(code))                                 mechanicCounters[V_PING]->insertCards(synergies);
     if(isEnrageSyn(code, text))                         mechanicCounters[V_ENRAGED]->insertCards(synergies);
 }
 
