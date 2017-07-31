@@ -75,7 +75,7 @@ private:
     bool isDestroyGen(const QString &code);
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
-    bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType);
+    bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isOverloadGen(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);

@@ -254,7 +254,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->increase(code);
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
             || isDestroyGen(code))                                          mechanicCounters[V_DAMAGE_DESTROY]->increase(code);
-    if(isReachGen(code, mechanics, referencedTags, text, cardType))         mechanicCounters[V_REACH]->increase(code);
+    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
@@ -353,7 +353,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     {
         mechanicIcons.append("damageMechanic.png");
     }
-    if(isReachGen(code, mechanics, referencedTags, text, cardType))
+    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
     {
         mechanicIcons.append("reachMechanic.png");
     }
@@ -530,18 +530,19 @@ bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics,
     return false;
 }
 bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                              const QString &text, const CardType &cardType)
+                              const QString &text, const CardType &cardType, int attack)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("reachGen") || synergyCodes[code].contains("weaponGen") || synergyCodes[code].contains("stealthGen");
+        return synergyCodes[code].contains("reachGen");
     }
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
-            !text.contains("minion") && !text.contains("random") && !text.contains("to your hero"))
+            !text.contains("1 damage") && !text.contains("minion") && !text.contains("random") && !text.contains("to your hero"))
     {
         return true;
     }
+    else if(attack < 2)  return false;
     //Charge and stealth minions
     else if(cardType == MINION)
     {
