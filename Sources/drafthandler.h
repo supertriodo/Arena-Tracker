@@ -5,7 +5,7 @@
 #include "Cards/draftcard.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
-#include "Widgets/draftitemcounter.h"
+#include "synergyhandler.h"
 #include <QObject>
 #include <QFutureWatcher>
 
@@ -16,15 +16,6 @@
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
-
-
-enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
-enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
-enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
-                       V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
-                       V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
-                       /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD,
-                       V_FREEZE, V_SECRET, V_STEALTH, */V_NUM_MECHANICS};
 
 
 class LFtier
@@ -52,7 +43,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QMap<QString, QList<QString>> synergyCodes;
+    SynergyHandler *synergyHandler;
     QMap<QString, int> hearthArenaTiers;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
@@ -81,9 +72,6 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     double shownTierScores[3];
-    DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
-    QHBoxLayout *horLayoutRaces1, *horLayoutRaces2, *horLayoutCardTypes;
-    QHBoxLayout *horLayoutMechanics1, *horLayoutMechanics2;
 
 
 //Metodos
@@ -108,7 +96,6 @@ private:
     void initHearthArenaTiers(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
     void createDraftScoreWindow(const QPointF &screenScale);
-    void initCounters(QList<DeckCard> deckCardList);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
@@ -117,58 +104,7 @@ private:
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
     int normalizeLFscore(int score);
-    void createDraftItemCounters();
-    void deleteDraftItemCounters();
-    void updateRaceCounters(DeckCard &deckCard);
-    void updateCardTypeCounters(DeckCard &deckCard);
-    void getSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
-    void getCardTypeSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
-    void getRaceSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
-    void getMechanicSynergies(DraftCard &draftCard, QMap<QString, int> &synergies);
-    void initSynergyCodes();
-    int draftedCardsCount();
-    void updateCounters(DeckCard &deckCard);
-    void updateMechanicCounters(DeckCard &deckCard);
-
-//public://TODO
-    bool isSpellGen(const QString &code);
-    bool isWeaponGen(const QString &code);
-    bool isMurlocGen(const QString &code);
-    bool isDemonGen(const QString &code);
-    bool isMechGen(const QString &code);
-    bool isElementalGen(const QString &code);
-    bool isBeastGen(const QString &code);
-    bool isTotemGen(const QString &code);
-    bool isPirateGen(const QString &code);
-    bool isDragonGen(const QString &code);
-    bool isDiscoverDrawGen(const QString &code);
-    bool isTaunt(const QString &code, const QJsonArray &mechanics);
-    bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
-    bool isAoeGen(const QString &code);
-    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
-    bool isDestroyGen(const QString &code);
-    bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
-                   const QString &text, const CardType &cardType, int attack);
-    bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType);
-    bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
-    bool isOverloadGen(const QString &code);
-    bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
-
-    bool isMurlocSyn(const QString &code);
-    bool isDemonSyn(const QString &code);
-    bool isMechSyn(const QString &code);
-    bool isElementalSyn(const QString &code);
-    bool isBeastSyn(const QString &code);
-    bool isTotemSyn(const QString &code);
-    bool isPirateSyn(const QString &code);
-    bool isDragonSyn(const QString &code);
-    bool isSpellSyn(const QString &code);
-    bool isWeaponSyn(const QString &code);
-    bool isEnrageSyn(const QString &code, const QString &text);
-    bool isOverloadSyn(const QString &code, const QString &text);
-    bool isPingSyn(const QString &code);
-    bool isAoeSyn(const QString &code);
-    bool isTauntSyn(const QString &code);
+    void createSynergyHandler();
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

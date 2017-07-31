@@ -65,7 +65,8 @@ SOURCES += Sources/main.cpp\
     Sources/Utils/deckstringhandler.cpp \
     Sources/themehandler.cpp \
     Sources/Utils/libzippp.cpp \
-    Sources/Widgets/draftitemcounter.cpp
+    Sources/Widgets/draftitemcounter.cpp \
+    Sources/synergyhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -122,7 +123,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Utils/deckstringhandler.h \
     Sources/themehandler.h \
     Sources/Utils/libzippp.h \
-    Sources/Widgets/draftitemcounter.h
+    Sources/Widgets/draftitemcounter.h \
+    Sources/synergyhandler.h
 
 FORMS    += mainwindow.ui
 
