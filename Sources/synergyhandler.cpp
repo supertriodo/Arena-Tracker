@@ -53,6 +53,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
     mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
+    mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -260,6 +261,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
+    if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -268,6 +270,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
     if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
     if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
+    if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
 }
 
 
@@ -362,6 +365,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isOverloadGen(code))                                     mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
+    if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -370,6 +374,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
     if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
     if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
+    if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
 }
 
 
@@ -672,6 +677,21 @@ bool SynergyHandler::isFreezeGen(const QString &code, const QJsonArray &mechanic
         return false;
     }
 }
+bool SynergyHandler::isDiscardGen(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("discardGen");
+    }
+    else if(text.contains("discard") && text.contains("random card"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 bool SynergyHandler::isSpellSyn(const QString &code)
@@ -871,6 +891,21 @@ bool SynergyHandler::isFreezeSyn(const QString &code, const QJsonArray &referenc
     else if(referencedTags.contains(QJsonValue("FREEZE")))
     {
         return text.contains("frozen");
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDiscardSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("discardSyn");
+    }
+    else if(text.contains("discard") && !text.contains("random card"))
+    {
+        return true;
     }
     else
     {

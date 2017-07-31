@@ -12,7 +12,7 @@ enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
                        V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
-                       V_SECRET, V_FREEZE,
+                       V_SECRET, V_FREEZE, V_DISCARD,
                        /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD,
                        V_STEALTH, */V_NUM_MECHANICS};
 
@@ -81,6 +81,7 @@ private:
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isSecretGen(const QString &code, const QJsonArray &mechanics);
     bool isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
+    bool isDiscardGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -99,6 +100,7 @@ private:
     bool isTauntSyn(const QString &code);
     bool isSecretSyn(const QString &code, const QJsonArray &referencedTags);
     bool isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
+    bool isDiscardSyn(const QString &code, const QString &text);
 
 signals:
     void pLog(QString line);
