@@ -12,8 +12,9 @@ enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
                        V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
+                       V_SECRET,
                        /*V_BATTLECRY, V_COMBO, V_DEATHRATTLE, V_DIVINE_SHIELD,
-                       V_FREEZE, V_SECRET, V_STEALTH, */V_NUM_MECHANICS};
+                       V_FREEZE, V_STEALTH, */V_NUM_MECHANICS};
 
 
 class SynergyHandler : public QObject
@@ -79,6 +80,7 @@ private:
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isOverloadGen(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isSecretGen(const QString &code, const QJsonArray &mechanics);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -95,6 +97,7 @@ private:
     bool isPingSyn(const QString &code);
     bool isAoeSyn(const QString &code);
     bool isTauntSyn(const QString &code);
+    bool isSecretSyn(const QString &code, const QJsonArray &referencedTags);
 
 signals:
     void pLog(QString line);

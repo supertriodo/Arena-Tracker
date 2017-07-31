@@ -56,6 +56,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
+    mechanicCounters[V_SECRET] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutRaces1->addStretch();
@@ -265,12 +266,14 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
+    if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
     if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
+    if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
 }
 
 
@@ -329,10 +332,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     CardType cardType = deckCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
-    if(isJadeGolemGen(code, mechanics, referencedTags))
-    {
-        mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
-    }
     if(isDiscoverDrawGen(code))
     {
         mechanicIcons.append("drawMechanic.png");
@@ -364,21 +363,18 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     {
         mechanicIcons.append("reachMechanic.png");
     }
-    if(isEnrageGen(code, mechanics, referencedTags))
-    {
-        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
-    }
-    if(isOverloadGen(code))
-    {
-        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
-    }
+    if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
+    if(isEnrageGen(code, mechanics, referencedTags))            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+    if(isOverloadGen(code))                                     mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
+    if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
 
 
-    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->insertCards(synergies);
-    if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->insertCards(synergies);
-    if(isPingSyn(code))                                                     mechanicCounters[V_PING]->insertCards(synergies);
-    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->insertCards(synergies);
-    if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->insertCards(synergies);
+    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
+    if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
+    if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergies);
+    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
+    if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
+    if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
 }
 
 
@@ -645,6 +641,21 @@ bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mecha
         return false;
     }
 }
+bool SynergyHandler::isSecretGen(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("secretGen");
+    }
+    else if(mechanics.contains(QJsonValue("SECRET")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 bool SynergyHandler::isSpellSyn(const QString &code)
@@ -819,4 +830,19 @@ bool SynergyHandler::isTauntSyn(const QString &code)
         return synergyCodes[code].contains("tauntSyn");
     }
     return false;
+}
+bool SynergyHandler::isSecretSyn(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("secretSyn");
+    }
+    else if(referencedTags.contains(QJsonValue("SECRET")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
