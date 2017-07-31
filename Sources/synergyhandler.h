@@ -28,6 +28,7 @@ private:
     Ui::Extended *ui;
     QMap<QString, QList<QString>> synergyCodes;
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
+    DraftItemCounter *manaCounter;
     QHBoxLayout *horLayoutRaces1, *horLayoutRaces2, *horLayoutCardTypes;
     QHBoxLayout *horLayoutMechanics1, *horLayoutMechanics2;
 
@@ -45,6 +46,7 @@ private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
 
+    void updateManaCounter(DeckCard &deckCard);
     void updateRaceCounters(DeckCard &deckCard);
     void updateCardTypeCounters(DeckCard &deckCard);
     void updateMechanicCounters(DeckCard &deckCard);

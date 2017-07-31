@@ -74,6 +74,19 @@ void DraftItemCounter::increase()
         }
     }
 }
+void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
+{
+    if(labelIcon != NULL && labelCounter != NULL)
+    {
+        if(counter == 0)
+        {
+            labelIcon->setHidden(false);
+            labelCounter->setHidden(false);
+        }
+        this->counter += numIncrease;
+        labelCounter->setText(QString::number((counter*10/std::max(1,draftedCardsCount))/10.0));
+    }
+}
 void DraftItemCounter::increase(const QString &code, bool count)
 {
     bool duplicatedCard = false;

@@ -26,6 +26,8 @@ void SynergyHandler::createDraftItemCounters()
     horLayoutMechanics1 = new QHBoxLayout();
     horLayoutMechanics2 = new QHBoxLayout();
 
+    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("manaCounter.png"));
+
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("minionsCounter.png"));
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("spellsCounter.png"));
@@ -43,9 +45,9 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("totemRace.png"));
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("aoeMechanic.png"));
-    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("tauntMechanic.png"));
     mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("drawMechanic.png"));
+    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("tauntMechanic.png"));
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("aoeMechanic.png"));
 
     mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("pingMechanic.png"));
     mechanicCounters[V_DAMAGE_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("damageMechanic.png"));
@@ -70,6 +72,7 @@ void SynergyHandler::createDraftItemCounters()
 
 void SynergyHandler::deleteDraftItemCounters()
 {
+    delete manaCounter;
     for(int i=0; i<V_NUM_TYPES; i++)
     {
         delete cardTypeCounters[i];
@@ -121,6 +124,7 @@ void SynergyHandler::clearLists(bool keepCounters)
     if(!keepCounters)
     {
         //Reset counters
+        manaCounter->reset();
         for(int i=0; i<V_NUM_TYPES; i++)
         {
             cardTypeCounters[i]->reset();
@@ -154,6 +158,7 @@ void SynergyHandler::initCounters(QList<DeckCard> deckCardList)
 
     for(DeckCard deckCard: deckCardList)
     {
+        if(deckCard.getType() == INVALID_TYPE)  continue;
         for(uint i=0; i<deckCard.total; i++)
         {
             updateCounters(deckCard);
@@ -166,6 +171,7 @@ void SynergyHandler::initCounters(QList<DeckCard> deckCardList)
 
 void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 {
+    manaCounter->setTransparency(transparency, mouseInApp);
     for(int i=0; i<V_NUM_TYPES; i++)
     {
         cardTypeCounters[i]->setTransparency(transparency, mouseInApp);
@@ -185,7 +191,14 @@ void SynergyHandler::updateCounters(DeckCard &deckCard)
 {
     updateRaceCounters(deckCard);
     updateCardTypeCounters(deckCard);
+    updateManaCounter(deckCard);
     updateMechanicCounters(deckCard);
+}
+
+
+void SynergyHandler::updateManaCounter(DeckCard &deckCard)
+{
+    manaCounter->increase(deckCard.getCost(), draftedCardsCount());
 }
 
 
