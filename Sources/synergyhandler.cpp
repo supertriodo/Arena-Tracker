@@ -6,9 +6,6 @@ SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(pare
     this->ui = ui;
 
     createDraftItemCounters();
-
-    //TODO
-//    initSynergyCodes();
 }
 
 
@@ -55,6 +52,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
+    mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -261,6 +259,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
+    if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -268,6 +267,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
     if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
+    if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
 }
 
 
@@ -361,7 +361,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isEnrageGen(code, mechanics, referencedTags))            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
     if(isOverloadGen(code))                                     mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
-
+    if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -369,6 +369,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
     if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
     if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
+    if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
 }
 
 
@@ -650,6 +651,26 @@ bool SynergyHandler::isSecretGen(const QString &code, const QJsonArray &mechanic
         return false;
     }
 }
+bool SynergyHandler::isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                                 const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("freezeGen");
+    }
+    else if(mechanics.contains(QJsonValue("FREEZE")))
+    {
+        return true;
+    }
+    else if(referencedTags.contains(QJsonValue("FREEZE")))
+    {
+        return !text.contains("frozen");
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 bool SynergyHandler::isSpellSyn(const QString &code)
@@ -834,6 +855,21 @@ bool SynergyHandler::isSecretSyn(const QString &code, const QJsonArray &referenc
     else if(referencedTags.contains(QJsonValue("SECRET")))
     {
         return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("freezeSyn");
+    }
+    else if(referencedTags.contains(QJsonValue("FREEZE")))
+    {
+        return text.contains("frozen");
     }
     else
     {
