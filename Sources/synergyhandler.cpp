@@ -21,8 +21,6 @@ SynergyHandler::~SynergyHandler()
 void SynergyHandler::createDraftItemCounters()
 {
     horLayoutCardTypes = new QHBoxLayout();
-    horLayoutRaces1 = new QHBoxLayout();
-    horLayoutRaces2 = new QHBoxLayout();
     horLayoutMechanics1 = new QHBoxLayout();
     horLayoutMechanics2 = new QHBoxLayout();
 
@@ -34,15 +32,15 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("weaponsCounter.png"));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
-    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("elementalRace.png"));
-    raceCounters[V_BEAST] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("beastRace.png"));
-    raceCounters[V_MURLOC] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("murlocRace.png"));
-    raceCounters[V_DRAGON] = new DraftItemCounter(this, horLayoutRaces1, QPixmap("dragonRace.png"));
+    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
+    raceCounters[V_BEAST] = new DraftItemCounter(this);
+    raceCounters[V_MURLOC] = new DraftItemCounter(this);
+    raceCounters[V_DRAGON] = new DraftItemCounter(this);
 
-    raceCounters[V_PIRATE] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("pirateRace.png"));
-    raceCounters[V_MECHANICAL] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("mechanicalRace.png"));
-    raceCounters[V_DEMON] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("demonRace.png"));
-    raceCounters[V_TOTEM] = new DraftItemCounter(this, horLayoutRaces2, QPixmap("totemRace.png"));
+    raceCounters[V_PIRATE] = new DraftItemCounter(this);
+    raceCounters[V_MECHANICAL] = new DraftItemCounter(this);
+    raceCounters[V_DEMON] = new DraftItemCounter(this);
+    raceCounters[V_TOTEM] = new DraftItemCounter(this);
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
     mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("drawMechanic.png"));
@@ -59,15 +57,11 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
-    horLayoutRaces1->addStretch();
-    horLayoutRaces2->addStretch();
     horLayoutMechanics1->addStretch();
     horLayoutMechanics2->addStretch();
     ui->draftVerticalLayout->addLayout(horLayoutCardTypes);
     ui->draftVerticalLayout->addLayout(horLayoutMechanics1);
     ui->draftVerticalLayout->addLayout(horLayoutMechanics2);
-    ui->draftVerticalLayout->addLayout(horLayoutRaces1);
-    ui->draftVerticalLayout->addLayout(horLayoutRaces2);
 }
 
 

@@ -30,8 +30,7 @@ private:
     QMap<QString, QList<QString>> synergyCodes;
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
-    QHBoxLayout *horLayoutRaces1, *horLayoutRaces2, *horLayoutCardTypes;
-    QHBoxLayout *horLayoutMechanics1, *horLayoutMechanics2;
+    QHBoxLayout *horLayoutCardTypes, *horLayoutMechanics1, *horLayoutMechanics2;
 
 //Metodos
 public:
