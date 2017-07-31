@@ -580,3 +580,34 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
     painter.drawPath(path);
 }
 
+
+void Utility::clearLayout(QLayout* layout, bool deleteWidgets)
+{
+    while(QLayoutItem* item = layout->takeAt(0))
+    {
+        if(deleteWidgets)
+        {
+            if(QWidget* widget = item->widget())
+            {
+                widget->deleteLater();
+            }
+        }
+        if(QLayout* childLayout = item->layout())
+        {
+            clearLayout(childLayout, deleteWidgets);
+        }
+        delete item;
+    }
+}
+
+
+void Utility::showItemsLayout(QLayout* layout)
+{
+    for(int i=0; i<layout->count(); i++)
+    {
+        QLayoutItem *child = layout->itemAt(i);
+        QWidget *widget = child->widget();
+        if(widget != NULL)  widget->show();
+//        if (QLayout* childLayout = child->layout())  showItemsLayout(childLayout);
+    }
+}

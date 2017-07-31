@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QObject>
+#include <QHBoxLayout>
 #include "movelistwidget.h"
 #include "scorebutton.h"
 #include "../utility.h"
@@ -22,6 +23,7 @@ public:
 
 //Variables
 private:
+    QHBoxLayout *horLayoutMechanics[3];
     ScoreButton *scoresPushButton[3];
     ScoreButton *scoresPushButton2[3];
     MoveListWidget *synergiesListWidget[3];
@@ -41,7 +43,7 @@ public:
     void setLearningMode(bool value);
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
-    void setSynergies(QMap<QString, int> synergies[]);
+    void setSynergies(QMap<QString, int> synergies[], QStringList mechanicIcons[]);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

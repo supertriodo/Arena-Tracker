@@ -624,8 +624,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
     //Synergies
     QMap<QString,int> synergies[3];
-    for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i]);
-    draftScoreWindow->setSynergies(synergies);
+    QStringList mechanicIcons[3];
+    for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i], mechanicIcons[i]);
+    draftScoreWindow->setSynergies(synergies, mechanicIcons);
 }
 
 

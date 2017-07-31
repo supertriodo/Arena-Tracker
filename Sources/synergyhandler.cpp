@@ -261,11 +261,11 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
 {
     getCardTypeSynergies(deckCard, synergies);
     getRaceSynergies(deckCard, synergies);
-    getMechanicSynergies(deckCard, synergies);
+    getMechanicSynergies(deckCard, synergies, mechanicIcons);
 }
 
 
@@ -307,7 +307,7 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &syn
 }
 
 
-void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
 {
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -316,12 +316,50 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     CardType cardType = deckCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 
-    if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
-    if(isTaunt(code, mechanics))                                            mechanicCounters[V_TAUNT]->insertSynCards(synergies);
-    if(isAoeGen(code))                                                      mechanicCounters[V_AOE]->insertSynCards(synergies);
-    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->insertSynCards(synergies);
-    if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
-    if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
+    if(isJadeGolemGen(code, mechanics, referencedTags))
+    {
+        mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
+    }
+    if(isDiscoverDrawGen(code))
+    {
+        mechanicIcons.append("drawMechanic.png");
+    }
+    if(isTaunt(code, mechanics))
+    {
+        mechanicCounters[V_TAUNT]->insertSynCards(synergies);
+        mechanicIcons.append("tauntMechanic.png");
+    }
+    else if(isTauntGen(code, referencedTags))
+    {
+        mechanicIcons.append("tauntMechanic.png");
+    }
+    if(isAoeGen(code))
+    {
+        mechanicCounters[V_AOE]->insertSynCards(synergies);
+        mechanicIcons.append("aoeMechanic.png");
+    }
+    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
+    {
+        mechanicCounters[V_PING]->insertSynCards(synergies);
+        mechanicIcons.append("pingMechanic.png");
+    }
+    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack) || isDestroyGen(code))
+    {
+        mechanicIcons.append("damageMechanic.png");
+    }
+    if(isReachGen(code, mechanics, referencedTags, text, cardType))
+    {
+        mechanicIcons.append("reachMechanic.png");
+    }
+    if(isEnrageGen(code, mechanics, referencedTags))
+    {
+        mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+    }
+    if(isOverloadGen(code))
+    {
+        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
+    }
+
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->insertCards(synergies);

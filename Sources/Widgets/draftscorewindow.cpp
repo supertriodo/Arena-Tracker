@@ -57,6 +57,9 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
 
         QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
+
+        horLayoutMechanics[i] = new QHBoxLayout();
+
         synergiesListWidget[i] = new MoveListWidget(centralWidget);
         synergiesListWidget[i]->setFixedHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -69,6 +72,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         connect(synergiesListWidget[i], SIGNAL(leave()),
                 this, SIGNAL(cardLeave()));
 
+        verLayoutSynergy->addLayout(horLayoutMechanics[i]);
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
         verLayoutSynergy->addStretch();
 
@@ -174,7 +178,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 }
 
 
-void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3])
+void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3], QStringList mechanicIcons[3])
 {
     for(int i=0; i<3; i++)
     {
@@ -190,6 +194,20 @@ void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3])
             deckCard.draw();
             synergiesDeckCardLists[i].append(deckCard);
         }
+
+        //Add mechanic icons
+        Utility::clearLayout(horLayoutMechanics[i], true);
+        horLayoutMechanics[i]->addStretch();
+
+        for(const QString &mechanicIcon: mechanicIcons[i])
+        {
+            QLabel *label = new QLabel();
+            label->setPixmap(QPixmap(mechanicIcon));
+            label->hide();
+            horLayoutMechanics[i]->addWidget(label);
+        }
+
+        horLayoutMechanics[i]->addStretch();
     }
 }
 
@@ -233,6 +251,7 @@ void DraftScoreWindow::showSynergies()
     for(int i=0; i<3; i++)
     {
         synergiesListWidget[i]->show();
+        Utility::showItemsLayout(horLayoutMechanics[i]);
     }
     this->update();
 }
@@ -243,6 +262,7 @@ void DraftScoreWindow::hideSynergies(int index)
     synergiesListWidget[index]->hide();
     synergiesListWidget[index]->clear();
     synergiesDeckCardLists[index].clear();
+    Utility::clearLayout(horLayoutMechanics[index], true);
 }
 
 

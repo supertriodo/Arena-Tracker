@@ -86,6 +86,8 @@ public:
     static QString themesPath();
     static int heroLogNumber2HeroOrder(QString heroLog);
     static QString cardEnTextFromCode(QString code);
+    static void clearLayout(QLayout *layout, bool deleteWidgets);
+    static void showItemsLayout(QLayout *layout);
 };
 
 #endif // UTILITY_H

@@ -34,7 +34,7 @@ private:
 //Metodos
 public:
     void updateCounters(DeckCard &deckCard);
-    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
@@ -51,7 +51,7 @@ private:
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
-    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
 
 private:
 //public: //TODO
