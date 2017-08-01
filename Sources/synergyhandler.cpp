@@ -743,7 +743,7 @@ bool SynergyHandler::isSpellSyn(const QString &code)
     else
     {
         QString text = Utility::cardEnTextFromCode(code).toLower();
-        return  (text.contains("spell") && !text.contains("spell damage") && !text.contains("can't be targeted by spells"));
+        return  text.contains("spell") && (text.contains("you cast") || text.contains("cost"));
     }
 }
 
