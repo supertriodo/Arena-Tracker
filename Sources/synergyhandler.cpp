@@ -55,6 +55,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
+    mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -264,6 +265,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleGen(code, mechanics))                                   mechanicCounters[V_DEATHRATTLE]->increase(code);
+    if(isBattlecryGen(code, mechanics))                                     mechanicCounters[V_BATTLECRY]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -274,6 +276,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
+    if(isBattlecrySyn(code, referencedTags, text))                          mechanicCounters[V_BATTLECRY]->increaseSyn(code);
 }
 
 
@@ -370,6 +373,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleGen(code, mechanics))                       mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
+    if(isBattlecryGen(code, mechanics))                         mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -380,6 +384,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
+    if(isBattlecrySyn(code, referencedTags, text))              mechanicCounters[V_BATTLECRY]->insertCards(synergies);
 }
 
 
@@ -712,6 +717,22 @@ bool SynergyHandler::isDeathrattleGen(const QString &code, const QJsonArray &mec
         return false;
     }
 }
+bool SynergyHandler::isBattlecryGen(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("battlecryGen");
+    }
+    else if(mechanics.contains(QJsonValue("BATTLECRY")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 
 bool SynergyHandler::isSpellSyn(const QString &code)
 {
@@ -936,6 +957,25 @@ bool SynergyHandler::isDeathrattleSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("deathrattleSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isBattlecrySyn(const QString &code, const QJsonArray &referencedTags, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("battlecrySyn");
+    }
+    else if(referencedTags.contains(QJsonValue("BATTLECRY")))
+    {
+        return true;
+    }
+    else if(text.contains("return a friendly minion"))
+    {
+        return true;
     }
     else
     {
