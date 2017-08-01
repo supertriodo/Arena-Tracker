@@ -14,6 +14,7 @@ enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
                        V_SECRET, V_FREEZE, V_DISCARD,
                        V_DEATHRATTLE, V_BATTLECRY, V_SILENCE,
+                       V_TAUNT_GIVER,
                        /*V_DIVINE_SHIELD, V_STEALTH, */V_NUM_MECHANICS};
 
 
@@ -85,6 +86,7 @@ private:
     bool isDeathrattleGen(const QString &code, const QJsonArray &mechanics);
     bool isBattlecryGen(const QString &code, const QJsonArray &mechanics);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isTauntGiverGen(const QString &code);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -107,6 +109,7 @@ private:
     bool isDeathrattleSyn(const QString &code);
     bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
+    bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
 
 signals:
     void pLog(QString line);

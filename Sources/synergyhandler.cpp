@@ -57,6 +57,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
     mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
     mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
+    mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -268,6 +269,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isDeathrattleGen(code, mechanics))                                   mechanicCounters[V_DEATHRATTLE]->increase(code);
     if(isBattlecryGen(code, mechanics))                                     mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
+    if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -280,6 +282,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
     if(isBattlecrySyn(code, referencedTags, text))                          mechanicCounters[V_BATTLECRY]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
+    if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
 }
 
 
@@ -378,6 +381,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDeathrattleGen(code, mechanics))                       mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
     if(isBattlecryGen(code, mechanics))                         mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
+    if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -390,6 +394,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
     if(isBattlecrySyn(code, referencedTags, text))              mechanicCounters[V_BATTLECRY]->insertCards(synergies);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
+    if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
 }
 
 
@@ -756,6 +761,17 @@ bool SynergyHandler::isSilenceOwnGen(const QString &code, const QJsonArray &mech
         return false;
     }
 }
+bool SynergyHandler::isTauntGiverGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("tauntGiverGen");
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 //Synergy items
@@ -1011,6 +1027,25 @@ bool SynergyHandler::isSilenceOwnSyn(const QString &code, const QJsonArray &mech
         return synergyCodes[code].contains("silenceOwnSyn");
     }
     else if(mechanics.contains(QJsonValue("CANT_ATTACK")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("tauntGiverSyn");
+    }
+    else if(mechanics.contains(QJsonValue("CANT_ATTACK")))
+    {
+        return true;
+    }
+    else if(cardType == MINION && attack ==0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
     {
         return true;
     }
