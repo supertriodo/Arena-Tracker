@@ -54,6 +54,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
     mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
+    mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -262,6 +263,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
+    if(isDeathrattleGen(code, mechanics))                                   mechanicCounters[V_DEATHRATTLE]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -271,6 +273,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
     if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
+    if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
 }
 
 
@@ -366,6 +369,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
+    if(isDeathrattleGen(code, mechanics))                       mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -375,6 +379,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
     if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
+    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
 }
 
 
@@ -692,7 +697,21 @@ bool SynergyHandler::isDiscardGen(const QString &code, const QString &text)
         return false;
     }
 }
-
+bool SynergyHandler::isDeathrattleGen(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("deathrattleGen");
+    }
+    else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 bool SynergyHandler::isSpellSyn(const QString &code)
 {
@@ -906,6 +925,17 @@ bool SynergyHandler::isDiscardSyn(const QString &code, const QString &text)
     else if(text.contains("discard") && !text.contains("random card"))
     {
         return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDeathrattleSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("deathrattleSyn");
     }
     else
     {
