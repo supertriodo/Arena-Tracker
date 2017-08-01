@@ -56,6 +56,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
     mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
+    mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -266,6 +267,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleGen(code, mechanics))                                   mechanicCounters[V_DEATHRATTLE]->increase(code);
     if(isBattlecryGen(code, mechanics))                                     mechanicCounters[V_BATTLECRY]->increase(code);
+    if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -277,6 +279,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
     if(isBattlecrySyn(code, referencedTags, text))                          mechanicCounters[V_BATTLECRY]->increaseSyn(code);
+    if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
 }
 
 
@@ -374,6 +377,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleGen(code, mechanics))                       mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
     if(isBattlecryGen(code, mechanics))                         mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
+    if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -385,6 +389,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
     if(isBattlecrySyn(code, referencedTags, text))              mechanicCounters[V_BATTLECRY]->insertCards(synergies);
+    if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
 }
 
 
@@ -732,8 +737,28 @@ bool SynergyHandler::isBattlecryGen(const QString &code, const QJsonArray &mecha
         return false;
     }
 }
+bool SynergyHandler::isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("silenceOwnGen");
+    }
+    else if(mechanics.contains(QJsonValue("SILENCE")))
+    {
+        return true;
+    }
+    else if(referencedTags.contains(QJsonValue("SILENCE")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
+//Synergy items
 bool SynergyHandler::isSpellSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -746,9 +771,6 @@ bool SynergyHandler::isSpellSyn(const QString &code)
         return  text.contains("spell") && (text.contains("you cast") || text.contains("cost"));
     }
 }
-
-
-//Synergy items
 bool SynergyHandler::isWeaponSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -974,6 +996,21 @@ bool SynergyHandler::isBattlecrySyn(const QString &code, const QJsonArray &refer
         return true;
     }
     else if(text.contains("return a friendly minion"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("silenceOwnSyn");
+    }
+    else if(mechanics.contains(QJsonValue("CANT_ATTACK")))
     {
         return true;
     }

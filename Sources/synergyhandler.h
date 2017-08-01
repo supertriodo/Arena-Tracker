@@ -13,7 +13,7 @@ enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
                        V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
                        V_SECRET, V_FREEZE, V_DISCARD,
-                       V_DEATHRATTLE, V_BATTLECRY,
+                       V_DEATHRATTLE, V_BATTLECRY, V_SILENCE,
                        /*V_DIVINE_SHIELD, V_STEALTH, */V_NUM_MECHANICS};
 
 
@@ -84,6 +84,7 @@ private:
     bool isDiscardGen(const QString &code, const QString &text);
     bool isDeathrattleGen(const QString &code, const QJsonArray &mechanics);
     bool isBattlecryGen(const QString &code, const QJsonArray &mechanics);
+    bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -105,6 +106,7 @@ private:
     bool isDiscardSyn(const QString &code, const QString &text);
     bool isDeathrattleSyn(const QString &code);
     bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
+    bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
 
 signals:
     void pLog(QString line);
