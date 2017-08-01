@@ -202,7 +202,8 @@ void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3], QStringList 
         for(const QString &mechanicIcon: mechanicIcons[i])
         {
             QLabel *label = new QLabel();
-            label->setPixmap(QPixmap(mechanicIcon));
+            QPixmap pixmap(mechanicIcon);
+            label->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
             label->hide();
             horLayoutMechanics[i]->addWidget(label);
         }
