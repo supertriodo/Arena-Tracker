@@ -58,6 +58,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
     mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
     mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this);
+    mechanicCounters[V_TOKEN] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -270,6 +271,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isBattlecryGen(code, mechanics))                                     mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
+    if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -283,6 +285,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isBattlecrySyn(code, referencedTags, text))                          mechanicCounters[V_BATTLECRY]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
+    if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
 }
 
 
@@ -382,6 +385,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isBattlecryGen(code, mechanics))                         mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
+    if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -395,6 +399,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isBattlecrySyn(code, referencedTags, text))              mechanicCounters[V_BATTLECRY]->insertCards(synergies);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
+    if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
 }
 
 
@@ -772,6 +777,24 @@ bool SynergyHandler::isTauntGiverGen(const QString &code)
         return false;
     }
 }
+bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
+{
+    //TEST
+    //(text.contains("1/1") || text.contains("2/1") || text.contains("1/2") || text.contains("2/2")) && !text.contains("opponent")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("tokenGen");
+    }
+    else if((text.contains("1/1") || text.contains("2/1") || text.contains("1/2"))
+            && text.contains("summon") && !text.contains("opponent"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 //Synergy items
@@ -1046,6 +1069,31 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
         return true;
     }
     else if(cardType == MINION && attack ==0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
+{
+    //TEST
+//    (text.contains("+") && (text.contains("minions") || text.contains("characters"))
+//    && !text.contains("hand")
+//    || (text.contains("control") && text.contains("least") && text.contains("minions")))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("tokenSyn");
+    }
+    else if(text.contains("+")
+            && (text.contains("minions") || text.contains("characters"))
+            && !text.contains("hand"))
+    {
+        return true;
+    }
+    else if(text.contains("control") && text.contains("least") && text.contains("minions"))
     {
         return true;
     }
