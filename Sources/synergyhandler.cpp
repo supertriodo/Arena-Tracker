@@ -59,6 +59,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
     mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this);
     mechanicCounters[V_TOKEN] = new DraftItemCounter(this);
+    mechanicCounters[V_WINDFURY] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -272,6 +273,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
+    if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -286,6 +288,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
+    if(isWindfurySyn(code))                                                 mechanicCounters[V_WINDFURY]->increaseSyn(code);
 }
 
 
@@ -386,6 +389,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
+    if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -400,6 +404,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
+    if(isWindfurySyn(code))                                     mechanicCounters[V_WINDFURY]->insertCards(synergies);
 }
 
 
@@ -796,6 +801,22 @@ bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
         return false;
     }
 }
+bool SynergyHandler::isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
+{
+    if(cardType != MINION)  return false;
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("windfury");
+    }
+    else if(mechanics.contains(QJsonValue("WINDFURY")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 //Synergy items
@@ -1097,6 +1118,17 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
     else if(text.contains("control") && text.contains("least") && text.contains("minions"))
     {
         return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isWindfurySyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("windfurySyn");
     }
     else
     {
