@@ -268,7 +268,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattle(code, mechanics))                                      mechanicCounters[V_DEATHRATTLE]->increase(code);
-    if(isBattlecry(code, mechanics))                                        mechanicCounters[V_BATTLECRY]->increase(code);
+    if(isBattlecryMinion(code, mechanics, cardType))                        mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
@@ -382,7 +382,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattle(code, mechanics))                          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
-    if(isBattlecry(code, mechanics))                            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
+    if(isBattlecryMinion(code, mechanics, cardType))            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
@@ -732,8 +732,9 @@ bool SynergyHandler::isDeathrattle(const QString &code, const QJsonArray &mechan
         return false;
     }
 }
-bool SynergyHandler::isBattlecry(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isBattlecryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
 {
+    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("battlecry");

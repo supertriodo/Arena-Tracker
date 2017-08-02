@@ -84,7 +84,7 @@ private:
     bool isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardGen(const QString &code, const QString &text);
     bool isDeathrattle(const QString &code, const QJsonArray &mechanics);
-    bool isBattlecry(const QString &code, const QJsonArray &mechanics);
+    bool isBattlecryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
