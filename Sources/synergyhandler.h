@@ -15,6 +15,7 @@ enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_SECRET, V_FREEZE, V_DISCARD,
                        V_DEATHRATTLE, V_BATTLECRY, V_SILENCE,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY,
+                       V_ATTACK_BUFF,
                        /*V_DIVINE_SHIELD, V_STEALTH, */V_NUM_MECHANICS};
 
 
@@ -89,6 +90,7 @@ private:
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
+    bool isAttackBuffGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -114,6 +116,7 @@ private:
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
     bool isWindfurySyn(const QString &code);
+    bool isAttackBuffSyn(const QString &code);
 
 signals:
     void pLog(QString line);
