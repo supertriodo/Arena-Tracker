@@ -78,13 +78,13 @@ private:
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
-    bool isOverloadGen(const QString &code);
+    bool isOverload(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isSecretGen(const QString &code, const QJsonArray &mechanics);
     bool isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardGen(const QString &code, const QString &text);
-    bool isDeathrattleGen(const QString &code, const QJsonArray &mechanics);
-    bool isBattlecryGen(const QString &code, const QJsonArray &mechanics);
+    bool isDeathrattle(const QString &code, const QJsonArray &mechanics);
+    bool isBattlecry(const QString &code, const QJsonArray &mechanics);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);

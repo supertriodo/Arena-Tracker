@@ -262,13 +262,13 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
             || isDestroyGen(code))                                          mechanicCounters[V_DAMAGE_DESTROY]->increase(code);
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_REACH]->increase(code);
     if(isEnrageGen(code, mechanics, referencedTags))                        mechanicCounters[V_ENRAGED]->increase(code);
-    if(isOverloadGen(code))                                                 mechanicCounters[V_OVERLOAD]->increase(code);
+    if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
-    if(isDeathrattleGen(code, mechanics))                                   mechanicCounters[V_DEATHRATTLE]->increase(code);
-    if(isBattlecryGen(code, mechanics))                                     mechanicCounters[V_BATTLECRY]->increase(code);
+    if(isDeathrattle(code, mechanics))                                      mechanicCounters[V_DEATHRATTLE]->increase(code);
+    if(isBattlecry(code, mechanics))                                        mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
@@ -377,12 +377,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     }
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
     if(isEnrageGen(code, mechanics, referencedTags))            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
-    if(isOverloadGen(code))                                     mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
+    if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
-    if(isDeathrattleGen(code, mechanics))                       mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
-    if(isBattlecryGen(code, mechanics))                         mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
+    if(isDeathrattle(code, mechanics))                          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
+    if(isBattlecry(code, mechanics))                            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
@@ -461,7 +461,7 @@ bool SynergyHandler::isDiscoverDrawGen(const QString &code)
 
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("discoverGen") ||
+        return synergyCodes[code].contains("discover") ||
                 synergyCodes[code].contains("drawGen") ||
                 synergyCodes[code].contains("toYourHandGen");
     }
@@ -640,11 +640,11 @@ bool SynergyHandler::isEnrageGen(const QString &code, const QJsonArray &mechanic
         return false;
     }
 }
-bool SynergyHandler::isOverloadGen(const QString &code)
+bool SynergyHandler::isOverload(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("overloadGen");
+        return synergyCodes[code].contains("overload");
     }
     else
     {
@@ -717,11 +717,11 @@ bool SynergyHandler::isDiscardGen(const QString &code, const QString &text)
         return false;
     }
 }
-bool SynergyHandler::isDeathrattleGen(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isDeathrattle(const QString &code, const QJsonArray &mechanics)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("deathrattleGen");
+        return synergyCodes[code].contains("deathrattle");
     }
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
     {
@@ -732,11 +732,11 @@ bool SynergyHandler::isDeathrattleGen(const QString &code, const QJsonArray &mec
         return false;
     }
 }
-bool SynergyHandler::isBattlecryGen(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isBattlecry(const QString &code, const QJsonArray &mechanics)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("battlecryGen");
+        return synergyCodes[code].contains("battlecry");
     }
     else if(mechanics.contains(QJsonValue("BATTLECRY")))
     {
