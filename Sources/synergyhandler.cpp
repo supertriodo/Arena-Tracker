@@ -1196,11 +1196,11 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
 {
     //TEST
     //&& mechanics.contains(QJsonValue("BATTLECRY"))
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("returnSyn");
     }
+    else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("BATTLECRY")))
     {
         if(
