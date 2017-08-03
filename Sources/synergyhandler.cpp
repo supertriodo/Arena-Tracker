@@ -61,6 +61,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_TOKEN] = new DraftItemCounter(this);
     mechanicCounters[V_WINDFURY] = new DraftItemCounter(this);
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
+    mechanicCounters[V_RETURN] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -276,6 +277,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
+    if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -292,6 +294,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isWindfurySyn(code))                                                 mechanicCounters[V_WINDFURY]->increaseSyn(code);
     if(isAttackBuffSyn(code))                                               mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
+    if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
 }
 
 
@@ -394,6 +397,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
+    if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -410,6 +414,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
     if(isWindfurySyn(code))                                     mechanicCounters[V_WINDFURY]->insertCards(synergies);
     if(isAttackBuffSyn(code))                                   mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
+    if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
 }
 
 
@@ -845,6 +850,23 @@ bool SynergyHandler::isAttackBuffGen(const QString &code, const QString &text)
         return false;
     }
 }
+bool SynergyHandler::isReturnGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("return a friendly minion")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("returnGen");
+    }
+    else if(text.contains("return a friendly minion"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 //Synergy items
@@ -1084,10 +1106,6 @@ bool SynergyHandler::isBattlecrySyn(const QString &code, const QJsonArray &refer
     {
         return true;
     }
-    else if(text.contains("return a friendly minion"))
-    {
-        return true;
-    }
     else
     {
         return false;
@@ -1173,4 +1191,38 @@ bool SynergyHandler::isAttackBuffSyn(const QString &code)
     {
         return false;
     }
+}
+bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text)
+{
+    //TEST
+    //&& mechanics.contains(QJsonValue("BATTLECRY"))
+    if(cardType != MINION)  return false;
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("returnSyn");
+    }
+    else if(mechanics.contains(QJsonValue("BATTLECRY")))
+    {
+        if(
+                ((text.contains("summon") || text.contains("give") || text.contains("restore")) && !text.contains("opponent")) ||
+                (text.contains("deal") && !(text.contains("your") && text.contains("hero"))) ||
+                text.contains("swap") ||
+                (text.contains("play") && !text.contains("played")) ||
+                text.contains("discover") ||
+                text.contains("draw") ||
+                (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return")) ||
+                text.contains("destroy") ||
+                text.contains("transform") ||
+                (text.contains("take") && text.contains("control")) ||
+                text.contains("freeze") ||
+                text.contains("remove") ||
+                text.contains("silence") ||
+                text.contains("cast") ||
+                text.contains("equip")
+           )
+        {
+            return true;
+        }
+    }
+    return false;
 }
