@@ -63,6 +63,8 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
     mechanicCounters[V_RETURN] = new DraftItemCounter(this);
     mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
+    mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this);
+    mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -280,6 +282,13 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
+    if(isDivineShield(code, mechanics))
+    {
+        mechanicCounters[V_DIVINE_SHIELD]->increase(code);
+        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
+    }
+    else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
+
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -298,6 +307,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isAttackBuffSyn(code))                                               mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
+    if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
+    else if(isDivineShieldAllSyn(code))                                     mechanicCounters[V_DIVINE_SHIELD_ALL]->increaseSyn(code);
 }
 
 
@@ -402,6 +413,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
+    if(isDivineShield(code, mechanics))
+    {
+        mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
+        mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
+    }
+    else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -420,6 +437,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isAttackBuffSyn(code))                                   mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
+    if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
+    else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
 }
 
 
@@ -889,7 +908,40 @@ bool SynergyHandler::isStealthGen(const QString &code, const QJsonArray &mechani
         return false;
     }
 }
-
+bool SynergyHandler::isDivineShield(const QString &code, const QJsonArray &mechanics)
+{
+    //TEST
+    //&& (mechanics.contains(QJsonValue("DIVINE_SHIELD")) ||  referencedTags.contains(QJsonValue("DIVINE_SHIELD")))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("divineShield");
+    }
+    else if(mechanics.contains(QJsonValue("DIVINE_SHIELD")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDivineShieldGen(const QString &code, const QJsonArray &referencedTags)
+{
+    //TEST
+    //&& (mechanics.contains(QJsonValue("STEALTH")) ||  referencedTags.contains(QJsonValue("STEALTH")))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("divineShieldGen");
+    }
+    else if(referencedTags.contains(QJsonValue("DIVINE_SHIELD")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 
 
@@ -1261,4 +1313,25 @@ bool SynergyHandler::isStealthSyn(const QString &code)
         return false;
     }
 }
-
+bool SynergyHandler::isDivineShieldSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("divineShieldSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDivineShieldAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("divineShieldAllSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
