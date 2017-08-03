@@ -16,7 +16,7 @@ enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_DEATHRATTLE, V_BATTLECRY, V_SILENCE,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY,
                        V_ATTACK_BUFF, V_RETURN,
-                       /*V_DIVINE_SHIELD, V_STEALTH, */V_NUM_MECHANICS};
+                       V_STEALTH,/*V_DIVINE_SHIELD, */V_NUM_MECHANICS};
 
 
 class SynergyHandler : public QObject
@@ -92,6 +92,7 @@ private:
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);
     bool isReturnGen(const QString &code, const QString &text);
+    bool isStealthGen(const QString &code, const QJsonArray &mechanics);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -112,13 +113,14 @@ private:
     bool isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardSyn(const QString &code, const QString &text);
     bool isDeathrattleSyn(const QString &code);
-    bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
+    bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
     bool isWindfurySyn(const QString &code);
     bool isAttackBuffSyn(const QString &code);
     bool isReturnSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
+    bool isStealthSyn(const QString &code);
 
 signals:
     void pLog(QString line);

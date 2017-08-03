@@ -62,6 +62,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_WINDFURY] = new DraftItemCounter(this);
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
     mechanicCounters[V_RETURN] = new DraftItemCounter(this);
+    mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -278,6 +279,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
+    if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -288,13 +290,14 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
-    if(isBattlecrySyn(code, referencedTags, text))                          mechanicCounters[V_BATTLECRY]->increaseSyn(code);
+    if(isBattlecrySyn(code, referencedTags))                                mechanicCounters[V_BATTLECRY]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isWindfurySyn(code))                                                 mechanicCounters[V_WINDFURY]->increaseSyn(code);
     if(isAttackBuffSyn(code))                                               mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
+    if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
 }
 
 
@@ -398,6 +401,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
+    if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
 
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -408,13 +412,14 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
-    if(isBattlecrySyn(code, referencedTags, text))              mechanicCounters[V_BATTLECRY]->insertCards(synergies);
+    if(isBattlecrySyn(code, referencedTags))                    mechanicCounters[V_BATTLECRY]->insertCards(synergies);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
     if(isWindfurySyn(code))                                     mechanicCounters[V_WINDFURY]->insertCards(synergies);
     if(isAttackBuffSyn(code))                                   mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
+    if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
 }
 
 
@@ -867,6 +872,25 @@ bool SynergyHandler::isReturnGen(const QString &code, const QString &text)
         return false;
     }
 }
+bool SynergyHandler::isStealthGen(const QString &code, const QJsonArray &mechanics)
+{
+    //TEST
+    //&& (mechanics.contains(QJsonValue("STEALTH")) ||  referencedTags.contains(QJsonValue("STEALTH")))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("stealthGen");
+    }
+    else if(mechanics.contains(QJsonValue("STEALTH")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 
 
 //Synergy items
@@ -1096,7 +1120,7 @@ bool SynergyHandler::isDeathrattleSyn(const QString &code)
         return false;
     }
 }
-bool SynergyHandler::isBattlecrySyn(const QString &code, const QJsonArray &referencedTags, const QString &text)
+bool SynergyHandler::isBattlecrySyn(const QString &code, const QJsonArray &referencedTags)
 {
     if(synergyCodes.contains(code))
     {
@@ -1226,3 +1250,15 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
     }
     return false;
 }
+bool SynergyHandler::isStealthSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("stealthSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
+
