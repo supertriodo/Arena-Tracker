@@ -495,6 +495,8 @@ bool SynergyHandler::isDragonGen(const QString &code)
 }
 bool SynergyHandler::isDiscoverDrawGen(const QString &code)
 {
+    //TEST
+    //&& (text.contains("draw") || text.contains("discover") || (text.contains("to") && text.contains("your") && text.contains("hand")))
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
@@ -512,7 +514,7 @@ bool SynergyHandler::isDiscoverDrawGen(const QString &code)
     {
         QString text = Utility::cardEnTextFromCode(code).toLower();
         return  text.contains("draw") ||
-                (text.contains("to your hand") && !text.contains("return"));
+                (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
     }
 }
 bool SynergyHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
