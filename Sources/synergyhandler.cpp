@@ -55,6 +55,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
+    mechanicCounters[V_DEATHRATTLE_GOOD_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
     mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
     mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this);
@@ -273,7 +274,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
     if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
-    if(isDeathrattle(code, mechanics))                                      mechanicCounters[V_DEATHRATTLE]->increase(code);
+    if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
     if(isBattlecryMinion(code, mechanics, cardType))                        mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
@@ -299,6 +301,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
+    else if(isDeathrattleGoodAllSyn(code))                                  mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
     if(isBattlecrySyn(code, referencedTags))                                mechanicCounters[V_BATTLECRY]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
@@ -404,7 +407,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
-    if(isDeathrattle(code, mechanics))                          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
+    if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags))   mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
     if(isBattlecryMinion(code, mechanics, cardType))            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
@@ -429,6 +433,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
+    else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergies);
     if(isBattlecrySyn(code, referencedTags))                    mechanicCounters[V_BATTLECRY]->insertCards(synergies);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
@@ -763,13 +768,32 @@ bool SynergyHandler::isDiscardGen(const QString &code, const QString &text)
         return false;
     }
 }
-bool SynergyHandler::isDeathrattle(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
 {
+    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("deathrattle");
     }
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    //TEST
+    //&& (mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
+    if(synergyCodes.contains(code))
+    {
+        return (synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleGen")) &&
+                !synergyCodes[code].contains("silenceOwnSyn");
+    }
+    else if(mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
     {
         return true;
     }
@@ -1173,6 +1197,17 @@ bool SynergyHandler::isDeathrattleSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("deathrattleSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isDeathrattleGoodAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("deathrattleGoodAllSyn");
     }
     else
     {

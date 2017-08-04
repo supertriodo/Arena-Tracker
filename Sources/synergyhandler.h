@@ -13,7 +13,8 @@ enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
                        V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
                        V_SECRET, V_FREEZE, V_DISCARD,
-                       V_DEATHRATTLE, V_BATTLECRY, V_SILENCE,
+                       V_BATTLECRY, V_SILENCE,
+                       V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY,
                        V_ATTACK_BUFF, V_RETURN,
                        V_STEALTH, V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL,
@@ -85,7 +86,8 @@ private:
     bool isSecretGen(const QString &code, const QJsonArray &mechanics);
     bool isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardGen(const QString &code, const QString &text);
-    bool isDeathrattle(const QString &code, const QJsonArray &mechanics);
+    bool isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
+    bool isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isBattlecryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
@@ -116,6 +118,7 @@ private:
     bool isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardSyn(const QString &code, const QString &text);
     bool isDeathrattleSyn(const QString &code);
+    bool isDeathrattleGoodAllSyn(const QString &code);
     bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
