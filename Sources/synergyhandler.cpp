@@ -62,6 +62,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_TOKEN] = new DraftItemCounter(this);
     mechanicCounters[V_WINDFURY] = new DraftItemCounter(this);
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
+    mechanicCounters[V_HEALTH_BUFF] = new DraftItemCounter(this);
     mechanicCounters[V_RETURN] = new DraftItemCounter(this);
     mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
     mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this);
@@ -282,6 +283,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
+    if(isHealthBuffGen(code, text))                                         mechanicCounters[V_HEALTH_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
     if(isDivineShield(code, mechanics))
@@ -308,6 +310,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isWindfurySyn(code))                                                 mechanicCounters[V_WINDFURY]->increaseSyn(code);
     if(isAttackBuffSyn(code))                                               mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
+    if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
     if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
@@ -415,6 +418,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
+    if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
@@ -440,6 +444,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
     if(isWindfurySyn(code))                                     mechanicCounters[V_WINDFURY]->insertCards(synergies);
     if(isAttackBuffSyn(code))                                   mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
+    if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
     if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
@@ -586,7 +591,7 @@ bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics,
     {
         return synergyCodes[code].contains("pingGen");
     }
-    //Anything that deals damage (no pings)
+    //Anything that deals damage
     else if(text.contains("deal") && text.contains("1 damage") &&
             !text.contains("random") && !text.contains("hero"))
     {
@@ -896,6 +901,29 @@ bool SynergyHandler::isAttackBuffGen(const QString &code, const QString &text)
             && (text.contains("give") || text.contains("have"))
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("attack") || text.contains("/+"))
+            && !text.contains("hand") && !text.contains("random") && !text.contains("c'thun"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isHealthBuffGen(const QString &code, const QString &text)
+{
+    //TEST
+//    && (text.contains("+")
+//    && (text.contains("minion") || text.contains("character"))
+//    && (text.contains("health") || text.contains("/+")))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("healthBuffGen");
+    }
+    else if(text.contains("+")
+            && (text.contains("give") || text.contains("have"))
+            && (text.contains("minion") || text.contains("character"))
+            && (text.contains("health") || text.contains("/+"))
             && !text.contains("hand") && !text.contains("random") && !text.contains("c'thun"))
     {
         return true;
@@ -1304,6 +1332,17 @@ bool SynergyHandler::isAttackBuffSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("attackBuffSyn");
+    }
+    else
+    {
+        return false;
+    }
+}
+bool SynergyHandler::isHealthBuffSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("healthBuffSyn");
     }
     else
     {
