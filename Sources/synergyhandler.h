@@ -11,13 +11,14 @@ enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
 enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
-                       V_ENRAGED, V_OVERLOAD, V_JADE_GOLEM,
+                       V_OVERLOAD, V_JADE_GOLEM,
                        V_SECRET, V_FREEZE, V_DISCARD,
-                       V_BATTLECRY, V_SILENCE,
+                       V_BATTLECRY, V_SILENCE, V_STEALTH,
                        V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY,
                        V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
-                       V_STEALTH, V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL,
+                       V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL,
+                       V_ENRAGED_MINION, V_ENRAGED_ALL,
                        V_NUM_MECHANICS};
 
 
@@ -80,7 +81,8 @@ private:
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
-    bool isEnrageGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isEnrageMinion(const QString &code, const QJsonArray &mechanics);
+    bool isEnrageGen(const QString &code, const QJsonArray &referencedTags);
     bool isOverload(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isSecretGen(const QString &code, const QJsonArray &mechanics);
@@ -110,7 +112,8 @@ private:
     bool isDragonSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
-    bool isEnrageSyn(const QString &code, const QString &text);
+    bool isEnrageMinionSyn(const QString &code);
+    bool isEnrageAllSyn(const QString &code, const QString &text);
     bool isOverloadSyn(const QString &code, const QString &text);
     bool isPingSyn(const QString &code);
     bool isAoeSyn(const QString &code);
