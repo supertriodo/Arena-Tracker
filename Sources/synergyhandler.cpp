@@ -613,6 +613,11 @@ bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics
     {
         return true;
     }
+    //Hero attack
+    else if(text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))
+    {
+        return true;
+    }
     else if(attack < 2)  return false;
     //Charge and stealth minions
     else if(cardType == MINION)
