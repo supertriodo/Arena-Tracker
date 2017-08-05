@@ -28,6 +28,7 @@ public:
     void increase(int numIncrease, int draftedCardsCount);
     void increase(const QString &code, bool count=true);
     bool isEmpty();
+    bool insertCode(const QString code, QMap<QString, int> &synergies);
     void insertCards(QMap<QString, int> &synergies);
     void increaseSyn(const QString &code);
     void insertSynCards(QMap<QString, int> &synergies);

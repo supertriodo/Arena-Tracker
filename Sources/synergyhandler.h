@@ -32,7 +32,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QMap<QString, QList<QString>> synergyCodes;
+    QMap<QString, QList<QString>> synergyCodes, directLinks;
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     QHBoxLayout *horLayoutCardTypes, *horLayoutMechanics1, *horLayoutMechanics2;
@@ -59,6 +59,7 @@ private:
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
+    void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
 
 private:
 //public: //TODO

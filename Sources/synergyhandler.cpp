@@ -114,15 +114,35 @@ void SynergyHandler::initSynergyCodes()
 
     for(const QString &code: jsonObject.keys())
     {
-        synergyCodes[code];
-        QJsonArray synergies = jsonObject.value(code).toArray();
-        for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+        if(jsonObject.value(code).isArray())
         {
-            synergyCodes[code].append(it->toString());
+            synergyCodes[code];
+            QJsonArray synergies = jsonObject.value(code).toArray();
+            for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+            {
+                synergyCodes[code].append(it->toString());
+            }
         }
     }
-
     emit pDebug("Synergy Cards: " + QString::number(synergyCodes.count()));
+
+
+    //Direct links
+    QJsonObject dlObject = jsonObject.value("DIRECT_LINKS").toObject();
+    for(const QString &code: dlObject.keys())
+    {
+        if(dlObject.value(code).isArray())
+        {
+            QJsonArray synergies = dlObject.value(code).toArray();
+            for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+            {
+                directLinks[code].append(it->toString());
+                directLinks[it->toString()].append(code);
+            }
+        }
+    }
+    emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
+    qDebug()<<directLinks;
 }
 
 
@@ -336,6 +356,7 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergi
     getCardTypeSynergies(deckCard, synergies);
     getRaceSynergies(deckCard, synergies);
     getMechanicSynergies(deckCard, synergies, mechanicIcons);
+    getDirectLinkSynergies(deckCard, synergies);
 }
 
 
@@ -476,6 +497,24 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
     if(isEnrageMinionSyn(code))                                 mechanicCounters[V_ENRAGED_MINION]->insertCards(synergies);
     else if(isEnrageAllSyn(code, text))                         mechanicCounters[V_ENRAGED_ALL]->insertCards(synergies);
+}
+
+
+void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+{
+    QString code = deckCard.getCode();
+
+    if(directLinks.contains(code))
+    {
+        QList<QString> linkCodes = directLinks[code];
+
+        for(const QString linkCode: linkCodes)
+        {
+            if(cardTypeCounters[V_MINION]->insertCode(linkCode, synergies)){}
+            else if(cardTypeCounters[V_WEAPON]->insertCode(linkCode, synergies)){}
+            else cardTypeCounters[V_SPELL]->insertCode(linkCode, synergies);
+        }
+    }
 }
 
 

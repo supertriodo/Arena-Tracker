@@ -140,6 +140,23 @@ void DraftItemCounter::increaseSyn(const QString &code)
 }
 
 
+bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergies)
+{
+    for(DeckCard &deckCard: deckCardList)
+    {
+        if(code == deckCard.getCode())
+        {
+            if(!synergies.contains(code))
+            {
+                synergies[code] = deckCard.total;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+
 void DraftItemCounter::insertCards(QMap<QString,int> &synergies)
 {
     for(DeckCard &deckCard: deckCardList)
