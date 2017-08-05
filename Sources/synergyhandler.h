@@ -9,8 +9,8 @@
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
-enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
-                       V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
+enum VisibleMechanics {V_AOE, V_TAUNT, /*V_RESTORE,*/V_DISCOVER_DRAW,
+                       V_PING, V_DAMAGE, V_DESTROY, V_REACH,
                        V_OVERLOAD, V_JADE_GOLEM,
                        V_SECRET, V_FREEZE, V_DISCARD,
                        V_BATTLECRY, V_SILENCE, V_STEALTH,
