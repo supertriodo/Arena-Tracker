@@ -27,6 +27,7 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("minionsCounter.png"));
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("spellsCounter.png"));
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("weaponsCounter.png"));
+    cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
     raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
@@ -238,18 +239,23 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
 void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
+    QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    if(cardType == SPELL)       cardTypeCounters[V_SPELL]->increase(code);
-    else if(isSpellGen(code))   cardTypeCounters[V_SPELL]->increase(code,false);
+    if(cardType == SPELL)               cardTypeCounters[V_SPELL]->increase(code);
+    else if(isSpellGen(code))           cardTypeCounters[V_SPELL]->increase(code,false);
+    if(cardType == MINION)              cardTypeCounters[V_MINION]->increase(code);
+    if(cardType == WEAPON)
+    {
+        cardTypeCounters[V_WEAPON]->increase(code);
+        cardTypeCounters[V_WEAPON_ALL]->increase(code);
+    }
+    else if(isWeaponGen(code, text))    cardTypeCounters[V_WEAPON_ALL]->increase(code);
 
-    if(cardType == WEAPON)      cardTypeCounters[V_WEAPON]->increase(code);
-    else if(isWeaponGen(code))  cardTypeCounters[V_WEAPON]->increase(code,false);
 
-    if(cardType == MINION)      cardTypeCounters[V_MINION]->increase(code);
-
-    if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->increaseSyn(code);
-    if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->increaseSyn(code);
+    if(isSpellSyn(code))                cardTypeCounters[V_SPELL]->increaseSyn(code);
+    if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
+    else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
 }
 
 
@@ -336,13 +342,21 @@ void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergi
 void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
 {
     QString code = deckCard.getCode();
+    QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    if(cardType == SPELL || isSpellGen(code))   cardTypeCounters[V_SPELL]->insertSynCards(synergies);
-    if(cardType == WEAPON || isWeaponGen(code)) cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
+    if(cardType == SPELL || isSpellGen(code))           cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+    if(cardType == WEAPON)
+    {
+        cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
+        cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergies);
+    }
+    else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergies);
 
-    if(isSpellSyn(code))    cardTypeCounters[V_SPELL]->insertCards(synergies);
-    if(isWeaponSyn(code))   cardTypeCounters[V_WEAPON]->insertCards(synergies);
+
+    if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergies);
+    if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergies);
+    else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergies);
 }
 
 
@@ -471,9 +485,17 @@ bool SynergyHandler::isSpellGen(const QString &code)
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("spellGen");
     return false;
 }
-bool SynergyHandler::isWeaponGen(const QString &code)
+bool SynergyHandler::isWeaponGen(const QString &code, const QString &text)
 {
-    if(synergyCodes.contains(code)) return synergyCodes[code].contains("weaponGen");
+    //NO TEST
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("weaponGen");
+    }
+    else if(text.contains("equip "))
+    {
+        return true;
+    }
     return false;
 }
 bool SynergyHandler::isMurlocGen(const QString &code)
@@ -1047,14 +1069,27 @@ bool SynergyHandler::isSpellSyn(const QString &code)
 }
 bool SynergyHandler::isWeaponSyn(const QString &code)
 {
+    //NO TEST
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("weaponSyn");
     }
     else
     {
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        return  text.contains("weapon") && !text.contains("opponent's weapon");
+        return false;
+    }
+}
+bool SynergyHandler::isWeaponAllSyn(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("weapon")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("weaponAllSyn");
+    }
+    else
+    {
+        return text.contains("weapon") && !text.contains("opponent's weapon");
     }
 }
 bool SynergyHandler::isMurlocSyn(const QString &code)

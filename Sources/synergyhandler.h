@@ -8,7 +8,7 @@
 
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
-enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_NUM_TYPES};
+enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleMechanics {V_DISCOVER_DRAW, V_TAUNT, /*V_RESTORE,*/
                        V_AOE, V_PING, V_DAMAGE_DESTROY, V_REACH,
                        V_OVERLOAD, V_JADE_GOLEM,
@@ -63,7 +63,7 @@ private:
 private:
 //public: //TODO
     bool isSpellGen(const QString &code);
-    bool isWeaponGen(const QString &code);
+    bool isWeaponGen(const QString &code, const QString &text);
     bool isMurlocGen(const QString &code);
     bool isDemonGen(const QString &code);
     bool isMechGen(const QString &code);
@@ -112,6 +112,7 @@ private:
     bool isDragonSyn(const QString &code);
     bool isSpellSyn(const QString &code);
     bool isWeaponSyn(const QString &code);
+    bool isWeaponAllSyn(const QString &code, const QString &text);
     bool isEnrageMinionSyn(const QString &code);
     bool isEnrageAllSyn(const QString &code, const QString &text);
     bool isOverloadSyn(const QString &code, const QString &text);
