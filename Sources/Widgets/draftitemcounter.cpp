@@ -69,7 +69,7 @@ void DraftItemCounter::increase()
         labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
-            labelIcon->setHidden(false);
+            labelIcon->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
             labelCounter->setHidden(false);
         }
     }

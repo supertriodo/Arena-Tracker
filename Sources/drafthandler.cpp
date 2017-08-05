@@ -14,6 +14,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->leavingArena = false;
     this->transparency = Opaque;
     this->draftScoreWindow = NULL;
+    this->synergyHandler = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
 
@@ -552,11 +553,11 @@ void DraftHandler::pickCard(QString code)
         if(draftCards[i].getCode() == code)
         {
             draftCard = draftCards[i];
+            synergyHandler->updateCounters(draftCard);
             updateBoxTitle(shownTierScores[i]);
             break;
         }
     }
-    synergyHandler->updateCounters(draftCard);
 
     //Clear cards and score
     for(int i=0; i<3; i++)
@@ -622,7 +623,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    -1, -1, -1,
                    HearthArena);
 
-    //Synergies
+    //Synergies //TODO Borrar para eliminar synergies
     QMap<QString,int> synergies[3];
     QStringList mechanicIcons[3];
     for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i], mechanicIcons[i]);
@@ -1159,7 +1160,7 @@ void DraftHandler::deMinimizeScoreWindow()
 }
 
 
-//Construir json de HearthArena
+//Construir json de HearthArena (Ya no lo usamos)
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT
 //2) Eliminar al principio ("\")

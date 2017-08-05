@@ -3512,23 +3512,89 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-//    int num = 0;
-//    for(const QString &code: Utility::cardsJson->keys())
-//    {
-//        DeckCard deckCard(code);
-//        CardType cardType = deckCard.getType();
-//        QString text = Utility::cardEnTextFromCode(code).toLower();
-//        int attack = Utility::getCardAttribute(code, "attack").toInt();
-//        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-//        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-//        if(Utility::isFromStandardSet(code) && //text.contains("damage") &&
-////                draftHandler->isPingGen(code, mechanics, referencedTags, text, cardType, attack))
-////                draftHandler->isEnrageSyn(code, text))
-//                draftHandler->isEnrageGen(code,mechanics,referencedTags))
-//        {
-//            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-//        }
-//    }
+}
+
+
+void MainWindow::testSynergies()
+{
+    QRegularExpressionMatch match;
+    draftHandler->synergyHandler->initSynergyCodes();
+
+    int num = 0;
+    for(const QString &code: Utility::cardsJson->keys())
+    {
+        DeckCard deckCard(code);
+        CardType cardType = deckCard.getType();
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+//        if(Utility::isFromStandardSet(code)
+//                && text.contains("jaks;djf;sf")
+//                && text.contains("equip ")
+//                && draftHandler->synergyHandler->isWeaponGen(code, text)
+//                && draftHandler->synergyHandler->isWeaponSyn(code, text)
+//                && !draftHandler->synergyHandler->isWeaponAllSyn(code, text)
+//                && mechanics.contains(QJsonValue("ENRAGED"))
+//                && (text.contains("+")
+//                && (text.contains("minion") || text.contains("character"))
+//                && (text.contains("health") || text.contains("/+")))
+//                && draftHandler->synergyHandler->isHealthBuffGen(code, text)
+//                && draftHandler->synergyHandler->isTokenGen(code, text)
+//                && (mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
+//                && !draftHandler->synergyHandler->isDeathrattleGoodAll(code, mechanics,referencedTags)
+//                && draftHandler->synergyHandler->isDeathrattleGoodAllSyn(code)
+//                && draftHandler->synergyHandler->isReachGen(code, mechanics, referencedTags, text, cardType, attack)
+//                && text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero")
+//                && (text.contains("draw") || text.contains("discover") || (text.contains("to") && text.contains("your") && text.contains("hand")))
+//                && !draftHandler->synergyHandler->isDiscoverDrawGen(code)
+//                && mechanics.contains(QJsonValue("STEALTH"))
+//                && mechanics.contains(QJsonValue("BATTLECRY"))
+//                && text.contains("whenever") && text.contains("summon") && text.contains("minion")
+//                && (text.contains("+")
+//                            && (text.contains("minion") || text.contains("character"))
+//                            && (text.contains("attack") || text.contains("/+")))
+//                && text.contains("attack") && text.contains("+")
+//                && (text.contains("give") || text.contains("adjacent")) && (text.contains("minion") || text.contains("character"))
+//                && !text.contains("random")
+//                && !text.contains("hand")
+//                || (text.contains("control") && text.contains("least") && text.contains("minions")))
+//                && !(text.contains("1/1") || text.contains("2/1") || text.contains("1/2"))
+//                && !text.contains("opponent")
+//                && text.contains(QRegularExpression("\\d/\\d"), &match)
+//                && !draftHandler->synergyHandler->isFreezeGen(code,mechanics,referencedTags,text)
+//                && !draftHandler->synergyHandler->isFreezeSyn(code,referencedTags,text)
+//                && !draftHandler->synergyHandler->isDiscardGen(code, text)
+//                && !draftHandler->synergyHandler->isDiscardSyn(code, text)
+//                && draftHandler->synergyHandler->isDeathrattleGen(code,mechanics)
+//                && draftHandler->synergyHandler->isDeathrattleSyn(code)
+//                && draftHandler->synergyHandler->isBattlecryMinion(code,mechanics,cardType)
+//                && !draftHandler->synergyHandler->isBattlecrySyn(code,referencedTags,text)
+//                && !draftHandler->synergyHandler->isSpellSyn(code)
+//                && draftHandler->synergyHandler->isMurlocSyn(code)
+//                && draftHandler->synergyHandler->isSilenceOwnGen(code, mechanics, referencedTags,text)
+//                && draftHandler->synergyHandler->isSilenceOwnSyn(code, mechanics)
+//                && draftHandler->synergyHandler->isTauntGiverGen(code)
+//                && draftHandler->synergyHandler->isTauntGiverSyn(code,mechanics,attack,cardType)
+//                && draftHandler->synergyHandler->isTokenGen(code, text)
+//                && draftHandler->synergyHandler->isTokenSyn(code, text)
+//                && draftHandler->synergyHandler->isWindfuryMinion(code, mechanics, cardType)
+//                && draftHandler->synergyHandler->isWindfurySyn(code)
+//                && !draftHandler->synergyHandler->isAttackBuffGen(code, text)
+//                && draftHandler->synergyHandler->isAttackBuffSyn(code)
+//                && !draftHandler->synergyHandler->isReturnSyn(code, mechanics, cardType, text)
+//                && draftHandler->synergyHandler->isReturnGen(code, text)
+//                && !draftHandler->synergyHandler->isStealthGen(code, mechanics)
+//                && draftHandler->synergyHandler->isStealthSyn(code)
+//                && (/*mechanics.contains(QJsonValue("DIVINE_SHIELD")) ||  */referencedTags.contains(QJsonValue("DIVINE_SHIELD")))
+//                && !draftHandler->synergyHandler->isDivineShield(code, mechanics)
+//                && draftHandler->synergyHandler->isDivineShieldGen(code, referencedTags)
+//                && draftHandler->synergyHandler->isDivineShieldAllSyn(code)
+//                )
+        {
+            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+        }
+    }
 }
 
 
@@ -3589,12 +3655,14 @@ void MainWindow::testDelay()
 
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
-//Update Json heroes HA --> drafthandler.cpp
+//Update Json LF tierlist --> Automatico
+//Update Json HA tierlist --> HATLsed.sh
 //Update secrets
 //Update bombing cards
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
 //Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
+//Update synergies.json
 
 //STANDARD CYCLE
 //Remove secrets rotating out
