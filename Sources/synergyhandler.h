@@ -73,12 +73,12 @@ private:
     bool isTotemGen(const QString &code);
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
-    bool isDiscoverDrawGen(const QString &code);
+    bool isDiscoverDrawGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isTaunt(const QString &code, const QJsonArray &mechanics);
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
-    bool isAoeGen(const QString &code);
+    bool isAoeGen(const QString &code, const QString &text);
     bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
-    bool isDestroyGen(const QString &code);
+    bool isDestroyGen(const QString &code, const QString &text);
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
@@ -103,15 +103,15 @@ private:
     bool isDivineShield(const QString &code, const QJsonArray &mechanics);
     bool isDivineShieldGen(const QString &code, const QJsonArray &referencedTags);
 
-    bool isMurlocSyn(const QString &code);
-    bool isDemonSyn(const QString &code);
-    bool isMechSyn(const QString &code);
-    bool isElementalSyn(const QString &code);
-    bool isBeastSyn(const QString &code);
-    bool isTotemSyn(const QString &code);
-    bool isPirateSyn(const QString &code);
-    bool isDragonSyn(const QString &code);
-    bool isSpellSyn(const QString &code);
+    bool isMurlocSyn(const QString &code, const QString &text);
+    bool isDemonSyn(const QString &code, const QString &text);
+    bool isMechSyn(const QString &code, const QString &text);
+    bool isElementalSyn(const QString &code, const QString &text);
+    bool isBeastSyn(const QString &code, const QString &text);
+    bool isTotemSyn(const QString &code, const QString &text);
+    bool isPirateSyn(const QString &code, const QString &text);
+    bool isDragonSyn(const QString &code, const QString &text);
+    bool isSpellSyn(const QString &code, const QString &text);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
     bool isEnrageMinionSyn(const QString &code);
