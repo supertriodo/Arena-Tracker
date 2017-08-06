@@ -23,12 +23,12 @@ void SynergyHandler::createDraftItemCounters()
 
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("minionsCounter.png"));
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("spellsCounter.png"));
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("weaponsCounter.png"));
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/minionsCounter.png"));
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/spellsCounter.png"));
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/weaponsCounter.png"));
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
-    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap("manaCounter.png"));
+    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/manaCounter.png"));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
     raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
@@ -42,15 +42,15 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM] = new DraftItemCounter(this);
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("aoeMechanic.png"));
-    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("tauntMechanic.png"));
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/aoeMechanic.png"));
+    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/tauntMechanic.png"));
     //Restore Hero
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap("drawMechanic.png"));
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/drawMechanic.png"));
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("pingMechanic.png"));
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("damageMechanic.png"));
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("destroyMechanic.png"));
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap("reachMechanic.png"));
+    mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/pingMechanic.png"));
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/damageMechanic.png"));
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/destroyMechanic.png"));
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/reachMechanic.png"));
 
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
@@ -422,38 +422,38 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
 
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
     {
-        mechanicIcons.append("drawMechanic.png");
+        mechanicIcons.append(":/Images/drawMechanic.png");
     }
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->insertSynCards(synergies);
-        mechanicIcons.append("tauntMechanic.png");
+        mechanicIcons.append(":/Images/tauntMechanic.png");
     }
     else if(isTauntGen(code, referencedTags))
     {
-        mechanicIcons.append("tauntMechanic.png");
+        mechanicIcons.append(":/Images/tauntMechanic.png");
     }
     if(isAoeGen(code, text))
     {
         mechanicCounters[V_AOE]->insertSynCards(synergies);
-        mechanicIcons.append("aoeMechanic.png");
+        mechanicIcons.append(":/Images/aoeMechanic.png");
     }
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
     {
         mechanicCounters[V_PING]->insertSynCards(synergies);
-        mechanicIcons.append("pingMechanic.png");
+        mechanicIcons.append(":/Images/pingMechanic.png");
     }
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append("damageMechanic.png");
+        mechanicIcons.append(":/Images/damageMechanic.png");
     }
     if(isDestroyGen(code, text))
     {
-        mechanicIcons.append("destroyMechanic.png");
+        mechanicIcons.append(":/Images/destroyMechanic.png");
     }
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append("reachMechanic.png");
+        mechanicIcons.append(":/Images/reachMechanic.png");
     }
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
     if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);

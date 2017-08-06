@@ -121,5 +121,17 @@
         <file>Images/haOpen.png</file>
         <file>Images/legendaryStar.png</file>
         <file>Images/manaLimit.png</file>
+        <file>Images/aoeMechanic.png</file>
+        <file>Images/damageMechanic.png</file>
+        <file>Images/destroyMechanic.png</file>
+        <file>Images/drawMechanic.png</file>
+        <file>Images/manaCounter.png</file>
+        <file>Images/minionsCounter.png</file>
+        <file>Images/pingMechanic.png</file>
+        <file>Images/reachMechanic.png</file>
+        <file>Images/restoreMechanic.png</file>
+        <file>Images/spellsCounter.png</file>
+        <file>Images/tauntMechanic.png</file>
+        <file>Images/weaponsCounter.png</file>
     </qresource>
 </RCC>
