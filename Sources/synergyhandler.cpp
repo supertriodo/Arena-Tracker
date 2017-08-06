@@ -44,7 +44,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
     mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/aoeMechanic.png"));
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/tauntMechanic.png"));
-    //Restore Hero
+    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/restoreMechanic.png"));
     mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/drawMechanic.png"));
 
     mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/pingMechanic.png"));
@@ -72,6 +72,8 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_ENRAGED_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_ENRAGED_ALL] = new DraftItemCounter(this);
+    mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this);
+    mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -145,7 +147,7 @@ void SynergyHandler::initSynergyCodes()
         }
     }
     emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
-    qDebug()<<directLinks;
+    qDebug()<<directLinks;//TODO
 }
 
 
@@ -316,6 +318,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isHealthBuffGen(code, text))                                         mechanicCounters[V_HEALTH_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
+    if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
+    if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
+    if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->increase(code);
@@ -348,6 +353,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
+    if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
+    if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
+    if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
     if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
     else if(isDivineShieldAllSyn(code))                                     mechanicCounters[V_DIVINE_SHIELD_ALL]->increaseSyn(code);
     if(isEnrageMinionSyn(code))                                             mechanicCounters[V_ENRAGED_MINION]->increaseSyn(code);
@@ -471,6 +479,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
+    if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
+    if(isRestoreFriendlyHeroGen(code, mechanics, text))         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergies);
+    if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
@@ -502,6 +513,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
+    if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergies);
+    if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
+    if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
     if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
     else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
     if(isEnrageMinionSyn(code))                                 mechanicCounters[V_ENRAGED_MINION]->insertCards(synergies);
@@ -1031,6 +1045,52 @@ bool SynergyHandler::isDivineShieldGen(const QString &code, const QJsonArray &re
     }
     return false;
 }
+bool SynergyHandler::isRestoreTargetMinionGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("restore") // No hace falta "heal", restore lo cubre todo excepto Prophet Velen y Wickerflame Burnbristle
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreTargetMinionGen");
+    }
+    else if(text.contains("restore") && !text.contains("friendly") && !text.contains("hero"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QString &text)
+{
+    //TEST
+    //&& text.contains("restore")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreFriendlyHeroGen");
+    }
+    else if(mechanics.contains(QJsonValue("LIFESTEAL")))
+    {
+        return true;
+    }
+    else if(text.contains("restore"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isRestoreFriendlyMinionGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("restore")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreFriendlyMinionGen");
+    }
+    else if(text.contains("restore") && text.contains("friendly") && !text.contains("hero"))
+    {
+        return true;
+    }
+    return false;
+}
 
 
 
@@ -1407,6 +1467,30 @@ bool SynergyHandler::isDivineShieldAllSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("divineShieldAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isRestoreTargetMinionSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreTargetMinionSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isRestoreFriendlyHeroSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreFriendlyHeroSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isRestoreFriendlyMinionSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("restoreFriendlyMinionSyn");
     }
     return false;
 }
