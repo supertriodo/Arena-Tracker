@@ -30,6 +30,7 @@
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
+#define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
 
 
 namespace Ui {
@@ -174,6 +175,8 @@ private:
     void downloadTheme(QString theme, int version);
     void downloadHearthArenaVersion();
     void downloadHearthArenaJson(int version);
+    void downloadSynergiesVersion();
+    void downloadSynergiesJson(int version);
 
 //Override events
 protected:

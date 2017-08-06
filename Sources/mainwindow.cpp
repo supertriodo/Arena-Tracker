@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initCardsJson();
     downloadLightForgeJson();
     downloadHearthArenaVersion();
+    downloadSynergiesVersion();
     downloadExtraFiles();
     downloadThemes();
 
@@ -317,6 +318,19 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Json HearthArena --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/hearthArena.json");
+        }
+        //Synergies version
+        else if(endUrl == "synergiesVersion.json")
+        {
+            int synergiesVersion = QJsonDocument::fromJson(reply->readAll()).object().value("synergiesVersion").toInt();
+            downloadSynergiesJson(synergiesVersion);
+        }
+        //Hearth Arena json
+        else if(endUrl == "synergies.json")
+        {
+            emit pDebug("Extra: Json synergies --> Download Success.");
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/synergies.json");
         }
         //Themes json
         else if(endUrl == "Themes.json")
@@ -2176,6 +2190,41 @@ void MainWindow::downloadHearthArenaJson(int version)
         settings.setValue("haVersion", version);
         networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/hearthArena.json"))));
         emit pDebug("Extra: Json HearthArena --> Download from: " + QString(HA_URL) + QString("/hearthArena.json"));
+    }
+}
+
+
+void MainWindow::downloadSynergiesVersion()
+{
+    networkManager->get(QNetworkRequest(QUrl(SYNERGIES_URL + QString("/synergiesVersion.json"))));
+}
+
+
+void MainWindow::downloadSynergiesJson(int version)
+{
+    bool needDownload = false;
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    int storedVersion = settings.value("synergiesVersion", 0).toInt();
+
+    QFileInfo fileInfo(Utility::extraPath() + "/synergies.json");
+    if(!fileInfo.exists())          needDownload = true;
+    if(version != storedVersion)    needDownload = true;
+
+    emit pDebug("Extra: Json Synergies: Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+    if(needDownload)
+    {
+        if(fileInfo.exists())
+        {
+            QFile file(Utility::extraPath() + "/synergies.json");
+            file.remove();
+            emit pDebug("Extra: Json Synergies removed.");
+        }
+
+        settings.setValue("synergiesVersion", version);
+        networkManager->get(QNetworkRequest(QUrl(SYNERGIES_URL + QString("/synergies.json"))));
+        emit pDebug("Extra: Json Synergies --> Download from: " + QString(SYNERGIES_URL) + QString("/synergies.json"));
     }
 }
 
