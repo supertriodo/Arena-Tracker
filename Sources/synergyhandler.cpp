@@ -68,6 +68,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_HEALTH_BUFF] = new DraftItemCounter(this);
     mechanicCounters[V_RETURN] = new DraftItemCounter(this);
     mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
+    mechanicCounters[V_SPELL_DAMAGE] = new DraftItemCounter(this);
     mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this);
     mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_ENRAGED_MINION] = new DraftItemCounter(this);
@@ -319,6 +320,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isHealthBuffGen(code, text))                                         mechanicCounters[V_HEALTH_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
+    if(isSpellDamageGen(code))                                              mechanicCounters[V_SPELL_DAMAGE]->increase(code);
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
     if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
@@ -359,6 +361,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
+    if(isSpellDamageSyn(code, mechanics, cardType, text))                   mechanicCounters[V_SPELL_DAMAGE]->increaseSyn(code);
     if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
     if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
     if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
@@ -500,6 +503,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
+    if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
@@ -531,6 +535,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
+    if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergies);
     if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergies);
     if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
     if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
@@ -1124,6 +1129,20 @@ bool SynergyHandler::isArmorGen(const QString &code, const QString &text)
     }
     return false;
 }
+bool SynergyHandler::isSpellDamageGen(const QString &code)
+{
+    //TEST
+    //&& text.contains("spell") && text.contains("damage")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spellDamageGen");
+    }
+    else
+    {
+        int spellDamage = Utility::getCardAttribute(code, "spellDamage").toInt();
+        return spellDamage > 0;
+    }
+}
 
 
 //Synergy items
@@ -1531,6 +1550,26 @@ bool SynergyHandler::isArmorSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("armorSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text)
+{
+    //TEST
+//    && (text.contains("all") || text.contains("adjacent")) && (text.contains("damage"))
+//    && cardType == SPELL
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spellDamageSyn");
+    }
+    else if(cardType != SPELL)  return false;
+    else if(mechanics.contains(QJsonValue("SECRET")))   return false;
+    else if(
+            (text.contains("all") || text.contains("adjacent")) && (text.contains("damage"))
+            && !text.contains("random")
+           )
+    {
+            return true;
     }
     return false;
 }

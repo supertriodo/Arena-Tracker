@@ -15,7 +15,7 @@ enum VisibleMechanics {V_AOE, V_TAUNT, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DEST
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
                        V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED_MINION, V_ENRAGED_ALL,
                        V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION,
-                       V_ARMOR, V_NUM_MECHANICS};
+                       V_ARMOR, V_SPELL_DAMAGE, V_NUM_MECHANICS};
 
 
 class SynergyHandler : public QObject
@@ -102,6 +102,7 @@ private:
     bool isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isRestoreFriendlyMinionGen(const QString &code, const QString &text);
     bool isArmorGen(const QString &code, const QString &text);
+    bool isSpellDamageGen(const QString &code);
 
     bool isMurlocSyn(const QString &code, const QString &text);
     bool isDemonSyn(const QString &code, const QString &text);
@@ -140,6 +141,7 @@ private:
     bool isRestoreFriendlyHeroSyn(const QString &code);
     bool isRestoreFriendlyMinionSyn(const QString &code);
     bool isArmorSyn(const QString &code);
+    bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
 
 signals:
     void pLog(QString line);
