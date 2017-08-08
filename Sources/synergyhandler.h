@@ -10,7 +10,7 @@
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleMechanics {V_AOE, V_TAUNT, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
-                       V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE, V_DISCARD,
+                       V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE, V_DISCARD, V_EVOLVE,
                        V_BATTLECRY, V_SILENCE, V_STEALTH, V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
                        V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED_MINION, V_ENRAGED_ALL,
@@ -103,6 +103,7 @@ private:
     bool isRestoreFriendlyMinionGen(const QString &code, const QString &text);
     bool isArmorGen(const QString &code, const QString &text);
     bool isSpellDamageGen(const QString &code);
+    bool isEvolveGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code, const QString &text);
     bool isDemonSyn(const QString &code, const QString &text);
@@ -142,6 +143,7 @@ private:
     bool isRestoreFriendlyMinionSyn(const QString &code);
     bool isArmorSyn(const QString &code);
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
+    bool isEvolveSyn(const QString &code);
 
 signals:
     void pLog(QString line);

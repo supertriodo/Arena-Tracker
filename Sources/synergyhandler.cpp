@@ -76,6 +76,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_ARMOR] = new DraftItemCounter(this);
+    mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -281,7 +282,7 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard)
     else if(isWeaponGen(code, text))    cardTypeCounters[V_WEAPON_ALL]->increase(code);
 
 
-    if(isSpellSyn(code, text))                cardTypeCounters[V_SPELL]->increaseSyn(code);
+    if(isSpellSyn(code, text))          cardTypeCounters[V_SPELL]->increaseSyn(code);
     if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
     else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
 }
@@ -321,6 +322,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
     if(isSpellDamageGen(code))                                              mechanicCounters[V_SPELL_DAMAGE]->increase(code);
+    if(isEvolveGen(code, text))                                             mechanicCounters[V_EVOLVE]->increase(code);
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
     if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
@@ -362,6 +364,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mechanicCounters[V_SPELL_DAMAGE]->increaseSyn(code);
+    if(isEvolveSyn(code))                                                   mechanicCounters[V_EVOLVE]->increaseSyn(code);
     if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
     if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
     if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
@@ -388,7 +391,8 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    if(cardType == SPELL || isSpellGen(code))   cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+    //Evita mostrar spellSyn cards en cada hechizo que veamos
+//    if(cardType == SPELL || isSpellGen(code))   cardTypeCounters[V_SPELL]->insertSynCards(synergies);
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
@@ -504,6 +508,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
     if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergies);
+    if(isEvolveGen(code, text))                                 mechanicCounters[V_EVOLVE]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
@@ -536,6 +541,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
     if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergies);
+    if(isEvolveSyn(code))                                       mechanicCounters[V_EVOLVE]->insertCards(synergies);
     if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergies);
     if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
     if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
@@ -681,6 +687,7 @@ bool SynergyHandler::isTauntGen(const QString &code, const QJsonArray &reference
 //        return  text.contains("restore");
 //    }
 //}
+//El minimo aoe es 3 pings a esbirros enemigos
 bool SynergyHandler::isAoeGen(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
@@ -695,6 +702,7 @@ bool SynergyHandler::isAoeGen(const QString &code, const QString &text)
                      );
     }
 }
+//El ping debe poder seleccionar a un enemigo
 bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                              const QString &text, const CardType &cardType, int attack)
 {
@@ -1143,6 +1151,20 @@ bool SynergyHandler::isSpellDamageGen(const QString &code)
         return spellDamage > 0;
     }
 }
+bool SynergyHandler::isEvolveGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("transform") && text.contains("cost") && text.contains("more")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("evolveGen");
+    }
+    else if(text.contains("transform") && text.contains("cost") && text.contains("more"))
+    {
+        return true;
+    }
+    return false;
+}
 
 
 //Synergy items
@@ -1573,3 +1595,12 @@ bool SynergyHandler::isSpellDamageSyn(const QString &code, const QJsonArray &mec
     }
     return false;
 }
+bool SynergyHandler::isEvolveSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("evolveSyn");
+    }
+    return false;
+}
+
