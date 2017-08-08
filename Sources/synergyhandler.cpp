@@ -893,7 +893,7 @@ bool SynergyHandler::isDeathrattleMinion(const QString &code, const QJsonArray &
     if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("deathrattle");
+        return synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleOpponent");
     }
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
     {
@@ -908,7 +908,8 @@ bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray 
     if(synergyCodes.contains(code))
     {
         return (synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleGen")) &&
-                !synergyCodes[code].contains("silenceOwnSyn");
+                !synergyCodes[code].contains("silenceOwnSyn") &&
+                !synergyCodes[code].contains("deathrattleOpponent");
     }
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
     {
@@ -961,7 +962,7 @@ bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
     {
         return synergyCodes[code].contains("tokenGen");
     }
-    else if((text.contains("1/1") || text.contains("2/1") || text.contains("1/2"))
+    else if((text.contains("1/1") || text.contains("2/1") || text.contains("1/2") || text.contains("0/2") || text.contains("0/1"))
             && text.contains("summon") && !text.contains("opponent"))
     {
         return true;
@@ -1442,7 +1443,7 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
 bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
 {
     //TEST
-//    (text.contains("+") && (text.contains("minions") || text.contains("characters"))
+//    && (text.contains("+") && (text.contains("minions") || text.contains("characters"))
 //    && !text.contains("hand")
 //    || (text.contains("control") && text.contains("least") && text.contains("minions")))
     if(synergyCodes.contains(code))
