@@ -1615,7 +1615,7 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("tauntGiverSyn");
+        return synergyCodes[code].contains("tauntGiverSyn") || synergyCodes[code].contains("deathrattleOpponent");
     }
     else if(mechanics.contains(QJsonValue("CANT_ATTACK")))
     {
