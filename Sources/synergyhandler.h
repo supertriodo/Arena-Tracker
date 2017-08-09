@@ -38,6 +38,7 @@ private:
 //Metodos
 public:
     void debugSynergies(QString set);
+    void testSynergies();
     void updateCounters(DeckCard &deckCard);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
     void initSynergyCodes();

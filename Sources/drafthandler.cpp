@@ -1166,6 +1166,12 @@ void DraftHandler::debugSynergies(QString set)
 }
 
 
+void DraftHandler::testSynergies()
+{
+    synergyHandler->testSynergies();
+}
+
+
 //Construir json de HearthArena (Ya no lo usamos)
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT

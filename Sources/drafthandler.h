@@ -121,6 +121,7 @@ public:
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
     void debugSynergies(QString set);
+    void testSynergies();
 
 signals:
     void checkCardImage(QString code);

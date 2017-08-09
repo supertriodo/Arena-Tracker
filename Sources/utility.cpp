@@ -284,6 +284,17 @@ QStringList Utility::getSetCodes(QString set)
 }
 
 
+QStringList Utility::getStandardCodes()
+{
+    QStringList setCodes;
+    for(const QString &code: Utility::cardsJson->keys())
+    {
+        if(Utility::isFromStandardSet(code))    setCodes.append(code);
+    }
+    return setCodes;
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();

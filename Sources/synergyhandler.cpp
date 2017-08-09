@@ -668,6 +668,31 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int
 }
 
 
+void SynergyHandler::testSynergies()
+{
+    initSynergyCodes();
+    int num = 0;
+    for(const QString &code: Utility::getStandardCodes())
+    {
+        DeckCard deckCard(code);
+        CardType cardType = deckCard.getType();
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+        if(
+//                (text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))&&
+//            text.contains("damage") && text.contains("deal")&&
+                // !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero")&&
+            isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+            )
+        {
+            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+        }
+    }
+}
+
+
 void SynergyHandler::debugSynergies(QString set)
 {
     initSynergyCodes();
@@ -950,6 +975,11 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
             !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero"))
+    {
+        return true;
+    }
+    //Hero attack
+    else if(text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))
     {
         return true;
     }

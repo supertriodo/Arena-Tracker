@@ -219,7 +219,6 @@ public slots:
 private slots:
     void test();
     void testPlan();
-    void testSynergies();
     void testDelay();
     void confirmNewArenaDraft(QString hero);
     void toggleSplitWindow();

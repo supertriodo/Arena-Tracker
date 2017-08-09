@@ -89,6 +89,7 @@ public:
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);
     static QStringList getSetCodes(QString set);
+    static QStringList getStandardCodes();
 };
 
 #endif // UTILITY_H
