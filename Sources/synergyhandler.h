@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include "Widgets/ui_extended.h"
-#include "Widgets/draftitemcounter.h"
+#include "Synergies/draftitemcounter.h"
+#include "Synergies/statsynergies.h"
 #include "utility.h"
 
 
@@ -29,6 +30,7 @@ public:
 private:
     Ui::Extended *ui;
     QMap<QString, QList<QString>> synergyCodes, directLinks;
+    StatSynergies costMinions, attackMinions, healthMinions;
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     QHBoxLayout *horLayoutCardTypes, *horLayoutMechanics1, *horLayoutMechanics2;
@@ -51,11 +53,13 @@ private:
     void updateRaceCounters(DeckCard &deckCard);
     void updateCardTypeCounters(DeckCard &deckCard);
     void updateMechanicCounters(DeckCard &deckCard);
+    void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
 
 private:
 //public: //TODO

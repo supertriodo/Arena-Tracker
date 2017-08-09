@@ -113,6 +113,7 @@ void SynergyHandler::deleteDraftItemCounters()
 void SynergyHandler::initSynergyCodes()
 {
     synergyCodes.clear();
+    directLinks.clear();
 
     QFile jsonFile(Utility::extraPath() + "/synergies.json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -157,6 +158,7 @@ void SynergyHandler::initSynergyCodes()
 void SynergyHandler::clearLists(bool keepCounters)
 {
     synergyCodes.clear();
+    directLinks.clear();
 
     if(!keepCounters)
     {
@@ -174,6 +176,11 @@ void SynergyHandler::clearLists(bool keepCounters)
         {
             mechanicCounters[i]->reset();
         }
+
+        //Reset stats maps
+        costMinions.clear();
+        attackMinions.clear();
+        healthMinions.clear();
     }
 }
 
@@ -230,6 +237,7 @@ void SynergyHandler::updateCounters(DeckCard &deckCard)
     updateCardTypeCounters(deckCard);
     updateManaCounter(deckCard);
     updateMechanicCounters(deckCard);
+    updateStatsCards(deckCard);
 }
 
 
@@ -376,12 +384,56 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
 }
 
 
+void SynergyHandler::updateStatsCards(DeckCard &deckCard)
+{
+    if(deckCard.getType() != MINION)    return;
+
+    //Stats
+    QString code = deckCard.getCode();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
+
+    costMinions.appendStatValue(false, deckCard.getCost(), code);
+    attackMinions.appendStatValue(false, attack, code);
+    healthMinions.appendStatValue(false, health, code);
+
+    //Synergies
+    QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
+    for(const StatSyn &statSyn: statSyns)
+    {
+        switch(statSyn.statKind)
+        {
+            case V_COST:
+                if(statSyn.isGen)   costMinions.appendStatValue(false, statSyn.statValue, code);
+                else                costMinions.updateStatsMapSyn(statSyn, code);
+            break;
+            case V_ATTACK:
+                if(statSyn.isGen)   attackMinions.appendStatValue(false, statSyn.statValue, code);
+                else                attackMinions.updateStatsMapSyn(statSyn, code);
+            break;
+            case V_HEALTH:
+                if(statSyn.isGen)   healthMinions.appendStatValue(false, statSyn.statValue, code);
+                else                healthMinions.updateStatsMapSyn(statSyn, code);
+            break;
+        }
+    }
+
+//    qDebug()<<"*****COST MAP*****";
+//    costMinions.qDebugContents();
+//    qDebug()<<"*****ATTACK MAP*****";
+//    attackMinions.qDebugContents();
+//    qDebug()<<"*****HEALTH MAP*****";
+//    healthMinions.qDebugContents();
+}
+
+
 void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
 {
     getCardTypeSynergies(deckCard, synergies);
     getRaceSynergies(deckCard, synergies);
     getMechanicSynergies(deckCard, synergies, mechanicIcons);
     getDirectLinkSynergies(deckCard, synergies);
+    getStatsCardsSynergies(deckCard, synergies);
 }
 
 
@@ -566,6 +618,42 @@ void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int
             if(cardTypeCounters[V_MINION]->insertCode(linkCode, synergies)){}
             else if(cardTypeCounters[V_WEAPON]->insertCode(linkCode, synergies)){}
             else cardTypeCounters[V_SPELL]->insertCode(linkCode, synergies);
+        }
+    }
+}
+
+
+void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+{
+    if(deckCard.getType() != MINION)    return;
+
+    //Stats
+    QString code = deckCard.getCode();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
+
+    costMinions.insertCards(true, deckCard.getCost(), synergies);
+    attackMinions.insertCards(true, attack, synergies);
+    healthMinions.insertCards(true, health, synergies);
+
+    //Synergies
+    QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
+    for(const StatSyn &statSyn: statSyns)
+    {
+        switch(statSyn.statKind)
+        {
+            case V_COST:
+                if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergies);
+                else                costMinions.insertStatCards(statSyn, synergies);
+            break;
+            case V_ATTACK:
+                if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergies);
+                else                attackMinions.insertStatCards(statSyn, synergies);
+            break;
+            case V_HEALTH:
+                if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergies);
+                else                healthMinions.insertStatCards(statSyn, synergies);
+            break;
         }
     }
 }
