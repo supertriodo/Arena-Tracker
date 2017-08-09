@@ -681,7 +681,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                (text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))&&
+//                (text.contains("+") && text.contains("give") && text.contains("attack") &&
+//                 (text.contains("hero") || text.contains("character")))&&
 //            text.contains("damage") && text.contains("deal")&&
                 // !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero")&&
             isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -695,6 +696,8 @@ void SynergyHandler::testSynergies()
 
 void SynergyHandler::debugSynergies(QString set)
 {
+    //CORE done
+
     initSynergyCodes();
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set))
@@ -767,7 +770,7 @@ void SynergyHandler::debugSynergies(QString set)
         if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
         if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
         if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
-        else if(isEnrageAllSyn(code, text))                                     syn<<"enrageAllSyn";
+        if(isEnrageAllSyn(code, text))                                     syn<<"enrageAllSyn";
 
         qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
         qDebug()<<mec<<syn;
@@ -947,7 +950,8 @@ bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics
         return true;
     }
     //Hero attack
-    else if(text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))
+    else if(text.contains("+") && text.contains("give") && text.contains("attack") &&
+            (text.contains("hero") || text.contains("character")))
     {
         return true;
     }
@@ -979,7 +983,8 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
         return true;
     }
     //Hero attack
-    else if(text.contains("+") && text.contains("give") && text.contains("attack") && text.contains("hero"))
+    else if(text.contains("+") && text.contains("give") && text.contains("attack") &&
+            (text.contains("hero") || text.contains("character")))
     {
         return true;
     }
