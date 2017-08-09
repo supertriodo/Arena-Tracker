@@ -1160,6 +1160,12 @@ void DraftHandler::deMinimizeScoreWindow()
 }
 
 
+void DraftHandler::debugSynergies(QString set)
+{
+    synergyHandler->debugSynergies(set);
+}
+
+
 //Construir json de HearthArena (Ya no lo usamos)
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT

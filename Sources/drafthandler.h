@@ -120,6 +120,7 @@ public:
     bool isDrafting();
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
+    void debugSynergies(QString set);
 
 signals:
     void checkCardImage(QString code);

@@ -42,7 +42,7 @@ public:
     ~Utility();
 
 //Variables
-private://TODO
+private:
     static QMap<QString, QJsonObject> *cardsJson;
     static QString localLang;
     static QString diacriticLetters;
@@ -88,6 +88,7 @@ public:
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);
+    static QStringList getSetCodes(QString set);
 };
 
 #endif // UTILITY_H

@@ -273,6 +273,17 @@ bool Utility::isASecret(QString code)
 }
 
 
+QStringList Utility::getSetCodes(QString set)
+{
+    QStringList setCodes;
+    for(const QString &code: Utility::cardsJson->keys())
+    {
+        if(getCardAttribute(code, "set").toString() == set)     setCodes.append(code);
+    }
+    return setCodes;
+}
+
+
 QString Utility::appPath()
 {
     QString dirPath = QCoreApplication::applicationDirPath();

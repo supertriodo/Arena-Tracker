@@ -10,7 +10,7 @@
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
-enum VisibleMechanics {V_AOE, V_TAUNT, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
+enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
                        V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE, V_DISCARD, V_EVOLVE,
                        V_BATTLECRY, V_SILENCE, V_STEALTH, V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
@@ -37,6 +37,7 @@ private:
 
 //Metodos
 public:
+    void debugSynergies(QString set);
     void updateCounters(DeckCard &deckCard);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
     void initSynergyCodes();
@@ -62,7 +63,6 @@ private:
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
 
 private:
-//public: //TODO
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code, const QString &text);
     bool isMurlocGen(const QString &code);
@@ -126,6 +126,7 @@ private:
     bool isPingSyn(const QString &code);
     bool isAoeSyn(const QString &code);
     bool isTauntSyn(const QString &code);
+    bool isTauntAllSyn(const QString &code);
     bool isSecretSyn(const QString &code, const QJsonArray &referencedTags);
     bool isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardSyn(const QString &code, const QString &text);

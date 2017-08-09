@@ -3561,26 +3561,51 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
+//    testSynergies();
+    draftHandler->debugSynergies("CORE");
 }
 
 
 void MainWindow::testSynergies()
 {
-    QRegularExpressionMatch match;
-    draftHandler->synergyHandler->initSynergyCodes();
+//    QRegularExpressionMatch match;
+//    draftHandler->synergyHandler->initSynergyCodes();
 
-    int num = 0;
-    for(const QString &code: Utility::cardsJson->keys())
-    {
-        DeckCard deckCard(code);
-        CardType cardType = deckCard.getType();
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-//        if(Utility::isFromStandardSet(code)
-//                && text.contains("jaks;djf;sf")
-//                && text.contains("equip ")
+//    int num = 0;
+//    for(const QString &code: Utility::cardsJson->keys())
+//    {
+//        DeckCard deckCard(code);
+//        CardType cardType = deckCard.getType();
+//        QString text = Utility::cardEnTextFromCode(code).toLower();
+//        int attack = Utility::getCardAttribute(code, "attack").toInt();
+//        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+//        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+//        if(Utility::isFromStandardSet(code) && false
+//                    && (text.contains("+") && (text.contains("minions") || text.contains("characters"))
+//                    && !text.contains("hand")
+//                    || (text.contains("control") && text.contains("least") && text.contains("minions")))
+//                &&draftHandler->synergyHandler->isTokenGen(code, text)
+//                && cardType == WEAPON
+//                && draftHandler->synergyHandler->isAoeGen(code, text)
+//                && draftHandler->synergyHandler->isPingGen(code, mechanics, referencedTags, text, cardType, attack)
+//                && text.contains("transform") && text.contains("cost") && text.contains("more")
+//                && draftHandler->synergyHandler->isEvolveGen(code, text)
+//                && draftHandler->synergyHandler->isEvolveSyn(code)
+//                && !draftHandler->synergyHandler->isSpellDamageGen(code)
+//                && (text.contains("all") || text.contains("adjacent")) && (text.contains("damage"))
+//                && cardType == SPELL
+//                && draftHandler->synergyHandler->isAoeGen(code, text)
+//                && draftHandler->synergyHandler->isSpellDamageSyn(code, mechanics, cardType, text)
+//                && draftHandler->synergyHandler->isDestroyGen(code, text)
+//                && draftHandler->synergyHandler->isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+//                && text.contains("")
+//                && !draftHandler->synergyHandler->isArmorGen(code, text)
+//                && draftHandler->synergyHandler->isArmorSyn(code)
+//                && text.contains("hero")
+//                && draftHandler->synergyHandler->isRestoreTargetCharacterSyn(code)
+//                && !draftHandler->synergyHandler->isRestoreFriendlyHeroGen(code, mechanics, text)
+//                && !draftHandler->synergyHandler->isRestoreFriendlyMinionGen(code, text)
+//                && draftHandler->synergyHandler->isRestoreTargetMinionGen(code, text)
 //                && draftHandler->synergyHandler->isWeaponGen(code, text)
 //                && draftHandler->synergyHandler->isWeaponSyn(code, text)
 //                && !draftHandler->synergyHandler->isWeaponAllSyn(code, text)
@@ -3640,10 +3665,10 @@ void MainWindow::testSynergies()
 //                && draftHandler->synergyHandler->isDivineShieldGen(code, referencedTags)
 //                && draftHandler->synergyHandler->isDivineShieldAllSyn(code)
 //                )
-        {
-            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-        }
-    }
+//        {
+//            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+//        }
+//    }
 }
 
 
@@ -3653,9 +3678,16 @@ void MainWindow::testSynergies()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //New web
 
+//https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
 //Theme nuevos iconos y documentar
 //Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
 
+
+//ADD TO FAQ
+//I have a deck drafted from sometime ago so I'll test that.
+//But keep in mind that decks with duplicated cards are completed from a file of your drafted arena you keep in your AT dir. If for any reason you drafted a new deck (in a different server or account) the last drafted arena will change in you AT dir and any previous arena deck you have will not be loaded correctly.
+//Edit: You can still complete it manually by simply double clicking the cards to increase its number.
+//Edit2: Tested with my deck but I have the exact same problem, I drafted in another account, so my last drafted deck is different. The deck will only be read correctly when playing in the account you did your last draft.
 
 
 
