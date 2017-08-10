@@ -34,11 +34,13 @@
 #define BEAR_TRAP QString("AT_060")
 #define SNIPE QString("EX1_609")
 #define DART_TRAP QString("LOE_021")
+#define VENOMSTRIKE_TRAP QString("ICC_200")
 #define CAT_TRICK QString("KAR_004")
 #define MISDIRECTION QString("EX1_533")
 #define HIDDEN_CACHE QString("CFM_026")
 #define SNAKE_TRAP QString("EX1_554")
 
+#define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
 #define DDUPLICATE QString("FP1_018")
 #define ICE_BARRIER QString("EX1_289")

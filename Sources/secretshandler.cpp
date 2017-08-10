@@ -196,6 +196,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
 //            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
 //            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
+            activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
             activeSecret.children.append(SecretCard(HIDDEN_CACHE));
@@ -203,6 +204,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         break;
 
         case MAGE:
+            activeSecret.children.append(SecretCard(FROZEN_CLONE));
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
 //            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
@@ -445,6 +447,7 @@ void SecretsHandler::playerHeroPower()
 
 void SecretsHandler::playerMinionPlayed(int playerMinions)
 {
+    discardSecretOptionNow(FROZEN_CLONE);
     discardSecretOptionNow(MIRROR_ENTITY);
     discardSecretOptionNow(POTION_OF_POLIMORPH);
     discardSecretOptionNow(SNIPE);
@@ -510,6 +513,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         //Hero -> minion
         else
         {
+            discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
             discardSecretOptionNow(NOBLE_SACRIFICE);
         }
@@ -532,6 +536,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         else
         {
             discardSecretOptionNow(FREEZING_TRAP);
+            discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
             discardSecretOptionNow(NOBLE_SACRIFICE);
         }
