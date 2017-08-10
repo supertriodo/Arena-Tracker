@@ -681,11 +681,16 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
+                (text.contains("+")
+                            && (text.contains("give") || text.contains("have"))
+                            && (text.contains("minion") || text.contains("character"))
+                            && (text.contains("attack") || text.contains("/+"))
+                            && !text.contains("hand") && !text.contains("c'thun"))&&
 //                (text.contains("+") && text.contains("give") && text.contains("attack") &&
 //                 (text.contains("hero") || text.contains("character")))&&
 //            text.contains("damage") && text.contains("deal")&&
                 // !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero")&&
-            isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+                !isAttackBuffGen(code, text)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -1210,7 +1215,7 @@ bool SynergyHandler::isAttackBuffGen(const QString &code, const QString &text)
             && (text.contains("give") || text.contains("have"))
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("attack") || text.contains("/+"))
-            && !text.contains("hand") && !text.contains("random") && !text.contains("c'thun"))
+            && !text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun"))
     {
         return true;
     }
@@ -1230,7 +1235,7 @@ bool SynergyHandler::isHealthBuffGen(const QString &code, const QString &text)
             && (text.contains("give") || text.contains("have"))
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("health") || text.contains("/+"))
-            && !text.contains("hand") && !text.contains("random") && !text.contains("c'thun"))
+            && !text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun"))
     {
         return true;
     }

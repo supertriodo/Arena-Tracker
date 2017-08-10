@@ -3561,8 +3561,8 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-//    draftHandler->testSynergies();
-    draftHandler->debugSynergies("CORE");
+    draftHandler->testSynergies();
+//    draftHandler->debugSynergies("CORE");
 }
 
 
@@ -3635,8 +3635,8 @@ void MainWindow::testDelay()
 //Update Json LF tierlist --> Automatico
 //--Update Json HA tierlist --> HATLsed.sh
 //Update secrets
-//--Update bombing cards
-//--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//Update bombing cards
+//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
 //--Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
 //--Update synergies.json
