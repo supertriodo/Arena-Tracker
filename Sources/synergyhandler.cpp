@@ -685,12 +685,9 @@ void SynergyHandler::testSynergies()
                             && (text.contains("give") || text.contains("have"))
                             && (text.contains("minion") || text.contains("character"))
                             && (text.contains("attack") || text.contains("/+"))
-                            && !text.contains("hand") && !text.contains("c'thun"))&&
-//                (text.contains("+") && text.contains("give") && text.contains("attack") &&
-//                 (text.contains("hero") || text.contains("character")))&&
-//            text.contains("damage") && text.contains("deal")&&
-                // !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero")&&
-                !isAttackBuffGen(code, text)
+                            && text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun")) &&
+                text.contains("hand") &&
+                isHealthBuffGen(code, text)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -701,8 +698,6 @@ void SynergyHandler::testSynergies()
 
 void SynergyHandler::debugSynergies(QString set)
 {
-    //CORE done
-
     initSynergyCodes();
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set))
@@ -1215,7 +1210,7 @@ bool SynergyHandler::isAttackBuffGen(const QString &code, const QString &text)
             && (text.contains("give") || text.contains("have"))
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("attack") || text.contains("/+"))
-            && !text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun"))
+            &&/* !text.contains("hand") && *//*!text.contains("random") && */!text.contains("c'thun"))
     {
         return true;
     }
@@ -1235,7 +1230,7 @@ bool SynergyHandler::isHealthBuffGen(const QString &code, const QString &text)
             && (text.contains("give") || text.contains("have"))
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("health") || text.contains("/+"))
-            && !text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun"))
+            && /*!text.contains("hand") && *//*!text.contains("random") && */!text.contains("c'thun"))
     {
         return true;
     }
@@ -1317,7 +1312,7 @@ bool SynergyHandler::isRestoreFriendlyHeroGen(const QString &code, const QJsonAr
     //&& text.contains("restore")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("restoreFriendlyHeroGen");
+        return synergyCodes[code].contains("restoreFriendlyHeroGen") || synergyCodes[code].contains("lifestealMinion");
     }
     else if(mechanics.contains(QJsonValue("LIFESTEAL")))
     {
