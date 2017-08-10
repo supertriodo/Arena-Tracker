@@ -3637,7 +3637,7 @@ void MainWindow::testDelay()
 //Update secrets
 //Update bombing cards
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//--Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
 //--Update synergies.json
 

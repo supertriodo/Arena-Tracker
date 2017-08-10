@@ -56,7 +56,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
-    mechanicCounters[V_FREEZE] = new DraftItemCounter(this);
+    mechanicCounters[V_FREEZE_ENEMY] = new DraftItemCounter(this);
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE_GOOD_ALL] = new DraftItemCounter(this);
@@ -315,7 +315,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
-    if(isFreezeGen(code, mechanics, referencedTags, text))                  mechanicCounters[V_FREEZE]->increase(code);
+    if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
     if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
@@ -364,7 +364,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
     if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
-    if(isFreezeSyn(code, referencedTags, text))                             mechanicCounters[V_FREEZE]->increaseSyn(code);
+    if(isFreezeEnemySyn(code, referencedTags, text))                        mechanicCounters[V_FREEZE_ENEMY]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
     else if(isDeathrattleGoodAllSyn(code))                                  mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
@@ -554,7 +554,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);//Sinergias gen-gen
     if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
-    if(isFreezeGen(code, mechanics, referencedTags, text))      mechanicCounters[V_FREEZE]->insertSynCards(synergies);
+    if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
     if(isDeathrattleGoodAll(code, mechanics, referencedTags))   mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
@@ -588,7 +588,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergies);
     if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
     if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
-    if(isFreezeSyn(code, referencedTags, text))                 mechanicCounters[V_FREEZE]->insertCards(synergies);
+    if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
     if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
     else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergies);
@@ -739,7 +739,7 @@ void SynergyHandler::debugSynergies(QString set)
         if(isOverload(code))                                                    mec<<"overload";
         if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
         if(isSecretGen(code, mechanics))                                        mec<<"secretGen";
-        if(isFreezeGen(code, mechanics, referencedTags, text))                  mec<<"freezeGen";
+        if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
         if(isDiscardGen(code, text))                                            mec<<"discardGen";
         if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
         if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mec<<"deathrattle o deathrattleGen";
@@ -767,7 +767,7 @@ void SynergyHandler::debugSynergies(QString set)
 
         if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
         if(isSecretSyn(code, referencedTags))                                   syn<<"secretSyn";
-        if(isFreezeSyn(code, referencedTags, text))                             syn<<"freezeSyn";
+        if(isFreezeEnemySyn(code, referencedTags, text))                        syn<<"freezeEnemySyn";
         if(isDiscardSyn(code, text))                                            syn<<"discardSyn";
         if(isBattlecrySyn(code, referencedTags))                                syn<<"battlecrySyn";
         if(isSilenceOwnSyn(code, mechanics))                                    syn<<"silenceOwnSyn";
@@ -1078,12 +1078,12 @@ bool SynergyHandler::isSecretGen(const QString &code, const QJsonArray &mechanic
     }
     return false;
 }
-bool SynergyHandler::isFreezeGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+bool SynergyHandler::isFreezeEnemyGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                  const QString &text)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("freezeGen");
+        return synergyCodes[code].contains("freezeEnemyGen");
     }
     else if(mechanics.contains(QJsonValue("FREEZE")))
     {
@@ -1587,11 +1587,11 @@ bool SynergyHandler::isSecretSyn(const QString &code, const QJsonArray &referenc
     }
     return false;
 }
-bool SynergyHandler::isFreezeSyn(const QString &code, const QJsonArray &referencedTags, const QString &text)
+bool SynergyHandler::isFreezeEnemySyn(const QString &code, const QJsonArray &referencedTags, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("freezeSyn");
+        return synergyCodes[code].contains("freezeEnemySyn");
     }
     else if(referencedTags.contains(QJsonValue("FREEZE")))
     {
