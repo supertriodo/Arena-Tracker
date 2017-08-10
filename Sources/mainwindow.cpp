@@ -3632,13 +3632,13 @@ void MainWindow::testDelay()
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico
-//Update Json HA tierlist --> HATLsed.sh
-//Update secrets
-//Update bombing cards
-//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//--Update Json HA tierlist --> HATLsed.sh
+//--Update secrets
+//--Update bombing cards
+//--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//--Update cards que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
-//Update synergies.json
+//--Update synergies.json
 
 //STANDARD CYCLE
 //Remove secrets rotating out

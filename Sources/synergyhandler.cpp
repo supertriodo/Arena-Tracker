@@ -282,7 +282,7 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard)
 
     if(cardType == SPELL)               cardTypeCounters[V_SPELL]->increase(code);
     else if(isSpellGen(code))           cardTypeCounters[V_SPELL]->increase(code,false);
-    if(cardType == MINION)              cardTypeCounters[V_MINION]->increase(code);
+    if(cardType == MINION || cardType == HERO)  cardTypeCounters[V_MINION]->increase(code);
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->increase(code);
@@ -1656,7 +1656,7 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
     {
         return true;
     }
-    else if(cardType == MINION && attack ==0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
+    else if(cardType == MINION && attack == 0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
     {
         return true;
     }
