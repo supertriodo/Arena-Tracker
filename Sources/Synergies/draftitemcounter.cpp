@@ -69,8 +69,8 @@ void DraftItemCounter::increase()
         labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
-            labelIcon->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
-            labelCounter->setHidden(false);
+            labelIcon->setHidden(true);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
+            labelCounter->setHidden(true);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
         }
     }
 }
@@ -80,8 +80,8 @@ void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
     {
         if(counter == 0)
         {
-            labelIcon->setHidden(false);
-            labelCounter->setHidden(false);
+            labelIcon->setHidden(true);     //TODO Para ocultar los iconos cambiar todos a setHidden(true)
+            labelCounter->setHidden(true);  //TODO Para ocultar los iconos cambiar todos a setHidden(true)
         }
         this->counter += numIncrease;
         labelCounter->setText(QString::number((counter*10/std::max(1,draftedCardsCount))/10.0));
@@ -112,8 +112,8 @@ void DraftItemCounter::increase(const QString &code, bool count)
         labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
-            labelIcon->setHidden(false);
-            labelCounter->setHidden(false);
+            labelIcon->setHidden(true);     //TODO Para ocultar los iconos cambiar todos a setHidden(true)
+            labelCounter->setHidden(true);  //TODO Para ocultar los iconos cambiar todos a setHidden(true)
         }
     }
 }
