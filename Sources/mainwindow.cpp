@@ -3561,8 +3561,14 @@ void MainWindow::testPlan()
 
 void MainWindow::testDelay()
 {
-    draftHandler->testSynergies();
-//    draftHandler->debugSynergies("CORE");
+    //CORE done
+    //EXPERT1 done
+    //OG done
+    //KARA done
+    //GANGS done
+    //UNGORO done
+//    draftHandler->debugSynergies("UNGORO");
+//        draftHandler->testSynergies();
 }
 
 
@@ -3621,7 +3627,6 @@ void MainWindow::testDelay()
 
 //BUGS CONOCIDOS
 //Tab Config ScrollArea slider transparent CSS
-//Cazar crash bug en drafting con 31 cartas
 //Solo mode da problemas con las cartas iniciales en el enemigo, son de turn 1 y no hay moneda.
 //Baron seboso (Blubber baron) no tiene atk/health correctos en el replay ya que modifica sus atributos en mano y no usa TAG_CHANGE ARMS_DEALING
 //Acechador solitario (Forlorn Stalker), los minions que buffan tienen atk/health correctos por la misma razon.

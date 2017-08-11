@@ -624,10 +624,12 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    HearthArena);
 
     //Synergies //TODO Borrar para eliminar synergies
-//    QMap<QString,int> synergies[3];
-//    QStringList mechanicIcons[3];
-//    for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i], mechanicIcons[i]);
-//    draftScoreWindow->setSynergies(synergies, mechanicIcons);
+#ifdef QT_DEBUG
+    QMap<QString,int> synergies[3];
+    QStringList mechanicIcons[3];
+    for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i], mechanicIcons[i]);
+    draftScoreWindow->setSynergies(synergies, mechanicIcons);
+#endif
 }
 
 
