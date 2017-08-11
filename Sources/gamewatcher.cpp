@@ -1136,6 +1136,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 emit pDebug("Enemy: Weapon played: " + name + " ID: " + id, numLine);
             }
+            //Enemigo juega heroe
+            else if(zoneTo == "OPPOSING PLAY (Hero)")
+            {
+                emit pDebug("Enemy: Hero played: " + name + " ID: " + id, numLine);
+            }
             //Enemigo descarta carta
             else if(zoneTo == "OPPOSING GRAVEYARD")
             {
@@ -1203,6 +1208,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY PLAY (Weapon)")
             {
                 emit pDebug("Player: Weapon played: " + name + " ID: " + id, numLine);
+            }
+            //Jugador juega heroe
+            else if(zoneTo == "FRIENDLY PLAY (Hero)")
+            {
+                emit pDebug("Player: Hero played: " + name + " ID: " + id, numLine);
             }
             //Jugador descarta carta
             else if(zoneTo == "FRIENDLY GRAVEYARD")
