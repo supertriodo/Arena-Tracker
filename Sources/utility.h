@@ -88,7 +88,7 @@ public:
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);
-    static QStringList getSetCodes(QString set);
+    static QStringList getSetCodes(const QString &set);
     static QStringList getStandardCodes();
 };
 

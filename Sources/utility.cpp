@@ -273,7 +273,7 @@ bool Utility::isASecret(QString code)
 }
 
 
-QStringList Utility::getSetCodes(QString set)
+QStringList Utility::getSetCodes(const QString &set)
 {
     QStringList setCodes;
     for(const QString &code: Utility::cardsJson->keys())

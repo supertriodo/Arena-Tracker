@@ -310,7 +310,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isAoeGen(code, text))                                                mechanicCounters[V_AOE]->increase(code);
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->increase(code);
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_DAMAGE]->increase(code);
-    if(isDestroyGen(code, text))                                            mechanicCounters[V_DESTROY]->increase(code);
+    if(isDestroyGen(code, mechanics, text))                                 mechanicCounters[V_DESTROY]->increase(code);
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_REACH]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
@@ -530,7 +530,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     {
         mechanicIcons.append(":/Images/damageMechanic.png");
     }
-    if(isDestroyGen(code, text))
+    if(isDestroyGen(code, mechanics, text))
     {
         mechanicIcons.append(":/Images/destroyMechanic.png");
     }
@@ -681,13 +681,23 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                (text.contains("+")
-                            && (text.contains("give") || text.contains("have"))
-                            && (text.contains("minion") || text.contains("character"))
-                            && (text.contains("attack") || text.contains("/+"))
-                            && text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun")) &&
-                text.contains("hand") &&
-                isHealthBuffGen(code, text)
+//                (text.contains("+")
+//                            && (text.contains("give") || text.contains("have"))
+//                            && (text.contains("minion") || text.contains("character"))
+//                            && (text.contains("attack") || text.contains("/+"))
+//                            && text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun")) &&
+//                (text.contains("damage") && text.contains("deal") &&
+//                            !text.contains("1 damage") && !text.contains("all") && !text.contains("hero")) &&
+//                (text.contains("deal") && text.contains("1 damage") &&
+//                        text.contains("random") && !text.contains("hero")) &&
+//                text.contains("hand") &&
+                mechanics.contains(QJsonValue("DEATHRATTLE")) &&
+                isAoeGen(code, text)
+//                text.contains("random") &&
+//                mechanics.contains("DEATHRATTLE") && text.contains("random") &&
+//                isDestroyGen(code, mechanics, text)
+//                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+//                isPingGen(code, mechanics, referencedTags, text, cardType, attack)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -696,85 +706,91 @@ void SynergyHandler::testSynergies()
 }
 
 
-void SynergyHandler::debugSynergies(QString set)
+void SynergyHandler::debugSynergiesSet(const QString &set)
 {
     initSynergyCodes();
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set))
     {
-        if(synergyCodes.contains(code)) continue;
-
-        DeckCard deckCard(code);
-        CardType cardType = deckCard.getType();
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-
-        QStringList mec, syn;
-        if(isMurlocSyn(code, text))     syn<<"murlocSyn";
-        if(isDemonSyn(code, text))      syn<<"demonSyn";
-        if(isMechSyn(code, text))       syn<<"mechSyn";
-        if(isElementalSyn(code, text))  syn<<"elementalSyn";
-        if(isBeastSyn(code, text))      syn<<"beastSyn";
-        if(isTotemSyn(code, text))      syn<<"totemSyn";
-        if(isPirateSyn(code, text))     syn<<"pirateSyn";
-        if(isDragonSyn(code, text))     syn<<"dragonSyn";
-
-        if(isWeaponGen(code, text))     mec<<"weaponGen";
-        if(isSpellSyn(code, text))      syn<<"spellSyn";
-        if(isWeaponAllSyn(code, text))  syn<<"weaponAllSyn";
-
-        if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
-        if(isAoeGen(code, text))                                                mec<<"aoeGen";
-        if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mec<<"pingGen";
-        if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"damageMinionsGen";
-        if(isDestroyGen(code, text))                                            mec<<"destroyGen";
-        if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
-        if(isOverload(code))                                                    mec<<"overload";
-        if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
-        if(isSecretGen(code, mechanics))                                        mec<<"secretGen";
-        if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
-        if(isDiscardGen(code, text))                                            mec<<"discardGen";
-        if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
-        if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mec<<"deathrattle o deathrattleGen";
-        if(isBattlecryMinion(code, mechanics, cardType))                        mec<<"battlecry";
-        if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
-        if(isTokenGen(code, text))                                              mec<<"tokenGen";
-        if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
-        if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
-        if(isHealthBuffGen(code, text))                                         mec<<"healthBuffGen";
-        if(isReturnGen(code, text))                                             mec<<"returnGen";
-        if(isStealthGen(code, mechanics))                                       mec<<"stealthGen";
-        if(isSpellDamageGen(code))                                              mec<<"spellDamageGen";
-        if(isEvolveGen(code, text))                                             mec<<"evolveGen";
-        if(isRestoreTargetMinionGen(code, text))                                mec<<"restoreTargetMinionGen";
-        if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mec<<"restoreFriendlyHeroGen";
-        if(isRestoreFriendlyMinionGen(code, text))                              mec<<"restoreFriendlyMinionGen";
-        if(isArmorGen(code, text))                                              mec<<"armorGen";
-        if(isTaunt(code, mechanics))                                            mec<<"taunt";
-        else if(isTauntGen(code, referencedTags))                               mec<<"tauntGen";
-        if(isDivineShield(code, mechanics))                                     mec<<"divineShield";
-        else if(isDivineShieldGen(code, referencedTags))                        mec<<"divineShieldGen";
-        if(isEnrageMinion(code, mechanics))                                     mec<<"enrageMinion";
-        if(isEnrageGen(code, referencedTags))                                   mec<<"enrageGen";
-
-
-        if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
-        if(isSecretSyn(code, referencedTags))                                   syn<<"secretSyn";
-        if(isFreezeEnemySyn(code, referencedTags, text))                        syn<<"freezeEnemySyn";
-        if(isDiscardSyn(code, text))                                            syn<<"discardSyn";
-        if(isBattlecrySyn(code, referencedTags))                                syn<<"battlecrySyn";
-        if(isSilenceOwnSyn(code, mechanics))                                    syn<<"silenceOwnSyn";
-        if(isTauntGiverSyn(code, mechanics, attack, cardType))                  syn<<"tauntGiverSyn";
-        if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
-        if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
-        if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
-        if(isEnrageAllSyn(code, text))                                     syn<<"enrageAllSyn";
-
-        qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-        qDebug()<<mec<<syn;
+        debugSynergiesCode(code, ++num);
     }
+}
+
+
+void SynergyHandler::debugSynergiesCode(const QString &code, int num)
+{
+    QStringList mec, syn;
+
+    if(synergyCodes.contains(code)) mec<<"MANUAL: ";
+    DeckCard deckCard(code);
+    CardType cardType = deckCard.getType();
+    QString text = Utility::cardEnTextFromCode(code).toLower();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+    QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+
+    if(isMurlocSyn(code, text))     syn<<"murlocSyn";
+    if(isDemonSyn(code, text))      syn<<"demonSyn";
+    if(isMechSyn(code, text))       syn<<"mechSyn";
+    if(isElementalSyn(code, text))  syn<<"elementalSyn";
+    if(isBeastSyn(code, text))      syn<<"beastSyn";
+    if(isTotemSyn(code, text))      syn<<"totemSyn";
+    if(isPirateSyn(code, text))     syn<<"pirateSyn";
+    if(isDragonSyn(code, text))     syn<<"dragonSyn";
+
+    if(isWeaponGen(code, text))     mec<<"weaponGen";
+    if(isSpellSyn(code, text))      syn<<"spellSyn";
+    if(isWeaponAllSyn(code, text))  syn<<"weaponAllSyn";
+
+    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
+    if(isAoeGen(code, text))                                                mec<<"aoeGen";
+    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mec<<"pingGen";
+    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"damageMinionsGen";
+    if(isDestroyGen(code, mechanics, text))                                 mec<<"destroyGen";
+    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
+    if(isOverload(code))                                                    mec<<"overload";
+    if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
+    if(isSecretGen(code, mechanics))                                        mec<<"secretGen";
+    if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
+    if(isDiscardGen(code, text))                                            mec<<"discardGen";
+    if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mec<<"deathrattle o deathrattleGen";
+    if(isBattlecryMinion(code, mechanics, cardType))                        mec<<"battlecry";
+    if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
+    if(isTokenGen(code, text))                                              mec<<"tokenGen";
+    if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
+    if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
+    if(isHealthBuffGen(code, text))                                         mec<<"healthBuffGen";
+    if(isReturnGen(code, text))                                             mec<<"returnGen";
+    if(isStealthGen(code, mechanics))                                       mec<<"stealthGen";
+    if(isSpellDamageGen(code))                                              mec<<"spellDamageGen";
+    if(isEvolveGen(code, text))                                             mec<<"evolveGen";
+    if(isRestoreTargetMinionGen(code, text))                                mec<<"restoreTargetMinionGen";
+    if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mec<<"restoreFriendlyHeroGen";
+    if(isRestoreFriendlyMinionGen(code, text))                              mec<<"restoreFriendlyMinionGen";
+    if(isArmorGen(code, text))                                              mec<<"armorGen";
+    if(isTaunt(code, mechanics))                                            mec<<"taunt";
+    else if(isTauntGen(code, referencedTags))                               mec<<"tauntGen";
+    if(isDivineShield(code, mechanics))                                     mec<<"divineShield";
+    else if(isDivineShieldGen(code, referencedTags))                        mec<<"divineShieldGen";
+    if(isEnrageMinion(code, mechanics))                                     mec<<"enrageMinion";
+    if(isEnrageGen(code, referencedTags))                                   mec<<"enrageGen";
+
+
+    if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
+    if(isSecretSyn(code, referencedTags))                                   syn<<"secretSyn";
+    if(isFreezeEnemySyn(code, referencedTags, text))                        syn<<"freezeEnemySyn";
+    if(isDiscardSyn(code, text))                                            syn<<"discardSyn";
+    if(isBattlecrySyn(code, referencedTags))                                syn<<"battlecrySyn";
+    if(isSilenceOwnSyn(code, mechanics))                                    syn<<"silenceOwnSyn";
+    if(isTauntGiverSyn(code, mechanics, attack, cardType))                  syn<<"tauntGiverSyn";
+    if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
+    if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
+    if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
+    if(isEnrageAllSyn(code, text))                                     syn<<"enrageAllSyn";
+
+    qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+    qDebug()<<mec<<syn;
 }
 
 
@@ -919,9 +935,10 @@ bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics,
     }
     //Anything that deals damage
     else if(text.contains("deal") && text.contains("1 damage") &&
-            !text.contains("random") && !text.contains("hero"))
+            !text.contains("hero"))
     {
-        return true;
+        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
+        else return true;
     }
     else if(attack != 1)  return false;
     //Charge minions
@@ -972,15 +989,19 @@ bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics
 bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                                       const QString &text, const CardType &cardType, int attack)
 {
+    //TEST
+//    (text.contains("damage") && text.contains("deal") &&
+//                !text.contains("1 damage") && !text.contains("all") && !text.contains("hero")) &&
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("damageMinionsGen");
     }
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
-            !text.contains("1 damage") && !text.contains("all") && !text.contains("random") && !text.contains("hero"))
+            !text.contains("1 damage") && !text.contains("all") && !text.contains("hero"))
     {
-        return true;
+        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
+        else return true;
     }
     //Hero attack
     else if(text.contains("+") && text.contains("give") && text.contains("attack") &&
@@ -1001,17 +1022,19 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
     else if(cardType == WEAPON) return true;
     return false;
 }
-bool SynergyHandler::isDestroyGen(const QString &code, const QString &text)
+bool SynergyHandler::isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("destroyGen");
     }
-    else
+    else if(text.contains("destroy") && text.contains("minion") &&
+            !text.contains("all"))
     {
-        return  text.contains("destroy") && text.contains("minion") &&
-                !text.contains("all");
+        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
+        else return true;
     }
+    return false;
 }
 bool SynergyHandler::isEnrageMinion(const QString &code, const QJsonArray &mechanics)
 {

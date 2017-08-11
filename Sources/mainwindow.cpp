@@ -3567,7 +3567,8 @@ void MainWindow::testDelay()
     //KARA done
     //GANGS done
     //UNGORO done
-//    draftHandler->debugSynergies("UNGORO");
+//    draftHandler->debugSynergiesSet("UNGORO");
+//        draftHandler->debugSynergiesCode("EX1_610");
 //        draftHandler->testSynergies();
 }
 

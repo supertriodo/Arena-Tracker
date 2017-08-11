@@ -1162,9 +1162,15 @@ void DraftHandler::deMinimizeScoreWindow()
 }
 
 
-void DraftHandler::debugSynergies(QString set)
+void DraftHandler::debugSynergiesSet(const QString &set)
 {
-    synergyHandler->debugSynergies(set);
+    synergyHandler->debugSynergiesSet(set);
+}
+
+
+void DraftHandler::debugSynergiesCode(const QString &code)
+{
+    synergyHandler->debugSynergiesCode(code);
 }
 
 

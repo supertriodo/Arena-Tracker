@@ -37,7 +37,8 @@ private:
 
 //Metodos
 public:
-    void debugSynergies(QString set);
+    void debugSynergiesSet(const QString &set);
+    void debugSynergiesCode(const QString &code, int num=0);
     void testSynergies();
     void updateCounters(DeckCard &deckCard);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
@@ -79,7 +80,7 @@ private:
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
     bool isAoeGen(const QString &code, const QString &text);
     bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
-    bool isDestroyGen(const QString &code, const QString &text);
+    bool isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);

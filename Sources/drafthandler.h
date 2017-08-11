@@ -120,7 +120,8 @@ public:
     bool isDrafting();
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
-    void debugSynergies(QString set);
+    void debugSynergiesSet(const QString &set);
+    void debugSynergiesCode(const QString &code);
     void testSynergies();
 
 signals:
