@@ -20,9 +20,8 @@ private:
 //Metodos
 public:
     void draw(QLabel *label);
-    void addQualityMatch(double matchScore);
     double getSumQualityMatches();
-    void setQualityMatch(double matchScore);
+    void setBestQualityMatch(double matchScore);
 };
 
 #endif // DRAFTCARD_H

@@ -703,10 +703,10 @@ void SynergyHandler::testSynergies()
 //                (text.contains("deal") && text.contains("1 damage") &&
 //                        text.contains("random") && !text.contains("hero")) &&
 //                text.contains("to") && text.contains("your") && text.contains("hand")
-//                text.contains("play") && text.contains("card") && !text.contains("player") &&
+                text.contains("takes") && text.contains("damage")
 //                isTokenCardSyn(code, text)
 //                isTokenCardGen(code)
-                referencedTags.contains(QJsonValue("COMBO"))
+//                referencedTags.contains(QJsonValue("COMBO"))
 //                mechanics.contains(QJsonValue("DEATHRATTLE")) &&
 //                isAoeGen(code, text)
 //                text.contains("random") &&
@@ -1054,6 +1054,8 @@ bool SynergyHandler::isDestroyGen(const QString &code, const QJsonArray &mechani
 }
 bool SynergyHandler::isEnrageMinion(const QString &code, const QJsonArray &mechanics)
 {
+    //TEST
+    //text.contains("takes") && text.contains("damage")
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("enrageMinion");

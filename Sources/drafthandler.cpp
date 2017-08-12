@@ -460,13 +460,13 @@ bool DraftHandler::areCardsDetected()
 
 double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
 {
-    double minMatch = numCaptured;
+    double minMatch = 1;
     for(DraftCard card: draftCardMaps.values())
     {
         double match = card.getSumQualityMatches();
-        if(match < minMatch)    minMatch = card.getSumQualityMatches();
+        if(match < minMatch)    minMatch = match;
     }
-    return minMatch/numCaptured;
+    return minMatch;
 }
 
 
@@ -483,26 +483,39 @@ void DraftHandler::buildBestMatchesMaps()
 }
 
 
-void DraftHandler::getBestCards(DraftCard bestCards[3])
+CardRarity DraftHandler::getBestRarity()
 {
-    double bestMatch = numCaptured;
-    int bestIndex = 0;
-    QString bestCode;
-
+    CardRarity rarity[3];
     for(int i=0; i<3; i++)
     {
-        double match = bestMatchesMaps[i].firstKey();
-        QString code = bestMatchesMaps[i].first();
-        if(match < bestMatch)
-        {
-            bestMatch = match;
-            bestIndex = i;
-            bestCode = code;
-        }
+        rarity[i] = draftCardMaps[i][bestMatchesMaps[i].first()].getRarity();
     }
 
-    CardRarity bestRarity = draftCardMaps[bestIndex][bestCode].getRarity();
-    emit pDebug("");
+    if(rarity[0] == rarity[1] || rarity[0] == rarity[2])    return rarity[0];
+    else if(rarity[1] == rarity[2])                         return rarity[1];
+    else
+    {
+        double bestMatch = 1;
+        int bestIndex = 0;
+
+        for(int i=0; i<3; i++)
+        {
+            double match = bestMatchesMaps[i].firstKey();
+            if(match < bestMatch)
+            {
+                bestMatch = match;
+                bestIndex = i;
+            }
+        }
+
+        return rarity[bestIndex];
+    }
+}
+
+
+void DraftHandler::getBestCards(DraftCard bestCards[3])
+{
+    CardRarity bestRarity = getBestRarity();
 
     for(int i=0; i<3; i++)
     {
@@ -514,7 +527,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
             QString code = bestCodesList[j];
             QString name = draftCardMaps[i][code].getName();
             QString cardInfo = code + " " + name + " " +
-                    QString::number(((int)(match/std::max(1,numCaptured)*1000))/1000.0);
+                    QString::number(((int)(match*1000))/1000.0);
             if(draftCardMaps[i][code].getRarity() == bestRarity)
             {
                 bestCards[i] = draftCardMaps[i][code];
@@ -738,8 +751,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             //Actualizamos DraftCardMaps con los nuevos resultados
             if(draftCardMaps[i].contains(code))
             {
-                if(numCaptured == 0)    draftCardMaps[i][code].setQualityMatch(match);
-                else                    draftCardMaps[i][code].addQualityMatch(match);
+                if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match);
             }
         }
 
@@ -754,7 +766,6 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             {
                 newCardsFound = true;
                 draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
-                draftCardMaps[i][code].addQualityMatch(match + this->numCaptured);
             }
         }
     }
@@ -775,8 +786,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         {
             DraftCard card = draftCardMaps[i][code];
             qDebug()<<"["<<i<<"]"<<code<<card.getName()<<" -- "<<
-                      ((int)(card.getSumQualityMatches()*1000))/1000.0<<" -- "<<
-                      ((int)(card.getSumQualityMatches()/std::max(1,numCaptured)*1000))/1000.0;
+                      ((int)(card.getSumQualityMatches()*1000))/1000.0;
         }
     }
     qDebug()<<"Captured: "<<numCaptured<<endl;
