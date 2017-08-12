@@ -16,7 +16,7 @@ enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL, V_DISCOVER_DRAW, V_PING, V_D
                        V_TAUNT_GIVER, V_TOKEN, V_WINDFURY, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
                        V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED_MINION, V_ENRAGED_ALL,
                        V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION,
-                       V_ARMOR, V_SPELL_DAMAGE, V_TOKEN_CARD, V_NUM_MECHANICS};
+                       V_ARMOR, V_SPELL_DAMAGE, V_TOKEN_CARD, V_COMBO, V_NUM_MECHANICS};
 
 
 class SynergyHandler : public QObject
@@ -98,6 +98,7 @@ private:
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
     bool isTokenCardGen(const QString &code);
+    bool isComboGen(const QString &code, const QJsonArray &mechanics);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);
     bool isHealthBuffGen(const QString &code, const QString &text);
@@ -140,6 +141,7 @@ private:
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
     bool isTokenCardSyn(const QString &code, const QString &text);
+    bool isComboSyn(const QString &code, const QJsonArray &referencedTags, int cost);
     bool isWindfurySyn(const QString &code);
     bool isAttackBuffSyn(const QString &code);
     bool isHealthBuffSyn(const QString &code);
