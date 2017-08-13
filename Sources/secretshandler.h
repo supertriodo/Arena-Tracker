@@ -41,7 +41,7 @@ private:
     QList<ActiveSecret> activeSecretList;
     QQueue<SecretTest> secretTests;
     bool secretsAnimating;
-    QString lastMinionDead, lastSpellPlayed;
+    QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
 
 
 //Metodos
@@ -75,7 +75,7 @@ public slots:
     void resetSecretsInterface();
     void playerSpellPlayed(QString code);
     void playerSpellObjPlayed();
-    void playerMinionPlayed(int playerMinions);
+    void playerMinionPlayed(QString code, int playerMinions);
     void enemyMinionDead(QString code);
     void avengeTested();
     void cSpiritTested();

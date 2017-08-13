@@ -154,7 +154,7 @@ void SynergyHandler::initSynergyCodes()
         }
     }
     emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
-    qDebug()<<directLinks;//TODO
+//    qDebug()<<directLinks;//TODO
 }
 
 

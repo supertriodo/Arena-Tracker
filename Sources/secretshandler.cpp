@@ -7,6 +7,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->enemyHandHandler = enemyHandHandler;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
+    this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
 
     completeUI();
@@ -48,6 +49,8 @@ void SecretsHandler::resetLastMinionDead(QString code, QString subType)
         //El ManaBind es rebelado justo antes del POWER del hechizo lanzado
         if(subType != "PLAY")   this->lastSpellPlayed.clear();
     }
+    //No podemos resetear lasMinionPlayed porque entre que se invoca el minion y se desvela el secreto ocurren
+    //los tres subType POWER/PLAY/TRIGGER
 }
 
 
@@ -348,6 +351,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit revealCreatedByCard(lastMinionDead, code, 2);
     else if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())  emit revealCreatedByCard(lastMinionDead, code, 1);
     else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
+    else if(code == FROZEN_CLONE && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
 }
 
 
@@ -445,8 +449,10 @@ void SecretsHandler::playerHeroPower()
 }
 
 
-void SecretsHandler::playerMinionPlayed(int playerMinions)
+void SecretsHandler::playerMinionPlayed(QString code, int playerMinions)
 {
+    lastMinionPlayed = code;
+
     discardSecretOptionNow(FROZEN_CLONE);
     discardSecretOptionNow(MIRROR_ENTITY);
     discardSecretOptionNow(POTION_OF_POLIMORPH);

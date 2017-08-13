@@ -1202,7 +1202,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY PLAY")
             {
                 emit pDebug("Player: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
-                if(isPlayerTurn)    emit playerMinionPlayed(playerMinions);
+                if(isPlayerTurn)    emit playerMinionPlayed(cardId, playerMinions);
             }
             //Jugador juega arma
             else if(zoneTo == "FRIENDLY PLAY (Weapon)")
