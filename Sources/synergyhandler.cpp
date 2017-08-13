@@ -326,7 +326,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
-    if(isTokenCardGen(code))                                                mechanicCounters[V_TOKEN_CARD]->increase(code);
+    if(isTokenCardGen(code, cost))                                          mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
@@ -570,7 +570,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
-    if(isTokenCardGen(code))                                    mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
+    if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
     if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
@@ -693,27 +693,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                (text.contains("+")
-//                            && (text.contains("give") || text.contains("have"))
-//                            && (text.contains("minion") || text.contains("character"))
-//                            && (text.contains("attack") || text.contains("/+"))
-//                            && text.contains("hand") && /*!text.contains("random") && */!text.contains("c'thun")) &&
-//                (text.contains("damage") && text.contains("deal") &&
-//                            !text.contains("1 damage") && !text.contains("all") && !text.contains("hero")) &&
-//                (text.contains("deal") && text.contains("1 damage") &&
-//                        text.contains("random") && !text.contains("hero")) &&
-//                text.contains("to") && text.contains("your") && text.contains("hand")
-                text.contains("takes") && text.contains("damage")
-//                isTokenCardSyn(code, text)
-//                isTokenCardGen(code)
-//                referencedTags.contains(QJsonValue("COMBO"))
-//                mechanics.contains(QJsonValue("DEATHRATTLE")) &&
-//                isAoeGen(code, text)
-//                text.contains("random") &&
-//                mechanics.contains("DEATHRATTLE") && text.contains("random") &&
-//                isDestroyGen(code, mechanics, text)
-//                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
-//                isPingGen(code, mechanics, referencedTags, text, cardType, attack)
+                (text.contains("+") && text.contains("give") && text.contains("attack") &&
+                            (text.contains("hero") || text.contains("character")))
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -791,6 +772,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     else if(isDivineShieldGen(code, referencedTags))                        mec<<"divineShieldGen";
     if(isEnrageMinion(code, mechanics))                                     mec<<"enrageMinion";
     if(isEnrageGen(code, referencedTags))                                   mec<<"enrageGen";
+    if(isComboGen(code, mechanics))                                         mec<<"comboGen";
 
 
     if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
@@ -803,7 +785,8 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
-    if(isEnrageAllSyn(code, text))                                     syn<<"enrageAllSyn";
+    if(isEnrageAllSyn(code, text))                                          syn<<"enrageAllSyn";
+    if(isTokenCardSyn(code, text))                                          syn<<"tokenCardSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
     qDebug()<<mec<<syn;
@@ -1224,11 +1207,12 @@ bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isTokenCardGen(const QString &code)
+bool SynergyHandler::isTokenCardGen(const QString &code, int cost)
 {
     //Incluimos cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2
     //TEST
     //text.contains("to") && text.contains("your") && text.contains("hand")
+    if(cost == 0)   return true;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("tokenCardGen");

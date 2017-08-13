@@ -3568,7 +3568,7 @@ void MainWindow::testDelay()
     //KARA done
     //GANGS done
     //UNGORO done
-//    draftHandler->debugSynergiesSet("UNGORO");
+    draftHandler->debugSynergiesSet("ICECROWN");
 //        draftHandler->debugSynergiesCode("EX1_610");
 //        draftHandler->testSynergies();
 }
@@ -3585,7 +3585,7 @@ void MainWindow::testDelay()
 //Theme nuevos iconos y documentar
 //Test FreezingTrap, snakeTrap and envenomTrap played in that order
 //Cartas creadas por FROZEN_CLONE deben ser identificadas
-//Actualizar purple.zip y classic.zip, y la guia
+//Actualizar purple.zip y classic.zip, y documentar
 
 //ADD TO FAQ
 //I have a deck drafted from sometime ago so I'll test that.
