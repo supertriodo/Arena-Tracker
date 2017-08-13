@@ -49,15 +49,41 @@ void DraftHandler::createSynergyHandler()
 
 void DraftHandler::completeUI()
 {
-    labelCard[0] = ui->labelCard1;
-    labelCard[1] = ui->labelCard2;
-    labelCard[2] = ui->labelCard3;
+    comboBoxCard[0] = ui->comboBoxCard1;
+    comboBoxCard[1] = ui->comboBoxCard2;
+    comboBoxCard[2] = ui->comboBoxCard3;
     labelLFscore[0] = ui->labelLFscore1;
     labelLFscore[1] = ui->labelLFscore2;
     labelLFscore[2] = ui->labelLFscore3;
     labelHAscore[0] = ui->labelHAscore1;
     labelHAscore[1] = ui->labelHAscore2;
     labelHAscore[2] = ui->labelHAscore3;
+}
+
+
+void DraftHandler::connectAllComboBox()
+{
+    for(int i=0; i<3; i++)
+    {
+        connect(comboBoxCard[i], SIGNAL(currentIndexChanged(int)),
+                this, SLOT(comboBoxChanged()));
+    }
+}
+
+
+void DraftHandler::clearAndDisconnectAllComboBox()
+{
+    for(int i=0; i<3; i++)
+    {
+        clearAndDisconnectComboBox(i);
+    }
+}
+
+
+void DraftHandler::clearAndDisconnectComboBox(int index)
+{
+    disconnect(comboBoxCard[index], 0, 0, 0);
+    comboBoxCard[index]->clear();
 }
 
 
@@ -215,12 +241,13 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
 
 void DraftHandler::resetTab(bool alreadyDrafting)
 {
+    clearAndDisconnectAllComboBox();
     for(int i=0; i<3; i++)
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
-        draftCards[i].draw(labelCard[i]);
+        draftCards[i].draw(comboBoxCard[i]);
     }
 
     updateBoxTitle();
@@ -248,6 +275,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 
 void DraftHandler::clearLists(bool keepCounters)
 {
+    clearAndDisconnectAllComboBox();
     synergyHandler->clearLists(keepCounters);
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
@@ -474,10 +502,24 @@ void DraftHandler::buildBestMatchesMaps()
 {
     for(int i=0; i<3; i++)
     {
+        QMap<double, QString> bestMatchesDups;
         for(QString code: draftCardMaps[i].keys())
         {
             double match = draftCardMaps[i][code].getSumQualityMatches();
-            bestMatchesMaps[i].insertMulti(match, code);
+            bestMatchesDups.insertMulti(match, code);
+        }
+
+        comboBoxCard[i]->clear();
+        QStringList insertedCodes;
+        for(const QString &code: bestMatchesDups.values())
+        {
+            if(!insertedCodes.contains(degoldCode(code)))
+            {
+                double match = draftCardMaps[i][code].getSumQualityMatches();
+                bestMatchesMaps[i].insertMulti(match, code);
+                draftCardMaps[i][code].draw(comboBoxCard[i]);
+                insertedCodes.append(degoldCode(code));
+            }
         }
     }
 }
@@ -531,6 +573,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
             if(draftCardMaps[i][code].getRarity() == bestRarity)
             {
                 bestCards[i] = draftCardMaps[i][code];
+                comboBoxCard[i]->setCurrentIndex(j);
                 emit pDebug("Choose: " + cardInfo);
                 break;
             }
@@ -541,6 +584,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
         }
     }
 
+    connectAllComboBox();
     emit pDebug("(" + QString::number(synergyHandler->draftedCardsCount()) + ") " +
                 bestCards[0].getCode() + "/" + bestCards[1].getCode() +
                 "/" + bestCards[2].getCode() + " New codes.");
@@ -573,12 +617,13 @@ void DraftHandler::pickCard(QString code)
     }
 
     //Clear cards and score
+    clearAndDisconnectAllComboBox();
     for(int i=0; i<3; i++)
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
-        draftCards[i].draw(labelCard[i]);
+        draftCards[i].draw(comboBoxCard[i]);
         cardDetected[i] = false;
         draftCardMaps[i].clear();
         bestMatchesMaps[i].clear();
@@ -610,7 +655,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i] = bestCards[i];
-        draftCards[i].draw(labelCard[i]);
     }
 
 
@@ -638,11 +682,36 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
     //Synergies //TODO Borrar para eliminar synergies
 #ifdef QT_DEBUG
-    QMap<QString,int> synergies[3];
-    QStringList mechanicIcons[3];
-    for(int i=0; i<3; i++)  synergyHandler->getSynergies(bestCards[i], synergies[i], mechanicIcons[i]);
-    draftScoreWindow->setSynergies(synergies, mechanicIcons);
+    if(draftScoreWindow != NULL)
+    {
+        for(int i=0; i<3; i++)
+        {
+            QMap<QString,int> synergies;
+            QStringList mechanicIcons;
+            synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons);
+            draftScoreWindow->setSynergies(i, synergies, mechanicIcons);
+        }
+    }
 #endif
+}
+
+
+void DraftHandler::comboBoxChanged()
+{
+    DraftCard bestCards[3];
+
+    for(int i=0; i<3; i++)
+    {
+        int comboBoxIndex = comboBoxCard[i]->currentIndex();
+        QList<QString> bestCodes = bestMatchesMaps[i].values();
+        int count = bestCodes.count();
+        if(comboBoxIndex >= count || comboBoxIndex < 0) return;
+        QString code = bestCodes[comboBoxIndex];
+        bestCards[i] = draftCardMaps[i][code];
+    }
+
+    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores(true);
+    showNewCards(bestCards);
 }
 
 
@@ -724,6 +793,12 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 
     for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(bigCards[i]);
     return true;
+}
+
+
+bool DraftHandler::isGoldCode(QString fileName)
+{
+    return fileName.endsWith("_premium");
 }
 
 
@@ -976,7 +1051,6 @@ void DraftHandler::setTheme()
     {
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
         if(labelHAscore[i]->styleSheet().contains("background-image"))      highlightScore(labelHAscore[i], HearthArena);
-        draftCards[i].draw(labelCard[i]);
     }
 
     //Change Arena draft icon
@@ -1116,18 +1190,25 @@ void DraftHandler::redrawAllCards()
 
     for(int i=0; i<3; i++)
     {
-        draftCards[i].draw(labelCard[i]);
+        int currentIndex = comboBoxCard[i]->currentIndex();
+        clearAndDisconnectComboBox(i);
+        for(const QString &code: bestMatchesMaps[i].values())
+        {
+            draftCardMaps[i][code].draw(comboBoxCard[i]);
+        }
+        comboBoxCard[i]->setCurrentIndex(currentIndex);
     }
 
     if(draftScoreWindow != NULL)    draftScoreWindow->redrawSynergyCards();
+    connectAllComboBox();
 }
 
 
-void DraftHandler::updateTamCard(int value)
+void DraftHandler::updateTamCard()
 {
-    ui->labelCard1->setMaximumHeight(value);
-    ui->labelCard2->setMaximumHeight(value);
-    ui->labelCard3->setMaximumHeight(value);
+    ui->comboBoxCard1->setIconSize(QSize(DeckCard::getCardWidth(), DeckCard::getCardHeight()));
+    ui->comboBoxCard2->setIconSize(QSize(DeckCard::getCardWidth(), DeckCard::getCardHeight()));
+    ui->comboBoxCard3->setIconSize(QSize(DeckCard::getCardWidth(), DeckCard::getCardHeight()));
 }
 
 

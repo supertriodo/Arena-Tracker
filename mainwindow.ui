@@ -463,11 +463,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLabel" name="labelCard1">
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </widget>
+                <widget class="QComboBox" name="comboBoxCard1"/>
                </item>
                <item>
                 <widget class="QLabel" name="labelLFscore1">
@@ -496,11 +492,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="labelCard2">
-                 <property name="text">
-                  <string>2</string>
-                 </property>
-                </widget>
+                <widget class="QComboBox" name="comboBoxCard2"/>
                </item>
                <item>
                 <widget class="QLabel" name="labelLFscore2">
@@ -529,11 +521,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="labelCard3">
-                 <property name="text">
-                  <string>3</string>
-                 </property>
-                </widget>
+                <widget class="QComboBox" name="comboBoxCard3"/>
                </item>
                <item>
                 <widget class="QLabel" name="labelLFscore3">

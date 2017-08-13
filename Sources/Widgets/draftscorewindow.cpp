@@ -178,38 +178,37 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 }
 
 
-void DraftScoreWindow::setSynergies(QMap<QString,int> synergies[3], QStringList mechanicIcons[3])
+void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
 {
-    for(int i=0; i<3; i++)
+    if(posCard < 0 || posCard > 2)  return;
+
+    synergiesListWidget[posCard]->clear();
+    synergiesDeckCardLists[posCard].clear();
+
+    for(const QString &code: synergies.keys())
     {
-        synergiesListWidget[i]->clear();
-        synergiesDeckCardLists[i].clear();
-
-        for(const QString &code: synergies[i].keys())
-        {
-            int total = synergies[i][code];
-            DeckCard deckCard(code);
-            deckCard.total = deckCard.remaining = total;
-            deckCard.listItem = new QListWidgetItem(synergiesListWidget[i]);
-            deckCard.draw();
-            synergiesDeckCardLists[i].append(deckCard);
-        }
-
-        //Add mechanic icons
-        Utility::clearLayout(horLayoutMechanics[i], true);
-        horLayoutMechanics[i]->addStretch();
-
-        for(const QString &mechanicIcon: mechanicIcons[i])
-        {
-            QLabel *label = new QLabel();
-            QPixmap pixmap(mechanicIcon);
-            label->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
-            label->hide();
-            horLayoutMechanics[i]->addWidget(label);
-        }
-
-        horLayoutMechanics[i]->addStretch();
+        int total = synergies[code];
+        DeckCard deckCard(code);
+        deckCard.total = deckCard.remaining = total;
+        deckCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
+        deckCard.draw();
+        synergiesDeckCardLists[posCard].append(deckCard);
     }
+
+    //Add mechanic icons
+    Utility::clearLayout(horLayoutMechanics[posCard], true);
+    horLayoutMechanics[posCard]->addStretch();
+
+    for(const QString &mechanicIcon: mechanicIcons)
+    {
+        QLabel *label = new QLabel();
+        QPixmap pixmap(mechanicIcon);
+        label->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
+        label->hide();
+        horLayoutMechanics[posCard]->addWidget(label);
+    }
+
+    horLayoutMechanics[posCard]->addStretch();
 }
 
 
@@ -230,14 +229,24 @@ int DraftScoreWindow::getCard(QString &name, QString &code)
 }
 
 
-void DraftScoreWindow::hideScores()
+void DraftScoreWindow::hideScores(bool quick)
 {
     for(int i=0; i<3; i++)
     {
-        QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
-        Utility::fadeOutWidget(scoresPushButton2[i]);
+        if(quick)
+        {
+            QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)scoresPushButton[i]->graphicsEffect();
+            eff->setOpacity(0);
+            eff = (QGraphicsOpacityEffect *)scoresPushButton2[i]->graphicsEffect();
+            eff->setOpacity(0);
+        }
+        else
+        {
+            QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
+            Utility::fadeOutWidget(scoresPushButton2[i]);
 
-        if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
+            if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
+        }
 
         hideSynergies(i);
     }

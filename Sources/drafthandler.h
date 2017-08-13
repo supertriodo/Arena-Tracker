@@ -68,9 +68,9 @@ private:
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
-    QLabel *labelCard[3];
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
+    QComboBox *comboBoxCard[3];
     double shownTierScores[3];
 
 
@@ -106,6 +106,10 @@ private:
     QString degoldCode(QString fileName);
     int normalizeLFscore(int score);
     void createSynergyHandler();
+    bool isGoldCode(QString fileName);
+    void connectAllComboBox();
+    void clearAndDisconnectAllComboBox();
+    void clearAndDisconnectComboBox(int index);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
@@ -114,7 +118,7 @@ public:
     void setShowDraftOverlay(bool value);
     void setLearningMode(bool value);
     void redrawAllCards();
-    void updateTamCard(int value);
+    void updateTamCard();
     void setDraftMethod(DraftMethod value);
     void setTheme();
     void craftGoldenCopy(int cardIndex);
@@ -155,6 +159,7 @@ private slots:
     void captureDraft();
     void finishFindScreenRects();
     void startFindScreenRects();
+    void comboBoxChanged();
 };
 
 #endif // DRAFTHANDLER_H

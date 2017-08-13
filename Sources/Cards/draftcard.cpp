@@ -36,3 +36,11 @@ void DraftCard::draw(QLabel *label)
 
     label->setPixmap(canvas);
 }
+
+
+void DraftCard::draw(QComboBox *comboBox)
+{
+    QPixmap canvas = DeckCard::draw(1, false);
+
+    comboBox->addItem(canvas,"");
+}

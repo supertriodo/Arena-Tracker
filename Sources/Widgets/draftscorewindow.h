@@ -39,11 +39,11 @@ private:
 
 public:
     void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);
-    void hideScores();
+    void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
-    void setSynergies(QMap<QString, int> synergies[], QStringList mechanicIcons[]);
+    void setSynergies(int posCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

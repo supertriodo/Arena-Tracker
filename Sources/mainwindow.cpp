@@ -2735,6 +2735,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     planHandler->setTheme();
     enemyHandHandler->setTheme();
     deckHandler->redrawAllCards();
+    draftHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     if(redrawAllGames) this->redrawAllGames();
@@ -2919,8 +2920,8 @@ void MainWindow::spreadTamCard(int value)
 
     if(draftHandler != NULL)
     {
+        draftHandler->updateTamCard();
         draftHandler->redrawAllCards();
-        draftHandler->updateTamCard(value);
     }
 
     calculateDeckWindowMinimumWidth();
