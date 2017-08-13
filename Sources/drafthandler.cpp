@@ -582,6 +582,10 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
                 emit pDebug("Skip: " + cardInfo + " (Different rarity)");
             }
         }
+        if(bestCards[i].getCode().isEmpty() && !bestCodesList.isEmpty())
+        {
+            bestCards[i] = draftCardMaps[i][bestCodesList.first()];
+        }
     }
 
     connectAllComboBox();
