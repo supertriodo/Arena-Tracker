@@ -59,6 +59,11 @@ void DraftHandler::completeUI()
     labelHAscore[1] = ui->labelHAscore2;
     labelHAscore[2] = ui->labelHAscore3;
 
+    for(int i=0; i<3; i++)
+    {
+        comboBoxCard[i]->setFocusPolicy(Qt::NoFocus);
+    }
+
     connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
                 this, SLOT(refreshCapturedCards()));
 }
@@ -608,9 +613,11 @@ void DraftHandler::pickCard(QString code)
         return;
     }
 
+    bool delayCapture = true;
     if(code=="0" || code=="1" || code=="2")
     {
         code = draftCards[code.toInt()].getCode();
+        delayCapture = false;
     }
 
     DraftCard draftCard;
@@ -646,7 +653,7 @@ void DraftHandler::pickCard(QString code)
     emit newDeckCard(code);
     this->justPickedCard = code;
 
-    newCaptureDraftLoop(true);
+    newCaptureDraftLoop(delayCapture);
 }
 
 
