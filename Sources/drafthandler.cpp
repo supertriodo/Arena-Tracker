@@ -58,6 +58,9 @@ void DraftHandler::completeUI()
     labelHAscore[0] = ui->labelHAscore1;
     labelHAscore[1] = ui->labelHAscore2;
     labelHAscore[2] = ui->labelHAscore3;
+
+    connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
+                this, SLOT(refreshCapturedCards()));
 }
 
 
@@ -68,6 +71,7 @@ void DraftHandler::connectAllComboBox()
         connect(comboBoxCard[i], SIGNAL(currentIndexChanged(int)),
                 this, SLOT(comboBoxChanged()));
     }
+    ui->refreshDraftButton->setEnabled(true);
 }
 
 
@@ -77,6 +81,7 @@ void DraftHandler::clearAndDisconnectAllComboBox()
     {
         clearAndDisconnectComboBox(i);
     }
+    ui->refreshDraftButton->setEnabled(false);
 }
 
 
@@ -250,7 +255,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         draftCards[i].draw(comboBoxCard[i]);
     }
 
-    updateBoxTitle();
+    updateDeckScore();
 
     if(!alreadyDrafting)
     {
@@ -370,7 +375,7 @@ void DraftHandler::endDraft()
 {
     if(!drafting)    return;
 
-    emit pLog(tr("Draft: ") + ui->groupBoxDraft->title());
+    emit pLog(tr("Draft: ") + ui->labelDeckScore->text());
     emit pDebug("End draft.");
     emit pLog(tr("Draft: Draft ended."));
 
@@ -615,7 +620,7 @@ void DraftHandler::pickCard(QString code)
         {
             draftCard = draftCards[i];
             synergyHandler->updateCounters(draftCard);
-            updateBoxTitle(shownTierScores[i]);
+            updateDeckScore(shownTierScores[i]);
             break;
         }
     }
@@ -642,6 +647,33 @@ void DraftHandler::pickCard(QString code)
     this->justPickedCard = code;
 
     newCaptureDraftLoop(true);
+}
+
+
+void DraftHandler::refreshCapturedCards()
+{
+    if(!drafting)
+    {
+        return;
+    }
+
+    //Clear cards and score
+    clearAndDisconnectAllComboBox();
+    for(int i=0; i<3; i++)
+    {
+        clearScore(labelLFscore[i], LightForge);
+        clearScore(labelHAscore[i], HearthArena);
+        draftCards[i].setCode("");
+        draftCards[i].draw(comboBoxCard[i]);
+        cardDetected[i] = false;
+        draftCardMaps[i].clear();
+        bestMatchesMaps[i].clear();
+    }
+
+    this->numCaptured = 0;
+    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
+
+    newCaptureDraftLoop(false);
 }
 
 
@@ -719,12 +751,12 @@ void DraftHandler::comboBoxChanged()
 }
 
 
-void DraftHandler::updateBoxTitle(double cardRating)
+void DraftHandler::updateDeckScore(double cardRating)
 {
     deckRating += cardRating;
     int numCards = synergyHandler->draftedCardsCount();
     int actualRating = (numCards==0)?0:(int)(deckRating/numCards);
-    ui->groupBoxDraft->setTitle(QString("Deck Score: " + QString::number(actualRating) +
+    ui->labelDeckScore->setText(QString("Deck Score: " + QString::number(actualRating) +
                                         " (" + QString::number(numCards) + "/30)"));
 }
 
@@ -1039,6 +1071,8 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 
 void DraftHandler::setTheme()
 {
+    ui->refreshDraftButton->setIcon(QIcon(ThemeHandler::buttonDraftRefreshFile()));
+
     QFont font(ThemeHandler::bigFont());
     font.setPixelSize(24);
     ui->labelLFscore1->setFont(font);
@@ -1072,18 +1106,14 @@ void DraftHandler::setTransparency(Transparency value)
         ui->tabDraft->setAttribute(Qt::WA_NoBackground);
         ui->tabDraft->repaint();
 
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
-                                            " color: white;}"
-                                         "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
+        ui->labelDeckScore->setStyleSheet("QLabel {background-color: transparent; color: white;}");
     }
     else
     {
         ui->tabDraft->setAttribute(Qt::WA_NoBackground, false);
         ui->tabDraft->repaint();
 
-        ui->groupBoxDraft->setStyleSheet("QGroupBox{border: 0px solid transparent; margin-top: 15px; " + ThemeHandler::bgWidgets() +
-                                            " color: " + ThemeHandler::fgColor() + ";}"
-                                         "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}");
+        ui->labelDeckScore->setStyleSheet("");
     }
 
     //Update score labels

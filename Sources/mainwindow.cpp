@@ -3583,9 +3583,9 @@ void MainWindow::testDelay()
 
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
 //Theme nuevos iconos y documentar
-//Nueva expansion vigilar nuevas razas, como crear nuevo HA tier list
 //Test FreezingTrap, snakeTrap and envenomTrap played in that order
 //Cartas creadas por FROZEN_CLONE deben ser identificadas
+//Actualizar purple.zip y classic.zip, y la guia
 
 //ADD TO FAQ
 //I have a deck drafted from sometime ago so I'll test that.

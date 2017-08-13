@@ -36,7 +36,7 @@ private:
     static QString buttonRemoveDeckFile_, buttonLoadDeckFile_, buttonNewDeckFile_, buttonSaveDeckFile_;
     static QString buttonMinFile_, buttonPlusFile_, buttonRemoveFile_;
     static QString buttonCloseFile_, buttonMinimizeFile_, buttonResizeFile_;
-    static QString buttonForceDraftFile_;
+    static QString buttonForceDraftFile_, buttonDraftRefreshFile_;
     static QString buttonGamesReplayFile_, buttonGamesWebFile_;
     static QString buttonPlanFirstFile_, buttonPlanLastFile_, buttonPlanRefreshFile_;
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
@@ -110,6 +110,7 @@ public:
     static QString tabConfigFile();
     static QString tabDeckFile();
     static QString buttonForceDraftFile();
+    static QString buttonDraftRefreshFile();
     static QString tabEnemyDeckFile();
     static QString firstFile();
     static QString tabGamesFile();

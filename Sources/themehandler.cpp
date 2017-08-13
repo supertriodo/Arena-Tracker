@@ -30,7 +30,7 @@ QString ThemeHandler::tabGamesFile_, ThemeHandler::tabHandFile_, ThemeHandler::t
 QString ThemeHandler::buttonRemoveDeckFile_, ThemeHandler::buttonLoadDeckFile_, ThemeHandler::buttonNewDeckFile_, ThemeHandler::buttonSaveDeckFile_;
 QString ThemeHandler::buttonMinFile_, ThemeHandler::buttonPlusFile_, ThemeHandler::buttonRemoveFile_;
 QString ThemeHandler::buttonCloseFile_, ThemeHandler::buttonMinimizeFile_, ThemeHandler::buttonResizeFile_;
-QString ThemeHandler::buttonForceDraftFile_;
+QString ThemeHandler::buttonForceDraftFile_, ThemeHandler::buttonDraftRefreshFile_;
 QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_;
 QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, ThemeHandler::buttonPlanRefreshFile_;
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
@@ -382,6 +382,12 @@ QString ThemeHandler::buttonForceDraftFile()
 }
 
 
+QString ThemeHandler::buttonDraftRefreshFile()
+{
+    return buttonDraftRefreshFile_;
+}
+
+
 QString ThemeHandler::buttonGamesReplayFile()
 {
     return buttonGamesReplayFile_;
@@ -720,7 +726,8 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     buttonPlanLastFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanLastFile");
     buttonPlanRefreshFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanRefreshFile");
 
-    //"-----DRAFT OVERLAY-----": 0,
+    //"-----DRAFT-----": 0,
+    buttonDraftRefreshFile_ = loadThemeFile(themePath, jsonObject, "buttonDraftRefreshFile");
     haBestFile_ = loadThemeFile(themePath, jsonObject, "haBestFile");
     haCloseFile_ = loadThemeFile(themePath, jsonObject, "haCloseFile");
     haOpenFile_ = loadThemeFile(themePath, jsonObject, "haOpenFile");
@@ -910,6 +917,7 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonMinimizeFile_.isEmpty())       buttonMinimizeFile_ = ":/Images/minimize.png";
     if(buttonResizeFile_.isEmpty())         buttonResizeFile_ = ":/Images/resize.png";
     if(buttonForceDraftFile_.isEmpty())     buttonForceDraftFile_ = ":/Images/draft.png";
+    if(buttonDraftRefreshFile_.isEmpty())   buttonDraftRefreshFile_ = ":/Images/refresh.png";
     if(buttonGamesReplayFile_.isEmpty())    buttonGamesReplayFile_ = ":/Images/replay.png";
     if(buttonGamesWebFile_.isEmpty())       buttonGamesWebFile_ = ":/Images/web.png";
     if(buttonPlanFirstFile_.isEmpty())      buttonPlanFirstFile_ = ":/Images/planFirst.png";

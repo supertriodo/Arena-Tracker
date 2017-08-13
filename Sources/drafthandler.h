@@ -84,7 +84,7 @@ private:
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void updateBoxTitle(double cardRating=0);
+    void updateDeckScore(double cardRating=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
@@ -160,6 +160,7 @@ private slots:
     void finishFindScreenRects();
     void startFindScreenRects();
     void comboBoxChanged();
+    void refreshCapturedCards();
 };
 
 #endif // DRAFTHANDLER_H
