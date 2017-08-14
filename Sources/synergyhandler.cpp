@@ -322,7 +322,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
     if(isBattlecryMinion(code, mechanics, cardType))                        mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
@@ -569,7 +569,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags))   mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
     if(isBattlecryMinion(code, mechanics, cardType))            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
@@ -698,9 +698,12 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                text.contains("lifesteal") &&
-                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
-                !mechanics.contains(QJsonValue("LIFESTEAL"))
+//                text.contains("lifesteal") &&
+//                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
+//                !mechanics.contains(QJsonValue("LIFESTEAL"))
+//                (text.contains("deal") && text.contains("1 damage") &&
+//                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
+                isEnrageAllSyn(code, text)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -722,9 +725,9 @@ void SynergyHandler::debugSynergiesSet(const QString &set)
 
 void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 {
-    QStringList mec, syn;
+    QStringList mec, syn, manual;
 
-    if(synergyCodes.contains(code)) mec<<"MANUAL: ";
+    if(synergyCodes.contains(code)) manual<<synergyCodes[code];
     DeckCard deckCard(code);
     CardType cardType = deckCard.getType();
     QString text = Utility::cardEnTextFromCode(code).toLower();
@@ -757,7 +760,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
     if(isDiscardGen(code, text))                                            mec<<"discardGen";
     if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags))               mec<<"deathrattle o deathrattleGen";
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mec<<"deathrattle o deathrattleGen";
     if(isBattlecryMinion(code, mechanics, cardType))                        mec<<"battlecry";
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
     if(isTokenGen(code, text))                                              mec<<"tokenGen";
@@ -796,7 +799,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTokenCardSyn(code, text))                                          syn<<"tokenCardSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-    qDebug()<<mec<<syn;
+
+    if(!manual.isEmpty())   qDebug()<<"-----MANUAL: "<<manual;
+    else                    qDebug()<<mec<<syn;
 }
 
 
@@ -1146,10 +1151,12 @@ bool SynergyHandler::isDeathrattleMinion(const QString &code, const QJsonArray &
     }
     return false;
 }
-bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                                          const CardType &cardType)
 {
     //TEST
     //&& (mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
+    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return (synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleGen")) &&
