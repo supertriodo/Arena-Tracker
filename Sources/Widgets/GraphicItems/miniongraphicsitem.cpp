@@ -559,7 +559,10 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     //Evita addons provocado por cambios despues de morir(en el log los minion vuelven a damage 0 y estado original justo antes de desaparecer de la zona)
     //Terror de fatalidad envia TO_BE_DESTROYED despues de hacer 2 de damage, para dar tiempo a invocar el demonio.
     //Despues de morir por TO_BE_DESTROYED, vuelve a 0.
-    if(this->damage >= this->health || this->zone !="PLAY" || this->toBeDestroyed)
+    //Dark Speaker (minion 3/6 swap stats con otro minion) produce cambia el health a 0 antes del swap
+    //lo que hace que el y su objetivo aparezcan muertos, por eso (this->health > 0)
+    if((this->damage >= this->health && this->health > 0)
+            || this->zone !="PLAY" || this->toBeDestroyed)
     {
         this->dead = true;
     }

@@ -3622,6 +3622,8 @@ void MainWindow::testDelay()
 //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
 //GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
 
+//El minion copiado por mirror entity no tiene las modificaciones a ataque o vida ya que estas no estan en append el suficiente tiempo.
+
 
 //SPECTATOR GAMES
 //Si empiezan desde el principio todo correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
