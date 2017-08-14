@@ -2813,10 +2813,13 @@ void MainWindow::updateMainUITheme()
                 "selection-background-color: " + ThemeHandler::bgSelectionLineEditColor() + "; "
                 "selection-color: " + ThemeHandler::fgSelectionLineEditColor() + ";}"
 
-            "QComboBox {background: " + ThemeHandler::bgMenuColor() + "; color: " + ThemeHandler::fgMenuColor() + ";"
+            "QComboBox {background: " + ThemeHandler::bgMenuColor() + "; color: " + ThemeHandler::fgMenuColor() + "; "
                 "selection-background-color: " + ThemeHandler::bgSelectedItemMenuColor() + ";"
                 "selection-color: "+ ThemeHandler::fgSelectedItemMenuColor() +";}"
-            "QComboBox QAbstractItemView{background: " + ThemeHandler::bgMenuColor() + ";}"
+            "QComboBox QAbstractItemView{background: " + ThemeHandler::bgMenuColor() + "; "
+                "color: " + ThemeHandler::fgMenuColor() + "; "
+                "selection-background-color: " + ThemeHandler::bgSelectedItemMenuColor() + "; "
+                "selection-color: "+ ThemeHandler::fgSelectedItemMenuColor() +";}"
             ;
 
     this->setStyleSheet(mainCSS);
