@@ -13,10 +13,10 @@ enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
                        V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE_ENEMY, V_DISCARD, V_EVOLVE,
                        V_BATTLECRY, V_SILENCE, V_STEALTH, V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
-                       V_TAUNT_GIVER, V_TOKEN, V_WINDFURY, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
+                       V_TAUNT_GIVER, V_TOKEN, V_WINDFURY_MINION, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
                        V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED_MINION, V_ENRAGED_ALL,
                        V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION,
-                       V_ARMOR, V_SPELL_DAMAGE, V_TOKEN_CARD, V_COMBO, V_NUM_MECHANICS};
+                       V_ARMOR, V_SPELL_DAMAGE, V_TOKEN_CARD, V_COMBO, V_LIFESTEAL_MINION, V_NUM_MECHANICS};
 
 
 class SynergyHandler : public QObject
@@ -110,6 +110,7 @@ private:
     bool isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isRestoreFriendlyMinionGen(const QString &code, const QString &text);
     bool isArmorGen(const QString &code, const QString &text);
+    bool isLifestealMinon(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isSpellDamageGen(const QString &code);
     bool isEvolveGen(const QString &code, const QString &text);
 
@@ -142,7 +143,7 @@ private:
     bool isTokenSyn(const QString &code, const QString &text);
     bool isTokenCardSyn(const QString &code, const QString &text);
     bool isComboSyn(const QString &code, const QJsonArray &referencedTags, int cost);
-    bool isWindfurySyn(const QString &code);
+    bool isWindfuryMinionSyn(const QString &code);
     bool isAttackBuffSyn(const QString &code);
     bool isHealthBuffSyn(const QString &code);
     bool isReturnSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
@@ -153,6 +154,7 @@ private:
     bool isRestoreFriendlyHeroSyn(const QString &code);
     bool isRestoreFriendlyMinionSyn(const QString &code);
     bool isArmorSyn(const QString &code);
+    bool isLifestealMinionSyn(const QString &code);
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
     bool isEvolveSyn(const QString &code);
 
