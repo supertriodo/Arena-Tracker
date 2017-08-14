@@ -433,6 +433,9 @@
              <layout class="QHBoxLayout" name="draftHorizontalLayout">
               <item>
                <widget class="QPushButton" name="refreshDraftButton">
+                <property name="toolTip">
+                 <string>Rescan cards</string>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
