@@ -75,6 +75,7 @@ void DraftHandler::connectAllComboBox()
     {
         connect(comboBoxCard[i], SIGNAL(currentIndexChanged(int)),
                 this, SLOT(comboBoxChanged()));
+        comboBoxCard[i]->setEnabled(true);
     }
     ui->refreshDraftButton->setEnabled(true);
 }
@@ -84,6 +85,7 @@ void DraftHandler::clearAndDisconnectAllComboBox()
 {
     for(int i=0; i<3; i++)
     {
+        comboBoxCard[i]->setEnabled(false);
         clearAndDisconnectComboBox(i);
     }
     ui->refreshDraftButton->setEnabled(false);
@@ -258,6 +260,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
+        comboBoxCard[i]->setCurrentIndex(0);
     }
 
     updateDeckScore();
@@ -640,6 +643,7 @@ void DraftHandler::pickCard(QString code)
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
+        comboBoxCard[i]->setCurrentIndex(0);
         cardDetected[i] = false;
         draftCardMaps[i].clear();
         bestMatchesMaps[i].clear();
@@ -672,6 +676,7 @@ void DraftHandler::refreshCapturedCards()
         clearScore(labelHAscore[i], HearthArena);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
+        comboBoxCard[i]->setCurrentIndex(0);
         cardDetected[i] = false;
         draftCardMaps[i].clear();
         bestMatchesMaps[i].clear();
