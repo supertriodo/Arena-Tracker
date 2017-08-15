@@ -8,7 +8,9 @@
 #include "utility.h"
 
 
-enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NUM_RACES};
+enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON,
+                  V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL,
+                  V_BEAST_ALL, V_TOTEM_ALL, V_PIRATE_ALL, V_DRAGON_ALL, V_NUM_RACES};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
                        V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE_ENEMY, V_DISCARD, V_EVOLVE,
@@ -114,14 +116,22 @@ private:
     bool isSpellDamageGen(const QString &code);
     bool isEvolveGen(const QString &code, const QString &text);
 
-    bool isMurlocSyn(const QString &code, const QString &text);
-    bool isDemonSyn(const QString &code, const QString &text);
-    bool isMechSyn(const QString &code, const QString &text);
-    bool isElementalSyn(const QString &code, const QString &text);
-    bool isBeastSyn(const QString &code, const QString &text);
-    bool isTotemSyn(const QString &code, const QString &text);
-    bool isPirateSyn(const QString &code, const QString &text);
+    bool isMurlocSyn(const QString &code);
+    bool isDemonSyn(const QString &code);
+    bool isMechSyn(const QString &code);
+    bool isElementalSyn(const QString &code);
+    bool isBeastSyn(const QString &code);
+    bool isTotemSyn(const QString &code);
+    bool isPirateSyn(const QString &code);
     bool isDragonSyn(const QString &code, const QString &text);
+    bool isMurlocAllSyn(const QString &code, const QString &text);
+    bool isDemonAllSyn(const QString &code, const QString &text);
+    bool isMechAllSyn(const QString &code, const QString &text);
+    bool isElementalAllSyn(const QString &code, const QString &text);
+    bool isBeastAllSyn(const QString &code, const QString &text);
+    bool isTotemAllSyn(const QString &code, const QString &text);
+    bool isPirateAllSyn(const QString &code, const QString &text);
+    bool isDragonAllSyn(const QString &code);
     bool isSpellSyn(const QString &code, const QString &text);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
