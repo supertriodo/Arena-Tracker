@@ -562,7 +562,7 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     //Dark Speaker (minion 3/6 swap stats con otro minion) produce cambia el health a 0 antes del swap
     //lo que hace que el y su objetivo aparezcan muertos, por eso (this->health > 0)
     if((this->damage >= this->health && this->health > 0)
-            || this->zone !="PLAY" || this->toBeDestroyed)
+            || (!this->hero && (this->zone !="PLAY" || this->toBeDestroyed)))
     {
         this->dead = true;
     }
