@@ -163,7 +163,6 @@ void SynergyHandler::initSynergyCodes()
         }
     }
     emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
-//    qDebug()<<directLinks;//TODO
 }
 
 
@@ -804,7 +803,7 @@ void SynergyHandler::testSynergies()
         if(
 //                text.contains("lifesteal") &&
 //                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
-//                !mechanics.contains(QJsonValue("LIFESTEAL"))
+                mechanics.contains(QJsonValue("COMBO")) &&
 //                (text.contains("deal") && text.contains("1 damage") &&
 //                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
 //                isMurlocAllSyn(code, text)
@@ -814,7 +813,9 @@ void SynergyHandler::testSynergies()
 //                isBeastAllSyn(code, text)
 //                isTotemAllSyn(code, text)
 //                isPirateAllSyn(code, text)
-                isDragonSyn(code, text)
+//                isDragonSyn(code, text)
+//                isEnrageMinionSyn(code)
+                !isReturnSyn(code, mechanics, cardType, text)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -1012,7 +1013,7 @@ bool SynergyHandler::isTauntGen(const QString &code, const QJsonArray &reference
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("tauntGen");
+        return synergyCodes[code].contains("tauntGen") || synergyCodes[code].contains("tauntGiverGen");
     }
     else if(referencedTags.contains(QJsonValue("TAUNT")))
     {
@@ -1994,7 +1995,7 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
         return synergyCodes[code].contains("returnSyn");
     }
     else if(cardType != MINION)  return false;
-    else if(mechanics.contains(QJsonValue("BATTLECRY")))
+    else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")))
     {
         if(
                 ((text.contains("summon") || text.contains("give") || text.contains("restore")) && !text.contains("opponent")) ||
