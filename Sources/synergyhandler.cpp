@@ -82,8 +82,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_SPELL_DAMAGE] = new DraftItemCounter(this);
     mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this);
     mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_ENRAGED_MINION] = new DraftItemCounter(this);
-    mechanicCounters[V_ENRAGED_ALL] = new DraftItemCounter(this);
+    mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
     mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_ARMOR] = new DraftItemCounter(this);
@@ -412,14 +411,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
         mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
     }
     else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
-    if(isEnrageMinion(code, mechanics))
-    {
-        mechanicCounters[V_ENRAGED_MINION]->increase(code);
-        mechanicCounters[V_ENRAGED_ALL]->increase(code);
-    }
-    if(isEnrageGen(code, referencedTags))                                   mechanicCounters[V_ENRAGED_ALL]->increase(code);
 
 
+    if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
@@ -450,8 +444,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isArmorSyn(code))                                                    mechanicCounters[V_ARMOR]->increaseSyn(code);
     if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
     else if(isDivineShieldAllSyn(code))                                     mechanicCounters[V_DIVINE_SHIELD_ALL]->increaseSyn(code);
-    if(isEnrageMinionSyn(code))                                             mechanicCounters[V_ENRAGED_MINION]->increaseSyn(code);
-    else if(isEnrageAllSyn(code, text))                                     mechanicCounters[V_ENRAGED_ALL]->increaseSyn(code);
+    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
 }
 
 
@@ -692,13 +685,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
     }
     else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
-    if(isEnrageMinion(code, mechanics))
-    {
-        mechanicCounters[V_ENRAGED_MINION]->insertSynCards(synergies);
-        mechanicCounters[V_ENRAGED_ALL]->insertSynCards(synergies);
-    }
-    if(isEnrageGen(code, referencedTags))                       mechanicCounters[V_ENRAGED_ALL]->insertSynCards(synergies);
 
+
+    if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
@@ -729,8 +718,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergies);
     if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
     else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
-    if(isEnrageMinionSyn(code))                                 mechanicCounters[V_ENRAGED_MINION]->insertCards(synergies);
-    else if(isEnrageAllSyn(code, text))                         mechanicCounters[V_ENRAGED_ALL]->insertCards(synergies);
+    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
 }
 
 
@@ -806,15 +794,6 @@ void SynergyHandler::testSynergies()
                 mechanics.contains(QJsonValue("COMBO")) &&
 //                (text.contains("deal") && text.contains("1 damage") &&
 //                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
-//                isMurlocAllSyn(code, text)
-//                isDemonAllSyn(code, text)
-//                isMechAllSyn(code, text)
-//                isElementalAllSyn(code, text)
-//                isBeastAllSyn(code, text)
-//                isTotemAllSyn(code, text)
-//                isPirateAllSyn(code, text)
-//                isDragonSyn(code, text)
-//                isEnrageMinionSyn(code)
                 !isReturnSyn(code, mechanics, cardType, text)
             )
         {
@@ -892,8 +871,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     else if(isTauntGen(code, referencedTags))                               mec<<"tauntGen";
     if(isDivineShield(code, mechanics))                                     mec<<"divineShield";
     else if(isDivineShieldGen(code, referencedTags))                        mec<<"divineShieldGen";
-    if(isEnrageMinion(code, mechanics))                                     mec<<"enrageMinion";
-    if(isEnrageGen(code, referencedTags))                                   mec<<"enrageGen";
+    if(isEnrageGen(code, mechanics))                                        mec<<"enrageGen";
     if(isComboGen(code, mechanics))                                         mec<<"comboGen";
 
 
@@ -907,7 +885,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
-    if(isEnrageAllSyn(code, text))                                          syn<<"enrageAllSyn";
+    if(isEnrageSyn(code, text))                                             syn<<"enrageSyn";
     if(isTokenCardSyn(code, text))                                          syn<<"tokenCardSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -1159,27 +1137,15 @@ bool SynergyHandler::isDestroyGen(const QString &code, const QJsonArray &mechani
     }
     return false;
 }
-bool SynergyHandler::isEnrageMinion(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isEnrageGen(const QString &code, const QJsonArray &mechanics)
 {
     //TEST
     //text.contains("takes") && text.contains("damage")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("enrageMinion");
-    }
-    else if(mechanics.contains(QJsonValue("ENRAGED")))
-    {
-        return true;
-    }
-    return false;
-}
-bool SynergyHandler::isEnrageGen(const QString &code, const QJsonArray &referencedTags)
-{
-    if(synergyCodes.contains(code))
-    {
         return synergyCodes[code].contains("enrageGen");
     }
-    else if(referencedTags.contains(QJsonValue("ENRAGED")))
+    else if(mechanics.contains(QJsonValue("ENRAGED")))
     {
         return true;
     }
@@ -1755,19 +1721,11 @@ bool SynergyHandler::isDragonAllSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isEnrageMinionSyn(const QString &code)
+bool SynergyHandler::isEnrageSyn(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("enrageMinionSyn");
-    }
-    return false;
-}
-bool SynergyHandler::isEnrageAllSyn(const QString &code, const QString &text)
-{
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("enrageAllSyn");
+        return synergyCodes[code].contains("enrageSyn");
     }
     else if(text.contains("deal") && text.contains("1 damage") &&
             !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
