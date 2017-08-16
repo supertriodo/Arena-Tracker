@@ -9,6 +9,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->ui = ui;
     this->deckRating = 0;
     this->numCaptured = 0;
+    this->extendedCapture = false;
     this->drafting = false;
     this->capturing = false;
     this->leavingArena = false;
@@ -309,6 +310,7 @@ void DraftHandler::clearLists(bool keepCounters)
 
     screenIndex = -1;
     numCaptured = 0;
+    extendedCapture = false;
 }
 
 
@@ -333,6 +335,7 @@ void DraftHandler::leaveArena()
         {
             this->leavingArena = true;
             this->numCaptured = 0;
+            this->extendedCapture = false;
 
             //Clear guessed cards
             for(int i=0; i<3; i++)
@@ -650,6 +653,7 @@ void DraftHandler::pickCard(QString code)
     }
 
     this->numCaptured = 0;
+    this->extendedCapture = false;
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
@@ -683,6 +687,7 @@ void DraftHandler::refreshCapturedCards()
     }
 
     this->numCaptured = 0;
+    this->extendedCapture = true;
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     newCaptureDraftLoop(false);
@@ -861,6 +866,7 @@ QString DraftHandler::degoldCode(QString fileName)
 void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 {
     bool newCardsFound = false;
+    const int numCandidates = (extendedCapture?CAPTURE_EXTENDED_CANDIDATES:CAPTURE_MIN_CANDIDATES);
 
     for(int i=0; i<3; i++)
     {
@@ -880,7 +886,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 
         //Incluimos en DraftCardMaps los mejores 5 matches, si no han sido ya actualizados por estar en el map.
         QList<double> bestMatchesList = bestMatchesMap.keys();
-        for(int j=0; j<5 && j<bestMatchesList.count(); j++)
+        for(int j=0; j<numCandidates && j<bestMatchesList.count(); j++)
         {
             double match = bestMatchesList.at(j);
             QString code = bestMatchesMap[match];
@@ -889,14 +895,20 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             {
                 newCardsFound = true;
                 draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
+                if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match);
             }
         }
     }
 
 
     //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 5 mejores posiciones
-    if(!(numCaptured == 0 && newCardsFound))
+    if(numCaptured != 0 || !newCardsFound)
     {
+        if(numCaptured == 0 && !newCardsFound)
+        {
+            for(int i=0; i<3; i++)  draftCardMaps[i].clear();
+        }
+
         this->numCaptured++;
     }
 

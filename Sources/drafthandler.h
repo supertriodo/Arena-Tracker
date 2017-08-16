@@ -16,6 +16,8 @@
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
+#define CAPTURE_MIN_CANDIDATES                 5
+#define CAPTURE_EXTENDED_CANDIDATES            10
 
 
 class LFtier
@@ -72,6 +74,7 @@ private:
     QLabel *labelHAscore[3];
     QComboBox *comboBoxCard[3];
     double shownTierScores[3];
+    bool extendedCapture;
 
 
 //Metodos
