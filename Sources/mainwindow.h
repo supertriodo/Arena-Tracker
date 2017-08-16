@@ -220,6 +220,7 @@ private slots:
     void test();
     void testPlan();
     void testDelay();
+    void testSynergies();
     void confirmNewArenaDraft(QString hero);
     void toggleSplitWindow();
     void transparentAlways();

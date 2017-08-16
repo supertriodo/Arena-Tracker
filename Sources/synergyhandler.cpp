@@ -786,15 +786,18 @@ void SynergyHandler::testSynergies()
         CardType cardType = deckCard.getType();
         QString text = Utility::cardEnTextFromCode(code).toLower();
         int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int cost = deckCard.getCost();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                text.contains("lifesteal") &&
+//                text.contains("random") &&
 //                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
-                mechanics.contains(QJsonValue("COMBO")) &&
+//                mechanics.contains(QJsonValue("COMBO")) &&
 //                (text.contains("deal") && text.contains("1 damage") &&
 //                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
-                !isReturnSyn(code, mechanics, cardType, text)
+//                !isReturnSyn(code, mechanics, cardType, text)
+//                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+                isTokenCardGen(code, cost)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;

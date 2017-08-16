@@ -134,7 +134,9 @@ void MainWindow::init()
     checkLinuxShortcut();
 #endif
 
+#ifdef QT_DEBUG
     test();
+#endif
 }
 
 
@@ -3498,7 +3500,7 @@ void MainWindow::unZip(QString zipName, QString targetPath)
 void MainWindow::test()
 {
 //    testPlan();
-    QTimer::singleShot(5000, this, SLOT(testDelay()));
+    QTimer::singleShot(1000, this, SLOT(testDelay()));
 }
 
 
@@ -3563,17 +3565,17 @@ void MainWindow::testPlan()
 }
 
 
+void MainWindow::testSynergies()
+{
+//    draftHandler->debugSynergiesSet("ICECROWN");
+//        draftHandler->debugSynergiesCode("EX1_251");
+        draftHandler->testSynergies();
+}
+
+
 void MainWindow::testDelay()
 {
-    //CORE done
-    //EXPERT1 done
-    //OG done
-    //KARA done
-    //GANGS done
-    //UNGORO done
-//    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("EX1_610");
-//        draftHandler->testSynergies();
+    testSynergies();
 }
 
 
