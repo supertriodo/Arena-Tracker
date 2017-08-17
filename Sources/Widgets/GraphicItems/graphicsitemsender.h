@@ -43,7 +43,7 @@ signals:
     void heroPress(HeroGraphicsItem *hero, Qt::MouseButton mouseButton);
     void heroWheel(HeroGraphicsItem *hero, bool up);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
-    void secretEntered(int id, QRect rectCard, int maxTop, int maxBottom);
+    void secretEntered(int id, QRect &rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void resetDeadProbs();
     void checkBomb(QString code);

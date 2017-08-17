@@ -144,6 +144,8 @@ signals:
     void advanceProgressBar(int remaining, QString text);
     void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text, int hideDelay = 5000);
+    void itemEnter(const QStringList &codes, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
+    void itemLeave();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 

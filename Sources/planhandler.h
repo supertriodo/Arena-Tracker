@@ -170,7 +170,7 @@ public:
 signals:
     void checkCardImage(QString code, bool isHero);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
-    void secretEntered(int id, QRect rectCard, int maxTop, int maxBottom);
+    void secretEntered(int id, QRect &rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void needMainWindowFade(bool fade);
     void heroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);

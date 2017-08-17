@@ -1,9 +1,10 @@
-#include "secretswindow.h"
+#include "cardlistwindow.h"
 #include "../Cards/secretcard.h"
+#include "../Cards/deckcard.h"
 #include "../utility.h"
 #include <QtWidgets>
 
-SecretsWindow::SecretsWindow(QWidget *parent, SecretsHandler *secretsHandler) :
+CardListWindow::CardListWindow(QWidget *parent, SecretsHandler *secretsHandler) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->secretsHandler = secretsHandler;
@@ -14,12 +15,12 @@ SecretsWindow::SecretsWindow(QWidget *parent, SecretsHandler *secretsHandler) :
 }
 
 
-SecretsWindow::~SecretsWindow()
+CardListWindow::~CardListWindow()
 {
 }
 
 
-void SecretsWindow::loadSecret(int id, QRect rectCard, int maxTop, int maxBottom, bool alignReverse)
+void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     //Clear and delete items
     listWidget->clear();
@@ -65,3 +66,45 @@ void SecretsWindow::loadSecret(int id, QRect rectCard, int maxTop, int maxBottom
 }
 
 
+void CardListWindow::loadDraftItem(const QStringList &codes, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
+{
+    //Clear and delete items
+    listWidget->clear();
+
+    if(codes.isEmpty())
+    {
+        hide();
+        return;
+    }
+
+    foreach(QString code, codes)
+    {
+        DeckCard card(code);
+        card.listItem = new QListWidgetItem();//Items son auto delete en clear()
+        listWidget->addItem(card.listItem);
+        card.draw();
+    }
+
+    int winWidth = listWidget->sizeHintForColumn(0);
+    int winHeight = codes.count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth();
+    setFixedSize(winWidth, winHeight);
+
+    QPoint center = rectCard.center();
+    bool showAtLeft = !Utility::isLeftOfScreen(center);
+
+    int moveX, moveY;
+    if(alignReverse)    showAtLeft = !showAtLeft;
+    if(showAtLeft)  moveX = rectCard.left()-winWidth;
+    else            moveX = rectCard.right();
+
+    moveY = center.y()-winHeight/2;
+    if((maxTop!=-1) && (moveY<maxTop)) moveY=maxTop;
+    else if((maxBottom!=-1) && ((moveY+winHeight)>maxBottom))
+    {
+        if((maxBottom-winHeight)<maxTop)    moveY=maxTop;
+        else                                moveY=maxBottom-winHeight;
+    }
+
+    move(moveX, moveY);
+    show();
+}

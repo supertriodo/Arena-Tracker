@@ -80,8 +80,8 @@ void PlanHandler::createGraphicsItemSender()
             this, SLOT(heroWheel(HeroGraphicsItem*,bool)));
     connect(graphicsItemSender, SIGNAL(cardEntered(QString,QRect,int,int)),
             this, SLOT(showCardTooltip(QString,QRect,int,int)));
-    connect(graphicsItemSender, SIGNAL(secretEntered(int,QRect,int,int)),
-            this, SIGNAL(secretEntered(int,QRect,int,int)));
+    connect(graphicsItemSender, SIGNAL(secretEntered(int,QRect&,int,int)),
+            this, SIGNAL(secretEntered(int,QRect&,int,int)));
     connect(graphicsItemSender, SIGNAL(cardLeave()),
             this, SIGNAL(cardLeave()));
     connect(graphicsItemSender, SIGNAL(resetDeadProbs()),

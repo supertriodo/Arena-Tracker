@@ -28,6 +28,21 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/weaponsCounter.png"));
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+
+
     manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/manaCounter.png"));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
@@ -59,6 +74,40 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/damageMechanic.png"));
     mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/destroyMechanic.png"));
     mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/reachMechanic.png"));
+
+    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_RESTORE_FRIENDLY_HEROE], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QStringList,int,int)),
+            this, SLOT(sendItemEnter(QStringList,int,int)));
+
+    connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_RESTORE_FRIENDLY_HEROE], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_PING], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
 
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this);
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
@@ -118,6 +167,21 @@ void SynergyHandler::deleteDraftItemCounters()
         delete mechanicCounters[i];
     }
     delete []mechanicCounters;
+}
+
+
+void SynergyHandler::sendItemEnter(const QStringList &codes, int iconTop, int iconBottom)
+{
+    QPoint mainTopLeft = ui->tabDraft->mapToGlobal(QPoint(0,0));
+    QPoint mainBottomRight = ui->tabDraft->mapToGlobal(QPoint(ui->tabDraft->width(),ui->tabDraft->height()));
+
+    int maxTop = -1;//mainTopLeft.y();
+    int maxBottom = mainBottomRight.y();
+    QPoint rectTopLeft(mainTopLeft.x(), iconTop);
+    QPoint rectBottomRight(mainBottomRight.x(), iconBottom);
+    QRect rect(rectTopLeft, rectBottomRight);
+
+    emit itemEnter(codes, rect, maxTop, maxBottom);
 }
 
 
@@ -790,7 +854,7 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                text.contains("random") &&
+//                text.contains("friendly") && text.contains("minion") && text.contains("destroy")
 //                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
 //                mechanics.contains(QJsonValue("COMBO")) &&
 //                (text.contains("deal") && text.contains("1 damage") &&
@@ -814,6 +878,14 @@ void SynergyHandler::debugSynergiesSet(const QString &set)
     {
         debugSynergiesCode(code, ++num);
     }
+//    for(const QString &code: Utility::getStandardCodes())//Utility::getSetCodes(set))
+//    {
+//        QString text = Utility::cardEnTextFromCode(code).toLower();
+//        if(text.contains("if"))
+//        {
+//            debugSynergiesCode(code, ++num);
+//        }
+//    }
 }
 
 

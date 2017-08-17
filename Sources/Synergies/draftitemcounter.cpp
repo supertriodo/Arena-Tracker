@@ -3,11 +3,16 @@
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap) : QObject(parent)
 {
-    labelIcon = new QLabel();
+    labelIcon = new HoverLabel();
     labelCounter = new QLabel();
     labelIcon->setPixmap(pixmap.scaledToWidth(32,Qt::SmoothTransformation));
     hLayout->addWidget(labelIcon);
     hLayout->addWidget(labelCounter);
+
+    connect(labelIcon, SIGNAL(enter()),
+            this, SLOT(sendIconEnter()));
+    connect(labelIcon, SIGNAL(leave()),
+            this, SIGNAL(iconLeave()));
 
     reset();
 }
@@ -199,3 +204,19 @@ int DraftItemCounter::count()
 {
     return counter;
 }
+
+
+void DraftItemCounter::sendIconEnter()
+{
+    QStringList codes;
+    for(DeckCard &deckCard: deckCardList)
+    {
+        codes.append(deckCard.getCode());
+    }
+
+    int labelTop = labelIcon->mapToGlobal(QPoint(0,0)).y();
+    int labelBottom = labelIcon->mapToGlobal(QPoint(0,labelIcon->height())).y();
+
+    emit iconEnter(codes, labelTop, labelBottom);
+}
+

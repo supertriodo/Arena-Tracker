@@ -55,7 +55,6 @@ SOURCES += Sources/main.cpp\
     Sources/Utils/qcompressor.cpp \
     Sources/Widgets/bombwindow.cpp \
     Sources/Cards/rngcard.cpp \
-    Sources/Widgets/secretswindow.cpp \
     Sources/trackobotuploader.cpp \
     Sources/LibXls/endian.c \
     Sources/LibXls/getopt.c \
@@ -67,7 +66,9 @@ SOURCES += Sources/main.cpp\
     Sources/Utils/libzippp.cpp \
     Sources/synergyhandler.cpp \
     Sources/Synergies/draftitemcounter.cpp \
-    Sources/Synergies/statsynergies.cpp
+    Sources/Synergies/statsynergies.cpp \
+    Sources/Widgets/cardlistwindow.cpp \
+    Sources/Widgets/hoverlabel.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -109,7 +110,6 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Utils/qcompressor.h \
     Sources/Widgets/bombwindow.h \
     Sources/Cards/rngcard.h \
-    Sources/Widgets/secretswindow.h \
     Sources/trackobotuploader.h \
     Sources/LibXls/brdb.c.h \
     Sources/LibXls/brdb.h \
@@ -126,7 +126,9 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Utils/libzippp.h \
     Sources/synergyhandler.h \
     Sources/Synergies/draftitemcounter.h \
-    Sources/Synergies/statsynergies.h
+    Sources/Synergies/statsynergies.h \
+    Sources/Widgets/cardlistwindow.h \
+    Sources/Widgets/hoverlabel.h
 
 FORMS    += mainwindow.ui
 

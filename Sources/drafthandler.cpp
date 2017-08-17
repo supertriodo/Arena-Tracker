@@ -41,6 +41,10 @@ DraftHandler::~DraftHandler()
 void DraftHandler::createSynergyHandler()
 {
     this->synergyHandler = new SynergyHandler(this->parent(),ui);
+    connect(synergyHandler, SIGNAL(itemEnter(QStringList,QRect&,int,int)),
+            this, SIGNAL(itemEnter(QStringList,QRect&,int,int)));
+    connect(synergyHandler, SIGNAL(itemLeave()),
+            this, SIGNAL(itemLeave()));
     connect(synergyHandler, SIGNAL(pLog(QString)),
             this, SIGNAL(pLog(QString)));
     connect(synergyHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

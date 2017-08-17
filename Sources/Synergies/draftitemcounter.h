@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QLabel>
 #include <QHBoxLayout>
+#include "../Widgets/hoverlabel.h"
 #include "../utility.h"
 
 class DraftItemCounter : public QObject
@@ -16,7 +17,8 @@ public:
 
 //Variables
 private:
-    QLabel *labelIcon, *labelCounter;
+    HoverLabel *labelIcon;
+    QLabel *labelCounter;
     int counter;
     QList<DeckCard> deckCardList, deckCardListSyn;
 
@@ -35,8 +37,12 @@ public:
     int count();
 
 signals:
+    void iconEnter(const QStringList &codes, int top, int bottom);
+    void iconLeave();
 
 public slots:
+private slots:
+    void sendIconEnter();
 };
 
 #endif // DRAFTITEMCOUNTER_H

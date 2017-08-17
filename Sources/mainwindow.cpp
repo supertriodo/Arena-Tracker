@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
-    createSecretsWindow();//-->PlanHandler -->SecretsHandler
+    createCardListWindow();//-->PlanHandler -->SecretsHandler -->draftHandler
 
     readSettings();
     checkGamesLogDir();
@@ -640,14 +640,18 @@ void MainWindow::createCardWindow()
 }
 
 
-void MainWindow::createSecretsWindow()
+void MainWindow::createCardListWindow()
 {
-    secretsWindow = new SecretsWindow(this, secretsHandler);
-    connect(planHandler, SIGNAL(secretEntered(int,QRect,int,int)),
-            secretsWindow, SLOT(loadSecret(int,QRect,int,int)));
+    cardListWindow = new CardListWindow(this, secretsHandler);
+    connect(planHandler, SIGNAL(secretEntered(int,QRect&,int,int)),
+            cardListWindow, SLOT(loadSecret(int,QRect&,int,int)));
+    connect(draftHandler, SIGNAL(itemEnter(QStringList,QRect&,int,int)),
+            cardListWindow, SLOT(loadDraftItem(QStringList,QRect&,int,int)));
 
     connect(planHandler, SIGNAL(cardLeave()),
-            secretsWindow, SLOT(hide()));
+            cardListWindow, SLOT(hide()));
+    connect(draftHandler, SIGNAL(itemLeave()),
+            cardListWindow, SLOT(hide()));
 }
 
 
@@ -3568,8 +3572,8 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("EX1_251");
-        draftHandler->testSynergies();
+//        draftHandler->debugSynergiesCode("ICC_200");
+//        draftHandler->testSynergies();
 }
 
 

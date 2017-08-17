@@ -14,7 +14,7 @@
 #include "drafthandler.h"
 #include "trackobotuploader.h"
 #include "Widgets/cardwindow.h"
-#include "Widgets/secretswindow.h"
+#include "Widgets/cardlistwindow.h"
 #include <QMainWindow>
 #include <QJsonObject>
 
@@ -65,7 +65,7 @@ private:
     SecretsHandler *secretsHandler;
     DraftHandler * draftHandler;
     CardWindow *cardWindow;
-    SecretsWindow *secretsWindow;
+    CardListWindow *cardListWindow;
     TrackobotUploader *trackobotUploader;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
@@ -100,7 +100,7 @@ private:
     void createArenaHandler();
     void createGameWatcher();
     void createCardWindow();
-    void createSecretsWindow();
+    void createCardListWindow();
     void createCardDownloader();
     void createEnemyDeckHandler();
     void createDeckHandler();
