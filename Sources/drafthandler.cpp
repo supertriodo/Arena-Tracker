@@ -904,7 +904,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
     //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 5 mejores posiciones
     if(numCaptured != 0 || !newCardsFound)
     {
-        if(numCaptured == 0 && !newCardsFound)
+        if(numCaptured == 0)
         {
             for(int i=0; i<3; i++)  draftCardMaps[i].clear();
         }
