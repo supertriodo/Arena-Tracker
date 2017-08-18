@@ -53,7 +53,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
     mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/aoeMechanic.png"));
     mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/tauntMechanic.png"));
-    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/restoreMechanic.png"));
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/restoreMechanic.png"));
     mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/drawMechanic.png"));
 
     mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/pingMechanic.png"));
@@ -65,7 +65,7 @@ void SynergyHandler::createDraftItemCounters()
             this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
     connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_RESTORE_FRIENDLY_HEROE], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
     connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
@@ -82,7 +82,7 @@ void SynergyHandler::createDraftItemCounters()
             this, SIGNAL(itemLeave()));
     connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
-    connect(mechanicCounters[V_RESTORE_FRIENDLY_HEROE], SIGNAL(iconLeave()),
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
     connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -120,6 +120,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
     mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this);
+    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this);
     mechanicCounters[V_ARMOR] = new DraftItemCounter(this);
     mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
     mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this);
@@ -441,13 +442,17 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     if(isSpellDamageGen(code))                                              mechanicCounters[V_SPELL_DAMAGE]->increase(code);
     if(isEvolveGen(code, text))                                             mechanicCounters[V_EVOLVE]->increase(code);
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
-    if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
     if(isLifestealMinon(code, mechanics, cardType))                         mechanicCounters[V_LIFESTEAL_MINION]->increase(code);
+    if(isRestoreFriendlyHeroGen(code, mechanics, text))
+    {
+        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
+        mechanicCounters[V_SURVIVABILITY]->increase(code);
+    }
     if(isArmorGen(code, text))
     {
         mechanicCounters[V_ARMOR]->increase(code);
-        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase();
+        mechanicCounters[V_SURVIVABILITY]->increase(code);
     }
     if(isTaunt(code, mechanics))
     {

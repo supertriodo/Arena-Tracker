@@ -26,7 +26,7 @@ private:
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
-    void increase();
+//    void increase();
     void increase(int numIncrease, int draftedCardsCount);
     void increase(const QString &code, bool count=true);
     bool isEmpty();

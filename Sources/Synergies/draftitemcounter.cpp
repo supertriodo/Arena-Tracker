@@ -69,21 +69,21 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 }
 
 
-void DraftItemCounter::increase()
-{
-    if(labelIcon != NULL && labelCounter != NULL)
-    {
-        this->counter++;
-        labelCounter->setText(QString::number(counter));
-        if(counter == 1)
-        {
-#ifdef QT_DEBUG
-            labelIcon->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
-            labelCounter->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
-#endif
-        }
-    }
-}
+//void DraftItemCounter::increase()
+//{
+//    if(labelIcon != NULL && labelCounter != NULL)
+//    {
+//        this->counter++;
+//        labelCounter->setText(QString::number(counter));
+//        if(counter == 1)
+//        {
+//#ifdef QT_DEBUG
+//            labelIcon->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
+//            labelCounter->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
+//#endif
+//        }
+//    }
+//}
 void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
 {
     if(labelIcon != NULL && labelCounter != NULL)
