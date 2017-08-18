@@ -720,8 +720,10 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
-    if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
-    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
+    //TokenCard y combo son synergias debiles, no queremos ver questing adventure en cada token que elijamos
+    //y no queremos ver un token en cada combo que elijamos
+//    if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
+//    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
     if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
@@ -847,7 +849,8 @@ void SynergyHandler::testSynergies()
 //                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
 //                !isReturnSyn(code, mechanics, cardType, text)
 //                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
-                isTokenCardGen(code, cost)
+//                isTokenCardGen(code, cost)
+                isComboSyn(code, referencedTags, cost)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
