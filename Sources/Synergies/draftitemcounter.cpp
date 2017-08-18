@@ -1,7 +1,7 @@
 #include "draftitemcounter.h"
 #include <QtWidgets>
 
-DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap) : QObject(parent)
+DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover) : QObject(parent)
 {
     labelIcon = new HoverLabel();
     labelCounter = new QLabel();
@@ -9,10 +9,13 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixma
     hLayout->addWidget(labelIcon);
     hLayout->addWidget(labelCounter);
 
-    connect(labelIcon, SIGNAL(enter()),
-            this, SLOT(sendIconEnter()));
-    connect(labelIcon, SIGNAL(leave()),
-            this, SIGNAL(iconLeave()));
+    if(iconHover)
+    {
+        connect(labelIcon, SIGNAL(enter()),
+                this, SLOT(sendIconEnter()));
+        connect(labelIcon, SIGNAL(leave()),
+                this, SIGNAL(iconLeave()));
+    }
 
     reset();
 }
@@ -208,15 +211,9 @@ int DraftItemCounter::count()
 
 void DraftItemCounter::sendIconEnter()
 {
-    QStringList codes;
-    for(DeckCard &deckCard: deckCardList)
-    {
-        codes.append(deckCard.getCode());
-    }
-
     int labelTop = labelIcon->mapToGlobal(QPoint(0,0)).y();
     int labelBottom = labelIcon->mapToGlobal(QPoint(0,labelIcon->height())).y();
 
-    emit iconEnter(codes, labelTop, labelBottom);
+    emit iconEnter(deckCardList, labelTop, labelBottom);
 }
 

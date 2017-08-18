@@ -66,27 +66,26 @@ void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBott
 }
 
 
-void CardListWindow::loadDraftItem(const QStringList &codes, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
+void CardListWindow::loadDraftItem(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     //Clear and delete items
     listWidget->clear();
 
-    if(codes.isEmpty())
+    if(deckCardList.isEmpty())
     {
         hide();
         return;
     }
 
-    foreach(QString code, codes)
+    foreach(DeckCard card, deckCardList)
     {
-        DeckCard card(code);
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
         listWidget->addItem(card.listItem);
         card.draw();
     }
 
     int winWidth = listWidget->sizeHintForColumn(0);
-    int winHeight = codes.count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth();
+    int winHeight = listWidget->count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth();
     setFixedSize(winWidth, winHeight);
 
     QPoint center = rectCard.center();

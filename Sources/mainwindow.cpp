@@ -645,8 +645,8 @@ void MainWindow::createCardListWindow()
     cardListWindow = new CardListWindow(this, secretsHandler);
     connect(planHandler, SIGNAL(secretEntered(int,QRect&,int,int)),
             cardListWindow, SLOT(loadSecret(int,QRect&,int,int)));
-    connect(draftHandler, SIGNAL(itemEnter(QStringList,QRect&,int,int)),
-            cardListWindow, SLOT(loadDraftItem(QStringList,QRect&,int,int)));
+    connect(draftHandler, SIGNAL(itemEnter(QList<DeckCard>&,QRect&,int,int)),
+            cardListWindow, SLOT(loadDraftItem(QList<DeckCard>&,QRect&,int,int)));
 
     connect(planHandler, SIGNAL(cardLeave()),
             cardListWindow, SLOT(hide()));
@@ -3572,7 +3572,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("ICC_200");
+//        draftHandler->debugSynergiesCode("NEW1_041");
 //        draftHandler->testSynergies();
 }
 

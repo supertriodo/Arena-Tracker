@@ -11,7 +11,7 @@ class DraftItemCounter : public QObject
 {
     Q_OBJECT
 public:
-    DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap);
+    DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
     DraftItemCounter(QObject *parent);
     ~DraftItemCounter();
 
@@ -37,7 +37,7 @@ public:
     int count();
 
 signals:
-    void iconEnter(const QStringList &codes, int top, int bottom);
+    void iconEnter(QList<DeckCard> &deckCardList, int top, int bottom);
     void iconLeave();
 
 public slots:
