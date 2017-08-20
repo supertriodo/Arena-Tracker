@@ -871,7 +871,7 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(activeDraftDeck()),
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher, SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
-            draftHandler, SLOT(endDraft()));
+            draftHandler, SLOT(endDraftDeleteMechanicsWindow()));
     connect(gameWatcher, SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
     connect(gameWatcher, SIGNAL(enterArena()),
@@ -1020,7 +1020,7 @@ void MainWindow::closeApp()
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
     removeNonCompleteDraft();
     resizeChangingTab();
-    draftHandler->endDraft();
+    draftHandler->endDraftDeleteMechanicsWindow();
     close();
 }
 
@@ -3574,7 +3574,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-        draftHandler->debugSynergiesCode("EX1_558");
+        draftHandler->debugSynergiesCode("OG_222");
 //        draftHandler->testSynergies();
 }
 

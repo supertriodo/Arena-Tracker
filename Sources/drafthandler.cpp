@@ -355,6 +355,10 @@ void DraftHandler::leaveArena()
         if(draftScoreWindow != NULL)        draftScoreWindow->hide();
         if(draftMechanicsWindow != NULL)    draftMechanicsWindow->hide();
     }
+    else
+    {
+        deleteDraftMechanicsWindow();
+    }
 }
 
 
@@ -456,8 +460,13 @@ void DraftHandler::endDraft()
     this->justPickedCard = "";
 
     deleteDraftScoreWindow();
-    deleteDraftMechanicsWindow();
+}
 
+
+void DraftHandler::endDraftDeleteMechanicsWindow()
+{
+    endDraft();
+    deleteDraftMechanicsWindow();
 }
 
 

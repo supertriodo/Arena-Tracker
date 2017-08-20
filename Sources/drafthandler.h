@@ -160,6 +160,7 @@ signals:
 public slots:
     void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
     void endDraft();
+    void endDraftDeleteMechanicsWindow();
     void showNewRatings(double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,
                         int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod);
