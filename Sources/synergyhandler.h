@@ -166,7 +166,7 @@ signals:
     void itemLeave();
 
 private slots:
-    void sendItemEnter(QList<DeckCard> &deckCardList, int iconTop, int iconBottom);
+    void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
 };
 
 #endif // SYNERGYHANDLER_H

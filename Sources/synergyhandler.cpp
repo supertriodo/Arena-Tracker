@@ -61,22 +61,22 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/destroyMechanic.png"));
     mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/reachMechanic.png"));
 
-    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
-    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<DeckCard>&,int,int)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,int,int)));
+    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -157,8 +157,10 @@ void SynergyHandler::deleteDraftItemCounters()
 }
 
 
-void SynergyHandler::sendItemEnter(QList<DeckCard> &deckCardList, int iconTop, int iconBottom)
+void SynergyHandler::sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect)
 {
+    int iconTop = labelRect.top();
+    int iconBottom = labelRect.bottom();
     QPoint mainTopLeft = ui->tabDraft->mapToGlobal(QPoint(0,0));
     QPoint mainBottomRight = ui->tabDraft->mapToGlobal(QPoint(ui->tabDraft->width(),ui->tabDraft->height()));
 

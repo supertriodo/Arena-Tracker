@@ -42,7 +42,7 @@ public:
     QList<DeckCard> getDeckCardList();
 
 signals:
-    void iconEnter(QList<DeckCard> &deckCardList, int top, int bottom);
+    void iconEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
     void iconLeave();
 
 public slots:

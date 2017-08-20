@@ -647,6 +647,8 @@ void MainWindow::createCardListWindow()
             cardListWindow, SLOT(loadSecret(int,QRect&,int,int)));
     connect(draftHandler, SIGNAL(itemEnter(QList<DeckCard>&,QRect&,int,int)),
             cardListWindow, SLOT(loadDraftItem(QList<DeckCard>&,QRect&,int,int)));
+    connect(draftHandler, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)),
+            cardListWindow, SLOT(loadDraftOverlayItem(QList<DeckCard>&,QPoint&,int,int)));
 
     connect(planHandler, SIGNAL(cardLeave()),
             cardListWindow, SLOT(hide()));

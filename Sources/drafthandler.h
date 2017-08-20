@@ -152,6 +152,7 @@ signals:
     void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text, int hideDelay = 5000);
     void itemEnter(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
+    void itemEnterOverlay(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
     void itemLeave();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");

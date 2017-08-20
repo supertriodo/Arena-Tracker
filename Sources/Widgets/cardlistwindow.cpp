@@ -107,3 +107,37 @@ void CardListWindow::loadDraftItem(QList<DeckCard> &deckCardList, QRect &rectCar
     move(moveX, moveY);
     show();
 }
+
+
+void CardListWindow::loadDraftOverlayItem(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight)
+{
+    //Clear and delete items
+    listWidget->clear();
+
+    if(deckCardList.isEmpty())
+    {
+        hide();
+        return;
+    }
+
+    foreach(DeckCard card, deckCardList)
+    {
+        card.listItem = new QListWidgetItem();//Items son auto delete en clear()
+        listWidget->addItem(card.listItem);
+        card.draw();
+    }
+
+    int winWidth = listWidget->sizeHintForColumn(0);
+    int winHeight = listWidget->count()*listWidget->sizeHintForRow(0) + 2*listWidget->frameWidth();
+    setFixedSize(winWidth, winHeight);
+
+    int moveX, moveY;
+    moveX = originList.x() - winWidth/2;
+    moveY = originList.y();
+
+    if((maxLeft!=-1) && (moveX<maxLeft))                    moveX = maxLeft;
+    else if((maxRight!=-1) && ((moveX+winWidth)>maxRight))  moveX = maxRight - winWidth;
+
+    move(moveX, moveY);
+    show();
+}

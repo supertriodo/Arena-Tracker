@@ -1143,8 +1143,10 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
     draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
     initDraftMechanicsWindowCounters();
-    //TODO
-    //Connects mechanics
+    connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
+            this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
+    connect(draftMechanicsWindow, SIGNAL(itemLeave()),
+            this, SIGNAL(itemLeave()));
 
     showOverlay();
 }

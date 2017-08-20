@@ -66,6 +66,40 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(":/Images/destroyMechanic.png"), scoreWidth/2);
     mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(":/Images/reachMechanic.png"), scoreWidth/2);
 
+    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+
+    connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_PING], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+
 
     centralLayout->addStretch();
     centralLayout->addLayout(cardTypeLayout);
@@ -181,4 +215,18 @@ void DraftMechanicsWindow::clearLists()
     mechanicCounters[V_DAMAGE]->reset();
     mechanicCounters[V_DESTROY]->reset();
     mechanicCounters[V_REACH]->reset();
+}
+
+
+void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect)
+{
+    QPoint topLeftWindow = this->mapToGlobal(QPoint(0,0));
+    QPoint bottomRightWindow = this->mapToGlobal(QPoint(width(),height()));
+    int iconCenterX = labelRect.x() + labelRect.width()/2;
+    QPoint originList(iconCenterX, bottomRightWindow.y());
+
+    int maxLeft = topLeftWindow.x();
+    int maxRight = bottomRightWindow.x();
+
+    emit itemEnter(deckCardList, originList, maxLeft, maxRight);
 }

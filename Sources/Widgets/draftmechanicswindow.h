@@ -34,6 +34,13 @@ public:
     void updateManaCounter(int numIncrease, int draftedCardsCount);
     void clearLists();
     void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList, QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList, QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+
+public slots:
+    void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
+
+signals:
+    void itemEnter(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight);
+    void itemLeave();
 };
 
 #endif // DRAFTMECHANICSWINDOW_H
