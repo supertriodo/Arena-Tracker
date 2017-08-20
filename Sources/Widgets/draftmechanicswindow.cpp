@@ -110,6 +110,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Mechanics");
+
+    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(centralWidget);
+    effect->setOpacity(0);
+    centralWidget->setGraphicsEffect(effect);
+    Utility::fadeInWidget(centralWidget);
 }
 
 
