@@ -16,7 +16,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     resize(rect.width() * 1.3,
            rect.height() * 1.1);
     move(rectScreen.x() + rect.x() - 0.15*rect.width(),
-         rectScreen.y() + rect.y() - 0.05*rect.height() - 1.5*sizeCard.height());
+         rectScreen.y() + rect.y() - 0.05*rect.height() - 1.6*sizeCard.height());
 
 
     QWidget *centralWidget = new QWidget(this);

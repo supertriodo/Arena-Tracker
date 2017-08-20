@@ -185,15 +185,22 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
     synergiesListWidget[posCard]->clear();
     synergiesDeckCardLists[posCard].clear();
 
+    QMap<int,DeckCard> deckCardMap;
     for(const QString &code: synergies.keys())
     {
         int total = synergies[code];
         DeckCard deckCard(code);
         deckCard.total = deckCard.remaining = total;
+        deckCardMap.insertMulti(deckCard.getCost(), deckCard);
+    }
+
+    for(DeckCard &deckCard: deckCardMap.values())
+    {
         deckCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
         deckCard.draw();
         synergiesDeckCardLists[posCard].append(deckCard);
     }
+
 
     //Add mechanic icons
     Utility::clearLayout(horLayoutMechanics[posCard], true);

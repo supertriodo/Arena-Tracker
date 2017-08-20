@@ -243,6 +243,22 @@ void DraftItemCounter::sendIconEnter()
     QPoint bottomRight = labelIcon->mapToGlobal(QPoint(labelIcon->width(),labelIcon->height()));
     QRect labelRect = QRect(topLeft, bottomRight);
 
-    emit iconEnter(deckCardList, labelRect);
+    QMap<int,DeckCard> deckCardMap;
+    for(DeckCard &deckCard: deckCardList)   deckCardMap.insertMulti(deckCard.getCost(), deckCard);
+    QList<DeckCard> deckCardOrderedList = deckCardMap.values();
+
+    emit iconEnter(deckCardOrderedList, labelRect);
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1156,19 +1156,6 @@ bool SynergyHandler::isTauntGen(const QString &code, const QJsonArray &reference
     }
     return false;
 }
-//bool SynergyHandler::isRestoreGen(const QString &code)
-//{
-//    if(synergyCodes.contains(code))
-//    {
-//        return synergyCodes[code].contains("restoreGen");
-//    }
-//    else
-//    {
-//        QString text = Utility::cardEnTextFromCode(code).toLower();
-//        return  text.contains("restore");
-//    }
-//}
-//El minimo aoe es 3 pings a esbirros enemigos
 bool SynergyHandler::isAoeGen(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
