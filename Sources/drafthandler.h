@@ -2,9 +2,11 @@
 #define DRAFTHANDLER_H
 
 #include "Widgets/ui_extended.h"
+#include "deckhandler.h"
 #include "Cards/draftcard.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
+#include "Widgets/draftmechanicswindow.h"
 #include "synergyhandler.h"
 #include <QObject>
 #include <QFutureWatcher>
@@ -57,7 +59,7 @@ private:
     QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
     QString arenaHero;
-    double deckRating;
+    int deckRatingHA, deckRatingLF;
     cv::Rect screenRects[3];
     int screenIndex;
     int numCaptured;
@@ -65,6 +67,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     DraftScoreWindow *draftScoreWindow;
+    DraftMechanicsWindow * draftMechanicsWindow;
     bool showDraftOverlay;
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
@@ -73,7 +76,8 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     QComboBox *comboBoxCard[3];
-    double shownTierScores[3];
+    double shownTierScoresHA[3];
+    double shownTierScoresLF[3];
     bool extendedCapture;
 
 
@@ -87,18 +91,19 @@ private:
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void updateDeckScore(double cardRating=0);
+    void updateDeckScore(double cardRatingHA, double cardRatingLF);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
     void highlightScore(QLabel *label, DraftMethod draftMethod);
     void deleteDraftScoreWindow();
+    void deleteDraftMechanicsWindow();
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString);
     QMap<QString, LFtier> initLightForgeTiers(const QString &heroString);
-    void createDraftScoreWindow(const QPointF &screenScale);
+    void createDraftWindows(const QPointF &screenScale);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
@@ -113,6 +118,8 @@ private:
     void connectAllComboBox();
     void clearAndDisconnectAllComboBox();
     void clearAndDisconnectComboBox(int index);
+    void initDraftMechanicsWindowCounters();
+    void initSynergyCounters(QList<DeckCard> &deckCardList);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
@@ -150,7 +157,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
 public slots:
-    void beginDraft(QString hero, QList<DeckCard> deckCardList=QList<DeckCard>());
+    void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
     void endDraft();
     void showNewRatings(double rating1, double rating2, double rating3,
                         double tierScore1, double tierScore2, double tierScore3,

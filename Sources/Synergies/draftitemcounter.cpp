@@ -1,11 +1,33 @@
 #include "draftitemcounter.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover) : QObject(parent)
 {
+    init(hLayout, iconHover);
+    labelIcon->setPixmap(pixmap.scaledToWidth(32,Qt::SmoothTransformation));
+}
+
+
+DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol,
+                                   QPixmap pixmap, int iconWidth, bool iconHover) : QObject(parent)
+{
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    init(hLayout, iconHover);
+    labelIcon->setPixmap(pixmap.scaledToWidth(iconWidth, Qt::SmoothTransformation));
+
+    QFont font(ThemeHandler::defaultFont());
+    font.setPixelSize(iconWidth*0.6);
+    labelCounter->setFont(font);
+    labelCounter->setStyleSheet(".QLabel { color: black;}");
+    gridLayout->addLayout(hLayout, gridRow, gridCol);
+}
+
+
+void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
+{
     labelIcon = new HoverLabel();
     labelCounter = new QLabel();
-    labelIcon->setPixmap(pixmap.scaledToWidth(32,Qt::SmoothTransformation));
     hLayout->addWidget(labelIcon);
     hLayout->addWidget(labelCounter);
 
@@ -206,6 +228,12 @@ bool DraftItemCounter::isEmpty()
 int DraftItemCounter::count()
 {
     return counter;
+}
+
+
+QList<DeckCard> DraftItemCounter::getDeckCardList()
+{
+    return deckCardList;
 }
 
 

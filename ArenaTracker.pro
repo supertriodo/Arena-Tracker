@@ -68,7 +68,8 @@ SOURCES += Sources/main.cpp\
     Sources/Synergies/draftitemcounter.cpp \
     Sources/Synergies/statsynergies.cpp \
     Sources/Widgets/cardlistwindow.cpp \
-    Sources/Widgets/hoverlabel.cpp
+    Sources/Widgets/hoverlabel.cpp \
+    Sources/Widgets/draftmechanicswindow.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -128,7 +129,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Synergies/draftitemcounter.h \
     Sources/Synergies/statsynergies.h \
     Sources/Widgets/cardlistwindow.h \
-    Sources/Widgets/hoverlabel.h
+    Sources/Widgets/hoverlabel.h \
+    Sources/Widgets/draftmechanicswindow.h
 
 FORMS    += mainwindow.ui
 

@@ -7,7 +7,7 @@
 DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
-    this->deckRating = 0;
+    this->deckRatingHA = this->deckRatingLF = 0;
     this->numCaptured = 0;
     this->extendedCapture = false;
     this->drafting = false;
@@ -15,6 +15,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->leavingArena = false;
     this->transparency = Opaque;
     this->draftScoreWindow = NULL;
+    this->draftMechanicsWindow = NULL;
     this->synergyHandler = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
@@ -34,6 +35,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 DraftHandler::~DraftHandler()
 {
     deleteDraftScoreWindow();
+    deleteDraftMechanicsWindow();
     if(synergyHandler != NULL)  delete synergyHandler;
 }
 
@@ -268,7 +270,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         comboBoxCard[i]->setCurrentIndex(0);
     }
 
-    updateDeckScore();
+    updateDeckScore(0, 0);
 
     if(!alreadyDrafting)
     {
@@ -301,7 +303,8 @@ void DraftHandler::clearLists(bool keepCounters)
 
     if(!keepCounters)
     {
-        deckRating = 0;
+        deckRatingHA = deckRatingLF = 0;
+        if(draftMechanicsWindow != NULL)    draftMechanicsWindow->clearLists();
     }
 
     for(int i=0; i<3; i++)
@@ -349,7 +352,8 @@ void DraftHandler::leaveArena()
                 bestMatchesMaps[i].clear();
             }
         }
-        if(draftScoreWindow != NULL)    draftScoreWindow->hide();
+        if(draftScoreWindow != NULL)        draftScoreWindow->hide();
+        if(draftMechanicsWindow != NULL)    draftMechanicsWindow->hide();
     }
 }
 
@@ -381,8 +385,35 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
-    synergyHandler->initCounters(deckCardList);
+    if(!deckCardList.isEmpty()) initSynergyCounters(deckCardList);
     resetTab(alreadyDrafting);
+}
+
+
+void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
+{
+    if(synergyHandler->draftedCardsCount() > 0) return;
+
+    QStringList spellList, minionList, weaponList,
+                aoeList, tauntList, survivabilityList, drawList,
+                pingList, damageList, destroyList, reachList;
+    for(DeckCard &deckCard: deckCardList)
+    {
+        if(deckCard.getType() == INVALID_TYPE)  continue;
+        QString code = deckCard.getCode();
+        for(uint i=0; i<deckCard.total; i++)
+        {
+            synergyHandler->updateCounters(deckCard, spellList, minionList, weaponList,
+                           aoeList, tauntList, survivabilityList, drawList,
+                           pingList, damageList, destroyList, reachList);
+            deckRatingHA += hearthArenaTiers[code];
+            deckRatingLF += normalizeLFscore(lightForgeTiers[code].score);
+        }
+    }
+
+    int numCards = synergyHandler->draftedCardsCount();
+    updateDeckScore(0, 0);
+    emit pDebug("Counters starts with " + QString::number(numCards) + " cards.");
 }
 
 
@@ -415,8 +446,9 @@ void DraftHandler::endDraft()
 
     //Show Deck Score
     int numCards = synergyHandler->draftedCardsCount();
-    int deckScore = (numCards==0)?0:(int)(deckRating/numCards);
-    emit showMessageProgressBar("Deck Score: " + QString::number(deckScore), 10000);
+    int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
+    int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
+    emit showMessageProgressBar(" LF:" + QString::number(deckScoreLF) + " -- HA:" + QString::number(deckScoreHA), 10000);
 
     clearLists(false);
 
@@ -424,6 +456,7 @@ void DraftHandler::endDraft()
     this->justPickedCard = "";
 
     deleteDraftScoreWindow();
+    deleteDraftMechanicsWindow();
 
 }
 
@@ -435,6 +468,17 @@ void DraftHandler::deleteDraftScoreWindow()
         draftScoreWindow->close();
         delete draftScoreWindow;
         draftScoreWindow = NULL;
+    }
+}
+
+
+void DraftHandler::deleteDraftMechanicsWindow()
+{
+    if(draftMechanicsWindow != NULL)
+    {
+        draftMechanicsWindow->close();
+        delete draftMechanicsWindow;
+        draftMechanicsWindow = NULL;
     }
 }
 
@@ -636,8 +680,22 @@ void DraftHandler::pickCard(QString code)
         if(draftCards[i].getCode() == code)
         {
             draftCard = draftCards[i];
-            synergyHandler->updateCounters(draftCard);
-            updateDeckScore(shownTierScores[i]);
+
+            QStringList spellList, minionList, weaponList,
+                        aoeList, tauntList, survivabilityList, drawList,
+                        pingList, damageList, destroyList, reachList;
+            synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
+                                           aoeList, tauntList, survivabilityList, drawList,
+                                           pingList, damageList, destroyList, reachList);
+            updateDeckScore(shownTierScoresHA[i], shownTierScoresLF[i]);
+            if(draftMechanicsWindow != NULL)
+            {
+                int numCards = synergyHandler->draftedCardsCount();
+                draftMechanicsWindow->updateManaCounter(draftCard.getCost(), numCards);
+                draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                                     aoeList, tauntList, survivabilityList, drawList,
+                                                     pingList, damageList, destroyList, reachList);
+            }
             break;
         }
     }
@@ -772,13 +830,16 @@ void DraftHandler::comboBoxChanged()
 }
 
 
-void DraftHandler::updateDeckScore(double cardRating)
+void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
 {
-    deckRating += cardRating;
     int numCards = synergyHandler->draftedCardsCount();
-    int actualRating = (numCards==0)?0:(int)(deckRating/numCards);
-    ui->labelDeckScore->setText(QString("Deck Score: " + QString::number(actualRating) +
+    deckRatingHA += cardRatingHA;
+    deckRatingLF += cardRatingLF;
+    int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
+    int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
+    ui->labelDeckScore->setText(QString(" LF: " + QString::number(deckScoreLF) + " -- HA: " + QString::number(deckScoreHA) +
                                         " (" + QString::number(numCards) + "/30)"));
+    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
 }
 
 
@@ -794,21 +855,17 @@ void DraftHandler::showNewRatings(double rating1, double rating2, double rating3
 
     for(int i=0; i<3; i++)
     {
-        //TierScore for deck average
-        if(draftMethod == this->draftMethod || (this->draftMethod == All && draftMethod == HearthArena))
-        {
-            shownTierScores[i] = tierScore[i];
-        }
-
         //Update score label
         if(draftMethod == LightForge)
         {
+            shownTierScoresLF[i] = tierScore[i];
             labelLFscore[i]->setText(QString::number((int)ratings[i]) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(maxRating == ratings[i])     highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
+            shownTierScoresHA[i] = tierScore[i];
             labelHAscore[i]->setText(QString::number((int)ratings[i]) +
                                                 (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(maxRating == ratings[i])     highlightScore(labelHAscore[i], draftMethod);
@@ -1004,7 +1061,7 @@ void DraftHandler::finishFindScreenRects()
 
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
 
-        createDraftScoreWindow(screenDetection.screenScale);
+        createDraftWindows(screenDetection.screenScale);
         newCaptureDraftLoop();
     }
 }
@@ -1045,14 +1102,36 @@ ScreenDetection DraftHandler::findScreenRects()
 }
 
 
-void DraftHandler::createDraftScoreWindow(const QPointF &screenScale)
+void DraftHandler::initDraftMechanicsWindowCounters()
+{
+    int numCards = synergyHandler->draftedCardsCount();
+
+    if(numCards == 0)    return;
+
+    QStringList spellList, minionList, weaponList,
+                aoeList, tauntList, survivabilityList, drawList,
+                pingList, damageList, destroyList, reachList;
+    int manaCounter = synergyHandler->getCounters(spellList, minionList, weaponList,
+                                                  aoeList, tauntList, survivabilityList, drawList,
+                                                  pingList, damageList, destroyList, reachList);
+    draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                         aoeList, tauntList, survivabilityList, drawList,
+                                         pingList, damageList, destroyList, reachList);
+    draftMechanicsWindow->updateManaCounter(manaCounter, numCards);
+    updateDeckScore(0, 0);
+}
+
+
+void DraftHandler::createDraftWindows(const QPointF &screenScale)
 {
     deleteDraftScoreWindow();
+    deleteDraftMechanicsWindow();
     QPoint topLeft(screenRects[0].x * screenScale.x(), screenRects[0].y * screenScale.y());
     QPoint bottomRight(screenRects[2].x * screenScale.x() + screenRects[2].width * screenScale.x(),
             screenRects[2].y * screenScale.y() + screenRects[2].height * screenScale.y());
     QRect draftRect(topLeft, bottomRight);
     QSize sizeCard(screenRects[0].width * screenScale.x(), screenRects[0].height * screenScale.y());
+
     draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
     draftScoreWindow->setLearningMode(this->learningMode);
     draftScoreWindow->setDraftMethod(this->draftMethod);
@@ -1061,6 +1140,11 @@ void DraftHandler::createDraftScoreWindow(const QPointF &screenScale)
             this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
     connect(draftScoreWindow, SIGNAL(cardLeave()),
             this, SIGNAL(overlayCardLeave()));
+
+    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+    initDraftMechanicsWindowCounters();
+    //TODO
+    //Connects mechanics
 
     showOverlay();
 }
@@ -1173,10 +1257,18 @@ void DraftHandler::setShowDraftOverlay(bool value)
 
 void DraftHandler::showOverlay()
 {
-    if(this->draftScoreWindow != NULL)
+    if(this->draftScoreWindow != NULL && this->draftMechanicsWindow != NULL)
     {
-        if(this->showDraftOverlay)  this->draftScoreWindow->show();
-        else                        this->draftScoreWindow->hide();
+        if(this->showDraftOverlay)
+        {
+            this->draftScoreWindow->show();
+            this->draftMechanicsWindow->show();
+        }
+        else
+        {
+            this->draftScoreWindow->hide();
+            this->draftMechanicsWindow->hide();
+        }
     }
 }
 
@@ -1193,7 +1285,8 @@ void DraftHandler::setLearningMode(bool value)
 void DraftHandler::setDraftMethod(DraftMethod value)
 {
     this->draftMethod = value;
-    if(draftScoreWindow != NULL)    draftScoreWindow->setDraftMethod(value);
+    if(draftScoreWindow != NULL)        draftScoreWindow->setDraftMethod(value);
+    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setDraftMethod(value);
 
     updateScoresVisibility();
 }
@@ -1305,13 +1398,15 @@ bool DraftHandler::isDrafting()
 
 void DraftHandler::minimizeScoreWindow()
 {
-    if(this->draftScoreWindow != NULL)  draftScoreWindow->showMinimized();
+    if(this->draftScoreWindow != NULL)      draftScoreWindow->showMinimized();
+    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->showMinimized();
 }
 
 
 void DraftHandler::deMinimizeScoreWindow()
 {
-    if(this->draftScoreWindow != NULL)  draftScoreWindow->setWindowState(Qt::WindowActive);
+    if(this->draftScoreWindow != NULL)      draftScoreWindow->setWindowState(Qt::WindowActive);
+    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setWindowState(Qt::WindowActive);
 }
 
 

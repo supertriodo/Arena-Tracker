@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createEnemyHandHandler();//-->PlanHandler
     createEnemyDeckHandler();
     createDeckHandler();//-->EnemyDeckHandler
-    createDraftHandler();//-->DeckHandler -->CardDownloader
+    createDraftHandler();//-->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
     createGameWatcher();//-->A lot
@@ -3572,7 +3572,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("NEW1_041");
+        draftHandler->debugSynergiesCode("EX1_558");
 //        draftHandler->testSynergies();
 }
 
@@ -3584,12 +3584,15 @@ void MainWindow::testDelay()
 
 
 
-//TODO
+//TODDO
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //New web
 
+//Importar counters en createDraftWindows
+//Ordenar hover list por mana cost
+//https://www.reddit.com/r/ArenaTracker/comments/6tm49n/v53_kft_expansion/
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
 //Theme nuevos iconos y documentar
 //documentar nuevo icono refresh en create theme (user guide)

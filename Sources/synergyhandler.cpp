@@ -257,23 +257,6 @@ int SynergyHandler::draftedCardsCount()
 }
 
 
-void SynergyHandler::initCounters(QList<DeckCard> deckCardList)
-{
-    if(draftedCardsCount() > 0) return;
-
-    for(DeckCard deckCard: deckCardList)
-    {
-        if(deckCard.getType() == INVALID_TYPE)  continue;
-        for(uint i=0; i<deckCard.total; i++)
-        {
-            updateCounters(deckCard);
-        }
-    }
-
-    emit pDebug("Counters starts with " + QString::number(draftedCardsCount()) + " cards.");
-}
-
-
 void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 {
     manaCounter->setTransparency(transparency, mouseInApp);
@@ -292,12 +275,73 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 }
 
 
-void SynergyHandler::updateCounters(DeckCard &deckCard)
+int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
+{
+    for(DeckCard &deckCard: cardTypeCounters[V_SPELL]->getDeckCardList())
+    {
+        QString code = deckCard.getCode();
+        if(DeckCard(code).getType() == SPELL)
+        {
+            for(uint i=0; i<deckCard.total; i++)    spellList.append(code);
+        }
+    }
+    for(DeckCard &deckCard: cardTypeCounters[V_MINION]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    minionList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: cardTypeCounters[V_WEAPON]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    weaponList.append(deckCard.getCode());
+    }
+
+
+    for(DeckCard &deckCard: mechanicCounters[V_AOE]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    aoeList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_TAUNT_ALL]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    tauntList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_SURVIVABILITY]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    survivabilityList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_DISCOVER_DRAW]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    drawList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_PING]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    pingList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_DAMAGE]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    damageList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_DESTROY]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    destroyList.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_REACH]->getDeckCardList())
+    {
+        for(uint i=0; i<deckCard.total; i++)    reachList.append(deckCard.getCode());
+    }
+
+    return manaCounter->count();
+}
+
+
+void SynergyHandler::updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                                    QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
 {
     updateRaceCounters(deckCard);
-    updateCardTypeCounters(deckCard);
+    updateCardTypeCounters(deckCard, spellList, minionList, weaponList);
     updateManaCounter(deckCard);
-    updateMechanicCounters(deckCard);
+    updateMechanicCounters(deckCard, aoeList, tauntList, survivabilityList, drawList, pingList, damageList, destroyList, reachList);
     updateStatsCards(deckCard);
 }
 
@@ -382,19 +426,28 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard)
+void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList)
 {
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    if(cardType == SPELL)               cardTypeCounters[V_SPELL]->increase(code);
+    if(cardType == SPELL)
+    {
+        cardTypeCounters[V_SPELL]->increase(code);
+        spellList.append(code);
+    }
     else if(isSpellGen(code))           cardTypeCounters[V_SPELL]->increase(code,false);
-    if(cardType == MINION || cardType == HERO)  cardTypeCounters[V_MINION]->increase(code);
+    if(cardType == MINION || cardType == HERO)
+    {
+        cardTypeCounters[V_MINION]->increase(code);
+        minionList.append(code);
+    }
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->increase(code);
         cardTypeCounters[V_WEAPON_ALL]->increase(code);
+        weaponList.append(code);
     }
     else if(isWeaponGen(code, text))    cardTypeCounters[V_WEAPON_ALL]->increase(code);
 
@@ -405,7 +458,9 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
+void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
+                                            QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                                            QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
 {
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -415,12 +470,36 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
 
-    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mechanicCounters[V_DISCOVER_DRAW]->increase(code);
-    if(isAoeGen(code, text))                                                mechanicCounters[V_AOE]->increase(code);
-    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mechanicCounters[V_PING]->increase(code);
-    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_DAMAGE]->increase(code);
-    if(isDestroyGen(code, mechanics, text))                                 mechanicCounters[V_DESTROY]->increase(code);
-    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mechanicCounters[V_REACH]->increase(code);
+    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
+    {
+        mechanicCounters[V_DISCOVER_DRAW]->increase(code);
+        drawList.append(code);
+    }
+    if(isAoeGen(code, text))
+    {
+        mechanicCounters[V_AOE]->increase(code);
+        aoeList.append(code);
+    }
+    if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
+    {
+        mechanicCounters[V_PING]->increase(code);
+        pingList.append(code);
+    }
+    if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
+    {
+        mechanicCounters[V_DAMAGE]->increase(code);
+        damageList.append(code);
+    }
+    if(isDestroyGen(code, mechanics, text))
+    {
+        mechanicCounters[V_DESTROY]->increase(code);
+        destroyList.append(code);
+    }
+    if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
+    {
+        mechanicCounters[V_REACH]->increase(code);
+        reachList.append(code);
+    }
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
@@ -448,27 +527,34 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard)
     {
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
         mechanicCounters[V_SURVIVABILITY]->increase(code);
+        survivabilityList.append(code);
     }
     if(isArmorGen(code, text))
     {
         mechanicCounters[V_ARMOR]->increase(code);
         mechanicCounters[V_SURVIVABILITY]->increase(code);
+        survivabilityList.append(code);
     }
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->increase(code);
         mechanicCounters[V_TAUNT_ALL]->increase(code);
+        tauntList.append(code);
     }
-    else if(isTauntGen(code, referencedTags))                               mechanicCounters[V_TAUNT_ALL]->increase(code);
+    else if(isTauntGen(code, referencedTags))
+    {
+        mechanicCounters[V_TAUNT_ALL]->increase(code);
+        tauntList.append(code);
+    }
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->increase(code);
         mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
     }
     else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
-
-
     if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
+
+
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);

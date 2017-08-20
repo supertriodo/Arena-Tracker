@@ -1358,7 +1358,7 @@ void xls_close_WB(xlsWorkBook* pWB)
 	if(pWB->summary)  free(pWB->summary);
 	if(pWB->docSummary) free(pWB->docSummary);
 
-	// TODO - free other dynamically allocated objects like string table??
+    // TODDO - free other dynamically allocated objects like string table??
 	free(pWB);
 }
 

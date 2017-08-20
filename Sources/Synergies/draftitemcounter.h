@@ -12,6 +12,7 @@ class DraftItemCounter : public QObject
     Q_OBJECT
 public:
     DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
+    DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap, int iconWidth, bool iconHover=true);
     DraftItemCounter(QObject *parent);
     ~DraftItemCounter();
 
@@ -23,6 +24,9 @@ private:
     QList<DeckCard> deckCardList, deckCardListSyn;
 
 //Metodos
+private:
+    void init(QHBoxLayout *hLayout, bool iconHover);
+
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
@@ -35,6 +39,7 @@ public:
     void increaseSyn(const QString &code);
     void insertSynCards(QMap<QString, int> &synergies);
     int count();
+    QList<DeckCard> getDeckCardList();
 
 signals:
     void iconEnter(QList<DeckCard> &deckCardList, int top, int bottom);

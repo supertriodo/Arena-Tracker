@@ -8,19 +8,6 @@
 #include "utility.h"
 
 
-enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON,
-                  V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL,
-                  V_BEAST_ALL, V_TOTEM_ALL, V_PIRATE_ALL, V_DRAGON_ALL, V_NUM_RACES};
-enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
-enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL, V_DISCOVER_DRAW, V_PING, V_DAMAGE, V_DESTROY, V_REACH,
-                       V_OVERLOAD, V_JADE_GOLEM, V_SECRET, V_FREEZE_ENEMY, V_DISCARD, V_EVOLVE,
-                       V_BATTLECRY, V_SILENCE, V_STEALTH, V_DEATHRATTLE, V_DEATHRATTLE_GOOD_ALL,
-                       V_TAUNT_GIVER, V_TOKEN, V_WINDFURY_MINION, V_ATTACK_BUFF, V_HEALTH_BUFF, V_RETURN,
-                       V_DIVINE_SHIELD, V_DIVINE_SHIELD_ALL, V_ENRAGED, V_SPELL_DAMAGE, V_SURVIVABILITY,
-                       V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION,
-                       V_ARMOR, V_TOKEN_CARD, V_COMBO, V_LIFESTEAL_MINION, V_NUM_MECHANICS};
-
-
 class SynergyHandler : public QObject
 {
     Q_OBJECT
@@ -42,12 +29,16 @@ public:
     void debugSynergiesSet(const QString &set);
     void debugSynergiesCode(const QString &code, int num=0);
     void testSynergies();
-    void updateCounters(DeckCard &deckCard);
+    int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                        QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+    void updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                        QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
-    void initCounters(QList<DeckCard> deckCardList);
     void setTransparency(Transparency transparency, bool mouseInApp);
 
 private:
@@ -56,8 +47,10 @@ private:
 
     void updateManaCounter(DeckCard &deckCard);
     void updateRaceCounters(DeckCard &deckCard);
-    void updateCardTypeCounters(DeckCard &deckCard);
-    void updateMechanicCounters(DeckCard &deckCard);
+    void updateCardTypeCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList);
+    void updateMechanicCounters(DeckCard &deckCard,
+                                QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                                QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
     void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);

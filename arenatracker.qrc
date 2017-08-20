@@ -133,5 +133,6 @@
         <file>Images/spellsCounter.png</file>
         <file>Images/tauntMechanic.png</file>
         <file>Images/weaponsCounter.png</file>
+        <file>Images/bgDraftMechanics.png</file>
     </qresource>
 </RCC>

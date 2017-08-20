@@ -85,7 +85,7 @@ void ole2_bufread(OLE2Stream* olest)
 			//printf("fatpos: %d max=%u\n",olest->fatpos, (olest->ole->cfat*olest->ole->lsector)/4);
 			if(olest->fatpos > (olest->ole->cfat*olest->ole->lsector)/4) exit(-1);
 
-#if 0 // TODO: remove
+#if 0 // TODDO: remove
 			fseek(olest->ole->file,olest->fatpos*olest->ole->lsector+512,0);
 			ret = fread(olest->buf,1,olest->bufsize,olest->ole->file);
 			assert(ret == olest->bufsize);
