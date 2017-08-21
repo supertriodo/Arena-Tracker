@@ -112,10 +112,8 @@ void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
     {
         if(counter == 0)
         {
-#ifdef QT_DEBUG
-            labelIcon->setHidden(false);     //TODO Para ocultar los iconos cambiar todos a setHidden(true)
-            labelCounter->setHidden(false);  //TODO Para ocultar los iconos cambiar todos a setHidden(true)
-#endif
+            labelIcon->setHidden(false);
+            labelCounter->setHidden(false);
         }
         this->counter += numIncrease;
         labelCounter->setText(QString::number((counter*10/std::max(1,draftedCardsCount))/10.0));
@@ -146,10 +144,8 @@ void DraftItemCounter::increase(const QString &code, bool count)
         labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
-#ifdef QT_DEBUG
-            labelIcon->setHidden(false);     //TODO Para ocultar los iconos cambiar todos a setHidden(true)
-            labelCounter->setHidden(false);  //TODO Para ocultar los iconos cambiar todos a setHidden(true)
-#endif
+            labelIcon->setHidden(false);
+            labelCounter->setHidden(false);
         }
     }
 }

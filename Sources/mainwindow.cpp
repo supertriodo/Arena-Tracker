@@ -3574,7 +3574,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-        draftHandler->debugSynergiesCode("OG_222");
+//        draftHandler->debugSynergiesCode("ICC_289");
 //        draftHandler->testSynergies();
 }
 
@@ -3592,12 +3592,9 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 //New web
 
-//Importar counters en createDraftWindows
-//Ordenar hover list por mana cost
 //https://www.reddit.com/r/ArenaTracker/comments/6tm49n/v53_kft_expansion/
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
-//Theme nuevos iconos y documentar
-//documentar nuevo icono refresh en create theme (user guide)
+//documentar nuevo icono refresh en create theme y mechanics (user guide)
 
 //ADD TO FAQ
 //I have a deck drafted from sometime ago so I'll test that.

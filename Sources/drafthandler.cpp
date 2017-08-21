@@ -804,8 +804,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    -1, -1, -1,
                    HearthArena);
 
-    //Synergies //TODO Borrar para eliminar synergies
-#ifdef QT_DEBUG
     if(draftScoreWindow != NULL)
     {
         for(int i=0; i<3; i++)
@@ -816,7 +814,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
             draftScoreWindow->setSynergies(i, synergies, mechanicIcons);
         }
     }
-#endif
 }
 
 
