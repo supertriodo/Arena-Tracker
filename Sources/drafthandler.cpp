@@ -700,7 +700,7 @@ void DraftHandler::pickCard(QString code)
             if(draftMechanicsWindow != NULL)
             {
                 int numCards = synergyHandler->draftedCardsCount();
-                draftMechanicsWindow->updateManaCounter(draftCard.getCost(), numCards);
+                draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
                 draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
                                                      aoeList, tauntList, survivabilityList, drawList,
                                                      pingList, damageList, destroyList, reachList);

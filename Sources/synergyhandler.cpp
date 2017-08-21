@@ -371,7 +371,15 @@ void SynergyHandler::updateCounters(DeckCard &deckCard, QStringList &spellList, 
 
 void SynergyHandler::updateManaCounter(DeckCard &deckCard)
 {
-    manaCounter->increase(deckCard.getCost(), draftedCardsCount());
+    manaCounter->increase(getCorrectedCardMana(deckCard), draftedCardsCount());
+}
+
+
+int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
+{
+    if(deckCard.getCode() == NERUBIAN_PROPHET)  return 3;
+
+    return std::min(10, deckCard.getCost());
 }
 
 

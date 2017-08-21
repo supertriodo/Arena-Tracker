@@ -41,6 +41,7 @@ public:
     int draftedCardsCount();
     void setTransparency(Transparency transparency, bool mouseInApp);
     void setTheme();
+    int getCorrectedCardMana(DeckCard &deckCard);
 
 private:
     void createDraftItemCounters();
@@ -60,7 +61,6 @@ private:
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
 
-private:
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code, const QString &text);
     bool isMurlocGen(const QString &code);
@@ -158,7 +158,7 @@ private:
     bool isArmorSyn(const QString &code);
     bool isLifestealMinionSyn(const QString &code);
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
-    bool isEvolveSyn(const QString &code);
+    bool isEvolveSyn(const QString &code);    
 
 signals:
     void pLog(QString line);
