@@ -49,6 +49,10 @@ private:
     static QString lfBestFile_, lfCloseFile_, lfOpenFile_;
     static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
+    static QString minionsCounterFile_, spellsCounterFile_, weaponsCounterFile_, manaCounterFile_;
+    static QString aoeMechanicFile_, tauntMechanicFile_, survivalMechanicFile_, drawMechanicFile_;
+    static QString pingMechanicFile_, damageMechanicFile_, destroyMechanicFile_, reachMechanicFile_;
+    static QString bgDraftMechanicsFile_, fgDraftMechanicsColor_;
     static bool manaLimitBehind_;
     static QString themeLoaded_;
 
@@ -153,6 +157,20 @@ public:
     static QString gamesOnZ2HColor();
     static bool manaLimitBehind();
     static QString themeLoaded();
+    static QString minionsCounterFile();
+    static QString spellsCounterFile();
+    static QString weaponsCounterFile();
+    static QString manaCounterFile();
+    static QString aoeMechanicFile();
+    static QString tauntMechanicFile();
+    static QString survivalMechanicFile();
+    static QString drawMechanicFile();
+    static QString pingMechanicFile();
+    static QString damageMechanicFile();
+    static QString destroyMechanicFile();
+    static QString reachMechanicFile();
+    static QString bgDraftMechanicsFile();
+    static QString fgDraftMechanicsColor();
 };
 
 #endif // THEMEHANDLER_H

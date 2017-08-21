@@ -23,6 +23,7 @@ private:
     ScoreButton *scoresPushButton2;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
+    int scoreWidth;
 
 //Metodos
 private:
@@ -34,6 +35,7 @@ public:
     void updateManaCounter(int numIncrease, int draftedCardsCount);
     void clearLists();
     void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList, QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList, QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+    void setTheme();
 
 public slots:
     void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);

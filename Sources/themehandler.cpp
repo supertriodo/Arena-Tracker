@@ -43,6 +43,10 @@ QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haO
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
+QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
+QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
+QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
+QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
 
@@ -565,6 +569,90 @@ QString ThemeHandler::starFile()
 }
 
 
+QString ThemeHandler::minionsCounterFile()
+{
+    return minionsCounterFile_;
+}
+
+
+QString ThemeHandler::spellsCounterFile()
+{
+    return spellsCounterFile_;
+}
+
+
+QString ThemeHandler::weaponsCounterFile()
+{
+    return weaponsCounterFile_;
+}
+
+
+QString ThemeHandler::manaCounterFile()
+{
+    return manaCounterFile_;
+}
+
+
+QString ThemeHandler::aoeMechanicFile()
+{
+    return aoeMechanicFile_;
+}
+
+
+QString ThemeHandler::tauntMechanicFile()
+{
+    return tauntMechanicFile_;
+}
+
+
+QString ThemeHandler::survivalMechanicFile()
+{
+    return survivalMechanicFile_;
+}
+
+
+QString ThemeHandler::drawMechanicFile()
+{
+    return drawMechanicFile_;
+}
+
+
+QString ThemeHandler::pingMechanicFile()
+{
+    return pingMechanicFile_;
+}
+
+
+QString ThemeHandler::damageMechanicFile()
+{
+    return damageMechanicFile_;
+}
+
+
+QString ThemeHandler::destroyMechanicFile()
+{
+    return destroyMechanicFile_;
+}
+
+
+QString ThemeHandler::reachMechanicFile()
+{
+    return reachMechanicFile_;
+}
+
+
+QString ThemeHandler::bgDraftMechanicsFile()
+{
+    return bgDraftMechanicsFile_;
+}
+
+
+QString ThemeHandler::fgDraftMechanicsColor()
+{
+    return fgDraftMechanicsColor_;
+}
+
+
 QString ThemeHandler::manaLimitFile()
 {
     return manaLimitFile_;
@@ -734,6 +822,21 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfBestFile_ = loadThemeFile(themePath, jsonObject, "lfBestFile");
     lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
+
+    bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
+    fgDraftMechanicsColor_ = jsonObject.value("fgDraftMechanicsColor").toString("");
+    minionsCounterFile_ = loadThemeFile(themePath, jsonObject, "minionsCounterFile");
+    spellsCounterFile_ = loadThemeFile(themePath, jsonObject, "spellsCounterFile");
+    weaponsCounterFile_ = loadThemeFile(themePath, jsonObject, "weaponsCounterFile");
+    manaCounterFile_ = loadThemeFile(themePath, jsonObject, "manaCounterFile");
+    aoeMechanicFile_ = loadThemeFile(themePath, jsonObject, "aoeMechanicFile");
+    tauntMechanicFile_ = loadThemeFile(themePath, jsonObject, "tauntMechanicFile");
+    survivalMechanicFile_ = loadThemeFile(themePath, jsonObject, "survivalMechanicFile");
+    drawMechanicFile_ = loadThemeFile(themePath, jsonObject, "drawMechanicFile");
+    pingMechanicFile_ = loadThemeFile(themePath, jsonObject, "pingMechanicFile");
+    damageMechanicFile_ = loadThemeFile(themePath, jsonObject, "damageMechanicFile");
+    destroyMechanicFile_ = loadThemeFile(themePath, jsonObject, "destroyMechanicFile");
+    reachMechanicFile_ = loadThemeFile(themePath, jsonObject, "reachMechanicFile");
 
     //"-----MENU LISTS-----": 0,
     buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
@@ -977,4 +1080,18 @@ void ThemeHandler::defaultEmptyValues()
     if(starFile_.isEmpty())             starFile_ = ":/Images/legendaryStar.png";
     if(manaLimitFile_.isEmpty())        manaLimitFile_ = ":/Images/manaLimit.png";
     if(unknownFile_.isEmpty())          unknownFile_ = ":/Images/unknown.png";
+    if(minionsCounterFile_.isEmpty())   minionsCounterFile_ = ":/Images/minionsCounter.png";
+    if(spellsCounterFile_.isEmpty())    spellsCounterFile_ = ":/Images/spellsCounter.png";
+    if(weaponsCounterFile_.isEmpty())   weaponsCounterFile_ = ":/Images/weaponsCounter.png";
+    if(manaCounterFile_.isEmpty())      manaCounterFile_ = ":/Images/manaCounter.png";
+    if(aoeMechanicFile_.isEmpty())      aoeMechanicFile_ = ":/Images/aoeMechanic.png";
+    if(tauntMechanicFile_.isEmpty())    tauntMechanicFile_ = ":/Images/tauntMechanic.png";
+    if(survivalMechanicFile_.isEmpty()) survivalMechanicFile_ = ":/Images/restoreMechanic.png";
+    if(drawMechanicFile_.isEmpty())     drawMechanicFile_ = ":/Images/drawMechanic.png";
+    if(pingMechanicFile_.isEmpty())     pingMechanicFile_ = ":/Images/pingMechanic.png";
+    if(damageMechanicFile_.isEmpty())   damageMechanicFile_ = ":/Images/damageMechanic.png";
+    if(destroyMechanicFile_.isEmpty())  destroyMechanicFile_ = ":/Images/destroyMechanic.png";
+    if(reachMechanicFile_.isEmpty())    reachMechanicFile_ = ":/Images/reachMechanic.png";
+    if(bgDraftMechanicsFile_.isEmpty()) bgDraftMechanicsFile_ = ":/Images/bgDraftMechanics.png";
+    if(fgDraftMechanicsColor_.isEmpty())fgDraftMechanicsColor_ = fgColor_;
 }

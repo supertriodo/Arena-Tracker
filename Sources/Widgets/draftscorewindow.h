@@ -36,6 +36,7 @@ private:
 private:
     int getCard(QString &name, QString &code);
     void resizeSynergyList();
+    QString getMechanicTooltip(QString iconName);
 
 public:
     void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);

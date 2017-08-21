@@ -30,7 +30,6 @@ private:
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
-//    void increase();
     void increase(int numIncrease, int draftedCardsCount);
     void increase(const QString &code, bool count=true);
     bool isEmpty();
@@ -40,6 +39,8 @@ public:
     void insertSynCards(QMap<QString, int> &synergies);
     int count();
     QList<DeckCard> getDeckCardList();
+    void setTheme(QPixmap pixmap, int iconWidth);
+    void setIcon(QPixmap pixmap, int iconWidth=32);
 
 signals:
     void iconEnter(QList<DeckCard> &deckCardList, QRect &labelRect);

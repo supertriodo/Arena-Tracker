@@ -40,6 +40,7 @@ public:
     void clearLists(bool keepCounters);
     int draftedCardsCount();
     void setTransparency(Transparency transparency, bool mouseInApp);
+    void setTheme();
 
 private:
     void createDraftItemCounters();

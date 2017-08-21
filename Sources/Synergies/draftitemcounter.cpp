@@ -4,22 +4,20 @@
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover) : QObject(parent)
 {
+    //Constructor MainWindow
     init(hLayout, iconHover);
-    labelIcon->setPixmap(pixmap.scaledToWidth(32,Qt::SmoothTransformation));
+    setIcon(pixmap);
 }
 
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol,
                                    QPixmap pixmap, int iconWidth, bool iconHover) : QObject(parent)
 {
+    //Constructor DraftMechanicsWindow
     QHBoxLayout *hLayout = new QHBoxLayout();
     init(hLayout, iconHover);
-    labelIcon->setPixmap(pixmap.scaledToWidth(iconWidth, Qt::SmoothTransformation));
+    setTheme(pixmap, iconWidth);
 
-    QFont font(ThemeHandler::defaultFont());
-    font.setPixelSize(iconWidth*0.6);
-    labelCounter->setFont(font);
-    labelCounter->setStyleSheet(".QLabel { color: black;}");
     gridLayout->addLayout(hLayout, gridRow, gridCol);
 }
 
@@ -58,6 +56,23 @@ DraftItemCounter::~DraftItemCounter()
 }
 
 
+void DraftItemCounter::setIcon(QPixmap pixmap, int iconWidth)
+{
+    labelIcon->setPixmap(pixmap.scaledToWidth(iconWidth, Qt::SmoothTransformation));
+}
+
+
+void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth)
+{
+    QFont font(ThemeHandler::defaultFont());
+    font.setPixelSize(iconWidth*0.6);
+    labelCounter->setFont(font);
+    labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
+
+    setIcon(pixmap, iconWidth);
+}
+
+
 void DraftItemCounter::reset()
 {
     this->counter = 0;
@@ -91,21 +106,6 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 }
 
 
-//void DraftItemCounter::increase()
-//{
-//    if(labelIcon != NULL && labelCounter != NULL)
-//    {
-//        this->counter++;
-//        labelCounter->setText(QString::number(counter));
-//        if(counter == 1)
-//        {
-//#ifdef QT_DEBUG
-//            labelIcon->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
-//            labelCounter->setHidden(false);//TODO Para ocultar los iconos cambiar todos a setHidden(true)
-//#endif
-//        }
-//    }
-//}
 void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
 {
     if(labelIcon != NULL && labelCounter != NULL)

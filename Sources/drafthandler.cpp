@@ -1194,6 +1194,9 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 
 void DraftHandler::setTheme()
 {
+    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setTheme();
+    synergyHandler->setTheme();
+
     ui->refreshDraftButton->setIcon(QIcon(ThemeHandler::buttonDraftRefreshFile()));
 
     QFont font(ThemeHandler::bigFont());
@@ -1204,9 +1207,6 @@ void DraftHandler::setTheme()
     ui->labelHAscore1->setFont(font);
     ui->labelHAscore2->setFont(font);
     ui->labelHAscore3->setFont(font);
-
-    font = QFont(ThemeHandler::defaultFont());
-    font.setPixelSize(12);
 
     for(int i=0; i<3; i++)
     {

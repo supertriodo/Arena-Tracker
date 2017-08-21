@@ -1,4 +1,5 @@
 #include "draftscorewindow.h"
+#include "../themehandler.h"
 #include <QtWidgets>
 
 
@@ -211,11 +212,26 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
         QLabel *label = new QLabel();
         QPixmap pixmap(mechanicIcon);
         label->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
+        label->setToolTip(getMechanicTooltip(mechanicIcon));
         label->hide();
         horLayoutMechanics[posCard]->addWidget(label);
     }
 
     horLayoutMechanics[posCard]->addStretch();
+}
+
+
+QString DraftScoreWindow::getMechanicTooltip(QString iconName)
+{
+    if(iconName == ThemeHandler::aoeMechanicFile())             return "AOE";
+    else if(iconName == ThemeHandler::tauntMechanicFile())      return "Taunt";
+    else if(iconName == ThemeHandler::survivalMechanicFile())   return "Survival";
+    else if(iconName == ThemeHandler::drawMechanicFile())       return "Draw";
+    else if(iconName == ThemeHandler::pingMechanicFile())       return "Ping";
+    else if(iconName == ThemeHandler::damageMechanicFile())     return "Removal";
+    else if(iconName == ThemeHandler::destroyMechanicFile())    return "Hard\nRemoval";
+    else if(iconName == ThemeHandler::reachMechanicFile())      return "Reach";
+    else    return "";
 }
 
 

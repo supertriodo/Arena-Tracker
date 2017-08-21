@@ -6,7 +6,7 @@
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    int scoreWidth = sizeCard.width()*0.7;
+    scoreWidth = sizeCard.width()*0.7;
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
@@ -20,7 +20,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
 
     QWidget *centralWidget = new QWidget(this);
-    centralWidget->setStyleSheet(".QWidget{border-image: url(:/Images/bgDraftMechanics.png) 0 0 0 0 stretch stretch;border-width: 0px;}");
+    centralWidget->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     QHBoxLayout *centralLayout = new QHBoxLayout();
     QVBoxLayout *adjustLayout = new QVBoxLayout(centralWidget);
     adjustLayout->addStretch();
@@ -32,10 +32,10 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *cardTypeLayout = new QGridLayout();
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, cardTypeLayout, 0, 0, QPixmap(":/Images/minionsCounter.png"), scoreWidth/2, false);
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, cardTypeLayout, 0, 1, QPixmap(":/Images/spellsCounter.png"), scoreWidth/2, false);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(":/Images/weaponsCounter.png"), scoreWidth/2, false);
-    manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(":/Images/manaCounter.png"), scoreWidth/2, false);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, cardTypeLayout, 0, 0, QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2, false);
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, cardTypeLayout, 0, 1, QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2, false);
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2, false);
+    manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
     scoresPushButton = new ScoreButton(centralWidget, LightForge);
@@ -56,15 +56,15 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *mechanicsLayout = new QGridLayout();
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, mechanicsLayout, 0, 0, QPixmap(":/Images/aoeMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, mechanicsLayout, 0, 1, QPixmap(":/Images/tauntMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, mechanicsLayout, 0, 2, QPixmap(":/Images/restoreMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, mechanicsLayout, 0, 3, QPixmap(":/Images/drawMechanic.png"), scoreWidth/2);
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, mechanicsLayout, 0, 0, QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, mechanicsLayout, 0, 1, QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, mechanicsLayout, 0, 2, QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, mechanicsLayout, 0, 3, QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, mechanicsLayout, 1, 0, QPixmap(":/Images/pingMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, mechanicsLayout, 1, 1, QPixmap(":/Images/damageMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(":/Images/destroyMechanic.png"), scoreWidth/2);
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(":/Images/reachMechanic.png"), scoreWidth/2);
+    mechanicCounters[V_PING] = new DraftItemCounter(this, mechanicsLayout, 1, 0, QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, mechanicsLayout, 1, 1, QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
@@ -143,6 +143,27 @@ void DraftMechanicsWindow::deleteDraftItemCounters()
     delete mechanicCounters[V_DESTROY];
     delete mechanicCounters[V_REACH];
     delete []mechanicCounters;
+}
+
+
+void DraftMechanicsWindow::setTheme()
+{
+    this->centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+
+    cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
+    manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2);
+
+    mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_SURVIVABILITY]->setTheme(QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DISCOVER_DRAW]->setTheme(QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
+
+    mechanicCounters[V_PING]->setTheme(QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DAMAGE]->setTheme(QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DESTROY]->setTheme(QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_REACH]->setTheme(QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
 }
 
 

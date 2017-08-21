@@ -1,4 +1,5 @@
 #include "synergyhandler.h"
+#include "themehandler.h"
 #include <QtWidgets>
 
 SynergyHandler::SynergyHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
@@ -23,13 +24,13 @@ void SynergyHandler::createDraftItemCounters()
 
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/minionsCounter.png"), false);
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/spellsCounter.png"), false);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/weaponsCounter.png"), false);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()), false);
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()), false);
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()), false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
 
-    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(":/Images/manaCounter.png"), false);
+    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
     raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
@@ -51,15 +52,15 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this);
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/aoeMechanic.png"));
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/tauntMechanic.png"));
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/restoreMechanic.png"));
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(":/Images/drawMechanic.png"));
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::tauntMechanicFile()));
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::survivalMechanicFile()));
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::drawMechanicFile()));
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/pingMechanic.png"));
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/damageMechanic.png"));
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/destroyMechanic.png"));
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(":/Images/reachMechanic.png"));
+    mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::pingMechanicFile()));
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::damageMechanicFile()));
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::destroyMechanicFile()));
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::reachMechanicFile()));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
@@ -155,6 +156,26 @@ void SynergyHandler::deleteDraftItemCounters()
     }
     delete []mechanicCounters;
 }
+
+
+void SynergyHandler::setTheme()
+{
+    cardTypeCounters[V_MINION]->setIcon(QPixmap(ThemeHandler::minionsCounterFile()));
+    cardTypeCounters[V_SPELL]->setIcon(QPixmap(ThemeHandler::spellsCounterFile()));
+    cardTypeCounters[V_WEAPON]->setIcon(QPixmap(ThemeHandler::weaponsCounterFile()));
+    manaCounter->setIcon(QPixmap(ThemeHandler::manaCounterFile()));
+
+    mechanicCounters[V_AOE]->setIcon(QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_TAUNT_ALL]->setIcon(QPixmap(ThemeHandler::tauntMechanicFile()));
+    mechanicCounters[V_SURVIVABILITY]->setIcon(QPixmap(ThemeHandler::survivalMechanicFile()));
+    mechanicCounters[V_DISCOVER_DRAW]->setIcon(QPixmap(ThemeHandler::drawMechanicFile()));
+
+    mechanicCounters[V_PING]->setIcon(QPixmap(ThemeHandler::pingMechanicFile()));
+    mechanicCounters[V_DAMAGE]->setIcon(QPixmap(ThemeHandler::damageMechanicFile()));
+    mechanicCounters[V_DESTROY]->setIcon(QPixmap(ThemeHandler::destroyMechanicFile()));
+    mechanicCounters[V_REACH]->setIcon(QPixmap(ThemeHandler::reachMechanicFile()));
+}
+
 
 
 void SynergyHandler::sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect)
@@ -753,40 +774,40 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
 
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
     {
-        mechanicIcons.append(":/Images/drawMechanic.png");
+        mechanicIcons.append(ThemeHandler::drawMechanicFile());
     }
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->insertSynCards(synergies);
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
-        mechanicIcons.append(":/Images/tauntMechanic.png");
+        mechanicIcons.append(ThemeHandler::tauntMechanicFile());
     }
     else if(isTauntGen(code, referencedTags))
     {
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
-        mechanicIcons.append(":/Images/tauntMechanic.png");
+        mechanicIcons.append(ThemeHandler::tauntMechanicFile());
     }
     if(isAoeGen(code, text))
     {
         mechanicCounters[V_AOE]->insertSynCards(synergies);
-        mechanicIcons.append(":/Images/aoeMechanic.png");
+        mechanicIcons.append(ThemeHandler::aoeMechanicFile());
     }
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
     {
         mechanicCounters[V_PING]->insertSynCards(synergies);
-        mechanicIcons.append(":/Images/pingMechanic.png");
+        mechanicIcons.append(ThemeHandler::pingMechanicFile());
     }
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append(":/Images/damageMechanic.png");
+        mechanicIcons.append(ThemeHandler::damageMechanicFile());
     }
     if(isDestroyGen(code, mechanics, text))
     {
-        mechanicIcons.append(":/Images/destroyMechanic.png");
+        mechanicIcons.append(ThemeHandler::destroyMechanicFile());
     }
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append(":/Images/reachMechanic.png");
+        mechanicIcons.append(ThemeHandler::reachMechanicFile());
     }
     if(isArmorGen(code, text))
     {
@@ -798,7 +819,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergies);
         addRestoreIcon = true;
     }
-    if(addRestoreIcon)  mechanicIcons.append(":/Images/restoreMechanic.png");
+    if(addRestoreIcon)  mechanicIcons.append(ThemeHandler::survivalMechanicFile());
     if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isLifestealMinon(code, mechanics, cardType))             mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
