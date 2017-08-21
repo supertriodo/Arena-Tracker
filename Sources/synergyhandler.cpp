@@ -626,16 +626,18 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
 
 void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 {
-    if(deckCard.getType() != MINION)    return;
-
-    //Stats
     QString code = deckCard.getCode();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int health = Utility::getCardAttribute(code, "health").toInt();
 
-    costMinions.appendStatValue(false, deckCard.getCost(), code);
-    attackMinions.appendStatValue(false, attack, code);
-    healthMinions.appendStatValue(false, health, code);
+    if(deckCard.getType() == MINION)
+    {
+        //Stats
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
+
+        costMinions.appendStatValue(false, deckCard.getCost(), code);
+        attackMinions.appendStatValue(false, attack, code);
+        healthMinions.appendStatValue(false, health, code);
+    }
 
     //Synergies
     QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
@@ -920,16 +922,18 @@ void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int
 
 void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
 {
-    if(deckCard.getType() != MINION)    return;
-
-    //Stats
     QString code = deckCard.getCode();
-    int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int health = Utility::getCardAttribute(code, "health").toInt();
 
-    costMinions.insertCards(true, deckCard.getCost(), synergies);
-    attackMinions.insertCards(true, attack, synergies);
-    healthMinions.insertCards(true, health, synergies);
+    if(deckCard.getType() == MINION)
+    {
+        //Stats
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
+
+        costMinions.insertCards(true, deckCard.getCost(), synergies);
+        attackMinions.insertCards(true, attack, synergies);
+        healthMinions.insertCards(true, health, synergies);
+    }
 
     //Synergies
     QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
