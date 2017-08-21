@@ -485,6 +485,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
                                             QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                             QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
 {
+    bool isSurvivability = false;
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
@@ -549,14 +550,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRestoreFriendlyHeroGen(code, mechanics, text))
     {
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
-        mechanicCounters[V_SURVIVABILITY]->increase(code);
-        survivabilityList.append(code);
+        isSurvivability = true;
     }
     if(isArmorGen(code, text))
     {
         mechanicCounters[V_ARMOR]->increase(code);
-        mechanicCounters[V_SURVIVABILITY]->increase(code);
-        survivabilityList.append(code);
+        isSurvivability = true;
     }
     if(isTaunt(code, mechanics))
     {
@@ -576,6 +575,11 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     }
     else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
     if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
+    if(isSurvivability)
+    {
+        mechanicCounters[V_SURVIVABILITY]->increase(code);
+        survivabilityList.append(code);
+    }
 
 
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
