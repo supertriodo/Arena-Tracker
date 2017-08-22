@@ -304,7 +304,6 @@ void DraftHandler::clearLists(bool keepCounters)
     if(!keepCounters)
     {
         deckRatingHA = deckRatingLF = 0;
-        if(draftMechanicsWindow != NULL)    draftMechanicsWindow->clearLists();
     }
 
     for(int i=0; i<3; i++)
