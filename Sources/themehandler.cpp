@@ -46,7 +46,7 @@ QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unk
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
 QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
-QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::fgDraftMechanicsColor_;
+QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
 
@@ -647,6 +647,12 @@ QString ThemeHandler::bgDraftMechanicsFile()
 }
 
 
+QString ThemeHandler::bgDraftMechanicsHelpFile()
+{
+    return bgDraftMechanicsHelpFile_;
+}
+
+
 QString ThemeHandler::fgDraftMechanicsColor()
 {
     return fgDraftMechanicsColor_;
@@ -824,6 +830,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
 
     bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
+    bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
     fgDraftMechanicsColor_ = jsonObject.value("fgDraftMechanicsColor").toString("");
     minionsCounterFile_ = loadThemeFile(themePath, jsonObject, "minionsCounterFile");
     spellsCounterFile_ = loadThemeFile(themePath, jsonObject, "spellsCounterFile");
@@ -1093,5 +1100,6 @@ void ThemeHandler::defaultEmptyValues()
     if(destroyMechanicFile_.isEmpty())  destroyMechanicFile_ = ":/Images/destroyMechanic.png";
     if(reachMechanicFile_.isEmpty())    reachMechanicFile_ = ":/Images/reachMechanic.png";
     if(bgDraftMechanicsFile_.isEmpty()) bgDraftMechanicsFile_ = ":/Images/bgDraftMechanics.png";
+    if(bgDraftMechanicsHelpFile_.isEmpty()) bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
     if(fgDraftMechanicsColor_.isEmpty())fgDraftMechanicsColor_ = fgColor_;
 }

@@ -24,6 +24,7 @@ private:
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     int scoreWidth;
+    bool showingHelp;
 
 //Metodos
 private:

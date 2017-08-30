@@ -20,7 +20,8 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
 
     QWidget *centralWidget = new QWidget(this);
-    centralWidget->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    centralWidget->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsHelpFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    showingHelp = true;
     QHBoxLayout *centralLayout = new QHBoxLayout();
     QVBoxLayout *adjustLayout = new QVBoxLayout(centralWidget);
     adjustLayout->addStretch();
@@ -42,11 +43,13 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoresPushButton->setFixedHeight(scoreWidth);
     scoresPushButton->setFixedWidth(scoreWidth);
     scoresPushButton->setScore(0, true);
+    scoresPushButton->hide();
 
     scoresPushButton2 = new ScoreButton(centralWidget, HearthArena);
     scoresPushButton2->setFixedHeight(scoreWidth);
     scoresPushButton2->setFixedWidth(scoreWidth);
     scoresPushButton2->setScore(0, true);
+    scoresPushButton2->hide();
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
     scoresLayout->addWidget(scoresPushButton);
@@ -115,6 +118,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     effect->setOpacity(0);
     centralWidget->setGraphicsEffect(effect);
     Utility::fadeInWidget(centralWidget);
+    show();
 }
 
 
@@ -200,6 +204,13 @@ void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF)
 
 void DraftMechanicsWindow::updateManaCounter(int numIncrease, int draftedCardsCount)
 {
+    if(showingHelp)
+    {
+        centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+        scoresPushButton->show();
+        scoresPushButton2->show();
+        showingHelp = false;
+    }
     manaCounter->increase(numIncrease, draftedCardsCount);
 }
 

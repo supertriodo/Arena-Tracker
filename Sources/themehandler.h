@@ -52,7 +52,7 @@ private:
     static QString minionsCounterFile_, spellsCounterFile_, weaponsCounterFile_, manaCounterFile_;
     static QString aoeMechanicFile_, tauntMechanicFile_, survivalMechanicFile_, drawMechanicFile_;
     static QString pingMechanicFile_, damageMechanicFile_, destroyMechanicFile_, reachMechanicFile_;
-    static QString bgDraftMechanicsFile_, fgDraftMechanicsColor_;
+    static QString bgDraftMechanicsFile_, bgDraftMechanicsHelpFile_, fgDraftMechanicsColor_;
     static bool manaLimitBehind_;
     static QString themeLoaded_;
 
@@ -171,6 +171,7 @@ public:
     static QString reachMechanicFile();
     static QString bgDraftMechanicsFile();
     static QString fgDraftMechanicsColor();
+    static QString bgDraftMechanicsHelpFile();
 };
 
 #endif // THEMEHANDLER_H

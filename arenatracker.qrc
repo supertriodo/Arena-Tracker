@@ -134,5 +134,6 @@
         <file>Images/tauntMechanic.png</file>
         <file>Images/weaponsCounter.png</file>
         <file>Images/bgDraftMechanics.png</file>
+        <file>Images/bgDraftMechanicsHelp.png</file>
     </qresource>
 </RCC>
