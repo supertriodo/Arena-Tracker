@@ -115,6 +115,7 @@
 	"EX1_279": ["destroyGen","reachGen"],
 	"EX1_287": ["secretGen"],
 	"EX1_301": ["taunt","battlecry"],
+	"EX1_303": ["aoeGen","spellDamageSyn","attackBuffSyn"],
 	"EX1_304": ["battlecry"],
 	"EX1_308": ["discardGen","damageMinionsGen","reachGen"],
 	"EX1_317": ["drawGen","demonSyn"],
