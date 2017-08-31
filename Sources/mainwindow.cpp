@@ -3574,7 +3574,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("ICC_289");
+        draftHandler->debugSynergiesCode("EX1_303");
 //        draftHandler->testSynergies();
 }
 
@@ -3590,18 +3590,9 @@ void MainWindow::testDelay()
 //Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-//New web
 
 //https://www.reddit.com/r/ArenaTracker/comments/6tm49n/v53_kft_expansion/
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
-//documentar nuevo icono refresh en create theme y mechanics (user guide)
-
-//ADD TO FAQ
-//I have a deck drafted from sometime ago so I'll test that.
-//But keep in mind that decks with duplicated cards are completed from a file of your drafted arena you keep in your AT dir. If for any reason you drafted a new deck (in a different server or account) the last drafted arena will change in you AT dir and any previous arena deck you have will not be loaded correctly.
-//Edit: You can still complete it manually by simply double clicking the cards to increase its number.
-//Edit2: Tested with my deck but I have the exact same problem, I drafted in another account, so my last drafted deck is different. The deck will only be read correctly when playing in the account you did your last draft.
-
 
 
 //REPLAY BUGS

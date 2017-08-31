@@ -973,6 +973,12 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
+                ((text.contains("/"))
+                            && text.contains("summon") && !text.contains("opponent")) &&
+//                cardType == WEAPON &&
+//                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
+//                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+                !isTokenGen(code, text)
 //                text.contains("friendly") && text.contains("minion") && text.contains("destroy")
 //                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
 //                mechanics.contains(QJsonValue("COMBO")) &&
@@ -981,9 +987,9 @@ void SynergyHandler::testSynergies()
 //                !isReturnSyn(code, mechanics, cardType, text)
 //                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
 //                isTokenCardGen(code, cost)
-                isComboSyn(code, referencedTags, cost)
             )
         {
+//            debugSynergiesCode(code, ++num);
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
         }
     }
@@ -2253,3 +2259,140 @@ bool SynergyHandler::isEvolveSyn(const QString &code)
     return false;
 }
 
+
+
+/*
+Races
+murlocGen (murloc no es un tag, se saca de la carta)
+murlocSyn o murlocAllSyn
+
+
+
+Mechanics links:
+destroyGen o damageMinionsGen
+taunt o tauntGen
+tauntSyn o tauntAllSyn
+deathrattle (solo para minions) o deathrattleGen o deathrattleOpponent(solo se ejecuta en turno oponente)
+deathrattleSyn o deathrattleGoodAllSyn
+deathrattleOpponent y taunGiverSyn (no hace falta poner taunGiverSyn si es deathrattleOpponent)
+divineShield o divineShieldGen
+divineShieldSyn o divineShieldAllSyn
+weaponGen (no usamos weapon, es un cardType)
+weaponSyn o weaponAllSyn
+windfury - windfuryMinionSyn
+lifesteal - lifestealMinionSyn
+lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
+restoreTargetMinionGen <--> restoreFriendlyHeroGen
+restoreTargetMinionGen o restoreFriendlyMinionGen
+restoreTargetMinionSyn, restoreFriendlyMinionSyn, restoreFriendlyHeroSyn
+=(>|<)(Syn|Gen)(Cost|Attack|Health)(0-15)
+
+
+
+Mechanics list:
+spellGen, weaponGen
+murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen
+discover, drawGen, toYourHandGen
+taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
+jadeGolemGen, secretGen, freezeEnemyGen, discardGen, stealthGen
+
+damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
+deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, returnGen
+enrageGen, tauntGiverGen, evolveGen, spellDamageGen
+tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen,
+restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal
+
+
+
+Double check:
+DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn), damageMinionsGen, destroyGen
+BATTLECRY/COMBO/DEATHRATTLE: returnsyn(battlecry/combo), silenceOwnSyn(deathrattle/malo)
+ENRAGE/TAKE DAMAGE: enrageGen(take damage),
+SUMMON: tokenGen(summon) <--> =GenHealth1(paladin o neutral)
+TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenHealth1(paladin o neutral)
+PLAY CARDS: tokenCardSyn
+BUFF ALL: tokenSyn(beneficio masa), tauntGyverSyn(cant attack/egg)
+DESTROY TARDIO: freezeEnemySyn
+COSTE/STATS: evolveSyn
+
+RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
+RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
+CHARGE: damageMinionsGen(no atk1) <--> reachGen(no atk1) <--> pingGen(atk1)
+STEALTH: stealthGen <--> reachGen(no atk1)
+
+
+
+REGLAS
++No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
++Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no). Synergias con todo tu mazo son faciles, como robar 2 murlocs.
++spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
++tokenCardGen ya implica comboSyn (no hace falta poner comboSyn)
++tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
+1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0.
++si una carta nos da una carta de coste 0 o 1 es tokenCardGen, si es mas sera toYourHandGen
++tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
++=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
+    (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero), siempre son minions
++freezeEnemyGen deben poder usarse sobre enemigos
++pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle random
++aoeGen puede ser deathrattle random, quitaremos manualmente excepciones como el tentaculo de n'zoth
++aoeGen: los aoe tienen que afectar al menos 3 objetivos
++aoeGen: no son destroyGen ni damageMinionsGen
++pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
+*spellDamageSyn es para aoe o damage a 2 objetivos
++No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
++lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
+
+
+
+IDEAS RECHAZADAS
+--void terror synergias -- cant attack minion o twilight summoner (no me convencen)
+--devilsaur egg --> evolving spores, and other give evolve effects (no me convencen)
+--Twilight Summoner --> tokenGen (no me convence)
+--Darkspeaker (swap stats with a friendly minion) --> venom, divineShield, enrage, lifesteal, windfury(no me convencen)
+--mirage caller, shadow essence, Prince Taldaram, Barnes, ShadowCaster, Herald Volazj --> deathrattleGood (no deathrattleOpponent, el sistema no lo permite), venom minions, divineshield, stealth, taunt (dudoso)
+--buff atk grandes --> windfurySyn (dudoso)
+--Vigilar synergias hechizo y eliminar debiles como arcane anomaly (option, no usar list spellSyn, asi las synergias no aparecen en cada hechizo) (TESTING)
+--shadowcaster rogue --> synergias, huevo, objetivos evolution (ya es returnGen y deathrattleGoodAllSyn)
+--hand buff mech --> con cartas que requieren >5atk (imposible, tri-cards no incluye druida)
+--Devilsaur egg --> no tiene beastGen, no queremos ver sinergias que no sean de romper el huevo
+--Divine spirit --> healthBuffSyn (no me convence)
+
+--Steam surger --> "spellGen","toYourHandGen" (requiere combo)
+--Tol'vir Stoneshaper --> tauntGen, divineShieldGen (requiere combo)
+--Book Wyrm --> "damageMinionsGen" (requiere combo)
+--Primalfin Lookout --> "discover" (requiere combo)
+--Servant of Kalimos --> "discover" (requiere combo)
+--Netherpite Historian --> "discover" (requere combo)
+--Drakonid Operative --> "discover" (requiere combo)
+--Stone Sentinel --> "tauntGen" (requiere combo)
+--Kalimos, Primal Lord --> "aoeGen","reachGen","restoreFriendlyHeroGen","tokenGen" (requiere combo)
+--Houndmaster --> "tauntGen" (requiere combo)
+--Mark of Y'Shaarj --> "drawGen" (requiere combo)
+--Starving Buzzard --> "drawGen" (requiere combo)
+--Stampede --> "toYourHandGen" (requiere combo)
+
+--Fight promoter --> "drawGen" (requiere combo)
+--Malchezaar's Imp --> "drawGen" (requiere combo)
+--Violet Teacher --> "tokenGen" (requiere combo), es un combo facil (spells), aun asi es dificil crear mas de 1 token
+--Southsea Deckhand --> "damageMinionsGen","reachGen" (requiere combo), solo es valido en rogue
+--Furnacefire Colossus --> "discardGen" (requiere combo), los warlock no tienen armas
+--Coldwraith --> "drawGen" (requiere combo)
+--Medivh's Valet --> "damageMinionsGen", "reachGen" (requiere combo)
+--Blackguard --> "damageMinionsGen" (no es removal directo)
+--Wind-up Burglebot --> "drawGen (dificil de conseguir)
+--Tomb Lurker --> "deathrattle" (No es deathrattle, pero genera cartas deathrattle a tu mano, es el mismo efecto)
+--Journey Below --> "deathrattle" (No es deathrattle, pero genera cartas deathrattle a tu mano, es el mismo efecto)
+--Doomerang --> "damageMinionsGen" (requiere combo)
+--Ice Breaker --> "destroyGen" (requiere combo)
+--Far Sight/Mana Bind --> "drawGen" (la carta en si tiene como unico proposito reducir el coste de la robada, por lo que la dos cartas deberian ser consideradas como una sola)
+--Burgly Bully --> "spellGen","tokenCardGen" (requiere combo)
+--Corpsetaker --> "tauntGen" (si, es muy probable)
+--Harvest Golem --> Quitar tokenGen
+--Gloutonous Ooze --> Quitar armorGen (poco probable)
+
+
+
+Dudando
+++Arcane anomaly --> Quitar spellSyn
+*/
