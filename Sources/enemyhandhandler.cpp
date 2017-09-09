@@ -159,6 +159,8 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
     handCard.listItem = new QListWidgetItem();
     ui->enemyHandListWidget->addItem(handCard.listItem);
 
+    if(code.isEmpty() && isDrawSpecificCards()) isCreatedByCard = true;
+
     if(isCreatedByCard)
     {
         handCard.setCreatedByCode(this->lastCreatedByCode);
@@ -178,6 +180,22 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
 
     //Hide TabBar with 1 HandCards, was shown with 0 HandCards to avoid a full transparent window
     if(enemyHandList.count() == 1)  updateTransparency();
+}
+
+
+bool EnemyHandHandler::isDrawSpecificCards()
+{
+    if(lastCreatedByCode == SENSE_DEMONS)       return true;
+    if(lastCreatedByCode == HOLY_WRATH)         return true;
+    if(lastCreatedByCode == ICE_FISHING)        return true;
+    if(lastCreatedByCode == FORGE_OF_SOULS)     return true;
+    if(lastCreatedByCode == HOWLING_COMMANDER)  return true;
+    if(lastCreatedByCode == THE_CURATOR)        return true;
+    if(lastCreatedByCode == ARCANOLOGIST)       return true;
+    if(lastCreatedByCode == BRIGHTEYED_SCOUT)   return true;
+    if(lastCreatedByCode == TOLVIR_WARDEN)      return true;
+    if(lastCreatedByCode == SMALLTIME_RECRUITS) return true;
+    return false;
 }
 
 

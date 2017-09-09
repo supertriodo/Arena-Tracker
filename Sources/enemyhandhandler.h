@@ -48,6 +48,7 @@ private:
     void revealLinkedCards(QString code, QList<int> &ids);
     bool isClonerCard(QString code);
     void linkNextCards();
+    bool isDrawSpecificCards();
 
 public:
     HandCard *getHandCard(int id);
