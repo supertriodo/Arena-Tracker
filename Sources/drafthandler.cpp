@@ -766,7 +766,7 @@ void DraftHandler::refreshCapturedCards()
 
 int DraftHandler::normalizeLFscore(int score)
 {
-    return score - 40;
+    return score - 45;
 }
 
 
