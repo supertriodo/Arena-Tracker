@@ -476,6 +476,7 @@ void DraftHandler::deleteDraftScoreWindow()
         draftScoreWindow->close();
         delete draftScoreWindow;
         draftScoreWindow = NULL;
+        emit overlayCardLeave();
     }
 }
 
@@ -487,6 +488,7 @@ void DraftHandler::deleteDraftMechanicsWindow()
         draftMechanicsWindow->close();
         delete draftMechanicsWindow;
         draftMechanicsWindow = NULL;
+        emit itemLeave();
     }
 }
 
