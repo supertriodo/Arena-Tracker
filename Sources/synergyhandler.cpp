@@ -378,6 +378,8 @@ void SynergyHandler::updateManaCounter(DeckCard &deckCard)
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     if(deckCard.getCode() == NERUBIAN_PROPHET)  return 3;
+    if(deckCard.getCode() == MOLTEN_BLADE)  return 4;
+    if(deckCard.getCode() == SHIFTER_ZERUS)  return 4;
 
     return std::min(10, deckCard.getCost());
 }
@@ -973,12 +975,10 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                ((text.contains("/"))
-                            && text.contains("summon") && !text.contains("opponent")) &&
-//                cardType == WEAPON &&
+                text.contains("deal") && text.contains("damage") &&
+                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
-                !isTokenGen(code, text)
 //                text.contains("friendly") && text.contains("minion") && text.contains("destroy")
 //                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
 //                mechanics.contains(QJsonValue("COMBO")) &&
@@ -2390,6 +2390,7 @@ IDEAS RECHAZADAS
 --Corpsetaker --> "tauntGen" (si, es muy probable)
 --Harvest Golem --> Quitar tokenGen
 --Gloutonous Ooze --> Quitar armorGen (poco probable)
+--Plague Scientist --> Quitar tokenSyn (es una sinergia debil, envenom podria venir bien en muchos minions como un 1/7)
 
 
 

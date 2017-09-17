@@ -3574,8 +3574,8 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("ICECROWN");
-        draftHandler->debugSynergiesCode("EX1_303");
-//        draftHandler->testSynergies();
+//        draftHandler->debugSynergiesCode("EX1_303");
+        draftHandler->testSynergies();
 }
 
 
@@ -3591,8 +3591,8 @@ void MainWindow::testDelay()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
-//https://www.reddit.com/r/ArenaTracker/comments/6tm49n/v53_kft_expansion/
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
+//Hide tooltip window when hiding draft overlay.
 
 
 //REPLAY BUGS
