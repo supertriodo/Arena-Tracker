@@ -6,6 +6,10 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * Draft your arena with HearthArena or LightForge advice, or why not both.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
+* While drafting, check the synergies of the next picks with the rest of your deck.
+![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
+* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
+![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
 * Upload your stats to your track-o-bot account.
 ![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
 * Save and organize your constructed decks.
@@ -23,6 +27,4 @@ Arena Tracker is free and open source.
 
 My Hearthstone ID: triodo#2541 (EU region)
 
-If you like the app, donations are much appreciated. It allows me to spend more time developing Arena Tracker.
-
-[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
+If you like the app, consider supporting me through [my patreon](https://www.patreon.com/triodo) or [paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted).
