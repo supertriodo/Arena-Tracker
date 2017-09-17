@@ -106,31 +106,7 @@ If you build on Mac check:
 Thanks to all these projects ArenaTracker is possible.
 
 
-## Top donors:
-* King Karuso: €50,00 EUR
-* Clovis C: €30,00 EUR
-* Morgan K: €20,00 EUR
-* Pavel G: €15,00 EUR
-* Andres N: €15,00 EUR
-* Brieuc A: €10,00 EUR
-* Neil G: €10,00 EUR
-* Raymond B: €10,00 EUR
-* Eero V: €10,00 EUR
-* Thorsten G: €10,00 EUR
-* Michael L: €10,00 EUR
-* OmariZi: €10,00 EUR
-* [Michael B](https://github.com/MikeBull94): €10,00 EUR
-* Sam G: €5,00 EUR
-* Ryan S: €5,00 EUR
-* Bandcamp: €5,00 EUR
-* Oliver S: €5,00 EUR
-* Raido M: €5,00 EUR
-* Philip W: €5,00 EUR
-* John K: €5,00 EUR
-* Marcos P: €5,00 EUR
-* Dennis K: €5,00 EUR
-* Innotus: €5,00 EUR
- 
-(Thanks for keeping this project alive.)
+## Support:
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
 
-[![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
+[![PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypal-44px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
