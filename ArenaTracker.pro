@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network widgets
+QT       += core gui network widgets webenginewidgets
 
 TARGET = ArenaTracker
 TEMPLATE = app
@@ -130,7 +130,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Synergies/statsynergies.h \
     Sources/Widgets/cardlistwindow.h \
     Sources/Widgets/hoverlabel.h \
-    Sources/Widgets/draftmechanicswindow.h
+    Sources/Widgets/draftmechanicswindow.h \
+    Sources/Widgets/webenginepage.h
 
 FORMS    += mainwindow.ui
 

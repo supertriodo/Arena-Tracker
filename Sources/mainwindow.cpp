@@ -7,6 +7,7 @@
 #include "themehandler.h"
 #include "Utils/libzippp.h"
 #include <QtConcurrent/QtConcurrent>
+#include "Widgets/webenginepage.h"
 #include <QtWidgets>
 
 using namespace libzippp;
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     draftLogFile = "";
     cardHeight = -1;
     windowsFormation = None;
+    webEngineView = NULL;
 
     logLoader = NULL;
     gameWatcher = NULL;
@@ -52,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     downloadSynergiesVersion();
     downloadExtraFiles();
     downloadThemes();
+    downloadWebEngineView();
 
     createTrackobotUploader();
     createCardDownloader();
@@ -108,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
 
 MainWindow::~MainWindow()
 {
+    if(webEngineView != NULL)       delete webEngineView;
     if(networkManager != NULL)      delete networkManager;
     if(logLoader != NULL)           delete logLoader;
     if(gameWatcher != NULL)         delete gameWatcher;
@@ -343,6 +347,13 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 downloadTheme(key, jsonObject.value(key).toInt());
             }
         }
+        //WebEngineView json
+        else if(endUrl == "webEngineView.json")
+        {
+            emit pDebug("Extra: Json WebEngineView --> Download Success.");
+            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+            createWebEngineView(jsonObject);
+        }
         //Theme zip
         else if(fullUrl.contains(THEMES_URL) && endUrl.endsWith(".zip"))
         {
@@ -449,6 +460,20 @@ void MainWindow::createVersionChecker()
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createWebEngineView(QJsonObject jsonObject)
+{
+    int height = jsonObject.value("height").toInt();
+    QString html = jsonObject.value("html").toString();
+
+    webEngineView = new QWebEngineView(this);
+    webEngineView->setFixedHeight(height);
+    webEngineView->setPage(new WebEnginePage(webEngineView));
+    webEngineView->page()->setHtml(html);
+    ui->verticalLayout->addWidget(webEngineView);
+    webEngineView->show();
 }
 
 
@@ -2167,6 +2192,12 @@ void MainWindow::downloadExtraFiles()
 }
 
 
+void MainWindow::downloadWebEngineView()
+{
+    networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
+}
+
+
 void MainWindow::downloadHearthArenaVersion()
 {
     networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/haVersion.json"))));
@@ -3592,7 +3623,6 @@ void MainWindow::testDelay()
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
-//Hide tooltip window when hiding draft overlay.
 
 
 //REPLAY BUGS
