@@ -468,12 +468,15 @@ void MainWindow::createWebEngineView(QJsonObject jsonObject)
     int height = jsonObject.value("height").toInt();
     QString html = jsonObject.value("html").toString();
 
-    webEngineView = new QWebEngineView(this);
-    webEngineView->setFixedHeight(height);
-    webEngineView->setPage(new WebEnginePage(webEngineView));
-    webEngineView->page()->setHtml(html);
-    ui->verticalLayout->addWidget(webEngineView);
-    webEngineView->show();
+    if(height > 0)
+    {
+        webEngineView = new QWebEngineView(this);
+        webEngineView->setFixedHeight(height);
+        webEngineView->setPage(new WebEnginePage(webEngineView));
+        webEngineView->page()->setHtml(html);
+        ui->verticalLayout->addWidget(webEngineView);
+        webEngineView->show();
+    }
 }
 
 
@@ -3612,7 +3615,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testDelay()
 {
-    testSynergies();
+//    testSynergies();
 }
 
 
