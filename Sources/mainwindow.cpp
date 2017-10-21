@@ -2197,7 +2197,9 @@ void MainWindow::downloadExtraFiles()
 
 void MainWindow::downloadWebEngineView()
 {
+#ifndef PATREON_VERSION
     networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
+#endif
 }
 
 
