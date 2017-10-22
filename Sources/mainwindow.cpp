@@ -974,6 +974,9 @@ void MainWindow::completeUI()
         connect(this, SIGNAL(cardsJsonReady()),
                 this, SLOT(downloadAllArenaCodes()));
 
+#ifdef PATREON_VERSION
+        ui->donateButton->hide();
+#endif
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));

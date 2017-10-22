@@ -172,7 +172,7 @@ void GameWatcher::processAsset(QString &line, qint64 numLine)
 
     //Definimos RANKED solo si venimos de loadScreen TOURNAMENT y
     //acabamos de encontrar el WON pero aun no hemos createResult
-    if(loadingScreenState == casual && logSeekWon != -1 && line.contains("name=rank_window"))
+    if(loadingScreenState == casual && logSeekWon != -1 && line.contains("assetPath=rank_window"))
     {
         loadingScreenState = ranked;
         emit pDebug("On RANKED (loadingScreenState = ranked).", numLine);
@@ -403,6 +403,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         }
         else    emit pDebug("Read invalid PlayerID value: " + player, numLine, Error);
 
+        //No se usa. El playerID se calcula (junto al playerTag) al cargar el retrato del heroe en processZone.
         if(playerTag.isEmpty() && playerID == player.toInt())
         {
             playerTag = (playerID == 1)?name1:name2;
@@ -467,11 +468,11 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
     }
 
 
-    //GameState.DebugPrintEntityChoices() -   Entities[4]=[name=La moneda id=68 zone=HAND zonePos=5 cardId=GAME_005 player=2]
-    //GameState.DebugPrintEntityChoices() -   Entities[4]=[name=UNKNOWN ENTITY [cardType=INVALID] id=68 zone=HAND zonePos=5 cardId= player=1]
+    //GameState.DebugPrintEntityChoices() -   Entities[4]=[entityName=La moneda id=68 zone=HAND zonePos=5 cardId=GAME_005 player=2]
+    //GameState.DebugPrintEntityChoices() -   Entities[4]=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=68 zone=HAND zonePos=5 cardId= player=1]
     else if(line.contains(QRegularExpression(
                 "GameState\\.DebugPrintEntityChoices\\(\\) - *"
-                "Entities\\[4\\]=\\[name=.* id=(\\d+) zone=HAND zonePos=5 cardId=.* player=\\d+\\]"
+                "Entities\\[4\\]=\\[entityName=.* id=(\\d+) zone=HAND zonePos=5 cardId=.* player=\\d+\\]"
                   ), match))
     {
         QString id = match->captured(1);
@@ -537,11 +538,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //TAG_CHANGE desconocido
-        //TAG_CHANGE Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2] tag=CLASS value=MAGE
-        //TAG_CHANGE Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=37 zone=HAND zonePos=2 cardId= player=2] tag=CLASS value=MAGE
+        //TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2] tag=CLASS value=MAGE
+        //TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=37 zone=HAND zonePos=2 cardId= player=2] tag=CLASS value=MAGE
         if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-            "Entity=\\[name=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
+            "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
             "tag=(\\w+) value=(\\w+)"
             ), match))
         {
@@ -583,11 +584,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         //TAG_CHANGE conocido
         //PowerTaskList aparece segundo pero hay acciones que no tienen GameState, como el damage del maestro del acero herido
-        //GameState.DebugPrintPower() -         TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=DAMAGE value=0
-        //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[name=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
+        //GameState.DebugPrintPower() -         TAG_CHANGE Entity=[entityName=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=DAMAGE value=0
+        //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-            "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+            "Entity=\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "tag=(\\w+) value=(\\w+)"
             ), match))
         {
@@ -630,11 +631,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //Enemigo accion desconocida
-        //BLOCK_START BlockType=PLAY Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2]
+        //BLOCK_START BlockType=PLAY Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2]
         //EffectCardId= EffectIndex=0 Target=0
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-            "Entity=\\[name=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\] "
+            "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\] "
             "EffectCardId=\\w* EffectIndex=-?\\d+ "
             "Target="
             ), match))
@@ -649,11 +650,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //SHOW_ENTITY conocido
-        //SHOW_ENTITY - Updating Entity=[name=Maestra de secta id=50 zone=DECK zonePos=0 cardId= player=2] CardID=EX1_595
-        //SHOW_ENTITY - Updating Entity=[name=Turbocerdo con pinchos id=18 zone=DECK zonePos=0 cardId=CFM_688 player=1] CardID=CFM_688
+        //SHOW_ENTITY - Updating Entity=[entityName=Maestra de secta id=50 zone=DECK zonePos=0 cardId= player=2] CardID=EX1_595
+        //SHOW_ENTITY - Updating Entity=[entityName=Turbocerdo con pinchos id=18 zone=DECK zonePos=0 cardId=CFM_688 player=1] CardID=CFM_688
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *SHOW_ENTITY - Updating "
-            "Entity=\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
+            "Entity=\\[entityName=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
             "CardID=\\w+"
             ), match))
         {
@@ -668,10 +669,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //SHOW_ENTITY desconocido
-        //SHOW_ENTITY - Updating Entity=[name=UNKNOWN ENTITY [cardType=INVALID] id=58 zone=HAND zonePos=3 cardId= player=2] CardID=EX1_011
+        //SHOW_ENTITY - Updating Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=58 zone=HAND zonePos=3 cardId= player=2] CardID=EX1_011
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *SHOW_ENTITY - Updating "
-            "Entity=\\[name=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
+            "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
             "CardID=\\w+"
             ), match))
         {
@@ -686,10 +687,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //FULL_ENTITY conocido
-        //FULL_ENTITY - Updating [name=Recluta Mano de Plata id=95 zone=PLAY zonePos=3 cardId=CS2_101t player=2] CardID=CS2_101t
+        //FULL_ENTITY - Updating [entityName=Recluta Mano de Plata id=95 zone=PLAY zonePos=3 cardId=CS2_101t player=2] CardID=CS2_101t
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *FULL_ENTITY - Updating "
-            "\\[name=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
+            "\\[entityName=.* id=(\\d+) zone=\\w+ zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
             "CardID=\\w+"
             ), match))
         {
@@ -704,10 +705,10 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //CHANGE_ENTITY conocido
-        //CHANGE_ENTITY - Updating Entity=[name=Aullavísceras id=53 zone=HAND zonePos=3 cardId=EX1_411 player=2] CardID=OG_031
+        //CHANGE_ENTITY - Updating Entity=[entityName=Aullavísceras id=53 zone=HAND zonePos=3 cardId=EX1_411 player=2] CardID=OG_031
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *CHANGE_ENTITY - Updating Entity="
-            "\\[name=.* id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
+            "\\[entityName=.* id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=\\w* player=(\\d+)\\] "
             "CardID=(\\w+)"
             ), match))
         {
@@ -730,19 +731,19 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //Jugador/Enemigo accion con/sin objetivo
-        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[name=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
-        //EffectCardId= EffectIndex=-1 Target=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
-        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[name=Trepadora embrujada id=12 zone=GRAVEYARD zonePos=0 cardId=FP1_002 player=1]
+        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=ATTACK Entity=[entityName=Jinete de lobos id=45 zone=PLAY zonePos=1 cardId=CS2_124 player=2]
+        //EffectCardId= EffectIndex=-1 Target=[entityName=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1]
+        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[entityName=Trepadora embrujada id=12 zone=GRAVEYARD zonePos=0 cardId=FP1_002 player=1]
         //EffectCardId= EffectIndex=0 Target=0
-        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[name=Elemental de Escarcha id=43 zone=PLAY zonePos=1 cardId=EX1_283 player=2]
-        //EffectCardId= EffectIndex=-1 Target=[name=Trituradora antigua de Sneed id=23 zone=PLAY zonePos=5 cardId=GVG_114 player=1]
-        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=FATIGUE Entity=[name=Malfurion Tempestira id=76 zone=PLAY zonePos=0 cardId=HERO_06 player=1]
+        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=POWER Entity=[entityName=Elemental de Escarcha id=43 zone=PLAY zonePos=1 cardId=EX1_283 player=2]
+        //EffectCardId= EffectIndex=-1 Target=[entityName=Trituradora antigua de Sneed id=23 zone=PLAY zonePos=5 cardId=GVG_114 player=1]
+        //PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=FATIGUE Entity=[entityName=Malfurion Tempestira id=76 zone=PLAY zonePos=0 cardId=HERO_06 player=1]
         //EffectCardId= EffectIndex=0 Target=0
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-            "Entity=\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+            "Entity=\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
             "EffectCardId=\\w* EffectIndex=-?\\d+ "
-            "Target=(?:\\[name=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
+            "Target=(?:\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
             ), match))
         {
             QString blockType = match->captured(1);
@@ -861,9 +862,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     if(powerState == noGame)   return;
 
     //Carta desconocida
-    //[name=UNKNOWN ENTITY [cardType=INVALID] id=74 zone=HAND zonePos=0 cardId= player=2] zone from OPPOSING DECK -> OPPOSING HAND
+    //[entityName=UNKNOWN ENTITY [cardType=INVALID] id=69 zone=HAND zonePos=0 cardId= player=2] zone from OPPOSING DECK -> OPPOSING HAND
     if(line.contains(QRegularExpression(
-        "\\[name=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\] zone from "
+        "\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
@@ -937,11 +938,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     }
 
 
-    //[name=Marca de Y'Shaarj id=44 zone=HAND zonePos=0 cardId=OG_048 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND
-    //[name=Aliento de dragón id=14 zone=DECK zonePos=1 cardId= player=1] zone from FRIENDLY HAND -> FRIENDLY DECK
+    //[entityName=Shellshifter id=32 zone=HAND zonePos=0 cardId=UNG_101 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND
+    //[entityName=Shellshifter id=32 zone=DECK zonePos=0 cardId= player=1] zone from FRIENDLY HAND -> FRIENDLY DECK
     //Carta conocida
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w*) player=(\\d+)\\] zone from "
+        "\\[entityName=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w*) player=(\\d+)\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
         ), match))
     {
@@ -1291,9 +1292,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
     //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
     //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
     //y despues se genran los esbirros de deathrattle causando una suma erronea.
-    //id=7 local=True [name=Ingeniera novata id=25 zone=HAND zonePos=5 cardId=EX1_015 player=1] pos from 5 -> 3
+    //id=7 local=True [entityName=Ingeniera novata id=25 zone=HAND zonePos=5 cardId=EX1_015 player=1] pos from 5 -> 3
     else if(line.contains(QRegularExpression(
-        "\\[name=(.*) id=(\\d+) zone=(?:HAND|PLAY) zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
+        "\\[entityName=(.*) id=(\\d+) zone=(?:HAND|PLAY) zonePos=\\d+ cardId=\\w+ player=(\\d+)\\] pos from \\d+ -> (\\d+)"
         ), match))
     {
         QString name = match->captured(1);
@@ -1467,109 +1468,4 @@ void GameWatcher::setCopyGameLogs(bool value)
     this->copyGameLogs = value;
 }
 
-
-
-// RACHELLE PROCESS
-//    else if(line.startsWith("[Rachelle]"))
-//    {
-//        if(line.contains(QRegularExpression("reward \\d=\\[")))
-//        {
-//            gameState = inRewards;
-//            emit pDebug("New reward (GameState = inRewards).", numLine);
-
-//            if(line.contains("BoosterPackRewardData"))
-//            {
-//                emit newArenaReward(0,0,true,false,false);
-//            }
-//            else if(line.contains("CardRewardData"))
-//            {
-//                if(line.contains(QRegularExpression("Premium=(STANDARD|GOLDEN)"), match))
-//                {
-//                    QString cardType = match->captured(1);
-//                    if(cardType.compare("STANDARD") == 0)
-//                    {
-//                        emit newArenaReward(0,0,false,false,true);
-//                    }
-//                    else
-//                    {
-//                        emit newArenaReward(0,0,false,true,false);
-//                    }
-
-//                }
-//            }
-//            else if(line.contains(QRegularExpression("GoldRewardData: Amount=(\\d+)"), match))
-//            {
-//                QString gold = match->captured(1);
-//                emit newArenaReward(gold.toInt(),0,false,false,false);
-//            }
-//            else if(line.contains(QRegularExpression("ArcaneDustRewardData: Amount=(\\d+)"), match))
-//            {
-//                QString dust = match->captured(1);
-//                emit newArenaReward(0, dust.toInt(),false,false,false);
-//            }
-//        }
-//    }
-
-// ASSET PROCESS
-//    else if(line.startsWith("[Asset]"))
-//    {
-//        if((gameState == readingDeck) &&
-//            line.contains(QRegularExpression(
-//                "CachedAsset\\.UnloadAssetObject.+ - unloading name=(\\w+) family=CardPrefab persistent=False"), match))
-//        {
-//            QString code = match->captured(1);
-//            //Hero portraits
-//            if(code.contains("HERO"))
-//            {
-//                emit pDebug("Discard HERO card", numLine);
-//                endReadingDeck();
-//                return;
-//            }
-//            //Hero powers
-//            if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-//                code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-//                code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-//            {
-//                emit pDebug("Discard HERO POWER", numLine);
-//                endReadingDeck();
-//                return;
-//            }
-//            emit pDebug("Read code: " + code, numLine);
-//            emit newDeckCard(code);
-//        }
-//    }
-
-//  BOB PROCESS
-//    if(line.startsWith("[Bob]"))
-//    {
-//        if(line.startsWith("[Bob] ---Register"))
-//        {
-//            //Redundante en caso de que falle
-//            //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-//            endReadingDeck();
-
-//            if(line.startsWith("[Bob] ---RegisterScreenForge---"))
-//            {
-//                arenaMode = true;
-//                emit pDebug("Entering arena.", numLine);
-//                emit enterArena();
-//            }
-//            else if(line.startsWith("[Bob] ---RegisterProfileNotices---") ||
-//                    line.startsWith("[Bob] ---RegisterFriendChallenge---"))
-//            {
-//            }
-//            else if(line.startsWith("[Bob] ---RegisterScreenEndOfGame---"))
-//            {
-//                emit endGame();
-//                gameState = noGame;
-//                emit pDebug("Found ScreenEndOfGame (GameState = noGame).\n", numLine);
-//            }
-//            else
-//            {
-//                arenaMode = false;
-//                emit pDebug("Leaving arena.", numLine);
-//                emit leaveArena();
-//            }
-//        }
-//    }
 
