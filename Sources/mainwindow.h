@@ -173,6 +173,7 @@ private:
     void completeConfigComboTheme();
     void redrawAllGames();
     void initConfigTheme(QString theme);
+    bool isPatreonVersion();
     void unZip(QString zipName, QString targetPath);
     void downloadExtraFiles();
     void downloadThemes();

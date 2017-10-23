@@ -4,8 +4,10 @@
 #include <QNetworkReply>
 #include <QtWidgets>
 
-VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
+VersionChecker::VersionChecker(QObject *parent, bool patreonVersion) : QObject(parent)
 {
+    this->patreonVersion = patreonVersion;
+
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
@@ -38,13 +40,17 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
     {
         this->deleteLater();
 
-#ifdef PATREON_VERSION
-        QString latestVersion = QJsonDocument::fromJson(reply->readAll()).object().value("versionPatreon").toString();
-        emit pDebug("Installed AT Patreon: " + VERSION + " - Latest AT Patreon: " + latestVersion);
-#else
-        QString latestVersion = QJsonDocument::fromJson(reply->readAll()).object().value("versionFree").toString();
-        emit pDebug("Installed AT Free: " + VERSION + " - Latest AT Free: " + latestVersion);
-#endif
+        QString latestVersion;
+        if(patreonVersion)
+        {
+            latestVersion = QJsonDocument::fromJson(reply->readAll()).object().value("versionPatreon").toString();
+            emit pDebug("Installed AT Patreon: " + VERSION + " - Latest AT Patreon: " + latestVersion);
+        }
+        else
+        {
+            latestVersion = QJsonDocument::fromJson(reply->readAll()).object().value("versionFree").toString();
+            emit pDebug("Installed AT Free: " + VERSION + " - Latest AT Free: " + latestVersion);
+        }
 
         if(VERSION == latestVersion)
         {
@@ -67,11 +73,14 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
 
             if(msgBox.clickedButton() == button1)
             {
-#ifdef PATREON_VERSION
-                QDesktopServices::openUrl(QUrl("https://www.patreon.com/triodo/posts"));
-#else
-                QDesktopServices::openUrl(QUrl("https://github.com/supertriodo/Arena-Tracker/releases/latest"));
-#endif
+                if(patreonVersion)
+                {
+                    QDesktopServices::openUrl(QUrl("https://www.patreon.com/triodo/posts"));
+                }
+                else
+                {
+                    QDesktopServices::openUrl(QUrl("https://github.com/supertriodo/Arena-Tracker/releases/latest"));
+                }
             }
             ((QMainWindow*)this->parent())->close();
         }

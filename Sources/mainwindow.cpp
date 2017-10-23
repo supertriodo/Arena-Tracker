@@ -144,6 +144,16 @@ void MainWindow::init()
 }
 
 
+bool MainWindow::isPatreonVersion()
+{
+#ifdef PATREON_VERSION
+    return true;
+#else
+    return false;
+#endif
+}
+
+
 void MainWindow::createSecondaryWindow()
 {
     this->otherWindow = new MainWindow(0, this);
@@ -455,7 +465,7 @@ void MainWindow::createNetworkManager()
 
 void MainWindow::createVersionChecker()
 {
-    VersionChecker *versionChecker = new VersionChecker(this);
+    VersionChecker *versionChecker = new VersionChecker(this, isPatreonVersion());
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -974,9 +984,7 @@ void MainWindow::completeUI()
         connect(this, SIGNAL(cardsJsonReady()),
                 this, SLOT(downloadAllArenaCodes()));
 
-#ifdef PATREON_VERSION
-        ui->donateButton->hide();
-#endif
+        if(isPatreonVersion())  ui->donateButton->hide();
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));
@@ -2200,9 +2208,7 @@ void MainWindow::downloadExtraFiles()
 
 //void MainWindow::downloadWebEngineView()
 //{
-//#ifndef PATREON_VERSION
-//    networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
-//#endif
+//    if(!isPatreonVersion())  networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
 //}
 
 
