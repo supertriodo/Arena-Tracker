@@ -16,7 +16,7 @@
 #include "Widgets/cardwindow.h"
 #include "Widgets/cardlistwindow.h"
 #include <QMainWindow>
-#include <QWebEngineView>
+//#include <QWebEngineView>
 #include <QJsonObject>
 
 #define DIVIDE_TABS_H 444
@@ -69,7 +69,7 @@ private:
     CardWindow *cardWindow;
     CardListWindow *cardListWindow;
     TrackobotUploader *trackobotUploader;
-    QWebEngineView * webEngineView;
+//    QWebEngineView * webEngineView;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     WindowsFormation windowsFormation;
@@ -113,7 +113,7 @@ private:
     void createDraftHandler();
     void createVersionChecker();
     void createTrackobotUploader();
-    void createWebEngineView(QJsonObject jsonObject);
+//    void createWebEngineView(QJsonObject jsonObject);
     void readSettings();
     void writeSettings();
     void completeUI();
@@ -181,7 +181,7 @@ private:
     void downloadHearthArenaJson(int version);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
-    void downloadWebEngineView();
+//    void downloadWebEngineView();
 
 //Override events
 protected:

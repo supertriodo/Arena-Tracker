@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     draftLogFile = "";
     cardHeight = -1;
     windowsFormation = None;
-    webEngineView = NULL;
+//    webEngineView = NULL;
 
     logLoader = NULL;
     gameWatcher = NULL;
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     downloadSynergiesVersion();
     downloadExtraFiles();
     downloadThemes();
-    downloadWebEngineView();
+//    downloadWebEngineView();
 
     createTrackobotUploader();
     createCardDownloader();
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
 
 MainWindow::~MainWindow()
 {
-    if(webEngineView != NULL)       delete webEngineView;
+//    if(webEngineView != NULL)       delete webEngineView;
     if(networkManager != NULL)      delete networkManager;
     if(logLoader != NULL)           delete logLoader;
     if(gameWatcher != NULL)         delete gameWatcher;
@@ -348,12 +348,12 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             }
         }
         //WebEngineView json
-        else if(endUrl == "webEngineView.json")
-        {
-            emit pDebug("Extra: Json WebEngineView --> Download Success.");
-            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
-            createWebEngineView(jsonObject);
-        }
+//        else if(endUrl == "webEngineView.json")
+//        {
+//            emit pDebug("Extra: Json WebEngineView --> Download Success.");
+//            QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
+//            createWebEngineView(jsonObject);
+//        }
         //Theme zip
         else if(fullUrl.contains(THEMES_URL) && endUrl.endsWith(".zip"))
         {
@@ -463,21 +463,21 @@ void MainWindow::createVersionChecker()
 }
 
 
-void MainWindow::createWebEngineView(QJsonObject jsonObject)
-{
-    int height = jsonObject.value("height").toInt();
-    QString html = jsonObject.value("html").toString();
+//void MainWindow::createWebEngineView(QJsonObject jsonObject)
+//{
+//    int height = jsonObject.value("height").toInt();
+//    QString html = jsonObject.value("html").toString();
 
-    if(height > 0)
-    {
-        webEngineView = new QWebEngineView(this);
-        webEngineView->setFixedHeight(height);
-        webEngineView->setPage(new WebEnginePage(webEngineView));
-        webEngineView->page()->setHtml(html);
-        ui->verticalLayout->addWidget(webEngineView);
-        webEngineView->show();
-    }
-}
+//    if(height > 0)
+//    {
+//        webEngineView = new QWebEngineView(this);
+//        webEngineView->setFixedHeight(height);
+//        webEngineView->setPage(new WebEnginePage(webEngineView));
+//        webEngineView->page()->setHtml(html);
+//        ui->verticalLayout->addWidget(webEngineView);
+//        webEngineView->show();
+//    }
+//}
 
 
 void MainWindow::createTrackobotUploader()
@@ -2198,12 +2198,12 @@ void MainWindow::downloadExtraFiles()
 }
 
 
-void MainWindow::downloadWebEngineView()
-{
-#ifndef PATREON_VERSION
-    networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
-#endif
-}
+//void MainWindow::downloadWebEngineView()
+//{
+//#ifndef PATREON_VERSION
+//    networkManager->get(QNetworkRequest(QUrl(WEB_ENGINE_VIEW_URL + QString("/webEngineView.json"))));
+//#endif
+//}
 
 
 void MainWindow::downloadHearthArenaVersion()

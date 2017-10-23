@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network widgets webenginewidgets
+QT       += core gui network widgets
 
 TARGET = ArenaTracker
 TEMPLATE = app
