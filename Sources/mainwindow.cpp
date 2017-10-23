@@ -2353,7 +2353,7 @@ void MainWindow::createLinuxShortcut()
 {
 #ifdef APPIMAGE
     QProcess p;
-    QString pattern = "*/ArenaTracker.AppImage";
+    QString pattern = "*/ArenaTracker.Linux.AppImage";
     QString trash =  "*/.local/share/Trash/*";
     p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
     p.waitForFinished(-1);
