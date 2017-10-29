@@ -52,7 +52,7 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
             emit pDebug("Installed AT Free: " + VERSION + " - Latest AT Free: " + latestVersion);
         }
 
-        if(VERSION == latestVersion)
+        if(VERSION >= latestVersion)
         {
             emit pLog("Settings: Arena Tracker is up-to-date.");
             emit pDebug("Arena Tracker is up-to-date.");
