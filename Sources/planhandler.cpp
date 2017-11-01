@@ -5,8 +5,9 @@
 #include <QtWidgets>
 
 
-PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
+PlanHandler::PlanHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui) : QObject(parent)
 {
+    this->patreonVersion = patreonVersion;
     this->ui = ui;
     this->transparency = Opaque;
     this->inGame = false;
@@ -46,6 +47,29 @@ PlanHandler::~PlanHandler()
 
 void PlanHandler::completeUI()
 {
+    if(!patreonVersion)
+    {
+        ui->planGraphicsView->hide();
+        ui->planButtonPrev->hide();
+        ui->planButtonNext->hide();
+        ui->planButtonFirst->hide();
+        ui->planButtonLast->hide();
+        ui->planButtonResize->hide();
+        ui->planTurnSlider->hide();
+        ui->planLabelTurn->hide();
+
+        QPushButton *planPatreonButton = new QPushButton(ui->tabPlan);
+        planPatreonButton->setFlat(true);
+        planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
+        planPatreonButton->setIconSize(QSize(217, 51));
+
+        ui->horizontalLayoutPlanButtons->insertWidget(4, planPatreonButton);
+        ui->horizontalLayoutPlanButtons->removeItem(ui->planHorizontalSpacer3);
+
+        connect(planPatreonButton, SIGNAL(clicked()),
+                this, SLOT(openPatreonWeb()));
+    }
+
     connect(ui->planButtonPrev, SIGNAL(clicked()),
             this, SLOT(showPrevTurn()));
     connect(ui->planButtonNext, SIGNAL(clicked()),
@@ -60,6 +84,12 @@ void PlanHandler::completeUI()
             this, SLOT(resizePlan()));
     connect(ui->planGraphicsView, SIGNAL(sizeChanged()),
             this, SLOT(updateViewCardZoneSpots()));
+}
+
+
+void PlanHandler::openPatreonWeb()
+{
+    Utility::openPatreonWeb();
 }
 
 

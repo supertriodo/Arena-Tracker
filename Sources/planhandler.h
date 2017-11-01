@@ -53,11 +53,12 @@ class PlanHandler : public QObject
 {
     Q_OBJECT
 public:
-    PlanHandler(QObject *parent, Ui::Extended *ui);
+    PlanHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui);
     ~PlanHandler();
 
 //Variables
 private:
+    bool patreonVersion;
     Ui::Extended *ui;
     QList<TagChange> pendingTagChanges, cardPendingTagChanges;
     Board *nowBoard;
@@ -193,6 +194,7 @@ private slots:
     void minionWheel(MinionGraphicsItem *minion, bool up);
     void heroWheel(HeroGraphicsItem *hero, bool up);
     void checkCardPendingTagChanges();
+    void openPatreonWeb();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);

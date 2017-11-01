@@ -633,3 +633,11 @@ void Utility::showItemsLayout(QLayout* layout)
 //        if (QLayout* childLayout = child->layout())  showItemsLayout(childLayout);
     }
 }
+
+
+void Utility::openPatreonWeb()
+{
+    QDesktopServices::openUrl(QUrl(
+        "https://www.patreon.com/triodo"
+        ));
+}

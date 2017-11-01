@@ -102,6 +102,7 @@ public:
     static void showItemsLayout(QLayout *layout);
     static QStringList getSetCodes(const QString &set);
     static QStringList getStandardCodes();
+    static void openPatreonWeb();
 };
 
 #endif // UTILITY_H

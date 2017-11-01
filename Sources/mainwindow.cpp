@@ -629,7 +629,7 @@ void MainWindow::createEnemyHandHandler()
 
 void MainWindow::createPlanHandler()
 {
-    planHandler = new PlanHandler(this, ui);
+    planHandler = new PlanHandler(this, isPatreonVersion(), ui);
     connect(planHandler, SIGNAL(checkCardImage(QString, bool)),
             this, SLOT(checkCardImage(QString, bool)));
     connect(planHandler, SIGNAL(needMainWindowFade(bool)),

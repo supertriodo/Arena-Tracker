@@ -536,11 +536,9 @@ QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 }
 
 
-void ArenaHandler::openDonateWeb()
+void ArenaHandler::openPatreonWeb()
 {
-    QDesktopServices::openUrl(QUrl(
-        "https://www.patreon.com/triodo"
-        ));
+    Utility::openPatreonWeb();
 }
 
 

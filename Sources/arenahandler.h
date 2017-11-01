@@ -82,7 +82,7 @@ public slots:
     void replyFinished(QNetworkReply *reply);
 
 private slots:
-    void openDonateWeb();
+    void openPatreonWeb();
     void hideRewards();
     void changedRow(QTreeWidgetItem *current);
     void replayLog();
