@@ -18,7 +18,7 @@ class ArenaHandler : public QObject
 {
     Q_OBJECT
 public:
-    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, PlanHandler *planHandler, Ui::Extended *ui);
+    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, PlanHandler *planHandler, bool patreonVersion, Ui::Extended *ui);
     ~ArenaHandler();
 
 //Variables
@@ -26,6 +26,7 @@ private:
     TrackobotUploader *trackobotUploader;
     DeckHandler *deckHandler;
     PlanHandler *planHandler;
+    bool patreonVersion;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QTreeWidgetItem *rankedTreeItem[9];

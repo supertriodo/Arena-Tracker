@@ -561,7 +561,7 @@ void MainWindow::createSecretsHandler()
 
 void MainWindow::createArenaHandler()
 {
-    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
+    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, isPatreonVersion(), ui);
     connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(arenaHandler, SIGNAL(pLog(QString)),
@@ -985,8 +985,6 @@ void MainWindow::completeUI()
                 this, SLOT(resizeChangingTab()));
         connect(this, SIGNAL(cardsJsonReady()),
                 this, SLOT(downloadAllArenaCodes()));
-
-        if(isPatreonVersion())  ui->donateButton->hide();
 
 #ifdef QT_DEBUG
         pLog(tr("MODE DEBUG"));

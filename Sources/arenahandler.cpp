@@ -7,9 +7,10 @@
 #include <QtWidgets>
 
 ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
-                           TrackobotUploader *trackobotUploader, PlanHandler *planHandler,
+                           TrackobotUploader *trackobotUploader, PlanHandler *planHandler, bool patreonVersion,
                            Ui::Extended *ui) : QObject(parent)
 {
+    this->patreonVersion = patreonVersion;
     this->trackobotUploader = trackobotUploader;
     this->deckHandler = deckHandler;
     this->planHandler = planHandler;
@@ -35,6 +36,7 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
+    if(patreonVersion)  ui->donateButton->hide();
 
     connect(ui->webButton, SIGNAL(clicked()),
             this, SLOT(openTBProfile()));
