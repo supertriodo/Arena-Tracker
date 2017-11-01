@@ -148,9 +148,11 @@ bool MainWindow::isPatreonVersion()
 {
 #ifdef PATREON_VERSION
     return true;
-#else
-    return false;
 #endif
+#ifdef QT_DEBUG
+    return true;
+#endif
+    return false;
 }
 
 
