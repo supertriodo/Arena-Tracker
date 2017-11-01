@@ -62,6 +62,7 @@ void PlanHandler::completeUI()
         planPatreonButton->setFlat(true);
         planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
         planPatreonButton->setIconSize(QSize(217, 51));
+        planPatreonButton->setToolTip("Unlock Replays and Planning becoming a patron (2$)");
 
         ui->horizontalLayoutPlanButtons->insertWidget(4, planPatreonButton);
         ui->horizontalLayoutPlanButtons->removeItem(ui->planHorizontalSpacer3);

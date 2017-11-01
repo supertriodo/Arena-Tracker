@@ -159,6 +159,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip">
+               <string>Unlock replays, synergies and draft mechanics becoming a patron (2$)</string>
+              </property>
               <property name="text">
                <string/>
               </property>
