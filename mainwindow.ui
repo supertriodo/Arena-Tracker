@@ -164,12 +164,12 @@
               </property>
               <property name="icon">
                <iconset resource="arenatracker.qrc">
-                <normaloff>:/Images/donate.gif</normaloff>:/Images/donate.gif</iconset>
+                <normaloff>:/Images/becomePatreon.png</normaloff>:/Images/becomePatreon.png</iconset>
               </property>
               <property name="iconSize">
                <size>
-                <width>92</width>
-                <height>26</height>
+                <width>128</width>
+                <height>32</height>
                </size>
               </property>
               <property name="flat">

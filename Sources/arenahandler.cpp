@@ -537,8 +537,7 @@ QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 void ArenaHandler::openDonateWeb()
 {
     QDesktopServices::openUrl(QUrl(
-        "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&"
-        "item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"
+        "https://www.patreon.com/triodo"
         ));
 }
 
