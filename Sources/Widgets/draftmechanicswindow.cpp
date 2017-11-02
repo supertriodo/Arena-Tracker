@@ -3,9 +3,10 @@
 #include <QtWidgets>
 
 
-DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
+DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
+    this->patreonVersion = patreonVersion;
     scoreWidth = sizeCard.width()*0.7;
 
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -20,7 +21,9 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
 
     QWidget *centralWidget = new QWidget(this);
-    centralWidget->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsHelpFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    centralWidget->setStyleSheet(".QWidget{border-image: url(" +
+                                 (patreonVersion?ThemeHandler::bgDraftMechanicsHelpFile():ThemeHandler::bgDraftMechanicsFile()) +
+                                 ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     showingHelp = true;
     QHBoxLayout *centralLayout = new QHBoxLayout();
     QVBoxLayout *adjustLayout = new QVBoxLayout(centralWidget);
@@ -54,6 +57,20 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QHBoxLayout *scoresLayout = new QHBoxLayout();
     scoresLayout->addWidget(scoresPushButton);
     scoresLayout->addWidget(scoresPushButton2);
+
+    //Patreon
+    if(!patreonVersion)
+    {
+        QPushButton *patreonButton = new QPushButton(centralWidget);
+        patreonButton->setFlat(true);
+        patreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
+        patreonButton->setIconSize(QSize(217, 51));
+        patreonButton->setToolTip("Unlock Synergies and draft mechanics becoming a patron (2$)");
+        scoresLayout->addWidget(patreonButton);
+
+        connect(patreonButton, SIGNAL(clicked()),
+                this, SLOT(openPatreonWeb()));
+    }
 
     //Mechanics
     QGridLayout *mechanicsLayout = new QGridLayout();
@@ -125,6 +142,12 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 DraftMechanicsWindow::~DraftMechanicsWindow()
 {
     deleteDraftItemCounters();
+}
+
+
+void DraftMechanicsWindow::openPatreonWeb()
+{
+    Utility::openPatreonWeb();
 }
 
 

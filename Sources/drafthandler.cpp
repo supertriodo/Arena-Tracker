@@ -4,8 +4,9 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui) : QObject(parent)
 {
+    this->patreonVersion = patreonVersion;
     this->ui = ui;
     this->deckRatingHA = this->deckRatingLF = 0;
     this->numCaptured = 0;
@@ -56,6 +57,8 @@ void DraftHandler::createSynergyHandler()
 
 void DraftHandler::completeUI()
 {
+    if(!patreonVersion) ui->labelDeckScore->hide();
+
     comboBoxCard[0] = ui->comboBoxCard1;
     comboBoxCard[1] = ui->comboBoxCard2;
     comboBoxCard[2] = ui->comboBoxCard3;
@@ -721,29 +724,32 @@ void DraftHandler::pickCard(QString code)
         delayCapture = false;
     }
 
-    DraftCard draftCard;
-    for(int i=0; i<3; i++)
+    if(patreonVersion)
     {
-        if(draftCards[i].getCode() == code)
+        DraftCard draftCard;
+        for(int i=0; i<3; i++)
         {
-            draftCard = draftCards[i];
-
-            QStringList spellList, minionList, weaponList,
-                        aoeList, tauntList, survivabilityList, drawList,
-                        pingList, damageList, destroyList, reachList;
-            synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
-                                           aoeList, tauntList, survivabilityList, drawList,
-                                           pingList, damageList, destroyList, reachList);
-            updateDeckScore(shownTierScoresHA[i], shownTierScoresLF[i]);
-            if(draftMechanicsWindow != NULL)
+            if(draftCards[i].getCode() == code)
             {
-                int numCards = synergyHandler->draftedCardsCount();
-                draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
-                draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
-                                                     aoeList, tauntList, survivabilityList, drawList,
-                                                     pingList, damageList, destroyList, reachList);
+                draftCard = draftCards[i];
+
+                QStringList spellList, minionList, weaponList,
+                            aoeList, tauntList, survivabilityList, drawList,
+                            pingList, damageList, destroyList, reachList;
+                synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
+                                               aoeList, tauntList, survivabilityList, drawList,
+                                               pingList, damageList, destroyList, reachList);
+                updateDeckScore(shownTierScoresHA[i], shownTierScoresLF[i]);
+                if(draftMechanicsWindow != NULL)
+                {
+                    int numCards = synergyHandler->draftedCardsCount();
+                    draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
+                    draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                                         aoeList, tauntList, survivabilityList, drawList,
+                                                         pingList, damageList, destroyList, reachList);
+                }
+                break;
             }
-            break;
         }
     }
 
@@ -766,7 +772,7 @@ void DraftHandler::pickCard(QString code)
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
-    emit pLog(tr("Draft:") + " (" + QString::number(synergyHandler->draftedCardsCount()) + ")" + draftCard.getName());
+    emit pLog(tr("Draft:") + " (" + QString::number(synergyHandler->draftedCardsCount()) + ")" + code);
     emit newDeckCard(code);
     this->justPickedCard = code;
 
@@ -842,14 +848,17 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    -1, -1, -1,
                    HearthArena);
 
-    if(draftScoreWindow != NULL)
+    if(patreonVersion)
     {
-        for(int i=0; i<3; i++)
+        if(draftScoreWindow != NULL)
         {
-            QMap<QString,int> synergies;
-            QStringList mechanicIcons;
-            synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons);
-            draftScoreWindow->setSynergies(i, synergies, mechanicIcons);
+            for(int i=0; i<3; i++)
+            {
+                QMap<QString,int> synergies;
+                QStringList mechanicIcons;
+                synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons);
+                draftScoreWindow->setSynergies(i, synergies, mechanicIcons);
+            }
         }
     }
 }
@@ -1185,7 +1194,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     connect(draftScoreWindow, SIGNAL(cardLeave()),
             this, SIGNAL(overlayCardLeave()));
 
-    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, patreonVersion);
     initDraftMechanicsWindowCounters();
     connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
             this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));

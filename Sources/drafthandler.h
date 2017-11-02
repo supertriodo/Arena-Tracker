@@ -41,11 +41,12 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, Ui::Extended *ui);
+    DraftHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui);
     ~DraftHandler();
 
 //Variables
 private:
+    bool patreonVersion;
     Ui::Extended *ui;
     SynergyHandler *synergyHandler;
     QMap<QString, int> hearthArenaTiers;

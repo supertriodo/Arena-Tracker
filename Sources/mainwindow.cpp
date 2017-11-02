@@ -510,7 +510,7 @@ void MainWindow::createTrackobotUploader()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, ui);
+    draftHandler = new DraftHandler(this, isPatreonVersion(), ui);
     connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),

@@ -13,12 +13,13 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion);
     ~DraftMechanicsWindow();
 
 
 //Variables
 private:
+    bool patreonVersion;
     ScoreButton *scoresPushButton;
     ScoreButton *scoresPushButton2;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
@@ -44,6 +45,9 @@ public slots:
 signals:
     void itemEnter(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight);
     void itemLeave();
+
+private slots:
+    void openPatreonWeb();
 };
 
 #endif // DRAFTMECHANICSWINDOW_H
