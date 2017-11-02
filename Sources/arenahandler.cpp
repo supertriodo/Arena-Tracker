@@ -43,7 +43,7 @@ void ArenaHandler::completeUI()
     connect(ui->replayButton, SIGNAL(clicked()),
             this, SLOT(replayLog()));
     connect(ui->donateButton, SIGNAL(clicked()),
-            this, SLOT(openDonateWeb()));
+            this, SLOT(openPatreonWeb()));
 
     completeRewardsUI();
 }
