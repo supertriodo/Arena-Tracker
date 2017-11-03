@@ -435,7 +435,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
 void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 {
-    if(synergyHandler->draftedCardsCount() > 0) return;
+    if(synergyHandler->draftedCardsCount() > 0 || !patreonVersion)  return;
 
     QStringList spellList, minionList, weaponList,
                 aoeList, tauntList, survivabilityList, drawList,
@@ -488,10 +488,13 @@ void DraftHandler::endDraft()
     emit draftEnded();
 
     //Show Deck Score
-    int numCards = synergyHandler->draftedCardsCount();
-    int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
-    int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
-    emit showMessageProgressBar(" LF:" + QString::number(deckScoreLF) + " -- HA:" + QString::number(deckScoreHA), 10000);
+    if(patreonVersion)
+    {
+        int numCards = synergyHandler->draftedCardsCount();
+        int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
+        int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
+        emit showMessageProgressBar(" LF:" + QString::number(deckScoreLF) + " -- HA:" + QString::number(deckScoreHA), 10000);
+    }
 
     clearLists(false);
 
@@ -772,7 +775,6 @@ void DraftHandler::pickCard(QString code)
     if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
-    emit pLog(tr("Draft:") + " (" + QString::number(synergyHandler->draftedCardsCount()) + ")" + code);
     emit newDeckCard(code);
     this->justPickedCard = code;
 
@@ -885,6 +887,8 @@ void DraftHandler::comboBoxChanged()
 
 void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
 {
+    if(!patreonVersion) return;
+
     int numCards = synergyHandler->draftedCardsCount();
     deckRatingHA += cardRatingHA;
     deckRatingLF += cardRatingLF;
@@ -1159,7 +1163,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 {
     int numCards = synergyHandler->draftedCardsCount();
 
-    if(numCards == 0)    return;
+    if(numCards == 0 || !patreonVersion)    return;
 
     QStringList spellList, minionList, weaponList,
                 aoeList, tauntList, survivabilityList, drawList,
