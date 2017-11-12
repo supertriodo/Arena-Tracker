@@ -1446,6 +1446,8 @@ bool GameWatcher::advanceTurn(bool playerDraw)
 
         if(playerDraw)      emit clearDrawList();
 
+        emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en las cartas recien robadas al empezar el turno
+
         //Secret CSpirit test
         if(!isPlayerTurn && enemyMinions > 0)
         {
