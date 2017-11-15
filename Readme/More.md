@@ -6,18 +6,18 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * Draft your arena with HearthArena or LightForge advice, or why not both.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
-* While drafting, check the synergies of the next picks with the rest of your deck.
+* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the synergies of the next picks with the rest of your deck.
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
-* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
+* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
 * Upload your stats to your track-o-bot account.
 ![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
 * Save and organize your constructed decks.
 * Import/export your deck with Hearthstone.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
-* Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
+* [Patreon only:](https://www.patreon.com/triodo) Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
-* Plan your turn beforehand. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
+* [Patreon only:](https://www.patreon.com/triodo) Plan your turn beforehand. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
 * Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
