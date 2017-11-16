@@ -3693,6 +3693,7 @@ void MainWindow::testDelay()
 //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update Utility::isFromStandardSet(QString code)
 //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
+//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //--Update synergies.json
 
 //STANDARD CYCLE

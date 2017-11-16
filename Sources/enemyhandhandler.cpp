@@ -183,22 +183,6 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
 }
 
 
-bool EnemyHandHandler::isDrawSpecificCards()
-{
-    if(lastCreatedByCode == SENSE_DEMONS)       return true;
-    if(lastCreatedByCode == HOLY_WRATH)         return true;
-    if(lastCreatedByCode == ICE_FISHING)        return true;
-    if(lastCreatedByCode == FORGE_OF_SOULS)     return true;
-    if(lastCreatedByCode == HOWLING_COMMANDER)  return true;
-    if(lastCreatedByCode == THE_CURATOR)        return true;
-    if(lastCreatedByCode == ARCANOLOGIST)       return true;
-    if(lastCreatedByCode == BRIGHTEYED_SCOUT)   return true;
-    if(lastCreatedByCode == TOLVIR_WARDEN)      return true;
-    if(lastCreatedByCode == SMALLTIME_RECRUITS) return true;
-    return false;
-}
-
-
 bool EnemyHandHandler::isIDinHand(int id)
 {
     foreach(HandCard handCard, enemyHandList)
@@ -560,8 +544,26 @@ int EnemyHandHandler::getCardBuff(QString code)
 
 bool EnemyHandHandler::isClonerCard(QString code)
 {
-    if(code == MIMIC_POD)   return true;
-    if(code == THISTLE_TEA) return true;
+    if(code == MIMIC_POD)       return true;
+    if(code == THISTLE_TEA)     return true;
+    if(code == TOLINS_GOBLET)   return true;
+    return false;
+}
+
+
+bool EnemyHandHandler::isDrawSpecificCards()
+{
+    if(lastCreatedByCode == SENSE_DEMONS)       return true;
+    if(lastCreatedByCode == HOLY_WRATH)         return true;
+    if(lastCreatedByCode == ICE_FISHING)        return true;
+    if(lastCreatedByCode == FORGE_OF_SOULS)     return true;
+    if(lastCreatedByCode == HOWLING_COMMANDER)  return true;
+    if(lastCreatedByCode == THE_CURATOR)        return true;
+    if(lastCreatedByCode == ARCANOLOGIST)       return true;
+    if(lastCreatedByCode == BRIGHTEYED_SCOUT)   return true;
+    if(lastCreatedByCode == TOLVIR_WARDEN)      return true;
+    if(lastCreatedByCode == SMALLTIME_RECRUITS) return true;
+    if(lastCreatedByCode == WONDROUS_WAND)      return true;
     return false;
 }
 
