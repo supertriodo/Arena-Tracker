@@ -265,8 +265,8 @@ void DraftHandler::initCodesAndHistMaps(QString &hero)
 
     startFindScreenRects();
     const QString heroString = Utility::heroString2FromLogNumber(hero);
-    this->lightForgeTiers = initLightForgeTiers(heroString, true);
-    initHearthArenaTiers(heroString, true);
+    this->lightForgeTiers = initLightForgeTiers(heroString);//Add true for multiclass draft
+    initHearthArenaTiers(heroString);//Add true for multiclass draft
     synergyHandler->initSynergyCodes();
 
     //Wait for cards
