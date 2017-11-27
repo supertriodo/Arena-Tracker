@@ -2179,7 +2179,7 @@ bool MainWindow::createDir(QString pathDir)
 void MainWindow::createDataDir()
 {
     createDir(Utility::dataPath());
-//    removeHSCards();
+    removeHSCards();
     if(createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
