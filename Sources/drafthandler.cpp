@@ -730,29 +730,32 @@ void DraftHandler::pickCard(QString code)
     if(patreonVersion)
     {
         DraftCard draftCard;
-        for(int i=0; i<3; i++)
+        int cardIndex;
+        for(cardIndex=0; cardIndex<3; cardIndex++)
         {
-            if(draftCards[i].getCode() == code)
+            if(draftCards[cardIndex].getCode() == code)
             {
-                draftCard = draftCards[i];
-
-                QStringList spellList, minionList, weaponList,
-                            aoeList, tauntList, survivabilityList, drawList,
-                            pingList, damageList, destroyList, reachList;
-                synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
-                                               aoeList, tauntList, survivabilityList, drawList,
-                                               pingList, damageList, destroyList, reachList);
-                updateDeckScore(shownTierScoresHA[i], shownTierScoresLF[i]);
-                if(draftMechanicsWindow != NULL)
-                {
-                    int numCards = synergyHandler->draftedCardsCount();
-                    draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
-                    draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
-                                                         aoeList, tauntList, survivabilityList, drawList,
-                                                         pingList, damageList, destroyList, reachList);
-                }
+                draftCard = draftCards[cardIndex];
                 break;
             }
+        }
+
+        if(cardIndex > 2)   draftCard = DraftCard(code);
+
+        QStringList spellList, minionList, weaponList,
+                    aoeList, tauntList, survivabilityList, drawList,
+                    pingList, damageList, destroyList, reachList;
+        synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
+                                       aoeList, tauntList, survivabilityList, drawList,
+                                       pingList, damageList, destroyList, reachList);
+        if(cardIndex <= 2)   updateDeckScore(shownTierScoresHA[cardIndex], shownTierScoresLF[cardIndex]);
+        if(draftMechanicsWindow != NULL)
+        {
+            int numCards = synergyHandler->draftedCardsCount();
+            draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
+            draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                                 aoeList, tauntList, survivabilityList, drawList,
+                                                 pingList, damageList, destroyList, reachList);
         }
     }
 
