@@ -43,7 +43,7 @@ void HSCardDownloader::downloadWebImage(DownloadingCard downCard, bool force)
 }
 
 
-void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force)
+void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, bool fromHearthHead)
 {
     //Already downloading
     foreach(DownloadingCard downCard, gettingWebCards.values())
@@ -79,7 +79,11 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force)
     }
 
     QString urlString;
-    if(isHero)  urlString = OLD_CARDS_URL + "heroes/" + code + ".png";
+    if(!fromHearthHead)
+    {
+        urlString = AT_CARDS_URL + code + ".png";
+    }
+    else if(isHero)  urlString = OLD_CARDS_URL + "heroes/" + code + ".png";
     else
     {
         if(code.endsWith("_premium"))   urlString = NEW_CARDS_URL + "cards/enus/animated/" + code + ".gif";
@@ -88,7 +92,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force)
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     gettingWebCards[reply] = downCard;
-    emit pDebug("Downloading: " + code + " - (" + QString::number(gettingWebCards.count()) +
+    emit pDebug("Downloading (" + QString(fromHearthHead?"HearthHead":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
                 ") - " + QString::number(pendingDownloads.count()));
 }
 
@@ -110,17 +114,24 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     QByteArray data = reply->readAll();
     if(reply->error() != QNetworkReply::NoError)
     {
-        if(isHero)
+        QString fullUrl = reply->url().toString();
+        if(fullUrl.startsWith(AT_CARDS_URL))
         {
-            emit pDebug("Failed to download hero card image: " + code, Error);
-            emit pLog(tr("Web: Failed to download hero card image."));
-            reuseOldHero(code);
+            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying HearthHead.", Error);
+            emit pLog(tr("Web: Failed to download card image(GitHub). Trying HearthHead."));
+            downloadWebImage(code, isHero, false, true);
+        }
+        else if(isHero)
+        {
+            emit pDebug("Failed to download hero card image(HearthHead): " + code, Error);
+            emit pLog(tr("Web: Failed to download hero card image(HearthHead)."));
+            if(!reuseOldHero(code)) downloadWebImage(code, isHero, false, true);
         }
         else
         {
-            emit pDebug("Failed to download card image: " + code + " - Trying again.", Error);
-            emit pLog(tr("Web: Failed to download card image. Trying again."));
-            downloadWebImage(code);
+            emit pDebug("Failed to download card image(HearthHead): " + code + " - Trying again.", Error);
+            emit pLog(tr("Web: Failed to download card image(HearthHead). Trying again."));
+            downloadWebImage(code, isHero, false, true);
         }
     }
     else if(data.isEmpty())
@@ -133,7 +144,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         QImage webImage;
         webImage.loadFromData(data);
-        if(!isHero)     webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
+        if(!isHero && webImage.width()!=200)    webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
@@ -161,9 +172,9 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 }
 
 
-void HSCardDownloader::reuseOldHero(QString code)
+bool HSCardDownloader::reuseOldHero(QString code)
 {
-    if(code.length() == 7)  return;
+    if(code.length() == 7)  return false;
 
     QString oldHeroCode = code.left(7);
     QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");
@@ -181,6 +192,7 @@ void HSCardDownloader::reuseOldHero(QString code)
         emit pDebug("Old hero not found: " + oldHeroCode);
         downloadWebImage(oldHeroCode, true);
     }
+    return true;
 }
 
 

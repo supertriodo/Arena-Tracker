@@ -9,6 +9,7 @@
 
 #define OLD_CARDS_URL QString("http://wow.zamimg.com/images/hearthstone/")
 #define NEW_CARDS_URL QString("http://media.services.zam.com/v1/media/byName/hs/")
+#define AT_CARDS_URL QString("https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthstoneCards/")
 #define MAX_DOWNLOADS 10
 #define FORCE_NEXT_DOWNLOAD 100
 
@@ -39,11 +40,11 @@ private:
 
 //Metodos
 private:
-    void reuseOldHero(QString code);
+    bool reuseOldHero(QString code);
     void downloadWebImage(DownloadingCard downCard, bool force=false);
 
 public:
-    void downloadWebImage(QString code, bool isHero=false, bool force=false);
+    void downloadWebImage(QString code, bool isHero=false, bool force=false, bool fromHearthHead=false);
     void setLang(QString value);
 
 signals:
