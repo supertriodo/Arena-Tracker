@@ -560,6 +560,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 if(value == "MAGE")         secretHero = MAGE;
                 else if(value == "HUNTER")  secretHero = HUNTER;
                 else if(value == "PALADIN") secretHero = PALADIN;
+                else if(value == "ROGUE")   secretHero = ROGUE;
             }
             //Justo antes de jugarse ARMS_DEALING se pone a 0, si no lo evitamos el minion no se actualizara desde la carta
             else if(tag == "ARMS_DEALING" && value.toInt() != 0)

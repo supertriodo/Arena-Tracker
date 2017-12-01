@@ -220,6 +220,9 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(ICE_BLOCK));
         break;
 
+        case ROGUE:
+        break;
+
         default:
         break;
     }
