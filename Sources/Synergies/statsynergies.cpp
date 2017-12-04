@@ -18,16 +18,16 @@ void StatSynergies::updateStatsMapSyn(const StatSyn &statSyn, QString &code)
 {
     switch(statSyn.op)
     {
-        case V_EQUAL:
+        case S_EQUAL:
             appendStatValue(true, statSyn.statValue, code);
         break;
-        case V_LOWER_IGUAL:
+        case S_LOWER_IGUAL:
             for(int i = statSyn.statValue; i >= 0; i--)
             {
                 appendStatValue(true, i, code);
             }
         break;
-        case V_HIGHER_EQUAL:
+        case S_HIGHER_EQUAL:
             for(int i = statSyn.statValue; i <= 15; i++)
             {
                 appendStatValue(true, i, code);
@@ -64,16 +64,16 @@ void StatSynergies::insertStatCards(const StatSyn &statSyn, QMap<QString,int> &s
 {
     switch(statSyn.op)
     {
-        case V_EQUAL:
+        case S_EQUAL:
             insertCards(false, statSyn.statValue, synergies);
         break;
-        case V_LOWER_IGUAL:
+        case S_LOWER_IGUAL:
             for(int i = statSyn.statValue; i >= 0; i--)
             {
                 insertCards(false, i, synergies);
             }
         break;
-        case V_HIGHER_EQUAL:
+        case S_HIGHER_EQUAL:
             for(int i = statSyn.statValue; i <= 15; i++)
             {
                 insertCards(false, i, synergies);
@@ -139,15 +139,15 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
             QChar c = mechanic[0];
             if(c == '<')
             {
-                statSyn.op = V_LOWER_IGUAL;
+                statSyn.op = S_LOWER_IGUAL;
                 mechanic.remove(0,1);
             }
             else if(c == '>')
             {
-                statSyn.op = V_HIGHER_EQUAL;
+                statSyn.op = S_HIGHER_EQUAL;
                 mechanic.remove(0,1);
             }
-            else    statSyn.op = V_EQUAL;
+            else    statSyn.op = S_EQUAL;
 
             //Gen o Syn
             if(mechanic.startsWith("Gen"))
@@ -160,27 +160,65 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
                 statSyn.isGen = false;
                 mechanic.remove(0,3);
             }
+            else
+            {
+                qDebug()<<"WARNING: Synergy Stat failed waiting Gen/Syn:" << mechanic;
+                break;
+            }
+
+            //CardType
+            if(mechanic.startsWith("Minion"))
+            {
+                statSyn.cardType = S_MINION;
+                mechanic.remove(0,6);
+            }
+            else if(mechanic.startsWith("Spell"))
+            {
+                statSyn.cardType = S_SPELL;
+                mechanic.remove(0,5);
+            }
+            else if(mechanic.startsWith("Weapon"))
+            {
+                statSyn.cardType = S_WEAPON;
+                mechanic.remove(0,6);
+            }
+            else
+            {
+                qDebug()<<"WARNING: Synergy Stat failed waiting Minion/Spell/Weapon:" << mechanic;
+                break;
+            }
 
             //Stat
             if(mechanic.startsWith("Cost"))
             {
-                statSyn.statKind = V_COST;
+                statSyn.statKind = S_COST;
                 mechanic.remove(0,4);
             }
             else if(mechanic.startsWith("Attack"))
             {
-                statSyn.statKind = V_ATTACK;
+                statSyn.statKind = S_ATTACK;
                 mechanic.remove(0,6);
             }
             else if(mechanic.startsWith("Health"))
             {
-                statSyn.statKind = V_HEALTH;
+                statSyn.statKind = S_HEALTH;
                 mechanic.remove(0,6);
+            }
+            else
+            {
+                qDebug()<<"WARNING: Synergy Stat failed waiting Cost/Attack/Health:" << mechanic;
+                break;
             }
 
             //Value
             statSyn.statValue = mechanic.toInt();
             statSyns.append(statSyn);
+
+            //Error
+            if(statSyn.statValue == 0)
+            {
+                qDebug()<<"WARNING: Synergy Stat failed waiting value if not 0:" << mechanic;
+            }
         }
     }
     return statSyns;

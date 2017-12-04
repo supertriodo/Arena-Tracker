@@ -5,15 +5,17 @@
 #include "../Cards/deckcard.h"
 
 
-enum VisibleStat {V_COST, V_ATTACK, V_HEALTH};
-enum VisibleOp {V_EQUAL,V_HIGHER_EQUAL, V_LOWER_IGUAL};
+enum SynergyStat {S_COST, S_ATTACK, S_HEALTH};
+enum SynergyOp {S_EQUAL, S_HIGHER_EQUAL, S_LOWER_IGUAL};
+enum SynergyType {S_MINION, S_SPELL, S_WEAPON};
 
 
 class StatSyn
 {
 public:
-    VisibleStat statKind;
-    VisibleOp op;
+    SynergyStat statKind;
+    SynergyOp op;
+    SynergyType cardType;
     int statValue;
     bool isGen;
 };
