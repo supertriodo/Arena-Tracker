@@ -250,7 +250,7 @@ bool Utility::isFromStandardSet(QString code)
 
     if( cardSet == "CORE" || cardSet == "EXPERT1" ||
         cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
-        cardSet == "UNGORO" || cardSet == "ICECROWN")
+        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA")
     {
         return true;
     }
