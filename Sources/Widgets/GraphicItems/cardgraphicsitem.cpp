@@ -379,6 +379,6 @@ int CardGraphicsItem::getManaSpent()
     int saveMana = 0;
     if(code == THE_COIN)                saveMana = 1;
     else if(code == COUNTERFEIT_COIN)   saveMana = 1;
-    else if(code == INNERVATE)          saveMana = 2;
+    else if(code == INNERVATE)          saveMana = 1;
     return cost - saveMana;
 }
