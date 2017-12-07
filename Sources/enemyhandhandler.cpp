@@ -564,6 +564,9 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == TOLVIR_WARDEN)      return true;
     if(lastCreatedByCode == SMALLTIME_RECRUITS) return true;
     if(lastCreatedByCode == WONDROUS_WAND)      return true;
+    if(lastCreatedByCode == RAVEN_FAMILIAR)     return true;
+    if(lastCreatedByCode == CAVERN_SHINYFINDER) return true;
+    if(lastCreatedByCode == ELVEN_MINSTREL)     return true;
     return false;
 }
 
