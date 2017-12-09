@@ -889,8 +889,12 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed(QString)),
             secretsHandler, SLOT(playerSpellPlayed(QString)));
-    connect(gameWatcher, SIGNAL(playerSpellObjPlayed()),
-            secretsHandler, SLOT(playerSpellObjPlayed()));
+    connect(gameWatcher, SIGNAL(playerSpellObjMinionPlayed()),
+            secretsHandler, SLOT(playerSpellObjMinionPlayed()));
+    connect(gameWatcher, SIGNAL(playerSpellObjHeroPlayed()),
+            secretsHandler, SLOT(playerSpellObjHeroPlayed()));
+    connect(gameWatcher, SIGNAL(playerBattlecryObjHeroPlayed()),
+            secretsHandler, SLOT(playerBattlecryObjHeroPlayed()));
     connect(gameWatcher, SIGNAL(playerMinionPlayed(QString, int)),
             secretsHandler, SLOT(playerMinionPlayed(QString, int)));
     connect(gameWatcher, SIGNAL(enemyMinionDead(QString)),
@@ -899,8 +903,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
-    connect(gameWatcher, SIGNAL(playerAttack(bool,bool)),
-            secretsHandler, SLOT(playerAttack(bool,bool)));
+    connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int)),
+            secretsHandler, SLOT(playerAttack(bool,bool,int)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
@@ -3686,15 +3690,15 @@ void MainWindow::testDelay()
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico
-//--Update Json HA tierlist --> HATLsed.sh
-//Update secrets
-//Update bombing cards
-//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
-//Update Utility::isFromStandardSet(QString code)
-//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
-//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
-//--Update synergies.json
+//Update Json HA tierlist --> HATLsed.sh
+//--Update secrets
+//--Update bombing cards --> PlanHandler::isCardBomb
+//--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//--Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
+//--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
+//--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
+//Update synergies.json
 
 //STANDARD CYCLE
 //Remove secrets rotating out
@@ -3735,3 +3739,7 @@ void MainWindow::testDelay()
 
 
 
+//Pendiente
+//subir nuevo synergies.json y actualizar version
+//mover a la derecha la imagen de deckcard
+//Despues de la release quitar el eliminado automatico del directorio hs cards

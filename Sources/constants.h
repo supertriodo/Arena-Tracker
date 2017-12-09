@@ -39,6 +39,7 @@
 #define MISDIRECTION QString("EX1_533")
 #define HIDDEN_CACHE QString("CFM_026")
 #define SNAKE_TRAP QString("EX1_554")
+#define WANDERING_MONSTER QString("LOOT_079")
 
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
@@ -51,6 +52,11 @@
 #define MANA_BIND QString("UNG_024")
 #define SPELLBENDER QString("tt_010")
 #define ICE_BLOCK QString("EX1_295")
+#define EXPLOSIVE_RUNES QString("LOOT_101")
+
+#define CHEAT_DEATH QString("LOOT_204")
+#define SUDDEN_BETRAYAL QString("LOOT_210")
+#define EVASION QString("LOOT_214")
 
 //Cartas
 #define MAD_SCIENTIST "FP1_004"
@@ -116,6 +122,10 @@
 #define SHIFTER_ZERUS "OG_123"
 #define WONDROUS_WAND "LOOT_998l"
 #define TOLINS_GOBLET "LOOT_998h"
+#define KOBOLD_APPRENTICE "LOOT_347"
+#define RAVEN_FAMILIAR "LOOT_170"
+#define CAVERN_SHINYFINDER "LOOT_033"
+#define ELVEN_MINSTREL "LOOT_211"
 
 
 #endif // CONSTANTS_H

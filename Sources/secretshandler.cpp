@@ -183,22 +183,23 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(AVENGE));
+//            activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SACRED_TRIAL));
+//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(GETAWAY_KODO));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
+//            activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
         case HUNTER:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(BEAR_TRAP));
+//            activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DART_TRAP));
+//            activeSecret.children.append(SecretCard(DART_TRAP));
+            activeSecret.children.append(SecretCard(WANDERING_MONSTER));
             activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
@@ -209,10 +210,11 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         case MAGE:
             activeSecret.children.append(SecretCard(FROZEN_CLONE));
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(DDUPLICATE));
+//            activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
+            activeSecret.children.append(SecretCard(EXPLOSIVE_RUNES));
             activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
-//            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(EFFIGY));
+//            activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(MANA_BIND));
@@ -221,6 +223,9 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         break;
 
         case ROGUE:
+            activeSecret.children.append(SecretCard(SUDDEN_BETRAYAL));
+            activeSecret.children.append(SecretCard(CHEAT_DEATH));
+            activeSecret.children.append(SecretCard(EVASION));
         break;
 
         default:
@@ -351,10 +356,11 @@ void SecretsHandler::secretRevealed(int id, QString code)
 
 
     //Reveal cards in Hand
-    if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit revealCreatedByCard(lastMinionDead, code, 2);
-    else if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())  emit revealCreatedByCard(lastMinionDead, code, 1);
+    if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())       emit revealCreatedByCard(lastMinionDead, code, 1);
     else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
     else if(code == FROZEN_CLONE && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
+    else if(code == CHEAT_DEATH && !lastMinionDead.isEmpty())   emit revealCreatedByCard(lastMinionDead, code, 1);
+//    else if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit revealCreatedByCard(lastMinionDead, code, 2);
 }
 
 
@@ -436,38 +442,54 @@ void SecretsHandler::playerSpellPlayed(QString code)
 
     discardSecretOptionNow(COUNTERSPELL);
     discardSecretOptionNow(MANA_BIND);
+
     discardSecretOptionNow(CAT_TRICK);
 }
 
 
-void SecretsHandler::playerSpellObjPlayed()
+void SecretsHandler::playerSpellObjMinionPlayed()
 {
     discardSecretOption(SPELLBENDER);//Ocultado por COUNTERSPELL
 }
 
 
+void SecretsHandler::playerSpellObjHeroPlayed()
+{
+    discardSecretOptionNow(EVASION);
+}
+
+
+void SecretsHandler::playerBattlecryObjHeroPlayed()
+{
+    discardSecretOptionNow(EVASION);
+}
+
+
 void SecretsHandler::playerHeroPower()
 {
-    discardSecretOptionNow(DART_TRAP);
+//    discardSecretOptionNow(DART_TRAP);
 }
 
 
 void SecretsHandler::playerMinionPlayed(QString code, int playerMinions)
 {
+    Q_UNUSED(playerMinions);
     lastMinionPlayed = code;
 
-    discardSecretOptionNow(FROZEN_CLONE);
-    discardSecretOptionNow(MIRROR_ENTITY);
-    discardSecretOptionNow(POTION_OF_POLIMORPH);
+    discardSecretOptionNow(FROZEN_CLONE);//No necesita objetivo
+    discardSecretOption(MIRROR_ENTITY);//Ocultado por EXPLOSIVE_RUNES
+    discardSecretOption(POTION_OF_POLIMORPH);//Ocultado por EXPLOSIVE_RUNES
+    discardSecretOptionNow(EXPLOSIVE_RUNES);
+
     discardSecretOptionNow(SNIPE);
     discardSecretOptionNow(HIDDEN_CACHE);
 
-    if(playerMinions>3)
+    /*if(playerMinions>3)
     {
         discardSecretOptionNow(SACRED_TRIAL);
         discardSecretOption(REPENTANCE);//Ocultado por SACRED_TRIAL
     }
-    else    discardSecretOptionNow(REPENTANCE);
+    else    */discardSecretOptionNow(REPENTANCE);
 
 }
 
@@ -476,22 +498,24 @@ void SecretsHandler::enemyMinionDead(QString code)
 {
     if(lastMinionDead.isEmpty())    lastMinionDead = code;
 
-    discardSecretOptionNow(DDUPLICATE);
-    discardSecretOptionNow(EFFIGY);
+//    discardSecretOptionNow(DDUPLICATE);
+//    discardSecretOptionNow(EFFIGY);
     discardSecretOptionNow(REDEMPTION);
     discardSecretOptionNow(GETAWAY_KODO);
+
+    discardSecretOptionNow(CHEAT_DEATH);
 }
 
 
 void SecretsHandler::avengeTested()
 {
-    discardSecretOptionNow(AVENGE);
+//    discardSecretOptionNow(AVENGE);
 }
 
 
 void SecretsHandler::cSpiritTested()
 {
-    discardSecretOptionNow(COMPETITIVE_SPIRIT);
+//    discardSecretOptionNow(COMPETITIVE_SPIRIT);
 }
 
 
@@ -505,7 +529,7 @@ void SecretsHandler::cSpiritTested()
  * Note that this rule only applies for Secrets which require specific targets; Secrets such as Explosive Trap and Snake Trap do not require targets,
  * and will always take effect once triggered, even if the original trigger minion has been removed from play.
  */
-void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
+void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions)
 {
     if(isHeroFrom)
     {
@@ -513,17 +537,23 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         if(isHeroTo)
         {
             discardSecretOptionNow(ICE_BARRIER);
-            discardSecretOptionNow(EXPLOSIVE_TRAP);
-            discardSecretOptionNow(BEAR_TRAP);
+
+            discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
+//            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(MISDIRECTION);//Ocultado por EXPLOSIVE_TRAP
+            discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
+
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
             discardSecretOptionNow(NOBLE_SACRIFICE);
+
+            discardSecretOptionNow(EVASION);
         }
         //Hero -> minion
         else
         {
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
+
             discardSecretOptionNow(NOBLE_SACRIFICE);
         }
     }
@@ -534,12 +564,18 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
         {
             discardSecretOptionNow(VAPORIZE);
             discardSecretOptionNow(ICE_BARRIER);
-            discardSecretOptionNow(EXPLOSIVE_TRAP);
-            discardSecretOptionNow(BEAR_TRAP);
+
+            discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
+//            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(FREEZING_TRAP);//Ocultado por EXPLOSIVE_TRAP
             discardSecretOption(MISDIRECTION);//Ocultado por FREEZING_TRAP y EXPLOSIVE_TRAP
+            discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
+
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
             discardSecretOptionNow(NOBLE_SACRIFICE);
+
+            if(playerMinions > 1)   discardSecretOptionNow(SUDDEN_BETRAYAL);
+            discardSecretOption(EVASION);//Ocultado por SUDDEN_BETRAYAL
         }
         //Minion -> minion
         else
@@ -547,6 +583,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo)
             discardSecretOptionNow(FREEZING_TRAP);
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
+
             discardSecretOptionNow(NOBLE_SACRIFICE);
         }
     }
@@ -599,8 +636,41 @@ QStringList SecretsHandler::getSecretOptionCodes(int id)
 }
 
 
+/* Secrets interactions. Kobolds & Catacombs update.
+Hey guys!
+It's the time for the test of new secrets. In order to update Arena Tracker I need to play with all the combinations of secrets to know in which order they trigger and which one overlap with any other.
+
+Secrets, same as deathrattle, trigger in the same order you played them. If a secret X rely on a target and that target was eliminated by a previous secret Y, triggered by the same action, then the secret X won't trigger.
+
+The result of this is a bunch of data that may be of interest for some of you, so here it is:
 
 
+Sudden Betrayal and Evasion:
+
+Sudden Betrayal will only trigger when you have 2+ minions. If it triggers, Evasion will never be revealed as your hero doesn't receive any damage.
+
+
+Explosive Runes, Frozen Clone, Mirror Entity and Potion of Polimorph:
+
+Frozen Clone will always trigger as it doesn't rely on the target to be alive.
+
+Explosive Runes will always trigger as neither of the other 3 secrets will remove the target (Potion of Polimorph just morph it).
+
+Mirror Entity and Potion of Polimorph won't trigger if Explosive Runes killed the minion before.
+
+If Explosive Runes triggers but don't kill the minion, Mirror Entity will copy the damaged minion.
+
+If Potion of Polimorph triggers first, Mirror Entity will copy a 1/1 sheep, Frozen Clone will create two copies of a 1/1 sheep and Explosive Runes will deal 1 damage to the sheep and the rest to the opponent hero.
+
+
+Freezing Trap, Explosive Trap, Missdirection and Wandering Monster:
+
+Explosive Trap and Wandering Monster will always trigger as they don't rely on the target to be alive.
+
+Freezing Trap won't trigger if Explosive Trap killed the minion before.
+
+Misdirection won't trigger if Explosive Trap or Freezing Trap killed the minion before.
+*/
 
 
 

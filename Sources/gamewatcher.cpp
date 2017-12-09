@@ -792,12 +792,21 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
                         }
-                        else if(isPlayer && isPlayerTurn && !cardId2.startsWith("HERO"))    emit playerSpellObjPlayed();
+                        else if(isPlayer && isPlayerTurn)
+                        {
+                            if(cardId2.startsWith("HERO"))  emit playerSpellObjHeroPlayed();
+                            else                            emit playerSpellObjMinionPlayed();
+                        }
                     }
                     else
                     {
                         emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Minion/weapon obj played: " +
                                     name1 + " target " + name2, numLine);
+                        if(isPlayer && isPlayerTurn)
+                        {
+                            if(cardId2.startsWith("HERO"))  emit playerBattlecryObjHeroPlayed();//Secreto Evasion
+//                            else                            emit playerBattlecryObjMinionPlayed();//No se usa aun
+                        }
                     }
                 }
 
@@ -819,7 +828,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (heroe)vs(heroe) " + name2, numLine);
-                            if(isPlayer && isPlayerTurn)    emit playerAttack(true, true);
+                            if(isPlayer && isPlayerTurn)    emit playerAttack(true, true, playerMinions);
                         }
                         else
                         {
@@ -829,7 +838,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                             {
                                 emit pDebug("Saltamos comprobacion de secretos";
                             }
-                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false);
+                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false, playerMinions);
                         }
                     }
                     else
@@ -838,7 +847,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (minion)vs(heroe) " + name2, numLine);
-                            if(isPlayer && isPlayerTurn)    emit playerAttack(false, true);
+                            if(isPlayer && isPlayerTurn)    emit playerAttack(false, true, playerMinions);
                         }
                         else
                         {
@@ -848,7 +857,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                             {
                                 emit pDebug("Saltamos comprobacion de secretos";
                             }
-                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false);
+                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false, playerMinions);
                         }
                     }
                 }

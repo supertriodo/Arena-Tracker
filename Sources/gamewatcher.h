@@ -152,9 +152,11 @@ signals:
     void enemyTagChange(QString tag, QString value);
     void playerCardCodeChange(int id, QString newCode);
     void enemyMinionDead(QString code);
-    void playerAttack(bool isHeroFrom, bool isHeroTo);
+    void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void zonePlayAttack(QString code, int id1, int id2);
-    void playerSpellObjPlayed();
+    void playerSpellObjHeroPlayed();
+    void playerSpellObjMinionPlayed();
+    void playerBattlecryObjHeroPlayed();
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();

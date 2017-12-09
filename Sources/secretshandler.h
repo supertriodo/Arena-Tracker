@@ -74,12 +74,14 @@ public slots:
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();
     void playerSpellPlayed(QString code);
-    void playerSpellObjPlayed();
+    void playerSpellObjMinionPlayed();
+    void playerSpellObjHeroPlayed();
+    void playerBattlecryObjHeroPlayed();
     void playerMinionPlayed(QString code, int playerMinions);
     void enemyMinionDead(QString code);
     void avengeTested();
     void cSpiritTested();
-    void playerAttack(bool isHeroFrom, bool isHeroTo);
+    void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void resetLastMinionDead(QString code, QString subType);
     void playerHeroPower();
 
