@@ -293,7 +293,11 @@ QStringList Utility::getStandardCodes()
     QStringList setCodes;
     for(const QString &code: Utility::cardsJson->keys())
     {
-        if(Utility::isFromStandardSet(code))    setCodes.append(code);
+        if(Utility::isFromStandardSet(code) &&
+            (getCardAttribute(code, "collectible").toBool() == true))
+        {
+            setCodes.append(code);
+        }
     }
     return setCodes;
 }

@@ -3743,6 +3743,6 @@ void MainWindow::testDelay()
 //subir nuevo synergies.json y actualizar version
 //mover a la derecha la imagen de deckcard
 //Despues de la release quitar el eliminado automatico del directorio hs cards
-//Repasar =GenMinionHealth1(paladin o neutral)
 //Fix heroes
 //Test spawnMinionGenSyn
+//Subir nuevas cartas al github

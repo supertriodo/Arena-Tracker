@@ -1077,9 +1077,9 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent") &&
+                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
 //                !isSpawnEnemyGen(code, text)
-                isSpawnEnemySyn(code)
+//                isSpawnEnemySyn(code)
 //                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
