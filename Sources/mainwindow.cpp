@@ -3622,9 +3622,9 @@ void MainWindow::testPlan()
 
 void MainWindow::testSynergies()
 {
-//    draftHandler->debugSynergiesSet("ICECROWN");
-//        draftHandler->debugSynergiesCode("EX1_303");
-        draftHandler->testSynergies();
+//    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
+//        draftHandler->debugSynergiesCode("LOOT_367");
+    draftHandler->testSynergies();
 }
 
 
@@ -3698,7 +3698,7 @@ void MainWindow::testDelay()
 //--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
 //--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
 //--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
-//Update synergies.json
+//--Update synergies.json
 
 //STANDARD CYCLE
 //Remove secrets rotating out
@@ -3743,3 +3743,6 @@ void MainWindow::testDelay()
 //subir nuevo synergies.json y actualizar version
 //mover a la derecha la imagen de deckcard
 //Despues de la release quitar el eliminado automatico del directorio hs cards
+//Repasar =GenMinionHealth1(paladin o neutral)
+//Fix heroes
+//Test spawnMinionGenSyn

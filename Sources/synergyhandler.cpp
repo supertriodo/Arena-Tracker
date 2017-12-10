@@ -124,6 +124,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this);
     mechanicCounters[V_ARMOR] = new DraftItemCounter(this);
     mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
+    mechanicCounters[V_SPAWN_ENEMY] = new DraftItemCounter(this);
     mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this);
 
     horLayoutCardTypes->addStretch();
@@ -555,6 +556,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
     if(isSpellDamageGen(code))                                              mechanicCounters[V_SPELL_DAMAGE]->increase(code);
     if(isEvolveGen(code, text))                                             mechanicCounters[V_EVOLVE]->increase(code);
+    if(isSpawnEnemyGen(code, text))                                         mechanicCounters[V_SPAWN_ENEMY]->increase(code);
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
     if(isLifestealMinon(code, mechanics, cardType))                         mechanicCounters[V_LIFESTEAL_MINION]->increase(code);
@@ -616,6 +618,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mechanicCounters[V_SPELL_DAMAGE]->increaseSyn(code);
     if(isEvolveSyn(code))                                                   mechanicCounters[V_EVOLVE]->increaseSyn(code);
+    if(isSpawnEnemySyn(code))                                               mechanicCounters[V_SPAWN_ENEMY]->increaseSyn(code);
     if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
     if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
     if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
@@ -910,6 +913,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
     if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergies);
     if(isEvolveGen(code, text))                                 mechanicCounters[V_EVOLVE]->insertSynCards(synergies);
+    if(isSpawnEnemyGen(code, text))                             mechanicCounters[V_SPAWN_ENEMY]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
@@ -943,6 +947,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
     if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergies);
     if(isEvolveSyn(code))                                       mechanicCounters[V_EVOLVE]->insertCards(synergies);
+    if(isSpawnEnemySyn(code))                                   mechanicCounters[V_SPAWN_ENEMY]->insertCards(synergies);
     if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergies);
     if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
     if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
@@ -1071,8 +1076,10 @@ void SynergyHandler::testSynergies()
         int cost = deckCard.getCost();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-//        if(
-//                text.contains("deal") && text.contains("damage") &&
+        if(
+//                text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent") &&
+//                !isSpawnEnemyGen(code, text)
+                isSpawnEnemySyn(code)
 //                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -1084,12 +1091,18 @@ void SynergyHandler::testSynergies()
 //                !isReturnSyn(code, mechanics, cardType, text)
 //                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
 //                isTokenCardGen(code, cost)
-//            )
+            )
         {
 //            debugSynergiesCode(code, ++num);
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
         }
+        Q_UNUSED(cardType);
+        Q_UNUSED(text);
+        Q_UNUSED(attack);
+        Q_UNUSED(cost);
+        Q_UNUSED(mechanics);
+        Q_UNUSED(referencedTags);
     }
 }
 
@@ -1102,14 +1115,6 @@ void SynergyHandler::debugSynergiesSet(const QString &set)
     {
         debugSynergiesCode(code, ++num);
     }
-//    for(const QString &code: Utility::getStandardCodes())//Utility::getSetCodes(set))
-//    {
-//        QString text = Utility::cardEnTextFromCode(code).toLower();
-//        if(text.contains("if"))
-//        {
-//            debugSynergiesCode(code, ++num);
-//        }
-//    }
 }
 
 
@@ -1161,6 +1166,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isStealthGen(code, mechanics))                                       mec<<"stealthGen";
     if(isSpellDamageGen(code))                                              mec<<"spellDamageGen";
     if(isEvolveGen(code, text))                                             mec<<"evolveGen";
+    if(isSpawnEnemyGen(code, text))                                         mec<<"spawnEnemyGen";
     if(isRestoreTargetMinionGen(code, text))                                mec<<"restoreTargetMinionGen";
     if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mec<<"restoreFriendlyHeroGen o lifesteal";
     if(isRestoreFriendlyMinionGen(code, text))                              mec<<"restoreFriendlyMinionGen";
@@ -1173,7 +1179,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isEnrageGen(code, mechanics))                                        mec<<"enrageGen";
     if(isComboGen(code, mechanics))                                         mec<<"comboGen";
 
-
+    //Solo analizamos los que tienen patrones definidos
     if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
     if(isSecretSyn(code, referencedTags))                                   syn<<"secretSyn";
     if(isFreezeEnemySyn(code, referencedTags, text))                        syn<<"freezeEnemySyn";
@@ -1270,7 +1276,7 @@ bool SynergyHandler::isDiscoverDrawGen(const QString &code, const QJsonArray &me
     }
     else
     {
-        return  text.contains("draw") ||
+        return  (text.contains("draw") && !text.contains("drawn")) ||
                 (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
     }
 }
@@ -1349,7 +1355,8 @@ bool SynergyHandler::isReachGen(const QString &code, const QJsonArray &mechanics
     }
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
-            !text.contains("1 damage") && !text.contains("minion") && !text.contains("random") && !text.contains("to your hero"))
+            !text.contains("1 damage") && !text.contains("minion") && !text.contains("random") &&
+            !(text.contains("to") && text.contains("your") && text.contains("hero")))
     {
         return true;
     }
@@ -1396,7 +1403,7 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
     {
         return true;
     }
-    else if(attack == 1)  return false;
+    else if(attack < 2)  return false;
     //Charge minions
     else if(cardType == MINION)
     {
@@ -1814,6 +1821,20 @@ bool SynergyHandler::isEvolveGen(const QString &code, const QString &text)
         return synergyCodes[code].contains("evolveGen");
     }
     else if(text.contains("transform") && text.contains("cost") && text.contains("more"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isSpawnEnemyGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spawnEnemyGen");
+    }
+    else if(text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent"))
     {
         return true;
     }
@@ -2256,7 +2277,8 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
                 text.contains("remove") ||
                 text.contains("silence") ||
                 text.contains("cast") ||
-                text.contains("equip")
+                text.contains("equip") ||
+                text.contains("recruit")
            )
         {
             return true;
@@ -2356,6 +2378,14 @@ bool SynergyHandler::isEvolveSyn(const QString &code)
     }
     return false;
 }
+bool SynergyHandler::isSpawnEnemySyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spawnEnemySyn");
+    }
+    return false;
+}
 
 
 
@@ -2383,7 +2413,7 @@ lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
 restoreTargetMinionGen <--> restoreFriendlyHeroGen
 restoreTargetMinionGen o restoreFriendlyMinionGen
 restoreTargetMinionSyn, restoreFriendlyMinionSyn, restoreFriendlyHeroSyn
-=(>|<)(Syn|Gen)(Cost|Attack|Health)(0-15)
+=(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 
 
@@ -2396,7 +2426,7 @@ jadeGolemGen, secretGen, freezeEnemyGen, discardGen, stealthGen
 
 damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, returnGen
-enrageGen, tauntGiverGen, evolveGen, spellDamageGen
+enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen
 tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen,
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal
 
@@ -2406,12 +2436,13 @@ Double check:
 DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn), damageMinionsGen, destroyGen
 BATTLECRY/COMBO/DEATHRATTLE: returnsyn(battlecry/combo), silenceOwnSyn(deathrattle/malo)
 ENRAGE/TAKE DAMAGE: enrageGen(take damage),
-SUMMON: tokenGen(summon) <--> =GenHealth1(paladin o neutral)
-TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenHealth1(paladin o neutral)
+SUMMON: tokenGen(summon) <--> =GenMinionHealth1(paladin o neutral)
+TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenHealth1(paladin o neutral (para Steward of Darkshire))
 PLAY CARDS: tokenCardSyn
-BUFF ALL: tokenSyn(beneficio masa), tauntGyverSyn(cant attack/egg)
+BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack/egg)
 DESTROY TARDIO: freezeEnemySyn
 COSTE/STATS: evolveSyn
+SPAWN ENEMIES: spawnEnemyGen
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
@@ -2430,7 +2461,7 @@ REGLAS
 +si una carta nos da una carta de coste 0 o 1 es tokenCardGen, si es mas sera toYourHandGen
 +tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
-    (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero), siempre son minions
+    (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
 +freezeEnemyGen deben poder usarse sobre enemigos
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle random
 +aoeGen puede ser deathrattle random, quitaremos manualmente excepciones como el tentaculo de n'zoth

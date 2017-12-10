@@ -109,6 +109,7 @@ private:
     bool isLifestealMinon(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isSpellDamageGen(const QString &code);
     bool isEvolveGen(const QString &code, const QString &text);
+    bool isSpawnEnemyGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -159,7 +160,8 @@ private:
     bool isArmorSyn(const QString &code);
     bool isLifestealMinionSyn(const QString &code);
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
-    bool isEvolveSyn(const QString &code);    
+    bool isEvolveSyn(const QString &code);
+    bool isSpawnEnemySyn(const QString &code);
 
 signals:
     void pLog(QString line);

@@ -278,7 +278,11 @@ QStringList Utility::getSetCodes(const QString &set)
     QStringList setCodes;
     for(const QString &code: Utility::cardsJson->keys())
     {
-        if(getCardAttribute(code, "set").toString() == set)     setCodes.append(code);
+        if((getCardAttribute(code, "set").toString() == set) &&
+            (getCardAttribute(code, "collectible").toBool() == true))
+        {
+            setCodes.append(code);
+        }
     }
     return setCodes;
 }
