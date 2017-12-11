@@ -454,7 +454,7 @@
 	"UNG_851": ["battlecry","returnSyn"],
 	"UNG_854": [],
 	"UNG_856": ["discover","tokenCardGen"],
-	"UNG_900": ["deathrattleSyn"],
+	"UNG_900": ["deathrattleGoodAllSyn"],
 	"UNG_910": ["damageMinionsGen","aoeGen","pingGen","spellDamageSyn"],
 	"UNG_912": ["battlecry","returnSyn","toYourHandGen","tokenCardGen"],
 	"UNG_913": ["battlecry","returnSyn","drawGen","=SynMinionCost1"],
