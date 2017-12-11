@@ -3623,8 +3623,8 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//        draftHandler->debugSynergiesCode("LOOT_367");
-    draftHandler->testSynergies();
+//        draftHandler->debugSynergiesCode("EX1_057");
+//    draftHandler->testSynergies();
 }
 
 
@@ -3740,9 +3740,5 @@ void MainWindow::testDelay()
 
 
 //Pendiente
-//subir nuevo synergies.json y actualizar version
 //mover a la derecha la imagen de deckcard
 //Despues de la release quitar el eliminado automatico del directorio hs cards
-//Fix heroes
-//Test spawnMinionGenSyn
-//Subir nuevas cartas al github

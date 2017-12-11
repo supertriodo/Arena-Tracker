@@ -1077,9 +1077,9 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
+//                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
 //                !isSpawnEnemyGen(code, text)
-//                isSpawnEnemySyn(code)
+                isSpellSyn(code, text)
 //                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -2441,6 +2441,7 @@ TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> 
 PLAY CARDS: tokenCardSyn
 BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack/egg)
 DESTROY TARDIO: freezeEnemySyn
+DESTROY PROPIO: tokenSyn, eggs
 COSTE/STATS: evolveSyn
 SPAWN ENEMIES: spawnEnemyGen
 
@@ -2521,6 +2522,7 @@ IDEAS RECHAZADAS
 --Gloutonous Ooze --> Quitar armorGen (poco probable)
 --Plague Scientist --> Quitar tokenSyn (es una sinergia debil, envenom podria venir bien en muchos minions como un 1/7)
 
+--Recruit 4 or less --> "=<SynMinionCost4" (crea demasiadas sinergias)
 
 
 Dudando
