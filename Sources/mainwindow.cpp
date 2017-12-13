@@ -2183,7 +2183,7 @@ bool MainWindow::createDir(QString pathDir)
 void MainWindow::createDataDir()
 {
     createDir(Utility::dataPath());
-    removeHSCards();
+//    removeHSCards();//Redownload HSCards en esta version
     if(createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
@@ -3740,5 +3740,4 @@ void MainWindow::testDelay()
 
 
 //Pendiente
-//mover a la derecha la imagen de deckcard
-//Despues de la release quitar el eliminado automatico del directorio hs cards
+//Sistema de actualizaciones permitiendo varias versiones: Quitar comentarios, actualizar version.json
