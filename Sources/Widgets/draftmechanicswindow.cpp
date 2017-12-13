@@ -22,7 +22,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
     QWidget *centralWidget = new QWidget(this);
     centralWidget->setStyleSheet(".QWidget{border-image: url(" +
-                                 (patreonVersion?ThemeHandler::bgDraftMechanicsHelpFile():ThemeHandler::bgDraftMechanicsFile()) +
+                                 (patreonVersion?ThemeHandler::bgDraftMechanicsHelpFile():ThemeHandler::bgDraftMechanicsHelpFile()) +
                                  ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     showingHelp = true;
     QHBoxLayout *centralLayout = new QHBoxLayout();
