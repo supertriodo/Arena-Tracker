@@ -248,8 +248,8 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
         QRectF target;
         QRectF source;
         if(name == "unknown")                   source = QRectF(0,0,100,25);
-        else if(type==MINION)                   source = QRectF(48,72,100,25);
-        else                                    source = QRectF(48,98,100,25);
+        else if(type==MINION)                   source = QRectF(46,72,100,25);
+        else                                    source = QRectF(46,98,100,25);
         if(total == 1 && rarity != LEGENDARY)   target = QRectF(113,6,100,25);
         else                                    target = QRectF(100,6,100,25);
 
@@ -366,8 +366,8 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         QFileInfo cardFI(Utility::hscardsPath() + "/" + customCode + ".png");
         if(cardFI.exists())
         {
-            if(type==MINION)        source = QRectF(48,72,100,25);
-            else                    source = QRectF(48,98,100,25);
+            if(type==MINION)        source = QRectF(46,72,100,25);
+            else                    source = QRectF(46,98,100,25);
             painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + customCode + ".png"), source);
         }
         else
