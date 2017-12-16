@@ -1,5 +1,5 @@
 {
 	"premium": ["c76ab1cb9fb3094012592208cdb3391cf9c340634a670b9dea62c59d1f3eaa8f"],
-	"ban": [],
-	"unban": ["b37448781172864ae5bb386c7a8a62ad85727a0a020ba0af24f050a71bed802e"]
+	"ban": ["b37448781172864ae5bb386c7a8a62ad85727a0a020ba0af24f050a71bed802e"],
+	"unban": []
 }
