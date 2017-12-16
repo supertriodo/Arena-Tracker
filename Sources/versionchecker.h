@@ -12,11 +12,8 @@ class VersionChecker : public QObject
 {
     Q_OBJECT
 public:
-    VersionChecker(QObject *parent, bool patreonVersion);
+    VersionChecker(QObject *parent);
     ~VersionChecker();
-
-private:
-    bool patreonVersion;
 
 private:
     QNetworkAccessManager * networkManager;

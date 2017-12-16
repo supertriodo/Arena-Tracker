@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>true</bool>
@@ -992,7 +992,7 @@
          <attribute name="title">
           <string>Plan</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_14">
+         <layout class="QVBoxLayout" name="verticalLayoutPlan">
           <property name="spacing">
            <number>0</number>
           </property>

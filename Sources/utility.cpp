@@ -642,10 +642,3 @@ void Utility::showItemsLayout(QLayout* layout)
     }
 }
 
-
-void Utility::openPatreonWeb()
-{
-    QDesktopServices::openUrl(QUrl(
-        "https://www.patreon.com/triodo"
-        ));
-}

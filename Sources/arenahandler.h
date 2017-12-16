@@ -18,7 +18,7 @@ class ArenaHandler : public QObject
 {
     Q_OBJECT
 public:
-    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, PlanHandler *planHandler, bool patreonVersion, Ui::Extended *ui);
+    ArenaHandler(QObject *parent, DeckHandler *deckHandler, TrackobotUploader *trackobotUploader, PlanHandler *planHandler, Ui::Extended *ui);
     ~ArenaHandler();
 
 //Variables
@@ -26,7 +26,6 @@ private:
     TrackobotUploader *trackobotUploader;
     DeckHandler *deckHandler;
     PlanHandler *planHandler;
-    bool patreonVersion;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
     QTreeWidgetItem *rankedTreeItem[9];
@@ -69,6 +68,7 @@ public:
 
 signals:
     void showMessageProgressBar(QString text);
+    void showPremiumDialog();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="ArenaHandler");
 
@@ -81,8 +81,10 @@ public slots:
     //NetworkManager
     void replyFinished(QNetworkReply *reply);
 
+    //MainWindow
+    void setPremium(bool premium);
+
 private slots:
-    void openPatreonWeb();
     void hideRewards();
     void changedRow(QTreeWidgetItem *current);
     void replayLog();

@@ -4,10 +4,8 @@
 #include <QNetworkReply>
 #include <QtWidgets>
 
-VersionChecker::VersionChecker(QObject *parent, bool patreonVersion) : QObject(parent)
+VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
 {
-    this->patreonVersion = patreonVersion;
-
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));

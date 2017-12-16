@@ -69,7 +69,9 @@ SOURCES += Sources/main.cpp\
     Sources/Synergies/statsynergies.cpp \
     Sources/Widgets/cardlistwindow.cpp \
     Sources/Widgets/hoverlabel.cpp \
-    Sources/Widgets/draftmechanicswindow.cpp
+    Sources/Widgets/draftmechanicswindow.cpp \
+    Sources/LibSmtp/smtp.cpp \
+    Sources/premiumhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -131,7 +133,9 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/cardlistwindow.h \
     Sources/Widgets/hoverlabel.h \
     Sources/Widgets/draftmechanicswindow.h \
-    Sources/Widgets/webenginepage.h
+    Sources/Widgets/webenginepage.h \
+    Sources/LibSmtp/smtp.h \
+    Sources/premiumhandler.h
 
 FORMS    += mainwindow.ui
 

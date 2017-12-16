@@ -45,9 +45,7 @@ public slots:
 signals:
     void itemEnter(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight);
     void itemLeave();
-
-private slots:
-    void openPatreonWeb();
+    void showPremiumDialog();
 };
 
 #endif // DRAFTMECHANICSWINDOW_H

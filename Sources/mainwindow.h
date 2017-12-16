@@ -13,6 +13,7 @@
 #include "secretshandler.h"
 #include "drafthandler.h"
 #include "trackobotuploader.h"
+#include "premiumhandler.h"
 #include "Widgets/cardwindow.h"
 #include "Widgets/cardlistwindow.h"
 #include <QMainWindow>
@@ -69,6 +70,7 @@ private:
     CardWindow *cardWindow;
     CardListWindow *cardListWindow;
     TrackobotUploader *trackobotUploader;
+    PremiumHandler *premiumHandler;
 //    QWebEngineView * webEngineView;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
@@ -113,6 +115,7 @@ private:
     void createDraftHandler();
     void createVersionChecker();
     void createTrackobotUploader();
+    void createPremiumHandler();
 //    void createWebEngineView(QJsonObject jsonObject);
     void readSettings();
     void writeSettings();
@@ -173,7 +176,6 @@ private:
     void completeConfigComboTheme();
     void redrawAllGames();
     void initConfigTheme(QString theme);
-    bool isPatreonVersion();
     void unZip(QString zipName, QString targetPath);
     void downloadExtraFiles();
     void downloadThemes();
@@ -268,6 +270,7 @@ private slots:
     void allCardsDownloaded();
     void init();
     void loadTheme(QString theme, bool initTheme=false);
+    void showPremiumDialog();
 };
 
 #endif // MAINWINDOW_H

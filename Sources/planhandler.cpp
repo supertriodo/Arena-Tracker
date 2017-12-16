@@ -5,9 +5,8 @@
 #include <QtWidgets>
 
 
-PlanHandler::PlanHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui) : QObject(parent)
+PlanHandler::PlanHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
-    this->patreonVersion = patreonVersion;
     this->ui = ui;
     this->transparency = Opaque;
     this->inGame = false;
@@ -47,29 +46,18 @@ PlanHandler::~PlanHandler()
 
 void PlanHandler::completeUI()
 {
-    if(!patreonVersion)
-    {
-        ui->planGraphicsView->hide();
-        ui->planButtonPrev->hide();
-        ui->planButtonNext->hide();
-        ui->planButtonFirst->hide();
-        ui->planButtonLast->hide();
-        ui->planButtonResize->hide();
-        ui->planTurnSlider->hide();
-        ui->planLabelTurn->hide();
+    planPatreonButton = new QPushButton(ui->tabPlan);
+    planPatreonButton->setFlat(true);
+    planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
+    planPatreonButton->setIconSize(QSize(217, 51));
+    planPatreonButton->setToolTip("Unlock Replays and Planning becoming a patron (2$)");
 
-        QPushButton *planPatreonButton = new QPushButton(ui->tabPlan);
-        planPatreonButton->setFlat(true);
-        planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
-        planPatreonButton->setIconSize(QSize(217, 51));
-        planPatreonButton->setToolTip("Unlock Replays and Planning becoming a patron (2$)");
+    ui->verticalLayoutPlan->insertWidget(0, planPatreonButton);
 
-        ui->horizontalLayoutPlanButtons->insertWidget(4, planPatreonButton);
-        ui->horizontalLayoutPlanButtons->removeItem(ui->planHorizontalSpacer3);
+    connect(planPatreonButton, SIGNAL(clicked()),
+            this, SIGNAL(showPremiumDialog()));
 
-        connect(planPatreonButton, SIGNAL(clicked()),
-                this, SLOT(openPatreonWeb()));
-    }
+    setPremium(false);
 
     connect(ui->planButtonPrev, SIGNAL(clicked()),
             this, SLOT(showPrevTurn()));
@@ -88,9 +76,34 @@ void PlanHandler::completeUI()
 }
 
 
-void PlanHandler::openPatreonWeb()
+void PlanHandler::setPremium(bool premium)
 {
-    Utility::openPatreonWeb();
+    if(premium)
+    {
+        ui->planGraphicsView->show();
+        ui->planButtonPrev->show();
+        ui->planButtonNext->show();
+        ui->planButtonFirst->show();
+        ui->planButtonLast->show();
+        ui->planButtonResize->show();
+        ui->planTurnSlider->show();
+        ui->planLabelTurn->show();
+
+        this->planPatreonButton->hide();
+    }
+    else
+    {
+        ui->planGraphicsView->hide();
+        ui->planButtonPrev->hide();
+        ui->planButtonNext->hide();
+        ui->planButtonFirst->hide();
+        ui->planButtonLast->hide();
+        ui->planButtonResize->hide();
+        ui->planTurnSlider->hide();
+        ui->planLabelTurn->hide();
+
+        this->planPatreonButton->show();
+    }
 }
 
 

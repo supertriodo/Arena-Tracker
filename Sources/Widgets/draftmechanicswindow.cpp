@@ -69,7 +69,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
         scoresLayout->addWidget(patreonButton);
 
         connect(patreonButton, SIGNAL(clicked()),
-                this, SLOT(openPatreonWeb()));
+                this, SIGNAL(showPremiumDialog()));
     }
 
     //Mechanics
@@ -142,12 +142,6 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 DraftMechanicsWindow::~DraftMechanicsWindow()
 {
     deleteDraftItemCounters();
-}
-
-
-void DraftMechanicsWindow::openPatreonWeb()
-{
-    Utility::openPatreonWeb();
 }
 
 

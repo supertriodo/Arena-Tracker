@@ -7,13 +7,11 @@
 TrackobotUploader::TrackobotUploader(QObject *parent) : QObject(parent)
 {
     username = password = "";
-    connected = false;
+    connectSuccess = false;
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
-
-    QTimer::singleShot(1, this, SLOT(checkAccount()));
 }
 
 
@@ -25,7 +23,7 @@ TrackobotUploader::~TrackobotUploader()
 
 bool TrackobotUploader::isConnected()
 {
-    return this->connected;
+    return this->connectSuccess;
 }
 
 
@@ -125,13 +123,16 @@ bool TrackobotUploader::loadAccount(QByteArray jsonData)
     {
         this->username = username;
         this->password = password;
-        this->connected = true;
+        this->connectSuccess = true;
         emit pDebug("New account " + this->username + " --> Loaded.");
+        emit connected(username, password);
         return true;
     }
     else
     {
+        this->connectSuccess = false;
         emit pDebug(jsonData + " has an invalid format.");
+        emit disconnected();
         return false;
     }
 }
@@ -164,14 +165,17 @@ bool TrackobotUploader::loadAccount(QString fileName)
     {
         this->username = username;
         this->password = password;
-        this->connected = true;
+        this->connectSuccess = true;
         emit pDebug("Account " + this->username + " --> Loaded.");
+        emit connected(username, password);
         return true;
     }
     else
     {
+        this->connectSuccess = false;
         emit pDebug(fileName + " file has an invalid format.");
         emit showMessageProgressBar("Invalid track-o-bot account");
+        emit disconnected();
         return false;
     }
 }

@@ -7,10 +7,9 @@
 #include <QtWidgets>
 
 ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler,
-                           TrackobotUploader *trackobotUploader, PlanHandler *planHandler, bool patreonVersion,
+                           TrackobotUploader *trackobotUploader, PlanHandler *planHandler,
                            Ui::Extended *ui) : QObject(parent)
 {
-    this->patreonVersion = patreonVersion;
     this->trackobotUploader = trackobotUploader;
     this->deckHandler = deckHandler;
     this->planHandler = planHandler;
@@ -36,16 +35,29 @@ void ArenaHandler::completeUI()
     createTreeWidget();
 
     ui->logTextEdit->setFrameShape(QFrame::NoFrame);
-    if(patreonVersion)  ui->donateButton->hide();
+    setPremium(false);
 
     connect(ui->webButton, SIGNAL(clicked()),
             this, SLOT(openTBProfile()));
     connect(ui->replayButton, SIGNAL(clicked()),
             this, SLOT(replayLog()));
     connect(ui->donateButton, SIGNAL(clicked()),
-            this, SLOT(openPatreonWeb()));
+            this, SIGNAL(showPremiumDialog()));
 
     completeRewardsUI();
+}
+
+
+void ArenaHandler::setPremium(bool premium)
+{
+    if(premium)
+    {
+        ui->donateButton->hide();
+    }
+    else
+    {
+        ui->donateButton->show();
+    }
 }
 
 
@@ -533,12 +545,6 @@ void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 {
     return item->foreground(0).color();
-}
-
-
-void ArenaHandler::openPatreonWeb()
-{
-    Utility::openPatreonWeb();
 }
 
 

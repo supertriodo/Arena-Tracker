@@ -41,7 +41,7 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui);
+    DraftHandler(QObject *parent, Ui::Extended *ui);
     ~DraftHandler();
 
 //Variables
@@ -155,6 +155,7 @@ signals:
     void itemEnter(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
     void itemEnterOverlay(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
     void itemLeave();
+    void showPremiumDialog();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
@@ -169,6 +170,7 @@ public slots:
     void enterArena();
     void leaveArena();
     void minimizeScoreWindow();
+    void setPremium(bool premium);
 
 private slots:
     void captureDraft();

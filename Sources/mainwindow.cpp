@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
     trackobotUploader = NULL;
+    premiumHandler = NULL;
 
     createNetworkManager();
     createDataDir();
@@ -68,7 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
-    createCardListWindow();//-->PlanHandler -->SecretsHandler -->draftHandler
+    createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
+    createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler
 
     readSettings();
     checkGamesLogDir();
@@ -96,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
     enemyDeckHandler = NULL;
     secretsHandler = NULL;
     trackobotUploader = NULL;
+    premiumHandler = NULL;
     isMainWindow = false;
     mouseInApp = false;
     copyGameLogs = false;
@@ -113,6 +116,7 @@ MainWindow::~MainWindow()
 {
 //    if(webEngineView != NULL)       delete webEngineView;
     if(networkManager != NULL)      delete networkManager;
+    if(premiumHandler != NULL)      delete premiumHandler;
     if(logLoader != NULL)           delete logLoader;
     if(gameWatcher != NULL)         delete gameWatcher;
     if(arenaHandler != NULL)        delete arenaHandler;
@@ -132,6 +136,7 @@ MainWindow::~MainWindow()
 void MainWindow::init()
 {
     spreadTransparency();
+    trackobotUploader->checkAccount();
 //    downloadAllArenaCodes();  //Connect en completeUI
 
 #ifdef Q_OS_LINUX
@@ -141,18 +146,6 @@ void MainWindow::init()
 #ifdef QT_DEBUG
     test();
 #endif
-}
-
-
-bool MainWindow::isPatreonVersion()
-{
-#ifdef PATREON_VERSION
-    return true;
-#endif
-#ifdef QT_DEBUG
-    return true;
-#endif
-    return false;
 }
 
 
@@ -467,7 +460,7 @@ void MainWindow::createNetworkManager()
 
 void MainWindow::createVersionChecker()
 {
-    VersionChecker *versionChecker = new VersionChecker(this, isPatreonVersion());
+    VersionChecker *versionChecker = new VersionChecker(this);
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -492,6 +485,26 @@ void MainWindow::createVersionChecker()
 //}
 
 
+void MainWindow::createPremiumHandler()
+{
+    premiumHandler = new PremiumHandler(this);
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            arenaHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            draftHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            planHandler, SLOT(setPremium(bool)));
+    connect(trackobotUploader, SIGNAL(connected(QString,QString)),
+            premiumHandler, SLOT(checkPremium(QString,QString)));
+    connect(trackobotUploader, SIGNAL(disconnected()),
+            premiumHandler, SLOT(checkPremium()));
+    connect(premiumHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(premiumHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
 void MainWindow::createTrackobotUploader()
 {
     trackobotUploader = new TrackobotUploader(this);
@@ -510,7 +523,7 @@ void MainWindow::createTrackobotUploader()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, isPatreonVersion(), ui);
+    draftHandler = new DraftHandler(this, ui);
     connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
@@ -519,6 +532,8 @@ void MainWindow::createDraftHandler()
             this, SLOT(showMessageProgressBar(QString, int)));
     connect(draftHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
+    connect(draftHandler, SIGNAL(showPremiumDialog()),
+            this, SLOT(showPremiumDialog()));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardDraft(QString)));
 
@@ -561,9 +576,11 @@ void MainWindow::createSecretsHandler()
 
 void MainWindow::createArenaHandler()
 {
-    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, isPatreonVersion(), ui);
+    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
     connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
+    connect(arenaHandler, SIGNAL(showPremiumDialog()),
+            this, SLOT(showPremiumDialog()));
     connect(arenaHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -629,11 +646,13 @@ void MainWindow::createEnemyHandHandler()
 
 void MainWindow::createPlanHandler()
 {
-    planHandler = new PlanHandler(this, isPatreonVersion(), ui);
+    planHandler = new PlanHandler(this, ui);
     connect(planHandler, SIGNAL(checkCardImage(QString, bool)),
             this, SLOT(checkCardImage(QString, bool)));
     connect(planHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
+    connect(planHandler, SIGNAL(showPremiumDialog()),
+            this, SLOT(showPremiumDialog()));
     connect(planHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(planHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -3549,6 +3568,49 @@ void MainWindow::unZip(QString zipName, QString targetPath)
     }
 
     zf.close();
+}
+
+
+void MainWindow::showPremiumDialog()
+{
+    QMessageBox msgBox(this);
+    msgBox.setText("Becoming a patron (2$+) will let you activate the premium version of Arena Tracker, "
+                   "which implements some extra features: (replays, planning, synergies and draft mechanics overview). "
+                   "<a href='https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md'>Learn more...</a>"
+                   "<br><br>If you are already a patron use the \"Unlock premium\" button and "
+                   "type the e-mail address that appears in your patron profile. "
+                   "Your version will be upgraded in less than 24 hours."
+                   "<br><br>Thanks for your support!");
+    msgBox.setWindowTitle(tr("Premium"));
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setIcon(QMessageBox::Information);
+    QPushButton *button1 = msgBox.addButton("Become a patron", QMessageBox::ActionRole);
+    QPushButton *button2 = msgBox.addButton("Unlock premium", QMessageBox::ActionRole);
+    QPushButton *button3 = msgBox.addButton("Cancel", QMessageBox::ActionRole);
+
+    msgBox.exec();
+
+    if(msgBox.clickedButton() == button1)
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://www.patreon.com/triodo"
+            ));
+    }
+    else if(msgBox.clickedButton() == button2)
+    {
+        bool ok;
+        QString email = QInputDialog::getText(this, tr("Unlock premium"),
+                                                tr("Patron e-mail:"), QLineEdit::Normal,
+                                                "", &ok);
+        if(ok)
+        {
+            premiumHandler->unlockPremium(email);
+            showMessageProgressBar("Premium request sent");
+        }
+    }
+    else if(msgBox.clickedButton() == button3)
+    {
+    }
 }
 
 

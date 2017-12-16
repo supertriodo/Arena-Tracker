@@ -36,7 +36,7 @@ public:
 private:
     QNetworkAccessManager *networkManager;
     QString username, password;
-    bool connected;
+    bool connectSuccess;
     QList<ArenaItem> arenaItemXlsList;
 
 
@@ -53,6 +53,7 @@ private:
     void uploadNextXlsResult();
 
 public:
+    void checkAccount();
     bool isConnected();
     void openTBProfile();
     void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory);
@@ -64,13 +65,14 @@ signals:
     void advanceProgressBar(int remaining, QString text);
     void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text);
+    void connected(QString username, QString password);
+    void disconnected();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TrackobotUploader");
 
 public slots:
 
 private slots:
-    void checkAccount();
     void replyFinished(QNetworkReply *reply);
 };
 

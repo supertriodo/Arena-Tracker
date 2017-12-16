@@ -53,12 +53,11 @@ class PlanHandler : public QObject
 {
     Q_OBJECT
 public:
-    PlanHandler(QObject *parent, bool patreonVersion, Ui::Extended *ui);
+    PlanHandler(QObject *parent, Ui::Extended *ui);
     ~PlanHandler();
 
 //Variables
 private:
-    bool patreonVersion;
     Ui::Extended *ui;
     QList<TagChange> pendingTagChanges, cardPendingTagChanges;
     Board *nowBoard;
@@ -81,6 +80,7 @@ private:
     GraphicsItemSender *graphicsItemSender;
     QFutureWatcher<QList<float> > futureBombs;
     bool abortFutureBombs;
+    QPushButton *planPatreonButton;
 
 //Metodos:
 private:
@@ -175,6 +175,7 @@ signals:
     void cardLeave();
     void needMainWindowFade(bool fade);
     void heroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
+    void showPremiumDialog();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
 
@@ -194,7 +195,6 @@ private slots:
     void minionWheel(MinionGraphicsItem *minion, bool up);
     void heroWheel(HeroGraphicsItem *hero, bool up);
     void checkCardPendingTagChanges();
-    void openPatreonWeb();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
@@ -249,6 +249,7 @@ public slots:
     void enemyIsolatedSecret(int id, QString code);
     void playerCardCodeChange(int id, QString newCode);
     void revealEnemyCard(int id, QString code);
+    void setPremium(bool premium);
 };
 
 #endif // PLANHANDLER_H
