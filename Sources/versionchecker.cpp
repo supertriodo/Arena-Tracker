@@ -38,8 +38,8 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
     {
         this->deleteLater();
 
-        QJsonArray versionArray = QJsonDocument::fromJson("{\"versionPatreon\": [],\"versionFree\": [\"v6.01\",\"v6.1\"]}"
-                    /*reply->readAll()*/).object().value("versionFree").toArray();
+        QJsonArray versionArray = QJsonDocument::fromJson(
+                    reply->readAll()).object().value("versionFree").toArray();
         QStringList allowedVersions;
         for(QJsonValue value: versionArray)
         {
