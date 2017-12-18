@@ -2434,7 +2434,7 @@ restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorG
 
 Double check:
 DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn), damageMinionsGen, destroyGen
-BATTLECRY/COMBO/DEATHRATTLE: returnsyn(battlecry/combo), silenceOwnSyn(deathrattle/malo)
+BATTLECRY/COMBO/DEATHRATTLE: returnsyn(battlecry/combo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/TAKE DAMAGE: enrageGen(take damage),
 SUMMON: tokenGen(summon) <--> =GenMinionHealth1(paladin o neutral)
 TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenHealth1(paladin o neutral (para Steward of Darkshire))
@@ -2472,6 +2472,9 @@ REGLAS
 *spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
++evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
+Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo)
+o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 
 
 

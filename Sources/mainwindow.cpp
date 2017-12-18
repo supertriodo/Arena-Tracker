@@ -3797,9 +3797,3 @@ void MainWindow::testDelay()
 //    emit pDebug(message);
 //}
 
-
-
-
-
-//Pendiente
-//Sistema de actualizaciones permitiendo varias versiones: Quitar comentarios, actualizar version.json
