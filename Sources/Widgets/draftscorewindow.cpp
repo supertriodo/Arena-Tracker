@@ -3,7 +3,7 @@
 #include <QtWidgets>
 
 
-DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
+DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     scoreWidth = sizeCard.width()*0.7;
@@ -30,13 +30,13 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget, LightForge);
+        scoresPushButton[i] = new ScoreButton(centralWidget, LightForge, normalizedLF);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
-        scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena);
+        scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena, false);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
@@ -365,4 +365,11 @@ void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
 }
 
 
+void DraftScoreWindow::setNormalizedLF(bool value)
+{
+    for(int i=0; i<3; i++)
+    {
+        scoresPushButton[i]->setNormalizedLF(value);
+    }
+}
 

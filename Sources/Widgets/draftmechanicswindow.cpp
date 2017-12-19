@@ -3,7 +3,8 @@
 #include <QtWidgets>
 
 
-DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion) :
+DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
+                                           bool patreonVersion, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->patreonVersion = patreonVersion;
@@ -42,13 +43,13 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
-    scoresPushButton = new ScoreButton(centralWidget, LightForge);
+    scoresPushButton = new ScoreButton(centralWidget, LightForge, normalizedLF);
     scoresPushButton->setFixedHeight(scoreWidth);
     scoresPushButton->setFixedWidth(scoreWidth);
     scoresPushButton->setScore(0, true);
     scoresPushButton->hide();
 
-    scoresPushButton2 = new ScoreButton(centralWidget, HearthArena);
+    scoresPushButton2 = new ScoreButton(centralWidget, HearthArena, false);
     scoresPushButton2->setFixedHeight(scoreWidth);
     scoresPushButton2->setFixedWidth(scoreWidth);
     scoresPushButton2->setScore(0, true);
@@ -283,4 +284,10 @@ void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &l
     int maxRight = bottomRightWindow.x();
 
     emit itemEnter(deckCardList, originList, maxLeft, maxRight);
+}
+
+
+void DraftMechanicsWindow::setNormalizedLF(bool value)
+{
+    scoresPushButton->setNormalizedLF(value);
 }

@@ -19,6 +19,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->synergyHandler = NULL;
     this->mouseInApp = false;
     this->draftMethod = All;
+    this->normalizedLF = true;
 
     for(int i=0; i<3; i++)
     {
@@ -465,7 +466,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
                            aoeList, tauntList, survivabilityList, drawList,
                            pingList, damageList, destroyList, reachList);
             deckRatingHA += hearthArenaTiers[code];
-            deckRatingLF += normalizeLFscore(lightForgeTiers[code].score);
+            deckRatingLF += lightForgeTiers[code].score;
         }
     }
 
@@ -507,7 +508,7 @@ void DraftHandler::endDraft()
     {
         int numCards = synergyHandler->draftedCardsCount();
         int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
-        int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
+        int deckScoreLF = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
         emit showMessageProgressBar(" LF:" + QString::number(deckScoreLF) + " -- HA:" + QString::number(deckScoreHA), 10000);
     }
 
@@ -829,12 +830,6 @@ void DraftHandler::refreshCapturedCards()
 }
 
 
-int DraftHandler::normalizeLFscore(int score)
-{
-    return score - 45;
-}
-
-
 void DraftHandler::showNewCards(DraftCard bestCards[3])
 {
     //Load cards
@@ -847,9 +842,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
     //LightForge
-    int rating1 = normalizeLFscore(lightForgeTiers[bestCards[0].getCode()].score);
-    int rating2 = normalizeLFscore(lightForgeTiers[bestCards[1].getCode()].score);
-    int rating3 = normalizeLFscore(lightForgeTiers[bestCards[2].getCode()].score);
+    int rating1 = lightForgeTiers[bestCards[0].getCode()].score;
+    int rating2 = lightForgeTiers[bestCards[1].getCode()].score;
+    int rating3 = lightForgeTiers[bestCards[2].getCode()].score;
     int maxCard1 = lightForgeTiers[bestCards[0].getCode()].maxCard;
     int maxCard2 = lightForgeTiers[bestCards[1].getCode()].maxCard;
     int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
@@ -912,7 +907,8 @@ void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
     deckRatingLF += cardRatingLF;
     int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
     int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
-    ui->labelDeckScore->setText(QString(" LF: " + QString::number(deckScoreLF) + " -- HA: " + QString::number(deckScoreHA) +
+    int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
+    ui->labelDeckScore->setText(QString(" LF: " + QString::number(deckScoreLFNormalized) + " -- HA: " + QString::number(deckScoreHA) +
                                         " (" + QString::number(numCards) + "/30)"));
     if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
 }
@@ -934,7 +930,7 @@ void DraftHandler::showNewRatings(double rating1, double rating2, double rating3
         if(draftMethod == LightForge)
         {
             shownTierScoresLF[i] = tierScore[i];
-            labelLFscore[i]->setText(QString::number((int)ratings[i]) +
+            labelLFscore[i]->setText(QString::number((int)Utility::normalizeLF(ratings[i], this->normalizedLF)) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(maxRating == ratings[i])     highlightScore(labelLFscore[i], draftMethod);
         }
@@ -1207,7 +1203,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     QRect draftRect(topLeft, bottomRight);
     QSize sizeCard(screenRects[0].width * screenScale.x(), screenRects[0].height * screenScale.y());
 
-    draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+    draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, this->normalizedLF);
     draftScoreWindow->setLearningMode(this->learningMode);
     draftScoreWindow->setDraftMethod(this->draftMethod);
 
@@ -1216,7 +1212,8 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     connect(draftScoreWindow, SIGNAL(cardLeave()),
             this, SIGNAL(overlayCardLeave()));
 
-    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, patreonVersion);
+    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
+                                                    patreonVersion, this->normalizedLF);
     initDraftMechanicsWindowCounters();
     connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
             this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
@@ -1472,6 +1469,31 @@ void DraftHandler::craftGoldenCopy(int cardIndex)
 bool DraftHandler::isDrafting()
 {
     return this->drafting;
+}
+
+
+void DraftHandler::setNormalizedLF(bool value)
+{
+    this->normalizedLF = value;
+    if(!isDrafting())   return;
+
+    if(this->draftScoreWindow != NULL)      draftScoreWindow->setNormalizedLF(value);
+    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setNormalizedLF(value);
+
+    //Re Show new ratings
+    int rating1 = lightForgeTiers[draftCards[0].getCode()].score;
+    int rating2 = lightForgeTiers[draftCards[1].getCode()].score;
+    int rating3 = lightForgeTiers[draftCards[2].getCode()].score;
+    int maxCard1 = lightForgeTiers[draftCards[0].getCode()].maxCard;
+    int maxCard2 = lightForgeTiers[draftCards[1].getCode()].maxCard;
+    int maxCard3 = lightForgeTiers[draftCards[2].getCode()].maxCard;
+    showNewRatings(rating1, rating2, rating3,
+                   rating1, rating2, rating3,
+                   maxCard1, maxCard2, maxCard3,
+                   LightForge);
+
+    //Re UpdateDeckScore
+    updateDeckScore(0, 0);
 }
 
 

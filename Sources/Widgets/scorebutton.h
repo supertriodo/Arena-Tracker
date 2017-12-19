@@ -11,7 +11,7 @@ class ScoreButton : public QPushButton
 
 //Constructor
 public:
-    ScoreButton(QWidget * parent, DraftMethod draftMethod);
+    ScoreButton(QWidget * parent, DraftMethod draftMethod, bool normalizedLF);
 
 //Variables
 private:
@@ -19,6 +19,7 @@ private:
     bool learningMode, learningShow;
     bool isBestScore;
     DraftMethod draftMethod;
+    bool normalizedLF;
 
 //Metodos
 private:
@@ -34,6 +35,7 @@ public:
     void setScore(double score, bool isBest);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
+    void setNormalizedLF(bool value);
 
 signals:
     void spreadLearningShow(bool value);

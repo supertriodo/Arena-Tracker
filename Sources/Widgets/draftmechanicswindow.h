@@ -13,7 +13,7 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, bool normalizedLF);
     ~DraftMechanicsWindow();
 
 
@@ -38,6 +38,7 @@ public:
     void clearLists();
     void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList, QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList, QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
     void setTheme();
+    void setNormalizedLF(bool value);
 
 public slots:
     void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);

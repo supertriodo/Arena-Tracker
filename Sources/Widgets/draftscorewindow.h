@@ -18,7 +18,7 @@ class DraftScoreWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex);
+    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool normalizedLF);
     ~DraftScoreWindow();
 
 //Variables
@@ -45,6 +45,7 @@ public:
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
+    void setNormalizedLF(bool value);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

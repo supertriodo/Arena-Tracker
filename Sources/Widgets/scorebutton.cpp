@@ -2,8 +2,9 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod) : QPushButton(parent)
+ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod, bool normalizedLF) : QPushButton(parent)
 {
+    this->normalizedLF = normalizedLF;
     this->learningMode = false;
     this->learningShow = false;
     this->isBestScore = false;
@@ -46,6 +47,13 @@ void ScoreButton::setLearningMode(bool value)
 }
 
 
+void ScoreButton::setNormalizedLF(bool value)
+{
+    this->normalizedLF = value;
+    //No necesita draw porque al cambiar normalized en draftHandler el vuelve a mostrar los scores lo que en cascada causara un draw aqui.
+}
+
+
 void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
 {
     int rating255 = 0;
@@ -70,7 +78,7 @@ void ScoreButton::draw()
     bool hideScore = learningMode && !learningShow;
 
     int r, g, b;
-    getScoreColor(r, g, b, score);
+    getScoreColor(r, g, b, (draftMethod == LightForge)?Utility::normalizeLF(score, true):score);
 
     QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
     QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
@@ -97,9 +105,13 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
 
+    int normalizedScore;
+    if(draftMethod == LightForge)   normalizedScore = (int)Utility::normalizeLF(score, this->normalizedLF);
+    else                            normalizedScore = (int)score;
+
     QFont font(LG_FONT);
-    if(score > 99)  font.setPixelSize(width()/3.2);
-    else            font.setPixelSize(width()/2.7);
+    if(normalizedScore > 99)    font.setPixelSize(width()/3.2);
+    else                        font.setPixelSize(width()/2.7);
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
@@ -122,7 +134,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
             else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfBestFile()));
         }
 
-        QString text = QString::number((int)score);
+        QString text = QString::number(normalizedScore);
         QFontMetrics fm = QFontMetrics(font);
         int textWide = fm.width(text);
         int textHigh = fm.height();

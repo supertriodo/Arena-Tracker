@@ -80,6 +80,7 @@ private:
     double shownTierScoresHA[3];
     double shownTierScoresLF[3];
     bool extendedCapture;
+    bool normalizedLF;
 
 
 //Metodos
@@ -113,7 +114,6 @@ private:
     void getBestCards(DraftCard bestCards[3]);
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
-    int normalizeLFscore(int score);
     void createSynergyHandler();
     bool isGoldCode(QString fileName);
     void connectAllComboBox();
@@ -171,6 +171,7 @@ public slots:
     void leaveArena();
     void minimizeScoreWindow();
     void setPremium(bool premium);
+    void setNormalizedLF(bool value);
 
 private slots:
     void captureDraft();

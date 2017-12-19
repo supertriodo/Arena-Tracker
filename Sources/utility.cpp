@@ -642,3 +642,10 @@ void Utility::showItemsLayout(QLayout* layout)
     }
 }
 
+
+double Utility::normalizeLF(double score, bool doit)
+{
+    if(doit)    return score - 45;
+    else        return score;
+}
+

@@ -1106,7 +1106,7 @@ void MainWindow::initConfigTheme(QString theme)
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               QString theme)
+                               bool normalizedLF, QString theme)
 {
     //UI
     switch(transparency)
@@ -1184,6 +1184,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
+
+    if(normalizedLF)    ui->configCheckNormalizeLF->setChecked(true);
+    updateDraftNormalizeLF(normalizedLF);
 
     switch(draftMethod)
     {
@@ -1265,6 +1268,7 @@ void MainWindow::readSettings()
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
+        bool normalizedLF = settings.value("draftNormalizedLF", true).toBool();
         this->draftMethod = (DraftMethod)settings.value("draftMethod", HearthArena).toInt();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         bool autoSize = settings.value("autoSize", true).toBool();
@@ -1276,7 +1280,7 @@ void MainWindow::readSettings()
         int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
 
         initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      maxGamesLog, theme);
+                      maxGamesLog, normalizedLF, theme);
     }
     else
     {
@@ -1311,6 +1315,7 @@ void MainWindow::writeSettings()
         settings.setValue("drawDisappear", this->drawDisappear);
         settings.setValue("showDraftOverlay", this->showDraftOverlay);
         settings.setValue("draftLearningMode", this->draftLearningMode);
+        settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
         settings.setValue("draftMethod", (int)this->draftMethod);
         settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
         settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
@@ -2672,6 +2677,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSpellColor->setStyleSheet(checkCSS);
         ui->configCheckOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
+        ui->configCheckNormalizeLF->setStyleSheet(checkCSS);
         ui->configCheckAutoSize->setStyleSheet(checkCSS);
         ui->configCheckManaLimits->setStyleSheet(checkCSS);
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
@@ -2719,6 +2725,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSpellColor->setStyleSheet("");
         ui->configCheckOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
+        ui->configCheckNormalizeLF->setStyleSheet("");
         ui->configCheckAutoSize->setStyleSheet("");
         ui->configCheckManaLimits->setStyleSheet("");
         ui->configCheckTotalAttack->setStyleSheet("");
@@ -3123,6 +3130,12 @@ void MainWindow::toggleDraftLearningMode()
 }
 
 
+void MainWindow::updateDraftNormalizeLF(bool checked)
+{
+    draftHandler->setNormalizedLF(checked);
+}
+
+
 void MainWindow::draftMethodHA()
 {
     spreadDraftMethod(HearthArena);
@@ -3227,6 +3240,7 @@ void MainWindow::completeConfigTab()
     //Draft
     connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+    connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
     connect(ui->configRadioHA, SIGNAL(clicked()), this, SLOT(draftMethodHA()));
     connect(ui->configRadioLF, SIGNAL(clicked()), this, SLOT(draftMethodLF()));
     connect(ui->configRadioCombined, SIGNAL(clicked()), this, SLOT(draftMethodCombined()));

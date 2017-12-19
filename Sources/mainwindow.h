@@ -145,7 +145,7 @@ private:
     void createDataDir();
     bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, QString theme);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, QString theme);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -240,6 +240,7 @@ private slots:
     void updateTamCard(int value);
     void toggleShowDraftOverlay();
     void toggleDraftLearningMode();
+    void updateDraftNormalizeLF(bool checked);
     void updateTooltipScale(int value);
     void closeApp();
     void updateShowClassColor(bool checked);
