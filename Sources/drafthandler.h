@@ -93,7 +93,7 @@ private:
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void updateDeckScore(double cardRatingHA, double cardRatingLF);
+    void updateDeckScore(double cardRatingHA=0, double cardRatingLF=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
@@ -121,6 +121,8 @@ private:
     void clearAndDisconnectComboBox(int index);
     void initDraftMechanicsWindowCounters();
     void initSynergyCounters(QList<DeckCard> &deckCardList);
+    void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards);
+    void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

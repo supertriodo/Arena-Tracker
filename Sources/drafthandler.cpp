@@ -326,7 +326,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         comboBoxCard[i]->setCurrentIndex(0);
     }
 
-    updateDeckScore(0, 0);
+    updateDeckScore();
 
     if(!alreadyDrafting)
     {
@@ -471,7 +471,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
     }
 
     int numCards = synergyHandler->draftedCardsCount();
-    updateDeckScore(0, 0);
+    updateDeckScore();
     emit pDebug("Counters starts with " + QString::number(numCards) + " cards.");
 }
 
@@ -508,8 +508,8 @@ void DraftHandler::endDraft()
     {
         int numCards = synergyHandler->draftedCardsCount();
         int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
-        int deckScoreLF = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
-        emit showMessageProgressBar(" LF:" + QString::number(deckScoreLF) + " -- HA:" + QString::number(deckScoreHA), 10000);
+        int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
+        showMessageDeckScore(deckScoreLFNormalized, deckScoreHA);
     }
 
     clearLists(false);
@@ -908,9 +908,54 @@ void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
     int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
     int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
     int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
-    ui->labelDeckScore->setText(QString(" LF: " + QString::number(deckScoreLFNormalized) + " -- HA: " + QString::number(deckScoreHA) +
-                                        " (" + QString::number(numCards) + "/30)"));
+    updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, numCards);
+
     if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
+}
+
+
+void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards)
+{
+    QString scoreText;
+    switch(draftMethod)
+    {
+        case All:
+            scoreText = QString(" LF: " + QString::number(deckScoreLFNormalized) + " -- HA: " + QString::number(deckScoreHA) +
+                                " (" + QString::number(numCards) + "/30)");
+            break;
+        case LightForge:
+            scoreText = QString(" LF: " + QString::number(deckScoreLFNormalized) +
+                                " (" + QString::number(numCards) + "/30)");
+            break;
+        case HearthArena:
+            scoreText = QString(" HA: " + QString::number(deckScoreHA) +
+                                " (" + QString::number(numCards) + "/30)");
+            break;
+        default:
+            break;
+    }
+    ui->labelDeckScore->setText(scoreText);
+}
+
+
+void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA)
+{
+    QString scoreText = "";
+    switch(draftMethod)
+    {
+        case All:
+            scoreText = "LF:" + QString::number(deckScoreLFNormalized) + " -- HA:" + QString::number(deckScoreHA);
+            break;
+        case LightForge:
+            scoreText = "Deck Score: " + QString::number(deckScoreLFNormalized);
+            break;
+        case HearthArena:
+            scoreText = "Deck Score: " + QString::number(deckScoreHA);
+            break;
+        default:
+            break;
+    }
+    if(!scoreText.isEmpty())    emit showMessageProgressBar(scoreText, 10000);
 }
 
 
@@ -1189,7 +1234,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
                                          aoeList, tauntList, survivabilityList, drawList,
                                          pingList, damageList, destroyList, reachList);
     draftMechanicsWindow->updateManaCounter(manaCounter, numCards);
-    updateDeckScore(0, 0);
+    updateDeckScore();
 }
 
 
@@ -1213,7 +1258,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
             this, SIGNAL(overlayCardLeave()));
 
     draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
-                                                    patreonVersion, this->normalizedLF);
+                                                    patreonVersion, this->draftMethod, this->normalizedLF);
     initDraftMechanicsWindowCounters();
     connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
             this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
@@ -1361,9 +1406,11 @@ void DraftHandler::setLearningMode(bool value)
 void DraftHandler::setDraftMethod(DraftMethod value)
 {
     this->draftMethod = value;
+    if(!isDrafting())   return;
     if(draftScoreWindow != NULL)        draftScoreWindow->setDraftMethod(value);
     if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setDraftMethod(value);
 
+    updateDeckScore();
     updateScoresVisibility();
 }
 
@@ -1493,7 +1540,7 @@ void DraftHandler::setNormalizedLF(bool value)
                    LightForge);
 
     //Re UpdateDeckScore
-    updateDeckScore(0, 0);
+    updateDeckScore();
 }
 
 

@@ -3712,11 +3712,10 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Verificador de acciones de log.
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
-//https://www.reddit.com/r/ArenaTracker/comments/6skad3/bug_wrong_match_result_after_opponent_disconnected/
+
 
 
 //REPLAY BUGS

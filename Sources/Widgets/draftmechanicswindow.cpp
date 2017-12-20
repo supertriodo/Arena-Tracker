@@ -4,10 +4,11 @@
 
 
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
-                                           bool patreonVersion, bool normalizedLF) :
+                                           bool patreonVersion, DraftMethod draftMethod, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->patreonVersion = patreonVersion;
+    this->draftMethod = draftMethod;
     scoreWidth = sizeCard.width()*0.7;
 
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -191,6 +192,8 @@ void DraftMechanicsWindow::setTheme()
 
 void DraftMechanicsWindow::setDraftMethod(DraftMethod draftMethod)
 {
+    this->draftMethod = draftMethod;
+    if(showingHelp) return;
     switch(draftMethod)
     {
         case All:
@@ -224,10 +227,9 @@ void DraftMechanicsWindow::updateManaCounter(int numIncrease, int draftedCardsCo
 {
     if(showingHelp)
     {
-        centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
-        scoresPushButton->show();
-        scoresPushButton2->show();
         showingHelp = false;
+        centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+        setDraftMethod(this->draftMethod);
     }
     manaCounter->increase(numIncrease, draftedCardsCount);
 }

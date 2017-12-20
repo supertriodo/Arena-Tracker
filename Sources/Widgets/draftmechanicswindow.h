@@ -13,7 +13,7 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, bool normalizedLF);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, DraftMethod draftMethod, bool normalizedLF);
     ~DraftMechanicsWindow();
 
 
@@ -26,6 +26,7 @@ private:
     DraftItemCounter *manaCounter;
     int scoreWidth;
     bool showingHelp;
+    DraftMethod draftMethod;
 
 //Metodos
 private:
