@@ -154,7 +154,7 @@ void MainWindow::createSecondaryWindow()
     this->otherWindow = new MainWindow(0, this);
     this->otherWindow->showWindowFrame(transparency == Framed);
     calculateDeckWindowMinimumWidth();
-    deckHandler->setTransparency(Transparent);
+    deckHandler->setTransparency((transparency!=Framed)?Transparent:Framed);
     updateMainUITheme();
     this->resizeTabWidgets();
     this->resizeChecks();
@@ -170,6 +170,7 @@ void MainWindow::destroySecondaryWindow()
     this->otherWindow->close();
     this->otherWindow = NULL;
     deckHandler->setTransparency(this->transparency);
+    updateMainUITheme();
 
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
     this->resizeTabWidgets();
@@ -1291,6 +1292,7 @@ void MainWindow::readSettings()
         this->splitWindow = false;
     }
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
+    this->showWindowFrame(transparency == Framed);
     this->windowsFormation = None;
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
@@ -2601,7 +2603,7 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     this->transparency = newTransparency;
     if(otherWindow != NULL)     otherWindow->transparency = newTransparency;
 
-    deckHandler->setTransparency((this->otherWindow!=NULL)?Transparent:this->transparency);
+    deckHandler->setTransparency((this->otherWindow!=NULL && this->transparency != Framed)?Transparent:this->transparency);
     enemyDeckHandler->setTransparency(this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     planHandler->setTransparency(this->transparency);
@@ -2610,7 +2612,11 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     updateOtherTabsTransparency();
 
     showWindowFrame(transparency == Framed);
-    if(otherWindow != NULL) otherWindow->showWindowFrame(transparency == Framed);
+    if(otherWindow != NULL)
+    {
+        otherWindow->showWindowFrame(transparency == Framed);
+        updateDeckWindowTheme();
+    }
 }
 
 
@@ -2910,6 +2916,28 @@ void MainWindow::updateMainUITheme()
     {
         otherWindow->setStyleSheet(mainCSS);
         otherWindow->updateButtonsTheme();
+    }
+    updateDeckWindowTheme();
+}
+
+
+void MainWindow::updateDeckWindowTheme()
+{
+    if(otherWindow!=NULL)
+    {
+        if(transparency == Framed)
+        {
+            ui->tabDeck->setStyleSheet("QWidget { " +
+                ThemeHandler::bgApp() + ThemeHandler::borderApp(false) +" }");
+        }
+        else
+        {
+            ui->tabDeck->setStyleSheet("");
+        }
+    }
+    else
+    {
+        ui->tabDeck->setStyleSheet("");
     }
 }
 

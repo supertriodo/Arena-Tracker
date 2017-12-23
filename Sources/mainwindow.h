@@ -128,6 +128,7 @@ private:
     void updateOtherTabsTransparency();
     void spreadTheme(bool redrawAllGames);
     void updateMainUITheme();
+    void updateDeckWindowTheme();
     void updateButtonsTheme();
     void updateTabWidgetsTheme(bool transparent, bool resizing);
     QString getHSLanguage();
