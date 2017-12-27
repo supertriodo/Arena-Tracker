@@ -345,6 +345,7 @@
 	"LOOT_528": ["battlecry","dragonSyn"],
 	"LOOT_534": ["deathrattle","tokenCardGen","spellGen"],
 	"LOOT_535": ["battlecry","returnSyn","=>SynSpellCost5"],
+	"LOOT_537": ["battlecry","discoverSyn","toYourHandSyn"],
 	"LOOT_541": ["battlecry","evolveSyn"],
 	"NEW1_003": ["restoreFriendlyHeroGen"],
 	"NEW1_004": ["aoeGen","returnGen"],

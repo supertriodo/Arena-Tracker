@@ -3728,7 +3728,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//        draftHandler->debugSynergiesCode("EX1_057");
+//    draftHandler->debugSynergiesCode("EX1_057");
 //    draftHandler->testSynergies();
 }
 

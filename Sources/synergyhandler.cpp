@@ -96,6 +96,9 @@ void SynergyHandler::createDraftItemCounters()
     connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
+    mechanicCounters[V_DISCOVER] = new DraftItemCounter(this);
+    mechanicCounters[V_DRAW] = new DraftItemCounter(this);
+    mechanicCounters[V_TOYOURHAND] = new DraftItemCounter(this);
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this);
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
@@ -536,6 +539,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_REACH]->increase(code);
         reachList.append(code);
     }
+    if(isDiscoverGen(code, mechanics, referencedTags))                      mechanicCounters[V_DISCOVER]->increase(code);
+    if(isDrawGen(code, text))                                               mechanicCounters[V_DRAW]->increase(code);
+    if(isToYourHandGen(code, text))                                         mechanicCounters[V_TOYOURHAND]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
@@ -599,6 +605,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
+    if(isDiscoverSyn(code))                                                 mechanicCounters[V_DISCOVER]->increaseSyn(code);
+    if(isDrawSyn(code))                                                     mechanicCounters[V_DRAW]->increaseSyn(code);
+    if(isToYourHandSyn(code))                                               mechanicCounters[V_TOYOURHAND]->increaseSyn(code);
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
     if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
     if(isFreezeEnemySyn(code, referencedTags, text))                        mechanicCounters[V_FREEZE_ENEMY]->increaseSyn(code);
@@ -892,6 +901,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isLifestealMinon(code, mechanics, cardType))             mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);//Sinergias gen-gen
+    if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergies);
+    if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergies);
+    if(isToYourHandGen(code, text))                             mechanicCounters[V_TOYOURHAND]->insertSynCards(synergies);
     if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
     if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergies);
@@ -927,6 +939,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergies);
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
     if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergies);
+    if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergies);
+    if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergies);
+    if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergies);
     if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
     if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
     if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergies);
@@ -1143,7 +1158,10 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSpellSyn(code, text))          syn<<"spellSyn";
     if(isWeaponAllSyn(code, text))      syn<<"weaponAllSyn";
 
-    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
+//    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
+    if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
+    if(isDrawGen(code, text))                                               mec<<"drawGen";
+    if(isToYourHandGen(code, text))                                         mec<<"toYourHandGen";
     if(isAoeGen(code, text))                                                mec<<"aoeGen";
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))  mec<<"pingGen";
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"damageMinionsGen";
@@ -1278,6 +1296,46 @@ bool SynergyHandler::isDiscoverDrawGen(const QString &code, const QJsonArray &me
     {
         return  (text.contains("draw") && !text.contains("drawn")) ||
                 (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
+    }
+}
+bool SynergyHandler::isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    //TEST
+    //&& text.contains("discover")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("discover");
+    }
+    else if(mechanics.contains(QJsonValue("DISCOVER")) || referencedTags.contains(QJsonValue("DISCOVER")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isDrawGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("draw")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("drawGen");
+    }
+    else
+    {
+        return  (text.contains("draw") && !text.contains("drawn"));
+    }
+}
+bool SynergyHandler::isToYourHandGen(const QString &code, const QString &text)
+{
+    //TEST
+    //&& (text.contains("to") && text.contains("your") && text.contains("hand"))
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("toYourHandGen");
+    }
+    else
+    {
+        return  (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
     }
 }
 bool SynergyHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
@@ -2025,6 +2083,30 @@ bool SynergyHandler::isDragonAllSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("dragonAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isDiscoverSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("discoverSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isDrawSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("drawSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isToYourHandSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("toYourHandSyn");
     }
     return false;
 }

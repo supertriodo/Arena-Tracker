@@ -73,6 +73,9 @@ private:
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
     bool isDiscoverDrawGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
+    bool isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isDrawGen(const QString &code, const QString &text);
+    bool isToYourHandGen(const QString &code, const QString &text);
     bool isTaunt(const QString &code, const QJsonArray &mechanics);
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
     bool isAoeGen(const QString &code, const QString &text);
@@ -127,6 +130,9 @@ private:
     bool isTotemAllSyn(const QString &code, const QString &text);
     bool isPirateAllSyn(const QString &code, const QString &text);
     bool isDragonAllSyn(const QString &code);
+    bool isDiscoverSyn(const QString &code);
+    bool isDrawSyn(const QString &code);
+    bool isToYourHandSyn(const QString &code);
     bool isSpellSyn(const QString &code, const QString &text);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
