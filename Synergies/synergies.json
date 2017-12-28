@@ -345,7 +345,7 @@
 	"LOOT_528": ["battlecry","dragonSyn"],
 	"LOOT_534": ["deathrattle","tokenCardGen","spellGen"],
 	"LOOT_535": ["battlecry","returnSyn","=>SynSpellCost5"],
-	"LOOT_537": ["battlecry","discoverSyn","toYourHandSyn"],
+	"LOOT_537": ["battlecry","discoverSyn","toYourHandSyn","tokenCardSyn"],
 	"LOOT_541": ["battlecry","evolveSyn"],
 	"NEW1_003": ["restoreFriendlyHeroGen"],
 	"NEW1_004": ["aoeGen","returnGen"],
@@ -557,9 +557,6 @@
 			"UNG_835","UNG_832","CS2_062","CFM_094","CFM_751","OG_121","CS2_064","UNG_803"],
 		"EX1_620": ["CFM_667","UNG_087","CFM_900","EX1_313","EX1_319","LOOT_013","LOOT_014",
 			"UNG_835","UNG_832","CS2_062","CFM_094","CFM_751","OG_121"],
-
-		"LOOT_537": ["KAR_009","UNG_018","LOOT_103","UNG_941","UNG_846",
-			"ICC_082","ICC_823","ICC_069","OG_090"],
 
 		"CFM_661": ["NEW1_041","CFM_603","EX1_334","CS2_234","OG_100","EX1_091","LOOT_111"],
 		"EX1_350": ["EX1_591","OG_104"],
