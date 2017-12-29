@@ -27,7 +27,7 @@ enum DraftMethod { HearthArena, LightForge, All };
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON,
                   V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL,
                   V_BEAST_ALL, V_TOTEM_ALL, V_PIRATE_ALL, V_DRAGON_ALL, V_NUM_RACES};
-enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
+enum VisibleType {V_MINION, V_SPELL, V_SPELL_ALL, V_WEAPON, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
                        V_DISCOVER_DRAW, V_DISCOVER, V_DRAW, V_TOYOURHAND,
                        V_PING, V_DAMAGE, V_DESTROY, V_REACH,

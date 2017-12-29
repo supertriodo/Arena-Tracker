@@ -133,7 +133,8 @@ private:
     bool isDiscoverSyn(const QString &code);
     bool isDrawSyn(const QString &code);
     bool isToYourHandSyn(const QString &code);
-    bool isSpellSyn(const QString &code, const QString &text);
+    bool isSpellSyn(const QString &code);
+    bool isSpellAllSyn(const QString &code, const QString &text);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
     bool isEnrageSyn(const QString &code, const QString &text);

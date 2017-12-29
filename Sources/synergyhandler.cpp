@@ -26,6 +26,7 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()), false);
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()), false);
+    cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this);
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()), false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
@@ -473,9 +474,10 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QStringList &spe
     if(cardType == SPELL)
     {
         cardTypeCounters[V_SPELL]->increase(code);
+        cardTypeCounters[V_SPELL_ALL]->increase(code);
         spellList.append(code);
     }
-    else if(isSpellGen(code))           cardTypeCounters[V_SPELL]->increase(code,false);
+    else if(isSpellGen(code))           cardTypeCounters[V_SPELL_ALL]->increase(code);
     if(cardType == MINION || cardType == HERO)
     {
         cardTypeCounters[V_MINION]->increase(code);
@@ -490,7 +492,8 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QStringList &spe
     else if(isWeaponGen(code, text))    cardTypeCounters[V_WEAPON_ALL]->increase(code);
 
 
-    if(isSpellSyn(code, text))          cardTypeCounters[V_SPELL]->increaseSyn(code);
+    if(isSpellSyn(code))                cardTypeCounters[V_SPELL]->increaseSyn(code);
+    else if(isSpellAllSyn(code, text))  cardTypeCounters[V_SPELL_ALL]->increaseSyn(code);
     if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
     else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
 }
@@ -749,7 +752,12 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     CardType cardType = deckCard.getType();
 
     //Evita mostrar spellSyn cards en cada hechizo que veamos
-//    if(cardType == SPELL || isSpellGen(code))   cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+//    if(cardType == SPELL)
+//    {
+//        cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+//        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
+//    }
+//    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
@@ -758,7 +766,8 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergies);
 
 
-    if(isSpellSyn(code, text))                  cardTypeCounters[V_SPELL]->insertCards(synergies);
+    if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergies);
+    else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergies);
     if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergies);
     else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergies);
 }
@@ -1094,7 +1103,8 @@ void SynergyHandler::testSynergies()
         if(
 //                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
 //                !isSpawnEnemyGen(code, text)
-                isSpellSyn(code, text)
+//                isSpellAllSyn(code, text)
+                    isSpellSyn(code)
 //                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -1155,7 +1165,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isDragonSyn(code, text))         syn<<"dragonSyn";
 
     if(isWeaponGen(code, text))         mec<<"weaponGen";
-    if(isSpellSyn(code, text))          syn<<"spellSyn";
+    if(isSpellAllSyn(code, text))       syn<<"spellAllSyn";
     if(isWeaponAllSyn(code, text))      syn<<"weaponAllSyn";
 
 //    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
@@ -1901,11 +1911,22 @@ bool SynergyHandler::isSpawnEnemyGen(const QString &code, const QString &text)
 
 
 //Synergy items
-bool SynergyHandler::isSpellSyn(const QString &code, const QString &text)
+bool SynergyHandler::isSpellSyn(const QString &code)
 {
+    //NO TEST
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("spellSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isSpellAllSyn(const QString &code, const QString &text)
+{
+    //TEST
+    //&& text.contains("spell")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("spellAllSyn");
     }
     else
     {
@@ -2479,6 +2500,10 @@ murlocSyn o murlocAllSyn
 
 
 Mechanics links:
+spellGen (no usamos spell, es un cardType)
+spellSyn o spellAllSyn
+weaponGen (no usamos weapon, es un cardType)
+weaponSyn o weaponAllSyn
 destroyGen o damageMinionsGen
 taunt o tauntGen
 tauntSyn o tauntAllSyn
@@ -2487,8 +2512,6 @@ deathrattleSyn o deathrattleGoodAllSyn
 deathrattleOpponent y taunGiverSyn (no hace falta poner taunGiverSyn si es deathrattleOpponent)
 divineShield o divineShieldGen
 divineShieldSyn o divineShieldAllSyn
-weaponGen (no usamos weapon, es un cardType)
-weaponSyn o weaponAllSyn
 windfury - windfuryMinionSyn
 lifesteal - lifestealMinionSyn
 lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
@@ -2541,7 +2564,7 @@ REGLAS
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn)
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
 1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0.
-+si una carta nos da una carta de coste 0 o 1 es tokenCardGen, si es mas sera toYourHandGen
++si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
 +tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
     (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
