@@ -386,6 +386,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(deckCard.getCode() == NERUBIAN_PROPHET)  return 3;
     if(deckCard.getCode() == MOLTEN_BLADE)  return 4;
     if(deckCard.getCode() == SHIFTER_ZERUS)  return 4;
+    if(deckCard.getCode() == SHIFTING_SCROLL)  return 4;
+    if(deckCard.getCode() == CORRIDOR_CREEPER)  return 4;
 
     return std::min(10, deckCard.getCost());
 }
