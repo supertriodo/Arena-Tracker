@@ -1269,8 +1269,8 @@ void MainWindow::readSettings()
         this->drawDisappear = settings.value("drawDisappear", 5).toInt();
         this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
         this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
-        bool normalizedLF = settings.value("draftNormalizedLF", true).toBool();
-        this->draftMethod = (DraftMethod)settings.value("draftMethod", HearthArena).toInt();
+        bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
+        this->draftMethod = (DraftMethod)settings.value("draftMethod", LightForge).toInt();
         int tooltipScale = settings.value("tooltipScale", 10).toInt();
         bool autoSize = settings.value("autoSize", true).toBool();
         bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -3728,7 +3728,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//    draftHandler->debugSynergiesCode("EX1_057");
+//    draftHandler->debugSynergiesCode("OG_121");
 //    draftHandler->testSynergies();
 }
 
@@ -3744,6 +3744,10 @@ void MainWindow::testDelay()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
+//Sin max cards en deck
+//Cambiar gamewatcher para legendarias que mueven cartas de mazos.
+//Test import arena deck para coop watch
+//Revisar HA tier list
 
 
 
@@ -3802,6 +3806,7 @@ void MainWindow::testDelay()
 //--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
 //--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
 //--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
+//--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
 //--Update synergies.json
 
 //STANDARD CYCLE
