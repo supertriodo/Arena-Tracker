@@ -270,6 +270,8 @@ QString MainWindow::getHSLanguage()
 
 void MainWindow::createCardsJsonMap(QByteArray &jsonData)
 {
+    emit pDebug("Create Json Map.");
+
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     QJsonArray jsonArray = jsonDoc.array();
     foreach(QJsonValue jsonCard, jsonArray)
@@ -306,6 +308,8 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             else
             {
                 emit pDebug("Extra: Json Cards --> Download Success.");
+                QSettings settings("Arena Tracker", "Arena Tracker");
+                settings.setValue("cardsJsonVersion", fullUrl);
                 QByteArray jsonData = reply->readAll();
                 Utility::dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
                 createCardsJsonMap(jsonData);
@@ -407,24 +411,16 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     //Need download
     if(cardsJsonVersion != storedCardsJsonVersion || !cardsJsonFile.exists())
     {
-        cardsJsonFile.remove();
-        settings.setValue("cardsJsonVersion", cardsJsonVersion);
-        networkManager->get(QNetworkRequest(QUrl(cardsJsonVersion)));
         emit pDebug("Extra: Json Cards --> Download from: " + cardsJsonVersion);
+        networkManager->get(QNetworkRequest(QUrl(cardsJsonVersion)));
     }
-
-    //Use local cards.json
+    //No download
     else
     {
         emit pDebug("Extra: Json Cards --> Use local cards.json");
-        if(!cardsJsonFile.open(QIODevice::ReadOnly))
-        {
-            emit pDebug("ERROR: Failed to open cards.json");
-            return;
-        }
-        QByteArray jsonData = cardsJsonFile.readAll();
-        cardsJsonFile.close();
-        createCardsJsonMap(jsonData);
+        //Al crear el JsonMap en initCardsJson no se ejecuta downloadAllArenaCodes a traves de emit cardsJsonReady
+        //porque draftHandler aun no esta definido, asi que lo volvemos a llamar aqui.
+        emit cardsJsonReady();
     }
 }
 
@@ -441,6 +437,20 @@ void MainWindow::initCardsJson()
     Utility::setCardsJson(&cardsJson);
     networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
     emit pDebug("Extra: Json Cards --> Trying: " + QString(JSON_CARDS_URL));
+
+    //Load local cards.json (Incluso aunque haya una version nueva para bajar)
+    QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
+    if(cardsJsonFile.exists())
+    {
+        if(!cardsJsonFile.open(QIODevice::ReadOnly))
+        {
+            emit pDebug("ERROR: Failed to open cards.json");
+            return;
+        }
+        QByteArray jsonData = cardsJsonFile.readAll();
+        cardsJsonFile.close();
+        createCardsJsonMap(jsonData);
+    }
 }
 
 
@@ -3744,9 +3754,8 @@ void MainWindow::testDelay()
 //HSReplay support
 //Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
-//Sin max cards en deck
+//Sin max cards en deck, permitir +/-/x mas alla del limite de cartas
 //Cambiar gamewatcher para legendarias que mueven cartas de mazos.
-//Test import arena deck para coop watch
 //Revisar HA tier list
 
 
