@@ -945,12 +945,19 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyCardPlayed(id.toInt());
             }
         }
+
+        //Jugador, elimina OUTSIDER desconocido de deck
+        else if(zoneFrom == "FRIENDLY DECK")
+        {
+            emit pDebug("Player: Outsider unknown card removed from deck. ID: " + id, numLine);
+            emit playerCardDraw("", id.toInt());
+        }
     }
 
 
+    //Carta conocida
     //[entityName=Shellshifter id=32 zone=HAND zonePos=0 cardId=UNG_101 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND
     //[entityName=Shellshifter id=32 zone=DECK zonePos=0 cardId= player=1] zone from FRIENDLY HAND -> FRIENDLY DECK
-    //Carta conocida
     else if(line.contains(QRegularExpression(
         "\\[entityName=(.*) id=(\\d+) zone=\\w+ zonePos=(\\d+) cardId=(\\w*) player=(\\d+)\\] zone from "
         "(\\w+ \\w+(?: \\(Weapon\\))?)? -> (\\w+ \\w+(?: \\((?:Weapon|Hero|Hero Power)\\))?)?"
