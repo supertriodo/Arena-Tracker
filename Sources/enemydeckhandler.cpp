@@ -92,7 +92,7 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
     if(code.isEmpty())  return;
 
     //Mazo completo
-    if(deckCardList[0].total < (uint)total)
+    if(deckCardList[0].total < total)
     {
         emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
                     Utility::getCardAttribute(code, "name").toString(), Warning);

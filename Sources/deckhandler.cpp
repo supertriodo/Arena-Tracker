@@ -470,7 +470,7 @@ void DeckHandler::reset()
 
     DeckCard deckCard("");
     deckCard.total = 30;
-    deckCard.remaining = deckCard.total;
+    deckCard.remaining = -1;
     deckCard.listItem = new QListWidgetItem();
     deckCard.draw();
     insertDeckCard(deckCard); //Lanza emit deckSizeChanged();
@@ -537,15 +537,15 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
         if(code.isEmpty())  return;
     }
 
-    //Mazo completo
-    if(!outsider && (deckCardList[0].total < (uint)total))
-    {
-        emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    Utility::getCardAttribute(code, "name").toString(), Warning);
-        return;
-    }
+    //Mazo completo - Permitimos un mazo mayor de 30 cartas
+//    if(!outsider && (deckCardList[0].total < (uint)total))
+//    {
+//        emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
+//                    Utility::getCardAttribute(code, "name").toString(), Warning);
+//        return;
+//    }
 
-    //Ya existe en el mazo
+    //Carta existente (No outsider) - Los outsider no stack pq necesitamos guardar el id de cada uno
     bool found = false;
     if(!outsider)
     {
@@ -568,6 +568,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
         }
     }
 
+    //Nueva carta
     if(!found)
     {
         DeckCard deckCard(code, outsider);
@@ -593,12 +594,19 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
         updateManaLimits();
     }
 
+    //Actualizamos unknown cards
     if(!outsider)
     {
-        deckCardList[0].total-=total;
-        deckCardList[0].remaining = deckCardList[0].total;
-        deckCardList[0].draw();
-        if(deckCardList[0].total == 0)  hideUnknown();
+        if(deckCardList[0].total > 0)
+        {
+            deckCardList[0].total-=total;
+            if(deckCardList[0].total <= 0)  hideUnknown();
+            else                            deckCardList[0].draw();
+        }
+        else
+        {
+            deckCardList[0].total-=total;
+        }
     }
 
     if(!this->inArena && !outsider)   enableDeckButtonSave();
@@ -752,7 +760,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
     //Check normal deck
     for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
     {
-        if(it->getCode() == code)
+        if(it->getCode() == code && !it->isOutsider())
         {
             if(it->remaining > 0)
             {
@@ -761,23 +769,24 @@ void DeckHandler::drawFromDeck(QString code, int id)
             }
             //it->remaining == 0
             //Reajustamos el mazo si tiene unknown cards
-            else if(deckCardList[0].total > 0 && !it->isOutsider())
+            else
             {
-                deckCardList[0].total--;
-                deckCardList[0].remaining = deckCardList[0].total;
-                if(deckCardList[0].total == 0)  hideUnknown();
-                else                            deckCardList[0].draw();
+                if(deckCardList[0].total > 0)
+                {
+                    deckCardList[0].total--;
+                    if(deckCardList[0].total <= 0)  hideUnknown();
+                    else                            deckCardList[0].draw();
+                }
+                else
+                {
+                    deckCardList[0].total--;
+                }
 
                 it->total++;
                 it->draw();
 
                 emit pDebug("New card: " + it->getName() + ". " +
                             QString::number(it->remaining) + "/" + QString::number(it->total));
-            }
-            else
-            {
-                emit pDebug("New card but deck is full. " + it->getName() + ". " +
-                            QString::number(it->remaining) + "/" + QString::number(it->total), Warning);
             }
 
             //Id -- Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
@@ -787,18 +796,10 @@ void DeckHandler::drawFromDeck(QString code, int id)
         }
     }
 
-    if(deckCardList[0].total>0)
-    {
-        emit pDebug("New card: " +
-                          Utility::getCardAttribute(code, "name").toString() + ". 0/1");
-        newDeckCard(code);
-        drawFromDeck(code, id);
-    }
-    else
-    {
-        emit pDebug("New card but deck is full. " +
-                      Utility::getCardAttribute(code, "name").toString(), Warning);
-    }
+    emit pDebug("New card: " +
+                      Utility::getCardAttribute(code, "name").toString() + ". 0/1");
+    newDeckCard(code);
+    drawFromDeck(code, id);
 }
 
 
@@ -810,11 +811,12 @@ void DeckHandler::returnToDeck(QString code, int id)
         code = cardId2Code[id];
     }
 
+    //Carta devuelta al mazo en mulligan.
     if(!code.isEmpty())
     {
         for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
         {
-            if(it->getCode() == code)
+            if(it->getCode() == code && !it->isOutsider())
             {
                 it->remaining++;
                 it->draw();
@@ -825,6 +827,7 @@ void DeckHandler::returnToDeck(QString code, int id)
         }
     }
 
+    //Outsider al mazo
     newDeckCardOutsider(code, id);
 }
 
@@ -969,11 +972,7 @@ void DeckHandler::enableDeckButtons()
     if(index>0 && deckCardList[index].total == 1)
                                         ui->deckButtonRemove->setEnabled(true);
     else                                ui->deckButtonRemove->setEnabled(false);
-    if(index>0 && deckCardList.first().total > 0 &&
-            (inArena |
-                ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != LEGENDARY))
-            )
-        )
+    if(index>0)
                                         ui->deckButtonPlus->setEnabled(true);
     else                                ui->deckButtonPlus->setEnabled(false);
 
@@ -1023,7 +1022,6 @@ void DeckHandler::cardTotalMin()
     deckCardList[index].total--;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total++;
-    deckCardList[0].remaining = deckCardList[0].total;
 
     deckCardList[index].draw();
     if(deckCardList[0].total==1)    hideUnknown(false);
@@ -1040,7 +1038,6 @@ void DeckHandler::cardTotalPlus()
     deckCardList[index].total++;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total--;
-    deckCardList[0].remaining = deckCardList[0].total;
 
     deckCardList[index].draw();
     if(deckCardList[0].total==0)    hideUnknown();
@@ -1063,7 +1060,6 @@ void DeckHandler::cardRemove()
     removeFromDeck(index);
 
     deckCardList[0].total++;
-    deckCardList[0].remaining = deckCardList[0].total;
     if(deckCardList[0].total==1)    hideUnknown(false);
     deckCardList[0].draw();
     enableDeckButtons();
@@ -1077,11 +1073,7 @@ void DeckHandler::cardTotalPlus(QListWidgetItem *item)
 {
     item->setSelected(true);
     int index = ui->deckListWidget->row(item);
-    if(index > 0 &&
-        deckCardList.first().total > 0 &&
-        (inArena |
-            ((deckCardList[index].total == 1) && (deckCardList[index].getRarity() != LEGENDARY))
-        ))
+    if(index > 0 && deckCardList.first().total > 0)
     {
         cardTotalPlus();
     }
@@ -1103,11 +1095,6 @@ void DeckHandler::lockDeckInterface()
 
     this->inGame = true;
 
-    for (QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
-    {
-        it->remaining = it->total;
-    }
-
     ui->deckListWidget->setSelectionMode(QAbstractItemView::NoSelection);
     ui->deckListWidget->selectionModel()->reset();
     ui->deckListWidget->clearFocus();
@@ -1128,7 +1115,7 @@ void DeckHandler::unlockDeckInterface()
 
     this->inGame = false;
 
-    for(int i=0; i<deckCardList.length(); i++)
+    for(int i=1; i<deckCardList.length(); i++)
     {
         DeckCard *card = &deckCardList[i];
         if(card->isOutsider())
@@ -1139,14 +1126,8 @@ void DeckHandler::unlockDeckInterface()
         else
         {
             card->id = 0;
-
-            if(card->total > 0)
-            {
-                card->remaining = card->total;
-                card->draw();
-                card->listItem->setHidden(false);
-            }
-            else    card->listItem->setHidden(true);
+            card->remaining = card->total;
+            card->draw();
         }
     }
 
@@ -1745,7 +1726,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
         QString code = deckCard.getCode();
         if(!code.isEmpty())
         {
-            for(uint i=0; i<deckCard.total; i++) cardsInDeck.append(code);
+            for(int i=0; i<deckCard.total; i++) cardsInDeck.append(code);
         }
     }
 
@@ -1776,7 +1757,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
     logFile.close();
 
     //Check lists make sense
-    if(deckCardList[0].total != (uint)cardsToAdd.count())
+    if(deckCardList[0].total != cardsToAdd.count())
     {
         emit pDebug("Completing Arena Deck: Cards to add != unknown cards.");
         return;

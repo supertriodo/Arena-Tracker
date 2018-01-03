@@ -313,50 +313,50 @@ int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList,
         QString code = deckCard.getCode();
         if(DeckCard(code).getType() == SPELL)
         {
-            for(uint i=0; i<deckCard.total; i++)    spellList.append(code);
+            for(int i=0; i<deckCard.total; i++)    spellList.append(code);
         }
     }
     for(DeckCard &deckCard: cardTypeCounters[V_MINION]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    minionList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    minionList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: cardTypeCounters[V_WEAPON]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    weaponList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    weaponList.append(deckCard.getCode());
     }
 
 
     for(DeckCard &deckCard: mechanicCounters[V_AOE]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    aoeList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    aoeList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_TAUNT_ALL]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    tauntList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    tauntList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_SURVIVABILITY]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    survivabilityList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    survivabilityList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_DISCOVER_DRAW]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    drawList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    drawList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_PING]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    pingList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    pingList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_DAMAGE]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    damageList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    damageList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_DESTROY]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    destroyList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    destroyList.append(deckCard.getCode());
     }
     for(DeckCard &deckCard: mechanicCounters[V_REACH]->getDeckCardList())
     {
-        for(uint i=0; i<deckCard.total; i++)    reachList.append(deckCard.getCode());
+        for(int i=0; i<deckCard.total; i++)    reachList.append(deckCard.getCode());
     }
 
     return manaCounter->count();

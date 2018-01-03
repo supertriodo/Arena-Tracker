@@ -208,9 +208,9 @@ void DeckCard::draw()
     }
 
 
-    if(remaining > 0)       this->listItem->setIcon(QIcon(canvas));
-    else                    this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
-                                    canvas.size(), QIcon::Disabled, QIcon::On)));
+    if(remaining == 0)      this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
+                                                              canvas.size(), QIcon::Disabled, QIcon::On)));
+    else                    this->listItem->setIcon(QIcon(canvas));
 }
 
 

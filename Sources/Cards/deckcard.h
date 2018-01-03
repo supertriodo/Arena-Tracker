@@ -26,8 +26,8 @@ public:
 //Variables
 public:
     QListWidgetItem *listItem;
-    uint total;
-    uint remaining;
+    int total;
+    int remaining;
     bool special;
     int id;
 

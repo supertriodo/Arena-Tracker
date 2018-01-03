@@ -3751,10 +3751,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//HSReplay support
-//Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
-
-//Sin max cards en deck, permitir +/-/x mas alla del limite de cartas
+//HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+//Auto updater
+//Agrupar outsiders
 //Cambiar gamewatcher para legendarias que mueven cartas de mazos.
 //Revisar HA tier list
 

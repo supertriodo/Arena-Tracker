@@ -461,7 +461,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
     {
         if(deckCard.getType() == INVALID_TYPE)  continue;
         QString code = deckCard.getCode();
-        for(uint i=0; i<deckCard.total; i++)
+        for(int i=0; i<deckCard.total; i++)
         {
             synergyHandler->updateCounters(deckCard, spellList, minionList, weaponList,
                            aoeList, tauntList, survivabilityList, drawList,
