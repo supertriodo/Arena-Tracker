@@ -680,6 +680,9 @@ void Utility::unZip(QString zipName, QString targetPath)
         int size = entry.getSize();
         if(name.endsWith('/'))
         {
+#ifdef Q_OS_MAC
+            if(!name.endsWith("__MACOSX/"))
+#endif
             createDir(targetPath + "/" + name);
         }
         else
