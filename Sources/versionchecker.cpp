@@ -13,10 +13,9 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
     networkManager->get(QNetworkRequest(QUrl(VERSION_URL)));
     removeOldVersion();
 
-//    qApp->setApplicationVersion(VERSION);//Eliminar runVersion
-
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("runVersion", VERSION);
+    qApp->setApplicationVersion(VERSION);
 }
 
 
