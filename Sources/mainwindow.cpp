@@ -469,6 +469,12 @@ void MainWindow::createNetworkManager()
 void MainWindow::createVersionChecker()
 {
     VersionChecker *versionChecker = new VersionChecker(this);
+    connect(versionChecker, SIGNAL(startProgressBar(int, QString)),
+            this, SLOT(startProgressBar(int, QString)));
+    connect(versionChecker, SIGNAL(advanceProgressBar(int, QString)),
+            this, SLOT(advanceProgressBar(int, QString)));
+    connect(versionChecker, SIGNAL(showMessageProgressBar(QString, int)),
+            this, SLOT(showMessageProgressBar(QString, int)));
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -3396,7 +3402,7 @@ void MainWindow::advanceProgressBar(int remaining, QString text)
         if(remaining > ui->progressBar->maximum())  ui->progressBar->setMaximum(remaining);
         ui->progressBar->setValue(ui->progressBar->maximum()-remaining);
     }
-    ui->progressBar->setFormat(text);
+    if(!text.isEmpty())     ui->progressBar->setFormat(text);
 }
 
 

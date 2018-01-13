@@ -26,6 +26,12 @@ VersionChecker::~VersionChecker()
 }
 
 
+void VersionChecker::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    emit advanceProgressBar(bytesTotal - bytesReceived);
+}
+
+
 void VersionChecker::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -46,7 +52,10 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
         {
             QByteArray location = reply->rawHeader("Location");
             emit pDebug("Redirect to --> " + location);
-            networkManager->get(QNetworkRequest(QUrl(location)));
+            emit startProgressBar(1, "Downloading " + latestVersion + "...");
+            QNetworkReply *reply = networkManager->get(QNetworkRequest(QUrl(location)));
+            connect(reply, SIGNAL(downloadProgress(qint64,qint64)),
+                    this, SLOT(downloadProgress(qint64,qint64)));
         }
 
         //Check version
@@ -58,6 +67,7 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
         //New version downloaded
         else
         {
+            emit showMessageProgressBar(latestVersion + " downloaded");
             saveRestart(reply->readAll());
         }
     }
@@ -86,7 +96,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
     {
         allowedVersions.append(value.toString());
     }
-    QString latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
+    this->latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString remindedVersion = settings.value("version", "").toString();

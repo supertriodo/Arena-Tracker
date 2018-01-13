@@ -263,7 +263,7 @@ private slots:
     void draftMethodCombined();
     void spreadTransparency();
     void startProgressBar(int maximum, QString text);
-    void advanceProgressBar(int remaining, QString text);
+    void advanceProgressBar(int remaining, QString text="");
     void showMessageProgressBar(QString text, int hideDelay = 5000);
     void hideProgressBar();
     void downloadAllArenaCodes();
