@@ -66,6 +66,20 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
 
 void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
 {
+    //AppImage version se baja siempre en el primer run para que el usuario ejecute el
+    //AppImage de ~/Arena Tracker
+    //Al reiniciar se crearan los shortcut
+#ifdef Q_OS_LINUX
+    #ifdef APPIMAGE
+    QFile appFile(Utility::dataPath() + "/ArenaTracker.Linux.AppImage");
+    if(!appFile.exists())
+    {
+        downloadLatestVersion(versionJsonObject);
+        return;
+    }
+    #endif
+#endif
+
     QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
     QStringList allowedVersions;
     for(QJsonValue value: versionArray)
@@ -196,6 +210,13 @@ void VersionChecker::saveRestart(const QByteArray &data)
 {
     emit pDebug("New binary --> Download Success.");
 
+#ifdef Q_OS_LINUX
+    #ifdef APPIMAGE
+        saveRestartAppImage(data);
+        return;
+    #endif
+#endif
+
     QString runningBinaryName = QCoreApplication::applicationFilePath().split("/").last();
     QString runningBinaryPath = Utility::appPath() + "/" + runningBinaryName;
 
@@ -211,6 +232,25 @@ void VersionChecker::saveRestart(const QByteArray &data)
     QFile::setPermissions(runningBinaryPath, permissions);
 
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    ((QMainWindow *)this->parent())->close();
+}
+
+
+void VersionChecker::saveRestartAppImage(const QByteArray &data)
+{
+    QString runningBinaryName = "ArenaTracker.Linux.AppImage";
+    QString runningBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
+
+    QFile appFile(runningBinaryPath);
+    if(appFile.exists())    appFile.rename(Utility::dataPath() + "/ArenaTracker.old");
+
+    Utility::dumpOnFile(data, runningBinaryPath);
+    QFile::setPermissions(runningBinaryPath, QFileDevice::ExeOther|QFileDevice::ReadOther|
+                          QFileDevice::ExeGroup|QFileDevice::ReadGroup|
+                          QFileDevice::ExeUser|QFileDevice::WriteUser|QFileDevice::ReadUser|
+                          QFileDevice::ExeOwner|QFileDevice::WriteOwner|QFileDevice::ReadOwner);
+
+    QProcess::startDetached(runningBinaryPath, qApp->arguments());
     ((QMainWindow *)this->parent())->close();
 }
 

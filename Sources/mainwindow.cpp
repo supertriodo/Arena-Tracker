@@ -2363,8 +2363,18 @@ void MainWindow::checkLinuxShortcut()
 
     if(!shortcutAsked)
     {
+#ifdef APPIMAGE
+        QFile appFile(Utility::dataPath() + "/ArenaTracker.Linux.AppImage");
+        if(appFile.exists())
+        {
+            settings.setValue("shortcutAsked", true);
+            createLinuxShortcut();
+            showMessageAppImageShortcut();
+        }
+#else
         settings.setValue("shortcutAsked", true);
         askLinuxShortcut();
+#endif
     }
 }
 
@@ -2380,25 +2390,21 @@ void MainWindow::askLinuxShortcut()
 }
 
 
+void MainWindow::showMessageAppImageShortcut()
+{
+    QMessageBox::information(this, tr("Use the shorcut"),
+                    tr("Arena Tracker AppImage has been copied to \n(~/.local/share/Arena Tracker) and a new shortcut has been created "
+                       "in your desktop linked to that AppImage."
+                       "\n\nFrom now on you should run Arena Tracker from that shortcut."
+                       "\nYou can also remove the AppImage you downloaded."),
+                    QMessageBox::Ok);
+}
+
+
 void MainWindow::createLinuxShortcut()
 {
 #ifdef APPIMAGE
-    QProcess p;
-    QString pattern = "*/ArenaTracker.Linux.AppImage";
-    QString trash =  "*/.local/share/Trash/*";
-    p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\" ! -path \"" + trash + "\"");
-    p.waitForFinished(-1);
-    QString appImagePath = QString(p.readAll()).trimmed();
-    if(appImagePath.contains("\n") || appImagePath.isEmpty())
-    {
-        emit pDebug("WARNING: Cannot create shorcut. " +
-                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-        emit pLog("Shortcut: Cannot create shorcut. " +
-                    (appImagePath.isEmpty()?QString("None"):QString("Several")) +
-                    " ArenaTracker.AppImage found in Home: " + appImagePath);
-        return;
-    }
+    QString appImagePath = Utility::dataPath() + "/ArenaTracker.Linux.AppImage";
 #else
     QString appImagePath = Utility::appPath() + "/ArenaTracker";
 #endif
@@ -2421,7 +2427,7 @@ void MainWindow::createLinuxShortcut()
     out << "Terminal=false" << endl;
     out << "Name=Arena Tracker" << endl;
     out << "Type=Application" << endl;
-    out << "Exec=" + appImagePath << endl;
+    out << "Exec=\"" + appImagePath + "\"" << endl;
     out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
 
     shortcutFile.close();

@@ -160,6 +160,7 @@ private:
     void removeHSCards();   //Desactivado: Remove HSCards when upgrading version
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void askLinuxShortcut();
+    void showMessageAppImageShortcut();
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
