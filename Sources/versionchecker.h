@@ -5,7 +5,7 @@
 #include <QNetworkAccessManager>
 
 #define VERSION QString("v6.12")
-#define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version"
+#define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version/version.json"
 
 
 class VersionChecker : public QObject
@@ -17,6 +17,10 @@ public:
 
 private:
     QNetworkAccessManager * networkManager;
+    void checkUpdate(const QJsonObject &versionJsonObject);
+    void downloadLatestVersion(const QJsonObject &versionJsonObject);
+    void saveRestart(const QByteArray &data);
+    void removeOldVersion();
 
 signals:
     void pLog(QString line);

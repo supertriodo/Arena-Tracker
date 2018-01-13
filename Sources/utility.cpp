@@ -7,6 +7,9 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/nonfree/features2d.hpp"
 
+using namespace libzippp;
+
+
 QMap<QString, QJsonObject> * Utility::cardsJson = NULL;
 QString Utility::localLang = "enUS";
 QString Utility::diacriticLetters;
@@ -583,7 +586,7 @@ bool Utility::isLeftOfScreen(QPoint center)
 }
 
 
-void Utility::dumpOnFile(QByteArray &data, QString path)
+void Utility::dumpOnFile(const QByteArray &data, QString path)
 {
     QFile file(path);
     if(!file.open(QIODevice::WriteOnly))
@@ -649,3 +652,45 @@ double Utility::normalizeLF(double score, bool doit)
     else        return score;
 }
 
+
+bool Utility::createDir(QString pathDir)
+{
+    QFileInfo dirInfo(pathDir);
+    if(!dirInfo.exists())
+    {
+        QDir().mkdir(pathDir);
+        qDebug() << pathDir + " created.";
+        return true;
+    }
+    return false;
+}
+
+
+void Utility::unZip(QString zipName, QString targetPath)
+{
+    ZipArchive zf(zipName.toStdString());
+    zf.open(ZipArchive::READ_ONLY);
+
+    vector<ZipEntry> entries = zf.getEntries();
+    vector<ZipEntry>::iterator it;
+    for(it=entries.begin() ; it!=entries.end(); ++it)
+    {
+        ZipEntry entry = *it;
+        QString name = entry.getName().data();
+        int size = entry.getSize();
+        if(name.endsWith('/'))
+        {
+            createDir(targetPath + "/" + name);
+        }
+        else
+        {
+            char* binaryData = (char *)entry.readAsBinary();
+            QByteArray byteArray(binaryData, size);
+            dumpOnFile(byteArray, targetPath + "/" + name);
+            qDebug() << "Unzipped " + name;
+            delete[] binaryData;
+        }
+    }
+
+    zf.close();
+}

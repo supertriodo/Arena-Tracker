@@ -3,6 +3,7 @@
 
 #include "Cards/deckcard.h"
 #include "opencv2/opencv.hpp"
+#include "Utils/libzippp.h"
 #include <QString>
 #include <QMap>
 #include <QJsonObject>
@@ -94,7 +95,7 @@ public:
     static bool isLeftOfScreen(QPoint center);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);
-    static void dumpOnFile(QByteArray &data, QString path);
+    static void dumpOnFile(const QByteArray &data, QString path);
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter);
     static QString themesPath();
@@ -105,6 +106,8 @@ public:
     static QStringList getSetCodes(const QString &set);
     static QStringList getStandardCodes();
     static double normalizeLF(double score, bool doit);
+    static bool createDir(QString pathDir);
+    static void unZip(QString zipName, QString targetPath);
 };
 
 #endif // UTILITY_H

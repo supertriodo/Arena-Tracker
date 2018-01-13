@@ -10,7 +10,10 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
-    networkManager->get(QNetworkRequest(QUrl(VERSION_URL + QString("/version.json"))));
+    networkManager->get(QNetworkRequest(QUrl(VERSION_URL)));
+    removeOldVersion();
+
+//    qApp->setApplicationVersion(VERSION);//Eliminar runVersion
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("runVersion", VERSION);
@@ -36,30 +39,86 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
     }
     else
     {
-        this->deleteLater();
+        QString fullUrl = reply->url().toString();
 
-        QJsonArray versionArray = QJsonDocument::fromJson(
-                    reply->readAll()).object().value("versionFree").toArray();
-        QStringList allowedVersions;
-        for(QJsonValue value: versionArray)
+        //Redirect
+        if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
         {
-            allowedVersions.append(value.toString());
-        }
-        QString latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
-
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        QString remindedVersion = settings.value("version", "").toString();
-
-        emit pDebug("VERSION: " + VERSION + " - RemindedVersion: " + remindedVersion +
-                    " - LatestVersion: " + latestVersion + " - AllowedVersions: " + allowedVersions.join(","));
-
-        if(remindedVersion.isEmpty())
-        {
-            remindedVersion = VERSION;
+            QByteArray location = reply->rawHeader("Location");
+            emit pDebug("Redirect to --> " + location);
+            networkManager->get(QNetworkRequest(QUrl(location)));
         }
 
+        //Check version
+        else if(fullUrl == VERSION_URL)
+        {
+            checkUpdate(QJsonDocument::fromJson(reply->readAll()).object());
+        }
 
-        if(!allowedVersions.contains(VERSION))
+        //New version downloaded
+        else
+        {
+            saveRestart(reply->readAll());
+        }
+    }
+}
+
+
+void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
+{
+    QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
+    QStringList allowedVersions;
+    for(QJsonValue value: versionArray)
+    {
+        allowedVersions.append(value.toString());
+    }
+    QString latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString remindedVersion = settings.value("version", "").toString();
+
+    emit pDebug("VERSION: " + VERSION + " - RemindedVersion: " + remindedVersion +
+                " - LatestVersion: " + latestVersion + " - AllowedVersions: " + allowedVersions.join(","));
+
+    if(remindedVersion.isEmpty())
+    {
+        remindedVersion = VERSION;
+    }
+
+
+    if(!allowedVersions.contains(VERSION))
+    {
+        emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
+        emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
+
+        QMessageBox msgBox((QMainWindow*)this->parent());
+        msgBox.setText("Arena Tracker " + latestVersion + " is available for download.");
+        msgBox.setWindowTitle(tr("New version"));
+        msgBox.setIcon(QMessageBox::Information);
+        QPushButton *button1 = msgBox.addButton("Update", QMessageBox::ActionRole);
+        msgBox.addButton("Exit", QMessageBox::ActionRole);
+
+        msgBox.exec();
+
+        if(msgBox.clickedButton() == button1)
+        {
+            downloadLatestVersion(versionJsonObject);
+        }
+        else
+        {
+            ((QMainWindow*)this->parent())->close();
+        }
+    }
+    else if(remindedVersion != latestVersion)
+    {
+        if(VERSION == latestVersion)
+        {
+            settings.setValue("version", VERSION);
+            emit pLog("Settings: Arena Tracker is up-to-date.");
+            emit pDebug("Arena Tracker is up-to-date.");
+            this->deleteLater();
+        }
+        else
         {
             emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
             emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
@@ -68,63 +127,96 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
             msgBox.setText("Arena Tracker " + latestVersion + " is available for download.");
             msgBox.setWindowTitle(tr("New version"));
             msgBox.setIcon(QMessageBox::Information);
-            QPushButton *button1 = msgBox.addButton("Open web", QMessageBox::ActionRole);
-            msgBox.addButton("Exit", QMessageBox::ActionRole);
+            QPushButton *button1 = msgBox.addButton("Update", QMessageBox::ActionRole);
+            QPushButton *button2 = msgBox.addButton("Remind me later", QMessageBox::ActionRole);
+            QPushButton *button3 = msgBox.addButton("Don't remind me", QMessageBox::ActionRole);
 
             msgBox.exec();
 
             if(msgBox.clickedButton() == button1)
             {
-                QDesktopServices::openUrl(QUrl("https://github.com/supertriodo/Arena-Tracker/releases/latest"));
+                downloadLatestVersion(versionJsonObject);
             }
-            ((QMainWindow*)this->parent())->close();
-        }
-        else if(remindedVersion != latestVersion)
-        {
-            if(VERSION == latestVersion)
+            else if(msgBox.clickedButton() == button2)
             {
-                settings.setValue("version", VERSION);
-                emit pLog("Settings: Arena Tracker is up-to-date.");
-                emit pDebug("Arena Tracker is up-to-date.");
+                this->deleteLater();
             }
-            else
+            else if(msgBox.clickedButton() == button3)
             {
-                emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
-                emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
-
-                QMessageBox msgBox((QMainWindow*)this->parent());
-                msgBox.setText("Arena Tracker " + latestVersion + " is available for download.");
-                msgBox.setWindowTitle(tr("New version"));
-                msgBox.setIcon(QMessageBox::Information);
-                QPushButton *button1 = msgBox.addButton("Open in web", QMessageBox::ActionRole);
-                QPushButton *button2 = msgBox.addButton("Remind me later", QMessageBox::ActionRole);
-                QPushButton *button3 = msgBox.addButton("Don't remind me", QMessageBox::ActionRole);
-
-                msgBox.exec();
-
-                if(msgBox.clickedButton() == button1)
-                {
-                    QDesktopServices::openUrl(QUrl("https://github.com/supertriodo/Arena-Tracker/releases/latest"));
-                }
-                else if(msgBox.clickedButton() == button2)
-                {
-                }
-                else if(msgBox.clickedButton() == button3)
-                {
-                    settings.setValue("version", latestVersion);
-                }
+                settings.setValue("version", latestVersion);
+                this->deleteLater();
             }
         }
-        else if(VERSION != latestVersion)
-        {
-            emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
-            emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
-        }
-        else
-        {
-            emit pLog("Settings: Arena Tracker is up-to-date.");
-            emit pDebug("Arena Tracker is up-to-date.");
-        }
+    }
+    else if(VERSION != latestVersion)
+    {
+        emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
+        emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
+        this->deleteLater();
+    }
+    else
+    {
+        emit pLog("Settings: Arena Tracker is up-to-date.");
+        emit pDebug("Arena Tracker is up-to-date.");
+        this->deleteLater();
     }
 }
 
+
+void VersionChecker::downloadLatestVersion(const QJsonObject &versionJsonObject)
+{
+    QString binaryUrl = "";
+
+#ifdef Q_OS_WIN
+    binaryUrl = versionJsonObject.value("windowsUrl").toString();
+#endif
+
+#ifdef Q_OS_MAC
+        binaryUrl = versionJsonObject.value("macUrl").toString();
+#endif
+
+#ifdef Q_OS_LINUX
+    #ifdef APPIMAGE
+        binaryUrl = versionJsonObject.value("linuxAppUrl").toString();
+    #else
+        binaryUrl = versionJsonObject.value("linuxStaticUrl").toString();
+    #endif
+#endif
+
+    if(!binaryUrl.isEmpty())
+    {
+        emit pDebug("New binary --> Download from: " + binaryUrl);
+        networkManager->get(QNetworkRequest(QUrl(binaryUrl)));
+    }
+    else                        this->deleteLater();
+}
+
+
+void VersionChecker::saveRestart(const QByteArray &data)
+{
+    emit pDebug("New binary --> Download Success.");
+
+    QString runningBinaryName = QCoreApplication::applicationFilePath().split("/").last();
+    QString runningBinaryPath = Utility::appPath() + "/" + runningBinaryName;
+
+    QFile appFile(runningBinaryPath);
+    QFile::Permissions permissions = appFile.permissions();
+    appFile.rename(Utility::dataPath() + "/ArenaTracker.old");
+
+    Utility::dumpOnFile(data, Utility::dataPath() + "/binaryTemp.zip");
+    Utility::unZip(Utility::dataPath() + "/binaryTemp.zip", Utility::appPath());
+    QFile zipFile(Utility::dataPath() + "/binaryTemp.zip");
+    zipFile.remove();
+
+    QFile::setPermissions(runningBinaryPath, permissions);
+
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    ((QMainWindow *)this->parent())->close();
+}
+
+
+void VersionChecker::removeOldVersion()
+{
+    QFile appOld(Utility::dataPath() + "/ArenaTracker.old");
+    if(appOld.exists()) appOld.remove();
+}

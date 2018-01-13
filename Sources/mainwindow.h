@@ -144,7 +144,6 @@ private:
     void createSecondaryWindow();
     void destroySecondaryWindow();
     void createDataDir();
-    bool createDir(QString pathDir);
     void calculateDeckWindowMinimumWidth();
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, QString theme);
     void moveInScreen(QPoint pos, QSize size);
@@ -177,7 +176,6 @@ private:
     void completeConfigComboTheme();
     void redrawAllGames();
     void initConfigTheme(QString theme);
-    void unZip(QString zipName, QString targetPath);
     void downloadExtraFiles();
     void downloadThemes();
     void downloadTheme(QString theme, int version);

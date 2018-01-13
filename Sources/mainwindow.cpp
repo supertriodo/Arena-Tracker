@@ -5,12 +5,9 @@
 #include "Widgets/cardwindow.h"
 #include "versionchecker.h"
 #include "themehandler.h"
-#include "Utils/libzippp.h"
 #include <QtConcurrent/QtConcurrent>
-#include "Widgets/webenginepage.h"
 #include <QtWidgets>
 
-using namespace libzippp;
 using namespace cv;
 
 
@@ -370,7 +367,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             pDebug("Themes: " + endUrl + " --> Download Success.");
             QByteArray data = reply->readAll();
             Utility::dumpOnFile(data, Utility::themesPath() + "/" + endUrl);
-            unZip(Utility::themesPath() + "/" + endUrl, Utility::themesPath());
+            Utility::unZip(Utility::themesPath() + "/" + endUrl, Utility::themesPath());
             QFile zipFile(Utility::themesPath() + "/" + endUrl);
             zipFile.remove();
 
@@ -2204,32 +2201,19 @@ void MainWindow::closeLogFile()
 }
 
 
-bool MainWindow::createDir(QString pathDir)
-{
-    QFileInfo dirInfo(pathDir);
-    if(!dirInfo.exists())
-    {
-        QDir().mkdir(pathDir);
-        pDebug(pathDir + " created.");
-        return true;
-    }
-    return false;
-}
-
-
 void MainWindow::createDataDir()
 {
-    createDir(Utility::dataPath());
+    Utility::createDir(Utility::dataPath());
 //    removeHSCards();//Redownload HSCards en esta version
-    if(createDir(Utility::hscardsPath()))
+    if(Utility::createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("allCardsDownloaded", false);
     }
-    createDir(Utility::gameslogPath());
-    createDir(Utility::extraPath());
-    createDir(Utility::themesPath());
+    Utility::createDir(Utility::gameslogPath());
+    Utility::createDir(Utility::extraPath());
+    Utility::createDir(Utility::themesPath());
 
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }
@@ -3594,36 +3578,6 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 }
 
 
-void MainWindow::unZip(QString zipName, QString targetPath)
-{
-    ZipArchive zf(zipName.toStdString());
-    zf.open(ZipArchive::READ_ONLY);
-
-    vector<ZipEntry> entries = zf.getEntries();
-    vector<ZipEntry>::iterator it;
-    for(it=entries.begin() ; it!=entries.end(); ++it)
-    {
-        ZipEntry entry = *it;
-        QString name = entry.getName().data();
-        int size = entry.getSize();
-        if(name.endsWith('/'))
-        {
-            createDir(targetPath + "/" + name);
-        }
-        else
-        {
-            char* binaryData = (char *)entry.readAsBinary();
-            QByteArray byteArray(binaryData, size);
-            Utility::dumpOnFile(byteArray, targetPath + "/" + name);
-            emit pDebug("Unzipped " + name);
-            delete[] binaryData;
-        }
-    }
-
-    zf.close();
-}
-
-
 void MainWindow::showPremiumDialog()
 {
     QMessageBox msgBox(this);
@@ -3738,7 +3692,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//    draftHandler->debugSynergiesCode("OG_121");
+//    draftHandler->debugSynergiesCode("LOOT_389");
 //    draftHandler->testSynergies();
 }
 
@@ -3752,6 +3706,8 @@ void MainWindow::testDelay()
 
 //TODDO
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+
+//Eliminar runVersion de QSettings
 
 //Auto updater.
 //Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
