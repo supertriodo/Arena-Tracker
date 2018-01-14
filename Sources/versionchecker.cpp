@@ -27,7 +27,7 @@ VersionChecker::~VersionChecker()
 
 void VersionChecker::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    emit advanceProgressBar(bytesTotal - bytesReceived);
+    emit advanceProgressBar(bytesTotal - bytesReceived, "Downloading " + latestVersion + "...");
 }
 
 
