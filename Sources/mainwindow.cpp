@@ -1442,7 +1442,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #endif
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_D)  createDebugPack();
-            else if(event->key() == Qt::Key_Z)  this->resize(QSize(544, 715));
+            else if(event->key() == Qt::Key_Z)  this->resize(QSize(960, 1080));
             else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
             else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
             else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
@@ -3704,7 +3704,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//    draftHandler->debugSynergiesCode("LOOT_389");
+//    draftHandler->debugSynergiesCode("LOOT_152");
 //    draftHandler->testSynergies();
 }
 

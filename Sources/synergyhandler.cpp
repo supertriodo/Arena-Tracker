@@ -1103,10 +1103,10 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
+                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
 //                !isSpawnEnemyGen(code, text)
 //                isSpellAllSyn(code, text)
-                    isSpellSyn(code)
+//                    isSpellSyn(code)
 //                cardType == MINION //&&
 //                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
 //                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
@@ -2287,7 +2287,7 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
 {
     //TEST
 //    && (text.contains("+") && (text.contains("minions") || text.contains("characters"))
-//    && !text.contains("hand")
+//    && !text.contains("hand") && !text.contains("health")
 //    || (text.contains("control") && text.contains("least") && text.contains("minions")))
     if(synergyCodes.contains(code))
     {
@@ -2295,7 +2295,7 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
     }
     else if(text.contains("+")
             && (text.contains("minions") || text.contains("characters"))
-            && !text.contains("hand"))
+            && !text.contains("hand") && !text.contains("health"))
     {
         return true;
     }
