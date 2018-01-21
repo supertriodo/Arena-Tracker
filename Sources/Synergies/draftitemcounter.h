@@ -39,7 +39,7 @@ public:
     void insertSynCards(QMap<QString, int> &synergies);
     int count();
     QList<DeckCard> getDeckCardList();
-    void setTheme(QPixmap pixmap, int iconWidth);
+    void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);
     void setIcon(QPixmap pixmap, int iconWidth=32);
 
 signals:

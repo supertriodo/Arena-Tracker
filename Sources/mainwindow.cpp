@@ -3704,7 +3704,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//    draftHandler->debugSynergiesCode("LOOT_152");
+//    draftHandler->debugSynergiesCode("ICC_082");
 //    draftHandler->testSynergies();
 }
 
@@ -3718,6 +3718,8 @@ void MainWindow::testDelay()
 
 //TODDO
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
+
+//Cambiar defaultFont de Classic theme a Verdana o Robotic justo antes de la nueva release
 
 //Auto updater.
 //Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.

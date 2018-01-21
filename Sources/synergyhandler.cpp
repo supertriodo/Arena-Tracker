@@ -165,20 +165,20 @@ void SynergyHandler::deleteDraftItemCounters()
 
 void SynergyHandler::setTheme()
 {
-    cardTypeCounters[V_MINION]->setIcon(QPixmap(ThemeHandler::minionsCounterFile()));
-    cardTypeCounters[V_SPELL]->setIcon(QPixmap(ThemeHandler::spellsCounterFile()));
-    cardTypeCounters[V_WEAPON]->setIcon(QPixmap(ThemeHandler::weaponsCounterFile()));
-    manaCounter->setIcon(QPixmap(ThemeHandler::manaCounterFile()));
+    cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()));
+    cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()));
+    cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()));
+    manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()));
 
-    mechanicCounters[V_AOE]->setIcon(QPixmap(ThemeHandler::aoeMechanicFile()));
-    mechanicCounters[V_TAUNT_ALL]->setIcon(QPixmap(ThemeHandler::tauntMechanicFile()));
-    mechanicCounters[V_SURVIVABILITY]->setIcon(QPixmap(ThemeHandler::survivalMechanicFile()));
-    mechanicCounters[V_DISCOVER_DRAW]->setIcon(QPixmap(ThemeHandler::drawMechanicFile()));
+    mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()));
+    mechanicCounters[V_SURVIVABILITY]->setTheme(QPixmap(ThemeHandler::survivalMechanicFile()));
+    mechanicCounters[V_DISCOVER_DRAW]->setTheme(QPixmap(ThemeHandler::drawMechanicFile()));
 
-    mechanicCounters[V_PING]->setIcon(QPixmap(ThemeHandler::pingMechanicFile()));
-    mechanicCounters[V_DAMAGE]->setIcon(QPixmap(ThemeHandler::damageMechanicFile()));
-    mechanicCounters[V_DESTROY]->setIcon(QPixmap(ThemeHandler::destroyMechanicFile()));
-    mechanicCounters[V_REACH]->setIcon(QPixmap(ThemeHandler::reachMechanicFile()));
+    mechanicCounters[V_PING]->setTheme(QPixmap(ThemeHandler::pingMechanicFile()));
+    mechanicCounters[V_DAMAGE]->setTheme(QPixmap(ThemeHandler::damageMechanicFile()));
+    mechanicCounters[V_DESTROY]->setTheme(QPixmap(ThemeHandler::destroyMechanicFile()));
+    mechanicCounters[V_REACH]->setTheme(QPixmap(ThemeHandler::reachMechanicFile()));
 }
 
 

@@ -6,7 +6,7 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixma
 {
     //Constructor MainWindow
     init(hLayout, iconHover);
-    setIcon(pixmap);
+    setTheme(pixmap);
 }
 
 
@@ -16,7 +16,7 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int
     //Constructor DraftMechanicsWindow
     QHBoxLayout *hLayout = new QHBoxLayout();
     init(hLayout, iconHover);
-    setTheme(pixmap, iconWidth);
+    setTheme(pixmap, iconWidth, true);
 
     gridLayout->addLayout(hLayout, gridRow, gridCol);
 }
@@ -62,12 +62,12 @@ void DraftItemCounter::setIcon(QPixmap pixmap, int iconWidth)
 }
 
 
-void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth)
+void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth, bool inDraftMechanicsWindow)
 {
-    QFont font(ThemeHandler::defaultFont());
+    QFont font(ThemeHandler::bigFont());
     font.setPixelSize(iconWidth*0.6);
     labelCounter->setFont(font);
-    labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
+    if(inDraftMechanicsWindow)  labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
 
     setIcon(pixmap, iconWidth);
 }
