@@ -4,5 +4,14 @@
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v5.0/Arena.Tracker.v6.12.Linux.Dev.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v5.0/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v5.0/Arena.Tracker.v6.12.Mac.Dev.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v5.0/Arena.Tracker.v6.12.Windows.Dev.zip"
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v5.0/Arena.Tracker.v6.12.Windows.Dev.zip",
+	"log": "AT updates to show the original LightForge tier score, centered around 100, if you want. There's a new checkbox in config tab called \"Normalize LF\". When unset LightForge tier score will be the original ones. When set LightForge tier score will be original - 45, which makes it easier to compare along with HearthArena tier scores.<br><br>"
+                "Changed the process used to send the premium request to avoid the recent errors found by patrons.<br><br>"
+                "<b>Details:</b>"
+                "<ul>"
+                "<li>Misc: Update the process used to send the premium request to avoid errors.</li>"
+                "<li>Config: Add a checkbox in config tab to normalize lightforge. This way you can show the original lightforge scores.</li>"
+                "<li>Draft: Show deck score only for the selected draft method (LightForge, HearthArena or combined). This include the label at the top of draft tab, the deck score in the draft overlay and the message that comes up when your draft is done showing you the deck score.</li>"
+                "<li>Draft: Update evolve synergies.</li>"
+                "</ul>"
 }
