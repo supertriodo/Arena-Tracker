@@ -19,6 +19,7 @@ public:
 private:
     QNetworkAccessManager * networkManager;
     QString latestVersion;
+    bool newVersion;
 
 //Metodos
 private:
@@ -27,6 +28,7 @@ private:
     void saveRestart(const QByteArray &data);
     void removeOldVersion();
     void saveRestartAppImage(const QByteArray &data);
+    void showVersionLog(QString changesLog);
 
 signals:
     void startProgressBar(int maximum, QString text);

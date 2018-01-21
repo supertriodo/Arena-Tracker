@@ -14,7 +14,18 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
     removeOldVersion();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("runVersion", VERSION);
+    QString runVersion = settings.value("runVersion", "").toString();
+
+    if(runVersion != VERSION)
+    {
+        newVersion = true;
+        settings.setValue("runVersion", VERSION);
+    }
+    else
+    {
+        newVersion = false;
+    }
+
     qApp->setApplicationVersion(VERSION);
 }
 
@@ -183,6 +194,20 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
         emit pDebug("Arena Tracker is up-to-date.");
         this->deleteLater();
     }
+
+    if(newVersion)  showVersionLog(versionJsonObject.value("log").toString());
+}
+
+
+void VersionChecker::showVersionLog(QString changesLog)
+{
+    QMessageBox msgBox((QMainWindow*)this->parent());
+    msgBox.setText(changesLog);
+    msgBox.setWindowTitle(VERSION + " changes");
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.addButton(QMessageBox::Ok);
+
+    msgBox.exec();
 }
 
 
