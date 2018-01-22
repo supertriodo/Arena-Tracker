@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
     readSettings();
     checkGamesLogDir();
     checkFirstRunNewVersion();
-    createVersionChecker();
+    createVersionChecker();//Despues de createDataDir (removeHSDir) y checkFirstRunNewVersion() ya que reescribe el settings "runVersion"
 
     setAcceptDrops(true);
 
@@ -2542,8 +2542,8 @@ void MainWindow::addDraftMenu(QPushButton *button)
 void MainWindow::confirmNewArenaDraft(QString hero)
 {
     int ret = QMessageBox::question(this, tr("New arena: ") + hero,
-                                   "Make sure you have already picked " + hero + " in hearthstone.\n"
-                                   "You shouldn't move hearthstone window until the end of the draft.\n"
+                                   "Make sure you have already picked " + hero + " in hearthstone. "
+                                   "You shouldn't move hearthstone window until the end of the draft.\n\n"
                                    "Do you want to continue?",
                                    QMessageBox::Ok | QMessageBox::Cancel);
 

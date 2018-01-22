@@ -14,17 +14,9 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
     removeOldVersion();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QString runVersion = settings.value("runVersion", "").toString();
-
-    if(runVersion != VERSION)
-    {
-        newVersion = true;
-        settings.setValue("runVersion", VERSION);
-    }
-    else
-    {
-        newVersion = false;
-    }
+    QString runVersion = settings.value("runVersion", VERSION).toString();
+    newVersion = (runVersion != VERSION);
+    settings.setValue("runVersion", VERSION);
 
     qApp->setApplicationVersion(VERSION);
 }
