@@ -187,7 +187,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
         this->deleteLater();
     }
 
-    if(newVersion)  showVersionLog(versionJsonObject.value("log").toString());
+    if(newVersion && VERSION == latestVersion)  showVersionLog(versionJsonObject.value("log").toString());
 }
 
 
