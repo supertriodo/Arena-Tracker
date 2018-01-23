@@ -3593,7 +3593,7 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 void MainWindow::showPremiumDialog()
 {
     QMessageBox msgBox(this);
-    msgBox.setText("Becoming a patron (2$+) will let you activate the premium version of Arena Tracker, "
+    msgBox.setText("Becoming a patron (3$+) will let you activate the premium version of Arena Tracker, "
                    "which implements some extra features: (replays, planning, synergies and draft mechanics overview). "
                    "<a href='https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md'>Learn more...</a>"
                    "<br><br>If you are already a patron use the \"Unlock premium\" button and "
