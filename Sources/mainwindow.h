@@ -17,7 +17,6 @@
 #include "Widgets/cardwindow.h"
 #include "Widgets/cardlistwindow.h"
 #include <QMainWindow>
-//#include <QWebEngineView>
 #include <QJsonObject>
 
 #define DIVIDE_TABS_H 444
@@ -33,7 +32,6 @@
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
 #define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
-#define WEB_ENGINE_VIEW_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/WebEngineView"
 
 
 namespace Ui {
@@ -71,7 +69,6 @@ private:
     CardListWindow *cardListWindow;
     TrackobotUploader *trackobotUploader;
     PremiumHandler *premiumHandler;
-//    QWebEngineView * webEngineView;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
     WindowsFormation windowsFormation;
@@ -116,7 +113,6 @@ private:
     void createVersionChecker();
     void createTrackobotUploader();
     void createPremiumHandler();
-//    void createWebEngineView(QJsonObject jsonObject);
     void readSettings();
     void writeSettings();
     void completeUI();
@@ -184,7 +180,6 @@ private:
     void downloadHearthArenaJson(int version);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
-//    void downloadWebEngineView();
 
 //Override events
 protected:
