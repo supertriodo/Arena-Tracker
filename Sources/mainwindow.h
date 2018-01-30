@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "detachwindow.h"
 #include "logloader.h"
 #include "gamewatcher.h"
 #include "Cards/deckcard.h"
@@ -38,15 +39,17 @@ namespace Ui {
 class Extended;
 }
 
+class DetachWindow;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+friend class DetachWindow;
+
 //Constructor
 public:
     explicit MainWindow(QWidget *parent = 0);
-    MainWindow(QWidget *parent, MainWindow *primaryWindow);
     ~MainWindow();
 
 private:
@@ -78,8 +81,7 @@ private:
     Transparency transparency;
     DraftMethod draftMethod;
     bool oneWindow;
-    bool isMainWindow;
-    MainWindow *otherWindow;
+    DetachWindow *otherWindow;
     int cardHeight;
     int drawDisappear;
     bool showDraftOverlay;

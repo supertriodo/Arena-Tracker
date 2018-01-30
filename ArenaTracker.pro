@@ -71,7 +71,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/hoverlabel.cpp \
     Sources/Widgets/draftmechanicswindow.cpp \
     Sources/LibSmtp/smtp.cpp \
-    Sources/premiumhandler.cpp
+    Sources/premiumhandler.cpp \
+    Sources/detachwindow.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -135,7 +136,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/draftmechanicswindow.h \
     Sources/Widgets/webenginepage.h \
     Sources/LibSmtp/smtp.h \
-    Sources/premiumhandler.h
+    Sources/premiumhandler.h \
+    Sources/detachwindow.h
 
 FORMS    += mainwindow.ui
 

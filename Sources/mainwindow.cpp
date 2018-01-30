@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     atLogFile = NULL;
-    isMainWindow = true;
     mouseInApp = false;
     otherWindow = NULL;
     copyGameLogs = false;
@@ -78,35 +77,6 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 
-MainWindow::MainWindow(QWidget *parent, MainWindow *primaryWindow) :
-    QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
-    ui(new Ui::Extended)
-{
-    atLogFile = NULL;
-    logLoader = NULL;
-    gameWatcher = NULL;
-    arenaHandler = NULL;
-    cardDownloader = NULL;
-    enemyHandHandler = NULL;
-    draftHandler = NULL;
-    deckHandler = NULL;
-    enemyDeckHandler = NULL;
-    secretsHandler = NULL;
-    trackobotUploader = NULL;
-    premiumHandler = NULL;
-    isMainWindow = false;
-    mouseInApp = false;
-    copyGameLogs = false;
-    draftLogFile = "";
-    cardHeight = -1;
-    windowsFormation = None;
-    otherWindow = primaryWindow;
-
-    completeUI();
-    readSettings();
-}
-
-
 MainWindow::~MainWindow()
 {
     if(networkManager != NULL)      delete networkManager;
@@ -145,25 +115,30 @@ void MainWindow::init()
 
 void MainWindow::createSecondaryWindow()
 {
-    this->otherWindow = new MainWindow(0, this);
+    this->otherWindow = new DetachWindow(0, this);
     this->otherWindow->showWindowFrame(transparency == Framed);
     calculateDeckWindowMinimumWidth();
-    deckHandler->setTransparency((transparency!=Framed)?Transparent:Framed);
+    spreadTransparency();
     updateMainUITheme();
     this->resizeTabWidgets();
     this->resizeChecks();
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this->otherWindow, SLOT(showMinimized()));
+    connect(otherWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+    connect(otherWindow, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
 }
 
 
 void MainWindow::destroySecondaryWindow()
 {
     disconnect(ui->minimizeButton, 0, this->otherWindow, 0);
+    disconnect(otherWindow, 0, this, 0);
     this->otherWindow->close();
     this->otherWindow = NULL;
-    deckHandler->setTransparency(this->transparency);
+    spreadTransparency();
     updateMainUITheme();
 
     ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
@@ -961,54 +936,52 @@ void MainWindow::createLogLoader()
 
 void MainWindow::completeUI()
 {
-    if(isMainWindow)
-    {
-        ThemeHandler::defaultEmptyValues();
-        ui->tabWidget->clear();
-        ui->tabWidget->hide();
+    ThemeHandler::defaultEmptyValues();
+    ui->tabWidget->clear();
+    ui->tabWidget->hide();
 
-        ui->tabWidgetH2 = new MoveTabWidget(this);
-        ui->tabWidgetH2->hide();
-        ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
-        ui->tabWidgetH3 = new MoveTabWidget(this);
-        ui->tabWidgetH3->hide();
-        ui->gridLayout->addWidget(ui->tabWidgetH3, 0, 2);
-        ui->tabWidgetV1 = new MoveTabWidget(this);
-        ui->tabWidgetV1->hide();
-        ui->tabWidgetV1->setTabBarAutoHide(true);
-        ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
+    ui->tabWidgetH2 = new MoveTabWidget(this);
+    ui->tabWidgetH2->hide();
+    ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
+    ui->tabWidgetH3 = new MoveTabWidget(this);
+    ui->tabWidgetH3->hide();
+    ui->gridLayout->addWidget(ui->tabWidgetH3, 0, 2);
+    ui->tabWidgetV1 = new MoveTabWidget(this);
+    ui->tabWidgetV1->hide();
+    ui->tabWidgetV1->setTabBarAutoHide(true);
+    ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
 
-        ui->progressBar->setVisible(false);
-        ui->progressBar->setMaximum(100);
-        ui->progressBar->setValue(100);
+    ui->progressBar->setVisible(false);
+    ui->progressBar->setMaximum(100);
+    ui->progressBar->setValue(100);
 
-        ui->progressBarMini->setFixedHeight(8);
-        ui->progressBarMini->setVisible(false);
-        ui->progressBarMini->setMaximum(100);
-        ui->progressBarMini->setValue(100);
+    ui->progressBarMini->setFixedHeight(8);
+    ui->progressBarMini->setVisible(false);
+    ui->progressBarMini->setMaximum(100);
+    ui->progressBarMini->setValue(100);
 
-        completeConfigTab();
+    completeConfigTab();
 
-        connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-                this, SLOT(spreadMouseInApp()));
-        connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-                this, SLOT(resizeChangingTab()));
-        connect(this, SIGNAL(cardsJsonReady()),
-                this, SLOT(downloadAllArenaCodes()));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(spreadMouseInApp()));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(resizeChangingTab()));
+    connect(this, SIGNAL(cardsJsonReady()),
+            this, SLOT(downloadAllArenaCodes()));
 
 #ifdef QT_DEBUG
-        pLog(tr("MODE DEBUG"));
-        pDebug("MODE DEBUG");
+    pLog(tr("MODE DEBUG"));
+    pDebug("MODE DEBUG");
 #endif
 
 #ifdef Q_OS_WIN
-        pLog(tr("Settings: Platform: Windows"));
-        pDebug("Platform: Windows");
+    pLog(tr("Settings: Platform: Windows"));
+    pDebug("Platform: Windows");
 #endif
 
 #ifdef Q_OS_MAC
-        pLog(tr("Settings: Platform: Mac"));
-        pDebug("Platform: Mac");
+    pLog(tr("Settings: Platform: Mac"));
+    pDebug("Platform: Mac");
 #endif
 
 #ifdef Q_OS_LINUX
@@ -1020,38 +993,25 @@ void MainWindow::completeUI()
         pDebug("Platform: Linux Static");
     #endif
 #endif
-    }
-    else
-    {
-        this->setWindowIcon(QIcon(":/Images/icon.png"));
-        this->setWindowTitle("AT Deck");
 
-        setCentralWidget(this->otherWindow->ui->tabDeck);
-        this->otherWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
-        this->otherWindow->ui->tabDeck->show();
-    }
     completeUIButtons();
 }
 
 
 void MainWindow::completeUIButtons()
 {
-    if(isMainWindow)
-    {
-        ui->closeButton = new QPushButton("", this);
-        ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->closeButton->setFlat(true);
-        connect(ui->closeButton, SIGNAL(clicked()),
-                this, SLOT(closeApp()));
+    ui->closeButton = new QPushButton("", this);
+    ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    ui->closeButton->setFlat(true);
+    connect(ui->closeButton, SIGNAL(clicked()),
+            this, SLOT(closeApp()));
 
 
-        ui->minimizeButton = new QPushButton("", this);
-        ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        ui->minimizeButton->setFlat(true);
-        connect(ui->minimizeButton, SIGNAL(clicked()),
-                this, SLOT(showMinimized()));
-    }
-
+    ui->minimizeButton = new QPushButton("", this);
+    ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    ui->minimizeButton->setFlat(true);
+    connect(ui->minimizeButton, SIGNAL(clicked()),
+            this, SLOT(showMinimized()));
 
     ui->resizeButton = new ResizeButton(this);
     ui->resizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -1204,7 +1164,7 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
     QRect appRect(pos, size);
     QPoint midPoint = appRect.center();
 
-    QString message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
+    QString message =
             "Window Pos: (" + QString::number(pos.x()) + "," + QString::number(pos.y()) +
             ") - Size: (" + QString::number(size.width()) + "," + QString::number(size.height()) +
             ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")";
@@ -1217,7 +1177,7 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
 
         if(geometry.contains(midPoint))
         {
-            message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
+            message =
                     "Window in screen: (" + QString::number(geometry.left()) + "," + QString::number(geometry.top()) + "," +
                     QString::number(geometry.right()) + "," + QString::number(geometry.bottom()) + ")";
             pDebug(message);
@@ -1226,8 +1186,7 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
         }
     }
 
-    message = (isMainWindow?QString("TabsWindow: "):QString("DeckWindow: ")) +
-            "Window outside screens. Move to (0,0)";
+    message = "Window outside screens. Move to (0,0)";
     pDebug(message);
     move(QPoint(0,0));
 }
@@ -1239,44 +1198,34 @@ void MainWindow::readSettings()
     QPoint pos;
     QSize size;
 
-    if(isMainWindow)
-    {
-        pos = settings.value("pos", QPoint(0,0)).toPoint();
-        size = settings.value("size", QSize(255, 600)).toSize();
+    pos = settings.value("pos", QPoint(0,0)).toPoint();
+    size = settings.value("size", QSize(255, 600)).toSize();
 
-        this->splitWindow = settings.value("splitWindow", false).toBool();
-        this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
-        QString theme = settings.value("theme", DEFAULT_THEME).toString();
+    this->splitWindow = settings.value("splitWindow", false).toBool();
+    this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
+    QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
-        int numWindows = settings.value("numWindows", 2).toInt();
-        if(numWindows == 2) createSecondaryWindow();
+    int numWindows = settings.value("numWindows", 2).toInt();
+    if(numWindows == 2) createSecondaryWindow();
 
-        int cardHeight = settings.value("cardHeight", 35).toInt();
-        this->drawDisappear = settings.value("drawDisappear", 5).toInt();
-        this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
-        this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
-        bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
-        this->draftMethod = (DraftMethod)settings.value("draftMethod", LightForge).toInt();
-        int tooltipScale = settings.value("tooltipScale", 10).toInt();
-        bool autoSize = settings.value("autoSize", true).toBool();
-        bool showClassColor = settings.value("showClassColor", true).toBool();
-        bool showSpellColor = settings.value("showSpellColor", true).toBool();
-        bool showManaLimits = settings.value("showManaLimits", true).toBool();
-        bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
-        bool showRngList = settings.value("showRngList", true).toBool();
-        int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
+    int cardHeight = settings.value("cardHeight", 35).toInt();
+    this->drawDisappear = settings.value("drawDisappear", 5).toInt();
+    this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
+    this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
+    bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
+    this->draftMethod = (DraftMethod)settings.value("draftMethod", LightForge).toInt();
+    int tooltipScale = settings.value("tooltipScale", 10).toInt();
+    bool autoSize = settings.value("autoSize", true).toBool();
+    bool showClassColor = settings.value("showClassColor", true).toBool();
+    bool showSpellColor = settings.value("showSpellColor", true).toBool();
+    bool showManaLimits = settings.value("showManaLimits", true).toBool();
+    bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
+    bool showRngList = settings.value("showRngList", true).toBool();
+    int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
 
-        initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                      maxGamesLog, normalizedLF, theme);
-    }
-    else
-    {
-        pos = settings.value("pos2", QPoint(0,0)).toPoint();
-        size = settings.value("size2", QSize(255, 600)).toSize();
-        this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
+    initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
+                  maxGamesLog, normalizedLF, theme);
 
-        this->splitWindow = false;
-    }
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->showWindowFrame(transparency == Framed);
     this->windowsFormation = None;
@@ -1291,34 +1240,26 @@ void MainWindow::readSettings()
 void MainWindow::writeSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    if(isMainWindow)
-    {
-        settings.setValue("pos", pos());
-        settings.setValue("size", size());
-        settings.setValue("splitWindow", this->splitWindow);
-        settings.setValue("transparent", (int)this->transparency);
-        settings.setValue("theme", ui->configComboTheme->currentText());
-        settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
-        settings.setValue("cardHeight", ui->configSliderCardSize->value());
-        settings.setValue("drawDisappear", this->drawDisappear);
-        settings.setValue("showDraftOverlay", this->showDraftOverlay);
-        settings.setValue("draftLearningMode", this->draftLearningMode);
-        settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
-        settings.setValue("draftMethod", (int)this->draftMethod);
-        settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
-        settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
-        settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
-        settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
-        settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
-        settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
-        settings.setValue("showRngList", ui->configCheckRngList->isChecked());
-        settings.setValue("maxGamesLog", ui->configSliderZero->value());
-    }
-    else
-    {
-        settings.setValue("pos2", pos());
-        settings.setValue("size2", size());
-    }
+    settings.setValue("pos", pos());
+    settings.setValue("size", size());
+    settings.setValue("splitWindow", this->splitWindow);
+    settings.setValue("transparent", (int)this->transparency);
+    settings.setValue("theme", ui->configComboTheme->currentText());
+    settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
+    settings.setValue("cardHeight", ui->configSliderCardSize->value());
+    settings.setValue("drawDisappear", this->drawDisappear);
+    settings.setValue("showDraftOverlay", this->showDraftOverlay);
+    settings.setValue("draftLearningMode", this->draftLearningMode);
+    settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
+    settings.setValue("draftMethod", (int)this->draftMethod);
+    settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
+    settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
+    settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
+    settings.setValue("showSpellColor", ui->configCheckSpellColor->isChecked());
+    settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
+    settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
+    settings.setValue("showRngList", ui->configCheckRngList->isChecked());
+    settings.setValue("maxGamesLog", ui->configSliderZero->value());
 }
 
 
@@ -1326,11 +1267,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     QMainWindow::closeEvent(event);
 
-    if(isMainWindow && (otherWindow != NULL))
-    {
-        otherWindow->close();
-    }
-
+    if(otherWindow != NULL) otherWindow->close();
     writeSettings();
     event->accept();
 }
@@ -1543,8 +1480,6 @@ void MainWindow::enterEvent(QEvent * e)
 
 void MainWindow::spreadMouseInApp()
 {
-    if(!isMainWindow)   return;
-
     QWidget *currentTab = ui->tabWidget->currentWidget();
 
     if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
@@ -1620,31 +1555,17 @@ void MainWindow::resizeChecks()
     QSize size = this->size();
     QWidget *widget = this->centralWidget();
 
-    if(isMainWindow)
-    {
-        resizeTabWidgets(size);
+    resizeTabWidgets(size);
 
-        int top = widget->pos().y();
-        int bottom = top + widget->height();
-        int left = widget->pos().x();
-        int right = left + widget->width();
+    int top = widget->pos().y();
+    int bottom = top + widget->height();
+    int left = widget->pos().x();
+    int right = left + widget->width();
 
-        resizeTopButtons(right - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
-        ui->resizeButton->move(right-24, bottom-24);
+    resizeTopButtons(right - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
+    ui->resizeButton->move(right-24, bottom-24);
 
-        if(otherWindow == NULL) spreadCorrectTamCard();
-    }
-    else
-    {
-        int top = widget->pos().y();
-        int bottom = top + widget->height();
-        int left = widget->pos().x();
-        int right = left + widget->width();
-
-        ui->resizeButton->move(right-24, bottom-24);
-
-        otherWindow->spreadCorrectTamCard();
-    }
+    if(otherWindow == NULL) spreadCorrectTamCard();
 }
 
 
@@ -1911,12 +1832,9 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 
 void MainWindow::calculateMinimumWidth()
 {
-    if(isMainWindow)
-    {
-        //El menor ancho de una tab es 38 y el menor de los botones 19;
-        int minWidth = ui->tabWidget->count()*38 + SMALL_BUTTONS_H + ThemeHandler::borderWidth()*2;
-        this->setMinimumWidth(minWidth);
-    }
+    //El menor ancho de una tab es 38 y el menor de los botones 19;
+    int minWidth = ui->tabWidget->count()*38 + SMALL_BUTTONS_H + ThemeHandler::borderWidth()*2;
+    this->setMinimumWidth(minWidth);
 }
 
 
@@ -2046,12 +1964,6 @@ void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 
 void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file)
 {
-    if(!isMainWindow)
-    {
-        this->otherWindow->pDebug(line, numLine, debugLevel, file);
-        return;
-    }
-
     (void)debugLevel;
     QString logLine = "";
     QString timeStamp = QDateTime::currentDateTime().toString("hh:mm:ss");
@@ -2083,8 +1995,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
 
 void MainWindow::pLog(QString line)
 {
-    if(isMainWindow)    ui->logTextEdit->append(line);
-    else                this->otherWindow->pLog(line);
+    ui->logTextEdit->append(line);
 }
 
 
@@ -2534,11 +2445,6 @@ void MainWindow::toggleSplitWindow()
 void MainWindow::spreadSplitWindow()
 {
     resizeChecks();
-
-    if(isMainWindow && otherWindow != NULL)
-    {
-        otherWindow->splitWindow = this->splitWindow;
-    }
 }
 
 
@@ -2577,7 +2483,9 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     this->transparency = newTransparency;
     if(otherWindow != NULL)     otherWindow->transparency = newTransparency;
 
-    deckHandler->setTransparency((this->otherWindow!=NULL && this->transparency != Framed)?Transparent:this->transparency);
+    deckHandler->setTransparency(
+                (this->otherWindow!=NULL && (transparency==Transparent || transparency==AutoTransparent))?
+                    Transparent:transparency);
     enemyDeckHandler->setTransparency(this->transparency);
     enemyHandHandler->setTransparency(this->transparency);
     planHandler->setTransparency(this->transparency);
@@ -2598,7 +2506,7 @@ void MainWindow::showWindowFrame(bool showFrame)
 {
     if(showFrame)
     {
-        this->setWindowFlags(Qt::Window);
+        this->setWindowFlags(Qt::Window|Qt::WindowStaysOnTopHint);
     }
     else
     {
@@ -2897,17 +2805,11 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateDeckWindowTheme()
 {
-    if(otherWindow!=NULL)
+    if(otherWindow!=NULL && (transparency == Framed || transparency == Opaque))
     {
-        if(transparency == Framed)
-        {
-            ui->tabDeck->setStyleSheet("QWidget { " +
-                ThemeHandler::bgApp() + ThemeHandler::borderApp(false) +" }");
-        }
-        else
-        {
-            ui->tabDeck->setStyleSheet("");
-        }
+        ui->tabDeck->setObjectName(QString("Box"));
+        ui->tabDeck->setStyleSheet("QWidget#Box { " +
+            ThemeHandler::bgApp() + ThemeHandler::borderApp(false) +" }");
     }
     else
     {
@@ -2918,22 +2820,19 @@ void MainWindow::updateDeckWindowTheme()
 
 void MainWindow::updateButtonsTheme()
 {
-    if(isMainWindow)
+    ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                   "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+    ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                      "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+
+    ui->closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
+    ui->minimizeButton->setIcon(QIcon(ThemeHandler::buttonMinimizeFile()));
+    ui->configButtonForceDraft->setIcon(QIcon(ThemeHandler::buttonForceDraftFile()));
+
+    QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
+    for(int i=0; i<actions.count(); i++)
     {
-        ui->closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
-                                       "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
-        ui->minimizeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
-                                          "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
-
-        ui->closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
-        ui->minimizeButton->setIcon(QIcon(ThemeHandler::buttonMinimizeFile()));
-        ui->configButtonForceDraft->setIcon(QIcon(ThemeHandler::buttonForceDraftFile()));
-
-        QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
-        for(int i=0; i<actions.count(); i++)
-        {
-            actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
-        }
+        actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
     }
 
     ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
@@ -3684,6 +3583,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
+//Verificar changeEvent y QDialog
+
+
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
 //Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
