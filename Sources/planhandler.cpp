@@ -612,7 +612,7 @@ void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString valu
     CardGraphicsItem *card = findCard(friendly, id);
     if(card == NULL)
     {
-        QTimer::singleShot(1000, this, SLOT(checkCardPendingTagChanges()));
+        QTimer::singleShot(2000, this, SLOT(checkCardPendingTagChanges()));
         cardPendingTagChanges.append(tagChange);
         emit pDebug("Append Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         return;

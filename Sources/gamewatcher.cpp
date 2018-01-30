@@ -581,6 +581,15 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 if(isPlayer)    emit playerMinionTagChange(id.toInt(), "", tag, value);
                 else            emit enemyMinionTagChange(id.toInt(), "", tag, value);
             }
+            //Exploradora avida roba una carta y cambia su coste a 5 pero lo hace en unknown
+            //Dejo ATK y HEALTH preparados por si en el futuro hay cartas que roban y cambian ATK o HEALTH (quitarlos del else anterior)
+            else if(tag == "COST"/* || tag == "ATK" || tag == "HEALTH"*/)
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CARD TAG_CHANGE(" + tag + ")=" + value +
+                            " -- Id: " + id, numLine);
+                if(isPlayer)    emit playerCardTagChange(id.toInt(), "", tag, value);
+                else            emit enemyCardTagChange(id.toInt(), "", tag, value);
+            }
         }
 
         //TAG_CHANGE conocido
