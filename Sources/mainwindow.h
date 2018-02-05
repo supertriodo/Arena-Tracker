@@ -81,7 +81,7 @@ private:
     Transparency transparency;
     DraftMethod draftMethod;
     bool oneWindow;
-    DetachWindow *otherWindow;
+    DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *planWindow;
     int cardHeight;
     int drawDisappear;
     bool showDraftOverlay;
@@ -119,6 +119,7 @@ private:
     void writeSettings();
     void completeUI();
     void completeUIButtons();
+    void completeUITabNames();
     void completeConfigTab();
     void addDraftMenu(QPushButton *button);
     void spreadSplitWindow();
@@ -126,7 +127,8 @@ private:
     void updateOtherTabsTransparency();
     void spreadTheme(bool redrawAllGames);
     void updateMainUITheme();
-    void updateDeckWindowTheme();
+    void updateAllDetachWindowTheme(const QString &mainCSS);
+    void updateDetachWindowTheme(QWidget *paneWidget);
     void updateButtonsTheme();
     void updateTabWidgetsTheme(bool transparent, bool resizing);
     QString getHSLanguage();
@@ -139,10 +141,8 @@ private:
     void resetSettings();
     void createLogFile();
     void closeLogFile();
-    void createSecondaryWindow();
-    void destroySecondaryWindow();
     void createDataDir();
-    void calculateDeckWindowMinimumWidth();
+    void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, QString theme);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
@@ -249,7 +249,8 @@ private slots:
     void logReset();
     void spreadCorrectTamCard();
     void completeArenaDeck();
-    void resizeChangingTab();
+    void changingTabResetSizePlan();
+    void resetSizePlan();
     void updateShowTotalAttack(bool checked);
     void updateShowRngList(bool checked);
     void setLocalLang();
@@ -269,6 +270,9 @@ private slots:
     void init();
     void loadTheme(QString theme, bool initTheme=false);
     void showPremiumDialog();
+    void createDetachWindow(int index, const QPoint &dropPoint);
+    void closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget);
+    void swapSizePlan(bool sizePlan);
 };
 
 #endif // MAINWINDOW_H

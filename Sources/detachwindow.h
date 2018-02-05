@@ -1,7 +1,6 @@
 #ifndef DETACHWINDOW_H
 #define DETACHWINDOW_H
 
-#include "mainwindow.h"
 #include "Widgets/resizebutton.h"
 #include "utility.h"
 #include <QMainWindow>
@@ -17,7 +16,7 @@ friend class MainWindow;
 
 //Constructor
 public:
-    DetachWindow(QWidget *parent, MainWindow *mainWindow);
+    DetachWindow(QWidget *paneWidget, QString paneName, const QPoint &dropPoint, Transparency transparency);
     ~DetachWindow();
 
 
@@ -26,14 +25,14 @@ private:
     QPushButton *minimizeButton = NULL;
     QPushButton *closeButton = NULL;
     ResizeButton *resizeButton = NULL;
-    MainWindow *mainWindow;
-    Transparency transparency;
     QPoint dragPosition;
+    QString paneName;
+    QWidget *paneWidget;
 
 
 //Metodos
 private:
-    void completeUI();
+    void completeUI(Transparency transparency);
     void completeUIButtons();
     void moveInScreen(QPoint pos, QSize size);
     void readSettings();
@@ -48,11 +47,15 @@ protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
+//    void changeEvent(QEvent *event) Q_DECL_OVERRIDE;
 //    void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
 //    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
 
+public:
+
 signals:
+    void resized();
+    void closed(DetachWindow *detachWindow, QWidget *paneWidget);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DetachWindow");
 

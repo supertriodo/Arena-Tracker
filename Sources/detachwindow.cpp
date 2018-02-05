@@ -3,12 +3,12 @@
 #include <QtWidgets>
 
 
-DetachWindow::DetachWindow(QWidget *parent, MainWindow *mainWindow) :
-    QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
+DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, const QPoint& dropPoint, Transparency transparency) :
+    QMainWindow(0, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    this->mainWindow = mainWindow;
-
-    completeUI();
+    this->paneName = paneName;
+    this->paneWidget = paneWidget;
+    completeUI(transparency);
     readSettings();
 }
 
@@ -18,16 +18,19 @@ DetachWindow::~DetachWindow()
 }
 
 
-void DetachWindow::completeUI()
+void DetachWindow::completeUI(Transparency transparency)
 {
     this->setWindowIcon(QIcon(":/Images/icon.png"));
-    this->setWindowTitle("AT Deck");
+    this->setWindowTitle("AT " + paneName);
 
-    setCentralWidget(this->mainWindow->ui->tabDeck);
-    this->mainWindow->ui->tabDeckLayout->setContentsMargins(0, 0, 0, 0);
-    this->mainWindow->ui->tabDeck->show();
+    paneWidget->setParent(this);
+    setCentralWidget(paneWidget);
+    paneWidget->show();
 
     completeUIButtons();
+
+    this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
+    this->showWindowFrame(transparency == Framed);
 }
 
 
@@ -49,12 +52,9 @@ void DetachWindow::readSettings()
     QPoint pos;
     QSize size;
 
-    pos = settings.value("pos2", QPoint(0,0)).toPoint();
-    size = settings.value("size2", QSize(255, 600)).toSize();
-    this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
+    pos = settings.value("posWindow" + paneName, QPoint(0,0)).toPoint();
+    size = settings.value("sizeWindow" + paneName, QSize(255, 600)).toSize();
 
-    this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
-    this->showWindowFrame(transparency == Framed);
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
     resize(size);
@@ -65,8 +65,8 @@ void DetachWindow::readSettings()
 void DetachWindow::writeSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("pos2", pos());
-    settings.setValue("size2", size());
+    settings.setValue("posWindow" + paneName, pos());
+    settings.setValue("sizeWindow" + paneName, size());
 }
 
 
@@ -139,14 +139,14 @@ void DetachWindow::resizeChecks()
     int right = left + widget->width();
 
     resizeButton->move(right-24, bottom-24);
-
-    mainWindow->spreadCorrectTamCard();
 }
 
 
 void DetachWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
+    emit resized();
+
     resizeChecks();
     event->accept();
 }
@@ -155,6 +155,7 @@ void DetachWindow::resizeEvent(QResizeEvent *event)
 void DetachWindow::closeEvent(QCloseEvent *event)
 {
     QMainWindow::closeEvent(event);
+    emit closed(this, paneWidget);
 
     writeSettings();
     event->accept();
@@ -225,17 +226,17 @@ void DetachWindow::mouseMoveEvent(QMouseEvent *event)
 
 
 //Restaura ambas ventanas minimizadas
-void DetachWindow::changeEvent(QEvent * event)
-{
-    if(event->type() == QEvent::WindowStateChange)
-    {
-        if((windowState() & Qt::WindowMinimized) == 0)
-        {
-            if(this->mainWindow != NULL)
-            {
-                this->mainWindow->setWindowState(Qt::WindowActive);
-            }
-        }
+//void DetachWindow::changeEvent(QEvent * event)
+//{
+//    if(event->type() == QEvent::WindowStateChange)
+//    {
+//        if((windowState() & Qt::WindowMinimized) == 0)
+//        {
+//            if(this->mainWindow != NULL)
+//            {
+//                this->mainWindow->setWindowState(Qt::WindowActive);
+//            }
+//        }
 
-    }
-}
+//    }
+//}

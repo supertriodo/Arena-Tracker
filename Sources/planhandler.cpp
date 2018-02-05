@@ -2565,25 +2565,10 @@ bool PlanHandler::resetSizePlan()
 }
 
 
-void PlanHandler::resizePlan(bool toggleSizePlan)
+void PlanHandler::resizePlan()
 {
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    MainWindow *mainWindow = ((MainWindow*)parent());
-    QSize newSize;
-    if(toggleSizePlan)      sizePlan = !sizePlan;
-
-    if(!sizePlan)
-    {
-        settings.setValue("sizePlan", mainWindow->size());
-        newSize = settings.value("size", QSize(350, 400)).toSize();
-    }
-    else
-    {
-        settings.setValue("size", mainWindow->size());
-        newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
-    }
-
-    mainWindow->resize(newSize);
+    sizePlan = !sizePlan;
+    emit swapSize(sizePlan);
 }
 
 

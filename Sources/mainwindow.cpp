@@ -22,7 +22,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     atLogFile = NULL;
     mouseInApp = false;
-    otherWindow = NULL;
+    deckWindow = NULL;
+    arenaWindow = NULL;
+    enemyWindow = NULL;
+    enemyDeckWindow = NULL;
+    planWindow = NULL;
+    //TODO Eliminar
+    //configWindow = NULL;
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
@@ -113,36 +119,83 @@ void MainWindow::init()
 }
 
 
-void MainWindow::createSecondaryWindow()
+void MainWindow::createDetachWindow(int index, const QPoint& dropPoint)
 {
-    this->otherWindow = new DetachWindow(0, this);
-    this->otherWindow->showWindowFrame(transparency == Framed);
-    calculateDeckWindowMinimumWidth();
-    spreadTransparency();
-    updateMainUITheme();
-    this->resizeTabWidgets();
-    this->resizeChecks();
+    QWidget *paneWidget = ui->tabWidget->widget(index);
+
+    if(paneWidget != ui->tabArena && paneWidget != ui->tabEnemy && paneWidget != ui->tabDeck &&
+            paneWidget != ui->tabEnemyDeck && paneWidget != ui->tabPlan)    return;
+
+    DetachWindow *detachWindow = NULL;
+
+    if(paneWidget == ui->tabArena)
+    {
+        detachWindow = new DetachWindow(paneWidget, "Games", dropPoint, this->transparency);
+        arenaWindow = detachWindow;
+    }
+    else if(paneWidget == ui->tabEnemy)
+    {
+        detachWindow = new DetachWindow(paneWidget, "Hand", dropPoint, this->transparency);
+        enemyWindow = detachWindow;
+    }
+    else if(paneWidget == ui->tabDeck)
+    {
+        detachWindow = new DetachWindow(paneWidget, "Deck", dropPoint, this->transparency);
+        deckWindow = detachWindow;
+        connect(deckWindow, SIGNAL(resized()),
+                this, SLOT(spreadCorrectTamCard()));
+    }
+    else if(paneWidget == ui->tabEnemyDeck)
+    {
+        detachWindow = new DetachWindow(paneWidget, "Enemy Deck", dropPoint, this->transparency);
+        enemyDeckWindow = detachWindow;
+    }
+    else /*if(paneWidget == ui->tabPlan)*/
+    {
+        detachWindow = new DetachWindow(paneWidget, "Replay", dropPoint, this->transparency);
+        planWindow = detachWindow;
+    }
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
-            this->otherWindow, SLOT(showMinimized()));
-    connect(otherWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            detachWindow, SLOT(showMinimized()));
+    connect(detachWindow, SIGNAL(closed(DetachWindow *, QWidget *)),
+            this, SLOT(closedDetachWindow(DetachWindow *, QWidget *)));
+    connect(detachWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    connect(otherWindow, SIGNAL(pLog(QString)),
+    connect(detachWindow, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
+
+//    spreadTransparency();
+    updateMainUITheme();
+    //TODO revisar si son necesarios
+//    this->resizeTabWidgets();
+    this->resizeChecks();
 }
 
 
-void MainWindow::destroySecondaryWindow()
+void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget)
 {
-    disconnect(ui->minimizeButton, 0, this->otherWindow, 0);
-    disconnect(otherWindow, 0, this, 0);
-    this->otherWindow->close();
-    this->otherWindow = NULL;
-    spreadTransparency();
+    //TODO
+    //Antes de hacer el close de la detach window se llama esta funcion.
+    //Volver plan a su size normal si se cierra Plan
+    disconnect(ui->minimizeButton, 0, detachWindow, 0);
+    disconnect(detachWindow, 0, this, 0);
+
+    if(detachWindow == deckWindow)      deckWindow = NULL;
+    if(detachWindow == arenaWindow)     arenaWindow = NULL;
+    if(detachWindow == enemyWindow)     enemyWindow = NULL;
+    if(detachWindow == enemyDeckWindow) enemyDeckWindow = NULL;
+    if(detachWindow == planWindow)
+    {
+        resetSizePlan();
+        planWindow = NULL;
+    }
+
+    moveTabTo(paneWidget, ui->tabWidget);
+//    spreadTransparency();
     updateMainUITheme();
 
-    ui->tabDeckLayout->setContentsMargins(0, 40, 0, 0);
-    this->resizeTabWidgets();
+//    this->resizeTabWidgets();
     this->resizeChecks();
 }
 
@@ -615,10 +668,48 @@ void MainWindow::createPlanHandler()
             this, SLOT(fadeBarAndButtons(bool)));
     connect(planHandler, SIGNAL(showPremiumDialog()),
             this, SLOT(showPremiumDialog()));
+    connect(planHandler, SIGNAL(swapSize(bool)),
+            this, SLOT(swapSizePlan(bool)));
     connect(planHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(planHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::swapSizePlan(bool sizePlan)
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QSize newSize;
+
+    if(this->planWindow == NULL)
+    {
+        if(!sizePlan)
+        {
+            settings.setValue("sizePlan", this->size());
+            newSize = settings.value("size", QSize(255, 600)).toSize();
+        }
+        else
+        {
+            settings.setValue("size", this->size());
+            newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
+        }
+        this->resize(newSize);
+    }
+    else
+    {
+        if(!sizePlan)
+        {
+            settings.setValue("sizePlan", planWindow->size());
+            newSize = settings.value("sizeWindowReplay", QSize(255, 600)).toSize();
+        }
+        else
+        {
+            settings.setValue("sizeWindowReplay", planWindow->size());
+            newSize = settings.value("sizePlan", QSize(400, 400)).toSize();
+        }
+        planWindow->resize(newSize);
+    }
 }
 
 
@@ -965,7 +1056,9 @@ void MainWindow::completeUI()
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(spreadMouseInApp()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(resizeChangingTab()));
+            this, SLOT(changingTabResetSizePlan()));
+    connect(ui->tabWidget, SIGNAL(detachTab(int,QPoint)),
+            this, SLOT(createDetachWindow(int,QPoint)));
     connect(this, SIGNAL(cardsJsonReady()),
             this, SLOT(downloadAllArenaCodes()));
 
@@ -994,7 +1087,19 @@ void MainWindow::completeUI()
     #endif
 #endif
 
+    completeUITabNames();
     completeUIButtons();
+}
+
+
+void MainWindow::completeUITabNames()
+{
+    ui->tabArena->setObjectName("TabArena");
+    ui->tabEnemy->setObjectName("TabEnemy");
+    ui->tabDeck->setObjectName("TabDeck");
+    ui->tabEnemyDeck->setObjectName("TabEnemyDeck");
+    ui->tabPlan->setObjectName("TabPlan");
+    ui->tabConfig->setObjectName("TabConfig");
 }
 
 
@@ -1028,7 +1133,7 @@ void MainWindow::closeApp()
     //Check unsaved decks
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
     removeNonCompleteDraft();
-    resizeChangingTab();
+    resetSizePlan();
     draftHandler->endDraftDeleteMechanicsWindow();
     close();
 }
@@ -1078,7 +1183,8 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
     initConfigTheme(theme);
     if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
-    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
+    //TODO Eliminar deck window check
+//    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
     //Deck
     if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
@@ -1206,7 +1312,8 @@ void MainWindow::readSettings()
     QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
     int numWindows = settings.value("numWindows", 2).toInt();
-    if(numWindows == 2) createSecondaryWindow();
+    //TODO Eliminar deck window check y leer detachwindows y sus posiciones
+//    if(numWindows == 2) createDetachWindow();
 
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
@@ -1245,7 +1352,8 @@ void MainWindow::writeSettings()
     settings.setValue("splitWindow", this->splitWindow);
     settings.setValue("transparent", (int)this->transparency);
     settings.setValue("theme", ui->configComboTheme->currentText());
-    settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
+    //TODO Eliminar deck window check
+//    settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
     settings.setValue("showDraftOverlay", this->showDraftOverlay);
@@ -1267,8 +1375,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     QMainWindow::closeEvent(event);
 
-    if(otherWindow != NULL) otherWindow->close();
     writeSettings();
+    if(deckWindow != NULL)      deckWindow->close();
+    if(arenaWindow != NULL)     arenaWindow->close();
+    if(enemyWindow != NULL)     enemyWindow->close();
+    if(enemyDeckWindow != NULL) enemyDeckWindow->close();
+    if(planWindow != NULL)      planWindow->close();
     event->accept();
 }
 
@@ -1369,14 +1481,15 @@ void MainWindow::changeEvent(QEvent * event)
     {
         if((windowState() & Qt::WindowMinimized) == 0)
         {
-            if(this->otherWindow != NULL)
-            {
-                this->otherWindow->setWindowState(Qt::WindowActive);
-            }
-            if(this->draftHandler != NULL)
-            {
-                this->draftHandler->deMinimizeScoreWindow();
-            }
+            if(deckWindow != NULL)      deckWindow->setWindowState(Qt::WindowActive);
+            if(arenaWindow != NULL)     arenaWindow->setWindowState(Qt::WindowActive);
+            if(enemyWindow != NULL)     enemyWindow->setWindowState(Qt::WindowActive);
+            if(enemyDeckWindow != NULL) enemyDeckWindow->setWindowState(Qt::WindowActive);
+            if(planWindow != NULL)      planWindow->setWindowState(Qt::WindowActive);
+            //TODO Eliminar
+//            if(configWindow != NULL)    configWindow->setWindowState(Qt::WindowActive);
+
+            if(draftHandler != NULL)    draftHandler->deMinimizeScoreWindow();
         }
 
     }
@@ -1530,9 +1643,15 @@ void MainWindow::spreadMouseInApp()
 }
 
 
-void MainWindow::resizeChangingTab()
+void MainWindow::changingTabResetSizePlan()
 {
-    if(planHandler->resetSizePlan())    planHandler->resizePlan(false);
+    if(planWindow == NULL)  resetSizePlan();
+}
+
+
+void MainWindow::resetSizePlan()
+{
+    if(planHandler->resetSizePlan())  swapSizePlan(false);
 }
 
 
@@ -1565,7 +1684,7 @@ void MainWindow::resizeChecks()
     resizeTopButtons(right - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
     ui->resizeButton->move(right-24, bottom-24);
 
-    if(otherWindow == NULL) spreadCorrectTamCard();
+    if(deckWindow == NULL) spreadCorrectTamCard(); //Solo es necesario si ui->tabDeck esta en mainWindow, debido a auto size
 }
 
 
@@ -1627,7 +1746,8 @@ void MainWindow::resizeTabWidgets(QSize newSize)
             break;
 
         case H2:
-            if(otherWindow == NULL) ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
+        //TODO Eliminar split window
+            if(deckWindow == NULL) ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
             else                    ui->tabWidgetH2->setFixedWidth(230 + ThemeHandler::borderWidth()*2);//Hand tab necesita 230 para los secretos
             break;
 
@@ -1665,13 +1785,14 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
 
     QWidget * currentTab = ui->tabWidget->currentWidget();
     disconnect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(resizeChangingTab()));
+            this, SLOT(changingTabResetSizePlan()));
 
     switch(windowsFormation)
     {
         case None:
         case H1:
-            if(otherWindow == NULL)
+        //TODO Eliminar splitWindow
+            if(deckWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
@@ -1695,7 +1816,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             break;
 
         case H2:
-            if(otherWindow == NULL)
+            if(deckWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
@@ -1722,7 +1843,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             break;
 
         case H3:
-            if(otherWindow == NULL)
+            if(deckWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
@@ -1751,7 +1872,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
             break;
 
         case V2:
-            if(otherWindow == NULL)
+            if(deckWindow == NULL)
             {
                 moveTabTo(ui->tabArena, ui->tabWidget);
                 moveTabTo(ui->tabEnemy, ui->tabWidget);
@@ -1782,7 +1903,7 @@ void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
     this->calculateMinimumWidth();
 
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(resizeChangingTab()));
+            this, SLOT(changingTabResetSizePlan()));
 }
 
 
@@ -1838,16 +1959,15 @@ void MainWindow::calculateMinimumWidth()
 }
 
 
-//Fija la anchura de la ventana de deck.
-void MainWindow::calculateDeckWindowMinimumWidth()
+//Fija la anchura de la ventana de deck, enemyHand y enemyDeck.
+void MainWindow::calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders)
 {
-    //Si deckListWidget esta oculto el sizehint sera erroneo
-    if(ui->deckListWidget->height() == 0)   return;
-    if(this->otherWindow!=NULL && deckHandler!= NULL)
-    {
-        int deckWidth = this->otherWindow->width() - ui->deckListWidget->width() + ui->deckListWidget->sizeHintForColumn(0);
-        this->otherWindow->setFixedWidth(deckWidth);
-    }
+    if(detachWindow == NULL)    return;
+
+    int deckWidth = ui->deckListWidget->sizeHintForColumn(0) + (hasBorders?2*ThemeHandler::borderWidth():0);
+    if(detachWindow == deckWindow)      deckWindow->setFixedWidth(deckWidth);
+    if(detachWindow == enemyWindow)     enemyWindow->setFixedWidth(deckWidth);
+    if(detachWindow == enemyDeckWindow) enemyDeckWindow->setFixedWidth(deckWidth);
 }
 
 
@@ -2059,10 +2179,11 @@ void MainWindow::resetSettings()
         resize(QSize(255, 600));
         move(QPoint(0,0));
 
-        if(otherWindow != NULL)
+        //TODO Incluir otros detachWindow / Reset todos pos size y juntar todas las windows menos deckWindow
+        if(deckWindow != NULL)
         {
-            otherWindow->resize(QSize(255, 600));
-            otherWindow->move(QPoint(0,0));
+            deckWindow->resize(QSize(255, 600));
+            deckWindow->move(QPoint(0,0));
         }
         this->close();
     }
@@ -2481,23 +2602,48 @@ void MainWindow::spreadTransparency()
 void MainWindow::spreadTransparency(Transparency newTransparency)
 {
     this->transparency = newTransparency;
-    if(otherWindow != NULL)     otherWindow->transparency = newTransparency;
 
+    bool kindOfTransparent = (transparency==Transparent || transparency==AutoTransparent);
     deckHandler->setTransparency(
-                (this->otherWindow!=NULL && (transparency==Transparent || transparency==AutoTransparent))?
+                (this->deckWindow!=NULL && kindOfTransparent)?
                     Transparent:transparency);
-    enemyDeckHandler->setTransparency(this->transparency);
-    enemyHandHandler->setTransparency(this->transparency);
-    planHandler->setTransparency(this->transparency);
-    arenaHandler->setTransparency(this->transparency);
-    draftHandler->setTransparency(this->transparency);
+    enemyDeckHandler->setTransparency(
+                (this->enemyDeckWindow!=NULL && kindOfTransparent)?
+                    Transparent:transparency);
+    enemyHandHandler->setTransparency(
+                (this->enemyWindow!=NULL && kindOfTransparent)?
+                    Transparent:transparency);
+    planHandler->setTransparency(transparency);
+    arenaHandler->setTransparency(transparency);
+    draftHandler->setTransparency(transparency);
     updateOtherTabsTransparency();
 
     showWindowFrame(transparency == Framed);
-    if(otherWindow != NULL)
+
+    if(arenaWindow != NULL)
     {
-        otherWindow->showWindowFrame(transparency == Framed);
-        updateDeckWindowTheme();
+        arenaWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabArena);
+    }
+    if(enemyWindow != NULL)
+    {
+        enemyWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabEnemy);
+    }
+    if(deckWindow != NULL)
+    {
+        deckWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabDeck);
+    }
+    if(enemyDeckWindow != NULL)
+    {
+        enemyDeckWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabEnemyDeck);
+    }
+    if(planWindow != NULL)
+    {
+        planWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabPlan);
     }
 }
 
@@ -2794,26 +2940,105 @@ void MainWindow::updateMainUITheme()
             ;
 
     this->setStyleSheet(mainCSS);
-    if(otherWindow!=NULL)
-    {
-        otherWindow->setStyleSheet(mainCSS);
-        otherWindow->updateButtonsTheme();
-    }
-    updateDeckWindowTheme();
+    updateAllDetachWindowTheme(mainCSS);
 }
 
 
-void MainWindow::updateDeckWindowTheme()
+void MainWindow::updateAllDetachWindowTheme(const QString &mainCSS)
 {
-    if(otherWindow!=NULL && (transparency == Framed || transparency == Opaque))
+    if(arenaWindow != NULL)
     {
-        ui->tabDeck->setObjectName(QString("Box"));
-        ui->tabDeck->setStyleSheet("QWidget#Box { " +
+        arenaWindow->setStyleSheet(mainCSS);
+        arenaWindow->updateButtonsTheme();
+    }
+    if(enemyWindow != NULL)
+    {
+        enemyWindow->setStyleSheet(mainCSS);
+        enemyWindow->updateButtonsTheme();
+    }
+    if(deckWindow != NULL)
+    {
+        deckWindow->setStyleSheet(mainCSS);
+        deckWindow->updateButtonsTheme();
+    }
+    if(enemyDeckWindow != NULL)
+    {
+        enemyDeckWindow->setStyleSheet(mainCSS);
+        enemyDeckWindow->updateButtonsTheme();
+    }
+    if(planWindow != NULL)
+    {
+        planWindow->setStyleSheet(mainCSS);
+        planWindow->updateButtonsTheme();
+    }
+
+    updateDetachWindowTheme(ui->tabArena);
+    updateDetachWindowTheme(ui->tabEnemy);
+    updateDetachWindowTheme(ui->tabDeck);
+    updateDetachWindowTheme(ui->tabEnemyDeck);
+    updateDetachWindowTheme(ui->tabPlan);
+}
+
+
+void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
+{
+    DetachWindow *detachWindow;
+    QString paneWidgetName;
+    bool showThemeBackground = false;
+
+    if(paneWidget == ui->tabArena)
+    {
+            detachWindow = arenaWindow;
+            paneWidgetName = "TabArena";
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
+    }
+    else if(paneWidget == ui->tabEnemy)
+    {
+            detachWindow = enemyWindow;
+            paneWidgetName = "TabEnemy";
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque));
+    }
+    else if(paneWidget == ui->tabDeck)
+    {
+            detachWindow = deckWindow;
+            paneWidgetName = "TabDeck";
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque));
+    }
+    else if(paneWidget == ui->tabEnemyDeck)
+    {
+            detachWindow = enemyDeckWindow;
+            paneWidgetName = "TabEnemyDeck";
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque));
+    }
+    else if(paneWidget == ui->tabPlan)
+    {
+            detachWindow = planWindow;
+            paneWidgetName = "TabPlan";
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
+    }
+
+    if(showThemeBackground)
+    {
+        paneWidget->setStyleSheet("QWidget#" + paneWidgetName + " { " +
             ThemeHandler::bgApp() + ThemeHandler::borderApp(false) +" }");
+        paneWidget->layout()->setContentsMargins(ThemeHandler::borderWidth(), ThemeHandler::borderWidth(),
+                                                 ThemeHandler::borderWidth(), ThemeHandler::borderWidth());
+        calculateCardWindowMinimumWidth(detachWindow, true);
     }
     else
     {
-        ui->tabDeck->setStyleSheet("");
+        paneWidget->setStyleSheet("");
+        if(detachWindow == NULL)    paneWidget->layout()->setContentsMargins(0, 40, 0, 0);
+        else
+        {
+            paneWidget->layout()->setContentsMargins(0, 0, 0, 0);
+            calculateCardWindowMinimumWidth(detachWindow, false);
+        }
     }
 }
 
@@ -2841,15 +3066,16 @@ void MainWindow::updateButtonsTheme()
 
 void MainWindow::toggleDeckWindow()
 {
-    if(this->otherWindow == NULL)
-    {
-        createSecondaryWindow();
-    }
-    else
-    {
-        destroySecondaryWindow();
-    }
-    spreadCorrectTamCard();
+    //TODO Eliminar deck window check
+//    if(this->otherWindow == NULL)
+//    {
+//        createDetachWindow();
+//    }
+//    else
+//    {
+//        destroyDetachWindow();
+//    }
+//    spreadCorrectTamCard();
 }
 
 
@@ -2857,7 +3083,7 @@ int MainWindow::getAutoTamCard()
 {
     int numCards = deckHandler->getNumCardRows();
     int deckHeight = ui->tabDeck->height();
-    if(this->otherWindow == NULL)   deckHeight -= 40;
+    if(this->deckWindow == NULL)   deckHeight -= 40;
 
     if(numCards > 0)    return deckHeight/numCards;
     else                return -1;
@@ -2911,7 +3137,10 @@ void MainWindow::spreadTamCard(int value)
         draftHandler->redrawAllCards();
     }
 
-    calculateDeckWindowMinimumWidth();
+    bool windowsWithBorders = (transparency == Framed || transparency == Opaque);
+    if(deckWindow != NULL)      calculateCardWindowMinimumWidth(deckWindow, windowsWithBorders);
+    if(enemyWindow != NULL)     calculateCardWindowMinimumWidth(enemyWindow, windowsWithBorders);
+    if(enemyDeckWindow != NULL) calculateCardWindowMinimumWidth(enemyDeckWindow, windowsWithBorders);
 }
 
 
@@ -3583,8 +3812,14 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Verificar changeEvent y QDialog
+//DetachWindow hijas de mainWindow
+//Eliminar resizeChecks y crear detachwindows al cargar AT
 
+//Synergy --> Genzo -- Daring reporter
+//Synergy --> Recuperar spell synergy backwards
+//Synergy --> Eliminar removal turbo cerdo
+//En Games tab borrar logs de arena no completas y mostrar todas collapse
+//Eliminar addon corridor creaper en todo
 
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
 
