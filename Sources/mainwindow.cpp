@@ -3828,7 +3828,7 @@ void MainWindow::testDelay()
 //A Graveyard Tab to be able to know exactly what died on each side and how often. This could be useful for reanimation mechanics (Onyx Bishop) and other ones like Tomb Lurker.
 //Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
 //Divide the overlay checkbox in config tab used during the draft in two separate checkboxes: One for deck mechanics overlay (over the cards) and other for scores and synergies overlay (below the cards).
-
+//Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
 
 
 //REPLAY BUGS

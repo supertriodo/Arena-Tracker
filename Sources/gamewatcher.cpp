@@ -581,7 +581,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 if(isPlayer)    emit playerMinionTagChange(id.toInt(), "", tag, value);
                 else            emit enemyMinionTagChange(id.toInt(), "", tag, value);
             }
-            //Exploradora avida roba una carta y cambia su coste a 5 pero lo hace en unknown
+            //Exploradora avida roba una carta y cambia su coste a 5, lo puede hacer en desconocido o en conocido
             //Dejo ATK y HEALTH preparados por si en el futuro hay cartas que roban y cambian ATK o HEALTH (quitarlos del else anterior)
             else if(tag == "COST"/* || tag == "ATK" || tag == "HEALTH"*/)
             {
@@ -598,7 +598,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Déspota del templo id=36 zone=PLAY zonePos=1 cardId=EX1_623 player=2] tag=ATK value=3
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
-            "Entity=\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
+            "Entity=\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w*) player=(\\d+)\\] "
             "tag=(\\w+) value=(\\w+)"
             ), match))
         {
@@ -627,7 +627,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     else            emit enemyMinionTagChange(id.toInt(), cardId, tag, value);
                 }
             }
-            else if(zone == "HAND")
+            //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Vigía de tormenta id=54 zone=DECK zonePos=0 cardId= player=2] tag=COST value=5
+            else// if(zone == "HAND")//A veces el cambio se hace en DECK justo antes de robarse (Exploradora avida roba una carta y cambia su coste a 5)
             {
                 if(tag == "COST" || tag == "ATK" || tag == "HEALTH")
                 {
