@@ -1028,6 +1028,9 @@ void PlanHandler::checkAtkHealthChange(MinionGraphicsItem * minion, bool friendl
         int attack = minion->getAttack();
         int newAttack = value.toInt();
 
+        //Swaps pone ATK y HEALTH a 0 y luego los valores finales, lo que crea signos - confusos.
+        if(attack == 0 || newAttack == 0)  return;
+
         if(newAttack > attack)          minionLastTurn->setChangeAttack(MinionGraphicsItem::ChangePositive);
         else if(newAttack < attack)     minionLastTurn->setChangeAttack(MinionGraphicsItem::ChangeNegative);
     }
@@ -1040,6 +1043,8 @@ void PlanHandler::checkAtkHealthChange(MinionGraphicsItem * minion, bool friendl
 
         int health = minion->getHealth();
         int newHealth = value.toInt();
+
+        if(health == 0 || newHealth == 0)  return;
 
         if(newHealth > health)          minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangePositive);
         else if(newHealth < health)     minionLastTurn->setChangeHealth(MinionGraphicsItem::ChangeNegative);
