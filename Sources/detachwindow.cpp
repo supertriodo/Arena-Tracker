@@ -3,13 +3,15 @@
 #include <QtWidgets>
 
 
-DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, const QPoint& dropPoint, Transparency transparency) :
+DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, Transparency transparency, const QPoint& dropPoint) :
     QMainWindow(0, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->paneName = paneName;
     this->paneWidget = paneWidget;
     completeUI(transparency);
-    readSettings();
+
+    if(dropPoint.isNull())  readSettings();
+    else                    moveResize(dropPoint, QSize(255, 600));
 }
 
 
@@ -55,6 +57,12 @@ void DetachWindow::readSettings()
     pos = settings.value("posWindow" + paneName, QPoint(0,0)).toPoint();
     size = settings.value("sizeWindow" + paneName, QSize(255, 600)).toSize();
 
+    moveResize(pos, size);
+}
+
+
+void DetachWindow::moveResize(const QPoint &pos, const QSize &size)
+{
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
     resize(size);

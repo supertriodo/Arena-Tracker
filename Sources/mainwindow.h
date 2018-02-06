@@ -271,6 +271,7 @@ private slots:
     void loadTheme(QString theme, bool initTheme=false);
     void showPremiumDialog();
     void createDetachWindow(int index, const QPoint &dropPoint);
+    void createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint = QPoint());
     void closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget);
     void swapSizePlan(bool sizePlan);
 };

@@ -16,7 +16,7 @@ friend class MainWindow;
 
 //Constructor
 public:
-    DetachWindow(QWidget *paneWidget, QString paneName, const QPoint &dropPoint, Transparency transparency);
+    DetachWindow(QWidget *paneWidget, QString paneName, Transparency transparency, const QPoint &dropPoint = QPoint());
     ~DetachWindow();
 
 
@@ -40,6 +40,7 @@ private:
     void writeSettings();
     void resizeChecks();
     void updateButtonsTheme();
+    void moveResize(const QPoint &pos, const QSize &size);
 
 //Override events
 protected:

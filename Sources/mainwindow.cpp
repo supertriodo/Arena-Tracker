@@ -122,7 +122,12 @@ void MainWindow::init()
 void MainWindow::createDetachWindow(int index, const QPoint& dropPoint)
 {
     QWidget *paneWidget = ui->tabWidget->widget(index);
+    createDetachWindow(paneWidget, dropPoint);
+}
 
+
+void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint)
+{
     if(paneWidget != ui->tabArena && paneWidget != ui->tabEnemy && paneWidget != ui->tabDeck &&
             paneWidget != ui->tabEnemyDeck && paneWidget != ui->tabPlan)    return;
 
@@ -130,29 +135,29 @@ void MainWindow::createDetachWindow(int index, const QPoint& dropPoint)
 
     if(paneWidget == ui->tabArena)
     {
-        detachWindow = new DetachWindow(paneWidget, "Games", dropPoint, this->transparency);
+        detachWindow = new DetachWindow(paneWidget, "Games", this->transparency, dropPoint);
         arenaWindow = detachWindow;
     }
     else if(paneWidget == ui->tabEnemy)
     {
-        detachWindow = new DetachWindow(paneWidget, "Hand", dropPoint, this->transparency);
+        detachWindow = new DetachWindow(paneWidget, "Hand", this->transparency, dropPoint);
         enemyWindow = detachWindow;
     }
     else if(paneWidget == ui->tabDeck)
     {
-        detachWindow = new DetachWindow(paneWidget, "Deck", dropPoint, this->transparency);
+        detachWindow = new DetachWindow(paneWidget, "Deck", this->transparency, dropPoint);
         deckWindow = detachWindow;
         connect(deckWindow, SIGNAL(resized()),
                 this, SLOT(spreadCorrectTamCard()));
     }
     else if(paneWidget == ui->tabEnemyDeck)
     {
-        detachWindow = new DetachWindow(paneWidget, "Enemy Deck", dropPoint, this->transparency);
+        detachWindow = new DetachWindow(paneWidget, "Enemy Deck", this->transparency, dropPoint);
         enemyDeckWindow = detachWindow;
     }
     else /*if(paneWidget == ui->tabPlan)*/
     {
-        detachWindow = new DetachWindow(paneWidget, "Replay", dropPoint, this->transparency);
+        detachWindow = new DetachWindow(paneWidget, "Replay", this->transparency, dropPoint);
         planWindow = detachWindow;
     }
 
@@ -1341,6 +1346,13 @@ void MainWindow::readSettings()
     this->windowsFormation = None;
     resize(size);
     moveInScreen(pos, size);
+
+    //Detach Windows
+    if(settings.value("deckWindow", true).toBool())         createDetachWindow(ui->tabDeck);
+    if(settings.value("arenaWindow", false).toBool())       createDetachWindow(ui->tabArena);
+    if(settings.value("enemyWindow", false).toBool())       createDetachWindow(ui->tabEnemy);
+    if(settings.value("enemyDeckWindow", false).toBool())   createDetachWindow(ui->tabEnemyDeck);
+    if(settings.value("planWindow", false).toBool())        createDetachWindow(ui->tabPlan);
 }
 
 
@@ -1368,6 +1380,11 @@ void MainWindow::writeSettings()
     settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
     settings.setValue("maxGamesLog", ui->configSliderZero->value());
+    settings.setValue("deckWindow", deckWindow!=NULL);
+    settings.setValue("arenaWindow", arenaWindow!=NULL);
+    settings.setValue("enemyWindow", enemyWindow!=NULL);
+    settings.setValue("enemyDeckWindow", enemyDeckWindow!=NULL);
+    settings.setValue("planWindow", planWindow!=NULL);
 }
 
 
@@ -1376,11 +1393,31 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 
     writeSettings();
-    if(deckWindow != NULL)      deckWindow->close();
-    if(arenaWindow != NULL)     arenaWindow->close();
-    if(enemyWindow != NULL)     enemyWindow->close();
-    if(enemyDeckWindow != NULL) enemyDeckWindow->close();
-    if(planWindow != NULL)      planWindow->close();
+    if(deckWindow != NULL)
+    {
+        deckWindow->close();
+        deckWindow = NULL;
+    }
+    if(arenaWindow != NULL)
+    {
+        arenaWindow->close();
+        arenaWindow = NULL;
+    }
+    if(enemyWindow != NULL)
+    {
+        enemyWindow->close();
+        enemyWindow = NULL;
+    }
+    if(enemyDeckWindow != NULL)
+    {
+        enemyDeckWindow->close();
+        enemyDeckWindow = NULL;
+    }
+    if(planWindow != NULL)
+    {
+        planWindow->close();
+        planWindow = NULL;
+    }
     event->accept();
 }
 
