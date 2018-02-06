@@ -3022,11 +3022,13 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     DetachWindow *detachWindow;
     QString paneWidgetName;
     bool showThemeBackground = false;
+    bool paneBorder;
 
     if(paneWidget == ui->tabArena)
     {
             detachWindow = arenaWindow;
             paneWidgetName = "TabArena";
+            paneBorder = true;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
     }
@@ -3034,6 +3036,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = enemyWindow;
             paneWidgetName = "TabEnemy";
+            paneBorder = false;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque));
     }
@@ -3041,6 +3044,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = deckWindow;
             paneWidgetName = "TabDeck";
+            paneBorder = false;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque));
     }
@@ -3048,6 +3052,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = enemyDeckWindow;
             paneWidgetName = "TabEnemyDeck";
+            paneBorder = false;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque));
     }
@@ -3055,6 +3060,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = planWindow;
             paneWidgetName = "TabPlan";
+            paneBorder = true;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
     }
@@ -3063,17 +3069,24 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
         paneWidget->setStyleSheet("QWidget#" + paneWidgetName + " { " +
             ThemeHandler::bgApp() + ThemeHandler::borderApp(false) +" }");
-        paneWidget->layout()->setContentsMargins(ThemeHandler::borderWidth(), ThemeHandler::borderWidth(),
-                                                 ThemeHandler::borderWidth(), ThemeHandler::borderWidth());
+        paneWidget->layout()->setContentsMargins(ThemeHandler::borderWidth() + (paneBorder?10:0),
+                                                 ThemeHandler::borderWidth() + (paneBorder?10:0),
+                                                 ThemeHandler::borderWidth() + (paneBorder?10:0),
+                                                 ThemeHandler::borderWidth() + (paneBorder?10:0));
         calculateCardWindowMinimumWidth(detachWindow, true);
     }
     else
     {
         paneWidget->setStyleSheet("");
-        if(detachWindow == NULL)    paneWidget->layout()->setContentsMargins(0, 40, 0, 0);
+        if(detachWindow == NULL)
+        {
+            paneWidget->layout()->setContentsMargins((paneBorder?10:0), 40 + (paneBorder?5:0),
+                                                     (paneBorder?10:0), (paneBorder?10:0));
+        }
         else
         {
-            paneWidget->layout()->setContentsMargins(0, 0, 0, 0);
+            paneWidget->layout()->setContentsMargins((paneBorder?10:0), (paneBorder?10:0),
+                                                     (paneBorder?10:0), (paneBorder?10:0));
             calculateCardWindowMinimumWidth(detachWindow, false);
         }
     }
