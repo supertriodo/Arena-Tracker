@@ -50,7 +50,7 @@ MoveTabBar::MoveTabBar(QWidget *parent) : QTabBar(parent)
 {
     setIconSize(QSize(32,32));
     setAcceptDrops(true);
-    setMovable(true);
+//    setMovable(true);
 }
 
 
@@ -59,7 +59,7 @@ void MoveTabBar::mousePressEvent(QMouseEvent* event)
   if (event->button() == Qt::LeftButton)
   {
     dragStartPos = event->pos();
-    dragLastPos = dragStartPos;
+//    dragLastPos = dragStartPos;
   }
 
   QTabBar::mousePressEvent(event);
@@ -71,7 +71,7 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
     bool mouseLeft = ((event->buttons() & Qt::LeftButton));
     bool dragging = ((event->pos() - dragStartPos).manhattanLength() > QApplication::startDragDistance());
     bool mouseInWidget = (geometry().contains(event->pos()));
-    if(mouseInWidget)   dragLastPos = event->pos();
+//    if(mouseInWidget)   dragLastPos = event->pos();
     if(mouseLeft && dragging && !mouseInWidget)
     {
         // Stop the move to be able to convert to a drag
@@ -104,7 +104,7 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
         if (Qt::IgnoreAction == dragged)
         {
             event->accept ();
-            emit detachTab(tabAt(dragLastPos), QCursor::pos());
+            emit detachTab(tabAt(dragStartPos), QCursor::pos());
         }
         else if (Qt::MoveAction == dragged)
         {

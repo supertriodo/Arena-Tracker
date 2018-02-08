@@ -1374,6 +1374,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     QMainWindow::closeEvent(event);
 
+    hide();
     writeSettings();
     if(deckWindow != NULL)
     {

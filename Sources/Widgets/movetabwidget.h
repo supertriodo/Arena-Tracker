@@ -27,7 +27,7 @@ class MoveTabBar : public QTabBar
     Q_OBJECT
 
 private:
-    QPoint  dragStartPos, dragLastPos;
+    QPoint dragStartPos/*, dragLastPos*/;
 
 public:
     MoveTabBar(QWidget *parent = 0);
