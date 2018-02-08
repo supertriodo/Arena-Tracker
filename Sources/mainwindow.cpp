@@ -1974,14 +1974,14 @@ void MainWindow::resetSettings()
 
         resize(QSize(255, 600));
         move(QPoint(0,0));
+        close();
 
-        //TODO Incluir otros detachWindow / Reset todos pos size y juntar todas las windows menos deckWindow
-        if(deckWindow != NULL)
-        {
-            deckWindow->resize(QSize(255, 600));
-            deckWindow->move(QPoint(0,0));
-        }
-        this->close();
+        //Write detachWindows settings after they are closed
+        settings.setValue("deckWindow", false);
+        settings.setValue("arenaWindow", false);
+        settings.setValue("enemyWindow", false);
+        settings.setValue("enemyDeckWindow", false);
+        settings.setValue("planWindow", false);
     }
 }
 
