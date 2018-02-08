@@ -170,19 +170,14 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
     connect(detachWindow, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
 
-//    spreadTransparency();
-    updateMainUITheme();
-    //TODO revisar si son necesarios
-//    this->resizeTabWidgets();
-    this->resizeChecks();
+    updateMainUITheme();//Crea el fondo de la nueva ventana
+    resizeChecks();//Recoloca botones -X y reajusta tabBar size
+    calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
 }
 
 
 void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget)
 {
-    //TODO
-    //Antes de hacer el close de la detach window se llama esta funcion.
-    //Volver plan a su size normal si se cierra Plan
     disconnect(ui->minimizeButton, 0, detachWindow, 0);
     disconnect(detachWindow, 0, this, 0);
 
@@ -192,16 +187,16 @@ void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWid
     if(detachWindow == enemyDeckWindow) enemyDeckWindow = NULL;
     if(detachWindow == planWindow)
     {
+        //Antes de hacer el close de la detach window se llama esta funcion.
+        //Volver plan a su size normal si se cierra Plan
         resetSizePlan();
         planWindow = NULL;
     }
 
-    moveTabTo(paneWidget, ui->tabWidget);
-//    spreadTransparency();
-    updateMainUITheme();
-
-//    this->resizeTabWidgets();
-    this->resizeChecks();
+    updateMainUITheme();//Elimina el fondo de la ventana al unir la tab a mainWindow
+    updateTabIcons();//Inserta el tab y los ordena
+    resizeChecks();//Recoloca botones -X y reajusta tabBar size
+    calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
 }
 
 
@@ -556,6 +551,8 @@ void MainWindow::createDraftHandler()
             this, SLOT(showPremiumDialog()));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardDraft(QString)));
+    connect(draftHandler, SIGNAL(calculateMinimumWidth()),
+            this, SLOT(calculateMinimumWidth()));
 
     connect(draftHandler, SIGNAL(downloadStarted()),
             cardDownloader, SLOT(setFastMode()));
@@ -1033,8 +1030,7 @@ void MainWindow::createLogLoader()
 void MainWindow::completeUI()
 {
     ThemeHandler::defaultEmptyValues();
-    ui->tabWidget->clear();
-    ui->tabWidget->hide();
+    ui->tabWidget->clear();//Rellenado en spreadTheme
 
     ui->tabWidgetH2 = new MoveTabWidget(this);
     ui->tabWidgetH2->hide();
@@ -1346,6 +1342,7 @@ void MainWindow::readSettings()
     this->windowsFormation = None;
     resize(size);
     moveInScreen(pos, size);
+    calculateMinimumWidth();
 
     //Detach Windows
     if(settings.value("deckWindow", true).toBool())         createDetachWindow(ui->tabDeck);
@@ -1708,10 +1705,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::resizeChecks()
 {
-    QSize size = this->size();
     QWidget *widget = this->centralWidget();
 
-    resizeTabWidgets(size);
+    updateTabWidgetsTheme(false, true);
 
     int top = widget->pos().y();
     int bottom = top + widget->height();
@@ -1748,199 +1744,6 @@ void MainWindow::resizeTopButtons(int right, int top)
     ui->closeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
     ui->minimizeButton->resize(buttonsWidth, buttonsWidth);
     ui->minimizeButton->setIconSize(QSize(buttonsWidth, buttonsWidth));
-}
-
-
-void MainWindow::resizeTabWidgets(QSize newSize)
-{
-    if(ui->tabWidget == NULL)   return;
-
-    WindowsFormation newWindowsFormation;
-
-    //H1
-    if(newSize.width()<=DIVIDE_TABS_H)
-    {
-        if(newSize.height()>DIVIDE_TABS_V)  newWindowsFormation = V2;
-        else                                newWindowsFormation = H1;
-    }
-    //H2
-    else if(newSize.width()>DIVIDE_TABS_H && newSize.width()<=DIVIDE_TABS_H2)
-    {
-        newWindowsFormation = H2;
-    }
-    //H3
-    else
-    {
-        newWindowsFormation = H3;
-    }
-
-    if(!this->splitWindow || planHandler->isSizePlan())  newWindowsFormation = H1;
-
-    switch(newWindowsFormation)
-    {
-        case None:
-        case H1:
-            break;
-
-        case H2:
-        //TODO Eliminar split window
-            if(deckWindow == NULL) ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
-            else                    ui->tabWidgetH2->setFixedWidth(230 + ThemeHandler::borderWidth()*2);//Hand tab necesita 230 para los secretos
-            break;
-
-        case H3:
-            ui->tabWidgetH2->setFixedWidth(222 + ThemeHandler::borderWidth()*2);
-            ui->tabWidgetH3->setFixedWidth(230 + ThemeHandler::borderWidth()*2);//Hand tab necesita 230 para los secretos
-            break;
-
-        case V2:
-            ui->tabWidgetV1->setFixedHeight(this->height()/2);
-            break;
-    }
-
-    if(newWindowsFormation != windowsFormation) resizeTabWidgets(newWindowsFormation);
-    else                                        updateTabWidgetsTheme(false, true);
-}
-
-
-//Fuerza los checks sin cambiar la formacion
-//Habra que llamarlo siempre que se añada o quite una tab
-void MainWindow::resizeTabWidgets()
-{
-    resizeTabWidgets(windowsFormation);
-}
-
-
-void MainWindow::resizeTabWidgets(WindowsFormation newWindowsFormation)
-{
-    windowsFormation = newWindowsFormation;
-
-    ui->tabWidget->hide();
-    ui->tabWidgetH2->hide();
-    ui->tabWidgetH3->hide();
-    ui->tabWidgetV1->hide();
-
-    QWidget * currentTab = ui->tabWidget->currentWidget();
-    disconnect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(changingTabResetSizePlan()));
-
-    switch(windowsFormation)
-    {
-        case None:
-        case H1:
-        //TODO Eliminar splitWindow
-            if(deckWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidget);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
-                ui->tabWidget->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
-                ui->tabWidget->show();
-            }
-            break;
-
-        case H2:
-            if(deckWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                if(draftHandler->isDrafting())  ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
-                else                            moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-            }
-            break;
-
-        case H3:
-            if(deckWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabDeck, ui->tabWidgetH2);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                if(draftHandler->isDrafting())  ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabLog));
-                else                            moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-                ui->tabWidgetH3->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetH3);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidgetH2);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetH2->show();
-                ui->tabWidgetH3->show();
-            }
-            break;
-
-        case V2:
-            if(deckWindow == NULL)
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidget);
-                moveTabTo(ui->tabDeck, ui->tabWidgetV1);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetV1->show();
-            }
-            else
-            {
-                moveTabTo(ui->tabArena, ui->tabWidget);
-                moveTabTo(ui->tabEnemy, ui->tabWidgetV1);
-                moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-                moveTabTo(ui->tabPlan, ui->tabWidget);
-                moveTabTo(ui->tabConfig, ui->tabWidget);
-                moveTabTo(ui->tabLog, ui->tabWidget);
-                ui->tabWidget->show();
-                ui->tabWidgetV1->show();
-            }
-            break;
-    }
-    ui->tabWidget->setCurrentWidget(currentTab);
-
-    updateTabWidgetsTheme(false, true);
-    this->calculateMinimumWidth();
-
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            this, SLOT(changingTabResetSizePlan()));
 }
 
 
@@ -1988,6 +1791,7 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 }
 
 
+//Se llama al meter o sacar tabs en tabBar o al cambiar theme (por si tiene bordes)
 void MainWindow::calculateMinimumWidth()
 {
     //El menor ancho de una tab es 38 y el menor de los botones 19;
@@ -2883,6 +2687,7 @@ void MainWindow::redrawAllGames()
 void MainWindow::spreadTheme(bool redrawAllGames)
 {
     updateMainUITheme();
+    updateTabIcons();
     arenaHandler->setTheme();
     deckHandler->setTheme();
     draftHandler->setTheme();
@@ -2894,16 +2699,31 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     enemyHandHandler->redrawAllCards();
     if(redrawAllGames) this->redrawAllGames();
     resizeChecks();//Recoloca botones -X
-    resizeTabWidgets();
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
+}
+
+
+void MainWindow::updateTabIcons()
+{
+    QWidget * currentTab = ui->tabWidget->currentWidget();
+
+    ui->tabWidget->hide();
+    if(arenaWindow == NULL)     moveTabTo(ui->tabArena, ui->tabWidget);
+    if(enemyWindow == NULL)     moveTabTo(ui->tabEnemy, ui->tabWidget);
+    if(deckWindow == NULL)      moveTabTo(ui->tabDeck, ui->tabWidget);
+    if(enemyDeckWindow == NULL) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+    if(planWindow == NULL)      moveTabTo(ui->tabPlan, ui->tabWidget);
+    moveTabTo(ui->tabConfig, ui->tabWidget);
+    ui->tabWidget->show();
+
+    ui->tabWidget->setCurrentWidget(currentTab);
 }
 
 
 void MainWindow::updateTabWidgetsTheme(bool transparent, bool resizing)
 {
-    int maxWidthH1 = ui->tabWidget->width() - ThemeHandler::borderWidth()*2;
-    maxWidthH1 -= (windowsFormation == H1 || windowsFormation == V2)?SMALL_BUTTONS_H:2;
-    ui->tabWidget->setTheme("left", maxWidthH1, resizing, transparent);
+    int maxWidth = ui->tabWidget->width() - ThemeHandler::borderWidth()*2 - SMALL_BUTTONS_H;
+    ui->tabWidget->setTheme("left", maxWidth, resizing, transparent);
 
     if(!resizing)
     {
@@ -3862,11 +3682,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//DetachWindow hijas de mainWindow
-//Eliminar resizeChecks y crear detachwindows al cargar AT
+//Collapse all games
 
 //Synergy --> Genzo -- Daring reporter
-//Synergy --> Recuperar spell synergy backwards
 //Synergy --> Eliminar removal turbo cerdo
 //En Games tab borrar logs de arena no completas y mostrar todas collapse
 //Eliminar addon corridor creaper en todo

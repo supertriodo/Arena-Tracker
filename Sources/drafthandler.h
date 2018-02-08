@@ -158,6 +158,7 @@ signals:
     void itemEnterOverlay(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
     void itemLeave();
     void showPremiumDialog();
+    void calculateMinimumWidth();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 

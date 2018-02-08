@@ -1,5 +1,4 @@
 #include "drafthandler.h"
-#include "mainwindow.h"
 #include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
@@ -331,7 +330,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
     if(!alreadyDrafting)
     {
         //SizePreDraft
-        MainWindow *mainWindow = ((MainWindow*)parent());
+        QMainWindow *mainWindow = ((QMainWindow*)parent());
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("size", mainWindow->size());
 
@@ -343,7 +342,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         //SizeDraft
         QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
         mainWindow->resize(sizeDraft);
-        mainWindow->resizeTabWidgets();
+        emit calculateMinimumWidth();
     }
 
     ui->tabWidget->setCurrentWidget(ui->tabDraft);
@@ -487,14 +486,14 @@ void DraftHandler::endDraft()
 
 
     //SizeDraft
-    MainWindow *mainWindow = ((MainWindow*)parent());
+    QMainWindow *mainWindow = ((QMainWindow*)parent());
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("sizeDraft", mainWindow->size());
 
     //Hide Tab
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabDraft));
     ui->tabWidget->setCurrentIndex(ui->tabWidget->indexOf(ui->tabArena));
-    mainWindow->calculateMinimumWidth();
+    emit calculateMinimumWidth();
 
     //SizePreDraft
     QSize size = settings.value("size", QSize(400, 400)).toSize();

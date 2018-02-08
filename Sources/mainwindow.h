@@ -95,9 +95,7 @@ private:
 
 //Metodos
 public:
-    void calculateMinimumWidth();
     LoadingScreenState getLoadingScreen();
-    void resizeTabWidgets();
 
 private:
     void createLogLoader();
@@ -135,8 +133,6 @@ private:
     void createCardsJsonMap(QByteArray &jsonData);
     void resizeTopButtons(int right, int top);
     void resizeChecks();
-    void resizeTabWidgets(QSize newSize);
-    void resizeTabWidgets(WindowsFormation newWindowsFormation);
     void moveTabTo(QWidget *widget, QTabWidget *tabWidget);
     void resetSettings();
     void createLogFile();
@@ -182,6 +178,7 @@ private:
     void downloadHearthArenaJson(int version);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
+    void updateTabIcons();
 
 //Override events
 protected:
@@ -274,6 +271,7 @@ private slots:
     void createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint = QPoint());
     void closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget);
     void swapSizePlan(bool sizePlan);
+    void calculateMinimumWidth();
 };
 
 #endif // MAINWINDOW_H
