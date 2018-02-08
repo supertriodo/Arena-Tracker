@@ -50,7 +50,6 @@ MoveTabBar::MoveTabBar(QWidget *parent) : QTabBar(parent)
 {
     setIconSize(QSize(32,32));
     setAcceptDrops(true);
-//    setMovable(true);
 }
 
 
@@ -59,7 +58,6 @@ void MoveTabBar::mousePressEvent(QMouseEvent* event)
   if (event->button() == Qt::LeftButton)
   {
     dragStartPos = event->pos();
-//    dragLastPos = dragStartPos;
   }
 
   QTabBar::mousePressEvent(event);
@@ -69,41 +67,42 @@ void MoveTabBar::mousePressEvent(QMouseEvent* event)
 void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
 {
     bool mouseLeft = ((event->buttons() & Qt::LeftButton));
-    bool dragging = ((event->pos() - dragStartPos).manhattanLength() > QApplication::startDragDistance());
+    bool dragging = mouseLeft && ((event->pos() - dragStartPos).manhattanLength() > QApplication::startDragDistance());
     bool mouseInWidget = (geometry().contains(event->pos()));
-//    if(mouseInWidget)   dragLastPos = event->pos();
-    if(mouseLeft && dragging && !mouseInWidget)
+    if(dragging)
     {
-        //Stop the move to be able to convert to a drag
-        QMouseEvent* finishMoveEvent = new QMouseEvent(QEvent::MouseMove, event->pos (), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
-        QTabBar::mouseMoveEvent(finishMoveEvent);
-        delete finishMoveEvent;
-        finishMoveEvent = NULL;
-
-        //Initiate Drag
-        QDrag* drag = new QDrag(this);
-        QMimeData* mimeData = new QMimeData;
-        //A crude way to distinguish tab-reordering drops from other ones
-        mimeData->setData("action", "application/tab-detach") ;
-        drag->setMimeData(mimeData);
-
-
-        //Create transparent drag pixmap
-        QPixmap pixmap(255, 600);
-        pixmap.fill(QColor(0, 0, 0, 128));
-        drag->setPixmap(pixmap);
-        drag->setHotSpot(QPoint(0, 0));
-
-        //Handle Detach and Move
-        Qt::DropAction dragged = drag->exec(Qt::MoveAction | Qt::CopyAction);
-        if (Qt::IgnoreAction == dragged)
+        if(!mouseInWidget)
         {
-            event->accept();
-            emit detachTab(tabAt(dragStartPos), QCursor::pos());
-        }
-        else if (Qt::MoveAction == dragged)
-        {
-            event->accept();
+            //Stop the move to be able to convert to a drag
+            QMouseEvent* finishMoveEvent = new QMouseEvent(QEvent::MouseMove, event->pos (), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+            QTabBar::mouseMoveEvent(finishMoveEvent);
+            delete finishMoveEvent;
+            finishMoveEvent = NULL;
+
+            //Initiate Drag
+            QDrag* drag = new QDrag(this);
+            QMimeData* mimeData = new QMimeData;
+            //A crude way to distinguish tab-reordering drops from other ones
+            mimeData->setData("action", "application/tab-detach") ;
+            drag->setMimeData(mimeData);
+
+            //Create semi-transparent drag pixmap
+            QPixmap pixmap(255, 600);
+            pixmap.fill(QColor(0, 0, 0, 128));
+            drag->setPixmap(pixmap);
+            drag->setHotSpot(QPoint(0, 0));
+
+            //Handle Detach and Move
+            Qt::DropAction dragged = drag->exec(Qt::MoveAction | Qt::CopyAction);
+            if (Qt::IgnoreAction == dragged)
+            {
+                event->accept();
+                emit detachTab(tabAt(dragStartPos), QCursor::pos());
+            }
+            else if (Qt::MoveAction == dragged)
+            {
+                event->accept();
+            }
         }
     }
     else
