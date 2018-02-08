@@ -28,6 +28,7 @@ class MoveTabBar : public QTabBar
 
 private:
     QPoint dragStartPos;
+    bool draggingConfig;
 
 public:
     MoveTabBar(QWidget *parent = 0);
