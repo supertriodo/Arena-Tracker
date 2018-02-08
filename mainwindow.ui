@@ -1549,17 +1549,6 @@ Changing to/from Framed need a restart to fully take effective.</string>
                      <widget class="QComboBox" name="configComboTheme"/>
                     </item>
                     <item>
-                     <widget class="QCheckBox" name="configCheckWindowSplit">
-                      <property name="toolTip">
-                       <string>Split Window: When window gets bigger
-it'll split to show several tabs at once</string>
-                      </property>
-                      <property name="text">
-                       <string>Split Window</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
                      <widget class="QCheckBox" name="configCheckDeckWindow">
                       <property name="toolTip">
                        <string>Deck Window: Separate Deck tab

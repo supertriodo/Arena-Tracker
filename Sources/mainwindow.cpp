@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
-    windowsFormation = None;
 
     logLoader = NULL;
     gameWatcher = NULL;
@@ -1183,7 +1182,6 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     }
 
     initConfigTheme(theme);
-    if(this->splitWindow) ui->configCheckWindowSplit->setChecked(true);
     //TODO Eliminar deck window check
 //    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
@@ -1308,7 +1306,6 @@ void MainWindow::readSettings()
     pos = settings.value("pos", QPoint(0,0)).toPoint();
     size = settings.value("size", QSize(255, 600)).toSize();
 
-    this->splitWindow = settings.value("splitWindow", false).toBool();
     this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
     QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
@@ -1336,10 +1333,8 @@ void MainWindow::readSettings()
 
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->showWindowFrame(transparency == Framed);
-    this->windowsFormation = None;
     this->show();
     this->setMinimumSize(100,200);  //El minimumSize inicial es incorrecto
-    this->windowsFormation = None;
     resize(size);
     moveInScreen(pos, size);
     calculateMinimumWidth();
@@ -1358,7 +1353,6 @@ void MainWindow::writeSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
-    settings.setValue("splitWindow", this->splitWindow);
     settings.setValue("transparent", (int)this->transparency);
     settings.setValue("theme", ui->configComboTheme->currentText());
     //TODO Eliminar deck window check
@@ -1646,33 +1640,6 @@ void MainWindow::spreadMouseInApp()
     else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck)
     {
         fadeBarAndButtons(false);
-    }
-
-    //Split windows
-    if(windowsFormation == H2 || windowsFormation == H3)
-    {
-        currentTab = ui->tabWidgetH2->currentWidget();
-
-        if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
-        else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
-        else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
-
-        if(windowsFormation == H3)
-        {
-            currentTab = ui->tabWidgetH3->currentWidget();
-
-            if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
-            else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
-            else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
-        }
-    }
-    else if(windowsFormation == V2)
-    {
-        currentTab = ui->tabWidgetV1->currentWidget();
-
-        if(currentTab == ui->tabDeck)           deckHandler->setMouseInApp(mouseInApp);
-        else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
-        else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
     }
 }
 
@@ -2397,19 +2364,6 @@ void MainWindow::confirmNewArenaDraft(QString hero)
 }
 
 
-void MainWindow::toggleSplitWindow()
-{
-    this->splitWindow = !this->splitWindow;
-    spreadSplitWindow();
-}
-
-
-void MainWindow::spreadSplitWindow()
-{
-    resizeChecks();
-}
-
-
 void MainWindow::transparentAlways()
 {
     spreadTransparency(Transparent);
@@ -2546,7 +2500,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
-        ui->configCheckWindowSplit->setStyleSheet(checkCSS);
         ui->configCheckDeckWindow->setStyleSheet(checkCSS);
         ui->configCheckClassColor->setStyleSheet(checkCSS);
         ui->configCheckSpellColor->setStyleSheet(checkCSS);
@@ -2594,7 +2547,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioLF->setStyleSheet("");
         ui->configRadioCombined->setStyleSheet("");
 
-        ui->configCheckWindowSplit->setStyleSheet("");
         ui->configCheckDeckWindow->setStyleSheet("");
         ui->configCheckClassColor->setStyleSheet("");
         ui->configCheckSpellColor->setStyleSheet("");
@@ -3220,7 +3172,6 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
     connect(ui->configRadioFramed, SIGNAL(clicked()), this, SLOT(transparentFramed()));
 
-    connect(ui->configCheckWindowSplit, SIGNAL(clicked()), this, SLOT(toggleSplitWindow()));
     connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
     completeConfigComboTheme();
 

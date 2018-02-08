@@ -52,8 +52,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    enum WindowsFormation {H1, H2, H3, V2, None};
 
 //Variables
 private:
@@ -74,9 +72,7 @@ private:
     PremiumHandler *premiumHandler;
     QMap<QString, QJsonObject> cardsJson;
     QPoint dragPosition;
-    WindowsFormation windowsFormation;
     QFile* atLogFile;
-    bool splitWindow;
     bool mouseInApp;
     Transparency transparency;
     DraftMethod draftMethod;
@@ -120,7 +116,6 @@ private:
     void completeUITabNames();
     void completeConfigTab();
     void addDraftMenu(QPushButton *button);
-    void spreadSplitWindow();
     void spreadTransparency(Transparency newTransparency);
     void updateOtherTabsTransparency();
     void spreadTheme(bool redrawAllGames);
@@ -224,7 +219,6 @@ private slots:
     void testDelay();
     void testSynergies();
     void confirmNewArenaDraft(QString hero);
-    void toggleSplitWindow();
     void transparentAlways();
     void transparentAuto();
     void transparentNever();
