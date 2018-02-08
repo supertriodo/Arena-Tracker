@@ -1548,17 +1548,6 @@ Changing to/from Framed need a restart to fully take effective.</string>
                     <item>
                      <widget class="QComboBox" name="configComboTheme"/>
                     </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckDeckWindow">
-                      <property name="toolTip">
-                       <string>Deck Window: Separate Deck tab
-in a new window</string>
-                      </property>
-                      <property name="text">
-                       <string>Deck Window</string>
-                      </property>
-                     </widget>
-                    </item>
                    </layout>
                   </widget>
                  </item>

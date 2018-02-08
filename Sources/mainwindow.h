@@ -223,7 +223,6 @@ private slots:
     void transparentAuto();
     void transparentNever();
     void transparentFramed();
-    void toggleDeckWindow();
     void updateTimeDraw(int value);
     void updateTamCard(int value);
     void toggleShowDraftOverlay();

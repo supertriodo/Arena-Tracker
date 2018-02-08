@@ -27,8 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyWindow = NULL;
     enemyDeckWindow = NULL;
     planWindow = NULL;
-    //TODO Eliminar
-    //configWindow = NULL;
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
@@ -177,6 +175,7 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
 
 void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget)
 {
+    Q_UNUSED(paneWidget);
     disconnect(ui->minimizeButton, 0, detachWindow, 0);
     disconnect(detachWindow, 0, this, 0);
 
@@ -1182,8 +1181,6 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     }
 
     initConfigTheme(theme);
-    //TODO Eliminar deck window check
-//    if(this->otherWindow!=NULL) ui->configCheckDeckWindow->setChecked(true);
 
     //Deck
     if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
@@ -1309,10 +1306,6 @@ void MainWindow::readSettings()
     this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
     QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
-    int numWindows = settings.value("numWindows", 2).toInt();
-    //TODO Eliminar deck window check y leer detachwindows y sus posiciones
-//    if(numWindows == 2) createDetachWindow();
-
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
     this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
@@ -1355,8 +1348,6 @@ void MainWindow::writeSettings()
     settings.setValue("size", size());
     settings.setValue("transparent", (int)this->transparency);
     settings.setValue("theme", ui->configComboTheme->currentText());
-    //TODO Eliminar deck window check
-//    settings.setValue("numWindows", (this->otherWindow == NULL)?1:2);
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
     settings.setValue("showDraftOverlay", this->showDraftOverlay);
@@ -1514,9 +1505,6 @@ void MainWindow::changeEvent(QEvent * event)
             if(enemyWindow != NULL)     enemyWindow->setWindowState(Qt::WindowActive);
             if(enemyDeckWindow != NULL) enemyDeckWindow->setWindowState(Qt::WindowActive);
             if(planWindow != NULL)      planWindow->setWindowState(Qt::WindowActive);
-            //TODO Eliminar
-//            if(configWindow != NULL)    configWindow->setWindowState(Qt::WindowActive);
-
             if(draftHandler != NULL)    draftHandler->deMinimizeScoreWindow();
         }
 
@@ -2500,7 +2488,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
-        ui->configCheckDeckWindow->setStyleSheet(checkCSS);
         ui->configCheckClassColor->setStyleSheet(checkCSS);
         ui->configCheckSpellColor->setStyleSheet(checkCSS);
         ui->configCheckOverlay->setStyleSheet(checkCSS);
@@ -2547,7 +2534,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioLF->setStyleSheet("");
         ui->configRadioCombined->setStyleSheet("");
 
-        ui->configCheckDeckWindow->setStyleSheet("");
         ui->configCheckClassColor->setStyleSheet("");
         ui->configCheckSpellColor->setStyleSheet("");
         ui->configCheckOverlay->setStyleSheet("");
@@ -2886,21 +2872,6 @@ void MainWindow::updateButtonsTheme()
 }
 
 
-void MainWindow::toggleDeckWindow()
-{
-    //TODO Eliminar deck window check
-//    if(this->otherWindow == NULL)
-//    {
-//        createDetachWindow();
-//    }
-//    else
-//    {
-//        destroyDetachWindow();
-//    }
-//    spreadCorrectTamCard();
-}
-
-
 int MainWindow::getAutoTamCard()
 {
     int numCards = deckHandler->getNumCardRows();
@@ -3172,7 +3143,6 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioOpaque, SIGNAL(clicked()), this, SLOT(transparentNever()));
     connect(ui->configRadioFramed, SIGNAL(clicked()), this, SLOT(transparentFramed()));
 
-    connect(ui->configCheckDeckWindow, SIGNAL(clicked()), this, SLOT(toggleDeckWindow()));
     completeConfigComboTheme();
 
     //Deck
