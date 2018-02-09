@@ -2478,6 +2478,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
         ui->configLabelZero->setStyleSheet(labelCSS);
         ui->configLabelZero2->setStyleSheet(labelCSS);
+        ui->configLabelTheme->setStyleSheet(labelCSS);
 
         QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
         ui->configRadioTransparent->setStyleSheet(radioCSS);
@@ -2526,6 +2527,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet("");
         ui->configLabelZero->setStyleSheet("");
         ui->configLabelZero2->setStyleSheet("");
+        ui->configLabelTheme->setStyleSheet("");
 
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
