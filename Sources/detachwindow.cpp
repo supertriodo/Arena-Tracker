@@ -55,6 +55,8 @@ void DetachWindow::completeUIButtons()
     resizeButton->setFlat(true);
     connect(resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
+
+    Utility::fadeOutWidget(closeButton);
 }
 
 
@@ -182,6 +184,22 @@ void DetachWindow::closeEvent(QCloseEvent *event)
 
     writeSettings();
     event->accept();
+}
+
+
+void DetachWindow::leaveEvent(QEvent * e)
+{
+    QMainWindow::leaveEvent(e);
+
+    Utility::fadeOutWidget(closeButton);
+}
+
+
+void DetachWindow::enterEvent(QEvent * e)
+{
+    QMainWindow::enterEvent(e);
+
+    Utility::fadeInWidget(closeButton);
 }
 
 
