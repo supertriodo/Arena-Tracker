@@ -12,6 +12,8 @@ DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, Transparency t
 
     if(dropPoint.isNull())  readSettings();
     else                    moveResize(dropPoint, QSize(255, 600));
+
+    show();
 }
 
 
@@ -38,6 +40,14 @@ void DetachWindow::completeUI(Transparency transparency)
 
 void DetachWindow::completeUIButtons()
 {
+    closeButton = new QPushButton("", this);
+    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    closeButton->resize(24, 24);
+    closeButton->setIconSize(QSize(24, 24));
+    closeButton->setFlat(true);
+    connect(closeButton, SIGNAL(clicked()),
+            this, SLOT(close()));
+
     resizeButton = new ResizeButton(this);
     resizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     resizeButton->resize(24, 24);
@@ -127,6 +137,10 @@ void DetachWindow::showWindowFrame(bool showFrame)
 
 void DetachWindow::updateButtonsTheme()
 {
+    closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"
+                                   "QPushButton:hover {background: " + ThemeHandler::hoverTopButtonsColor() + ";}");
+    closeButton->setIcon(QIcon(ThemeHandler::buttonCloseFile()));
+
     resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
 }
 
@@ -146,7 +160,8 @@ void DetachWindow::resizeChecks()
     int left = widget->pos().x();
     int right = left + widget->width();
 
-    resizeButton->move(right-24, bottom-24);
+    closeButton->move(right - 24 - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
+    resizeButton->move(right - 24, bottom - 24);
 }
 
 

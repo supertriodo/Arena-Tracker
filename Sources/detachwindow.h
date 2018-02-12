@@ -22,7 +22,6 @@ public:
 
 //Variables
 private:
-    QPushButton *minimizeButton = NULL;
     QPushButton *closeButton = NULL;
     ResizeButton *resizeButton = NULL;
     QPoint dragPosition;
