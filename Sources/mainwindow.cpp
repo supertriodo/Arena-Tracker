@@ -167,7 +167,7 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
     connect(detachWindow, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
 
-    updateMainUITheme();//Crea el fondo de la nueva ventana
+    updateMainUITheme();//Crea el fondo de la nueva ventana y sus botones
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
     calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
 }
@@ -2747,27 +2747,27 @@ void MainWindow::updateAllDetachWindowTheme(const QString &mainCSS)
     if(arenaWindow != NULL)
     {
         arenaWindow->setStyleSheet(mainCSS);
-        arenaWindow->updateButtonsTheme();
+        arenaWindow->spreadTheme();
     }
     if(enemyWindow != NULL)
     {
         enemyWindow->setStyleSheet(mainCSS);
-        enemyWindow->updateButtonsTheme();
+        enemyWindow->spreadTheme();
     }
     if(deckWindow != NULL)
     {
         deckWindow->setStyleSheet(mainCSS);
-        deckWindow->updateButtonsTheme();
+        deckWindow->spreadTheme();
     }
     if(enemyDeckWindow != NULL)
     {
         enemyDeckWindow->setStyleSheet(mainCSS);
-        enemyDeckWindow->updateButtonsTheme();
+        enemyDeckWindow->spreadTheme();
     }
     if(planWindow != NULL)
     {
         planWindow->setStyleSheet(mainCSS);
-        planWindow->updateButtonsTheme();
+        planWindow->spreadTheme();
     }
 
     updateDetachWindowTheme(ui->tabArena);

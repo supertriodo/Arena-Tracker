@@ -137,6 +137,13 @@ void DetachWindow::showWindowFrame(bool showFrame)
 }
 
 
+void DetachWindow::spreadTheme()
+{
+    updateButtonsTheme();
+    resizeChecks();//Recoloca boton X
+}
+
+
 void DetachWindow::updateButtonsTheme()
 {
     closeButton->setStyleSheet("QPushButton {background: " + ThemeHandler::bgTopButtonsColor() + "; border: none;}"

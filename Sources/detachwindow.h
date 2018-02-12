@@ -38,6 +38,7 @@ private:
     void showWindowFrame(bool showFrame);
     void writeSettings();
     void resizeChecks();
+    void spreadTheme();
     void updateButtonsTheme();
     void moveResize(const QPoint &pos, const QSize &size);
 
