@@ -2273,6 +2273,7 @@ void MainWindow::checkGamesLogDir()
     int indexDraft = files.indexOf(QRegularExpression("DRAFT.*"));
     pDebug("Last arena DRAFT: " + (indexDraft==-1?QString("Not Found"):files[indexDraft]));
 
+    bool homelessArenaGames = true;//Evita mostrar juegos de arena sin draft
     for(int i=files.length()-1; i>=0; i--)
     {
         QString file = files[i];
@@ -2280,10 +2281,12 @@ void MainWindow::checkGamesLogDir()
         if((file.startsWith("DRAFT") && i < maxGamesLog) || i == indexDraft)
         {
             emit pDebug("Show Arena: " + file);
+            homelessArenaGames = false;
             arenaHandler->showArenaLog(file);
         }
         //Current arena game or kept other games
-        else if((file.startsWith("ARENA") && i < indexDraft) || (i < maxGamesLog))
+        else if(((file.startsWith("ARENA") && i < indexDraft) || (i < maxGamesLog)) &&
+                !(file.startsWith("ARENA") && homelessArenaGames))
         {
             emit pDebug("Show GameResut: " + file);
             arenaHandler->showGameResultLog(file);
@@ -2294,6 +2297,8 @@ void MainWindow::checkGamesLogDir()
             pDebug(file + " removed.");
         }
     }
+
+    ui->arenaTreeWidget->collapseAll();
 }
 
 
@@ -3606,10 +3611,8 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Collapse all games
 //Only enemy cards played from zone enemy's hand go to enemy's deck tab, solve recruit
 //Dech mechanics redone with colors
-//En Games tab borrar logs de arena no completas y mostrar todas collapse
 
 //Twitch integration
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
