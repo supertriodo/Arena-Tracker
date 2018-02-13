@@ -3607,13 +3607,14 @@ void MainWindow::testDelay()
 
 //TODDO
 //Collapse all games
-//Only enemy cards played from zone enemy's hand go to enemy's deck tab, so they shouldn't show up on enemy's deck tab. That's something that should be fixed though :)
+//Only enemy cards played from zone enemy's hand go to enemy's deck tab, solve recruit
 //Dech mechanics redone with colors
 
 //Synergy --> Genzo -- Daring reporter
 //Synergy --> Eliminar removal turbo cerdo
 //En Games tab borrar logs de arena no completas y mostrar todas collapse
 //Eliminar addon corridor creaper en todo
+//Eliminar addon venomstrike trap en todo
 
 //Twitch integration
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
