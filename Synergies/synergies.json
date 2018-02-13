@@ -32,7 +32,7 @@
 	"CFM_669": [],
 	"CFM_672": ["battlecry","returnSyn","evolveSyn","tokenSyn"],
 	"CFM_687": ["battlecry"],
-	"CFM_688": ["battlecry","damageMinionsGen"],
+	"CFM_688": ["battlecry"],
 	"CFM_691": ["stealthGen","deathrattle","jadeGolemGen","tokenGen"],
 	"CFM_694": ["battlecry","returnSyn","stealthSyn"],
 	"CFM_699": ["battlecry","murlocSyn"],
@@ -517,7 +517,7 @@
 		"LOOT_154": ["EX1_085","CFM_652","KAR_026","ICC_054","LOOT_367"],
 		"LOOT_383": ["EX1_085","CFM_652","KAR_026","ICC_054","LOOT_367"],
 
-		"CFM_851": ["EX1_161","EX1_050","OG_338"],
+		"CFM_851": ["EX1_161","EX1_050","OG_338","CFM_808"],
 
 		"EX1_567": ["CS2_045"],
 		"KAR_028": ["CS2_105"],

@@ -3593,7 +3593,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
-//    draftHandler->debugSynergiesCode("ICC_082");
+//    draftHandler->debugSynergiesCode("EX1_044");
 //    draftHandler->testSynergies();
 }
 
@@ -3609,12 +3609,7 @@ void MainWindow::testDelay()
 //Collapse all games
 //Only enemy cards played from zone enemy's hand go to enemy's deck tab, solve recruit
 //Dech mechanics redone with colors
-
-//Synergy --> Genzo -- Daring reporter
-//Synergy --> Eliminar removal turbo cerdo
 //En Games tab borrar logs de arena no completas y mostrar todas collapse
-//Eliminar addon corridor creaper en todo
-//Eliminar addon venomstrike trap en todo
 
 //Twitch integration
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
