@@ -34,7 +34,7 @@ private:
     void completeUI(Transparency transparency);
     void completeUIButtons();
     void moveInScreen(QPoint pos, QSize size);
-    void readSettings();
+    void readSettings(const QPoint &dropPoint);
     void showWindowFrame(bool showFrame);
     void writeSettings();
     void resizeChecks();

@@ -84,8 +84,10 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
         bool dragging = mouseLeft && ((event->pos() - dragStartPos).manhattanLength() > QApplication::startDragDistance());
         if(dragging)
         {
+            int indexTab = tabAt(dragStartPos);
+
             //Stop the move to be able to convert to a drag
-            QMouseEvent* finishMoveEvent = new QMouseEvent(QEvent::MouseMove, event->pos (), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+            QMouseEvent* finishMoveEvent = new QMouseEvent(QEvent::MouseMove, event->pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
             QTabBar::mouseMoveEvent(finishMoveEvent);
             delete finishMoveEvent;
             finishMoveEvent = NULL;
@@ -98,7 +100,9 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
             drag->setMimeData(mimeData);
 
             //Create semi-transparent drag pixmap
-            QPixmap pixmap(255, 600);
+            QSettings settings("Arena Tracker", "Arena Tracker");
+            QSize size = settings.value("sizeWindow" + tabToolTip(indexTab), QSize(255, 600)).toSize();
+            QPixmap pixmap(size);
             pixmap.fill(QColor(0, 0, 0, 128));
             drag->setPixmap(pixmap);
             drag->setHotSpot(QPoint(0, 0));
@@ -108,7 +112,7 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
             if (Qt::IgnoreAction == dragged)
             {
                 event->accept();
-                emit detachTab(tabAt(dragStartPos), QCursor::pos());
+                emit detachTab(indexTab, QCursor::pos());
             }
             else if (Qt::MoveAction == dragged)
             {

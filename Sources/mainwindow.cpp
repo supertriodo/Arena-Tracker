@@ -1715,12 +1715,12 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
     else if(widget == ui->tabDeck)
     {
         icon = QIcon(ThemeHandler::tabDeckFile());
-        tooltip = "Player Deck";
+        tooltip = "Deck";
     }
     else if(widget == ui->tabEnemy)
     {
         icon = QIcon(ThemeHandler::tabHandFile());
-        tooltip = "Enemy Hand";
+        tooltip = "Hand";
     }
     else if(widget == ui->tabPlan)
     {

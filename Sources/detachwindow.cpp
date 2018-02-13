@@ -9,10 +9,7 @@ DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, Transparency t
     this->paneName = paneName;
     this->paneWidget = paneWidget;
     completeUI(transparency);
-
-    if(dropPoint.isNull())  readSettings();
-    else                    moveResize(dropPoint, QSize(255, 600));
-
+    readSettings(dropPoint);
     show();
 }
 
@@ -60,13 +57,14 @@ void DetachWindow::completeUIButtons()
 }
 
 
-void DetachWindow::readSettings()
+void DetachWindow::readSettings(const QPoint& dropPoint)
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     QPoint pos;
     QSize size;
 
-    pos = settings.value("posWindow" + paneName, QPoint(0,0)).toPoint();
+    if(dropPoint.isNull())  pos = settings.value("posWindow" + paneName, QPoint(0,0)).toPoint();
+    else                    pos = dropPoint;
     size = settings.value("sizeWindow" + paneName, QSize(255, 600)).toSize();
 
     moveResize(pos, size);
