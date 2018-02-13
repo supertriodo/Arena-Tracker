@@ -2900,7 +2900,9 @@ bool PlanHandler::isAddonCommonValid(QString code)
     if(code == DARKSHIRE_COUNCILMAN)    return false;
     if(code == POLLUTED_HOARDER)        return false;
     if(code == GLADIATORS_LONGBOW)      return false;
-    if(code == CANDLESHOT)      return false;
+    if(code == CANDLESHOT)              return false;
+    if(code == VENOMSTRIKE_TRAP)        return false;
+    if(code == CORRIDOR_CREEPER)        return false;
     return true;
 }
 
