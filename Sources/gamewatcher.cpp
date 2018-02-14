@@ -992,18 +992,26 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Enemigo roba carta conocida
-        else if(zoneTo == "OPPOSING HAND" && mulliganEnemyDone)
+        else if(zoneTo == "OPPOSING HAND" && zoneFrom != "OPPOSING HAND" && mulliganEnemyDone)
         {
             bool advance = false;
             if(zoneFrom == "OPPOSING DECK")
             {
                 advance = advanceTurn(false);
-                emit enemyKnownCardDraw(id.toInt(), cardId);
+                //Bug HS, aun no deberiamos conocer esta carta, no queremos que vaya a enemy deck tab hasta que sea jugada
+                //emit enemyKnownCardDraw(id.toInt(), cardId);
+
+                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                //Bug HS, aun no deberiamos conocer esta carta, no queremos que se muestre en hand tab
+                emit enemyCardDraw(id.toInt(), turnReal);
+                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
             }
-            if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
-            emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
-            if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
-            emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+            else
+            {
+                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
+                emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+            }
         }
 
         //Jugador roba carta conocida
@@ -1029,7 +1037,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Jugador, OUTSIDER a deck
-        else if(zoneTo == "FRIENDLY DECK" && zoneFrom != "FRIENDLY HAND")
+        else if(zoneTo == "FRIENDLY DECK" && zoneFrom != "FRIENDLY DECK" && zoneFrom != "FRIENDLY HAND")
         {
             emit pDebug("Player: Outsider card to deck: " + name + " ID: " + id, numLine);
             emit playerReturnToDeck(cardId, id.toInt());
@@ -1145,7 +1153,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Enemigo juega carta conocida
-        else if(zoneFrom == "OPPOSING HAND")
+        else if(zoneFrom == "OPPOSING HAND" && zoneTo != "OPPOSING HAND")
         {
             bool discard = false;
 
@@ -1190,20 +1198,22 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit enemyCardPlayed(id.toInt(), cardId, discard);
         }
 
-        //Enemigo roba carta overdraw
-        else if(zoneFrom == "OPPOSING DECK" && zoneTo == "OPPOSING GRAVEYARD")
+        //Enemigo roba carta overdraw/recruit
+        else if(zoneFrom == "OPPOSING DECK" && (zoneTo == "OPPOSING GRAVEYARD" || zoneTo == "OPPOSING PLAY"))
         {
             bool advance = advanceTurn(false);
-            emit pDebug("Enemy: Card overdraw: " + name + " ID: " + id, numLine);
+            emit pDebug("Enemy: Card from deck skipped hand (overdraw/recruit): " + name + " ID: " + id, numLine);
             emit enemyKnownCardDraw(id.toInt(), cardId);
             if(advance)     emit newTurn(isPlayerTurn, turnReal);
         }
 
         //Jugador roba carta conocida
         //Maldición ancestral hace un FRIENDLY DECK --> EMPTY justo despues de meterse en el mazo. CONTRA
+        //Joust mechanics mueven la carta mostrada a EMPTY. CONTRA. En deckHandler se evita que la carta se incluya en el mazo (al ser un outsider)
+        //Dragon's Fury se mete como outsider en el mazo EMPTY --> FRIENDLY DECK y sale despues de hacer el joust FRIENDLY DECK --> EMPTY. Puesto que AT lo mete en el deck es necesario sacarlo. PRO
         //El mono de Elise vacia el deck a empty y lo rellena de legendarias. PRO
         //Explorar un'goro vacia el deck a empty y lo rellena de explorar un'goro. PRO
-        else if(zoneFrom == "FRIENDLY DECK"/* && !zoneTo.isEmpty()*/)
+        else if(zoneFrom == "FRIENDLY DECK" && zoneTo != "FRIENDLY DECK")
         {
             //El avance de turno ocurre generalmente en (zoneTo == "FRIENDLY HAND") pero en el caso de overdraw ocurrira aqui.
             if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
@@ -1316,7 +1326,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 
     //Jugador/Enemigo esbirro cambia pos
     //No podemos usar zonePos= porque para los esbirros del jugador que pasan a una posicion mayor muestra su posicion origen
-    //Todo comentado porque esta forma de contar el numero de esbirros puede producir errores.
+    //Toddo comentado porque esta forma de contar el numero de esbirros puede producir errores.
     //Ej: Si un esbirro con deathrattle produce otro esbirro. Primero se cambia la pos de los esbirros a la dcha
     //y despues se genran los esbirros de deathrattle causando una suma erronea.
     //id=7 local=True [entityName=Ingeniera novata id=25 zone=HAND zonePos=5 cardId=EX1_015 player=1] pos from 5 -> 3

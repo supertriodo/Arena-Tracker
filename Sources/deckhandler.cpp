@@ -464,6 +464,7 @@ void DeckHandler::clearDrawAnimating()
 
 void DeckHandler::reset()
 {
+    this->firstOutsiderId = 68;
     ui->deckListWidget->clear();
     deckCardList.clear();
     clearDrawList(true);
@@ -478,6 +479,12 @@ void DeckHandler::reset()
     enableDeckButtons();
 
     emit pDebug("Deck list cleared.");
+}
+
+
+void DeckHandler::setFirstOutsiderId(int id)
+{
+    this->firstOutsiderId = id;
 }
 
 
@@ -522,12 +529,13 @@ void DeckHandler::newDeckCardWeb(QString code, int total)
 
 void DeckHandler::newDeckCardOutsider(QString code, int id)
 {
-    newDeckCard(code, 1, false, true, id);
+    newDeckCard(code, 1, false, id);
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, int id)
+void DeckHandler::newDeckCard(QString code, int total, bool add, int id)
 {
+    bool outsider = (id >= this->firstOutsiderId);
     if(outsider)
     {
         if(code.isEmpty() && this->lastCreatedByCode.isEmpty())     return;
@@ -734,72 +742,78 @@ void DeckHandler::playerCardToHand(int id, QString code, int turn)
 
 void DeckHandler::drawFromDeck(QString code, int id)
 {
-    //Avoid special cards
-    if(code == THE_COIN)    return;
+    //En las mechanics JOUST se envia la carta desvelada (una copia creada de la carta, un outsider) de FRIENDLY PLAY --> EMPTY,
+    //se llama a playerCardDraw que incluira la carta en nuestro mazo (pero lo evitamos pq es un outsider)
+    bool outsider = (id >= this->firstOutsiderId);
 
-    //Check outsiders (por id), todos los outsiders tienen id
-    for(int i=1; i<deckCardList.length(); i++)
+    if(outsider)
     {
-        DeckCard *card = &deckCardList[i];
-        if(card->isOutsider() && card->id == id)
+        //Check outsiders (por id), todos los outsiders tienen id
+        for(int i=1; i<deckCardList.length(); i++)
         {
-            if(card->remaining > 1)
+            DeckCard *card = &deckCardList[i];
+            if(card->isOutsider() && card->id == id)
             {
-                card->remaining--;
-                card->draw();
-            }
-            else
-            {
-                removeFromDeck(i);
-                i--;
-            }
-            return;
-        }
-    }
-
-    //Check normal deck
-    for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
-    {
-        if(it->getCode() == code && !it->isOutsider())
-        {
-            if(it->remaining > 0)
-            {
-                it->remaining--;
-                it->draw();
-            }
-            //it->remaining == 0
-            //Reajustamos el mazo si tiene unknown cards
-            else
-            {
-                if(deckCardList[0].total > 0)
+                if(card->remaining > 1)
                 {
-                    deckCardList[0].total--;
-                    if(deckCardList[0].total <= 0)  hideUnknown();
-                    else                            deckCardList[0].draw();
+                    card->remaining--;
+                    card->draw();
                 }
                 else
                 {
-                    deckCardList[0].total--;
+                    removeFromDeck(i);
+                    i--;
                 }
-
-                it->total++;
-                it->draw();
-
-                emit pDebug("New card: " + it->getName() + ". " +
-                            QString::number(it->remaining) + "/" + QString::number(it->total));
+                return;
             }
-
-            //Id -- Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
-            cardId2Code[id] = code;
-
-            return;
         }
     }
+    else
+    {
+        //Check normal deck
+        for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
+        {
+            if(it->getCode() == code && !it->isOutsider())
+            {
+                if(it->remaining > 0)
+                {
+                    it->remaining--;
+                    it->draw();
+                }
+                //it->remaining == 0
+                //Reajustamos el mazo si tiene unknown cards
+                else
+                {
+                    if(deckCardList[0].total > 0)
+                    {
+                        deckCardList[0].total--;
+                        if(deckCardList[0].total <= 0)  hideUnknown();
+                        else                            deckCardList[0].draw();
+                    }
+                    else
+                    {
+                        deckCardList[0].total--;
+                    }
 
-    emit pDebug("New card: " +
-                      Utility::getCardAttribute(code, "name").toString() + ". 0/1");
-    newDeckCard(code);
-    drawFromDeck(code, id);
+                    it->total++;
+                    it->draw();
+
+                    emit pDebug("New card: " + it->getName() + ". " +
+                                QString::number(it->remaining) + "/" + QString::number(it->total));
+                }
+
+                //Id -- Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+                cardId2Code[id] = code;
+
+                return;
+            }
+        }
+
+        emit pDebug("New card: " +
+                          Utility::getCardAttribute(code, "name").toString() + ". 0/1");
+        newDeckCard(code);
+        drawFromDeck(code, id);
+    }
 }
 
 

@@ -830,6 +830,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(leaveArena()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             deckHandler, SLOT(setLastCreatedByCode(QString, QString)));
+    connect(gameWatcher, SIGNAL(coinIdFound(int)),
+            deckHandler, SLOT(setFirstOutsiderId(int)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
@@ -3611,8 +3613,8 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Only enemy cards played from zone enemy's hand go to enemy's deck tab, solve recruit
 //Dech mechanics redone with colors
+//Prox version rebajar cartas
 
 //Twitch integration
 //HSReplay support, Remove all lines logged by PowerTaskList.*, which are a duplicate of the GameState ones
@@ -3623,6 +3625,7 @@ void MainWindow::testDelay()
 //Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
 //Divide the overlay checkbox in config tab used during the draft in two separate checkboxes: One for deck mechanics overlay (over the cards) and other for scores and synergies overlay (below the cards).
 //Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
+//Mostrar BY: cards en mano enemiga conocidas como la carta especifica. P.Ej: BY: Gilded gargoyle es siempre moneda
 
 
 //REPLAY BUGS

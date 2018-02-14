@@ -47,6 +47,8 @@ private:
     BombWindow *bombWindow;
     //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
     QMap<int,QString> cardId2Code;
+    //Lo usamos para diferenciar outsiders
+    int firstOutsiderId;
 
 
 //Metodos
@@ -55,7 +57,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code, bool mulligan);
-    void newDeckCard(QString code, int total=1, bool add=false, bool outsider=false, int id=0);
+    void newDeckCard(QString code, int total=1, bool add=false, int id=0);
     void drawFromDeck(QString code, int id);
     void showDeckButtons();
     void hideDeckButtons();
@@ -133,6 +135,7 @@ public slots:
     void returnToDeck(QString code, int id);
     void setLastCreatedByCode(QString code, QString blockType);
     void removeRngCard(int id, QString code="");
+    void setFirstOutsiderId(int id);
 
 private slots:
     void removeOldestDrawCard();
