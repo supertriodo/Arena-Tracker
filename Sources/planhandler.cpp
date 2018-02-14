@@ -2939,5 +2939,6 @@ bool PlanHandler::isLastTriggerValid(QString code)
     if(code == FROTHING_BERSEKER)       return false;
     if(code == THE_SKELETON_KNIGHT)     return false;
     if(code == SWORD_OF_JUSTICE)        return false;
+    if(code == CRYPT_LORD)              return false;
     return true;
 }
