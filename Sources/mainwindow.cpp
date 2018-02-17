@@ -1486,7 +1486,21 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #endif
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_D)  createDebugPack();
-            else if(event->key() == Qt::Key_Z)  this->resize(QSize(960, 1080));
+            else if(event->key() == Qt::Key_Z)
+            {
+                if(this->planWindow != NULL)
+                {
+                    planWindow->resize(QSize(960, 1080));
+                    planWindow->move(1920, 0);
+                }
+                if(this->deckWindow != NULL)
+                {
+                    deckWindow->resize(QSize(deckWindow->width(), 1053));
+                    deckWindow->move(0, 0);
+                }
+                this->resize(QSize(250, 540));
+                this->move(2880, 0);
+            }
             else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
             else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
             else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
