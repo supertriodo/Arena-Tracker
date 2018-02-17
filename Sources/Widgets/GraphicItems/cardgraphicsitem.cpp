@@ -170,7 +170,8 @@ void CardGraphicsItem::checkDownloadedCode(QString code)
 
 QRectF CardGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2, -heightShow/2-CARD_LIFT, WIDTH, heightShow+CARD_LIFT);
+    //Aumentamos 5px por la derecha para incluir el glow
+    return QRectF( -WIDTH/2, -heightShow/2-CARD_LIFT, WIDTH + 5, heightShow+CARD_LIFT);
 }
 
 

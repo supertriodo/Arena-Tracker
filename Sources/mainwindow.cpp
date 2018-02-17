@@ -3616,7 +3616,6 @@ void MainWindow::testDelay()
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
-//Replay: Fix rastro glow al moverse por turnos
 
 //Twitch integration
 //HSReplay support
