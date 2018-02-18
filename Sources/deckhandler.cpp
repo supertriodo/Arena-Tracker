@@ -529,13 +529,13 @@ void DeckHandler::newDeckCardWeb(QString code, int total)
 
 void DeckHandler::newDeckCardOutsider(QString code, int id)
 {
-    newDeckCard(code, 1, false, id);
+    newDeckCard(code, 1, false, true, id);
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool add, int id)
+void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, int id)
 {
-    bool outsider = (id >= this->firstOutsiderId);
+    outsider = outsider || (id >= this->firstOutsiderId);
     if(outsider)
     {
         if(code.isEmpty() && this->lastCreatedByCode.isEmpty())     return;
@@ -742,33 +742,30 @@ void DeckHandler::playerCardToHand(int id, QString code, int turn)
 
 void DeckHandler::drawFromDeck(QString code, int id)
 {
-    //En las mechanics JOUST se envia la carta desvelada (una copia creada de la carta, un outsider) de FRIENDLY PLAY --> EMPTY,
-    //se llama a playerCardDraw que incluira la carta en nuestro mazo (pero lo evitamos pq es un outsider)
-    bool outsider = (id >= this->firstOutsiderId);
-
-    if(outsider)
+    //Algunas cartas pueden ser outsiders teniendo un id inferior a moneda, cartas del mazo enemigo, como la comadreja
+    //Check outsiders (por id), todos los outsiders tienen id
+    for(int i=1; i<deckCardList.length(); i++)
     {
-        //Check outsiders (por id), todos los outsiders tienen id
-        for(int i=1; i<deckCardList.length(); i++)
+        DeckCard *card = &deckCardList[i];
+        if(card->isOutsider() && card->id == id)
         {
-            DeckCard *card = &deckCardList[i];
-            if(card->isOutsider() && card->id == id)
+            if(card->remaining > 1)
             {
-                if(card->remaining > 1)
-                {
-                    card->remaining--;
-                    card->draw();
-                }
-                else
-                {
-                    removeFromDeck(i);
-                    i--;
-                }
-                return;
+                card->remaining--;
+                card->draw();
             }
+            else
+            {
+                removeFromDeck(i);
+                i--;
+            }
+            return;
         }
     }
-    else
+
+    //Cualquier outsider deberia haber sido detectado ya. Ademas no queremos que los outsider se incluyan en el mazo de forma permanente.
+    bool outsider = (id >= this->firstOutsiderId);
+    if(!outsider)
     {
         //Check normal deck
         for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
