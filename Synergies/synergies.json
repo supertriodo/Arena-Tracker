@@ -311,7 +311,7 @@
 	"LOOT_209": ["spellAllSyn"],
 	"LOOT_216": ["battlecry"],	
 	"LOOT_217": ["beastGen"],
-	"LOOT_218": [],
+	"LOOT_218": ["tokenGen"],
 	"LOOT_231": ["spellAllSyn"],
 	"LOOT_233": ["deathrattle","=GenMinionHealth1"],
 	"LOOT_306": ["deathrattle","demonSyn"],
