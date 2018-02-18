@@ -170,7 +170,8 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 
 void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
 {
-    Q_UNUSED(loadingScreenState);
+    bool wildArena = true;
+    bool showWildSecrets = (loadingScreenState == arena && wildArena);
 
     ActiveSecret activeSecret;
     activeSecret.id = id;
@@ -183,22 +184,22 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
-//            activeSecret.children.append(SecretCard(AVENGE));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
-//            activeSecret.children.append(SecretCard(SACRED_TRIAL));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
             activeSecret.children.append(SecretCard(GETAWAY_KODO));
-//            activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
         break;
 
         case HUNTER:
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
-//            activeSecret.children.append(SecretCard(BEAR_TRAP));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
-//            activeSecret.children.append(SecretCard(DART_TRAP));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(WANDERING_MONSTER));
             activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
             activeSecret.children.append(SecretCard(CAT_TRICK));
@@ -210,11 +211,11 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         case MAGE:
             activeSecret.children.append(SecretCard(FROZEN_CLONE));
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-//            activeSecret.children.append(SecretCard(DDUPLICATE));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(EXPLOSIVE_RUNES));
             activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
-//            activeSecret.children.append(SecretCard(EFFIGY));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(MANA_BIND));
@@ -360,7 +361,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
     else if(code == FROZEN_CLONE && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
     else if(code == CHEAT_DEATH && !lastMinionDead.isEmpty())   emit revealCreatedByCard(lastMinionDead, code, 1);
-//    else if(code == DDUPLICATE && !lastMinionDead.isEmpty())         emit revealCreatedByCard(lastMinionDead, code, 2);
+    else if(code == DDUPLICATE && !lastMinionDead.isEmpty())    emit revealCreatedByCard(lastMinionDead, code, 2);
 }
 
 
@@ -467,7 +468,7 @@ void SecretsHandler::playerBattlecryObjHeroPlayed()
 
 void SecretsHandler::playerHeroPower()
 {
-//    discardSecretOptionNow(DART_TRAP);
+    discardSecretOptionNow(DART_TRAP);
 }
 
 
@@ -484,12 +485,12 @@ void SecretsHandler::playerMinionPlayed(QString code, int playerMinions)
     discardSecretOptionNow(SNIPE);
     discardSecretOptionNow(HIDDEN_CACHE);
 
-    /*if(playerMinions>3)
+    if(playerMinions>3)
     {
         discardSecretOptionNow(SACRED_TRIAL);
         discardSecretOption(REPENTANCE);//Ocultado por SACRED_TRIAL
     }
-    else    */discardSecretOptionNow(REPENTANCE);
+    else    discardSecretOptionNow(REPENTANCE);
 
 }
 
@@ -498,8 +499,8 @@ void SecretsHandler::enemyMinionDead(QString code)
 {
     if(lastMinionDead.isEmpty())    lastMinionDead = code;
 
-//    discardSecretOptionNow(DDUPLICATE);
-//    discardSecretOptionNow(EFFIGY);
+    discardSecretOptionNow(DDUPLICATE);
+    discardSecretOptionNow(EFFIGY);
     discardSecretOptionNow(REDEMPTION);
     discardSecretOptionNow(GETAWAY_KODO);
 
@@ -509,13 +510,13 @@ void SecretsHandler::enemyMinionDead(QString code)
 
 void SecretsHandler::avengeTested()
 {
-//    discardSecretOptionNow(AVENGE);
+    discardSecretOptionNow(AVENGE);
 }
 
 
 void SecretsHandler::cSpiritTested()
 {
-//    discardSecretOptionNow(COMPETITIVE_SPIRIT);
+    discardSecretOptionNow(COMPETITIVE_SPIRIT);
 }
 
 
@@ -539,7 +540,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(ICE_BARRIER);
 
             discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
-//            discardSecretOptionNow(BEAR_TRAP);
+            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(MISDIRECTION);//Ocultado por EXPLOSIVE_TRAP
             discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
 
@@ -566,7 +567,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(ICE_BARRIER);
 
             discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
-//            discardSecretOptionNow(BEAR_TRAP);
+            discardSecretOptionNow(BEAR_TRAP);
             discardSecretOption(FREEZING_TRAP);//Ocultado por EXPLOSIVE_TRAP
             discardSecretOption(MISDIRECTION);//Ocultado por FREEZING_TRAP y EXPLOSIVE_TRAP
             discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
