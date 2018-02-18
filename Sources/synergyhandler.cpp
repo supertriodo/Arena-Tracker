@@ -381,18 +381,6 @@ void SynergyHandler::updateManaCounter(DeckCard &deckCard)
 }
 
 
-int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
-{
-    if(deckCard.getCode() == NERUBIAN_PROPHET)  return 3;
-    if(deckCard.getCode() == MOLTEN_BLADE)  return 4;
-    if(deckCard.getCode() == SHIFTER_ZERUS)  return 4;
-    if(deckCard.getCode() == SHIFTING_SCROLL)  return 4;
-    if(deckCard.getCode() == CORRIDOR_CREEPER)  return 4;
-
-    return std::min(10, deckCard.getCost());
-}
-
-
 void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
@@ -2492,6 +2480,18 @@ bool SynergyHandler::isSpawnEnemySyn(const QString &code)
     return false;
 }
 
+
+int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
+{
+    if(deckCard.getCode() == NERUBIAN_PROPHET)  return 3;
+    if(deckCard.getCode() == MOLTEN_BLADE)  return 4;
+    if(deckCard.getCode() == SHIFTER_ZERUS)  return 4;
+    if(deckCard.getCode() == SHIFTING_SCROLL)  return 4;
+    if(deckCard.getCode() == CORRIDOR_CREEPER)  return 4;
+    if(deckCard.getCode() == FORBIDDEN_SHAPING) return 4;
+
+    return std::min(10, deckCard.getCost());
+}
 
 
 /*
