@@ -1,5 +1,4 @@
 #include "planhandler.h"
-#include "mainwindow.h"
 #include "themehandler.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>

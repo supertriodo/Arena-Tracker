@@ -3613,7 +3613,7 @@ void MainWindow::testPlan()
 
 void MainWindow::testSynergies()
 {
-//    draftHandler->debugSynergiesSet("LOOTAPALOOZA");
+//    draftHandler->debugSynergiesSet("GVG");
 //    draftHandler->debugSynergiesCode("LOOT_520");
 //    draftHandler->testSynergies();
 }
@@ -3621,6 +3621,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testDelay()
 {
+//    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
 //    testSynergies();
 }
 
@@ -3630,6 +3631,10 @@ void MainWindow::testDelay()
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
+//Hacer el delay para buscar tag change 1sec no mas, sino se puede pasar a otro turno
+//Hallazeal the ascended solo puede poner addons en heroes
+//Incluir dano y healing en el addon en replay
+//Actualizar synergiesVersion
 
 //Twitch integration
 //HSReplay support

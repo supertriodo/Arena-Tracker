@@ -2559,13 +2559,14 @@ STEALTH: stealthGen <--> reachGen(no atk1)
 
 
 
+
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no). Synergias con todo tu mazo son faciles, como robar 2 murlocs.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn)
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
-1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0.
+1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
 +si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
 +tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
