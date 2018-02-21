@@ -2028,7 +2028,7 @@ void MainWindow::closeLogFile()
 void MainWindow::createDataDir()
 {
     Utility::createDir(Utility::dataPath());
-//    removeHSCards();//Redownload HSCards en esta version
+    removeHSCards();//Redownload HSCards en esta version
     if(Utility::createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
