@@ -3634,9 +3634,8 @@ void MainWindow::testDelay()
 //Hacer el delay para buscar tag change 1sec no mas, sino se puede pasar a otro turno
 //Hallazeal the ascended solo puede poner addons en heroes
 //Incluir dano y healing en el addon en replay
-//Anciano prohibido es coste 4 para mana avg, repasar todas las cartas de coste 0/1/2/3
+//Cambiar el coste para mana avg de cartas con overload
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
-//Actualizar synergiesVersion
 
 //Twitch integration
 //HSReplay support
