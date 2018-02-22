@@ -619,7 +619,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
 
     if(!this->inArena && !outsider)   enableDeckButtonSave();
 
-    emit pDebug("Add to deck" + (outsider?QString(" OUTSIDER"):QString("")) + ": (" + QString::number(total) + ")" +
+    emit pDebug("Add to deck" + (outsider?QString(" (OUTSIDER)"):QString("")) + ": (" + QString::number(total) + ")" +
                 Utility::getCardAttribute(code, "name").toString());
 }
 
@@ -753,9 +753,12 @@ void DeckHandler::drawFromDeck(QString code, int id)
             {
                 card->remaining--;
                 card->draw();
+                emit pDebug("Draw outsider: " + card->getName() + ". " +
+                            QString::number(card->remaining) + " left.");
             }
             else
             {
+                emit pDebug("Draw outsider: " + card->getName() + "None left.");
                 removeFromDeck(i);
                 i--;
             }
@@ -776,6 +779,8 @@ void DeckHandler::drawFromDeck(QString code, int id)
                 {
                     it->remaining--;
                     it->draw();
+                    emit pDebug("Draw card: " + it->getName() + ". " +
+                                QString::number(it->remaining) + "/" + QString::number(it->total) + " left.");
                 }
                 //it->remaining == 0
                 //Reajustamos el mazo si tiene unknown cards
@@ -796,7 +801,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
                     it->draw();
 
                     emit pDebug("New card: " + it->getName() + ". " +
-                                QString::number(it->remaining) + "/" + QString::number(it->total));
+                                QString::number(it->remaining) + "/" + QString::number(it->total) + " left.");
                 }
 
                 //Id -- Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
@@ -807,7 +812,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
         }
 
         emit pDebug("New card: " +
-                          Utility::getCardAttribute(code, "name").toString() + ". 0/1");
+                          Utility::getCardAttribute(code, "name").toString());
         newDeckCard(code);
         drawFromDeck(code, id);
     }
@@ -816,22 +821,19 @@ void DeckHandler::drawFromDeck(QString code, int id)
 
 void DeckHandler::returnToDeck(QString code, int id)
 {
-    //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+    //Carta devuelta al mazo en mulligan. Solo devuelve cartas que hayan salido de nuestro mazo, sino se tratara de un outsider
     if(cardId2Code.contains(id))
     {
+        //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
         code = cardId2Code[id];
-    }
 
-    //Carta devuelta al mazo en mulligan.
-    if(!code.isEmpty())
-    {
         for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
         {
             if(it->getCode() == code && !it->isOutsider())
             {
                 it->remaining++;
                 it->draw();
-                emit pDebug("Return to deck: " + code + ". " +
+                emit pDebug("Add to deck (returned): " + code + ". " +
                             QString::number(it->remaining) + "/" + QString::number(it->total));
                 return;
             }

@@ -3636,6 +3636,8 @@ void MainWindow::testDelay()
 //Incluir dano y healing en el addon en replay
 //Cambiar el coste para mana avg de cartas con overload
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
+//Cambiar reclutador de toYourHand a tokenCardGen si vale 1
+//Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 
 //Twitch integration
 //HSReplay support

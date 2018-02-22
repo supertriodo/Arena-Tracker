@@ -46,6 +46,7 @@ private:
     QString lastCreatedByCode;
     BombWindow *bombWindow;
     //Nos permite saber el code de las starting cards para devolverlas al deck durante el mulligan.
+    //Tb permite identificar cartas originales de nuestro deck de outsiders
     QMap<int,QString> cardId2Code;
     //Lo usamos para diferenciar outsiders
     int firstOutsiderId;

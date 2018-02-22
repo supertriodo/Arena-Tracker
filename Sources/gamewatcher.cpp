@@ -1259,6 +1259,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 discard = true;
             }
             //Carta devuelta al mazo en Mulligan
+            //(Quizas sea util verificar que estamos en el turno 1 o puede dar problemas en el futuro)
             else if(zoneTo == "FRIENDLY DECK")
             {
                 emit pDebug("Player: Starting card returned: " + name + " ID: " + id, numLine);
