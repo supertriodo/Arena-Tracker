@@ -1,8 +1,8 @@
 {
 	"versionFree": ["v6.3","v6.12","v6.2"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.2/Arena.Tracker.v6.2.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.2/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.2/Arena.Tracker.v6.2.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.2/Arena.Tracker.v6.2.Windows.zip",
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Windows.zip",
 	"log": "Now you can organize AT through different windows creating your own setup. New windows are created by dragging out tabs from the main window. This feature was voted by tier 5$+ patrons.<br><br>Check it on action in this <a href='https://youtu.be/d6olTrW66Zg'>video</a><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.3'>github</a>"
 }
