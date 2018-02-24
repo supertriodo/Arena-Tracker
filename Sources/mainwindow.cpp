@@ -3639,7 +3639,7 @@ void MainWindow::testDelay()
 //Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 //Mirar bug streamer, tooltip carta no se oculta
 //Fix autosize con outsiders
-//Incluir video detach en guia
+//Incluir video detach en guia / incluir posts deck mechanics
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
 
 //Twitch integration
