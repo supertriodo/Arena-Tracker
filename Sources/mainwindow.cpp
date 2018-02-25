@@ -1032,17 +1032,6 @@ void MainWindow::completeUI()
     ThemeHandler::defaultEmptyValues();
     ui->tabWidget->clear();//Rellenado en spreadTheme
 
-    ui->tabWidgetH2 = new MoveTabWidget(this);
-    ui->tabWidgetH2->hide();
-    ui->gridLayout->addWidget(ui->tabWidgetH2, 0, 1);
-    ui->tabWidgetH3 = new MoveTabWidget(this);
-    ui->tabWidgetH3->hide();
-    ui->gridLayout->addWidget(ui->tabWidgetH3, 0, 2);
-    ui->tabWidgetV1 = new MoveTabWidget(this);
-    ui->tabWidgetV1->hide();
-    ui->tabWidgetV1->setTabBarAutoHide(true);
-    ui->gridLayout->addWidget(ui->tabWidgetV1, 1, 0);
-
     ui->progressBar->setVisible(false);
     ui->progressBar->setMaximum(100);
     ui->progressBar->setValue(100);
@@ -2581,14 +2570,10 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
         if(inTabEnemy && enemyHandHandler->isEmpty())
         {
             Utility::fadeInWidget(ui->tabWidget->tabBar());
-            Utility::fadeInWidget(ui->tabWidgetH2->tabBar());
-            Utility::fadeInWidget(ui->tabWidgetH3->tabBar());
         }
         else
         {
             Utility::fadeOutWidget(ui->tabWidget->tabBar());
-            Utility::fadeOutWidget(ui->tabWidgetH2->tabBar());
-            Utility::fadeOutWidget(ui->tabWidgetH3->tabBar());
         }
         Utility::fadeOutWidget(ui->minimizeButton);
         Utility::fadeOutWidget(ui->closeButton);
@@ -2597,8 +2582,6 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
     else
     {
         Utility::fadeInWidget(ui->tabWidget->tabBar());
-        Utility::fadeInWidget(ui->tabWidgetH2->tabBar());
-        Utility::fadeInWidget(ui->tabWidgetH3->tabBar());
         Utility::fadeInWidget(ui->minimizeButton);
         Utility::fadeInWidget(ui->closeButton);
         Utility::fadeInWidget(ui->resizeButton);
@@ -2686,13 +2669,6 @@ void MainWindow::updateTabWidgetsTheme(bool transparent, bool resizing)
 {
     int maxWidth = ui->tabWidget->width() - ThemeHandler::borderWidth()*2 - SMALL_BUTTONS_H;
     ui->tabWidget->setTheme("left", maxWidth, resizing, transparent);
-
-    if(!resizing)
-    {
-        ui->tabWidgetH2->setTheme("center", ui->tabWidgetH2->width(), resizing, transparent);
-        ui->tabWidgetH3->setTheme("center", ui->tabWidgetH3->width(), resizing, transparent);
-        ui->tabWidgetV1->setTheme("left", ui->tabWidgetV1->width(), resizing, transparent);
-    }
 }
 
 
@@ -3638,6 +3614,7 @@ void MainWindow::testDelay()
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 //Mirar bug streamer, tooltip carta no se oculta
+//En transparente no mostrar fondo en mouse in si estas en tab de cartas
 //Fix autosize con outsiders
 //Incluir video detach en guia / incluir posts deck mechanics
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
