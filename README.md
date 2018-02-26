@@ -103,7 +103,7 @@ If you build on Mac check:
 * https://sourceforge.net/projects/libxls/
 * https://github.com/stevschmid/track-o-bot
 * https://github.com/probonopd/linuxdeployqt
-* Arena Tracker is a [HearthSim](http://hearthsim.info) project. Join us on [Discord](https://discord.gg/jDSGFhT).
+* Arena Tracker is a [HearthSim](http://hearthsim.info) project. Join us on [Discord](https://discord.gg/hearthsim).
 
 Thanks to all these projects ArenaTracker is possible.
 
