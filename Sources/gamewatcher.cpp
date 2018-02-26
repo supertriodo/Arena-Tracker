@@ -498,8 +498,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
             if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", Error);
-            else if(lastShowEntity.isPlayer)    emit playerMinionTagChange(lastShowEntity.id, "", tag, value);
-            else                                emit enemyMinionTagChange(lastShowEntity.id, "", tag, value);
+            else if(lastShowEntity.isPlayer)    emit playerBoardTagChange(lastShowEntity.id, "", tag, value);
+            else                                emit enemyBoardTagChange(lastShowEntity.id, "", tag, value);
         }
         //En un futuro quizas haya que distinguir entre cambios en zone HAND o PLAY, por ahora son siempre cambios en PLAY
     }
@@ -574,21 +574,13 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                    tag == "LINKED_ENTITY" || tag == "DURABILITY")
+                    tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
+                    tag == "COST")
             {
-                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
-                if(isPlayer)    emit playerMinionTagChange(id.toInt(), "", tag, value);
-                else            emit enemyMinionTagChange(id.toInt(), "", tag, value);
-            }
-            //Exploradora avida roba una carta y cambia su coste a 5, lo puede hacer en desconocido o en conocido
-            //Dejo ATK y HEALTH preparados por si en el futuro hay cartas que roban y cambian ATK o HEALTH (quitarlos del else anterior)
-            else if(tag == "COST"/* || tag == "ATK" || tag == "HEALTH"*/)
-            {
-                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CARD TAG_CHANGE(" + tag + ")=" + value +
-                            " -- Id: " + id, numLine);
-                if(isPlayer)    emit playerCardTagChange(id.toInt(), "", tag, value);
-                else            emit enemyCardTagChange(id.toInt(), "", tag, value);
+                if(isPlayer)    emit playerBoardTagChange(id.toInt(), "", tag, value);
+                else            emit enemyBoardTagChange(id.toInt(), "", tag, value);
             }
         }
 
@@ -610,33 +602,21 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             QString tag = match->captured(6);
             QString value = match->captured(7);
             bool isPlayer = (player.toInt() == playerID);
+            Q_UNUSED(zone);
 
 
-            if(zone == "PLAY")
+            if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
+                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                    tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
+                    tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
+                    tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
+                    tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
+                    tag == "COST")
             {
-                if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                        tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                        tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                        tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                        tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                        tag == "LINKED_ENTITY" || tag == "DURABILITY")
-                {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION TAG_CHANGE(" + tag + ")=" + value +
-                                " -- " + name + " -- Id: " + id, numLine);
-                    if(isPlayer)    emit playerMinionTagChange(id.toInt(), cardId, tag, value);
-                    else            emit enemyMinionTagChange(id.toInt(), cardId, tag, value);
-                }
-            }
-            //PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=Vigía de tormenta id=54 zone=DECK zonePos=0 cardId= player=2] tag=COST value=5
-            else// if(zone == "HAND")//A veces el cambio se hace en DECK justo antes de robarse (Exploradora avida roba una carta y cambia su coste a 5)
-            {
-                if(tag == "COST" || tag == "ATK" || tag == "HEALTH")
-                {
-                    emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": CARD TAG_CHANGE(" + tag + ")=" + value +
-                                " -- " + name + " -- Id: " + id, numLine);
-                    if(isPlayer)    emit playerCardTagChange(id.toInt(), cardId, tag, value);
-                    else            emit enemyCardTagChange(id.toInt(), cardId, tag, value);
-                }
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
+                            " -- " + name + " -- Id: " + id, numLine);
+                if(isPlayer)    emit playerBoardTagChange(id.toInt(), cardId, tag, value);
+                else            emit enemyBoardTagChange(id.toInt(), cardId, tag, value);
             }
         }
 
@@ -997,6 +977,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             bool advance = false;
             if(zoneFrom == "OPPOSING DECK")
             {
+                emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
                 advance = advanceTurn(false);
                 //Bug HS, aun no deberiamos conocer esta carta, no queremos que vaya a enemy deck tab hasta que sea jugada
                 //emit enemyKnownCardDraw(id.toInt(), cardId);
@@ -1005,12 +986,11 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 //Bug HS, aun no deberiamos conocer esta carta, no queremos que se muestre en hand tab
                 emit enemyCardDraw(id.toInt(), turnReal);
                 if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
-                emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
             }
             else
             {
-                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
                 emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
             }
         }
 
@@ -1019,6 +999,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
             {
+                emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
                 bool advance = false;
                 if(zoneFrom == "FRIENDLY DECK")
                 {
@@ -1027,7 +1008,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
                 emit playerCardToHand(id.toInt(), cardId, turnReal);
                 if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
-                emit pDebug("Player: Known card to hand: " + name + " ID: " + id, numLine);
             }
             else
             {
@@ -1215,13 +1195,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Explorar un'goro vacia el deck a empty y lo rellena de explorar un'goro. PRO
         else if(zoneFrom == "FRIENDLY DECK" && zoneTo != "FRIENDLY DECK")
         {
+            emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
             //El avance de turno ocurre generalmente en (zoneTo == "FRIENDLY HAND") pero en el caso de overdraw ocurrira aqui.
             if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
             {
                 bool advance = advanceTurn(true);
                 if(advance)     emit newTurn(isPlayerTurn, turnReal);
             }
-            emit pDebug("Player: Card drawn: " + name + " ID: " + id, numLine);
             emit playerCardDraw(cardId, id.toInt());
         }
 

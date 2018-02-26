@@ -143,10 +143,8 @@ signals:
     void enemyWeaponZonePlayRemove(int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
-    void playerMinionTagChange(int id, QString code, QString tag, QString value);
-    void enemyMinionTagChange(int id, QString code, QString tag, QString value);
-    void playerCardTagChange(int id, QString code, QString tag, QString value);
-    void enemyCardTagChange(int id, QString code, QString tag, QString value);
+    void playerBoardTagChange(int id, QString code, QString tag, QString value);
+    void enemyBoardTagChange(int id, QString code, QString tag, QString value);
     void unknownTagChange(QString tag, QString value);
     void playerTagChange(QString tag, QString value);
     void enemyTagChange(QString tag, QString value);

@@ -156,6 +156,13 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
     updateMinionFromCard(minion);
     addMinion(friendly, minion, pos);
     emit checkCardImage(code, false);
+
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addMinionTagChange(tagChange, minion);
+    }
+    pendingTagChanges.remove(id);
 }
 
 
@@ -226,9 +233,17 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
 
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
     addMinion(friendly, minion, pos);
+    emit checkCardImage(code, false);
+
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addMinionTagChange(tagChange, minion);
+    }
+    pendingTagChanges.remove(id);
+
     if(this->lastTriggerId!=-1)         copyMinionToLastTurn(friendly, minion);
     else                                emit pDebug("Triggered minion creator not set.");
-    emit checkCardImage(code, false);
 }
 
 
@@ -442,6 +457,13 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
         else            nowBoard->enemyHero = hero;
     }
     emit checkCardImage(code, true);
+
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addHeroTagChange(tagChange);
+    }
+    pendingTagChanges.remove(id);
 }
 
 
@@ -586,78 +608,6 @@ bool PlanHandler::isLastMinionAddedValid()
 }
 
 
-void PlanHandler::playerCardTagChange(int id, QString code, QString tag, QString value)
-{
-    Q_UNUSED(code);
-    cardTagChange(id, true, tag, value);
-}
-
-
-void PlanHandler::enemyCardTagChange(int id, QString code, QString tag, QString value)
-{
-    Q_UNUSED(code);
-    cardTagChange(id, false, tag, value);
-}
-
-
-void PlanHandler::cardTagChange(int id, bool friendly, QString tag, QString value)
-{
-    TagChange tagChange;
-    tagChange.id = id;
-    tagChange.friendly = friendly;
-    tagChange.tag = tag;
-    tagChange.value = value;
-
-    CardGraphicsItem *card = findCard(friendly, id);
-    if(card == NULL)
-    {
-        QTimer::singleShot(2000, this, SLOT(checkCardPendingTagChanges()));
-        cardPendingTagChanges.append(tagChange);
-        emit pDebug("Append Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        return;
-    }
-
-    emit pDebug("Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-    card->processTagChange(tag, value);
-    cardTagChangePrevTurn(id, friendly, tag, value);
-
-    if(friendly && tag == "COST")
-    {
-        showManaPlayableCardsAuto();
-    }
-}
-
-
-void PlanHandler::checkCardPendingTagChanges()
-{
-    if(cardPendingTagChanges.isEmpty()) return;
-
-    TagChange tagChange = cardPendingTagChanges.takeFirst();
-    const int id = tagChange.id;
-    const bool friendly = tagChange.friendly;
-    const QString tag = tagChange.tag;
-    const QString value = tagChange.value;
-
-    CardGraphicsItem *card = findCard(friendly, id);
-    if(card == NULL)
-    {
-        //Try to find the minion on the board
-        emit pDebug("Pending Tag Change Card, id not found, looking into minions: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        addMinionTagChange(id, friendly, tag, value);
-        return;
-    }
-
-    emit pDebug("Pending Tag Change Card: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-    card->processTagChange(tag, value);
-    cardTagChangePrevTurn(id, friendly, tag, value);
-
-    if(friendly && tag == "COST")
-    {
-        showManaPlayableCardsAuto();
-    }
-}
-
-
 void PlanHandler::cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value)
 {
     if(turnBoards.empty())  return;
@@ -674,7 +624,7 @@ void PlanHandler::cardTagChangePrevTurn(int id, bool friendly, QString tag, QStr
 }
 
 
-void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QString value)
+void PlanHandler::playerBoardTagChange(int id, QString code, QString tag, QString value)
 {
     if(tag == "LINKED_ENTITY" && !code.isEmpty() &&
         nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == value.toInt())
@@ -682,11 +632,11 @@ void PlanHandler::playerMinionTagChange(int id, QString code, QString tag, QStri
         addAddonToLastTurn(code, id, nowBoard->playerHero->getId(), Addon::AddonNeutral);
         addHero(true, code, id);
     }
-    else    addMinionTagChange(id, true, tag, value);
+    else    addBoardTagChange(id, true, tag, value);
 }
 
 
-void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QString value)
+void PlanHandler::enemyBoardTagChange(int id, QString code, QString tag, QString value)
 {
     if(tag == "LINKED_ENTITY" && !code.isEmpty() &&
         nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == value.toInt())
@@ -694,17 +644,17 @@ void PlanHandler::enemyMinionTagChange(int id, QString code, QString tag, QStrin
         addAddonToLastTurn(code, id, nowBoard->enemyHero->getId(), Addon::AddonNeutral);
         addHero(false, code, id);
     }
-    else    addMinionTagChange(id, false, tag, value);
+    else    addBoardTagChange(id, false, tag, value);
 }
 
 
 bool PlanHandler::updateInPendingTagChange(int id, QString tag, QString value)
 {
-    for(QList<TagChange>::iterator it = pendingTagChanges.begin(); it != pendingTagChanges.end(); it++)
+    for(QMap<int,TagChange>::iterator it = pendingTagChanges.begin(); it != pendingTagChanges.end(); it++)
     {
         if(it->id == id && it->tag == tag)
         {
-            emit pDebug("Pending Tag Change updated: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+            emit pDebug("Mapped Tag Change updated: Id: " + QString::number(id) + " - " + tag + " --> " + value);
             it->value = value;
             return true;
         }
@@ -713,7 +663,106 @@ bool PlanHandler::updateInPendingTagChange(int id, QString tag, QString value)
 }
 
 
-void PlanHandler::addMinionTagChange(int id, bool friendly, QString tag, QString value)
+void PlanHandler::addCardTagChange(const TagChange &tagChange, CardGraphicsItem *card)
+{
+    emit pDebug("Tag Change Card: Id: " + QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+    card->processTagChange(tagChange.tag, tagChange.value);
+    cardTagChangePrevTurn(tagChange.id, tagChange.friendly, tagChange.tag, tagChange.value);
+
+    if(tagChange.friendly && tagChange.tag == "COST")
+    {
+        showManaPlayableCardsAuto();
+    }
+}
+
+
+void PlanHandler::addMinionTagChange(const TagChange &tagChange, MinionGraphicsItem * minion)
+{
+    emit pDebug("Tag Change Minion: Id: " + QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+    checkAtkHealthChange(minion, tagChange.friendly, tagChange.tag, tagChange.value);
+    bool healing = minion->processTagChange(tagChange.tag, tagChange.value);
+    bool isDead = minion->isDead();
+    bool isHero = false;
+    if(tagChange.tag == "ATK" || tagChange.tag == "EXHAUSTED" || tagChange.tag == "WINDFURY" || tagChange.tag == "FROZEN")
+    {
+        updateMinionsAttack(tagChange.friendly);
+    }
+
+    addAddonTagChange(tagChange, healing, isDead, isHero);
+}
+
+
+void PlanHandler::addHeroTagChange(const TagChange &tagChange)
+{
+    HeroGraphicsItem* hero = (tagChange.friendly?nowBoard->playerHero:nowBoard->enemyHero);
+
+    emit pDebug("Tag Change " + QString(tagChange.friendly?"Player":"Enemy") + " Hero: Id: " +
+                QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+    bool healing = hero->processTagChange(tagChange.tag, tagChange.value);
+    bool isDead = hero->isDead();
+    bool isHero = true;
+
+    addAddonTagChange(tagChange, healing, isDead, isHero);
+}
+
+
+void PlanHandler::addHeroPowerTagChange(const TagChange &tagChange)
+{
+    HeroPowerGraphicsItem* heroPower = (tagChange.friendly?nowBoard->playerHeroPower:nowBoard->enemyHeroPower);
+
+    emit pDebug("Tag Change " + QString(tagChange.friendly?"Player":"Enemy") + " Hero Power: Id: " +
+                QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+    heroPower->processTagChange(tagChange.tag, tagChange.value);
+
+    if(tagChange.tag == "EXHAUSTED" && tagChange.value == "1" && !turnBoards.empty())
+    {
+        if(tagChange.friendly)  turnBoards.last()->playerHeroPower->processTagChange(tagChange.tag, tagChange.value);
+        else                    turnBoards.last()->enemyHeroPower->processTagChange(tagChange.tag, tagChange.value);
+    }
+}
+
+
+void PlanHandler::addWeaponTagChange(const TagChange &tagChange)
+{
+    WeaponGraphicsItem* weapon = (tagChange.friendly?nowBoard->playerWeapon:nowBoard->enemyWeapon);
+
+    emit pDebug("Tag Change " + QString(tagChange.friendly?"Player":"Enemy") + " Weapon: Id: " +
+                QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+    weapon->processTagChange(tagChange.tag, tagChange.value);
+}
+
+
+void PlanHandler::addAddonTagChange(const TagChange &tagChange, bool healing, bool isDead, bool isHero)
+{
+    if(!isDead && isLastPowerAddonValid(tagChange.tag, tagChange.value, tagChange.id, tagChange.friendly, isHero, healing))
+    {
+        if(tagChange.tag == "DAMAGE" || tagChange.tag == "ARMOR" || tagChange.tag == "CONTROLLER" || tagChange.tag == "TO_BE_DESTROYED" ||
+            tagChange.tag == "SHOULDEXITCOMBAT" || (tagChange.tag == "DIVINE_SHIELD" && tagChange.value == "0"))
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, healing?Addon::AddonLife:Addon::AddonDamage);
+
+            //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
+            if(isHero && tagChange.tag == "ARMOR" && tagChange.value == "0")
+            {
+                this->lastArmorRemoverIds.idAddon = this->lastPowerAddon.id;
+                this->lastArmorRemoverIds.idHero = tagChange.id;
+                emit pDebug("Last armor remover set.");
+            }
+        }
+        else if(
+                    tagChange.tag == "ATK" || tagChange.tag == "HEALTH" || tagChange.tag == "ZONE" ||
+                    tagChange.tag == "DIVINE_SHIELD" || tagChange.tag == "STEALTH" || tagChange.tag == "TAUNT" ||
+                    tagChange.tag == "CHARGE" || tagChange.tag == "FROZEN" || tagChange.tag == "WINDFURY" ||
+                    tagChange.tag == "SILENCED" || tagChange.tag == "AURA" || tagChange.tag == "CANT_BE_DAMAGED"
+               )
+        {
+            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, tagChange.id, Addon::AddonNeutral);
+        }
+    }
+}
+
+
+void PlanHandler::addBoardTagChange(int id, bool friendly, QString tag, QString value)
 {
     TagChange tagChange;
     tagChange.id = id;
@@ -721,69 +770,52 @@ void PlanHandler::addMinionTagChange(int id, bool friendly, QString tag, QString
     tagChange.tag = tag;
     tagChange.value = value;
 
-    bool healing = false;
-    bool isDead = true;
-    bool isHero = true;
-
     //Update if is in pendingTagChanges
     if(updateInPendingTagChange(id, tag, value)) return;
+
+    //Cards
+    CardGraphicsItem *card = findCard(friendly, id);
+    if(card != NULL)
+    {
+        addCardTagChange(tagChange, card);
+        return;
+    }
 
     //Minions
     MinionGraphicsItem * minion = findMinion(friendly, id);
     if(minion != NULL)
     {
-        emit pDebug("Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        checkAtkHealthChange(minion, friendly, tag, value);
-        healing = minion->processTagChange(tag, value);
-        isDead = minion->isDead();
-        isHero = false;
-        if(tag == "ATK" || tag == "EXHAUSTED" || tag == "WINDFURY" || tag == "FROZEN")      updateMinionsAttack(friendly);
+        addMinionTagChange(tagChange, minion);
     }
 
     //Heroes
     else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
     {
-        emit pDebug("Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->playerHero->processTagChange(tag, value);
-        isDead = nowBoard->playerHero->isDead();
-        isHero = true;
+        addHeroTagChange(tagChange);
     }
     else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == id)
     {
-        emit pDebug("Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->enemyHero->processTagChange(tag, value);
-        isDead = nowBoard->enemyHero->isDead();
-        isHero = true;
+        addHeroTagChange(tagChange);
     }
 
     //Heroe Powers
     else if(friendly && nowBoard->playerHeroPower!=NULL && nowBoard->playerHeroPower->getId() == id)
     {
-        emit pDebug("Tag Change Player Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->playerHeroPower->processTagChange(tag, value);
-        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->playerHeroPower->processTagChange(tag, value);
-        return;
+        addHeroPowerTagChange(tagChange);
     }
     else if(!friendly && nowBoard->enemyHeroPower!=NULL && nowBoard->enemyHeroPower->getId() == id)
     {
-        emit pDebug("Tag Change Enemy Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->enemyHeroPower->processTagChange(tag, value);
-        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->enemyHeroPower->processTagChange(tag, value);
-        return;
+        addHeroPowerTagChange(tagChange);
     }
 
     //Weapons
     else if(friendly && nowBoard->playerWeapon!=NULL && nowBoard->playerWeapon->getId() == id)
     {
-        emit pDebug("Tag Change Player Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->playerWeapon->processTagChange(tag, value);
-        return;
+        addWeaponTagChange(tagChange);
     }
     else if(!friendly && nowBoard->enemyWeapon!=NULL && nowBoard->enemyWeapon->getId() == id)
     {
-        emit pDebug("Tag Change Enemy Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->enemyWeapon->processTagChange(tag, value);
-        return;
+        addWeaponTagChange(tagChange);
     }
 
     //Pending tag change
@@ -796,142 +828,8 @@ void PlanHandler::addMinionTagChange(int id, bool friendly, QString tag, QString
         }
         else
         {
-            QTimer::singleShot(1000, this, SLOT(checkPendingTagChanges()));
-            pendingTagChanges.append(tagChange);
-            emit pDebug("Append Tag Change: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        }
-        return;
-    }
-
-
-    if(!isDead && isLastPowerAddonValid(tag, value, id, friendly, isHero, healing))
-    {
-        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT" ||
-            (tag == "DIVINE_SHIELD" && value == "0"))
-        {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, healing?Addon::AddonLife:Addon::AddonDamage);
-
-            //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
-            if(isHero && tag == "ARMOR" && value == "0")
-            {
-                this->lastArmorRemoverIds.idAddon = this->lastPowerAddon.id;
-                this->lastArmorRemoverIds.idHero = id;
-                emit pDebug("Last armor remover set.");
-            }
-        }
-        else if(
-                   tag == "ATK" || tag == "HEALTH" || tag == "ZONE" ||
-                   tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
-               )
-        {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, Addon::AddonNeutral);
-        }
-    }
-}
-
-
-void PlanHandler::checkPendingTagChanges()
-{
-    if(pendingTagChanges.isEmpty()) return;
-
-    TagChange tagChange = pendingTagChanges.takeFirst();
-    const int id = tagChange.id;
-    const bool friendly = tagChange.friendly;
-    const QString tag = tagChange.tag;
-    const QString value = tagChange.value;
-
-    bool healing = false;
-    bool isDead = true;
-    bool isHero = true;
-
-    //Minions
-    MinionGraphicsItem * minion = findMinion(friendly, id);
-    if(minion != NULL)
-    {
-        emit pDebug("Pending Tag Change Minion: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        checkAtkHealthChange(minion, friendly, tag, value);
-        healing = minion->processTagChange(tag, value);
-        isDead = minion->isDead();
-        isHero = false;
-        if(tag == "ATK" || tag == "EXHAUSTED" || tag == "WINDFURY" || tag == "FROZEN")      updateMinionsAttack(friendly);
-    }
-
-    //Heroes
-    else if(friendly && nowBoard->playerHero!=NULL && nowBoard->playerHero->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Player Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->playerHero->processTagChange(tag, value);
-        isDead = nowBoard->playerHero->isDead();
-        isHero = true;
-    }
-    else if(!friendly && nowBoard->enemyHero!=NULL && nowBoard->enemyHero->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Enemy Hero: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        healing = nowBoard->enemyHero->processTagChange(tag, value);
-        isDead = nowBoard->enemyHero->isDead();
-        isHero = true;
-    }
-
-    //Heroe Powers
-    else if(friendly && nowBoard->playerHeroPower!=NULL && nowBoard->playerHeroPower->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Player Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->playerHeroPower->processTagChange(tag, value);
-        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->playerHeroPower->processTagChange(tag, value);
-        return;
-    }
-    else if(!friendly && nowBoard->enemyHeroPower!=NULL && nowBoard->enemyHeroPower->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Enemy Hero Power: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->enemyHeroPower->processTagChange(tag, value);
-        if(tag == "EXHAUSTED" && value == "1" && !turnBoards.empty())   turnBoards.last()->enemyHeroPower->processTagChange(tag, value);
-        return;
-    }
-
-    //Weapons
-    else if(friendly && nowBoard->playerWeapon!=NULL && nowBoard->playerWeapon->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Player Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->playerWeapon->processTagChange(tag, value);
-        return;
-    }
-    else if(!friendly && nowBoard->enemyWeapon!=NULL && nowBoard->enemyWeapon->getId() == id)
-    {
-        emit pDebug("Pending Tag Change Enemy Weapon: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        nowBoard->enemyWeapon->processTagChange(tag, value);
-        return;
-    }
-
-    else
-    {
-        emit pDebug("Pending Tag Change, id not found: Id: " + QString::number(id) + " - " + tag + " --> " + value);
-        return;
-    }
-
-
-    if(!isDead && isLastPowerAddonValid(tag, value, id, friendly, isHero, healing))
-    {
-        if(tag == "DAMAGE" || tag == "ARMOR" || tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "SHOULDEXITCOMBAT" ||
-            (tag == "DIVINE_SHIELD" && value == "0"))
-        {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, healing?Addon::AddonLife:Addon::AddonDamage);
-
-            //Evita que un efecto que quita la armadura y hace algo de damage aparezca 2 veces
-            if(isHero && tag == "ARMOR" && value == "0")
-            {
-                this->lastArmorRemoverIds.idAddon = this->lastPowerAddon.id;
-                this->lastArmorRemoverIds.idHero = id;
-                emit pDebug("Last armor remover set.");
-            }
-        }
-        else if(
-                   tag == "ATK" || tag == "HEALTH" || tag == "ZONE" ||
-                   tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
-                   tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" || tag == "AURA" || tag == "CANT_BE_DAMAGED"
-               )
-        {
-            addAddonToLastTurn(this->lastPowerAddon.code, this->lastPowerAddon.id, id, Addon::AddonNeutral);
+            pendingTagChanges.insertMulti(id, tagChange);
+            emit pDebug("Tag Change Mapped: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         }
     }
 }
@@ -1232,6 +1130,13 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     //Add addon to last turn
     HeroGraphicsItem* heroLast = friendly?nowBoard->playerHero:nowBoard->enemyHero;
     if(heroLast != NULL)    addAddonToLastTurn(code, id, heroLast->getId(), Addon::AddonNeutral);
+
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addWeaponTagChange(tagChange);
+    }
+    pendingTagChanges.remove(id);
 }
 
 
@@ -1330,6 +1235,13 @@ void PlanHandler::addHeroPower(bool friendly, QString code, int id)
         else            nowBoard->enemyHeroPower = heroPower;
     }
     emit checkCardImage(code, false);
+
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addHeroPowerTagChange(tagChange);
+    }
+    pendingTagChanges.remove(id);
 }
 
 
@@ -1594,6 +1506,13 @@ CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QS
     if(!code.isEmpty())             emit checkCardImage(code, false);
     if(!createdByCode.isEmpty())    emit checkCardImage(createdByCode, false);
 
+    //Pending Tag Changes
+    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    {
+        addCardTagChange(tagChange, card);
+    }
+    pendingTagChanges.remove(id);
+
     //Show card draw last turn
     if(!turnBoards.empty())
     {
@@ -1770,6 +1689,7 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
             nowBoard->enemyHero->setResources(10);
         }
     }
+    pendingTagChanges.clear();
 
     //Store nowBoard
     turnBoards.append(copyBoard(nowBoard, numTurn));

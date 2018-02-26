@@ -59,7 +59,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
-    QList<TagChange> pendingTagChanges, cardPendingTagChanges;
+    QMap<int,TagChange> pendingTagChanges;
     Board *nowBoard;
     Board *viewBoard;
     Board *futureBoard;
@@ -97,7 +97,13 @@ private:
     void addReinforceToLastTurn(MinionGraphicsItem *parent, MinionGraphicsItem *child, Board *board);
     void updateMinionPos(bool friendly, int id, int pos);
     void removeMinion(bool friendly, int id);
-    void addMinionTagChange(int id, bool friendly, QString tag, QString value);
+    void addBoardTagChange(int id, bool friendly, QString tag, QString value);
+    void addCardTagChange(const TagChange &tagChange, CardGraphicsItem *card);
+    void addMinionTagChange(const TagChange &tagChange, MinionGraphicsItem *minion);
+    void addHeroTagChange(const TagChange &tagChange);
+    void addHeroPowerTagChange(const TagChange &tagChange);
+    void addWeaponTagChange(const TagChange &tagChange);
+    void addAddonTagChange(const TagChange &tagChange, bool healing, bool isDead, bool isHero);
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id, bool stolen=false);
     void addHero(bool friendly, QString code, int id);
@@ -135,7 +141,6 @@ private:
     void fixTurn1Card();    
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();
-    void cardTagChange(int id, bool friendly, QString tag, QString value);
     void cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value);
     bool updateInPendingTagChange(int id, QString tag, QString value);
     void createGraphicsItemSender();
@@ -182,7 +187,6 @@ signals:
 
 private slots:
     void updateViewCardZoneSpots();
-    void checkPendingTagChanges();
     void setDeadProbs();
     void showSliderTurn(int turn);
     void showFirstTurn();
@@ -195,7 +199,6 @@ private slots:
     void showCardTooltip(QString code, QRect rectCard, int maxTop, int maxBottom);
     void minionWheel(MinionGraphicsItem *minion, bool up);
     void heroWheel(HeroGraphicsItem *hero, bool up);
-    void checkCardPendingTagChanges();
 
 public slots:
     void playerMinionZonePlayAdd(QString code, int id, int pos);
@@ -208,8 +211,8 @@ public slots:
     void enemyMinionZonePlayRemove(int id);
     void playerMinionPosChange(int id, int pos);
     void enemyMinionPosChange(int id, int pos);
-    void playerMinionTagChange(int id, QString code, QString tag, QString value);
-    void enemyMinionTagChange(int id, QString code, QString tag, QString value);
+    void playerBoardTagChange(int id, QString code, QString tag, QString value);
+    void enemyBoardTagChange(int id, QString code, QString tag, QString value);
     void playerHeroZonePlayAdd(QString code, int id);
     void enemyHeroZonePlayAdd(QString code, int id);
     void playerWeaponZonePlayAdd(QString code, int id);
@@ -241,8 +244,6 @@ public slots:
     void enemyTagChange(QString tag, QString value);
     void unknownTagChange(QString tag, QString value);
     void resizePlan();
-    void playerCardTagChange(int id, QString code, QString tag, QString value);
-    void enemyCardTagChange(int id, QString code, QString tag, QString value);
     void resetDeadProbs();
     void checkBomb(QString code);
     void showLastTurn();
