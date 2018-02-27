@@ -1698,6 +1698,10 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 
     //Avanza en now board
     if(viewBoard==nowBoard || viewBoard==futureBoard)   showLastTurn();
+
+#ifdef QT_DEBUG
+    if(DEBUG_REPLAY_AUTO_ADVANCE)   showNextTurn();//Auto avanzar turno para testing
+#endif
 }
 
 

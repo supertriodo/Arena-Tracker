@@ -13,6 +13,10 @@
 #include <QPropertyAnimation>
 
 
+#define REMOVE_CARDS_ON_VERSION_UPDATE false
+#define DEBUG_REPLAY_AUTO_ADVANCE false
+
+
 using namespace cv;
 
 #define ANIMATION_TIME 750

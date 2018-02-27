@@ -2013,7 +2013,7 @@ void MainWindow::closeLogFile()
 void MainWindow::createDataDir()
 {
     Utility::createDir(Utility::dataPath());
-    removeHSCards();//Redownload HSCards en esta version
+    if(REMOVE_CARDS_ON_VERSION_UPDATE)  removeHSCards();//Redownload HSCards en esta version
     if(Utility::createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
@@ -3600,12 +3600,11 @@ void MainWindow::testDelay()
 
 
 //TODDO
+//Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
-//Hacer el delay para buscar tag change 1sec no mas, sino se puede pasar a otro turno
 //Hallazeal the ascended solo puede poner addons en heroes
-//Incluir dano y healing en el addon en replay
 //Cambiar el coste para mana avg de cartas con overload
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
@@ -3665,6 +3664,8 @@ void MainWindow::testDelay()
 //El minion copiado por mirror entity no tiene las modificaciones a ataque o vida ya que estas no estan en append el suficiente tiempo.
 
 //Algunos esbirros creados con efecto de copia (manipulador ignoto) no tienen mareo de invocacion, en el log reciben exhausted --> 0
+
+//Lich heroes no ponen 5 armadura, no aparece el TAG_CHANGE en el log
 
 
 //SPECTATOR GAMES
