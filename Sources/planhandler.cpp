@@ -777,8 +777,11 @@ void PlanHandler::addBoardTagChange(int id, bool friendly, QString tag, QString 
     CardGraphicsItem *card = findCard(friendly, id);
     if(card != NULL)
     {
-        addCardTagChange(tagChange, card);
-        return;
+        if(tag == "COST" || tag == "ATK" || tag == "HEALTH")
+        {
+            addCardTagChange(tagChange, card);
+            return;
+        }
     }
 
     //Minions

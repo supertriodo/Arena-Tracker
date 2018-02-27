@@ -1483,7 +1483,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                     deckWindow->resize(QSize(deckWindow->width(), 1053));
                     deckWindow->move(0, 0);
                 }
-                this->resize(QSize(250, 540));
+                this->resize(QSize(270, 540));
                 this->move(2880, 0);
             }
             else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
@@ -3616,7 +3616,7 @@ void MainWindow::testDelay()
 //Reajustar grimestreet informant
 //Progress bar uploading games/draft to zerotoheroes
 //Imagenes de heroes al github (lichs, mayordomo, Jaraxxus)
-//Imagenes armas legendarias github
+
 
 //Twitch integration
 //HSReplay support

@@ -546,9 +546,10 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 void MinionGraphicsItem::updateStatsFromCard(CardGraphicsItem * card)
 {
     if(card->attack != card->origAttack)    this->attack = card->attack;
+    else                                    this->attack += card->buffAttack;
+
     if(card->health != card->origHealth)    this->health = card->health;
-    this->attack += card->buffAttack;
-    this->health += card->buffHealth;
+    else                                    this->health += card->buffHealth;
 }
 
 
