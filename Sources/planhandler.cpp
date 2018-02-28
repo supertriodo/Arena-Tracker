@@ -456,7 +456,8 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
         if(friendly)    nowBoard->playerHero = hero;
         else            nowBoard->enemyHero = hero;
     }
-    emit checkCardImage(code, true);
+    if(code.startsWith("HERO_"))    emit checkCardImage(code, true);
+    else                            emit checkCardImage("HERO_" + code, true);
 
     //Pending Tag Changes
     for(const TagChange &tagChange: pendingTagChanges.values(id))

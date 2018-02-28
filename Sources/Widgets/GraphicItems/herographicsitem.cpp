@@ -22,12 +22,15 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     int y = friendly?hMinion + HEIGHT/2:-hMinion - HEIGHT/2;
     this->setPos(x, y);
     this->setZValue(-20);
+
+    initHeroCode();
 }
 
 
 HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     :MinionGraphicsItem(copy)
 {
+    this->heroCode = copy->heroCode;
     this->armor = copy->armor;
     this->minionsAttack = copy->minionsAttack;
     this->minionsMaxAttack = copy->minionsMaxAttack;
@@ -56,7 +59,23 @@ void HeroGraphicsItem::changeHero(QString code, int id)
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->damage = 0;
     this->armor = Utility::getCardAttribute(code, "armor").toInt();
+
+    initHeroCode();
     update();
+}
+
+
+void HeroGraphicsItem::initHeroCode()
+{
+    if(code.startsWith("HERO_"))    heroCode = code;
+    else                            heroCode = "HERO_" + code;
+}
+
+
+void HeroGraphicsItem::checkDownloadedCode(QString code)
+{
+    if(this->heroCode == code)  this->update();
+    else    MinionGraphicsItem::checkDownloadedCode(code);
 }
 
 
@@ -376,10 +395,6 @@ void HeroGraphicsItem::sendHeroTotalAttackChange()
 void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     Q_UNUSED(option);
-
-    QString heroCode;
-    if(code.startsWith("HERO_"))    heroCode = code;
-    else                            heroCode = "HERO_" + code;
 
     QString heroCodePath = Utility::hscardsPath() + "/" + heroCode + ".png";
     if(QFileInfo(heroCodePath).exists())

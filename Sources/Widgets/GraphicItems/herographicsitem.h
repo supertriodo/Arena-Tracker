@@ -23,6 +23,7 @@ public:
 
 //Variables:
 private:
+    QString heroCode;
     int armor, minionsAttack, minionsMaxAttack, resources, resourcesUsed, spellDamage;
     bool showAllInfo;
     QList<SecretIcon> secretsList;
@@ -42,6 +43,7 @@ protected:
 
 private:
     void sendHeroTotalAttackChange();
+    void initHeroCode();
 
 public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
@@ -66,6 +68,7 @@ public:
     void addResourcesUsed(int value);
     int getAvailableResources();
     void damagePlanningMinion(int damage=1);
+    void checkDownloadedCode(QString code);
 };
 
 #endif // HEROGRAPHICSITEM_H
