@@ -2810,7 +2810,7 @@ QJsonArray PlanHandler::getJsonCardHistory()
 
 //Card exceptions
 //Cartas que no pueden poner addons ni en otros esbirros ni en heroes
-bool PlanHandler::isAddonCommonValid(QString code)
+bool PlanHandler::isAddonCommonValid(const QString &code)
 {
     if(code == IMP_GANG_BOSS)           return false;
     if(code == DRAGON_EGG)              return false;
@@ -2834,7 +2834,7 @@ bool PlanHandler::isAddonCommonValid(QString code)
 
 
 //Cartas que no pueden poner addons en heroes
-bool PlanHandler::isAddonHeroValid(QString code)
+bool PlanHandler::isAddonHeroValid(const QString &code)
 {
     if(code == ACIDMAW)                 return false;
     if(code == SIEGE_ENGINE)            return false;
@@ -2843,7 +2843,7 @@ bool PlanHandler::isAddonHeroValid(QString code)
 
 
 //Cartas que no pueden poner addons en otros esbirros
-bool PlanHandler::isAddonMinionValid(QString code)
+bool PlanHandler::isAddonMinionValid(const QString &code)
 {
     if(code == WRATHGUARD)              return false;
     if(code == AXE_FLINGER)             return false;
@@ -2857,7 +2857,7 @@ bool PlanHandler::isAddonMinionValid(QString code)
 
 
 //Cartas que no pueden crear otros esbirros
-bool PlanHandler::isLastTriggerValid(QString code)
+bool PlanHandler::isLastTriggerValid(const QString &code)
 {
     if(code == KNIFE_JUGGLER)           return false;
     if(code == ADDLED_GRIZZLY)          return false;

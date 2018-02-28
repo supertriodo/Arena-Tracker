@@ -119,11 +119,11 @@ private:
     void addHeroDeadToLastTurn(bool playerWon);
     bool isLastPowerAddonValid(QString tag, QString value, int idTarget, bool friendly, bool isHero, bool healing);
     bool isLastMinionAddedValid();
-    bool isLastTriggerValid(QString code);    
+    bool isLastTriggerValid(const QString &code);
     bool areThereAuras(bool friendly);    
-    bool isAddonMinionValid(QString code);
-    bool isAddonHeroValid(QString code);
-    bool isAddonCommonValid(QString code);    
+    bool isAddonMinionValid(const QString &code);
+    bool isAddonHeroValid(const QString &code);
+    bool isAddonCommonValid(const QString &code);
     void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);    
     void updateCardZoneSpots(bool friendly, Board *board=NULL);
     int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);

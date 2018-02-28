@@ -3600,6 +3600,8 @@ void MainWindow::testDelay()
 
 
 //TODDO
+//Eliminar ice block de secretos standard
+//Incluir portrait nuevo druid hero
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
@@ -3613,7 +3615,7 @@ void MainWindow::testDelay()
 //Fix autosize con outsiders
 //Incluir video detach en guia / incluir posts deck mechanics
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
-//Reajustar grimestreet informant
+//Reajustar grimestreet informant y todas multiclass
 //Progress bar uploading games/draft to zerotoheroes
 //Imagenes de heroes al github (lichs, mayordomo, Jaraxxus)
 
@@ -3696,6 +3698,7 @@ void MainWindow::testDelay()
 //--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
 //--Update synergies.json
+//--Crear imagenes de nuevos heroes en el github (HERO_***)
 
 //STANDARD CYCLE
 //Remove secrets rotating out

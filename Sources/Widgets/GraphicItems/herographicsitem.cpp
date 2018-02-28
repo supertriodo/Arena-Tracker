@@ -3,10 +3,11 @@
 #include "../../themehandler.h"
 #include <QtWidgets>
 
-HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
+HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool playerTurn,
+                                   GraphicsItemSender *graphicsItemSender)
     :MinionGraphicsItem(code, id, friendly, playerTurn, graphicsItemSender)
 {
-    this->armor = 0;
+    this->armor = Utility::getCardAttribute(code, "armor").toInt();
     this->exausted = false;
     this->hero = true;
     this->minionsAttack = this->minionsMaxAttack = 0;
@@ -54,7 +55,7 @@ void HeroGraphicsItem::changeHero(QString code, int id)
     this->attack = this->origAttack = 0;
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->damage = 0;
-    this->armor = 0;
+    this->armor = Utility::getCardAttribute(code, "armor").toInt();
     update();
 }
 
@@ -376,11 +377,16 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 {
     Q_UNUSED(option);
 
-    if(code.startsWith("HERO_"))
+    QString heroCode;
+    if(code.startsWith("HERO_"))    heroCode = code;
+    else                            heroCode = "HERO_" + code;
+
+    QString heroCodePath = Utility::hscardsPath() + "/" + heroCode + ".png";
+    if(QFileInfo(heroCodePath).exists())
     {
         QRectF target = QRectF( -80, -92, 160, 184);
         QRectF source(34, 112, 240, 276);
-        QPixmap pixmap(Utility::hscardsPath() + "/" + code + ".png");
+        QPixmap pixmap(heroCodePath);
         painter->drawPixmap(target, pixmap, source);
     }
 
