@@ -3606,7 +3606,6 @@ void MainWindow::testDelay()
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
-//Cambiar el coste para mana avg de cartas con overload
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 //Mirar bug streamer, tooltip carta no se oculta
