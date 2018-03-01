@@ -3606,18 +3606,14 @@ void MainWindow::testDelay()
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
-//Hallazeal the ascended solo puede poner addons en heroes
 //Cambiar el coste para mana avg de cartas con overload
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 //Mirar bug streamer, tooltip carta no se oculta
 //En transparente no mostrar fondo en mouse in si estas en tab de cartas
 //Fix autosize con outsiders
-//Incluir video detach en guia / incluir posts deck mechanics
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
-//Reajustar grimestreet informant y todas multiclass
 //Progress bar uploading games/draft to zerotoheroes
-//Imagenes de heroes al github (lichs, mayordomo, Jaraxxus)
 
 
 //Twitch integration

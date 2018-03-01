@@ -2853,6 +2853,7 @@ bool PlanHandler::isAddonMinionValid(const QString &code)
     if(code == TRUESILVER_CHAMPION)     return false;
     if(code == BITTERTIDE_HYDRA)        return false;
     if(code == UNLICENSED_APOTHECARY)   return false;
+    if(code == HALLAZEAL_THE_ASCENDED)  return false;
     return isAddonCommonValid(code);
 }
 
