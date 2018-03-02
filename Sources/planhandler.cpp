@@ -1775,17 +1775,37 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     if(blockType == "TRIGGER" || blockType == "JOUST")
     {
         if(isLastTriggerValid(code))    this->lastTriggerId = id;
-        else                            emit pDebug("Trigger creator code is in the forbidden list: " + code, Warning);
-        this->lastPowerAddon.code = code;
-        this->lastPowerAddon.id = id;
-        this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+        else
+        {
+            emit pDebug("Trigger creator code is in the forbidden list: " + code, Warning);
+            this->lastTriggerId = -1;
+        }
+
+        if(code.isEmpty())
+        {
+            this->lastPowerAddon.id = -1;
+        }
+        else
+        {
+            this->lastPowerAddon.code = code;
+            this->lastPowerAddon.id = id;
+            this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+        }
     }
     else if(blockType == "POWER")
     {
         this->lastTriggerId = idTarget;
-        this->lastPowerAddon.code = code;
-        this->lastPowerAddon.id = id;
-        this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
+        if(code.isEmpty())
+        {
+            this->lastPowerAddon.id = -1;
+        }
+        else
+        {
+            this->lastPowerAddon.code = code;
+            this->lastPowerAddon.id = id;
+            this->lastPowerTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+        }
     }
     else if(blockType == "FATIGUE")
     {

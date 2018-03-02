@@ -3613,6 +3613,7 @@ void MainWindow::testDelay()
 //Fix autosize con outsiders
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
 //Progress bar uploading games/draft to zerotoheroes
+//Lesser Mithril Spellstone (warrior) no addons
 
 
 //Twitch integration
@@ -3629,6 +3630,7 @@ void MainWindow::testDelay()
 //Mostrar BY: cards en mano enemiga conocidas como la carta especifica. P.Ej: BY: Gilded gargoyle es siempre moneda
 ////Show cards drawn and discarded when your hand is full on replay tab.
 //Add a countdown option to let you know how much time you have left until your turn ends.
+//Mostrar tooltip de cartas con atributos modificados
 
 
 
