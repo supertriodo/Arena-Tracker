@@ -2833,23 +2833,24 @@ QJsonArray PlanHandler::getJsonCardHistory()
 //Cartas que no pueden poner addons ni en otros esbirros ni en heroes
 bool PlanHandler::isAddonCommonValid(const QString &code)
 {
-    if(code == IMP_GANG_BOSS)           return false;
-    if(code == DRAGON_EGG)              return false;
-    if(code == ACOLYTE_OF_PAIN)         return false;
-    if(code == GURUBASHI_BERSERKER)     return false;
-    if(code == FROTHING_BERSEKER)       return false;
-    if(code == LIGHTWARDEN)             return false;
-    if(code == GOREHOWL)                return false;
-    if(code == LOREWALKER_CHO)          return false;
-    if(code == NERUBIAN_PROPHET)        return false;
-    if(code == SNAKE_TRAP)              return false;
-    if(code == ARMORED_WARHORSE)        return false;
-    if(code == DARKSHIRE_COUNCILMAN)    return false;
-    if(code == POLLUTED_HOARDER)        return false;
-    if(code == GLADIATORS_LONGBOW)      return false;
-    if(code == CANDLESHOT)              return false;
-    if(code == VENOMSTRIKE_TRAP)        return false;
-    if(code == CORRIDOR_CREEPER)        return false;
+    if(code == IMP_GANG_BOSS)               return false;
+    if(code == DRAGON_EGG)                  return false;
+    if(code == ACOLYTE_OF_PAIN)             return false;
+    if(code == GURUBASHI_BERSERKER)         return false;
+    if(code == FROTHING_BERSEKER)           return false;
+    if(code == LIGHTWARDEN)                 return false;
+    if(code == GOREHOWL)                    return false;
+    if(code == LOREWALKER_CHO)              return false;
+    if(code == NERUBIAN_PROPHET)            return false;
+    if(code == SNAKE_TRAP)                  return false;
+    if(code == ARMORED_WARHORSE)            return false;
+    if(code == DARKSHIRE_COUNCILMAN)        return false;
+    if(code == POLLUTED_HOARDER)            return false;
+    if(code == GLADIATORS_LONGBOW)          return false;
+    if(code == CANDLESHOT)                  return false;
+    if(code == VENOMSTRIKE_TRAP)            return false;
+    if(code == CORRIDOR_CREEPER)            return false;
+    if(code == LESSER_MITHRIL_SPELLSTONE)   return false;
     return true;
 }
 

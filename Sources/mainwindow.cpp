@@ -3613,7 +3613,6 @@ void MainWindow::testDelay()
 //Fix autosize con outsiders
 //Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
 //Progress bar uploading games/draft to zerotoheroes
-//Lesser Mithril Spellstone (warrior) no addons
 
 
 //Twitch integration
