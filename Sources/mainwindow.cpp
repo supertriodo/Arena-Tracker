@@ -3618,6 +3618,8 @@ void MainWindow::testDelay()
 //Twitch integration
 //HSReplay support
 
+//When detecting cards from a different hero in your deck, save your current deck if it has a name, and make a new deck.
+//Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.
 //Add a new element on deck mechanics overlay that tracks how heavy your deck is.
 //Show enemy cards revealed during a joust in a new section of enemy's deck tab to know they haven't been played yet.
 //Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.

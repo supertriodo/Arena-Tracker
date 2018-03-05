@@ -58,7 +58,7 @@ void HeroGraphicsItem::changeHero(QString code, int id)
     this->attack = this->origAttack = 0;
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->damage = 0;
-    this->armor = Utility::getCardAttribute(code, "armor").toInt();
+    this->armor += Utility::getCardAttribute(code, "armor").toInt();
 
     initHeroCode();
     update();
