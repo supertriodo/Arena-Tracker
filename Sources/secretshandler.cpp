@@ -129,7 +129,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         //Discover card, puede ser cualquier secreto standard, incluido los baneados de arena
         else if(!createdByCode.isEmpty())
         {
-            unknownSecretPlayed(id, hero, ranked);
+            unknownSecretPlayed(id, hero, loadingScreenState, true);
         }
         //Deck Card
         else
@@ -168,7 +168,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 }
 
 
-void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
+void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover)
 {
     bool wildArena = true;
     bool showWildSecrets = (loadingScreenState == arena && wildArena);
@@ -198,7 +198,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             if(showWildSecrets) activeSecret.children.append(SecretCard(BEAR_TRAP));
-            if(loadingScreenState != arena) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
+            if(loadingScreenState != arena || discover) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
             if(showWildSecrets) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(WANDERING_MONSTER));
             activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));

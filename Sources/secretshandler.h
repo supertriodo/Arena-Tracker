@@ -50,7 +50,7 @@ private:
     void discardSecretOption(QString code, int delay=8000);
     void discardSecretOptionNow(QString code);
     void checkLastSecretOption(ActiveSecret &activeSecret);
-    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
+    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover=false);
     void knownSecretPlayed(int id, CardClass hero, QString code);
 
 public:
