@@ -170,8 +170,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 
 void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover)
 {
-    bool wildArena = true;
-    bool showWildSecrets = (loadingScreenState == arena && wildArena);
+    bool showWildSecrets = (loadingScreenState == arena && WILD_ARENA);
 
     ActiveSecret activeSecret;
     activeSecret.id = id;

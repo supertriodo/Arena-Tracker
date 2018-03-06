@@ -3611,7 +3611,6 @@ void MainWindow::testDelay()
 //En transparente no mostrar fondo en mouse in si estas en tab de cartas
 //Fix autosize con outsiders
 //Progress bar uploading games/draft to zerotoheroes
-//Add defines for wildarena and multiclassarena
 
 
 //Twitch integration

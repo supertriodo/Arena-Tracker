@@ -15,6 +15,8 @@
 
 #define REMOVE_CARDS_ON_VERSION_UPDATE false
 #define DEBUG_REPLAY_AUTO_ADVANCE false
+#define WILD_ARENA true
+#define MULTICLASS_ARENA false
 
 
 using namespace cv;
