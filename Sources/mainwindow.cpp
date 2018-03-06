@@ -3607,12 +3607,11 @@ void MainWindow::testDelay()
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
-//Evitar que alarido psiquico mueva esbirros de bando en replay como entomb hacia
 //Mirar bug streamer, tooltip carta no se oculta
 //En transparente no mostrar fondo en mouse in si estas en tab de cartas
 //Fix autosize con outsiders
-//Bug: cards added to the opponent's hand through lorewalker cho don't show in his hand's tab
 //Progress bar uploading games/draft to zerotoheroes
+//Add defines for wildarena and multiclassarena
 
 
 //Twitch integration

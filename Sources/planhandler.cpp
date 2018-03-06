@@ -409,13 +409,13 @@ void PlanHandler::stealMinion(bool friendly, int id, int pos)
         minion->changeZone();
 
         //Engrave roba el esbirro en el log, y luego lo mata, lo evitamos. Usamos lastPowerAddon.code pq lastTrigger no guarda code.
-        if(this->lastPowerAddon.code != ENGRAVE)
+        if(this->lastPowerAddon.code == ENGRAVE || this->lastPowerAddon.code == PSYCHIC_SCREAM)
         {
-            copyMinionToLastTurn(!friendly, minion, -id);
+            emit pDebug("Avoid steal minion by Engrave/Psychic scream.");
         }
         else
         {
-            emit pDebug("Avoid steal minion by Engrave.");
+            copyMinionToLastTurn(!friendly, minion, -id);
         }
     }
 }
