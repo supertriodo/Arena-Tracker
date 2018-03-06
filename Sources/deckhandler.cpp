@@ -598,7 +598,7 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
         }
         insertDeckCard(deckCard);
         deckCard.draw();
-        emit checkCardImage(code);
+        if(!code.isEmpty()) emit checkCardImage(code);
         updateManaLimits();
     }
 
@@ -758,7 +758,7 @@ void DeckHandler::drawFromDeck(QString code, int id)
             }
             else
             {
-                emit pDebug("Draw outsider: " + card->getName() + "None left.");
+                emit pDebug("Draw outsider: " + card->getName() + " None left.");
                 removeFromDeck(i);
                 i--;
             }
@@ -770,6 +770,12 @@ void DeckHandler::drawFromDeck(QString code, int id)
     bool outsider = (id >= this->firstOutsiderId);
     if(!outsider)
     {
+        if(code.isEmpty())
+        {
+            emit pDebug("WARNING: Trying to remove an original card (!outsider) that is unknown from deck: ID: " + QString::number(id));
+            return;
+        }
+
         //Check normal deck
         for(QList<DeckCard>::iterator it = deckCardList.begin(); it != deckCardList.end(); it++)
         {
@@ -815,6 +821,10 @@ void DeckHandler::drawFromDeck(QString code, int id)
                           Utility::getCardAttribute(code, "name").toString());
         newDeckCard(code);
         drawFromDeck(code, id);
+    }
+    else
+    {
+        emit pDebug("WARNING: Ousider not found in deck: ID: " + QString::number(id));
     }
 }
 
@@ -1078,7 +1088,6 @@ void DeckHandler::cardRemove()
     enableDeckButtons();
 
     enableDeckButtonSave();
-    emit deckSizeChanged();
 }
 
 
@@ -1099,6 +1108,7 @@ void DeckHandler::removeFromDeck(int index)
     delete deckCardList[index].listItem;
     deckCardList.removeAt(index);
     updateManaLimits();
+    emit deckSizeChanged();
 }
 
 

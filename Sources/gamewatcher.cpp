@@ -939,7 +939,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         //Jugador, elimina OUTSIDER desconocido de deck
         else if(zoneFrom == "FRIENDLY DECK")
         {
-            emit pDebug("Player: Outsider unknown card removed from deck. ID: " + id, numLine);
+            emit pDebug("Player: Unknown card removed from deck. ID: " + id, numLine);
             emit playerCardDraw("", id.toInt());
         }
     }

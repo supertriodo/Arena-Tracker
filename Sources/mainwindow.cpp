@@ -1928,6 +1928,8 @@ void MainWindow::logReset()
 
 bool MainWindow::checkCardImage(QString code, bool isHero)
 {
+    if(code.isEmpty())  return true;
+
     QFileInfo cardFile(Utility::hscardsPath() + "/" + code + ".png");
 
     if(!cardFile.exists())
@@ -3609,7 +3611,6 @@ void MainWindow::testDelay()
 //Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Mirar bug streamer, tooltip carta no se oculta
 //En transparente no mostrar fondo en mouse in si estas en tab de cartas
-//Fix autosize con outsiders
 //Progress bar uploading games/draft to zerotoheroes
 
 
