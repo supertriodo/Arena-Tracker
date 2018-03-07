@@ -1622,11 +1622,13 @@ void MainWindow::spreadMouseInApp()
     else                                    updateOtherTabsTransparency();
 
     //Fade Bar
-    if(transparency==Transparent)
+    //En Transparent --> EnemyHandHandler::updateTransparency() se encarga de llamar a fadeBarAndButtons
+    if(transparency==Transparent && currentTab != ui->tabEnemy)
     {
         if(mouseInApp)      fadeBarAndButtons(false);
         else                fadeBarAndButtons(true);
     }
+    //En AutoTransparent --> DeckHandler/EnemyDeckHandler/EnemyHandHandler::updateTransparency() se encarga de llamar a fadeBarAndButtons
     else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck)
     {
         fadeBarAndButtons(false);
@@ -3604,13 +3606,12 @@ void MainWindow::testDelay()
 //TODDO
 //Eliminar ice block de secretos standard
 //Incluir portrait nuevo druid hero
+//Secreto paladin exclusivo arena
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
 //Prox version rebajar cartas
 //Primer deck mechanic dorado
-//Repasar cartas wild como nueva exp (king's elek) carta robada como BY:
 //Mirar bug streamer, tooltip carta no se oculta
-//En transparente no mostrar fondo en mouse in si estas en tab de cartas
 //Progress bar uploading games/draft to zerotoheroes
 
 

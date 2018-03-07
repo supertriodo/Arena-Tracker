@@ -196,7 +196,7 @@ void EnemyDeckHandler::insertDeckCard(DeckCard &deckCard)
 
 void EnemyDeckHandler::updateTransparency()
 {
-    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
+    if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
         ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemyDeck->repaint();

@@ -1168,7 +1168,7 @@ void DeckHandler::unlockDeckInterface()
 
 void DeckHandler::updateTransparency()
 {
-    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
+    if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
         ui->tabDeck->setAttribute(Qt::WA_NoBackground);
         ui->tabDeck->repaint();

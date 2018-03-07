@@ -357,15 +357,16 @@ void EnemyHandHandler::updateTransparency()
 {
     bool inTabEnemy = ui->tabWidget->currentWidget() == ui->tabEnemy;
 
-    if(!mouseInApp && (transparency==Transparent || (inGame && transparency==AutoTransparent)))
+    if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground);
         ui->tabEnemy->repaint();
 
         //Tambien nos hacemos cargo en transparency==Transparent para que se llame a MainWindowFade al empezar y terminar un juego
-        if(inTabEnemy && (transparency == Transparent || transparency == AutoTransparent))
+        if(inTabEnemy && (transparency==Transparent || transparency==AutoTransparent))
         {
-            emit needMainWindowFade(true);
+            if(mouseInApp)      emit needMainWindowFade(false);
+            else                emit needMainWindowFade(true);
         }
     }
     else
@@ -373,6 +374,7 @@ void EnemyHandHandler::updateTransparency()
         ui->tabEnemy->setAttribute(Qt::WA_NoBackground, false);
         ui->tabEnemy->repaint();
 
+        //transparency==Transparent nunca llegara hasta aqui
         if(inTabEnemy && transparency==AutoTransparent)
         {
             emit needMainWindowFade(false);
