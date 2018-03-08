@@ -3590,7 +3590,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("GVG");
-//    draftHandler->debugSynergiesCode("LOOT_520");
+//    draftHandler->debugSynergiesCode("GVG_022");
 //    draftHandler->testSynergies();
 }
 
@@ -3613,6 +3613,7 @@ void MainWindow::testDelay()
 //Primer deck mechanic dorado
 //Mirar bug streamer, tooltip carta no se oculta
 //Progress bar uploading games/draft to zerotoheroes
+//Resetear contador neo con cada nueva version
 
 
 //Twitch integration
