@@ -3395,7 +3395,9 @@ void MainWindow::checkFirstRunNewVersion()
 
     if(runVersion != VERSION)
     {
+        pDebug("First run of new version.");
         settings.setValue("allCardsDownloaded", false);
+        settings.setValue("neoInt", 0);
     }
 }
 
@@ -3613,7 +3615,6 @@ void MainWindow::testDelay()
 //Primer deck mechanic dorado
 //Mirar bug streamer, tooltip carta no se oculta
 //Progress bar uploading games/draft to zerotoheroes
-//Resetear contador neo con cada nueva version
 
 
 //Twitch integration
