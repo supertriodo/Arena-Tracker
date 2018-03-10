@@ -305,6 +305,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         playerMinions = 0;
         enemyMinions = 0;
         enemyMinionsAliveForAvenge = -1;
+        enemyMinionsDeadThisTurn = 0;
         startGameEpoch = QDateTime::currentMSecsSinceEpoch()/1000;
         tied = true;//Si no se encuentra WON no se llamara a createGameResult() pq tried sigue siendo true
 
@@ -1265,6 +1266,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
             {
                 emit enemyMinionDead(cardId);
+
+                //Avenge control
                 if(enemyMinionsAliveForAvenge == -1)
                 {
                     if(cardId == MAD_SCIENTIST)
@@ -1278,6 +1281,21 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     }
                 }
                 else    enemyMinionsAliveForAvenge--;
+
+                //Hand of salvation control
+                enemyMinionsDeadThisTurn++;
+                if(enemyMinionsDeadThisTurn > 1)
+                {
+                    if(cardId == MAD_SCIENTIST)
+                    {
+                        emit pDebug("Skip Hand of salvation testing (Mad Scientist died).", 0);
+                    }
+                    else
+                    {
+                        emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
+                        emit handOfSalvationTested();
+                    }
+                }
             }
         }
 
@@ -1472,6 +1490,8 @@ bool GameWatcher::advanceTurn(bool playerDraw)
             emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions), 0);
             emit cSpiritTested();
         }
+
+        enemyMinionsDeadThisTurn = 0; //Hand of salvation testing
     }
     return advance;
 }

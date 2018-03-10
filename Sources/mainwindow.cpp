@@ -971,6 +971,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(enemyMinionDead(QString)));
     connect(gameWatcher, SIGNAL(avengeTested()),
             secretsHandler, SLOT(avengeTested()));
+    connect(gameWatcher, SIGNAL(handOfSalvationTested()),
+            secretsHandler, SLOT(handOfSalvationTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int)),
@@ -3606,15 +3608,17 @@ void MainWindow::testDelay()
 
 
 //TODDO
+//Prox expansion rebajar cartas
 //Eliminar ice block de secretos standard
 //Incluir portrait nuevo druid hero
-//Secreto paladin exclusivo arena
+//Secreto paladin exclusivo arena, test, poner code y incluir como secreto(descomentar)
+//Repasar nuevas cartas arena como nueva expansion
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
-//Prox version rebajar cartas
 //Primer deck mechanic dorado
 //Mirar bug streamer, tooltip carta no se oculta
 //Progress bar uploading games/draft to zerotoheroes
+//Incluir todos los hero power en GameWatcher::isHeroPower
 
 
 //Twitch integration

@@ -183,6 +183,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
+//            activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//TODO
             if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
@@ -510,6 +511,12 @@ void SecretsHandler::enemyMinionDead(QString code)
 void SecretsHandler::avengeTested()
 {
     discardSecretOptionNow(AVENGE);
+}
+
+
+void SecretsHandler::handOfSalvationTested()
+{
+    discardSecretOptionNow(HAND_OF_SALVATION);
 }
 
 
