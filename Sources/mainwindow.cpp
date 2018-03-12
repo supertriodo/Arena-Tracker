@@ -3617,6 +3617,7 @@ void MainWindow::testDelay()
 //Dech mechanics redone with colors
 //Primer deck mechanic dorado
 //Progress bar uploading games/draft to zerotoheroes
+//Detectar pack legendarias en draft.
 
 
 //Twitch integration
