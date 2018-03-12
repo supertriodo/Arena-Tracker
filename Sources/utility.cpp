@@ -247,6 +247,81 @@ QString Utility::getCodeFromCardAttribute(QString attribute, QJsonValue value)
 }
 
 
+CardType Utility::getTypeFromCode(QString code)
+{
+    QString value = Utility::getCardAttribute(code, "type").toString();
+    if(value == "MINION")           return MINION;
+    else if(value == "SPELL")       return SPELL;
+    else if(value == "WEAPON")      return WEAPON;
+    else if(value == "ENCHANTMENT") return ENCHANTMENT;
+    else if(value == "HERO")        return HERO;
+    else if(value == "HERO_POWER")  return HERO_POWER;
+    else                            return INVALID_TYPE;
+}
+
+
+CardRarity Utility::getRarityFromCode(QString code)
+{
+    QString value = Utility::getCardAttribute(code, "rarity").toString();
+    if(value == "FREE")             return COMMON;
+    else if(value == "COMMON")      return COMMON;
+    else if(value == "RARE")        return RARE;
+    else if(value == "EPIC")        return EPIC;
+    else if(value == "LEGENDARY")   return LEGENDARY;
+    else                            return INVALID_RARITY;
+}
+
+
+CardRace Utility::getRaceFromCode(QString code)
+{
+    QString value = Utility::getCardAttribute(code, "race").toString();
+    if(value == "BLOODELF")         return BLOODELF;
+    else if(value == "DRAENEI")     return DRAENEI;
+    else if(value == "DWARF")       return DWARF;
+    else if(value == "GNOME")       return GNOME;
+    else if(value == "GOBLIN")      return GOBLIN;
+    else if(value == "HUMAN")       return HUMAN;
+    else if(value == "NIGHTELF")    return NIGHTELF;
+    else if(value == "ORC")         return ORC;
+    else if(value == "TAUREN")      return TAUREN;
+    else if(value == "TROLL")       return TROLL;
+    else if(value == "UNDEAD")      return UNDEAD;
+    else if(value == "WORGEN")      return WORGEN;
+    else if(value == "GOBLIN2")     return GOBLIN2;
+    else if(value == "MURLOC")      return MURLOC;
+    else if(value == "DEMON")       return DEMON;
+    else if(value == "SCOURGE")     return SCOURGE;
+    else if(value == "MECHANICAL")  return MECHANICAL;
+    else if(value == "ELEMENTAL")   return ELEMENTAL;
+    else if(value == "OGRE")        return OGRE;
+    else if(value == "BEAST")       return BEAST;
+    else if(value == "TOTEM")       return TOTEM;
+    else if(value == "NERUBIAN")    return NERUBIAN;
+    else if(value == "PIRATE")      return PIRATE;
+    else if(value == "DRAGON")      return DRAGON;
+    else                            return INVALID_RACE;
+}
+
+
+CardClass Utility::getClassFromCode(QString code)
+{
+    QString value = Utility::getCardAttribute(code, "playerClass").toString();
+    if(value == "")             return NEUTRAL;
+    else if(value == "NEUTRAL") return NEUTRAL;
+    else if(value == "DRUID")   return DRUID;
+    else if(value == "HUNTER")  return HUNTER;
+    else if(value == "MAGE")    return MAGE;
+    else if(value == "PALADIN") return PALADIN;
+    else if(value == "PRIEST")  return PRIEST;
+    else if(value == "ROGUE")   return ROGUE;
+    else if(value == "SHAMAN")  return SHAMAN;
+    else if(value == "WARLOCK") return WARLOCK;
+    else if(value == "WARRIOR") return WARRIOR;
+    else if(value == "DREAM")   return DREAM;
+    else                        return INVALID_CLASS;
+}
+
+
 bool Utility::isFromStandardSet(QString code)
 {
     QString cardSet = getCardAttribute(code, "set").toString();

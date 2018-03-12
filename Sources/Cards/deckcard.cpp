@@ -70,11 +70,11 @@ void DeckCard::setCode(QString code)
     if(!code.isEmpty())
     {
         cost = Utility::getCardAttribute(code, "cost").toInt();
-        type = getTypeFromString(Utility::getCardAttribute(code, "type").toString());
+        type = Utility::getTypeFromCode(code);
         name = Utility::getCardAttribute(code, "name").toString();
-        rarity = getRarityFromString(Utility::getCardAttribute(code, "rarity").toString());
-        cardClass = getClassFromString(Utility::getCardAttribute(code, "playerClass").toString());
-        cardRace = getRaceFromString(Utility::getCardAttribute(code, "race").toString());
+        rarity = Utility::getRarityFromCode(code);
+        cardClass = Utility::getClassFromCode(code);
+        cardRace = Utility::getRaceFromCode(code);
     }
     else
     {
@@ -98,11 +98,11 @@ void DeckCard::setCreatedByCode(QString code)
     if(!createdByCode.isEmpty())
     {
         cost = Utility::getCardAttribute(code, "cost").toInt();
-        type = getTypeFromString(Utility::getCardAttribute(code, "type").toString());
+        type = Utility::getTypeFromCode(code);
         name = Utility::getCardAttribute(code, "name").toString();
-        rarity = getRarityFromString(Utility::getCardAttribute(code, "rarity").toString());
-        cardClass = getClassFromString(Utility::getCardAttribute(code, "playerClass").toString());
-        cardRace = getRaceFromString(Utility::getCardAttribute(code, "race").toString());
+        rarity = Utility::getRarityFromCode(code);
+        cardClass = Utility::getClassFromCode(code);
+        cardRace = Utility::getRaceFromCode(code);
     }
     else
     {
@@ -119,77 +119,6 @@ void DeckCard::setCreatedByCode(QString code)
 QString DeckCard::getCreatedByCode()
 {
     return this->createdByCode;
-}
-
-
-CardRarity DeckCard::getRarityFromString(QString value)
-{
-    if(value == "FREE")             return COMMON;
-    else if(value == "COMMON")      return COMMON;
-    else if(value == "RARE")        return RARE;
-    else if(value == "EPIC")        return EPIC;
-    else if(value == "LEGENDARY")   return LEGENDARY;
-    else                            return INVALID_RARITY;
-}
-
-
-CardType DeckCard::getTypeFromString(QString value)
-{
-    if(value == "MINION")           return MINION;
-    else if(value == "SPELL")       return SPELL;
-    else if(value == "WEAPON")      return WEAPON;
-    else if(value == "ENCHANTMENT") return ENCHANTMENT;
-    else if(value == "HERO")        return HERO;
-    else if(value == "HERO_POWER")  return HERO_POWER;
-    else                            return INVALID_TYPE;
-}
-
-
-CardRace DeckCard::getRaceFromString(QString value)
-{
-    if(value == "BLOODELF")         return BLOODELF;
-    else if(value == "DRAENEI")     return DRAENEI;
-    else if(value == "DWARF")       return DWARF;
-    else if(value == "GNOME")       return GNOME;
-    else if(value == "GOBLIN")      return GOBLIN;
-    else if(value == "HUMAN")       return HUMAN;
-    else if(value == "NIGHTELF")    return NIGHTELF;
-    else if(value == "ORC")         return ORC;
-    else if(value == "TAUREN")      return TAUREN;
-    else if(value == "TROLL")       return TROLL;
-    else if(value == "UNDEAD")      return UNDEAD;
-    else if(value == "WORGEN")      return WORGEN;
-    else if(value == "GOBLIN2")     return GOBLIN2;
-    else if(value == "MURLOC")      return MURLOC;
-    else if(value == "DEMON")       return DEMON;
-    else if(value == "SCOURGE")     return SCOURGE;
-    else if(value == "MECHANICAL")  return MECHANICAL;
-    else if(value == "ELEMENTAL")   return ELEMENTAL;
-    else if(value == "OGRE")        return OGRE;
-    else if(value == "BEAST")       return BEAST;
-    else if(value == "TOTEM")       return TOTEM;
-    else if(value == "NERUBIAN")    return NERUBIAN;
-    else if(value == "PIRATE")      return PIRATE;
-    else if(value == "DRAGON")      return DRAGON;
-    else                            return INVALID_RACE;
-}
-
-
-CardClass DeckCard::getClassFromString(QString value)
-{
-    if(value == "")             return NEUTRAL;
-    else if(value == "NEUTRAL") return NEUTRAL;
-    else if(value == "DRUID")   return DRUID;
-    else if(value == "HUNTER")  return HUNTER;
-    else if(value == "MAGE")    return MAGE;
-    else if(value == "PALADIN") return PALADIN;
-    else if(value == "PRIEST")  return PRIEST;
-    else if(value == "ROGUE")   return ROGUE;
-    else if(value == "SHAMAN")  return SHAMAN;
-    else if(value == "WARLOCK") return WARLOCK;
-    else if(value == "WARRIOR") return WARRIOR;
-    else if(value == "DREAM")   return DREAM;
-    else                        return INVALID_CLASS;
 }
 
 

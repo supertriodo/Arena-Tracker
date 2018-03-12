@@ -53,10 +53,6 @@ protected:
     QPixmap draw(uint total, bool drawRarity, QColor nameColor=BLACK, bool resize=true);
     QPixmap drawCustomCard(QString customCode, QString customText);
     QColor getRarityColor();
-    CardRarity getRarityFromString(QString value);
-    CardType getTypeFromString(QString value);
-    CardClass getClassFromString(QString value);
-    CardRace getRaceFromString(QString value);
     QPixmap resizeCardHeight(QPixmap &canvas);
 
 public:

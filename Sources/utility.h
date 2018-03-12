@@ -99,6 +99,10 @@ public:
     static std::vector<Point2f> findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, QPointF &screenScale);
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
     static bool isLeftOfScreen(QPoint center);
+    static CardType getTypeFromCode(QString code);
+    static CardRarity getRarityFromCode(QString code);
+    static CardClass getClassFromCode(QString code);
+    static CardRace getRaceFromCode(QString code);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);
     static void dumpOnFile(const QByteArray &data, QString path);

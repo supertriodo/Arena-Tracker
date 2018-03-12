@@ -3616,9 +3616,7 @@ void MainWindow::testDelay()
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
 //Primer deck mechanic dorado
-//Mirar bug streamer, tooltip carta no se oculta
 //Progress bar uploading games/draft to zerotoheroes
-//Incluir todos los hero power en GameWatcher::isHeroPower
 
 
 //Twitch integration

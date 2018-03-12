@@ -1362,11 +1362,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 
 bool GameWatcher::isHeroPower(QString code)
 {
-    if( code=="CS2_102" || code=="CS2_083b" || code=="CS2_034" ||
-        code=="CS1h_001" || code=="CS2_056" || code=="CS2_101" ||
-        code=="CS2_017" || code=="DS1h_292" || code=="CS2_049")
-            return true;
-    else    return false;
+    return (Utility::getTypeFromCode(code) == HERO_POWER);
 }
 
 
