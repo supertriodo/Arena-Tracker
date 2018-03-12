@@ -568,6 +568,7 @@
 	"OG_311": ["discover"],
 	"OG_312": ["battlecry","returnSyn","weaponGen","pingGen"],
 	"OG_313": ["tokenSyn","attackBuffGen","healthBuffGen"],
+	"OG_315": ["battlecry","returnSyn"],
 	"OG_316": ["battlecry","returnSyn","tokenGen"],
 	"OG_317": ["deathrattle","dragonSyn"],
 	"OG_318": ["enrageGen","tauntGen"],
@@ -694,6 +695,7 @@
 
 
 		"CS2_181": ["EX1_392","CS2_104","OG_276","EX1_604","UNG_927","ICC_450"],
+		"OG_315": ["OG_312"],
 
 		"EX1_007": ["UNG_025"],
 		"ICC_289": ["ICC_855"],

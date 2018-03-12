@@ -568,6 +568,7 @@
 	"OG_311": [ "A Light in the Darkness" ],
 	"OG_312": ["N'Zoth's First Mate"],
 	"OG_313": [ "Addled Grizzly" ],
+	"OG_315": [ "Bloodsail Cultist" ],
 	"OG_316": ["Herald Volazj"],
 	"OG_317": [ "Deathwing, Dragonlord" ],
 	"OG_318": [ "Hogger, Doom of Elwynn" ],
@@ -735,6 +736,7 @@
 		"-----------------------------------------WARRIOR-----------------------------------------": "",
 		"CS2_181 Injured Blademaster": ["EX1_392 Battle Rage","CS2_104 Rampage","OG_276 Blood Warriors",
 			"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant"],
+		"OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
 
 		"-----------------------------------------SHAMAN-----------------------------------------": "",
 		"EX1_007 Acolyte of Pain": ["UNG_025 Volcano"],
