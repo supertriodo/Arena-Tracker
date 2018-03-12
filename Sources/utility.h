@@ -15,7 +15,7 @@
 
 #define REMOVE_CARDS_ON_VERSION_UPDATE false
 #define DEBUG_REPLAY_AUTO_ADVANCE false
-#define WILD_ARENA true
+#define WILD_ARENA false
 #define MULTICLASS_ARENA false
 
 
