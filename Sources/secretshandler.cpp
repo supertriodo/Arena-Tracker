@@ -183,7 +183,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
-//            activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//TODO
+            if(loadingScreenState == arena) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));
             if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));

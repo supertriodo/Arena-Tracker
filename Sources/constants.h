@@ -20,7 +20,7 @@
 
 
 //Secretos
-#define HAND_OF_SALVATION QString("TO_BE_DONE")
+#define HAND_OF_SALVATION QString("BCON_012")
 #define AVENGE QString("FP1_020")
 #define NOBLE_SACRIFICE QString("EX1_130")
 #define REPENTANCE QString("EX1_379")
