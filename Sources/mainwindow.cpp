@@ -2448,7 +2448,7 @@ void MainWindow::showWindowFrame(bool showFrame)
 {
     if(showFrame)
     {
-        this->setWindowFlags(Qt::Window|Qt::WindowStaysOnTopHint);
+        this->setWindowFlags(Qt::Window);//Incluir Qt::WindowStaysOnTopHint causa problemas en Mac (Bug no deminimizing)
     }
     else
     {
@@ -3608,10 +3608,10 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Prox expansion rebajar cartas
-//Eliminar ice block de secretos standard
-//Incluir portrait nuevo druid hero
-//Secreto paladin exclusivo arena, test, poner code y incluir como secreto(descomentar)
+////Prox expansion rebajar cartas
+////Eliminar ice block de secretos standard
+////Incluir portrait nuevo druid hero
+////Secreto paladin exclusivo arena, test, poner code y incluir como secreto(descomentar)
 //Repasar nuevas cartas arena como nueva expansion
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors

@@ -125,7 +125,7 @@ void DetachWindow::showWindowFrame(bool showFrame)
 {
     if(showFrame)
     {
-        this->setWindowFlags(Qt::Window|Qt::WindowStaysOnTopHint);
+        this->setWindowFlags(Qt::Window);//Incluir Qt::WindowStaysOnTopHint causa problemas en Mac (Bug no deminimizing)
     }
     else
     {
