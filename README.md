@@ -47,7 +47,7 @@ On **Windows and Mac**: Arena Tracker setup is done automatically unless you did
  * If the file doesn't exist create an empty log.config in that dir.
 3) Restart Hearthstone (if you have it opened).
 
-On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations. This process can take several minutes, I suggest you to empty your trash bin before to shorten it.
+On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations. This process can take several minutes, I suggest you to empty your trash bin before, to make it short.
 
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
