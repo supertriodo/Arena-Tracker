@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.31","v6.2","v6.3"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.3/Arena.Tracker.v6.3.Windows.zip",
-	"log": "Now you can organize AT through different windows creating your own setup. New windows are created by dragging out tabs from the main window. This feature was voted by tier 5$+ patrons.<br><br>Check it on action in this <a href='https://youtu.be/d6olTrW66Zg'>video</a><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.3'>github</a>"
+	"versionFree": ["v6.2","v6.3","v6.31"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Windows.zip",
+	"log": "This is a hotfix to allow drafting with different rarities, introduced in HS 10.4 patch.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.31'>github</a>"
 }
