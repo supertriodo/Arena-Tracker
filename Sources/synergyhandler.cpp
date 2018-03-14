@@ -2561,7 +2561,7 @@ SPAWN ENEMIES: spawnEnemyGen
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
-CHARGE: damageMinionsGen(no atk1) <--> reachGen(no atk1) <--> pingGen(atk1)
+CHARGE/RUSH: damageMinionsGen(no atk1) <--> reachGen(no atk1/no rush) <--> pingGen(atk1)
 STEALTH: stealthGen <--> reachGen(no atk1)
 
 

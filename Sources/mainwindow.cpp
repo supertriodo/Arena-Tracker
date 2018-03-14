@@ -3658,7 +3658,7 @@ void MainWindow::testDelay()
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico
-//++Update Json HA tierlist --> HATLsed.sh
+//--Update Json HA tierlist --> HATLsed.sh
 //--Update secrets
 //--Update bombing cards --> PlanHandler::isCardBomb
 //--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
@@ -3667,7 +3667,7 @@ void MainWindow::testDelay()
 //--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
 //--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//++Update synergies.json
+//--Update synergies.json
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
 
 //STANDARD CYCLE
