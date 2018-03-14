@@ -16,7 +16,7 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
   * I suggest downloading ArenaTracker.AppImage
-  * libpng12, libxcb-xinerama0 need to be installed on Ubuntu 16.04 LTS
+  * libpng12-0, libxcb-xinerama0 need to be installed on Ubuntu 16.04 LTS
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by [Strit](https://github.com/Strit).
 
 Extract the zip wherever you want and double click the executable, no installation required.
@@ -34,7 +34,7 @@ Arena Tracker will need to download all Hearthstone card images onto Hearthstone
 
 
 ##  First Run
-On Windows and Mac: Arena Tracker setup is done automatically unless you didn't install Hearthstone in its default dir. In that case the first time you run Arena Tracker you will be asked for:
+On **Windows and Mac**: Arena Tracker setup is done automatically unless you didn't install Hearthstone in its default dir. In that case the first time you run Arena Tracker you will be asked for:
 
 1) Logs dir location (If not default).
  * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Logs
@@ -47,7 +47,7 @@ On Windows and Mac: Arena Tracker setup is done automatically unless you didn't 
  * If the file doesn't exist create an empty log.config in that dir.
 3) Restart Hearthstone (if you have it opened).
 
-On Linux: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations.
+On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations. This process can take several minutes, I suggest you to empty your trash bin before, to make it short.
 
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
