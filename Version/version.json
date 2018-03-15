@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.2","v6.3","v6.31"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.31/Arena.Tracker.v6.31.Windows.zip",
-	"log": "This is a hotfix to allow drafting with different rarities, introduced in HS 10.4 patch.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.31'>github</a>"
+	"versionFree": ["v6.2","v6.3","v6.31","v6.32"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.32/Arena.Tracker.v6.32.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.32/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.32/Arena.Tracker.v6.32.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.32/Arena.Tracker.v6.32.Windows.zip",
+	"log": "This is a hotfix to detect arena exclusive cards during the draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.32'>github</a>"
 }
