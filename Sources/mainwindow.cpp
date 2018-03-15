@@ -1475,16 +1475,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
-                if(this->planWindow != NULL)
-                {
-                    planWindow->resize(QSize(960, 1080));
-                    planWindow->move(1920, 0);
-                }
-                if(this->deckWindow != NULL)
-                {
-                    deckWindow->resize(QSize(deckWindow->width(), 1053));
-                    deckWindow->move(0, 0);
-                }
+                if(this->planWindow == NULL)    createDetachWindow(ui->tabPlan);
+                planWindow->resize(QSize(960, 1080));
+                planWindow->move(1920, 0);
+
+                if(this->deckWindow == NULL)    createDetachWindow(ui->tabDeck);
+                deckWindow->resize(QSize(deckWindow->width(), 1053));
+                deckWindow->move(0, 0);
+
                 this->resize(QSize(270, 540));
                 this->move(2880, 0);
             }
@@ -3714,10 +3712,9 @@ void MainWindow::testDelay()
 ////Prox expansion rebajar cartas
 ////Eliminar ice block de secretos standard
 ////Incluir portrait nuevo druid hero
-//Repasar nuevas cartas arena como nueva expansion
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
-//Primer deck mechanic dorado
+//Primer deck mechanic dorado, segundo plata
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 
