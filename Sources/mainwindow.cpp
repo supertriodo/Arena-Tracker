@@ -3707,7 +3707,7 @@ void MainWindow::testDelay()
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico
-//--Update Json HA tierlist --> HATLsed.sh
+//--Update Json HA tierlist --> HATLsed.sh --- 3/13/18: 10.4 update
 //--Update secrets
 //--Update bombing cards --> PlanHandler::isCardBomb
 //--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
