@@ -32,6 +32,7 @@
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
+#define LF_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/LightForge"
 #define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
 
 
@@ -153,7 +154,6 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
-    void downloadLightForgeJson();
     void spreadDraftMethod(DraftMethod draftMethod);
     void showProgressBar(bool animated=true);
     bool askImportXls();
@@ -171,6 +171,8 @@ private:
     void downloadTheme(QString theme, int version);
     void downloadHearthArenaVersion();
     void downloadHearthArenaJson(int version);
+    void downloadLightForgeVersion();
+    void downloadLightForgeJson(QJsonObject jsonObject);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
     void updateTabIcons();

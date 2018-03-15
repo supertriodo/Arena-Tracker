@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogFile();
     completeUI();
     initCardsJson();
-    downloadLightForgeJson();
+    downloadLightForgeVersion();
     downloadHearthArenaVersion();
     downloadSynergiesVersion();
     downloadExtraFiles();
@@ -335,10 +335,22 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 createCardsJsonMap(jsonData);
             }
         }
-        //Light Forge json
+        //Light Forge version
+        else if(endUrl == "lfVersion.json")
+        {
+            downloadLightForgeJson(QJsonDocument::fromJson(reply->readAll()).object());
+        }
+        //Light Forge original json
         else if(fullUrl == LIGHTFORGE_JSON_URL)
         {
-            emit pDebug("Extra: Json LightForge --> Download Success.");
+            emit pDebug("Extra: Json LightForge original --> Download Success.");
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+        }
+        //Hearth Arena json
+        else if(endUrl == "lightForge.json")
+        {
+            emit pDebug("Extra: Json LightForge github --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
         }
@@ -467,10 +479,49 @@ void MainWindow::initCardsJson()
 }
 
 
-void MainWindow::downloadLightForgeJson()
+void MainWindow::downloadLightForgeVersion()
 {
-    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
-    emit pDebug("Extra: Json LightForge --> Download from: " + QString(LIGHTFORGE_JSON_URL));
+    networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lfVersion.json"))));
+}
+
+
+void MainWindow::downloadLightForgeJson(QJsonObject jsonObject)
+{
+    bool downloadOriginal = jsonObject.value("lfDownloadOriginal").toBool();
+
+    if(downloadOriginal)
+    {
+        networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
+        emit pDebug("Extra: Json LightForge original --> Download from: " + QString(LIGHTFORGE_JSON_URL));
+    }
+    else
+    {
+        int version = jsonObject.value("lfVersion").toInt();
+        bool needDownload = false;
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        int storedVersion = settings.value("lfVersion", 0).toInt();
+
+        QFileInfo fileInfo(Utility::extraPath() + "/lightForge.json");
+        if(!fileInfo.exists())          needDownload = true;
+        if(version != storedVersion)    needDownload = true;
+
+        emit pDebug("Extra: Json LightForge github: Local(" + QString::number(storedVersion) + ") - "
+                            "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+        if(needDownload)
+        {
+            if(fileInfo.exists())
+            {
+                QFile file(Utility::extraPath() + "/lightForge.json");
+                file.remove();
+                emit pDebug("Extra: Json LightForge removed.");
+            }
+
+            settings.setValue("lfVersion", version);
+            networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
+            emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
+        }
+    }
 }
 
 
