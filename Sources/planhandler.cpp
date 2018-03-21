@@ -2858,8 +2858,9 @@ bool PlanHandler::isAddonCommonValid(const QString &code)
 //Cartas que no pueden poner addons en heroes
 bool PlanHandler::isAddonHeroValid(const QString &code)
 {
-    if(code == ACIDMAW)                 return false;
-    if(code == SIEGE_ENGINE)            return false;
+    if(code == ACIDMAW)                     return false;
+    if(code == SIEGE_ENGINE)                return false;
+    if(code == LESSER_JASPER_SPELLSTONE)    return false;
     return isAddonCommonValid(code);
 }
 

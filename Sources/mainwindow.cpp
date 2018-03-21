@@ -3788,5 +3788,3 @@ void MainWindow::testDelay()
 //Add a countdown option to let you know how much time you have left until your turn ends.
 //Mostrar tooltip de cartas con atributos modificados
 
-
-//Evitar Lesser Jasper Spellstone addon en heroes
