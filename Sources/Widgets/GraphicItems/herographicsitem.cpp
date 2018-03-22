@@ -506,8 +506,11 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
             case MAGE:
                 pixmap = QPixmap(":Images/secretMage.png");
                 break;
+            case ROGUE:
+                pixmap = QPixmap(":Images/secretRogue.png");
+                break;
             default:
-                qDebug()<<"SECRET HERO UNKNOWN";
+                pixmap = QPixmap(":Images/secretMage.png");
                 break;
         }
 

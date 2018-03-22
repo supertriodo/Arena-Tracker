@@ -305,7 +305,7 @@ CardRace Utility::getRaceFromCode(QString code)
 
 CardClass Utility::getClassFromCode(QString code)
 {
-    QString value = Utility::getCardAttribute(code, "playerClass").toString();
+    QString value = Utility::getCardAttribute(code, "cardClass").toString();
     if(value == "")             return NEUTRAL;
     else if(value == "NEUTRAL") return NEUTRAL;
     else if(value == "DRUID")   return DRUID;

@@ -45,22 +45,27 @@ void SecretCard::draw()
     switch(hero)
     {
         case MAGE:
-        painter.drawPixmap(5,4,QPixmap(":Images/secretMage.png"));
-        painter.drawPixmap(186,4,QPixmap(":Images/secretMage.png"));
-        break;
+            painter.drawPixmap(5,4,QPixmap(":Images/secretMage.png"));
+            painter.drawPixmap(186,4,QPixmap(":Images/secretMage.png"));
+            break;
 
         case HUNTER:
-        painter.drawPixmap(5,4,QPixmap(":Images/secretHunter.png"));
-        painter.drawPixmap(186,4,QPixmap(":Images/secretHunter.png"));
-        break;
+            painter.drawPixmap(5,4,QPixmap(":Images/secretHunter.png"));
+            painter.drawPixmap(186,4,QPixmap(":Images/secretHunter.png"));
+            break;
 
         case PALADIN:
-        painter.drawPixmap(5,4,QPixmap(":Images/secretPaladin.png"));
-        painter.drawPixmap(186,4,QPixmap(":Images/secretPaladin.png"));
-        break;
+            painter.drawPixmap(5,4,QPixmap(":Images/secretPaladin.png"));
+            painter.drawPixmap(186,4,QPixmap(":Images/secretPaladin.png"));
+            break;
+
+        case ROGUE:
+            painter.drawPixmap(5,4,QPixmap(":Images/secretRogue.png"));
+            painter.drawPixmap(186,4,QPixmap(":Images/secretRogue.png"));
+            break;
 
         default:
-        break;
+            break;
     }
     painter.end();
 

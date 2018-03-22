@@ -136,5 +136,6 @@
         <file>Images/bgDraftMechanics.png</file>
         <file>Images/bgDraftMechanicsHelp.png</file>
         <file>Images/becomePatreon.png</file>
+        <file>Images/secretRogue.png</file>
     </qresource>
 </RCC>
