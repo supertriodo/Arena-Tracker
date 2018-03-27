@@ -72,7 +72,8 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/draftmechanicswindow.cpp \
     Sources/LibSmtp/smtp.cpp \
     Sources/premiumhandler.cpp \
-    Sources/detachwindow.cpp
+    Sources/detachwindow.cpp \
+    Sources/graveyardhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -137,7 +138,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Widgets/webenginepage.h \
     Sources/LibSmtp/smtp.h \
     Sources/premiumhandler.h \
-    Sources/detachwindow.h
+    Sources/detachwindow.h \
+    Sources/graveyardhandler.h
 
 FORMS    += mainwindow.ui
 

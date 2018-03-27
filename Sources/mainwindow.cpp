@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     arenaWindow = NULL;
     enemyWindow = NULL;
     enemyDeckWindow = NULL;
+    graveyardWindow = NULL;
     planWindow = NULL;
     copyGameLogs = false;
     draftLogFile = "";
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     draftHandler = NULL;
     deckHandler = NULL;
     enemyDeckHandler = NULL;
+    graveyardHandler = NULL;
     secretsHandler = NULL;
     trackobotUploader = NULL;
     premiumHandler = NULL;
@@ -59,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createPlanHandler();
     createEnemyHandHandler();//-->PlanHandler
     createEnemyDeckHandler();
+    createGraveyardHandler();
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler
@@ -88,6 +91,7 @@ MainWindow::~MainWindow()
     if(gameWatcher != NULL)         delete gameWatcher;
     if(arenaHandler != NULL)        delete arenaHandler;
     if(cardDownloader != NULL)      delete cardDownloader;
+    if(graveyardHandler != NULL)    delete graveyardHandler;
     if(enemyDeckHandler != NULL)    delete enemyDeckHandler;
     if(enemyHandHandler != NULL)    delete enemyHandHandler;
     if(draftHandler != NULL)        delete draftHandler;
@@ -126,7 +130,7 @@ void MainWindow::createDetachWindow(int index, const QPoint& dropPoint)
 void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint)
 {
     if(paneWidget != ui->tabArena && paneWidget != ui->tabEnemy && paneWidget != ui->tabDeck &&
-            paneWidget != ui->tabEnemyDeck && paneWidget != ui->tabPlan)    return;
+            paneWidget != ui->tabEnemyDeck && paneWidget != ui->tabGraveyard && paneWidget != ui->tabPlan)    return;
 
     DetachWindow *detachWindow = NULL;
 
@@ -151,6 +155,11 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
     {
         detachWindow = new DetachWindow(paneWidget, "Enemy Deck", this->transparency, dropPoint);
         enemyDeckWindow = detachWindow;
+    }
+    else if(paneWidget == ui->tabGraveyard)
+    {
+        detachWindow = new DetachWindow(paneWidget, "Graveyard", this->transparency, dropPoint);
+        graveyardWindow = detachWindow;
     }
     else /*if(paneWidget == ui->tabPlan)*/
     {
@@ -183,6 +192,7 @@ void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWid
     if(detachWindow == arenaWindow)     arenaWindow = NULL;
     if(detachWindow == enemyWindow)     enemyWindow = NULL;
     if(detachWindow == enemyDeckWindow) enemyDeckWindow = NULL;
+    if(detachWindow == graveyardWindow) graveyardWindow = NULL;
     if(detachWindow == planWindow)
     {
         //Antes de hacer el close de la detach window se llama esta funcion.
@@ -668,6 +678,20 @@ void MainWindow::createEnemyDeckHandler()
 }
 
 
+void MainWindow::createGraveyardHandler()
+{//TODO
+    graveyardHandler = new GraveyardHandler(this, ui);
+    connect(graveyardHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(graveyardHandler, SIGNAL(needMainWindowFade(bool)),
+            this, SLOT(fadeBarAndButtons(bool)));
+    connect(graveyardHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(graveyardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
 void MainWindow::createDeckHandler()
 {
     deckHandler = new DeckHandler(this, ui, enemyDeckHandler, planHandler);
@@ -770,6 +794,8 @@ void MainWindow::createCardWindow()
     connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(enemyDeckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(graveyardHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
@@ -898,6 +924,8 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(setEnemyClass(QString)));
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
+
+    //TODO Incluir connects de graveyardHandler
 
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
@@ -1137,6 +1165,7 @@ void MainWindow::completeUITabNames()
     ui->tabEnemy->setObjectName("TabEnemy");
     ui->tabDeck->setObjectName("TabDeck");
     ui->tabEnemyDeck->setObjectName("TabEnemyDeck");
+    ui->tabGraveyard->setObjectName("TabGraveyard");
     ui->tabPlan->setObjectName("TabPlan");
     ui->tabConfig->setObjectName("TabConfig");
 }
@@ -1377,6 +1406,7 @@ void MainWindow::readSettings()
     if(settings.value("arenaWindow", false).toBool())       createDetachWindow(ui->tabArena);
     if(settings.value("enemyWindow", false).toBool())       createDetachWindow(ui->tabEnemy);
     if(settings.value("enemyDeckWindow", false).toBool())   createDetachWindow(ui->tabEnemyDeck);
+    if(settings.value("graveyardWindow", false).toBool())   createDetachWindow(ui->tabGraveyard);
     if(settings.value("planWindow", false).toBool())        createDetachWindow(ui->tabPlan);
 }
 
@@ -1406,6 +1436,7 @@ void MainWindow::writeSettings()
     settings.setValue("arenaWindow", arenaWindow!=NULL);
     settings.setValue("enemyWindow", enemyWindow!=NULL);
     settings.setValue("enemyDeckWindow", enemyDeckWindow!=NULL);
+    settings.setValue("graveyardWindow", graveyardWindow!=NULL);
     settings.setValue("planWindow", planWindow!=NULL);
 }
 
@@ -1435,6 +1466,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     {
         enemyDeckWindow->close();
         enemyDeckWindow = NULL;
+    }
+    if(graveyardWindow != NULL)
+    {
+        graveyardWindow->close();
+        graveyardWindow = NULL;
     }
     if(planWindow != NULL)
     {
@@ -1557,6 +1593,7 @@ void MainWindow::changeEvent(QEvent * event)
             if(arenaWindow != NULL)     arenaWindow->setWindowState(Qt::WindowActive);
             if(enemyWindow != NULL)     enemyWindow->setWindowState(Qt::WindowActive);
             if(enemyDeckWindow != NULL) enemyDeckWindow->setWindowState(Qt::WindowActive);
+            if(graveyardWindow != NULL) graveyardWindow->setWindowState(Qt::WindowActive);
             if(planWindow != NULL)      planWindow->setWindowState(Qt::WindowActive);
             if(draftHandler != NULL)    draftHandler->deMinimizeScoreWindow();
         }
@@ -1668,6 +1705,7 @@ void MainWindow::spreadMouseInApp()
     else if(currentTab == ui->tabEnemy)     enemyHandHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabPlan)      planHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabEnemyDeck) enemyDeckHandler->setMouseInApp(mouseInApp);
+    else if(currentTab == ui->tabGraveyard) graveyardHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabArena)     arenaHandler->setMouseInApp(mouseInApp);
     else if(currentTab == ui->tabDraft)     draftHandler->setMouseInApp(mouseInApp);
     else                                    updateOtherTabsTransparency();
@@ -1680,7 +1718,8 @@ void MainWindow::spreadMouseInApp()
         else                fadeBarAndButtons(true);
     }
     //En AutoTransparent --> DeckHandler/EnemyDeckHandler/EnemyHandHandler::updateTransparency() se encarga de llamar a fadeBarAndButtons
-    else if(transparency==AutoTransparent && currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck)
+    else if(transparency==AutoTransparent &&
+            currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck && currentTab != ui->tabGraveyard)
     {
         fadeBarAndButtons(false);
     }
@@ -1786,6 +1825,11 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
         icon = QIcon(ThemeHandler::tabEnemyDeckFile());
         tooltip = "Enemy Deck";
     }
+    else if(widget == ui->tabGraveyard)
+    {
+        icon = QIcon(ThemeHandler::tabGraveyardFile());
+        tooltip = "Graveyard";
+    }
     else if(widget == ui->tabLog)
     {
         icon = QIcon(ThemeHandler::tabLogFile());
@@ -1819,6 +1863,7 @@ void MainWindow::calculateCardWindowMinimumWidth(DetachWindow *detachWindow, boo
     if(detachWindow == deckWindow)      deckWindow->setFixedWidth(deckWidth);
     if(detachWindow == enemyWindow)     enemyWindow->setFixedWidth(deckWidth);
     if(detachWindow == enemyDeckWindow) enemyDeckWindow->setFixedWidth(deckWidth);
+    if(detachWindow == graveyardWindow) graveyardWindow->setFixedWidth(deckWidth);
 }
 
 
@@ -1999,6 +2044,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
 {
     deckHandler->redrawDownloadedCardImage(code);
     enemyDeckHandler->redrawDownloadedCardImage(code);
+    graveyardHandler->redrawDownloadedCardImage(code);
     enemyHandHandler->redrawDownloadedCardImage(code);
     planHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
@@ -2038,6 +2084,7 @@ void MainWindow::resetSettings()
         settings.setValue("arenaWindow", false);
         settings.setValue("enemyWindow", false);
         settings.setValue("enemyDeckWindow", false);
+        settings.setValue("graveyardWindow", false);
         settings.setValue("planWindow", false);
     }
 }
@@ -2455,6 +2502,9 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     enemyDeckHandler->setTransparency(
                 (this->enemyDeckWindow!=NULL && kindOfTransparent)?
                     Transparent:transparency);
+    graveyardHandler->setTransparency(
+                (this->graveyardWindow!=NULL && kindOfTransparent)?
+                    Transparent:transparency);
     enemyHandHandler->setTransparency(
                 (this->enemyWindow!=NULL && kindOfTransparent)?
                     Transparent:transparency);
@@ -2484,6 +2534,11 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
     {
         enemyDeckWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabEnemyDeck);
+    }
+    if(graveyardWindow != NULL)
+    {
+        graveyardWindow->showWindowFrame(transparency == Framed);
+        updateDetachWindowTheme(ui->tabGraveyard);
     }
     if(planWindow != NULL)
     {
@@ -2692,6 +2747,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     deckHandler->redrawAllCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawAllCards();
+    graveyardHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
     if(redrawAllGames) this->redrawAllGames();
@@ -2709,6 +2765,7 @@ void MainWindow::updateTabIcons()
     if(enemyWindow == NULL)     moveTabTo(ui->tabEnemy, ui->tabWidget);
     if(deckWindow == NULL)      moveTabTo(ui->tabDeck, ui->tabWidget);
     if(enemyDeckWindow == NULL) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+    if(graveyardWindow == NULL) moveTabTo(ui->tabGraveyard, ui->tabWidget);
     if(planWindow == NULL)      moveTabTo(ui->tabPlan, ui->tabWidget);
     moveTabTo(ui->tabConfig, ui->tabWidget);
     ui->tabWidget->show();
@@ -2813,6 +2870,11 @@ void MainWindow::updateAllDetachWindowTheme(const QString &mainCSS)
         enemyDeckWindow->setStyleSheet(mainCSS);
         enemyDeckWindow->spreadTheme();
     }
+    if(graveyardWindow != NULL)
+    {
+        graveyardWindow->setStyleSheet(mainCSS);
+        graveyardWindow->spreadTheme();
+    }
     if(planWindow != NULL)
     {
         planWindow->setStyleSheet(mainCSS);
@@ -2823,6 +2885,7 @@ void MainWindow::updateAllDetachWindowTheme(const QString &mainCSS)
     updateDetachWindowTheme(ui->tabEnemy);
     updateDetachWindowTheme(ui->tabDeck);
     updateDetachWindowTheme(ui->tabEnemyDeck);
+    updateDetachWindowTheme(ui->tabGraveyard);
     updateDetachWindowTheme(ui->tabPlan);
 }
 
@@ -2862,6 +2925,14 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = enemyDeckWindow;
             paneWidgetName = "TabEnemyDeck";
+            paneBorder = false;
+            showThemeBackground = (detachWindow != NULL &&
+                    (transparency == Framed || transparency == Opaque));
+    }
+    else if(paneWidget == ui->tabGraveyard)
+    {
+            detachWindow = graveyardWindow;
+            paneWidgetName = "TabGraveyard";
             paneBorder = false;
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque));
@@ -2969,6 +3040,7 @@ void MainWindow::spreadTamCard(int value)
     }
 
     if(enemyDeckHandler != NULL)    enemyDeckHandler->redrawAllCards();
+    if(graveyardHandler != NULL)    graveyardHandler->redrawAllCards();//TODO Redraw iconos futuro
     if(secretsHandler != NULL)      secretsHandler->redrawAllCards();
     if(enemyHandHandler != NULL)
     {
@@ -2986,6 +3058,7 @@ void MainWindow::spreadTamCard(int value)
     if(deckWindow != NULL)      calculateCardWindowMinimumWidth(deckWindow, windowsWithBorders);
     if(enemyWindow != NULL)     calculateCardWindowMinimumWidth(enemyWindow, windowsWithBorders);
     if(enemyDeckWindow != NULL) calculateCardWindowMinimumWidth(enemyDeckWindow, windowsWithBorders);
+    if(graveyardWindow != NULL) calculateCardWindowMinimumWidth(graveyardWindow, windowsWithBorders);
 }
 
 
@@ -3025,6 +3098,7 @@ void MainWindow::updateShowClassColor(bool checked)
     enemyHandHandler->redrawClassCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawClassCards();
+    graveyardHandler->redrawClassCards();
 }
 
 
@@ -3036,6 +3110,7 @@ void MainWindow::updateShowSpellColor(bool checked)
     enemyHandHandler->redrawSpellWeaponCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawSpellWeaponCards();
+    graveyardHandler->redrawSpellWeaponCards();
 }
 
 
@@ -3653,6 +3728,9 @@ void MainWindow::testDelay()
 {
 //    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
 //    testSynergies();
+
+    for(int i=1; i<6; i++)
+        enemyHandHandler->showEnemyCardDraw(i,i,false,"");
 }
 
 
@@ -3787,4 +3865,3 @@ void MainWindow::testDelay()
 ////Show cards drawn and discarded when your hand is full on replay tab.
 //Add a countdown option to let you know how much time you have left until your turn ends.
 //Mostrar tooltip de cartas con atributos modificados
-

@@ -31,7 +31,7 @@ private:
     static QString defaultFont_, cardsFont_, bigFont_;
     static int cardsFontOffsetY_;
     static QString gamesOnZ2HColor_;
-    static QString tabArenaFile_, tabConfigFile_, tabDeckFile_, tabEnemyDeckFile_;
+    static QString tabArenaFile_, tabConfigFile_, tabDeckFile_, tabEnemyDeckFile_, tabGraveyardFile_;
     static QString tabGamesFile_, tabHandFile_, tabLogFile_, tabPlanFile_;
     static QString buttonRemoveDeckFile_, buttonLoadDeckFile_, buttonNewDeckFile_, buttonSaveDeckFile_;
     static QString buttonMinFile_, buttonPlusFile_, buttonRemoveFile_;
@@ -117,6 +117,7 @@ public:
     static QString buttonForceDraftFile();
     static QString buttonDraftRefreshFile();
     static QString tabEnemyDeckFile();
+    static QString tabGraveyardFile();
     static QString firstFile();
     static QString tabGamesFile();
     static QString haBestFile();

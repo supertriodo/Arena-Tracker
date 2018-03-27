@@ -25,7 +25,8 @@ QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEd
 QString ThemeHandler::defaultFont_, ThemeHandler::cardsFont_, ThemeHandler::bigFont_;
 int ThemeHandler::cardsFontOffsetY_;
 QString ThemeHandler::gamesOnZ2HColor_;
-QString ThemeHandler::tabArenaFile_, ThemeHandler::tabConfigFile_, ThemeHandler::tabDeckFile_, ThemeHandler::tabEnemyDeckFile_;
+QString ThemeHandler::tabArenaFile_, ThemeHandler::tabConfigFile_, ThemeHandler::tabDeckFile_;
+QString ThemeHandler::tabEnemyDeckFile_, ThemeHandler::tabGraveyardFile_;
 QString ThemeHandler::tabGamesFile_, ThemeHandler::tabHandFile_, ThemeHandler::tabLogFile_, ThemeHandler::tabPlanFile_;
 QString ThemeHandler::buttonRemoveDeckFile_, ThemeHandler::buttonLoadDeckFile_, ThemeHandler::buttonNewDeckFile_, ThemeHandler::buttonSaveDeckFile_;
 QString ThemeHandler::buttonMinFile_, ThemeHandler::buttonPlusFile_, ThemeHandler::buttonRemoveFile_;
@@ -294,6 +295,12 @@ QString ThemeHandler::tabDeckFile()
 QString ThemeHandler::tabEnemyDeckFile()
 {
     return tabEnemyDeckFile_;
+}
+
+
+QString ThemeHandler::tabGraveyardFile()
+{
+    return tabGraveyardFile_;
 }
 
 
@@ -747,6 +754,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     tabHandFile_ = loadThemeFile(themePath, jsonObject, "tabHandFile");
     tabDeckFile_ = loadThemeFile(themePath, jsonObject, "tabDeckFile");
     tabEnemyDeckFile_ = loadThemeFile(themePath, jsonObject, "tabEnemyDeckFile");
+    tabGraveyardFile_ = loadThemeFile(themePath, jsonObject, "tabGraveyardFile");
     tabPlanFile_ = loadThemeFile(themePath, jsonObject, "tabPlanFile");
     tabConfigFile_ = loadThemeFile(themePath, jsonObject, "tabConfigFile");
     tabLogFile_ = loadThemeFile(themePath, jsonObject, "tabLogFile");
@@ -1020,6 +1028,7 @@ void ThemeHandler::defaultEmptyValues()
     if(tabConfigFile_.isEmpty())            tabConfigFile_ = ":/Images/config.png";
     if(tabDeckFile_.isEmpty())              tabDeckFile_ = ":/Images/deck.png";
     if(tabEnemyDeckFile_.isEmpty())         tabEnemyDeckFile_ = ":/Images/enemyDeck.png";
+    if(tabGraveyardFile_.isEmpty())         tabGraveyardFile_ = ":/Images/graveyard.png";
     if(tabGamesFile_.isEmpty())             tabGamesFile_ = ":/Images/games.png";
     if(tabHandFile_.isEmpty())              tabHandFile_ = ":/Images/hand.png";
     if(tabLogFile_.isEmpty())               tabLogFile_ = ":/Images/log.png";

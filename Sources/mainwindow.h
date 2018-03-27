@@ -7,6 +7,7 @@
 #include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "enemydeckhandler.h"
+#include "graveyardhandler.h"
 #include "deckhandler.h"
 #include "enemyhandhandler.h"
 #include "planhandler.h"
@@ -61,6 +62,7 @@ private:
     GameWatcher *gameWatcher;
     HSCardDownloader *cardDownloader;
     EnemyDeckHandler *enemyDeckHandler;
+    GraveyardHandler *graveyardHandler;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
     PlanHandler *planHandler;
@@ -78,7 +80,7 @@ private:
     Transparency transparency;
     DraftMethod draftMethod;
     bool oneWindow;
-    DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *planWindow;
+    DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *graveyardWindow, *planWindow;
     int cardHeight;
     int drawDisappear;
     bool showDraftOverlay;
@@ -102,6 +104,7 @@ private:
     void createCardListWindow();
     void createCardDownloader();
     void createEnemyDeckHandler();
+    void createGraveyardHandler();
     void createDeckHandler();
     void createEnemyHandHandler();
     void createPlanHandler();

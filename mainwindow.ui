@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>6</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -1254,6 +1254,19 @@
           </property>
           <item>
            <widget class="MoveListWidget" name="enemyDeckListWidget"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabGraveyard">
+         <attribute name="title">
+          <string>Graveyard</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="MoveListWidget" name="graveyardListWidgetPlayer"/>
+          </item>
+          <item>
+           <widget class="MoveListWidget" name="graveyardListWidgetEnemy"/>
           </item>
          </layout>
         </widget>
