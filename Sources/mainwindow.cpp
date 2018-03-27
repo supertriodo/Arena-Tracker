@@ -2866,7 +2866,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             showThemeBackground = (detachWindow != NULL &&
                     (transparency == Framed || transparency == Opaque));
     }
-    else if(paneWidget == ui->tabPlan)
+    else /*if(paneWidget == ui->tabPlan)*/
     {
             detachWindow = planWindow;
             paneWidgetName = "TabPlan";
