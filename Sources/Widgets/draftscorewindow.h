@@ -37,6 +37,7 @@ private:
     int getCard(QString &name, QString &code);
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
+    QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count);
 
 public:
     void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);
@@ -44,7 +45,7 @@ public:
     void setLearningMode(bool value);
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
-    void setSynergies(int posCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
+    void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void setNormalizedLF(bool value);
 
 signals:

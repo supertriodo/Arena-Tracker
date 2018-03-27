@@ -725,7 +725,7 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
+void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
 {
     getCardTypeSynergies(deckCard, synergies);
     getRaceSynergies(deckCard, synergies);
@@ -837,7 +837,7 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &syn
 }
 
 
-void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
+void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
 {
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -850,40 +850,40 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
 
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
     {
-        mechanicIcons.append(ThemeHandler::drawMechanicFile());
+        mechanicIcons[ThemeHandler::drawMechanicFile()] = mechanicCounters[V_DISCOVER_DRAW]->count() + 1;
     }
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->insertSynCards(synergies);
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
-        mechanicIcons.append(ThemeHandler::tauntMechanicFile());
+        mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     else if(isTauntGen(code, referencedTags))
     {
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
-        mechanicIcons.append(ThemeHandler::tauntMechanicFile());
+        mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     if(isAoeGen(code, text))
     {
         mechanicCounters[V_AOE]->insertSynCards(synergies);
-        mechanicIcons.append(ThemeHandler::aoeMechanicFile());
+        mechanicIcons[ThemeHandler::aoeMechanicFile()] = mechanicCounters[V_AOE]->count() + 1;
     }
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
     {
         mechanicCounters[V_PING]->insertSynCards(synergies);
-        mechanicIcons.append(ThemeHandler::pingMechanicFile());
+        mechanicIcons[ThemeHandler::pingMechanicFile()] = mechanicCounters[V_PING]->count() + 1;
     }
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append(ThemeHandler::damageMechanicFile());
+        mechanicIcons[ThemeHandler::damageMechanicFile()] = mechanicCounters[V_DAMAGE]->count() + 1;
     }
     if(isDestroyGen(code, mechanics, text))
     {
-        mechanicIcons.append(ThemeHandler::destroyMechanicFile());
+        mechanicIcons[ThemeHandler::destroyMechanicFile()] = mechanicCounters[V_DESTROY]->count() + 1;
     }
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons.append(ThemeHandler::reachMechanicFile());
+        mechanicIcons[ThemeHandler::reachMechanicFile()] = mechanicCounters[V_REACH]->count() + 1;
     }
     if(isArmorGen(code, text))
     {
@@ -895,7 +895,10 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergies);
         addRestoreIcon = true;
     }
-    if(addRestoreIcon)  mechanicIcons.append(ThemeHandler::survivalMechanicFile());
+    if(addRestoreIcon)
+    {
+        mechanicIcons[ThemeHandler::survivalMechanicFile()] = mechanicCounters[V_SURVIVABILITY]->count() + 1;
+    }
     if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isLifestealMinon(code, mechanics, cardType))             mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);

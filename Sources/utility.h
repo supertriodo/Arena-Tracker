@@ -107,7 +107,7 @@ public:
     static bool isASecret(QString code);
     static void dumpOnFile(const QByteArray &data, QString path);
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
-    static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter);
+    static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
     static QString themesPath();
     static int heroLogNumber2HeroOrder(QString heroLog);
     static QString cardEnTextFromCode(QString code);

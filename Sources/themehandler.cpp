@@ -46,6 +46,7 @@ QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unk
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
 QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
+QString ThemeHandler::goldenMechanicFile_;
 QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
@@ -641,6 +642,12 @@ QString ThemeHandler::reachMechanicFile()
 }
 
 
+QString ThemeHandler::goldenMechanicFile()
+{
+    return goldenMechanicFile_;
+}
+
+
 QString ThemeHandler::bgDraftMechanicsFile()
 {
     return bgDraftMechanicsFile_;
@@ -844,6 +851,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     damageMechanicFile_ = loadThemeFile(themePath, jsonObject, "damageMechanicFile");
     destroyMechanicFile_ = loadThemeFile(themePath, jsonObject, "destroyMechanicFile");
     reachMechanicFile_ = loadThemeFile(themePath, jsonObject, "reachMechanicFile");
+    goldenMechanicFile_ = loadThemeFile(themePath, jsonObject, "goldenMechanicFile");
 
     //"-----MENU LISTS-----": 0,
     buttonForceDraftFile_ = loadThemeFile(themePath, jsonObject, "buttonForceDraftFile");
@@ -1093,6 +1101,7 @@ void ThemeHandler::defaultEmptyValues()
     if(manaCounterFile_.isEmpty())      manaCounterFile_ = ":/Images/manaCounter.png";
     if(aoeMechanicFile_.isEmpty())      aoeMechanicFile_ = ":/Images/aoeMechanic.png";
     if(tauntMechanicFile_.isEmpty())    tauntMechanicFile_ = ":/Images/tauntMechanic.png";
+    if(goldenMechanicFile_.isEmpty())   goldenMechanicFile_ = ":/Images/goldenMechanic.png";
     if(survivalMechanicFile_.isEmpty()) survivalMechanicFile_ = ":/Images/restoreMechanic.png";
     if(drawMechanicFile_.isEmpty())     drawMechanicFile_ = ":/Images/drawMechanic.png";
     if(pingMechanicFile_.isEmpty())     pingMechanicFile_ = ":/Images/pingMechanic.png";

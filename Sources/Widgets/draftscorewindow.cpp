@@ -179,7 +179,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
 }
 
 
-void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QStringList &mechanicIcons)
+void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
 {
     if(posCard < 0 || posCard > 2)  return;
 
@@ -207,17 +207,48 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
     Utility::clearLayout(horLayoutMechanics[posCard], true);
     horLayoutMechanics[posCard]->addStretch();
 
-    for(const QString &mechanicIcon: mechanicIcons)
+    for(const QString &mechanicIcon: mechanicIcons.keys())
     {
         QLabel *label = new QLabel();
-        QPixmap pixmap(mechanicIcon);
-        label->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
+        label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon]));
         label->setToolTip(getMechanicTooltip(mechanicIcon));
         label->hide();
         horLayoutMechanics[posCard]->addWidget(label);
     }
 
     horLayoutMechanics[posCard]->addStretch();
+}
+
+
+QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, int count)
+{
+    QPixmap pixmap(mechanicIcon);
+    QString text = count<10?QString::number(count):"+";
+
+    QPainter painter;
+    painter.begin(&pixmap);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        if(count == 1)
+        {
+            painter.drawPixmap(0, 0, QPixmap(ThemeHandler::goldenMechanicFile()));
+        }
+        else
+        {
+            QFont font(ThemeHandler::bigFont());
+            font.setPixelSize(30);
+            QPen pen(BLACK);
+            pen.setWidth(2);
+            painter.setPen(pen);
+            painter.setBrush(WHITE);
+            Utility::drawShadowText(painter, font, text, 50, 14, true, false);
+        }
+    painter.end();
+
+    return pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation);
 }
 
 

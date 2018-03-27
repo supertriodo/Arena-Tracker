@@ -675,13 +675,22 @@ void Utility::dumpOnFile(const QByteArray &data, QString path)
 }
 
 
-void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter)
+void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText)
 {
     QFontMetrics fm(font);
+
     int textWide = fm.width(text);
     int textHigh = fm.height();
 
-    double offsetY = 0.25 - ThemeHandler::cardsFontOffsetY()/100.0;
+    double offsetY = 0.25 - (isCardText?ThemeHandler::cardsFontOffsetY():0)/100.0;
+    if(font.family() == LG_FONT)
+    {
+#ifdef Q_OS_WIN
+        offsetY += 0.05;
+#else
+        offsetY += 0.15;
+#endif
+    }
 
     QPainterPath path;
     path.addText(x - (alignCenter?textWide/2:0), y + textHigh*offsetY, font, text);

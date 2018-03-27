@@ -36,7 +36,7 @@ public:
     void updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
-    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
+    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
@@ -58,7 +58,7 @@ private:
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
-    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QStringList &mechanicIcons);
+    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
 

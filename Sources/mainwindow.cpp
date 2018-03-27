@@ -3653,18 +3653,6 @@ void MainWindow::testDelay()
 {
 //    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
 //    testSynergies();
-
-//    enemyHandHandler->showEnemyCardDraw(1, 1, false, "");
-//    enemyHandHandler->setLastCreatedByCode(MIRROR_ENTITY);
-//    enemyHandHandler->showEnemyCardDraw(2, 1, true, "");
-//    enemyHandHandler->showEnemyCardDraw(3, 1, false, MIRROR_ENTITY);
-
-//    enemyHandHandler->showEnemyCardDraw(11, 1, false, "");
-//    enemyHandHandler->setLastCreatedByCode(FROTHING_BERSEKER);
-//    enemyHandHandler->showEnemyCardDraw(12, 1, true, "");
-//    enemyHandHandler->showEnemyCardDraw(13, 1, false, FROTHING_BERSEKER);
-
-//    secretsHandler->secretPlayed(21, PALADIN, arena);
 }
 
 
@@ -3778,7 +3766,6 @@ void MainWindow::testDelay()
 ////Incluir portrait nuevo druid hero
 //Incluir dano y healing en el addon en replay
 //Dech mechanics redone with colors
-//Primer deck mechanic dorado, segundo plata
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 
