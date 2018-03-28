@@ -78,7 +78,7 @@ public slots:
     void playerSpellObjHeroPlayed();
     void playerBattlecryObjHeroPlayed();
     void playerMinionPlayed(QString code, int playerMinions);
-    void enemyMinionDead(QString code);
+    void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
     void avengeTested();
     void handOfSalvationTested();
     void cSpiritTested();

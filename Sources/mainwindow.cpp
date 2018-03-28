@@ -814,6 +814,10 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(hide()));
     connect(ui->enemyDeckListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
+    connect(ui->graveyardListWidgetPlayer, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->graveyardListWidgetEnemy, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
     connect(ui->drawListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(ui->enemyHandListWidget, SIGNAL(leave()),
@@ -926,6 +930,20 @@ void MainWindow::createGameWatcher()
             enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
 
     //TODO Incluir connects de graveyardHandler
+//    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
+//            graveyardHandler, SLOT(enemySecretRevealed(int, QString)));
+    connect(gameWatcher, SIGNAL(playerMinionGraveyard(int,QString)),
+            graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
+            graveyardHandler, SLOT(enemyCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(playerWeaponGraveyard(int,QString)),
+            graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(enemyWeaponGraveyard(int,QString,bool)),
+            graveyardHandler, SLOT(enemyCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(startGame()),
+            graveyardHandler, SLOT(lockGraveyardInterface()));
+    connect(gameWatcher, SIGNAL(endGame(bool,bool)),
+            graveyardHandler, SLOT(unlockGraveyardInterface()));
 
     connect(gameWatcher, SIGNAL(enemyCardDraw(int,int,bool,QString)),
             enemyHandHandler, SLOT(showEnemyCardDraw(int,int,bool,QString)));
@@ -1046,8 +1064,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerBattlecryObjHeroPlayed()));
     connect(gameWatcher, SIGNAL(playerMinionPlayed(QString, int)),
             secretsHandler, SLOT(playerMinionPlayed(QString, int)));
-    connect(gameWatcher, SIGNAL(enemyMinionDead(QString)),
-            secretsHandler, SLOT(enemyMinionDead(QString)));
+    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
+            secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool)));
     connect(gameWatcher, SIGNAL(avengeTested()),
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(handOfSalvationTested()),
@@ -3728,9 +3746,6 @@ void MainWindow::testDelay()
 {
 //    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
 //    testSynergies();
-
-    for(int i=1; i<6; i++)
-        enemyHandHandler->showEnemyCardDraw(i,i,false,"");
 }
 
 
@@ -3769,7 +3784,7 @@ void MainWindow::testDelay()
 
 
 //SPECTATOR GAMES
-//Si empiezan desde el principio todo correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
+//Si empiezan desde el principio es correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
 //Por lo tanto no seran restadas del mazo, y si son devueltas en el mulligan apareceran como OUTSIDERS
 //Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
 
@@ -3865,3 +3880,6 @@ void MainWindow::testDelay()
 ////Show cards drawn and discarded when your hand is full on replay tab.
 //Add a countdown option to let you know how much time you have left until your turn ends.
 //Mostrar tooltip de cartas con atributos modificados
+
+//Test secretos enemyminiondead (turno player y turno enemigo)
+//Test transparencias y cambios colores cartas

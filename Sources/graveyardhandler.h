@@ -16,13 +16,11 @@ public:
 
 //Variables
 private:
-    QList<DeckCard> deckCardList;
+    QList<DeckCard> deckCardListPlayer, deckCardListEnemy;
     Ui::Extended *ui;
     Transparency transparency;
     bool inGame, mouseInApp;
-    CardClass enemyClass;
     int lastSecretIdAdded;
-    int firstOutsiderId;
 
 //Metodos
 public:
@@ -32,13 +30,13 @@ public:
     void redrawDownloadedCardImage(QString code);
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
-    QList<DeckCard> getDeckCardList();
 
 private:
     void completeUI();
-    void insertDeckCard(DeckCard &deckCard);
-    void newDeckCard(QString card, int id, int total=1, bool add=true);
+    void insertDeckCard(bool friendly, DeckCard &deckCard);
+    void newDeckCard(bool friendly, QString card, int id);
     void updateTransparency();
+    void findDeckCardEntered(bool friendly, QListWidgetItem *item);
     void reset();
 
 signals:
@@ -49,16 +47,15 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="GraveyardHandler");
 
 public slots:
-    void enemyCardPlayed(int id, QString code);
+    void playerCardGraveyard(int id, QString code);
+    void enemyCardGraveyard(int id, QString code);
     void enemySecretRevealed(int id, QString code);
-    void enemyKnownCardDraw(int id, QString code);
-    void setEnemyClass(QString hero);
-    void lockEnemyDeckInterface();
-    void unlockEnemyDeckInterface();
-    void setFirstOutsiderId(int id);
+    void lockGraveyardInterface();
+    void unlockGraveyardInterface();
 
 private slots:
-    void findDeckCardEntered(QListWidgetItem *item);
+    void findPlayerDeckCardEntered(QListWidgetItem *item);
+    void findEnemyDeckCardEntered(QListWidgetItem *item);
 };
 
 #endif // GRAVEYARDHANDLER_H

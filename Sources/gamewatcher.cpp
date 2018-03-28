@@ -1263,37 +1263,39 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit pDebug("Enemy: Minion removed from OPPOSING PLAY: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
             if(zoneTo != "FRIENDLY PLAY")   emit enemyMinionZonePlayRemove(id.toInt());
 
-            if(zoneTo == "OPPOSING GRAVEYARD" && isPlayerTurn)
+            if(zoneTo == "OPPOSING GRAVEYARD")
             {
-                emit enemyMinionDead(cardId);
-
-                //Avenge control
-                if(enemyMinionsAliveForAvenge == -1)
+                emit enemyMinionGraveyard(id.toInt(), cardId, isPlayerTurn);
+                if(isPlayerTurn)
                 {
-                    if(cardId == MAD_SCIENTIST)
+                    //Avenge control
+                    if(enemyMinionsAliveForAvenge == -1)
                     {
-                        emit pDebug("Skip avenge testing (Mad Scientist died).", 0);
+                        if(cardId == MAD_SCIENTIST)
+                        {
+                            emit pDebug("Skip avenge testing (Mad Scientist died).", 0);
+                        }
+                        else
+                        {
+                            enemyMinionsAliveForAvenge = enemyMinions;
+                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
+                        }
                     }
-                    else
-                    {
-                        enemyMinionsAliveForAvenge = enemyMinions;
-                        QTimer::singleShot(1000, this, SLOT(checkAvenge()));
-                    }
-                }
-                else    enemyMinionsAliveForAvenge--;
+                    else    enemyMinionsAliveForAvenge--;
 
-                //Hand of salvation control
-                enemyMinionsDeadThisTurn++;
-                if(enemyMinionsDeadThisTurn > 1)
-                {
-                    if(cardId == MAD_SCIENTIST)
+                    //Hand of salvation control
+                    enemyMinionsDeadThisTurn++;
+                    if(enemyMinionsDeadThisTurn > 1)
                     {
-                        emit pDebug("Skip Hand of salvation testing (Mad Scientist died).", 0);
-                    }
-                    else
-                    {
-                        emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
-                        emit handOfSalvationTested();
+                        if(cardId == MAD_SCIENTIST)
+                        {
+                            emit pDebug("Skip Hand of salvation testing (Mad Scientist died).", 0);
+                        }
+                        else
+                        {
+                            emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
+                            emit handOfSalvationTested();
+                        }
                     }
                 }
             }
@@ -1305,6 +1307,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(playerMinions>0) playerMinions--;
             emit pDebug("Player: Minion removed from FRIENDLY PLAY: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
             if(zoneTo != "OPPOSING PLAY")   emit playerMinionZonePlayRemove(id.toInt());
+
+            if(zoneTo == "FRIENDLY GRAVEYARD")  emit playerMinionGraveyard(id.toInt(), cardId);
         }
 
         //Enemigo, deshecha arma
@@ -1312,6 +1316,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             emit pDebug("Enemy: Weapon moved from OPPOSING PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit enemyWeaponZonePlayRemove(id.toInt());
+
+            if(zoneTo == "OPPOSING GRAVEYARD")  emit enemyWeaponGraveyard(id.toInt(), cardId);
         }
 
         //Jugador, deshecha arma
@@ -1319,6 +1325,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         {
             emit pDebug("Player: Weapon moved from FRIENDLY PLAY (Weapon): " + name + " ID: " + id, numLine);
             emit playerWeaponZonePlayRemove(id.toInt());
+
+            if(zoneTo == "FRIENDLY GRAVEYARD")  emit playerWeaponGraveyard(id.toInt(), cardId);
         }
     }
 

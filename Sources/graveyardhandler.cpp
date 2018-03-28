@@ -6,7 +6,6 @@ GraveyardHandler::GraveyardHandler(QObject *parent, Ui::Extended *ui) : QObject(
 {
     this->ui = ui;
     this->transparency = Opaque;
-    this->enemyClass = INVALID_CLASS;
     this->lastSecretIdAdded = -1;
     this->mouseInApp = false;
     this->inGame = false;
@@ -17,64 +16,52 @@ GraveyardHandler::GraveyardHandler(QObject *parent, Ui::Extended *ui) : QObject(
 
 GraveyardHandler::~GraveyardHandler()
 {
-    ui->enemyDeckListWidget->clear();
-    deckCardList.clear();
+    ui->graveyardListWidgetPlayer->clear();
+    ui->graveyardListWidgetEnemy->clear();
+    deckCardListPlayer.clear();
+    deckCardListEnemy.clear();
 }
 
 
 void GraveyardHandler::completeUI()
 {
-    ui->enemyDeckListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->enemyDeckListWidget->setMouseTracking(true);
+    ui->graveyardListWidgetPlayer->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graveyardListWidgetPlayer->setMouseTracking(true);
 
-    connect(ui->enemyDeckListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
-            this, SLOT(findDeckCardEntered(QListWidgetItem*)));
+    ui->graveyardListWidgetEnemy->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graveyardListWidgetEnemy->setMouseTracking(true);
+
+    connect(ui->graveyardListWidgetPlayer, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findPlayerDeckCardEntered(QListWidgetItem*)));
+    connect(ui->graveyardListWidgetEnemy, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findEnemyDeckCardEntered(QListWidgetItem*)));
 
 }
 
 
 void GraveyardHandler::reset()
 {
-    this->enemyClass = INVALID_CLASS;
-    this->firstOutsiderId = 68;
     this->lastSecretIdAdded = -1;
-    ui->enemyDeckListWidget->clear();
-    deckCardList.clear();
+    ui->graveyardListWidgetPlayer->clear();
+    ui->graveyardListWidgetEnemy->clear();
+    deckCardListPlayer.clear();
+    deckCardListEnemy.clear();
 
-    DeckCard deckCard("");
-    deckCard.total = 30;
-    deckCard.remaining = deckCard.total;
-    deckCard.listItem = new QListWidgetItem();
-    deckCard.draw();
-    insertDeckCard(deckCard);
-
-    emit pDebug("Deck list cleared.");
+    emit pDebug("Graveyard deck lists cleared.");
 }
 
 
-void GraveyardHandler::setEnemyClass(QString hero)
-{
-    this->enemyClass = Utility::heroFromLogNumber(hero);
-}
-
-
-void GraveyardHandler::setFirstOutsiderId(int id)
-{
-    this->firstOutsiderId = id;
-}
-
-
-void GraveyardHandler::enemyKnownCardDraw(int id, QString code)
+void GraveyardHandler::playerCardGraveyard(int id, QString code)
 {
     this->lastSecretIdAdded = -1;
-    newDeckCard(code, id);
+    newDeckCard(true, code, id);
 }
 
 
-void GraveyardHandler::enemyCardPlayed(int id, QString code)
+void GraveyardHandler::enemyCardGraveyard(int id, QString code)
 {
     this->lastSecretIdAdded = -1;
-    newDeckCard(code, id);
+    newDeckCard(false, code, id);
 }
 
 
@@ -84,35 +71,21 @@ void GraveyardHandler::enemySecretRevealed(int id, QString code)
     if(id == lastSecretIdAdded) return;
 
     this->lastSecretIdAdded = id;
-    newDeckCard(code, id);
+    newDeckCard(false, code, id);
 }
 
 
-void GraveyardHandler::newDeckCard(QString code, int id, int total, bool add)
+void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
 {
     if(code.isEmpty())  return;
 
-    //Mazo completo
-    if(deckCardList[0].total < total)
-    {
-        emit pDebug("Deck is full: Not adding: (" + QString::number(total) + ") " +
-                    Utility::getCardAttribute(code, "name").toString(), Warning);
-        return;
-    }
-
     //Ya existe en el mazo
-    bool outsider = (id >= this->firstOutsiderId);
     bool found = false;
+    QList<DeckCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
     for(int i=0; i<deckCardList.length(); i++)
     {
-        if(deckCardList[i].getCode() == code && deckCardList[i].isOutsider() == outsider)
+        if(deckCardList[i].getCode() == code)
         {
-            if(!add)
-            {
-                emit pDebug(Utility::getCardAttribute(code, "name").toString() + " already in deck.");
-                return;
-            }
-
             if(deckCardList[i].id == id)
             {
                 emit pDebug("Card id=" + QString::number(id) + " already in deck.");
@@ -120,8 +93,8 @@ void GraveyardHandler::newDeckCard(QString code, int id, int total, bool add)
             }
 
             found = true;
-            deckCardList[i].total+=total;
-            deckCardList[i].remaining+=total;
+            deckCardList[i].total++;
+            deckCardList[i].remaining++;
             deckCardList[i].draw();
             break;
         }
@@ -129,46 +102,30 @@ void GraveyardHandler::newDeckCard(QString code, int id, int total, bool add)
 
     if(!found)
     {
-        DeckCard deckCard(code, outsider);
-        CardClass cardClass = deckCard.getCardClass();
-
-        if(!outsider && enemyClass != INVALID_CLASS && cardClass != enemyClass && cardClass != NEUTRAL)
-        {
-            emit pDebug("Wrong class card: Not adding: (" + QString::number(total) + ") " +
-                        Utility::getCardAttribute(code, "name").toString(), Warning);
-            return;
-        }
-
+        DeckCard deckCard(code);
         deckCard.id = id;
-        deckCard.total = total;
-        deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
-        insertDeckCard(deckCard);
+        insertDeckCard(friendly, deckCard);
         deckCard.draw();
         emit checkCardImage(code);
     }
 
-    if(!outsider)
-    {
-        deckCardList[0].total-=total;
-        deckCardList[0].remaining = deckCardList[0].total;
-        deckCardList[0].draw();
-        if(deckCardList[0].total == 0)  deckCardList[0].listItem->setHidden(true);
-    }
-
-    emit pDebug("Add to deck: " + (outsider?QString("(outsider)"):QString("")) + "(" + QString::number(total) + ")" +
+    emit pDebug("Add to " + (friendly?QString("Player"):QString("Enemy")) + " Graveyard: " +
                 Utility::getCardAttribute(code, "name").toString());
 }
 
 
-void GraveyardHandler::insertDeckCard(DeckCard &deckCard)
+void GraveyardHandler::insertDeckCard(bool friendly, DeckCard &deckCard)
 {
+    QList<DeckCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
+    MoveListWidget *listWidget = (friendly?ui->graveyardListWidgetPlayer:ui->graveyardListWidgetEnemy);
+
     for(int i=0; i<deckCardList.length(); i++)
     {
         if(deckCard.getCost() < deckCardList[i].getCost())
         {
             deckCardList.insert(i, deckCard);
-            ui->enemyDeckListWidget->insertItem(i, deckCard.listItem);
+            listWidget->insertItem(i, deckCard.listItem);
             return;
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
@@ -178,20 +135,20 @@ void GraveyardHandler::insertDeckCard(DeckCard &deckCard)
                 if(deckCard.getType() == WEAPON || deckCardList[i].getType() == MINION)
                 {
                     deckCardList.insert(i, deckCard);
-                    ui->enemyDeckListWidget->insertItem(i, deckCard.listItem);
+                    listWidget->insertItem(i, deckCard.listItem);
                     return;
                 }
             }
             else */if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
             {
                 deckCardList.insert(i, deckCard);
-                ui->enemyDeckListWidget->insertItem(i, deckCard.listItem);
+                listWidget->insertItem(i, deckCard.listItem);
                 return;
             }
         }
     }
     deckCardList.append(deckCard);
-    ui->enemyDeckListWidget->addItem(deckCard.listItem);
+    listWidget->addItem(deckCard.listItem);
 }
 
 
@@ -199,20 +156,20 @@ void GraveyardHandler::updateTransparency()
 {
     if(transparency==Transparent || (!mouseInApp && inGame && transparency==AutoTransparent))
     {
-        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground);
-        ui->tabEnemyDeck->repaint();
+        ui->tabGraveyard->setAttribute(Qt::WA_NoBackground);
+        ui->tabGraveyard->repaint();
 
-        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabGraveyard)
         {
             emit needMainWindowFade(true);
         }
     }
     else
     {
-        ui->tabEnemyDeck->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabEnemyDeck->repaint();
+        ui->tabGraveyard->setAttribute(Qt::WA_NoBackground, false);
+        ui->tabGraveyard->repaint();
 
-        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabEnemyDeck)
+        if(transparency==AutoTransparent && ui->tabWidget->currentWidget()==ui->tabGraveyard)
         {
             emit needMainWindowFade(false);
         }
@@ -234,7 +191,7 @@ void GraveyardHandler::setMouseInApp(bool value)
 }
 
 
-void GraveyardHandler::lockEnemyDeckInterface()
+void GraveyardHandler::lockGraveyardInterface()
 {
     this->inGame = true;
     updateTransparency();
@@ -243,7 +200,7 @@ void GraveyardHandler::lockEnemyDeckInterface()
 }
 
 
-void GraveyardHandler::unlockEnemyDeckInterface()
+void GraveyardHandler::unlockGraveyardInterface()
 {
     this->inGame = false;
     updateTransparency();
@@ -252,7 +209,15 @@ void GraveyardHandler::unlockEnemyDeckInterface()
 
 void GraveyardHandler::redrawClassCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    foreach(DeckCard deckCard, deckCardListPlayer)
+    {
+        if(deckCard.getCardClass()<9)
+        {
+            deckCard.draw();
+        }
+    }
+
+    foreach(DeckCard deckCard, deckCardListEnemy)
     {
         if(deckCard.getCardClass()<9)
         {
@@ -264,7 +229,16 @@ void GraveyardHandler::redrawClassCards()
 
 void GraveyardHandler::redrawSpellWeaponCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    foreach(DeckCard deckCard, deckCardListPlayer)
+    {
+        CardType cardType = deckCard.getType();
+        if(cardType == SPELL || cardType == WEAPON)
+        {
+            deckCard.draw();
+        }
+    }
+
+    foreach(DeckCard deckCard, deckCardListEnemy)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -277,7 +251,12 @@ void GraveyardHandler::redrawSpellWeaponCards()
 
 void GraveyardHandler::redrawAllCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    foreach(DeckCard deckCard, deckCardListPlayer)
+    {
+        deckCard.draw();
+    }
+
+    foreach(DeckCard deckCard, deckCardListEnemy)
     {
         deckCard.draw();
     }
@@ -286,27 +265,40 @@ void GraveyardHandler::redrawAllCards()
 
 void GraveyardHandler::redrawDownloadedCardImage(QString code)
 {
-    foreach(DeckCard deckCard, deckCardList)
+    foreach(DeckCard deckCard, deckCardListPlayer)
+    {
+        if(deckCard.getCode() == code)  deckCard.draw();
+    }
+
+    foreach(DeckCard deckCard, deckCardListEnemy)
     {
         if(deckCard.getCode() == code)  deckCard.draw();
     }
 }
 
 
-void GraveyardHandler::findDeckCardEntered(QListWidgetItem * item)
+void GraveyardHandler::findPlayerDeckCardEntered(QListWidgetItem * item)
 {
-    QString code = deckCardList[ui->enemyDeckListWidget->row(item)].getCode();
-
-    QRect rectCard = ui->enemyDeckListWidget->visualItemRect(item);
-    QPoint posCard = ui->enemyDeckListWidget->mapToGlobal(rectCard.topLeft());
-    QRect globalRectCard = QRect(posCard, rectCard.size());
-
-    int deckListTop = ui->enemyDeckListWidget->mapToGlobal(QPoint(0,0)).y();
-    int deckListBottom = ui->enemyDeckListWidget->mapToGlobal(QPoint(0,ui->enemyDeckListWidget->height())).y();
-    emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
+    findDeckCardEntered(true, item);
 }
 
-QList<DeckCard> GraveyardHandler::getDeckCardList()
+
+void GraveyardHandler::findEnemyDeckCardEntered(QListWidgetItem * item)
 {
-    return deckCardList;
+    findDeckCardEntered(false, item);
+}
+
+
+void GraveyardHandler::findDeckCardEntered(bool friendly, QListWidgetItem * item)
+{
+    MoveListWidget *listWidget = (friendly?ui->graveyardListWidgetPlayer:ui->graveyardListWidgetEnemy);
+    QString code = (friendly?deckCardListPlayer:deckCardListEnemy)[listWidget->row(item)].getCode();
+
+    QRect rectCard = listWidget->visualItemRect(item);
+    QPoint posCard = listWidget->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int deckListTop = listWidget->mapToGlobal(QPoint(0,0)).y();
+    int deckListBottom = listWidget->mapToGlobal(QPoint(0,listWidget->height())).y();
+    emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
 }

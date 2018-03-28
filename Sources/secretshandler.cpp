@@ -495,8 +495,12 @@ void SecretsHandler::playerMinionPlayed(QString code, int playerMinions)
 }
 
 
-void SecretsHandler::enemyMinionDead(QString code)
+void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTurn)
 {
+    Q_UNUSED(id);
+
+    if(!isPlayerTurn)   return;
+
     if(lastMinionDead.isEmpty())    lastMinionDead = code;
 
     discardSecretOptionNow(DDUPLICATE);
