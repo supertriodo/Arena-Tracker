@@ -35,6 +35,8 @@ QString ThemeHandler::buttonForceDraftFile_, ThemeHandler::buttonDraftRefreshFil
 QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_;
 QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, ThemeHandler::buttonPlanRefreshFile_;
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
+QString ThemeHandler::buttonGraveyardPlayerFile_, ThemeHandler::buttonGraveyardEnemyFile_;
+QString ThemeHandler::buttonGraveyardMinionsFile_, ThemeHandler::buttonGraveyardWeaponsFile_;
 QString ThemeHandler::bgCard1Files_[10], ThemeHandler::bgCard2Files_[10], ThemeHandler::heroFiles_[9];
 QString ThemeHandler::bgTotalAttackFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
@@ -448,6 +450,30 @@ QString ThemeHandler::buttonPlanResizeFile()
 }
 
 
+QString ThemeHandler::buttonGraveyardPlayerFile()
+{
+    return buttonGraveyardPlayerFile_;
+}
+
+
+QString ThemeHandler::buttonGraveyardEnemyFile()
+{
+    return buttonGraveyardEnemyFile_;
+}
+
+
+QString ThemeHandler::buttonGraveyardMinionsFile()
+{
+    return buttonGraveyardMinionsFile_;
+}
+
+
+QString ThemeHandler::buttonGraveyardWeaponsFile()
+{
+    return buttonGraveyardWeaponsFile_;
+}
+
+
 QString ThemeHandler::bgCard1File(int order)
 {
     if(order>8) return bgCard1Files_[9];
@@ -827,6 +853,12 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     handCardBYUnknownFile_ = loadThemeFile(themePath, jsonObject, "handCardBYUnknownFile");
     bgTotalAttackFile_ = loadThemeFile(themePath, jsonObject, "bgTotalAttackFile");
 
+    //"-----GRAVEYARD TAB-----": 0,
+    buttonGraveyardPlayerFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardPlayerFile");
+    buttonGraveyardEnemyFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardEnemyFile");
+    buttonGraveyardMinionsFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardMinionsFile");
+    buttonGraveyardWeaponsFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardWeaponsFile");
+
     //"-----REPLAY TAB-----": 0,
     buttonPlanResizeFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanResizeFile");
     buttonPlanFirstFile_ = loadThemeFile(themePath, jsonObject, "buttonPlanFirstFile");
@@ -1053,6 +1085,10 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonPlanPrevFile_.isEmpty())       buttonPlanPrevFile_ = ":/Images/planPrev.png";
     if(buttonPlanNextFile_.isEmpty())       buttonPlanNextFile_ = ":/Images/planNext.png";
     if(buttonPlanResizeFile_.isEmpty())     buttonPlanResizeFile_ = ":/Images/planResize.png";
+    if(buttonGraveyardPlayerFile_.isEmpty())    buttonGraveyardPlayerFile_ = ":/Images/graveyardPlayer.png";
+    if(buttonGraveyardEnemyFile_.isEmpty())     buttonGraveyardEnemyFile_ = ":/Images/graveyardEnemy.png";
+    if(buttonGraveyardMinionsFile_.isEmpty())   buttonGraveyardMinionsFile_ = ":/Images/minionsCounter.png";
+    if(buttonGraveyardWeaponsFile_.isEmpty())   buttonGraveyardWeaponsFile_ = ":/Images/weaponsCounter.png";
 
     QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
     for(int i=0; i<9; i++)

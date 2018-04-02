@@ -1,4 +1,5 @@
 #include "graveyardhandler.h"
+#include "themehandler.h"
 
 #include <QtWidgets>
 
@@ -30,12 +31,81 @@ void GraveyardHandler::completeUI()
 
     ui->graveyardListWidgetEnemy->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graveyardListWidgetEnemy->setMouseTracking(true);
+    ui->graveyardListWidgetEnemy->hide();
 
     connect(ui->graveyardListWidgetPlayer, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findPlayerDeckCardEntered(QListWidgetItem*)));
     connect(ui->graveyardListWidgetEnemy, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findEnemyDeckCardEntered(QListWidgetItem*)));
 
+
+    //Top buttons
+    QButtonGroup *playerEnemyGroup = new QButtonGroup(ui->tabGraveyard);
+    playerEnemyGroup->addButton(ui->graveyardButtonPlayer);
+    playerEnemyGroup->addButton(ui->graveyardButtonEnemy);
+
+    connect(ui->graveyardButtonPlayer, SIGNAL(clicked(bool)),
+            this, SLOT(buttonPlayerClicked()));
+    connect(ui->graveyardButtonEnemy, SIGNAL(clicked(bool)),
+            this, SLOT(buttonEnemyClicked()));
+
+    QButtonGroup *minionsWeaponsGroup = new QButtonGroup(ui->tabGraveyard);
+    minionsWeaponsGroup->addButton(ui->graveyardButtonMinions);
+    minionsWeaponsGroup->addButton(ui->graveyardButtonWeapons);
+
+    connect(ui->graveyardButtonMinions, SIGNAL(clicked(bool)),
+            this, SLOT(buttonMinionsClicked()));
+    connect(ui->graveyardButtonWeapons, SIGNAL(clicked(bool)),
+            this, SLOT(buttonWeaponsClicked()));
+}
+
+
+void GraveyardHandler::buttonPlayerClicked()
+{
+    ui->graveyardListWidgetEnemy->hide();
+    ui->graveyardListWidgetPlayer->show();
+}
+
+
+void GraveyardHandler::buttonEnemyClicked()
+{
+    ui->graveyardListWidgetPlayer->hide();
+    ui->graveyardListWidgetEnemy->show();
+}
+
+
+void GraveyardHandler::buttonMinionsClicked()
+{
+    onlyShow(MINION);
+}
+
+
+void GraveyardHandler::buttonWeaponsClicked()
+{
+    onlyShow(WEAPON);
+}
+
+
+void GraveyardHandler::onlyShow(CardType cardType)
+{
+    for(DeckCard &deckCard: deckCardListPlayer)
+    {
+        deckCard.listItem->setHidden(deckCard.getType() != cardType);
+    }
+
+    for(DeckCard &deckCard: deckCardListEnemy)
+    {
+        deckCard.listItem->setHidden(deckCard.getType() != cardType);
+    }
+}
+
+
+void GraveyardHandler::setTheme()
+{
+    ui->graveyardButtonPlayer->setIcon(QIcon(ThemeHandler::buttonGraveyardPlayerFile()));
+    ui->graveyardButtonEnemy->setIcon(QIcon(ThemeHandler::buttonGraveyardEnemyFile()));
+    ui->graveyardButtonMinions->setIcon(QIcon(ThemeHandler::buttonGraveyardMinionsFile()));
+    ui->graveyardButtonWeapons->setIcon(QIcon(ThemeHandler::buttonGraveyardWeaponsFile()));
 }
 
 
@@ -103,9 +173,27 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
     if(!found)
     {
         DeckCard deckCard(code);
+
+        //Allow only weapon/minion
+        CardType cardType = deckCard.getType();
+        if(cardType != MINION && cardType != WEAPON)
+        {
+            emit pDebug("Avoid adding non weapon/minion to graveyard: " + deckCard.getName());
+            return;
+        }
+
         deckCard.id = id;
         deckCard.listItem = new QListWidgetItem();
         insertDeckCard(friendly, deckCard);
+
+        //Show/hide
+        if((cardType == MINION && !ui->graveyardButtonMinions->isChecked()) ||
+                (cardType == WEAPON && !ui->graveyardButtonWeapons->isChecked()))
+        {
+            deckCard.listItem->setHidden(true);
+        }
+
+        //Draw
         deckCard.draw();
         emit checkCardImage(code);
     }
@@ -130,16 +218,7 @@ void GraveyardHandler::insertDeckCard(bool friendly, DeckCard &deckCard)
         }
         else if(deckCard.getCost() == deckCardList[i].getCost())
         {
-            /*if(deckCard.getType() != deckCardList[i].getType())
-            {
-                if(deckCard.getType() == WEAPON || deckCardList[i].getType() == MINION)
-                {
-                    deckCardList.insert(i, deckCard);
-                    listWidget->insertItem(i, deckCard.listItem);
-                    return;
-                }
-            }
-            else */if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
+            if(deckCard.getName().toLower() < deckCardList[i].getName().toLower())
             {
                 deckCardList.insert(i, deckCard);
                 listWidget->insertItem(i, deckCard.listItem);

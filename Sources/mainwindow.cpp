@@ -679,7 +679,7 @@ void MainWindow::createEnemyDeckHandler()
 
 
 void MainWindow::createGraveyardHandler()
-{//TODO
+{
     graveyardHandler = new GraveyardHandler(this, ui);
     connect(graveyardHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
@@ -929,7 +929,6 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
 
-    //TODO Incluir connects de graveyardHandler
 //    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
 //            graveyardHandler, SLOT(enemySecretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerMinionGraveyard(int,QString)),
@@ -2761,6 +2760,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     deckHandler->setTheme();
     draftHandler->setTheme();
     planHandler->setTheme();
+    graveyardHandler->setTheme();
     enemyHandHandler->setTheme();
     deckHandler->redrawAllCards();
     draftHandler->redrawAllCards();
@@ -3058,7 +3058,7 @@ void MainWindow::spreadTamCard(int value)
     }
 
     if(enemyDeckHandler != NULL)    enemyDeckHandler->redrawAllCards();
-    if(graveyardHandler != NULL)    graveyardHandler->redrawAllCards();//TODO Redraw iconos futuro
+    if(graveyardHandler != NULL)    graveyardHandler->redrawAllCards();
     if(secretsHandler != NULL)      secretsHandler->redrawAllCards();
     if(enemyHandHandler != NULL)
     {

@@ -40,6 +40,8 @@ private:
     static QString buttonGamesReplayFile_, buttonGamesWebFile_;
     static QString buttonPlanFirstFile_, buttonPlanLastFile_, buttonPlanRefreshFile_;
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
+    static QString buttonGraveyardPlayerFile_, buttonGraveyardEnemyFile_;
+    static QString buttonGraveyardMinionsFile_, buttonGraveyardWeaponsFile_;
     static QString bgCard1Files_[10], bgCard2Files_[10], heroFiles_[9];
     static QString bgTotalAttackFile_;
     static QString branchClosedFile_, branchOpenFile_;
@@ -147,6 +149,10 @@ public:
     static QString buttonPlanPrevFile();
     static QString buttonPlanNextFile();
     static QString buttonPlanResizeFile();
+    static QString buttonGraveyardPlayerFile();
+    static QString buttonGraveyardEnemyFile();
+    static QString buttonGraveyardMinionsFile();
+    static QString buttonGraveyardWeaponsFile();
     static QString buttonPlusFile();
     static QString buttonRemoveFile();
     static QString buttonGamesReplayFile();

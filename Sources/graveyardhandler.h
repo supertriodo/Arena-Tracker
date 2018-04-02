@@ -30,6 +30,7 @@ public:
     void redrawDownloadedCardImage(QString code);
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
+    void setTheme();
 
 private:
     void completeUI();
@@ -38,6 +39,7 @@ private:
     void updateTransparency();
     void findDeckCardEntered(bool friendly, QListWidgetItem *item);
     void reset();
+    void onlyShow(CardType cardType);
 
 signals:
     void checkCardImage(QString code);
@@ -56,6 +58,10 @@ public slots:
 private slots:
     void findPlayerDeckCardEntered(QListWidgetItem *item);
     void findEnemyDeckCardEntered(QListWidgetItem *item);
+    void buttonPlayerClicked();
+    void buttonEnemyClicked();
+    void buttonMinionsClicked();
+    void buttonWeaponsClicked();
 };
 
 #endif // GRAVEYARDHANDLER_H

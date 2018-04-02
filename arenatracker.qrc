@@ -139,5 +139,7 @@
         <file>Images/secretRogue.png</file>
         <file>Images/goldenMechanic.png</file>
         <file>Images/graveyard.png</file>
+        <file>Images/graveyardEnemy.png</file>
+        <file>Images/graveyardPlayer.png</file>
     </qresource>
 </RCC>
