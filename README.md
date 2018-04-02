@@ -17,7 +17,7 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 * Tested on Ubuntu/Linux Mint
   * I suggest downloading ArenaTracker.AppImage
   * libpng12-0, libxcb-xinerama0 need to be installed on Ubuntu 16.04 LTS
-  * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arena-tracker/) maintained by [Strit](https://github.com/Strit).
+  * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arenatracker-bin/) maintained by [Strit](https://github.com/Strit).
 
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
