@@ -23,6 +23,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * [Patreon only:](https://www.patreon.com/triodo) Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
 * [Patreon only:](https://www.patreon.com/triodo) Check the cards (minions and weapons) that died during the game on each side of the board. Useful for reanimation mechanics.
+
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
 Arena Tracker is free and open source.
