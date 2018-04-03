@@ -31,7 +31,6 @@ void GraveyardHandler::completeUI()
 
     ui->graveyardListWidgetEnemy->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graveyardListWidgetEnemy->setMouseTracking(true);
-    ui->graveyardListWidgetEnemy->hide();
 
     connect(ui->graveyardListWidgetPlayer, SIGNAL(itemEntered(QListWidgetItem*)),
             this, SLOT(findPlayerDeckCardEntered(QListWidgetItem*)));
@@ -57,6 +56,47 @@ void GraveyardHandler::completeUI()
             this, SLOT(buttonMinionsClicked()));
     connect(ui->graveyardButtonWeapons, SIGNAL(clicked(bool)),
             this, SLOT(buttonWeaponsClicked()));
+
+    //Patreon button
+    planPatreonButton = new QPushButton(ui->tabGraveyard);
+    planPatreonButton->setFlat(true);
+    planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
+    planPatreonButton->setIconSize(QSize(217, 51));
+    planPatreonButton->setToolTip("Unlock Graveyard becoming a patron (3$)");
+
+    ui->tabGraveyardVerticalLayout->insertWidget(0, planPatreonButton);
+
+    connect(planPatreonButton, SIGNAL(clicked()),
+            this, SIGNAL(showPremiumDialog()));
+
+    setPremium(false);
+}
+
+
+void GraveyardHandler::setPremium(bool premium)
+{
+    if(premium)
+    {
+        ui->graveyardListWidgetEnemy->hide();
+        ui->graveyardListWidgetPlayer->show();
+        ui->graveyardButtonPlayer->show();
+        ui->graveyardButtonEnemy->show();
+        ui->graveyardButtonMinions->show();
+        ui->graveyardButtonWeapons->show();
+
+        this->planPatreonButton->hide();
+    }
+    else
+    {
+        ui->graveyardListWidgetEnemy->hide();
+        ui->graveyardListWidgetPlayer->hide();
+        ui->graveyardButtonPlayer->hide();
+        ui->graveyardButtonEnemy->hide();
+        ui->graveyardButtonMinions->hide();
+        ui->graveyardButtonWeapons->hide();
+
+        this->planPatreonButton->show();
+    }
 }
 
 

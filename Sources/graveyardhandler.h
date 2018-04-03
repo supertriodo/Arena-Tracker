@@ -21,6 +21,7 @@ private:
     Transparency transparency;
     bool inGame, mouseInApp;
     int lastSecretIdAdded;
+    QPushButton *planPatreonButton;
 
 //Metodos
 public:
@@ -45,6 +46,7 @@ signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
+    void showPremiumDialog();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="GraveyardHandler");
 
@@ -54,6 +56,7 @@ public slots:
     void enemySecretRevealed(int id, QString code);
     void lockGraveyardInterface();
     void unlockGraveyardInterface();
+    void setPremium(bool premium);
 
 private slots:
     void findPlayerDeckCardEntered(QListWidgetItem *item);

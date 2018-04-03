@@ -568,6 +568,8 @@ void MainWindow::createPremiumHandler()
             draftHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             planHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            graveyardHandler, SLOT(setPremium(bool)));
     connect(trackobotUploader, SIGNAL(connected(QString,QString)),
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
@@ -685,6 +687,8 @@ void MainWindow::createGraveyardHandler()
             this, SLOT(checkCardImage(QString)));
     connect(graveyardHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
+    connect(graveyardHandler, SIGNAL(showPremiumDialog()),
+            this, SLOT(showPremiumDialog()));
     connect(graveyardHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(graveyardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
