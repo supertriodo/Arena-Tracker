@@ -15,13 +15,15 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Save and organize your constructed decks.
 * Import/export your deck with Hearthstone.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
+* Upload your draft and games to [ZeroToHeroes](http://www.zerotoheroes.com/s/hearthstone) and improve with the community.
 * [Patreon only:](https://www.patreon.com/triodo) Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * [Patreon only:](https://www.patreon.com/triodo) Plan your turn beforehand. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
-* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
+* [Patreon only:](https://www.patreon.com/triodo) Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Upload your draft and games to [ZeroToHeroes](http://www.zerotoheroes.com/s/hearthstone) and improve with the community.
+* [Patreon only:](https://www.patreon.com/triodo) Check the cards (minions and weapons) that died during the game on each side of the board. Useful for reanimation mechanics.
+![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
 Arena Tracker is free and open source.
 
