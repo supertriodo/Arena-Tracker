@@ -160,7 +160,8 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Unlock replays, synergies and draft mechanics becoming a patron (3$)</string>
+               <string>Unlock replays, graveyard, synergies and
+draft mechanics becoming a patron (3$)</string>
               </property>
               <property name="text">
                <string/>
