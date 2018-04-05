@@ -55,14 +55,14 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoreButtonLF->setFixedHeight(scoreWidth);
     scoreButtonLF->setFixedWidth(scoreWidth);
     scoreButtonLF->setScore(0, true);
-    lavaButton->setToolTip("LightForge deck average");
+    scoreButtonLF->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
     scoreButtonHA = new ScoreButton(centralWidget, HearthArena, false);
     scoreButtonHA->setFixedHeight(scoreWidth);
     scoreButtonHA->setFixedWidth(scoreWidth);
     scoreButtonHA->setScore(0, true);
-    lavaButton->setToolTip("HearthArena deck average");
+    scoreButtonHA->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
