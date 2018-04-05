@@ -2,7 +2,7 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod, bool normalizedLF) : QPushButton(parent)
+ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod, bool normalizedLF) : QLabel(parent)
 {
     this->normalizedLF = normalizedLF;
     this->learningMode = false;
@@ -19,7 +19,7 @@ void ScoreButton::leaveEvent(QEvent * e)
     {
         emit spreadLearningShow(false);
     }
-    QPushButton::leaveEvent(e);
+    QLabel::leaveEvent(e);
 }
 
 
@@ -29,7 +29,7 @@ void ScoreButton::enterEvent(QEvent * e)
     {
         emit spreadLearningShow(true);
     }
-    QPushButton::enterEvent(e);
+    QLabel::enterEvent(e);
 }
 
 
@@ -88,7 +88,7 @@ void ScoreButton::draw()
                           "stop: 1 " + rgbMid + ");";
 
     this->setStyleSheet(
-            "QPushButton{background-color: " + (hideScore?"black;":gradientCSS) +
+            "QLabel{background-color: " + (hideScore?"black;":gradientCSS) +
             "border-style: solid; border-color: transparent;" +
             "border-width: " + QString::number(width()/3) + "px;" +
             "border-radius: " + QString::number(width()/2) + "px;}");
@@ -98,7 +98,7 @@ void ScoreButton::draw()
 
 void ScoreButton::paintEvent(QPaintEvent *event)
 {
-    QPushButton::paintEvent(event);
+    QLabel::paintEvent(event);
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);

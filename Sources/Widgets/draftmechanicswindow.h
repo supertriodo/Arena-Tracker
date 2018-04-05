@@ -20,8 +20,8 @@ public:
 //Variables
 private:
     bool patreonVersion;
-    ScoreButton *scoresPushButton;
-    ScoreButton *scoresPushButton2;
+    ScoreButton *scoreButtonLF;
+    ScoreButton *scoreButtonHA;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     int scoreWidth;

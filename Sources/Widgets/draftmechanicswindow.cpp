@@ -44,21 +44,21 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
-    scoresPushButton = new ScoreButton(centralWidget, LightForge, normalizedLF);
-    scoresPushButton->setFixedHeight(scoreWidth);
-    scoresPushButton->setFixedWidth(scoreWidth);
-    scoresPushButton->setScore(0, true);
-    scoresPushButton->hide();
+    scoreButtonLF = new ScoreButton(centralWidget, LightForge, normalizedLF);
+    scoreButtonLF->setFixedHeight(scoreWidth);
+    scoreButtonLF->setFixedWidth(scoreWidth);
+    scoreButtonLF->setScore(0, true);
+    scoreButtonLF->hide();
 
-    scoresPushButton2 = new ScoreButton(centralWidget, HearthArena, false);
-    scoresPushButton2->setFixedHeight(scoreWidth);
-    scoresPushButton2->setFixedWidth(scoreWidth);
-    scoresPushButton2->setScore(0, true);
-    scoresPushButton2->hide();
+    scoreButtonHA = new ScoreButton(centralWidget, HearthArena, false);
+    scoreButtonHA->setFixedHeight(scoreWidth);
+    scoreButtonHA->setFixedWidth(scoreWidth);
+    scoreButtonHA->setScore(0, true);
+    scoreButtonHA->hide();
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
-    scoresLayout->addWidget(scoresPushButton);
-    scoresLayout->addWidget(scoresPushButton2);
+    scoresLayout->addWidget(scoreButtonLF);
+    scoresLayout->addWidget(scoreButtonHA);
 
     //Patreon
     if(!patreonVersion)
@@ -197,20 +197,20 @@ void DraftMechanicsWindow::setDraftMethod(DraftMethod draftMethod)
     switch(draftMethod)
     {
         case All:
-            scoresPushButton->show();
-            scoresPushButton2->show();
+            scoreButtonLF->hide();
+            scoreButtonHA->show();
             break;
         case LightForge:
-            scoresPushButton->show();
-            scoresPushButton2->hide();
+            scoreButtonLF->show();
+            scoreButtonHA->hide();
             break;
         case HearthArena:
-            scoresPushButton->hide();
-            scoresPushButton2->show();
+            scoreButtonLF->hide();
+            scoreButtonHA->show();
             break;
         default:
-            scoresPushButton->hide();
-            scoresPushButton2->hide();
+            scoreButtonLF->hide();
+            scoreButtonHA->hide();
             break;
     }
 }
@@ -218,8 +218,8 @@ void DraftMechanicsWindow::setDraftMethod(DraftMethod draftMethod)
 
 void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF)
 {
-    scoresPushButton->setScore(deckScoreLF, true);
-    scoresPushButton2->setScore(deckScoreHA, true);
+    scoreButtonLF->setScore(deckScoreLF, true);
+    scoreButtonHA->setScore(deckScoreHA, true);
 }
 
 
@@ -291,5 +291,5 @@ void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &l
 
 void DraftMechanicsWindow::setNormalizedLF(bool value)
 {
-    scoresPushButton->setNormalizedLF(value);
+    scoreButtonLF->setNormalizedLF(value);
 }

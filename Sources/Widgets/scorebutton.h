@@ -2,10 +2,10 @@
 #define SCOREBUTTON_H
 
 #include <QObject>
-#include <QPushButton>
+#include <QLabel>
 #include "../utility.h"
 
-class ScoreButton : public QPushButton
+class ScoreButton : public QLabel
 {
     Q_OBJECT
 
