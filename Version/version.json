@@ -1,5 +1,5 @@
 {
-	"versionFree": ["v6.33","v6.4"],
+	"versionFree": ["v6.32","v6.33","v6.4"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/Arena.Tracker.v6.4.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/Arena.Tracker.v6.4.Mac.zip",
