@@ -44,22 +44,25 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
-    lavaButton = new LavaButton(centralWidget);
+    lavaButton = new LavaButton(centralWidget, 3, 5);
     lavaButton->setFixedHeight(scoreWidth);
     lavaButton->setFixedWidth(scoreWidth);
     lavaButton->setValue(0);
+    lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
     scoreButtonLF = new ScoreButton(centralWidget, LightForge, normalizedLF);
     scoreButtonLF->setFixedHeight(scoreWidth);
     scoreButtonLF->setFixedWidth(scoreWidth);
     scoreButtonLF->setScore(0, true);
+    lavaButton->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
     scoreButtonHA = new ScoreButton(centralWidget, HearthArena, false);
     scoreButtonHA->setFixedHeight(scoreWidth);
     scoreButtonHA->setFixedWidth(scoreWidth);
     scoreButtonHA->setScore(0, true);
+    lavaButton->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();

@@ -2,15 +2,19 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-LavaButton::LavaButton(QWidget *parent) : QLabel(parent)
+LavaButton::LavaButton(QWidget *parent, double min, double max) : QLabel(parent)
 {
-    this->value = 0;
+    this->value = this->min = min;
+    this->max = max;
 }
 
 
 void LavaButton::setValue(double value)
 {
+    if(value > max) value = max;
+    if(value < min) value = min;
     this->value = value;
+    this->value_0_1 = (value - min)/(max - min);
     draw();
 }
 
@@ -29,6 +33,16 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
+
+    QRect targetAll(0, 0, width(), height());
+    painter.drawPixmap(targetAll, QPixmap(":Images/speedClose.png"));
+
+    QRegion r(QRect(width()*0.15, height()*0.15, width()*0.7, height()*0.7), QRegion::Ellipse);
+    painter.setClipRegion(r);
+    painter.setClipping(true);
+        QRect targetLava(0, (1-value_0_1)*(height()*80/128), width(), height());
+        painter.drawPixmap(targetLava, QPixmap(":Images/speedLava.png"));
+    painter.setClipping(false);
 
     QFont font(LG_FONT);
     font.setPixelSize(width()/2.7);
@@ -51,8 +65,7 @@ void LavaButton::paintEvent(QPaintEvent *event)
 #endif
     painter.drawPath(path);
 
-    QRect target(0, 0, width(), height());
-    painter.drawPixmap(target, QPixmap(":Images/speedOpen.png"));
+    painter.drawPixmap(targetAll, QPixmap(":Images/speedOpen.png"));
 }
 
 
