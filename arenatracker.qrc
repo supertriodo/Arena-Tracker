@@ -141,5 +141,8 @@
         <file>Images/graveyard.png</file>
         <file>Images/graveyardEnemy.png</file>
         <file>Images/graveyardPlayer.png</file>
+        <file>Images/speedClose.png</file>
+        <file>Images/speedlava.png</file>
+        <file>Images/speedOpen.png</file>
     </qresource>
 </RCC>

@@ -44,6 +44,12 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
+    lavaButton = new LavaButton(centralWidget);
+    lavaButton->setFixedHeight(scoreWidth);
+    lavaButton->setFixedWidth(scoreWidth);
+    lavaButton->setValue(0);
+    lavaButton->hide();
+
     scoreButtonLF = new ScoreButton(centralWidget, LightForge, normalizedLF);
     scoreButtonLF->setFixedHeight(scoreWidth);
     scoreButtonLF->setFixedWidth(scoreWidth);
@@ -57,6 +63,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoreButtonHA->hide();
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
+    scoresLayout->addWidget(lavaButton);
     scoresLayout->addWidget(scoreButtonLF);
     scoresLayout->addWidget(scoreButtonHA);
 
@@ -230,8 +237,10 @@ void DraftMechanicsWindow::updateManaCounter(int numIncrease, int draftedCardsCo
         showingHelp = false;
         centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
         setDraftMethod(this->draftMethod);
+        lavaButton->show();
     }
     manaCounter->increase(numIncrease, draftedCardsCount);
+    if(draftedCardsCount > 0)   lavaButton->setValue(float(manaCounter->count())/draftedCardsCount);
 }
 
 

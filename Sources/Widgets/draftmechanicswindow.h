@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include "scorebutton.h"
+#include "lavabutton.h"
 #include "../Synergies/draftitemcounter.h"
 
 
@@ -20,8 +21,8 @@ public:
 //Variables
 private:
     bool patreonVersion;
-    ScoreButton *scoreButtonLF;
-    ScoreButton *scoreButtonHA;
+    LavaButton *lavaButton;
+    ScoreButton *scoreButtonLF, *scoreButtonHA;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     int scoreWidth;

@@ -73,7 +73,8 @@ SOURCES += Sources/main.cpp\
     Sources/LibSmtp/smtp.cpp \
     Sources/premiumhandler.cpp \
     Sources/detachwindow.cpp \
-    Sources/graveyardhandler.cpp
+    Sources/graveyardhandler.cpp \
+    Sources/Widgets/lavabutton.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -139,7 +140,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/LibSmtp/smtp.h \
     Sources/premiumhandler.h \
     Sources/detachwindow.h \
-    Sources/graveyardhandler.h
+    Sources/graveyardhandler.h \
+    Sources/Widgets/lavabutton.h
 
 FORMS    += mainwindow.ui
 
