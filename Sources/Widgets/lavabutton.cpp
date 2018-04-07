@@ -6,15 +6,35 @@ LavaButton::LavaButton(QWidget *parent, double min, double max) : QLabel(parent)
 {
     this->value = this->min = min;
     this->max = max;
+    this->drawCards = this->toYourHandCards = this->discoverCards = 0;
 }
 
 
-void LavaButton::setValue(double value)
+void LavaButton::setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards)
 {
-    if(value > max) value = max;
-    if(value < min) value = min;
-    this->value = value;
+    this->drawCards += drawCards;
+    this->toYourHandCards += toYourHandCards;
+    this->discoverCards += discoverCards;
+
+#ifdef QT_DEBUG
+    qDebug() << QString("Mana: ") + QString::number(totalMana) +
+                QString("- Cards: ") + QString::number(numCards) +
+                QString("- Draw: ") + QString::number(this->drawCards) + "(" + QString::number(drawCards) + ")" +
+                QString("- ToYourHand: ") + QString::number(this->toYourHandCards) + "(" + QString::number(toYourHandCards) + ")" +
+                QString("- Discover: ") + QString::number(this->discoverCards) + "(" + QString::number(discoverCards) + ")";
+#endif
+
+    if(numCards == 0)    return;
+    value = (
+                totalMana +
+                this->drawCards * (totalMana/(float)numCards) +
+                this->toYourHandCards * 4 +
+                this->discoverCards * 4
+             )/(float)numCards;
+
     this->value_0_1 = (value - min)/(max - min);
+    if(value_0_1 > 1) value_0_1 = 1;
+    if(value_0_1 < 0) value_0_1 = 0;
     draw();
 }
 
@@ -67,15 +87,4 @@ void LavaButton::paintEvent(QPaintEvent *event)
 
     painter.drawPixmap(targetAll, QPixmap(":Images/speedOpen.png"));
 }
-
-
-
-
-
-
-
-
-
-
-
 

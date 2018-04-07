@@ -366,6 +366,20 @@ QStringList Utility::getSetCodes(const QString &set)
 }
 
 
+QStringList Utility::getWildCodes()
+{
+    QStringList setCodes;
+    for(const QString &code: Utility::cardsJson->keys())
+    {
+        if(getCardAttribute(code, "collectible").toBool() == true)
+        {
+            setCodes.append(code);
+        }
+    }
+    return setCodes;
+}
+
+
 QStringList Utility::getStandardCodes()
 {
     QStringList setCodes;

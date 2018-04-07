@@ -305,8 +305,9 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 
 
 int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
-                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
+                                QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                                QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
+                                int &draw, int &toYourHand, int &discover)
 {
     for(DeckCard &deckCard: cardTypeCounters[V_SPELL]->getDeckCardList())
     {
@@ -359,18 +360,41 @@ int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList,
         for(int i=0; i<deckCard.total; i++)    reachList.append(deckCard.getCode());
     }
 
+    discover = draw = toYourHand = 0;
+    for(DeckCard &deckCard: mechanicCounters[V_DISCOVER]->getDeckCardList())
+    {
+        QString code = deckCard.getCode();
+        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+        discover += deckCard.total * numDiscoverGen(code, mechanics, referencedTags);
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_DRAW]->getDeckCardList())
+    {
+        QString code = deckCard.getCode();
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        draw += deckCard.total * numDrawGen(code, text);
+    }
+    for(DeckCard &deckCard: mechanicCounters[V_TOYOURHAND]->getDeckCardList())
+    {
+        QString code = deckCard.getCode();
+        QString text = Utility::cardEnTextFromCode(code).toLower();
+        toYourHand += deckCard.total * numToYourHandGen(code, text);
+    }
+
     return manaCounter->count();
 }
 
 
 void SynergyHandler::updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                                     QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
+                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
+                                    int &draw, int &toYourHand, int &discover)
 {
     updateRaceCounters(deckCard);
     updateCardTypeCounters(deckCard, spellList, minionList, weaponList);
     updateManaCounter(deckCard);
-    updateMechanicCounters(deckCard, aoeList, tauntList, survivabilityList, drawList, pingList, damageList, destroyList, reachList);
+    updateMechanicCounters(deckCard, aoeList, tauntList, survivabilityList, drawList, pingList, damageList, destroyList, reachList,
+                           draw, toYourHand, discover);
     updateStatsCards(deckCard);
 }
 
@@ -491,7 +515,8 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QStringList &spe
 
 void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
                                             QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                            QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
+                                            QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
+                                            int &draw, int &toYourHand, int &discover)
 {
     bool isSurvivability = false;
     QString code = deckCard.getCode();
@@ -532,9 +557,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_REACH]->increase(code);
         reachList.append(code);
     }
-    if(isDiscoverGen(code, mechanics, referencedTags))                      mechanicCounters[V_DISCOVER]->increase(code);
-    if(isDrawGen(code, text))                                               mechanicCounters[V_DRAW]->increase(code);
-    if(isToYourHandGen(code, text))                                         mechanicCounters[V_TOYOURHAND]->increase(code);
+    discover = numDiscoverGen(code, mechanics, referencedTags);
+    draw = numDrawGen(code, text);
+    toYourHand = numToYourHandGen(code, text);
+    if(discover > 0)                                                        mechanicCounters[V_DISCOVER]->increase(code);
+    if(draw > 0)                                                            mechanicCounters[V_DRAW]->increase(code);
+    if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
@@ -1084,7 +1112,8 @@ void SynergyHandler::testSynergies()
 {
     initSynergyCodes();
     int num = 0;
-    for(const QString &code: Utility::getStandardCodes())
+//    for(const QString &code: Utility::getStandardCodes())
+    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1094,7 +1123,7 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                text.contains("silver") && text.contains("hand") && text.contains("recruit")//&&
+                (text.contains("to") && text.contains("your") && text.contains("hand"))
 //                !isSpawnEnemyGen(code, text)
 //                isSpellAllSyn(code, text)
 //                    isSpellSyn(code)
@@ -1111,9 +1140,10 @@ void SynergyHandler::testSynergies()
 //                isTokenCardGen(code, cost)
             )
         {
-//            debugSynergiesCode(code, ++num);
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
-            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+//            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+            debugSynergiesCode(code, ++num);
+
         }
         Q_UNUSED(cardType);
         Q_UNUSED(text);
@@ -1138,7 +1168,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set)
 
 void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 {
-    QStringList mec, syn, manual;
+    QStringList mec, manual;
 
     if(synergyCodes.contains(code)) manual<<synergyCodes[code];
     DeckCard deckCard(code);
@@ -1148,18 +1178,18 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
-    if(isMurlocAllSyn(code, text))      syn<<"murlocAllSyn";
-    if(isDemonAllSyn(code, text))       syn<<"demonAllSyn";
-    if(isMechAllSyn(code, text))        syn<<"mechAllSyn";
-    if(isElementalAllSyn(code, text))   syn<<"elementalAllSyn";
-    if(isBeastAllSyn(code, text))       syn<<"beastAllSyn";
-    if(isTotemAllSyn(code, text))       syn<<"totemAllSyn";
-    if(isPirateAllSyn(code, text))      syn<<"pirateAllSyn";
-    if(isDragonSyn(code, text))         syn<<"dragonSyn";
+    if(isMurlocAllSyn(code, text))      mec<<"murlocAllSyn";
+    if(isDemonAllSyn(code, text))       mec<<"demonAllSyn";
+    if(isMechAllSyn(code, text))        mec<<"mechAllSyn";
+    if(isElementalAllSyn(code, text))   mec<<"elementalAllSyn";
+    if(isBeastAllSyn(code, text))       mec<<"beastAllSyn";
+    if(isTotemAllSyn(code, text))       mec<<"totemAllSyn";
+    if(isPirateAllSyn(code, text))      mec<<"pirateAllSyn";
+    if(isDragonSyn(code, text))         mec<<"dragonSyn";
 
     if(isWeaponGen(code, text))         mec<<"weaponGen";
-    if(isSpellAllSyn(code, text))       syn<<"spellAllSyn";
-    if(isWeaponAllSyn(code, text))      syn<<"weaponAllSyn";
+    if(isSpellAllSyn(code, text))       mec<<"spellAllSyn";
+    if(isWeaponAllSyn(code, text))      mec<<"weaponAllSyn";
 
 //    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
     if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
@@ -1201,23 +1231,23 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isComboGen(code, mechanics))                                         mec<<"comboGen";
 
     //Solo analizamos los que tienen patrones definidos
-    if(isOverloadSyn(code, text))                                           syn<<"overloadSyn";
-    if(isSecretSyn(code, referencedTags))                                   syn<<"secretSyn";
-    if(isFreezeEnemySyn(code, referencedTags, text))                        syn<<"freezeEnemySyn";
-    if(isDiscardSyn(code, text))                                            syn<<"discardSyn";
-    if(isBattlecrySyn(code, referencedTags))                                syn<<"battlecrySyn";
-    if(isSilenceOwnSyn(code, mechanics))                                    syn<<"silenceOwnSyn";
-    if(isTauntGiverSyn(code, mechanics, attack, cardType))                  syn<<"tauntGiverSyn";
-    if(isTokenSyn(code, text))                                              syn<<"tokenSyn";
-    if(isReturnSyn(code, mechanics, cardType, text))                        syn<<"returnSyn";
-    if(isSpellDamageSyn(code, mechanics, cardType, text))                   syn<<"spellDamageSyn";
-    if(isEnrageSyn(code, text))                                             syn<<"enrageSyn";
-    if(isTokenCardSyn(code, text))                                          syn<<"tokenCardSyn";
+    if(isOverloadSyn(code, text))                                           mec<<"overloadSyn";
+    if(isSecretSyn(code, referencedTags))                                   mec<<"secretSyn";
+    if(isFreezeEnemySyn(code, referencedTags, text))                        mec<<"freezeEnemySyn";
+    if(isDiscardSyn(code, text))                                            mec<<"discardSyn";
+    if(isBattlecrySyn(code, referencedTags))                                mec<<"battlecrySyn";
+    if(isSilenceOwnSyn(code, mechanics))                                    mec<<"silenceOwnSyn";
+    if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mec<<"tauntGiverSyn";
+    if(isTokenSyn(code, text))                                              mec<<"tokenSyn";
+    if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
+    if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
+    if(isEnrageSyn(code, text))                                             mec<<"enrageSyn";
+    if(isTokenCardSyn(code, text))                                          mec<<"tokenCardSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
 
     if(!manual.isEmpty())   qDebug()<<"-----MANUAL: "<<manual;
-    else                    qDebug()<<mec<<syn;
+    else                    qDebug()<<mec;
 }
 
 
@@ -1285,61 +1315,90 @@ bool SynergyHandler::isDiscoverDrawGen(const QString &code, const QJsonArray &me
 {
     //TEST
     //&& (text.contains("draw") || text.contains("discover") || (text.contains("to") && text.contains("your") && text.contains("hand")))
-    if(synergyCodes.contains(code))
-    {
-        return synergyCodes[code].contains("discover") ||
-                synergyCodes[code].contains("drawGen") ||
-                synergyCodes[code].contains("toYourHandGen");
-    }
-    else if(mechanics.contains(QJsonValue("DISCOVER")) || referencedTags.contains(QJsonValue("DISCOVER")))
-    {
-        return true;
-    }
-    else
-    {
-        return  (text.contains("draw") && !text.contains("drawn")) ||
-                (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
-    }
+    return(isDiscoverGen(code, mechanics, referencedTags) ||
+            isDrawGen(code, text) ||
+            isToYourHandGen(code, text));
 }
 bool SynergyHandler::isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    return numDiscoverGen(code, mechanics, referencedTags)>0;
+}
+int SynergyHandler::numDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
 {
     //TEST
     //&& text.contains("discover")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("discover");
+        for(QString mechanic: synergyCodes[code])
+        {
+            if(mechanic.startsWith("discover"))
+            {
+                mechanic.remove(0,8);
+                if(!mechanic.isEmpty())     return mechanic.toInt();
+                return 1;
+            }
+        }
+        return 0;
     }
     else if(mechanics.contains(QJsonValue("DISCOVER")) || referencedTags.contains(QJsonValue("DISCOVER")))
     {
-        return true;
+        return 1;
     }
-    return false;
+    return 0;
 }
 bool SynergyHandler::isDrawGen(const QString &code, const QString &text)
+{
+    return numDrawGen(code, text)>0;
+}
+int SynergyHandler::numDrawGen(const QString &code, const QString &text)
 {
     //TEST
     //&& text.contains("draw")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("drawGen");
+        for(QString mechanic: synergyCodes[code])
+        {
+            if(mechanic.startsWith("drawGen"))
+            {
+                mechanic.remove(0,7);
+                if(!mechanic.isEmpty())     return mechanic.toInt();
+                return 1;
+            }
+        }
+        return 0;
     }
-    else
+    else if(text.contains("draw") && !text.contains("drawn"))
     {
-        return  (text.contains("draw") && !text.contains("drawn"));
+        return 1;
     }
+    return 0;
 }
 bool SynergyHandler::isToYourHandGen(const QString &code, const QString &text)
+{
+    return numToYourHandGen(code, text)>0;
+}
+int SynergyHandler::numToYourHandGen(const QString &code, const QString &text)
 {
     //TEST
     //&& (text.contains("to") && text.contains("your") && text.contains("hand"))
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("toYourHandGen");
+        for(QString mechanic: synergyCodes[code])
+        {
+            if(mechanic.startsWith("toYourHandGen"))
+            {
+                mechanic.remove(0,13);
+                if(!mechanic.isEmpty())     return mechanic.toInt();
+                return 1;
+            }
+        }
+        return 0;
     }
-    else
+    else if(text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"))
     {
-        return  (text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"));
+        return 1;
     }
+    return 0;
 }
 bool SynergyHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
 {
@@ -2489,6 +2548,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QString code = deckCard.getCode();
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
+    if(code == SECOND_RATE_BRUISER) return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -2497,7 +2557,6 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FORBIDDEN_HEALING)   return 4;
     if(code == FORBIDDEN_RITUAL)    return 4;
     if(code == FORBIDDEN_ANCIENT)   return 4;
-    if(code == UNSTABLE_EVOLUTION)  return 4;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
@@ -2576,8 +2635,11 @@ REGLAS
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn)
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
-1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
-+si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
+    1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
++toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
++drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
+    que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
+    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
 +tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
     (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
@@ -2587,12 +2649,12 @@ REGLAS
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen
 +pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
-*spellDamageSyn es para aoe o damage a 2 objetivos
++spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
-Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo)
-o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
+    Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo)
+    o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 
 
 

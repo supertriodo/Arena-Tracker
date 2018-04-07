@@ -44,10 +44,9 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
     //SCORES
-    lavaButton = new LavaButton(centralWidget, 3, 5);
+    lavaButton = new LavaButton(centralWidget, 3, 5.5);
     lavaButton->setFixedHeight(scoreWidth);
     lavaButton->setFixedWidth(scoreWidth);
-    lavaButton->setValue(0);
     lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
@@ -233,8 +232,16 @@ void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF)
 }
 
 
-void DraftMechanicsWindow::updateManaCounter(int numIncrease, int draftedCardsCount)
+void DraftMechanicsWindow::updateManaCounter(int numIncrease, int numCards)
 {
+    manaCounter->increase(numIncrease, numCards);
+}
+
+
+void DraftMechanicsWindow::updateDeckWeight(int numCards, int draw, int toYourHand, int discover)
+{
+    lavaButton->setValue(manaCounter->count(), numCards, draw, toYourHand, discover);
+
     if(showingHelp)
     {
         showingHelp = false;
@@ -242,8 +249,6 @@ void DraftMechanicsWindow::updateManaCounter(int numIncrease, int draftedCardsCo
         setDraftMethod(this->draftMethod);
         lavaButton->show();
     }
-    manaCounter->increase(numIncrease, draftedCardsCount);
-    if(draftedCardsCount > 0)   lavaButton->setValue(float(manaCounter->count())/draftedCardsCount);
 }
 
 
@@ -264,26 +269,6 @@ void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &m
     for(const QString &code: damageList)    mechanicCounters[V_DAMAGE]->increase(code);
     for(const QString &code: destroyList)   mechanicCounters[V_DESTROY]->increase(code);
     for(const QString &code: reachList)     mechanicCounters[V_REACH]->increase(code);
-}
-
-
-void DraftMechanicsWindow::clearLists()
-{
-    manaCounter->reset();
-
-    cardTypeCounters[V_MINION]->reset();
-    cardTypeCounters[V_SPELL]->reset();
-    cardTypeCounters[V_WEAPON]->reset();
-
-    mechanicCounters[V_AOE]->reset();
-    mechanicCounters[V_TAUNT_ALL]->reset();
-    mechanicCounters[V_SURVIVABILITY]->reset();
-    mechanicCounters[V_DISCOVER_DRAW]->reset();
-
-    mechanicCounters[V_PING]->reset();
-    mechanicCounters[V_DAMAGE]->reset();
-    mechanicCounters[V_DESTROY]->reset();
-    mechanicCounters[V_REACH]->reset();
 }
 
 

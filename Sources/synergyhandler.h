@@ -32,10 +32,10 @@ public:
     void testSynergies();
     int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
@@ -53,7 +53,7 @@ private:
     void updateCardTypeCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList);
     void updateMechanicCounters(DeckCard &deckCard,
                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+                                QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
@@ -76,6 +76,9 @@ private:
     bool isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isDrawGen(const QString &code, const QString &text);
     bool isToYourHandGen(const QString &code, const QString &text);
+    int numDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    int numDrawGen(const QString &code, const QString &text);
+    int numToYourHandGen(const QString &code, const QString &text);
     bool isTaunt(const QString &code, const QJsonArray &mechanics);
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
     bool isAoeGen(const QString &code, const QString &text);

@@ -3741,7 +3741,7 @@ void MainWindow::testPlan()
 void MainWindow::testSynergies()
 {
 //    draftHandler->debugSynergiesSet("GVG");
-//    draftHandler->debugSynergiesCode("GVG_022");
+//    draftHandler->debugSynergiesCode("LOOT_504");
 //    draftHandler->testSynergies();
 }
 
@@ -3750,11 +3750,6 @@ void MainWindow::testDelay()
 {
 //    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
 //    testSynergies();
-
-//    for(int i=0; i<5; i++)  enemyHandHandler->showEnemyCardDraw(i,i,false,"");
-//    enemyHandHandler->setLastCreatedByCode(FROTHING_BERSEKER);
-//    enemyHandHandler->showEnemyCardDraw(5,5,true,"");
-//    for(int i=6; i<10; i++)  enemyHandHandler->showEnemyCardDraw(i,i,false,"");
 }
 
 
@@ -3863,13 +3858,18 @@ void MainWindow::testDelay()
 
 
 //TODDO
-////Prox expansion rebajar cartas
-////Eliminar ice block de secretos standard
-////Incluir portrait nuevo druid hero
+///Prox expansion rebajar cartas
+///Eliminar ice block de secretos standard
+///Incluir portrait nuevo druid hero
+///Revisar UNSTABLE EVOLUTION --> toyourhandgen
+///Eliminar excepciones addons wild cards
 //Dech mechanics redone with colors
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
+//Incluir Theme para scores y lava en draftmechanicsoverlay, probar a cambiar theme en draft
+//Incluir scores y lava en draft window.
+//Cambiar texto lava a porcentaje
 
 
 //HSReplay support
@@ -3890,6 +3890,3 @@ void MainWindow::testDelay()
 ////Show cards drawn and discarded when your hand is full on replay tab.
 ////Add a countdown option to let you know how much time you have left until your turn ends.
 
-
-//Test secretos enemyminiondead (turno player y turno enemigo)
-//Test transparencias y cambios colores cartas

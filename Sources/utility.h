@@ -114,6 +114,7 @@ public:
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);
     static QStringList getSetCodes(const QString &set);
+    static QStringList getWildCodes();
     static QStringList getStandardCodes();
     static double normalizeLF(double score, bool doit);
     static bool createDir(QString pathDir);

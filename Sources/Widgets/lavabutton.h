@@ -15,7 +15,8 @@ public:
 
 //Variables
 private:
-    double value, value_0_1, min, max;
+    float value, value_0_1, min, max;
+    int drawCards, toYourHandCards, discoverCards;
 
 //Metodos
 private:
@@ -25,7 +26,7 @@ protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setValue(double value);
+    void setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards);
 };
 
 #endif // LAVABUTTON_H
