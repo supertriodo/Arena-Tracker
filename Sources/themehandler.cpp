@@ -44,6 +44,7 @@ QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
 QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
 QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_;
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_;
+QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
@@ -579,6 +580,24 @@ QString ThemeHandler::lfOpenFile()
 }
 
 
+QString ThemeHandler::speedLavaFile()
+{
+    return speedLavaFile_;
+}
+
+
+QString ThemeHandler::speedCloseFile()
+{
+    return speedCloseFile_;
+}
+
+
+QString ThemeHandler::speedOpenFile()
+{
+    return speedOpenFile_;
+}
+
+
 QString ThemeHandler::handCardFile()
 {
     return handCardFile_;
@@ -875,6 +894,9 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfBestFile_ = loadThemeFile(themePath, jsonObject, "lfBestFile");
     lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
+    speedLavaFile_ = loadThemeFile(themePath, jsonObject, "speedLavaFile");
+    speedCloseFile_ = loadThemeFile(themePath, jsonObject, "speedCloseFile");
+    speedOpenFile_ = loadThemeFile(themePath, jsonObject, "speedOpenFile");
 
     bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
     bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
@@ -1134,6 +1156,9 @@ void ThemeHandler::defaultEmptyValues()
     if(lfBestFile_.isEmpty())           lfBestFile_ = ":/Images/lfBest.png";
     if(lfCloseFile_.isEmpty())          lfCloseFile_ = ":/Images/lfClose.png";
     if(lfOpenFile_.isEmpty())           lfOpenFile_ = ":/Images/lfOpen.png";
+    if(speedLavaFile_.isEmpty())        speedLavaFile_ = ":/Images/speedLava.png";
+    if(speedCloseFile_.isEmpty())       speedCloseFile_ = ":/Images/speedClose.png";
+    if(speedOpenFile_.isEmpty())        speedOpenFile_ = ":/Images/speedOpen.png";
     if(handCardFile_.isEmpty())         handCardFile_ = ":/Images/handCard1.png";
     if(handCardBYFile_.isEmpty())       handCardBYFile_ = ":/Images/handCard3.png";
     if(handCardBYUnknownFile_.isEmpty())handCardBYUnknownFile_ = ":/Images/handCard2.png";

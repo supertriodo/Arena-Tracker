@@ -3861,15 +3861,18 @@ void MainWindow::testDelay()
 ///Prox expansion rebajar cartas
 ///Eliminar ice block de secretos standard
 ///Incluir portrait nuevo druid hero
-///Revisar UNSTABLE EVOLUTION --> toyourhandgen
 ///Eliminar excepciones addons wild cards
-//Dech mechanics redone with colors
+///Cambiar texto lava a porcentaje
+///Aumentar version themes para los dos themes
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
-//Incluir Theme para scores y lava en draftmechanicsoverlay, probar a cambiar theme en draft
 //Incluir scores y lava en draft window.
-//Cambiar texto lava a porcentaje
+//Incluir lava keys en gitbook
+//"speedLavaFile": "speedLava.png",
+//"speedCloseFile": "speedClose.png",
+//"speedOpenFile": "speedOpen.png",
+
 
 
 //HSReplay support

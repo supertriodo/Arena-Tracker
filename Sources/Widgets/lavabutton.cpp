@@ -55,13 +55,13 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::TextAntialiasing);
 
     QRect targetAll(0, 0, width(), height());
-    painter.drawPixmap(targetAll, QPixmap(":Images/speedClose.png"));
+    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedCloseFile()));
 
     QRegion r(QRect(width()*0.15, height()*0.15, width()*0.7, height()*0.7), QRegion::Ellipse);
     painter.setClipRegion(r);
     painter.setClipping(true);
         QRect targetLava(0, (1-value_0_1)*(height()*80/128), width(), height());
-        painter.drawPixmap(targetLava, QPixmap(":Images/speedLava.png"));
+        painter.drawPixmap(targetLava, QPixmap(ThemeHandler::speedLavaFile()));
     painter.setClipping(false);
 
     QFont font(LG_FONT);
@@ -85,6 +85,6 @@ void LavaButton::paintEvent(QPaintEvent *event)
 #endif
     painter.drawPath(path);
 
-    painter.drawPixmap(targetAll, QPixmap(":Images/speedOpen.png"));
+    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedOpenFile()));
 }
 
