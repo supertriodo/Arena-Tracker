@@ -65,14 +65,15 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.setClipping(false);
 
     QFont font(LG_FONT);
-    font.setPixelSize(width()/2.7);
+    font.setPixelSize(width()/3.0);
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
-    QString text = QString::number(int(value*10));
+    QString text = QString::number(int(value)) + "." + QString::number(int(value*10)%10);
+//    QString text = QString::number(int(value_0_1*100)) + "%";
     QFontMetrics fm = QFontMetrics(font);
     int textWide = fm.width(text);
     int textHigh = fm.height();
