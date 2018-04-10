@@ -81,6 +81,7 @@ public slots:
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
     void avengeTested();
     void handOfSalvationTested();
+    void _3CardsPlayedTested();
     void cSpiritTested();
     void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void resetLastMinionDead(QString code, QString subType);

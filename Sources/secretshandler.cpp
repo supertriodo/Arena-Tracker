@@ -183,15 +183,16 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     switch(hero)
     {
         case PALADIN:
-            if(loadingScreenState == arena) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));
+            //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));
             if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
             activeSecret.children.append(SecretCard(REDEMPTION));
             if(showWildSecrets) activeSecret.children.append(SecretCard(SACRED_TRIAL));
             activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
-            activeSecret.children.append(SecretCard(GETAWAY_KODO));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(GETAWAY_KODO));
             if(showWildSecrets) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
+            activeSecret.children.append(SecretCard(HIDDEN_WISDOM));
         break;
 
         case HUNTER:
@@ -200,27 +201,28 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             if(showWildSecrets) activeSecret.children.append(SecretCard(BEAR_TRAP));
             if(loadingScreenState != arena || discover) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
             if(showWildSecrets) activeSecret.children.append(SecretCard(DART_TRAP));
-            activeSecret.children.append(SecretCard(WANDERING_MONSTER));
             activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
-            activeSecret.children.append(SecretCard(CAT_TRICK));
+            activeSecret.children.append(SecretCard(WANDERING_MONSTER));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(CAT_TRICK));
             activeSecret.children.append(SecretCard(MISDIRECTION));
-            activeSecret.children.append(SecretCard(HIDDEN_CACHE));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(HIDDEN_CACHE));
             activeSecret.children.append(SecretCard(SNAKE_TRAP));
+            activeSecret.children.append(SecretCard(RAT_TRAP));
         break;
 
         case MAGE:
-            activeSecret.children.append(SecretCard(FROZEN_CLONE));
             activeSecret.children.append(SecretCard(MIRROR_ENTITY));
+            activeSecret.children.append(SecretCard(FROZEN_CLONE));
             if(showWildSecrets) activeSecret.children.append(SecretCard(DDUPLICATE));
             activeSecret.children.append(SecretCard(ICE_BARRIER));
             activeSecret.children.append(SecretCard(EXPLOSIVE_RUNES));
-            activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
             if(showWildSecrets) activeSecret.children.append(SecretCard(EFFIGY));
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(MANA_BIND));
             activeSecret.children.append(SecretCard(SPELLBENDER));
-            activeSecret.children.append(SecretCard(ICE_BLOCK));
+            if(showWildSecrets) activeSecret.children.append(SecretCard(ICE_BLOCK));
         break;
 
         case ROGUE:
@@ -521,6 +523,13 @@ void SecretsHandler::avengeTested()
 void SecretsHandler::handOfSalvationTested()
 {
     discardSecretOptionNow(HAND_OF_SALVATION);
+}
+
+
+void SecretsHandler::_3CardsPlayedTested()
+{
+    discardSecretOptionNow(RAT_TRAP);
+    discardSecretOptionNow(HIDDEN_WISDOM);
 }
 
 

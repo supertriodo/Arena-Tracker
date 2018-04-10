@@ -29,6 +29,7 @@
 #define EYE_FOR_AN_EYE QString("EX1_132")
 #define GETAWAY_KODO QString("CFM_800")
 #define COMPETITIVE_SPIRIT QString("AT_073")
+#define HIDDEN_WISDOM QString("WW_TODO")
 
 #define FREEZING_TRAP QString("EX1_611")
 #define EXPLOSIVE_TRAP QString("EX1_610")
@@ -41,6 +42,7 @@
 #define HIDDEN_CACHE QString("CFM_026")
 #define SNAKE_TRAP QString("EX1_554")
 #define WANDERING_MONSTER QString("LOOT_079")
+#define RAT_TRAP QString("WW_TODO")
 
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")

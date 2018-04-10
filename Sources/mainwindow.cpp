@@ -1073,6 +1073,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(handOfSalvationTested()),
             secretsHandler, SLOT(handOfSalvationTested()));
+    connect(gameWatcher, SIGNAL(_3CardsPlayedTested()),
+            secretsHandler, SLOT(_3CardsPlayedTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int)),
@@ -3868,10 +3870,10 @@ void MainWindow::testDelay()
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
 //Incluir scores y lava en draft window.
-//Incluir lava keys en gitbook
-//"speedLavaFile": "speedLava.png",
-//"speedCloseFile": "speedClose.png",
-//"speedOpenFile": "speedOpen.png",
+//separar secret de secretGen
+//Key rush
+//Eliminar sinergias con weapon en rogue
+//New secrets codes
 
 
 

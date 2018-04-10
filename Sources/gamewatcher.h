@@ -63,6 +63,7 @@ private:
     CardClass secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
     int enemyMinionsDeadThisTurn; //Hand of Salvation control (exclusive arena paladin secret)
+    int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     int playerMinions;
     bool isPlayerTurn;
     QRegularExpressionMatch *match;
@@ -164,6 +165,7 @@ signals:
     void playerHeroPower();
     void avengeTested();
     void handOfSalvationTested();
+    void _3CardsPlayedTested();
     void cSpiritTested();
     void clearDrawList(bool forceClear=false);
     void newTurn(bool isPlayerTurn, int numTurn);
