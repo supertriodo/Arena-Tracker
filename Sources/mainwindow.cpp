@@ -3750,7 +3750,8 @@ void MainWindow::testSynergies()
 
 void MainWindow::testDelay()
 {
-//    qDebug()<<Utility::getCardAttribute("GVG_030", "set").toString();
+//    qDebug()<<"Witchwood Piper"<<Utility::cardEnCodeFromName("Witchwood Piper");
+//    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
 //    testSynergies();
 }
 
@@ -3808,14 +3809,14 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico
 //--Update Json HA tierlist --> HATLsed.sh --- 3/13/18: 10.4 update
-//--Update secrets
-//--Update bombing cards --> PlanHandler::isCardBomb
-//--Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//--Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
-//--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
-//--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
-//--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
-//--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
+//Update secrets
+//Update bombing cards --> PlanHandler::isCardBomb
+//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
+//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
+//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
+//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
 //--Update synergies.json
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
 
@@ -3860,23 +3861,28 @@ void MainWindow::testDelay()
 
 
 //TODDO
+///Poner LF tier list a automatico
 ///Prox expansion rebajar cartas
-///Eliminar ice block de secretos standard
 ///Incluir portrait nuevo druid hero
 ///Eliminar excepciones addons wild cards
-///Cambiar texto lava a porcentaje
 ///Aumentar version themes para los dos themes
+///Check enrage mechanic (while damaged)
+///Test carta robada cursed castaway
+//Separar key secret/secretGen para Bellringer Sentry que coge secretos del mazo (no de discover)
+//Key rush/rushGen/rushSyn/rushAllSyn
+//Key echo/echoGen/echoSyn/echoAllSyn
+//key damageFriendlyHeroGen/damageFriendlyHeroSyn
+//key eggGen/eggSyn
+//isToYourHandGen --> echo
+//isReturnSyn --> echo
+//isDamageMinionsGen --> rush
+//isPingGen --> rush
+
+
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
 //Incluir scores y lava en draft window.
-//separar secret de secretGen
-//Key rush
-//Eliminar sinergias con weapon en rogue
-//New secrets codes
-
-
-
 //HSReplay support
 
 //1)Add a new element on deck mechanics overlay that tracks how heavy your deck is.

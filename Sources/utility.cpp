@@ -327,8 +327,11 @@ bool Utility::isFromStandardSet(QString code)
     QString cardSet = getCardAttribute(code, "set").toString();
 
     if( cardSet == "CORE" || cardSet == "EXPERT1" ||
-        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
-        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA")
+//        cardSet == "HOF" || cardSet == "NAXX" || cardSet == "GVG" ||
+//        cardSet == "BRM" || cardSet == "TGT" || cardSet == "LOE" ||
+//        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
+        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
+        cardSet == "GILNEAS")
     {
         return true;
     }

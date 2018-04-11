@@ -569,6 +569,13 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == RAVEN_FAMILIAR)     return true;
     if(lastCreatedByCode == CAVERN_SHINYFINDER) return true;
     if(lastCreatedByCode == ELVEN_MINSTREL)     return true;
+    if(lastCreatedByCode == CURSED_CASTAWAY)    return true;
+    if(lastCreatedByCode == BOGSHAPER)          return true;
+    if(lastCreatedByCode == TOWN_CRIER)         return true;
+    if(lastCreatedByCode == DOLLMASTER_DORIAN)  return true;
+    if(lastCreatedByCode == COUNTESS_ASHMORE)   return true;
+    if(lastCreatedByCode == SANDBINDER)         return true;
+    if(lastCreatedByCode == WITCHWOOD_PIPER)    return true;
     return false;
 }
 

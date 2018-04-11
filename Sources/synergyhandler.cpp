@@ -2552,6 +2552,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
+    if(code == CHAMELEOS)           return 4;
     if(code == FORBIDDEN_SHAPING)   return 4;
     if(code == FORBIDDEN_FLAME)     return 4;
     if(code == FORBIDDEN_HEALING)   return 4;

@@ -2740,7 +2740,7 @@ bool PlanHandler::isCardBomb(QString code)
 {
     if((code == MAD_BOMBER) || (code == MADDER_BOMBER) || (code == SPREADING_MADNESS) ||
             (code == ARCANE_MISSILES) || (code == AVENGING_WRATH) || (code == GOBLIN_BLASTMAGE) ||
-            (code == KOBOLD_APPRENTICE))
+            (code == KOBOLD_APPRENTICE) || code == CINDERSTORM)
     {
         return true;
     }
@@ -2781,6 +2781,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
     else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
     {
         missiles = 4;
+        playerIn = false;
+    }
+    else if(code == CINDERSTORM)
+    {
+        missiles = 5;
         playerIn = false;
     }
 
