@@ -104,6 +104,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
+    mechanicCounters[V_SECRET_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_FREEZE_ENEMY] = new DraftItemCounter(this);
     mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
     mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
@@ -130,6 +131,13 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
     mechanicCounters[V_SPAWN_ENEMY] = new DraftItemCounter(this);
     mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this);
+    mechanicCounters[V_EGG] = new DraftItemCounter(this);
+    mechanicCounters[V_DAMAGE_FRIENDLY_HERO] = new DraftItemCounter(this);
+    mechanicCounters[V_RUSH] = new DraftItemCounter(this);
+    mechanicCounters[V_RUSH_ALL] = new DraftItemCounter(this);
+    mechanicCounters[V_ECHO] = new DraftItemCounter(this);
+    mechanicCounters[V_ECHO_ALL] = new DraftItemCounter(this);
+
 
     horLayoutCardTypes->addStretch();
     horLayoutMechanics1->addStretch();
@@ -527,6 +535,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
 
+    //GEN
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
     {
         mechanicCounters[V_DISCOVER_DRAW]->increase(code);
@@ -557,6 +566,21 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_REACH]->increase(code);
         reachList.append(code);
     }
+    if(isRestoreFriendlyHeroGen(code, mechanics, text))
+    {
+        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
+        isSurvivability = true;
+    }
+    if(isArmorGen(code, text))
+    {
+        mechanicCounters[V_ARMOR]->increase(code);
+        isSurvivability = true;
+    }
+    if(isSurvivability)
+    {
+        mechanicCounters[V_SURVIVABILITY]->increase(code);
+        survivabilityList.append(code);
+    }
     discover = numDiscoverGen(code, mechanics, referencedTags);
     draw = numDrawGen(code, text);
     toYourHand = numToYourHandGen(code, text);
@@ -565,7 +589,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
-    if(isSecretGen(code, mechanics))                                        mechanicCounters[V_SECRET]->increase(code);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
@@ -587,16 +610,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
     if(isLifestealMinon(code, mechanics, cardType))                         mechanicCounters[V_LIFESTEAL_MINION]->increase(code);
-    if(isRestoreFriendlyHeroGen(code, mechanics, text))
-    {
-        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
-        isSurvivability = true;
-    }
-    if(isArmorGen(code, text))
-    {
-        mechanicCounters[V_ARMOR]->increase(code);
-        isSurvivability = true;
-    }
+    if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
+    if(isEggGen(code, mechanics, attack, cardType))                         mechanicCounters[V_EGG]->increase(code);
+    if(isDamageFriendlyHeroGen(code))                                       mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->increase(code);
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->increase(code);
@@ -614,27 +630,36 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
     }
     else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
-    if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
-    if(isSurvivability)
+    if(isSecret(code, mechanics))
     {
-        mechanicCounters[V_SURVIVABILITY]->increase(code);
-        survivabilityList.append(code);
+        mechanicCounters[V_SECRET]->increase(code);
+        mechanicCounters[V_SECRET_ALL]->increase(code);
     }
+    else if(isSecretGen(code))                                              mechanicCounters[V_SECRET_ALL]->increase(code);
+    if(isEcho(code, text))
+    {
+        mechanicCounters[V_ECHO]->increase(code);
+        mechanicCounters[V_ECHO_ALL]->increase(code);
+    }
+    else if(isEchoGen(code))                                                mechanicCounters[V_ECHO_ALL]->increase(code);
+    if(isRush(code, text))
+    {
+        mechanicCounters[V_RUSH]->increase(code);
+        mechanicCounters[V_RUSH_ALL]->increase(code);
+    }
+    else if(isRushGen(code))                                                mechanicCounters[V_RUSH_ALL]->increase(code);
 
 
-    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
-    else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
+
+    //SYN
     if(isAoeSyn(code))                                                      mechanicCounters[V_AOE]->increaseSyn(code);
     if(isPingSyn(code))                                                     mechanicCounters[V_PING]->increaseSyn(code);
     if(isDiscoverSyn(code))                                                 mechanicCounters[V_DISCOVER]->increaseSyn(code);
     if(isDrawSyn(code))                                                     mechanicCounters[V_DRAW]->increaseSyn(code);
     if(isToYourHandSyn(code))                                               mechanicCounters[V_TOYOURHAND]->increaseSyn(code);
     if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
-    if(isSecretSyn(code, referencedTags))                                   mechanicCounters[V_SECRET]->increaseSyn(code);
     if(isFreezeEnemySyn(code, referencedTags, text))                        mechanicCounters[V_FREEZE_ENEMY]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
-    if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
-    else if(isDeathrattleGoodAllSyn(code))                                  mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
     if(isBattlecrySyn(code, referencedTags))                                mechanicCounters[V_BATTLECRY]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
@@ -642,7 +667,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTokenCardSyn(code, text))                                          mechanicCounters[V_TOKEN_CARD]->increaseSyn(code);
     if(isComboSyn(code, referencedTags, cost))                              mechanicCounters[V_COMBO]->increaseSyn(code);
     if(isWindfuryMinionSyn(code))                                           mechanicCounters[V_WINDFURY_MINION]->increaseSyn(code);
-    if(isAttackBuffSyn(code))                                               mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
+    if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
     if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
@@ -654,9 +679,21 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
     if(isLifestealMinionSyn(code))                                          mechanicCounters[V_LIFESTEAL_MINION]->increaseSyn(code);
     if(isArmorSyn(code))                                                    mechanicCounters[V_ARMOR]->increaseSyn(code);
+    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
+    if(isEggSyn(code, text))                                                mechanicCounters[V_EGG]->increaseSyn(code);
+    if(isDamageFriendlyHeroSyn(code))                                       mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->increaseSyn(code);
+    if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
+    else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
+    if(isDeathrattleSyn(code))                                              mechanicCounters[V_DEATHRATTLE]->increaseSyn(code);
+    else if(isDeathrattleGoodAllSyn(code))                                  mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
     if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
     else if(isDivineShieldAllSyn(code))                                     mechanicCounters[V_DIVINE_SHIELD_ALL]->increaseSyn(code);
-    if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
+    if(isSecretSyn(code))                                                   mechanicCounters[V_SECRET]->increaseSyn(code);
+    else if(isSecretAllSyn(code, referencedTags))                           mechanicCounters[V_SECRET_ALL]->increaseSyn(code);
+    if(isEchoSyn(code))                                                     mechanicCounters[V_ECHO]->increaseSyn(code);
+    else if(isEchoAllSyn(code))                                             mechanicCounters[V_ECHO_ALL]->increaseSyn(code);
+    if(isRushSyn(code))                                                     mechanicCounters[V_RUSH]->increaseSyn(code);
+    else if(isRushAllSyn(code))                                             mechanicCounters[V_RUSH_ALL]->increaseSyn(code);
 }
 
 
@@ -876,6 +913,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     int cost = deckCard.getCost();
     bool addRestoreIcon = false;
 
+    //GEN
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
     {
         mechanicIcons[ThemeHandler::drawMechanicFile()] = mechanicCounters[V_DISCOVER_DRAW]->count() + 1;
@@ -935,7 +973,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergies);
     if(isToYourHandGen(code, text))                             mechanicCounters[V_TOYOURHAND]->insertSynCards(synergies);
     if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
-    if(isSecretGen(code, mechanics))                            mechanicCounters[V_SECRET]->insertSynCards(synergies);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergies);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
@@ -956,6 +993,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergies);
     if(isEvolveGen(code, text))                                 mechanicCounters[V_EVOLVE]->insertSynCards(synergies);
     if(isSpawnEnemyGen(code, text))                             mechanicCounters[V_SPAWN_ENEMY]->insertSynCards(synergies);
+    if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
+    if(isEggGen(code, mechanics, attack, cardType))             mechanicCounters[V_EGG]->insertSynCards(synergies);
+    if(isDamageFriendlyHeroGen(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertSynCards(synergies);
     if(isDivineShield(code, mechanics))
     {
         mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
@@ -963,21 +1003,35 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     }
     else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
 
+    if(isSecret(code, mechanics))
+    {
+        mechanicCounters[V_SECRET]->insertSynCards(synergies);
+        mechanicCounters[V_SECRET_ALL]->insertSynCards(synergies);
+    }
+    else if(isSecretGen(code))                                  mechanicCounters[V_SECRET_ALL]->insertSynCards(synergies);
+    if(isEcho(code, text))
+    {
+        mechanicCounters[V_ECHO]->insertSynCards(synergies);
+        mechanicCounters[V_ECHO_ALL]->insertSynCards(synergies);
+    }
+    else if(isEchoGen(code))                                    mechanicCounters[V_ECHO_ALL]->insertSynCards(synergies);
+    if(isRush(code, text))
+    {
+        mechanicCounters[V_RUSH]->insertSynCards(synergies);
+        mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
+    }
+    else if(isRushGen(code))                                    mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
 
-    if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
-    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
-    else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergies);
+
+    //SYN
     if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
     if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergies);
     if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergies);
     if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergies);
     if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergies);
     if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
-    if(isSecretSyn(code, referencedTags))                       mechanicCounters[V_SECRET]->insertCards(synergies);
     if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergies);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
-    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
-    else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergies);
     if(isBattlecrySyn(code, referencedTags))                    mechanicCounters[V_BATTLECRY]->insertCards(synergies);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
@@ -985,7 +1039,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergies);
     if(isComboSyn(code, referencedTags, cost))                  mechanicCounters[V_COMBO]->insertCards(synergies);
     if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergies);
-    if(isAttackBuffSyn(code))                                   mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
+    if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
     //returnSyn es synergia debil
 //    if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
@@ -998,9 +1052,22 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
     if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergies);
     if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergies);
+    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
+    if(isEggSyn(code, text))                                    mechanicCounters[V_EGG]->insertCards(synergies);
+    if(isDamageFriendlyHeroSyn(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertCards(synergies);
+    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
+    else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergies);
+    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
+    else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergies);
     if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
     else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
-    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
+    if(isSecretSyn(code))                                       mechanicCounters[V_SECRET]->insertCards(synergies);
+    else if(isSecretAllSyn(code, referencedTags))               mechanicCounters[V_SECRET_ALL]->insertCards(synergies);
+    if(isEchoSyn(code))                                         mechanicCounters[V_ECHO]->insertCards(synergies);
+    else if(isEchoAllSyn(code))                                 mechanicCounters[V_ECHO_ALL]->insertCards(synergies);
+    if(isRushSyn(code))                                         mechanicCounters[V_RUSH]->insertCards(synergies);
+    else if(isRushAllSyn(code))                                 mechanicCounters[V_RUSH_ALL]->insertCards(synergies);
+
 }
 
 
@@ -1123,21 +1190,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                (text.contains("to") && text.contains("your") && text.contains("hand"))
-//                !isSpawnEnemyGen(code, text)
-//                isSpellAllSyn(code, text)
-//                    isSpellSyn(code)
-//                cardType == MINION //&&
-//                !isReachGen(code, mechanics, referencedTags, text, cardType, attack)
-//                !isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
-//                text.contains("friendly") && text.contains("minion") && text.contains("destroy")
-//                !referencedTags.contains(QJsonValue("LIFESTEAL")) &&
-//                mechanics.contains(QJsonValue("COMBO")) &&
-//                (text.contains("deal") && text.contains("1 damage") &&
-//                            !text.contains("enemy") && !text.contains("random") && !text.contains("hero"))
-//                !isReturnSyn(code, mechanics, cardType, text)
-//                isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
-//                isTokenCardGen(code, cost)
+                (text.contains("deal") && text.contains("damage") && text.contains("to") && text.contains("your") && text.contains("hero")) &&
+                isDamageFriendlyHeroGen(code)
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
@@ -1202,7 +1256,10 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
     if(isOverload(code))                                                    mec<<"overload";
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
-    if(isSecretGen(code, mechanics))                                        mec<<"secretGen";
+    if(isSecret(code, mechanics))                                           mec<<"secret";
+    if(isEcho(code, text))                                                  mec<<"echo";
+    if(isRush(code, text))                                                  mec<<"rush";
+    if(isEggGen(code, mechanics, attack, cardType))                         mec<<"eggGen";
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
     if(isDiscardGen(code, text))                                            mec<<"discardGen";
     if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
@@ -1232,17 +1289,19 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 
     //Solo analizamos los que tienen patrones definidos
     if(isOverloadSyn(code, text))                                           mec<<"overloadSyn";
-    if(isSecretSyn(code, referencedTags))                                   mec<<"secretSyn";
+    if(isSecretAllSyn(code, referencedTags))                                mec<<"secretAllSyn";
     if(isFreezeEnemySyn(code, referencedTags, text))                        mec<<"freezeEnemySyn";
     if(isDiscardSyn(code, text))                                            mec<<"discardSyn";
     if(isBattlecrySyn(code, referencedTags))                                mec<<"battlecrySyn";
     if(isSilenceOwnSyn(code, mechanics))                                    mec<<"silenceOwnSyn";
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mec<<"tauntGiverSyn";
+    if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mec<<"attackBuffSyn";
     if(isTokenSyn(code, text))                                              mec<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
     if(isEnrageSyn(code, text))                                             mec<<"enrageSyn";
     if(isTokenCardSyn(code, text))                                          mec<<"tokenCardSyn";
+    if(isEggSyn(code, text))                                                mec<<"eggSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
 
@@ -1392,12 +1451,14 @@ int SynergyHandler::numToYourHandGen(const QString &code, const QString &text)
                 return 1;
             }
         }
+        if(synergyCodes[code].contains("echo")) return 1;
         return 0;
     }
     else if(text.contains("to") && text.contains("your") && text.contains("hand") && !text.contains("return"))
     {
         return 1;
     }
+    else if(isEcho(code, text)) return 1;
     return 0;
 }
 bool SynergyHandler::isTaunt(const QString &code, const QJsonArray &mechanics)
@@ -1461,6 +1522,7 @@ bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics,
         {
             return !text.contains("gain <b>charge</b>");
         }
+        else if(isRush(code, text))  return true;
     }
     //Weapons
     else if(cardType == WEAPON) return true;
@@ -1531,6 +1593,7 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
         {
             return !text.contains("gain <b>charge</b>");
         }
+        else if(isRush(code, text))  return true;
     }
     //Weapons
     else if(cardType == WEAPON) return true;
@@ -1588,15 +1651,83 @@ bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mecha
     }
     return false;
 }
-bool SynergyHandler::isSecretGen(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isSecret(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("secret");
+    }
+    else if(mechanics.contains(QJsonValue("SECRET")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isSecretGen(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("secretGen");
     }
-    else if(mechanics.contains(QJsonValue("SECRET")))
+    return false;
+}
+bool SynergyHandler::isEcho(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("echo");
+    }
+    else if(text.contains("<b>echo</b>"))
     {
         return true;
+    }
+    return false;
+}
+bool SynergyHandler::isEchoGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("echoGen");
+    }
+    return false;
+}
+bool SynergyHandler::isRush(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("rush");
+    }
+    else if(text.contains("<b>rush</b>"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isRushGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("rushGen");
+    }
+    return false;
+}
+bool SynergyHandler::isEggGen(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("eggGen");
+    }
+    else if(cardType == MINION && attack == 0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isDamageFriendlyHeroGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("damageFriendlyHeroGen");
     }
     return false;
 }
@@ -2241,15 +2372,75 @@ bool SynergyHandler::isTauntAllSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isSecretSyn(const QString &code, const QJsonArray &referencedTags)
+bool SynergyHandler::isSecretSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("secretSyn");
     }
+    return false;
+}
+bool SynergyHandler::isSecretAllSyn(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("secretAllSyn");
+    }
     else if(referencedTags.contains(QJsonValue("SECRET")))
     {
         return true;
+    }
+    return false;
+}
+bool SynergyHandler::isEchoSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("echoSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isEchoAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("echoAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isRushSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("rushSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isRushAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("rushAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isEggSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("eggSyn");
+    }
+    if(text.contains("swap") && text.contains("attack") && text.contains("health") && text.contains("minion"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isDamageFriendlyHeroSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("damageFriendlyHeroSyn");
     }
     return false;
 }
@@ -2321,7 +2512,8 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("tauntGiverSyn") || synergyCodes[code].contains("deathrattleOpponent");
+        return synergyCodes[code].contains("tauntGiverSyn") || synergyCodes[code].contains("deathrattleOpponent") ||
+               synergyCodes[code].contains("eggGen");
     }
     else if(mechanics.contains(QJsonValue("CANT_ATTACK")))
     {
@@ -2390,11 +2582,15 @@ bool SynergyHandler::isWindfuryMinionSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isAttackBuffSyn(const QString &code)
+bool SynergyHandler::isAttackBuffSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("attackBuffSyn");
+        return synergyCodes[code].contains("attackBuffSyn") || synergyCodes[code].contains("eggGen");
+    }
+    else if(cardType == MINION && attack == 0 && mechanics.contains(QJsonValue("DEATHRATTLE")) && !mechanics.contains(QJsonValue("TAUNT")))
+    {
+        return true;
     }
     return false;
 }
@@ -2412,7 +2608,7 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
     //&& mechanics.contains(QJsonValue("BATTLECRY"))
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("returnSyn");
+        return synergyCodes[code].contains("returnSyn") || synergyCodes[code].contains("echo");
     }
     else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")))
@@ -2439,6 +2635,7 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
             return true;
         }
     }
+    else if(isEcho(code, text)) return true;
     return false;
 }
 bool SynergyHandler::isStealthSyn(const QString &code)
@@ -2584,12 +2781,20 @@ deathrattleSyn o deathrattleGoodAllSyn
 deathrattleOpponent y taunGiverSyn (no hace falta poner taunGiverSyn si es deathrattleOpponent)
 divineShield o divineShieldGen
 divineShieldSyn o divineShieldAllSyn
+secret o secretGen
+secretSyn o secretAllSyn
+echo o echoGen
+echoSyn o echoAllSyn
+rush o rushGen
+rushSyn o rushAllSyn
 windfury - windfuryMinionSyn
 lifesteal - lifestealMinionSyn
 lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
 restoreTargetMinionGen <--> restoreFriendlyHeroGen
 restoreTargetMinionGen o restoreFriendlyMinionGen
 restoreTargetMinionSyn, restoreFriendlyMinionSyn, restoreFriendlyHeroSyn
+damageFriendlyHeroGen/damageFriendlyHeroSyn
+eggGen/eggSyn
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 
@@ -2599,31 +2804,34 @@ spellGen, weaponGen
 murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen
 discover, drawGen, toYourHandGen
 taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
-jadeGolemGen, secretGen, freezeEnemyGen, discardGen, stealthGen
+jadeGolemGen, secret, secretGen, freezeEnemyGen, discardGen, stealthGen
 
 damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, returnGen
 enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen
 tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen,
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal
+eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen
 
 
 
 Double check:
-DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn), damageMinionsGen, destroyGen
-BATTLECRY/COMBO/DEATHRATTLE: returnsyn(battlecry/combo), silenceOwnSyn/evolveSyn(deathrattle/malo)
+DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn/eggSyn), damageMinionsGen, destroyGen
+BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/TAKE DAMAGE: enrageGen(take damage),
-SUMMON: tokenGen(summon) <--> =GenMinionHealth1(paladin o neutral)
-TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenHealth1(paladin o neutral (para Steward of Darkshire))
+SUMMON: tokenGen(summon) <--> =GenMinionHealth1
+TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenMinionHealth1
 PLAY CARDS: tokenCardSyn
-BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack/egg)
+BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack/eggGen)
 DESTROY TARDIO: freezeEnemySyn
-DESTROY PROPIO: tokenSyn, eggs
+DESTROY PROPIO: tokenSyn, eggSyn
+SWAP/copia 1-1: eggSyn
 COSTE/STATS: evolveSyn
 SPAWN ENEMIES: spawnEnemyGen
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
+DAMAGE HERO: damageFriendlyHeroGen/damageFriendlyHeroSyn
 CHARGE/RUSH: damageMinionsGen(no atk1) <--> reachGen(no atk1/no rush) <--> pingGen(atk1)
 STEALTH: stealthGen <--> reachGen(no atk1)
 
@@ -2634,10 +2842,10 @@ REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no). Synergias con todo tu mazo son faciles, como robar 2 murlocs.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
-+tokenCardGen ya implica comboSyn (no hace falta poner comboSyn)
++tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
-+toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
++toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.

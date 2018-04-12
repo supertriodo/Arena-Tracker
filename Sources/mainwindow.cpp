@@ -3742,8 +3742,8 @@ void MainWindow::testPlan()
 
 void MainWindow::testSynergies()
 {
-//    draftHandler->debugSynergiesSet("GVG");
-//    draftHandler->debugSynergiesCode("LOOT_504");
+//    draftHandler->debugSynergiesSet("GILNEAS");
+//    draftHandler->debugSynergiesCode("CS2_064");
 //    draftHandler->testSynergies();
 }
 
@@ -3868,17 +3868,28 @@ void MainWindow::testDelay()
 ///Aumentar version themes para los dos themes
 ///Check enrage mechanic (while damaged)
 ///Test carta robada cursed castaway
-//Separar key secret/secretGen para Bellringer Sentry que coge secretos del mazo (no de discover)
-//Key rush/rushGen/rushSyn/rushAllSyn
-//Key echo/echoGen/echoSyn/echoAllSyn
-//key damageFriendlyHeroGen/damageFriendlyHeroSyn
-//key eggGen/eggSyn
-//isToYourHandGen --> echo
-//isReturnSyn --> echo
-//isDamageMinionsGen --> rush
-//isPingGen --> rush
 
+//"GIL_116" : [ "Arcane Keysmith" ], --> "EX1_274" : [ "Ethereal Arcanist" ],"GVG_089" : [ "Illuminator" ],"KAR_037" : [ "Avian Watcher" ],
+//-->"KAR_092" : [ "Medivh's Valet" ],
+//??"CFM_760" : [ "Kabal Crystal Runner" ], "EX1_080" : [ "Secretkeeper" ],
+//Repasar GIL --> toYourHandGen --> tokenCardGen
+//Repasar cartas evolveSyn
+//Synergia individual con cartas que den ataque por 1 turno (hero strike)
+//"GIL_534" : [ "Hench-Clan Thug" ], --> "after your hero attacks, give this minion +1/+1."
+//Synergia individual con robo de cartas
+//"GIL_598" : [ "Tess Greymane" ], --> "[x]<b>battlecry:</b> replay every card\nfrom another class you've\nplayed this game <i>(targets\nchosen randomly)</i>."
+//"GIL_672" : [ "Spectral Cutlass" ], --> "[x]<b>lifesteal</b>\nwhenever you play a card\nfrom another class,\ngain +1 durability."
+//"GIL_827" : [ "Blink Fox" ], --> "<b>battlecry:</b> add a random card to your hand <i>(from your opponent's class).</i>"
+//Repasar cartas que general minion coste 1 a mano (problema prince liam)
+//"GIL_607" : [ "Toxmonger" ], --> "[x]whenever you play a 1-cost\nminion, give it <b>poisonous</b>."
+//"GIL_694" : [ "Prince Liam" ], --> "[x]<b>battlecry:</b> transform all\n1-cost cards in your deck\n into <b>legendary</b> minions."
+//Synergia individual priest, mirar tb otra carta que destruye 2 attack minions
+//"GIL_665" : [ "Curse of Weakness" ], --> "<b>echo</b>\ngive all enemy minions -2 attack until your next turn."
+//End of turn
+//"GIL_833" : [ "Forest Guide" ], --> "at the end of your turn, both players draw a card."
 
+//Revisar draft capture con epicas
+//Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
