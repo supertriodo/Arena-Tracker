@@ -3817,8 +3817,10 @@ void MainWindow::testDelay()
 //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
 //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//--Update synergies.json
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
+//--Update synergies.json
+//|--Check evolveSyn cards
+//|--Check individual synergies
 
 //STANDARD CYCLE
 //Remove secrets rotating out
