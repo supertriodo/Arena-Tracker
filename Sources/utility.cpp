@@ -798,3 +798,42 @@ void Utility::unZip(QString zipName, QString targetPath)
 
     zf.close();
 }
+
+
+void Utility::fixLightforgeTierlist()
+{
+    QFile tierList(Utility::extraPath() + "/lightForge.json");
+    tierList.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString data = QString::fromUtf8(tierList.readAll());
+    tierList.close();
+
+    QFile jsonFile(Utility::extraPath() + "/lightForgeCardMaps.json");
+    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+    const QJsonArray jsonArray = jsonDoc.object().value("CardMaps").toArray();
+    for(QJsonValue jsonCardMap: jsonArray)
+    {
+        QJsonObject jsonCardMapObject = jsonCardMap.toObject();
+        QString lfCode = jsonCardMapObject.value("CardId").toString();
+        QString code = jsonCardMapObject.value("ClientId").toString();
+        data.replace(lfCode, code);
+    }
+
+    QFile tierListFixed(Utility::extraPath() + "/lightForgeFixed.json");
+    tierListFixed.open(QIODevice::WriteOnly | QIODevice::Text);
+    tierListFixed.write(data.toUtf8());
+    tierListFixed.close();
+    qDebug()<<"lightForgeFixed.json created";
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -3753,6 +3753,7 @@ void MainWindow::testDelay()
 //    qDebug()<<"Witchwood Piper"<<Utility::cardEnCodeFromName("Witchwood Piper");
 //    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
 //    testSynergies();
+//    Utility::fixLightforgeTierlist();
 }
 
 

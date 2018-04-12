@@ -121,6 +121,7 @@ public:
     static double normalizeLF(double score, bool doit);
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
+    static void fixLightforgeTierlist();
 };
 
 #endif // UTILITY_H
