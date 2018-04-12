@@ -3808,8 +3808,8 @@ void MainWindow::testDelay()
 
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
-//Update Json LF tierlist --> Automatico
-//--Update Json HA tierlist --> HATLsed.sh --- 3/13/18: 10.4 update
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-04-12T11:45:01Z"
+//Update Json HA tierlist --> HATLsed.sh --- 4/12/18: Withwood Release
 //Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
