@@ -4,5 +4,5 @@
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Windows.zip",
-	"log": "Arena Tracker gets updated for Witchwood. Added a new component to the mechanics shown over the cards during a draft: Deck Weight. It will show how heavy your deck is by combining deck mana average and cards that generate/draw other cards in a number that should represent your modified mana average.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.5'>github</a>"
+	"log": "Arena Tracker gets updated for Witchwood.<br>Added a new component to the mechanics shown over the cards during a draft: Deck Weight. It will show how heavy your deck is by combining deck mana average and cards that generate/draw other cards in a number that should represent your modified mana average.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.5'>github</a>"
 }
