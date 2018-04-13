@@ -3864,19 +3864,16 @@ void MainWindow::testDelay()
 
 
 //TODDO
-///Poner LF tier list a automatico
 ///Prox expansion rebajar cartas
 ///Incluir portrait nuevo druid hero
 ///Eliminar excepciones addons wild cards
-///Aumentar version themes para los dos themes
-///Check enrage mechanic (while damaged)
 ///Test carta robada cursed castaway
 
 //"GIL_116" : [ "Arcane Keysmith" ], --> "EX1_274" : [ "Ethereal Arcanist" ],"GVG_089" : [ "Illuminator" ],"KAR_037" : [ "Avian Watcher" ],
 //-->"KAR_092" : [ "Medivh's Valet" ],
 //??"CFM_760" : [ "Kabal Crystal Runner" ], "EX1_080" : [ "Secretkeeper" ],
-//Repasar GIL --> toYourHandGen --> tokenCardGen
 //Repasar cartas evolveSyn
+//Repasar GIL --> toYourHandGen --> tokenCardGen
 //Synergia individual con cartas que den ataque por 1 turno (hero strike)
 //"GIL_534" : [ "Hench-Clan Thug" ], --> "after your hero attacks, give this minion +1/+1."
 //Synergia individual con robo de cartas
@@ -3897,6 +3894,7 @@ void MainWindow::testDelay()
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
 //Incluir scores y lava en draft window.
+//Ofrecer premium prueba
 //HSReplay support
 
 //1)Add a new element on deck mechanics overlay that tracks how heavy your deck is.
