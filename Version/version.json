@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.32","v6.33","v6.4"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/Arena.Tracker.v6.4.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/Arena.Tracker.v6.4.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.4/Arena.Tracker.v6.4.Windows.zip",
-	"log": "Added a new tab (graveyard) for premium users that will show the list of cards (minions and weapons) that died during the game on each side of the board. It's useful for reanimation mechanics from cards like Onyx Bishop or Tomb Lurker.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.4'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Windows.zip",
+	"log": "Arena Tracker gets updated for Witchwood. Added a new component to the mechanics shown over the cards during a draft: Deck Weight. It will show how heavy your deck is by combining deck mana average and cards that generate/draw other cards in a number that should represent your modified mana average.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.5'>github</a>"
 }
