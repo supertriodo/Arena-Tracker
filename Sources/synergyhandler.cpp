@@ -1190,8 +1190,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                (text.contains("deal") && text.contains("damage") && text.contains("to") && text.contains("your") && text.contains("hero")) &&
-                isDamageFriendlyHeroGen(code)
+//                (text.contains("deal") && text.contains("damage") && text.contains("to") && text.contains("your") && text.contains("hero")) &&
+                isSecretAllSyn(code, referencedTags)
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
@@ -1212,6 +1212,12 @@ void SynergyHandler::testSynergies()
 void SynergyHandler::debugSynergiesSet(const QString &set)
 {
     initSynergyCodes();
+
+    for(const QString &code: Utility::getSetCodes(set))
+    {
+        qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
+    }
+
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set))
     {
@@ -1245,7 +1251,6 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSpellAllSyn(code, text))       mec<<"spellAllSyn";
     if(isWeaponAllSyn(code, text))      mec<<"weaponAllSyn";
 
-//    if(isDiscoverDrawGen(code, mechanics, referencedTags, text))            mec<<"discover o drawGen o toYourHandGen";
     if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
     if(isDrawGen(code, text))                                               mec<<"drawGen";
     if(isToYourHandGen(code, text))                                         mec<<"toYourHandGen";
@@ -1303,10 +1308,12 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTokenCardSyn(code, text))                                          mec<<"tokenCardSyn";
     if(isEggSyn(code, text))                                                mec<<"eggSyn";
 
-    qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+    qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
 
-    if(!manual.isEmpty())   qDebug()<<"-----MANUAL: "<<manual;
-    else                    qDebug()<<mec;
+    if(!manual.isEmpty())   qDebug()<<"--MANUAL-- :"<<code<<": ["<<manual<<"],";
+    else                    qDebug()<<code<<": ["<<mec<<"],";
+
+    qDebug()<<num<<text;
 }
 
 

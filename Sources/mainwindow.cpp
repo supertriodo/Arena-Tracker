@@ -3742,16 +3742,17 @@ void MainWindow::testPlan()
 
 void MainWindow::testSynergies()
 {
+//    qDebug()<<Utility::cardEnCodeFromName("Gilnean Royal Guard");
+//    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
+
 //    draftHandler->debugSynergiesSet("GILNEAS");
-//    draftHandler->debugSynergiesCode("CS2_064");
+//    draftHandler->debugSynergiesCode("GIL_202");
 //    draftHandler->testSynergies();
 }
 
 
 void MainWindow::testDelay()
 {
-//    qDebug()<<"Witchwood Piper"<<Utility::cardEnCodeFromName("Witchwood Piper");
-//    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
 //    testSynergies();
 //    Utility::fixLightforgeTierlist();
 }
@@ -3869,10 +3870,6 @@ void MainWindow::testDelay()
 ///Eliminar excepciones addons wild cards
 ///Test carta robada cursed castaway
 
-//"GIL_116" : [ "Arcane Keysmith" ], --> "EX1_274" : [ "Ethereal Arcanist" ],"GVG_089" : [ "Illuminator" ],"KAR_037" : [ "Avian Watcher" ],
-//-->"KAR_092" : [ "Medivh's Valet" ],
-//??"CFM_760" : [ "Kabal Crystal Runner" ], "EX1_080" : [ "Secretkeeper" ],
-//Repasar cartas evolveSyn
 //Synergia individual con cartas que den ataque por 1 turno (hero strike)
 //"GIL_534" : [ "Hench-Clan Thug" ], --> "after your hero attacks, give this minion +1/+1."
 //Synergia individual con robo de cartas
