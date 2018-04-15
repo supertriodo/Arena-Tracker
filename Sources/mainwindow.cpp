@@ -3873,7 +3873,6 @@ void MainWindow::testDelay()
 //-->"KAR_092" : [ "Medivh's Valet" ],
 //??"CFM_760" : [ "Kabal Crystal Runner" ], "EX1_080" : [ "Secretkeeper" ],
 //Repasar cartas evolveSyn
-//Repasar GIL --> toYourHandGen --> tokenCardGen
 //Synergia individual con cartas que den ataque por 1 turno (hero strike)
 //"GIL_534" : [ "Hench-Clan Thug" ], --> "after your hero attacks, give this minion +1/+1."
 //Synergia individual con robo de cartas
@@ -3887,9 +3886,11 @@ void MainWindow::testDelay()
 //"GIL_665" : [ "Curse of Weakness" ], --> "<b>echo</b>\ngive all enemy minions -2 attack until your next turn."
 //End of turn
 //"GIL_833" : [ "Forest Guide" ], --> "at the end of your turn, both players draw a card."
+//Synergia minion crea 2/1 veneno con shadow madness
 
 //Revisar draft capture con epicas
 //Completar synergies manual con todas las cartas
+//Completar synergias spawnEnemy
 //Progress bar uploading games/draft to zerotoheroes
 //Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext

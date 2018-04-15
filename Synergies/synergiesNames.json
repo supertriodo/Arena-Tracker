@@ -791,28 +791,14 @@
 	"DIRECT_LINKS": 
 	{
 		"-----------------------------------------HAND BUFF-----------------------------------------": "",
-		"CFM_316 Rat Pack": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
-			"CFM_026 Hidden Cache","CFM_336 Zipgunner"],
-		"CFM_335 Dispatch Kodo": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
-			"CFM_026 Hidden Cache","CFM_336 Zipgunner"],
 		"LOOT_078 Cave Hydra": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
 			"CFM_026 Hidden Cache","CFM_336 Zipgunner"],
-		"CFM_759 Meanstreet Marshal": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
-			"CFM_305 Smuggler's Run","CFM_753 Grimestreet Outfitter","CFM_639 Grimestreet Enforcer",
-			"LOOT_500 Val'anyr"],
-		"CFM_668 Doppelgangster": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
-			"CFM_305 Smuggler's Run","CFM_753 Grimestreet Outfitter","CFM_639 Grimestreet Enforcer",
-			"CFM_631 Brass Knuckles","CFM_754 Grimy Gadgeteer",
-			"CFM_026 Hidden Cache","CFM_336 Zipgunner","LOOT_500 Val'anyr"],
 		"ICC_466 Saronite Chain Gang": ["CFM_685 Don Han'Cho","CFM_853 Grimestreet Smuggler",
 			"CFM_305 Smuggler's Run","CFM_753 Grimestreet Outfitter","CFM_639 Grimestreet Enforcer",
 			"CFM_631 Brass Knuckles","CFM_754 Grimy Gadgeteer",
 			"CFM_026 Hidden Cache","CFM_336 Zipgunner","LOOT_500 Val'anyr"],
 
 		"-----------------------------------------BAD DEATHRATTLE-----------------------------------------": "",
-		"CFM_855 Defias Cleaner": ["CFM_667 Bomb Squad","EX1_577 The Beast","KAR_041 Moat Lurker",
-			"OG_147 Corrupted Healbot","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination",
-			"LOOT_144 Hoarding Dragon"],
 		"ICC_206 Treachery": ["CFM_667 Bomb Squad","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination"],
 
 		"-----------------------------------------MINIONS TO ENEMY-----------------------------------------": "",
@@ -825,13 +811,9 @@
 		"LOOT_383 Hungry Ettin": ["EX1_085 Mind Control Tech","CFM_652 Second-Rate Bruiser",
 			"KAR_026 Protect the King!","ICC_054 Spreading Plague","LOOT_367 Drywhisker Armorer"],
 
-		"-----------------------------------------CARDS TO ENEMY-----------------------------------------": "",
-		"CFM_851 Daring Reporter": ["EX1_161 Naturalize","EX1_050 Coldlight Oracle","OG_338 Nat, the Darkfisher",
-			"CFM_808 Genzo, the Shark"],
-
+		"-----------------------CARDS TO ENEMY---(daring reporter)-------------------------------------": "",
 		"-----------------------------------------AOE WEAPONS-----------------------------------------": "",
 		"EX1_567 Doomhammer": ["CS2_045 Rockbiter Weapon"],
-		"KAR_028 Fool's Bane": ["CS2_105 Heroic Strike"],
 
 		"-----------------------------------------EXTRA-----------------------------------------": "",
 		"ICC_901 Drakkari Enchanter": ["CFM_639 Grimestreet Enforcer","CFM_654 Friendly Bartender",
@@ -842,19 +824,12 @@
 			"OG_042 Y'Shaarj, Rage Unbound","OG_229 Ragnaros, Lightlord","UNG_201 Primalfin Totem","LOOT_108 Aluneth",
 			"LOOT_131 Green Jelly","LOOT_394 Shrieking Shroom","LOOT_398 Benevolent Djinn","LOOT_414 Grand Archivist",
 			"LOOT_519 Geosculptor Yip","LOOT_540 Dragonhatcher"],
-		"KAR_712 Violet Illusionist": ["CS2_005 Claw","CS2_011 Savage Roar","CS2_045 Rockbiter Weapon",
-			"CS2_105 Heroic Strike","EX1_570 Bite","ICC_079 Gnash","OG_047 Feral Rage",
-			"ICC_832 Malfurion the Pestilent"],
-		"OG_173 Blood of The Ancient One": ["UNG_022 Mirage Caller","UNG_948 Molten Reflection",
-			"EX1_564 Faceless Manipulator","OG_316 Herald Volazj","OG_291 Shadowcaster","UNG_927 Sudden Genesis",
-			"LOOT_064 Lesser Sapphire Spellstone","LOOT_329 Ixlid, Fungal Lord","LOOT_161 Carnivorous Cube"],
 		"EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
 
 
 		"-----------------------------------------WARRIOR-----------------------------------------": "",
 		"CS2_181 Injured Blademaster": ["EX1_392 Battle Rage","CS2_104 Rampage","OG_276 Blood Warriors",
 			"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant"],
-		"OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
 
 		"-----------------------------------------SHAMAN-----------------------------------------": "",
 		"EX1_007 Acolyte of Pain": ["UNG_025 Volcano"],
@@ -862,8 +837,6 @@
 		"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans"],
 
 		"-----------------------------------------ROGUE-----------------------------------------": "",
-		"KAR_070 Ethereal Peddler": ["UNG_856 Hallucination","KAR_069 Swashburglar","OG_330 Uncercity Huckster",
-			"CFM_781 Shaku, the Collector","ICC_811 Lilian Voss","CFM_852 Lotus Agents"],
 		"UNG_061 Obsidian Shard": ["UNG_856 Hallucination","KAR_069 Swashburglar","OG_330 Uncercity Huckster",
 			"CFM_781 Shaku, the Collector","ICC_811 Lilian Voss","CFM_852 Lotus Agents"],
 		"ICC_811 Lilian Voss": ["CFM_669 Burgly Bully","OG_080 Xaril, Poisoned Mind",
@@ -907,19 +880,9 @@
 
 		"-----------------------------------------HUNTER-----------------------------------------": "",
 		"-----------------------------------------DRUID-----------------------------------------": "",
-		"OG_044 Fandral Staghelm": ["CFM_602 Jade Idol","EX1_160 Power of the Wild","EX1_154 Wrath",
-			"OG_047 Feral Rage","EX1_155 Mark of Nature","EX1_166 Keeper of the Grove","OG_202 Mire Keeper",
-			"UNG_101 Shellshifter","EX1_165 Druid of the Claw","EX1_164 Nourish","NEW1_007 Starfall",
-			"NEW1_008 Ancient of Lore","EX1_178 Ancient of War","OG_195 Wisps of the Old Gods",
-			"EX1_573 Cenarius","CFM_308 Kun the Forgotten King","ICC_051 Druid of the Swarm",
-			"ICC_832 Malfurion the Pestilent","ICC_047 Fatespinner"],
-
 		"-----------------------------------------WARLOCK-----------------------------------------": "",
 		"-----------------------------------------MAGE-----------------------------------------": "",
 		"-----------------------------------------PRIEST-----------------------------------------": "",
-		"CFM_661 Pint-Size Potion": ["NEW1_041 Stampeding Kodo","CFM_603 Potion of Madness","EX1_334 Shadow Madness",
-			"CS2_234 Shadow Word: Pain","OG_100 Shadow Word: Horror","EX1_091 Cabal Shadow Priest",
-			"LOOT_111 Scorp-o-matic"],
 		"EX1_350 Prophet Velen": ["EX1_591 Auchenai Soulpriest","OG_104 Embrace the Shadow"],
 		"EX1_591 Auchenai Soulpriest": ["OG_147 Corrupted Healbot"]
 
