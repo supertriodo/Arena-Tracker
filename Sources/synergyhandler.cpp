@@ -1179,8 +1179,10 @@ void SynergyHandler::testSynergies()
 {
     initSynergyCodes();
     int num = 0;
-//    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+
+//    for(const QString &code: Utility::getSetCodes("GILNEAS"))
+    for(const QString &code: Utility::getStandardCodes())
+//    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1190,8 +1192,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                (text.contains("deal") && text.contains("damage") && text.contains("to") && text.contains("your") && text.contains("hero")) &&
-                isSecretAllSyn(code, referencedTags)
+//                (text.contains("2-cost"))
+                isTokenCardGen(code, cost)
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
