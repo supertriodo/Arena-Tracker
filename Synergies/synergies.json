@@ -187,6 +187,7 @@
 	"EX1_095": ["spellAllSyn"],
 	"EX1_100": ["spellGen"],
 	"EX1_102": [],
+	"EX1_116": ["damageMinionsGen", "reachGen", "battlecry", "spawnEnemyGen"],
 	"EX1_128": ["stealthGen","reachGen"],
 	"EX1_130": ["secret","=GenMinionHealth1"],
 	"EX1_131": ["comboGen","tokenGen","returnSyn"],
@@ -588,6 +589,7 @@
 	"LOOT_149": ["tokenSyn"],
 	"LOOT_150": ["battlecry","returnSyn","evolveSyn"],
 	"LOOT_153": ["deathrattle","tokenGen","=GenMinionHealth1"],
+	"LOOT_154": ["battlecry", "spawnEnemyGen"],
 	"LOOT_161": ["battlecry","deathrattle", "deathrattleGoodAllSyn","eggSyn"],
 	"LOOT_165": ["tokenSyn","tokenCardGen","returnGen","=GenMinionHealth1"],
 	"LOOT_167": ["battlecry","evolveSyn","attackBuffGen","healthBuffGen","returnSyn"],
@@ -617,6 +619,7 @@
 	"LOOT_367": ["battlecry","returnSyn","armorGen","spawnEnemySyn"],
 	"LOOT_368": ["deathrattle","taunt","tokenGen"],
 	"LOOT_375": ["battlecry","returnSyn"],
+	"LOOT_383": ["battlecry", "spawnEnemyGen", "taunt"],
 	"LOOT_389": ["battlecry","toYourHandGen","weaponAllSyn","returnSyn"],
 	"LOOT_394": ["tokenGen"],
 	"LOOT_410": ["battlecry","dragonSyn","returnSyn"],
@@ -773,6 +776,7 @@
 	"UNG_913": ["battlecry","returnSyn","tokenCardGen","=SynMinionCost1"],
 	"UNG_915": ["battlecry","returnSyn","beastAllSyn"],
 	"UNG_916": ["beastSyn"],
+	"UNG_926": ["battlecry", "spawnEnemyGen", "taunt"],
 	"UNG_927": ["enrageGen"],
 	"UNG_929": ["damageMinionsGen","reachGen"],
 	"UNG_933": ["battlecry","returnSyn","aoeGen","tokenSyn","pingSyn"],
@@ -794,11 +798,6 @@
 		"ICC_466": ["LOOT_500"],
 
 		"ICC_206": ["ICC_025","ICC_099"],
-
-		"UNG_926": ["EX1_085","LOOT_367"],
-		"EX1_116": ["EX1_085","ICC_054","LOOT_367"],
-		"LOOT_154": ["EX1_085","ICC_054","LOOT_367"],
-		"LOOT_383": ["EX1_085","ICC_054","LOOT_367"],
 
 		"EX1_567": ["CS2_045"],
 
