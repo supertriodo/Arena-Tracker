@@ -3751,10 +3751,17 @@ void MainWindow::testSynergies()
 }
 
 
+void MainWindow::testTierlists()
+{
+//    Utility::fixLightforgeTierlist();
+//    Utility::checkTierlistsCount();
+}
+
+
 void MainWindow::testDelay()
 {
 //    testSynergies();
-//    Utility::fixLightforgeTierlist();
+//    testTierlists();
 }
 
 

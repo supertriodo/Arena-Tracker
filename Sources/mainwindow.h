@@ -223,6 +223,7 @@ private slots:
     void testPlan();
     void testDelay();
     void testSynergies();
+    void testTierlists();
     void confirmNewArenaDraft(QString hero);
     void transparentAlways();
     void transparentAuto();

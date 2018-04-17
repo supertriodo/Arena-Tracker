@@ -185,7 +185,7 @@ QString Utility::cardEnCodeFromName(QString name)
     {
         if(it->value("name").toObject().value("enUS").toString() == name)
         {
-            if(!it->value("cost").isUndefined())    return it.key();
+            if(it->value("collectible").toBool())    return it.key();
         }
     }
 
@@ -828,7 +828,77 @@ void Utility::fixLightforgeTierlist()
 }
 
 
+void Utility::checkTierlistsCount()
+{
+    QString allHeroes[] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    for(const QString &heroString: allHeroes)
+    {
+        QStringList lfCodes, haCodes;
 
+        //LightForge Codes List
+        QFile jsonFileLF(Utility::extraPath() + "/lightForge.json");
+        jsonFileLF.open(QIODevice::ReadOnly | QIODevice::Text);
+        QJsonDocument jsonDocLF = QJsonDocument::fromJson(jsonFileLF.readAll());
+        jsonFileLF.close();
+        const QJsonArray jsonCardsArrayLF = jsonDocLF.object().value("Cards").toArray();
+        for(QJsonValue jsonCard: jsonCardsArrayLF)
+        {
+            QJsonObject jsonCardObject = jsonCard.toObject();
+            QString code = jsonCardObject.value("CardId").toString();
+
+            const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
+            for(QJsonValue jsonScore: jsonScoresArray)
+            {
+                QJsonObject jsonScoreObject = jsonScore.toObject();
+                QString hero = jsonScoreObject.value("Hero").toString();
+
+                if(hero == NULL || hero == heroString)
+                {
+                    if(!lfCodes.contains(code))  lfCodes.append(code);
+                }
+            }
+        }
+
+        //HearthArena Codes List
+        QFile jsonFileHA(Utility::extraPath() + "/hearthArena.json");
+        jsonFileHA.open(QIODevice::ReadOnly | QIODevice::Text);
+        QJsonDocument jsonDocHA = QJsonDocument::fromJson(jsonFileHA.readAll());
+        jsonFileHA.close();
+
+        QJsonObject jsonNamesObjectHA = jsonDocHA.object().value(heroString).toObject();
+        for(const QString &name: jsonNamesObjectHA.keys())
+        {
+            QString code = Utility::cardEnCodeFromName(name);
+            haCodes.append(code);
+        }
+
+        qDebug()<<endl<<"-----"<<heroString<<"-----";
+        qDebug()<<heroString<<"LightForge count:"<<lfCodes.count();
+        qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
+
+        //Check Missing cards
+        bool missing = false;
+        for(const QString &code: lfCodes)
+        {
+            if(!haCodes.contains(code))
+            {
+                qDebug()<<"HearthArena missing:"<<code<<Utility::cardEnNameFromCode(code);
+                missing = true;
+            }
+        }
+        if(!missing)    qDebug()<<"HearthArena OK!";
+        missing = false;
+        for(const QString &code: haCodes)
+        {
+            if(!lfCodes.contains(code))
+            {
+                qDebug()<<"LightForge missing:"<<code<<Utility::cardEnNameFromCode(code);
+                missing = true;
+            }
+        }
+        if(!missing)    qDebug()<<"LightForge OK!";
+    }
+}
 
 
 
