@@ -235,7 +235,7 @@
 	"EX1_392": ["drawGen2","enrageGen"],
 	"EX1_398": ["battlecry","returnSyn","weaponGen","damageMinionsGen","reachGen"],
 	"EX1_399": ["enrageGen"],
-	"EX1_407": ["aoeGen", "eggSyn"],
+	"EX1_407": ["aoeGen", "eggSyn", "spawnEnemySyn"],
 	"EX1_409": ["weaponGen","pingGen","weaponAllSyn"],
 	"EX1_410": ["damageMinionsGen","armorSyn"],
 	"EX1_506": ["battlecry","returnSyn","tokenGen"],
