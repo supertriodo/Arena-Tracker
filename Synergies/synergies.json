@@ -493,7 +493,7 @@
 	"ICC_851": ["battlecry","attackBuffGen","healthBuffGen","returnSyn"],
 	"ICC_852": ["battlecry"],
 	"ICC_853": ["battlecry","tauntGen","restoreFriendlyHeroGen"],
-	"ICC_855": ["battlecry"],
+	"ICC_855": ["battlecry","silenceOwnSyn"],
 	"ICC_858": ["divineShield","divineShieldAllSyn"],
 	"ICC_900": ["tokenSyn"],
 	"ICC_903": ["tokenSyn", "battlecry", "eggSyn"],
