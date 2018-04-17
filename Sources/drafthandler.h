@@ -141,6 +141,7 @@ public:
     void debugSynergiesSet(const QString &set);
     void debugSynergiesCode(const QString &code);
     void testSynergies();
+    void initSynergyCodes();
 
 signals:
     void checkCardImage(QString code);

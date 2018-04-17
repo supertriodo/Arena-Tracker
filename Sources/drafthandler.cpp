@@ -1584,6 +1584,12 @@ void DraftHandler::testSynergies()
 }
 
 
+void DraftHandler::initSynergyCodes()
+{
+    synergyHandler->initSynergyCodes();
+}
+
+
 //Construir json de HearthArena (Ya no lo usamos)
 //1) Copiar line (var cards = ...)
 //EL RESTO LO HACE EL SCRIPT

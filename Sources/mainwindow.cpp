@@ -3748,20 +3748,21 @@ void MainWindow::testSynergies()
 //    draftHandler->debugSynergiesSet("GILNEAS");
 //    draftHandler->debugSynergiesCode("LOOT_383");
 //    draftHandler->testSynergies();
+    draftHandler->initSynergyCodes();
 }
 
 
 void MainWindow::testTierlists()
 {
 //    Utility::fixLightforgeTierlist();
-//    Utility::checkTierlistsCount();
+    Utility::checkTierlistsCount();
 }
 
 
 void MainWindow::testDelay()
 {
-//    testSynergies();
-//    testTierlists();
+    testTierlists();
+    testSynergies();
 }
 
 
