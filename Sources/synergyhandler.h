@@ -102,7 +102,7 @@ private:
     bool isDiscardGen(const QString &code, const QString &text);
     bool isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const CardType &cardType);
-    bool isBattlecryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
+    bool isBattlecry(const QString &code, const QJsonArray &mechanics);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
@@ -170,7 +170,7 @@ private:
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
     bool isTokenCardSyn(const QString &code, const QString &text);
-    bool isComboSyn(const QString &code, const QJsonArray &referencedTags, int cost);
+    bool isComboSyn(const QString &code, const QJsonArray &referencedTags);
     bool isWindfuryMinionSyn(const QString &code);
     bool isAttackBuffSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isHealthBuffSyn(const QString &code);

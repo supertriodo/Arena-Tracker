@@ -593,7 +593,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
-    if(isBattlecryMinion(code, mechanics, cardType))                        mechanicCounters[V_BATTLECRY]->increase(code);
+    if(isBattlecry(code, mechanics))                                        mechanicCounters[V_BATTLECRY]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
@@ -665,7 +665,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isTokenCardSyn(code, text))                                          mechanicCounters[V_TOKEN_CARD]->increaseSyn(code);
-    if(isComboSyn(code, referencedTags, cost))                              mechanicCounters[V_COMBO]->increaseSyn(code);
+    if(isComboSyn(code, referencedTags))                                    mechanicCounters[V_COMBO]->increaseSyn(code);
     if(isWindfuryMinionSyn(code))                                           mechanicCounters[V_WINDFURY_MINION]->increaseSyn(code);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
     if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
@@ -977,7 +977,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
     if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
-    if(isBattlecryMinion(code, mechanics, cardType))            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
+    if(isBattlecry(code, mechanics))                            mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
@@ -1038,7 +1038,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
     if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergies);
-    if(isComboSyn(code, referencedTags, cost))                  mechanicCounters[V_COMBO]->insertCards(synergies);
+    if(isComboSyn(code, referencedTags))                        mechanicCounters[V_COMBO]->insertCards(synergies);
     if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergies);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
@@ -1272,7 +1272,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isDiscardGen(code, text))                                            mec<<"discardGen";
     if(isDeathrattleMinion(code, mechanics, cardType))                      mec<<"deathrattle o deathrattleOpponent";
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mec<<"deathrattle o deathrattleGen";
-    if(isBattlecryMinion(code, mechanics, cardType))                        mec<<"battlecry";
+    if(isBattlecry(code, mechanics))                                        mec<<"battlecry";
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
     if(isTokenGen(code, text))                                              mec<<"tokenGen";
     if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
@@ -1801,9 +1801,8 @@ bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray 
     }
     return false;
 }
-bool SynergyHandler::isBattlecryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
+bool SynergyHandler::isBattlecry(const QString &code, const QJsonArray &mechanics)
 {
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("battlecry");
@@ -2571,7 +2570,7 @@ bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isComboSyn(const QString &code, const QJsonArray &referencedTags, int cost)
+bool SynergyHandler::isComboSyn(const QString &code, const QJsonArray &referencedTags)
 {
     if(synergyCodes.contains(code))
     {
