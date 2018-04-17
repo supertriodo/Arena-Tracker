@@ -191,9 +191,8 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
             hearthArenaTiers[code] = score;
             if(score == 0)  emit pDebug("HearthArena missing: " + name);
         }
+        emit pDebug("HearthArena Cards: " + QString::number(jsonNamesObject.count()));
     }
-
-    emit pDebug("HearthArena Cards: " + QString::number(hearthArenaTiers.count()));
 }
 
 
