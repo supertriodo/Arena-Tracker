@@ -983,8 +983,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
     //TokenCard y combo son synergias debiles, no queremos ver questing adventure en cada token que elijamos
     //y no queremos ver un token en cada combo que elijamos
-//    if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
-//    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
+    //Con la llegada de cartas que roban cartas combo ya no podemos hacer esta distincion
+    if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
+    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
     if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
@@ -2562,7 +2563,7 @@ bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
     //text.contains("play") && text.contains("card") && !text.contains("player")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("tokenCardSyn");
+        return synergyCodes[code].contains("tokenCardSyn") || synergyCodes[code].contains("comboGen");
     }
     else if(text.contains("play") && text.contains("card") && !text.contains("player"))
     {
@@ -2572,10 +2573,9 @@ bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
 }
 bool SynergyHandler::isComboSyn(const QString &code, const QJsonArray &referencedTags, int cost)
 {
-    if(cost == 0)   return true;
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("comboSyn") || synergyCodes[code].contains("tokenCardGen");
+        return synergyCodes[code].contains("comboSyn");
     }
     else if(referencedTags.contains(QJsonValue("COMBO")))
     {
