@@ -110,7 +110,7 @@ private:
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
     void buildBestMatchesMaps();
-//    CardRarity getBestRarity();
+    CardRarity getBestRarity();
     void getBestCards(DraftCard bestCards[3]);
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);

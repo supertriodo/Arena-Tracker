@@ -659,40 +659,39 @@ void DraftHandler::buildBestMatchesMaps()
 }
 
 
-//CardRarity DraftHandler::getBestRarity()
-//{
-//    CardRarity rarity[3];
-//    for(int i=0; i<3; i++)
-//    {
-//        rarity[i] = draftCardMaps[i][bestMatchesMaps[i].first()].getRarity();
-//    }
+CardRarity DraftHandler::getBestRarity()
+{
+    CardRarity rarity[3];
+    for(int i=0; i<3; i++)
+    {
+        rarity[i] = draftCardMaps[i][bestMatchesMaps[i].first()].getRarity();
+    }
 
 //    if(rarity[0] == rarity[1] || rarity[0] == rarity[2])    return rarity[0];
 //    else if(rarity[1] == rarity[2])                         return rarity[1];
 //    else
-//    {
-//        double bestMatch = 1;
-//        int bestIndex = 0;
+    {
+        double bestMatch = 1;
+        int bestIndex = 0;
 
-//        for(int i=0; i<3; i++)
-//        {
-//            double match = bestMatchesMaps[i].firstKey();
-//            if(match < bestMatch)
-//            {
-//                bestMatch = match;
-//                bestIndex = i;
-//            }
-//        }
+        for(int i=0; i<3; i++)
+        {
+            double match = bestMatchesMaps[i].firstKey();
+            if(match < bestMatch)
+            {
+                bestMatch = match;
+                bestIndex = i;
+            }
+        }
 
-//        return rarity[bestIndex];
-//    }
-//}
+        return rarity[bestIndex];
+    }
+}
 
 
 void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
-    //Comentado codigo que solo permite cartas de la misma rareza, cambiado en HS 10.4
-//    CardRarity bestRarity = getBestRarity();
+    CardRarity bestRarity = getBestRarity();
 
     for(int i=0; i<3; i++)
     {
@@ -705,17 +704,18 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
             QString name = draftCardMaps[i][code].getName();
             QString cardInfo = code + " " + name + " " +
                     QString::number(((int)(match*1000))/1000.0);
-//            if(draftCardMaps[i][code].getRarity() == bestRarity)
-//            {
+            if( (bestRarity != LEGENDARY && draftCardMaps[i][code].getRarity() != LEGENDARY) ||
+                (bestRarity == LEGENDARY && draftCardMaps[i][code].getRarity() == LEGENDARY))
+            {
                 bestCards[i] = draftCardMaps[i][code];
                 comboBoxCard[i]->setCurrentIndex(j);
                 emit pDebug("Choose: " + cardInfo);
                 break;
-//            }
-//            else
-//            {
-//                emit pDebug("Skip: " + cardInfo + " (Different rarity)");
-//            }
+            }
+            else
+            {
+                emit pDebug("Skip: " + cardInfo + " (Wrong rarity)");
+            }
         }
         if(bestCards[i].getCode().isEmpty() && !bestCodesList.isEmpty())
         {
