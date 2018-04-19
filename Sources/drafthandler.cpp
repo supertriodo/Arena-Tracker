@@ -600,7 +600,8 @@ void DraftHandler::captureDraft()
     }
     else
     {
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        if(numCaptured == 0)    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_FADING, this, SLOT(captureDraft()));
+        else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
 }
 
@@ -1060,13 +1061,13 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             bestMatchesMap.insertMulti(match, code);
 
             //Actualizamos DraftCardMaps con los nuevos resultados
-            if(draftCardMaps[i].contains(code))
+            if((numCaptured != 0) && draftCardMaps[i].contains(code))
             {
-                if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match);
+                draftCardMaps[i][code].setBestQualityMatch(match, false);
             }
         }
 
-        //Incluimos en DraftCardMaps los mejores 5 matches, si no han sido ya actualizados por estar en el map.
+        //Incluimos en DraftCardMaps los mejores 7 matches, si no han sido ya actualizados por estar en el map.
         QList<double> bestMatchesList = bestMatchesMap.keys();
         for(int j=0; j<numCandidates && j<bestMatchesList.count(); j++)
         {
@@ -1077,13 +1078,13 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             {
                 newCardsFound = true;
                 draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
-                if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match);
+                if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match, true);
             }
         }
     }
 
 
-    //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 5 mejores posiciones
+    //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 7 mejores posiciones
     if(numCaptured != 0 || !newCardsFound)
     {
         if(numCaptured == 0)

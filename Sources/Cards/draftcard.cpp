@@ -9,7 +9,7 @@ DraftCard::DraftCard() : DraftCard("")
 
 DraftCard::DraftCard(QString code) : DeckCard(code)
 {
-    this->sumQualityMatches = 1;
+    this->bestQualityMatches = 1;
 }
 
 DraftCard::~DraftCard()
@@ -18,15 +18,16 @@ DraftCard::~DraftCard()
 }
 
 
-void DraftCard::setBestQualityMatch(double matchScore)
+void DraftCard::setBestQualityMatch(double matchScore, bool force)
 {
-    this->sumQualityMatches = std::min(matchScore,sumQualityMatches);
+    if(force)   this->bestQualityMatches = matchScore;
+    else        this->bestQualityMatches = std::min(matchScore,bestQualityMatches);
 }
 
 
 double DraftCard::getSumQualityMatches()
 {
-    return this->sumQualityMatches;
+    return this->bestQualityMatches;
 }
 
 

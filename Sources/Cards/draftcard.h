@@ -16,13 +16,13 @@ public:
 
 //Variables
 private:
-    double sumQualityMatches;
+    double bestQualityMatches;
 
 //Metodos
 public:
     void draw(QLabel *label);
     double getSumQualityMatches();
-    void setBestQualityMatch(double matchScore);
+    void setBestQualityMatch(double matchScore, bool force);
     void draw(QComboBox *comboBox);
 };
 
