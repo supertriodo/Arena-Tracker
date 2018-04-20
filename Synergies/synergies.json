@@ -263,7 +263,7 @@
 	"EX1_604": ["enrageGen"],
 	"EX1_609": ["secret"],
 	"EX1_614": ["tokenGen","=GenMinionHealth1","tokenCardSyn"],
-	"EX1_619": ["aoeSyn","aoeGen","tokenSyn","pingSyn"],
+	"EX1_619": ["aoeGen","tokenSyn","pingSyn"],
 	"EX1_620": ["damageFriendlyHeroSyn"],
 	"EX1_621": ["restoreTargetMinionGen"],
 	"EX1_624": ["restoreFriendlyHeroGen","damageMinionsGen","reachGen"],
@@ -841,6 +841,7 @@
 			"LOOT_088","ICC_244","UNG_108","CS2_009","EX1_155","UNG_948","CS2_004","CS2_236",
 			"CS2_073","CS2_041","CS2_038","CS2_045","CS2_039","ICC_056","ICC_469","CS2_103",
 			"CS2_104","LOOT_278","LOOT_047","GIL_145"],
+		"EX1_619": ["CS2_093","EX1_384","NEW1_020","EX1_097","EX1_249","UNG_848"],
 		"NEW1_041": ["EX1_360","EX1_382"],
 		"LOOT_111": ["EX1_360","EX1_382"],
 

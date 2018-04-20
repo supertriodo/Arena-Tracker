@@ -875,6 +875,9 @@
 			"CS2_041 Ancestral Healing","CS2_038 Ancestral Spirit","CS2_045 Rockbiter Weapon","CS2_039 Windfury",
 			"ICC_056 Cryostasis","ICC_469 Unwilling Sacrifice","CS2_103 Charge","CS2_104 Rampage",
 			"LOOT_278 Unidentified Elixir","LOOT_047 Barkskin","GIL_145 Sound the Bells!"],
+
+		"EX1_619 Equality": ["CS2_093 Consecration","EX1_384 Avenging Wrath","NEW1_020 Wild Pyromancer",
+			"EX1_097 Abomination","EX1_249 Baron Geddon","UNG_848 Primordial Drake"],
 		"NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
 		"LOOT_111 Scorp-o-matic": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
 
