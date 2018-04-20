@@ -3875,12 +3875,10 @@ void MainWindow::testDelay()
 //TODDO
 ///Prox expansion rebajar cartas
 ///Incluir portrait nuevo druid hero
-///Eliminar excepciones addons wild cards
 ///Test carta robada cursed castaway
-//Revisar draft capture con epicas
+
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
-//Detectar pack legendarias en draft.
 //Arreglar llamadas a Drawshadowtext
 //Incluir scores y lava en draft window.
 //Ofrecer premium prueba

@@ -2838,19 +2838,13 @@ QJsonArray PlanHandler::getJsonCardHistory()
 //Cartas que no pueden poner addons ni en otros esbirros ni en heroes
 bool PlanHandler::isAddonCommonValid(const QString &code)
 {
-    if(code == IMP_GANG_BOSS)               return false;
-    if(code == DRAGON_EGG)                  return false;
     if(code == ACOLYTE_OF_PAIN)             return false;
     if(code == GURUBASHI_BERSERKER)         return false;
     if(code == FROTHING_BERSEKER)           return false;
     if(code == LIGHTWARDEN)                 return false;
     if(code == GOREHOWL)                    return false;
     if(code == LOREWALKER_CHO)              return false;
-    if(code == NERUBIAN_PROPHET)            return false;
     if(code == SNAKE_TRAP)                  return false;
-    if(code == ARMORED_WARHORSE)            return false;
-    if(code == DARKSHIRE_COUNCILMAN)        return false;
-    if(code == POLLUTED_HOARDER)            return false;
     if(code == GLADIATORS_LONGBOW)          return false;
     if(code == CANDLESHOT)                  return false;
     if(code == VENOMSTRIKE_TRAP)            return false;
@@ -2863,8 +2857,6 @@ bool PlanHandler::isAddonCommonValid(const QString &code)
 //Cartas que no pueden poner addons en heroes
 bool PlanHandler::isAddonHeroValid(const QString &code)
 {
-    if(code == ACIDMAW)                     return false;
-    if(code == SIEGE_ENGINE)                return false;
     if(code == LESSER_JASPER_SPELLSTONE)    return false;
     return isAddonCommonValid(code);
 }
@@ -2873,14 +2865,10 @@ bool PlanHandler::isAddonHeroValid(const QString &code)
 //Cartas que no pueden poner addons en otros esbirros
 bool PlanHandler::isAddonMinionValid(const QString &code)
 {
-    if(code == WRATHGUARD)              return false;
-    if(code == AXE_FLINGER)             return false;
     if(code == ARMORSMITH)              return false;
     if(code == EYE_FOR_AN_EYE)          return false;
     if(code == TRUESILVER_CHAMPION)     return false;
     if(code == BITTERTIDE_HYDRA)        return false;
-    if(code == UNLICENSED_APOTHECARY)   return false;
-    if(code == HALLAZEAL_THE_ASCENDED)  return false;
     return isAddonCommonValid(code);
 }
 
@@ -2889,10 +2877,7 @@ bool PlanHandler::isAddonMinionValid(const QString &code)
 bool PlanHandler::isLastTriggerValid(const QString &code)
 {
     if(code == KNIFE_JUGGLER)           return false;
-    if(code == ADDLED_GRIZZLY)          return false;
-    if(code == DARKSHIRE_COUNCILMAN)    return false;
     if(code == FROTHING_BERSEKER)       return false;
-    if(code == THE_SKELETON_KNIGHT)     return false;
     if(code == SWORD_OF_JUSTICE)        return false;
     if(code == CRYPT_LORD)              return false;
     return true;
