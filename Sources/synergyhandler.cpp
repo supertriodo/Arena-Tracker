@@ -2751,6 +2751,7 @@ bool SynergyHandler::isSpawnEnemySyn(const QString &code)
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
+    if(code == SEA_GIANT)           return 6;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
