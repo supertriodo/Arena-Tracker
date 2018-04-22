@@ -170,6 +170,7 @@
 #define SEA_GIANT "EX1_586"
 #define PRIMORDIAL_GLYPH "UNG_941"
 #define BLOODBLOOM "UNG_832"
+#define FAR_SIGHT "CS2_053"
 
 
 #endif // CONSTANTS_H

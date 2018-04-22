@@ -2756,10 +2756,11 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
     if(code == BLOODBLOOM)          return 0;
+    if(code == PRIMORDIAL_GLYPH)    return 0;
+    if(code == FAR_SIGHT)           return 0;
 //    if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
 //    if(code == SECOND_RATE_BRUISER) return 3;
-    if(code == PRIMORDIAL_GLYPH)    return 4;
     if(code == MOLTEN_BLADE)        return 4;
 //    if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
