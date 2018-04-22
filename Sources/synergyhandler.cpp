@@ -533,7 +533,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
-    int cost = deckCard.getCost();
+//    int cost = deckCard.getCost();
 
     //GEN
     if(isDiscoverDrawGen(code, mechanics, referencedTags, text))
@@ -597,7 +597,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
-    if(isTokenCardGen(code, cost))                                          mechanicCounters[V_TOKEN_CARD]->increase(code);
+    //TokenCard es synergia debil
+    //Evitamos que aparezcan token cards synergies en cada combo card
+//    if(isTokenCardGen(code, cost))                                          mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
@@ -981,9 +983,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
-    //TokenCard y combo son synergias debiles, no queremos ver questing adventure en cada token que elijamos
-    //y no queremos ver un token en cada combo que elijamos
-    //Con la llegada de cartas que roban cartas combo ya no podemos hacer esta distincion
     if(isTokenCardGen(code, cost))                              mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
     if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergies);
@@ -1194,7 +1193,7 @@ void SynergyHandler::testSynergies()
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
 //                (text.contains("2-cost"))
-                isTokenCardGen(code, cost)
+                isTokenCardGen(code, cost) && cost == 0
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
@@ -1238,6 +1237,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     CardType cardType = deckCard.getType();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int cost = deckCard.getCost();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
@@ -1275,6 +1275,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isBattlecry(code, mechanics))                                        mec<<"battlecry";
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
     if(isTokenGen(code, text))                                              mec<<"tokenGen";
+    if(isTokenCardGen(code, cost))                                          mec<<"tokenCardGen";
     if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
     if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
     if(isHealthBuffGen(code, text))                                         mec<<"healthBuffGen";
@@ -1857,11 +1858,11 @@ bool SynergyHandler::isTokenCardGen(const QString &code, int cost)
     //Incluimos cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2
     //TEST
     //text.contains("to") && text.contains("your") && text.contains("hand")
-    if(cost == 0)   return true;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("tokenCardGen");
     }
+    if(cost == 0)   return true;
     return false;
 }
 bool SynergyHandler::isComboGen(const QString &code, const QJsonArray &mechanics)
