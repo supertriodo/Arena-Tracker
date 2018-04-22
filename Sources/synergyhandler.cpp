@@ -2616,9 +2616,13 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
     //&& mechanics.contains(QJsonValue("BATTLECRY"))
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("returnSyn") || synergyCodes[code].contains("echo");
+        return synergyCodes[code].contains("returnSyn");
     }
     else if(cardType != MINION)  return false;
+    else if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("echo");
+    }
     else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")))
     {
         if(
