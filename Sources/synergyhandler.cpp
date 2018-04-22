@@ -2755,19 +2755,21 @@ bool SynergyHandler::isSpawnEnemySyn(const QString &code)
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
-    if(code == SEA_GIANT)           return 6;
-    if(code == NERUBIAN_PROPHET)    return 3;
+    if(code == BLOODBLOOM)          return 0;
+//    if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
-    if(code == SECOND_RATE_BRUISER) return 3;
+//    if(code == SECOND_RATE_BRUISER) return 3;
+    if(code == PRIMORDIAL_GLYPH)    return 4;
     if(code == MOLTEN_BLADE)        return 4;
-    if(code == SHIFTER_ZERUS)       return 4;
+//    if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
     if(code == CHAMELEOS)           return 4;
-    if(code == FORBIDDEN_SHAPING)   return 4;
-    if(code == FORBIDDEN_FLAME)     return 4;
-    if(code == FORBIDDEN_HEALING)   return 4;
-    if(code == FORBIDDEN_RITUAL)    return 4;
-    if(code == FORBIDDEN_ANCIENT)   return 4;
+//    if(code == FORBIDDEN_SHAPING)   return 4;
+//    if(code == FORBIDDEN_FLAME)     return 4;
+//    if(code == FORBIDDEN_HEALING)   return 4;
+//    if(code == FORBIDDEN_RITUAL)    return 4;
+//    if(code == FORBIDDEN_ANCIENT)   return 4;
+    if(code == SEA_GIANT)           return 6;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
