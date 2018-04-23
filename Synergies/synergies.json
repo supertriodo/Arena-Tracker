@@ -223,7 +223,7 @@
 	"EX1_320": ["demonGen","damageMinionsGen","reachGen"],
 	"EX1_323": ["battlecry","=GenMinionHealth6","weaponGen","reachGen","damageMinionsGen"],
 	"EX1_334": ["damageMinionsGen","reachGen","returnSyn"],
-	"EX1_335": ["healthBuffSyn"],
+	"EX1_335": [],
 	"EX1_339": ["toYourHandGen2"],
 	"EX1_349": ["drawGen2"],
 	"EX1_350": ["restoreFriendlyHeroGen","spellDamageGen"],
@@ -855,6 +855,7 @@
 
 		"GIL_116": ["EX1_274"],
 
+		"EX1_335": ["CS2_004","CS2_236","EX1_004","EX1_623","ICC_028","LOOT_152"],
 		"GIL_683": ["EX1_334","EX1_091"]
 
 	}

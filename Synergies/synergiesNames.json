@@ -893,6 +893,8 @@
 		"-----------------------------------------MAGE-----------------------------------------": "",
 		"GIL_116 Arcane Keysmith": ["EX1_274 Ethereal Arcanist"],
 		"-----------------------------------------PRIEST-----------------------------------------": "",
+		"EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
+			"EX1_623 Temple Enforcer","ICC_028 Sunborne Val'kyr","LOOT_152 Boisterous Bard"],
 		"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest"]
 
 	}
