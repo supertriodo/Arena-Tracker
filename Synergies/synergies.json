@@ -230,6 +230,7 @@
 	"EX1_354": ["drawGen3", "restoreTargetMinionGen", "restoreFriendlyHeroGen"],
 	"EX1_360": ["destroyGen"],
 	"EX1_363": ["drawGen", "tokenCardGen"],
+	"EX1_379": ["secret","pingSyn"],
 	"EX1_382": ["battlecry","returnSyn","destroyGen"],
 	"EX1_383": ["divineShield","taunt","deathrattle","weaponGen","damageMinionsGen","reachGen"],
 	"EX1_392": ["drawGen2","enrageGen"],
@@ -332,7 +333,7 @@
 	"GIL_618" : ["echoGen", "toYourHandGen"],
 	"GIL_620" : ["drawSyn", "deathrattleGoodAllSyn"],
 	"GIL_622" : ["battlecry", "restoreFriendlyHeroGen", "returnSyn", "reachGen"],
-	"GIL_623" : ["battlecry", "taunt", "restoreTargetMinionSyn","restoreFriendlyMinionSyn"],
+	"GIL_623" : ["battlecry", "taunt"],
 	"GIL_634" : ["deathrattle", "battlecry", "returnSyn", "secretSyn"],
 	"GIL_635" : ["dragonAllSyn", "battlecry"],
 	"GIL_640" : ["drawSyn"],
@@ -758,6 +759,7 @@
 	"UNG_208": ["battlecry","returnSyn","elementalAllSyn","evolveSyn"],
 	"UNG_211": ["battlecry","returnSyn","elementalAllSyn"],
 	"UNG_800": ["battlecry","returnSyn","deathrattleGoodAllSyn"],
+	"UNG_801": ["battlecry","tauntGen"],
 	"UNG_803": ["battlecry","damageFriendlyHeroGen"],
 	"UNG_807": ["battlecry","returnSyn"],
 	"UNG_809": ["battlecry","returnSyn","tokenGen","tokenCardGen"],
@@ -855,6 +857,7 @@
 
 		"GIL_116": ["EX1_274"],
 
+		"CS2_004": ["NEW1_020"],
 		"EX1_335": ["CS2_004","CS2_236","EX1_004","EX1_623","ICC_028","LOOT_152"],
 		"GIL_683": ["EX1_334","EX1_091"]
 

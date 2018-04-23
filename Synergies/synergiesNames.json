@@ -230,6 +230,7 @@
 	"EX1_354": [ "Lay on Hands" ],
 	"EX1_360": ["Humility"],
 	"EX1_363": [ "Blessing of Wisdom" ],
+	"EX1_379": [ "Repentance" ],
 	"EX1_382": [ "Aldor Peacekeeper" ],
 	"EX1_383": ["Tirion Fordring"],
 	"EX1_392": ["Battle Rage"],
@@ -758,6 +759,7 @@
 	"UNG_208": ["Stone Sentinel"],
 	"UNG_211": ["Kalimos, Primal Lord"],
 	"UNG_800": [ "Terrorscale Stalker" ],
+	"UNG_801": [ "Nesting Roc" ],
 	"UNG_803": [ "Emerald Reaver" ],
 	"UNG_807": ["Golakka Crawler"],
 	"UNG_809": ["Fire Fly"],
@@ -893,6 +895,7 @@
 		"-----------------------------------------MAGE-----------------------------------------": "",
 		"GIL_116 Arcane Keysmith": ["EX1_274 Ethereal Arcanist"],
 		"-----------------------------------------PRIEST-----------------------------------------": "",
+		"CS2_004 Power Word: Shield": ["NEW1_020 Wild Pyromancer"],
 		"EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
 			"EX1_623 Temple Enforcer","ICC_028 Sunborne Val'kyr","LOOT_152 Boisterous Bard"],
 		"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest"]

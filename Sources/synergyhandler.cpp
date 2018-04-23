@@ -1186,6 +1186,7 @@ void SynergyHandler::testSynergies()
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
+        CardClass cardClass = deckCard.getCardClass();
         QString text = Utility::cardEnTextFromCode(code).toLower();
         int attack = Utility::getCardAttribute(code, "attack").toInt();
         int cost = deckCard.getCost();
@@ -1193,7 +1194,8 @@ void SynergyHandler::testSynergies()
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
 //                (text.contains("2-cost"))
-                isTokenCardGen(code, cost) && cost == 0
+                isHealthBuffGen(code, text) &&
+                (cardClass == NEUTRAL || cardClass == PRIEST)
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1

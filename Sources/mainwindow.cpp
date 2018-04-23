@@ -3746,7 +3746,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
 
 //    draftHandler->debugSynergiesSet("GILNEAS");
-//    draftHandler->debugSynergiesCode("EX1_402");
+//    draftHandler->debugSynergiesCode("EX1_379");
 //    draftHandler->testSynergies();
     draftHandler->initSynergyCodes();
 }
@@ -3873,10 +3873,11 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Synergias individuales light spawn
-//Test Class: {"Druid1", "Hunter", "Mage111", "Paladin", "Priest11", "Rogue1", "Shaman1", "Warlock", "Warrior11"};
+//Test Class: {"Druid1", "Hunter", "Mage1111", "Paladin11", "Priest+++++", "Rogue1", "Shaman1", "Warlock1", "Warrior11"};
 ///Prox expansion rebajar cartas
 ///Incluir portrait nuevo druid hero
+///Bug Gablouni
+///Reddit post, new users
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Arreglar llamadas a Drawshadowtext
