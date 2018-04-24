@@ -729,7 +729,7 @@
 	"UNG_020": ["drawGen", "battlecry", "secretSyn", "returnSyn"],
 	"UNG_021": ["battlecry","returnSyn","elementalAllSyn"],
 	"UNG_022": ["battlecry","returnSyn","tokenGen","eggSyn","deathrattleGoodAllSyn","silenceOwnSyn"],
-	"UNG_024": ["secret","tokenCardGen"],
+	"UNG_024": ["secret","tokenCardGen","toYourHandGen"],
 	"UNG_025": ["aoeGen", "overload", "eggSyn"],
 	"UNG_027": ["deathrattle","toYourHandGen4"],
 	"UNG_029": ["discover","spellSyn"],
@@ -834,7 +834,7 @@
 		"GIL_672": ["UNG_856","GIL_827","GIL_696"],
 		"ICC_811": ["UNG_057","UNG_058","GIL_687"],
 		"ICC_809": ["EX1_097","EX1_102","EX1_249","NEW1_019","NEW1_020","UNG_818"],
-		"ICC_240": ["CS2_074"],
+		"CS2_074": ["CS2_233","ICC_240","ICC_018","ICC_221","NEW1_018","NEW1_022"],
 
 		"LOOT_313": ["LOOT_363","UNG_950","UNG_960"],
 		"LOOT_333": ["LOOT_363","UNG_950","UNG_960"],

@@ -854,7 +854,8 @@
 		"ICC_809 Plague Scientist": ["EX1_097 Abomination","EX1_102 Demolisher",
 			"EX1_249 Baron Geddon","NEW1_019 Knife Juggler","NEW1_020 Wild Pyromancer",
 			"UNG_818 Volatile Elemental"],
-		"ICC_240 Runeforge Haunter": ["CS2_074 Deadly Poison"],
+		"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
+			"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair"],
 
 		"-----------------------------------------PALADIN-----------------------------------------": "",
 		"----------------------------------SILVER HAND RECRUITS-----------------------------------": "",
