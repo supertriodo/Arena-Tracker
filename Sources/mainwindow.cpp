@@ -3746,7 +3746,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
 
 //    draftHandler->debugSynergiesSet("GILNEAS");
-//    draftHandler->debugSynergiesCode("EX1_379");
+//    draftHandler->debugSynergiesCode("ICC_240");
 //    draftHandler->testSynergies();
     draftHandler->initSynergyCodes();
 }
@@ -3873,7 +3873,6 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Test Class: {"Druid1", "Hunter", "Mage1111", "Paladin11", "Priest+++++", "Rogue1", "Shaman1", "Warlock1", "Warrior11"};
 ///Prox expansion rebajar cartas
 ///Incluir portrait nuevo druid hero
 ///Bug Gablouni

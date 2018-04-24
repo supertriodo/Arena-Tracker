@@ -1194,8 +1194,8 @@ void SynergyHandler::testSynergies()
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
 //                (text.contains("2-cost"))
-                isHealthBuffGen(code, text) &&
-                (cardClass == NEUTRAL || cardClass == PRIEST)
+                isWeaponAllSyn(code, text) &&
+                (cardClass == NEUTRAL || cardClass == ROGUE)
             )
         {
 //            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
@@ -2761,6 +2761,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == BLOODBLOOM)          return 0;
     if(code == PRIMORDIAL_GLYPH)    return 0;
     if(code == FAR_SIGHT)           return 0;
+    if(code == CHEAT_DEATH)         return 0;
+    if(code == MANA_BIND)           return 0;
 //    if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
 //    if(code == SECOND_RATE_BRUISER) return 3;
