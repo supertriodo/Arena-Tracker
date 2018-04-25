@@ -3584,7 +3584,7 @@ void MainWindow::downloadAllArenaCodes()
         else
         {
             startProgressBarMini(allCardsDownloadList.count());
-            showMessageProgressBar("Downloading cards...");
+            showMessageProgressBar("Downloading cards...", 10000);
         }
     }
 }
@@ -3874,7 +3874,6 @@ void MainWindow::testDelay()
 
 //TODDO
 ///Prox expansion rebajar cartas
-///Incluir portrait nuevo druid hero
 ///Bug Gablouni
 ///Reddit post, new users
 //Completar synergies manual con todas las cartas

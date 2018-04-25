@@ -1062,6 +1062,8 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyHero((playerID == 1)?hero2:hero1);
                 emit pDebug("Found playerID: " + player, numLine);
 
+                secretHero = Utility::heroFromLogNumber((playerID == 1)?hero1:hero2);
+
                 if(playerTag.isEmpty())
                 {
                     playerTag = (playerID == 1)?name1:name2;
