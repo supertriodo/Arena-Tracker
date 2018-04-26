@@ -41,6 +41,8 @@ public:
     QList<DeckCard> getDeckCardList();
     void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);
     void setIcon(QPixmap pixmap, int iconWidth=32);
+    void hide();
+    void show();
 
 signals:
     void iconEnter(QList<DeckCard> &deckCardList, QRect &labelRect);

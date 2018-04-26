@@ -43,6 +43,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2, false);
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
+    cardTypeCounters[V_MINION]->hide();
+    cardTypeCounters[V_SPELL]->hide();
+    cardTypeCounters[V_WEAPON]->hide();
+    manaCounter->hide();
+
     //SCORES
     lavaButton = new LavaButton(centralWidget, 3, 5.5);
     lavaButton->setFixedHeight(scoreWidth);
@@ -96,6 +101,16 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, mechanicsLayout, 1, 1, QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
     mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
     mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
+
+    mechanicCounters[V_AOE]->hide();
+    mechanicCounters[V_TAUNT_ALL]->hide();
+    mechanicCounters[V_SURVIVABILITY]->hide();
+    mechanicCounters[V_DISCOVER_DRAW]->hide();
+
+    mechanicCounters[V_PING]->hide();
+    mechanicCounters[V_DAMAGE]->hide();
+    mechanicCounters[V_DESTROY]->hide();
+    mechanicCounters[V_REACH]->hide();
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
@@ -248,6 +263,21 @@ void DraftMechanicsWindow::updateDeckWeight(int numCards, int draw, int toYourHa
         centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
         setDraftMethod(this->draftMethod);
         lavaButton->show();
+
+        cardTypeCounters[V_MINION]->show();
+        cardTypeCounters[V_SPELL]->show();
+        cardTypeCounters[V_WEAPON]->show();
+        manaCounter->show();
+
+        mechanicCounters[V_AOE]->show();
+        mechanicCounters[V_TAUNT_ALL]->show();
+        mechanicCounters[V_SURVIVABILITY]->show();
+        mechanicCounters[V_DISCOVER_DRAW]->show();
+
+        mechanicCounters[V_PING]->show();
+        mechanicCounters[V_DAMAGE]->show();
+        mechanicCounters[V_DESTROY]->show();
+        mechanicCounters[V_REACH]->show();
     }
 }
 

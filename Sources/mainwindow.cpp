@@ -3873,8 +3873,10 @@ void MainWindow::testDelay()
 
 
 //TODDO
-///Prox expansion rebajar cartas
-///Reddit post, new users
+//Prox expansion rebajar cartas
+//https://www.reddit.com/r/ArenaHS/comments/8e2trs/what_programs_do_you_use_to_assist_with_arena/dxtjpre/
+//Interrogacion enlace manual, mostrar tooltips.
+
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Incluir scores y lava en draft window.
