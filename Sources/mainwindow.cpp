@@ -3874,11 +3874,9 @@ void MainWindow::testDelay()
 
 //TODDO
 ///Prox expansion rebajar cartas
-///Bug Gablouni
 ///Reddit post, new users
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
-//Arreglar llamadas a Drawshadowtext
 //Incluir scores y lava en draft window.
 //Ofrecer premium prueba
 

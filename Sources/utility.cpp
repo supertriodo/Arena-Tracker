@@ -694,6 +694,8 @@ void Utility::dumpOnFile(const QByteArray &data, QString path)
 
 void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText)
 {
+    //Gran parte de los textos pintados usan el offset (que solo deberia ser usado para el texto de cartas),
+    //Eso hace que en los diferentes temas muestren el texto diferente donde no deberian (Ej Vida/Atk cartas replay)
     QFontMetrics fm(font);
 
     int textWide = fm.width(text);

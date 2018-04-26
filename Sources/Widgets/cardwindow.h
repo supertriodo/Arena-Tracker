@@ -23,8 +23,9 @@ private:
     bool alwaysHidden;
 
 //Metodos
-public:
-
+protected:
+    void leaveEvent(QEvent *e) Q_DECL_OVERRIDE;
+    void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
 
 signals:
 

@@ -71,3 +71,15 @@ void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBotto
 }
 
 
+void CardWindow::enterEvent(QEvent * e)
+{
+    QMainWindow::enterEvent(e);
+    hide();
+}
+
+
+void CardWindow::leaveEvent(QEvent * e)
+{
+    QMainWindow::leaveEvent(e);
+    hide();
+}

@@ -141,3 +141,17 @@ void CardListWindow::loadDraftOverlayItem(QList<DeckCard> &deckCardList, QPoint 
     move(moveX, moveY);
     show();
 }
+
+
+void CardListWindow::enterEvent(QEvent * e)
+{
+    QMainWindow::enterEvent(e);
+    hide();
+}
+
+
+void CardListWindow::leaveEvent(QEvent * e)
+{
+    QMainWindow::leaveEvent(e);
+    hide();
+}
