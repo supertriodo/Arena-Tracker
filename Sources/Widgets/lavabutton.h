@@ -27,6 +27,7 @@ protected:
 
 public:
     void setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards);
+    void reset();
 };
 
 #endif // LAVABUTTON_H

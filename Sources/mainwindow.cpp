@@ -3877,6 +3877,7 @@ void MainWindow::testDelay()
 //https://www.reddit.com/r/ArenaHS/comments/8e2trs/what_programs_do_you_use_to_assist_with_arena/dxtjpre/
 //Interrogacion enlace manual, mostrar tooltips.
 
+//Eliminar ultima carta echo jugada cada turno en replay
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Incluir scores y lava en draft window.

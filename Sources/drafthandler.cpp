@@ -26,6 +26,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
         cardDetected[i] = false;
     }
 
+    createScoreItems();
     createSynergyHandler();
     completeUI();
 
@@ -37,6 +38,39 @@ DraftHandler::~DraftHandler()
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
     if(synergyHandler != NULL)  delete synergyHandler;
+}
+
+
+void DraftHandler::createScoreItems()
+{
+    int width = 80;
+    lavaButton = new LavaButton(ui->tabDraft, 3, 5.5);
+    lavaButton->setFixedHeight(width);
+    lavaButton->setFixedWidth(width);
+    lavaButton->reset();
+    lavaButton->setToolTip("Deck weight");
+    lavaButton->hide();
+
+    scoreButtonLF = new ScoreButton(ui->tabDraft, LightForge, false);
+    scoreButtonLF->setFixedHeight(width);
+    scoreButtonLF->setFixedWidth(width);
+    scoreButtonLF->setScore(0, true);
+    scoreButtonLF->setToolTip("LightForge deck average");
+    scoreButtonLF->hide();
+
+    scoreButtonHA = new ScoreButton(ui->tabDraft, HearthArena, false);
+    scoreButtonHA->setFixedHeight(width);
+    scoreButtonHA->setFixedWidth(width);
+    scoreButtonHA->setScore(0, true);
+    scoreButtonHA->setToolTip("HearthArena deck average");
+    scoreButtonHA->hide();
+
+    QHBoxLayout *scoresLayout = new QHBoxLayout();
+    scoresLayout->addWidget(lavaButton);
+    scoresLayout->addWidget(scoreButtonLF);
+    scoresLayout->addWidget(scoreButtonHA);
+
+    ui->draftVerticalLayout->addLayout(scoresLayout);
 }
 
 
@@ -324,8 +358,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         comboBoxCard[i]->setCurrentIndex(0);
     }
 
-    updateDeckScore();
-
     if(!alreadyDrafting)
     {
         //SizePreDraft
@@ -336,7 +368,18 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         //Show Tab
         ui->tabWidget->insertTab(0, ui->tabDraft, QIcon(ThemeHandler::tabArenaFile()), "");
         ui->tabWidget->setTabToolTip(0, "Draft");
+
+        //Reset scores
+        scoreButtonLF->setNormalizedLF(normalizedLF);
+        synergyHandler->setHidden(!patreonVersion);
+        lavaButton->setHidden(!patreonVersion);
+        scoreButtonHA->setEnabled(false);
+        scoreButtonLF->setEnabled(false);
+        lavaButton->setEnabled(false);
+        lavaButton->reset();
+        updateDeckScore();
         updateScoresVisibility();
+        updateAvgScoresVisibility();
 
         //SizeDraft
         QSize sizeDraft = settings.value("sizeDraft", QSize(350, 400)).toSize();
@@ -351,12 +394,12 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 void DraftHandler::clearLists(bool keepCounters)
 {
     clearAndDisconnectAllComboBox();
-    synergyHandler->clearLists(keepCounters);
+    synergyHandler->clearLists(keepCounters);//keepCounters = beginDraft
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
     cardsHist.clear();
 
-    if(!keepCounters)
+    if(!keepCounters)//endDraft
     {
         deckRatingHA = deckRatingLF = 0;
     }
@@ -443,35 +486,50 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
-    if(!deckCardList.isEmpty()) initSynergyCounters(deckCardList);
     resetTab(alreadyDrafting);
+    initSynergyCounters(deckCardList);
 }
 
 
 void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 {
-    if(synergyHandler->draftedCardsCount() > 0 || !patreonVersion)  return;
+    if(deckCardList.count() == 1 || synergyHandler->draftedCardsCount() > 0 || !patreonVersion)  return;
+
+    if(!lavaButton->isEnabled())
+    {
+        scoreButtonHA->setEnabled(true);
+        scoreButtonLF->setEnabled(true);
+        lavaButton->setEnabled(true);
+    }
 
     QStringList spellList, minionList, weaponList,
                 aoeList, tauntList, survivabilityList, drawList,
                 pingList, damageList, destroyList, reachList;
-    int draw, toYourHand, discover;
+    int tdraw, ttoYourHand, tdiscover;
+    tdraw = ttoYourHand = tdiscover = 0;
     for(DeckCard &deckCard: deckCardList)
     {
         if(deckCard.getType() == INVALID_TYPE)  continue;
         QString code = deckCard.getCode();
         for(int i=0; i<deckCard.total; i++)
         {
+            int draw, toYourHand, discover;
             synergyHandler->updateCounters(deckCard, spellList, minionList, weaponList,
                            aoeList, tauntList, survivabilityList, drawList,
                            pingList, damageList, destroyList, reachList,
                            draw, toYourHand, discover);
+            tdraw += draw;
+            ttoYourHand += toYourHand;
+            tdiscover += discover;
+
             deckRatingHA += hearthArenaTiers[code];
             deckRatingLF += lightForgeTiers[code].score;
         }
     }
 
     int numCards = synergyHandler->draftedCardsCount();
+    lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, tdraw, ttoYourHand, tdiscover);
+
     updateDeckScore();
     emit pDebug("Counters starts with " + QString::number(numCards) + " cards.");
 }
@@ -748,6 +806,13 @@ void DraftHandler::pickCard(QString code)
 
     if(patreonVersion)
     {
+        if(!lavaButton->isEnabled())
+        {
+            scoreButtonHA->setEnabled(true);
+            scoreButtonLF->setEnabled(true);
+            lavaButton->setEnabled(true);
+        }
+
         DraftCard draftCard;
         int cardIndex;
         for(cardIndex=0; cardIndex<3; cardIndex++)
@@ -769,10 +834,12 @@ void DraftHandler::pickCard(QString code)
                                        aoeList, tauntList, survivabilityList, drawList,
                                        pingList, damageList, destroyList, reachList,
                                        draw, toYourHand, discover);
+
+        int numCards = synergyHandler->draftedCardsCount();
+        lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
         if(cardIndex <= 2)   updateDeckScore(shownTierScoresHA[cardIndex], shownTierScoresLF[cardIndex]);
         if(draftMechanicsWindow != NULL)
         {
-            int numCards = synergyHandler->draftedCardsCount();
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
                                                  aoeList, tauntList, survivabilityList, drawList,
                                                  pingList, damageList, destroyList, reachList);
@@ -915,6 +982,8 @@ void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
     int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
     int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
     updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, numCards);
+    scoreButtonLF->setScore(deckScoreLF, true);
+    scoreButtonHA->setScore(deckScoreHA, true);
 
     if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
 }
@@ -1228,7 +1297,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 {
     int numCards = synergyHandler->draftedCardsCount();
 
-    if(numCards == 0 || !patreonVersion)    return;
+    if(numCards == 0 || !patreonVersion || draftMechanicsWindow == NULL)    return;
 
     QStringList spellList, minionList, weaponList,
                 aoeList, tauntList, survivabilityList, drawList,
@@ -1421,6 +1490,7 @@ void DraftHandler::setDraftMethod(DraftMethod value)
 
     updateDeckScore();
     updateScoresVisibility();
+    updateAvgScoresVisibility();
 }
 
 
@@ -1467,6 +1537,38 @@ void DraftHandler::updateScoresVisibility()
                 }
                 break;
         }
+    }
+}
+
+
+void DraftHandler::updateAvgScoresVisibility()
+{
+    if(patreonVersion)
+    {
+        switch(draftMethod)
+        {
+            case All:
+                scoreButtonLF->hide();
+                scoreButtonHA->show();
+                break;
+            case LightForge:
+                scoreButtonLF->show();
+                scoreButtonHA->hide();
+                break;
+            case HearthArena:
+                scoreButtonLF->hide();
+                scoreButtonHA->show();
+                break;
+            default:
+                scoreButtonLF->hide();
+                scoreButtonHA->hide();
+                break;
+        }
+    }
+    else
+    {
+        scoreButtonLF->hide();
+        scoreButtonHA->hide();
     }
 }
 
@@ -1535,6 +1637,7 @@ void DraftHandler::setNormalizedLF(bool value)
 
     if(this->draftScoreWindow != NULL)      draftScoreWindow->setNormalizedLF(value);
     if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setNormalizedLF(value);
+    scoreButtonLF->setNormalizedLF(value);
 
     //Re Show new ratings
     int rating1 = lightForgeTiers[draftCards[0].getCode()].score;

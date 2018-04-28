@@ -10,6 +10,14 @@ LavaButton::LavaButton(QWidget *parent, double min, double max) : QLabel(parent)
 }
 
 
+void LavaButton::reset()
+{
+    this->drawCards = this->toYourHandCards = this->discoverCards = 0;
+    this->value = 0;
+    update();
+}
+
+
 void LavaButton::setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards)
 {
     this->drawCards += drawCards;
@@ -49,7 +57,10 @@ void LavaButton::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
 
-    QPainter painter(this);
+    QPixmap canvas(width(), height());
+    canvas.fill(Qt::transparent);
+
+    QPainter painter(&canvas);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
@@ -73,7 +84,6 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.setBrush(WHITE);
 
     QString text = QString::number(int(value)) + "." + QString::number(int(value*10)%10);
-//    QString text = QString::number(int(value_0_1*100)) + "%";
     QFontMetrics fm = QFontMetrics(font);
     int textWide = fm.width(text);
     int textHigh = fm.height();
@@ -87,5 +97,16 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.drawPath(path);
 
     painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedOpenFile()));
+
+    QPainter painterObject(this);
+    if(isEnabled())
+    {
+        painterObject.drawPixmap(targetAll, canvas);
+    }
+    else
+    {
+        QIcon icon(canvas);
+        painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
+    }
 }
 

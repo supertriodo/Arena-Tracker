@@ -87,8 +87,12 @@ void ScoreButton::draw()
                           "stop: 0.5 " + rgb + ", "
                           "stop: 1 " + rgbMid + ");";
 
+    QString backgroundColor;
+    if(!isEnabled())    backgroundColor = "grey;";
+    else if(hideScore)  backgroundColor = "black;";
+    else                backgroundColor = gradientCSS;
     this->setStyleSheet(
-            "QLabel{background-color: " + (hideScore?"black;":gradientCSS) +
+            "QLabel{background-color: " + backgroundColor +
             "border-style: solid; border-color: transparent;" +
             "border-width: " + QString::number(width()/3) + "px;" +
             "border-radius: " + QString::number(width()/2) + "px;}");
@@ -100,7 +104,10 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
 
-    QPainter painter(this);
+    QPixmap canvas(width(), height());
+    canvas.fill(Qt::transparent);
+
+    QPainter painter(&canvas);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
@@ -118,20 +125,19 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
+    QRect targetAll(0, 0, width(), height());
     bool hideScore = learningMode && !learningShow;
     if(hideScore)
     {
-        QRect target(0, 0, this->width(), this->height());
-        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haCloseFile()));
-        else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfCloseFile()));
+        if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
+        else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
     }
     else
     {
         if(isBestScore)
         {
-            QRect target(0, 0, width(), height());
-            if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haBestFile()));
-            else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfBestFile()));
+            if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
+            else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
         }
 
         QString text = QString::number(normalizedScore);
@@ -147,9 +153,19 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 #endif
         painter.drawPath(path);
 
-        QRect target(0, 0, width(), height());
-        if(draftMethod == HearthArena)      painter.drawPixmap(target, QPixmap(ThemeHandler::haOpenFile()));
-        else                                painter.drawPixmap(target, QPixmap(ThemeHandler::lfOpenFile()));
+        if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
+        else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
+    }
+
+    QPainter painterObject(this);
+    if(isEnabled())
+    {
+        painterObject.drawPixmap(targetAll, canvas);
+    }
+    else
+    {
+        QIcon icon(canvas);
+        painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
     }
 }
 

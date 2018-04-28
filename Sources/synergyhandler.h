@@ -43,6 +43,8 @@ public:
     void setTransparency(Transparency transparency, bool mouseInApp);
     void setTheme();
     int getCorrectedCardMana(DeckCard &deckCard);
+    int getManaCounterCount();
+    void setHidden(bool hide);
 
 private:
     void createDraftItemCounters();

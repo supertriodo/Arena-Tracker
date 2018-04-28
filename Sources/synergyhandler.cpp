@@ -283,6 +283,45 @@ void SynergyHandler::clearLists(bool keepCounters)
 }
 
 
+void SynergyHandler::setHidden(bool hide)
+{
+    if(hide)
+    {
+        cardTypeCounters[V_MINION]->hide();
+        cardTypeCounters[V_SPELL]->hide();
+        cardTypeCounters[V_WEAPON]->hide();
+        manaCounter->hide();
+
+        mechanicCounters[V_AOE]->hide();
+        mechanicCounters[V_TAUNT_ALL]->hide();
+        mechanicCounters[V_SURVIVABILITY]->hide();
+        mechanicCounters[V_DISCOVER_DRAW]->hide();
+
+        mechanicCounters[V_PING]->hide();
+        mechanicCounters[V_DAMAGE]->hide();
+        mechanicCounters[V_DESTROY]->hide();
+        mechanicCounters[V_REACH]->hide();
+    }
+    else
+    {
+        cardTypeCounters[V_MINION]->show();
+        cardTypeCounters[V_SPELL]->show();
+        cardTypeCounters[V_WEAPON]->show();
+        manaCounter->show();
+
+        mechanicCounters[V_AOE]->show();
+        mechanicCounters[V_TAUNT_ALL]->show();
+        mechanicCounters[V_SURVIVABILITY]->show();
+        mechanicCounters[V_DISCOVER_DRAW]->show();
+
+        mechanicCounters[V_PING]->show();
+        mechanicCounters[V_DAMAGE]->show();
+        mechanicCounters[V_DESTROY]->show();
+        mechanicCounters[V_REACH]->show();
+    }
+}
+
+
 int SynergyHandler::draftedCardsCount()
 {
     int num = 0;
@@ -389,6 +428,12 @@ int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList,
         toYourHand += deckCard.total * numToYourHandGen(code, text);
     }
 
+    return manaCounter->count();
+}
+
+
+int SynergyHandler::getManaCounterCount()
+{
     return manaCounter->count();
 }
 

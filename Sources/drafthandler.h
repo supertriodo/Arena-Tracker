@@ -50,6 +50,8 @@ private:
     bool patreonVersion;
     Ui::Extended *ui;
     SynergyHandler *synergyHandler;
+    LavaButton *lavaButton;
+    ScoreButton *scoreButtonLF, *scoreButtonHA;
     QMap<QString, int> hearthArenaTiers;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
@@ -115,6 +117,7 @@ private:
     void getBestCards(DraftCard bestCards[3]);
     void addCardHist(QString code, bool premium);
     QString degoldCode(QString fileName);
+    void createScoreItems();
     void createSynergyHandler();
     bool isGoldCode(QString fileName);
     void connectAllComboBox();
@@ -124,6 +127,7 @@ private:
     void initSynergyCounters(QList<DeckCard> &deckCardList);
     void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards);
     void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA);
+    void updateAvgScoresVisibility();
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
