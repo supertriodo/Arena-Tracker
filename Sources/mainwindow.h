@@ -271,6 +271,7 @@ private slots:
     void closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget);
     void swapSizePlan(bool sizePlan);
     void calculateMinimumWidth();
+    void changingTabUpdateDraftSize();
 };
 
 #endif // MAINWINDOW_H

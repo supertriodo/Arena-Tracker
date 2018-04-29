@@ -1147,6 +1147,8 @@ void MainWindow::completeUI()
             this, SLOT(spreadMouseInApp()));
     connect(ui->tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(changingTabResetSizePlan()));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            this, SLOT(changingTabUpdateDraftSize()));
     connect(ui->tabWidget, SIGNAL(detachTab(int,QPoint)),
             this, SLOT(createDetachWindow(int,QPoint)));
     connect(this, SIGNAL(cardsJsonReady()),
@@ -1745,6 +1747,17 @@ void MainWindow::spreadMouseInApp()
             currentTab != ui->tabDeck && currentTab != ui->tabEnemy && currentTab != ui->tabEnemyDeck && currentTab != ui->tabGraveyard)
     {
         fadeBarAndButtons(false);
+    }
+}
+
+
+void MainWindow::changingTabUpdateDraftSize()
+{
+    QWidget *currentTab = ui->tabWidget->currentWidget();
+
+    if(currentTab == ui->tabDraft)
+    {
+        draftHandler->updateMinimumHeight();
     }
 }
 

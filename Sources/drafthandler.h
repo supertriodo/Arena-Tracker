@@ -181,6 +181,7 @@ public slots:
     void minimizeScoreWindow();
     void setPremium(bool premium);
     void setNormalizedLF(bool value);
+    void updateMinimumHeight();
 
 private slots:
     void captureDraft();

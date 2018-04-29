@@ -71,6 +71,7 @@ void DraftHandler::createScoreItems()
     scoresLayout->addWidget(scoreButtonHA);
 
     ui->draftVerticalLayout->addLayout(scoresLayout);
+    ui->draftVerticalLayout->addSpacing(10);
 }
 
 
@@ -1538,6 +1539,12 @@ void DraftHandler::updateScoresVisibility()
                 break;
         }
     }
+}
+
+
+void DraftHandler::updateMinimumHeight()
+{
+    ui->tabDraft->setMinimumHeight(ui->tabDraft->sizeHint().height());
 }
 
 
