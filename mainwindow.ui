@@ -1523,7 +1523,7 @@ draft mechanics becoming a patron (3$)</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>764</height>
+               <height>793</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2029,7 +2029,7 @@ Hover your mouse over to check the odds of killing in the board.</string>
                     <item>
                      <widget class="QRadioButton" name="configRadioHA">
                       <property name="toolTip">
-                       <string>HearthArena</string>
+                       <string>HearthArena: Show HearthArena tier score during the draft.</string>
                       </property>
                       <property name="text">
                        <string>HearthArena</string>
@@ -2039,7 +2039,7 @@ Hover your mouse over to check the odds of killing in the board.</string>
                     <item>
                      <widget class="QRadioButton" name="configRadioLF">
                       <property name="toolTip">
-                       <string>LightForge</string>
+                       <string>LightForge: Show LightForge tier score during the draft.</string>
                       </property>
                       <property name="text">
                        <string>LightForge</string>
@@ -2049,7 +2049,7 @@ Hover your mouse over to check the odds of killing in the board.</string>
                     <item>
                      <widget class="QRadioButton" name="configRadioCombined">
                       <property name="toolTip">
-                       <string>Combined: Show advice from both: HearthArena and the LightForge.</string>
+                       <string>Combined: Show tier scores from both: HearthArena and the LightForge.</string>
                       </property>
                       <property name="text">
                        <string>Combined</string>
@@ -2066,20 +2066,32 @@ Hover your mouse over to check the odds of killing in the board.</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
                     <item>
-                     <widget class="QCheckBox" name="configCheckOverlay">
+                     <widget class="QCheckBox" name="configCheckMechanicsOverlay">
                       <property name="toolTip">
-                       <string>Overlay: Show/Hide drafting overlay</string>
+                       <string>Mechanics Overlay: Show/Hide mechanics overlay
+shown above the cards while drafting.</string>
                       </property>
                       <property name="text">
-                       <string>Overlay</string>
+                       <string>Mechanics Overlay</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QCheckBox" name="configCheckScoresOverlay">
+                      <property name="toolTip">
+                       <string>Scores Overlay: Show/Hide scores overlay
+shown below the cards while drafting.</string>
+                      </property>
+                      <property name="text">
+                       <string>Scores Overlay</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QCheckBox" name="configCheckLearning">
                       <property name="toolTip">
-                       <string>Learning: This mode will temporarily hide
-card scores during the draft.</string>
+                       <string>Learning: This mode will hide card scores unless
+you hover your mouse on the scores.</string>
                       </property>
                       <property name="text">
                        <string>Learning</string>
@@ -2089,7 +2101,7 @@ card scores during the draft.</string>
                     <item>
                      <widget class="QCheckBox" name="configCheckNormalizeLF">
                       <property name="toolTip">
-                       <string>Normalize LightForge score to 0-100 range
+                       <string>Normalize LF: Normalize LightForge score to 0-100 range
 so it can be compared along with HearthArena score.</string>
                       </property>
                       <property name="text">

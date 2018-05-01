@@ -83,7 +83,7 @@ private:
     DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *graveyardWindow, *planWindow;
     int cardHeight;
     int drawDisappear;
-    bool showDraftOverlay;
+    bool showDraftScoresOverlay, showDraftMechanicsOverlay;
     bool draftLearningMode;
     QString draftLogFile;
     bool copyGameLogs;
@@ -231,7 +231,8 @@ private slots:
     void transparentFramed();
     void updateTimeDraw(int value);
     void updateTamCard(int value);
-    void toggleShowDraftOverlay();
+    void toggleShowDraftScoresOverlay();
+    void toggleShowDraftMechanicsOverlay();
     void toggleDraftLearningMode();
     void updateDraftNormalizeLF(bool checked);
     void updateTooltipScale(int value);

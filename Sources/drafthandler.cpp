@@ -1448,27 +1448,32 @@ void DraftHandler::setMouseInApp(bool value)
 }
 
 
-void DraftHandler::setShowDraftOverlay(bool value)
+void DraftHandler::setShowDraftScoresOverlay(bool value)
 {
-    this->showDraftOverlay = value;
+    this->showDraftScoresOverlay = value;
+    showOverlay();
+}
+
+
+void DraftHandler::setShowDraftMechanicsOverlay(bool value)
+{
+    this->showDraftMechanicsOverlay = value;
     showOverlay();
 }
 
 
 void DraftHandler::showOverlay()
 {
-    if(this->draftScoreWindow != NULL && this->draftMechanicsWindow != NULL)
+    if(this->draftScoreWindow != NULL)
     {
-        if(this->showDraftOverlay)
-        {
-            this->draftScoreWindow->show();
-            this->draftMechanicsWindow->show();
-        }
-        else
-        {
-            this->draftScoreWindow->hide();
-            this->draftMechanicsWindow->hide();
-        }
+        if(showDraftScoresOverlay)  this->draftScoreWindow->show();
+        else                        this->draftScoreWindow->hide();
+    }
+
+    if(this->draftMechanicsWindow != NULL)
+    {
+        if(showDraftMechanicsOverlay && patreonVersion) this->draftMechanicsWindow->show();
+        else                                            this->draftMechanicsWindow->hide();
     }
 }
 

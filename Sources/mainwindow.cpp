@@ -1322,8 +1322,11 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
 
     //Draft
-    if(this->showDraftOverlay) ui->configCheckOverlay->setChecked(true);
-    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+    if(this->showDraftScoresOverlay) ui->configCheckScoresOverlay->setChecked(true);
+    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
+
+    if(this->showDraftMechanicsOverlay) ui->configCheckMechanicsOverlay->setChecked(true);
+    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
 
     if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
     draftHandler->setLearningMode(this->draftLearningMode);
@@ -1402,7 +1405,8 @@ void MainWindow::readSettings()
 
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
-    this->showDraftOverlay = settings.value("showDraftOverlay", true).toBool();
+    this->showDraftScoresOverlay = settings.value("showDraftScoresOverlay", true).toBool();
+    this->showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
     this->draftMethod = (DraftMethod)settings.value("draftMethod", LightForge).toInt();
@@ -1445,7 +1449,8 @@ void MainWindow::writeSettings()
     settings.setValue("theme", ui->configComboTheme->currentText());
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
-    settings.setValue("showDraftOverlay", this->showDraftOverlay);
+    settings.setValue("showDraftScoresOverlay", this->showDraftScoresOverlay);
+    settings.setValue("showDraftMechanicsOverlay", this->showDraftMechanicsOverlay);
     settings.setValue("draftLearningMode", this->draftLearningMode);
     settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
     settings.setValue("draftMethod", (int)this->draftMethod);
@@ -2644,7 +2649,8 @@ void MainWindow::updateOtherTabsTransparency()
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
         ui->configCheckClassColor->setStyleSheet(checkCSS);
         ui->configCheckSpellColor->setStyleSheet(checkCSS);
-        ui->configCheckOverlay->setStyleSheet(checkCSS);
+        ui->configCheckScoresOverlay->setStyleSheet(checkCSS);
+        ui->configCheckMechanicsOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
         ui->configCheckNormalizeLF->setStyleSheet(checkCSS);
         ui->configCheckAutoSize->setStyleSheet(checkCSS);
@@ -2691,7 +2697,8 @@ void MainWindow::updateOtherTabsTransparency()
 
         ui->configCheckClassColor->setStyleSheet("");
         ui->configCheckSpellColor->setStyleSheet("");
-        ui->configCheckOverlay->setStyleSheet("");
+        ui->configCheckScoresOverlay->setStyleSheet("");
+        ui->configCheckMechanicsOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
         ui->configCheckNormalizeLF->setStyleSheet("");
         ui->configCheckAutoSize->setStyleSheet("");
@@ -3203,10 +3210,17 @@ void MainWindow::updateShowRngList(bool checked)
 }
 
 
-void MainWindow::toggleShowDraftOverlay()
+void MainWindow::toggleShowDraftScoresOverlay()
 {
-    this->showDraftOverlay = !this->showDraftOverlay;
-    draftHandler->setShowDraftOverlay(this->showDraftOverlay);
+    this->showDraftScoresOverlay = !this->showDraftScoresOverlay;
+    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
+}
+
+
+void MainWindow::toggleShowDraftMechanicsOverlay()
+{
+    this->showDraftMechanicsOverlay = !this->showDraftMechanicsOverlay;
+    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
 }
 
 
@@ -3323,7 +3337,8 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
 
     //Draft
-    connect(ui->configCheckOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftOverlay()));
+    connect(ui->configCheckScoresOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftScoresOverlay()));
+    connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftMechanicsOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
     connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
     connect(ui->configRadioHA, SIGNAL(clicked()), this, SLOT(draftMethodHA()));
@@ -3893,18 +3908,16 @@ void MainWindow::testDelay()
 //Eliminar ultima carta echo jugada cada turno en replay
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
-//Incluir scores y lava en draft window.
 //Ofrecer premium prueba
 
 
-
-//2)Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
+//2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.
 //3)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
-//4)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin so instead of showing BY: Gilded gargoyle, AT would show a coin in enemy's hand tab.
+//4)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .
 //5)Twitch integration. Let your viewers vote which card they want during the draft and show what they want as a 3rd score under the cards.
+//Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
 //Show how much damage and healing has been made through the addons during a replay.
 //When detecting cards from a different hero in your deck, save your current deck if it has a name, and make a new deck.
-//Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.
 //In the replay tab when hovering over a card that has its atributes modified, show the card's tooltip with its current attack/life/mana.
 ////Show enemy cards revealed during a joust in a new section of enemy's deck tab to know they haven't been played yet.
 ////Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.

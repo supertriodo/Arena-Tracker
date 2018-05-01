@@ -72,7 +72,7 @@ private:
     Transparency transparency;
     DraftScoreWindow *draftScoreWindow;
     DraftMechanicsWindow * draftMechanicsWindow;
-    bool showDraftOverlay;
+    bool showDraftScoresOverlay, showDraftMechanicsOverlay;
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
     DraftMethod draftMethod;
@@ -133,7 +133,8 @@ public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
-    void setShowDraftOverlay(bool value);
+    void setShowDraftScoresOverlay(bool value);
+    void setShowDraftMechanicsOverlay(bool value);
     void setLearningMode(bool value);
     void redrawAllCards();
     void updateTamCard();
