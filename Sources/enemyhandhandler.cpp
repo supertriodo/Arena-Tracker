@@ -444,7 +444,7 @@ void EnemyHandHandler::redrawTotalAttack()
 
 void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
 {
-    int tamAtkHero = DeckCard::getCardHeight()*1.7;
+    int tamAtkHero = std::max(35,DeckCard::getCardHeight())*1.7;
 
     //Font
     QFont font(ThemeHandler::cardsFont());
