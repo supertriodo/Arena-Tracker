@@ -63,12 +63,6 @@ void CardGraphicsItem::changeCode(QString newCode)
 }
 
 
-bool CardGraphicsItem::isDiscard()
-{
-    return this->discard;
-}
-
-
 int CardGraphicsItem::getId()
 {
     return this->id;
@@ -87,9 +81,21 @@ QString CardGraphicsItem::getCreatedByCode()
 }
 
 
+bool CardGraphicsItem::isDiscard()
+{
+    return this->discard;
+}
+
+
 bool CardGraphicsItem::isPlayed()
 {
     return this->played;
+}
+
+
+bool CardGraphicsItem::isDraw()
+{
+    return this->draw;
 }
 
 

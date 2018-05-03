@@ -1638,6 +1638,27 @@ void PlanHandler::fixTurn1Card()
 }
 
 
+void PlanHandler::fixLastEchoCard()
+{
+    if(turnBoards.empty())  return;
+    Board *board = turnBoards.last();
+    QList<CardGraphicsItem *> *cardList = getHandList(board->playerTurn, board);
+
+    if(cardList->isEmpty()) return;
+    CardGraphicsItem *card = cardList->last();
+    QString code = card->getCode();
+    if(card->isDraw() && card->isPlayed() && !code.isEmpty() &&
+            (Utility::getCardAttribute(code, "mechanics").toArray().contains(QJsonValue("ECHO")) ||
+             code == UNSTABLE_EVOLUTION_TOKEN))
+    {
+        cardList->removeLast();
+        updateCardZoneSpots(board->playerTurn, board);
+        if(viewBoard == board)      ui->planGraphicsView->scene()->removeItem(card);
+        delete card;
+    }
+}
+
+
 void PlanHandler::playerCardCodeChange(int id, QString newCode)
 {
     CardGraphicsItem *card = findCard(true, id);
@@ -1663,6 +1684,7 @@ void PlanHandler::playerCardCodeChange(int id, QString newCode)
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     if(numTurn == 2)    fixTurn1Card();
+    fixLastEchoCard();
 
     //Update nowBoard
     nowBoard->playerTurn = playerTurn;

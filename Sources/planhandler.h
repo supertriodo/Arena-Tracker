@@ -139,6 +139,7 @@ private:
     void addHeroPower(bool friendly, QString code, int id);
     void updateMinionsAttack(bool friendly, Board *board=NULL);
     void fixTurn1Card();    
+    void fixLastEchoCard();
     void addTagChange(bool friendly, QString tag, QString value);
     bool getWinner();
     void cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value);

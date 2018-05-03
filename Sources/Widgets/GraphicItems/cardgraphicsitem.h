@@ -51,9 +51,10 @@ public:
     void setDiscard();
     void setDraw(bool drawn=true);
     bool isDiscard();
+    bool isPlayed();
+    bool isDraw();
     void reduceCost(int cost);
     void togglePlayed();
-    bool isPlayed();
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
     QString getCode();
