@@ -535,6 +535,15 @@ void MainWindow::downloadLightForgeJson(QJsonObject jsonObject)
 }
 
 
+void MainWindow::setPremium(bool premium)
+{
+    this->patreonVersion = premium;
+    updateTabIcons();
+    resizeChecks();//Recoloca botones -X y reajusta tabBar size
+    calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
+}
+
+
 void MainWindow::createNetworkManager()
 {
     networkManager = new QNetworkAccessManager(this);
@@ -562,6 +571,8 @@ void MainWindow::createVersionChecker()
 void MainWindow::createPremiumHandler()
 {
     premiumHandler = new PremiumHandler(this);
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            this, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             arenaHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
@@ -2805,12 +2816,13 @@ void MainWindow::updateTabIcons()
     QWidget * currentTab = ui->tabWidget->currentWidget();
 
     ui->tabWidget->hide();
+    ui->tabWidget->clear();
     if(arenaWindow == NULL)     moveTabTo(ui->tabArena, ui->tabWidget);
     if(enemyWindow == NULL)     moveTabTo(ui->tabEnemy, ui->tabWidget);
     if(deckWindow == NULL)      moveTabTo(ui->tabDeck, ui->tabWidget);
     if(enemyDeckWindow == NULL) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-    if(graveyardWindow == NULL) moveTabTo(ui->tabGraveyard, ui->tabWidget);
-    if(planWindow == NULL)      moveTabTo(ui->tabPlan, ui->tabWidget);
+    if(graveyardWindow == NULL && patreonVersion) moveTabTo(ui->tabGraveyard, ui->tabWidget);
+    if(planWindow == NULL && patreonVersion)      moveTabTo(ui->tabPlan, ui->tabWidget);
     moveTabTo(ui->tabConfig, ui->tabWidget);
     ui->tabWidget->show();
 

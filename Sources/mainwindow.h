@@ -58,6 +58,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
+    bool patreonVersion;
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     HSCardDownloader *cardDownloader;
@@ -273,6 +274,7 @@ private slots:
     void swapSizePlan(bool sizePlan);
     void calculateMinimumWidth();
     void changingTabUpdateDraftSize();
+    void setPremium(bool premium);
 };
 
 #endif // MAINWINDOW_H
