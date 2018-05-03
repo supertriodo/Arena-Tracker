@@ -538,6 +538,9 @@ void MainWindow::downloadLightForgeJson(QJsonObject jsonObject)
 void MainWindow::setPremium(bool premium)
 {
     this->patreonVersion = premium;
+
+    ui->configCheckMechanicsOverlay->setHidden(!patreonVersion);
+
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
     calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
@@ -3349,6 +3352,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
 
     //Draft
+    ui->configCheckMechanicsOverlay->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftScoresOverlay()));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftMechanicsOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
