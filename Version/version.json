@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.32","v6.33","v6.4","v6.5"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.5/Arena.Tracker.v6.5.Windows.zip",
-	"log": "Arena Tracker gets updated for Witchwood.<br><br>Added a new component to the mechanics shown over the cards during a draft: Deck Weight. It will show how heavy your deck is by combining deck mana average and cards that generate/draw other cards in a number that should represent your modified mana average.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.5'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.51/Arena.Tracker.v6.51.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.51/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.51/Arena.Tracker.v6.51.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.51/Arena.Tracker.v6.51.Windows.zip",
+	"log": "Improved the detection of cards during the draft. Added deck average score and deck weight to the draft tab. Added separate checkboxes to the config tab to show/hide mechanics and/or scores overlays during the draft. Remove locked premium elements from AT free version (mechanics overlay, replay and graveyard tab).<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.51'>github</a>"
 }
