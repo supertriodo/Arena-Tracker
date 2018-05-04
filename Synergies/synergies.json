@@ -423,7 +423,7 @@
 	"ICC_019": ["deathrattleOpponent"],
 	"ICC_025": ["deathrattle","silenceOwnSyn","battlecry","returnSyn","evolveSyn"],
 	"ICC_026": ["battlecry","tokenGen","=GenMinionHealth1","returnSyn"],
-	"ICC_027": ["toYourHandGen","deathrattle"],
+	"ICC_027": ["toYourHandGen2","deathrattle"],
 	"ICC_028": ["battlecry","healthBuffGen","returnSyn"],
 	"ICC_031": ["enrageGen"],
 	"ICC_034": ["deathrattleOpponent"],
