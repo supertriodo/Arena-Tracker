@@ -49,7 +49,7 @@ void HearthArenaMentor::replyFinished(QNetworkReply *reply)
 
     if (reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug("No internet access to Hearth Arena.", Error);
+        emit pDebug("No internet access to Hearth Arena.", DebugLevel::Error);
         emit pLog(tr("Web: No internet access to Hearth Arena."));
         return;
     }

@@ -148,7 +148,10 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     arenatracker.qrc
 
-linux: LIBS += -L/home/triodo/Documentos/ArenaTracker/Libs
+linux{
+    LIBS += -L/home/triodo/Documentos/ArenaTracker/Libs
+    QMAKE_LFLAGS += -no-pie
+}
 win32: RC_ICONS = ArenaTracker.ico
 macx{
     ICON = ArenaTracker.icns

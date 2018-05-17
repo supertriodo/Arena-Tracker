@@ -466,7 +466,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
     {
-        emit pDebug("Begin draft of unknown hero: " + hero, Error);
+        emit pDebug("Begin draft of unknown hero: " + hero, DebugLevel::Error);
         emit pLog(tr("Draft: ERROR: Started draft of unknown hero ") + hero);
         return;
     }

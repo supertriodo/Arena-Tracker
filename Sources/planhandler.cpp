@@ -581,7 +581,7 @@ void PlanHandler::updateMinionPos(bool friendly, int id, int pos)
         else if(pos >= minionsList->count() || pos < 0)
         {
             emit pDebug((friendly?QString("Player"):QString("Enemy")) + ": POSITION(" + QString::number(id) + ")=" +QString::number(pos) +
-                        ". Minion ouside list bounds. Count: " + QString::number(minionsList->count()), Error);
+                        ". Minion ouside list bounds. Count: " + QString::number(minionsList->count()), DebugLevel::Error);
         }
         else
         {
@@ -1972,7 +1972,7 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
             int pos = findCardPos(handList, card->getId());
             if(pos == -1)
             {
-                emit pDebug("ERROR: Clicked card not found in just created futureBoard.", Error);
+                emit pDebug("ERROR: Clicked card not found in just created futureBoard.", DebugLevel::Error);
                 return;
             }
 
@@ -2049,7 +2049,7 @@ void PlanHandler::minionPress(MinionGraphicsItem* minion, Qt::MouseButton mouseB
             int pos = findMinionPos(minionList, minion->getId());
             if(pos == -1)
             {
-                emit pDebug("ERROR: Clicked minion not found in just created futureBoard.", Error);
+                emit pDebug("ERROR: Clicked minion not found in just created futureBoard.", DebugLevel::Error);
                 return;
             }
 

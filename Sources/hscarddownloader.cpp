@@ -117,26 +117,26 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         QString fullUrl = reply->url().toString();
         if(fullUrl.startsWith(AT_CARDS_URL))
         {
-            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying HearthHead.", Error);
+            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying HearthHead.", DebugLevel::Error);
             emit pLog(tr("Web: Failed to download card image(GitHub). Trying HearthHead."));
             downloadWebImage(code, isHero, false, true);
         }
         else if(isHero)
         {
-            emit pDebug("Failed to download hero card image(HearthHead): " + code, Error);
+            emit pDebug("Failed to download hero card image(HearthHead): " + code, DebugLevel::Error);
             emit pLog(tr("Web: Failed to download hero card image(HearthHead)."));
             if(!reuseOldHero(code)) downloadWebImage(code, isHero, false, true);
         }
         else
         {
-            emit pDebug("Failed to download card image(HearthHead): " + code + " - Trying again.", Error);
+            emit pDebug("Failed to download card image(HearthHead): " + code + " - Trying again.", DebugLevel::Error);
             emit pLog(tr("Web: Failed to download card image(HearthHead). Trying again."));
             downloadWebImage(code, isHero, false, true);
         }
     }
     else if(data.isEmpty())
     {
-        emit pDebug("Downloaded empty card image: " + code, Error);
+        emit pDebug("Downloaded empty card image: " + code, DebugLevel::Error);
         emit pLog(tr("Web: Downloaded empty card image."));
         emit missingOnWeb(code);
     }
@@ -148,7 +148,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
-            emit pDebug("Failed to save card image to disk: " + code, Error);
+            emit pDebug("Failed to save card image to disk: " + code, DebugLevel::Error);
             emit pLog(tr("File: ERROR:Saving card image to disk."));
         }
         else

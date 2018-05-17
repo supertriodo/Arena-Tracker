@@ -102,7 +102,7 @@ void LogWorker::readLog()
     QFile logFile(logPath);
     if(!logFile.open(QIODevice::ReadOnly))
     {
-        emit pDebug("Cannot open log " + this->logComponentString, Error);
+        emit pDebug("Cannot open log " + this->logComponentString, DebugLevel::Error);
         return;
     }
 
@@ -159,7 +159,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
     QFile logFile(logPath);
     if(!logFile.open(QIODevice::ReadOnly))
     {
-        emit pDebug("Cannot open log...", Error);
+        emit pDebug("Cannot open log...", DebugLevel::Error);
         emit pLog(tr("Log: ERROR:Cannot open log..."));
         return;
     }
@@ -167,7 +167,7 @@ void LogWorker::doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString f
     QFile logGame(Utility::gameslogPath() + "/" + fileName);
     if(!logGame.open(QIODevice::WriteOnly))
     {
-        emit pDebug("Cannot create game log file...", Error);
+        emit pDebug("Cannot create game log file...", DebugLevel::Error);
         emit pLog(tr("Log: ERROR:Cannot create game log file..."));
         return;
     }

@@ -1318,7 +1318,7 @@ void DeckHandler::loadDecks()
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to load Arena Tracker decks json from disk.", Error);
+        emit pDebug("Failed to load Arena Tracker decks json from disk.", DebugLevel::Error);
         emit pLog(tr("File: ERROR: Loading Arena Tracker decks json from disk."));
         return;
     }
@@ -1346,7 +1346,7 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
 {
     if(!decksJson.contains(deckName))
     {
-        emit pDebug("Deck " + deckName + " not found. Adding to loadDeckTreeWidget.", Error);
+        emit pDebug("Deck " + deckName + " not found. Adding to loadDeckTreeWidget.", DebugLevel::Error);
         return;
     }
 
@@ -1389,7 +1389,7 @@ void DeckHandler::loadDeck(QString deckName)
 
     if(!decksJson.contains(deckName))
     {
-        emit pDebug("Deck " + deckName + " not found. Trying to load.", Error);
+        emit pDebug("Deck " + deckName + " not found. Trying to load.", DebugLevel::Error);
         return;
     }
 
@@ -1495,7 +1495,7 @@ void DeckHandler::saveDecksJsonFile()
 
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to create Arena Tracker decks json on disk.", Error);
+        emit pDebug("Failed to create Arena Tracker decks json on disk.", DebugLevel::Error);
         emit pLog(tr("File: ERROR: Creating Arena Tracker decks json on disk."));
         return;
     }
@@ -1757,7 +1757,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
     QFile logFile(Utility::gameslogPath() + "/" + draftLog);
     if(!logFile.open(QIODevice::ReadOnly))
     {
-        emit pDebug("Cannot open draft log " + Utility::gameslogPath() + "/" + draftLog, Error);
+        emit pDebug("Cannot open draft log " + Utility::gameslogPath() + "/" + draftLog, DebugLevel::Error);
         return;
     }
 

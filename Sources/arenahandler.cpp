@@ -273,7 +273,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     }
     else
     {
-        emit pDebug("Failed replay " + logFileName + " rename to " + newLogFileName, Error);
+        emit pDebug("Failed replay " + logFileName + " rename to " + newLogFileName, DebugLevel::Error);
     }
 
     lastReplayUploaded = NULL;

@@ -226,7 +226,7 @@ bool LogLoader::checkLogConfig()
     QFile file(logConfig);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        emit pDebug("Cannot access log.config", Error);
+        emit pDebug("Cannot access log.config", DebugLevel::Error);
         emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
@@ -377,7 +377,7 @@ void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 nu
     }
     else
     {
-        emit pDebug("Log timestamp invalid: " + line, Error);
+        emit pDebug("Log timestamp invalid: " + line, DebugLevel::Error);
         emit newLogLineRead(logComponent, line, numLine, logSeek);
     }
 }

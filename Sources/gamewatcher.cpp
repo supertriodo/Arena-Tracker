@@ -403,7 +403,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
             name2 = playerName;
             emit pDebug("Found player 2: " + name2, numLine);
         }
-        else    emit pDebug("Read invalid PlayerID value: " + player, numLine, Error);
+        else    emit pDebug("Read invalid PlayerID value: " + player, numLine, DebugLevel::Error);
 
         //No se usa. El playerID se calcula (junto al playerTag) al cargar el retrato del heroe en processZone.
         if(playerTag.isEmpty() && playerID == player.toInt())
@@ -499,7 +499,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         if(tag == "ATK" || tag == "HEALTH")
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
-            if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", Error);
+            if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", DebugLevel::Error);
             else if(lastShowEntity.isPlayer)    emit playerBoardTagChange(lastShowEntity.id, "", tag, value);
             else                                emit enemyBoardTagChange(lastShowEntity.id, "", tag, value);
         }
@@ -1418,7 +1418,7 @@ void GameWatcher::createGameResult(QString logFileName)
     }
     else
     {
-        emit pDebug("CreateGameResult: PlayerID wasn't defined in the game.", 0, Error);
+        emit pDebug("CreateGameResult: PlayerID wasn't defined in the game.", 0, DebugLevel::Error);
         return;
     }
 

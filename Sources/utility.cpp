@@ -8,6 +8,7 @@
 #include "opencv2/nonfree/features2d.hpp"
 
 using namespace libzippp;
+using namespace std;
 
 
 QMap<QString, QJsonObject> * Utility::cardsJson = NULL;

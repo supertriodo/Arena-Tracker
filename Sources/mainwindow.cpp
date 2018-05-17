@@ -1969,7 +1969,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             QFile logDraft(Utility::gameslogPath() + "/" + fileName);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                pDebug("Cannot create draft log file...", Error);
+                pDebug("Cannot create draft log file...", DebugLevel::Error);
                 pLog(tr("Log: ERROR:Cannot create draft log file..."));
                 return;
             }
@@ -2008,7 +2008,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             QFile logDraft(Utility::gameslogPath() + "/" + draftLogFile);
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
             {
-                pDebug("Cannot open draft log file...", Error);
+                pDebug("Cannot open draft log file...", DebugLevel::Error);
                 pLog(tr("Log: ERROR:Cannot open draft log file..."));
                 return;
             }
@@ -2151,7 +2151,7 @@ void MainWindow::createLogFile()
     if(atLogFile->exists())  atLogFile->remove();
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        pDebug("Failed to create Arena Tracker log on disk.", Error);
+        pDebug("Failed to create Arena Tracker log on disk.", DebugLevel::Error);
         pLog(tr("File: ERROR: Failed to create Arena Tracker log on disk."));
         atLogFile = NULL;
     }
@@ -2374,7 +2374,7 @@ void MainWindow::createLinuxShortcut()
     if(shortcutFile.exists())   shortcutFile.remove();
     if(!shortcutFile.open(QIODevice::WriteOnly))
     {
-        emit pDebug("ERROR: Cannot create Arena Tracker.desktop", Error);
+        emit pDebug("ERROR: Cannot create Arena Tracker.desktop", DebugLevel::Error);
         emit pLog(tr("Log: ERROR:Arena Tracker.desktop"));
         return;
     }
