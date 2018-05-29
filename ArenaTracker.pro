@@ -150,7 +150,6 @@ RESOURCES += \
 
 linux{
     LIBS += -L/home/triodo/Documentos/ArenaTracker/Libs
-    #QMAKE_CXXFLAGS += -D_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
     QMAKE_LFLAGS += -no-pie
 }
 win32: RC_ICONS = ArenaTracker.ico
