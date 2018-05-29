@@ -5,6 +5,7 @@
 #include "gamewatcher.h"
 #include "LibXls/xls.h"
 #include "Widgets/ui_extended.h"
+#include <QDateTime>
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
