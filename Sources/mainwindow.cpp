@@ -1611,7 +1611,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 planWindow->move(1920, 0);
 
                 if(this->deckWindow == NULL)    createDetachWindow(ui->tabDeck);
-                deckWindow->resize(QSize(deckWindow->width(), 1053));
+                deckWindow->resize(QSize(deckWindow->width(), 1030));
                 deckWindow->move(0, 0);
 
                 this->resize(QSize(270, 540));
