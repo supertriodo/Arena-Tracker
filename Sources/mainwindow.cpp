@@ -3862,7 +3862,7 @@ void MainWindow::testDelay()
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-04-15T00:00:01Z"
-//Update Json HA tierlist --> HATLsed.sh --- 4/12/18: Witchwood release #2
+//Update Json HA tierlist --> HATLsed.sh --- 5/24/18: Balance patch, meta adjustments and small fixes
 //Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff

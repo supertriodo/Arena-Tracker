@@ -180,6 +180,12 @@ void GameWatcher::processAsset(QString &line, qint64 numLine)
 }
 
 
+//Usar ticket arena/Comprar arena
+//D 11:27:13.1732560 DraftManager.OnBegin - Got new draft deck with ID: 507495951
+//D 11:27:13.1736650 SetDraftMode - DRAFTING
+//Volver arena eleccion heroes ya comprada
+//D 11:27:47.0196860 DraftManager.OnChoicesAndContents - Draft Deck ID: 507495951, Hero Card =
+//D 11:27:47.0197460 SetDraftMode - DRAFTING
 void GameWatcher::processArena(QString &line, qint64 numLine)
 {
     //NEW ARENA
