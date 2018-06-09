@@ -29,6 +29,7 @@
 #define DEFAULT_THEME "Classic"
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
+#define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
@@ -180,6 +181,8 @@ private:
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
     void updateTabIcons();
+    void downloadHSRHeroesWinrate();
+    void processHSRHeroesWinrate(QJsonObject jsonObject);
 
 //Override events
 protected:

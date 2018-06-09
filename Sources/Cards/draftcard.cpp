@@ -25,7 +25,7 @@ void DraftCard::setBestQualityMatch(double matchScore, bool force)
 }
 
 
-double DraftCard::getSumQualityMatches()
+double DraftCard::getBestQualityMatches()
 {
     return this->bestQualityMatches;
 }

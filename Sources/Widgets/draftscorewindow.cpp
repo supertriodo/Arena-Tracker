@@ -30,13 +30,13 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget, LightForge, normalizedLF);
+        scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, normalizedLF);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
-        scoresPushButton2[i] = new ScoreButton(centralWidget, HearthArena, false);
+        scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena, false);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
@@ -263,23 +263,6 @@ QString DraftScoreWindow::getMechanicTooltip(QString iconName)
     else if(iconName == ThemeHandler::destroyMechanicFile())    return "Hard\nRemoval";
     else if(iconName == ThemeHandler::reachMechanicFile())      return "Reach";
     else    return "";
-}
-
-
-int DraftScoreWindow::getCard(QString &name, QString &code)
-{
-    //Mechwarper (2x)
-    QRegularExpressionMatch match;
-    if(name.contains(QRegularExpression("^(.*[^ ]) +\\((\\d+)x\\)$"), &match))
-    {
-        code = Utility::cardEnCodeFromName(match.captured(1));
-        return match.captured(2).toInt();
-    }
-    else
-    {
-        code = Utility::cardEnCodeFromName(name);
-        return 1;
-    }
 }
 
 

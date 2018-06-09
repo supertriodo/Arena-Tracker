@@ -21,7 +21,7 @@ private:
 //Metodos
 public:
     void draw(QLabel *label);
-    double getSumQualityMatches();
+    double getBestQualityMatches();
     void setBestQualityMatch(double matchScore, bool force);
     void draw(QComboBox *comboBox);
 };

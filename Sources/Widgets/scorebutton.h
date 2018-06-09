@@ -11,14 +11,14 @@ class ScoreButton : public QLabel
 
 //Constructor
 public:
-    ScoreButton(QWidget * parent, DraftMethod draftMethod, bool normalizedLF);
+    ScoreButton(QWidget * parent, ScoreSource scoreSource, bool normalizedLF);
 
 //Variables
 private:
     double score;
     bool learningMode, learningShow;
     bool isBestScore;
-    DraftMethod draftMethod;
+    ScoreSource scoreSource;
     bool normalizedLF;
 
 //Metodos

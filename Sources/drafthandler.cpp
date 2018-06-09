@@ -10,9 +10,11 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->numCaptured = 0;
     this->extendedCapture = false;
     this->drafting = false;
+    this->heroDrafting = false;
     this->capturing = false;
     this->leavingArena = false;
     this->transparency = Opaque;
+    this->draftHeroWindow = NULL;
     this->draftScoreWindow = NULL;
     this->draftMechanicsWindow = NULL;
     this->synergyHandler = NULL;
@@ -28,6 +30,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
     createScoreItems();
     createSynergyHandler();
+    buildHeroCodesList();
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
@@ -35,6 +38,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
 DraftHandler::~DraftHandler()
 {
+    deleteDraftHeroWindow();
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
     if(synergyHandler != NULL)  delete synergyHandler;
@@ -51,14 +55,14 @@ void DraftHandler::createScoreItems()
     lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
-    scoreButtonLF = new ScoreButton(ui->tabDraft, LightForge, false);
+    scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge, false);
     scoreButtonLF->setFixedHeight(width);
     scoreButtonLF->setFixedWidth(width);
     scoreButtonLF->setScore(0, true);
     scoreButtonLF->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
-    scoreButtonHA = new ScoreButton(ui->tabDraft, HearthArena, false);
+    scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena, false);
     scoreButtonHA->setFixedHeight(width);
     scoreButtonHA->setFixedWidth(width);
     scoreButtonHA->setScore(0, true);
@@ -176,6 +180,12 @@ QStringList DraftHandler::getAllArenaCodes()
     }
 
     return codeList;
+}
+
+
+QStringList DraftHandler::getAllHeroCodes()
+{
+    return heroCodesList;
 }
 
 
@@ -307,16 +317,26 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
 }
 
 
-void DraftHandler::initCodesAndHistMaps(QString &hero)
+void DraftHandler::initCodesAndHistMaps(QString hero)
 {
     cardsDownloading.clear();
     cardsHist.clear();
 
-    startFindScreenRects();
-    const QString heroString = Utility::heroString2FromLogNumber(hero);
-    this->lightForgeTiers = initLightForgeTiers(heroString, MULTICLASS_ARENA);
-    initHearthArenaTiers(heroString, MULTICLASS_ARENA);
-    synergyHandler->initSynergyCodes();
+    if(drafting)
+    {
+        startFindScreenRects();
+
+        const QString heroString = Utility::heroString2FromLogNumber(hero);
+        this->lightForgeTiers = initLightForgeTiers(heroString, MULTICLASS_ARENA);
+        initHearthArenaTiers(heroString, MULTICLASS_ARENA);
+        synergyHandler->initSynergyCodes();
+    }
+    else //if(heroDrafting)
+    {
+        QTimer::singleShot(1000, this, SLOT(startFindScreenRects()));
+
+        for(const QString &code: heroCodesList)     addCardHist(code, false);
+    }
 
     //Wait for cards
     if(cardsDownloading.isEmpty())
@@ -453,15 +473,15 @@ void DraftHandler::leaveArena()
         if(draftScoreWindow != NULL)        draftScoreWindow->hide();
         if(draftMechanicsWindow != NULL)    draftMechanicsWindow->hide();
     }
-    else
-    {
-        deleteDraftMechanicsWindow();
-    }
+    else if(heroDrafting)   endHeroDraft();
+    else    deleteDraftMechanicsWindow();
 }
 
 
 void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 {
+    if(heroDrafting)   endHeroDraft();
+
     bool alreadyDrafting = drafting;
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>9)
@@ -588,6 +608,18 @@ void DraftHandler::endDraftDeleteMechanicsWindow()
 }
 
 
+void DraftHandler::deleteDraftHeroWindow()
+{
+    if(draftHeroWindow != NULL)
+    {
+        draftHeroWindow->close();
+        delete draftHeroWindow;
+        draftHeroWindow = NULL;
+        emit overlayCardLeave();
+    }
+}
+
+
 void DraftHandler::deleteDraftScoreWindow()
 {
     if(draftScoreWindow != NULL)
@@ -614,9 +646,8 @@ void DraftHandler::deleteDraftMechanicsWindow()
 
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
-    if(!capturing && drafting &&
-        screenFound() && cardsDownloading.isEmpty() &&
-        !lightForgeTiers.empty() && !hearthArenaTiers.empty())
+    if(!capturing && screenFound() && cardsDownloading.isEmpty() &&
+        ((drafting && !lightForgeTiers.empty() && !hearthArenaTiers.empty()) || heroDrafting))
     {
         capturing = true;
 
@@ -631,9 +662,9 @@ void DraftHandler::captureDraft()
 {
     justPickedCard = "";
 
-    if(leavingArena || !drafting ||
-        !screenFound() || !cardsDownloading.isEmpty() ||
-        lightForgeTiers.empty() || hearthArenaTiers.empty())
+    bool missingTierLists = drafting && (lightForgeTiers.empty() || hearthArenaTiers.empty());
+    if((!drafting && !heroDrafting) || missingTierLists ||
+        leavingArena || !screenFound() || !cardsDownloading.isEmpty())
     {
         leavingArena = false;
         capturing = false;
@@ -653,9 +684,16 @@ void DraftHandler::captureDraft()
         capturing = false;
         buildBestMatchesMaps();
 
-        DraftCard bestCards[3];
-        getBestCards(bestCards);
-        showNewCards(bestCards);
+        if(drafting)
+        {
+            DraftCard bestCards[3];
+            getBestCards(bestCards);
+            showNewCards(bestCards);
+        }
+        else// if(heroDrafting)
+        {
+            showNewHeroes();
+        }
     }
     else
     {
@@ -685,7 +723,7 @@ double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
     double minMatch = 1;
     for(DraftCard card: draftCardMaps.values())
     {
-        double match = card.getSumQualityMatches();
+        double match = card.getBestQualityMatches();
         if(match < minMatch)    minMatch = match;
     }
     return minMatch;
@@ -694,25 +732,39 @@ double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
 
 void DraftHandler::buildBestMatchesMaps()
 {
-    for(int i=0; i<3; i++)
+    if(drafting)
     {
-        QMap<double, QString> bestMatchesDups;
-        for(QString code: draftCardMaps[i].keys())
+        for(int i=0; i<3; i++)
         {
-            double match = draftCardMaps[i][code].getSumQualityMatches();
-            bestMatchesDups.insertMulti(match, code);
-        }
-
-        comboBoxCard[i]->clear();
-        QStringList insertedCodes;
-        for(const QString &code: bestMatchesDups.values())
-        {
-            if(!insertedCodes.contains(degoldCode(code)))
+            QMap<double, QString> bestMatchesDups;
+            for(QString code: draftCardMaps[i].keys())
             {
-                double match = draftCardMaps[i][code].getSumQualityMatches();
+                double match = draftCardMaps[i][code].getBestQualityMatches();
+                bestMatchesDups.insertMulti(match, code);
+            }
+
+            comboBoxCard[i]->clear();
+            QStringList insertedCodes;
+            for(const QString &code: bestMatchesDups.values())
+            {
+                if(!insertedCodes.contains(degoldCode(code)))
+                {
+                    double match = draftCardMaps[i][code].getBestQualityMatches();
+                    bestMatchesMaps[i].insertMulti(match, code);
+                    draftCardMaps[i][code].draw(comboBoxCard[i]);
+                    insertedCodes.append(degoldCode(code));
+                }
+            }
+        }
+    }
+    else// if(heroDrafting)
+    {
+        for(int i=0; i<3; i++)
+        {
+            for(QString code: draftCardMaps[i].keys())
+            {
+                double match = draftCardMaps[i][code].getBestQualityMatches();
                 bestMatchesMaps[i].insertMulti(match, code);
-                draftCardMaps[i][code].draw(comboBoxCard[i]);
-                insertedCodes.append(degoldCode(code));
             }
         }
     }
@@ -1166,19 +1218,19 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
     }
 
 
-#ifdef QT_DEBUG
-    for(int i=0; i<3; i++)
-    {
-        qDebug()<<endl;
-        for(QString code: draftCardMaps[i].keys())
-        {
-            DraftCard card = draftCardMaps[i][code];
-            qDebug()<<"["<<i<<"]"<<code<<card.getName()<<" -- "<<
-                      ((int)(card.getSumQualityMatches()*1000))/1000.0;
-        }
-    }
-    qDebug()<<"Captured: "<<numCaptured<<endl;
-#endif
+//#ifdef QT_DEBUG
+//    for(int i=0; i<3; i++)
+//    {
+//        qDebug()<<endl;
+//        for(QString code: draftCardMaps[i].keys())
+//        {
+//            DraftCard card = draftCardMaps[i][code];
+//            qDebug()<<"["<<i<<"]"<<code<<card.getName()<<" -- "<<
+//                      ((int)(card.getBestQualityMatches()*1000))/1000.0;
+//        }
+//    }
+//    qDebug()<<"Captured: "<<numCaptured<<endl;
+//#endif
 }
 
 
@@ -1186,8 +1238,15 @@ cv::MatND DraftHandler::getHist(const QString &code)
 {
     cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
     cv::Mat srcBase;
-    if(code.endsWith("_premium"))   srcBase = fullCard(cv::Rect(57,71,80,80));
-    else                            srcBase = fullCard(cv::Rect(60,71,80,80));
+    if(drafting)
+    {
+        if(code.endsWith("_premium"))   srcBase = fullCard(cv::Rect(57,71,80,80));
+        else                            srcBase = fullCard(cv::Rect(60,71,80,80));
+    }
+    else //if(heroDrafting)
+    {
+        srcBase = fullCard(cv::Rect(49,131,104,104));
+    }
     return getHist(srcBase);
 }
 
@@ -1229,7 +1288,8 @@ bool DraftHandler::screenFound()
 
 void DraftHandler::startFindScreenRects()
 {
-    if(!futureFindScreenRects.isRunning() && drafting)  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    if(!futureFindScreenRects.isRunning() &&
+            (drafting || heroDrafting))  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
 }
 
 
@@ -1264,9 +1324,18 @@ ScreenDetection DraftHandler::findScreenRects()
     ScreenDetection screenDetection;
 
     std::vector<Point2f> templatePoints(6);
-    templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
-    templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
-    templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+    if(drafting)
+    {
+        templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
+        templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
+        templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+    }
+    else// if(heroDrafting)
+    {
+        templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
+        templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
+        templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
+    }
 
 
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -1275,7 +1344,7 @@ ScreenDetection DraftHandler::findScreenRects()
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen("arenaTemplate.png", screen,
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(drafting?"arenaTemplate.png":"heroesTemplate.png", screen,
                                                                           templatePoints, screenDetection.screenScale);
         if(screenPoints.empty())    continue;
 
@@ -1291,6 +1360,50 @@ ScreenDetection DraftHandler::findScreenRects()
 
     screenDetection.screenIndex = -1;
     return screenDetection;
+}
+
+
+void DraftHandler::beginHeroDraft()
+{
+    emit pDebug("Begin hero draft.");
+
+    clearLists(false);
+    this->heroDrafting = true;
+    this->leavingArena = false;
+
+    initCodesAndHistMaps();
+}
+
+
+void DraftHandler::endHeroDraft()
+{
+    if(!heroDrafting)    return;
+
+    emit pDebug("End hero draft.");
+
+    clearLists(false);
+
+    this->heroDrafting = false;
+    deleteDraftHeroWindow();
+}
+
+
+void DraftHandler::showNewHeroes()
+{
+    float scores[3];
+    for(int i=0; i<3; i++)
+    {
+        double match = bestMatchesMaps[i].firstKey();
+        QString code = bestMatchesMaps[i].first();
+        QString name = draftCardMaps[i][code].getName();
+        QString cardInfo = code + " " + name + " " +
+                QString::number(((int)(match*1000))/1000.0);
+        emit pDebug("Choose: " + cardInfo);
+
+        QString HSRkey = Utility::getCardAttribute(code, "cardClass").toString();
+        scores[i] = heroWinratesMap[HSRkey];
+    }
+    if(draftHeroWindow != NULL)     draftHeroWindow->setScores(scores[0], scores[1], scores[2]);
 }
 
 
@@ -1319,6 +1432,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 
 void DraftHandler::createDraftWindows(const QPointF &screenScale)
 {
+    deleteDraftHeroWindow();
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
     QPoint topLeft(screenRects[0].x * screenScale.x(), screenRects[0].y * screenScale.y());
@@ -1327,24 +1441,31 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     QRect draftRect(topLeft, bottomRight);
     QSize sizeCard(screenRects[0].width * screenScale.x(), screenRects[0].height * screenScale.y());
 
-    draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, this->normalizedLF);
-    draftScoreWindow->setLearningMode(this->learningMode);
-    draftScoreWindow->setDraftMethod(this->draftMethod);
+    if(drafting)
+    {
+        draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, this->normalizedLF);
+        draftScoreWindow->setLearningMode(this->learningMode);
+        draftScoreWindow->setDraftMethod(this->draftMethod);
 
-    connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
-            this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
-    connect(draftScoreWindow, SIGNAL(cardLeave()),
-            this, SIGNAL(overlayCardLeave()));
+        connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
+                this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
+        connect(draftScoreWindow, SIGNAL(cardLeave()),
+                this, SIGNAL(overlayCardLeave()));
 
-    draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
-                                                    patreonVersion, this->draftMethod, this->normalizedLF);
-    initDraftMechanicsWindowCounters();
-    connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
-            this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
-    connect(draftMechanicsWindow, SIGNAL(itemLeave()),
-            this, SIGNAL(itemLeave()));
-    connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),
-            this, SIGNAL(showPremiumDialog()));
+        draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
+                                                        patreonVersion, this->draftMethod, this->normalizedLF);
+        initDraftMechanicsWindowCounters();
+        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
+                this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
+        connect(draftMechanicsWindow, SIGNAL(itemLeave()),
+                this, SIGNAL(itemLeave()));
+        connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),
+                this, SIGNAL(showPremiumDialog()));
+    }
+    else// if(heroDrafting)
+    {
+        draftHeroWindow = new DraftHeroWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+    }
 
     showOverlay();
 }
@@ -1464,6 +1585,10 @@ void DraftHandler::setShowDraftMechanicsOverlay(bool value)
 
 void DraftHandler::showOverlay()
 {
+    if(this->draftHeroWindow != NULL)
+    {
+        this->draftHeroWindow->show();
+    }
     if(this->draftScoreWindow != NULL)
     {
         if(showDraftScoresOverlay)  this->draftScoreWindow->show();
@@ -1670,6 +1795,7 @@ void DraftHandler::setNormalizedLF(bool value)
 
 void DraftHandler::minimizeScoreWindow()
 {
+    if(this->draftHeroWindow != NULL)       draftHeroWindow->showMinimized();
     if(this->draftScoreWindow != NULL)      draftScoreWindow->showMinimized();
     if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->showMinimized();
 }
@@ -1677,6 +1803,7 @@ void DraftHandler::minimizeScoreWindow()
 
 void DraftHandler::deMinimizeScoreWindow()
 {
+    if(this->draftHeroWindow != NULL)       draftHeroWindow->setWindowState(Qt::WindowActive);
     if(this->draftScoreWindow != NULL)      draftScoreWindow->setWindowState(Qt::WindowActive);
     if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setWindowState(Qt::WindowActive);
 }
@@ -1703,6 +1830,37 @@ void DraftHandler::testSynergies()
 void DraftHandler::initSynergyCodes()
 {
     synergyHandler->initSynergyCodes();
+}
+
+
+void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
+{
+    this->heroWinratesMap = heroWinratesMap;
+}
+
+
+void DraftHandler::buildHeroCodesList()
+{
+    heroCodesList.append("HERO_01");
+    heroCodesList.append("HERO_01a");
+    heroCodesList.append("HERO_02");
+    heroCodesList.append("HERO_02a");
+    heroCodesList.append("HERO_03");
+    heroCodesList.append("HERO_03a");
+    heroCodesList.append("HERO_04");
+    heroCodesList.append("HERO_04a");
+    heroCodesList.append("HERO_04b");
+    heroCodesList.append("HERO_05");
+    heroCodesList.append("HERO_05a");
+    heroCodesList.append("HERO_06");
+    heroCodesList.append("HERO_06a");
+    heroCodesList.append("HERO_07");
+    heroCodesList.append("HERO_07a");
+    heroCodesList.append("HERO_08");
+    heroCodesList.append("HERO_08a");
+    heroCodesList.append("HERO_08b");
+    heroCodesList.append("HERO_09");
+    heroCodesList.append("HERO_09a");
 }
 
 

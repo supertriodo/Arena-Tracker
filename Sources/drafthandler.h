@@ -5,6 +5,7 @@
 #include "deckhandler.h"
 #include "Cards/draftcard.h"
 #include "utility.h"
+#include "Widgets/draftherowindow.h"
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/draftmechanicswindow.h"
 #include "synergyhandler.h"
@@ -67,9 +68,10 @@ private:
     cv::Rect screenRects[3];
     int screenIndex;
     int numCaptured;
-    bool drafting, capturing, leavingArena;
+    bool drafting, heroDrafting, capturing, leavingArena;
     bool mouseInApp;
     Transparency transparency;
+    DraftHeroWindow *draftHeroWindow;
     DraftScoreWindow *draftScoreWindow;
     DraftMechanicsWindow * draftMechanicsWindow;
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
@@ -84,6 +86,8 @@ private:
     double shownTierScoresLF[3];
     bool extendedCapture;
     bool normalizedLF;
+    QStringList heroCodesList;
+    QMap<QString, float> heroWinratesMap;
 
 
 //Metodos
@@ -91,7 +95,7 @@ private:
     void completeUI();
     cv::MatND getHist(const QString &code);
     cv::MatND getHist(cv::Mat &srcBase);
-    void initCodesAndHistMaps(QString &hero);
+    void initCodesAndHistMaps(QString hero="");
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
@@ -101,6 +105,7 @@ private:
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
     void highlightScore(QLabel *label, DraftMethod draftMethod);
+    void deleteDraftHeroWindow();
     void deleteDraftScoreWindow();
     void deleteDraftMechanicsWindow();
     void showOverlay();
@@ -128,6 +133,9 @@ private:
     void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards);
     void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA);
     void updateAvgScoresVisibility();
+    void endHeroDraft();
+    void showNewHeroes();
+    void buildHeroCodesList();
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
@@ -144,10 +152,12 @@ public:
     bool isDrafting();
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
+    QStringList getAllHeroCodes();
     void debugSynergiesSet(const QString &set);
     void debugSynergiesCode(const QString &code);
     void testSynergies();
     void initSynergyCodes();
+    void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
 
 signals:
     void checkCardImage(QString code);
@@ -171,6 +181,7 @@ signals:
 
 public slots:
     void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
+    void beginHeroDraft();
     void endDraft();
     void endDraftDeleteMechanicsWindow();
     void showNewRatings(double rating1, double rating2, double rating3,

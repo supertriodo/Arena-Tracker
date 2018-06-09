@@ -188,7 +188,7 @@ void GameWatcher::processAsset(QString &line, qint64 numLine)
 //D 11:27:47.0197460 SetDraftMode - DRAFTING
 void GameWatcher::processArena(QString &line, qint64 numLine)
 {
-    //NEW ARENA
+    //NEW ARENA - START DRAFT
     //[Arena] DraftManager.OnChosen(): hero=HERO_02 premium=STANDARD
     if(line.contains(QRegularExpression("DraftManager\\.OnChosen\\(\\): hero=HERO_(\\d+)"), match))
     {
@@ -196,14 +196,6 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         emit pDebug("New arena. Heroe: " + hero, numLine);
         emit pLog(tr("Log: New arena."));
         emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (arenaState = deckRead)
-    }
-    //END READING DECK
-    //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
-    else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
-    {
-        emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
-        emit activeDraftDeck(); //End draft
-        endReadingDeck();
     }
     //DRAFTING PICK CARD
     //[Arena] Client chooses: Profesora violeta (NEW1_026)
@@ -224,6 +216,14 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
         startReadingDeck();
     }
+    //END READING DECK
+    //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
+    else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
+    {
+        emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
+        emit activeDraftDeck(); //End draft
+        endReadingDeck();
+    }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
     else if((arenaState == readingDeck) && line.contains(QRegularExpression(
@@ -233,13 +233,22 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         emit pDebug("Reading deck: " + code, numLine);
         emit newDeckCard(code);
     }
+    //COMPRAR ARENA -- VUELTA A SELECCION HEROE
+    else if(line.contains(QRegularExpression(
+                "DraftManager\\.OnBegin - Got new draft deck with ID: \\d+"), match) ||
+            line.contains(QRegularExpression(
+                            "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card ="), match))
+    {
+        emit pDebug("New arena: choosing heroe.", numLine);
+        emit arenaChoosingHeroe();
+    }
     //IN REWARDS
     //[Arena] SetDraftMode - IN_REWARDS
-    else if(line.contains("SetDraftMode - IN_REWARDS"))
-    {
-        emit pDebug("Found IN_REWARDS.", numLine);
-        emit inRewards();   //Show rewards input
-    }
+//    else if(line.contains("SetDraftMode - IN_REWARDS"))
+//    {
+//        emit pDebug("Found IN_REWARDS.", numLine);
+//        emit inRewards();   //Show rewards input
+//    }
 }
 
 

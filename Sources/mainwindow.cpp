@@ -345,6 +345,11 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 createCardsJsonMap(jsonData);
             }
         }
+        //HSR Heroes Winrate
+        else if(fullUrl == HSR_HEROES_WINRATE)
+        {
+            processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
+        }
         //Light Forge version
         else if(endUrl == "lfVersion.json")
         {
@@ -486,6 +491,35 @@ void MainWindow::initCardsJson()
         cardsJsonFile.close();
         createCardsJsonMap(jsonData);
     }
+}
+
+
+void MainWindow::downloadHSRHeroesWinrate()
+{
+    networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
+}
+
+
+void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
+{
+    if(draftHandler == NULL)    return;
+
+    QMap<QString, float> heroWinratesMap;
+    QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
+
+    for(const QString &key: data.keys())
+    {
+        for(const QJsonValue &gameWinrate: data.value(key).toArray())
+        {
+            QJsonObject gameWinrateObject = gameWinrate.toObject();
+            if(gameWinrateObject.value("game_type").toInt() == 3)
+            {
+                heroWinratesMap[key] = round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0;
+            }
+        }
+    }
+
+    draftHandler->setHeroWinratesMap(heroWinratesMap);
 }
 
 
@@ -647,6 +681,8 @@ void MainWindow::createDraftHandler()
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             draftHandler, SLOT(minimizeScoreWindow()));
+
+    downloadHSRHeroesWinrate();
 }
 
 
@@ -1100,6 +1136,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
+    connect(gameWatcher, SIGNAL(arenaChoosingHeroe()),
+            draftHandler, SLOT(beginHeroDraft()));
     connect(gameWatcher, SIGNAL(activeDraftDeck()),
             draftHandler, SLOT(endDraft()));
     connect(gameWatcher, SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
@@ -2191,6 +2229,9 @@ void MainWindow::downloadExtraFiles()
 
     file = QFileInfo(Utility::extraPath() + "/arenaTemplate.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/arenaTemplate.png"))));
+
+    file = QFileInfo(Utility::extraPath() + "/heroesTemplate.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/heroesTemplate.png"))));
 
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
@@ -3624,6 +3665,15 @@ void MainWindow::downloadAllArenaCodes()
             }
         }
 
+        codeList = draftHandler->getAllHeroCodes();
+        for(const QString code: codeList)
+        {
+            if(!checkCardImage(code))
+            {
+                allCardsDownloadList.append(code);
+            }
+        }
+
         if(allCardsDownloadList.isEmpty())  this->allCardsDownloaded();
         else
         {
@@ -3917,14 +3967,12 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Prox expansion rebajar cartas
-//https://www.reddit.com/r/ArenaHS/comments/8e2trs/what_programs_do_you_use_to_assist_with_arena/dxtjpre/
 //Interrogacion enlace manual, mostrar tooltips.
-
-//Buscar mechanics ECHO/RUSH en synergyHandler
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
-//Ofrecer premium prueba
+//Cambiar iconos HSReplay y incluir text en LF/HA
+//Enlazar click HSReplay con web
+//Pensar rango HSR 47-53
 
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.

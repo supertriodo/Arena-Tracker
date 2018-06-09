@@ -104,6 +104,7 @@ public:
 signals:
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch);
     void newArena(QString hero);
+    void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);
     void startGame();

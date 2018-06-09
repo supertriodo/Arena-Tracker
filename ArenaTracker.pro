@@ -74,7 +74,8 @@ SOURCES += Sources/main.cpp\
     Sources/premiumhandler.cpp \
     Sources/detachwindow.cpp \
     Sources/graveyardhandler.cpp \
-    Sources/Widgets/lavabutton.cpp
+    Sources/Widgets/lavabutton.cpp \
+    Sources/Widgets/draftherowindow.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -141,7 +142,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/premiumhandler.h \
     Sources/detachwindow.h \
     Sources/graveyardhandler.h \
-    Sources/Widgets/lavabutton.h
+    Sources/Widgets/lavabutton.h \
+    Sources/Widgets/draftherowindow.h
 
 FORMS    += mainwindow.ui
 

@@ -34,7 +34,6 @@ private:
 
 //Metodos
 private:
-    int getCard(QString &name, QString &code);
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count);

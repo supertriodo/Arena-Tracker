@@ -2,13 +2,13 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent, DraftMethod draftMethod, bool normalizedLF) : QLabel(parent)
+ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, bool normalizedLF) : QLabel(parent)
 {
     this->normalizedLF = normalizedLF;
     this->learningMode = false;
     this->learningShow = false;
     this->isBestScore = false;
-    this->draftMethod = draftMethod;
+    this->scoreSource = scoreSource;
     this->score = 0;
 }
 
@@ -57,8 +57,9 @@ void ScoreButton::setNormalizedLF(bool value)
 void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
 {
     int rating255 = 0;
-    if(draftMethod == HearthArena)      rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    else if(draftMethod == LightForge)  rating255 = std::max(std::min((int)(score*2.55), 255), 0);
+    if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min((int)(score*2.55), 255), 0);//0<-->100
+    else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min((int)(score*2.55), 255), 0);
+    else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min((int)((score-48)/4*255), 255), 0);//48<-->52
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
@@ -78,7 +79,7 @@ void ScoreButton::draw()
     bool hideScore = learningMode && !learningShow;
 
     int r, g, b;
-    getScoreColor(r, g, b, (draftMethod == LightForge)?Utility::normalizeLF(score, true):score);
+    getScoreColor(r, g, b, (scoreSource == Score_LightForge)?Utility::normalizeLF(score, true):score);
 
     QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
     QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
@@ -112,13 +113,15 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
 
-    int normalizedScore;
-    if(draftMethod == LightForge)   normalizedScore = (int)Utility::normalizeLF(score, this->normalizedLF);
-    else                            normalizedScore = (int)score;
+    float drawScore;
+    if(scoreSource == Score_LightForge)         drawScore = (int)Utility::normalizeLF(score, this->normalizedLF);
+    else if(scoreSource == Score_HearthArena)   drawScore = (int)score;
+    else if(scoreSource == Score_Heroes)        drawScore = score;
 
     QFont font(LG_FONT);
-    if(normalizedScore > 99)    font.setPixelSize(width()/3.2);
-    else                        font.setPixelSize(width()/2.7);
+    if(scoreSource == Score_Heroes) font.setPixelSize(width()/3.5);
+    else if(drawScore > 99)         font.setPixelSize(width()/3.2);
+    else                            font.setPixelSize(width()/2.7);
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
@@ -129,18 +132,20 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     bool hideScore = learningMode && !learningShow;
     if(hideScore)
     {
-        if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
-        else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
+        if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
+        else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
+        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
     }
     else
     {
         if(isBestScore)
         {
-            if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
-            else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
+            if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
+            else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
+            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
         }
 
-        QString text = QString::number(normalizedScore);
+        QString text = QString::number(drawScore);
         QFontMetrics fm = QFontMetrics(font);
         int textWide = fm.width(text);
         int textHigh = fm.height();
@@ -153,8 +158,9 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 #endif
         painter.drawPath(path);
 
-        if(draftMethod == HearthArena)      painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
-        else                                painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
+        if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
+        else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
+        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
     }
 
     QPainter painterObject(this);
