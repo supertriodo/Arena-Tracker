@@ -3913,6 +3913,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-04-15T00:00:01Z"
 //Update Json HA tierlist --> HATLsed.sh --- 5/24/18: Balance patch, meta adjustments and small fixes
+//Comparar tier lists con Utility::check
 //Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
@@ -3921,10 +3922,11 @@ void MainWindow::testDelay()
 //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
 //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//--Crear imagenes de nuevos heroes en el github (HERO_***)
-//--Update synergies.json
-//|--Check evolveSyn cards
-//|--Check individual synergies
+//Crear imagenes de nuevos heroes en el github (HERO_***)
+//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+//Update synergies.json
+//|-Check evolveSyn cards
+//|-Check individual synergies
 
 //STANDARD CYCLE
 //Remove secrets rotating out

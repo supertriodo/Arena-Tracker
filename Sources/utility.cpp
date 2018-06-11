@@ -180,13 +180,13 @@ QString Utility::cardEnTextFromCode(QString code)
 }
 
 
-QString Utility::cardEnCodeFromName(QString name)
+QString Utility::cardEnCodeFromName(QString name, bool onlyCollectible)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
         if(it->value("name").toObject().value("enUS").toString() == name)
         {
-            if(it->value("collectible").toBool())    return it.key();
+            if(!onlyCollectible || it->value("collectible").toBool())    return it.key();
         }
     }
 
@@ -805,12 +805,16 @@ void Utility::unZip(QString zipName, QString targetPath)
 
 void Utility::fixLightforgeTierlist()
 {
-    QFile tierList(Utility::extraPath() + "/lightForge.json");
+    QString originalLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/originalLF.json";
+    QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
+    QString fixedLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForge.json";
+
+    QFile tierList(originalLF);
     tierList.open(QIODevice::ReadOnly | QIODevice::Text);
     QString data = QString::fromUtf8(tierList.readAll());
     tierList.close();
 
-    QFile jsonFile(Utility::extraPath() + "/lightForgeCardMaps.json");
+    QFile jsonFile(cardMapLF);
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
@@ -823,11 +827,11 @@ void Utility::fixLightforgeTierlist()
         data.replace(lfCode, code);
     }
 
-    QFile tierListFixed(Utility::extraPath() + "/lightForgeFixed.json");
+    QFile tierListFixed(fixedLF);
     tierListFixed.open(QIODevice::WriteOnly | QIODevice::Text);
     tierListFixed.write(data.toUtf8());
     tierListFixed.close();
-    qDebug()<<"lightForgeFixed.json created";
+    qDebug()<<"lightForge.json created";
 }
 
 
@@ -872,6 +876,7 @@ void Utility::checkTierlistsCount()
         for(const QString &name: jsonNamesObjectHA.keys())
         {
             QString code = Utility::cardEnCodeFromName(name);
+            if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);
             haCodes.append(code);
         }
 

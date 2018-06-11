@@ -90,7 +90,7 @@ public:
     static QString hscardsPath();
     static QString extraPath();
     static QString cardEnNameFromCode(QString code);
-    static QString cardEnCodeFromName(QString name);
+    static QString cardEnCodeFromName(QString name, bool onlyCollectible=true);
     static QString cardLocalCodeFromName(QString name);
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setLocalLang(QString localLang);
