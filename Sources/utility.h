@@ -116,7 +116,7 @@ public:
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);
-    static QStringList getSetCodes(const QString &set);
+    static QStringList getSetCodes(const QString &set, bool onlyCollectible=true);
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
     static double normalizeLF(double score, bool doit);

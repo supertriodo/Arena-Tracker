@@ -1258,17 +1258,19 @@ void SynergyHandler::testSynergies()
 }
 
 
-void SynergyHandler::debugSynergiesSet(const QString &set)
+void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
 {
     initSynergyCodes();
 
-    for(const QString &code: Utility::getSetCodes(set))
+    qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
+    for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
     {
         qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
     }
 
+    qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
-    for(const QString &code: Utility::getSetCodes(set))
+    for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
     {
         debugSynergiesCode(code, ++num);
     }
@@ -2803,6 +2805,11 @@ bool SynergyHandler::isSpawnEnemySyn(const QString &code)
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
+    //Tavern of time cards
+    if(code == GRASP_THE_FUTURE)    return 0;
+    if(code == TIMEBOUND_GIANT)     return 6;
+    if(code == TIMEWAY_WANDERER)    return 0;
+
     if(code == BLOODBLOOM)          return 0;
     if(code == PRIMORDIAL_GLYPH)    return 0;
     if(code == FAR_SIGHT)           return 0;
@@ -2905,6 +2912,7 @@ STEALTH: stealthGen <--> reachGen(no atk1)
 
 
 REGLAS
++Corregir el mana que cuesta en la practica ciertas cartas a traves de SynergyHandler::getCorrectedCardMana
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no). Synergias con todo tu mazo son faciles, como robar 2 murlocs.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.

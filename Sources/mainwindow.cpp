@@ -3766,13 +3766,6 @@ void MainWindow::showPremiumDialog()
 }
 
 
-void MainWindow::test()
-{
-//    testPlan();
-    QTimer::singleShot(1000, this, SLOT(testDelay()));
-}
-
-
 void MainWindow::testPlan()
 {
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
@@ -3834,12 +3827,19 @@ void MainWindow::testPlan()
 }
 
 
+void MainWindow::test()
+{
+//    testPlan();
+    QTimer::singleShot(1000, this, SLOT(testDelay()));
+}
+
+
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Gilnean Royal Guard");
-//    qDebug()<<Utility::getCardAttribute("GIL_833", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("TOT_030", "set").toString();
 
-//    draftHandler->debugSynergiesSet("GILNEAS");
+//    draftHandler->debugSynergiesSet("TAVERNS_OF_TIME", false);
 //    draftHandler->debugSynergiesCode("ICC_240");
 //    draftHandler->testSynergies();
     draftHandler->initSynergyCodes();

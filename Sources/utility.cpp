@@ -355,15 +355,17 @@ bool Utility::isASecret(QString code)
 }
 
 
-QStringList Utility::getSetCodes(const QString &set)
+QStringList Utility::getSetCodes(const QString &set, bool onlyCollectible)
 {
     QStringList setCodes;
     for(const QString &code: Utility::cardsJson->keys())
     {
-        if((getCardAttribute(code, "set").toString() == set) &&
-            (getCardAttribute(code, "collectible").toBool() == true))
+        if(getCardAttribute(code, "set").toString() == set)
         {
-            setCodes.append(code);
+            if(!onlyCollectible || getCardAttribute(code, "collectible").toBool())
+            {
+                setCodes.append(code);
+            }
         }
     }
     return setCodes;

@@ -27,7 +27,7 @@ private:
 
 //Metodos
 public:
-    void debugSynergiesSet(const QString &set);
+    void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code, int num=0);
     void testSynergies();
     int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,

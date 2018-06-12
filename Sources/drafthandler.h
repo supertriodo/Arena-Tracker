@@ -153,7 +153,7 @@ public:
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
-    void debugSynergiesSet(const QString &set);
+    void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code);
     void testSynergies();
     void initSynergyCodes();

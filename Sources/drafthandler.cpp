@@ -1809,9 +1809,9 @@ void DraftHandler::deMinimizeScoreWindow()
 }
 
 
-void DraftHandler::debugSynergiesSet(const QString &set)
+void DraftHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
 {
-    synergyHandler->debugSynergiesSet(set);
+    synergyHandler->debugSynergiesSet(set, onlyCollectible);
 }
 
 
