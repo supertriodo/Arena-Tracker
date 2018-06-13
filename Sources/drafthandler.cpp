@@ -241,7 +241,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 }
 
 
-void DraftHandler::addCardHist(QString code, bool premium)
+void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
     QString fileNameCode = premium?(code + "_premium"): code;
     QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
@@ -252,7 +252,7 @@ void DraftHandler::addCardHist(QString code, bool premium)
     else
     {
         //La bajamos de HearthHead
-        emit checkCardImage(fileNameCode);
+        emit checkCardImage(fileNameCode, isHero);
         cardsDownloading.append(fileNameCode);
     }
 }
@@ -335,7 +335,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     {
         QTimer::singleShot(1000, this, SLOT(startFindScreenRects()));
 
-        for(const QString &code: heroCodesList)     addCardHist(code, false);
+        for(const QString &code: heroCodesList)     addCardHist(code, false, true);
     }
 
     //Wait for cards
@@ -1245,7 +1245,10 @@ cv::MatND DraftHandler::getHist(const QString &code)
     }
     else //if(heroDrafting)
     {
-        srcBase = fullCard(cv::Rect(49,131,104,104));
+        srcBase = fullCard(cv::Rect(75,201,160,160));
+//#ifdef QT_DEBUG
+//        cv::imshow(code.toStdString(), srcBase);
+//#endif
     }
     return getHist(srcBase);
 }

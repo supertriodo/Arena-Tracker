@@ -120,7 +120,7 @@ private:
     void buildBestMatchesMaps();
     CardRarity getBestRarity();
     void getBestCards(DraftCard bestCards[3]);
-    void addCardHist(QString code, bool premium);
+    void addCardHist(QString code, bool premium, bool isHero=false);
     QString degoldCode(QString fileName);
     void createScoreItems();
     void createSynergyHandler();
@@ -160,7 +160,7 @@ public:
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
 
 signals:
-    void checkCardImage(QString code);
+    void checkCardImage(QString code, bool isHero=false);
     void newDeckCard(QString code);
     void draftStarted();
     void draftEnded();
