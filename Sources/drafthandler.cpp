@@ -1312,6 +1312,9 @@ void DraftHandler::finishFindScreenRects()
         for(int i=0; i<3; i++)
         {
             this->screenRects[i] = screenDetection.screenRects[i];
+//#ifdef QT_DEBUG
+//            qDebug()<<"[" + QString::number(i) + "]"<<screenRects[i].x<<screenRects[i].y<<screenRects[i].width<<screenRects[i].height;
+//#endif
         }
 
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));

@@ -3975,7 +3975,6 @@ void MainWindow::testDelay()
 //Cambiar iconos HSReplay y incluir text en LF/HA
 //Enlazar click HSReplay con web
 //Pensar rango HSR 47-53
-//Bug heroes replay
 //collectionable no premium
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.
