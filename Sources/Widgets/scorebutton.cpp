@@ -59,7 +59,7 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
     int rating255 = 0;
     if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min((int)(score*2.55), 255), 0);//0<-->100
     else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min((int)((score-48)/4*255), 255), 0);//48<-->52
+    else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min((int)((score-45)/10*255), 255), 0);//45<-->55
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
@@ -145,6 +145,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
             else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
         }
 
+        //Draw Score
         QString text = QString::number(drawScore);
         QFontMetrics fm = QFontMetrics(font);
         int textWide = fm.width(text);
@@ -157,6 +158,24 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, font, text);
 #endif
         painter.drawPath(path);
+
+        //Draw heroe winrate %
+        if(scoreSource == Score_Heroes)
+        {
+            font.setPixelSize(width()/4.5);
+            QString text = "%";
+            QFontMetrics fm = QFontMetrics(font);
+            int textWide = fm.width(text);
+            int textHigh = fm.height();
+
+            QPainterPath path;
+#ifdef Q_OS_WIN
+            path.addText(this->width()/2 - textWide/2, this->height()*0.75 + textHigh*0.3, font, text);
+#else
+            path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.4, font, text);
+#endif
+            painter.drawPath(path);
+        }
 
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
