@@ -13,6 +13,15 @@ ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, bool normaliz
 }
 
 
+void ScoreButton::mousePressEvent(QMouseEvent *event)
+{
+    QDesktopServices::openUrl(QUrl(
+        "https://hsreplay.net"
+        ));
+    QLabel::mousePressEvent(event);
+}
+
+
 void ScoreButton::leaveEvent(QEvent * e)
 {
     if(learningMode)

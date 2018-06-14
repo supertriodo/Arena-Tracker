@@ -3855,6 +3855,7 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDelay()
 {
+//    draftHandler->beginHeroDraft();
 //    testTierlists();
 //    testSynergies();
 }
@@ -3973,7 +3974,6 @@ void MainWindow::testDelay()
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Cambiar iconos HSReplay y incluir text en LF/HA
-//Enlazar click HSReplay con web
 
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.
