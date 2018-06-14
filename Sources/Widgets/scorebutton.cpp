@@ -170,7 +170,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 
             QPainterPath path;
 #ifdef Q_OS_WIN
-            path.addText(this->width()/2 - textWide/2, this->height()*0.75 + textHigh*0.3, font, text);
+            path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.3, font, text);
 #else
             path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.4, font, text);
 #endif
