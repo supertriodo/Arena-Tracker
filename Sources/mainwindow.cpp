@@ -3973,7 +3973,9 @@ void MainWindow::testDelay()
 //Interrogacion enlace manual, mostrar tooltips.
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
+//Bug: Mechanics overlay hidden is shown when AT is minimized
 //Cambiar iconos HSReplay y incluir text en LF/HA
+//Actualizar gitbook hsr template
 
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.

@@ -143,7 +143,6 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     {
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
-        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
     }
     else
     {
@@ -151,7 +150,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         {
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
-            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
+            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
         }
 
         //Draw Score
@@ -171,7 +170,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         //Draw heroe winrate %
         if(scoreSource == Score_Heroes)
         {
-            font.setPixelSize(width()/4.5);
+            font.setPixelSize(width()/5.0);
             QString text = "%";
             QFontMetrics fm = QFontMetrics(font);
             int textWide = fm.width(text);
@@ -188,7 +187,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
-        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
+        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
     }
 
     QPainter painterObject(this);

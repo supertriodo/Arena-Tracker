@@ -49,6 +49,7 @@ private:
     static QString loseFile_, winFile_;
     static QString haBestFile_, haCloseFile_, haOpenFile_;
     static QString lfBestFile_, lfCloseFile_, lfOpenFile_;
+    static QString hsrBestFile_, hsrOpenFile_;
     static QString speedLavaFile_, speedCloseFile_, speedOpenFile_;
     static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
@@ -136,6 +137,8 @@ public:
     static QString lfBestFile();
     static QString lfCloseFile();
     static QString lfOpenFile();
+    static QString hsrBestFile();
+    static QString hsrOpenFile();
     static QString speedLavaFile();
     static QString speedCloseFile();
     static QString speedOpenFile();
