@@ -2216,6 +2216,7 @@ void MainWindow::createDataDir()
         settings.setValue("allCardsDownloaded", false);
     }
     Utility::createDir(Utility::gameslogPath());
+    removeExtra();//Redownload Extra en esta version
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());
 
@@ -2353,6 +2354,20 @@ void MainWindow::removeHSCards()
         QDir cardsDir = QDir(Utility::hscardsPath());
         cardsDir.removeRecursively();
         emit pDebug(Utility::hscardsPath() + " removed.");
+    }
+}
+
+
+void MainWindow::removeExtra()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString runVersion = settings.value("runVersion", "").toString();
+
+    if(runVersion != VERSION)
+    {
+        QDir extraDir = QDir(Utility::extraPath());
+        extraDir.removeRecursively();
+        emit pDebug(Utility::extraPath() + " removed.");
     }
 }
 
@@ -3659,7 +3674,8 @@ void MainWindow::downloadAllArenaCodes()
             {
                 allCardsDownloadList.append(code);
             }
-            if(!checkCardImage(code + "_premium"))
+            //Solo bajamos golden cards de cartas colleccionables
+            if(Utility::getCardAttribute(code, "collectible").toBool() && !checkCardImage(code + "_premium"))
             {
                 allCardsDownloadList.append(code + "_premium");
             }
@@ -3974,7 +3990,6 @@ void MainWindow::testDelay()
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 //Bug: Mechanics overlay hidden is shown when AT is minimized
-//Remove extra next version
 
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.

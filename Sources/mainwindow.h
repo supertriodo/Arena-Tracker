@@ -153,6 +153,7 @@ private:
     void createNetworkManager();
     void initCardsJson();
     void removeHSCards();   //Desactivado: Remove HSCards when upgrading version
+    void removeExtra();
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void askLinuxShortcut();
     void showMessageAppImageShortcut();
