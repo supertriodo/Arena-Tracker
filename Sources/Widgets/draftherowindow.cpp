@@ -16,7 +16,7 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
     resize(rect.width() + 2*MARGIN + midCards,
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
     move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
-         rectScreen.y() + rect.y() - MARGIN + 1.48*sizeCard.height());
+         rectScreen.y() + rect.y() - MARGIN + 1.5*sizeCard.height());
 
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *horLayoutScores = new QHBoxLayout(centralWidget);

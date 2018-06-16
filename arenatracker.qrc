@@ -146,5 +146,8 @@
         <file>Images/speedOpen.png</file>
         <file>Images/hsrBest.png</file>
         <file>Images/hsrOpen.png</file>
+        <file>Images/haText.png</file>
+        <file>Images/hsrText.png</file>
+        <file>Images/lfText.png</file>
     </qresource>
 </RCC>

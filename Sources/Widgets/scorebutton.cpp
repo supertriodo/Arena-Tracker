@@ -146,6 +146,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     }
     else
     {
+        //Best Score background
         if(isBestScore)
         {
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
@@ -188,6 +189,14 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
         else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
+
+        //Best Score text
+        if(isBestScore)
+        {
+            if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haTextFile()));
+            else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfTextFile()));
+            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
+        }
     }
 
     QPainter painterObject(this);

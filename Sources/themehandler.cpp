@@ -42,9 +42,9 @@ QString ThemeHandler::bgTotalAttackFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
 QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
 QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
-QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_;
-QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_;
-QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrOpenFile_;
+QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_, ThemeHandler::haTextFile_;
+QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_, ThemeHandler::lfTextFile_;
+QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
 QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
@@ -563,6 +563,12 @@ QString ThemeHandler::haOpenFile()
 }
 
 
+QString ThemeHandler::haTextFile()
+{
+    return haTextFile_;
+}
+
+
 QString ThemeHandler::lfBestFile()
 {
     return lfBestFile_;
@@ -581,6 +587,12 @@ QString ThemeHandler::lfOpenFile()
 }
 
 
+QString ThemeHandler::lfTextFile()
+{
+    return lfTextFile_;
+}
+
+
 QString ThemeHandler::hsrBestFile()
 {
     return hsrBestFile_;
@@ -590,6 +602,12 @@ QString ThemeHandler::hsrBestFile()
 QString ThemeHandler::hsrOpenFile()
 {
     return hsrOpenFile_;
+}
+
+
+QString ThemeHandler::hsrTextFile()
+{
+    return hsrTextFile_;
 }
 
 
@@ -904,11 +922,14 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     haBestFile_ = loadThemeFile(themePath, jsonObject, "haBestFile");
     haCloseFile_ = loadThemeFile(themePath, jsonObject, "haCloseFile");
     haOpenFile_ = loadThemeFile(themePath, jsonObject, "haOpenFile");
+    haTextFile_ = loadThemeFile(themePath, jsonObject, "haTextFile");
     lfBestFile_ = loadThemeFile(themePath, jsonObject, "lfBestFile");
     lfCloseFile_ = loadThemeFile(themePath, jsonObject, "lfCloseFile");
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
+    lfTextFile_ = loadThemeFile(themePath, jsonObject, "lfTextFile");
     hsrBestFile_ = loadThemeFile(themePath, jsonObject, "hsrBestFile");
     hsrOpenFile_ = loadThemeFile(themePath, jsonObject, "hsrOpenFile");
+    hsrTextFile_ = loadThemeFile(themePath, jsonObject, "hsrTextFile");
     speedLavaFile_ = loadThemeFile(themePath, jsonObject, "speedLavaFile");
     speedCloseFile_ = loadThemeFile(themePath, jsonObject, "speedCloseFile");
     speedOpenFile_ = loadThemeFile(themePath, jsonObject, "speedOpenFile");
@@ -1168,11 +1189,14 @@ void ThemeHandler::defaultEmptyValues()
     if(haBestFile_.isEmpty())           haBestFile_ = ":/Images/haBest.png";
     if(haCloseFile_.isEmpty())          haCloseFile_ = ":/Images/haClose.png";
     if(haOpenFile_.isEmpty())           haOpenFile_ = ":/Images/haOpen.png";
+    if(haTextFile_.isEmpty())           haTextFile_ = ":/Images/haText.png";
     if(lfBestFile_.isEmpty())           lfBestFile_ = ":/Images/lfBest.png";
     if(lfCloseFile_.isEmpty())          lfCloseFile_ = ":/Images/lfClose.png";
     if(lfOpenFile_.isEmpty())           lfOpenFile_ = ":/Images/lfOpen.png";
+    if(lfTextFile_.isEmpty())           lfTextFile_ = ":/Images/lfText.png";
     if(hsrBestFile_.isEmpty())          hsrBestFile_ = ":/Images/hsrBest.png";
     if(hsrOpenFile_.isEmpty())          hsrOpenFile_ = ":/Images/hsrOpen.png";
+    if(hsrTextFile_.isEmpty())          hsrTextFile_ = ":/Images/hsrText.png";
     if(speedLavaFile_.isEmpty())        speedLavaFile_ = ":/Images/speedLava.png";
     if(speedCloseFile_.isEmpty())       speedCloseFile_ = ":/Images/speedClose.png";
     if(speedOpenFile_.isEmpty())        speedOpenFile_ = ":/Images/speedOpen.png";
