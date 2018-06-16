@@ -1805,17 +1805,17 @@ void DraftHandler::setNormalizedLF(bool value)
 
 void DraftHandler::minimizeScoreWindow()
 {
-    if(this->draftHeroWindow != NULL)       draftHeroWindow->showMinimized();
-    if(this->draftScoreWindow != NULL)      draftScoreWindow->showMinimized();
-    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->showMinimized();
+    if(this->draftHeroWindow != NULL)                                                       draftHeroWindow->showMinimized();
+    if(this->draftScoreWindow != NULL && showDraftScoresOverlay)                            draftScoreWindow->showMinimized();
+    if(this->draftMechanicsWindow != NULL && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->showMinimized();
 }
 
 
 void DraftHandler::deMinimizeScoreWindow()
 {
-    if(this->draftHeroWindow != NULL)       draftHeroWindow->setWindowState(Qt::WindowActive);
-    if(this->draftScoreWindow != NULL)      draftScoreWindow->setWindowState(Qt::WindowActive);
-    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setWindowState(Qt::WindowActive);
+    if(this->draftHeroWindow != NULL)                                                       draftHeroWindow->setWindowState(Qt::WindowActive);
+    if(this->draftScoreWindow != NULL && showDraftScoresOverlay)                            draftScoreWindow->setWindowState(Qt::WindowActive);
+    if(this->draftMechanicsWindow != NULL && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->setWindowState(Qt::WindowActive);
 }
 
 
