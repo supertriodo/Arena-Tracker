@@ -2209,6 +2209,7 @@ void MainWindow::createDataDir()
 {
     Utility::createDir(Utility::dataPath());
     if(REMOVE_CARDS_ON_VERSION_UPDATE)  removeHSCards();//Redownload HSCards en esta version
+    if(REMOVE_EXTRA_ON_VERSION_UPDATE)  removeExtra();//Redownload Extra en esta version
     if(Utility::createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
@@ -2216,7 +2217,6 @@ void MainWindow::createDataDir()
         settings.setValue("allCardsDownloaded", false);
     }
     Utility::createDir(Utility::gameslogPath());
-    removeExtra();//Redownload Extra en esta version
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());
 
