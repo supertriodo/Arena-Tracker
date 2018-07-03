@@ -3928,7 +3928,7 @@ void MainWindow::testDelay()
 
 //NUEVAS CARTAS
 //Update Json cartas --> Automatico
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-04-15T00:00:01Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-07-03T07:00:00Z"
 //Update Json HA tierlist --> HATLsed.sh --- 5/24/18: Balance patch, meta adjustments and small fixes
 //Comparar tier lists con Utility::check
 //Update secrets
