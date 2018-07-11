@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network widgets
+QT       += core gui network widgets websockets
 
 TARGET = ArenaTracker
 TEMPLATE = app
@@ -75,7 +75,8 @@ SOURCES += Sources/main.cpp\
     Sources/detachwindow.cpp \
     Sources/graveyardhandler.cpp \
     Sources/Widgets/lavabutton.cpp \
-    Sources/Widgets/draftherowindow.cpp
+    Sources/Widgets/draftherowindow.cpp \
+    Sources/twitchhandler.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -143,7 +144,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/detachwindow.h \
     Sources/graveyardhandler.h \
     Sources/Widgets/lavabutton.h \
-    Sources/Widgets/draftherowindow.h
+    Sources/Widgets/draftherowindow.h \
+    Sources/twitchhandler.h
 
 FORMS    += mainwindow.ui
 
