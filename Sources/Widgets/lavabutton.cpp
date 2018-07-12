@@ -97,6 +97,7 @@ void LavaButton::paintEvent(QPaintEvent *event)
     painter.drawPath(path);
 
     painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedOpenFile()));
+    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedDWTextFile()));
 
     QPainter painterObject(this);
     if(isEnabled())

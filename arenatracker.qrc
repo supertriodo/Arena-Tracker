@@ -149,5 +149,6 @@
         <file>Images/haText.png</file>
         <file>Images/hsrText.png</file>
         <file>Images/lfText.png</file>
+        <file>Images/speedDWText.png</file>
     </qresource>
 </RCC>

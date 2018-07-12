@@ -50,7 +50,7 @@ private:
     static QString haBestFile_, haCloseFile_, haOpenFile_, haTextFile_;
     static QString lfBestFile_, lfCloseFile_, lfOpenFile_, lfTextFile_;
     static QString hsrBestFile_, hsrOpenFile_, hsrTextFile_;
-    static QString speedLavaFile_, speedCloseFile_, speedOpenFile_;
+    static QString speedLavaFile_, speedCloseFile_, speedOpenFile_, speedDWTextFile_;
     static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
     static QString minionsCounterFile_, spellsCounterFile_, weaponsCounterFile_, manaCounterFile_;
@@ -145,6 +145,7 @@ public:
     static QString speedLavaFile();
     static QString speedCloseFile();
     static QString speedOpenFile();
+    static QString speedDWTextFile();
     static QString buttonLoadDeckFile();
     static QString tabLogFile();
     static QString loseFile();

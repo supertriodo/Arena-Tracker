@@ -45,7 +45,7 @@ QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
 QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_, ThemeHandler::haTextFile_;
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_, ThemeHandler::lfTextFile_;
 QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
-QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
+QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_, ThemeHandler::speedDWTextFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
@@ -629,6 +629,12 @@ QString ThemeHandler::speedOpenFile()
 }
 
 
+QString ThemeHandler::speedDWTextFile()
+{
+    return speedDWTextFile_;
+}
+
+
 QString ThemeHandler::handCardFile()
 {
     return handCardFile_;
@@ -933,6 +939,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     speedLavaFile_ = loadThemeFile(themePath, jsonObject, "speedLavaFile");
     speedCloseFile_ = loadThemeFile(themePath, jsonObject, "speedCloseFile");
     speedOpenFile_ = loadThemeFile(themePath, jsonObject, "speedOpenFile");
+    speedDWTextFile_ = loadThemeFile(themePath, jsonObject, "speedDWTextFile");
 
     bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
     bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
@@ -1200,6 +1207,7 @@ void ThemeHandler::defaultEmptyValues()
     if(speedLavaFile_.isEmpty())        speedLavaFile_ = ":/Images/speedLava.png";
     if(speedCloseFile_.isEmpty())       speedCloseFile_ = ":/Images/speedClose.png";
     if(speedOpenFile_.isEmpty())        speedOpenFile_ = ":/Images/speedOpen.png";
+    if(speedDWTextFile_.isEmpty())      speedDWTextFile_ = ":/Images/speedDWText.png";
     if(handCardFile_.isEmpty())         handCardFile_ = ":/Images/handCard1.png";
     if(handCardBYFile_.isEmpty())       handCardBYFile_ = ":/Images/handCard3.png";
     if(handCardBYUnknownFile_.isEmpty())handCardBYUnknownFile_ = ":/Images/handCard2.png";
