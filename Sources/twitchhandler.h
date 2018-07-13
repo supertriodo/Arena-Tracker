@@ -11,7 +11,7 @@ class TwitchHandler : public QObject
 
 //Constructor
 public:
-    TwitchHandler(QObject *parent, bool testingConnection=true);
+    TwitchHandler(QObject *parent);
     ~TwitchHandler();
 
 //Variables
@@ -19,7 +19,7 @@ private:
     static QString oauth, channel, pickTag;
 
     QWebSocket twitchSocket;
-    bool testingConnection;
+    bool connectionOk_;
     QRegularExpressionMatch match;
     QList<QString> participants;
     int votes[3];
@@ -31,11 +31,14 @@ public:
     static void setOauth(QString oauth);
     static void setChannel(QString channel);
     static void setPickTag(QString pickTag);
+    static QString getPickTag();
     void reset();
+    bool isConnectionOk();
+    void sendMessage(QString msg);
 
 signals:
     void connectionOk(bool ok=true);
-    void voteUpdate(int votes, int pick);
+    void voteUpdate(int vote1, int vote2, int vote3);
 
 public slots:
 

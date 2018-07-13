@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include "movelistwidget.h"
 #include "scorebutton.h"
+#include "twitchbutton.h"
 #include "../utility.h"
 #include "../Cards/deckcard.h"
 
@@ -26,6 +27,7 @@ private:
     QHBoxLayout *horLayoutMechanics[3];
     ScoreButton *scoresPushButton[3];
     ScoreButton *scoresPushButton2[3];
+    TwitchButton *twitchButton[3];
     MoveListWidget *synergiesListWidget[3];
     QList<DeckCard> synergiesDeckCardLists[3];
     int scoreWidth;
@@ -34,6 +36,7 @@ private:
 
 //Metodos
 private:
+    void resetTwitchScore();
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count);
@@ -42,10 +45,12 @@ public:
     void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
+    void showTwitchScores(bool show=true);
     void setDraftMethod(DraftMethod draftMethod);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void setNormalizedLF(bool value);
+    void setTwitchScores(int vote1, int vote2, int vote3);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

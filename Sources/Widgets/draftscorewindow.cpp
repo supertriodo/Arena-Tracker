@@ -42,6 +42,11 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
+        twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
+        twitchButton[i]->setFixedHeight(scoreWidth*0.75);
+        twitchButton[i]->setFixedWidth(scoreWidth*0.75);
+        twitchButton[i]->hide();
+
         //Opacity effects
         QGraphicsOpacityEffect *effect;
         effect = new QGraphicsOpacityEffect(scoresPushButton[i]);
@@ -50,9 +55,13 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         effect = new QGraphicsOpacityEffect(scoresPushButton2[i]);
         effect->setOpacity(0);
         scoresPushButton2[i]->setGraphicsEffect(effect);
+        effect = new QGraphicsOpacityEffect(twitchButton[i]);
+        effect->setOpacity(0);
+        twitchButton[i]->setGraphicsEffect(effect);
 
         horLayoutScores->addStretch();
         horLayoutScores->addWidget(scoresPushButton[i]);
+        horLayoutScores->addWidget(twitchButton[i]);
         horLayoutScores->addWidget(scoresPushButton2[i]);
         horLayoutScores->addStretch();
 
@@ -119,6 +128,16 @@ void DraftScoreWindow::spreadLearningShow(bool value)
 }
 
 
+void DraftScoreWindow::showTwitchScores(bool show)
+{
+    for(int i=0; i<3; i++)
+    {
+        if(show)    twitchButton[i]->show();
+        else        twitchButton[i]->hide();
+    }
+}
+
+
 void DraftScoreWindow::setDraftMethod(DraftMethod draftMethod)
 {
     switch(draftMethod)
@@ -174,8 +193,30 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
             if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+
+            resetTwitchScore();
         }
     }
+}
+
+
+void DraftScoreWindow::resetTwitchScore()
+{
+    for(int i=0; i<3; i++)
+    {
+        twitchButton[i]->setValue(0, 0, false);
+        Utility::fadeInWidget(twitchButton[i]);
+    }
+}
+
+
+void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3)
+{
+    int votes[3] = {vote1, vote2, vote3};
+    float totalVotes = votes[0] + votes[1] + votes[2];
+    double topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
+
+    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], votes[i]==topVotes);
 }
 
 
@@ -276,11 +317,14 @@ void DraftScoreWindow::hideScores(bool quick)
             eff->setOpacity(0);
             eff = (QGraphicsOpacityEffect *)scoresPushButton2[i]->graphicsEffect();
             eff->setOpacity(0);
+            eff = (QGraphicsOpacityEffect *)twitchButton[i]->graphicsEffect();
+            eff->setOpacity(0);
         }
         else
         {
             QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
             Utility::fadeOutWidget(scoresPushButton2[i]);
+            Utility::fadeOutWidget(twitchButton[i]);
 
             if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
         }

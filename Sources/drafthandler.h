@@ -9,6 +9,7 @@
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/draftmechanicswindow.h"
 #include "synergyhandler.h"
+#include "twitchhandler.h"
 #include <QObject>
 #include <QFutureWatcher>
 
@@ -88,6 +89,7 @@ private:
     bool normalizedLF;
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
+    TwitchHandler *twitchHandler;
 
 
 //Metodos
@@ -136,6 +138,8 @@ private:
     void endHeroDraft();
     void showNewHeroes();
     void buildHeroCodesList();
+    void createTwitchHandler();
+    void deleteTwitchHandler();
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
@@ -201,6 +205,8 @@ private slots:
     void startFindScreenRects();
     void comboBoxChanged();
     void refreshCapturedCards();
+    void twitchHandlerConnectionOk(bool ok);
+    void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3);
 };
 
 #endif // DRAFTHANDLER_H

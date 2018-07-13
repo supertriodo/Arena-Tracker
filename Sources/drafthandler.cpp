@@ -21,6 +21,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->mouseInApp = false;
     this->draftMethod = All;
     this->normalizedLF = true;
+    this->twitchHandler = NULL;
 
     for(int i=0; i<3; i++)
     {
@@ -41,6 +42,7 @@ DraftHandler::~DraftHandler()
     deleteDraftHeroWindow();
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
+    deleteTwitchHandler();
     if(synergyHandler != NULL)  delete synergyHandler;
 }
 
@@ -512,6 +514,47 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     initCodesAndHistMaps(hero);
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
+    createTwitchHandler();
+}
+
+
+void DraftHandler::createTwitchHandler()
+{
+    //TODO Verificar AUTH correcto
+    this->twitchHandler = new TwitchHandler(this);
+    connect(twitchHandler, SIGNAL(connectionOk(bool)),
+            this, SLOT(twitchHandlerConnectionOk(bool)));
+    connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
+            this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
+}
+
+
+void DraftHandler::deleteTwitchHandler()
+{
+    if(twitchHandler != NULL)
+    {
+        delete twitchHandler;
+        twitchHandler = NULL;
+    }
+}
+
+
+void DraftHandler::twitchHandlerConnectionOk(bool ok)
+{
+    if(ok)
+    {
+        if(draftScoreWindow != NULL)    draftScoreWindow->showTwitchScores();//TODO mostrar/ocultar segun config checkbox
+    }
+    else
+    {
+        deleteTwitchHandler();
+    }
+}
+
+
+void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3)
+{
+    if(draftScoreWindow != NULL)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
 }
 
 
@@ -601,6 +644,7 @@ void DraftHandler::endDraft()
     this->justPickedCard = "";
 
     deleteDraftScoreWindow();
+    deleteTwitchHandler();
 }
 
 
@@ -992,6 +1036,17 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    rating1, rating2, rating3,
                    -1, -1, -1,
                    HearthArena);
+
+    //Twitch Handler
+    if(this->twitchHandler != NULL)
+    {
+        twitchHandler->reset();
+        QString pickTag = TwitchHandler::getPickTag();
+        twitchHandler->sendMessage("(!" + pickTag + "1): " + bestCards[0].getName() +
+                                   " / (!" + pickTag + "2): " + bestCards[1].getName() +
+                                   " / (!" + pickTag + "3): " + bestCards[2].getName());
+    }
+
 
     if(patreonVersion)
     {
@@ -1461,6 +1516,8 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
         connect(draftScoreWindow, SIGNAL(cardLeave()),
                 this, SIGNAL(overlayCardLeave()));
+
+        if(twitchHandler != NULL && twitchHandler->isConnectionOk())    draftScoreWindow->showTwitchScores();//TODO mostrar/ocultar segun config checkbox
 
         draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->draftMethod, this->normalizedLF);

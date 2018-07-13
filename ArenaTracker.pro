@@ -76,7 +76,8 @@ SOURCES += Sources/main.cpp\
     Sources/graveyardhandler.cpp \
     Sources/Widgets/lavabutton.cpp \
     Sources/Widgets/draftherowindow.cpp \
-    Sources/twitchhandler.cpp
+    Sources/twitchhandler.cpp \
+    Sources/Widgets/twitchbutton.cpp
 
 HEADERS  += Sources/mainwindow.h \
     Sources/logloader.h \
@@ -145,7 +146,8 @@ HEADERS  += Sources/mainwindow.h \
     Sources/graveyardhandler.h \
     Sources/Widgets/lavabutton.h \
     Sources/Widgets/draftherowindow.h \
-    Sources/twitchhandler.h
+    Sources/twitchhandler.h \
+    Sources/Widgets/twitchbutton.h
 
 FORMS    += mainwindow.ui
 

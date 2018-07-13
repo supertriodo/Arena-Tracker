@@ -1474,6 +1474,8 @@ void MainWindow::readSettings()
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
                   maxGamesLog, normalizedLF, theme);
 
+    TwitchHandler::loadSettings();
+
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->showWindowFrame(transparency == Framed);
     this->show();
@@ -3989,6 +3991,9 @@ void MainWindow::testDelay()
 //Interrogacion enlace manual, mostrar tooltips.
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
+
+//Actualizar theme github
+//Actualizar themes zip
 
 
 //2)Add class winrate from hsreplay.net to the choose your hero screen at the start of a draft.

@@ -43,11 +43,17 @@ void TwitchHandler::setPickTag(QString pickTag)
 }
 
 
-TwitchHandler::TwitchHandler(QObject *parent, bool testingConnection) : QObject(parent)
+QString TwitchHandler::getPickTag()
+{
+    return TwitchHandler::pickTag;
+}
+
+
+TwitchHandler::TwitchHandler(QObject *parent) : QObject(parent)
 {
     reset();
-    this->testingConnection = testingConnection;
-    if(testingConnection)   QTimer::singleShot(10000, this, SLOT(endTestConnection()));
+    this->connectionOk_ = false;
+    QTimer::singleShot(10000, this, SLOT(endTestConnection()));
 
     connect(&twitchSocket, SIGNAL(connected()),
                 this, SLOT(connected()));
@@ -63,10 +69,7 @@ TwitchHandler::~TwitchHandler()
 
 void TwitchHandler::endTestConnection()
 {
-    if(testingConnection)
-    {
-        emit connectionOk(false);
-    }
+    if(!connectionOk_)  emit connectionOk(false);
 }
 
 
@@ -79,7 +82,6 @@ void TwitchHandler::reset()
 
 void TwitchHandler::connected()
 {
-    qDebug()<<"CONNECTED!!!";
     connect(&twitchSocket, SIGNAL(textMessageReceived(QString)),
                 this, SLOT(textMessageReceived(QString)));
     twitchSocket.sendTextMessage("PASS " + TwitchHandler::oauth);
@@ -89,31 +91,35 @@ void TwitchHandler::connected()
     twitchSocket.sendTextMessage(QStringLiteral("CAP REQ :twitch.tv/membership"));
     twitchSocket.sendTextMessage(QStringLiteral("CAP REQ :twitch.tv/tags"));
     twitchSocket.sendTextMessage(QStringLiteral("CAP REQ :twitch.tv/commands"));
+}
 
-    twitchSocket.sendTextMessage("PRIVMSG " + TwitchHandler::channel + " :Bot conectado!!!");
+
+void TwitchHandler::sendMessage(QString msg)
+{
+    twitchSocket.sendTextMessage("PRIVMSG " + TwitchHandler::channel + " :" + msg);
+}
+
+
+bool TwitchHandler::isConnectionOk()
+{
+    return this->connectionOk_;
 }
 
 
 void TwitchHandler::textMessageReceived(QString message)
 {
     //TESTING CONNECTION
-    if(testingConnection)
+    if(message.contains(":Welcome, GLHF!"))
     {
-        if(message.contains(":Welcome, GLHF!"))
-        {
-            this->testingConnection = false;
-            emit connectionOk();
-            return;
-        }
+        this->connectionOk_ = true;
+        emit connectionOk();
+        return;
     }
-
-    qDebug()<<message;
 
     //PING
     if(message.contains("PING :tmi.twitch.tv"))
     {
         twitchSocket.sendTextMessage(QStringLiteral("PONG :tmi.twitch.tv"));
-        qDebug()<<"PONG sent!";
     }
 
     //PICK TAG
@@ -123,11 +129,13 @@ void TwitchHandler::textMessageReceived(QString message)
         QString username = match.captured(1);
         int pick = match.captured(2).toInt() - 1;
 
+        qDebug()<<username<<pick;
+
         if(!participants.contains(username))
         {
             participants.append(username);
             votes[pick]++;
-            emit voteUpdate(votes[pick], pick);
+            emit voteUpdate(votes[0], votes[1], votes[2]);
         }
     }
 }
