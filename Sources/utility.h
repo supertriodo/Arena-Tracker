@@ -30,7 +30,7 @@ enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum LoadingScreenState { menu, arena, ranked, adventure, tavernBrawl, friendly, casual, unknown };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logAsset, logInvalid };
-enum DraftMethod { HearthArena, LightForge, All };
+enum DraftMethod { HearthArena, LightForge, All, None };
 enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes };
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON,

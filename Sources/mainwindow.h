@@ -261,9 +261,7 @@ private slots:
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
     void checkLinuxShortcut();
-    void draftMethodHA();
-    void draftMethodLF();
-    void draftMethodCombined();
+    void updateDraftMethod();
     void spreadTransparency();
     void startProgressBar(int maximum, QString text);
     void advanceProgressBar(int remaining, QString text="");

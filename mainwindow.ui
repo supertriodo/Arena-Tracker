@@ -2027,32 +2027,16 @@ Hover your mouse over to check the odds of killing in the board.</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_16">
                     <item>
-                     <widget class="QRadioButton" name="configRadioHA">
-                      <property name="toolTip">
-                       <string>HearthArena: Show HearthArena tier score during the draft.</string>
-                      </property>
-                      <property name="text">
-                       <string>HearthArena</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="configRadioLF">
-                      <property name="toolTip">
-                       <string>LightForge: Show LightForge tier score during the draft.</string>
-                      </property>
+                     <widget class="QCheckBox" name="configCheckLF">
                       <property name="text">
                        <string>LightForge</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QRadioButton" name="configRadioCombined">
-                      <property name="toolTip">
-                       <string>Combined: Show tier scores from both: HearthArena and the LightForge.</string>
-                      </property>
+                     <widget class="QCheckBox" name="configCheckHA">
                       <property name="text">
-                       <string>Combined</string>
+                       <string>HearthArena</string>
                       </property>
                      </widget>
                     </item>

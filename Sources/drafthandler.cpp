@@ -1128,6 +1128,7 @@ void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScore
                                 " (" + QString::number(numCards) + "/30)");
             break;
         default:
+            scoreText = "";
             break;
     }
     ui->labelDeckScore->setText(scoreText);

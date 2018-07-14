@@ -170,8 +170,6 @@ void TwitchHandler::textMessageReceived(QString message)
         QString username = match.captured(1);
         int pick = match.captured(2).toInt() - 1;
 
-        qDebug()<<username<<pick;
-
         if(!participants.contains(username))
         {
             participants.append(username);

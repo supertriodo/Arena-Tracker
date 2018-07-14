@@ -1390,17 +1390,20 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     switch(draftMethod)
     {
         case HearthArena:
-            ui->configRadioHA->setChecked(true);
+            ui->configCheckHA->setChecked(true);
+            ui->configCheckLF->setChecked(false);
             break;
         case LightForge:
-            ui->configRadioLF->setChecked(true);
+            ui->configCheckHA->setChecked(false);
+            ui->configCheckLF->setChecked(true);
             break;
         case All:
-            ui->configRadioCombined->setChecked(true);
+            ui->configCheckHA->setChecked(true);
+            ui->configCheckLF->setChecked(true);
             break;
         default:
-            draftMethod = HearthArena;
-            ui->configRadioHA->setChecked(true);
+            ui->configCheckHA->setChecked(false);
+            ui->configCheckLF->setChecked(false);
             break;
     }
     spreadDraftMethod(draftMethod);
@@ -2834,9 +2837,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioAuto->setStyleSheet(radioCSS);
         ui->configRadioOpaque->setStyleSheet(radioCSS);
         ui->configRadioFramed->setStyleSheet(radioCSS);
-        ui->configRadioHA->setStyleSheet(radioCSS);
-        ui->configRadioLF->setStyleSheet(radioCSS);
-        ui->configRadioCombined->setStyleSheet(radioCSS);
 
         QString checkCSS = "QCheckBox {background-color: transparent; color: white;}";
         ui->configCheckClassColor->setStyleSheet(checkCSS);
@@ -2850,6 +2850,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
         ui->configCheckRngList->setStyleSheet(checkCSS);
         ui->configCheckVotes->setStyleSheet(checkCSS);
+        ui->configCheckHA->setStyleSheet(checkCSS);
+        ui->configCheckLF->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{" + ThemeHandler::bgWidgets() + " color: white;}");
     }
@@ -2886,9 +2888,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configRadioAuto->setStyleSheet("");
         ui->configRadioOpaque->setStyleSheet("");
         ui->configRadioFramed->setStyleSheet("");
-        ui->configRadioHA->setStyleSheet("");
-        ui->configRadioLF->setStyleSheet("");
-        ui->configRadioCombined->setStyleSheet("");
 
         ui->configCheckClassColor->setStyleSheet("");
         ui->configCheckSpellColor->setStyleSheet("");
@@ -2901,6 +2900,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckTotalAttack->setStyleSheet("");
         ui->configCheckRngList->setStyleSheet("");
         ui->configCheckVotes->setStyleSheet("");
+        ui->configCheckHA->setStyleSheet("");
+        ui->configCheckLF->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
     }
@@ -3434,21 +3435,18 @@ void MainWindow::updateDraftNormalizeLF(bool checked)
 }
 
 
-void MainWindow::draftMethodHA()
+void MainWindow::updateDraftMethod()
 {
-    spreadDraftMethod(HearthArena);
-}
-
-
-void MainWindow::draftMethodLF()
-{
-    spreadDraftMethod(LightForge);
-}
-
-
-void MainWindow::draftMethodCombined()
-{
-    spreadDraftMethod(All);
+    if(ui->configCheckLF->isChecked())
+    {
+        if(ui->configCheckHA->isChecked())  spreadDraftMethod(All);
+        else                                spreadDraftMethod(LightForge);
+    }
+    else
+    {
+        if(ui->configCheckHA->isChecked())  spreadDraftMethod(HearthArena);
+        else                                spreadDraftMethod(None);
+    }
 }
 
 
@@ -3545,9 +3543,8 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftMechanicsOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
     connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
-    connect(ui->configRadioHA, SIGNAL(clicked()), this, SLOT(draftMethodHA()));
-    connect(ui->configRadioLF, SIGNAL(clicked()), this, SLOT(draftMethodLF()));
-    connect(ui->configRadioCombined, SIGNAL(clicked()), this, SLOT(draftMethodCombined()));
+    connect(ui->configCheckHA, SIGNAL(clicked()), this, SLOT(updateDraftMethod()));
+    connect(ui->configCheckLF, SIGNAL(clicked()), this, SLOT(updateDraftMethod()));
 
     //Zero To Heroes
     connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
