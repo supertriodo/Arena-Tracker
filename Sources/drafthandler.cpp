@@ -520,15 +520,13 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
 void DraftHandler::createTwitchHandler()
 {
-    if(TwitchHandler::isActive() && TwitchHandler::isWellConfigured())
+    if(TwitchHandler::isWellConfigured())
     {
         this->twitchHandler = new TwitchHandler(this);
         connect(twitchHandler, SIGNAL(connectionOk(bool)),
                 this, SLOT(twitchHandlerConnectionOk(bool)));
         connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
                 this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
-
-        ui->configCheckVotes->setEnabled(false);
     }
 }
 
@@ -540,11 +538,6 @@ void DraftHandler::deleteTwitchHandler()
         twitchHandler->deleteLater();
         twitchHandler = NULL;
     }
-
-    if(TwitchHandler::isWellConfigured())
-    {
-        ui->configCheckVotes->setEnabled(true);
-    }
 }
 
 
@@ -552,7 +545,7 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 {
     if(ok)
     {
-        if(draftScoreWindow != NULL)    draftScoreWindow->showTwitchScores();//TODO mostrar/ocultar segun config checkbox
+        if(draftScoreWindow != NULL && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
     }
     else
     {
@@ -564,6 +557,16 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3)
 {
     if(draftScoreWindow != NULL)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
+}
+
+
+void DraftHandler::updateTwitchChatVotes()
+{
+    if(draftScoreWindow == NULL)    return;
+
+    if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
+            TwitchHandler::isActive())  draftScoreWindow->showTwitchScores();
+    else                                draftScoreWindow->showTwitchScores(false);
 }
 
 
@@ -1527,7 +1530,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
         connect(draftScoreWindow, SIGNAL(cardLeave()),
                 this, SIGNAL(overlayCardLeave()));
 
-        if(twitchHandler != NULL && twitchHandler->isConnectionOk())    draftScoreWindow->showTwitchScores();//TODO mostrar/ocultar segun config checkbox
+        if(twitchHandler != NULL && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
         draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->draftMethod, this->normalizedLF);

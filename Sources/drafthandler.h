@@ -162,6 +162,7 @@ public:
     void testSynergies();
     void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
+    void updateTwitchChatVotes();
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

@@ -3460,6 +3460,7 @@ void MainWindow::spreadDraftMethod(DraftMethod draftMethod)
 void MainWindow::updateTwitchChatVotes(bool checked)
 {
     TwitchHandler::setActive(checked);
+    if(draftHandler != NULL)    draftHandler->updateTwitchChatVotes();
 }
 
 
