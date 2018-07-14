@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     secretsHandler = NULL;
     trackobotUploader = NULL;
     premiumHandler = NULL;
+    twitchTester = NULL;
 
     createNetworkManager();
     createDataDir();
@@ -1303,7 +1304,7 @@ void MainWindow::initConfigTheme(QString theme)
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               bool normalizedLF, QString theme)
+                               bool normalizedLF, bool twitchChatVotes, QString theme)
 {
     //UI
     switch(transparency)
@@ -1407,6 +1408,10 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     //Zero To Heroes
     ui->configSliderZero->setValue(maxGamesLog);
     updateMaxGamesLog(maxGamesLog);
+
+    //Twitch
+    ui->configCheckVotes->setChecked(twitchChatVotes);
+    updateTwitchChatVotes(twitchChatVotes);
 }
 
 
@@ -1443,6 +1448,117 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
 }
 
 
+void MainWindow::configureTwitchDialogs()
+{
+    QMessageBox msgBox(this);
+    msgBox.setText("Configuring twitch integration will let your chat vote during drafts. "
+                   "A new element will appear below the cards to show the votes counted for each card."
+                   "<br><br>It's a 3-step process:"
+                   "<br><br>1) Get an OAuth Password from <a href='http://twitchapps.com/tmi/'>here</a> by login with your twitch account."
+                   " e.g. oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                   "<br><br>2) Set your twitch username. e.g. supertriodo"
+                   "<br><br>3) Set the tag your chat will use to vote cards. The default one is !pick, "
+                   "this means chat will type !pick1, !pick2 or !pick3 to vote for cards 1, 2 or 3.");
+    msgBox.setWindowTitle(tr("Twitch Chat Vote"));
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setIcon(QMessageBox::Information);
+    QPushButton *button1 = msgBox.addButton("Get OAuth", QMessageBox::ActionRole);
+    QPushButton *button2 = msgBox.addButton("Cancel", QMessageBox::ActionRole);
+
+    msgBox.exec();
+
+    if(msgBox.clickedButton() == button1)
+    {
+        //Activamos el chechbox
+        ui->configCheckVotes->setChecked(true);
+        updateTwitchChatVotes(true);
+
+        //Step 1: Oauth
+        QDesktopServices::openUrl(QUrl(
+            "http://twitchapps.com/tmi/"
+            ));
+
+        bool ok;
+        QString twitchOauth = QInputDialog::getText(this, tr("OAuth Password"),
+                                             tr("OAuth:"), QLineEdit::Normal,
+                                             TwitchHandler::getOauth(), &ok);
+        if(!ok || twitchOauth.isEmpty())
+        {
+            checkTwitchConnection();
+            return;
+        }
+        TwitchHandler::setOauth(twitchOauth);
+
+        //Step 2: Username
+        QString twitchChannel = TwitchHandler::getChannel();
+        if(!twitchChannel.isEmpty())    twitchChannel = twitchChannel.mid(1);//Eliminamos #
+        QString twitchUsername = QInputDialog::getText(this, tr("Twitch Account"),
+                                             tr("Account:"), QLineEdit::Normal,
+                                             twitchChannel, &ok);
+        if(!ok || twitchUsername.isEmpty())
+        {
+            checkTwitchConnection();
+            return;
+        }
+        twitchChannel = '#' + twitchUsername;
+        TwitchHandler::setChannel(twitchChannel);
+
+        //Step 3: Vote tag
+        QString twitchPickTag = QInputDialog::getText(this, tr("Pick Tag"),
+                                             tr("Tag:"), QLineEdit::Normal,
+                                             TwitchHandler::getPickTag(), &ok);
+        if(!ok || twitchPickTag.isEmpty())
+        {
+            checkTwitchConnection();
+            return;
+        }
+        TwitchHandler::setPickTag(twitchPickTag);
+        checkTwitchConnection();
+    }
+    else if(msgBox.clickedButton() == button2)
+    {
+    }
+}
+
+
+void MainWindow::deleteTwitchTester()
+{
+    if(twitchTester != NULL)
+    {
+        twitchTester->deleteLater();
+        twitchTester = NULL;
+    }
+}
+
+
+void MainWindow::twitchTesterConnectionOk(bool ok)
+{
+    ui->configCheckVotes->setEnabled(ok);
+    ui->configLabelVotesStatus->setEnabled(true);
+    ui->configLabelVotesStatus->setPixmap(ok?ThemeHandler::winFile():ThemeHandler::loseFile());
+    if(!ok)
+    {
+        ui->configCheckVotes->setChecked(false);
+        updateTwitchChatVotes(false);
+    }
+
+    deleteTwitchTester();
+}
+
+
+void MainWindow::checkTwitchConnection()
+{
+    ui->configCheckVotes->setEnabled(false);
+    ui->configLabelVotesStatus->setEnabled(false);
+    ui->configLabelVotesStatus->setPixmap(ThemeHandler::winFile());
+
+    deleteTwitchTester();
+    twitchTester = new TwitchHandler(this);
+    connect(twitchTester, SIGNAL(connectionOk(bool)),
+            this, SLOT(twitchTesterConnectionOk(bool)));
+}
+
+
 void MainWindow::readSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -1470,11 +1586,12 @@ void MainWindow::readSettings()
     bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
     bool showRngList = settings.value("showRngList", true).toBool();
     int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
+    bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, theme);
+                  maxGamesLog, normalizedLF, twitchChatVotes, theme);
 
-    TwitchHandler::loadSettings();
+    if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->showWindowFrame(transparency == Framed);
@@ -1516,6 +1633,7 @@ void MainWindow::writeSettings()
     settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
     settings.setValue("maxGamesLog", ui->configSliderZero->value());
+    settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
     settings.setValue("deckWindow", deckWindow!=NULL);
     settings.setValue("arenaWindow", arenaWindow!=NULL);
     settings.setValue("enemyWindow", enemyWindow!=NULL);
@@ -2697,6 +2815,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxZero->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftExtra->setStyleSheet(groupBoxCSS);
+        ui->configBoxTwitch->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
         ui->configLabelDeckNormal->setStyleSheet(labelCSS);
@@ -2708,6 +2827,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelZero->setStyleSheet(labelCSS);
         ui->configLabelZero2->setStyleSheet(labelCSS);
         ui->configLabelTheme->setStyleSheet(labelCSS);
+        ui->configLabelVotesStatus->setStyleSheet(labelCSS);
 
         QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
         ui->configRadioTransparent->setStyleSheet(radioCSS);
@@ -2729,6 +2849,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckManaLimits->setStyleSheet(checkCSS);
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
         ui->configCheckRngList->setStyleSheet(checkCSS);
+        ui->configCheckVotes->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{" + ThemeHandler::bgWidgets() + " color: white;}");
     }
@@ -2747,6 +2868,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxZero->setStyleSheet("");
         ui->configBoxDraftMethod->setStyleSheet("");
         ui->configBoxDraftExtra->setStyleSheet("");
+        ui->configBoxTwitch->setStyleSheet("");
 
 
         ui->configLabelDeckNormal->setStyleSheet("");
@@ -2758,6 +2880,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelZero->setStyleSheet("");
         ui->configLabelZero2->setStyleSheet("");
         ui->configLabelTheme->setStyleSheet("");
+        ui->configLabelVotesStatus->setStyleSheet("");
 
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
@@ -2777,6 +2900,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckManaLimits->setStyleSheet("");
         ui->configCheckTotalAttack->setStyleSheet("");
         ui->configCheckRngList->setStyleSheet("");
+        ui->configCheckVotes->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
     }
@@ -3335,6 +3459,12 @@ void MainWindow::spreadDraftMethod(DraftMethod draftMethod)
 }
 
 
+void MainWindow::updateTwitchChatVotes(bool checked)
+{
+    TwitchHandler::setActive(checked);
+}
+
+
 void MainWindow::updateMaxGamesLog(int value)
 {
     if(value == 0)
@@ -3422,6 +3552,12 @@ void MainWindow::completeConfigTab()
     //Zero To Heroes
     connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
 
+    //Twitch
+    ui->configLabelVotesStatus->setPixmap(ThemeHandler::loseFile());
+    ui->configCheckVotes->setEnabled(false);
+    ui->configLabelVotesStatus->setEnabled(false);
+    connect(ui->configCheckVotes, SIGNAL(clicked(bool)), this, SLOT(updateTwitchChatVotes(bool)));
+    connect(ui->configButtonVotesConfig, SIGNAL(clicked()), this, SLOT(configureTwitchDialogs()));
 
     completeHighResConfigTab();
 }
@@ -3876,6 +4012,8 @@ void MainWindow::testDelay()
 //    draftHandler->beginHeroDraft();
 //    testTierlists();
 //    testSynergies();
+//    TwitchHandler::setOauth("oauth:xxxxxxxxxx");
+//    TwitchHandler::setPickTag("!pick");
 }
 
 

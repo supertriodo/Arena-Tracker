@@ -91,6 +91,7 @@ private:
     bool copyGameLogs;
     QNetworkAccessManager *networkManager;
     QStringList allCardsDownloadList;
+    TwitchHandler *twitchTester;
 
 
 
@@ -140,7 +141,7 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, QString theme);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -184,6 +185,8 @@ private:
     void updateTabIcons();
     void downloadHSRHeroesWinrate();
     void processHSRHeroesWinrate(QJsonObject jsonObject);
+    void deleteTwitchTester();
+    void checkTwitchConnection();
 
 //Override events
 protected:
@@ -279,6 +282,9 @@ private slots:
     void calculateMinimumWidth();
     void changingTabUpdateDraftSize();
     void setPremium(bool premium);
+    void twitchTesterConnectionOk(bool ok);
+    void updateTwitchChatVotes(bool checked);
+    void configureTwitchDialogs();
 };
 
 #endif // MAINWINDOW_H

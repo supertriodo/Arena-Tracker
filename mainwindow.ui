@@ -1523,7 +1523,7 @@ draft mechanics becoming a patron (3$)</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>793</height>
+               <height>875</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2159,6 +2159,39 @@ to upload to www.zerotoheroes.com</string>
                   <widget class="QLabel" name="configLabelZero2">
                    <property name="text">
                     <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="configBoxTwitch">
+                <property name="title">
+                 <string>Twitch</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <widget class="QCheckBox" name="configCheckVotes">
+                   <property name="text">
+                    <string>Chat votes</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="configLabelVotesStatus">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="arenatracker.qrc">:/Images/win.png</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="configButtonVotesConfig">
+                   <property name="text">
+                    <string>Configure</string>
                    </property>
                   </widget>
                  </item>

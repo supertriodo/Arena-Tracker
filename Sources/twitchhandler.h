@@ -17,6 +17,7 @@ public:
 //Variables
 private:
     static QString oauth, channel, pickTag;
+    static bool wellConfigured, active;
 
     QWebSocket twitchSocket;
     bool connectionOk_;
@@ -27,11 +28,16 @@ private:
 
 //Metodos
 public:
-    static void loadSettings();
+    static bool loadSettings();
     static void setOauth(QString oauth);
     static void setChannel(QString channel);
     static void setPickTag(QString pickTag);
+    static QString getOauth();
+    static QString getChannel();
     static QString getPickTag();
+    static void setActive(bool active);
+    static bool isActive();
+    static bool isWellConfigured();
     void reset();
     bool isConnectionOk();
     void sendMessage(QString msg);

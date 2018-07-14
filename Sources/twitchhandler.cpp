@@ -4,15 +4,21 @@
 QString TwitchHandler::oauth;
 QString TwitchHandler::channel;
 QString TwitchHandler::pickTag;
+bool TwitchHandler::wellConfigured;
+bool TwitchHandler::active;
 
 
-void TwitchHandler::loadSettings()
+bool TwitchHandler::loadSettings()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
 
-    TwitchHandler::oauth = settings.value("twitchOauth", QString("oauth:knicqcnfdu5sixko3ezbkr9brv58vd")).toString();
-    TwitchHandler::channel = settings.value("twitchChannel", QString("#supertriodo")).toString();
-    TwitchHandler::pickTag = settings.value("twitchPickTag", QString("pick")).toString();
+    TwitchHandler::oauth = settings.value("twitchOauth", QString("oauth:xxxxxxxxxx")).toString();
+    TwitchHandler::channel = settings.value("twitchChannel", QString("")).toString();
+    TwitchHandler::pickTag = settings.value("twitchPickTag", QString("!pick")).toString();
+
+    TwitchHandler::wellConfigured = false;
+
+    return !(TwitchHandler::oauth.isEmpty() || TwitchHandler::channel.isEmpty());
 }
 
 
@@ -43,9 +49,39 @@ void TwitchHandler::setPickTag(QString pickTag)
 }
 
 
+QString TwitchHandler::getOauth()
+{
+    return TwitchHandler::oauth;
+}
+
+
+QString TwitchHandler::getChannel()
+{
+    return TwitchHandler::channel;
+}
+
+
 QString TwitchHandler::getPickTag()
 {
     return TwitchHandler::pickTag;
+}
+
+
+void TwitchHandler::setActive(bool active)
+{
+    TwitchHandler::active = active;
+}
+
+
+bool TwitchHandler::isActive()
+{
+    return TwitchHandler::active;
+}
+
+
+bool TwitchHandler::isWellConfigured()
+{
+    return TwitchHandler::wellConfigured;
 }
 
 
@@ -69,7 +105,11 @@ TwitchHandler::~TwitchHandler()
 
 void TwitchHandler::endTestConnection()
 {
-    if(!connectionOk_)  emit connectionOk(false);
+    if(!connectionOk_)
+    {
+        TwitchHandler::wellConfigured = false;
+        emit connectionOk(false);
+    }
 }
 
 
@@ -111,6 +151,7 @@ void TwitchHandler::textMessageReceived(QString message)
     //TESTING CONNECTION
     if(message.contains(":Welcome, GLHF!"))
     {
+        TwitchHandler::wellConfigured = true;
         this->connectionOk_ = true;
         emit connectionOk();
         return;
@@ -124,7 +165,7 @@ void TwitchHandler::textMessageReceived(QString message)
 
     //PICK TAG
     else if(message.contains(QRegularExpression("\\:(\\w+)!\\w*@\\w*\\.tmi\\.twitch\\.tv PRIVMSG " + TwitchHandler::channel +
-                                           " :!" + TwitchHandler::pickTag + "([1-3])\\r\\n"), &match))
+                                           " :" + TwitchHandler::pickTag + "([1-3])\\r\\n"), &match))
     {
         QString username = match.captured(1);
         int pick = match.captured(2).toInt() - 1;

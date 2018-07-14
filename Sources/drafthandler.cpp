@@ -520,12 +520,16 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
 void DraftHandler::createTwitchHandler()
 {
-    //TODO Verificar AUTH correcto
-    this->twitchHandler = new TwitchHandler(this);
-    connect(twitchHandler, SIGNAL(connectionOk(bool)),
-            this, SLOT(twitchHandlerConnectionOk(bool)));
-    connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
-            this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
+    if(TwitchHandler::isActive() && TwitchHandler::isWellConfigured())
+    {
+        this->twitchHandler = new TwitchHandler(this);
+        connect(twitchHandler, SIGNAL(connectionOk(bool)),
+                this, SLOT(twitchHandlerConnectionOk(bool)));
+        connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
+                this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
+
+        ui->configCheckVotes->setEnabled(false);
+    }
 }
 
 
@@ -533,8 +537,13 @@ void DraftHandler::deleteTwitchHandler()
 {
     if(twitchHandler != NULL)
     {
-        delete twitchHandler;
+        twitchHandler->deleteLater();
         twitchHandler = NULL;
+    }
+
+    if(TwitchHandler::isWellConfigured())
+    {
+        ui->configCheckVotes->setEnabled(true);
     }
 }
 
@@ -1042,9 +1051,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     {
         twitchHandler->reset();
         QString pickTag = TwitchHandler::getPickTag();
-        twitchHandler->sendMessage("(!" + pickTag + "1): " + bestCards[0].getName() +
-                                   " / (!" + pickTag + "2): " + bestCards[1].getName() +
-                                   " / (!" + pickTag + "3): " + bestCards[2].getName());
+        twitchHandler->sendMessage("(" + pickTag + "1): " + bestCards[0].getName() +
+                                   " / (" + pickTag + "2): " + bestCards[1].getName() +
+                                   " / (" + pickTag + "3): " + bestCards[2].getName());
     }
 
 
