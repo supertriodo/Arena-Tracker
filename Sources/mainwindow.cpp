@@ -1485,7 +1485,7 @@ void MainWindow::configureTwitchDialogs()
         QString twitchOauth = QInputDialog::getText(this, tr("OAuth Password"),
                                              tr("OAuth:"), QLineEdit::Normal,
                                              TwitchHandler::getOauth(), &ok);
-        if(!ok || twitchOauth.isEmpty())
+        if(!ok)
         {
             checkTwitchConnection();
             return;
@@ -1498,7 +1498,7 @@ void MainWindow::configureTwitchDialogs()
         QString twitchUsername = QInputDialog::getText(this, tr("Twitch Account"),
                                              tr("Account:"), QLineEdit::Normal,
                                              twitchChannel, &ok);
-        if(!ok || twitchUsername.isEmpty())
+        if(!ok)
         {
             checkTwitchConnection();
             return;
@@ -1510,7 +1510,7 @@ void MainWindow::configureTwitchDialogs()
         QString twitchPickTag = QInputDialog::getText(this, tr("Pick Tag"),
                                              tr("Tag:"), QLineEdit::Normal,
                                              TwitchHandler::getPickTag(), &ok);
-        if(!ok || twitchPickTag.isEmpty())
+        if(!ok)
         {
             checkTwitchConnection();
             return;
