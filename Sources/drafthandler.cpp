@@ -546,6 +546,7 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
     if(ok)
     {
         if(draftScoreWindow != NULL && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
+        if(draftHeroWindow != NULL && TwitchHandler::isActive())    draftHeroWindow->showTwitchScores();
     }
     else
     {
@@ -557,16 +558,25 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3)
 {
     if(draftScoreWindow != NULL)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
+    if(draftHeroWindow != NULL)     draftHeroWindow->setTwitchScores(vote1, vote2, vote3);
 }
 
 
 void DraftHandler::updateTwitchChatVotes()
 {
-    if(draftScoreWindow == NULL)    return;
+    if(draftScoreWindow != NULL)
+    {
+        if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
+                TwitchHandler::isActive())  draftScoreWindow->showTwitchScores();
+        else                                draftScoreWindow->showTwitchScores(false);
+    }
 
-    if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
-            TwitchHandler::isActive())  draftScoreWindow->showTwitchScores();
-    else                                draftScoreWindow->showTwitchScores(false);
+    if(draftHeroWindow != NULL)
+    {
+        if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
+                TwitchHandler::isActive())  draftHeroWindow->showTwitchScores();
+        else                                draftHeroWindow->showTwitchScores(false);
+    }
 }
 
 
@@ -1451,6 +1461,7 @@ void DraftHandler::beginHeroDraft()
     this->leavingArena = false;
 
     initCodesAndHistMaps();
+    createTwitchHandler();
 }
 
 
@@ -1464,6 +1475,7 @@ void DraftHandler::endHeroDraft()
 
     this->heroDrafting = false;
     deleteDraftHeroWindow();
+    deleteTwitchHandler();
 }
 
 
@@ -1483,6 +1495,16 @@ void DraftHandler::showNewHeroes()
         scores[i] = heroWinratesMap[HSRkey];
     }
     if(draftHeroWindow != NULL)     draftHeroWindow->setScores(scores[0], scores[1], scores[2]);
+
+    //Twitch Handler
+    if(this->twitchHandler != NULL)
+    {
+        twitchHandler->reset();
+        QString pickTag = TwitchHandler::getPickTag();
+        twitchHandler->sendMessage("(" + pickTag + "1) " + draftCardMaps[0][bestMatchesMaps[0].first()].getName() +
+                                   " / (" + pickTag + "2) " + draftCardMaps[1][bestMatchesMaps[1].first()].getName() +
+                                   " / (" + pickTag + "3) " + draftCardMaps[2][bestMatchesMaps[2].first()].getName());
+    }
 }
 
 
@@ -1546,6 +1568,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     else// if(heroDrafting)
     {
         draftHeroWindow = new DraftHeroWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+        if(twitchHandler != NULL && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
     }
 
     showOverlay();

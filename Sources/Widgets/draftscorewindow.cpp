@@ -193,10 +193,10 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
             if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
-
-            resetTwitchScore();
         }
     }
+
+    if(draftMethod == HearthArena)  resetTwitchScore();
 }
 
 
