@@ -1054,9 +1054,10 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     {
         twitchHandler->reset();
         QString pickTag = TwitchHandler::getPickTag();
-        twitchHandler->sendMessage("(" + pickTag + "1): " + bestCards[0].getName() +
-                                   " / (" + pickTag + "2): " + bestCards[1].getName() +
-                                   " / (" + pickTag + "3): " + bestCards[2].getName());
+        twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+"/30] -- "):QString("")) +
+                                   "(" + pickTag + "1) " + bestCards[0].getName() +
+                                   " / (" + pickTag + "2) " + bestCards[1].getName() +
+                                   " / (" + pickTag + "3) " + bestCards[2].getName());
     }
 
 
