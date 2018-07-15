@@ -256,16 +256,16 @@ QString MainWindow::getHSLanguage()
             }
 
             //Remove old image cards
-            QDir dirHSCards(Utility::hscardsPath());
-            dirHSCards.setFilter(QDir::Files);
-            QStringList filters("*_*.png");
-            dirHSCards.setNameFilters(filters);
+//            QDir dirHSCards(Utility::hscardsPath());
+//            dirHSCards.setFilter(QDir::Files);
+//            QStringList filters("*_*.png");
+//            dirHSCards.setNameFilters(filters);
 
-            foreach(QString file, dirHSCards.entryList())
-            {
-                dirHSCards.remove(file);
-                pDebug(file + " removed.");
-            }
+//            foreach(QString file, dirHSCards.entryList())
+//            {
+//                dirHSCards.remove(file);
+//                pDebug(file + " removed.");
+//            }
 
             break;
         }
