@@ -1960,6 +1960,7 @@ void DraftHandler::buildHeroCodesList()
     heroCodesList.append("HERO_06a");
     heroCodesList.append("HERO_07");
     heroCodesList.append("HERO_07a");
+    heroCodesList.append("HERO_07b");
     heroCodesList.append("HERO_08");
     heroCodesList.append("HERO_08a");
     heroCodesList.append("HERO_08b");
