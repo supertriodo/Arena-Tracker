@@ -22,7 +22,7 @@ private:
     QWebSocket twitchSocket;
     bool connectionOk_;
     QRegularExpressionMatch match;
-    QList<QString> participants;
+    QMap<QString, int> participants;
     int votes[3];
 
 

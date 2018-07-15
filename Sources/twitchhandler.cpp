@@ -170,11 +170,19 @@ void TwitchHandler::textMessageReceived(QString message)
         QString username = match.captured(1);
         int pick = match.captured(2).toInt() - 1;
 
-        if(!participants.contains(username))
+        //Eliminamos su voto anterior
+        if(participants.contains(username))
         {
-            participants.append(username);
-            votes[pick]++;
-            emit voteUpdate(votes[0], votes[1], votes[2]);
+            int oldPick = participants[username];
+
+            if(oldPick>=0 && oldPick<3)
+            {
+                votes[oldPick]--;
+            }
         }
+
+        participants[username] = pick;
+        votes[pick]++;
+        emit voteUpdate(votes[0], votes[1], votes[2]);
     }
 }
