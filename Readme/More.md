@@ -12,6 +12,8 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
 * [Patreon only:](https://www.patreon.com/triodo) While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
+* Do you stream Hearthstone? Let your viewers vote during drafts.
+![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
 * Upload your stats to your track-o-bot account.
 ![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
 * Save and organize your constructed decks.
