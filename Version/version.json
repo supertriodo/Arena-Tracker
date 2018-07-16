@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.7","v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.61/Arena.Tracker.v6.61.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.61/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.61/Arena.Tracker.v6.61.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.61/Arena.Tracker.v6.61.Windows.zip",
-	"log": "This is a hotfix for the end of Tavern of Time event.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.61'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.7/Arena.Tracker.v6.7.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.7/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.7/Arena.Tracker.v6.7.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.7/Arena.Tracker.v6.7.Windows.zip",
+	"log": "AT updates with Twitch integration, allowing your chat to vote for cards and heroes during your draft. Configure it through the config tab and it will automatically work on your next draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.7'>github</a>"
 }
