@@ -1063,11 +1063,15 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     if(this->twitchHandler != NULL)
     {
         twitchHandler->reset();
-        QString pickTag = TwitchHandler::getPickTag();
-        twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+"/30] -- "):QString("")) +
-                                   "(" + pickTag + "1) " + bestCards[0].getName() +
-                                   " / (" + pickTag + "2) " + bestCards[1].getName() +
-                                   " / (" + pickTag + "3) " + bestCards[2].getName());
+
+        if(TwitchHandler::isActive())
+        {
+            QString pickTag = TwitchHandler::getPickTag();
+            twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+"/30] -- "):QString("")) +
+                                       "(" + pickTag + "1) " + bestCards[0].getName() +
+                                       " / (" + pickTag + "2) " + bestCards[1].getName() +
+                                       " / (" + pickTag + "3) " + bestCards[2].getName());
+        }
     }
 
 
@@ -1500,10 +1504,14 @@ void DraftHandler::showNewHeroes()
     if(this->twitchHandler != NULL)
     {
         twitchHandler->reset();
-        QString pickTag = TwitchHandler::getPickTag();
-        twitchHandler->sendMessage("(" + pickTag + "1) " + draftCardMaps[0][bestMatchesMaps[0].first()].getName() +
-                                   " / (" + pickTag + "2) " + draftCardMaps[1][bestMatchesMaps[1].first()].getName() +
-                                   " / (" + pickTag + "3) " + draftCardMaps[2][bestMatchesMaps[2].first()].getName());
+
+        if(TwitchHandler::isActive())
+        {
+            QString pickTag = TwitchHandler::getPickTag();
+            twitchHandler->sendMessage("(" + pickTag + "1) " + draftCardMaps[0][bestMatchesMaps[0].first()].getName() +
+                                       " / (" + pickTag + "2) " + draftCardMaps[1][bestMatchesMaps[1].first()].getName() +
+                                       " / (" + pickTag + "3) " + draftCardMaps[2][bestMatchesMaps[2].first()].getName());
+        }
     }
 }
 
