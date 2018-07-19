@@ -37,6 +37,7 @@ class ShowEntity
 public:
     int id;
     bool isPlayer;
+    bool trackAllTags;//No lo usamos
 };
 
 
@@ -152,6 +153,7 @@ signals:
     void playerTagChange(QString tag, QString value);
     void enemyTagChange(QString tag, QString value);
     void playerCardCodeChange(int id, QString newCode);
+    void minionCodeChange(bool friendly, int id, QString newCode);
     void playerMinionGraveyard(int id, QString code);
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
     void playerWeaponGraveyard(int id, QString code);

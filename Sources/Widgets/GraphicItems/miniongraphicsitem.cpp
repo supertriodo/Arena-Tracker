@@ -5,43 +5,15 @@
 
 MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
 {
-    this->code = code;
+    initCode(code);
+
     this->id = id;
     this->friendly = friendly;
-    this->hero = false;
-    this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
-    this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
-    if(health <= 0) this->health = this->origHealth = Utility::getCardAttribute(code, "durability").toInt();
-
-    this->damage = 0;
-    this->shield = false;
-    this->taunt = false;
-    this->stealth = false;
-    this->frozen = false;
-    this->windfury = false;
-    this->charge = false;
-    this->exausted = true;
-    this->dead = false;
-    this->toBeDestroyed = false;
     this->playerTurn = playerTurn;
-    this->addonsStacked = false;
-    this->triggerMinion = false;
-    this->aura = false;
-    this->zone = "PLAY";
-    this->changeAttack = ChangeNone;
-    this->changeHealth = ChangeNone;
-    this->deadProb = 0;
+
     this->graphicsItemSender = graphicsItemSender;
     this->setZValue(-50);
     setAcceptHoverEvents(true);
-
-    foreach(QJsonValue value, Utility::getCardAttribute(code, "mechanics").toArray())
-    {
-        processTagChange(value.toString(), "1");
-    }
-
-    //Leokk AURA
-    if(code == LEOKK || code == GRIMSCALE_ORACLE)   processTagChange("AURA", "1");
 }
 
 
@@ -82,6 +54,49 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     {
         this->addons.append(addon);
     }
+}
+
+
+void MinionGraphicsItem::changeCode(QString newCode)
+{
+    initCode(newCode);
+    update();
+}
+
+
+void MinionGraphicsItem::initCode(QString code)
+{
+    this->code = code;
+    this->hero = false;
+    this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
+    this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
+    if(health <= 0) this->health = this->origHealth = Utility::getCardAttribute(code, "durability").toInt();
+
+    this->damage = 0;
+    this->shield = false;
+    this->taunt = false;
+    this->stealth = false;
+    this->frozen = false;
+    this->windfury = false;
+    this->charge = false;
+    this->exausted = true;
+    this->dead = false;
+    this->toBeDestroyed = false;
+    this->addonsStacked = false;
+    this->triggerMinion = false;
+    this->aura = false;
+    this->zone = "PLAY";
+    this->changeAttack = ChangeNone;
+    this->changeHealth = ChangeNone;
+    this->deadProb = 0;
+
+    foreach(QJsonValue value, Utility::getCardAttribute(code, "mechanics").toArray())
+    {
+        processTagChange(value.toString(), "1");
+    }
+
+    //Leokk AURA
+    if(code == LEOKK || code == GRIMSCALE_ORACLE)   processTagChange("AURA", "1");
 }
 
 

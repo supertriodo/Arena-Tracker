@@ -1681,6 +1681,24 @@ void PlanHandler::playerCardCodeChange(int id, QString newCode)
 }
 
 
+void PlanHandler::minionCodeChange(bool friendly, int id, QString newCode)
+{
+    MinionGraphicsItem *minion = findMinion(friendly, id);
+
+    if(minion != NULL)
+    {
+        emit pDebug((friendly?QString("Player"): QString("Enemy")) + " minion Id: " + QString::number(id) +
+                    " changed Code: " + minion->getCode() + " --> " + newCode);
+        minion->changeCode(newCode);
+        emit checkCardImage(newCode, false);
+    }
+    else
+    {
+        emit pDebug((friendly?QString("Player"): QString("Enemy")) + " minion Id: " + QString::number(id) + " not found in board.");
+    }
+}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     if(numTurn == 2)    fixTurn1Card();

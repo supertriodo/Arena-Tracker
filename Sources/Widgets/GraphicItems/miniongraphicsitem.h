@@ -88,12 +88,14 @@ public:
     void setExausted(bool value=true);
     void updateStatsFromCard(CardGraphicsItem *card);
     void addPlanningAddon(QString code, Addon::AddonType type);
+    void changeCode(QString newCode);
 
 private:
     void addAddonNeutral(Addon addon);
     void addAddonDamageLife(Addon addon);
     void stackAddons();
     void healPlanningMinion(bool allowRecoverShield=false);
+    void initCode(QString code);
 };
 
 #endif // MINIONGRAPHICSITEM_H

@@ -514,11 +514,18 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         if(tag == "ATK" || tag == "HEALTH")
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
-            if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", DebugLevel::Error);
+            if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", numLine, DebugLevel::Error);
             else if(lastShowEntity.isPlayer)    emit playerBoardTagChange(lastShowEntity.id, "", tag, value);
             else                                emit enemyBoardTagChange(lastShowEntity.id, "", tag, value);
         }
         //En un futuro quizas haya que distinguir entre cambios en zone HAND o PLAY, por ahora son siempre cambios en PLAY
+
+        //Tag avanzados para CHANGE_ENTITY - Updating Entity=
+        //No son necesarios ya que al hacer el update entity emit minionCodeChange que cambiara
+        //el codigo del minion leyendo del json todos sus atributos correctos.
+//                    || (lastShowEntity.trackAllTags && (tag == "DAMAGE" || /*tag == "EXHAUSTED" ||*/
+//                     tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+//                     tag == "FROZEN" || tag == "WINDFURY" || tag == "AURA"))
     }
     else
     {
@@ -673,6 +680,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
+            lastShowEntity.trackAllTags = false;
         }
 
 
@@ -691,6 +699,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
+            lastShowEntity.trackAllTags = false;
         }
 
 
@@ -709,6 +718,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": FULL_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
+            lastShowEntity.trackAllTags = false;
         }
 
 
@@ -730,10 +740,15 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         " to Code: " + newCardId + " in Zone: " + zone, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
+            lastShowEntity.trackAllTags = true;
 
-            if(isPlayer && zone == "HAND")
+            if(zone == "HAND")
             {
-                emit playerCardCodeChange(id.toInt(), newCardId);
+                if(isPlayer)    emit playerCardCodeChange(id.toInt(), newCardId);
+            }
+            else if(zone == "PLAY")
+            {
+                emit minionCodeChange(isPlayer, id.toInt(), newCardId);
             }
         }
 

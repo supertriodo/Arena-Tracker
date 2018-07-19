@@ -253,6 +253,7 @@ public slots:
     void playerCardCodeChange(int id, QString newCode);
     void revealEnemyCard(int id, QString code);
     void setPremium(bool premium);
+    void minionCodeChange(bool friendly, int id, QString newCode);
 };
 
 #endif // PLANHANDLER_H
