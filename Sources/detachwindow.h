@@ -22,8 +22,8 @@ public:
 
 //Variables
 private:
-    QPushButton *closeButton = NULL;
-    ResizeButton *resizeButton = NULL;
+    QPushButton *closeButton = nullptr;
+    ResizeButton *resizeButton = nullptr;
     QPoint dragPosition;
     QString paneName;
     QWidget *paneWidget;

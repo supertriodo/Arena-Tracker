@@ -5,13 +5,13 @@
 
 SecretCard::SecretCard() : DeckCard("")
 {
-    treeItem = NULL;
+    treeItem = nullptr;
     hero = INVALID_CLASS;
 }
 
 SecretCard::SecretCard(QString code) : DeckCard(code)
 {
-    treeItem = NULL;
+    treeItem = nullptr;
     hero = INVALID_CLASS;
 }
 
@@ -69,11 +69,11 @@ void SecretCard::draw()
     }
     painter.end();
 
-    if(this->listItem != NULL)
+    if(this->listItem != nullptr)
     {
         this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
     }
-    if(this->treeItem != NULL)
+    if(this->treeItem != nullptr)
     {
         this->treeItem->setIcon(0, QIcon(resizeCardHeight(canvas)));
     }

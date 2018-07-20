@@ -14,14 +14,14 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->capturing = false;
     this->leavingArena = false;
     this->transparency = Opaque;
-    this->draftHeroWindow = NULL;
-    this->draftScoreWindow = NULL;
-    this->draftMechanicsWindow = NULL;
-    this->synergyHandler = NULL;
+    this->draftHeroWindow = nullptr;
+    this->draftScoreWindow = nullptr;
+    this->draftMechanicsWindow = nullptr;
+    this->synergyHandler = nullptr;
     this->mouseInApp = false;
     this->draftMethod = All;
     this->normalizedLF = true;
-    this->twitchHandler = NULL;
+    this->twitchHandler = nullptr;
 
     for(int i=0; i<3; i++)
     {
@@ -43,7 +43,7 @@ DraftHandler::~DraftHandler()
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
     deleteTwitchHandler();
-    if(synergyHandler != NULL)  delete synergyHandler;
+    if(synergyHandler != nullptr)  delete synergyHandler;
 }
 
 
@@ -283,7 +283,7 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
             QJsonObject jsonScoreObject = jsonScore.toObject();
             QString hero = jsonScoreObject.value("Hero").toString();
 
-            if(multiClassDraft || hero == NULL || hero == heroString)
+            if(multiClassDraft || hero == nullptr || hero == heroString)
             {
                 LFtier lfTier;
                 lfTier.score = (int)jsonScoreObject.value("Score").toDouble();
@@ -307,7 +307,7 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
                     addCardHist(code, true);
 
                     //En multiclass guardaremos el primer score que aparezca
-                    //En cartas neutrales sera el hero==NULL
+                    //En cartas neutrales sera el hero == nullptr
                     //En cartas de clase sera la clase especifica
                     if(multiClassDraft) lightForgeTiers[code] = lfTier;
                 }
@@ -475,8 +475,8 @@ void DraftHandler::leaveArena()
                 bestMatchesMaps[i].clear();
             }
         }
-        if(draftScoreWindow != NULL)        draftScoreWindow->hide();
-        if(draftMechanicsWindow != NULL)    draftMechanicsWindow->hide();
+        if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
+        if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
     }
     else if(heroDrafting)   endHeroDraft();
     else    deleteDraftMechanicsWindow();
@@ -533,10 +533,10 @@ void DraftHandler::createTwitchHandler()
 
 void DraftHandler::deleteTwitchHandler()
 {
-    if(twitchHandler != NULL)
+    if(twitchHandler != nullptr)
     {
         twitchHandler->deleteLater();
-        twitchHandler = NULL;
+        twitchHandler = nullptr;
     }
 }
 
@@ -545,8 +545,8 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 {
     if(ok)
     {
-        if(draftScoreWindow != NULL && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
-        if(draftHeroWindow != NULL && TwitchHandler::isActive())    draftHeroWindow->showTwitchScores();
+        if(draftScoreWindow != nullptr && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
+        if(draftHeroWindow != nullptr && TwitchHandler::isActive())    draftHeroWindow->showTwitchScores();
     }
     else
     {
@@ -557,23 +557,23 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 
 void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3)
 {
-    if(draftScoreWindow != NULL)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
-    if(draftHeroWindow != NULL)     draftHeroWindow->setTwitchScores(vote1, vote2, vote3);
+    if(draftScoreWindow != nullptr)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
+    if(draftHeroWindow != nullptr)     draftHeroWindow->setTwitchScores(vote1, vote2, vote3);
 }
 
 
 void DraftHandler::updateTwitchChatVotes()
 {
-    if(draftScoreWindow != NULL)
+    if(draftScoreWindow != nullptr)
     {
-        if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
+        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() &&
                 TwitchHandler::isActive())  draftScoreWindow->showTwitchScores();
         else                                draftScoreWindow->showTwitchScores(false);
     }
 
-    if(draftHeroWindow != NULL)
+    if(draftHeroWindow != nullptr)
     {
-        if(twitchHandler != NULL && twitchHandler->isConnectionOk() &&
+        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() &&
                 TwitchHandler::isActive())  draftHeroWindow->showTwitchScores();
         else                                draftHeroWindow->showTwitchScores(false);
     }
@@ -679,11 +679,11 @@ void DraftHandler::endDraftDeleteMechanicsWindow()
 
 void DraftHandler::deleteDraftHeroWindow()
 {
-    if(draftHeroWindow != NULL)
+    if(draftHeroWindow != nullptr)
     {
         draftHeroWindow->close();
         delete draftHeroWindow;
-        draftHeroWindow = NULL;
+        draftHeroWindow = nullptr;
         emit overlayCardLeave();
     }
 }
@@ -691,11 +691,11 @@ void DraftHandler::deleteDraftHeroWindow()
 
 void DraftHandler::deleteDraftScoreWindow()
 {
-    if(draftScoreWindow != NULL)
+    if(draftScoreWindow != nullptr)
     {
         draftScoreWindow->close();
         delete draftScoreWindow;
-        draftScoreWindow = NULL;
+        draftScoreWindow = nullptr;
         emit overlayCardLeave();
     }
 }
@@ -703,11 +703,11 @@ void DraftHandler::deleteDraftScoreWindow()
 
 void DraftHandler::deleteDraftMechanicsWindow()
 {
-    if(draftMechanicsWindow != NULL)
+    if(draftMechanicsWindow != nullptr)
     {
         draftMechanicsWindow->close();
         delete draftMechanicsWindow;
-        draftMechanicsWindow = NULL;
+        draftMechanicsWindow = nullptr;
         emit itemLeave();
     }
 }
@@ -961,7 +961,7 @@ void DraftHandler::pickCard(QString code)
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
         if(cardIndex <= 2)   updateDeckScore(shownTierScoresHA[cardIndex], shownTierScoresLF[cardIndex]);
-        if(draftMechanicsWindow != NULL)
+        if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
                                                  aoeList, tauntList, survivabilityList, drawList,
@@ -987,7 +987,7 @@ void DraftHandler::pickCard(QString code)
 
     this->numCaptured = 0;
     this->extendedCapture = false;
-    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
+    if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
     emit pDebug("Pick card: " + code);
     emit newDeckCard(code);
@@ -1020,7 +1020,7 @@ void DraftHandler::refreshCapturedCards()
 
     this->numCaptured = 0;
     this->extendedCapture = true;
-    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores();
+    if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
     newCaptureDraftLoop(false);
 }
@@ -1060,7 +1060,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    HearthArena);
 
     //Twitch Handler
-    if(this->twitchHandler != NULL)
+    if(this->twitchHandler != nullptr)
     {
         twitchHandler->reset();
 
@@ -1077,7 +1077,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
     if(patreonVersion)
     {
-        if(draftScoreWindow != NULL)
+        if(draftScoreWindow != nullptr)
         {
             for(int i=0; i<3; i++)
             {
@@ -1105,7 +1105,7 @@ void DraftHandler::comboBoxChanged()
         bestCards[i] = draftCardMaps[i][code];
     }
 
-    if(draftScoreWindow != NULL)    draftScoreWindow->hideScores(true);
+    if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
     showNewCards(bestCards);
 }
 
@@ -1124,7 +1124,7 @@ void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
 
-    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
 }
 
 
@@ -1204,7 +1204,7 @@ void DraftHandler::showNewRatings(double rating1, double rating2, double rating3
     }
 
     //Mostrar score
-    if(draftScoreWindow != NULL)
+    if(draftScoreWindow != nullptr)
     {
         draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod);
     }
@@ -1498,10 +1498,10 @@ void DraftHandler::showNewHeroes()
         QString HSRkey = Utility::getCardAttribute(code, "cardClass").toString();
         scores[i] = heroWinratesMap[HSRkey];
     }
-    if(draftHeroWindow != NULL)     draftHeroWindow->setScores(scores[0], scores[1], scores[2]);
+    if(draftHeroWindow != nullptr)     draftHeroWindow->setScores(scores[0], scores[1], scores[2]);
 
     //Twitch Handler
-    if(this->twitchHandler != NULL)
+    if(this->twitchHandler != nullptr)
     {
         twitchHandler->reset();
 
@@ -1520,7 +1520,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 {
     int numCards = synergyHandler->draftedCardsCount();
 
-    if(numCards == 0 || !patreonVersion || draftMechanicsWindow == NULL)    return;
+    if(numCards == 0 || !patreonVersion || draftMechanicsWindow == nullptr)    return;
 
     QStringList spellList, minionList, weaponList,
                 aoeList, tauntList, survivabilityList, drawList,
@@ -1561,7 +1561,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
         connect(draftScoreWindow, SIGNAL(cardLeave()),
                 this, SIGNAL(overlayCardLeave()));
 
-        if(twitchHandler != NULL && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
+        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
         draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->draftMethod, this->normalizedLF);
@@ -1576,7 +1576,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     else// if(heroDrafting)
     {
         draftHeroWindow = new DraftHeroWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
-        if(twitchHandler != NULL && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
+        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
     }
 
     showOverlay();
@@ -1616,7 +1616,7 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 
 void DraftHandler::setTheme()
 {
-    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setTheme();
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setTheme();
     synergyHandler->setTheme();
 
     ui->refreshDraftButton->setIcon(QIcon(ThemeHandler::buttonDraftRefreshFile()));
@@ -1697,17 +1697,17 @@ void DraftHandler::setShowDraftMechanicsOverlay(bool value)
 
 void DraftHandler::showOverlay()
 {
-    if(this->draftHeroWindow != NULL)
+    if(this->draftHeroWindow != nullptr)
     {
         this->draftHeroWindow->show();
     }
-    if(this->draftScoreWindow != NULL)
+    if(this->draftScoreWindow != nullptr)
     {
         if(showDraftScoresOverlay)  this->draftScoreWindow->show();
         else                        this->draftScoreWindow->hide();
     }
 
-    if(this->draftMechanicsWindow != NULL)
+    if(this->draftMechanicsWindow != nullptr)
     {
         if(showDraftMechanicsOverlay && patreonVersion) this->draftMechanicsWindow->show();
         else                                            this->draftMechanicsWindow->hide();
@@ -1718,7 +1718,7 @@ void DraftHandler::showOverlay()
 void DraftHandler::setLearningMode(bool value)
 {
     this->learningMode = value;
-    if(this->draftScoreWindow != NULL)  draftScoreWindow->setLearningMode(value);
+    if(this->draftScoreWindow != nullptr)  draftScoreWindow->setLearningMode(value);
 
     updateScoresVisibility();
 }
@@ -1728,8 +1728,8 @@ void DraftHandler::setDraftMethod(DraftMethod value)
 {
     this->draftMethod = value;
     if(!isDrafting())   return;
-    if(draftScoreWindow != NULL)        draftScoreWindow->setDraftMethod(value);
-    if(draftMechanicsWindow != NULL)    draftMechanicsWindow->setDraftMethod(value);
+    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(value);
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethod(value);
 
     updateDeckScore();
     updateScoresVisibility();
@@ -1837,7 +1837,7 @@ void DraftHandler::redrawAllCards()
         comboBoxCard[i]->setCurrentIndex(currentIndex);
     }
 
-    if(draftScoreWindow != NULL)    draftScoreWindow->redrawSynergyCards();
+    if(draftScoreWindow != nullptr)    draftScoreWindow->redrawSynergyCards();
     connectAllComboBox();
 }
 
@@ -1884,8 +1884,8 @@ void DraftHandler::setNormalizedLF(bool value)
     this->normalizedLF = value;
     if(!isDrafting())   return;
 
-    if(this->draftScoreWindow != NULL)      draftScoreWindow->setNormalizedLF(value);
-    if(this->draftMechanicsWindow != NULL)  draftMechanicsWindow->setNormalizedLF(value);
+    if(this->draftScoreWindow != nullptr)      draftScoreWindow->setNormalizedLF(value);
+    if(this->draftMechanicsWindow != nullptr)  draftMechanicsWindow->setNormalizedLF(value);
     scoreButtonLF->setNormalizedLF(value);
 
     //Re Show new ratings
@@ -1907,17 +1907,17 @@ void DraftHandler::setNormalizedLF(bool value)
 
 void DraftHandler::minimizeScoreWindow()
 {
-    if(this->draftHeroWindow != NULL)                                                       draftHeroWindow->showMinimized();
-    if(this->draftScoreWindow != NULL && showDraftScoresOverlay)                            draftScoreWindow->showMinimized();
-    if(this->draftMechanicsWindow != NULL && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->showMinimized();
+    if(this->draftHeroWindow != nullptr)                                                       draftHeroWindow->showMinimized();
+    if(this->draftScoreWindow != nullptr && showDraftScoresOverlay)                            draftScoreWindow->showMinimized();
+    if(this->draftMechanicsWindow != nullptr && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->showMinimized();
 }
 
 
 void DraftHandler::deMinimizeScoreWindow()
 {
-    if(this->draftHeroWindow != NULL)                                                       draftHeroWindow->setWindowState(Qt::WindowActive);
-    if(this->draftScoreWindow != NULL && showDraftScoresOverlay)                            draftScoreWindow->setWindowState(Qt::WindowActive);
-    if(this->draftMechanicsWindow != NULL && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->setWindowState(Qt::WindowActive);
+    if(this->draftHeroWindow != nullptr)                                                       draftHeroWindow->setWindowState(Qt::WindowActive);
+    if(this->draftScoreWindow != nullptr && showDraftScoresOverlay)                            draftScoreWindow->setWindowState(Qt::WindowActive);
+    if(this->draftMechanicsWindow != nullptr && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->setWindowState(Qt::WindowActive);
 }
 
 

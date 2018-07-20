@@ -20,31 +20,31 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    atLogFile = NULL;
+    atLogFile = nullptr;
     mouseInApp = false;
-    deckWindow = NULL;
-    arenaWindow = NULL;
-    enemyWindow = NULL;
-    enemyDeckWindow = NULL;
-    graveyardWindow = NULL;
-    planWindow = NULL;
+    deckWindow = nullptr;
+    arenaWindow = nullptr;
+    enemyWindow = nullptr;
+    enemyDeckWindow = nullptr;
+    graveyardWindow = nullptr;
+    planWindow = nullptr;
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
 
-    logLoader = NULL;
-    gameWatcher = NULL;
-    arenaHandler = NULL;
-    cardDownloader = NULL;
-    enemyHandHandler = NULL;
-    draftHandler = NULL;
-    deckHandler = NULL;
-    enemyDeckHandler = NULL;
-    graveyardHandler = NULL;
-    secretsHandler = NULL;
-    trackobotUploader = NULL;
-    premiumHandler = NULL;
-    twitchTester = NULL;
+    logLoader = nullptr;
+    gameWatcher = nullptr;
+    arenaHandler = nullptr;
+    cardDownloader = nullptr;
+    enemyHandHandler = nullptr;
+    draftHandler = nullptr;
+    deckHandler = nullptr;
+    enemyDeckHandler = nullptr;
+    graveyardHandler = nullptr;
+    secretsHandler = nullptr;
+    trackobotUploader = nullptr;
+    premiumHandler = nullptr;
+    twitchTester = nullptr;
 
     createNetworkManager();
     createDataDir();
@@ -86,20 +86,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if(networkManager != NULL)      delete networkManager;
-    if(premiumHandler != NULL)      delete premiumHandler;
-    if(logLoader != NULL)           delete logLoader;
-    if(gameWatcher != NULL)         delete gameWatcher;
-    if(arenaHandler != NULL)        delete arenaHandler;
-    if(cardDownloader != NULL)      delete cardDownloader;
-    if(graveyardHandler != NULL)    delete graveyardHandler;
-    if(enemyDeckHandler != NULL)    delete enemyDeckHandler;
-    if(enemyHandHandler != NULL)    delete enemyHandHandler;
-    if(draftHandler != NULL)        delete draftHandler;
-    if(deckHandler != NULL)         delete deckHandler;
-    if(secretsHandler != NULL)      delete secretsHandler;
-    if(trackobotUploader != NULL)   delete trackobotUploader;
-    if(ui != NULL)                  delete ui;
+    if(networkManager != nullptr)      delete networkManager;
+    if(premiumHandler != nullptr)      delete premiumHandler;
+    if(logLoader != nullptr)           delete logLoader;
+    if(gameWatcher != nullptr)         delete gameWatcher;
+    if(arenaHandler != nullptr)        delete arenaHandler;
+    if(cardDownloader != nullptr)      delete cardDownloader;
+    if(graveyardHandler != nullptr)    delete graveyardHandler;
+    if(enemyDeckHandler != nullptr)    delete enemyDeckHandler;
+    if(enemyHandHandler != nullptr)    delete enemyHandHandler;
+    if(draftHandler != nullptr)        delete draftHandler;
+    if(deckHandler != nullptr)         delete deckHandler;
+    if(secretsHandler != nullptr)      delete secretsHandler;
+    if(trackobotUploader != nullptr)   delete trackobotUploader;
+    if(ui != nullptr)                  delete ui;
     closeLogFile();
     QFontDatabase::removeAllApplicationFonts();
 }
@@ -133,7 +133,7 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
     if(paneWidget != ui->tabArena && paneWidget != ui->tabEnemy && paneWidget != ui->tabDeck &&
             paneWidget != ui->tabEnemyDeck && paneWidget != ui->tabGraveyard && paneWidget != ui->tabPlan)    return;
 
-    DetachWindow *detachWindow = NULL;
+    DetachWindow *detachWindow = nullptr;
 
     if(paneWidget == ui->tabArena)
     {
@@ -189,17 +189,17 @@ void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWid
     disconnect(ui->minimizeButton, 0, detachWindow, 0);
     disconnect(detachWindow, 0, this, 0);
 
-    if(detachWindow == deckWindow)      deckWindow = NULL;
-    if(detachWindow == arenaWindow)     arenaWindow = NULL;
-    if(detachWindow == enemyWindow)     enemyWindow = NULL;
-    if(detachWindow == enemyDeckWindow) enemyDeckWindow = NULL;
-    if(detachWindow == graveyardWindow) graveyardWindow = NULL;
+    if(detachWindow == deckWindow)      deckWindow = nullptr;
+    if(detachWindow == arenaWindow)     arenaWindow = nullptr;
+    if(detachWindow == enemyWindow)     enemyWindow = nullptr;
+    if(detachWindow == enemyDeckWindow) enemyDeckWindow = nullptr;
+    if(detachWindow == graveyardWindow) graveyardWindow = nullptr;
     if(detachWindow == planWindow)
     {
         //Antes de hacer el close de la detach window se llama esta funcion.
         //Volver plan a su size normal si se cierra Plan
         resetSizePlan();
-        planWindow = NULL;
+        planWindow = nullptr;
     }
 
     updateMainUITheme();//Elimina el fondo de la ventana al unir la tab a mainWindow
@@ -226,7 +226,7 @@ QString MainWindow::getHSLanguage()
 {
     QString lang = "";
 
-    if(logLoader != NULL)
+    if(logLoader != nullptr)
     {
         QDir dir(QFileInfo(logLoader->getLogConfigPath()).absolutePath() + "/Cache/UberText");
         dir.setFilter(QDir::Files);
@@ -503,7 +503,7 @@ void MainWindow::downloadHSRHeroesWinrate()
 
 void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
 {
-    if(draftHandler == NULL)    return;
+    if(draftHandler == nullptr)    return;
 
     QMap<QString, float> heroWinratesMap;
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
@@ -812,7 +812,7 @@ void MainWindow::swapSizePlan(bool sizePlan)
     QSettings settings("Arena Tracker", "Arena Tracker");
     QSize newSize;
 
-    if(this->planWindow == NULL)
+    if(this->planWindow == nullptr)
     {
         if(!sizePlan)
         {
@@ -1528,10 +1528,10 @@ void MainWindow::configureTwitchDialogs()
 
 void MainWindow::deleteTwitchTester()
 {
-    if(twitchTester != NULL)
+    if(twitchTester != nullptr)
     {
         twitchTester->deleteLater();
-        twitchTester = NULL;
+        twitchTester = nullptr;
     }
 }
 
@@ -1639,12 +1639,12 @@ void MainWindow::writeSettings()
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
     settings.setValue("maxGamesLog", ui->configSliderZero->value());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
-    settings.setValue("deckWindow", deckWindow!=NULL);
-    settings.setValue("arenaWindow", arenaWindow!=NULL);
-    settings.setValue("enemyWindow", enemyWindow!=NULL);
-    settings.setValue("enemyDeckWindow", enemyDeckWindow!=NULL);
-    settings.setValue("graveyardWindow", graveyardWindow!=NULL);
-    settings.setValue("planWindow", planWindow!=NULL);
+    settings.setValue("deckWindow", deckWindow != nullptr);
+    settings.setValue("arenaWindow", arenaWindow != nullptr);
+    settings.setValue("enemyWindow", enemyWindow != nullptr);
+    settings.setValue("enemyDeckWindow", enemyDeckWindow != nullptr);
+    settings.setValue("graveyardWindow", graveyardWindow != nullptr);
+    settings.setValue("planWindow", planWindow != nullptr);
 }
 
 
@@ -1654,35 +1654,35 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     hide();
     writeSettings();
-    if(deckWindow != NULL)
+    if(deckWindow != nullptr)
     {
         deckWindow->close();
-        deckWindow = NULL;
+        deckWindow = nullptr;
     }
-    if(arenaWindow != NULL)
+    if(arenaWindow != nullptr)
     {
         arenaWindow->close();
-        arenaWindow = NULL;
+        arenaWindow = nullptr;
     }
-    if(enemyWindow != NULL)
+    if(enemyWindow != nullptr)
     {
         enemyWindow->close();
-        enemyWindow = NULL;
+        enemyWindow = nullptr;
     }
-    if(enemyDeckWindow != NULL)
+    if(enemyDeckWindow != nullptr)
     {
         enemyDeckWindow->close();
-        enemyDeckWindow = NULL;
+        enemyDeckWindow = nullptr;
     }
-    if(graveyardWindow != NULL)
+    if(graveyardWindow != nullptr)
     {
         graveyardWindow->close();
-        graveyardWindow = NULL;
+        graveyardWindow = nullptr;
     }
-    if(planWindow != NULL)
+    if(planWindow != nullptr)
     {
         planWindow->close();
-        planWindow = NULL;
+        planWindow = nullptr;
     }
     event->accept();
 }
@@ -1769,11 +1769,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
-                if(this->planWindow == NULL)    createDetachWindow(ui->tabPlan);
+                if(this->planWindow == nullptr)    createDetachWindow(ui->tabPlan);
                 planWindow->resize(QSize(960, 1080));
                 planWindow->move(1920, 0);
 
-                if(this->deckWindow == NULL)    createDetachWindow(ui->tabDeck);
+                if(this->deckWindow == nullptr)    createDetachWindow(ui->tabDeck);
                 deckWindow->resize(QSize(deckWindow->width(), 1030));
                 deckWindow->move(0, 0);
 
@@ -1796,13 +1796,13 @@ void MainWindow::changeEvent(QEvent * event)
     {
         if((windowState() & Qt::WindowMinimized) == 0)
         {
-            if(deckWindow != NULL)      deckWindow->setWindowState(Qt::WindowActive);
-            if(arenaWindow != NULL)     arenaWindow->setWindowState(Qt::WindowActive);
-            if(enemyWindow != NULL)     enemyWindow->setWindowState(Qt::WindowActive);
-            if(enemyDeckWindow != NULL) enemyDeckWindow->setWindowState(Qt::WindowActive);
-            if(graveyardWindow != NULL) graveyardWindow->setWindowState(Qt::WindowActive);
-            if(planWindow != NULL)      planWindow->setWindowState(Qt::WindowActive);
-            if(draftHandler != NULL)    draftHandler->deMinimizeScoreWindow();
+            if(deckWindow != nullptr)      deckWindow->setWindowState(Qt::WindowActive);
+            if(arenaWindow != nullptr)     arenaWindow->setWindowState(Qt::WindowActive);
+            if(enemyWindow != nullptr)     enemyWindow->setWindowState(Qt::WindowActive);
+            if(enemyDeckWindow != nullptr) enemyDeckWindow->setWindowState(Qt::WindowActive);
+            if(graveyardWindow != nullptr) graveyardWindow->setWindowState(Qt::WindowActive);
+            if(planWindow != nullptr)      planWindow->setWindowState(Qt::WindowActive);
+            if(draftHandler != nullptr)    draftHandler->deMinimizeScoreWindow();
         }
 
     }
@@ -1891,7 +1891,7 @@ void MainWindow::leaveEvent(QEvent * e)
     this->mouseInApp = false;
     spreadMouseInApp();
 
-    if(arenaHandler != NULL)    arenaHandler->deselectRow();
+    if(arenaHandler != nullptr)    arenaHandler->deselectRow();
 }
 
 
@@ -1946,7 +1946,7 @@ void MainWindow::changingTabUpdateDraftSize()
 
 void MainWindow::changingTabResetSizePlan()
 {
-    if(planWindow == NULL)  resetSizePlan();
+    if(planWindow == nullptr)  resetSizePlan();
 }
 
 
@@ -1984,7 +1984,7 @@ void MainWindow::resizeChecks()
     resizeTopButtons(right - ThemeHandler::borderWidth(), top + ThemeHandler::borderWidth());
     ui->resizeButton->move(right-24, bottom-24);
 
-    if(deckWindow == NULL) spreadCorrectTamCard(); //Solo es necesario si ui->tabDeck esta en mainWindow, debido a auto size
+    if(deckWindow == nullptr) spreadCorrectTamCard(); //Solo es necesario si ui->tabDeck esta en mainWindow, debido a auto size
 }
 
 
@@ -2075,7 +2075,7 @@ void MainWindow::calculateMinimumWidth()
 //Fija la anchura de la ventana de deck, enemyHand y enemyDeck.
 void MainWindow::calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders)
 {
-    if(detachWindow == NULL)    return;
+    if(detachWindow == nullptr)    return;
 
     int deckWidth = ui->deckListWidget->sizeHintForColumn(0) + (hasBorders?2*ThemeHandler::borderWidth():0);
     if(detachWindow == deckWindow)      deckWindow->setFixedWidth(deckWidth);
@@ -2183,7 +2183,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
         if(endDraftLog)
         {
             pDebug("End DraftLog: " + draftLogFile);
-            if(arenaHandler != NULL)    arenaHandler->linkDraftLogToArenaCurrent(draftLogFile);
+            if(arenaHandler != nullptr)    arenaHandler->linkDraftLogToArenaCurrent(draftLogFile);
             draftLogFile = "";
         }
     }
@@ -2217,7 +2217,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
 
     qDebug().noquote() << logLine;
 
-    if(atLogFile != NULL)
+    if(atLogFile != nullptr)
     {
         QTextStream stream(atLogFile);
         stream << logLine << endl;
@@ -2316,17 +2316,17 @@ void MainWindow::createLogFile()
     {
         pDebug("Failed to create Arena Tracker log on disk.", DebugLevel::Error);
         pLog(tr("File: ERROR: Failed to create Arena Tracker log on disk."));
-        atLogFile = NULL;
+        atLogFile = nullptr;
     }
 }
 
 
 void MainWindow::closeLogFile()
 {
-    if(atLogFile == NULL)   return;
+    if(atLogFile == nullptr)   return;
     atLogFile->close();
     delete atLogFile;
-    atLogFile = NULL;
+    atLogFile = nullptr;
 }
 
 
@@ -2643,7 +2643,7 @@ void MainWindow::checkGamesLogDir()
 
 void MainWindow::completeArenaDeck()
 {
-    if(arenaHandler == NULL)    return;
+    if(arenaHandler == nullptr)    return;
 
     QString arenaCurrentGameLog = arenaHandler->getArenaCurrentDraftLog();
     if(arenaCurrentGameLog.isEmpty())
@@ -2654,7 +2654,7 @@ void MainWindow::completeArenaDeck()
     {
         pDebug("Completing Arena Deck: " + arenaCurrentGameLog);
 
-        if(deckHandler != NULL) deckHandler->completeArenaDeck(arenaCurrentGameLog);
+        if(deckHandler != nullptr) deckHandler->completeArenaDeck(arenaCurrentGameLog);
     }
 }
 
@@ -2733,16 +2733,16 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
 
     bool kindOfTransparent = (transparency==Transparent || transparency==AutoTransparent);
     deckHandler->setTransparency(
-                (this->deckWindow!=NULL && kindOfTransparent)?
+                (this->deckWindow != nullptr && kindOfTransparent)?
                     Transparent:transparency);
     enemyDeckHandler->setTransparency(
-                (this->enemyDeckWindow!=NULL && kindOfTransparent)?
+                (this->enemyDeckWindow != nullptr && kindOfTransparent)?
                     Transparent:transparency);
     graveyardHandler->setTransparency(
-                (this->graveyardWindow!=NULL && kindOfTransparent)?
+                (this->graveyardWindow != nullptr && kindOfTransparent)?
                     Transparent:transparency);
     enemyHandHandler->setTransparency(
-                (this->enemyWindow!=NULL && kindOfTransparent)?
+                (this->enemyWindow != nullptr && kindOfTransparent)?
                     Transparent:transparency);
     planHandler->setTransparency(transparency);
     arenaHandler->setTransparency(transparency);
@@ -2751,32 +2751,32 @@ void MainWindow::spreadTransparency(Transparency newTransparency)
 
     showWindowFrame(transparency == Framed);
 
-    if(arenaWindow != NULL)
+    if(arenaWindow != nullptr)
     {
         arenaWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabArena);
     }
-    if(enemyWindow != NULL)
+    if(enemyWindow != nullptr)
     {
         enemyWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabEnemy);
     }
-    if(deckWindow != NULL)
+    if(deckWindow != nullptr)
     {
         deckWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabDeck);
     }
-    if(enemyDeckWindow != NULL)
+    if(enemyDeckWindow != nullptr)
     {
         enemyDeckWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabEnemyDeck);
     }
-    if(graveyardWindow != NULL)
+    if(graveyardWindow != nullptr)
     {
         graveyardWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabGraveyard);
     }
-    if(planWindow != NULL)
+    if(planWindow != nullptr)
     {
         planWindow->showWindowFrame(transparency == Framed);
         updateDetachWindowTheme(ui->tabPlan);
@@ -3005,12 +3005,12 @@ void MainWindow::updateTabIcons()
 
     ui->tabWidget->hide();
     ui->tabWidget->clear();
-    if(arenaWindow == NULL)     moveTabTo(ui->tabArena, ui->tabWidget);
-    if(enemyWindow == NULL)     moveTabTo(ui->tabEnemy, ui->tabWidget);
-    if(deckWindow == NULL)      moveTabTo(ui->tabDeck, ui->tabWidget);
-    if(enemyDeckWindow == NULL) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-    if(graveyardWindow == NULL && patreonVersion) moveTabTo(ui->tabGraveyard, ui->tabWidget);
-    if(planWindow == NULL && patreonVersion)      moveTabTo(ui->tabPlan, ui->tabWidget);
+    if(arenaWindow == nullptr)     moveTabTo(ui->tabArena, ui->tabWidget);
+    if(enemyWindow == nullptr)     moveTabTo(ui->tabEnemy, ui->tabWidget);
+    if(deckWindow == nullptr)      moveTabTo(ui->tabDeck, ui->tabWidget);
+    if(enemyDeckWindow == nullptr) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+    if(graveyardWindow == nullptr && patreonVersion) moveTabTo(ui->tabGraveyard, ui->tabWidget);
+    if(planWindow == nullptr && patreonVersion)      moveTabTo(ui->tabPlan, ui->tabWidget);
     moveTabTo(ui->tabConfig, ui->tabWidget);
     ui->tabWidget->show();
 
@@ -3094,32 +3094,32 @@ void MainWindow::updateMainUITheme()
 
 void MainWindow::updateAllDetachWindowTheme(const QString &mainCSS)
 {
-    if(arenaWindow != NULL)
+    if(arenaWindow != nullptr)
     {
         arenaWindow->setStyleSheet(mainCSS);
         arenaWindow->spreadTheme();
     }
-    if(enemyWindow != NULL)
+    if(enemyWindow != nullptr)
     {
         enemyWindow->setStyleSheet(mainCSS);
         enemyWindow->spreadTheme();
     }
-    if(deckWindow != NULL)
+    if(deckWindow != nullptr)
     {
         deckWindow->setStyleSheet(mainCSS);
         deckWindow->spreadTheme();
     }
-    if(enemyDeckWindow != NULL)
+    if(enemyDeckWindow != nullptr)
     {
         enemyDeckWindow->setStyleSheet(mainCSS);
         enemyDeckWindow->spreadTheme();
     }
-    if(graveyardWindow != NULL)
+    if(graveyardWindow != nullptr)
     {
         graveyardWindow->setStyleSheet(mainCSS);
         graveyardWindow->spreadTheme();
     }
-    if(planWindow != NULL)
+    if(planWindow != nullptr)
     {
         planWindow->setStyleSheet(mainCSS);
         planWindow->spreadTheme();
@@ -3146,7 +3146,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = arenaWindow;
             paneWidgetName = "TabArena";
             paneBorder = true;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
     }
     else if(paneWidget == ui->tabEnemy)
@@ -3154,7 +3154,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = enemyWindow;
             paneWidgetName = "TabEnemy";
             paneBorder = false;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque));
     }
     else if(paneWidget == ui->tabDeck)
@@ -3162,7 +3162,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = deckWindow;
             paneWidgetName = "TabDeck";
             paneBorder = false;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque));
     }
     else if(paneWidget == ui->tabEnemyDeck)
@@ -3170,7 +3170,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = enemyDeckWindow;
             paneWidgetName = "TabEnemyDeck";
             paneBorder = false;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque));
     }
     else if(paneWidget == ui->tabGraveyard)
@@ -3178,7 +3178,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = graveyardWindow;
             paneWidgetName = "TabGraveyard";
             paneBorder = false;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque));
     }
     else /*if(paneWidget == ui->tabPlan)*/
@@ -3186,7 +3186,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
             detachWindow = planWindow;
             paneWidgetName = "TabPlan";
             paneBorder = true;
-            showThemeBackground = (detachWindow != NULL &&
+            showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
     }
 
@@ -3203,7 +3203,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     else
     {
         paneWidget->setStyleSheet("");
-        if(detachWindow == NULL)
+        if(detachWindow == nullptr)
         {
             paneWidget->layout()->setContentsMargins((paneBorder?10:0), 40 + (paneBorder?5:0),
                                                      (paneBorder?10:0), (paneBorder?10:0));
@@ -3243,7 +3243,7 @@ int MainWindow::getAutoTamCard()
 {
     int numCards = deckHandler->getNumCardRows();
     int deckHeight = ui->tabDeck->height();
-    if(this->deckWindow == NULL)   deckHeight -= 40;
+    if(this->deckWindow == nullptr)   deckHeight -= 40;
 
     if(numCards > 0)    return deckHeight/numCards;
     else                return -1;
@@ -3277,32 +3277,32 @@ void MainWindow::spreadTamCard(int value)
     this->cardHeight = value;
     DeckCard::setCardHeight(value);
 
-    if(deckHandler != NULL)
+    if(deckHandler != nullptr)
     {
         deckHandler->updateIconSize(value);
         deckHandler->redrawAllCards();
     }
 
-    if(enemyDeckHandler != NULL)    enemyDeckHandler->redrawAllCards();
-    if(graveyardHandler != NULL)    graveyardHandler->redrawAllCards();
-    if(secretsHandler != NULL)      secretsHandler->redrawAllCards();
-    if(enemyHandHandler != NULL)
+    if(enemyDeckHandler != nullptr)    enemyDeckHandler->redrawAllCards();
+    if(graveyardHandler != nullptr)    graveyardHandler->redrawAllCards();
+    if(secretsHandler != nullptr)      secretsHandler->redrawAllCards();
+    if(enemyHandHandler != nullptr)
     {
         enemyHandHandler->redrawAllCards();
         enemyHandHandler->redrawTotalAttack();
     }
 
-    if(draftHandler != NULL)
+    if(draftHandler != nullptr)
     {
         draftHandler->updateTamCard();
         draftHandler->redrawAllCards();
     }
 
     bool windowsWithBorders = (transparency == Framed || transparency == Opaque);
-    if(deckWindow != NULL)      calculateCardWindowMinimumWidth(deckWindow, windowsWithBorders);
-    if(enemyWindow != NULL)     calculateCardWindowMinimumWidth(enemyWindow, windowsWithBorders);
-    if(enemyDeckWindow != NULL) calculateCardWindowMinimumWidth(enemyDeckWindow, windowsWithBorders);
-    if(graveyardWindow != NULL) calculateCardWindowMinimumWidth(graveyardWindow, windowsWithBorders);
+    if(deckWindow != nullptr)      calculateCardWindowMinimumWidth(deckWindow, windowsWithBorders);
+    if(enemyWindow != nullptr)     calculateCardWindowMinimumWidth(enemyWindow, windowsWithBorders);
+    if(enemyDeckWindow != nullptr) calculateCardWindowMinimumWidth(enemyDeckWindow, windowsWithBorders);
+    if(graveyardWindow != nullptr) calculateCardWindowMinimumWidth(graveyardWindow, windowsWithBorders);
 }
 
 
@@ -3462,7 +3462,7 @@ void MainWindow::spreadDraftMethod(DraftMethod draftMethod)
 void MainWindow::updateTwitchChatVotes(bool checked)
 {
     TwitchHandler::setActive(checked);
-    if(draftHandler != NULL)    draftHandler->updateTwitchChatVotes();
+    if(draftHandler != nullptr)    draftHandler->updateTwitchChatVotes();
 }
 
 
@@ -3594,7 +3594,7 @@ int MainWindow::getScreenHighest()
 
 LoadingScreenState MainWindow::getLoadingScreen()
 {
-    if(gameWatcher != NULL) return gameWatcher->getLoadingScreen();
+    if(gameWatcher != nullptr) return gameWatcher->getLoadingScreen();
     else                    return menu;
 }
 
@@ -3793,7 +3793,7 @@ void MainWindow::checkFirstRunNewVersion()
 
 void MainWindow::downloadAllArenaCodes()
 {
-    if(draftHandler == NULL)    return;
+    if(draftHandler == nullptr)    return;
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     bool allCardsDownloaded = settings.value("allCardsDownloaded", false).toBool();

@@ -10,9 +10,9 @@ QT_BEGIN_NAMESPACE
 class Ui_Extended : public Ui_MainWindow
 {
 public:
-    QPushButton *minimizeButton = NULL;
-    QPushButton *closeButton = NULL;
-    ResizeButton *resizeButton = NULL;
+    QPushButton *minimizeButton = nullptr;
+    QPushButton *closeButton = nullptr;
+    ResizeButton *resizeButton = nullptr;
 };
 
 namespace Ui {

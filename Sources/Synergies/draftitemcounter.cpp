@@ -43,16 +43,16 @@ void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
 
 DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
 {
-    labelIcon = NULL;
-    labelCounter = NULL;
+    labelIcon = nullptr;
+    labelCounter = nullptr;
     reset();
 }
 
 
 DraftItemCounter::~DraftItemCounter()
 {
-    if(labelIcon != NULL)       delete labelIcon;
-    if(labelCounter != NULL)    delete labelCounter;
+    if(labelIcon != nullptr)       delete labelIcon;
+    if(labelCounter != nullptr)    delete labelCounter;
 }
 
 
@@ -79,7 +79,7 @@ void DraftItemCounter::reset()
     this->deckCardList.clear();
     this->deckCardListSyn.clear();
 
-    if(labelIcon != NULL && labelCounter != NULL)
+    if(labelIcon != nullptr && labelCounter != nullptr)
     {
         labelCounter->setText("0");
         labelIcon->setDisabled(true);
@@ -104,7 +104,7 @@ void DraftItemCounter::show()
 
 void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInApp)
 {
-    if(labelIcon != NULL && labelCounter != NULL)
+    if(labelIcon != nullptr && labelCounter != nullptr)
     {
         if(!mouseInApp && transparency == Transparent)
         {
@@ -122,7 +122,7 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 
 void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
 {
-    if(labelIcon != NULL && labelCounter != NULL)
+    if(labelIcon != nullptr && labelCounter != nullptr)
     {
         if(counter == 0)
         {
@@ -152,7 +152,7 @@ void DraftItemCounter::increase(const QString &code, bool count)
         deckCardList.append(DeckCard(code));
     }
 
-    if(labelIcon != NULL && labelCounter != NULL && count)
+    if(labelIcon != nullptr && labelCounter != nullptr && count)
     {
         this->counter++;
         labelCounter->setText(QString::number(counter));

@@ -245,7 +245,7 @@ QString TrackobotUploader::getStringCellXls(struct st_row::st_row_data* row, int
 {
     if(col < row->fcell || col >= row->lcell)   return "";
     struct st_cell::st_cell_data* cell = &row->cells.cell[col];
-    if(cell->id != 0x0201 && cell->str!=NULL)
+    if(cell->id != 0x0201 && cell->str != nullptr)
     {
         return QString((const char*)cell->str);
     }
@@ -328,7 +328,7 @@ void TrackobotUploader::uploadXls(QString fileName)
 
     xlsWorkBook* pWB = xls_open(fileName.toUtf8(),"UTF-8");
 
-    if(pWB == NULL)
+    if(pWB == nullptr)
     {
         emit pDebug("Xls invalid file: " + fileName, Warning);
         emit showMessageProgressBar("XLS invalid");

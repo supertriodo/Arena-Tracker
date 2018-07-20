@@ -11,7 +11,7 @@ class PlanGraphicsView : public QGraphicsView
     Q_OBJECT
 
 public:
-    PlanGraphicsView(QWidget *parent=0, QGraphicsScene *graphicsScene=NULL, bool showCards=true);
+    PlanGraphicsView(QWidget *parent=nullptr, QGraphicsScene *graphicsScene=nullptr, bool showCards=true);
 
 //Variables
 private:

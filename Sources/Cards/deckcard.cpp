@@ -12,7 +12,7 @@ int DeckCard::cardHeight = 35;
 DeckCard::DeckCard(QString code, bool outsider)
 {
     setCode(code);
-    listItem = NULL;
+    listItem = nullptr;
     total = remaining = 1;
     topManaLimit = bottomManaLimit = false;
     special = false;

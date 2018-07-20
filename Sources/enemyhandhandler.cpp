@@ -199,7 +199,7 @@ HandCard *EnemyHandHandler::getHandCard(int id)
     {
         if(it->id == id)    return &(*it);
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -511,7 +511,7 @@ void EnemyHandHandler::buffHandCard(int id)
 {
     HandCard * handCard = getHandCard(id);
 
-    if(handCard == NULL)
+    if(handCard == nullptr)
     {
         emit pDebug("ERROR: HandCard not found for buffing. Id: " + QString::number(id));
         return;

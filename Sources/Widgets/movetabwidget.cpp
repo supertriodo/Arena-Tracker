@@ -90,7 +90,7 @@ void MoveTabBar::mouseMoveEvent(QMouseEvent* event)
             QMouseEvent* finishMoveEvent = new QMouseEvent(QEvent::MouseMove, event->pos(), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
             QTabBar::mouseMoveEvent(finishMoveEvent);
             delete finishMoveEvent;
-            finishMoveEvent = NULL;
+            finishMoveEvent = nullptr;
 
             //Initiate Drag
             QDrag* drag = new QDrag(this);

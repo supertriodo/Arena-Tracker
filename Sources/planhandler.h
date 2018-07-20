@@ -35,12 +35,12 @@ class Board
 {
 public:
     QList<MinionGraphicsItem *> playerMinions, enemyMinions;
-    HeroGraphicsItem * playerHero = NULL;
-    HeroGraphicsItem * enemyHero = NULL;
-    HeroPowerGraphicsItem * playerHeroPower = NULL;
-    HeroPowerGraphicsItem * enemyHeroPower = NULL;
-    WeaponGraphicsItem * playerWeapon = NULL;
-    WeaponGraphicsItem * enemyWeapon = NULL;
+    HeroGraphicsItem * playerHero = nullptr;
+    HeroGraphicsItem * enemyHero = nullptr;
+    HeroPowerGraphicsItem * playerHeroPower = nullptr;
+    HeroPowerGraphicsItem * enemyHeroPower = nullptr;
+    WeaponGraphicsItem * playerWeapon = nullptr;
+    WeaponGraphicsItem * enemyWeapon = nullptr;
     QList<ArrowGraphicsItem *> arrows;
     QList<CardGraphicsItem *> playerHandList;
     QList<CardGraphicsItem *> enemyHandList;
@@ -85,11 +85,11 @@ private:
 //Metodos:
 private:
     void updateTransparency();
-    void updateMinionZoneSpots(bool friendly, Board *board=NULL);
-    QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board=NULL);
-    HeroGraphicsItem *getHero(bool friendly, Board *board=NULL);
+    void updateMinionZoneSpots(bool friendly, Board *board = nullptr);
+    QList<MinionGraphicsItem *> *getMinionList(bool friendly, Board *board = nullptr);
+    HeroGraphicsItem *getHero(bool friendly, Board *board = nullptr);
     int findMinionPos(QList<MinionGraphicsItem *> *minionsList, int id);
-    MinionGraphicsItem *findMinion(bool friendly, int id, Board *board=NULL);
+    MinionGraphicsItem *findMinion(bool friendly, int id, Board *board = nullptr);
     void addMinion(bool friendly, QString code, int id, int pos);
     void addMinion(bool friendly, MinionGraphicsItem *minion, int pos);
     void addMinionTriggered(bool friendly, QString code, int id, int pos);
@@ -107,7 +107,7 @@ private:
     void stealMinion(bool friendly, int id, int pos);
     MinionGraphicsItem *takeMinion(bool friendly, int id, bool stolen=false);
     void addHero(bool friendly, QString code, int id);
-    void removeHero(bool friendly, Board *board=NULL);
+    void removeHero(bool friendly, Board *board = nullptr);
     void resetBoard(Board *board);
     void updateTurnLabel();
     void loadViewBoard();
@@ -125,19 +125,19 @@ private:
     bool isAddonHeroValid(const QString &code);
     bool isAddonCommonValid(const QString &code);
     void checkAtkHealthChange(MinionGraphicsItem *minion, bool friendly, QString tag, QString value);    
-    void updateCardZoneSpots(bool friendly, Board *board=NULL);
+    void updateCardZoneSpots(bool friendly, Board *board = nullptr);
     int findCardPos(QList<CardGraphicsItem *> *cardsList, int id);
-    QList<CardGraphicsItem *> *getHandList(bool friendly, Board *board=NULL);
-    CardGraphicsItem *findCard(bool friendly, int id, Board *board=NULL);
+    QList<CardGraphicsItem *> *getHandList(bool friendly, Board *board = nullptr);
+    CardGraphicsItem *findCard(bool friendly, int id, Board *board = nullptr);
     CardGraphicsItem *cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn);
     void cardPlayed(bool friendly, int id, QString code, bool discard);
     void revealEnemyCardPrevTurns(int id, QString code);    
     void addWeapon(bool friendly, QString code, int id);
-    void removeWeapon(bool friendly, int id=-1, Board *board=NULL);
+    void removeWeapon(bool friendly, int id=-1, Board *board = nullptr);
     void killWeaponLastTurn(bool friendly, int id);
     void removeHeroPower(bool friendly, Board *board);
     void addHeroPower(bool friendly, QString code, int id);
-    void updateMinionsAttack(bool friendly, Board *board=NULL);
+    void updateMinionsAttack(bool friendly, Board *board = nullptr);
     void fixTurn1Card();    
     void fixLastEchoCard();
     void addTagChange(bool friendly, QString tag, QString value);

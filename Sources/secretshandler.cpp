@@ -111,7 +111,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
 {
     HandCard *handCard = enemyHandHandler->getHandCard(id);
 
-    if(handCard != NULL)
+    if(handCard != nullptr)
     {
         QString code = handCard->getCode();
         QString createdByCode = handCard->getCreatedByCode();

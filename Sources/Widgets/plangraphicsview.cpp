@@ -10,7 +10,7 @@ PlanGraphicsView::PlanGraphicsView(QWidget *parent, QGraphicsScene *graphicsScen
     this->targetZoom = this->zoom = 0;
     this->showCards = showCards;
 
-    if(graphicsScene == NULL)
+    if(graphicsScene == nullptr)
     {
         graphicsScene = new QGraphicsScene(this);
         graphicsScene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -50,7 +50,7 @@ void PlanGraphicsView::reset()
 
 void PlanGraphicsView::removeAll()
 {
-    if(this->scene() == NULL)   return;
+    if(this->scene() == nullptr)   return;
     foreach(QGraphicsItem *item, this->scene()->items())
     {
         this->scene()->removeItem(item);

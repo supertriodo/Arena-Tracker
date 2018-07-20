@@ -278,7 +278,7 @@ void DetachWindow::mouseMoveEvent(QMouseEvent *event)
 //    {
 //        if((windowState() & Qt::WindowMinimized) == 0)
 //        {
-//            if(this->mainWindow != NULL)
+//            if(this->mainWindow != nullptr)
 //            {
 //                this->mainWindow->setWindowState(Qt::WindowActive);
 //            }

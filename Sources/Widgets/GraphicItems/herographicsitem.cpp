@@ -15,7 +15,7 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->resourcesUsed = 0;
     this->spellDamage = 0;
     this->showAllInfo = true;
-    this->heroWeapon = NULL;
+    this->heroWeapon = nullptr;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     int x = 0;
@@ -38,7 +38,7 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     this->resourcesUsed = copy->resourcesUsed;
     this->spellDamage = copy->spellDamage;
     this->showAllInfo = false;
-    this->heroWeapon = NULL; //Al copiar el weapon en copyBoard se lo asignaremos al heroe a traves de setHeroWeapon()
+    this->heroWeapon = nullptr; //Al copiar el weapon en copyBoard se lo asignaremos al heroe a traves de setHeroWeapon()
 
     foreach(SecretIcon secretIcon, copy->secretsList)
     {
@@ -377,13 +377,13 @@ void HeroGraphicsItem::sendHeroTotalAttackChange()
     if(windfury)
     {
         if(glow)                                totalAttack += attack*2;
-        if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack()*2;
+        if(attack == 0 && heroWeapon != nullptr)   totalMaxAttack += heroWeapon->getAttack()*2;
         else                                    totalMaxAttack += attack*2;
     }
     else
     {
         if(glow)                                totalAttack += attack;
-        if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack();
+        if(attack == 0 && heroWeapon != nullptr)   totalMaxAttack += heroWeapon->getAttack();
         else                                    totalMaxAttack += attack;
     }
 
@@ -616,13 +616,13 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         if(windfury)
         {
             if(glow)                                totalAttack += attack*2;
-            if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack()*2;
+            if(attack == 0 && heroWeapon != nullptr)   totalMaxAttack += heroWeapon->getAttack()*2;
             else                                    totalMaxAttack += attack*2;
         }
         else
         {
             if(glow)                                totalAttack += attack;
-            if(attack == 0 && heroWeapon != NULL)   totalMaxAttack += heroWeapon->getAttack();
+            if(attack == 0 && heroWeapon != nullptr)   totalMaxAttack += heroWeapon->getAttack();
             else                                    totalMaxAttack += attack;
         }
         if(playerTurn != friendly)              text = QString::number(totalMaxAttack);

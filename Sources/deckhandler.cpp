@@ -287,7 +287,7 @@ void DeckHandler::loadSelectedDeck()
 {
     if(ui->loadDeckTreeWidget->selectedItems().isEmpty())   return;
     QTreeWidgetItem *item = ui->loadDeckTreeWidget->selectedItems().first();
-    if(item!=NULL && !isItemClass(item))  loadDeck(item->text(0));
+    if(item != nullptr && !isItemClass(item))  loadDeck(item->text(0));
 }
 
 
@@ -491,7 +491,7 @@ void DeckHandler::setFirstOutsiderId(int id)
 QList<DeckCard> * DeckHandler::getDeckComplete()
 {
     if(deckCardList[0].total==0)    return &deckCardList;
-    else    return NULL;
+    else    return nullptr;
 }
 
 
@@ -1372,11 +1372,11 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
 void DeckHandler::removeDeckFromLoadTree(QString deckName)
 {
     QTreeWidgetItem *item = loadDeckItemsMap[deckName];
-    if(item != NULL)
+    if(item != nullptr)
     {
         QTreeWidgetItem *itemClass = item->parent();
         delete item;
-        if(itemClass != NULL && (itemClass->childCount()==0))   itemClass->setHidden(true);
+        if(itemClass != nullptr && (itemClass->childCount()==0))   itemClass->setHidden(true);
     }
 
     loadDeckItemsMap.remove(deckName);

@@ -192,7 +192,7 @@ void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
             scoresPushButton2[i]->setScore(ratings[i], ratings[i]==bestRating);
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
-            if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+            if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
         }
     }
 
@@ -326,7 +326,7 @@ void DraftScoreWindow::hideScores(bool quick)
             Utility::fadeOutWidget(scoresPushButton2[i]);
             Utility::fadeOutWidget(twitchButton[i]);
 
-            if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
+            if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
         }
 
         hideSynergies(i);

@@ -119,7 +119,7 @@ void DraftHeroWindow::hideScores(bool quick)
             QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
             Utility::fadeOutWidget(twitchButton[i]);
 
-            if(i==0 && animation!=NULL)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
+            if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
         }
     }
     this->update();

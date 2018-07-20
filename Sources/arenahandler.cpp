@@ -94,21 +94,21 @@ void ArenaHandler::createTreeWidget()
     arenaHomeless->setText(0, "Arena");
     arenaHomeless->setHidden(true);
 
-    arenaCurrent = NULL;
+    arenaCurrent = nullptr;
     arenaCurrentHero = "";
 
-    for(int i=0; i<9; i++)  rankedTreeItem[i]=NULL;
-    casualTreeItem = NULL;
-    adventureTreeItem = NULL;
-    tavernBrawlTreeItem = NULL;
-    friendlyTreeItem = NULL;
-    lastReplayUploaded = NULL;
+    for(int i=0; i<9; i++)  rankedTreeItem[i] = nullptr;
+    casualTreeItem = nullptr;
+    adventureTreeItem = nullptr;
+    tavernBrawlTreeItem = nullptr;
+    friendlyTreeItem = nullptr;
+    lastReplayUploaded = nullptr;
 }
 
 
 void ArenaHandler::deselectRow()
 {
-    ui->arenaTreeWidget->setCurrentItem(NULL);
+    ui->arenaTreeWidget->setCurrentItem(nullptr);
 }
 
 
@@ -133,7 +133,7 @@ bool ArenaHandler::isOnZ2H(QString &logFileName, QRegularExpressionMatch &match)
 
 void ArenaHandler::replayLog()
 {
-    if(!trackobotUploader->isConnected() || lastReplayUploaded != NULL || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
+    if(!trackobotUploader->isConnected() || lastReplayUploaded != nullptr || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
 
     QString logFileName = replayLogsMap[ui->arenaTreeWidget->currentItem()];
     QRegularExpressionMatch match;
@@ -228,9 +228,9 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
 
     ui->arenaTreeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    if(lastReplayUploaded == NULL)
+    if(lastReplayUploaded == nullptr)
     {
-        emit pDebug("LastReplayUploaded is NULL");
+        emit pDebug("LastReplayUploaded is nullptr");
         return;
     }
 
@@ -239,7 +239,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     if(jsonReply.isEmpty())
     {
         emit pDebug("No reply from zerotoheroes.com when uploading " + logFileName);
-        lastReplayUploaded = NULL;
+        lastReplayUploaded = nullptr;
         return;
     }
 
@@ -249,7 +249,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
     if(replayIds.isEmpty())
     {
         emit pDebug("No review id found in the reply " + jsonReply + " from zerotoheroes.com when uploading " + logFileName);
-        lastReplayUploaded = NULL;
+        lastReplayUploaded = nullptr;
         return;
     }
     QString replayId = replayIds.first().toString();
@@ -276,7 +276,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
         emit pDebug("Failed replay " + logFileName + " rename to " + newLogFileName, DebugLevel::Error);
     }
 
-    lastReplayUploaded = NULL;
+    lastReplayUploaded = nullptr;
 
     emit pDebug("Opening: " + QString(Z2H_VIEW_REPLAY_URL) + replayId);
     QDesktopServices::openUrl(QUrl(Z2H_VIEW_REPLAY_URL + replayId));
@@ -285,7 +285,7 @@ void ArenaHandler::replyFinished(QNetworkReply *reply)
 
 void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 {
-    if(arenaCurrent != NULL && !logFileName.isEmpty())  replayLogsMap[arenaCurrent] = logFileName;
+    if(arenaCurrent != nullptr && !logFileName.isEmpty())  replayLogsMap[arenaCurrent] = logFileName;
 }
 
 
@@ -293,10 +293,10 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 {
     QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
 
-    if(item != NULL && !logFileName.isEmpty())  replayLogsMap[item] = logFileName;
+    if(item != nullptr && !logFileName.isEmpty())  replayLogsMap[item] = logFileName;
 
     //Trackobot upload
-    if(trackobotUploader != NULL && planHandler != NULL &&
+    if(trackobotUploader != nullptr && planHandler != nullptr &&
             (loadingScreen == arena || loadingScreen == ranked || loadingScreen == casual || loadingScreen == friendly))
     {
         trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, QDateTime::currentDateTime(), planHandler->getJsonCardHistory());
@@ -347,7 +347,7 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, b
 
 QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen)
 {
-    QTreeWidgetItem *item = NULL;
+    QTreeWidgetItem *item = nullptr;
     int indexHero = gameResult.playerHero.toInt()-1;
 
     switch(loadingScreen)
@@ -359,7 +359,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
         case arena:
             emit pLog(tr("Log: New arena game."));
 
-            if(arenaCurrent == NULL || arenaCurrentHero.compare(gameResult.playerHero)!=0)
+            if(arenaCurrent == nullptr || arenaCurrentHero.compare(gameResult.playerHero)!=0)
             {
                 emit pDebug("Create GameResult from arena in arenaHomeless.");
 
@@ -379,9 +379,9 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from ranked with hero " + gameResult.playerHero + ".");
             emit pLog(tr("Log: New ranked game."));
 
-            if(indexHero<0||indexHero>8)  return NULL;
+            if(indexHero<0||indexHero>8)  return nullptr;
 
-            if(rankedTreeItem[indexHero] == NULL)
+            if(rankedTreeItem[indexHero] == nullptr)
             {
                 emit pDebug("Create Category ranked[" + QString::number(indexHero) + "].");
                 rankedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
@@ -395,7 +395,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from casual.");
             emit pLog(tr("Log: New casual game."));
 
-            if(casualTreeItem == NULL)
+            if(casualTreeItem == nullptr)
             {
                 emit pDebug("Create Category casual.");
                 casualTreeItem = createTopLevelItem("Casual", "", false);
@@ -409,7 +409,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from adventure.");
             emit pLog(tr("Log: New solo game."));
 
-            if(adventureTreeItem == NULL)
+            if(adventureTreeItem == nullptr)
             {
                 emit pDebug("Create Category adventure.");
                 adventureTreeItem = createTopLevelItem("Solo", "", false);
@@ -423,7 +423,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from tavern brawl.");
             emit pLog(tr("Log: New tavern brawl game."));
 
-            if(tavernBrawlTreeItem == NULL)
+            if(tavernBrawlTreeItem == nullptr)
             {
                 emit pDebug("Create Category tavern brawl.");
                 tavernBrawlTreeItem = createTopLevelItem("Brawl", "", false);
@@ -437,7 +437,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from friendly.");
             emit pLog(tr("Log: New friendly game."));
 
-            if(friendlyTreeItem == NULL)
+            if(friendlyTreeItem == nullptr)
             {
                 emit pDebug("Create Category friendly.");
                 friendlyTreeItem = createTopLevelItem("Duel", "", false);
@@ -468,7 +468,7 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         gameResult.isFirst = match.captured(5)=="FIRST";
 
         QTreeWidgetItem *item = showGameResult(gameResult, loadingScreen);
-        if(item != NULL)
+        if(item != nullptr)
         {
             replayLogsMap[item] = logFileName;
             if(!match.captured(6).isEmpty())    setRowColor(item, QColor(ThemeHandler::gamesOnZ2HColor()));
@@ -477,7 +477,7 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
         return item;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -486,7 +486,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
     emit pDebug("Show GameResult.");
 
     QTreeWidgetItem *item = createGameInCategory(gameResult, loadingScreen);
-    if(item == NULL)    return NULL;
+    if(item == nullptr)    return nullptr;
 
     QString iconFile = (gameResult.playerHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.playerHero));
     item->setIcon(0, QIcon(iconFile));
@@ -550,7 +550,7 @@ QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
 
 void ArenaHandler::openTBProfile()
 {
-    if(trackobotUploader == NULL)   return;
+    if(trackobotUploader == nullptr)   return;
     trackobotUploader->openTBProfile();
 }
 
@@ -675,15 +675,15 @@ void ArenaHandler::clearAllGames()
     arenaHomeless->setHidden(true);
     setRowColor(arenaHomeless, ThemeHandler::fgColor());
 
-    arenaCurrent = NULL;
+    arenaCurrent = nullptr;
     arenaCurrentHero = "";
 
-    for(int i=0; i<9; i++)  rankedTreeItem[i]=NULL;
-    casualTreeItem = NULL;
-    adventureTreeItem = NULL;
-    tavernBrawlTreeItem = NULL;
-    friendlyTreeItem = NULL;
-    lastReplayUploaded = NULL;
+    for(int i=0; i<9; i++)  rankedTreeItem[i] = nullptr;
+    casualTreeItem = nullptr;
+    adventureTreeItem = nullptr;
+    tavernBrawlTreeItem = nullptr;
+    friendlyTreeItem = nullptr;
+    lastReplayUploaded = nullptr;
 }
 
 

@@ -11,7 +11,7 @@ using namespace libzippp;
 using namespace std;
 
 
-QMap<QString, QJsonObject> * Utility::cardsJson = NULL;
+QMap<QString, QJsonObject> * Utility::cardsJson = nullptr;
 QString Utility::localLang = "enUS";
 QString Utility::diacriticLetters;
 QStringList Utility::noDiacriticLetters;
@@ -602,7 +602,7 @@ QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() == 1) return NULL;
+    if(eff->opacity() == 1) return nullptr;
 
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
     a->setDuration(ANIMATION_TIME);
@@ -624,7 +624,7 @@ QPropertyAnimation * Utility::fadeOutWidget(QWidget * widget)
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() == 0) return NULL;
+    if(eff->opacity() == 0) return nullptr;
 
     QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
     a->setDuration(ANIMATION_TIME);
@@ -746,7 +746,7 @@ void Utility::showItemsLayout(QLayout* layout)
     {
         QLayoutItem *child = layout->itemAt(i);
         QWidget *widget = child->widget();
-        if(widget != NULL)  widget->show();
+        if(widget != nullptr)  widget->show();
 //        if (QLayout* childLayout = child->layout())  showItemsLayout(childLayout);
     }
 }
@@ -861,7 +861,7 @@ void Utility::checkTierlistsCount()
                 QJsonObject jsonScoreObject = jsonScore.toObject();
                 QString hero = jsonScoreObject.value("Hero").toString();
 
-                if(hero == NULL || hero == heroString)
+                if(hero == nullptr || hero == heroString)
                 {
                     if(!lfCodes.contains(code))  lfCodes.append(code);
                 }
