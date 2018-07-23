@@ -231,7 +231,7 @@ void MinionGraphicsItem::setChangeHealth(ValueChange value)
 
 void MinionGraphicsItem::setDeadProb(float value)
 {
-    if(deadProb != value)
+    if(!FLOATEQ(deadProb, value))
     {
         deadProb = value;
         update();
@@ -552,7 +552,7 @@ void MinionGraphicsItem::setZonePos(bool friendly, int pos, int minionsZone)
 {
     const int hMinion = HEIGHT-5;
     const int wMinion = WIDTH-5;
-    int x = wMinion*(pos - (minionsZone-1)/2.0);
+    int x = static_cast<int>(wMinion*(pos - (minionsZone-1)/2.0));
     int y = friendly?hMinion/2:-hMinion/2;
     this->setPos(x, y);
 }
@@ -820,13 +820,13 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     }
 
     //Dead Prob
-    if(deadProb != 0)
+    if(!FLOATEQ(deadProb, 0))
     {
         painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
 
         //Numero
         painter->setBrush(RED);
-        text = QString::number((int)round(deadProb*100)) + "%";
+        text = QString::number(static_cast<int>(round(deadProb*100))) + "%";
         Utility::drawShadowText(*painter, font, text, 0, 0, true);
     }
 }

@@ -9,7 +9,7 @@ class HoverLabel : public QLabel
     Q_OBJECT
 
 public:
-    HoverLabel(QWidget *parent = 0);
+    HoverLabel(QWidget *parent = nullptr);
 
 protected:
     bool event(QEvent *e) Q_DECL_OVERRIDE;

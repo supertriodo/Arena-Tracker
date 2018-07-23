@@ -11,7 +11,7 @@ class TwitchButton : public QLabel
 
 //Constructor
 public:
-    TwitchButton(QWidget * parent, double min, double max);
+    TwitchButton(QWidget * parent, float min, float max);
 
 //Variables
 private:

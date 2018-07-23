@@ -42,7 +42,7 @@ private:
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count);
 
 public:
-    void setScores(double rating1, double rating2, double rating3, DraftMethod draftMethod);
+    void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod);
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);

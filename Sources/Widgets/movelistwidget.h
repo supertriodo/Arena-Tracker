@@ -9,7 +9,7 @@ class MoveListWidget : public QListWidget
     Q_OBJECT
 
 public:
-    MoveListWidget(QWidget *parent = 0);
+    MoveListWidget(QWidget *parent = nullptr);
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

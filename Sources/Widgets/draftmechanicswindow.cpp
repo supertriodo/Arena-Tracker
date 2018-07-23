@@ -9,17 +9,17 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 {
     this->patreonVersion = patreonVersion;
     this->draftMethod = draftMethod;
-    scoreWidth = sizeCard.width()*0.7;
+    scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
     if (!screen) return;
 
     QRect rectScreen = screen->geometry();
-    resize(rect.width() * 1.3,
-           rect.height() * 1.1);
-    move(rectScreen.x() + rect.x() - 0.15*rect.width(),
-         rectScreen.y() + rect.y() - 0.05*rect.height() - 1.6*sizeCard.height());
+    resize(static_cast<int>(rect.width() * 1.3),
+           static_cast<int>(rect.height() * 1.1));
+    move(static_cast<int>(rectScreen.x() + rect.x() - 0.15*rect.width()),
+         static_cast<int>(rectScreen.y() + rect.y() - 0.05*rect.height() - 1.6*sizeCard.height()));
 
 
     QWidget *centralWidget = new QWidget(this);

@@ -52,8 +52,8 @@ friend class DetachWindow;
 
 //Constructor
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() Q_DECL_OVERRIDE;
 
 
 //Variables

@@ -11,7 +11,7 @@ class MoveTreeWidget : public QTreeWidget
     Q_OBJECT
 
 public:
-    MoveTreeWidget(QWidget *parent = 0);
+    MoveTreeWidget(QWidget *parent = nullptr);
     void setTheme(bool standAlone);
 
 protected:

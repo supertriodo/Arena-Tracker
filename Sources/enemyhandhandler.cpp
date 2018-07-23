@@ -444,11 +444,11 @@ void EnemyHandHandler::redrawTotalAttack()
 
 void EnemyHandHandler::drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack)
 {
-    int tamAtkHero = std::max(35,DeckCard::getCardHeight())*1.7;
+    int tamAtkHero = static_cast<int>(std::max(35,DeckCard::getCardHeight())*1.7);
 
     //Font
     QFont font(ThemeHandler::cardsFont());
-    font.setPixelSize(tamAtkHero/1.5);
+    font.setPixelSize(static_cast<int>(tamAtkHero/1.5));
     font.setBold(true);
     font.setKerning(true);
 #ifdef Q_OS_WIN

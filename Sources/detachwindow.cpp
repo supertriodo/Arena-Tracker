@@ -4,7 +4,7 @@
 
 
 DetachWindow::DetachWindow(QWidget *paneWidget, QString paneName, Transparency transparency, const QPoint& dropPoint) :
-    QMainWindow(0, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
+    QMainWindow(nullptr, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->paneName = paneName;
     this->paneWidget = paneWidget;

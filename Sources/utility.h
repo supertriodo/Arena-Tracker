@@ -22,6 +22,7 @@
 
 using namespace cv;
 
+#define FLOATEQ(X, Y)  (abs(X - Y) < 0.000001f)
 #define ANIMATION_TIME 750
 #define SHOW_EASING_CURVE QEasingCurve::OutCubic
 #define HIDE_EASING_CURVE QEasingCurve::InCubic
@@ -120,7 +121,7 @@ public:
     static QStringList getSetCodes(const QString &set, bool onlyCollectible=true);
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
-    static double normalizeLF(double score, bool doit);
+    static float normalizeLF(float score, bool doit);
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
     static void fixLightforgeTierlist();

@@ -143,7 +143,7 @@ void DeckCard::draw()
 }
 
 
-QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resize)
+QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize)
 {
     QFont font(ThemeHandler::cardsFont());
     font.setBold(true);
@@ -246,7 +246,7 @@ QPixmap DeckCard::draw(uint total, bool drawRarity, QColor nameColor, bool resiz
             Utility::drawShadowText(painter, font, name, 34, 20, false);
 
             //Mana cost
-            int manaSize = cost>9?26:18+1.5*cost;
+            int manaSize = cost>9?26:static_cast<int>(18+1.5*cost);
             font.setPixelSize(manaSize);//20pt | 14 + cost
             Utility::drawShadowText(painter, font, QString::number(cost), 13, 20, true);
 
@@ -448,5 +448,5 @@ int DeckCard::getCardHeight()
 
 int DeckCard::getCardWidth()
 {
-    return (cardHeight<=35)?218:cardHeight/35.0*218;
+    return (cardHeight<=35)?218:static_cast<int>(cardHeight/35.0*218);
 }

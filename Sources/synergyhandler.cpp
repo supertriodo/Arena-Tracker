@@ -1124,7 +1124,7 @@ void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int
     {
         QList<QString> linkCodes = directLinks[code];
 
-        for(const QString linkCode: linkCodes)
+        for(QString linkCode: linkCodes)
         {
             if(cardTypeCounters[V_MINION]->insertCode(linkCode, synergies)){}
             else if(cardTypeCounters[V_WEAPON]->insertCode(linkCode, synergies)){}

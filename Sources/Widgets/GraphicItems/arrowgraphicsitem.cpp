@@ -65,16 +65,16 @@ QRectF ArrowGraphicsItem::boundingRect() const
 {
     QPointF from = this->from->pos();
     QPointF to = this->to->pos();
-    float left = std::min(from.x(), to.x());
-    float top = std::min(from.y(), to.y());
-    float width = std::abs(to.x()-from.x());
-    float height = std::abs(to.y()-from.y());
-    if(width == 0)
+    double left = std::min(from.x(), to.x());
+    double top = std::min(from.y(), to.y());
+    double width = std::abs(to.x()-from.x());
+    double height = std::abs(to.y()-from.y());
+    if(FLOATEQ(static_cast<float>(width), 0))
     {
         left -= 25;
         width = 50;
     }
-    if(height == 0)
+    if(FLOATEQ(static_cast<float>(height), 0))
     {
         top -= 25;
         height = 50;
@@ -114,10 +114,10 @@ void ArrowGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     QVector2D vector(line.dx(), line.dy());
     int margen;
     QPixmap pixmap = getArrowPixmap(margen);
-    const int arrowHeight = vector.length()-margen;
+    const int arrowHeight = static_cast<const int>(vector.length()-margen);
     const int arrowWide = std::max(15, 80 - arrowHeight/5);
     pixmap = pixmap.scaled(QSize(arrowHeight,arrowWide), Qt::IgnoreAspectRatio, Qt::FastTransformation);
-    qreal rot = qAtan2(vector.y(), vector.x());
+    qreal rot = qAtan2(static_cast<qreal>(vector.y()), static_cast<qreal>(vector.x()));
     QPointF origin;
     QPixmap rotImage = Utility::getTransformedImage(pixmap, line.p1(), QPoint(-margen/2,arrowWide/2), rot, origin);
     painter->drawPixmap(origin, rotImage);

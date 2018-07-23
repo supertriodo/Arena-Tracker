@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QGraphicsView>
 
-#define ZOOM_SPEED 0.005
+#define ZOOM_SPEED 0.005f
 
 class PlanGraphicsView : public QGraphicsView
 {

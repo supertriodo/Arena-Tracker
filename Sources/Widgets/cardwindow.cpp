@@ -29,9 +29,9 @@ void CardWindow::scale(int value_x10)
     else
     {
         alwaysHidden = false;
-        float value = value_x10/10.0;
+        float value = value_x10/10.0f;
         setMinimumSize(0,0);
-        resize(value*WCARD, value*HCARD);
+        resize(static_cast<int>(value*WCARD), static_cast<int>(value*HCARD));
     }
 }
 

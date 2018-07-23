@@ -7,7 +7,7 @@ class MoveVerticalScrollArea : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit MoveVerticalScrollArea(QWidget *parent = 0);
+    explicit MoveVerticalScrollArea(QWidget *parent = nullptr);
 
 protected:
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;

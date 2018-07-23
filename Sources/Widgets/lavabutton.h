@@ -11,7 +11,7 @@ class LavaButton : public QLabel
 
 //Constructor
 public:
-    LavaButton(QWidget * parent, double min, double max);
+    LavaButton(QWidget * parent, float min, float max);
 
 //Variables
 private:

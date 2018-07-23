@@ -14,7 +14,7 @@ private:
     int tabSize;
 
 public:
-    MoveTabWidget(QWidget *parent = 0);
+    MoveTabWidget(QWidget *parent = nullptr);
     void setTheme(QString tabBarAlignment, int maxWidth, bool resizing, bool transparent);
 
 signals:
@@ -31,7 +31,7 @@ private:
     bool draggingConfig;
 
 public:
-    MoveTabBar(QWidget *parent = 0);
+    MoveTabBar(QWidget *parent = nullptr);
 
 protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;

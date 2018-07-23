@@ -212,7 +212,7 @@ void CardGraphicsItem::setZonePos(bool friendly, int pos, int cardsZone, int vie
     this->heightShow = cardHeightShow;
     viewWidth -= WIDTH+8 - viewWidth/cardsZone;
     const int wCard = std::min(175, viewWidth/cardsZone);
-    int x = wCard*(pos - (cardsZone-1)/2.0);
+    int x = static_cast<int>(wCard*(pos - (cardsZone-1)/2.0));
     int y = friendly?hMinion + hHero + heightShow/2:-hMinion - hHero - heightShow/2;
     this->setPos(x, y);
 }

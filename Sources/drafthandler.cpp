@@ -160,7 +160,7 @@ void DraftHandler::clearAndDisconnectAllComboBox()
 
 void DraftHandler::clearAndDisconnectComboBox(int index)
 {
-    disconnect(comboBoxCard[index], 0, 0, 0);
+    disconnect(comboBoxCard[index], nullptr, nullptr, nullptr);
     comboBoxCard[index]->clear();
 }
 
@@ -286,7 +286,7 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
             if(multiClassDraft || hero == nullptr || hero == heroString)
             {
                 LFtier lfTier;
-                lfTier.score = (int)jsonScoreObject.value("Score").toDouble();
+                lfTier.score = static_cast<int>(jsonScoreObject.value("Score").toDouble());
 
                 if(jsonScoreObject.value("StopAfterFirst").toBool())
                 {
@@ -387,7 +387,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
     if(!alreadyDrafting)
     {
         //SizePreDraft
-        QMainWindow *mainWindow = ((QMainWindow*)parent());
+        QMainWindow *mainWindow = static_cast<QMainWindow*>(parent());
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("size", mainWindow->size());
 
@@ -634,7 +634,7 @@ void DraftHandler::endDraft()
 
 
     //SizeDraft
-    QMainWindow *mainWindow = ((QMainWindow*)parent());
+    QMainWindow *mainWindow = static_cast<QMainWindow*>(parent());
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("sizeDraft", mainWindow->size());
 
@@ -655,8 +655,8 @@ void DraftHandler::endDraft()
     if(patreonVersion)
     {
         int numCards = synergyHandler->draftedCardsCount();
-        int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
-        int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
+        int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
+        int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
         showMessageDeckScore(deckScoreLFNormalized, deckScoreHA);
     }
 
@@ -885,7 +885,7 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
             QString code = bestCodesList[j];
             QString name = draftCardMaps[i][code].getName();
             QString cardInfo = code + " " + name + " " +
-                    QString::number(((int)(match*1000))/1000.0);
+                    QString::number(static_cast<int>(match*1000)/1000.0);
 //            if( (bestRarity != LEGENDARY && draftCardMaps[i][code].getRarity() != LEGENDARY) ||
 //                (bestRarity == LEGENDARY && draftCardMaps[i][code].getRarity() == LEGENDARY))
 //            {
@@ -1110,16 +1110,16 @@ void DraftHandler::comboBoxChanged()
 }
 
 
-void DraftHandler::updateDeckScore(double cardRatingHA, double cardRatingLF)
+void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF)
 {
     if(!patreonVersion) return;
 
     int numCards = synergyHandler->draftedCardsCount();
     deckRatingHA += cardRatingHA;
     deckRatingLF += cardRatingLF;
-    int deckScoreHA = (numCards==0)?0:(int)(deckRatingHA/numCards);
-    int deckScoreLF = (numCards==0)?0:(int)(deckRatingLF/numCards);
-    int deckScoreLFNormalized = (numCards==0)?0:(int)Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF);
+    int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
+    int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
+    int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
     updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, numCards);
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
@@ -1174,15 +1174,15 @@ void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScore
 }
 
 
-void DraftHandler::showNewRatings(double rating1, double rating2, double rating3,
-                                  double tierScore1, double tierScore2, double tierScore3,
+void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
+                                  float tierScore1, float tierScore2, float tierScore3,
                                   int maxCard1, int maxCard2, int maxCard3,
                                   DraftMethod draftMethod)
 {
-    double ratings[3] = {rating1,rating2,rating3};
-    double tierScore[3] = {tierScore1, tierScore2, tierScore3};
+    float ratings[3] = {rating1,rating2,rating3};
+    float tierScore[3] = {tierScore1, tierScore2, tierScore3};
     int maxCards[3] = {maxCard1, maxCard2, maxCard3};
-    double maxRating = std::max(std::max(rating1,rating2),rating3);
+    float maxRating = std::max(std::max(rating1,rating2),rating3);
 
     for(int i=0; i<3; i++)
     {
@@ -1190,16 +1190,16 @@ void DraftHandler::showNewRatings(double rating1, double rating2, double rating3
         if(draftMethod == LightForge)
         {
             shownTierScoresLF[i] = tierScore[i];
-            labelLFscore[i]->setText(QString::number((int)Utility::normalizeLF(ratings[i], this->normalizedLF)) +
+            labelLFscore[i]->setText(QString::number(static_cast<int>(Utility::normalizeLF(ratings[i], this->normalizedLF))) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
-            if(maxRating == ratings[i])     highlightScore(labelLFscore[i], draftMethod);
+            if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
             shownTierScoresHA[i] = tierScore[i];
-            labelHAscore[i]->setText(QString::number((int)ratings[i]) +
+            labelHAscore[i]->setText(QString::number(static_cast<int>(ratings[i])) +
                                                 (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
-            if(maxRating == ratings[i])     highlightScore(labelHAscore[i], draftMethod);
+            if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHAscore[i], draftMethod);
         }
     }
 
@@ -1220,7 +1220,7 @@ bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
 
     cv::Mat screenCapture = mat.clone();
 
@@ -1444,7 +1444,7 @@ ScreenDetection DraftHandler::findScreenRects()
         //Calculamos screenRect
         for(int i=0; i<3; i++)
         {
-            screenDetection.screenRects[i]=cv::Rect(screenPoints[i*2], screenPoints[i*2+1]);
+            screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
         }
 
         screenDetection.screenIndex = screenIndex;
@@ -1492,7 +1492,7 @@ void DraftHandler::showNewHeroes()
         QString code = bestMatchesMaps[i].first();
         QString name = draftCardMaps[i][code].getName();
         QString cardInfo = code + " " + name + " " +
-                QString::number(((int)(match*1000))/1000.0);
+                QString::number(static_cast<int>(match*1000)/1000.0);
         emit pDebug("Choose: " + cardInfo);
 
         QString HSRkey = Utility::getCardAttribute(code, "cardClass").toString();
@@ -1544,15 +1544,15 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     deleteDraftHeroWindow();
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
-    QPoint topLeft(screenRects[0].x * screenScale.x(), screenRects[0].y * screenScale.y());
-    QPoint bottomRight(screenRects[2].x * screenScale.x() + screenRects[2].width * screenScale.x(),
-            screenRects[2].y * screenScale.y() + screenRects[2].height * screenScale.y());
+    QPoint topLeft(static_cast<int>(screenRects[0].x * screenScale.x()), static_cast<int>(screenRects[0].y * screenScale.y()));
+    QPoint bottomRight(static_cast<int>(screenRects[2].x * screenScale.x() + screenRects[2].width * screenScale.x()),
+            static_cast<int>(screenRects[2].y * screenScale.y() + screenRects[2].height * screenScale.y()));
     QRect draftRect(topLeft, bottomRight);
-    QSize sizeCard(screenRects[0].width * screenScale.x(), screenRects[0].height * screenScale.y());
+    QSize sizeCard(static_cast<int>(screenRects[0].width * screenScale.x()), static_cast<int>(screenRects[0].height * screenScale.y()));
 
     if(drafting)
     {
-        draftScoreWindow = new DraftScoreWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex, this->normalizedLF);
+        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, this->normalizedLF);
         draftScoreWindow->setLearningMode(this->learningMode);
         draftScoreWindow->setDraftMethod(this->draftMethod);
 
@@ -1563,7 +1563,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
-        draftMechanicsWindow = new DraftMechanicsWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex,
+        draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->draftMethod, this->normalizedLF);
         initDraftMechanicsWindowCounters();
         connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
@@ -1575,7 +1575,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     }
     else// if(heroDrafting)
     {
-        draftHeroWindow = new DraftHeroWindow((QMainWindow *)this->parent(), draftRect, sizeCard, screenIndex);
+        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
     }
 

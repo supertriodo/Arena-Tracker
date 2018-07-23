@@ -29,7 +29,7 @@ void BombWindow::showAt(QRect rectTab)
 {
     int height = rectTab.height();
     QRectF boardRect = graphicsView->getBoardRect();
-    int width = boardRect.width() * height / boardRect.height();
+    int width = static_cast<int>(boardRect.width() * height / boardRect.height());
 
     QPoint center = rectTab.center();
     QPoint topLeft = rectTab.topRight();

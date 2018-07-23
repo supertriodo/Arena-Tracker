@@ -30,7 +30,7 @@ private:
     void resetTwitchScore();
 
 public:
-    void setScores(double rating1, double rating2, double rating3);
+    void setScores(float rating1, float rating2, float rating3);
     void hideScores(bool quick=false);
     void showTwitchScores(bool show=true);
     void setTwitchScores(int vote1, int vote2, int vote3);

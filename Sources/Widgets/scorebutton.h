@@ -15,7 +15,7 @@ public:
 
 //Variables
 private:
-    double score;
+    float score;
     bool learningMode, learningShow;
     bool isBestScore;
     ScoreSource scoreSource;
@@ -23,7 +23,7 @@ private:
 
 //Metodos
 private:
-    void getScoreColor(int &r, int &g, int &b, double score);
+    void getScoreColor(int &r, int &g, int &b, float score);
     void draw();
 
 protected:
@@ -33,7 +33,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setScore(double score, bool isBest);
+    void setScore(float score, bool isBest);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void setNormalizedLF(bool value);

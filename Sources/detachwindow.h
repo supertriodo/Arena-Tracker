@@ -17,7 +17,7 @@ friend class MainWindow;
 //Constructor
 public:
     DetachWindow(QWidget *paneWidget, QString paneName, Transparency transparency, const QPoint &dropPoint = QPoint());
-    ~DetachWindow();
+    ~DetachWindow() Q_DECL_OVERRIDE;
 
 
 //Variables

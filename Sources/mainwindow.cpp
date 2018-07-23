@@ -186,8 +186,8 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
 void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget)
 {
     Q_UNUSED(paneWidget);
-    disconnect(ui->minimizeButton, 0, detachWindow, 0);
-    disconnect(detachWindow, 0, this, 0);
+    disconnect(ui->minimizeButton, nullptr, detachWindow, nullptr);
+    disconnect(detachWindow, nullptr, this, nullptr);
 
     if(detachWindow == deckWindow)      deckWindow = nullptr;
     if(detachWindow == arenaWindow)     arenaWindow = nullptr;
@@ -515,7 +515,7 @@ void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
             QJsonObject gameWinrateObject = gameWinrate.toObject();
             if(gameWinrateObject.value("game_type").toInt() == 3)
             {
-                heroWinratesMap[key] = round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0;
+                heroWinratesMap[key] = static_cast<float>(round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0);
             }
         }
     }
@@ -1323,10 +1323,10 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
         case Framed:
             ui->configRadioFramed->setChecked(true);
             break;
-        default:
-            transparency = AutoTransparent;
-            ui->configRadioAuto->setChecked(true);
-            break;
+//        default:
+//            transparency = AutoTransparent;
+//            ui->configRadioAuto->setChecked(true);
+//            break;
     }
 
     initConfigTheme(theme);
@@ -1573,7 +1573,7 @@ void MainWindow::readSettings()
     pos = settings.value("pos", QPoint(0,0)).toPoint();
     size = settings.value("size", QSize(255, 600)).toSize();
 
-    this->transparency = (Transparency)settings.value("transparent", AutoTransparent).toInt();
+    this->transparency = static_cast<Transparency>(settings.value("transparent", AutoTransparent).toInt());
     QString theme = settings.value("theme", DEFAULT_THEME).toString();
 
     int cardHeight = settings.value("cardHeight", 35).toInt();
@@ -1582,7 +1582,7 @@ void MainWindow::readSettings()
     this->showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
-    this->draftMethod = (DraftMethod)settings.value("draftMethod", LightForge).toInt();
+    this->draftMethod = static_cast<DraftMethod>(settings.value("draftMethod", LightForge).toInt());
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = settings.value("autoSize", true).toBool();
     bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -1621,7 +1621,7 @@ void MainWindow::writeSettings()
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
-    settings.setValue("transparent", (int)this->transparency);
+    settings.setValue("transparent", static_cast<int>(this->transparency));
     settings.setValue("theme", ui->configComboTheme->currentText());
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
@@ -1629,7 +1629,7 @@ void MainWindow::writeSettings()
     settings.setValue("showDraftMechanicsOverlay", this->showDraftMechanicsOverlay);
     settings.setValue("draftLearningMode", this->draftLearningMode);
     settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
-    settings.setValue("draftMethod", (int)this->draftMethod);
+    settings.setValue("draftMethod", static_cast<int>(this->draftMethod));
     settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
     settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
     settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
@@ -3568,11 +3568,11 @@ void MainWindow::completeHighResConfigTab()
     int screenHeight = getScreenHighest();
     if(screenHeight < 1000) return;
 
-    int maxCard = (int)(screenHeight/1000.0*50);
+    int maxCard = static_cast<int>(screenHeight/1000.0*50);
     maxCard -= maxCard%5;
     ui->configSliderCardSize->setMaximum(maxCard);
 
-    int maxTooltip = (int)(screenHeight/1000.0*15);
+    int maxTooltip = static_cast<int>(screenHeight/1000.0*15);
     maxTooltip -= maxTooltip%5;
     ui->configSliderTooltipSize->setMaximum(maxTooltip);
 }
@@ -3616,7 +3616,7 @@ void MainWindow::createDebugPack()
         QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
         image.save(dirPath + "/screenshot.png");
 
-        cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
+        cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
         cv::resize(mat, mat, cv::Size(1280, 720));
         cv::imshow("Screenshot", mat);
     }
@@ -3806,7 +3806,7 @@ void MainWindow::downloadAllArenaCodes()
         emit pDebug("Downloading all arena cards.");
         allCardsDownloadList.clear();
         QStringList codeList = draftHandler->getAllArenaCodes();
-        for(const QString code: codeList)
+        for(QString code: codeList)
         {
             if(!checkCardImage(code))
             {
@@ -3820,7 +3820,7 @@ void MainWindow::downloadAllArenaCodes()
         }
 
         codeList = draftHandler->getAllHeroCodes();
-        for(const QString code: codeList)
+        for(QString code: codeList)
         {
             if(!checkCardImage(code, true))
             {

@@ -5,7 +5,7 @@
 DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    scoreWidth = sizeCard.width()*0.65;
+    scoreWidth = static_cast<int>(sizeCard.width()*0.65);
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
@@ -16,7 +16,7 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
     resize(rect.width() + 2*MARGIN + midCards,
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
     move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
-         rectScreen.y() + rect.y() - MARGIN + 1.5*sizeCard.height());
+         static_cast<int>(rectScreen.y() + rect.y() - MARGIN + 1.5*sizeCard.height()));
 
     QWidget *centralWidget = new QWidget(this);
     QHBoxLayout *horLayoutScores = new QHBoxLayout(centralWidget);
@@ -28,8 +28,8 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
         scoresPushButton[i]->setFixedWidth(scoreWidth);
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
-        twitchButton[i]->setFixedHeight(scoreWidth*0.75);
-        twitchButton[i]->setFixedWidth(scoreWidth*0.75);
+        twitchButton[i]->setFixedHeight(static_cast<int>(scoreWidth*0.75));
+        twitchButton[i]->setFixedWidth(static_cast<int>(scoreWidth*0.75));
         twitchButton[i]->hide();
 
         //Opacity effects
@@ -68,14 +68,14 @@ void DraftHeroWindow::showTwitchScores(bool show)
 }
 
 
-void DraftHeroWindow::setScores(double rating1, double rating2, double rating3)
+void DraftHeroWindow::setScores(float rating1, float rating2, float rating3)
 {
-    double bestRating = std::max(std::max(rating1, rating2), rating3);
-    double ratings[3] = {rating1, rating2, rating3};
+    float bestRating = std::max(std::max(rating1, rating2), rating3);
+    float ratings[3] = {rating1, rating2, rating3};
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setScore(ratings[i], ratings[i]==bestRating);
+        scoresPushButton[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
         Utility::fadeInWidget(scoresPushButton[i]);
     }
 
@@ -97,9 +97,9 @@ void DraftHeroWindow::setTwitchScores(int vote1, int vote2, int vote3)
 {
     int votes[3] = {vote1, vote2, vote3};
     float totalVotes = votes[0] + votes[1] + votes[2];
-    double topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
+    float topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
 
-    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], votes[i]==topVotes);
+    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes));
 }
 
 
@@ -109,9 +109,9 @@ void DraftHeroWindow::hideScores(bool quick)
     {
         if(quick)
         {
-            QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)scoresPushButton[i]->graphicsEffect();
+            QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton[i]->graphicsEffect());
             eff->setOpacity(0);
-            eff = (QGraphicsOpacityEffect *)twitchButton[i]->graphicsEffect();
+            eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
         }
         else

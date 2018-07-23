@@ -14,7 +14,7 @@ class CardListWindow : public QMainWindow
 //Constructor
 public:
     CardListWindow(QWidget *parent, SecretsHandler *secretsHandler);
-    ~CardListWindow();
+    ~CardListWindow() Q_DECL_OVERRIDE;
 
 //Variables
 private:

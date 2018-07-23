@@ -113,7 +113,7 @@ bool LogLoader::readLogsDirPath()
         if(logsDirPath.isEmpty())
         {
             emit pDebug("Show Find Logs dir dialog.");
-            logsDirPath = QFileDialog::getExistingDirectory(0,
+            logsDirPath = QFileDialog::getExistingDirectory(nullptr,
                 "Find Hearthstone Logs dir",
                 QDir::homePath());
         }
@@ -129,7 +129,7 @@ bool LogLoader::readLogsDirPath()
         settings.setValue("logsDirPath", "");
         emit pDebug("Logs dir not found.");
         emit pLog(tr("Log: Logs dir not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information((QWidget*)this->parent(), tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
         return false;
     }
     return true;
@@ -148,7 +148,7 @@ bool LogLoader::readLogConfigPath()
         if(logConfig.isEmpty())
         {
             emit pDebug("Show Find log.config dialog.");
-            logConfig = QFileDialog::getOpenFileName(0,
+            logConfig = QFileDialog::getOpenFileName(nullptr,
                 tr("Find Hearthstone config log (log.config)"), QDir::homePath(),
                 tr("log.config (log.config)"));
         }
@@ -175,7 +175,7 @@ bool LogLoader::readLogConfigPath()
         settings.setValue("logConfig", "");
         emit pDebug("log.config not found.");
         emit pLog(tr("Log: log.config not found. Restart Arena Tracker and set the path again."));
-        QMessageBox::information((QWidget*)this->parent(), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
         return false;
     }
 
@@ -230,7 +230,7 @@ bool LogLoader::checkLogConfig()
         emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
-        QMessageBox::information((QWidget*)this->parent(), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
         return false;
     }
 

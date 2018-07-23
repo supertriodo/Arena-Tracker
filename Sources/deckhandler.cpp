@@ -96,7 +96,7 @@ void DeckHandler::completeUI()
 
 void DeckHandler::createBombWindow()
 {
-    bombWindow = new BombWindow((QWidget*)this->parent(), ui->planGraphicsView->scene());
+    bombWindow = new BombWindow(static_cast<QWidget*>(this->parent()), ui->planGraphicsView->scene());
     connect(ui->rngListWidget,SIGNAL(leave()),
             bombWindow, SLOT(hide()));
     connect(ui->rngListWidget,SIGNAL(leave()),
@@ -1430,7 +1430,7 @@ void DeckHandler::saveDeck()
         int total = deckCard.total;
         if(!code.isEmpty() && total > 0)
         {
-            jsonObjectDeck.insert(deckCard.getCode(), (int)deckCard.total);
+            jsonObjectDeck.insert(deckCard.getCode(), static_cast<int>(deckCard.total));
             if(hero.isEmpty())
             {
                 hero = Utility::heroToLogNumber(deckCard.getCardClass());

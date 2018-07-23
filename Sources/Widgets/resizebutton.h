@@ -10,8 +10,8 @@ class ResizeButton : public QPushButton
     Q_OBJECT
 
 public:
-    explicit ResizeButton(QWidget *parent = 0);
-    ~ResizeButton();
+    explicit ResizeButton(QWidget *parent = nullptr);
+    ~ResizeButton() Q_DECL_OVERRIDE;
 
 
 //Variables

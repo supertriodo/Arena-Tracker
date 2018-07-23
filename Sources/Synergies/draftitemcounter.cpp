@@ -65,7 +65,7 @@ void DraftItemCounter::setIcon(QPixmap pixmap, int iconWidth)
 void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth, bool inDraftMechanicsWindow)
 {
     QFont font(ThemeHandler::bigFont());
-    font.setPixelSize(iconWidth*0.6);
+    font.setPixelSize(static_cast<int>(iconWidth*0.6));
     labelCounter->setFont(font);
     if(inDraftMechanicsWindow)  labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
 

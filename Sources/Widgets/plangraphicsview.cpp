@@ -30,7 +30,7 @@ void PlanGraphicsView::setTheme(bool standAlone)
 
 int PlanGraphicsView::getSceneViewWidth()
 {
-    return width()/targetZoom;
+    return static_cast<int>(width()/targetZoom);
 }
 
 
@@ -38,7 +38,7 @@ int PlanGraphicsView::getCardsViewHeight()
 {
     const int hMinion = MinionGraphicsItem::HEIGHT-5;//184
     const int hHero = HeroGraphicsItem::HEIGHT;//184
-    return (height()/targetZoom - hMinion*2 -hHero*2)/2;
+    return static_cast<int>((height()/targetZoom - hMinion*2 -hHero*2)/2);
 }
 
 
@@ -74,10 +74,10 @@ void PlanGraphicsView::updateView(int minionsZone)
 
 void PlanGraphicsView::fitInViewSmooth()
 {
-    bool zooming = (targetZoom != zoom);
+    bool zooming = !FLOATEQ(targetZoom, zoom);
     QRectF boardRect = this->scene()->sceneRect();
-    float zoomWidth = this->width()/boardRect.width();
-    float zoomHeight = this->height()/boardRect.height();
+    float zoomWidth = static_cast<float>(this->width()/boardRect.width());
+    float zoomHeight = static_cast<float>(this->height()/boardRect.height());
     targetZoom = std::min(zoomWidth, zoomHeight);
     if(!zooming)    progressiveZoom();
 }
@@ -93,7 +93,7 @@ void PlanGraphicsView::progressiveZoom()
     else                QTimer::singleShot(20, this, SLOT(progressiveZoom()));
 
     QMatrix mtx;
-    mtx.scale(zoom, zoom);
+    mtx.scale(static_cast<double>(zoom), static_cast<double>(zoom));
     this->setMatrix(mtx);
 }
 
@@ -103,12 +103,12 @@ void PlanGraphicsView::resizeEvent(QResizeEvent *event)
     QGraphicsView::resizeEvent(event);
 
     QRectF boardRect = getBoardRect();
-    float zoomWidth = this->width()/boardRect.width();
-    float zoomHeight = this->height()/boardRect.height();
+    float zoomWidth = static_cast<float>(this->width()/boardRect.width());
+    float zoomHeight = static_cast<float>(this->height()/boardRect.height());
     zoom = targetZoom = std::min(zoomWidth, zoomHeight);
 
     QMatrix mtx;
-    mtx.scale(zoom, zoom);
+    mtx.scale(static_cast<double>(zoom), static_cast<double>(zoom));
     this->setMatrix(mtx);
 
     emit sizeChanged();

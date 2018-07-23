@@ -503,10 +503,10 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
 
     //Screen scale
-    screenScale.setX(rect.width() / (float)image.width());
-    screenScale.setY(rect.height() / (float)image.height());
+    screenScale.setX(rect.width() / static_cast<qreal>(image.width()));
+    screenScale.setY(rect.height() / static_cast<qreal>(image.height()));
 
-    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), image.bytesPerLine());
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
     cv::Mat screenCapture = mat.clone();
 
     Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
@@ -545,7 +545,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
     //-- Quick calculation of max and min distances between keypoints
     for( int i = 0; i < descriptors_object.rows; i++ )
-    { double dist = matches[i].distance;
+    { double dist = static_cast<double>(matches[static_cast<ulong>(i)].distance);
       if( dist < min_dist ) min_dist = dist;
     }
 
@@ -555,8 +555,8 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     std::vector< DMatch > good_matches;
 
     for( int i = 0; i < descriptors_object.rows; i++ )
-    { if( matches[i].distance < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
-       { good_matches.push_back( matches[i]); }
+    { if( static_cast<double>(matches[static_cast<ulong>(i)].distance) < /*min(0.05,max(2*min_dist, 0.02))*/0.04 )
+       { good_matches.push_back( matches[static_cast<ulong>(i)]); }
     }
     qDebug()<< "Utility: FLANN Keypoints buenos:" <<good_matches.size();
     if(good_matches.size() < 10)    return screenPoints;
@@ -569,8 +569,8 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
     for( uint i = 0; i < good_matches.size(); i++ )
     {
       //-- Get the keypoints from the good matches
-      obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
-      scene.push_back( keypoints_scene[ good_matches[i].trainIdx ].pt );
+      obj.push_back( keypoints_object[ static_cast<ulong>(good_matches[i].queryIdx) ].pt );
+      scene.push_back( keypoints_scene[ static_cast<ulong>(good_matches[i].trainIdx) ].pt );
     }
 
     Mat H = findHomography( obj, scene, CV_RANSAC );
@@ -594,45 +594,49 @@ std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScree
 
 QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
 {
-    QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)widget->graphicsEffect();
-    if(eff == 0)
+    QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(widget->graphicsEffect());
+    if(eff == nullptr)
     {
         eff = new QGraphicsOpacityEffect(widget);
         widget->setGraphicsEffect(eff);
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() == 1) return nullptr;
-
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(ANIMATION_TIME);
-    a->setStartValue(0);
-    a->setEndValue(1);
-    a->setEasingCurve(SHOW_EASING_CURVE);
-    a->start(QPropertyAnimation::DeleteWhenStopped);
-    return a;
+    if(eff->opacity() < 1)
+    {
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(ANIMATION_TIME);
+        a->setStartValue(0);
+        a->setEndValue(1);
+        a->setEasingCurve(SHOW_EASING_CURVE);
+        a->start(QPropertyAnimation::DeleteWhenStopped);
+        return a;
+    }
+    else    return nullptr;
 }
 
 
 QPropertyAnimation * Utility::fadeOutWidget(QWidget * widget)
 {
-    QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)widget->graphicsEffect();
-    if(eff == 0)
+    QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(widget->graphicsEffect());
+    if(eff == nullptr)
     {
         eff = new QGraphicsOpacityEffect(widget);
         widget->setGraphicsEffect(eff);
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() == 0) return nullptr;
-
-    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
-    a->setDuration(ANIMATION_TIME);
-    a->setStartValue(1);
-    a->setEndValue(0);
-    a->setEasingCurve(SHOW_EASING_CURVE);
-    a->start(QPropertyAnimation::DeleteWhenStopped);
-    return a;
+    if(eff->opacity() > 0)
+    {
+        QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+        a->setDuration(ANIMATION_TIME);
+        a->setStartValue(1);
+        a->setEndValue(0);
+        a->setEasingCurve(SHOW_EASING_CURVE);
+        a->start(QPropertyAnimation::DeleteWhenStopped);
+        return a;
+    }
+    else    return nullptr;
 }
 
 
@@ -752,7 +756,7 @@ void Utility::showItemsLayout(QLayout* layout)
 }
 
 
-double Utility::normalizeLF(double score, bool doit)
+float Utility::normalizeLF(float score, bool doit)
 {
     if(doit)    return score - 45;
     else        return score;
@@ -783,7 +787,7 @@ void Utility::unZip(QString zipName, QString targetPath)
     {
         ZipEntry entry = *it;
         QString name = entry.getName().data();
-        int size = entry.getSize();
+        int size = static_cast<int>(entry.getSize());
         if(name.endsWith('/'))
         {
 #ifdef Q_OS_MAC
@@ -793,7 +797,7 @@ void Utility::unZip(QString zipName, QString targetPath)
         }
         else
         {
-            char* binaryData = (char *)entry.readAsBinary();
+            char* binaryData = static_cast<char *>(entry.readAsBinary());
             QByteArray byteArray(binaryData, size);
             dumpOnFile(byteArray, targetPath + "/" + name);
             qDebug() << "Unzipped " + name;

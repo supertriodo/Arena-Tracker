@@ -46,7 +46,7 @@ class GameWatcher : public QObject
 {
     Q_OBJECT
 public:
-    GameWatcher(QObject *parent = 0);
+    GameWatcher(QObject *parent = nullptr);
     ~GameWatcher();
 
 private:

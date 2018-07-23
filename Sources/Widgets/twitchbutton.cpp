@@ -2,7 +2,7 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-TwitchButton::TwitchButton(QWidget *parent, double min, double max) : QLabel(parent)
+TwitchButton::TwitchButton(QWidget *parent, float min, float max) : QLabel(parent)
 {
     this->value = this->min = min;
     this->max = max;
@@ -52,16 +52,17 @@ void TwitchButton::paintEvent(QPaintEvent *event)
     QRect targetAll(0, 0, width(), height());
     painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedCloseFile()));
 
-    QRegion r(QRect(width()*0.15, height()*0.15, width()*0.7, height()*0.7), QRegion::Ellipse);
+    QRegion r(QRect(static_cast<int>(width()*0.15), static_cast<int>(height()*0.15),
+                    static_cast<int>(width()*0.7), static_cast<int>(height()*0.7)), QRegion::Ellipse);
     painter.setClipRegion(r);
     painter.setClipping(true);
-        QRect targetLava(0, (1-value_0_1)*(height()*80/128), width(), height());
+        QRect targetLava(0, static_cast<int>((1-value_0_1)*(height()*80/128)), width(), height());
         painter.drawPixmap(targetLava, QPixmap(ThemeHandler::speedLavaFile()));
     painter.setClipping(false);
 
     QFont font(LG_FONT);
-    if(votes > 999)         font.setPixelSize(width()/3.75);
-    else                    font.setPixelSize(width()/3.0);
+    if(votes > 999)         font.setPixelSize(static_cast<int>(width()/3.75));
+    else                    font.setPixelSize(static_cast<int>(width()/3.0));
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);

@@ -6,7 +6,7 @@
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
-    scoreWidth = sizeCard.width()*0.7;
+    scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
     QList<QScreen *> screens = QGuiApplication::screens();
     QScreen *screen = screens[screenIndex];
@@ -17,7 +17,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     resize(rect.width() + 2*MARGIN + midCards,
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
     move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
-         rectScreen.y() + rect.y() - MARGIN + 2.65*sizeCard.height());
+         static_cast<int>(rectScreen.y() + rect.y() - MARGIN + 2.65*sizeCard.height()));
     int synergyWidth = this->width()/3-10;  //List Widget need 10 px (maybe 11px) extra space more than the sizeCard.
 
 
@@ -43,8 +43,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
                 this, SLOT(spreadLearningShow(bool)));
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
-        twitchButton[i]->setFixedHeight(scoreWidth*0.75);
-        twitchButton[i]->setFixedWidth(scoreWidth*0.75);
+        twitchButton[i]->setFixedHeight(static_cast<int>(scoreWidth*0.75));
+        twitchButton[i]->setFixedWidth(static_cast<int>(scoreWidth*0.75));
         twitchButton[i]->hide();
 
         //Opacity effects
@@ -73,7 +73,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i] = new MoveListWidget(centralWidget);
         synergiesListWidget[i]->setFixedHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        synergiesListWidget[i]->setIconSize(QSize(synergyWidth, synergyWidth/218.0*35));
+        synergiesListWidget[i]->setIconSize(QSize(synergyWidth, static_cast<int>(synergyWidth/218.0*35)));
         synergiesListWidget[i]->setMouseTracking(true);
         hideSynergies(i);
 
@@ -174,22 +174,22 @@ void DraftScoreWindow::setDraftMethod(DraftMethod draftMethod)
 }
 
 
-void DraftScoreWindow::setScores(double rating1, double rating2, double rating3,
+void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
                                  DraftMethod draftMethod)
 {
-    double bestRating = std::max(std::max(rating1, rating2), rating3);
-    double ratings[3] = {rating1, rating2, rating3};
+    float bestRating = std::max(std::max(rating1, rating2), rating3);
+    float ratings[3] = {rating1, rating2, rating3};
 
     for(int i=0; i<3; i++)
     {
         if(draftMethod == LightForge)
         {
-            scoresPushButton[i]->setScore(ratings[i], ratings[i]==bestRating);
+            scoresPushButton[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
             Utility::fadeInWidget(scoresPushButton[i]);
         }
         else if(draftMethod == HearthArena)
         {
-            scoresPushButton2[i]->setScore(ratings[i], ratings[i]==bestRating);
+            scoresPushButton2[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
             if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
@@ -214,9 +214,9 @@ void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3)
 {
     int votes[3] = {vote1, vote2, vote3};
     float totalVotes = votes[0] + votes[1] + votes[2];
-    double topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
+    float topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
 
-    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], votes[i]==topVotes);
+    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes));
 }
 
 
@@ -313,11 +313,11 @@ void DraftScoreWindow::hideScores(bool quick)
     {
         if(quick)
         {
-            QGraphicsOpacityEffect *eff = (QGraphicsOpacityEffect *)scoresPushButton[i]->graphicsEffect();
+            QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton[i]->graphicsEffect());
             eff->setOpacity(0);
-            eff = (QGraphicsOpacityEffect *)scoresPushButton2[i]->graphicsEffect();
+            eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton2[i]->graphicsEffect());
             eff->setOpacity(0);
-            eff = (QGraphicsOpacityEffect *)twitchButton[i]->graphicsEffect();
+            eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
         }
         else

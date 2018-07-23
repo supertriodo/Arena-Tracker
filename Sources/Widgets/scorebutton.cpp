@@ -63,19 +63,19 @@ void ScoreButton::setNormalizedLF(bool value)
 }
 
 
-void ScoreButton::getScoreColor(int &r, int &g, int &b, double score)
+void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 {
     int rating255 = 0;
-    if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min((int)(score*2.55), 255), 0);//0<-->100
-    else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min((int)(score*2.55), 255), 0);
-    else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min((int)((score-45)/10*255), 255), 0);//45<-->55
+    if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);//0<-->100
+    else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
+    else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min(static_cast<int>((score-45)/10*255), 255), 0);//45<-->55
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
 }
 
 
-void ScoreButton::setScore(double score, bool isBestScore)
+void ScoreButton::setScore(float score, bool isBestScore)
 {
     this->score = score;
     this->isBestScore = isBestScore;
@@ -123,14 +123,14 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::TextAntialiasing);
 
     float drawScore;
-    if(scoreSource == Score_LightForge)         drawScore = (int)Utility::normalizeLF(score, this->normalizedLF);
-    else if(scoreSource == Score_HearthArena)   drawScore = (int)score;
+    if(scoreSource == Score_LightForge)         drawScore = static_cast<int>(Utility::normalizeLF(score, this->normalizedLF));
+    else if(scoreSource == Score_HearthArena)   drawScore = static_cast<int>(score);
     else if(scoreSource == Score_Heroes)        drawScore = score;
 
     QFont font(LG_FONT);
-    if(scoreSource == Score_Heroes) font.setPixelSize(width()/3.5);
-    else if(drawScore > 99)         font.setPixelSize(width()/3.2);
-    else                            font.setPixelSize(width()/2.7);
+    if(scoreSource == Score_Heroes) font.setPixelSize(static_cast<int>(width()/3.5));
+    else if(drawScore > 99)         font.setPixelSize(static_cast<int>(width()/3.2));
+    else                            font.setPixelSize(static_cast<int>(width()/2.7));
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
@@ -155,7 +155,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         }
 
         //Draw Score
-        QString text = QString::number(drawScore);
+        QString text = QString::number(static_cast<double>(drawScore));
         QFontMetrics fm = QFontMetrics(font);
         int textWide = fm.width(text);
         int textHigh = fm.height();
@@ -171,7 +171,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         //Draw heroe winrate %
         if(scoreSource == Score_Heroes)
         {
-            font.setPixelSize(width()/5.0);
+            font.setPixelSize(static_cast<int>(width()/5.0));
             QString text = "%";
             QFontMetrics fm = QFontMetrics(font);
             int textWide = fm.width(text);

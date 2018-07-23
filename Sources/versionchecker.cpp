@@ -30,7 +30,7 @@ VersionChecker::~VersionChecker()
 
 void VersionChecker::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    emit advanceProgressBar(bytesTotal - bytesReceived, "Downloading " + latestVersion + "...");
+    emit advanceProgressBar(static_cast<int>(bytesTotal - bytesReceived), "Downloading " + latestVersion + "...");
 }
 
 
@@ -117,7 +117,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
         emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
         emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
 
-        QMessageBox msgBox((QMainWindow*)this->parent());
+        QMessageBox msgBox(static_cast<QMainWindow*>(this->parent()));
         msgBox.setText("Arena Tracker " + latestVersion + " is available for download.");
         msgBox.setWindowTitle(tr("New version"));
         msgBox.setIcon(QMessageBox::Information);
@@ -132,7 +132,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
         }
         else
         {
-            ((QMainWindow*)this->parent())->close();
+            static_cast<QMainWindow*>(this->parent())->close();
         }
     }
     else if(remindedVersion != latestVersion)
@@ -149,7 +149,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
             emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
             emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
 
-            QMessageBox msgBox((QMainWindow*)this->parent());
+            QMessageBox msgBox(static_cast<QMainWindow*>(this->parent()));
             msgBox.setText("Arena Tracker " + latestVersion + " is available for download.");
             msgBox.setWindowTitle(tr("New version"));
             msgBox.setIcon(QMessageBox::Information);
@@ -193,7 +193,7 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
 
 void VersionChecker::showVersionLog(QString changesLog)
 {
-    QMessageBox msgBox((QMainWindow*)this->parent());
+    QMessageBox msgBox(static_cast<QMainWindow*>(this->parent()));
     msgBox.setText(changesLog);
     msgBox.setWindowTitle(VERSION + " changes");
     msgBox.setTextFormat(Qt::RichText);
@@ -258,7 +258,7 @@ void VersionChecker::saveRestart(const QByteArray &data)
     QFile::setPermissions(runningBinaryPath, permissions);
 
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-    ((QMainWindow *)this->parent())->close();
+    static_cast<QMainWindow*>(this->parent())->close();
 }
 
 
@@ -277,7 +277,7 @@ void VersionChecker::saveRestartAppImage(const QByteArray &data)
                           QFileDevice::ExeOwner|QFileDevice::WriteOwner|QFileDevice::ReadOwner);
 
     QProcess::startDetached(runningBinaryPath, qApp->arguments());
-    ((QMainWindow *)this->parent())->close();
+    static_cast<QMainWindow*>(this->parent())->close();
 }
 
 

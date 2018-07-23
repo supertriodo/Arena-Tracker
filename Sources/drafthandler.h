@@ -83,8 +83,8 @@ private:
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     QComboBox *comboBoxCard[3];
-    double shownTierScoresHA[3];
-    double shownTierScoresLF[3];
+    float shownTierScoresHA[3];
+    float shownTierScoresLF[3];
     bool extendedCapture;
     bool normalizedLF;
     QStringList heroCodesList;
@@ -102,7 +102,7 @@ private:
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void updateDeckScore(double cardRatingHA=0, double cardRatingLF=0);
+    void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
@@ -189,8 +189,8 @@ public slots:
     void beginHeroDraft();
     void endDraft();
     void endDraftDeleteMechanicsWindow();
-    void showNewRatings(double rating1, double rating2, double rating3,
-                        double tierScore1, double tierScore2, double tierScore3,
+    void showNewRatings(float rating1, float rating2, float rating3,
+                        float tierScore1, float tierScore2, float tierScore3,
                         int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod);
     void pickCard(QString code);
     void enterArena();
