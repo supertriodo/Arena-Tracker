@@ -787,7 +787,7 @@ void PlanHandler::addBoardTagChange(int id, bool friendly, QString tag, QString 
 
     //Minions
     MinionGraphicsItem * minion = findMinion(friendly, id);
-    if(minion != nullptr)
+    if(minion != nullptr && tag != "COST")
     {
         addMinionTagChange(tagChange, minion);
     }
