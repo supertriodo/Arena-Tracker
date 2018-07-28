@@ -4137,7 +4137,6 @@ void MainWindow::testDelay()
 //In the replay tab when hovering over a card that has its atributes modified, show the card's tooltip with its current attack/life/mana.
 ////Show enemy cards revealed during a joust in a new section of enemy's deck tab to know they haven't been played yet.
 ////Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
-////Divide the overlay checkbox in config tab used during the draft in two separate checkboxes: One for deck mechanics overlay (over the cards) and other for scores and synergies overlay (below the cards).
 ////Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
 ////Show cards drawn and discarded when your hand is full on replay tab.
 ////Add a countdown option to let you know how much time you have left until your turn ends.
