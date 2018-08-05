@@ -2752,27 +2752,27 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates)
 }
 
 
-//int PlanHandler::flamewakersOnBoard()
-//{
-//    int num = 0;
-//    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-//    foreach(MinionGraphicsItem *minion, *playerMinions)
-//    {
-//        if(minion->getCode() == FLAMEWAKER)     num++;
-//    }
-//    return num;
-//}
+int PlanHandler::flamewakersOnBoard()
+{
+    int num = 0;
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(minion->getCode() == FLAMEWAKER)     num++;
+    }
+    return num;
+}
 
 
-//bool PlanHandler::isMechOnBoard()
-//{
-//    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-//    foreach(MinionGraphicsItem *minion, *playerMinions)
-//    {
-//        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
-//    }
-//    return false;
-//}
+bool PlanHandler::isMechOnBoard()
+{
+    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
+    foreach(MinionGraphicsItem *minion, *playerMinions)
+    {
+        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
+    }
+    return false;
+}
 
 
 //Card bombs
@@ -2808,21 +2808,21 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
         missiles = 8;
         playerIn = false;
     }
-//    else if(code == MADDER_BOMBER)
-//    {
-//        missiles = 6;
-//        playerIn = true;
-//    }
-//    else if(code == SPREADING_MADNESS)
-//    {
-//        missiles = 9;
-//        playerIn = true;
-//    }
-//    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
-//    {
-//        missiles = 4;
-//        playerIn = false;
-//    }
+    else if(code == MADDER_BOMBER)
+    {
+        missiles = 6;
+        playerIn = true;
+    }
+    else if(code == SPREADING_MADNESS)
+    {
+        missiles = 9;
+        playerIn = true;
+    }
+    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
+    {
+        missiles = 4;
+        playerIn = false;
+    }
     else if(code == CINDERSTORM)
     {
         missiles = 5;

@@ -150,8 +150,8 @@ private:
     QString encodeBombState(QList<int> targets);
     QList<float> bombDeads(QList<int> targets, int missiles);
     bool isCardBomb(QString code, bool &playerIn, int &missiles);
-//    bool isMechOnBoard();
-//    int flamewakersOnBoard();
+    bool isMechOnBoard();
+    int flamewakersOnBoard();
     void updateTurnSliderRange();
     Board *copyBoard(Board *origBoard, int numTurn = 0, bool copySecretCodes=false);
     void deleteFutureBoard();
