@@ -137,6 +137,8 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_RUSH_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_ECHO] = new DraftItemCounter(this);
     mechanicCounters[V_ECHO_ALL] = new DraftItemCounter(this);
+    mechanicCounters[V_MAGNETIC] = new DraftItemCounter(this);
+    mechanicCounters[V_MAGNETIC_ALL] = new DraftItemCounter(this);
 
 
     horLayoutCardTypes->addStretch();
@@ -463,6 +465,7 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardRace cardRace = deckCard.getRace();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
 
     if(cardRace == MURLOC)
     {
@@ -513,22 +516,22 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
     }
     else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->increase(code);
 
-    if(isMurlocSyn(code))                   raceCounters[V_MURLOC]->increaseSyn(code);
-    else if(isMurlocAllSyn(code, text))     raceCounters[V_MURLOC_ALL]->increaseSyn(code);
-    if(isDemonSyn(code))                    raceCounters[V_DEMON]->increaseSyn(code);
-    else if(isDemonAllSyn(code, text))      raceCounters[V_DEMON_ALL]->increaseSyn(code);
-    if(isMechSyn(code))                     raceCounters[V_MECHANICAL]->increaseSyn(code);
-    else if(isMechAllSyn(code, text))       raceCounters[V_MECHANICAL_ALL]->increaseSyn(code);
-    if(isElementalSyn(code))                raceCounters[V_ELEMENTAL]->increaseSyn(code);
-    else if(isElementalAllSyn(code, text))  raceCounters[V_ELEMENTAL_ALL]->increaseSyn(code);
-    if(isBeastSyn(code))                    raceCounters[V_BEAST]->increaseSyn(code);
-    else if(isBeastAllSyn(code, text))      raceCounters[V_BEAST_ALL]->increaseSyn(code);
-    if(isTotemSyn(code))                    raceCounters[V_TOTEM]->increaseSyn(code);
-    else if(isTotemAllSyn(code, text))      raceCounters[V_TOTEM_ALL]->increaseSyn(code);
-    if(isPirateSyn(code))                   raceCounters[V_PIRATE]->increaseSyn(code);
-    else if(isPirateAllSyn(code, text))     raceCounters[V_PIRATE_ALL]->increaseSyn(code);
-    if(isDragonSyn(code, text))             raceCounters[V_DRAGON]->increaseSyn(code);
-    else if(isDragonAllSyn(code))           raceCounters[V_DRAGON_ALL]->increaseSyn(code);
+    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->increaseSyn(code);
+    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->increaseSyn(code);
+    if(isDemonSyn(code))                            raceCounters[V_DEMON]->increaseSyn(code);
+    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->increaseSyn(code);
+    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->increaseSyn(code);
+    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->increaseSyn(code);
+    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->increaseSyn(code);
+    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->increaseSyn(code);
+    if(isBeastSyn(code))                            raceCounters[V_BEAST]->increaseSyn(code);
+    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->increaseSyn(code);
+    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->increaseSyn(code);
+    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->increaseSyn(code);
+    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->increaseSyn(code);
+    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->increaseSyn(code);
+    if(isDragonSyn(code, text))                     raceCounters[V_DRAGON]->increaseSyn(code);
+    else if(isDragonAllSyn(code))                   raceCounters[V_DRAGON_ALL]->increaseSyn(code);
 }
 
 
@@ -695,6 +698,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_RUSH_ALL]->increase(code);
     }
     else if(isRushGen(code))                                                mechanicCounters[V_RUSH_ALL]->increase(code);
+    if(isMagnetic(code, mechanics))
+    {
+        mechanicCounters[V_MAGNETIC]->increase(code);
+        mechanicCounters[V_MAGNETIC_ALL]->increase(code);
+    }
+    else if(isMagneticGen(code))                                            mechanicCounters[V_MAGNETIC_ALL]->increase(code);
 
 
 
@@ -741,6 +750,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isEchoAllSyn(code))                                             mechanicCounters[V_ECHO_ALL]->increaseSyn(code);
     if(isRushSyn(code))                                                     mechanicCounters[V_RUSH]->increaseSyn(code);
     else if(isRushAllSyn(code))                                             mechanicCounters[V_RUSH_ALL]->increaseSyn(code);
+    if(isMagneticSyn(code))                                                 mechanicCounters[V_MAGNETIC]->increaseSyn(code);
+    else if(isMagneticAllSyn(code))                                         mechanicCounters[V_MAGNETIC_ALL]->increaseSyn(code);
 }
 
 
@@ -880,6 +891,7 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &syn
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardRace cardRace = deckCard.getRace();
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
 
     if(cardRace == MURLOC)
     {
@@ -930,22 +942,22 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &syn
     }
     else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->insertSynCards(synergies);
 
-    if(isMurlocSyn(code))                   raceCounters[V_MURLOC]->insertCards(synergies);
-    else if(isMurlocAllSyn(code, text))     raceCounters[V_MURLOC_ALL]->insertCards(synergies);
-    if(isDemonSyn(code))                    raceCounters[V_DEMON]->insertCards(synergies);
-    else if(isDemonAllSyn(code, text))      raceCounters[V_DEMON_ALL]->insertCards(synergies);
-    if(isMechSyn(code))                     raceCounters[V_MECHANICAL]->insertCards(synergies);
-    else if(isMechAllSyn(code, text))       raceCounters[V_MECHANICAL_ALL]->insertCards(synergies);
-    if(isElementalSyn(code))                raceCounters[V_ELEMENTAL]->insertCards(synergies);
-    else if(isElementalAllSyn(code, text))  raceCounters[V_ELEMENTAL_ALL]->insertCards(synergies);
-    if(isBeastSyn(code))                    raceCounters[V_BEAST]->insertCards(synergies);
-    else if(isBeastAllSyn(code, text))      raceCounters[V_BEAST_ALL]->insertCards(synergies);
-    if(isTotemSyn(code))                    raceCounters[V_TOTEM]->insertCards(synergies);
-    else if(isTotemAllSyn(code, text))      raceCounters[V_TOTEM_ALL]->insertCards(synergies);
-    if(isPirateSyn(code))                   raceCounters[V_PIRATE]->insertCards(synergies);
-    else if(isPirateAllSyn(code, text))     raceCounters[V_PIRATE_ALL]->insertCards(synergies);
-    if(isDragonSyn(code, text))             raceCounters[V_DRAGON]->insertCards(synergies);
-    else if(isDragonAllSyn(code))           raceCounters[V_DRAGON_ALL]->insertCards(synergies);
+    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergies);
+    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergies);
+    if(isDemonSyn(code))                            raceCounters[V_DEMON]->insertCards(synergies);
+    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->insertCards(synergies);
+    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->insertCards(synergies);
+    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->insertCards(synergies);
+    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->insertCards(synergies);
+    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->insertCards(synergies);
+    if(isBeastSyn(code))                            raceCounters[V_BEAST]->insertCards(synergies);
+    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->insertCards(synergies);
+    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->insertCards(synergies);
+    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->insertCards(synergies);
+    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->insertCards(synergies);
+    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->insertCards(synergies);
+    if(isDragonSyn(code, text))                     raceCounters[V_DRAGON]->insertCards(synergies);
+    else if(isDragonAllSyn(code))                   raceCounters[V_DRAGON_ALL]->insertCards(synergies);
 }
 
 
@@ -1066,6 +1078,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
     }
     else if(isRushGen(code))                                    mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
+    if(isMagnetic(code, mechanics))
+    {
+        mechanicCounters[V_MAGNETIC]->insertSynCards(synergies);
+        mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
+    }
+    else if(isMagneticGen(code))                                mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
 
 
     //SYN
@@ -1112,7 +1130,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isEchoAllSyn(code))                                 mechanicCounters[V_ECHO_ALL]->insertCards(synergies);
     if(isRushSyn(code))                                         mechanicCounters[V_RUSH]->insertCards(synergies);
     else if(isRushAllSyn(code))                                 mechanicCounters[V_RUSH_ALL]->insertCards(synergies);
-
+    if(isMagneticSyn(code))                                     mechanicCounters[V_MAGNETIC]->insertCards(synergies);
+    else if(isMagneticAllSyn(code))                             mechanicCounters[V_MAGNETIC_ALL]->insertCards(synergies);
 }
 
 
@@ -1290,18 +1309,18 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 
-    if(isMurlocAllSyn(code, text))      mec<<"murlocAllSyn";
-    if(isDemonAllSyn(code, text))       mec<<"demonAllSyn";
-    if(isMechAllSyn(code, text))        mec<<"mechAllSyn";
-    if(isElementalAllSyn(code, text))   mec<<"elementalAllSyn";
-    if(isBeastAllSyn(code, text))       mec<<"beastAllSyn";
-    if(isTotemAllSyn(code, text))       mec<<"totemAllSyn";
-    if(isPirateAllSyn(code, text))      mec<<"pirateAllSyn";
-    if(isDragonSyn(code, text))         mec<<"dragonSyn";
+    if(isMurlocAllSyn(code, text))          mec<<"murlocAllSyn";
+    if(isDemonAllSyn(code, text))           mec<<"demonAllSyn";
+    if(isMechAllSyn(code, mechanics, text)) mec<<"mechAllSyn";
+    if(isElementalAllSyn(code, text))       mec<<"elementalAllSyn";
+    if(isBeastAllSyn(code, text))           mec<<"beastAllSyn";
+    if(isTotemAllSyn(code, text))           mec<<"totemAllSyn";
+    if(isPirateAllSyn(code, text))          mec<<"pirateAllSyn";
+    if(isDragonSyn(code, text))             mec<<"dragonSyn";
 
-    if(isWeaponGen(code, text))         mec<<"weaponGen";
-    if(isSpellAllSyn(code, text))       mec<<"spellAllSyn";
-    if(isWeaponAllSyn(code, text))      mec<<"weaponAllSyn";
+    if(isWeaponGen(code, text))             mec<<"weaponGen";
+    if(isSpellAllSyn(code, text))           mec<<"spellAllSyn";
+    if(isWeaponAllSyn(code, text))          mec<<"weaponAllSyn";
 
     if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
     if(isDrawGen(code, text))                                               mec<<"drawGen";
@@ -1316,6 +1335,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSecret(code, mechanics))                                           mec<<"secret";
     if(isEcho(code, text))                                                  mec<<"echo";
     if(isRush(code, text))                                                  mec<<"rush";
+    if(isMagnetic(code, mechanics))                                         mec<<"magnetic";
     if(isEggGen(code, mechanics, attack, cardType))                         mec<<"eggGen";
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
     if(isDiscardGen(code, text))                                            mec<<"discardGen";
@@ -1768,6 +1788,26 @@ bool SynergyHandler::isRushGen(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("rushGen");
+    }
+    return false;
+}
+bool SynergyHandler::isMagnetic(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("magnetic");
+    }
+    else if(mechanics.contains(QJsonValue("MODULAR")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isMagneticGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("magneticGen");
     }
     return false;
 }
@@ -2243,12 +2283,13 @@ bool SynergyHandler::isMechSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isMechAllSyn(const QString &code, const QString &text)
+bool SynergyHandler::isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("mechAllSyn");
     }
+    else if(isMagnetic(code, mechanics) || isMagneticGen(code))    return true;
     else
     {
         return text.contains("mech");
@@ -2480,6 +2521,22 @@ bool SynergyHandler::isRushAllSyn(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("rushAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isMagneticSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("magneticSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isMagneticAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("magneticAllSyn");
     }
     return false;
 }
@@ -2865,6 +2922,8 @@ echo o echoGen
 echoSyn o echoAllSyn
 rush o rushGen
 rushSyn o rushAllSyn
+magnetic o magneticGen
+magneticSyn o magneticAllSyn
 windfury - windfuryMinionSyn
 lifesteal - lifestealMinionSyn
 lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
@@ -2889,7 +2948,7 @@ deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, retu
 enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen
 tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen,
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal
-eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen
+eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
 
 
 

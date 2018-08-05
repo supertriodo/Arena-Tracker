@@ -98,6 +98,8 @@ private:
     bool isEchoGen(const QString &code);
     bool isRush(const QString &code, const QString &text);
     bool isRushGen(const QString &code);
+    bool isMagnetic(const QString &code, const QJsonArray &mechanics);
+    bool isMagneticGen(const QString &code);
     bool isEggGen(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isDamageFriendlyHeroGen(const QString &code);
     bool isFreezeEnemyGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
@@ -136,7 +138,7 @@ private:
     bool isDragonSyn(const QString &code, const QString &text);
     bool isMurlocAllSyn(const QString &code, const QString &text);
     bool isDemonAllSyn(const QString &code, const QString &text);
-    bool isMechAllSyn(const QString &code, const QString &text);
+    bool isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isElementalAllSyn(const QString &code, const QString &text);
     bool isBeastAllSyn(const QString &code, const QString &text);
     bool isTotemAllSyn(const QString &code, const QString &text);
@@ -161,6 +163,8 @@ private:
     bool isEchoAllSyn(const QString &code);
     bool isRushSyn(const QString &code);
     bool isRushAllSyn(const QString &code);
+    bool isMagneticSyn(const QString &code);
+    bool isMagneticAllSyn(const QString &code);
     bool isEggSyn(const QString &code, const QString &text);
     bool isDamageFriendlyHeroSyn(const QString &code);
     bool isFreezeEnemySyn(const QString &code, const QJsonArray &referencedTags, const QString &text);

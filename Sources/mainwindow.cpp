@@ -3990,10 +3990,10 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
-    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
+//    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
+//    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
-//    draftHandler->debugSynergiesSet("BOOMSDAY", false);
+    draftHandler->debugSynergiesSet("BOOMSDAY", true);
 //    draftHandler->debugSynergiesCode("BOT_908");
 //    draftHandler->testSynergies();
 //    draftHandler->initSynergyCodes();
@@ -4098,6 +4098,7 @@ void MainWindow::testDelay()
 
 //Update synergies.json
 //==Treant druid synergy
+//==MODULAR key
 //|-Check evolveSyn cards
 //|-Check individual synergies
 
