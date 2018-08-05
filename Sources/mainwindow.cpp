@@ -4080,7 +4080,7 @@ void MainWindow::testDelay()
 //==Soul Infusion +2/+2
 //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//== Mulchmuncher (8)
+//==Mulchmuncher (8)
 //==Dreampetal Florist (3)
 //==Luna's Pocket Galaxy (0)
 //==Academic Espionage (0)
