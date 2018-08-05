@@ -548,9 +548,10 @@ int EnemyHandHandler::getCardBuff(QString code)
 
 bool EnemyHandHandler::isClonerCard(QString code)
 {
-    if(code == MIMIC_POD)       return true;
-    if(code == THISTLE_TEA)     return true;
-    if(code == TOLINS_GOBLET)   return true;
+    if(code == MIMIC_POD)           return true;
+    if(code == THISTLE_TEA)         return true;
+    if(code == TOLINS_GOBLET)       return true;
+    if(code == ELEMENTARY_REACTION) return true;
     return false;
 }
 
