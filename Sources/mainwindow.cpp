@@ -3990,8 +3990,8 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
-//    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
+    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
+    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
 //    draftHandler->debugSynergiesSet("BOOMSDAY", false);
 //    draftHandler->debugSynergiesCode("BOT_908");
@@ -4065,7 +4065,7 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION
 //Update Json cartas --> Automatico
-//--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
+//Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
 //--Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-07-19T12:00:00Z"
 //--Update Json HA tierlist --> HATLsed.sh --- 6/22/18: Taverns of Time Update
 //--Comparar tier lists con Utility::check
