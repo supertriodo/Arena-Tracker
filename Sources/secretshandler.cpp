@@ -184,6 +184,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     {
         case PALADIN:
             //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));
+            activeSecret.children.append(SecretCard(AUTODEFENSE_MATRIX));
             if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
             activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
             activeSecret.children.append(SecretCard(REPENTANCE));
@@ -575,6 +576,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(SNAKE_TRAP);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
+            discardSecretOptionNow(AUTODEFENSE_MATRIX);
         }
     }
     else
@@ -605,6 +607,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(SNAKE_TRAP);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
+            discardSecretOptionNow(AUTODEFENSE_MATRIX);
         }
     }
 }

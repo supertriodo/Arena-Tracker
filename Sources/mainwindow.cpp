@@ -3990,13 +3990,13 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Gilnean Royal Guard");
-//    qDebug()<<Utility::getCardAttribute("TOT_030", "set").toString();
+//    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
+//    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
-//    draftHandler->debugSynergiesSet("TAVERNS_OF_TIME", false);
-//    draftHandler->debugSynergiesCode("ICC_240");
+//    draftHandler->debugSynergiesSet("BOOMSDAY", false);
+//    draftHandler->debugSynergiesCode("BOT_908");
 //    draftHandler->testSynergies();
-    draftHandler->initSynergyCodes();
+//    draftHandler->initSynergyCodes();
 }
 
 
@@ -4010,7 +4010,7 @@ void MainWindow::testTierlists()
 void MainWindow::testDelay()
 {
 //    testTierlists();
-//    testSynergies();
+    testSynergies();
 }
 
 
@@ -4063,22 +4063,43 @@ void MainWindow::testDelay()
 //Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
 
 
-//NUEVAS CARTAS
+//NUEVA EXPANSION
 //Update Json cartas --> Automatico
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-07-19T12:00:00Z"
-//Update Json HA tierlist --> HATLsed.sh --- 6/22/18: Taverns of Time Update
-//Comparar tier lists con Utility::check
-//Update secrets
-//Update bombing cards --> PlanHandler::isCardBomb
-//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
-//Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
-//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
-//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
-//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//Crear imagenes de nuevos heroes en el github (HERO_***)
+//--Update Utility::isFromStandardSet(QString code) --> LOOTAPALOOZA
+//--Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-07-19T12:00:00Z"
+//--Update Json HA tierlist --> HATLsed.sh --- 6/22/18: Taverns of Time Update
+//--Comparar tier lists con Utility::check
+//--Crear imagenes de nuevos heroes en el github (HERO_***)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+//Update secrets
+//==Autodefense matrix
+//Update bombing cards --> PlanHandler::isCardBomb
+//==Meteorologist (cards in hand)
+//==Dyn-o-matic (no dania mechs)
+//==Loose Specimen (dania friendly minions solo)
+//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
+//==Glowstone technician +2/+2
+//==Soul Infusion +2/+2
+//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
+//== Mulchmuncher (8)
+//==Dreampetal Florist (3)
+//==Luna's Pocket Galaxy (0)
+//==Academic Espionage (0)
+//==Piloted Reaper (3)
+//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
+//==Subject 9
+//==Storm Chaser
+//==Dead Ringer
+//==Prismatic Lens
+//==Crystology
+//==Juicy Psychmelon
+//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
+//==Elementary Reaction
+
+
 //Update synergies.json
+//==Treant druid synergy
 //|-Check evolveSyn cards
 //|-Check individual synergies
 
