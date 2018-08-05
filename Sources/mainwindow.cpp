@@ -4072,11 +4072,7 @@ void MainWindow::testDelay()
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
 //Update secrets
-//==Autodefense matrix
 //Update bombing cards --> PlanHandler::isCardBomb
-//==Meteorologist (cards in hand)
-//==Dyn-o-matic (no dania mechs)
-//==Loose Specimen (dania friendly minions solo)
 //Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
 //==Glowstone technician +2/+2
 //==Soul Infusion +2/+2
