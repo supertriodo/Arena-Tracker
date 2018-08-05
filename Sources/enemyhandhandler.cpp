@@ -578,6 +578,12 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == COUNTESS_ASHMORE)   return true;
     if(lastCreatedByCode == SANDBINDER)         return true;
     if(lastCreatedByCode == WITCHWOOD_PIPER)    return true;
+    if(lastCreatedByCode == SUBJECT_9)          return true;
+    if(lastCreatedByCode == STORM_CHASER)       return true;
+    if(lastCreatedByCode == DEAD_RINGER)        return true;
+    if(lastCreatedByCode == PRISMATIC_LENS)     return true;
+    if(lastCreatedByCode == CRYSTOLOGY)         return true;
+    if(lastCreatedByCode == JUICY_PSYCHMELON)   return true;
     return false;
 }
 
