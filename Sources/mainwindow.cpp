@@ -4063,13 +4063,13 @@ void MainWindow::testDelay()
 //Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
 
 
-//NUEVA EXPANSION
+//NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-06T12:00:01Z"
 //Update Json HA tierlist --> HATLsed.sh --- 8/7/18: New Boomsday Project Release
 //Comparar tier lists con Utility::check
-//--Crear imagenes de nuevos heroes en el github (HERO_***)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
 //Update secrets
 //==Autodefense matrix
@@ -4102,12 +4102,6 @@ void MainWindow::testDelay()
 //STANDARD CYCLE
 //Remove secrets rotating out
 //Actualizar Utility::isFromStandardSet(code)
-
-//NUEVOS HEROES
-//Evitar Asset hero powers (GameWatcher 201)
-//Incluir nuevo hero power en isHeroPower(QString code) de GameWatcher
-//Nuevo Json hearthArena
-//Nuevo start draft menu
 
 //NUEVOS BACKGROUND
 //Coger el color de una parte clara de un carta de clase
