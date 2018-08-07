@@ -3993,10 +3993,10 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Venomizer");
 //    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
-    draftHandler->debugSynergiesSet("BOOMSDAY", true);
-//    draftHandler->debugSynergiesCode("BOT_908");
+//    draftHandler->debugSynergiesSet("BOOMSDAY", true);
+//    draftHandler->debugSynergiesCode("UNG_818");
 //    draftHandler->testSynergies();
-//    draftHandler->initSynergyCodes();
+    draftHandler->initSynergyCodes();
 }
 
 
@@ -4066,7 +4066,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
-//--Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-07-19T12:00:00Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-06T12:00:01Z"
 //--Update Json HA tierlist --> HATLsed.sh --- 6/22/18: Taverns of Time Update
 //--Comparar tier lists con Utility::check
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
@@ -4097,8 +4097,14 @@ void MainWindow::testDelay()
 
 
 //Update synergies.json
-//==Treant druid synergy
-//==MODULAR key
+//==Treant druid synergy ==> "BOT_419" : [ "Dendrologist" ], ==> "BOT_420" : [ "Landscaping" ], ==> "BOT_422" : [ "Tending Tauren" ],==> "BOT_523" : [ "Mulchmuncher" ],
+//=="BOT_258" : [ "Zerek, Master Cloner" ],"BOT_558" : [ "Test Subject" ], ==> Synergias buffs sacerdote
+//=="BOT_267" : [ "Piloted Reaper" ], ==> Synergias cartas general minions coste <=2
+//=="BOT_283" : [ "Pogo-Hopper" ], ==> Synergia consigo mismo
+//=="BOT_448" : [ "Damaged Stegotron" ], ==> Synergia resummon + bad battlecry
+//=="BOT_550" : [ "Electrowright" ], ==> Synergia con el que descubre hechizo coste 5
+//=="BOT_559" : [ "Augmented Elekk" ], ==> Synergias shuffle
+//=="BOT_910" : [ "Glowstone Technician" ], ==> Synergias hand buff
 //|-Check evolveSyn cards
 //|-Check individual synergies
 
