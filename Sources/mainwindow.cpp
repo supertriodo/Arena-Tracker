@@ -4010,7 +4010,7 @@ void MainWindow::testTierlists()
 void MainWindow::testDelay()
 {
 //    testTierlists();
-    testSynergies();
+//    testSynergies();
 }
 
 
