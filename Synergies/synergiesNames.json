@@ -65,7 +65,6 @@
 	"BCON_021": [ "Crackling Doom" ],
 	"BCON_024": [ "Bottled Madness" ],
 	"BCON_026": [ "Blazing Longsword" ],
-
 	"BOT_020" : [ "Skaterbot" ],
 	"BOT_021" : [ "Bronze Gatekeeper" ],
 	"BOT_031" : [ "Goblin Bomb" ],
@@ -201,7 +200,6 @@
 	"BOT_912" : [ "Kangor's Endless Army" ],
 	"BOT_913" : [ "Demonic Project" ],
 	"BOT_914" : [ "Whizbang the Wonderful" ],
-
 	"BRM_001": [ "Solemn Vigil" ],
 	"BRM_002": [ "Flamewaker" ],
 	"BRM_003": [ "Dragon's Breath" ],
@@ -741,7 +739,7 @@
 	"LOOT_204": [ "Cheat Death" ],
 	"LOOT_209": [ "Dragon Soul" ],
 	"LOOT_211": [ "Elven Minstrel" ],
-	"LOOT_216": [ "Lynessa Sunsorrow" ],	
+	"LOOT_216": [ "Lynessa Sunsorrow" ],
 	"LOOT_217": [ "To My Side!" ],
 	"LOOT_218": [ "Feral Gibberer" ],
 	"LOOT_231": [ "Arcane Artificer" ],
@@ -858,7 +856,6 @@
 	"OG_322": [ "Blackwater Pirate" ],
 	"OG_338": ["Nat, the Darkfisher"],
 	"PRO_001": [ "Elite Tauren Chieftain" ],
-
 	"TOT_030" : [ "Chromie" ],
 	"TOT_056" : [ "Wildlands Adventurer" ],
 	"TOT_067" : [ "Infinite Murloc" ],
@@ -887,7 +884,6 @@
 	"TOT_342" : [ "Fatecleaver" ],
 	"TOT_343" : [ "Reminisce" ],
 	"TOT_345" : [ "Ripple in Time" ],
-
 	"UNG_004": ["Dinosize"],
 	"UNG_010": ["Sated Threshadon"],
 	"UNG_011": ["Hydrologist"],
@@ -967,7 +963,7 @@
 	"UNG_963": [ "Lyra the Sunshard" ],
 	"tt_004": [ "Flesheating Ghoul" ],
 	"tt_010": ["Spellbender"],
-	"DIRECT_LINKS": 
+	"DIRECT_LINKS":
 	{
 		"-----------------------------------------HAND BUFF-----------------------------------------": "",
 		"ICC_466 Saronite Chain Gang": ["LOOT_500 Val'anyr"],
