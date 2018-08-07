@@ -2959,7 +2959,7 @@ ENRAGE/TAKE DAMAGE: enrageGen(take damage),
 SUMMON: tokenGen(summon) <--> =GenMinionHealth1
 TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenMinionHealth1
 PLAY CARDS: tokenCardSyn
-BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack/eggGen)
+BUFF ALL: tokenSyn(beneficio masa), tauntGiverSyn(cant attack)
 DESTROY TARDIO: freezeEnemySyn
 DESTROY PROPIO: tokenSyn, eggSyn
 SWAP/copia 1-1: eggSyn
@@ -2969,14 +2969,14 @@ SPAWN ENEMIES: spawnEnemyGen
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
 DAMAGE HERO: damageFriendlyHeroGen/damageFriendlyHeroSyn
-CHARGE/RUSH: damageMinionsGen(no atk1) <--> reachGen(no atk1/no rush) <--> pingGen(atk1)
+CHARGE/RUSH: pingGen(atk1) <--> damageMinionsGen(no atk1) <--> reachGen(no atk1/no rush)
 STEALTH: stealthGen <--> reachGen(no atk1)
+MAGNETIC: magnetic <--> mechAllSyn
 
 
 
 
 REGLAS
-+Corregir el mana que cuesta en la practica ciertas cartas a traves de SynergyHandler::getCorrectedCardMana
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no). Synergias con todo tu mazo son faciles, como robar 2 murlocs.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
@@ -3000,8 +3000,9 @@ REGLAS
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
-    Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo)
+    Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
     o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
++Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor, es una sinergia muy debil.
 
 
 

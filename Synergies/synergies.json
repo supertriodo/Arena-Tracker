@@ -65,6 +65,415 @@
 	"BCON_021": ["aoeGen","overload","spellDamageSyn"],
 	"BCON_024": ["demonGen"],
 	"BCON_026": ["reachGen","aoeGen"],
+
+
+
+
+"BOT_020" : [ "Skaterbot" ],
+"BOT_020" : [ "mechAllSyn", "pingGen", "rush", "magnetic" ],
+
+"BOT_021" : [ "Bronze Gatekeeper" ],
+"BOT_021" : [ "mechAllSyn", "magnetic", "taunt" ],
+
+"BOT_031" : [ "Goblin Bomb" ],
+"BOT_031" : [ "eggGen", "deathrattle" ],
+
+"BOT_033" : [ "Bomb Toss" ],
+"BOT_033" : [ "damageMinionsGen", "reachGen", "eggGen", "deathrattleGen" ],
+
+"BOT_034" : [ "Boommaster Flark" ],
+"BOT_034" : [ "battlecry", "returnSyn", "eggGen", "deathrattleGen" ],
+
+"BOT_035" : [ "Venomizer" ],
+"BOT_035" : [ "mechAllSyn", "magnetic" ],
+
+"BOT_038" : [ "Fireworks Tech" ],
+"BOT_038" : [ "mechAllSyn", "battlecry", "returnSyn" ],
+
+"BOT_039" : [ "Necromechanic" ],
+"BOT_039" : [ "deathrattleGoodAllSyn" ],
+
+"BOT_042" : [ "Weapons Project" ],
+"BOT_042" : [ "reachGen", "damageMinionsGen", "armorGen" ],
+
+"BOT_050" : [ "Rusty Recycler" ],
+"BOT_050" : [ "lifesteal", "taunt" ],
+
+"BOT_054" : [ "Biology Project" ],
+"BOT_054" : [ ],
+
+"BOT_059" : [ "Eternium Rover" ],
+"BOT_059" : [ "enrageGen", "armorGen" ],
+
+"BOT_066" : [ "Mechanical Whelp" ],
+"BOT_066" : [ "deathrattle" ],
+
+"BOT_067" : [ "Rocket Boots" ],
+"BOT_067" : [ "drawGen", "rushGen", "damageMinionsGen" ],
+
+"BOT_069" : [ "The Boomship" ],
+"BOT_069" : [ "rushGen", "damageMinionsGen" ],
+
+"BOT_079" : [ "Faithful Lumi" ],
+"BOT_079" : [ "mechAllSyn", "battlecry", "returnSyn" ],
+
+"BOT_083" : [ "Toxicologist" ],
+"BOT_083" : [ "weaponAllSyn", "battlecry", "returnSyn" ],
+
+"BOT_084" : [ "Violet Haze" ],
+"BOT_084" : [ "toYourHandGen2", "deathrattleGen" ],
+
+"BOT_087" : [ "Academic Espionage" ],
+"BOT_087" : [ ],
+
+"BOT_093" : [ "Elementary Reaction" ],
+"BOT_093" : [ "elementalAllSyn", "drawGen2" ],
+
+"BOT_098" : [ "Unpowered Mauler" ],
+"BOT_098" : [ "spellAllSyn" ],
+
+"BOT_099" : [ "Eureka!" ],
+"BOT_099" : [ ],
+
+"BOT_101" : [ "Astral Rift" ],
+"BOT_101" : [ "toYourHandGen2" ],
+
+"BOT_102" : [ "Spark Drill" ],
+"BOT_102" : [ "tokenGen", "tokenCardGen", "damageMinionsGen", "pingGen", "rush", "deathrattle" ],
+
+"BOT_103" : [ "Stargazer Luna" ],
+"BOT_103" : [ "drawGen" ],
+
+"BOT_104" : [ "Dyn-o-matic" ],
+"BOT_104" : [ "mechAllSyn", "pingGen", "battlecry", "returnSyn" ],
+
+"BOT_107" : [ "Missile Launcher" ],
+"BOT_107" : [ "mechAllSyn", "aoeGen", "pingGen", "magnetic", "enrageSyn" ],
+
+"BOT_216" : [ "Omega Medic" ],
+"BOT_216" : [ "battlecry", "restoreFriendlyHeroGen", "returnSyn" ],
+
+"BOT_218" : [ "Security Rover" ],
+"BOT_218" : [ "enrageGen", "tauntGen" ],
+
+"BOT_219" : [ "Extra Arms" ],
+"BOT_219" : [ "toYourHandGen", "attackBuffGen", "healthBuffGen" ],
+
+"BOT_222" : [ "Spirit Bomb" ],
+"BOT_222" : [ "damageMinionsGen", "damageFriendlyHeroGen" ],
+
+"BOT_224" : [ "Doubling Imp" ],
+"BOT_224" : [ "battlecry", "returnSyn" ],
+
+"BOT_226" : [ "Nethersoul Buster" ],
+"BOT_226" : [ "battlecry", "damageFriendlyHeroSyn" ],
+
+"BOT_234" : [ "Shrink Ray" ],
+"BOT_234" : [ "aoeGen", "destroyGen", "eggSyn" ],
+
+"BOT_236" : [ "Crystalsmith Kangor" ],
+"BOT_236" : [ "lifesteal", "divineShield", "restoreTargetMinionSyn", "restoreFriendlyMinionSyn", "restoreFriendlyHeroSyn" ],
+
+"BOT_237" : [ "Beryllium Nullifier" ],
+"BOT_237" : [ "mechAllSyn", "magnetic" ],
+
+"BOT_238" : [ "Dr. Boom, Mad Genius" ],
+"BOT_238" : [ "mechAllSyn", "battlecry" ],
+
+"BOT_242" : [ "Myra's Unstable Element" ],
+"BOT_242" : [ "drawGen5" ],
+
+"BOT_243" : [ "Myra Rotspring" ],
+"BOT_243" : [ "discover", "deathrattleGen", "battlecry", "returnSyn" ],
+
+"BOT_245" : [ "The Storm Bringer" ],
+"BOT_245" : [ "tokenSyn" ],
+
+"BOT_246" : [ "Beakered Lightning" ],
+"BOT_246" : [ "aoeGen", "pingGen", "overload", "spellDamageSyn", "enrageSyn" ],
+
+"BOT_251" : [ "Spider Bomb" ],
+"BOT_251" : [ "mechAllSyn", "magnetic", "deathrattle" ],
+
+"BOT_254" : [ "Unexpected Results" ],
+"BOT_254" : [ "spellDamageGen" ],
+
+"BOT_256" : [ "Astromancer" ],
+"BOT_256" : [ "battlecry", "returnSyn" ],
+
+"BOT_257" : [ "Luna's Pocket Galaxy" ],
+"BOT_257" : [ "drawSyn" ],
+
+"BOT_258" : [ "Zerek, Master Cloner" ],
+"BOT_258" : [ "deathrattle" ],
+
+"BOT_263" : [ "Soul Infusion" ],
+"BOT_263" : [ "attackBuffGen", "healthBuffGen" ],
+
+"BOT_267" : [ "Piloted Reaper" ],
+"BOT_267" : [ "deathrattle", "=<SynMinionCost2" ],
+
+"BOT_270" : [ "Giggling Inventor" ],
+"BOT_270" : [ "mechGen", "battlecry", "tokenGen", "tauntGen", "divineShieldGen", "returnSyn" ],
+
+"BOT_280" : [ "Holomancer" ],
+"BOT_280" : [ ],
+
+"BOT_283" : [ "Pogo-Hopper" ],
+"BOT_283" : [ "battlecry", "returnSyn" ],
+
+"BOT_286" : [ "Necrium Blade" ],
+"BOT_286" : [ "damageMinionsGen", "reachGen", "deathrattleGoodAllSyn" ],
+
+"BOT_288" : [ "Lab Recruiter" ],
+"BOT_288" : [ "battlecry", "returnSyn" ],
+
+"BOT_291" : [ "Storm Chaser" ],
+"BOT_291" : [ "=>SynSpellCost5", "drawGen", "battlecry", "returnSyn" ],
+
+"BOT_296" : [ "Omega Defender" ],
+"BOT_296" : [ "battlecry", "taunt" ],
+
+"BOT_299" : [ "Omega Assembly" ],
+"BOT_299" : [ "mechGen", "discover3" ],
+
+"BOT_308" : [ "Spring Rocket" ],
+"BOT_308" : [ "damageMinionsGen", "reachGen", "battlecry", "returnSyn" ],
+
+"BOT_309" : [ "Upgradeable Framebot" ],
+"BOT_309" : [ ],
+
+"BOT_312" : [ "Replicating Menace" ],
+"BOT_312" : [ "mechAllSyn", "magnetic", "deathrattle", "tokenGen" ],
+
+"BOT_401" : [ "Weaponized Piñata" ],
+"BOT_401" : [ "toYourHandGen", "deathrattle" ],
+
+"BOT_402" : [ "Secret Plan" ],
+"BOT_402" : [ "discover", "secretGen" ],
+
+"BOT_404" : [ "Juicy Psychmelon" ],
+"BOT_404" : [ "drawGen4", "=>SynMinionCost7" ],
+
+"BOT_406" : [ "Supercollider" ],
+"BOT_406" : [ "damageMinionsGen" ],
+
+"BOT_407" : [ "Thunderhead" ],
+"BOT_407" : [ "overloadSyn" ],
+
+"BOT_411" : [ "Electra Stormsurge" ],
+"BOT_411" : [ "battlecry", "returnSyn", "spellAllSyn" ],
+
+"BOT_413" : [ "Brainstormer" ],
+"BOT_413" : [ "battlecry", "spellAllSyn" ],
+
+"BOT_414" : [ "Cloakscale Chemist" ],
+"BOT_414" : [ "stealthGen", "divineShield" ],
+
+"BOT_419" : [ "Dendrologist" ],
+"BOT_419" : [ "battlecry", "returnSyn" ],
+
+"BOT_420" : [ "Landscaping" ],
+"BOT_420" : [ ],
+
+"BOT_422" : [ "Tending Tauren" ],
+"BOT_422" : [ "attackBuffGen", "healthBuffGen", "tokenSyn", "chooseOneGen" ],
+
+"BOT_423" : [ "Dreampetal Florist" ],
+"BOT_423" : [ ],
+
+"BOT_424" : [ "Mecha'thun" ],
+"BOT_424" : [ "deathrattle" ],
+
+"BOT_429" : [ "Flark's Boom-Zooka" ],
+"BOT_429" : [ "aoeGen" ],
+
+"BOT_431" : [ "Whirliglider" ],
+"BOT_431" : [ "eggGen", "deathrattleGen", "battlecry", "returnSyn" ],
+
+"BOT_433" : [ "Dr. Morrigan" ],
+"BOT_433" : [ "deathrattle" ],
+
+"BOT_434" : [ "Flobbidinous Floop" ],
+"BOT_434" : [ ],
+
+"BOT_435" : [ "Cloning Device" ],
+"BOT_435" : [ "discover" ],
+
+"BOT_436" : [ "Prismatic Lens" ],
+"BOT_436" : [ "drawGen2" ],
+
+"BOT_437" : [ "Goblin Prank" ],
+"BOT_437" : [ "rushGen", "attackBuffGen", "healthBuffGen", "eggSyn", "damageMinionsGen" ],
+
+"BOT_438" : [ "Cybertech Chip" ],
+"BOT_438" : [ "mechGen", "tokenSyn", "deathrattleGen", "toYourHandGen2" ],
+
+"BOT_443" : [ "Void Analyst" ],
+"BOT_443" : [ "demonAllSyn", "deathrattle" ],
+
+"BOT_444" : [ "Floop's Glorious Gloop" ],
+"BOT_444" : [ "tokenSyn" ],
+
+"BOT_445" : [ "Mecharoo" ],
+"BOT_445" : [ "deathrattle", "tokenGen" ],
+
+"BOT_447" : [ "Crystallizer" ],
+"BOT_447" : [ "battlecry", "armorGen", "damageFriendlyHeroGen" ],
+
+"BOT_448" : [ "Damaged Stegotron" ],
+"BOT_448" : [ "restoreTargetMinionSyn", "restoreFriendlyMinionSyn", "battlecry", "taunt" ],
+
+"BOT_451" : [ "Voltaic Burst" ],
+"BOT_451" : [ "overload", "rushGen", "tokenGen", "pingGen" ],
+
+"BOT_453" : [ "Shooting Star" ],
+"BOT_453" : [ "aoeGen", "pingGen", "spellDamageSyn" ],
+
+"BOT_507" : [ "Gloop Sprayer" ],
+"BOT_507" : [ "battlecry", "returnSyn" ],
+
+"BOT_508" : [ "Necrium Vial" ],
+"BOT_508" : [ "deathrattleGoodAllSyn" ],
+
+"BOT_509" : [ "Dead Ringer" ],
+"BOT_509" : [ "drawGen", "deathrattle", "deathrattleSyn" ],
+
+"BOT_511" : [ "Seaforium Bomber" ],
+"BOT_511" : [ "battlecry", "returnSyn", "reachGen" ],
+
+"BOT_517" : [ "Topsy Turvy" ],
+"BOT_517" : [ "eggSyn" ],
+
+"BOT_521" : [ "Ectomancy" ],
+"BOT_521" : [ "demonAllSyn" ],
+
+"BOT_523" : [ "Mulchmuncher" ],
+"BOT_523" : [ "damageMinionsGen", "rush" ],
+
+"BOT_529" : [ "Power Word: Replicate" ],
+"BOT_529" : [ ],
+
+"BOT_531" : [ "Celestial Emissary" ],
+"BOT_531" : [ "battlecry", "returnSyn", "spellDamageGen" ],
+
+"BOT_532" : [ "Explodinator" ],
+"BOT_532" : [ "battlecry", "returnSyn", "eggGen", "deathrattleGen" ],
+
+"BOT_533" : [ "Menacing Nimbus" ],
+"BOT_533" : [ "toYourHandGen", "battlecry", "returnSyn" ],
+
+"BOT_534" : [ "Bull Dozer" ],
+"BOT_534" : [ "divineShield" ],
+
+"BOT_535" : [ "Microtech Controller" ],
+"BOT_535" : [ "battlecry", "tokenGen", "returnSyn", "mechGen" ],
+
+"BOT_536" : [ "Omega Agent" ],
+"BOT_536" : [ "battlecry", "returnSyn" ],
+
+"BOT_537" : [ "Mechano-Egg" ],
+"BOT_537" : [ "eggGen", "deathrattle" ],
+
+"BOT_538" : [ "Spark Engine" ],
+"BOT_538" : [ "tokenCardGen", "pingGen", "rushGen", "battlecry", "returnSyn" ],
+
+"BOT_539" : [ "Arcane Dynamo" ],
+"BOT_539" : [ "spellGen", "discover", "battlecry", "returnSyn" ],
+
+"BOT_540" : [ "E.M.P. Operative" ],
+"BOT_540" : [ "battlecry", "returnSyn" ],
+
+"BOT_543" : [ "Omega Mind" ],
+"BOT_543" : [ "battlecry", "returnSyn" ],
+
+"BOT_544" : [ "Loose Specimen" ],
+"BOT_544" : [ "battlecry", "enrageSyn" ],
+
+"BOT_548" : [ "Zilliax" ],
+"BOT_548" : [ "mechAllSyn", "magnetic", "lifesteal", "taunt", "divineShield", "rush", "damageMinionsGen" ],
+
+"BOT_550" : [ "Electrowright" ],
+"BOT_550" : [ "=>SynSpellCost5", "battlecry" ],
+
+"BOT_552" : [ "Star Aligner" ],
+"BOT_552" : [ "battlecry", "returnSyn" ],
+
+"BOT_555" : [ "Harbinger Celestia" ],
+"BOT_555" : [ "reachGen", "stealthGen" ],
+
+"BOT_558" : [ "Test Subject" ],
+"BOT_558" : [ "deathrattle" ],
+
+"BOT_559" : [ "Augmented Elekk" ],
+"BOT_559" : [ ],
+
+"BOT_562" : [ "Coppertail Imposter" ],
+"BOT_562" : [ "reachGen", "battlecry", "stealthGen" ],
+
+"BOT_563" : [ "Wargear" ],
+"BOT_563" : [ "mechAllSyn", "magnetic" ],
+
+"BOT_565" : [ "Blightnozzle Crawler" ],
+"BOT_565" : [ "rushGen", "deathrattle" ],
+
+"BOT_566" : [ "Reckless Experimenter" ],
+"BOT_566" : [ "eggSyn" ],
+
+"BOT_567" : [ "Zerek's Cloning Gallery" ],
+"BOT_567" : [ "tokenGen" ],
+
+"BOT_568" : [ "The Soularium" ],
+"BOT_568" : [ "drawGen3", "discardGen" ],
+
+"BOT_573" : [ "Subject 9" ],
+"BOT_573" : [ "drawGen2", "battlecry", "secretSyn", "returnSyn" ],
+
+"BOT_576" : [ "Crazed Chemist" ],
+"BOT_576" : [ "attackBuffGen", "comboGen", "returnSyn" ],
+
+"BOT_600" : [ "Research Project" ],
+"BOT_600" : [ "drawGen2" ],
+
+"BOT_601" : [ "Meteorologist" ],
+"BOT_601" : [ "pingGen", "battlecry", "returnSyn" ],
+
+"BOT_603" : [ "Steel Rager" ],
+"BOT_603" : [ "damageMinionsGen", "rush" ],
+
+"BOT_604" : [ "Cosmic Anomaly" ],
+"BOT_604" : [ "spellDamageGen" ],
+
+"BOT_606" : [ "Kaboom Bot" ],
+"BOT_606" : [ "deathrattle" ],
+
+"BOT_906" : [ "Glow-Tron" ],
+"BOT_906" : [ "mechAllSyn", "magnetic" ],
+
+"BOT_907" : [ "Galvanizer" ],
+"BOT_907" : [ "mechSyn", "battlecry", "returnSyn" ],
+
+"BOT_908" : [ "Autodefense Matrix" ],
+"BOT_908" : [ "secretGen" ],
+
+"BOT_909" : [ "Crystology" ],
+"BOT_909" : [ "drawGen", "=SynMinionAttack1" ],
+
+"BOT_910" : [ "Glowstone Technician" ],
+"BOT_910" : [ "battlecry", "attackBuffGen", "healthBuffGen", "returnSyn" ],
+
+"BOT_911" : [ "Annoy-o-Module" ],
+"BOT_911" : [ "mechAllSyn", "magnetic", "taunt", "divineShield" ],
+
+"BOT_912" : [ "Kangor's Endless Army" ],
+"BOT_912" : [ "magneticSyn" ],
+
+"BOT_913" : [ "Demonic Project" ],
+"BOT_913" : [ "demonGen" ],
+
+"BOT_914" : [ "Whizbang the Wonderful" ],
+"BOT_914" : [ ],
+
 	"BRM_001": ["drawGen2","tokenSyn"],
 	"BRM_002": ["spellAllSyn"],
 	"BRM_003": ["damageMinionsGen","reachGen","tokenSyn"],
