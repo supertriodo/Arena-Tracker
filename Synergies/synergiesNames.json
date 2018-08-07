@@ -1058,7 +1058,7 @@
 			"UNG_818 Volatile Elemental","BOT_107 Missile Launcher","BOT_606 Kaboom Bot"],
 		"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
 			"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair"],
-		"BOT_283 Pogo-Hopper": ["BOT_283 Pogo-Hopper"],
+		"BOT_283 Pogo-Hopper": ["BOT_283 Pogo-Hopper","GIL_815 Baleful Banker","BOT_288 Lab Recruiter"],
 
 		"-----------------------------------------PALADIN-----------------------------------------": "",
 		"----------------------------------SILVER HAND RECRUITS-----------------------------------": "",
