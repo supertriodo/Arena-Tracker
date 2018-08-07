@@ -4067,8 +4067,8 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-06T12:00:01Z"
-//--Update Json HA tierlist --> HATLsed.sh --- 6/22/18: Taverns of Time Update
-//--Comparar tier lists con Utility::check
+//Update Json HA tierlist --> HATLsed.sh --- 8/7/18: New Boomsday Project Release
+//Comparar tier lists con Utility::check
 //--Crear imagenes de nuevos heroes en el github (HERO_***)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
 //Update secrets
