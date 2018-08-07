@@ -4095,14 +4095,7 @@ void MainWindow::testDelay()
 //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
 //==Elementary Reaction
 
-
 //Update synergies.json
-//==Treant druid synergy ==> "BOT_419" : [ "Dendrologist" ], ==> "BOT_420" : [ "Landscaping" ], ==> "BOT_422" : [ "Tending Tauren" ],==> "BOT_523" : [ "Mulchmuncher" ],
-//=="BOT_258" : [ "Zerek, Master Cloner" ],"BOT_558" : [ "Test Subject" ], ==> Synergias buffs sacerdote
-//=="BOT_267" : [ "Piloted Reaper" ], ==> Synergias cartas general minions coste <=2
-//=="BOT_283" : [ "Pogo-Hopper" ], ==> Synergia consigo mismo
-//=="BOT_550" : [ "Electrowright" ], ==> Synergia con el que descubre hechizo coste 5
-//=="BOT_559" : [ "Augmented Elekk" ], ==> Synergias shuffle
 //|-Check evolveSyn cards
 //|-Check individual synergies
 
