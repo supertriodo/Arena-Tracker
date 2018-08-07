@@ -4101,10 +4101,8 @@ void MainWindow::testDelay()
 //=="BOT_258" : [ "Zerek, Master Cloner" ],"BOT_558" : [ "Test Subject" ], ==> Synergias buffs sacerdote
 //=="BOT_267" : [ "Piloted Reaper" ], ==> Synergias cartas general minions coste <=2
 //=="BOT_283" : [ "Pogo-Hopper" ], ==> Synergia consigo mismo
-//=="BOT_448" : [ "Damaged Stegotron" ], ==> Synergia resummon + bad battlecry
 //=="BOT_550" : [ "Electrowright" ], ==> Synergia con el que descubre hechizo coste 5
 //=="BOT_559" : [ "Augmented Elekk" ], ==> Synergias shuffle
-//=="BOT_910" : [ "Glowstone Technician" ], ==> Synergias hand buff
 //|-Check evolveSyn cards
 //|-Check individual synergies
 

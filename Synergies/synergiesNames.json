@@ -966,7 +966,9 @@
 	"DIRECT_LINKS":
 	{
 		"-----------------------------------------HAND BUFF-----------------------------------------": "",
-		"ICC_466 Saronite Chain Gang": ["LOOT_500 Val'anyr"],
+		"ICC_466 Saronite Chain Gang": ["LOOT_500 Val'anyr","BOT_910 Glowstone Technician","BOT_263 Soul Infusion"],
+		"BOT_224 Doubling Imp": ["BOT_263 Soul Infusion","BOT_443 Void Analyst"],
+		"BOT_536 Omega Agent": ["BOT_263 Soul Infusion"],
 
 		"-----------------------------------------BAD DEATHRATTLE-----------------------------------------": "",
 		"ICC_206 Treachery": ["ICC_025 Rattling Rascal","ICC_099 Ticking Abomination"],
@@ -983,6 +985,8 @@
 			"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 		"GIL_623 Witchwood Grizzly": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
 			"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
+		"BOT_448 Damaged Stegotron": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
+			"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 
 		"-----------------------------------------HERO POWER-----------------------------------------": "",
 		"GIL_561 Blackwald Pixie": ["EX1_350 Prophet Velen","GIL_646 Clockwork Automaton","EX1_625 Shadowform",
@@ -997,11 +1001,14 @@
 			"ICC_314 The Lich King","NEW1_037 Master Swordsmith","NEW1_038 Gruul","NEW1_040 Hogger",
 			"UNG_201 Primalfin Totem","LOOT_108 Aluneth",
 			"LOOT_131 Green Jelly","LOOT_394 Shrieking Shroom","LOOT_398 Benevolent Djinn","LOOT_414 Grand Archivist",
-			"LOOT_519 Geosculptor Yip","LOOT_540 Dragonhatcher","GIL_833 Forest Guide"],
+			"LOOT_519 Geosculptor Yip","LOOT_540 Dragonhatcher","GIL_833 Forest Guide",
+			"BOT_423 Dreampetal Florist","BOT_107 Missile Launcher"],
 		"EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
 
 		"-----------------------------------------WARRIOR-----------------------------------------": "",
 		"CS2_181 Injured Blademaster": ["EX1_392 Battle Rage","CS2_104 Rampage",
+			"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant"],
+		"BOT_448 Damaged Stegotron": ["EX1_392 Battle Rage","CS2_104 Rampage",
 			"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant"],
 
 		"-----------------------------------------SHAMAN-----------------------------------------": "",
@@ -1010,13 +1017,13 @@
 		"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans"],
 
 		"-----------------------------------------ROGUE-----------------------------------------": "",
-		"UNG_061 Obsidian Shard": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket"],
-		"GIL_598 Tess Greymane": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket"],
-		"GIL_672 Spectral Cutlass": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket"],
+		"UNG_061 Obsidian Shard": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket","BOT_087 Academic Espionage"],
+		"GIL_598 Tess Greymane": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket","BOT_087 Academic Espionage"],
+		"GIL_672 Spectral Cutlass": ["UNG_856 Hallucination","GIL_827 Blink Fox","GIL_696 Pick Pocket","BOT_087 Academic Espionage"],
 		"ICC_811 Lilian Voss": ["UNG_057 Razorpetal Volley","UNG_058 Razorpetal Lasher","GIL_687 WANTED!"],
 		"ICC_809 Plague Scientist": ["EX1_097 Abomination","EX1_102 Demolisher",
 			"EX1_249 Baron Geddon","NEW1_019 Knife Juggler","NEW1_020 Wild Pyromancer",
-			"UNG_818 Volatile Elemental"],
+			"UNG_818 Volatile Elemental","BOT_107 Missile Launcher","BOT_606 Kaboom Bot"],
 		"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
 			"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair"],
 
@@ -1044,15 +1051,20 @@
 			"CS2_004 Power Word: Shield","CS2_236 Divine Spirit","CS2_073 Cold Blood",
 			"CS2_041 Ancestral Healing","CS2_038 Ancestral Spirit","CS2_045 Rockbiter Weapon","CS2_039 Windfury",
 			"ICC_056 Cryostasis","ICC_469 Unwilling Sacrifice","CS2_103 Charge","CS2_104 Rampage",
-			"LOOT_278 Unidentified Elixir","LOOT_047 Barkskin","GIL_145 Sound the Bells!"],
+			"LOOT_278 Unidentified Elixir","LOOT_047 Barkskin","GIL_145 Sound the Bells!",
+			"BOT_437 Goblin Prank","BOT_219 Extra Arms","BOT_529 Power Word: Replicate",
+			"BOT_067 Rocket Boots"],
 
 		"EX1_619 Equality": ["CS2_093 Consecration","EX1_384 Avenging Wrath","NEW1_020 Wild Pyromancer",
-			"EX1_097 Abomination","EX1_249 Baron Geddon","UNG_848 Primordial Drake"],
+			"EX1_097 Abomination","EX1_249 Baron Geddon","UNG_848 Primordial Drake",
+			"BOT_107 Missile Launcher"],
 		"NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
 		"LOOT_111 Scorp-o-matic": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
+		"GIL_124 Mossy Horror": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray"],
 
 		"-----------------------------------------HUNTER-----------------------------------------": "",
-		"GIL_607 Toxmonger": ["GIL_212 Ravencaller","UNG_809 Fire Fly","UNG_845 Igneous Elemental"],
+		"GIL_607 Toxmonger": ["GIL_212 Ravencaller","UNG_809 Fire Fly","UNG_845 Igneous Elemental",
+			"BOT_102 Spark Drill","BOT_538 Spark Engine"],
 		"-----------------------------------------DRUID-----------------------------------------": "",
 		"-----------------------------------------WARLOCK-----------------------------------------": "",
 		"GIL_665 Curse of Weakness": ["GIL_124 Mossy Horror"],
