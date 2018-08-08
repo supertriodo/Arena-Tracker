@@ -540,8 +540,6 @@ int EnemyHandHandler::getCardBuff(QString code)
     if(code == HIDDEN_CACHE)        return 2;
     if(code == SHAKY_ZYPGUNNER)     return 2;
     if(code == GRIMY_GADGETEER)     return 2;
-    if(code == GLOWSTONE_TECHNICIAN)return 2;
-    if(code == SOUL_INFUSION)       return 2;
     return 1;
 }
 

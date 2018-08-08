@@ -2780,7 +2780,7 @@ bool PlanHandler::isCardBomb(QString code)
 {
     if((code == MAD_BOMBER) || (code == MADDER_BOMBER) || (code == SPREADING_MADNESS) ||
             (code == ARCANE_MISSILES) || (code == AVENGING_WRATH) || (code == GOBLIN_BLASTMAGE) ||
-            (code == KOBOLD_APPRENTICE) || code == CINDERSTORM)
+            (code == KOBOLD_APPRENTICE) || (code == CINDERSTORM) || (code == METEOROLOGIST))
     {
         return true;
     }

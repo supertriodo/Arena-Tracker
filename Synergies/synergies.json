@@ -107,7 +107,7 @@
 	"BOT_245" : [ "tokenSyn" ],
 	"BOT_246" : [ "aoeGen", "pingGen", "overload", "spellDamageSyn", "enrageSyn" ],
 	"BOT_251" : [ "mechAllSyn", "magnetic", "deathrattle" ],
-	"BOT_254" : [ "spellDamageGen" ],
+	"BOT_254" : [ "spellDamageSyn" ],
 	"BOT_256" : [ "battlecry", "returnSyn" ],
 	"BOT_257" : [ "drawSyn" ],
 	"BOT_258" : [ "deathrattle" ],

@@ -4069,31 +4069,16 @@ void MainWindow::testDelay()
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-06T12:00:01Z"
 //Update Json HA tierlist --> HATLsed.sh --- 8/7/18: New Boomsday Project Release
 //Comparar tier lists con Utility::check
+//Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
 //Update secrets
-//==Autodefense matrix
 //Update bombing cards --> PlanHandler::isCardBomb
-//==Meteorologist (cards in hand)
-//Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff
-//==Glowstone technician +2/+2
-//==Soul Infusion +2/+2
 //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//==Mulchmuncher (8)
-//==Dreampetal Florist (3)
-//==Luna's Pocket Galaxy (0)
-//==Academic Espionage (0)
-//==Piloted Reaper (3)
 //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
-//==Subject 9
-//==Storm Chaser
-//==Dead Ringer
-//==Prismatic Lens
-//==Crystology
-//==Juicy Psychmelon
 //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
-//==Elementary Reaction
+//(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
 //|-Check evolveSyn cards
