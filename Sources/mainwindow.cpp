@@ -4119,7 +4119,10 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Interrogacion enlace manual, mostrar tooltips.
+//Cartas Witchwood Grizzly marron
+//Volver a incluir separacion de legendarios en la deteccion de cartas en el draft(cartas non-collectible pueden aparecer en todos sitios) (define en utility.cpp)
+
+//Interrogacion enlace manual, mostrar leyenda drafting
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 

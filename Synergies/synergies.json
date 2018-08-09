@@ -145,7 +145,7 @@
 	"BOT_436" : [ "drawGen2" ],
 	"BOT_437" : [ "rushGen", "attackBuffGen", "healthBuffGen", "eggSyn", "damageMinionsGen" ],
 	"BOT_438" : [ "mechGen", "tokenSyn", "deathrattleGen", "toYourHandGen2" ],
-	"BOT_443" : [ "demonAllSyn", "deathrattle" ],
+	"BOT_443" : [ "demonSyn", "deathrattle" ],
 	"BOT_444" : [ "tokenSyn" ],
 	"BOT_445" : [ "deathrattle", "tokenGen" ],
 	"BOT_447" : [ "battlecry", "armorGen", "damageFriendlyHeroGen" ],
