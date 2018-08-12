@@ -2987,7 +2987,7 @@ REGLAS
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
-+tokenGen son 2 small minions o 3 2/2 minions, somos mas restrictivos si summon en deathrattle (harvest golum no es).
++tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
     (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
 +freezeEnemyGen deben poder usarse sobre enemigos
