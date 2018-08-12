@@ -2996,6 +2996,7 @@ REGLAS
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen
 +pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
++pingGen: Todos los bombing/missiles cards son pingGen, si tienen los suficientes misiles aoeGen (cinderstorm).
 +spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions

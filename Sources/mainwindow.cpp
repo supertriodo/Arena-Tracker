@@ -1777,8 +1777,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 deckWindow->resize(QSize(deckWindow->width(), 1030));
                 deckWindow->move(0, 0);
 
-                this->resize(QSize(270, 540));
-                this->move(2880, 0);
+                this->resize(QSize(270, 1030));
+                this->move(1920-270, 0);
             }
             else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
             else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
@@ -3994,7 +3994,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
 //    draftHandler->debugSynergiesSet("BOOMSDAY", true);
-//    draftHandler->debugSynergiesCode("UNG_818");
+//    draftHandler->debugSynergiesCode("GIL_147");
 //    draftHandler->testSynergies();
     draftHandler->initSynergyCodes();
 }
@@ -4010,7 +4010,7 @@ void MainWindow::testTierlists()
 void MainWindow::testDelay()
 {
 //    testTierlists();
-//    testSynergies();
+    testSynergies();
 }
 
 
