@@ -839,41 +839,44 @@ void DraftHandler::buildBestMatchesMaps()
     }
 }
 
-//No lo usamos, en el draft se mezclan diferentes rarezas
-//Ademas en los eventos las cartas legendarias introducidas no tienen rareza legendaria, lo que añade mas confusion
-//CardRarity DraftHandler::getBestRarity()
-//{
-//    CardRarity rarity[3];
-//    for(int i=0; i<3; i++)
-//    {
-//        rarity[i] = draftCardMaps[i][bestMatchesMaps[i].first()].getRarity();
-//    }
+//Distingue grupos de legendarias de no legendarias
+//En los eventos las cartas legendarias introducidas no tienen rareza legendaria, para ellas no analizaremos rarezas
+CardRarity DraftHandler::getBestRarity()
+{
+    CardRarity rarity[3];
+    for(int i=0; i<3; i++)
+    {
+        QString code = bestMatchesMaps[i].first();
+        //No restringimos rarezas si hay cartas unicas de arena (no colleccionables) (que no tienen rareza)
+        if(!Utility::getCardAttribute(code, "collectible").toBool())    return INVALID_RARITY;
+        rarity[i] = draftCardMaps[i][code].getRarity();
+    }
 
-////    if(rarity[0] == rarity[1] || rarity[0] == rarity[2])    return rarity[0];
-////    else if(rarity[1] == rarity[2])                         return rarity[1];
-////    else
-//    {
-//        double bestMatch = 1;
-//        int bestIndex = 0;
+//    if(rarity[0] == rarity[1] || rarity[0] == rarity[2])    return rarity[0];
+//    else if(rarity[1] == rarity[2])                         return rarity[1];
+//    else
+    {
+        double bestMatch = 1;
+        int bestIndex = 0;
 
-//        for(int i=0; i<3; i++)
-//        {
-//            double match = bestMatchesMaps[i].firstKey();
-//            if(match < bestMatch)
-//            {
-//                bestMatch = match;
-//                bestIndex = i;
-//            }
-//        }
+        for(int i=0; i<3; i++)
+        {
+            double match = bestMatchesMaps[i].firstKey();
+            if(match < bestMatch)
+            {
+                bestMatch = match;
+                bestIndex = i;
+            }
+        }
 
-//        return rarity[bestIndex];
-//    }
-//}
+        return rarity[bestIndex];
+    }
+}
 
 
 void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
-//    CardRarity bestRarity = getBestRarity();
+    CardRarity bestRarity = getBestRarity();
 
     for(int i=0; i<3; i++)
     {
@@ -886,18 +889,19 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
             QString name = draftCardMaps[i][code].getName();
             QString cardInfo = code + " " + name + " " +
                     QString::number(static_cast<int>(match*1000)/1000.0);
-//            if( (bestRarity != LEGENDARY && draftCardMaps[i][code].getRarity() != LEGENDARY) ||
-//                (bestRarity == LEGENDARY && draftCardMaps[i][code].getRarity() == LEGENDARY))
-//            {
+            if( (bestRarity == INVALID_RARITY) ||
+                (bestRarity != LEGENDARY && draftCardMaps[i][code].getRarity() != LEGENDARY) ||
+                (bestRarity == LEGENDARY && draftCardMaps[i][code].getRarity() == LEGENDARY))
+            {
                 bestCards[i] = draftCardMaps[i][code];
                 comboBoxCard[i]->setCurrentIndex(j);
                 emit pDebug("Choose: " + cardInfo);
                 break;
-//            }
-//            else
-//            {
-//                emit pDebug("Skip: " + cardInfo + " (Wrong rarity)");
-//            }
+            }
+            else
+            {
+                emit pDebug("Skip: " + cardInfo + " (Wrong rarity)");
+            }
         }
         if(bestCards[i].getCode().isEmpty() && !bestCodesList.isEmpty())
         {
