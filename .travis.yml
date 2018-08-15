@@ -1,0 +1,18 @@
+os: linux
+dist: trusty
+language: generic
+before_install:
+install:
+script:
+  - rm -rf Readme HearthstoneCards
+before_deploy:
+  - tar --transform "s|^|ArenaTracker-${TRAVIS_TAG}/|" -Jcf ArenaTracker-${TRAVIS_TAG}.tar.xz *
+deploy:
+  provider: releases
+  api_key:
+    secure: <generated with 'travis setup releases'>
+  file: ArenaTracker-${TRAVIS_TAG}.tar.xz
+  skip_cleanup: true
+  on:
+    repo: supertriodo/Arena-Tracker
+    tags: true
