@@ -74,6 +74,7 @@ private:
     void addNewDeckMenu(QPushButton *button);
     bool newDeck(bool reset);
     void importDeckString();
+    void importDeckString(QString deck);
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);

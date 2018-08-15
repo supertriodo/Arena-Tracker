@@ -1576,8 +1576,12 @@ bool DeckHandler::newDeck(bool reset)
 
 void DeckHandler::importDeckString()
 {
+    importDeckString(QApplication::clipboard()->text());
+}
+
+void DeckHandler::importDeckString(QString text)
+{
     QString deckName;
-    QString text = QApplication::clipboard()->text();
     QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(text, deckName);
 
     if(deckList.isEmpty())
