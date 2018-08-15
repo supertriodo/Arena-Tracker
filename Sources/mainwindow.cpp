@@ -4120,6 +4120,7 @@ void MainWindow::testDelay()
 
 //TODDO
 //Cartas Witchwood Grizzly marron
+//Twitch draft, username to lower, remove link in description to oauth, permitir key con espacio y key vacia
 
 //Interrogacion enlace manual, mostrar leyenda drafting
 //Completar synergies manual con todas las cartas

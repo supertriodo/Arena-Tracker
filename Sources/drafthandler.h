@@ -22,7 +22,7 @@
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
 #define CAPTURE_MIN_CANDIDATES                 7
-#define CAPTURE_EXTENDED_CANDIDATES            10
+#define CAPTURE_EXTENDED_CANDIDATES            15
 
 
 class LFtier

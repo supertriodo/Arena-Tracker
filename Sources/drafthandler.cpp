@@ -848,7 +848,7 @@ CardRarity DraftHandler::getBestRarity()
     {
         QString code = bestMatchesMaps[i].first();
         //No restringimos rarezas si hay cartas unicas de arena (no colleccionables) (que no tienen rareza)
-        if(!Utility::getCardAttribute(code, "collectible").toBool())    return INVALID_RARITY;
+        if(!Utility::getCardAttribute(degoldCode(code), "collectible").toBool())    return INVALID_RARITY;
         rarity[i] = draftCardMaps[i][code].getRarity();
     }
 
@@ -1317,7 +1317,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 //        {
 //            DraftCard card = draftCardMaps[i][code];
 //            qDebug()<<"["<<i<<"]"<<code<<card.getName()<<" -- "<<
-//                      ((int)(card.getBestQualityMatches()*1000))/1000.0;
+//                      (static_cast<int>(card.getBestQualityMatches()*1000))/1000.0;
 //        }
 //    }
 //    qDebug()<<"Captured: "<<numCaptured<<endl;
