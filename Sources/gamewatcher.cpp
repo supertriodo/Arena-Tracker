@@ -1127,6 +1127,12 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     playerTag = (playerID == 1)?name1:name2;
                     if(!playerTag.isEmpty())    emit pDebug("Found playerTag: " + playerTag, numLine);
                 }
+                QString& whizbang = (playerID == 1)?whizbang1:whizbang2;
+                if(!whizbang.isEmpty())
+                {
+                    emit whizbangDeck(whizbang);
+                    emit pDebug("Found whizbang deck: " + whizbang, numLine);
+                }
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }

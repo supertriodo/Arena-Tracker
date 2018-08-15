@@ -1573,6 +1573,19 @@ bool DeckHandler::newDeck(bool reset)
     return true;
 }
 
+void DeckHandler::whizbangDeck(QString code)
+{
+    QString deckString = Utility::whizbangDeckString(code);
+    if(deckString.isEmpty())
+    {
+        emit showMessageProgressBar("Unknown whizbang deck " + code);
+        emit pDebug("Unknown whizbang deck " + code);
+    }
+    else
+    {
+        importDeckString(deckString);
+    }
+}
 
 void DeckHandler::importDeckString()
 {

@@ -118,6 +118,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
 public slots:
+    void whizbangDeck(QString code);
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
     void newDeckCardWeb(QString code, int total);

@@ -956,6 +956,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(returnToDeck(QString, int)));
     connect(gameWatcher, SIGNAL(clearDrawList(bool)),
             deckHandler, SLOT(clearDrawList(bool)));
+    connect(gameWatcher, SIGNAL(whizbangDeck(QString)),
+            deckHandler, SLOT(whizbangDeck(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),

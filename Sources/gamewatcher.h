@@ -109,6 +109,7 @@ signals:
     void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);
+    void whizbangDeck(QString code);
     void startGame();
     void endGame(bool playerWon=false, bool playerUnknown=true);
     void enemyHero(QString hero);
