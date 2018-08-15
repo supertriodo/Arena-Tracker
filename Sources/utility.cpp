@@ -102,6 +102,20 @@ QString Utility::heroString2FromLogNumber(QString hero)
 }
 
 
+CardClass Utility::whizbangHero(QString code)
+{
+    if(code == QString("1606") || code == QString("1829"))       return DRUID;
+    else if(code == QString("1607") || code == QString("1828"))  return HUNTER;
+    else if(code == QString("1609") || code == QString("1832"))  return MAGE;
+    else if(code == QString("1754") || code == QString("1825"))  return PALADIN;
+    else if(code == QString("1830") || code == QString("1831"))  return PRIEST;
+    else if(code == QString("1820") || code == QString("1821"))  return ROGUE;
+    else if(code == QString("1826") || code == QString("1827"))  return SHAMAN;
+    else if(code == QString("1818") || code == QString("1819"))  return WARLOCK;
+    else if(code == QString("1760") || code == QString("1817"))  return WARRIOR;
+    else                                                         return INVALID_CLASS;
+}
+
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
 {

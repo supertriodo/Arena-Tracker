@@ -310,6 +310,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 
         hero1.clear();
         hero2.clear();
+        whizbang1.clear();
+        whizbang2.clear();
         name1.clear();
         name2.clear();
         firstPlayer.clear();
@@ -373,18 +375,8 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             break;
         case heroType1State:
         case heroType2State:
-            if(powerState == heroType1State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
-            {
-                hero1 = match->captured(1);
-                powerState = heroType2State;
-                emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
-            }
-            else if(powerState == heroType2State && line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
-            {
-                hero2 = match->captured(1);
-                powerState = mulliganState;
-                emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
-            }
+            processPowerHero(line, numLine);
+            break;
         case mulliganState:
             processPowerMulligan(line, numLine);
             break;
@@ -394,6 +386,42 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
     }
 }
 
+void GameWatcher::processPowerHero(QString &line, qint64 numLine)
+{
+    if(line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
+    {
+        if(powerState == heroType1State)
+        {
+            if(whizbang1.isEmpty())
+            {
+                hero1 = match->captured(1);
+            }
+            powerState = heroType2State;
+            emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
+        }
+        else
+        {
+            if(whizbang2.isEmpty())
+            {
+                hero2 = match->captured(1);
+            }
+            powerState = mulliganState;
+            emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
+        }
+    }
+    else if(line.contains(QRegularExpression("tag=WHIZBANG_DECK_ID value=(\\d+)"), match))
+    {
+        if(powerState == heroType1State) {
+            whizbang1 = match->captured(1);
+            hero1 = Utility::heroToLogNumber(Utility::whizbangHero(whizbang1));
+        }
+        else
+        {
+            whizbang2 = match->captured(1);
+            hero2 = Utility::heroToLogNumber(Utility::whizbangHero(whizbang2));
+        }
+    }
+}
 
 void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 {
