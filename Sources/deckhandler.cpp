@@ -1559,9 +1559,9 @@ void DeckHandler::newCopyEnemyDeck()
 }
 
 
-bool DeckHandler::newDeck(bool reset)
+bool DeckHandler::newDeck(bool reset, bool askSave)
 {
-    if(ui->deckButtonSave->isEnabled() && !askSaveDeck())   return false;
+    if(ui->deckButtonSave->isEnabled() && askSave && !askSaveDeck())   return false;
 
     if(reset)   this->reset();
     loadedDeckName = QString();
@@ -1573,16 +1573,16 @@ bool DeckHandler::newDeck(bool reset)
     return true;
 }
 
-void DeckHandler::whizbangDeck(QString code)
+void DeckHandler::importWhizbangDeck(QString whizbangDeckCode)
 {
-    QString deckString = Utility::whizbangDeckString(code);
+    QString deckString = Utility::whizbangDeckString(whizbangDeckCode);
     if(deckString.isEmpty())
     {
-        emit showMessageProgressBar("Unknown whizbang deck " + code);
-        emit pDebug("Unknown whizbang deck " + code);
+        emit pDebug("WARNING: Unknown whizbang deck: " + whizbangDeckCode);
     }
     else
     {
+        newDeck(true, false);
         importDeckString(deckString);
     }
 }
@@ -1592,10 +1592,10 @@ void DeckHandler::importDeckString()
     importDeckString(QApplication::clipboard()->text());
 }
 
-void DeckHandler::importDeckString(QString text)
+void DeckHandler::importDeckString(QString deckString)
 {
     QString deckName;
-    QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(text, deckName);
+    QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(deckString, deckName);
 
     if(deckList.isEmpty())
     {

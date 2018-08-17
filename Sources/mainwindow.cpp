@@ -956,8 +956,6 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(returnToDeck(QString, int)));
     connect(gameWatcher, SIGNAL(clearDrawList(bool)),
             deckHandler, SLOT(clearDrawList(bool)));
-    connect(gameWatcher, SIGNAL(whizbangDeck(QString)),
-            deckHandler, SLOT(whizbangDeck(QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -970,6 +968,9 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(setLastCreatedByCode(QString, QString)));
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             deckHandler, SLOT(setFirstOutsiderId(int)));
+    //Whizbang support
+    connect(gameWatcher, SIGNAL(whizbangDeck(QString)),
+            deckHandler, SLOT(importWhizbangDeck(QString)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
@@ -4074,6 +4075,7 @@ void MainWindow::testDelay()
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+//Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
 //Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb
 //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent

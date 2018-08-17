@@ -86,8 +86,8 @@ public:
     static QString getHeroColor(int order);
     static QString getHeroName(int order);
     static QString getHeroLogNumber(int order);
-    static QString whizbangDeckString(QString code);
-    static CardClass whizbangHero(QString code);
+    static QString whizbangDeckString(QString whizbangDeckCode);
+    static CardClass whizbangHero(QString whizbangDeckCode);
     static QJsonValue getCardAttribute(QString code, QString attribute);
     static QString appPath();
     static QString dataPath();

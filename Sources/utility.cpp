@@ -101,42 +101,6 @@ QString Utility::heroString2FromLogNumber(QString hero)
     else                            return "";
 }
 
-QString Utility::whizbangDeckString(QString code)
-{
-    if     (code == QString("1606")) return "### Out of the Woods\nAAECAZICBMnCAofOAsLOApnTAg1AX8QG5AiU0gKY0gKo0gKL4QKE5gKL5gL15wLf+wLo/AIA";               // Recruit Druid
-    else if(code == QString("1607")) return "### I Hunt Alone\nAAECAR8EhwTp0gKG0wLy6gINjQGoArUDyQSXCNsJ/gzd0gLf0gLj0gLh4wLq4wKH+wIA";                       // Spell Hunter
-    else if(code == QString("1609")) return "### Spells are fun, SO FUN!\nAAECAf0EBNACvwib0wKj6wINTYoByQPsB/sMysMClscCx8cC29MC1eEC1+ECluQC1+sCAA==";        // Big Spells Mage
-    else if(code == QString("1754")) return "### Greymane's Alliance\nAAECAZ8FBvoGucEC4fACzfQC6/cC/fsCDNwD9AXPBq8HsQizwQKIxwLZxwKbywK35wL27ALZ/gIA";        // Even Paladin
-    else if(code == QString("1760")) return "### The Gilneas Armory\nAAECAQcIqgbTwwKZxwLN7wKb8AKe+AKO+wKggAMLS5EDogT/B5vCAsrDAqLHAsrnAqrsArrsAvLxAgA=";     // Odd Warrior
-    else if(code == QString("1817")) return "### The Boomsday Project\nAAECAQcEze8Cm/ACkvgCoIADDZEGzM0CuuwCnfACl/MCn/UCpfUC5PcCjvgCg/sCqPsCs/wCzIEDAA==";   // Rush Warrior
-    else if(code == QString("1818")) return "### Demonology Lab\nAAECAf0GApfTAo+CAw4w9wTCCPYIm8sC980C8dAC8tAC9PcC0/gCqvkCt/0Cw/0C+v4CAA==";                 // Zoolock
-    else if(code == QString("1819")) return "### The Omega Project\nAAECAf0GApfTApz4Ag6KAbYHxAjnywLy0AL40AKI0gL85QLq5gLo5wK38QLF8wL8+gKPgAMA";              // Control Warlock
-    else if(code == QString("1820")) return "### Stolen Research\nAAECAaIHBLICgNMC6/ACqPcCDbQBywObBYYJgcIC68ICm8gC5dEC2+MC6vMCt/UCovcCx/gCAA==";            // Thief Rogue
-    else if(code == QString("1821")) return "### The Necrium Trials\nAAECAaIHCIwC7QX7BeXRAs/hAvDmAtjpAp/4Agu0AYHCAqvCAuvCAtvjAurmArT2At76Auz8Avb9AtGBAwA="; // N'Zoth Rogue
-    else if(code == QString("1825")) return "### Kangor's Endless Army\nAAECAZ8FBvQFzwb6BrnBAvH+AqCAAwzcA48Js8EC48sCn/UCpfUC1v4C2f4C4f4CkYAD0YADzIEDAA==";  // Control Paladin
-    else if(code == QString("1826")) return "### Witchwood Awoken\nAAECAaoICooB7QXAB8/HApvLAsLOAqrsAqfuAoH2Ap79AgqBBPUE/gX/BcfBAvPnApbvAvbwAoqAA5eAAwA=";   // Control Shaman
-    else if(code == QString("1827")) return "### The Storm Bringer\nAAECAaoIBMAH88ICofgCmfsCDb0B+QOGBvAHkwnrwgKw8AL28AKz9wLq+gKP+wKc/wKKgAMA";              // Midrange Shaman
-    else if(code == QString("1828")) return "### Flark's Fireworks\nAAECAR8C4fUCoIADDo0Bigbh4wKf9QLg9QLi9QLv9QKZ9wK5+AKR+wKY+wKE/QL2/QLMgQMA";              // Mech Hunter
-    else if(code == QString("1829")) return "### Trees Are Friends\nAAECAZICAiTF/QIO/QLtA/cD5gWxCIbBAqTCAuvCAtfvAsHzAt/7AuH7Ar/9AtWDAwA=";                  // Token Druid
-    else if(code == QString("1830")) return "### Quest For Immortality\nAAECAa0GBMnCApbEAsv4Ao2CAw37AeUE0wryDKvCAubMAvDPAujQAovhAoL3AqH+AvX+AoiCAwA=";      // Quest Priest
-    else if(code == QString("1831")) return "### Awesome Augmentation\nAAECAa0GBKIJvsgC2OMCy/gCDfgC5QSNCNEK8gzRwQLYwQLL5gKC9wLl9wL1/gLxgAPeggMA";           // Lyra Combo Priest
-    else if(code == QString("1832")) return "### Shooting Starts\nAAECAf0EAqLTAu72Ag67ApUDvwOrBLQElgW/wQL77AKS7wK89wKj/QKV/wK5/wLvgAMA";                    // Tempo Mage
-    else                             return "";
-}
-
-CardClass Utility::whizbangHero(QString code)
-{
-    if(code == QString("1606") || code == QString("1829"))       return DRUID;
-    else if(code == QString("1607") || code == QString("1828"))  return HUNTER;
-    else if(code == QString("1609") || code == QString("1832"))  return MAGE;
-    else if(code == QString("1754") || code == QString("1825"))  return PALADIN;
-    else if(code == QString("1830") || code == QString("1831"))  return PRIEST;
-    else if(code == QString("1820") || code == QString("1821"))  return ROGUE;
-    else if(code == QString("1826") || code == QString("1827"))  return SHAMAN;
-    else if(code == QString("1818") || code == QString("1819"))  return WARLOCK;
-    else if(code == QString("1760") || code == QString("1817"))  return WARRIOR;
-    else                                                         return INVALID_CLASS;
-}
 
 //Return info about heroes in alphabetical order
 QString Utility::getHeroColor(int order)
@@ -951,7 +915,43 @@ void Utility::checkTierlistsCount()
 }
 
 
+//Whizband Decks
+QString Utility::whizbangDeckString(QString code)
+{
+    if(code == QString("1606")) return "### Out of the Woods\nAAECAZICBMnCAofOAsLOApnTAg1AX8QG5AiU0gKY0gKo0gKL4QKE5gKL5gL15wLf+wLo/AIA";
+    else if(code == QString("1607")) return "### I Hunt Alone\nAAECAR8EhwTp0gKG0wLy6gINjQGoArUDyQSXCNsJ/gzd0gLf0gLj0gLh4wLq4wKH+wIA";
+    else if(code == QString("1609")) return "### Spells are fun, SO FUN!\nAAECAf0EBNACvwib0wKj6wINTYoByQPsB/sMysMClscCx8cC29MC1eEC1+ECluQC1+sCAA==";
+    else if(code == QString("1754")) return "### Greymane's Alliance\nAAECAZ8FBvoGucEC4fACzfQC6/cC/fsCDNwD9AXPBq8HsQizwQKIxwLZxwKbywK35wL27ALZ/gIA";
+    else if(code == QString("1760")) return "### The Gilneas Armory\nAAECAQcIqgbTwwKZxwLN7wKb8AKe+AKO+wKggAMLS5EDogT/B5vCAsrDAqLHAsrnAqrsArrsAvLxAgA=";
+    else if(code == QString("1817")) return "### The Boomsday Project\nAAECAQcEze8Cm/ACkvgCoIADDZEGzM0CuuwCnfACl/MCn/UCpfUC5PcCjvgCg/sCqPsCs/wCzIEDAA==";
+    else if(code == QString("1818")) return "### Demonology Lab\nAAECAf0GApfTAo+CAw4w9wTCCPYIm8sC980C8dAC8tAC9PcC0/gCqvkCt/0Cw/0C+v4CAA==";
+    else if(code == QString("1819")) return "### The Omega Project\nAAECAf0GApfTApz4Ag6KAbYHxAjnywLy0AL40AKI0gL85QLq5gLo5wK38QLF8wL8+gKPgAMA";
+    else if(code == QString("1820")) return "### Stolen Research\nAAECAaIHBLICgNMC6/ACqPcCDbQBywObBYYJgcIC68ICm8gC5dEC2+MC6vMCt/UCovcCx/gCAA==";
+    else if(code == QString("1821")) return "### The Necrium Trials\nAAECAaIHCIwC7QX7BeXRAs/hAvDmAtjpAp/4Agu0AYHCAqvCAuvCAtvjAurmArT2At76Auz8Avb9AtGBAwA=";
+    else if(code == QString("1825")) return "### Kangor's Endless Army\nAAECAZ8FBvQFzwb6BrnBAvH+AqCAAwzcA48Js8EC48sCn/UCpfUC1v4C2f4C4f4CkYAD0YADzIEDAA==";
+    else if(code == QString("1826")) return "### Witchwood Awoken\nAAECAaoICooB7QXAB8/HApvLAsLOAqrsAqfuAoH2Ap79AgqBBPUE/gX/BcfBAvPnApbvAvbwAoqAA5eAAwA=";
+    else if(code == QString("1827")) return "### The Storm Bringer\nAAECAaoIBMAH88ICofgCmfsCDb0B+QOGBvAHkwnrwgKw8AL28AKz9wLq+gKP+wKc/wKKgAMA";
+    else if(code == QString("1828")) return "### Flark's Fireworks\nAAECAR8C4fUCoIADDo0Bigbh4wKf9QLg9QLi9QLv9QKZ9wK5+AKR+wKY+wKE/QL2/QLMgQMA";
+    else if(code == QString("1829")) return "### Trees Are Friends\nAAECAZICAiTF/QIO/QLtA/cD5gWxCIbBAqTCAuvCAtfvAsHzAt/7AuH7Ar/9AtWDAwA=";
+    else if(code == QString("1830")) return "### Quest For Immortality\nAAECAa0GBMnCApbEAsv4Ao2CAw37AeUE0wryDKvCAubMAvDPAujQAovhAoL3AqH+AvX+AoiCAwA=";
+    else if(code == QString("1831")) return "### Awesome Augmentation\nAAECAa0GBKIJvsgC2OMCy/gCDfgC5QSNCNEK8gzRwQLYwQLL5gKC9wLl9wL1/gLxgAPeggMA";
+    else if(code == QString("1832")) return "### Shooting Stars\nAAECAf0EAqLTAu72Ag67ApUDvwOrBLQElgW/wQL77AKS7wK89wKj/QKV/wK5/wLvgAMA";                // Tempo Mage
+    else                             return "";
+}
 
+CardClass Utility::whizbangHero(QString code)
+{
+    if(code == QString("1606") || code == QString("1829")) return DRUID;
+    else if(code == QString("1607") || code == QString("1828")) return HUNTER;
+    else if(code == QString("1609") || code == QString("1832")) return MAGE;
+    else if(code == QString("1754") || code == QString("1825")) return PALADIN;
+    else if(code == QString("1830") || code == QString("1831")) return PRIEST;
+    else if(code == QString("1820") || code == QString("1821")) return ROGUE;
+    else if(code == QString("1826") || code == QString("1827")) return SHAMAN;
+    else if(code == QString("1819") || code == QString("1818")) return WARLOCK;
+    else if(code == QString("1760") || code == QString("1817")) return WARRIOR;
+    else                                                         return INVALID_CLASS;
+}
 
 
 
