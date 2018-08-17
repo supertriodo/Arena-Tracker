@@ -74,6 +74,7 @@ private:
     void addNewDeckMenu(QPushButton *button);
     bool newDeck(bool reset);
     void importDeckString();
+    void importDeckString(QString deck);
     void importEnemyDeck();
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);
@@ -117,6 +118,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
 public slots:
+    void whizbangDeck(QString code);
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
     void newDeckCardWeb(QString code, int total);

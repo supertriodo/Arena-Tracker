@@ -59,7 +59,7 @@ private:
     PowerState powerState;
     ArenaState arenaState;
     LoadingScreenState loadingScreenState;
-    QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
+    QString hero1, hero2, whizbang1, whizbang2, name1, name2, firstPlayer, winnerPlayer;
     int playerID;
     CardClass secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
@@ -87,6 +87,7 @@ private:
     void processAsset(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
     void processPower(QString &line, qint64 numLine, qint64 logSeek);
+    void processPowerHero(QString &line, qint64 numLine);
     void processPowerMulligan(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
     void processZone(QString &line, qint64 numLine);
@@ -108,6 +109,7 @@ signals:
     void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);
+    void whizbangDeck(QString code);
     void startGame();
     void endGame(bool playerWon=false, bool playerUnknown=true);
     void enemyHero(QString hero);
