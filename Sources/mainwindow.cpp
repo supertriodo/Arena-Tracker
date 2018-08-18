@@ -2571,6 +2571,7 @@ void MainWindow::createLinuxShortcut()
     out << "Terminal=false" << endl;
     out << "Name=Arena Tracker" << endl;
     out << "Type=Application" << endl;
+    out << "Categories=Utility" << endl;
     out << "Exec=\"" + appImagePath + "\"" << endl;
     out << "Icon=" + Utility::extraPath() + "/icon.png" << endl;
 
