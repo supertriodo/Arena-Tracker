@@ -3997,7 +3997,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("BOT_908", "set").toString();
 
 //    draftHandler->debugSynergiesSet("BOOMSDAY", true);
-//    draftHandler->debugSynergiesCode("GIL_147");
+//    draftHandler->debugSynergiesCode("AT_112");
 //    draftHandler->testSynergies();
     draftHandler->initSynergyCodes();
 }
@@ -4125,6 +4125,8 @@ void MainWindow::testDelay()
 //TODDO
 //Cartas Witchwood Grizzly marron
 //Twitch draft, username to lower, remove link in description to oauth, permitir key con espacio y key vacia
+//Key venom, synergy copy card from deck with specified stats (priest)
+//Ordenar cartas alternativas en lista segun mana cost
 
 //Interrogacion enlace manual, mostrar leyenda drafting
 //Completar synergies manual con todas las cartas
