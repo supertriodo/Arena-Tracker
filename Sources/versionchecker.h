@@ -4,7 +4,7 @@
 #include "utility.h"
 #include <QNetworkAccessManager>
 
-#define VERSION QString("v6.71")
+#define VERSION QString("v6.72")
 #define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version/version.json"
 
 
