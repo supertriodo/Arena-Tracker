@@ -1508,7 +1508,7 @@ void MainWindow::configureTwitchDialogs()
             checkTwitchConnection();
             return;
         }
-        twitchChannel = '#' + twitchUsername;
+        twitchChannel = '#' + twitchUsername.toLower();
         TwitchHandler::setChannel(twitchChannel);
 
         //Step 3: Vote tag
@@ -4125,9 +4125,9 @@ void MainWindow::testDelay()
 
 //TODDO
 //Cartas Witchwood Grizzly marron
-//Twitch draft, username to lower, remove link in description to oauth, permitir key con espacio y key vacia
 //Key venom, synergy copy card from deck with specified stats (priest)
 //Ordenar cartas alternativas en lista segun mana cost
+//Verificar isDeathrattleGoodAll para cartas que generan minion pero no lo son. Check todos keys restringidos a minions en synergyhandler
 
 //Interrogacion enlace manual, mostrar leyenda drafting
 //Completar synergies manual con todas las cartas
