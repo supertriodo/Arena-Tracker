@@ -1862,11 +1862,11 @@ bool SynergyHandler::isDiscardGen(const QString &code, const QString &text)
 }
 bool SynergyHandler::isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
 {
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleOpponent");
     }
+    else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")))
     {
         return true;
@@ -1878,13 +1878,13 @@ bool SynergyHandler::isDeathrattleGoodAll(const QString &code, const QJsonArray 
 {
     //TEST
     //&& (mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return (synergyCodes[code].contains("deathrattle") || synergyCodes[code].contains("deathrattleGen")) &&
                 !synergyCodes[code].contains("silenceOwnSyn") &&
                 !synergyCodes[code].contains("deathrattleOpponent");
     }
+    else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("DEATHRATTLE")) || referencedTags.contains(QJsonValue("DEATHRATTLE")))
     {
         return true;
@@ -1968,11 +1968,11 @@ bool SynergyHandler::isComboGen(const QString &code, const QJsonArray &mechanics
 }
 bool SynergyHandler::isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
 {
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("windfury");
     }
+    else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("WINDFURY")))
     {
         return true;
@@ -2137,11 +2137,11 @@ bool SynergyHandler::isArmorGen(const QString &code, const QString &text)
 }
 bool SynergyHandler::isLifestealMinon(const QString &code, const QJsonArray &mechanics, const CardType &cardType)
 {
-    if(cardType != MINION)  return false;
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("lifesteal");
     }
+    else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("LIFESTEAL")))
     {
         return true;
