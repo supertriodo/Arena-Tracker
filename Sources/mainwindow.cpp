@@ -4070,7 +4070,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-06T12:00:01Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-22T11:45:00Z"
 //Update Json HA tierlist --> HATLsed.sh --- 8/7/18: New Boomsday Project Release
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
@@ -4126,8 +4126,6 @@ void MainWindow::testDelay()
 //TODDO
 //Cartas Witchwood Grizzly marron
 //Key venom, synergy copy card from deck with specified stats (priest)
-//Ordenar cartas alternativas en lista segun mana cost
-//Verificar isDeathrattleGoodAll para cartas que generan minion pero no lo son. Check todos keys restringidos a minions en synergyhandler
 
 //Interrogacion enlace manual, mostrar leyenda drafting
 //Completar synergies manual con todas las cartas
