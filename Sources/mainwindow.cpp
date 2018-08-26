@@ -4127,7 +4127,7 @@ void MainWindow::testDelay()
 //Cartas Witchwood Grizzly marron
 //Key venom, synergy copy card from deck with specified stats (priest)
 
-//Interrogacion enlace manual, mostrar leyenda drafting
+//Interrogacion enlace manual
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 

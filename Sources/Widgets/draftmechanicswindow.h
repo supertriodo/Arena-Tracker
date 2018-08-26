@@ -23,6 +23,7 @@ private:
     bool patreonVersion;
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA;
+    HoverLabel *helpMark;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     int scoreWidth;
@@ -44,6 +45,10 @@ public:
 
 public slots:
     void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
+
+private slots:
+    void showHelp();
+    void hideHelp();
 
 signals:
     void itemEnter(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight);
