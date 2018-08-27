@@ -13,6 +13,7 @@
 #define Z2H_UPLOAD_DRAFT_URL    "https://www.zerotoheroes.com/api/hearthstone/upload/draft/"
 #define Z2H_UPLOAD_GAME_URL     "https://www.zerotoheroes.com/api/hearthstone/upload/game/"
 #define Z2H_VIEW_REPLAY_URL     "https://www.zerotoheroes.com/r/hearthstone/"
+#define USER_GUIDE_URL          "https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/"
 
 class ArenaHandler : public QObject
 {
@@ -89,6 +90,7 @@ private slots:
     void changedRow(QTreeWidgetItem *current);
     void replayLog();
     void openTBProfile();
+    void openUserGuide();
 };
 
 #endif // ARENAHANDLER_H

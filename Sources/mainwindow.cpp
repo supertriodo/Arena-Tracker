@@ -4121,13 +4121,19 @@ void MainWindow::testDelay()
 //FOR EACH C++
 //for(const QString &key: jsonObject.keys())
 
+//Connect, function def inline
+//connect(animation, &QPropertyAnimation::finished,
+//    [=]()
+//    {
+//    }
+
 
 
 //TODDO
 //Cartas Witchwood Grizzly marron
 //Key venom, synergy copy card from deck with specified stats (priest)
+//Actualizar main user guide con graveyard
 
-//Interrogacion enlace manual
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
 

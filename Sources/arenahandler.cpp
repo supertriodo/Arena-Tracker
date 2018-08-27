@@ -41,6 +41,8 @@ void ArenaHandler::completeUI()
             this, SLOT(openTBProfile()));
     connect(ui->replayButton, SIGNAL(clicked()),
             this, SLOT(replayLog()));
+    connect(ui->guideButton, SIGNAL(clicked()),
+            this, SLOT(openUserGuide()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
 
@@ -552,6 +554,12 @@ void ArenaHandler::openTBProfile()
 {
     if(trackobotUploader == nullptr)   return;
     trackobotUploader->openTBProfile();
+}
+
+
+void ArenaHandler::openUserGuide()
+{
+    QDesktopServices::openUrl(QUrl(USER_GUIDE_URL));
 }
 
 
