@@ -1,7 +1,7 @@
 # Arena-Tracker
 Arena Tracker reads the Hearthstone log to give your all the info you need. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
 
-Too complicated? [Check the User Guide](https://www.gitbook.com/read/book/arena-tracker/arena-tracker-documentation).
+Too complicated? [Check the User Guide](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/).
 
 Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/ArenaTracker/) and support its development at the [Arena Tracker patreon](https://www.patreon.com/triodo).
 
