@@ -4070,7 +4070,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-22T11:45:00Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-24T00:00:00Z"
 //Update Json HA tierlist --> HATLsed.sh --- 8/31/18: Boomsday update
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
