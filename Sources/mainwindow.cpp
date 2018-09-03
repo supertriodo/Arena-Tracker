@@ -4071,7 +4071,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-22T11:45:00Z"
-//Update Json HA tierlist --> HATLsed.sh --- 8/7/18: New Boomsday Project Release
+//Update Json HA tierlist --> HATLsed.sh --- 8/31/18: Boomsday update
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4132,7 +4132,6 @@ void MainWindow::testDelay()
 //TODDO
 //Cartas Witchwood Grizzly marron
 //Key venom, synergy copy card from deck with specified stats (priest)
-//Actualizar main user guide con graveyard
 
 //Completar synergies manual con todas las cartas
 //Progress bar uploading games/draft to zerotoheroes
