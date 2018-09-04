@@ -133,6 +133,12 @@ bool ArenaHandler::isOnZ2H(QString &logFileName, QRegularExpressionMatch &match)
 }
 
 
+void ArenaHandler::uploadProgress(qint64 bytesSent, qint64 bytesTotal)
+{
+    emit advanceProgressBar(static_cast<int>(bytesTotal - bytesSent), "Uploading replay...");
+}
+
+
 void ArenaHandler::replayLog()
 {
     if(!trackobotUploader->isConnected() || lastReplayUploaded != nullptr || !replayLogsMap.contains(ui->arenaTreeWidget->currentItem())) return;
@@ -180,8 +186,11 @@ void ArenaHandler::replayLog()
     url.replace("+", "%2B");    //Encode +
     QNetworkRequest request;
     request.setUrl(QUrl(url).adjusted(QUrl::FullyEncoded));
+    emit startProgressBar(1, "Uploading replay...");
     QNetworkReply *reply = networkManager->post(request, multiPart);
     multiPart->setParent(reply);
+    connect(reply, SIGNAL(uploadProgress(qint64,qint64)),
+            this, SLOT(uploadProgress(qint64,qint64)));
 
     this->lastReplayUploaded = ui->arenaTreeWidget->currentItem();
     emit pDebug("Uploading replay " + replayLogsMap[lastReplayUploaded] + (logFileName=="temp.gz"?"(gzipped)":"") +

@@ -706,6 +706,10 @@ void MainWindow::createSecretsHandler()
 void MainWindow::createArenaHandler()
 {
     arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
+    connect(arenaHandler, SIGNAL(startProgressBar(int, QString)),
+            this, SLOT(startProgressBar(int, QString)));
+    connect(arenaHandler, SIGNAL(advanceProgressBar(int, QString)),
+            this, SLOT(advanceProgressBar(int, QString)));
     connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(arenaHandler, SIGNAL(showPremiumDialog()),

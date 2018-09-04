@@ -68,6 +68,8 @@ public:
     void clearAllGames();
 
 signals:
+    void startProgressBar(int maximum, QString text);
+    void advanceProgressBar(int remaining, QString text="");
     void showMessageProgressBar(QString text);
     void showPremiumDialog();
     void pLog(QString line);
@@ -91,6 +93,7 @@ private slots:
     void replayLog();
     void openTBProfile();
     void openUserGuide();
+    void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
 };
 
 #endif // ARENAHANDLER_H
