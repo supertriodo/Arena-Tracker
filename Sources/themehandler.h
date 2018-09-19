@@ -37,7 +37,7 @@ private:
     static QString buttonMinFile_, buttonPlusFile_, buttonRemoveFile_;
     static QString buttonCloseFile_, buttonMinimizeFile_, buttonResizeFile_;
     static QString buttonForceDraftFile_, buttonDraftRefreshFile_;
-    static QString buttonGamesReplayFile_, buttonGamesWebFile_;
+    static QString buttonGamesReplayFile_, buttonGamesWebFile_, buttonGamesGuideFile_;
     static QString buttonPlanFirstFile_, buttonPlanLastFile_, buttonPlanRefreshFile_;
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
     static QString buttonGraveyardPlayerFile_, buttonGraveyardEnemyFile_;
@@ -173,6 +173,7 @@ public:
     static QString buttonSaveDeckFile();
     static QString unknownFile();
     static QString buttonGamesWebFile();
+    static QString buttonGamesGuideFile();
     static QString winFile();
     static QString bgTotalAttackFile();
     static QString gamesOnZ2HColor();

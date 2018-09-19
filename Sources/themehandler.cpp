@@ -32,7 +32,7 @@ QString ThemeHandler::buttonRemoveDeckFile_, ThemeHandler::buttonLoadDeckFile_, 
 QString ThemeHandler::buttonMinFile_, ThemeHandler::buttonPlusFile_, ThemeHandler::buttonRemoveFile_;
 QString ThemeHandler::buttonCloseFile_, ThemeHandler::buttonMinimizeFile_, ThemeHandler::buttonResizeFile_;
 QString ThemeHandler::buttonForceDraftFile_, ThemeHandler::buttonDraftRefreshFile_;
-QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_;
+QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_, ThemeHandler::buttonGamesGuideFile_;
 QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, ThemeHandler::buttonPlanRefreshFile_;
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
 QString ThemeHandler::buttonGraveyardPlayerFile_, ThemeHandler::buttonGraveyardEnemyFile_;
@@ -414,6 +414,12 @@ QString ThemeHandler::buttonGamesReplayFile()
 QString ThemeHandler::buttonGamesWebFile()
 {
     return buttonGamesWebFile_;
+}
+
+
+QString ThemeHandler::buttonGamesGuideFile()
+{
+    return buttonGamesGuideFile_;
 }
 
 
@@ -888,6 +894,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     gamesOnZ2HColor_ = jsonObject.value("gamesOnZ2HColor").toString("");
     buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
     buttonGamesWebFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesWebFile");
+    buttonGamesGuideFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesGuideFile");
 
     bgSelectedItemListColor_ = jsonObject.value("bgSelectedItemListColor").toString("");
     fgSelectedItemListColor_ = jsonObject.value("fgSelectedItemListColor").toString("");
@@ -1152,6 +1159,7 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonDraftRefreshFile_.isEmpty())   buttonDraftRefreshFile_ = ":/Images/refresh.png";
     if(buttonGamesReplayFile_.isEmpty())    buttonGamesReplayFile_ = ":/Images/replay.png";
     if(buttonGamesWebFile_.isEmpty())       buttonGamesWebFile_ = ":/Images/web.png";
+    if(buttonGamesGuideFile_.isEmpty())     buttonGamesGuideFile_ = ":/Images/userGuide.png";
     if(buttonPlanFirstFile_.isEmpty())      buttonPlanFirstFile_ = ":/Images/planFirst.png";
     if(buttonPlanLastFile_.isEmpty())       buttonPlanLastFile_ = ":/Images/planLast.png";
     if(buttonPlanRefreshFile_.isEmpty())    buttonPlanRefreshFile_ = ":/Images/refresh.png";

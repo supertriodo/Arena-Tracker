@@ -709,6 +709,7 @@ void ArenaHandler::setTheme()
 {
     ui->replayButton->setIcon(QIcon(ThemeHandler::buttonGamesReplayFile()));
     ui->webButton->setIcon(QIcon(ThemeHandler::buttonGamesWebFile()));
+    ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
 
     QFont font(ThemeHandler::defaultFont());
     font.setPixelSize(12);
