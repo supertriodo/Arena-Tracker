@@ -17,7 +17,7 @@
 #define REMOVE_EXTRA_ON_VERSION_UPDATE false
 #define DEBUG_REPLAY_AUTO_ADVANCE false
 #define WILD_ARENA false
-#define MULTICLASS_ARENA false
+#define MULTICLASS_ARENA true
 
 
 using namespace cv;
