@@ -4137,8 +4137,7 @@ void MainWindow::testDelay()
 //Cartas Witchwood Grizzly marron
 //Completar synergies manual con todas las cartas
 //Appimage library
-//Halloween event (double class drafts) mid october
-//Incluir key buttonGamesGuideFile en user guide.
+//Halloween event end, LightForge new list.
 //Obtener cards images de un nuevo sitio.
 
 
