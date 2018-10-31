@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.73/Arena.Tracker.v6.73.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.73/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.73/Arena.Tracker.v6.73.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.73/Arena.Tracker.v6.73.Windows.zip",
-	"log": "Added a button to the games tab that will open AT user guide on your browser. Premium users can check the legend of icons during a draft by passing the mouse over a new question mark icon located at the top-right of the mechanics overlay.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.73'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73","v6.74"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.74/Arena.Tracker.v6.74.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.74/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.74/Arena.Tracker.v6.74.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.74/Arena.Tracker.v6.74.Windows.zip",
+	"log": "AT gets updated for dual class arena.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.74'>github</a>"
 }
