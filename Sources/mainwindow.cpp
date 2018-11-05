@@ -4074,8 +4074,8 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> BOOMSDAY
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-08-24T00:00:00Z"
-//Update Json HA tierlist --> HATLsed.sh --- 8/31/18: Boomsday update
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-11-01T00:00:00Z"
+//Update Json HA tierlist --> HATLsed.sh --- 10/19/18: Cards nerfs & minor shifts
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
