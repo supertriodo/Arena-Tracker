@@ -43,7 +43,7 @@ void HSCardDownloader::downloadWebImage(DownloadingCard downCard, bool force)
 }
 
 
-void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, bool fromHearthHead)
+void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, bool fromHearthsim)
 {
     //Already downloading
     foreach(DownloadingCard downCard, gettingWebCards.values())
@@ -79,20 +79,33 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
     }
 
     QString urlString;
-    if(!fromHearthHead)
+    if(!fromHearthsim)//Github hero/card
     {
         urlString = AT_CARDS_URL + code + ".png";
     }
-    else if(isHero)  urlString = OLD_CARDS_URL + "heroes/" + code + ".png";
-    else
+    else if(isHero)//Hearthsim hero
     {
-        if(code.endsWith("_premium"))   urlString = NEW_CARDS_URL + "cards/enus/animated/" + code + ".gif";
-        else                            urlString = NEW_CARDS_URL + "cards/enus/" + code + ".png";
+        emit pDebug("Trying to download hero card image(Hearthsim), shouldn't have happened: " + code, DebugLevel::Error);
+        emit missingOnWeb(code);
+        return;
+    }
+    else//Hearthsim card
+    {
+        if(code.endsWith("_premium"))
+        {
+            emit pDebug("Golden card " + code + " won't be downloaded from hearthsim.", DebugLevel::Warning);
+            emit missingOnWeb(code);
+            return;
+        }
+        else
+        {
+            urlString = HEARTHSIM_CARDS_URL + code + ".png";
+        }
     }
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     gettingWebCards[reply] = downCard;
-    emit pDebug("Downloading (" + QString(fromHearthHead?"HearthHead":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
+    emit pDebug("Downloading (" + QString(fromHearthsim?"Hearthsim":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
                 ") - " + QString::number(pendingDownloads.count()));
 }
 
@@ -115,22 +128,22 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     if(reply->error() != QNetworkReply::NoError)
     {
         QString fullUrl = reply->url().toString();
-        if(fullUrl.startsWith(AT_CARDS_URL))
+        if(isHero)//Github hero
         {
-            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying HearthHead.", DebugLevel::Error);
-            emit pLog(tr("Web: Failed to download card image(GitHub). Trying HearthHead."));
+            emit pDebug("Failed to download hero card image(Github): " + code, DebugLevel::Error);
+            emit pLog(tr("Web: Failed to download hero card image(Github)."));
+            if(!reuseOldHero(code)) downloadWebImage(code, isHero, false, false);
+        }
+        else if(fullUrl.startsWith(AT_CARDS_URL))//Github card
+        {
+            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying Hearthsim.", DebugLevel::Error);
+            emit pLog(tr("Web: Failed to download card image(GitHub). Trying Hearthsim."));
             downloadWebImage(code, isHero, false, true);
         }
-        else if(isHero)
+        else//Hearthsim card
         {
-            emit pDebug("Failed to download hero card image(HearthHead): " + code, DebugLevel::Error);
-            emit pLog(tr("Web: Failed to download hero card image(HearthHead)."));
-            if(!reuseOldHero(code)) downloadWebImage(code, isHero, false, true);
-        }
-        else
-        {
-            emit pDebug("Failed to download card image(HearthHead): " + code + " - Trying again.", DebugLevel::Error);
-            emit pLog(tr("Web: Failed to download card image(HearthHead). Trying again."));
+            emit pDebug("Failed to download card image(Hearthsim): " + code + " - Trying again.", DebugLevel::Error);
+            emit pLog(tr("Web: Failed to download card image(Hearthsim). Trying again."));
             downloadWebImage(code, isHero, false, true);
         }
     }
@@ -144,12 +157,17 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     {
         QImage webImage;
         webImage.loadFromData(data);
-        if(!isHero && webImage.width()!=200)    webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
+        if(!isHero && webImage.width()!=200)
+        {
+            webImage = webImage.copy(8, -6, 241, 365);
+            webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
+        }
 
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
             emit pDebug("Failed to save card image to disk: " + code, DebugLevel::Error);
             emit pLog(tr("File: ERROR:Saving card image to disk."));
+            emit missingOnWeb(code);
         }
         else
         {
