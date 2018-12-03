@@ -1961,11 +1961,13 @@ void DraftHandler::buildHeroCodesList()
     heroCodesList.append("HERO_01a");
     heroCodesList.append("HERO_02");
     heroCodesList.append("HERO_02a");
+    heroCodesList.append("HERO_02b");
     heroCodesList.append("HERO_03");
     heroCodesList.append("HERO_03a");
     heroCodesList.append("HERO_04");
     heroCodesList.append("HERO_04a");
     heroCodesList.append("HERO_04b");
+    heroCodesList.append("HERO_04c");
     heroCodesList.append("HERO_05");
     heroCodesList.append("HERO_05a");
     heroCodesList.append("HERO_06");
