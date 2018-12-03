@@ -54,6 +54,7 @@
 #define VAPORIZE QString("EX1_594")
 #define COUNTERSPELL QString("EX1_287")
 #define MANA_BIND QString("UNG_024")
+#define SPLITTING_IMAGE QString("TRL_400")
 #define SPELLBENDER QString("tt_010")
 #define ICE_BLOCK QString("EX1_295")
 #define EXPLOSIVE_RUNES QString("LOOT_101")

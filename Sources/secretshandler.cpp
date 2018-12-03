@@ -222,6 +222,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(VAPORIZE));
             activeSecret.children.append(SecretCard(COUNTERSPELL));
             activeSecret.children.append(SecretCard(MANA_BIND));
+            activeSecret.children.append(SecretCard(SPLITTING_IMAGE));
             activeSecret.children.append(SecretCard(SPELLBENDER));
             if(showWildSecrets) activeSecret.children.append(SecretCard(ICE_BLOCK));
         break;
@@ -577,6 +578,8 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
+
+            discardSecretOptionNow(SPLITTING_IMAGE);
         }
     }
     else
@@ -608,6 +611,8 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
+
+            discardSecretOptionNow(SPLITTING_IMAGE);
         }
     }
 }
