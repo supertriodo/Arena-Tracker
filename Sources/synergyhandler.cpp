@@ -2977,14 +2977,17 @@ MAGNETIC: magnetic <--> mechAllSyn
 
 
 REGLAS
-+No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn
++No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas,
+    la que genera 1/1s, el dragon y el que tiene tokenSyn
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
-+tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen
++tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
+    rush implica pingGen/damageMinionsGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
-+toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
++toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
+    (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
