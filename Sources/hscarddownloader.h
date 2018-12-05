@@ -39,7 +39,7 @@ private:
 
 //Metodos
 private:
-    bool reuseOldHero(QString code);
+    void reuseOldHero(QString code);
     void downloadWebImage(DownloadingCard downCard, bool force=false);
 
 public:

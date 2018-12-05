@@ -132,7 +132,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         {
             emit pDebug("Failed to download hero card image(Github): " + code, DebugLevel::Error);
             emit pLog(tr("Web: Failed to download hero card image(Github)."));
-            if(!reuseOldHero(code)) downloadWebImage(code, isHero, false, false);
+            reuseOldHero(code);
         }
         else if(fullUrl.startsWith(AT_CARDS_URL))//Github card
         {
@@ -190,27 +190,27 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 }
 
 
-bool HSCardDownloader::reuseOldHero(QString code)
+void HSCardDownloader::reuseOldHero(QString code)
 {
-    if(code.length() == 7)  return false;
-
-    QString oldHeroCode = code.left(7);
-    QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");
-
-    if(heroFile.exists())
+    if(code.length() > 7 && code.startsWith("HERO_0"))
     {
-        if(heroFile.copy(Utility::hscardsPath() + "/" + code + ".png"))
+        QString oldHeroCode = code.left(7);
+        QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");
+
+        if(heroFile.exists())
         {
-            emit pDebug("Old hero reused: " + oldHeroCode);
-            emit downloaded(code);
+            if(heroFile.copy(Utility::hscardsPath() + "/" + code + ".png"))
+            {
+                emit pDebug("Old hero reused: " + oldHeroCode);
+                emit downloaded(code);
+            }
+        }
+        else
+        {
+            emit pDebug("Old hero not found: " + oldHeroCode);
+            downloadWebImage(oldHeroCode, true);
         }
     }
-    else
-    {
-        emit pDebug("Old hero not found: " + oldHeroCode);
-        downloadWebImage(oldHeroCode, true);
-    }
-    return true;
 }
 
 
