@@ -4072,16 +4072,16 @@ void MainWindow::testDelay()
 
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//--Update Json cartas --> Automatico
-//--Update Utility::isFromStandardSet(QString code) --> TROLL
-//--Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-03T12:00:02Z"
-//--Update Json HA tierlist --> HATLsed.sh --- 12/4/18: Rastakhan's Rumble Release
-//--Comparar tier lists con Utility::check
-//--Subir cartas al github.
-//--Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-//--Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
-//--Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
-//--Update secrets
+//Update Json cartas --> Automatico
+//Update Utility::isFromStandardSet(QString code) --> TROLL
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-03T12:00:02Z"
+//Update Json HA tierlist --> HATLsed.sh --- 12/4/18: Rastakhan's Rumble Release
+//Comparar tier lists con Utility::check
+//Subir cartas al github.
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+//Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
+//Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb
 //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
