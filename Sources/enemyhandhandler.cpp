@@ -583,6 +583,13 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == PRISMATIC_LENS)     return true;
     if(lastCreatedByCode == CRYSTOLOGY)         return true;
     if(lastCreatedByCode == JUICY_PSYCHMELON)   return true;
+    if(lastCreatedByCode == PREDATORY_INSTINCTS)return true;
+    if(lastCreatedByCode == BWONSAMDI_THE_DEAD) return true;
+    if(lastCreatedByCode == MURLOC_TASTYFIN)    return true;
+    if(lastCreatedByCode == SPIRIT_OF_THE_FROG) return true;
+    if(lastCreatedByCode == AKALI_THE_RHINO)    return true;
+    if(lastCreatedByCode == MASTERS_CALL)       return true;
+    if(lastCreatedByCode == RAIDING_PARTY)      return true;
     return false;
 }
 
