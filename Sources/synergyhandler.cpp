@@ -2874,6 +2874,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == MANA_BIND)           return 0;
     if(code == LUNAS_POCKET_GALAXY) return 0;
     if(code == ACADEMIC_ESPIONAGE)  return 0;
+    if(code == HAUNTING_VISIONS)    return 0;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
@@ -2888,8 +2889,11 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FORBIDDEN_HEALING)   return 4;
     if(code == FORBIDDEN_RITUAL)    return 4;
     if(code == FORBIDDEN_ANCIENT)   return 4;
+    if(code == DEMONBOLT)           return 5;
+    if(code == RABBLE_BOUNCER)      return 5;
     if(code == SEA_GIANT)           return 6;
     if(code == MULCHMUNCHER)        return 8;
+    if(code == GRAVE_HORROR)        return 8;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
