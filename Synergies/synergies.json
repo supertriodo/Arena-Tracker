@@ -634,7 +634,7 @@
 	"ICC_835": ["deathrattle","tauntSyn"],
 	"ICC_838": ["battlecry","attackBuffSyn","returnSyn","tauntGiverSyn","eggGen"],
 	"ICC_849": ["destroyGen","freezeEnemySyn"],
-	"ICC_851": ["battlecry","attackBuffGen","healthBuffGen","returnSyn"],
+	"ICC_851": ["battlecry","returnSyn"],
 	"ICC_852": ["battlecry"],
 	"ICC_853": ["battlecry","tauntGen","restoreFriendlyHeroGen"],
 	"ICC_855": ["battlecry","silenceOwnSyn"],
