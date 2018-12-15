@@ -341,7 +341,7 @@
 	"EX1_179" : ["damageMinionsGen", "freezeEnemySyn"],
 	"EX1_180" : ["toYourHandGen"],
 	"EX1_181" : ["demonGen", "toYourHandGen"],
-	"EX1_182" : ["toYourHandGen"],
+	"EX1_182" : ["toYourHandGen","tokenCardGen"],
 	"EX1_245": ["silenceOwnGen","pingGen"],
 	"EX1_246": ["destroyGen"],
 	"EX1_251": ["damageMinionsGen","spellDamageSyn","overload"],
