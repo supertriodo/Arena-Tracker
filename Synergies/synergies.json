@@ -1058,7 +1058,7 @@
 	"UNG_103": ["tokenSyn"],
 	"UNG_109": ["battlecry","returnSyn","=>SynMinionAttack5"],
 	"UNG_111": ["deathrattleGen","tokenGen"],
-	"UNG_113": ["drawGen","battlecry","returnSyn","=>SynMinionCost6"],
+	"UNG_113": ["drawGen","battlecry","returnSyn","=>SynMinionCost6","=>SynSpellCost6","=>SynWeaponCost6"],
 	"UNG_201": ["murlocGen","tokenGen"],
 	"UNG_208": ["battlecry","returnSyn","elementalAllSyn","evolveSyn"],
 	"UNG_211": ["battlecry","returnSyn","elementalAllSyn"],
