@@ -4074,7 +4074,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> TROLL
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-03T12:00:02Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-11T12:00:01Z"
 //Update Json HA tierlist --> HATLsed.sh --- 12/4/18: Rastakhan's Rumble Release
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
