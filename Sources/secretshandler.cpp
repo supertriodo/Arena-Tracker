@@ -170,6 +170,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 
 void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover)
 {
+    Q_UNUSED(discover);
     bool showWildSecrets = (loadingScreenState == arena && WILD_ARENA);
 
     ActiveSecret activeSecret;
@@ -200,7 +201,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
             activeSecret.children.append(SecretCard(FREEZING_TRAP));
             activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
             if(showWildSecrets) activeSecret.children.append(SecretCard(BEAR_TRAP));
-            if(loadingScreenState != arena || discover) activeSecret.children.append(SecretCard(SNIPE));//BANNED ARENA
+            activeSecret.children.append(SecretCard(SNIPE));
             if(showWildSecrets) activeSecret.children.append(SecretCard(DART_TRAP));
             activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
             activeSecret.children.append(SecretCard(WANDERING_MONSTER));
