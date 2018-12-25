@@ -1106,7 +1106,6 @@
 	"tt_010": ["secret"],
 	"DIRECT_LINKS":
 	{
-		"ICC_466": ["LOOT_500","BOT_910","BOT_263","TRL_304","TRL_500","TRL_059","TRL_251","TRL_517"],
 		"BOT_224": ["BOT_263","BOT_443","TRL_251","TRL_517"],
 		"BOT_536": ["BOT_263","TRL_251","TRL_517"],
 		"TRL_253": ["BOT_263","TRL_251","TRL_517"],

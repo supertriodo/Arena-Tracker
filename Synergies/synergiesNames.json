@@ -1107,9 +1107,6 @@
 	"DIRECT_LINKS":
 	{
 		"-----------------------------------------HAND BUFF-----------------------------------------": "",
-		"ICC_466 Saronite Chain Gang": ["LOOT_500 Val'anyr","BOT_910 Glowstone Technician",
-			"BOT_263 Soul Infusion","TRL_304 Farraki Battleaxe","TRL_500 Surrender to Madness",
-			"TRL_059 Bog Slosher","TRL_251 Spirit of the Bat","TRL_517 Arena Fanatic"],
 		"BOT_224 Doubling Imp": ["BOT_263 Soul Infusion","BOT_443 Void Analyst",
 			"TRL_251 Spirit of the Bat","TRL_517 Arena Fanatic"],
 		"BOT_536 Omega Agent": ["BOT_263 Soul Infusion","TRL_251 Spirit of the Bat",
