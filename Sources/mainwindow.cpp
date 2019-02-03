@@ -4017,8 +4017,8 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDelay()
 {
-    testTierlists();
-    testSynergies();
+//    testTierlists();
+//    testSynergies();
 }
 
 
@@ -4074,8 +4074,8 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> TROLL
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-11T12:00:01Z"
-//Update Json HA tierlist --> HATLsed.sh --- 12/4/18: Rastakhan's Rumble Release
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-25T00:00:01Z"
+//Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
