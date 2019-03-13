@@ -38,6 +38,12 @@ void SecretsHandler::completeUI()
 }
 
 
+void SecretsHandler::setArenaSets(QStringList &arenaSets)
+{
+    this->arenaSets = arenaSets;
+}
+
+
 void SecretsHandler::resetLastMinionDead(QString code, QString subType)
 {
     (void) code;
@@ -168,10 +174,27 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
 }
 
 
+bool SecretsHandler::isFromArenaSets(QString code)
+{
+    QString cardSet = Utility::getCardAttribute(code, "set").toString();
+    return arenaSets.contains(cardSet);
+}
+
+
+void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret)
+{
+    if( (inArena && (WILD_ARENA || isFromArenaSets(code))) ||
+        (!inArena && Utility::isFromStandardSet(code)))
+    {
+        activeSecret.children.append(SecretCard(code));
+    }
+}
+
+
 void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover)
 {
     Q_UNUSED(discover);
-    bool showWildSecrets = (loadingScreenState == arena && WILD_ARENA);
+    bool inArena = (loadingScreenState == arena);
 
     ActiveSecret activeSecret;
     activeSecret.id = id;
@@ -185,53 +208,53 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     {
         case PALADIN:
             //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));
-            activeSecret.children.append(SecretCard(AUTODEFENSE_MATRIX));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(AVENGE));
-            activeSecret.children.append(SecretCard(NOBLE_SACRIFICE));
-            activeSecret.children.append(SecretCard(REPENTANCE));
-            activeSecret.children.append(SecretCard(REDEMPTION));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(SACRED_TRIAL));
-            activeSecret.children.append(SecretCard(EYE_FOR_AN_EYE));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(GETAWAY_KODO));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(COMPETITIVE_SPIRIT));
-            activeSecret.children.append(SecretCard(HIDDEN_WISDOM));
+            unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
+            unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
+            unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
+            unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
+            unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
+            unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
         break;
 
         case HUNTER:
-            activeSecret.children.append(SecretCard(FREEZING_TRAP));
-            activeSecret.children.append(SecretCard(EXPLOSIVE_TRAP));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(BEAR_TRAP));
-            activeSecret.children.append(SecretCard(SNIPE));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(DART_TRAP));
-            activeSecret.children.append(SecretCard(VENOMSTRIKE_TRAP));
-            activeSecret.children.append(SecretCard(WANDERING_MONSTER));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(CAT_TRICK));
-            activeSecret.children.append(SecretCard(MISDIRECTION));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(HIDDEN_CACHE));
-            activeSecret.children.append(SecretCard(SNAKE_TRAP));
-            activeSecret.children.append(SecretCard(RAT_TRAP));
+            unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
+            unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
+            unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
+            unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
+            unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
         break;
 
         case MAGE:
-            activeSecret.children.append(SecretCard(MIRROR_ENTITY));
-            activeSecret.children.append(SecretCard(FROZEN_CLONE));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(DDUPLICATE));
-            activeSecret.children.append(SecretCard(ICE_BARRIER));
-            activeSecret.children.append(SecretCard(EXPLOSIVE_RUNES));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(POTION_OF_POLIMORPH));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(EFFIGY));
-            activeSecret.children.append(SecretCard(VAPORIZE));
-            activeSecret.children.append(SecretCard(COUNTERSPELL));
-            activeSecret.children.append(SecretCard(MANA_BIND));
-            activeSecret.children.append(SecretCard(SPLITTING_IMAGE));
-            activeSecret.children.append(SecretCard(SPELLBENDER));
-            if(showWildSecrets) activeSecret.children.append(SecretCard(ICE_BLOCK));
+            unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
+            unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
+            unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
+            unknownSecretPlayedAddOption(POTION_OF_POLIMORPH, inArena, activeSecret);
+            unknownSecretPlayedAddOption(EFFIGY, inArena, activeSecret);
+            unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
+            unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
+            unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
+            unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
+            unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
         break;
 
         case ROGUE:
-            activeSecret.children.append(SecretCard(SUDDEN_BETRAYAL));
-            activeSecret.children.append(SecretCard(CHEAT_DEATH));
-            activeSecret.children.append(SecretCard(EVASION));
+            unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
+            unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
+            unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
         break;
 
         default:

@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
+    cardsJsonLoaded = lightForgeJsonLoaded = allCardsDownloadNeeded = false;
 
     logLoader = nullptr;
     gameWatcher = nullptr;
@@ -109,7 +110,6 @@ void MainWindow::init()
 {
     spreadTransparency();
     trackobotUploader->checkAccount();
-//    downloadAllArenaCodes();  //Connect en completeUI
 
 #ifdef Q_OS_LINUX
     checkLinuxShortcut();
@@ -311,7 +311,8 @@ void MainWindow::createCardsJsonMap(QByteArray &jsonData)
         cardsJson[jsonCardObject.value("id").toString()] = jsonCardObject;
     }
 
-    emit cardsJsonReady();
+    cardsJsonLoaded = true;
+    checkArenaCards();
 }
 
 
@@ -362,13 +363,21 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Json LightForge original --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+            //Si reactivamos el lightforge original tendremos que decidir cuando forzamos el download de todas las cartas
+            //Seria bueno solo hacerlo al detectar un cambio en lfVersion asi yo decido cuando se hace, en lugar de en todos los arranques
+            //allCardsDownloadNeeded = true;
+            lightForgeJsonLoaded = true;
+            checkArenaCards();
         }
-        //Hearth Arena json
+        //Light Forge json
         else if(endUrl == "lightForge.json")
         {
             emit pDebug("Extra: Json LightForge github --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
+            allCardsDownloadNeeded = true;
+            lightForgeJsonLoaded = true;
+            checkArenaCards();
         }
         //Hearth Arena version
         else if(endUrl == "haVersion.json")
@@ -389,7 +398,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             int synergiesVersion = QJsonDocument::fromJson(reply->readAll()).object().value("synergiesVersion").toInt();
             downloadSynergiesJson(synergiesVersion);
         }
-        //Hearth Arena json
+        //Synergies json
         else if(endUrl == "synergies.json")
         {
             emit pDebug("Extra: Json synergies --> Download Success.");
@@ -459,9 +468,6 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     else
     {
         emit pDebug("Extra: Json Cards --> Use local cards.json");
-        //Al crear el JsonMap en initCardsJson no se ejecuta downloadAllArenaCodes a traves de emit cardsJsonReady
-        //porque draftHandler aun no esta definido, asi que lo volvemos a llamar aqui.
-        emit cardsJsonReady();
     }
 }
 
@@ -510,7 +516,7 @@ void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
 
     for(const QString &key: data.keys())
     {
-        for(const QJsonValue &gameWinrate: data.value(key).toArray())
+        for(const QJsonValue gameWinrate: data.value(key).toArray())
         {
             QJsonObject gameWinrateObject = gameWinrate.toObject();
             if(gameWinrateObject.value("game_type").toInt() == 3)
@@ -565,6 +571,11 @@ void MainWindow::downloadLightForgeJson(QJsonObject jsonObject)
             settings.setValue("lfVersion", version);
             networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
             emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
+        }
+        else
+        {
+            lightForgeJsonLoaded = true;
+            checkArenaCards();
         }
     }
 }
@@ -1213,8 +1224,6 @@ void MainWindow::completeUI()
             this, SLOT(changingTabUpdateDraftSize()));
     connect(ui->tabWidget, SIGNAL(detachTab(int,QPoint)),
             this, SLOT(createDetachWindow(int,QPoint)));
-    connect(this, SIGNAL(cardsJsonReady()),
-            this, SLOT(downloadAllArenaCodes()));
 
 #ifdef QT_DEBUG
     pLog(tr("MODE DEBUG"));
@@ -2345,8 +2354,8 @@ void MainWindow::createDataDir()
     if(Utility::createDir(Utility::hscardsPath()))
     {
         //Necesitamos bajar todas las cartas
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("allCardsDownloaded", false);
+        allCardsDownloadNeeded = true;
+        //checkArenaCards(); Con seguridad cardsjson no se ha cargado
     }
     Utility::createDir(Utility::gameslogPath());
     Utility::createDir(Utility::extraPath());
@@ -3793,55 +3802,78 @@ void MainWindow::checkFirstRunNewVersion()
     if(runVersion != VERSION)
     {
         pDebug("First run of new version.");
-        settings.setValue("allCardsDownloaded", false);
         settings.setValue("neoInt", 0);
     }
 }
 
 
-void MainWindow::downloadAllArenaCodes()
+//Solo baja las cartas si LF ha cambiado de version o HSCards se ha borrado
+void MainWindow::checkArenaCards()
 {
-    if(draftHandler == nullptr)    return;
+    if(draftHandler == nullptr || secretsHandler == nullptr || !cardsJsonLoaded || !lightForgeJsonLoaded)    return;
 
     QSettings settings("Arena Tracker", "Arena Tracker");
-    bool allCardsDownloaded = settings.value("allCardsDownloaded", false).toBool();
-    if(allCardsDownloaded)
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+
+    if(allCardsDownloadNeeded || arenaSets.isEmpty())
     {
-        emit pDebug("All arena cards were already downloaded.");
+        QStringList codeList = draftHandler->getAllArenaCodes();
+        downloadAllArenaCodes(codeList);
+        getArenaSets(arenaSets, codeList);
+        settings.setValue("arenaSets", arenaSets);
+        emit pDebug("CheckArenaCards: New arena sets: " + arenaSets.join(" "));
     }
     else
     {
-        emit pDebug("Downloading all arena cards.");
-        allCardsDownloadList.clear();
-        QStringList codeList = draftHandler->getAllArenaCodes();
-        for(QString code: codeList)
-        {
-            if(!checkCardImage(code))
-            {
-                allCardsDownloadList.append(code);
-            }
-            //Solo bajamos golden cards de cartas colleccionables
-            if(Utility::getCardAttribute(code, "collectible").toBool() && !checkCardImage(code + "_premium"))
-            {
-                allCardsDownloadList.append(code + "_premium");
-            }
-        }
+        emit pDebug("CheckArenaCards: Arena cards and sets unchanged.");
+        emit pDebug("CheckArenaCards: Unchanged arena sets: " + arenaSets.join(" "));
+    }
+    secretsHandler->setArenaSets(arenaSets);
+}
 
-        codeList = draftHandler->getAllHeroCodes();
-        for(QString code: codeList)
-        {
-            if(!checkCardImage(code, true))
-            {
-                allCardsDownloadList.append(code);
-            }
-        }
 
-        if(allCardsDownloadList.isEmpty())  this->allCardsDownloaded();
-        else
+void MainWindow::getArenaSets(QStringList &arenaSets, const QStringList &codeList)
+{
+    for(const QString &code: codeList)
+    {
+        QString cardSet = Utility::getCardAttribute(code, "set").toString();
+        if(!arenaSets.contains(cardSet))    arenaSets.append(cardSet);
+    }
+}
+
+
+void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
+{
+    emit pDebug("CheckArenaCards: Downloading all arena cards.");
+    allCardsDownloadList.clear();
+
+    for(QString code: codeList)
+    {
+        if(!checkCardImage(code))
         {
-            startProgressBarMini(allCardsDownloadList.count());
-            showMessageProgressBar("Downloading cards...", 10000);
+            allCardsDownloadList.append(code);
         }
+        //Solo bajamos golden cards de cartas colleccionables
+        if(Utility::getCardAttribute(code, "collectible").toBool() && !checkCardImage(code + "_premium"))
+        {
+            allCardsDownloadList.append(code + "_premium");
+        }
+    }
+
+    QStringList heroList = draftHandler->getAllHeroCodes();
+    for(QString code: heroList)
+    {
+        if(!checkCardImage(code, true))
+        {
+            allCardsDownloadList.append(code);
+        }
+    }
+
+    if(allCardsDownloadList.isEmpty())  this->allCardsDownloaded();
+    else
+    {
+        startProgressBarMini(allCardsDownloadList.count());
+        showMessageProgressBar("Downloading cards...", 10000);
     }
 }
 
@@ -3857,15 +3889,13 @@ void MainWindow::updateProgressAllCardsDownload(QString code)
 
 void MainWindow::allCardsDownloaded()
 {
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    bool allCardsDownloaded = settings.value("allCardsDownloaded", false).toBool();
-    if(!allCardsDownloaded)
+    if(allCardsDownloadNeeded)
     {
-        settings.setValue("allCardsDownloaded", true);
+        allCardsDownloadNeeded = false;
         allCardsDownloadList.clear();
         hideProgressBarMini();
         showMessageProgressBar("All cards downloaded");
-        emit pDebug("All arena cards have been downloaded.");
+        emit pDebug("CheckArenaCards: All arena cards have been downloaded.");
     }
 }
 
@@ -4137,7 +4167,9 @@ void MainWindow::testDelay()
 //Cartas Witchwood Grizzly marron
 //Completar synergies manual con todas las cartas
 //Appimage library
+//No intentar bajar cartas dorados de sets que no las tengamos
 //Redownload all cards next version (nerfed cards)
+//Arena rotating sets for secrets
 
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.

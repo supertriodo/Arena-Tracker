@@ -92,6 +92,10 @@ private:
     QNetworkAccessManager *networkManager;
     QStringList allCardsDownloadList;
     TwitchHandler *twitchTester;
+    //Gestionan si es necesario bajar todas las cartas usadas en arena debido a que el directorio de cartas se haya borrado
+    //o haya una nueva version de tier list (rotacion sets)
+    //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
+    bool cardsJsonLoaded, lightForgeJsonLoaded, allCardsDownloadNeeded;
 
 
 
@@ -187,6 +191,9 @@ private:
     void processHSRHeroesWinrate(QJsonObject jsonObject);
     void deleteTwitchTester();
     void checkTwitchConnection();
+    void checkArenaCards();
+    void downloadAllArenaCodes(const QStringList &codeList);
+    void getArenaSets(QStringList &arenaSets, const QStringList &codeList);
 
 //Override events
 protected:
@@ -203,7 +210,7 @@ protected:
 
 //Signals
 signals:
-    void cardsJsonReady();
+
 
 //Slots
 public slots:
@@ -267,7 +274,6 @@ private slots:
     void advanceProgressBar(int remaining, QString text="");
     void showMessageProgressBar(QString text, int hideDelay = 5000);
     void hideProgressBar();
-    void downloadAllArenaCodes();
     void missingOnWeb(QString code);
     void allCardsDownloaded();
     void init();

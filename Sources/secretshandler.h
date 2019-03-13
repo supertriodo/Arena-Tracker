@@ -42,6 +42,7 @@ private:
     QQueue<SecretTest> secretTests;
     bool secretsAnimating;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
+    QStringList arenaSets;
 
 
 //Metodos
@@ -52,6 +53,8 @@ private:
     void checkLastSecretOption(ActiveSecret &activeSecret);
     void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover=false);
     void knownSecretPlayed(int id, CardClass hero, QString code);
+    bool isFromArenaSets(QString code);
+    void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret);
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -59,6 +62,7 @@ public:
     void redrawSpellWeaponCards();
     void redrawAllCards();
     QStringList getSecretOptionCodes(int id);
+    void setArenaSets(QStringList &arenaSets);
 
 signals:
     void checkCardImage(QString code);
