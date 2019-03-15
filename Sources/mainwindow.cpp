@@ -4167,9 +4167,7 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Cartas Witchwood Grizzly marron
 //Completar synergies manual con todas las cartas
-//Appimage library
 //Redownload all cards next version (nerfed cards)
 
 
