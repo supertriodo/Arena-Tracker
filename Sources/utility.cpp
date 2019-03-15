@@ -343,6 +343,26 @@ bool Utility::isFromStandardSet(QString code)
 }
 
 
+bool Utility::hasGoldenImage(QString code)
+{
+    QString cardSet = getCardAttribute(code, "set").toString();
+
+    if( cardSet == "CORE" || cardSet == "EXPERT1" ||
+        cardSet == "HOF" || cardSet == "NAXX" || cardSet == "GVG" ||
+        cardSet == "BRM" || cardSet == "TGT" || cardSet == "LOE" ||
+        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
+        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
+        cardSet == "GILNEAS" || cardSet == "BOOMSDAY")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 bool Utility::isASecret(QString code)
 {
     QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
@@ -806,6 +826,34 @@ void Utility::unZip(QString zipName, QString targetPath)
     }
 
     zf.close();
+}
+
+
+void Utility::resizeGoldenCards()
+{
+    QString goldenDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneGoldenCards";
+    QDir dir(goldenDir);
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Name);
+    QStringList filterName;
+    filterName << "*.png";
+    dir.setNameFilters(filterName);
+
+    for(const QString &file: dir.entryList())
+    {
+        QImage webImage(goldenDir + "/" + file);
+        webImage = webImage.scaledToWidth(205, Qt::SmoothTransformation);
+        webImage = webImage.copy(4, -10, 200, 303);
+
+        if(!webImage.save(goldenDir + "/Resized/" + file, "png"))
+        {
+            qDebug()<<"Failed to save card image to disk: " + file;
+        }
+        else
+        {
+            qDebug()<<"Card resized: " + file;
+        }
+    }
 }
 
 

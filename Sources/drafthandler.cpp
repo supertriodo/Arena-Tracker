@@ -246,7 +246,9 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
     //Evitamos golden cards de cartas no colleccionables
-    if(premium && !Utility::getCardAttribute(code, "collectible").toBool()) return;
+    if(premium &&
+        (!Utility::hasGoldenImage(code) ||
+         !Utility::getCardAttribute(code, "collectible").toBool())) return;
 
     QString fileNameCode = premium?(code + "_premium"): code;
     QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
