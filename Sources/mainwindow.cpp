@@ -4167,7 +4167,6 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Completar synergies manual con todas las cartas
 //Redownload all cards next version (nerfed cards)
 
 
