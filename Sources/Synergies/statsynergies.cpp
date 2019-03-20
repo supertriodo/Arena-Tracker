@@ -162,7 +162,7 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
             }
             else
             {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Gen/Syn:" << mechanic;
+                qDebug()<<"WARNING: Synergy Stat failed waiting Gen/Syn:" << mechanic << "Code:" << code;
                 break;
             }
 
@@ -184,7 +184,7 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
             }
             else
             {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Minion/Spell/Weapon:" << mechanic;
+                qDebug()<<"WARNING: Synergy Stat failed waiting Minion/Spell/Weapon:" << mechanic << "Code:" << code;
                 break;
             }
 
@@ -206,7 +206,7 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
             }
             else
             {
-                qDebug()<<"WARNING: Synergy Stat failed waiting Cost/Attack/Health:" << mechanic;
+                qDebug()<<"WARNING: Synergy Stat failed waiting Cost/Attack/Health:" << mechanic << "Code:" << code;
                 break;
             }
 
@@ -217,7 +217,7 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
             //Error
             if(statSyn.statValue == 0)
             {
-                qDebug()<<"WARNING: Synergy Stat failed waiting value if not 0:" << mechanic;
+                qDebug()<<"WARNING: Synergy Stat failed waiting value if not 0:" << mechanic << "Code:" << code;
             }
         }
     }

@@ -1239,6 +1239,64 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int
 }
 
 
+bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
+{
+    if(mechanic.startsWith('='))    return true;
+    QStringList validMecs = {
+        "spellGen", "weaponGen", "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen", "dragonGen",
+        "spellSyn", "weaponSyn", "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn",
+        "spellAllSyn", "weaponAllSyn", "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn", "dragonAllSyn",
+
+        "discover", "drawGen", "toYourHandGen", "taunt", "tauntGen", "divineShield", "divineShieldGen", "windfury", "overload",
+        "discoverSyn", "drawSyn", "toYourHandSyn", "tauntSyn", "tauntAllSyn", "divineShieldSyn", "divineShieldAllSyn", "windfuryMinionSyn", "overloadSyn",
+
+        "jadeGolemGen", "secret", "secretGen", "freezeEnemyGen", "discardGen", "stealthGen",
+        "jadeGolemSyn", "secretSyn", "secretAllSyn", "freezeEnemySyn", "discardSyn", "stealthSyn",
+
+        "damageMinionsGen", "reachGen", "pingGen", "aoeGen", "destroyGen",
+        "damageMinionsSyn", "reachSyn", "pingSyn", "aoeSyn", "destroySyn",
+
+        "deathrattle", "deathrattleGen", "deathrattleOpponent", "silenceOwnGen", "battlecry", "returnGen",
+        "deathrattleSyn", "deathrattleGoodAllSyn", "silenceOwnSyn", "battlecrySyn", "returnSyn",
+
+        "enrageGen", "tauntGiverGen", "evolveGen", "spawnEnemyGen", "spellDamageGen",
+        "enrageSyn", "tauntGiverSyn", "evolveSyn", "spawnEnemySyn", "spellDamageSyn",
+
+        "tokenGen", "tokenCardGen", "comboGen", "attackBuffGen", "healthBuffGen",
+        "tokenSyn", "tokenCardSyn", "comboSyn", "attackBuffSyn", "healthBuffSyn",
+
+        "restoreTargetMinionGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen", "armorGen", "lifesteal",
+        "restoreTargetMinionSyn", "restoreFriendlyHeroSyn", "restoreFriendlyMinionSyn", "armorSyn", "lifestealMinionSyn",
+
+        "eggGen", "damageFriendlyHeroGen", "echo", "echoGen", "rush", "rushGen", "magnetic", "magneticGen",
+        "eggSyn", "damageFriendlyHeroSyn", "echoSyn", "echoAllSyn", "rushSyn", "rushAllSyn", "magneticSyn", "magneticAllSyn"
+    };
+    if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
+    return validMecs.contains(mechanic);
+}
+
+
+void SynergyHandler::checkSynergyCodes()
+{
+    qDebug()<<endl<<"-----Check Synergies.json-----"<<endl;
+    initSynergyCodes();
+    for(const QString &code: Utility::getWildCodes())
+    {
+        if(synergyCodes.contains(code))
+        {
+            QStringList invalidMecs;
+            for(const QString &mechanic: synergyCodes[code])
+            {
+                if(!isValidSynergyCode(mechanic))   invalidMecs.append(mechanic);
+            }
+            if(!invalidMecs.isEmpty())  qDebug()<<"Code:"<<code<<"No mecs:"<<invalidMecs;
+            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
+        }
+    }
+    qDebug()<<endl<<"-----Check complete-----"<<endl;
+}
+
+
 void SynergyHandler::testSynergies()
 {
     initSynergyCodes();
@@ -1256,16 +1314,15 @@ void SynergyHandler::testSynergies()
         int cost = deckCard.getCost();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-        if(
-                (text.contains("treant"))
+        if(true
+//                (text.contains("give") && text.contains("in your hand"))
 //                isWeaponAllSyn(code, text) &&
 //                (cardClass == NEUTRAL || cardClass == ROGUE)
             )
         {
-//            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
 //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
             debugSynergiesCode(code, ++num);
-
+//            qDebug()<<mechanics<<endl<<referencedTags;
         }
         Q_UNUSED(cardType);
         Q_UNUSED(cardClass);
@@ -1382,7 +1439,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isEggSyn(code, text))                                                mec<<"eggSyn";
 
     qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
-    if(synergyCodes.contains(code)) qDebug()/*<<"--MANUAL-- :"*/<<code<<": ["<<synergyCodes[code]<<"],";
+    if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
     else                            qDebug()<<code<<": ["<<mec<<"],";
     qDebug()<<"Texto:"<<text<<endl;
 }

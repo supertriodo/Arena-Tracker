@@ -4036,7 +4036,8 @@ void MainWindow::testSynergies()
 //    draftHandler->debugSynergiesSet("TROLL", true);
 //    draftHandler->debugSynergiesCode("AT_112");
 //    draftHandler->testSynergies();
-    draftHandler->initSynergyCodes();
+
+    draftHandler->checkSynergyCodes();
 }
 
 

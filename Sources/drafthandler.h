@@ -159,6 +159,7 @@ public:
     QStringList getAllHeroCodes();
     void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code);
+    void checkSynergyCodes();
     void testSynergies();
     void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);

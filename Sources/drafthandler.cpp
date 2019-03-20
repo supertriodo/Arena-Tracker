@@ -1939,6 +1939,12 @@ void DraftHandler::debugSynergiesCode(const QString &code)
 }
 
 
+void DraftHandler::checkSynergyCodes()
+{
+    synergyHandler->checkSynergyCodes();
+}
+
+
 void DraftHandler::testSynergies()
 {
     synergyHandler->testSynergies();

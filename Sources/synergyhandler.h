@@ -29,7 +29,9 @@ private:
 public:
     void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code, int num=0);
+    bool isValidSynergyCode(const QString &mechanic);
     void testSynergies();
+    void checkSynergyCodes();
     int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
