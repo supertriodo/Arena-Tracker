@@ -1906,7 +1906,7 @@
 "tt_010" : [ "Spellbender" ],
 "DIRECT_LINKS":
 {
-	"-----------------------------------------HAND BUFF-----------------------------------------": "",
+	"------------------------------HAND BUFF-(handBuffGen/handBuffSyn)------------------------------": "",
 	"BOT_224 Doubling Imp": ["BOT_263 Soul Infusion","BOT_443 Void Analyst",
 		"TRL_251 Spirit of the Bat","TRL_517 Arena Fanatic"],
 	"BOT_536 Omega Agent": ["BOT_263 Soul Infusion","TRL_251 Spirit of the Bat",

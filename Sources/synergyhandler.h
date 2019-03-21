@@ -129,6 +129,7 @@ private:
     bool isSpellDamageGen(const QString &code);
     bool isEvolveGen(const QString &code, const QString &text);
     bool isSpawnEnemyGen(const QString &code, const QString &text);
+    bool isHandBuffGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -194,6 +195,7 @@ private:
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
     bool isEvolveSyn(const QString &code);
     bool isSpawnEnemySyn(const QString &code);
+    bool isHandBuffSyn(const QString &code, const QString &text);
 
 signals:
     void pLog(QString line);

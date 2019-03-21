@@ -4131,6 +4131,10 @@ void MainWindow::testDelay()
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
 //Actualizar Utility::isFromStandardSet(code)
 
+//NUEVA SYNERGY
+//Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
+//Marcado codigo con //New Synergy Step
+
 //NUEVOS BACKGROUND
 //Coger el color de una parte clara de un carta de clase
 //Colores->Colorear...(4 opcion por abajo)

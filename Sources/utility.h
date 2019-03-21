@@ -48,9 +48,9 @@ enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
                        V_RESTORE_FRIENDLY_HEROE, V_RESTORE_FRIENDLY_MINION, V_RESTORE_TARGET_MINION,
                        V_ARMOR, V_TOKEN_CARD, V_COMBO, V_LIFESTEAL_MINION, V_SPAWN_ENEMY, V_EGG,
                        V_RUSH, V_RUSH_ALL, V_ECHO, V_ECHO_ALL, V_DAMAGE_FRIENDLY_HERO,
-                       V_MAGNETIC, V_MAGNETIC_ALL,
+                       V_MAGNETIC, V_MAGNETIC_ALL, V_HAND_BUFF,
                        V_NUM_MECHANICS};
-
+//New Synergy Step 1
 
 
 class GameResultPost

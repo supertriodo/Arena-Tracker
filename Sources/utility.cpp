@@ -176,7 +176,9 @@ QString Utility::cardEnNameFromCode(QString code)
 
 QString Utility::cardEnTextFromCode(QString code)
 {
-    return (*cardsJson)[code].value("text").toObject().value("enUS").toString();
+    QString text = (*cardsJson)[code].value("text").toObject().value("enUS").toString();
+    text.replace('\n',' ');
+    return text;
 }
 
 
