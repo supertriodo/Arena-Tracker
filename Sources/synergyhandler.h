@@ -130,6 +130,7 @@ private:
     bool isEvolveGen(const QString &code, const QString &text);
     bool isSpawnEnemyGen(const QString &code, const QString &text);
     bool isHandBuffGen(const QString &code, const QString &text);
+    bool isEnemyDrawGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -196,6 +197,7 @@ private:
     bool isEvolveSyn(const QString &code);
     bool isSpawnEnemySyn(const QString &code);
     bool isHandBuffSyn(const QString &code, const QString &text);
+    bool isEnemyDrawSyn(const QString &code, const QString &text);
 
 signals:
     void pLog(QString line);

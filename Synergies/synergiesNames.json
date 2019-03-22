@@ -1906,7 +1906,7 @@
 "tt_010" : [ "Spellbender" ],
 "DIRECT_LINKS":
 {
-	"------------------------------HAND BUFF-(handBuffGen/handBuffSyn)------------------------------": "",
+	"----------------------HAND BUFF-(removed)-(handBuffGen/handBuffSyn)------------------------------": "",
 	"BOT_224 Doubling Imp": ["BOT_263 Soul Infusion","BOT_443 Void Analyst",
 		"TRL_251 Spirit of the Bat","TRL_517 Arena Fanatic"],
 	"BOT_536 Omega Agent": ["BOT_263 Soul Infusion","TRL_251 Spirit of the Bat",
@@ -1916,10 +1916,16 @@
 	"TRL_306 Immortal Prelate": ["LOOT_500 Val'anyr","BOT_910 Glowstone Technician",
 		"TRL_304 Farraki Battleaxe","TRL_517 Arena Fanatic"],
 
-	"-----------------------------------------BAD DEATHRATTLE-----------------------------------------": "",
-	"ICC_206 Treachery": ["ICC_025 Rattling Rascal","ICC_099 Ticking Abomination"],
+	"-----------------------------------------BAD DEATHRATTLE-(revised)------------------------------": "",
+  "CFM_855 Defias Cleaner": ["CFM_667 Bomb Squad","EX1_577 The Beast","KAR_041 Moat Lurker",
+    "OG_147 Corrupted Healbot","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination",
+    "LOOT_144 Hoarding Dragon"],
+  "ICC_206 Treachery": ["CFM_667 Bomb Squad","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination"],
 
-	"-----------------------CARDS TO ENEMY---(daring reporter)-------------------------------------": "",
+	"-------------------CARDS TO ENEMY-(removed)-(enemyDrawGen/enemyDrawSyn)--------------------------": "",
+  "CFM_851 Daring Reporter": ["EX1_161 Naturalize","EX1_050 Coldlight Oracle","OG_338 Nat, the Darkfisher",
+    "CFM_808 Genzo, the Shark"],
+
 	"-----------------------------------------HERO ATTACK-----------------------------------------": "",
 	"EX1_567 Doomhammer": ["CS2_045 Rockbiter Weapon"],
 	"EX1_578 Savagery": ["CS2_005 Claw","EX1_570 Bite","ICC_079 Gnash","CS2_011 Savage Roar",
