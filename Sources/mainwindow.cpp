@@ -4030,7 +4030,7 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Splitting Image");
+//    qDebug()<<Utility::cardEnCodeFromName("Clockwork Automaton");
 //    qDebug()<<Utility::getCardAttribute("TRL_243", "set").toString();
 
 //    draftHandler->debugSynergiesSet("TROLL", true);
@@ -4133,6 +4133,7 @@ void MainWindow::testDelay()
 
 //NUEVA SYNERGY
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
+//Ejemplo gen-gen V_JADE_GOLEM/jadeGolemGen
 //Marcado codigo con //New Synergy Step
 
 //NUEVOS BACKGROUND

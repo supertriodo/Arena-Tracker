@@ -94,6 +94,7 @@ private:
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics);
     bool isOverload(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
+    bool isHeroPowerGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isSecret(const QString &code, const QJsonArray &mechanics);
     bool isSecretGen(const QString &code);
     bool isEcho(const QString &code, const QString &text);

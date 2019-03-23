@@ -178,6 +178,7 @@ QString Utility::cardEnTextFromCode(QString code)
 {
     QString text = (*cardsJson)[code].value("text").toObject().value("enUS").toString();
     text.replace('\n',' ');
+    text.replace(QChar(160), ' ');
     return text;
 }
 

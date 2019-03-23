@@ -1942,7 +1942,7 @@
 	"TRL_507 Sharkfin Fan": ["CS2_005 Claw","CS2_105 Heroic Strike","EX1_570 Bite","ICC_079 Gnash",
 		"CS2_011 Savage Roar","CS2_045 Rockbiter Weapon","TRL_243 Pounce"],
 
-	"------------------------------BAD BATTLECRY -- SUMMON -------------------------------": "",
+	"------------------------------BAD BATTLECRY -- SUMMON -(revised)----------------------------": "",
 	"CS2_181 Injured Blademaster": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
 		"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 	"GIL_623 Witchwood Grizzly": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
@@ -1950,7 +1950,7 @@
 	"BOT_448 Damaged Stegotron": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
 		"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 
-	"-----------------------------------------HERO POWER-----------------------------------------": "",
+	"-----------------------------HERO POWER-(removed)-(heroPowerGen)--------------------------------": "",
 	"EX1_350 Prophet Velen": ["EX1_625 Shadowform","EX1_591 Auchenai Soulpriest",
 		"TRL_501 Auchenai Phantasm"],
 	"TRL_390 Daring Fire-Eater": ["TRL_315 Pyromaniac","TRL_319 Spirit of the Dragonhawk",

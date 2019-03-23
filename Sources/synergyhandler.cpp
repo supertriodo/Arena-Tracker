@@ -103,6 +103,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this);
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
+    mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET] = new DraftItemCounter(this);
     mechanicCounters[V_SECRET_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_FREEZE_ENEMY] = new DraftItemCounter(this);
@@ -584,6 +585,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
+    CardClass cardClass = deckCard.getCardClass();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
 //    int cost = deckCard.getCost();
 
@@ -641,6 +643,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
+    if(isHeroPowerGen(code, text, cardClass))                               mechanicCounters[V_HERO_POWER]->increase(code);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
@@ -980,6 +983,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
+    CardClass cardClass = deckCard.getCardClass();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
     bool addRestoreIcon = false;
@@ -1040,6 +1044,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isLifestealMinon(code, mechanics, cardType))             mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);//Sinergias gen-gen
+    if(isHeroPowerGen(code, text, cardClass))                   mechanicCounters[V_HERO_POWER]->insertCards(synergies);//Sinergias gen-gen
     if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergies);
     if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergies);
     if(isToYourHandGen(code, text))                             mechanicCounters[V_TOYOURHAND]->insertSynCards(synergies);
@@ -1274,7 +1279,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "tauntSyn", "tauntAllSyn", "divineShieldSyn", "divineShieldAllSyn", "windfuryMinionSyn", "overloadSyn",
 
         "jadeGolemGen", "secret", "secretGen", "freezeEnemyGen", "discardGen", "stealthGen",
-        "jadeGolemSyn", "secretSyn", "secretAllSyn", "freezeEnemySyn", "discardSyn", "stealthSyn",
+        "heroPowerGen", "secretSyn", "secretAllSyn", "freezeEnemySyn", "discardSyn", "stealthSyn",
 
         "damageMinionsGen", "reachGen", "pingGen", "aoeGen", "destroyGen",
         "damageMinionsSyn", "reachSyn", "pingSyn", "aoeSyn", "destroySyn",
@@ -1339,10 +1344,9 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-
-//            (text.contains("hero") || text.contains("character")) && text.contains("attack")//heroAttackGen
-            isHeroAttackGen(code, text)
-//            (cardClass == NEUTRAL || cardClass == ROGUE)
+//            (text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST))
+            isHeroPowerGen(code, text, cardClass)
+//            (cardClass == NEUTRAL || cardClass == PRIEST)
             )
         {
             qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -1385,6 +1389,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 
     DeckCard deckCard(code);
     CardType cardType = deckCard.getType();
+    CardClass cardClass = deckCard.getCardClass();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
@@ -1414,6 +1419,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
     if(isOverload(code))                                                    mec<<"overload";
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
+    if(isHeroPowerGen(code, text, cardClass))                               mec<<"heroPowerGen";
     if(isSecret(code, mechanics))                                           mec<<"secret";
     if(isEcho(code, text))                                                  mec<<"echo";
     if(isRush(code, text))                                                  mec<<"rush";
@@ -1813,6 +1819,20 @@ bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mecha
         return synergyCodes[code].contains("jadeGolemGen");
     }
     else if(mechanics.contains(QJsonValue("JADE_GOLEM")) || referencedTags.contains(QJsonValue("JADE_GOLEM")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isHeroPowerGen(const QString &code, const QString &text, const CardClass &cardClass)
+{
+    //TEST
+    //text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST)
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("heroPowerGen");
+    }
+    else if(text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST))
     {
         return true;
     }
@@ -3114,7 +3134,7 @@ spellGen, weaponGen
 murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen
 discover, drawGen, toYourHandGen, enemyDrawGen
 taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
-jadeGolemGen, secret, secretGen, freezeEnemyGen, discardGen, stealthGen
+jadeGolemGen, heroPowerGen, secret, secretGen, freezeEnemyGen, discardGen, stealthGen
 
 damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, returnGen
@@ -3139,8 +3159,6 @@ DESTROY PROPIO: tokenSyn, eggSyn
 SWAP/copia 1-1: eggSyn
 COSTE/STATS: evolveSyn
 SPAWN ENEMIES: spawnEnemyGen
-DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
-HERO ATTACK: heroAttackGen/heroAttackSyn
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
@@ -3149,6 +3167,9 @@ CHARGE/RUSH: pingGen(atk1) <--> damageMinionsGen(no atk1) <--> reachGen(no atk1/
 STEALTH: stealthGen <--> reachGen(no atk1)
 MAGNETIC: magnetic <--> mechAllSyn
 
+DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
+HERO ATTACK: heroAttackGen/heroAttackSyn
+HERO POWER: heroPowerGen
 
 
 
