@@ -1926,8 +1926,9 @@
   "CFM_851 Daring Reporter": ["EX1_161 Naturalize","EX1_050 Coldlight Oracle","OG_338 Nat, the Darkfisher",
     "CFM_808 Genzo, the Shark"],
 
-	"-----------------------------------------HERO ATTACK-----------------------------------------": "",
-	"EX1_567 Doomhammer": ["CS2_045 Rockbiter Weapon"],
+	"---------------------HERO ATTACK-(removed)-(heroAttackGen/heroAttackSyn)-------------------------": "",
+  "KAR_028 Fool's Bane": ["CS2_105 Heroic Strike"],
+  "EX1_567 Doomhammer": ["CS2_045 Rockbiter Weapon"],
 	"EX1_578 Savagery": ["CS2_005 Claw","EX1_570 Bite","ICC_079 Gnash","CS2_011 Savage Roar",
 		"TRL_243 Pounce"],
 	"TRL_240 Savage Striker": ["CS2_005 Claw","EX1_570 Bite","ICC_079 Gnash","CS2_011 Savage Roar",

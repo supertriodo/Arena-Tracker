@@ -131,6 +131,7 @@ private:
     bool isSpawnEnemyGen(const QString &code, const QString &text);
     bool isHandBuffGen(const QString &code, const QString &text);
     bool isEnemyDrawGen(const QString &code, const QString &text);
+    bool isHeroAttackGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -198,6 +199,7 @@ private:
     bool isSpawnEnemySyn(const QString &code);
     bool isHandBuffSyn(const QString &code, const QString &text);
     bool isEnemyDrawSyn(const QString &code, const QString &text);
+    bool isHeroAttackSyn(const QString &code);
 
 signals:
     void pLog(QString line);
