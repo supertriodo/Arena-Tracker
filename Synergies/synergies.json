@@ -1259,7 +1259,7 @@
 "KAR_702" : [ "battlecry", "murlocAllSyn", "beastAllSyn", "dragonAllSyn", "returnSyn" ],
 "KAR_710" : [ "battlecry", "tauntGen", "returnSyn" ],
 "KAR_711" : [ "spellAllSyn" ],
-"KAR_712" : [ "weaponAllSyn" ],
+"KAR_712" : [ "weaponAllSyn", "heroAttackSyn" ],
 "LOEA10_3" : [ "tokenCardGen" ],
 "LOE_002" : [ "damageMinionsGen", "reachGen" ],
 "LOE_003" : [ "discover", "spellGen", "battlecry", "returnSyn" ],
