@@ -2008,9 +2008,12 @@
     "LOOT_414 Grand Archivist","LOOT_519 Geosculptor Yip","LOOT_540 Dragonhatcher",
     "NEW1_037 Master Swordsmith","NEW1_038 Gruul","NEW1_040 Hogger","OG_042 Y'Shaarj, Rage Unbound",
     "OG_229 Ragnaros, Lightlord","OG_286 Twilight Elder","TRL_057 Serpent Ward","UNG_201 Primalfin Totem"],
+
 	"EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
+
   "---Search: add random cost minion": "",
 	"BOT_267 Piloted Reaper": ["GIL_213 Tanglefur Mystic","GIL_212 Ravencaller"],
+
 	"BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
   "---Search: shuffle": "",
   "BOT_559 Augmented Elekk": ["AT_035 Beneath the Grounds","BOT_087 Academic Espionage",
@@ -2023,6 +2026,7 @@
     "LOOT_526 The Darkness","LOOT_542 Kingsbane","OG_255 Doomcaller","TRL_306 Immortal Prelate",
     "TRL_502 Spirit of the Dead","TRL_541 Hakkar, the Soulflayer","UNG_851 Elise the Trailblazer",
     "UNG_914 Raptor Hatchling","UNG_957 Direhorn Hatchling"],
+
 	"TRL_533 Ice Cream Peddler": ["ICC_855 Hyldnir Frostrider"],
   "---Search: summon copy | summon copies": "",
   "OG_173 Blood of The Ancient One": ["UNG_022 Mirage Caller","UNG_948 Molten Reflection",
@@ -2031,15 +2035,27 @@
     "GIL_813 Vivid Nightmare","BOT_507 Gloop Sprayer","BOT_529 Power Word: Replicate",
     "TRL_400 Splitting Image","BOT_099 Eureka!","LOOT_412 Kobold Illusionist"],
 
+  "---Search: destroy attack": "",
+  "---Search: change minion attack | set minion attack | give minion attack": "",
+  "NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
+    "AT_081 Eadric the Pure","GIL_665 Curse of Weakness","CFM_661 Pint-Size Potion",
+    "GVG_011 Shrinkmeister"],
+  "LOOT_111 Scorp-o-matic": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
+    "AT_081 Eadric the Pure","GIL_665 Curse of Weakness","CFM_661 Pint-Size Potion",
+    "GVG_011 Shrinkmeister"],
+  "GIL_124 Mossy Horror": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
+    "AT_081 Eadric the Pure","GIL_665 Curse of Weakness","CFM_661 Pint-Size Potion",
+    "GVG_011 Shrinkmeister"],
+
 	"-----------------------------------------WARRIOR-(revised)----------------------------------------": "",
   "---Search: damaged | takes damage": "",
-  "AT_105 Injured Kvaldir": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith"
+  "AT_105 Injured Kvaldir": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith",
 		"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant",
     "OG_276 Blood Warriors","GVG_052 Crush"],
-  "CS2_181 Injured Blademaster": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith"
+  "CS2_181 Injured Blademaster": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith",
 		"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant",
     "OG_276 Blood Warriors","GVG_052 Crush"],
-	"BOT_448 Damaged Stegotron": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith"
+    "BOT_448 Damaged Stegotron": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith",
 		"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant",
     "OG_276 Blood Warriors","GVG_052 Crush"],
 
@@ -2108,13 +2124,6 @@
     "OG_151 Tentacle of N'Zoth","GVG_076 Explosive Sheep","FP1_024 Unstable Ghoul",
     "CFM_341 Sergeant Sally"],
 
-  "---Search: destroy attack": "",
-  "---Search: change attack | set": "",
-	"NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
-	"LOOT_111 Scorp-o-matic": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
-	"GIL_124 Mossy Horror": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
-    "AT_081 Eadric the Pure"],
-
 	"-----------------------------------------HUNTER-(revised)----------------------------------------": "",
   "---Search: to your hand": "",
 	"GIL_607 Toxmonger": ["GIL_212 Ravencaller","AT_113 Recruiter","UNG_845 Igneous Elemental",
@@ -2139,15 +2148,30 @@
 	"TRL_341 Treespeaker": ["GIL_663 Witchwood Apple","BOT_420 Landscaping","EX1_158 Soul of the Forest",
 		"EX1_571 Force of Nature","UNG_111 Living Mana","BOT_422 Tending Tauren","EX1_573 Cenarius"],
 
-	"-----------------------------------------WARLOCK-----------------------------------------": "",
-	"GIL_665 Curse of Weakness": ["GIL_124 Mossy Horror"],
-	"-----------------------------------------MAGE-----------------------------------------": "",
+	"-----------------------------------------WARLOCK-(revised)----------------------------------------": "",
+	"-----------------------------------------MAGE-(revised)----------------------------------------": "",
 	"GIL_116 Arcane Keysmith": ["EX1_274 Ethereal Arcanist"],
-	"-----------------------------------------PRIEST-----------------------------------------": "",
+	"-----------------------------------------PRIEST-(revised)----------------------------------------": "",
+  "---Search: heal deal damage instead": "",
+  "OG_147 Corrupted Healbot": ["EX1_591 Auchenai Soulpriest","OG_104 Embrace the Shadow",
+    "TRL_501 Auchenai Phantasm"],
+
 	"CS2_004 Power Word: Shield": ["NEW1_020 Wild Pyromancer"],
+
+  "---Search: give minion health": "",
 	"EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
-		"EX1_623 Temple Enforcer","ICC_028 Sunborne Val'kyr","LOOT_152 Boisterous Bard"],
-	"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest"]
+		"EX1_623 Temple Enforcer","ICC_028 Sunborne Val'kyr","LOOT_152 Boisterous Bard",
+    "CFM_626 Kabal Talonpriest","FP1_023 Dark Cultist"],
+
+  "---Search: control": "",
+	"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest","CFM_603 Potion of Madness"],
+
+  "---Search: give minion attack": "",
+  "---Search: control | destroy": "",
+  "CFM_661 Pint-Size Potion": ["CFM_603 Potion of Madness","EX1_334 Shadow Madness",
+    "CS2_234 Shadow Word: Pain","OG_100 Shadow Word: Horror","EX1_091 Cabal Shadow Priest"],
+  "GVG_011 Shrinkmeister": ["CFM_603 Potion of Madness","EX1_334 Shadow Madness",
+    "CS2_234 Shadow Word: Pain","OG_100 Shadow Word: Horror","EX1_091 Cabal Shadow Priest"]
 
 }
 }

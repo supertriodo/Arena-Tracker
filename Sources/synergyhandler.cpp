@@ -1367,9 +1367,10 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
+                (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST)
 //              text.contains("treant")
 //                && (cardClass == NEUTRAL || cardClass == DRUID)
-            isTreantGen(code, text, cardClass)
+//            isTreantGen(code, text, cardClass)
             )
         {
 //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
