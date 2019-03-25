@@ -2053,7 +2053,7 @@
 	"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans",
 		"TRL_012 Totemic Smash","AT_046 Tuskarr Totemic","KAR_021 Wicked Witchdoctor"],
 
-	"-----------------------------------------ROGUE-----------------------------------------": "",
+	"-----------------------------------------ROGUE-(revised)----------------------------------------": "",
   "------------OTHER CLASS-(removed)-(otherClassGen/otherClassSyn)----------------": "",
   "KAR_070 Ethereal Peddler": ["UNG_856 Hallucination","KAR_069 Swashburglar","OG_330 Undercity Huckster",
     "CFM_781 Shaku, the Collector","ICC_811 Lilian Voss","CFM_852 Lotus Agents","GIL_827 Blink Fox",
@@ -2093,17 +2093,18 @@
     "BRM_007 Gang Up"],
 
 	"-----------------------------------------PALADIN-----------------------------------------": "",
-	"----------------------------------SILVER HAND RECRUITS-----------------------------------": "",
-	"LOOT_313 Crystal Lion": ["LOOT_363 Drygulch Jailor",
+	"------------SILVER HAND RECRUITS-(removed)-(silverHandGen/silverHandSyn)--------": "",
+	"LOOT_313 Crystal Lion": ["LOOT_363 Drygulch Jailor","OG_273 Stand Against Darkness",
 		"UNG_950 Vinecleaver","UNG_960 Lost in the Jungle"],
-	"LOOT_333 Level Up!": ["LOOT_363 Drygulch Jailor",
+	"LOOT_333 Level Up!": ["LOOT_363 Drygulch Jailor","OG_273 Stand Against Darkness",
 		"UNG_950 Vinecleaver","UNG_960 Lost in the Jungle"],
-	"UNG_962 Lightfused Stegodon": ["LOOT_363 Drygulch Jailor",
+	"UNG_962 Lightfused Stegodon": ["LOOT_363 Drygulch Jailor","OG_273 Stand Against Darkness",
 		"UNG_950 Vinecleaver","UNG_960 Lost in the Jungle"],
 
 	"EX1_619 Equality": ["CS2_093 Consecration","EX1_384 Avenging Wrath","NEW1_020 Wild Pyromancer",
 		"EX1_097 Abomination","EX1_249 Baron Geddon","UNG_848 Primordial Drake",
 		"BOT_107 Missile Launcher","TRL_526 Dragonmaw Scorcher"],
+
 	"NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
 	"LOOT_111 Scorp-o-matic": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper"],
 	"GIL_124 Mossy Horror": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray"],

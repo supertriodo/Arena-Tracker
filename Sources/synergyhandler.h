@@ -135,6 +135,7 @@ private:
     bool isHeroAttackGen(const QString &code, const QString &text);
     bool isSpellBuffGen(const QString &code, const QString &text, const QJsonArray &mechanics, const CardType &cardType);
     bool isOtherClassGen(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -205,6 +206,7 @@ private:
     bool isHeroAttackSyn(const QString &code);
     bool isSpellBuffSyn(const QString &code, const QString &text);
     bool isOtherClassSyn(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isSilverHandSyn(const QString &code);
 
 signals:
     void pLog(QString line);
