@@ -573,7 +573,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //No son necesarios ya que al hacer el update entity emit minionCodeChange que cambiara
         //el codigo del minion leyendo del json todos sus atributos correctos.
 //                    || (lastShowEntity.trackAllTags && (tag == "DAMAGE" || /*tag == "EXHAUSTED" ||*/
-//                     tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+//                     tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
 //                     tag == "FROZEN" || tag == "WINDFURY" || tag == "AURA"))
     }
     else
@@ -643,7 +643,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 emit buffHandCard(id.toInt());
             }
             else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
                     tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
@@ -679,7 +679,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
             if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" ||
+                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
                     tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||

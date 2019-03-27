@@ -34,6 +34,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->frozen = copy->frozen;
     this->windfury = copy->windfury;
     this->charge = copy->charge;
+    this->rush = copy->rush;
     this->exausted = copy->exausted;
     this->dead = copy->dead;
     this->toBeDestroyed = copy->toBeDestroyed;
@@ -79,6 +80,7 @@ void MinionGraphicsItem::initCode(QString code)
     this->frozen = false;
     this->windfury = false;
     this->charge = false;
+    this->rush = false;
     this->exausted = true;
     this->dead = false;
     this->toBeDestroyed = false;
@@ -471,7 +473,7 @@ void MinionGraphicsItem::stackAddons()
 void MinionGraphicsItem::changeZone()
 {
     this->friendly = !this->friendly;
-    this->exausted = !this->charge;
+    this->exausted = !(this->charge || this->rush);
 }
 
 
@@ -620,6 +622,11 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
         this->charge = (value=="1");
         if(charge)    this->exausted = false;
     }
+    else if(tag == "RUSH")
+    {
+        this->rush = (value=="1");
+        if(rush)    this->exausted = false;
+    }
     else if(tag == "STEALTH")
     {
         this->stealth = (value=="1");
@@ -727,7 +734,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     for(int i=0; i<this->addons.count() && i<4; i++)
     {
         QString addonCode = this->addons[i].code;
-        int moveX, moveY;
+        int moveX = 0, moveY = 0;
         switch(i)
         {
             case 0:

@@ -34,7 +34,7 @@ protected:
     int attack, health, id;
     int damage;
     bool friendly, exausted, playerTurn, dead, hero, toBeDestroyed;
-    bool shield, taunt, charge, stealth, frozen, windfury;
+    bool shield, taunt, charge, rush, stealth, frozen, windfury;
     QList<Addon> addons;
     bool addonsStacked;
     bool triggerMinion;

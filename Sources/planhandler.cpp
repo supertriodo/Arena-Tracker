@@ -753,7 +753,7 @@ void PlanHandler::addAddonTagChange(const TagChange &tagChange, bool healing, bo
         else if(
                     tagChange.tag == "ATK" || tagChange.tag == "HEALTH" || tagChange.tag == "ZONE" ||
                     tagChange.tag == "DIVINE_SHIELD" || tagChange.tag == "STEALTH" || tagChange.tag == "TAUNT" ||
-                    tagChange.tag == "CHARGE" || tagChange.tag == "FROZEN" || tagChange.tag == "WINDFURY" ||
+                    tagChange.tag == "CHARGE" || tagChange.tag == "RUSH" || tagChange.tag == "FROZEN" || tagChange.tag == "WINDFURY" ||
                     tagChange.tag == "SILENCED" || tagChange.tag == "AURA" || tagChange.tag == "CANT_BE_DAMAGED"
                )
         {
