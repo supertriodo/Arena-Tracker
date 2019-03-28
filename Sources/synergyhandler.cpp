@@ -132,6 +132,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
     mechanicCounters[V_SPAWN_ENEMY] = new DraftItemCounter(this);
     mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this);
+    mechanicCounters[V_LIFESTEAL_ALL] = new DraftItemCounter(this);
     mechanicCounters[V_EGG] = new DraftItemCounter(this);
     mechanicCounters[V_DAMAGE_FRIENDLY_HERO] = new DraftItemCounter(this);
     mechanicCounters[V_RUSH] = new DraftItemCounter(this);
@@ -624,7 +625,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_REACH]->increase(code);
         reachList.append(code);
     }
-    if(isRestoreFriendlyHeroGen(code, mechanics, text))
+    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))
     {
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increase(code);
         isSurvivability = true;
@@ -670,7 +671,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSpawnEnemyGen(code, text))                                         mechanicCounters[V_SPAWN_ENEMY]->increase(code);
     if(isRestoreTargetMinionGen(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increase(code);
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
-    if(isLifestealMinon(code, mechanics, cardType))                         mechanicCounters[V_LIFESTEAL_MINION]->increase(code);
     if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isEggGen(code, mechanics, attack, cardType))                         mechanicCounters[V_EGG]->increase(code);
     if(isDamageFriendlyHeroGen(code))                                       mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->increase(code);
@@ -723,6 +723,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_MAGNETIC_ALL]->increase(code);
     }
     else if(isMagneticGen(code))                                            mechanicCounters[V_MAGNETIC_ALL]->increase(code);
+    if(isLifestealMinon(code, mechanics, cardType))
+    {
+        mechanicCounters[V_LIFESTEAL_MINION]->increase(code);
+        mechanicCounters[V_LIFESTEAL_ALL]->increase(code);
+    }
+    else if(isLifestealGen(code, referencedTags))                           mechanicCounters[V_LIFESTEAL_ALL]->increase(code);
 
 
 
@@ -752,7 +758,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
     if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
     if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
-    if(isLifestealMinionSyn(code))                                          mechanicCounters[V_LIFESTEAL_MINION]->increaseSyn(code);
     if(isArmorSyn(code))                                                    mechanicCounters[V_ARMOR]->increaseSyn(code);
     if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
     if(isEggSyn(code, text))                                                mechanicCounters[V_EGG]->increaseSyn(code);
@@ -779,6 +784,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isRushAllSyn(code))                                             mechanicCounters[V_RUSH_ALL]->increaseSyn(code);
     if(isMagneticSyn(code))                                                 mechanicCounters[V_MAGNETIC]->increaseSyn(code);
     else if(isMagneticAllSyn(code))                                         mechanicCounters[V_MAGNETIC_ALL]->increaseSyn(code);
+    if(isLifestealMinionSyn(code))                                          mechanicCounters[V_LIFESTEAL_MINION]->increaseSyn(code);
+    else if(isLifestealAllSyn(code))                                        mechanicCounters[V_LIFESTEAL_ALL]->increaseSyn(code);
 }
 
 
@@ -1043,7 +1050,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_ARMOR]->insertSynCards(synergies);
         addRestoreIcon = true;
     }
-    if(isRestoreFriendlyHeroGen(code, mechanics, text))
+    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))
     {
         mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergies);
         addRestoreIcon = true;
@@ -1054,7 +1061,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     }
     if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
-    if(isLifestealMinon(code, mechanics, cardType))             mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);//Sinergias gen-gen
     if(isHeroPowerGen(code, text, cardClass))                   mechanicCounters[V_HERO_POWER]->insertCards(synergies);//Sinergias gen-gen
     if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergies);
@@ -1121,6 +1127,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
         mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
     }
     else if(isMagneticGen(code))                                mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
+    if(isLifestealMinon(code, mechanics, cardType))
+    {
+        mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
+        mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergies);
+    }
+    else if(isLifestealGen(code, referencedTags))               mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergies);
 
 
     //SYN
@@ -1151,7 +1163,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
     if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
     if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergies);
-    if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergies);
     if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
     if(isEggSyn(code, text))                                    mechanicCounters[V_EGG]->insertCards(synergies);
     if(isDamageFriendlyHeroSyn(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertCards(synergies);
@@ -1177,6 +1188,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isRushAllSyn(code))                                 mechanicCounters[V_RUSH_ALL]->insertCards(synergies);
     if(isMagneticSyn(code))                                     mechanicCounters[V_MAGNETIC]->insertCards(synergies);
     else if(isMagneticAllSyn(code))                             mechanicCounters[V_MAGNETIC_ALL]->insertCards(synergies);
+    if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergies);
+    else if(isLifestealAllSyn(code))                            mechanicCounters[V_LIFESTEAL_ALL]->insertCards(synergies);
 }
 
 
@@ -1313,8 +1326,11 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "tokenGen", "tokenCardGen", "comboGen", "attackBuffGen", "healthBuffGen", "heroAttackGen",
         "tokenSyn", "tokenCardSyn", "comboSyn", "attackBuffSyn", "healthBuffSyn", "heroAttackSyn",
 
-        "restoreTargetMinionGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen", "armorGen", "lifesteal",
-        "restoreTargetMinionSyn", "restoreFriendlyHeroSyn", "restoreFriendlyMinionSyn", "armorSyn", "lifestealMinionSyn",
+        "restoreTargetMinionGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen",
+        "restoreTargetMinionSyn", "restoreFriendlyHeroSyn", "restoreFriendlyMinionSyn",
+
+        "armorGen", "lifesteal", "lifestealGen",
+        "armorSyn", "lifestealMinionSyn", "lifestealAllSyn",
 
         "eggGen", "damageFriendlyHeroGen", "echo", "echoGen", "rush", "rushGen", "magnetic", "magneticGen",
         "eggSyn", "damageFriendlyHeroSyn", "echoSyn", "echoAllSyn", "rushSyn", "rushAllSyn", "magneticSyn", "magneticAllSyn",
@@ -1467,10 +1483,11 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isEvolveGen(code, text))                                             mec<<"evolveGen";
     if(isSpawnEnemyGen(code, text))                                         mec<<"spawnEnemyGen";
     if(isRestoreTargetMinionGen(code, text))                                mec<<"restoreTargetMinionGen";
-    if(isRestoreFriendlyHeroGen(code, mechanics, text))                     mec<<"restoreFriendlyHeroGen o lifesteal";
+    if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))     mec<<"restoreFriendlyHeroGen o lifesteal o lifestealGen";
     if(isRestoreFriendlyMinionGen(code, text))                              mec<<"restoreFriendlyMinionGen";
     if(isArmorGen(code, text))                                              mec<<"armorGen";
     if(isLifestealMinon(code, mechanics, cardType))                         mec<<"lifesteal";
+    if(isLifestealGen(code, referencedTags))                                mec<<"lifestealGen";
     if(isTaunt(code, mechanics))                                            mec<<"taunt";
     else if(isTauntGen(code, referencedTags))                               mec<<"tauntGen";
     if(isDivineShield(code, mechanics))                                     mec<<"divineShield";
@@ -2202,7 +2219,7 @@ bool SynergyHandler::isDivineShield(const QString &code, const QJsonArray &mecha
 bool SynergyHandler::isDivineShieldGen(const QString &code, const QJsonArray &referencedTags)
 {
     //TEST
-    //&& (mechanics.contains(QJsonValue("STEALTH")) ||  referencedTags.contains(QJsonValue("STEALTH")))
+    //&& (mechanics.contains(QJsonValue("DIVINE_SHIELD")) ||  referencedTags.contains(QJsonValue("DIVINE_SHIELD")))
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("divineShieldGen");
@@ -2227,15 +2244,16 @@ bool SynergyHandler::isRestoreTargetMinionGen(const QString &code, const QString
     }
     return false;
 }
-bool SynergyHandler::isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QString &text)
+bool SynergyHandler::isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text)
 {
     //TEST
     //&& text.contains("restore")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("restoreFriendlyHeroGen") || synergyCodes[code].contains("lifesteal");
+        return synergyCodes[code].contains("restoreFriendlyHeroGen") || synergyCodes[code].contains("lifesteal")
+                || synergyCodes[code].contains("lifestealGen");
     }
-    else if(mechanics.contains(QJsonValue("LIFESTEAL")))
+    else if(mechanics.contains(QJsonValue("LIFESTEAL")) || referencedTags.contains(QJsonValue("LIFESTEAL")))//TODO lifesteal
     {
         return true;
     }
@@ -2281,6 +2299,18 @@ bool SynergyHandler::isLifestealMinon(const QString &code, const QJsonArray &mec
     }
     else if(cardType != MINION)  return false;
     else if(mechanics.contains(QJsonValue("LIFESTEAL")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isLifestealGen(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("lifestealGen");
+    }
+    else if(referencedTags.contains(QJsonValue("LIFESTEAL")))//TODO lifesteal
     {
         return true;
     }
@@ -3069,6 +3099,14 @@ bool SynergyHandler::isLifestealMinionSyn(const QString &code)
     }
     return false;
 }
+bool SynergyHandler::isLifestealAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("lifestealAllSyn");
+    }
+    return false;
+}
 bool SynergyHandler::isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text)
 {
     //TEST
@@ -3261,7 +3299,8 @@ rushSyn o rushAllSyn
 magnetic o magneticGen
 magneticSyn o magneticAllSyn
 windfury - windfuryMinionSyn
-lifesteal - lifestealMinionSyn
+lifesteal o lifestealGen
+lifestealMinionSyn o lifestealAllSyn
 lifesteal y restoreFriendlyHeroGen (no hace falta poner restore si es lifesteal)
 restoreTargetMinionGen <--> restoreFriendlyHeroGen
 restoreTargetMinionGen o restoreFriendlyMinionGen
@@ -3283,7 +3322,7 @@ damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, returnGen
 enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen, handBuffGen, spellBuffGen
 tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen, heroAttackGen
-restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal
+restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
 otherClassGen, silverHandGen, treantGen
 

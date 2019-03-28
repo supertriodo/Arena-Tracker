@@ -123,10 +123,11 @@ private:
     bool isDivineShield(const QString &code, const QJsonArray &mechanics);
     bool isDivineShieldGen(const QString &code, const QJsonArray &referencedTags);
     bool isRestoreTargetMinionGen(const QString &code, const QString &text);
-    bool isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QString &text);
+    bool isRestoreFriendlyHeroGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isRestoreFriendlyMinionGen(const QString &code, const QString &text);
     bool isArmorGen(const QString &code, const QString &text);
     bool isLifestealMinon(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
+    bool isLifestealGen(const QString &code, const QJsonArray &referencedTags);
     bool isSpellDamageGen(const QString &code);
     bool isEvolveGen(const QString &code, const QString &text);
     bool isSpawnEnemyGen(const QString &code, const QString &text);
@@ -199,6 +200,7 @@ private:
     bool isRestoreFriendlyMinionSyn(const QString &code);
     bool isArmorSyn(const QString &code);
     bool isLifestealMinionSyn(const QString &code);
+    bool isLifestealAllSyn(const QString &code);
     bool isSpellDamageSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
     bool isEvolveSyn(const QString &code);
     bool isSpawnEnemySyn(const QString &code);
