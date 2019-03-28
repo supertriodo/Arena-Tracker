@@ -2841,11 +2841,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
         if(hero != nullptr)            missiles += hero->getSpellDamage();
 
         //Flamewakers, evitamos con SPREADING_MADNESS (!playerIn)
-//        if(!playerIn)
-//        {
-//            int flamewakers = flamewakersOnBoard();
-//            if(flamewakers > 0)     missiles += flamewakers * 2;
-//        }
+        if(!playerIn)
+        {
+            int flamewakers = flamewakersOnBoard();
+            if(flamewakers > 0)     missiles += flamewakers * 2;
+        }
     }
 
     if(missiles > 0)    return true;

@@ -4030,7 +4030,7 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Clockwork Automaton");
+//    qDebug()<<Utility::cardEnCodeFromName("Captain's Parrot");
 //    qDebug()<<Utility::getCardAttribute("TRL_243", "set").toString();
 
 //    draftHandler->debugSynergiesSet("TROLL", true);
@@ -4116,16 +4116,16 @@ void MainWindow::testDelay()
 //Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
 //Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
 //Update secrets
-//Update bombing cards --> PlanHandler::isCardBomb
-//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent
+//Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
+//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards
-//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard
+//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
+//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
 //|-Check evolveSyn cards
-//|-(IGNORAR) Check individual synergies (Ya no vigilamos individual synergies con la rotacion de sets en arena, demasiadas posibilidades)
+//|-Check individual synergies
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)

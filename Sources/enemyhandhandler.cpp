@@ -590,6 +590,8 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == AKALI_THE_RHINO)    return true;
     if(lastCreatedByCode == MASTERS_CALL)       return true;
     if(lastCreatedByCode == RAIDING_PARTY)      return true;
+    if(lastCreatedByCode == KINGS_ELEKK)        return true;
+    if(lastCreatedByCode == CAPTAINS_PARROT)    return true;
     return false;
 }
 
