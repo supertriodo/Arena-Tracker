@@ -1383,7 +1383,8 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST)
+                (text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent"))
+//                (text.contains("opponent") && text.contains("battlefield"))
 //              text.contains("treant")
 //                && (cardClass == NEUTRAL || cardClass == DRUID)
 //            isTreantGen(code, text, cardClass)
@@ -2348,11 +2349,12 @@ bool SynergyHandler::isSpawnEnemyGen(const QString &code, const QString &text)
 {
     //TEST
     //&& text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent")
+    //Lo he abreviado pq algunos casos se escaban.
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("spawnEnemyGen");
     }
-    else if(text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent"))
+    else if(text.contains("summon") && text.contains("opponent"))
     {
         return true;
     }
@@ -3392,6 +3394,7 @@ REGLAS
     Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
     o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 +Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor, es una sinergia muy debil.
++discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 
 
 
