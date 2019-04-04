@@ -1388,6 +1388,18 @@ void SynergyHandler::testSynergies()
 //              text.contains("treant")
 //                && (cardClass == NEUTRAL || cardClass == DRUID)
 //            isTreantGen(code, text, cardClass)
+
+
+///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
+//(text.contains("damage") && text.contains("randomly"))
+///Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
+//(text.contains("gain") && text.contains("mana") && text.contains("this") && text.contains("turn") && text.contains("only"))
+///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+//(text.contains("spend") && text.contains("all") && text.contains("your") && text.contains("mana")) || (text.contains("cost"))
+///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
+//(text.contains("draw") && text.contains("from") && text.contains("your") && text.contains("deck"))
+///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
+//(text.contains("draw") && text.contains("cop"))
             )
         {
 //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
@@ -3261,9 +3273,11 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FORBIDDEN_HEALING)   return 4;
     if(code == FORBIDDEN_RITUAL)    return 4;
     if(code == FORBIDDEN_ANCIENT)   return 4;
+    if(code == FORBIDDEN_WORDS)     return 4;
     if(code == DEMONBOLT)           return 5;
     if(code == RABBLE_BOUNCER)      return 5;
     if(code == SEA_GIANT)           return 6;
+    if(code == KALECGOS)            return 6;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 8;
 

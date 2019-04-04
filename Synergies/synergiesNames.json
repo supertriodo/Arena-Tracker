@@ -1906,7 +1906,7 @@
 "tt_010" : [ "Spellbender" ],
 "DIRECT_LINKS":
 {
-	"-----------------------------------------BAD DEATHRATTLE-(revised)------------------------------": "",
+	"-----------------------------------------BAD DEATHRATTLE----------------------------------------": "",
   "---Search: Deathrattle: Yes": "",
   "CFM_855 Defias Cleaner": ["CFM_667 Bomb Squad","EX1_577 The Beast","KAR_041 Moat Lurker",
     "OG_147 Corrupted Healbot","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination",
@@ -1916,7 +1916,7 @@
   "ICC_206 Treachery": ["CFM_667 Bomb Squad","ICC_025 Rattling Rascal","ICC_099 Ticking Abomination",
     "FP1_009 Deathlord"],
 
-	"------------------------------BAD BATTLECRY -- SUMMON -(revised)----------------------------": "",
+	"-----------------------------------BAD BATTLECRY -- SUMMON -------------------------------------": "",
 	"CS2_181 Injured Blademaster": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
 		"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 	"GIL_623 Witchwood Grizzly": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
@@ -1924,7 +1924,7 @@
 	"BOT_448 Damaged Stegotron": ["ICC_213 Eternal Servitude","LOOT_507 Lesser Diamond Spellstone",
 		"CS2_038 Ancestral Spirit","ICC_257 Corpse Raiser","LOOT_161 Carnivorous Cube"],
 
-	"-----------------------------------------EXTRA-(revised)----------------------------------------": "",
+	"-------------------------------------------EXTRA------------------------------------------------": "",
   "---Search: end of turn": "",
   "ICC_901 Drakkari Enchanter": ["AT_019 Dreadsteed","AT_063t Dreadscale","BOT_107 Missile Launcher",
     "BOT_423 Dreampetal Florist","BRM_028 Emperor Thaurissan","CFM_639 Grimestreet Enforcer",
@@ -1983,7 +1983,7 @@
     "AT_081 Eadric the Pure","GIL_665 Curse of Weakness","CFM_661 Pint-Size Potion",
     "GVG_011 Shrinkmeister"],
 
-	"-----------------------------------------WARRIOR-(revised)----------------------------------------": "",
+	"-----------------------------------------WARRIOR------------------------------------------------": "",
   "---Search: damaged | takes damage": "",
   "AT_105 Injured Kvaldir": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith",
 		"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant",
@@ -1997,7 +1997,7 @@
 
   "OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
 
-	"-----------------------------------------SHAMAN-(revised)----------------------------------------": "",
+	"-----------------------------------------SHAMAN-------------------------------------------------": "",
 	"EX1_007 Acolyte of Pain": ["UNG_025 Volcano"],
 
 	"ICC_289 Moorabi": ["ICC_855 Hyldnir Frostrider"],
@@ -2006,7 +2006,7 @@
 	"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans",
 		"TRL_012 Totemic Smash","AT_046 Tuskarr Totemic","KAR_021 Wicked Witchdoctor"],
 
-	"-----------------------------------------ROGUE-(revised)----------------------------------------": "",
+	"-----------------------------------------ROGUE--------------------------------------------------": "",
   "---Search: to your hand": "",
 	"ICC_811 Lilian Voss": ["UNG_057 Razorpetal Volley","UNG_058 Razorpetal Lasher","GIL_687 WANTED!",
 		"TRL_509 Banana Buffoon","OG_080 Xaril, Poisoned Mind","AT_031 Cutpurse","GVG_082 Clockwork Gnome",
@@ -2032,7 +2032,7 @@
 	"BOT_283 Pogo-Hopper": ["BOT_283 Pogo-Hopper","GIL_815 Baleful Banker","BOT_288 Lab Recruiter",
     "BRM_007 Gang Up"],
 
-	"-----------------------------------------PALADIN-(revised)----------------------------------------": "",
+	"-----------------------------------------PALADIN------------------------------------------------": "",
   "---Search: deal damage all": "",
 	"EX1_619 Equality": ["CS2_093 Consecration","EX1_384 Avenging Wrath","NEW1_020 Wild Pyromancer",
 		"EX1_097 Abomination","EX1_249 Baron Geddon","UNG_848 Primordial Drake",
@@ -2040,12 +2040,12 @@
     "OG_151 Tentacle of N'Zoth","GVG_076 Explosive Sheep","FP1_024 Unstable Ghoul",
     "CFM_341 Sergeant Sally"],
 
-	"-----------------------------------------HUNTER-(revised)----------------------------------------": "",
+	"-----------------------------------------HUNTER-------------------------------------------------": "",
   "---Search: to your hand": "",
 	"GIL_607 Toxmonger": ["GIL_212 Ravencaller","AT_113 Recruiter","UNG_845 Igneous Elemental",
 		"BOT_102 Spark Drill","BOT_538 Spark Engine","TRL_900 Halazzi, the Lynx"],
 
-  "-----------------------------------------DRUID-(revised)----------------------------------------": "",
+  "-----------------------------------------DRUID--------------------------------------------------": "",
   "---Search: choose one": "",
   "OG_044 Fandral Staghelm": ["AT_037 Living Roots","AT_042 Druid of the Saber",
     "BRM_010 Druid of the Flame","CFM_308 Kun the Forgotten King","CFM_602 Jade Idol",
@@ -2057,12 +2057,12 @@
     "OG_202 Mire Keeper","UNG_101 Shellshifter","GIL_188 Druid of the Scythe","BOT_422 Tending Tauren",
     "TRL_343 Wardruid Loti","TRL_254 Mark of the Loa","ICC_047 Fatespinner"],
 
-	"-----------------------------------------WARLOCK-(revised)----------------------------------------": "",
+	"-----------------------------------------WARLOCK------------------------------------------------": "",
 
-	"-----------------------------------------MAGE-(revised)----------------------------------------": "",
+	"-----------------------------------------MAGE---------------------------------------------------": "",
 	"GIL_116 Arcane Keysmith": ["EX1_274 Ethereal Arcanist"],
 
-	"-----------------------------------------PRIEST-(revised)----------------------------------------": "",
+	"-----------------------------------------PRIEST-------------------------------------------------": "",
   "---Search: restore enemy hero": "",
   "---Search: heal deal damage instead": "",
   "OG_147 Corrupted Healbot": ["EX1_591 Auchenai Soulpriest","OG_104 Embrace the Shadow",

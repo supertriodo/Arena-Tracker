@@ -1988,6 +1988,7 @@ void DraftHandler::buildHeroCodesList()
     heroCodesList.append("HERO_08b");
     heroCodesList.append("HERO_09");
     heroCodesList.append("HERO_09a");
+    heroCodesList.append("HERO_09b");
 }
 
 
