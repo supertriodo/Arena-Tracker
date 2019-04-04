@@ -1945,7 +1945,10 @@
   "---Search: add random cost minion": "",
 	"BOT_267 Piloted Reaper": ["GIL_213 Tanglefur Mystic","GIL_212 Ravencaller"],
 
-	"BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
+  "---Search: hold spell": "",
+  "---Search: discover spell": "",
+	"BOT_550 Electrowright": ["BOT_539 Arcane Dynamo","KAR_057 Ivory Knight","LOE_003 Ethereal Conjurer",
+    "LOE_115 Raven Idol","UNG_835 Chittering Tunneler","UNG_941 Primordial Glyph"],
 
   "---Search: shuffle": "",
   "BOT_559 Augmented Elekk": ["AT_035 Beneath the Grounds","BOT_087 Academic Espionage",
@@ -2060,8 +2063,11 @@
 	"GIL_116 Arcane Keysmith": ["EX1_274 Ethereal Arcanist"],
 
 	"-----------------------------------------PRIEST-(revised)----------------------------------------": "",
+  "---Search: restore enemy hero": "",
   "---Search: heal deal damage instead": "",
   "OG_147 Corrupted Healbot": ["EX1_591 Auchenai Soulpriest","OG_104 Embrace the Shadow",
+    "TRL_501 Auchenai Phantasm"],
+  "FP1_001 Zombie Chow": ["EX1_591 Auchenai Soulpriest","OG_104 Embrace the Shadow",
     "TRL_501 Auchenai Phantasm"],
 
 	"CS2_004 Power Word: Shield": ["NEW1_020 Wild Pyromancer"],

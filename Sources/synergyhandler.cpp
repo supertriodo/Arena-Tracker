@@ -1383,7 +1383,7 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                (text.contains("summon") && text.contains("for") && text.contains("your") && text.contains("opponent"))
+                (text.contains("destroy") && text.contains("friendly") && text.contains("minion"))
 //                (text.contains("opponent") && text.contains("battlefield"))
 //              text.contains("treant")
 //                && (cardClass == NEUTRAL || cardClass == DRUID)
@@ -3364,7 +3364,7 @@ TREANT: treantGen/treantSyn
 
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas,
-    la que genera 1/1s, el dragon y el que tiene tokenSyn
+    la que genera 1/1s, el dragon y el que tiene tokenSyn, ni siquiera con cartas que requieran hechizos.
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
@@ -3378,6 +3378,7 @@ REGLAS
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
 +tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es).
++No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
     (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
 +freezeEnemyGen deben poder usarse sobre enemigos
