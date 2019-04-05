@@ -16,7 +16,8 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
   * I suggest downloading **ArenaTracker.Linux.AppImage** for modern distros (Ubuntu 18.04) and the static one **Arena.Tracker.X.Linux.zip** for older ones.
-  * [libpng12-0](https://packages.ubuntu.com/xenial/amd64/libpng12-0/download), libxcb-xinerama0 need to be installed on Ubuntu 16.04 LTS for the static version.
+  * AppImage version: libssl1.0-dev needs to be installed on Ubuntu 18.04 LTS.
+  * Static version: [libpng12-0](https://packages.ubuntu.com/xenial/amd64/libpng12-0/download), libxcb-xinerama0 need to be installed on Ubuntu 16.04.
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arenatracker-bin/) maintained by [Strit](https://github.com/Strit).
 
 Extract the zip wherever you want and double click the executable, no installation required.
