@@ -4030,10 +4030,10 @@ void MainWindow::test()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Captain's Parrot");
-//    qDebug()<<Utility::getCardAttribute("TRL_243", "set").toString();
+//    qDebug()<<Utility::cardEnCodeFromName("Forbidden Words");
+//    qDebug()<<Utility::getCardAttribute("DAL_605", "set").toString();
 
-//    draftHandler->debugSynergiesSet("TROLL", true);
+//    draftHandler->debugSynergiesSet("DALARAN", true);
 //    draftHandler->debugSynergiesCode("AT_112");
 //    draftHandler->testSynergies();
 
@@ -4106,30 +4106,30 @@ void MainWindow::testDelay()
 
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//Update Json cartas --> Automatico
-//Update Utility::isFromStandardSet(QString code) --> TROLL
+//--Update Json cartas --> Automatico
+//--Update Utility::isFromStandardSet(QString code) --> DALARAN
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-25T00:00:01Z"
 //Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
-//Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
-//Update secrets
-//Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
-//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana
-//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
+//--Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+//--Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
+//--Update secrets
+//--Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
+//--Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
+//--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+//--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
+//--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
-//|-Check evolveSyn cards
+//--|-Check evolveSyn cards
 //|-Check individual synergies
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
-//Actualizar Utility::isFromStandardSet(code)
+//--Actualizar Utility::isFromStandardSet(code)
 
 //NUEVA SYNERGY
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
@@ -4174,18 +4174,42 @@ void MainWindow::testDelay()
 
 //TODDO
 //Redownload all cards next version (nerfed cards)
+//Test Desperate Measures (Cast a random paladin secret)
+
+//Power of Creation --> no discover
+//Vereesa Windrunner --> spellDamageGen
+//Jepetoo Joybuzz --> isDrawSpecificCards, tokenCardGen
+//Fel Lord Betrug --> drawSyn, solo es, no presuponemos que se van a robar cartas
+//Hecklebot --> spwanEnemyGen
+//Muckmorpher --> minguna synergia, igual que sus homonimos de priest.
+//Ray of Frost --> damageMinionGen ya que siempre podemos congelarlo con la primera copia
+//Duel! --> spawnEnemyGen
+//Batterhead --> aoeGen
+//Portal overfiend/keeper --> drawSyn
+//Sweeping strikes --> Igual que cave hydra --> "spawnEnemySyn", "attackBuffSyn"
+//Witch brew --> toYourHandGen
+//Evil genious --> no es tokenSyn
+//Soldier of fortune / Arcane watcher --> tauntGyverSyn, silenceOwnSyn
+
+//evolveSyn --> Swampqeen agatha / Jeppetto / Mad summoner
+
+//Synergia link --> Bomb warrior (shuffle bomb)
+//Synergia link --> Khadgar summon mago
+//Heistbaron --> synergia lackeys
+//Hench-Clan --> direct link como corrupted healbot
+//Tak --> direct link shuffle como augmented Elekk
+//Lazul's scheme --> direct link en priest y en extra
+//Magic Carpet / Arcane Fletcher --> Direct link generadores 1-mana (tokenCardGen) / lackeys (revisar to your hand) (Jepetto)
+//Sunreaver Warmage -->> Direct link junto a Electrowright
+
 
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
 //2)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .
 //3)Twitch integration. Let your viewers vote which card you would play this turn.
 //Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
-//Show how much damage and healing has been made through the addons during a replay.
-//When detecting cards from a different hero in your deck, save your current deck if it has a name, and make a new deck.
 //In the replay tab when hovering over a card that has its atributes modified, show the card's tooltip with its current attack/life/mana.
-////Show enemy cards revealed during a joust in a new section of enemy's deck tab to know they haven't been played yet.
-////Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
-////Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
-////Show cards drawn and discarded when your hand is full on replay tab.
-////Add a countdown option to let you know how much time you have left until your turn ends.
+//Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
+//Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
+//Show cards drawn and discarded when your hand is full on replay tab.
 

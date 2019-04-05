@@ -334,8 +334,9 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "HOF" || cardSet == "NAXX" || cardSet == "GVG" ||
 //        cardSet == "BRM" || cardSet == "TGT" || cardSet == "LOE" ||
 //        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
-        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
-        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL")
+//        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
+        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
+        cardSet == "DALARAN")
     {
         return true;
     }
@@ -969,24 +970,12 @@ void Utility::checkTierlistsCount()
 //Whizband Decks
 QString Utility::whizbangDeckString(QString code)
 {
-    if(code == QString("1606")) return "### Out of the Woods\nAAECAZICBMnCAofOAsLOApnTAg1AX8QG5AiU0gKY0gKo0gKL4QKE5gKL5gL15wLf+wLo/AIA";
-    else if(code == QString("1607")) return "### I Hunt Alone\nAAECAR8IhwTFCN3SAunSAobTAvLqApuFA6KKAwuoArUDyQSXCNsJ/gzf0gLj0gLh4wLq4wKH+wIA";
-    else if(code == QString("1609")) return "### Spells are fun, SO FUN!\nAAECAf0EBNACvwib0wKj6wINTYoByQPsB/sMysMClscCx8cC29MC1eEC1+ECluQC1+sCAA==";
-    else if(code == QString("1754")) return "### Greymane's Alliance\nAAECAZ8FBvoGucEC4fACzfQC6/cC/fsCDNwD9AXPBq8HsQizwQKIxwLZxwKbywK35wL27ALZ/gIA";
-    else if(code == QString("1760")) return "### The Gilneas Armory\nAAECAQcIqgbTwwKZxwLN7wKb8AKe+AKO+wKggAMLS5EDogT/B5vCAsrDAqLHAsrnAqrsArrsAvLxAgA=";
-    else if(code == QString("1817")) return "### The Boomsday Project\nAAECAQcEze8Cm/ACkvgCoIADDZEGzM0CuuwCnfACl/MCn/UCpfUC5PcCjvgCg/sCqPsCs/wCzIEDAA==";
-    else if(code == QString("1818")) return "### Demonology Lab\nAAECAf0GApfTAo+CAw4w9wTCCPYIm8sC980C8dAC8tAC9PcC0/gCqvkCt/0Cw/0C+v4CAA==";
-    else if(code == QString("1819")) return "### The Omega Project\nAAECAf0GApfTApz4Ag6KAbYHxAjnywLy0AL40AKI0gL85QLq5gLo5wK38QLF8wL8+gKPgAMA";
-    else if(code == QString("1820")) return "### Stolen Research\nAAECAaIHBLICgNMC6/ACqPcCDbQBywObBYYJgcIC68ICm8gC5dEC2+MC6vMCt/UCovcCx/gCAA==";
-    else if(code == QString("1821")) return "### The Necrium Trials\nAAECAaIHBvYEi+ECz+ECnOICn/gCi4oDDLQBjAKGCYHCAqvCAuvCAtvjArT2At76Auz8AtGBA86MAwA=";
+    if(code == QString("1607")) return "### I Hunt Alone\nAAECAR8IhwTFCN3SAunSAobTAvLqApuFA6KKAwuoArUDyQSXCNsJ/gzf0gLj0gLh4wLq4wKH+wIA";
+    else if(code == QString("1821")) return "### The Necrium Trials\nAAECAaIHCPYE3QiL4QLP4QKc4gKf+AKggAOLigMLtAGGCYHCAqvCAuvCAtvjArT2At76Auz8AtGBA86MAwA=";
     else if(code == QString("1825")) return "### Kangor's Endless Army\nAAECAZ8FBvQF+ga5wQLx/gKggAPehgMM3AOPCbPBAuPLAp/1AqX1Atb+Atn+AuH+ApGAA9GAA8yBAwA=";
     else if(code == QString("1826")) return "### Witchwood Awoken\nAAECAaoIDN4F7QX/BYoHwAfPxwLCzgLD6gKn7gLv9wLq+gLzigMJgQT1BP4Fx8ECm8sC8+cCm/8CioADl4ADAA==";
-    else if(code == QString("1827")) return "### The Storm Bringer\nAAECAaoIBMAH88ICofgCmfsCDb0B+QOGBvAHkwnrwgKw8AL28AKz9wLq+gKP+wKc/wKKgAMA";
-    else if(code == QString("1828")) return "### Flark's Fireworks\nAAECAR8C4fUCoIADDo0Bigbh4wKf9QLg9QLi9QLv9QKZ9wK5+AKR+wKY+wKE/QL2/QLMgQMA";
     else if(code == QString("1829")) return "### Trees Are Friends\nAAECAZICAiTF/QIO/QLtA/cD5gWxCIbBAqTCAuvCAtfvAsHzAt/7Ar/9AtWDA7SJAwA=";
-    else if(code == QString("1830")) return "### Quest For Immortality\nAAECAa0GBMnCApbEAsv4Ao2CAw37AeUE0wryDKvCAubMAvDPAujQAovhAoL3AqH+AvX+AoiCAwA=";
     else if(code == QString("1831")) return "### Awesome Augmentation\nAAECAa0GAqUJvsgCDvgC5QT2B9EK0gryDPsM0cEC2MEC5fcC5ogDi4kD0okD64oDAA==";
-    else if(code == QString("1832")) return "### Shooting Stars\nAAECAf0EAqLTAu72Ag67ApUDvwOrBLQElgW/wQL77AKS7wK89wKj/QKV/wK5/wLvgAMA";
     else if(code == QString("1930")) return "### Feral Frenzy\nAAECAZICBpkC/M0CmdMCm+gC9fwCwYYDDEC0BeYFmgjrwgKHzgKY0gKm7wKYhgPAhgPGhgPPiQMA";
     else if(code == QString("1931")) return "### Animal Instincts\nAAECAR8G7QmG0wKA8wLqiQOiigPjiwMMqAK1A+sH2wmBCo7DAtfNAt3SAovlAqCFA7CLA+SLAwA=";
     else if(code == QString("1932")) return "### Power of the Dragonhawk\nAAECAf0ECNACxQT7DNPFApvTAu72Ap74AqiHAwvsB5vCAuvCAsrDAtfhApbkArfxAr36AqSHA6aHA82JAwA=";
@@ -997,28 +986,42 @@ QString Utility::whizbangDeckString(QString code)
     else if(code == QString("1937")) return "### Reckless Ritual\nAAECAf0GBJTHArjQAo+CA/CGAw0w0AT3BM4HwgjrwgKRxwKSzQL3zQLx0ALy0ALWhgOvjQMA";
     else if(code == QString("1938")) return "### Wings of War\nAAECAQcGkAf/B6IJ+wz4hgOShwMMogTJxwLMzQKJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAMA";
     else if(code == QString("1978")) return "### Hir'eek's Offering\nAAECAf0GApfTAvKGAw4w9wTCCPYI68ICm8sC980C8dAC8tAC9PcC0/gCw/0C6YYD3YkDAA==";
-    else if(code == QString("2118")) return "### Trees Are Friends\nAAECAZICAiTF/QIO/QLtA/cD5gWxCIbBAqTCAuvCAtfvAsHzAt/7AuH7Ar/9AtWDAwA=";
     else if(code == QString("2119")) return "### The Boomsday Project\nAAECAQcEze8Cm/ACkvgCoIADDczNArrsAp3wApfzAp/1AqX1AuT3Ao74AoP7Aqj7ArP8AsyBA/iGAwA=";
-    else if(code == QString("2121")) return "### The Necrium Trials\nAAECAaIHCIwC7QX7BeXRAs/hAvDmAtjpAp/4Agu0AYHCAqvCAuvCAtvjAurmArT2At76Auz8Avb9AtGBAwA=";
-    else if(code == QString("2122")) return "### Kangor's Endless Army\nAAECAZ8FBvQFzwb6BrnBAvH+AqCAAwzcA48Js8EC48sCn/UCpfUC1v4C2f4C4f4CkYAD0YADzIEDAA==";
-    else if(code == QString("2123")) return "### I Hunt Alone\nAAECAR8EhwTp0gKG0wLy6gINjQGoArUDyQSXCNsJ/gzd0gLf0gLj0gLh4wLq4wKH+wIA";
     else if(code == QString("2124")) return "### Spells are fun, SO FUN!\nAAECAf0EBNACm9MCo+sCr4cDDU2KAckD7Af7DMrDApbHAtvTAtXhAtfhApbkAtfrAs2JAwA=";
-    else if(code == QString("2125")) return "### Awesome Augmentation\nAAECAa0GBKIJvsgC2OMCy/gCDfgC5QSNCNEK8gzRwQLYwQLL5gKC9wLl9wL1/gLxgAPeggMA";
+    else if(code == QString("2149")) return "### Trees Are Friends\nAAECAZICBCT9AsX9AsOUAw3tA/cD5gWxCNfvAt/7AuH7Ar/9AtWDA7SJA86UA8qcA9OcAwA=";
+    else if(code == QString("2150")) return "### Nature's Restoration\nAAECAZICBu0Fm/AC9fwCoIAD05QDypwDDEBWX5MExAaYB9UI8wz6/gK5lAPPlAO7nwMA";
+    else if(code == QString("2151")) return "### Animal Instincts\nAAECAR8CgPMC44sDDqgCtQPeBNkH6wfbCe0JgQqghQOiigOwiwPkiwOenQPHnQMA";
+    else if(code == QString("2152")) return "### The Scrap Heap\nAAECAR8EoIADm4UD8ZYD+ZYDDbUDlwjg9QLi9QLv9QK09gK5+AKH+wKY+wL2/QKghQPylgO2nAMA";
+    else if(code == QString("2153")) return "### The Sunreavers' Secrets\nAAECAZ8FAq8ElJoDDkaMAZ4ByAT1Bc8GrwexCK3yAtj+AvWJA76YA46aA5CaAwA=";
+    else if(code == QString("2154")) return "### Shirvallah's Chosen\nAAECAZ8FCtIE+wyb8AL9+wKE/AKggAO9hgPehgPjhgPOhwMK3AP0Ba8H9gf57ALmhgPshgPvhgOKmgO0mwMA";
+    else if(code == QString("2155")) return "### Archmages of Dalaran\nAAECAf0EBO0FuAj77ALu9gINuwKrBLQE5gSWBZX/Arn/AqOHA8iHA4mWA5+bA+KbA/+dAwA=";
+    else if(code == QString("2156")) return "### Khadgar's Creations\nAAECAf0ECMUE+wyggAOvhwPnlQODlgOWmgOKngMLTYoBuwLJA6sEywSWBewHw/gCn5sDoJsDAA==";
+    else if(code == QString("2157")) return "### Day of the Dead\nAAECAa0GBND+AqCAA5ObA4OgAw3tAeUE1QjRCtIK1wryDPLxAvv+ApeHA4OUA5ibA5mbAwA=";
+    else if(code == QString("2158")) return "### Whispers from the Grave\nAAECAa0GBqUJ5fcCoIADi4oDgpQD65sDDO0B5QTSCtMK8gzc9QK09gKh/gLriAPvkgODlAONlwMA";
+    else if(code == QString("2159")) return "### The Heist\nAAECAaIHCLIC6/AC7/MCqPcC5/oCzowDr5EDiJsDC7QBmwX1BYgH3QiGCcf4ApCXA6iYA/uaA/6aAwA=";
+    else if(code == QString("2160")) return "### Cursed Crew\nAAECAaIHBrICyAPdCM6MA9aMA9uMAwy0AZsFqAXUBYgH5weGCabvAt/vAqr/As+JA5CXAwA=";
+    else if(code == QString("2161")) return "### Underbelly Underlings\nAAECAaoIArWYA5ybAw6/AcUD2wP+A+MF0AenCJMJ8PMC3oID4okDjJQDxpkD9JkDAA==";
+    else if(code == QString("2162")) return "### Swamp of Horror\nAAECAaoIBCCiCafuAqCAAw2UA/UE/gWyBp/9Apv/AoqFA72FA/OKA62RA4qUA4+UA8SZAwA=";
+    else if(code == QString("2163")) return "### Hand of Gul'dan\nAAECAf0GCJME8gXbBooHkgec+AKggAOXlwMLigH7BrYH4QeNCMQIzAjzDMXzAo+AA8KZAwA=";
+    else if(code == QString("2164")) return "### Ultimate Impfestation\nAAECAf0GAA8w0wHVA84H2QexCMIIkO4CnvEC9PcCw/0Cq5EDv5gDgJoDh50DAA==";
+    else if(code == QString("2165")) return "### Droppin' the Boom\nAAECAQcI0gL8BLj2ApL4AqCAA5qHA5uKA/aWAwtLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAOZlAMA";
+    else if(code == QString("2166")) return "### Wings of War\nAAECAQcIkAf/B6IJ+wzeggP4hgOShwO9mQMLogSJ8QKb8wL09QKBhwOLhwPoiQPsiQOqiwPolAPCmQMA";
+
 
     else                             return "";
 }
 
 CardClass Utility::whizbangHero(QString code)
 {
-    if(code == QString("1930") || code == QString("1829") || code == QString("1606") || code == QString("2118")) return DRUID;
-    else if(code == QString("1607") || code == QString("1931") || code == QString("1828") || code == QString("2123")) return HUNTER;
-    else if(code == QString("2124") || code == QString("1932") || code == QString("1832") || code == QString("1609")) return MAGE;
-    else if(code == QString("1933") || code == QString("1825") || code == QString("1754") || code == QString("2122")) return PALADIN;
-    else if(code == QString("1934") || code == QString("1831") || code == QString("1830") || code == QString("2125")) return PRIEST;
-    else if(code == QString("1935") || code == QString("1821") || code == QString("1820") || code == QString("2121")) return ROGUE;
-    else if(code == QString("1826") || code == QString("1936") || code == QString("1827")) return SHAMAN;
-    else if(code == QString("1937") || code == QString("1978") || code == QString("1819") || code == QString("1818")) return WARLOCK;
-    else if(code == QString("1938") || code == QString("2119") || code == QString("1760") || code == QString("1817")) return WARRIOR;
+    if(code == QString("2149") || code == QString("2150") || code == QString("1930") || code == QString("1829")) return DRUID;
+    else if(code == QString("1607") || code == QString("1931") || code == QString("2151") || code == QString("2152")) return HUNTER;
+    else if(code == QString("2124") || code == QString("1932") || code == QString("2155") || code == QString("2156")) return MAGE;
+    else if(code == QString("1933") || code == QString("1825") || code == QString("2154") || code == QString("2153")) return PALADIN;
+    else if(code == QString("1934") || code == QString("1831") || code == QString("2157") || code == QString("2158")) return PRIEST;
+    else if(code == QString("1935") || code == QString("1821") || code == QString("2159") || code == QString("2160")) return ROGUE;
+    else if(code == QString("2161") || code == QString("1936") || code == QString("2162") || code == QString("1826")) return SHAMAN;
+    else if(code == QString("1937") || code == QString("1978") || code == QString("2163") || code == QString("2164")) return WARLOCK;
+    else if(code == QString("1938") || code == QString("2119") || code == QString("2165") || code == QString("2166")) return WARRIOR;
 
     else                                                         return INVALID_CLASS;
 }

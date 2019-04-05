@@ -51,6 +51,7 @@ public:
 private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
+    bool containsAll(const QString &text, const QString &words);
 
     void updateManaCounter(DeckCard &deckCard);
     void updateRaceCounters(DeckCard &deckCard);
@@ -76,13 +77,13 @@ private:
     bool isTotemGen(const QString &code);
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
-    bool isDiscoverDrawGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
+    bool isDiscoverDrawGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isDrawGen(const QString &code, const QString &text);
-    bool isToYourHandGen(const QString &code, const QString &text);
+    bool isToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     int numDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     int numDrawGen(const QString &code, const QString &text);
-    int numToYourHandGen(const QString &code, const QString &text);
+    int numToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     bool isTaunt(const QString &code, const QJsonArray &mechanics);
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
     bool isAoeGen(const QString &code, const QString &text);
@@ -97,10 +98,10 @@ private:
     bool isHeroPowerGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isSecret(const QString &code, const QJsonArray &mechanics);
     bool isSecretGen(const QString &code);
-    bool isEcho(const QString &code, const QString &text);
-    bool isEchoGen(const QString &code);
-    bool isRush(const QString &code, const QString &text);
-    bool isRushGen(const QString &code);
+    bool isEcho(const QString &code, const QJsonArray &mechanics);
+    bool isEchoGen(const QString &code, const QJsonArray &referencedTags);
+    bool isRush(const QString &code, const QJsonArray &mechanics);
+    bool isRushGen(const QString &code, const QJsonArray &referencedTags);
     bool isMagnetic(const QString &code, const QJsonArray &mechanics);
     bool isMagneticGen(const QString &code);
     bool isEggGen(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
@@ -113,7 +114,7 @@ private:
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
-    bool isTokenCardGen(const QString &code, int cost);
+    bool isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     bool isComboGen(const QString &code, const QJsonArray &mechanics);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);

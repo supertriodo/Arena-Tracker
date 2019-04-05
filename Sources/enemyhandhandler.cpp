@@ -592,6 +592,11 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == RAIDING_PARTY)      return true;
     if(lastCreatedByCode == KINGS_ELEKK)        return true;
     if(lastCreatedByCode == CAPTAINS_PARROT)    return true;
+    if(lastCreatedByCode == ARCANE_FLETCHER)    return true;
+    if(lastCreatedByCode == URSATRON)           return true;
+    if(lastCreatedByCode == CALL_TO_ADVENTURE)  return true;
+    if(lastCreatedByCode == JEPETTO_JOYBUZZ)    return true;
+
     return false;
 }
 
