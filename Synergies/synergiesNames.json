@@ -2217,6 +2217,19 @@
     "OG_151 Tentacle of N'Zoth","GVG_076 Explosive Sheep","FP1_024 Unstable Ghoul",
     "CFM_341 Sergeant Sally","DAL_775 Tunnel Blaster"],
 
+  "---Search: /1 | silver hand": "",
+  "OG_310 Steward of Darkshire": ["AT_100 Silver Hand Regent","BOT_102 Spark Drill",
+    "BOT_312 Replicating Menace","BOT_445 Mecharoo","BOT_535 Microtech Controller",
+    "BOT_538 Spark Engine","CS2_196 Razorfen Hunter","DAL_087 Hench-Clan Hag","DAL_566 Eccentric Scribe",
+    "DAL_743 Hench-Clan Hogsteed","DAL_751 Mad Summoner","EX1_025 Dragonling Mechanic",
+    "EX1_130 Noble Sacrifice","EX1_506 Murloc Tidehunter","EX1_556 Harvest Golem",
+    "EX1_562 Onyxia","EX1_597 Imp Master","EX1_614 Illidan Stormrage","FP1_002 Haunted Creeper",
+    "GVG_061 Muster for Battle","GVG_110 Dr. Boom","ICC_026 Grim Necromancer","KAR_044 Moroes",
+    "KAR_114 Barnes","LOOT_153 Violet Wurm","LOOT_233 Cursed Disciple","OG_156 Bilefin Tidehunter",
+    "OG_273 Stand Against Darkness","TRL_020 Sightless Ranger","UNG_010 Sated Threshadon",
+    "UNG_076 Eggnapper","UNG_950 Vinecleaver","UNG_960 Lost in the Jungle","EX1_136 Redemption",
+    "ICC_244 Desperate Stand","LOOT_363 Drygulch Jailor"],
+
 	"-----------------------------------------HUNTER-------------------------------------------------": "",
 
   "-----------------------------------------DRUID--------------------------------------------------": "",
@@ -2234,6 +2247,10 @@
     "EX1_155 Mark of Nature","EX1_160 Power of the Wild","EX1_164 Nourish","GVG_041 Dark Wispers",
     "LOE_115 Raven Idol","NEW1_007 Starfall","OG_047 Feral Rage","OG_195 Wisps of the Old Gods",
     "TRL_254 Mark of the Loa","DAL_350 Crystal Power"],
+
+  "---Search: minion 5 attack": "",
+  "UNG_078 Tortollan Forager": ["CFM_617 Celestial Dreamer","UNG_086 Giant Anaconda",
+    "UNG_109 Elder Longneck"],
 
 	"-----------------------------------------WARLOCK------------------------------------------------": "",
 
