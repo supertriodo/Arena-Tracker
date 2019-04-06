@@ -2073,11 +2073,7 @@
     "UNG_845 Igneous Elemental","BOT_102 Spark Drill","BOT_538 Spark Engine","TRL_900 Halazzi, the Lynx",
     "DAL_400 EVIL Cable Rat","DAL_752 Jepetto Joybuzz"],
 
-	"-------------------------------------------EXTRA------------------------------------------------": "",
-  "EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
-
-  "TRL_533 Ice Cream Peddler": ["ICC_855 Hyldnir Frostrider"],
-
+  "----------------------------------------END OF TURN---------------------------------------------": "",
   "---Search: end of turn": "",
   "ICC_901 Drakkari Enchanter": ["AT_019 Dreadsteed","AT_063t Dreadscale","BOT_107 Missile Launcher",
     "BOT_423 Dreampetal Florist","BRM_028 Emperor Thaurissan","CFM_639 Grimestreet Enforcer",
@@ -2095,18 +2091,7 @@
     "UNG_201 Primalfin Totem","DAL_553 Big Bad Archmage","DAL_558 Archmage Vargoth",
     "DAL_721 Catrina Muerte"],
 
-  "---Search: add random cost minion": "",
-	"BOT_267 Piloted Reaper": ["GIL_213 Tanglefur Mystic","GIL_212 Ravencaller"],
-
-  "---Search: hold spell": "",
-  "---Search: discover spell": "",
-	"BOT_550 Electrowright": ["BOT_539 Arcane Dynamo","KAR_057 Ivory Knight","LOE_003 Ethereal Conjurer",
-    "LOE_115 Raven Idol","UNG_835 Chittering Tunneler","UNG_941 Primordial Glyph",
-    "DAL_371 Marked Shot","DAL_416 Hench-Clan Burglar"],
-  "DAL_539 Sunreaver Warmage": ["BOT_539 Arcane Dynamo","KAR_057 Ivory Knight","LOE_003 Ethereal Conjurer",
-    "LOE_115 Raven Idol","UNG_835 Chittering Tunneler","UNG_941 Primordial Glyph",
-    "DAL_371 Marked Shot","DAL_416 Hench-Clan Burglar"],
-
+  "----------------------------------------SHUFFLE-------------------------------------------------": "",
   "---Search: shuffle": "",
   "BOT_559 Augmented Elekk": ["AT_035 Beneath the Grounds","BOT_087 Academic Espionage",
     "BOT_288 Lab Recruiter","BOT_511 Seaforium Bomber","BRM_007 Gang Up","CFM_095 Weasel Tunneler",
@@ -2129,13 +2114,17 @@
     "UNG_957 Direhorn Hatchling","DAL_010 Togwaggle's Scheme","DAL_565 Portal Overfiend",
     "DAL_582 Portal Keeper","DAL_602 Plot Twist"],
 
-  "---Search: summon copy | summon copies": "",
-  "OG_173 Blood of The Ancient One": ["UNG_022 Mirage Caller","UNG_948 Molten Reflection",
-    "EX1_564 Faceless Manipulator","OG_316 Herald Volazj","OG_291 Shadowcaster","UNG_927 Sudden Genesis",
-    "LOOT_064 Lesser Sapphire Spellstone","LOOT_329 Ixlid, Fungal Lord","LOOT_161 Carnivorous Cube",
-    "GIL_813 Vivid Nightmare","BOT_507 Gloop Sprayer","BOT_529 Power Word: Replicate",
-    "TRL_400 Splitting Image","BOT_099 Eureka!","LOOT_412 Kobold Illusionist"],
+  "--------------------------------------HOLD BIG SPELL--------------------------------------------": "",
+  "---Search: hold spell": "",
+  "---Search: discover spell": "",
+	"BOT_550 Electrowright": ["BOT_539 Arcane Dynamo","KAR_057 Ivory Knight","LOE_003 Ethereal Conjurer",
+    "LOE_115 Raven Idol","UNG_835 Chittering Tunneler","UNG_941 Primordial Glyph",
+    "DAL_371 Marked Shot","DAL_416 Hench-Clan Burglar"],
+  "DAL_539 Sunreaver Warmage": ["BOT_539 Arcane Dynamo","KAR_057 Ivory Knight","LOE_003 Ethereal Conjurer",
+    "LOE_115 Raven Idol","UNG_835 Chittering Tunneler","UNG_941 Primordial Glyph",
+    "DAL_371 Marked Shot","DAL_416 Hench-Clan Burglar"],
 
+  "--------------------------------DESTROY SMALL ATTACK MINION-------------------------------------": "",
   "---Search: destroy attack": "",
   "---Search: change minion attack | set minion attack | give minion attack | reduce minion attack": "",
   "NEW1_041 Stampeding Kodo": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
@@ -2147,6 +2136,21 @@
   "GIL_124 Mossy Horror": ["EX1_360 Humility","EX1_382 Aldor Peacekeeper","BOT_234 Shrink Ray",
     "AT_081 Eadric the Pure","GIL_665 Curse of Weakness","CFM_661 Pint-Size Potion",
     "GVG_011 Shrinkmeister","DAL_011 Lazul's Scheme"],
+
+	"-------------------------------------------EXTRA------------------------------------------------": "",
+  "EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
+
+  "TRL_533 Ice Cream Peddler": ["ICC_855 Hyldnir Frostrider"],
+
+  "---Search: add random cost minion": "",
+	"BOT_267 Piloted Reaper": ["GIL_213 Tanglefur Mystic","GIL_212 Ravencaller"],
+
+  "---Search: summon copy | summon copies": "",
+  "OG_173 Blood of The Ancient One": ["UNG_022 Mirage Caller","UNG_948 Molten Reflection",
+    "EX1_564 Faceless Manipulator","OG_316 Herald Volazj","OG_291 Shadowcaster","UNG_927 Sudden Genesis",
+    "LOOT_064 Lesser Sapphire Spellstone","LOOT_329 Ixlid, Fungal Lord","LOOT_161 Carnivorous Cube",
+    "GIL_813 Vivid Nightmare","BOT_507 Gloop Sprayer","BOT_529 Power Word: Replicate",
+    "TRL_400 Splitting Image","BOT_099 Eureka!","LOOT_412 Kobold Illusionist"],
 
 	"-----------------------------------------WARRIOR------------------------------------------------": "",
   "OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
