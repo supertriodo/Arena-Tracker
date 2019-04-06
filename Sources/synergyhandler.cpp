@@ -1487,7 +1487,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isHeroPowerGen(code, text, cardClass))                               mec<<"heroPowerGen";
     if(isSecret(code, mechanics))                                           mec<<"secret";
     if(isEcho(code, mechanics))                                             mec<<"echo";
+    if(isEchoGen(code, referencedTags))                                     mec<<"echoGen";
     if(isRush(code, mechanics))                                             mec<<"rush";
+    if(isRushGen(code, referencedTags))                                     mec<<"rushGen";
     if(isMagnetic(code, mechanics))                                         mec<<"magnetic";
     if(isEggGen(code, mechanics, attack, cardType))                         mec<<"eggGen";
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mec<<"freezeEnemyGen";
@@ -3361,6 +3363,7 @@ tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
 otherClassGen, silverHandGen, treantGen
+=(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12
 
@@ -3368,16 +3371,16 @@ Double check:
 DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn/eggSyn), damageMinionsGen, destroyGen
 BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/TAKE DAMAGE: enrageGen(take damage),
-SUMMON: tokenGen(summon) <--> =GenMinionHealth1
-TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen <--> =GenMinionHealth1
+SUMMON: tokenGen(summon)
+TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen
 PLAY CARDS: tokenCardSyn
-BUFF ALL: tokenSyn(beneficio masa), handBuffGen, tauntGiverSyn(cant attack)
+BUFF ALL: tokenSyn(beneficio masa), handBuffGen
+CANT ATTACK: silenceOwnSyn, tauntGiverSyn
 COPY ITSELF: handBuffSyn
 DESTROY TARDIO: freezeEnemySyn
-DESTROY PROPIO: tokenSyn, eggSyn
+DESTROY PROPIO: eggSyn
 SWAP/copia 1-1: eggSyn
 COSTE/STATS: evolveSyn
-SPAWN ENEMIES: spawnEnemyGen
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
@@ -3386,6 +3389,7 @@ CHARGE/RUSH: pingGen(atk1) <--> damageMinionsGen(no atk1) <--> reachGen(no atk1/
 STEALTH: stealthGen <--> reachGen(no atk1)
 MAGNETIC: magnetic <--> mechAllSyn
 
+SPAWN ENEMIES: spawnEnemyGen
 DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
 HERO ATTACK: heroAttackGen/heroAttackSyn
 HERO POWER: heroPowerGen
@@ -3413,8 +3417,6 @@ REGLAS
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
 +tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
-+=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
-    (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
 +freezeEnemyGen deben poder usarse sobre enemigos
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle random
 +aoeGen puede ser deathrattle random, quitaremos manualmente excepciones como el tentaculo de n'zoth
@@ -3434,6 +3436,8 @@ REGLAS
 
 
 IDEAS RECHAZADAS
++=attack o =health son para cartas de la mano o del tablero dependiendo de cada tipo
+    (atk5 es mano, cost1 es mano, health1 es tablero, health6 es tablero). Puedes ser Minions/Spells
 --void terror synergias -- cant attack minion o twilight summoner (no me convencen)
 --devilsaur egg --> evolving spores, and other give evolve effects (no me convencen)
 --Twilight Summoner --> tokenGen (no me convence)

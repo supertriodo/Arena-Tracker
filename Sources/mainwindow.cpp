@@ -4034,7 +4034,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("DAL_605", "set").toString();
 
 //    draftHandler->debugSynergiesSet("DALARAN", true);
-//    draftHandler->debugSynergiesCode("AT_112");
+//    draftHandler->debugSynergiesCode("DAL_400");
 //    draftHandler->testSynergies();
 
     draftHandler->checkSynergyCodes();
@@ -4123,7 +4123,7 @@ void MainWindow::testDelay()
 //--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
-//Update synergies.json
+//--Update synergies.json
 //--|-Check evolveSyn cards
 //|-Check individual synergies
 
@@ -4173,25 +4173,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
+//Repasar synergias =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15), eliminar todas Gen y ponerlas como direct link, ayudara a poderlas repasarlas con nuevos sets.
 //Redownload all cards next version (nerfed cards)
 //Test Desperate Measures (Cast a random paladin secret)
-
-//Power of Creation --> no discover
-//Vereesa Windrunner --> spellDamageGen
-//Jepetoo Joybuzz --> isDrawSpecificCards, tokenCardGen
-//Fel Lord Betrug --> drawSyn, solo es, no presuponemos que se van a robar cartas
-//Hecklebot --> spwanEnemyGen
-//Muckmorpher --> minguna synergia, igual que sus homonimos de priest.
-//Ray of Frost --> damageMinionGen ya que siempre podemos congelarlo con la primera copia
-//Duel! --> spawnEnemyGen
-//Batterhead --> aoeGen
-//Portal overfiend/keeper --> drawSyn
-//Sweeping strikes --> Igual que cave hydra --> "spawnEnemySyn", "attackBuffSyn"
-//Witch brew --> toYourHandGen
-//Evil genious --> no es tokenSyn
-//Soldier of fortune / Arcane watcher --> tauntGyverSyn, silenceOwnSyn
-
-//evolveSyn --> Swampqeen agatha / Jeppetto / Mad summoner
 
 //Synergia link --> Bomb warrior (shuffle bomb)
 //Synergia link --> Khadgar summon mago
