@@ -958,7 +958,7 @@
 "FP1_030" : [ "battlecry", "returnSyn" ],
 "FP1_031" : [ "deathrattleSyn" ],
 "GIL_113" : [ "damageMinionsGen", "rush" ],
-"GIL_116" : [ "battlecry", "returnSyn", "evolveSyn" ],
+"GIL_116" : [ "battlecry", "returnSyn", "evolveSyn", "secretGen" ],
 "GIL_117" : [ "pingSyn", "aoeGen", "tokenSyn" ],
 "GIL_118" : [ "deathrattle", "restoreFriendlyHeroGen" ],
 "GIL_119" : [ "elementalAllSyn" ],
