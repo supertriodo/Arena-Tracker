@@ -2152,6 +2152,10 @@
     "GIL_813 Vivid Nightmare","BOT_507 Gloop Sprayer","BOT_529 Power Word: Replicate",
     "TRL_400 Splitting Image","BOT_099 Eureka!","LOOT_412 Kobold Illusionist"],
 
+  "---Search: lackey": "",
+  "DAL_417 Heistbaron Togwaggle": ["DAL_400 EVIL Cable Rat","DAL_413 EVIL Conscripter",
+    "DAL_415 EVIL Miscreant","DAL_433 Sludge Slurper","DAL_606 EVIL Genius","DAL_769 Improve Morale"],
+
 	"-----------------------------------------WARRIOR------------------------------------------------": "",
   "OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
 
@@ -2165,6 +2169,9 @@
   "BOT_448 Damaged Stegotron": ["EX1_392 Battle Rage","CS2_104 Rampage","EX1_402 Armorsmith",
 		"EX1_604 Frothing Berserker","UNG_927 Sudden Genesis","ICC_450 Death Revenant",
     "OG_276 Blood Warriors","GVG_052 Crush"],
+
+  "---Search: bomb": "",
+  "DAL_064 Blastmaster Boom": ["DAL_060 Clockwork Goblin","DAL_063 Wrenchcalibur"],
 
 	"-----------------------------------------SHAMAN-------------------------------------------------": "",
 	"EX1_007 Acolyte of Pain": ["UNG_025 Volcano"],
