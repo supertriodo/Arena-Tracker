@@ -1382,9 +1382,9 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("DALARAN"))
+//    for(const QString &code: Utility::getSetCodes("DALARAN"))
 //    for(const QString &code: Utility::getStandardCodes())
-//    for(const QString &code: Utility::getWildCodes())
+    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1395,9 +1395,12 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                containsAll(text, "lackey")
+                containsAll(text, "silver hand")
+//                || containsAll(text, "destroy")// || containsAll(text, "give minion attack")
 //                (text.contains("destroy") && text.contains("friendly") && text.contains("minion"))
-//                && (cardClass == NEUTRAL || cardClass == DRUID)
+                && (cardClass == NEUTRAL || cardClass == PALADIN)
+//                && cardType == MINION
+//                mechanics.contains(QJsonValue("DEATHRATTLE"))
 //            isTreantGen(code, text, cardClass)
 
 

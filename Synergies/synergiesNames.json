@@ -2201,9 +2201,9 @@
 	"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
 		"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair",
     "CFM_342 Luckydo Buccaneer"],
-  "GVG_022 Tinker's Sharpsword Oil": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
-		"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair",
-    "CFM_342 Luckydo Buccaneer"],
+  "GVG_022 Tinker's Sharpsword Oil": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter",
+    "ICC_018 Phantom Freebooter","ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider",
+    "NEW1_022 Dread Corsair","CFM_342 Luckydo Buccaneer"],
 
   "---Search: shuffle minion your deck": "",
 	"BOT_283 Pogo-Hopper": ["BOT_283 Pogo-Hopper","GIL_815 Baleful Banker","BOT_288 Lab Recruiter",
@@ -2274,7 +2274,8 @@
     "CFM_626 Kabal Talonpriest","FP1_023 Dark Cultist"],
 
   "---Search: control": "",
-	"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest","CFM_603 Potion of Madness"],
+	"GIL_683 Marsh Drake": ["EX1_334 Shadow Madness","EX1_091 Cabal Shadow Priest",
+    "CFM_603 Potion of Madness"],
 
   "---Search: give minion attack | reduce minion attack": "",
   "---Search: control | destroy": "",

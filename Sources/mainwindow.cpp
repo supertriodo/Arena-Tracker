@@ -4125,7 +4125,7 @@ void MainWindow::testDelay()
 
 //--Update synergies.json
 //--|-Check evolveSyn cards
-//|-Check individual synergies
+//--|-Check individual synergies
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
@@ -4135,6 +4135,9 @@ void MainWindow::testDelay()
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
 //Ejemplo gen-gen V_JADE_GOLEM/jadeGolemGen
 //Marcado codigo con //New Synergy Step
+
+//ELIMINAR NAMES synergiesNames.json --> synergies.json
+// +\w[ \w\.\,\'\:\-\!]+"
 
 //NUEVOS BACKGROUND
 //Coger el color de una parte clara de un carta de clase
@@ -4173,18 +4176,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Repasar synergias =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15), eliminar todas Gen y ponerlas como direct link, ayudara a poderlas repasarlas con nuevos sets.
 //Redownload all cards next version (nerfed cards)
 //Test Desperate Measures (Cast a random paladin secret)
-
-//Synergia link --> Bomb warrior (shuffle bomb)
-//Synergia link --> Khadgar summon mago
-//Heistbaron --> synergia lackeys
-//Hench-Clan --> direct link como corrupted healbot
-//Tak --> direct link shuffle como augmented Elekk
-//Lazul's scheme --> direct link en priest y en extra
-//Magic Carpet / Arcane Fletcher --> Direct link generadores 1-mana (tokenCardGen) / lackeys (revisar to your hand) (Jepetto)
-//Sunreaver Warmage -->> Direct link junto a Electrowright
+//Advance version, synergyVersion.
 
 
 
