@@ -4106,30 +4106,30 @@ void MainWindow::testDelay()
 
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//--Update Json cartas --> Automatico
-//--Update Utility::isFromStandardSet(QString code) --> DALARAN
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-25T00:00:01Z"
-//Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
+//Update Json cartas --> Automatico
+//Update Utility::isFromStandardSet(QString code) --> DALARAN
+//++Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-25T00:00:01Z"
+//++Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-//--Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
-//--Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
-//--Update secrets
-//--Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
-//--Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-//--Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-//--Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//--Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
+//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList (requiere forzar redownload cartas)
+//Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
+//Update secrets
+//Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
+//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
+//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
+//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
-//--Update synergies.json
-//--|-Check evolveSyn cards
-//--|-Check individual synergies
+//Update synergies.json
+//|-Check evolveSyn cards
+//|-Check individual synergies
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
-//--Actualizar Utility::isFromStandardSet(code)
+//Actualizar Utility::isFromStandardSet(code)
 
 //NUEVA SYNERGY
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
@@ -4178,7 +4178,9 @@ void MainWindow::testDelay()
 //TODDO
 //Redownload all cards next version (nerfed cards)
 //Test Desperate Measures (Cast a random paladin secret)
-//Advance version, synergyVersion.
+//Increase version, synergyVersion.
+//Update tier lists and check.
+//Subir cartas DALARAN al github.
 
 
 

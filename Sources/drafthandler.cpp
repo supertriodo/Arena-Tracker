@@ -258,7 +258,7 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
     }
     else
     {
-        //La bajamos de HearthHead
+        //La bajamos de github/hearthSim
         emit checkCardImage(fileNameCode, isHero);
         cardsDownloading.append(fileNameCode);
     }
@@ -1989,6 +1989,11 @@ void DraftHandler::buildHeroCodesList()
     heroCodesList.append("HERO_09");
     heroCodesList.append("HERO_09a");
     heroCodesList.append("HERO_09b");
+
+    //Si añadimos uno necesitamos borrar todas las cartas y forzar un redownload
+    //ya que si alguien ha necesitado el retrato mientras no estaba en el github
+    //se habra bajado el retrato basico con el codigo del especifico y
+    //no se detectara el nuevo retrato entre los heroes de arena
 }
 
 
