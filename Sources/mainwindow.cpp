@@ -4110,7 +4110,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> DALARAN
 //Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2019-04-08T12:00:01Z"
-//++Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
+//Update Json HA tierlist --> HATLsed.sh --- 4/9/19: Rise of Shadows Expansion release
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4178,7 +4178,6 @@ void MainWindow::testDelay()
 
 //TODDO
 //Test Desperate Measures (Cast a random paladin secret)
-//Update tier lists and check.
 
 
 
