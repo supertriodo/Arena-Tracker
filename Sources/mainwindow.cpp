@@ -3818,6 +3818,7 @@ void MainWindow::checkArenaCards()
     if(allCardsDownloadNeeded || arenaSets.isEmpty())
     {
         QStringList codeList = draftHandler->getAllArenaCodes();
+        arenaSets.clear();
         downloadAllArenaCodes(codeList);
         getArenaSets(arenaSets, codeList);
         settings.setValue("arenaSets", arenaSets);
@@ -4108,7 +4109,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> DALARAN
-//++Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2018-12-25T00:00:01Z"
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2019-04-08T12:00:01Z"
 //++Update Json HA tierlist --> HATLsed.sh --- 12/20/18: December 2018 Arena/Balance Changes
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
@@ -4176,11 +4177,8 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Redownload all cards next version (nerfed cards)
 //Test Desperate Measures (Cast a random paladin secret)
-//Increase version, synergyVersion.
 //Update tier lists and check.
-//Subir cartas DALARAN al github.
 
 
 
