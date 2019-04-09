@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.8","v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73","v6.74","v6.75","v6.76"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.76/Arena.Tracker.v6.76.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.76/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.76/Arena.Tracker.v6.76.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.76/Arena.Tracker.v6.76.Windows.zip",
-	"log": "AT gets updated for Rastakhan expansion.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.76'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73","v6.74","v6.75","v6.76","v6.8"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.8/Arena.Tracker.v6.8.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.8/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.8/Arena.Tracker.v6.8.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.8/Arena.Tracker.v6.8.Windows.zip",
+	"log": "AT gets updated for Rise of Shadows expansion.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.8'>github</a>"
 }
