@@ -4177,7 +4177,6 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Test Desperate Measures (Cast a random paladin secret)
 
 
 
