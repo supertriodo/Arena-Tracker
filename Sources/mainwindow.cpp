@@ -1786,7 +1786,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_Z)
             {
                 if(this->planWindow == nullptr)    createDetachWindow(ui->tabPlan);
-                planWindow->resize(QSize(960, 1080));
+                planWindow->resize(QSize(960, 1040));
                 planWindow->move(1920, 0);
 
                 if(this->deckWindow == nullptr)    createDetachWindow(ui->tabDeck);

@@ -3418,7 +3418,8 @@ REGLAS
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
-+tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es).
++tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es),
+    tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle random

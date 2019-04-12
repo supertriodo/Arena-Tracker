@@ -28,7 +28,7 @@ try:
 	clickOn(1600, 1005)#Atras (ajustado izq)
 	time.sleep(1)
 	clickOn(1050, 910)#Mi Coleccion
-	time.sleep(1)
+	time.sleep(4)
 	typeOn(1000, 992, cardName)#Buscar
 	clickOn(1240, 992)#Creacion
 	clickOn(1415, 595)#Golden
