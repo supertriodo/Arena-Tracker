@@ -2895,6 +2895,7 @@ bool PlanHandler::isAddonCommonValid(const QString &code)
     if(code == VENOMSTRIKE_TRAP)            return false;
     if(code == CORRIDOR_CREEPER)            return false;
     if(code == LESSER_MITHRIL_SPELLSTONE)   return false;
+    if(code == SOLDIER_OF_FORTUNE)          return false;
     return true;
 }
 
