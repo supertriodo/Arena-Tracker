@@ -1053,25 +1053,30 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
         }
 
         //Enemigo roba carta conocida
-        else if(zoneTo == "OPPOSING HAND" && zoneFrom != "OPPOSING HAND" && mulliganEnemyDone)
+        else if(zoneTo == "OPPOSING HAND" && zoneFrom != "OPPOSING HAND")
         {
-            bool advance = false;
-            if(zoneFrom == "OPPOSING DECK")
+            if(mulliganEnemyDone)
             {
-                emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
-                advance = advanceTurn(false);
-                //Bug HS, aun no deberiamos conocer esta carta, no queremos que vaya a enemy deck tab hasta que sea jugada
-                //emit enemyKnownCardDraw(id.toInt(), cardId);
-
+                //Mostramos todas las cartas marcadas como desveladas en el log y establecemos excepciones (isCheatingCard)
+                bool advance = false;
+                bool cheatingCard = isCheatingCard(cardId);
+                if(cheatingCard)    emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
+                else                emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
+                if(zoneFrom == "OPPOSING DECK")
+                {
+                    advance = advanceTurn(false);
+                    if(!cheatingCard)   emit enemyKnownCardDraw(id.toInt(), cardId);
+                }
                 if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
-                //Bug HS, aun no deberiamos conocer esta carta, no queremos que se muestre en hand tab
-                emit enemyCardDraw(id.toInt(), turnReal);
+                if(cheatingCard)                emit enemyCardDraw(id.toInt(), turnReal);
+                else                            emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
                 if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
             }
             else
             {
-                emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
-                emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
+                //Enemigo roba starting card
+                emit pDebug("Enemy: Starting card drawn (Hidden to avoid cheating). ID: " + id, numLine);
+                emit enemyCardDraw(id.toInt());
             }
         }
 
@@ -1618,6 +1623,13 @@ LoadingScreenState GameWatcher::getLoadingScreen()
 void GameWatcher::setCopyGameLogs(bool value)
 {
     this->copyGameLogs = value;
+}
+
+
+bool GameWatcher::isCheatingCard(const QString &code)
+{
+    if(code == PRINCE_MALCHEZAAR)   return true;
+    return false;
 }
 
 

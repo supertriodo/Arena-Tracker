@@ -99,6 +99,7 @@ private:
     bool isHeroPower(QString code);
     QString createGameLog();
     void checkWhizbangDeck(qint64 numLine);
+    bool isCheatingCard(const QString &code);
 
 public:
     void reset();
