@@ -350,7 +350,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         //HSR Heroes Winrate
         else if(fullUrl == HSR_HEROES_WINRATE)
         {
+            emit pDebug("Extra: Heroes winrate --> Download Success.");
             processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
+        }
+        //HSR Cards Pickrate
+        else if(fullUrl == HSR_CARDS_PICKRATE)
+        {
+            emit pDebug("Extra: Cards pickrate --> Download Success.");
+            processHSRCardsPickrate(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //Light Forge version
         else if(endUrl == "lfVersion.json")
@@ -503,11 +510,12 @@ void MainWindow::initCardsJson()
 
 void MainWindow::downloadHSRHeroesWinrate()
 {
+    emit pDebug("Extra: Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
     networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
 }
 
 
-void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
+void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 {
     if(draftHandler == nullptr)    return;
 
@@ -530,13 +538,91 @@ void MainWindow::processHSRHeroesWinrate(QJsonObject jsonObject)
 }
 
 
+void MainWindow::downloadHSRCardsPickrate()
+{
+    emit pDebug("Extra: Cards pickrate --> Download from: " + QString(HSR_CARDS_PICKRATE));
+    networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PICKRATE)));
+}
+
+
+void MainWindow::processHSRCardsPickrate(const QJsonObject &jsonObject)
+{
+    QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
+
+    for(const QJsonValue card: data.value("DRUID").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[DRUID][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("HUNTER").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[HUNTER][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("MAGE").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[MAGE][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("PALADIN").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[PALADIN][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("PRIEST").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[PRIEST][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("ROGUE").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[ROGUE][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("SHAMAN").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[SHAMAN][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("WARLOCK").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[WARLOCK][code] = pickrate;
+    }
+    for(const QJsonValue card: data.value("WARRIOR").toArray())
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        cardsPickratesMap[WARRIOR][code] = pickrate;
+    }
+    secretsHandler->createSecretsByPickrate(cardsPickratesMap);
+}
+
+
 void MainWindow::downloadLightForgeVersion()
 {
     networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lfVersion.json"))));
 }
 
 
-void MainWindow::downloadLightForgeJson(QJsonObject jsonObject)
+void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 {
     bool downloadOriginal = jsonObject.value("lfDownloadOriginal").toBool();
 
@@ -711,6 +797,7 @@ void MainWindow::createSecretsHandler()
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+    downloadHSRCardsPickrate();
 }
 
 
@@ -4177,7 +4264,8 @@ void MainWindow::testDelay()
 
 
 //TODDO
-
+//Repasar returnSyn (Encuadernador de grimorios no es)
+//Caracalamar synergias de arma como poison (synergia bucanero grisgris)
 
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.

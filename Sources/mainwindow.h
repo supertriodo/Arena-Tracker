@@ -30,6 +30,7 @@
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
+#define HSR_CARDS_PICKRATE "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
@@ -92,6 +93,7 @@ private:
     QNetworkAccessManager *networkManager;
     QStringList allCardsDownloadList;
     TwitchHandler *twitchTester;
+    QMap<QString, float> cardsPickratesMap[9];
     //Gestionan si es necesario bajar todas las cartas usadas en arena debido a que el directorio de cartas se haya borrado
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
@@ -183,12 +185,14 @@ private:
     void downloadHearthArenaVersion();
     void downloadHearthArenaJson(int version);
     void downloadLightForgeVersion();
-    void downloadLightForgeJson(QJsonObject jsonObject);
+    void downloadLightForgeJson(const QJsonObject &jsonObject);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
     void updateTabIcons();
     void downloadHSRHeroesWinrate();
-    void processHSRHeroesWinrate(QJsonObject jsonObject);
+    void processHSRHeroesWinrate(const QJsonObject &jsonObject);
+    void downloadHSRCardsPickrate();
+    void processHSRCardsPickrate(const QJsonObject &jsonObject);
     void deleteTwitchTester();
     void checkTwitchConnection();
     void checkArenaCards();

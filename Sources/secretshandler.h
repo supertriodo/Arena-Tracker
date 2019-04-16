@@ -43,6 +43,8 @@ private:
     bool secretsAnimating;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     QStringList arenaSets;
+    //List of code secrets ordered by pickrate for all 9 classes, used as options for a new unknown secret played.
+    QList<QString> secretsByPickrate[9];
 
 
 //Metodos
@@ -63,6 +65,7 @@ public:
     void redrawAllCards();
     QStringList getSecretOptionCodes(int id);
     void setArenaSets(QStringList &arenaSets);
+    void createSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
 
 signals:
     void checkCardImage(QString code);

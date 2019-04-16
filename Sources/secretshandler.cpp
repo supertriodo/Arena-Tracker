@@ -204,75 +204,80 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     activeSecret.root.treeItem->setExpanded(true);
     activeSecret.root.draw();
 
-    switch(hero)
+    for(const QString &code: secretsByPickrate[hero])
     {
-        case PALADIN:
-            //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
-            //COMMON
-            unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
-            unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
-            unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(NEVER_SURRENDER, inArena, activeSecret);
-            unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
-            unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
-            //RARE
-            unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
-            unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
-            //EPIC
-            unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
-        break;
-
-        case HUNTER:
-            //COMMON
-            unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
-            unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
-            unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
-            unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
-            //RARE
-            unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
-            unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
-            unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
-            unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
-            unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
-            //EPIC
-            unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
-            unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
-        break;
-
-        case MAGE:
-            //COMMON
-            unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
-            unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
-            //RARE
-            unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
-            unknownSecretPlayedAddOption(POTION_OF_POLIMORPH, inArena, activeSecret);
-            unknownSecretPlayedAddOption(EFFIGY, inArena, activeSecret);
-            unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
-            unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
-            //EPIC
-            unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
-            unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
-            unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
-        break;
-
-        case ROGUE:
-            //COMMON
-            unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
-            unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
-            //RARE
-            //EPIC
-            unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
-        break;
-
-        default:
-        break;
+        unknownSecretPlayedAddOption(code, inArena, activeSecret);
     }
+
+//    switch(hero)
+//    {
+//        case PALADIN:
+//            //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
+//            //COMMON
+//            unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(NEVER_SURRENDER, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
+//            //RARE
+//            unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
+//            //EPIC
+//            unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
+//        break;
+
+//        case HUNTER:
+//            //COMMON
+//            unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
+//            //RARE
+//            unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
+//            //EPIC
+//            unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
+//        break;
+
+//        case MAGE:
+//            //COMMON
+//            unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
+//            //RARE
+//            unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(POTION_OF_POLIMORPH, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(EFFIGY, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
+//            //EPIC
+//            unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
+//        break;
+
+//        case ROGUE:
+//            //COMMON
+//            unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
+//            unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
+//            //RARE
+//            //EPIC
+//            unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
+//        break;
+
+//        default:
+//        break;
+//    }
 
     emit pDebug("Secret played. Hero: " + QString::number(hero));
 
@@ -700,6 +705,37 @@ QStringList SecretsHandler::getSecretOptionCodes(int id)
         }
     }
     return QStringList();
+}
+
+
+void SecretsHandler::createSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[9])
+{
+    secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
+                              << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM;
+    qSort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
+    {
+        return cardsPickratesMap[PALADIN][code1] > cardsPickratesMap[PALADIN][code2];
+    });
+
+    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
+                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP;
+    qSort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
+    {
+        return cardsPickratesMap[HUNTER][code1] > cardsPickratesMap[HUNTER][code2];
+    });
+
+    secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
+                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK;
+    qSort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
+    {
+        return cardsPickratesMap[MAGE][code1] > cardsPickratesMap[MAGE][code2];
+    });
+
+    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION;
+    qSort(secretsByPickrate[ROGUE].begin(), secretsByPickrate[ROGUE].end(), [=](const QString &code1, const QString &code2)
+    {
+        return cardsPickratesMap[ROGUE][code1] > cardsPickratesMap[ROGUE][code2];
+    });
 }
 
 
