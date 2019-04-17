@@ -2198,10 +2198,13 @@
     "DAL_775 Tunnel Blaster"],
 
   "---Search: weapon": "",
-	"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter","ICC_018 Phantom Freebooter",
-		"ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider","NEW1_022 Dread Corsair",
-    "CFM_342 Luckydo Buccaneer"],
+	"CS2_074 Deadly Poison": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter",
+    "ICC_018 Phantom Freebooter","ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider",
+    "NEW1_022 Dread Corsair","CFM_342 Luckydo Buccaneer"],
   "GVG_022 Tinker's Sharpsword Oil": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter",
+    "ICC_018 Phantom Freebooter","ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider",
+    "NEW1_022 Dread Corsair","CFM_342 Luckydo Buccaneer"],
+  "OG_267 Southsea Squidface": ["CS2_233 Blade Flurry","ICC_240 Runeforge Haunter",
     "ICC_018 Phantom Freebooter","ICC_221 Leeching Poison","NEW1_018 Bloodsail Raider",
     "NEW1_022 Dread Corsair","CFM_342 Luckydo Buccaneer"],
 
