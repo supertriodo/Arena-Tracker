@@ -28,7 +28,8 @@ void SecretsHandler::completeUI()
     ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
                                          "QTreeView::item{padding: 0px;}");
     ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    ui->secretsTreeWidget->setIndentation(5);
+    ui->secretsTreeWidget->setRootIsDecorated(false);
+    ui->secretsTreeWidget->setIndentation(0);
     ui->secretsTreeWidget->setItemsExpandable(false);
     ui->secretsTreeWidget->setMouseTracking(true);
     ui->secretsTreeWidget->setFixedHeight(0);
