@@ -205,80 +205,87 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     activeSecret.root.treeItem->setExpanded(true);
     activeSecret.root.draw();
 
-    for(const QString &code: secretsByPickrate[hero])
+    //Opciones ordenadas por pickrate en arena
+    if(inArena)
     {
-        unknownSecretPlayedAddOption(code, inArena, activeSecret);
+        for(const QString &code: secretsByPickrate[hero])
+        {
+            unknownSecretPlayedAddOption(code, inArena, activeSecret);
+        }
     }
+    //Opciones ordenadas por rareza
+    else
+    {
+        switch(hero)
+        {
+            case PALADIN:
+                //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
+                //COMMON
+                unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
+                unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
+                unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(NEVER_SURRENDER, inArena, activeSecret);
+                unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
+                unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
+                //RARE
+                unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
+                unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
+                //EPIC
+                unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
+            break;
 
-//    switch(hero)
-//    {
-//        case PALADIN:
-//            //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
-//            //COMMON
-//            unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(NEVER_SURRENDER, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
-//            //RARE
-//            unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
-//            //EPIC
-//            unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
-//        break;
+            case HUNTER:
+                //COMMON
+                unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
+                //RARE
+                unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
+                unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
+                unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
+                unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
+                //EPIC
+                unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
+            break;
 
-//        case HUNTER:
-//            //COMMON
-//            unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
-//            //RARE
-//            unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
-//            //EPIC
-//            unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
-//        break;
+            case MAGE:
+                //COMMON
+                unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
+                unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
+                //RARE
+                unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
+                unknownSecretPlayedAddOption(POTION_OF_POLIMORPH, inArena, activeSecret);
+                unknownSecretPlayedAddOption(EFFIGY, inArena, activeSecret);
+                unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
+                unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
+                //EPIC
+                unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
+                unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
+            break;
 
-//        case MAGE:
-//            //COMMON
-//            unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
-//            //RARE
-//            unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(POTION_OF_POLIMORPH, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(EFFIGY, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
-//            //EPIC
-//            unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
-//        break;
+            case ROGUE:
+                //COMMON
+                unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
+                unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
+                //RARE
+                //EPIC
+                unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
+            break;
 
-//        case ROGUE:
-//            //COMMON
-//            unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
-//            unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
-//            //RARE
-//            //EPIC
-//            unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
-//        break;
-
-//        default:
-//        break;
-//    }
+            default:
+            break;
+        }
+    }
 
     emit pDebug("Secret played. Hero: " + QString::number(hero));
 

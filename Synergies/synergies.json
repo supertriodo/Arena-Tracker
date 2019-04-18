@@ -577,7 +577,7 @@
 "DAL_086" : [ "battlecry", "secretAllSyn" ],
 "DAL_087" : [ "battlecry", "tokenGen", "returnSyn", "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen", "dragonGen" ],
 "DAL_088" : [ "deathrattle", "taunt" ],
-"DAL_089" : [ "spellDamageSyn", "battlecry", "returnSyn" ],
+"DAL_089" : [ "spellDamageSyn", "battlecry" ],
 "DAL_090" : [ "reachGen", "stealthGen" ],
 "DAL_092" : [  ],
 "DAL_095" : [ "battlecry", "spellAllSyn" ],
