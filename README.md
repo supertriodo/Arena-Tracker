@@ -93,12 +93,11 @@ If you build on Mac check:
 
 
 ## Thanks to:
+* https://hsreplay.net
+* http://hearthstonejson.com
+* http://www.zerotoheroes.com/s/hearthstone
 * http://thelightforge.com/TierList
 * http://www.heartharena.com
-* http://www.hearthhead.com
-* http://www.hearthpwn.com
-* http://www.zerotoheroes.com/s/hearthstone
-* http://hearthstonejson.com
 * https://sourceforge.net/projects/libxls/
 * https://github.com/stevschmid/track-o-bot
 * https://github.com/probonopd/linuxdeployqt
