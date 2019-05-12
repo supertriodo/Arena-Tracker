@@ -1687,7 +1687,7 @@ void MainWindow::readSettings()
     bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
     this->draftMethod = static_cast<DraftMethod>(settings.value("draftMethod", LightForge).toInt());
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
-    bool autoSize = settings.value("autoSize", true).toBool();
+    bool autoSize = settings.value("autoSize", false).toBool();
     bool showClassColor = settings.value("showClassColor", true).toBool();
     bool showSpellColor = settings.value("showSpellColor", true).toBool();
     bool showManaLimits = settings.value("showManaLimits", true).toBool();
