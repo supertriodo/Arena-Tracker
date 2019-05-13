@@ -587,7 +587,7 @@
 "DAL_147" : [ "dragonAllSyn", "battlecry", "returnSyn" ],
 "DAL_163" : [ "discover", "battlecry", "returnSyn" ],
 "DAL_173" : [ "tokenSyn", "deathrattleGoodAllSyn", "eggSyn" ],
-"DAL_177" : [ "deathrattleGoodAllSyn", "eggSyn", "toYourHandGen" ],
+"DAL_177" : [ "deathrattleGoodAllSyn", "eggSyn", "toYourHandGen", "evolveGen" ],
 "DAL_182" : [ "spellAllSyn" ],
 "DAL_185" : [ "restoreFriendlyHeroGen", "taunt" ],
 "DAL_256" : [ "toYourHandGen", "treantGen", "tokenGen" ],
