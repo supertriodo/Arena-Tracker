@@ -15,9 +15,25 @@ ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, bool normaliz
 
 void ScoreButton::mousePressEvent(QMouseEvent *event)
 {
-    QDesktopServices::openUrl(QUrl(
-        "https://hsreplay.net"
-        ));
+    if(scoreSource == Score_HearthArena)
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://www.heartharena.com/tierlist"
+            ));
+    }
+    else if(scoreSource == Score_LightForge)
+    {
+        QDesktopServices::openUrl(QUrl(
+            "http://thelightforge.com"
+            ));
+    }
+    else
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://hsreplay.net"
+            ));
+    }
+
     QLabel::mousePressEvent(event);
 }
 
