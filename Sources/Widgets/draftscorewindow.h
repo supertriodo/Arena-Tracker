@@ -46,7 +46,7 @@ public:
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);
-    void setDraftMethod(DraftMethod draftMethod);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void setNormalizedLF(bool value);

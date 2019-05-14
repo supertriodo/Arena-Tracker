@@ -138,38 +138,12 @@ void DraftScoreWindow::showTwitchScores(bool show)
 }
 
 
-void DraftScoreWindow::setDraftMethod(DraftMethod draftMethod)
+void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
 {
-    switch(draftMethod)
+    for(int i=0; i<3; i++)
     {
-        case All:
-            for(int i=0; i<3; i++)
-            {
-                scoresPushButton[i]->show();
-                scoresPushButton2[i]->show();
-            }
-            break;
-        case LightForge:
-            for(int i=0; i<3; i++)
-            {
-                scoresPushButton[i]->show();
-                scoresPushButton2[i]->hide();
-            }
-            break;
-        case HearthArena:
-            for(int i=0; i<3; i++)
-            {
-                scoresPushButton[i]->hide();
-                scoresPushButton2[i]->show();
-            }
-            break;
-        default:
-            for(int i=0; i<3; i++)
-            {
-                scoresPushButton[i]->hide();
-                scoresPushButton2[i]->hide();
-            }
-            break;
+        scoresPushButton[i]->setVisible(draftMethodLF);
+        scoresPushButton2[i]->setVisible(draftMethodHA);
     }
 }
 

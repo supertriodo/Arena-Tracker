@@ -81,7 +81,6 @@ private:
     QFile* atLogFile;
     bool mouseInApp;
     Transparency transparency;
-    DraftMethod draftMethod;
     bool oneWindow;
     DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *graveyardWindow, *planWindow;
     int cardHeight;
@@ -147,7 +146,7 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -167,7 +166,7 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
-    void spreadDraftMethod(DraftMethod draftMethod);
+    void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF);
     void showProgressBar(bool animated=true);
     bool askImportXls();
     bool askImportAccount();

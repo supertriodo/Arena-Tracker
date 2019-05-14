@@ -14,7 +14,7 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, DraftMethod draftMethod, bool normalizedLF);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, bool draftMethodHA, bool draftMethodLF, bool normalizedLF);
     ~DraftMechanicsWindow();
 
 
@@ -28,14 +28,14 @@ private:
     DraftItemCounter *manaCounter;
     int scoreWidth;
     bool showingHelp;
-    DraftMethod draftMethod;
+    bool draftMethodHA, draftMethodLF;
 
 //Metodos
 private:
     void deleteDraftItemCounters();
 
 public:
-    void setDraftMethod(DraftMethod draftMethod);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF);
     void setScores(int deckScoreHA, int deckScoreLF);
     void updateManaCounter(int numIncrease, int numCards);
     void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList, QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList, QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);

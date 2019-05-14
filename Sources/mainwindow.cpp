@@ -1409,7 +1409,8 @@ void MainWindow::initConfigTheme(QString theme)
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               bool normalizedLF, bool twitchChatVotes, QString theme)
+                               bool normalizedLF, bool twitchChatVotes, QString theme,
+                               bool draftMethodHA, bool draftMethodLF)
 {
     //UI
     switch(transparency)
@@ -1492,26 +1493,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
     if(normalizedLF)    ui->configCheckNormalizeLF->setChecked(true);
     updateDraftNormalizeLF(normalizedLF);
 
-    switch(draftMethod)
-    {
-        case HearthArena:
-            ui->configCheckHA->setChecked(true);
-            ui->configCheckLF->setChecked(false);
-            break;
-        case LightForge:
-            ui->configCheckHA->setChecked(false);
-            ui->configCheckLF->setChecked(true);
-            break;
-        case All:
-            ui->configCheckHA->setChecked(true);
-            ui->configCheckLF->setChecked(true);
-            break;
-        default:
-            ui->configCheckHA->setChecked(false);
-            ui->configCheckLF->setChecked(false);
-            break;
-    }
-    spreadDraftMethod(draftMethod);
+    ui->configCheckHA->setChecked(draftMethodHA);
+    ui->configCheckLF->setChecked(draftMethodLF);
+    spreadDraftMethod(draftMethodHA, draftMethodLF);
 
     //Zero To Heroes
     ui->configSliderZero->setValue(maxGamesLog);
@@ -1685,7 +1669,8 @@ void MainWindow::readSettings()
     this->showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
-    this->draftMethod = static_cast<DraftMethod>(settings.value("draftMethod", LightForge).toInt());
+    bool draftMethodHA = settings.value("draftMethodHA", false).toBool();
+    bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = settings.value("autoSize", false).toBool();
     bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -1697,7 +1682,7 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, twitchChatVotes, theme);
+                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1732,7 +1717,8 @@ void MainWindow::writeSettings()
     settings.setValue("showDraftMechanicsOverlay", this->showDraftMechanicsOverlay);
     settings.setValue("draftLearningMode", this->draftLearningMode);
     settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
-    settings.setValue("draftMethod", static_cast<int>(this->draftMethod));
+    settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
+    settings.setValue("draftMethodLF", ui->configCheckLF->isChecked());
     settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
     settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
     settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
@@ -3543,23 +3529,13 @@ void MainWindow::updateDraftNormalizeLF(bool checked)
 
 void MainWindow::updateDraftMethod()
 {
-    if(ui->configCheckLF->isChecked())
-    {
-        if(ui->configCheckHA->isChecked())  spreadDraftMethod(All);
-        else                                spreadDraftMethod(LightForge);
-    }
-    else
-    {
-        if(ui->configCheckHA->isChecked())  spreadDraftMethod(HearthArena);
-        else                                spreadDraftMethod(None);
-    }
+    spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked());
 }
 
 
-void MainWindow::spreadDraftMethod(DraftMethod draftMethod)
+void MainWindow::spreadDraftMethod(bool draftMethodHA, bool draftMethodLF)
 {
-    this->draftMethod = draftMethod;
-    draftHandler->setDraftMethod(draftMethod);
+    draftHandler->setDraftMethod(draftMethodHA, draftMethodLF);
 }
 
 

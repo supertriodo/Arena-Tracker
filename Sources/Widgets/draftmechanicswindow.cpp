@@ -4,11 +4,12 @@
 
 
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
-                                           bool patreonVersion, DraftMethod draftMethod, bool normalizedLF) :
+                                           bool patreonVersion, bool draftMethodHA, bool draftMethodLF, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->patreonVersion = patreonVersion;
-    this->draftMethod = draftMethod;
+    this->draftMethodHA = draftMethodHA;
+    this->draftMethodLF = draftMethodLF;
     scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -210,28 +211,21 @@ void DraftMechanicsWindow::setTheme()
 }
 
 
-void DraftMechanicsWindow::setDraftMethod(DraftMethod draftMethod)
+void DraftMechanicsWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
 {
-    this->draftMethod = draftMethod;
+    this->draftMethodHA = draftMethodHA;
+    this->draftMethodLF = draftMethodLF;
     if(showingHelp) return;
-    switch(draftMethod)
+
+    if(draftMethodHA)
     {
-        case All:
-            scoreButtonLF->hide();
-            scoreButtonHA->show();
-            break;
-        case LightForge:
-            scoreButtonLF->show();
-            scoreButtonHA->hide();
-            break;
-        case HearthArena:
-            scoreButtonLF->hide();
-            scoreButtonHA->show();
-            break;
-        default:
-            scoreButtonLF->hide();
-            scoreButtonHA->hide();
-            break;
+        scoreButtonLF->hide();
+        scoreButtonHA->show();
+    }
+    else
+    {
+        scoreButtonLF->setVisible(draftMethodLF);
+        scoreButtonHA->hide();
     }
 }
 
@@ -282,7 +276,7 @@ void DraftMechanicsWindow::hideHelp()
     centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
                                    ThemeHandler::bgDraftMechanicsFile() +
                                    ") 0 0 0 0 stretch stretch;border-width: 0px;}");
-    setDraftMethod(this->draftMethod);
+    setDraftMethod(this->draftMethodHA, this->draftMethodLF);
     lavaButton->show();
     helpMark->show();
 

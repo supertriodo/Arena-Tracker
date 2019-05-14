@@ -78,7 +78,7 @@ private:
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
-    DraftMethod draftMethod;
+    bool draftMethodHA, draftMethodLF;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
@@ -150,7 +150,7 @@ public:
     void setLearningMode(bool value);
     void redrawAllCards();
     void updateTamCard();
-    void setDraftMethod(DraftMethod value);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF);
     void setTheme();
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
