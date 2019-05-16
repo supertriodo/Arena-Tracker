@@ -1557,8 +1557,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     {
         draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, this->normalizedLF);
         draftScoreWindow->setLearningMode(this->learningMode);
-        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodLF, this->draftMethodHSR);
-        //TODO draftMethodHSR && patreonVersion
+        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodLF, this->draftMethodHSR && patreonVersion);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -1735,7 +1734,7 @@ void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool d
     this->draftMethodLF = draftMethodLF;
     this->draftMethodHSR = draftMethodHSR;
     if(!isDrafting())   return;
-    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
+    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR && patreonVersion);
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethod(draftMethodHA, draftMethodLF);
 
     updateDeckScore();

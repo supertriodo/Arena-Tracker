@@ -33,18 +33,21 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, normalizedLF);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
+        scoresPushButton[i]->hide();
         connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena, false);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
+        scoresPushButton2[i]->hide();
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
         scoresPushButton3[i] = new ScoreButton(centralWidget, Score_Heroes, false);
         scoresPushButton3[i]->setFixedHeight(scoreWidth);
         scoresPushButton3[i]->setFixedWidth(scoreWidth);
+        scoresPushButton3[i]->hide();
         connect(scoresPushButton3[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
@@ -140,18 +143,59 @@ void DraftScoreWindow::spreadLearningShow(bool value)
 }
 
 
+void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch)
+{
+    if(draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch)
+    {
+        for(int i=0; i<3; i++)
+        {
+            int smallWidth = static_cast<int>(scoreWidth*0.75);
+            scoresPushButton[i]->setFixedHeight(smallWidth);
+            scoresPushButton[i]->setFixedWidth(smallWidth);
+            scoresPushButton[i]->draw();
+
+            scoresPushButton2[i]->setFixedHeight(smallWidth);
+            scoresPushButton2[i]->setFixedWidth(smallWidth);
+            scoresPushButton2[i]->draw();
+
+            scoresPushButton3[i]->setFixedHeight(smallWidth);
+            scoresPushButton3[i]->setFixedWidth(smallWidth);
+            scoresPushButton3[i]->draw();
+        }
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            scoresPushButton[i]->setFixedHeight(scoreWidth);
+            scoresPushButton[i]->setFixedWidth(scoreWidth);
+            scoresPushButton[i]->draw();
+
+            scoresPushButton2[i]->setFixedHeight(scoreWidth);
+            scoresPushButton2[i]->setFixedWidth(scoreWidth);
+            scoresPushButton2[i]->draw();
+
+            scoresPushButton3[i]->setFixedHeight(scoreWidth);
+            scoresPushButton3[i]->setFixedWidth(scoreWidth);
+            scoresPushButton3[i]->draw();
+        }
+    }
+}
+
+
 void DraftScoreWindow::showTwitchScores(bool show)
 {
-    for(int i=0; i<3; i++)
-    {
-        if(show)    twitchButton[i]->show();
-        else        twitchButton[i]->hide();
-    }
+    checkScoresSpace(scoresPushButton2[0]->isVisible(), scoresPushButton[0]->isVisible(),
+            scoresPushButton3[0]->isVisible(), show);
+
+    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(show);
 }
 
 
 void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
+    checkScoresSpace(draftMethodHA, draftMethodLF, draftMethodHSR, twitchButton[0]->isVisible());
+
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i]->setVisible(draftMethodLF);

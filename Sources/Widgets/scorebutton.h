@@ -24,7 +24,6 @@ private:
 //Metodos
 private:
     void getScoreColor(int &r, int &g, int &b, float score);
-    void draw();
 
 protected:
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
@@ -37,6 +36,7 @@ public:
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void setNormalizedLF(bool value);
+    void draw();
 
 signals:
     void spreadLearningShow(bool value);

@@ -41,6 +41,7 @@ private:
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count);
+    void checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch);
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod);
