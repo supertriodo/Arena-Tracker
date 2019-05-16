@@ -1372,7 +1372,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showClassColor, bool showSpellColor, bool showManaLimits,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
                                bool normalizedLF, bool twitchChatVotes, QString theme,
-                               bool draftMethodHA, bool draftMethodLF)
+                               bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
     //UI
     switch(transparency)
@@ -1457,7 +1457,8 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
     ui->configCheckHA->setChecked(draftMethodHA);
     ui->configCheckLF->setChecked(draftMethodLF);
-    spreadDraftMethod(draftMethodHA, draftMethodLF);
+    ui->configCheckHSR->setChecked(draftMethodHSR);
+    spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
 
     //Zero To Heroes
     ui->configSliderZero->setValue(maxGamesLog);
@@ -1633,6 +1634,7 @@ void MainWindow::readSettings()
     bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
     bool draftMethodHA = settings.value("draftMethodHA", false).toBool();
     bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
+    bool draftMethodHSR = settings.value("draftMethodHSR", false).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = settings.value("autoSize", false).toBool();
     bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -1644,7 +1646,7 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF);
+                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1681,6 +1683,7 @@ void MainWindow::writeSettings()
     settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
     settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
     settings.setValue("draftMethodLF", ui->configCheckLF->isChecked());
+    settings.setValue("draftMethodHSR", ui->configCheckHSR->isChecked());
     settings.setValue("tooltipScale", ui->configSliderTooltipSize->value());
     settings.setValue("autoSize", ui->configCheckAutoSize->isChecked());
     settings.setValue("showClassColor", ui->configCheckClassColor->isChecked());
@@ -2906,6 +2909,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckVotes->setStyleSheet(checkCSS);
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
+        ui->configCheckHSR->setStyleSheet(checkCSS);
 
         ui->logTextEdit->setStyleSheet("QTextEdit{" + ThemeHandler::bgWidgets() + " color: white;}");
     }
@@ -2956,6 +2960,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckVotes->setStyleSheet("");
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
+        ui->configCheckHSR->setStyleSheet("");
 
         ui->logTextEdit->setStyleSheet("");
     }
@@ -3491,14 +3496,13 @@ void MainWindow::updateDraftNormalizeLF(bool checked)
 
 void MainWindow::updateDraftMethod()
 {
-    spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked());
+    spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked(), ui->configCheckHSR->isChecked());
 }
 
 
-void MainWindow::spreadDraftMethod(bool draftMethodHA, bool draftMethodLF)
+void MainWindow::spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
-    //TODO draftMethodHSR
-    draftHandler->setDraftMethod(draftMethodHA, draftMethodLF, true);
+    draftHandler->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
 }
 
 
@@ -3591,6 +3595,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
     connect(ui->configCheckHA, SIGNAL(clicked()), this, SLOT(updateDraftMethod()));
     connect(ui->configCheckLF, SIGNAL(clicked()), this, SLOT(updateDraftMethod()));
+    connect(ui->configCheckHSR, SIGNAL(clicked()), this, SLOT(updateDraftMethod()));
 
     //Zero To Heroes
     connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
@@ -4206,6 +4211,7 @@ void MainWindow::testDelay()
 //Revisar HSR y patreonVersion
 //Revisar labels
 //Revisar 3 y votos no caben como scores
+//drop list para seleccionar assistant average
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
 //2)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .

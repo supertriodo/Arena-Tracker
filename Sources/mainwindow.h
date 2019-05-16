@@ -147,7 +147,7 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -167,7 +167,7 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
-    void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF);
+    void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void showProgressBar(bool animated=true);
     bool askImportXls();
     bool askImportAccount();

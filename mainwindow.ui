@@ -2052,13 +2052,29 @@ Hover your mouse over to check the odds of killing in the board.</string>
                    <layout class="QVBoxLayout" name="verticalLayout_16">
                     <item>
                      <widget class="QCheckBox" name="configCheckLF">
+                      <property name="toolTip">
+                       <string>LightForge Tier Score</string>
+                      </property>
                       <property name="text">
                        <string>LightForge</string>
                       </property>
                      </widget>
                     </item>
                     <item>
+                     <widget class="QCheckBox" name="configCheckHSR">
+                      <property name="toolTip">
+                       <string>HSReplay Winrates</string>
+                      </property>
+                      <property name="text">
+                       <string>HSReplay</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QCheckBox" name="configCheckHA">
+                      <property name="toolTip">
+                       <string>HearthArena Tier Score</string>
+                      </property>
                       <property name="text">
                        <string>HearthArena</string>
                       </property>
