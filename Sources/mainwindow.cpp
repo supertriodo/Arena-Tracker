@@ -2072,7 +2072,12 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
 {
     QIcon icon;
     QString tooltip;
-    if(widget == ui->tabArena)
+    if(widget == ui->tabDraft)
+    {
+        icon = QIcon(ThemeHandler::tabArenaFile());
+        tooltip = "Draft";
+    }
+    else if(widget == ui->tabArena)
     {
         icon = QIcon(ThemeHandler::tabGamesFile());
         tooltip = "Games";
@@ -3060,14 +3065,18 @@ void MainWindow::updateTabIcons()
 {
     QWidget * currentTab = ui->tabWidget->currentWidget();
 
+    bool drafting = false;
+    if(ui->tabWidget->indexOf(ui->tabDraft) != -1)  drafting = true;
+
     ui->tabWidget->hide();
     ui->tabWidget->clear();
-    if(arenaWindow == nullptr)     moveTabTo(ui->tabArena, ui->tabWidget);
-    if(enemyWindow == nullptr)     moveTabTo(ui->tabEnemy, ui->tabWidget);
-    if(deckWindow == nullptr)      moveTabTo(ui->tabDeck, ui->tabWidget);
-    if(enemyDeckWindow == nullptr) moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
-    if(graveyardWindow == nullptr && patreonVersion) moveTabTo(ui->tabGraveyard, ui->tabWidget);
-    if(planWindow == nullptr && patreonVersion)      moveTabTo(ui->tabPlan, ui->tabWidget);
+    if(drafting)                                        moveTabTo(ui->tabDraft, ui->tabWidget);
+    if(arenaWindow == nullptr)                          moveTabTo(ui->tabArena, ui->tabWidget);
+    if(enemyWindow == nullptr)                          moveTabTo(ui->tabEnemy, ui->tabWidget);
+    if(deckWindow == nullptr)                           moveTabTo(ui->tabDeck, ui->tabWidget);
+    if(enemyDeckWindow == nullptr)                      moveTabTo(ui->tabEnemyDeck, ui->tabWidget);
+    if(graveyardWindow == nullptr && patreonVersion)    moveTabTo(ui->tabGraveyard, ui->tabWidget);
+    if(planWindow == nullptr && patreonVersion)         moveTabTo(ui->tabPlan, ui->tabWidget);
     moveTabTo(ui->tabConfig, ui->tabWidget);
     ui->tabWidget->show();
 
