@@ -27,6 +27,7 @@ private:
     QHBoxLayout *horLayoutMechanics[3];
     ScoreButton *scoresPushButton[3];
     ScoreButton *scoresPushButton2[3];
+    ScoreButton *scoresPushButton3[3];
     TwitchButton *twitchButton[3];
     MoveListWidget *synergiesListWidget[3];
     QList<DeckCard> synergiesDeckCardLists[3];
@@ -46,7 +47,7 @@ public:
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);
-    void setDraftMethod(bool draftMethodHA, bool draftMethodLF);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void setNormalizedLF(bool value);

@@ -21,6 +21,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->mouseInApp = false;
     this->draftMethodHA = false;
     this->draftMethodLF = true;
+    this->draftMethodHSR = false;
     this->normalizedLF = true;
     this->twitchHandler = nullptr;
 
@@ -509,7 +510,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     clearLists(true);
 
-    this->arenaHero = hero;
+    this->arenaHero = Utility::heroFromLogNumber(hero);
     this->drafting = true;
     this->leavingArena = false;
     this->justPickedCard = "";
@@ -1043,14 +1044,15 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         draftCards[i] = bestCards[i];
     }
 
+    QString codes[3] = {bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
 
     //LightForge
-    int rating1 = lightForgeTiers[bestCards[0].getCode()].score;
-    int rating2 = lightForgeTiers[bestCards[1].getCode()].score;
-    int rating3 = lightForgeTiers[bestCards[2].getCode()].score;
-    int maxCard1 = lightForgeTiers[bestCards[0].getCode()].maxCard;
-    int maxCard2 = lightForgeTiers[bestCards[1].getCode()].maxCard;
-    int maxCard3 = lightForgeTiers[bestCards[2].getCode()].maxCard;
+    int rating1 = lightForgeTiers[codes[0]].score;
+    int rating2 = lightForgeTiers[codes[1]].score;
+    int rating3 = lightForgeTiers[codes[2]].score;
+    int maxCard1 = lightForgeTiers[codes[0]].maxCard;
+    int maxCard2 = lightForgeTiers[codes[1]].maxCard;
+    int maxCard3 = lightForgeTiers[codes[2]].maxCard;
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    maxCard1, maxCard2, maxCard3,
@@ -1058,13 +1060,22 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
 
 
     //HearthArena
-    rating1 = hearthArenaTiers[bestCards[0].getCode()];
-    rating2 = hearthArenaTiers[bestCards[1].getCode()];
-    rating3 = hearthArenaTiers[bestCards[2].getCode()];
+    rating1 = hearthArenaTiers[codes[0]];
+    rating2 = hearthArenaTiers[codes[1]];
+    rating3 = hearthArenaTiers[codes[2]];
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    -1, -1, -1,
                    HearthArena);
+
+    //HSReplay
+    float frating1 = cardsWinratesMap[this->arenaHero][codes[0]];
+    float frating2 = cardsWinratesMap[this->arenaHero][codes[1]];
+    float frating3 = cardsWinratesMap[this->arenaHero][codes[2]];
+    showNewRatings(frating1, frating2, frating3,
+                   frating1, frating2, frating3,
+                   -1, -1, -1,
+                   HSReplay);
 
     //Twitch Handler
     if(this->twitchHandler != nullptr)
@@ -1146,6 +1157,7 @@ void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScore
     }
     scoreText += " (" + QString::number(numCards) + "/30)";
     ui->labelDeckScore->setText(scoreText);
+    //TODO draftMethodHSR
 }
 
 
@@ -1160,6 +1172,7 @@ void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScore
     }
 
     if(!scoreText.isEmpty())    emit showMessageProgressBar(scoreText, 10000);
+    //TODO draftMethodHSR
 }
 
 
@@ -1175,6 +1188,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
 
     for(int i=0; i<3; i++)
     {
+        //TODO draftMethodHSR en labels
         //Update score label
         if(draftMethod == LightForge)
         {
@@ -1543,7 +1557,8 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     {
         draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, this->normalizedLF);
         draftScoreWindow->setLearningMode(this->learningMode);
-        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodLF);
+        draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodLF, this->draftMethodHSR);
+        //TODO draftMethodHSR && patreonVersion
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -1552,6 +1567,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
+        //TODO draftMethodHSR en draftMechanicsWindow
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->draftMethodHA, this->draftMethodLF, this->normalizedLF);
         initDraftMechanicsWindowCounters();
@@ -1713,12 +1729,13 @@ void DraftHandler::setLearningMode(bool value)
 }
 
 
-void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
+void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
     this->draftMethodHA = draftMethodHA;
     this->draftMethodLF = draftMethodLF;
+    this->draftMethodHSR = draftMethodHSR;
     if(!isDrafting())   return;
-    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF);
+    if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethod(draftMethodHA, draftMethodLF);
 
     updateDeckScore();
@@ -1729,6 +1746,7 @@ void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
 
 void DraftHandler::updateScoresVisibility()
 {
+    //TODO draftMethodHSR
     if(learningMode)
     {
         for(int i=0; i<3; i++)
@@ -1756,6 +1774,7 @@ void DraftHandler::updateMinimumHeight()
 
 void DraftHandler::updateAvgScoresVisibility()
 {
+    //TODO draftMethodHSR
     if(patreonVersion)
     {
         if(draftMethodHA)
@@ -1909,6 +1928,12 @@ void DraftHandler::initSynergyCodes()
 void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
 {
     this->heroWinratesMap = heroWinratesMap;
+}
+
+
+void DraftHandler::setCardsWinratesMap(QMap<QString, float> cardsWinratesMap[9])
+{
+    this->cardsWinratesMap = cardsWinratesMap;
 }
 
 

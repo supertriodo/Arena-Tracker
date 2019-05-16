@@ -42,6 +42,12 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
+        scoresPushButton3[i] = new ScoreButton(centralWidget, Score_Heroes, false);
+        scoresPushButton3[i]->setFixedHeight(scoreWidth);
+        scoresPushButton3[i]->setFixedWidth(scoreWidth);
+        connect(scoresPushButton3[i], SIGNAL(spreadLearningShow(bool)),
+                this, SLOT(spreadLearningShow(bool)));
+
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
         twitchButton[i]->setFixedHeight(static_cast<int>(scoreWidth*0.75));
         twitchButton[i]->setFixedWidth(static_cast<int>(scoreWidth*0.75));
@@ -55,12 +61,16 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         effect = new QGraphicsOpacityEffect(scoresPushButton2[i]);
         effect->setOpacity(0);
         scoresPushButton2[i]->setGraphicsEffect(effect);
+        effect = new QGraphicsOpacityEffect(scoresPushButton3[i]);
+        effect->setOpacity(0);
+        scoresPushButton3[i]->setGraphicsEffect(effect);
         effect = new QGraphicsOpacityEffect(twitchButton[i]);
         effect->setOpacity(0);
         twitchButton[i]->setGraphicsEffect(effect);
 
         horLayoutScores->addStretch();
         horLayoutScores->addWidget(scoresPushButton[i]);
+        horLayoutScores->addWidget(scoresPushButton3[i]);
         horLayoutScores->addWidget(twitchButton[i]);
         horLayoutScores->addWidget(scoresPushButton2[i]);
         horLayoutScores->addStretch();
@@ -114,6 +124,7 @@ void DraftScoreWindow::setLearningMode(bool value)
     {
         scoresPushButton[i]->setLearningMode(value);
         scoresPushButton2[i]->setLearningMode(value);
+        scoresPushButton3[i]->setLearningMode(value);
     }
 }
 
@@ -124,6 +135,7 @@ void DraftScoreWindow::spreadLearningShow(bool value)
     {
         scoresPushButton[i]->setLearningShow(value);
         scoresPushButton2[i]->setLearningShow(value);
+        scoresPushButton3[i]->setLearningShow(value);
     }
 }
 
@@ -138,12 +150,13 @@ void DraftScoreWindow::showTwitchScores(bool show)
 }
 
 
-void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
+void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i]->setVisible(draftMethodLF);
         scoresPushButton2[i]->setVisible(draftMethodHA);
+        scoresPushButton3[i]->setVisible(draftMethodHSR);
     }
 }
 
@@ -160,6 +173,11 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
         {
             scoresPushButton[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
             Utility::fadeInWidget(scoresPushButton[i]);
+        }
+        else if(draftMethod == HSReplay)
+        {
+            scoresPushButton3[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
+            Utility::fadeInWidget(scoresPushButton3[i]);
         }
         else if(draftMethod == HearthArena)
         {
@@ -291,6 +309,8 @@ void DraftScoreWindow::hideScores(bool quick)
             eff->setOpacity(0);
             eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton2[i]->graphicsEffect());
             eff->setOpacity(0);
+            eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton3[i]->graphicsEffect());
+            eff->setOpacity(0);
             eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
         }
@@ -298,6 +318,7 @@ void DraftScoreWindow::hideScores(bool quick)
         {
             QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
             Utility::fadeOutWidget(scoresPushButton2[i]);
+            Utility::fadeOutWidget(scoresPushButton3[i]);
             Utility::fadeOutWidget(twitchButton[i]);
 
             if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(update()));

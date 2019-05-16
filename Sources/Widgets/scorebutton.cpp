@@ -138,7 +138,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
     painter.setRenderHint(QPainter::TextAntialiasing);
 
-    float drawScore;
+    float drawScore = 0;
     if(scoreSource == Score_LightForge)         drawScore = static_cast<int>(Utility::normalizeLF(score, this->normalizedLF));
     else if(scoreSource == Score_HearthArena)   drawScore = static_cast<int>(score);
     else if(scoreSource == Score_Heroes)        drawScore = score;

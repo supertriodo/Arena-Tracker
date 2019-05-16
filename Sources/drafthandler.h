@@ -64,7 +64,7 @@ private:
     //Se crea al final de la iteracion para ordenar los candidatos por match score
     QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
-    QString arenaHero;
+    CardClass arenaHero;
     int deckRatingHA, deckRatingLF;
     cv::Rect screenRects[3];
     int screenIndex;
@@ -78,7 +78,7 @@ private:
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
-    bool draftMethodHA, draftMethodLF;
+    bool draftMethodHA, draftMethodLF, draftMethodHSR;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
@@ -89,6 +89,7 @@ private:
     bool normalizedLF;
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
+    QMap<QString, float> *cardsWinratesMap;
     TwitchHandler *twitchHandler;
 
 
@@ -150,7 +151,7 @@ public:
     void setLearningMode(bool value);
     void redrawAllCards();
     void updateTamCard();
-    void setDraftMethod(bool draftMethodHA, bool draftMethodLF);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void setTheme();
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
@@ -163,6 +164,7 @@ public:
     void testSynergies();
     void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
+    void setCardsWinratesMap(QMap<QString, float> cardsWinratesMap[9]);
     void updateTwitchChatVotes();
 
 signals:

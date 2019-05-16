@@ -93,6 +93,7 @@ private:
     QStringList allCardsDownloadList;
     TwitchHandler *twitchTester;
     QMap<QString, float> cardsPickratesMap[9];
+    QMap<QString, float> cardsWinratesMap[9];
     //Gestionan si es necesario bajar todas las cartas usadas en arena debido a que el directorio de cartas se haya borrado
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
@@ -197,6 +198,7 @@ private:
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
     void getArenaSets(QStringList &arenaSets, const QStringList &codeList);
+    void processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass);
 
 //Override events
 protected:

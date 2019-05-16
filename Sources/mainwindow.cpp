@@ -545,74 +545,36 @@ void MainWindow::downloadHSRCardsPickrate()
 }
 
 
+void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass)
+{
+    for(const QJsonValue card: jsonArray)
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
+        float winrate = static_cast<float>(round(cardObject.value("winrate").toDouble() * 10)/10.0);
+        cardsPickratesMap[cardClass][code] = pickrate;
+        cardsWinratesMap[cardClass][code] = winrate;
+    }
+}
+
+
 void MainWindow::processHSRCardsPickrate(const QJsonObject &jsonObject)
 {
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    for(const QJsonValue card: data.value("DRUID").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[DRUID][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("HUNTER").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[HUNTER][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("MAGE").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[MAGE][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("PALADIN").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[PALADIN][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("PRIEST").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[PRIEST][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("ROGUE").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[ROGUE][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("SHAMAN").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[SHAMAN][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("WARLOCK").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[WARLOCK][code] = pickrate;
-    }
-    for(const QJsonValue card: data.value("WARRIOR").toArray())
-    {
-        QJsonObject cardObject = card.toObject();
-        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
-        float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
-        cardsPickratesMap[WARRIOR][code] = pickrate;
-    }
+    processHSRCardClass(data.value("DRUID").toArray(), DRUID);
+    processHSRCardClass(data.value("HUNTER").toArray(), HUNTER);
+    processHSRCardClass(data.value("MAGE").toArray(), MAGE);
+    processHSRCardClass(data.value("PALADIN").toArray(), PALADIN);
+    processHSRCardClass(data.value("PRIEST").toArray(), PRIEST);
+    processHSRCardClass(data.value("ROGUE").toArray(), ROGUE);
+    processHSRCardClass(data.value("SHAMAN").toArray(), SHAMAN);
+    processHSRCardClass(data.value("WARLOCK").toArray(), WARLOCK);
+    processHSRCardClass(data.value("WARRIOR").toArray(), WARRIOR);
+
     secretsHandler->createSecretsByPickrate(cardsPickratesMap);
+    draftHandler->setCardsWinratesMap(cardsWinratesMap);
 }
 
 
@@ -3535,7 +3497,8 @@ void MainWindow::updateDraftMethod()
 
 void MainWindow::spreadDraftMethod(bool draftMethodHA, bool draftMethodLF)
 {
-    draftHandler->setDraftMethod(draftMethodHA, draftMethodLF);
+    //TODO draftMethodHSR
+    draftHandler->setDraftMethod(draftMethodHA, draftMethodLF, true);
 }
 
 
@@ -4240,7 +4203,9 @@ void MainWindow::testDelay()
 
 
 //TODDO
-
+//Revisar HSR y patreonVersion
+//Revisar labels
+//Revisar 3 y votos no caben como scores
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
 //2)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .
