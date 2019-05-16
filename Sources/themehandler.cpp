@@ -44,7 +44,7 @@ QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
 QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
 QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_, ThemeHandler::haTextFile_;
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_, ThemeHandler::lfTextFile_;
-QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
+QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrCloseFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
 QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
 QString ThemeHandler::speedDWTextFile_, ThemeHandler::speedTwitchTextFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
@@ -606,6 +606,12 @@ QString ThemeHandler::hsrBestFile()
 }
 
 
+QString ThemeHandler::hsrCloseFile()
+{
+    return hsrCloseFile_;
+}
+
+
 QString ThemeHandler::hsrOpenFile()
 {
     return hsrOpenFile_;
@@ -948,6 +954,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     lfOpenFile_ = loadThemeFile(themePath, jsonObject, "lfOpenFile");
     lfTextFile_ = loadThemeFile(themePath, jsonObject, "lfTextFile");
     hsrBestFile_ = loadThemeFile(themePath, jsonObject, "hsrBestFile");
+    hsrCloseFile_ = loadThemeFile(themePath, jsonObject, "hsrCloseFile");
     hsrOpenFile_ = loadThemeFile(themePath, jsonObject, "hsrOpenFile");
     hsrTextFile_ = loadThemeFile(themePath, jsonObject, "hsrTextFile");
     speedLavaFile_ = loadThemeFile(themePath, jsonObject, "speedLavaFile");
@@ -1218,6 +1225,7 @@ void ThemeHandler::defaultEmptyValues()
     if(lfOpenFile_.isEmpty())           lfOpenFile_ = ":/Images/lfOpen.png";
     if(lfTextFile_.isEmpty())           lfTextFile_ = ":/Images/lfText.png";
     if(hsrBestFile_.isEmpty())          hsrBestFile_ = ":/Images/hsrBest.png";
+    if(hsrCloseFile_.isEmpty())         hsrCloseFile_ = ":/Images/hsrClose.png";
     if(hsrOpenFile_.isEmpty())          hsrOpenFile_ = ":/Images/hsrOpen.png";
     if(hsrTextFile_.isEmpty())          hsrTextFile_ = ":/Images/hsrText.png";
     if(speedLavaFile_.isEmpty())        speedLavaFile_ = ":/Images/speedLava.png";

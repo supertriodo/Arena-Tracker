@@ -159,6 +159,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     {
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
+        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrCloseFile()));
     }
     else
     {

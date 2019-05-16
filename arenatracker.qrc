@@ -152,5 +152,6 @@
         <file>Images/speedDWText.png</file>
         <file>Images/speedTwitchText.png</file>
         <file>Images/userGuide.png</file>
+        <file>Images/hsrClose.png</file>
     </qresource>
 </RCC>
