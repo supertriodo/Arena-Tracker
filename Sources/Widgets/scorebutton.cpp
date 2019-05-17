@@ -85,6 +85,7 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
     if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);//0<-->100
     else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
     else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min(static_cast<int>((score-45)/10*255), 255), 0);//45<-->55
+    else if(scoreSource == Score_HSReplay)      rating255 = std::max(std::min(static_cast<int>((score-40)/20*255), 255), 0);//40<-->60
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
@@ -141,12 +142,13 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     float drawScore = 0;
     if(scoreSource == Score_LightForge)         drawScore = static_cast<int>(Utility::normalizeLF(score, this->normalizedLF));
     else if(scoreSource == Score_HearthArena)   drawScore = static_cast<int>(score);
-    else if(scoreSource == Score_Heroes)        drawScore = score;
+    else                                        drawScore = score;
 
     QFont font(LG_FONT);
-    if(scoreSource == Score_Heroes) font.setPixelSize(static_cast<int>(width()/3.5));
-    else if(drawScore > 99)         font.setPixelSize(static_cast<int>(width()/3.2));
-    else                            font.setPixelSize(static_cast<int>(width()/2.7));
+    if( scoreSource == Score_Heroes ||
+        scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/3.5));
+    else if(drawScore > 99)             font.setPixelSize(static_cast<int>(width()/3.2));
+    else                                font.setPixelSize(static_cast<int>(width()/2.7));
 
     QPen pen(BLACK);
     pen.setWidth(font.pixelSize()/20);
@@ -159,7 +161,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     {
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
-        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrCloseFile()));
+        else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrCloseFile()));
     }
     else
     {
@@ -168,7 +170,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         {
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
-            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
+            else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
         }
 
         //Draw Score
@@ -186,7 +188,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         painter.drawPath(path);
 
         //Draw heroe winrate %
-        if(scoreSource == Score_Heroes)
+        if(scoreSource == Score_Heroes || scoreSource == Score_HSReplay)
         {
             font.setPixelSize(static_cast<int>(width()/5.0));
             QString text = "%";
@@ -205,14 +207,14 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
         else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
-        else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
+        else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
 
         //Best Score text
         if(isBestScore)
         {
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haTextFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfTextFile()));
-            else if(scoreSource == Score_Heroes)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
+            else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
         }
     }
 

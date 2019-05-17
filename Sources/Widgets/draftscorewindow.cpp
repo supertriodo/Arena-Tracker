@@ -44,7 +44,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
-        scoresPushButton3[i] = new ScoreButton(centralWidget, Score_Heroes, false);
+        scoresPushButton3[i] = new ScoreButton(centralWidget, Score_HSReplay, false);
         scoresPushButton3[i]->setFixedHeight(scoreWidth);
         scoresPushButton3[i]->setFixedWidth(scoreWidth);
         scoresPushButton3[i]->hide();
