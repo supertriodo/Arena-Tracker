@@ -84,6 +84,7 @@ private:
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
+    QLabel *labelHSRscore[3];
     QComboBox *comboBoxCard[3];
     bool extendedCapture;
     bool normalizedLF;
@@ -141,6 +142,7 @@ private:
     void buildHeroCodesList();
     void createTwitchHandler();
     void deleteTwitchHandler();
+    QString getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
 
 public:
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

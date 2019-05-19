@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -525,6 +525,16 @@ draft mechanics becoming a patron (3$)</string>
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="labelHSRscore1">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLabel" name="labelHAscore1">
               <property name="text">
                <string/>
@@ -554,6 +564,16 @@ draft mechanics becoming a patron (3$)</string>
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="labelHSRscore2">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLabel" name="labelHAscore2">
               <property name="text">
                <string/>
@@ -574,6 +594,16 @@ draft mechanics becoming a patron (3$)</string>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelHSRscore3">
               <property name="text">
                <string/>
               </property>

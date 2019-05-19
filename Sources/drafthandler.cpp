@@ -120,6 +120,9 @@ void DraftHandler::completeUI()
     labelHAscore[0] = ui->labelHAscore1;
     labelHAscore[1] = ui->labelHAscore2;
     labelHAscore[2] = ui->labelHAscore3;
+    labelHSRscore[0] = ui->labelHSRscore1;
+    labelHSRscore[1] = ui->labelHSRscore2;
+    labelHSRscore[2] = ui->labelHSRscore3;
 
     for(int i=0; i<3; i++)
     {
@@ -393,6 +396,7 @@ void DraftHandler::resetTab(bool alreadyDrafting)
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
+        clearScore(labelHSRscore[i], HSReplay);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
@@ -1001,6 +1005,7 @@ void DraftHandler::pickCard(QString code)
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
+        clearScore(labelHSRscore[i], HSReplay);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
@@ -1034,6 +1039,7 @@ void DraftHandler::refreshCapturedCards()
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
+        clearScore(labelHSRscore[i], HSReplay);
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
@@ -1057,6 +1063,7 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     {
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
+        clearScore(labelHSRscore[i], HSReplay);
         draftCards[i] = bestCards[i];
     }
 
@@ -1165,33 +1172,36 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
 }
 
 
-void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards)
-{
-    QString scoreText = "";
-    if(draftMethodLF)   scoreText += " LF: " + QString::number(deckScoreLFNormalized);
-    if(draftMethodHA)
-    {
-        if(!scoreText.isEmpty())    scoreText += " --";
-        scoreText += " HA: " + QString::number(deckScoreHA);
-    }
-    scoreText += " (" + QString::number(numCards) + "/30)";
-    ui->labelDeckScore->setText(scoreText);
-    //TODO draftMethodHSR
-}
-
-
-void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
+QString DraftHandler::getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
 {
     QString scoreText = "";
     if(draftMethodLF)   scoreText += "LF: " + QString::number(deckScoreLFNormalized);
+    if(draftMethodHSR)
+    {
+        if(!scoreText.isEmpty())    scoreText += " -- ";
+        scoreText += "HSR: " + QString::number(static_cast<double>(deckScoreHSR)) + '%';
+    }
     if(draftMethodHA)
     {
         if(!scoreText.isEmpty())    scoreText += " -- ";
         scoreText += "HA: " + QString::number(deckScoreHA);
     }
+    return scoreText;
+}
 
+
+void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards)
+{
+    QString scoreText = getDeckAvgString(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
+    scoreText += " (" + QString::number(numCards) + "/30)";
+    ui->labelDeckScore->setText(scoreText);
+}
+
+
+void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
+{
+    QString scoreText = getDeckAvgString(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
     if(!scoreText.isEmpty())    emit showMessageProgressBar(scoreText, 10000);
-    //TODO draftMethodHSR
 }
 
 
@@ -1208,7 +1218,6 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
 
     for(int i=0; i<3; i++)
     {
-        //TODO draftMethodHSR en labels
         //Update score label
         if(draftMethod == LightForge)
         {
@@ -1216,10 +1225,14 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
+        else if(draftMethod == HSReplay)
+        {
+            labelHSRscore[i]->setText(QString::number(static_cast<double>(ratings[i])) + '%');
+            if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHSRscore[i], draftMethod);
+        }
         else if(draftMethod == HearthArena)
         {
-            labelHAscore[i]->setText(QString::number(static_cast<int>(ratings[i])) +
-                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
+            labelHAscore[i]->setText(QString::number(static_cast<int>(ratings[i])));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHAscore[i], draftMethod);
         }
     }
@@ -1631,6 +1644,7 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
     QString backgroundImage = "";
     if(draftMethod == LightForge)           backgroundImage = ":/Images/bgScoreLF.png";
     else if(draftMethod == HearthArena)     backgroundImage = ":/Images/bgScoreHA.png";
+    else if(draftMethod == HSReplay)        backgroundImage = ":/Images/bgScoreHSR.png";
     label->setStyleSheet("QLabel {background-color: transparent; color: " +
                          QString((!mouseInApp && transparency == Transparent)?"white":ThemeHandler::fgColor()) + ";"
                          "background-image: url(" + backgroundImage + "); background-repeat: no-repeat; background-position: center; }");
@@ -1652,11 +1666,15 @@ void DraftHandler::setTheme()
     ui->labelHAscore1->setFont(font);
     ui->labelHAscore2->setFont(font);
     ui->labelHAscore3->setFont(font);
+    ui->labelHSRscore1->setFont(font);
+    ui->labelHSRscore2->setFont(font);
+    ui->labelHSRscore3->setFont(font);
 
     for(int i=0; i<3; i++)
     {
         if(labelLFscore[i]->styleSheet().contains("background-image"))      highlightScore(labelLFscore[i], LightForge);
         if(labelHAscore[i]->styleSheet().contains("background-image"))      highlightScore(labelHAscore[i], HearthArena);
+        if(labelHSRscore[i]->styleSheet().contains("background-image"))     highlightScore(labelHSRscore[i], HSReplay);
     }
 
     //Change Arena draft icon
@@ -1691,6 +1709,9 @@ void DraftHandler::setTransparency(Transparency value)
     clearScore(ui->labelHAscore1, HearthArena, false);
     clearScore(ui->labelHAscore2, HearthArena, false);
     clearScore(ui->labelHAscore3, HearthArena, false);
+    clearScore(ui->labelHSRscore1, HSReplay, false);
+    clearScore(ui->labelHSRscore2, HSReplay, false);
+    clearScore(ui->labelHSRscore3, HSReplay, false);
 
     //Update race counters
     synergyHandler->setTransparency(transparency, mouseInApp);
@@ -1774,21 +1795,22 @@ void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool d
 
 void DraftHandler::updateScoresVisibility()
 {
-    //TODO draftMethodHSR
     if(learningMode)
     {
         for(int i=0; i<3; i++)
         {
             labelLFscore[i]->hide();
             labelHAscore[i]->hide();
+            labelHSRscore[i]->hide();
         }
     }
     else
     {
         for(int i=0; i<3; i++)
         {
-            labelHAscore[i]->setVisible(draftMethodHA);
             labelLFscore[i]->setVisible(draftMethodLF);
+            labelHAscore[i]->setVisible(draftMethodHA);
+            labelHSRscore[i]->setVisible(draftMethodHSR);
         }
     }
 }
