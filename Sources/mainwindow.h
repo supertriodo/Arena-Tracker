@@ -98,6 +98,7 @@ private:
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
     bool cardsJsonLoaded, lightForgeJsonLoaded, allCardsDownloadNeeded;
+    DraftMethod draftMethodAvgScore;
 
 
 
@@ -167,6 +168,7 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
+    void spreadDraftMethod();
     void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void showProgressBar(bool animated=true);
     bool askImportXls();
@@ -199,6 +201,7 @@ private:
     void downloadAllArenaCodes(const QStringList &codeList);
     void getArenaSets(QStringList &arenaSets, const QStringList &codeList);
     void processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass);
+    void updateDraftMethodUnchecked();
 
 //Override events
 protected:
@@ -273,7 +276,9 @@ private slots:
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
     void checkLinuxShortcut();
-    void updateDraftMethod();
+    void updateDraftMethodHA(bool checked);
+    void updateDraftMethodLF(bool checked);
+    void updateDraftMethodHSR(bool checked);
     void spreadTransparency();
     void startProgressBar(int maximum, QString text);
     void advanceProgressBar(int remaining, QString text="");

@@ -53,7 +53,7 @@ private:
     Ui::Extended *ui;
     SynergyHandler *synergyHandler;
     LavaButton *lavaButton;
-    ScoreButton *scoreButtonLF, *scoreButtonHA;
+    ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     QMap<QString, int> hearthArenaTiers;
     QMap<QString, LFtier> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
@@ -66,6 +66,7 @@ private:
     bool cardDetected[3];
     CardClass arenaHero;
     int deckRatingHA, deckRatingLF;
+    float deckRatingHSR;
     cv::Rect screenRects[3];
     int screenIndex;
     int numCaptured;
@@ -79,12 +80,11 @@ private:
     bool learningMode;
     QString justPickedCard; //Evita doble pick card en Arena.log
     bool draftMethodHA, draftMethodLF, draftMethodHSR;
+    DraftMethod draftMethodAvgScore;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QLabel *labelLFscore[3];
     QLabel *labelHAscore[3];
     QComboBox *comboBoxCard[3];
-    float shownTierScoresHA[3];
-    float shownTierScoresLF[3];
     bool extendedCapture;
     bool normalizedLF;
     QStringList heroCodesList;
@@ -103,7 +103,7 @@ private:
     void clearLists(bool keepCounters);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
-    void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0);
+    void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0, float cardRatingHSR=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
@@ -133,8 +133,8 @@ private:
     void clearAndDisconnectComboBox(int index);
     void initDraftMechanicsWindowCounters();
     void initSynergyCounters(QList<DeckCard> &deckCardList);
-    void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards);
-    void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA);
+    void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards);
+    void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
     void updateAvgScoresVisibility();
     void endHeroDraft();
     void showNewHeroes();
@@ -166,6 +166,7 @@ public:
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
     void setCardsWinratesMap(QMap<QString, float> cardsWinratesMap[9]);
     void updateTwitchChatVotes();
+    void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

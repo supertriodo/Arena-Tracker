@@ -7,6 +7,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 {
     this->ui = ui;
     this->deckRatingHA = this->deckRatingLF = 0;
+    this->deckRatingHSR = 0;
     this->numCaptured = 0;
     this->extendedCapture = false;
     this->drafting = false;
@@ -22,6 +23,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->draftMethodHA = false;
     this->draftMethodLF = true;
     this->draftMethodHSR = false;
+    this->draftMethodAvgScore = LightForge;
     this->normalizedLF = true;
     this->twitchHandler = nullptr;
 
@@ -73,10 +75,18 @@ void DraftHandler::createScoreItems()
     scoreButtonHA->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
+    scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay, false);
+    scoreButtonHSR->setFixedHeight(width);
+    scoreButtonHSR->setFixedWidth(width);
+    scoreButtonHSR->setScore(0, true);
+    scoreButtonHSR->setToolTip("HSReplay winrate deck average");
+    scoreButtonHSR->hide();
+
     QHBoxLayout *scoresLayout = new QHBoxLayout();
     scoresLayout->addWidget(lavaButton);
     scoresLayout->addWidget(scoreButtonLF);
     scoresLayout->addWidget(scoreButtonHA);
+    scoresLayout->addWidget(scoreButtonHSR);
 
     ui->draftVerticalLayout->addLayout(scoresLayout);
     ui->draftVerticalLayout->addSpacing(10);
@@ -405,9 +415,10 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         lavaButton->setHidden(!patreonVersion);
         scoreButtonHA->setEnabled(false);
         scoreButtonLF->setEnabled(false);
+        scoreButtonHSR->setEnabled(false);
         lavaButton->setEnabled(false);
         lavaButton->reset();
-        updateDeckScore();
+        updateDeckScore();//Basicamente para updateLabelDeckScore
         updateScoresVisibility();
         updateAvgScoresVisibility();
 
@@ -432,6 +443,7 @@ void DraftHandler::clearLists(bool keepCounters)
     if(!keepCounters)//endDraft
     {
         deckRatingHA = deckRatingLF = 0;
+        deckRatingHSR = 0;
     }
 
     for(int i=0; i<3; i++)
@@ -592,6 +604,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
     {
         scoreButtonHA->setEnabled(true);
         scoreButtonLF->setEnabled(true);
+        scoreButtonHSR->setEnabled(true);
         lavaButton->setEnabled(true);
     }
 
@@ -617,6 +630,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 
             deckRatingHA += hearthArenaTiers[code];
             deckRatingLF += lightForgeTiers[code].score;
+            deckRatingHSR += cardsWinratesMap[this->arenaHero][code];
         }
     }
 
@@ -661,7 +675,8 @@ void DraftHandler::endDraft()
         int numCards = synergyHandler->draftedCardsCount();
         int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
         int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
-        showMessageDeckScore(deckScoreLFNormalized, deckScoreHA);
+        float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
+        showMessageDeckScore(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
     }
 
     clearLists(false);
@@ -941,6 +956,7 @@ void DraftHandler::pickCard(QString code)
         {
             scoreButtonHA->setEnabled(true);
             scoreButtonLF->setEnabled(true);
+            scoreButtonHSR->setEnabled(true);
             lavaButton->setEnabled(true);
         }
 
@@ -968,7 +984,7 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        if(cardIndex <= 2)   updateDeckScore(shownTierScoresHA[cardIndex], shownTierScoresLF[cardIndex]);
+        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
@@ -1128,25 +1144,28 @@ void DraftHandler::comboBoxChanged()
 }
 
 
-void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF)
+void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float cardRatingHSR)
 {
     if(!patreonVersion) return;
 
     int numCards = synergyHandler->draftedCardsCount();
     deckRatingHA += cardRatingHA;
     deckRatingLF += cardRatingLF;
+    deckRatingHSR += cardRatingHSR;
     int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
     int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
     int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
-    updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, numCards);
+    float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
+    updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, deckScoreHSR, numCards);
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
+    scoreButtonHSR->setScore(deckScoreHSR, true);
 
-    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF);
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF, deckScoreHSR);
 }
 
 
-void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, int numCards)
+void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards)
 {
     QString scoreText = "";
     if(draftMethodLF)   scoreText += " LF: " + QString::number(deckScoreLFNormalized);
@@ -1161,7 +1180,7 @@ void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScore
 }
 
 
-void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA)
+void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
 {
     QString scoreText = "";
     if(draftMethodLF)   scoreText += "LF: " + QString::number(deckScoreLFNormalized);
@@ -1185,6 +1204,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
     float tierScore[3] = {tierScore1, tierScore2, tierScore3};
     int maxCards[3] = {maxCard1, maxCard2, maxCard3};
     float maxRating = std::max(std::max(rating1,rating2),rating3);
+    Q_UNUSED(tierScore);
 
     for(int i=0; i<3; i++)
     {
@@ -1192,14 +1212,12 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         //Update score label
         if(draftMethod == LightForge)
         {
-            shownTierScoresLF[i] = tierScore[i];
             labelLFscore[i]->setText(QString::number(static_cast<int>(Utility::normalizeLF(ratings[i], this->normalizedLF))) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
-            shownTierScoresHA[i] = tierScore[i];
             labelHAscore[i]->setText(QString::number(static_cast<int>(ratings[i])) +
                                                 (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHAscore[i], draftMethod);
@@ -1566,10 +1584,11 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
-        //TODO draftMethodHSR en draftMechanicsWindow
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                        patreonVersion, this->draftMethodHA, this->draftMethodLF, this->normalizedLF);
+                                                        patreonVersion, this->normalizedLF);
+        draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         initDraftMechanicsWindowCounters();
+
         connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
                 this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
         connect(draftMechanicsWindow, SIGNAL(itemLeave()),
@@ -1728,18 +1747,28 @@ void DraftHandler::setLearningMode(bool value)
 }
 
 
+void DraftHandler::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
+{
+    this->draftMethodAvgScore = draftMethodAvgScore;
+
+    if(!isDrafting())   return;
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
+
+    updateAvgScoresVisibility();
+}
+
+
 void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
     this->draftMethodHA = draftMethodHA;
     this->draftMethodLF = draftMethodLF;
     this->draftMethodHSR = draftMethodHSR;
+
     if(!isDrafting())   return;
     if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR && patreonVersion);
-    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethod(draftMethodHA, draftMethodLF);
 
-    updateDeckScore();
+    updateDeckScore();//Basicamente para updateLabelDeckScore
     updateScoresVisibility();
-    updateAvgScoresVisibility();
 }
 
 
@@ -1773,24 +1802,26 @@ void DraftHandler::updateMinimumHeight()
 
 void DraftHandler::updateAvgScoresVisibility()
 {
-    //TODO draftMethodHSR
+    scoreButtonLF->hide();
+    scoreButtonHA->hide();
+    scoreButtonHSR->hide();
+
     if(patreonVersion)
     {
-        if(draftMethodHA)
+        switch(draftMethodAvgScore)
         {
-            scoreButtonLF->hide();
-            scoreButtonHA->show();
+            case LightForge:
+                scoreButtonLF->show();
+            break;
+            case HearthArena:
+                scoreButtonHA->show();
+            break;
+            case HSReplay:
+                scoreButtonHSR->show();
+            break;
+            default:
+            break;
         }
-        else
-        {
-            scoreButtonLF->setVisible(draftMethodLF);
-            scoreButtonHA->hide();
-        }
-    }
-    else
-    {
-        scoreButtonLF->hide();
-        scoreButtonHA->hide();
     }
 }
 

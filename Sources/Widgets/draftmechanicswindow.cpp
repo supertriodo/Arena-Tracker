@@ -4,12 +4,10 @@
 
 
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
-                                           bool patreonVersion, bool draftMethodHA, bool draftMethodLF, bool normalizedLF) :
+                                           bool patreonVersion, bool normalizedLF) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     this->patreonVersion = patreonVersion;
-    this->draftMethodHA = draftMethodHA;
-    this->draftMethodLF = draftMethodLF;
     scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -70,10 +68,17 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoreButtonHA->setScore(0, true);
     scoreButtonHA->setToolTip("HearthArena deck average");
 
+    scoreButtonHSR = new ScoreButton(centralWidget, Score_HSReplay, false);
+    scoreButtonHSR->setFixedHeight(scoreWidth);
+    scoreButtonHSR->setFixedWidth(scoreWidth);
+    scoreButtonHSR->setScore(0, true);
+    scoreButtonHSR->setToolTip("HSReplay winrate deck average");
+
     QHBoxLayout *scoresLayout = new QHBoxLayout();
     scoresLayout->addWidget(lavaButton);
     scoresLayout->addWidget(scoreButtonLF);
     scoresLayout->addWidget(scoreButtonHA);
+    scoresLayout->addWidget(scoreButtonHSR);
 
     //Patreon
     if(!patreonVersion)
@@ -164,6 +169,7 @@ DraftMechanicsWindow::~DraftMechanicsWindow()
     delete lavaButton;
     delete scoreButtonHA;
     delete scoreButtonLF;
+    delete scoreButtonHSR;
     delete helpMark;
 }
 
@@ -211,29 +217,37 @@ void DraftMechanicsWindow::setTheme()
 }
 
 
-void DraftMechanicsWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF)
+void DraftMechanicsWindow::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
 {
-    this->draftMethodHA = draftMethodHA;
-    this->draftMethodLF = draftMethodLF;
+    this->draftMethodAvgScore = draftMethodAvgScore;
     if(showingHelp) return;
 
-    if(draftMethodHA)
+    scoreButtonLF->hide();
+    scoreButtonHA->hide();
+    scoreButtonHSR->hide();
+
+    switch(draftMethodAvgScore)
     {
-        scoreButtonLF->hide();
-        scoreButtonHA->show();
-    }
-    else
-    {
-        scoreButtonLF->setVisible(draftMethodLF);
-        scoreButtonHA->hide();
+        case LightForge:
+            scoreButtonLF->show();
+        break;
+        case HearthArena:
+            scoreButtonHA->show();
+        break;
+        case HSReplay:
+            scoreButtonHSR->show();
+        break;
+        default:
+        break;
     }
 }
 
 
-void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF)
+void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR)
 {
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
+    scoreButtonHSR->setScore(deckScoreHSR, true);
 }
 
 
@@ -251,6 +265,7 @@ void DraftMechanicsWindow::showHelp()
                                  ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     scoreButtonLF->hide();
     scoreButtonHA->hide();
+    scoreButtonHSR->hide();
     lavaButton->hide();
 
     cardTypeCounters[V_MINION]->hide();
@@ -276,7 +291,7 @@ void DraftMechanicsWindow::hideHelp()
     centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
                                    ThemeHandler::bgDraftMechanicsFile() +
                                    ") 0 0 0 0 stretch stretch;border-width: 0px;}");
-    setDraftMethod(this->draftMethodHA, this->draftMethodLF);
+    setDraftMethodAvgScore(this->draftMethodAvgScore);
     lavaButton->show();
     helpMark->show();
 
