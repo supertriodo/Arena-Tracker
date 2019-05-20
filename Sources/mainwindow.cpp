@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
     createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler
 
+    downloadHSRCards();//-->DraftHandler -->SecretHandler
+
     readSettings();
     checkGamesLogDir();
     checkFirstRunNewVersion();
@@ -103,6 +105,10 @@ MainWindow::~MainWindow()
     if(ui != nullptr)                  delete ui;
     closeLogFile();
     QFontDatabase::removeAllApplicationFonts();
+
+    //Delete HSR maps
+    delete[] cardsPickratesMap;
+    delete[] cardsWinratesMap;
 }
 
 
@@ -357,7 +363,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else if(fullUrl == HSR_CARDS_PICKRATE)
         {
             emit pDebug("Extra: Cards pickrate --> Download Success.");
-            processHSRCardsPickrate(QJsonDocument::fromJson(reply->readAll()).object());
+            startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //Light Forge version
         else if(endUrl == "lfVersion.json")
@@ -538,14 +544,16 @@ void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 }
 
 
-void MainWindow::downloadHSRCardsPickrate()
+void MainWindow::downloadHSRCards()
 {
+    connect(&futureProcessHSRCards, SIGNAL(finished()), this, SLOT(finishProcessHSRCards()));
+
     emit pDebug("Extra: Cards pickrate --> Download from: " + QString(HSR_CARDS_PICKRATE));
     networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PICKRATE)));
 }
 
 
-void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass)
+void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass, HSRCardsMaps &hsrCardsMaps)
 {
     for(const QJsonValue card: jsonArray)
     {
@@ -553,26 +561,45 @@ void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, CardClass card
         QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
         float pickrate = static_cast<float>(cardObject.value("popularity").toDouble());
         float winrate = static_cast<float>(round(cardObject.value("winrate").toDouble() * 10)/10.0);
-        cardsPickratesMap[cardClass][code] = pickrate;
-        cardsWinratesMap[cardClass][code] = winrate;
+        hsrCardsMaps.cardsPickratesMap[cardClass][code] = pickrate;
+        hsrCardsMaps.cardsWinratesMap[cardClass][code] = winrate;
     }
 }
 
 
-void MainWindow::processHSRCardsPickrate(const QJsonObject &jsonObject)
+HSRCardsMaps MainWindow::processHSRCards(const QJsonObject &jsonObject)
 {
+    HSRCardsMaps hsrCardsMaps;
+    hsrCardsMaps.cardsPickratesMap = new QMap<QString, float>[9];
+    hsrCardsMaps.cardsWinratesMap = new QMap<QString, float>[9];
+
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    processHSRCardClass(data.value("DRUID").toArray(), DRUID);
-    processHSRCardClass(data.value("HUNTER").toArray(), HUNTER);
-    processHSRCardClass(data.value("MAGE").toArray(), MAGE);
-    processHSRCardClass(data.value("PALADIN").toArray(), PALADIN);
-    processHSRCardClass(data.value("PRIEST").toArray(), PRIEST);
-    processHSRCardClass(data.value("ROGUE").toArray(), ROGUE);
-    processHSRCardClass(data.value("SHAMAN").toArray(), SHAMAN);
-    processHSRCardClass(data.value("WARLOCK").toArray(), WARLOCK);
-    processHSRCardClass(data.value("WARRIOR").toArray(), WARRIOR);
+    processHSRCardClass(data.value("DRUID").toArray(), DRUID, hsrCardsMaps);
+    processHSRCardClass(data.value("HUNTER").toArray(), HUNTER, hsrCardsMaps);
+    processHSRCardClass(data.value("MAGE").toArray(), MAGE, hsrCardsMaps);
+    processHSRCardClass(data.value("PALADIN").toArray(), PALADIN, hsrCardsMaps);
+    processHSRCardClass(data.value("PRIEST").toArray(), PRIEST, hsrCardsMaps);
+    processHSRCardClass(data.value("ROGUE").toArray(), ROGUE, hsrCardsMaps);
+    processHSRCardClass(data.value("SHAMAN").toArray(), SHAMAN, hsrCardsMaps);
+    processHSRCardClass(data.value("WARLOCK").toArray(), WARLOCK, hsrCardsMaps);
+    processHSRCardClass(data.value("WARRIOR").toArray(), WARRIOR, hsrCardsMaps);
 
+    return hsrCardsMaps;
+}
+
+
+void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
+{
+    if(!futureProcessHSRCards.isRunning())  futureProcessHSRCards.setFuture(QtConcurrent::run(this, &MainWindow::processHSRCards, jsonObject));
+}
+
+
+void MainWindow::finishProcessHSRCards()
+{
+    HSRCardsMaps hsrCardsMaps = futureProcessHSRCards.result();
+    this->cardsPickratesMap = hsrCardsMaps.cardsPickratesMap;
+    this->cardsWinratesMap = hsrCardsMaps.cardsWinratesMap;
     secretsHandler->createSecretsByPickrate(cardsPickratesMap);
     draftHandler->setCardsWinratesMap(cardsWinratesMap);
 }
@@ -760,7 +787,6 @@ void MainWindow::createSecretsHandler()
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    downloadHSRCardsPickrate();
 }
 
 
@@ -4254,7 +4280,6 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Crear map winrates/pickrates en otra hebra, revisar inicio fluido
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
 //2)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .
