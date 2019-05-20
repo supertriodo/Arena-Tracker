@@ -32,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     draftLogFile = "";
     cardHeight = -1;
     cardsJsonLoaded = lightForgeJsonLoaded = allCardsDownloadNeeded = false;
+    patreonVersion = false;
+    transparency = AutoTransparent;
 
     logLoader = nullptr;
     gameWatcher = nullptr;
