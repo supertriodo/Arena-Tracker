@@ -634,7 +634,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 
             deckRatingHA += hearthArenaTiers[code];
             deckRatingLF += lightForgeTiers[code].score;
-            deckRatingHSR += cardsWinratesMap[this->arenaHero][code];
+            deckRatingHSR += cardsPlayedWinratesMap[this->arenaHero][code];
         }
     }
 
@@ -988,7 +988,7 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsWinratesMap[this->arenaHero][code]);
+        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsPlayedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
@@ -1092,11 +1092,14 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    HearthArena);
 
     //HSReplay
-    float frating1 = cardsWinratesMap[this->arenaHero][codes[0]];
-    float frating2 = cardsWinratesMap[this->arenaHero][codes[1]];
-    float frating3 = cardsWinratesMap[this->arenaHero][codes[2]];
-    showNewRatings(frating1, frating2, frating3,
-                   frating1, frating2, frating3,
+    float ratingPlayed1 = cardsPlayedWinratesMap[this->arenaHero][codes[0]];
+    float ratingPlayed2 = cardsPlayedWinratesMap[this->arenaHero][codes[1]];
+    float ratingPlayed3 = cardsPlayedWinratesMap[this->arenaHero][codes[2]];
+    float ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
+    float ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
+    float ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
+    showNewRatings(ratingPlayed1, ratingPlayed2, ratingPlayed3,
+                   ratingIncluded1, ratingIncluded2, ratingIncluded3,
                    -1, -1, -1,
                    HSReplay);
 
@@ -1214,7 +1217,6 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
     float tierScore[3] = {tierScore1, tierScore2, tierScore3};
     int maxCards[3] = {maxCard1, maxCard2, maxCard3};
     float maxRating = std::max(std::max(rating1,rating2),rating3);
-    Q_UNUSED(tierScore);
 
     for(int i=0; i<3; i++)
     {
@@ -1227,7 +1229,8 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         }
         else if(draftMethod == HSReplay)
         {
-            labelHSRscore[i]->setText(QString::number(static_cast<double>(ratings[i])) + '%');
+            labelHSRscore[i]->setText(QString::number(static_cast<double>(ratings[i])) + "% -- " +
+                                      QString::number(static_cast<double>(tierScore[i])) + "%");
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHSRscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
@@ -1983,9 +1986,15 @@ void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
 }
 
 
-void DraftHandler::setCardsWinratesMap(QMap<QString, float> cardsWinratesMap[9])
+void DraftHandler::setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9])
 {
-    this->cardsWinratesMap = cardsWinratesMap;
+    this->cardsIncludedWinratesMap = cardsIncludedWinratesMap;
+}
+
+
+void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9])
+{
+    this->cardsPlayedWinratesMap = cardsPlayedWinratesMap;
 }
 
 

@@ -30,7 +30,9 @@
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
-#define HSR_CARDS_PICKRATE "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
+//#define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
+#define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=LAST_14_DAYS"
+#define HSR_CARDS_PLAYED "https://hsreplay.net/api/v1/analytics/query/card_played_popularity_report/?GameType=ARENA&TimeRange=LAST_14_DAYS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
@@ -106,8 +108,10 @@ private:
     bool cardsJsonLoaded, lightForgeJsonLoaded, allCardsDownloadNeeded;
     DraftMethod draftMethodAvgScore;
     QMap<QString, float> *cardsPickratesMap;
-    QMap<QString, float> *cardsWinratesMap;
-    QFutureWatcher<HSRCardsMaps> futureProcessHSRCards;
+    QMap<QString, float> *cardsIncludedWinratesMap;
+    QMap<QString, float> *cardsPlayedWinratesMap;
+    QFutureWatcher<HSRCardsMaps> futureProcessHSRCardsIncluded;
+    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayed;
 
 
 
@@ -202,16 +206,18 @@ private:
     void updateTabIcons();
     void downloadHSRHeroesWinrate();
     void processHSRHeroesWinrate(const QJsonObject &jsonObject);
-    void downloadHSRCards();
-    HSRCardsMaps processHSRCards(const QJsonObject &jsonObject);
     void deleteTwitchTester();
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
     void getArenaSets(QStringList &arenaSets, const QStringList &codeList);
-    void processHSRCardClass(const QJsonArray &jsonArray, CardClass cardClass, HSRCardsMaps &hsrCardsMaps);
+    void processHSRCardClass(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap);
     void updateDraftMethodUnchecked();
-    void startProcessHSRCards(const QJsonObject &jsonObject);
+    void downloadHSRCards();
+    HSRCardsMaps processHSRCardsIncluded(const QJsonObject &jsonObject);
+    void startProcessHSRCardsIncluded(const QJsonObject &jsonObject);
+    QMap<QString, float> * processHSRCardsPlayed(const QJsonObject &jsonObject);
+    void startProcessHSRCardsPlayed(const QJsonObject &jsonObject);
 
 //Override events
 protected:
@@ -309,7 +315,8 @@ private slots:
     void twitchTesterConnectionOk(bool ok);
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
-    void finishProcessHSRCards();
+    void finishProcessHSRCardsIncluded();
+    void finishProcessHSRCardsPlayed();
 };
 
 #endif // MAINWINDOW_H

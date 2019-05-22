@@ -90,7 +90,8 @@ private:
     bool normalizedLF;
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
-    QMap<QString, float> *cardsWinratesMap;
+    QMap<QString, float> *cardsIncludedWinratesMap;
+    QMap<QString, float> *cardsPlayedWinratesMap;
     TwitchHandler *twitchHandler;
 
 
@@ -166,7 +167,8 @@ public:
     void testSynergies();
     void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
-    void setCardsWinratesMap(QMap<QString, float> cardsWinratesMap[9]);
+    void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9]);
+    void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9]);
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
 
