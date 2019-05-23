@@ -8,6 +8,8 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
 * Draft your arena with HearthArena or LightForge advice, or why not both.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
+* [Patreon only:](https://www.patreon.com/triodo) Draft your arena with HSReplay winrates of cards.
+![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
 * [Patreon only:](https://www.patreon.com/triodo) While drafting, check the synergies of the next picks with the rest of your deck.
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
 * [Patreon only:](https://www.patreon.com/triodo) While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
