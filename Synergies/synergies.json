@@ -949,7 +949,7 @@
 "FP1_021" : [ "aoeGen", "pingGen", "damageMinionsGen", "reachGen", "enrageSyn" ],
 "FP1_022" : [ "deathrattle", "demonSyn" ],
 "FP1_023" : [ "deathrattle", "healthBuffGen" ],
-"FP1_024" : [ "aoeGen", "pingGen", "deathrattle", "taunt", "enrageSyn" ],
+"FP1_024" : [ "deathrattle", "taunt", "enrageSyn" ],
 "FP1_025" : [ "deathrattleGoodAllSyn" ],
 "FP1_026" : [ "deathrattle", "silenceOwnSyn", "returnGen" ],
 "FP1_027" : [ "attackBuffSyn", "healthBuffSyn" ],

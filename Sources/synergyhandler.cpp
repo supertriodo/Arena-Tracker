@@ -3423,7 +3423,7 @@ REGLAS
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle (random o no)
-+aoeGen puede ser deathrattle random, quitaremos manualmente excepciones como el tentaculo de n'zoth
++aoeGen puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen
 +pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
