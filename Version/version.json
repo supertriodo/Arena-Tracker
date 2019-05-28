@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73","v6.74","v6.75","v6.76","v6.8","v6.81"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.81/Arena.Tracker.v6.81.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.81/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.81/Arena.Tracker.v6.81.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v6.81/Arena.Tracker.v6.81.Windows.zip",
-	"log": "AT now use https://hsreplay.net pickrates of secrets to decide the order in which AT shows the options when an unknown secret is played in arena.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v6.81'>github</a>"
+	"versionFree": ["v6.32","v6.33","v6.4","v6.5","v6.51","v6.6","v6.61","v6.7","v6.71","v6.72","v6.73","v6.74","v6.75","v6.76","v6.8","v6.81","v7.0"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.0/Arena.Tracker.v7.0.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.0/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.0/Arena.Tracker.v7.0.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.0/Arena.Tracker.v7.0.Windows.zip",
+	"log": "AT adds HSReplay.net winrates of cards as a new score while drafting. This is a premium only feature, thanks to all AT patrons for all your support!<br><br>The assistant that will be used for the average deck score during a draft will be the last one activated through config tab. You can change between the 3 (LightForge, HearthArena and HSReplay) at any moment during a draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.0'>github</a>"
 }
