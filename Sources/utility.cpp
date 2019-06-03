@@ -898,6 +898,7 @@ void Utility::checkTierlistsCount()
     QString allHeroes[] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
     for(const QString &heroString: allHeroes)
     {
+        qDebug()<<endl<<"-----"<<heroString<<"-----";
         QStringList lfCodes, haCodes;
 
         //LightForge Codes List
@@ -935,10 +936,10 @@ void Utility::checkTierlistsCount()
         {
             QString code = Utility::cardEnCodeFromName(name);
             if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);
-            haCodes.append(code);
+            if(code.isEmpty())  qDebug()<<"HearthArena wrong name:"<<name;
+            else                haCodes.append(code);
         }
 
-        qDebug()<<endl<<"-----"<<heroString<<"-----";
         qDebug()<<heroString<<"LightForge count:"<<lfCodes.count();
         qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
 
