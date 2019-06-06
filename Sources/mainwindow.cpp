@@ -4271,8 +4271,8 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> DALARAN
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2019-06-03T11:30:00Z"
-//Update Json HA tierlist --> HATLsed.sh --- 6/3/19: Rise of the Mechs
+//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2019-06-04T00:00:01Z"
+//Update Json HA tierlist --> HATLsed.sh --- 6/4/19: Re-introduce previously banned cards
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
