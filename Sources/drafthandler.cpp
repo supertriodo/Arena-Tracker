@@ -2005,6 +2005,7 @@ void DraftHandler::buildHeroCodesList()
     heroCodesList.append("HERO_02");
     heroCodesList.append("HERO_02a");
     heroCodesList.append("HERO_02b");
+    heroCodesList.append("HERO_02c");
     heroCodesList.append("HERO_03");
     heroCodesList.append("HERO_03a");
     heroCodesList.append("HERO_04");
