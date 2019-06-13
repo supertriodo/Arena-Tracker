@@ -378,18 +378,21 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         {
             downloadLightForgeJson(QJsonDocument::fromJson(reply->readAll()).object());
         }
-        //Light Forge original json
+#ifdef QT_DEBUG
+        //Light Forge (Debug)
         else if(fullUrl == LIGHTFORGE_JSON_URL)
         {
-            emit pDebug("Extra: Json LightForge original --> Download Success.");
+            qDebug()<<"DEBUG: Json LightForge original --> Download Success.";
             QByteArray jsonData = reply->readAll();
-            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
-            //Si reactivamos el lightforge original tendremos que decidir cuando forzamos el download de todas las cartas
-            //Seria bueno solo hacerlo al detectar un cambio en lfVersion asi yo decido cuando se hace, en lugar de en todos los arranques
-            //allCardsDownloadNeeded = true;
-            lightForgeJsonLoaded = true;
-            checkArenaCards();
+            saveLightForgeJsonOriginal(jsonData);
         }
+        else if(fullUrl == LIGHTFORGE_CARDMAP_URL)
+        {
+            qDebug()<<"DEBUG: Card Map LightForge original --> Download Success.";
+            QByteArray jsonData = reply->readAll();
+            saveCardmapLightForgeOriginal(jsonData);
+        }
+#endif
         //Light Forge json
         else if(endUrl == "lightForge.json")
         {
@@ -672,45 +675,35 @@ void MainWindow::downloadLightForgeVersion()
 
 void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 {
-    bool downloadOriginal = jsonObject.value("lfDownloadOriginal").toBool();
+    int version = jsonObject.value("lfVersion").toInt();
+    bool needDownload = false;
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    int storedVersion = settings.value("lfVersion", 0).toInt();
 
-    if(downloadOriginal)
+    QFileInfo fileInfo(Utility::extraPath() + "/lightForge.json");
+    if(!fileInfo.exists())          needDownload = true;
+    if(version != storedVersion)    needDownload = true;
+
+    emit pDebug("Extra: Json LightForge github: Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+    if(needDownload)
     {
-        networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
-        emit pDebug("Extra: Json LightForge original --> Download from: " + QString(LIGHTFORGE_JSON_URL));
+        if(fileInfo.exists())
+        {
+            QFile file(Utility::extraPath() + "/lightForge.json");
+            file.remove();
+            emit pDebug("Extra: Json LightForge removed.");
+        }
+
+        settings.setValue("lfVersion", version);
+        networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
+        emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
     }
     else
     {
-        int version = jsonObject.value("lfVersion").toInt();
-        bool needDownload = false;
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        int storedVersion = settings.value("lfVersion", 0).toInt();
-
-        QFileInfo fileInfo(Utility::extraPath() + "/lightForge.json");
-        if(!fileInfo.exists())          needDownload = true;
-        if(version != storedVersion)    needDownload = true;
-
-        emit pDebug("Extra: Json LightForge github: Local(" + QString::number(storedVersion) + ") - "
-                            "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
-
-        if(needDownload)
-        {
-            if(fileInfo.exists())
-            {
-                QFile file(Utility::extraPath() + "/lightForge.json");
-                file.remove();
-                emit pDebug("Extra: Json LightForge removed.");
-            }
-
-            settings.setValue("lfVersion", version);
-            networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
-            emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
-        }
-        else
-        {
-            lightForgeJsonLoaded = true;
-            checkArenaCards();
-        }
+        lightForgeJsonLoaded = true;
+        checkArenaCards();
     }
 }
 
@@ -4123,6 +4116,54 @@ void MainWindow::showPremiumDialog()
 }
 
 
+void MainWindow::downloadLightForgeJsonOriginal()
+{
+    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
+    qDebug()<<"DEBUG: Json LightForge original --> Download from:" << QString(LIGHTFORGE_JSON_URL);
+}
+
+
+void MainWindow::saveLightForgeJsonOriginal(const QByteArray &jsonData)
+{
+    QString originalLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/originalLF.json";
+    Utility::dumpOnFile(jsonData, originalLF);
+
+    QJsonObject jsonObject = QJsonDocument::fromJson(jsonData).object();
+    QString createdOn = jsonObject.value("CreatedOn").toString();
+    QString cardMapUrl = jsonObject.value("CardMapLink").toString();
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString lightforgeCreatedon = settings.value("lightforgeCreatedon", "").toString();
+
+    //Download card map
+    if(cardMapUrl == LIGHTFORGE_CARDMAP_URL)
+    {
+        if(lightforgeCreatedon != createdOn)
+        {
+            settings.setValue("lightforgeCreatedon", createdOn);
+            networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_CARDMAP_URL)));
+            qDebug()<<"DEBUG: Lightforge json updated" << lightforgeCreatedon << "<-->" << createdOn;
+            qDebug()<<"DEBUG: Card Map LightForge original --> Download from:" << QString(LIGHTFORGE_CARDMAP_URL);
+        }
+        else
+        {
+            qDebug()<<"DEBUG: Lightforge json unchanged" << lightforgeCreatedon << "<-->" << createdOn;
+        }
+    }
+    else
+    {
+        qDebug()<<"DEBUG WARNING: Card Map:" << cardMapUrl << "<-->" << QString(LIGHTFORGE_CARDMAP_URL);
+    }
+}
+
+
+void MainWindow::saveCardmapLightForgeOriginal(const QByteArray &jsonData)
+{
+    QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
+    Utility::dumpOnFile(jsonData, cardMapLF);
+    Utility::fixLightforgeTierlist();
+}
+
+
 void MainWindow::testPlan()
 {
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
@@ -4206,14 +4247,14 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-//    Utility::fixLightforgeTierlist();
-    Utility::checkTierlistsCount();
+    downloadLightForgeJsonOriginal();
+//    Utility::checkTierlistsCount();
 }
 
 
 void MainWindow::testDelay()
 {
-//    testTierlists();
+    testTierlists();
 //    testSynergies();
 //    Utility::resizeGoldenCards();
 }
@@ -4271,12 +4312,14 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> DALARAN
-//Update Json LF tierlist --> Utility::fix --- "CreatedOn":"2019-06-04T00:00:01Z"
+//Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> HATLsed.sh --- 6/4/19: Re-introduce previously banned cards
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList (requiere forzar redownload cartas)
+//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+    //requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
+    //guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
 //Update secrets
 //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)

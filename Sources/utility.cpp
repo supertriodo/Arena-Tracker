@@ -865,7 +865,8 @@ void Utility::fixLightforgeTierlist()
 {
     QString originalLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/originalLF.json";
     QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
-    QString fixedLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForge.json";
+    QString fixedLF1 = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/lightForge.json";
+    QString fixedLF2 = Utility::extraPath() + "/lightForge.json";
 
     QFile tierList(originalLF);
     tierList.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -885,11 +886,13 @@ void Utility::fixLightforgeTierlist()
         data.replace(lfCode, code);
     }
 
-    QFile tierListFixed(fixedLF);
+    QFile tierListFixed(fixedLF1);
     tierListFixed.open(QIODevice::WriteOnly | QIODevice::Text);
     tierListFixed.write(data.toUtf8());
     tierListFixed.close();
-    qDebug()<<"lightForge.json created";
+    QFile::remove(fixedLF2);
+    QFile::copy(fixedLF1, fixedLF2);
+    qDebug()<<"DEBUG: lightForge.json created (source and local)";
 }
 
 

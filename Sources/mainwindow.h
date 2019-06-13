@@ -29,6 +29,7 @@
 #define DEFAULT_THEME "Classic"
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
+#define LIGHTFORGE_CARDMAP_URL "http://thelightforge.com/api/TierList/CardMap"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
 //#define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
 #define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=LAST_14_DAYS"
@@ -218,6 +219,9 @@ private:
     void startProcessHSRCardsIncluded(const QJsonObject &jsonObject);
     QMap<QString, float> * processHSRCardsPlayed(const QJsonObject &jsonObject);
     void startProcessHSRCardsPlayed(const QJsonObject &jsonObject);
+    void downloadLightForgeJsonOriginal();
+    void saveLightForgeJsonOriginal(const QByteArray &jsonData);
+    void saveCardmapLightForgeOriginal(const QByteArray &jsonData);
 
 //Override events
 protected:
