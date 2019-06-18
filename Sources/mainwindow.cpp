@@ -392,6 +392,13 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             QByteArray jsonData = reply->readAll();
             saveCardmapLightForgeOriginal(jsonData);
         }
+        //Hearth Arena (Debug)
+        else if(fullUrl == HEARTHARENA_TIERLIST_URL)
+        {
+            qDebug()<<"DEBUG: Heartharena Tierlist --> Download Success.";
+            QByteArray html = reply->readAll();
+            saveHearthArenaTierlistOriginal(html);
+        }
 #endif
         //Light Forge json
         else if(endUrl == "lightForge.json")
@@ -4161,6 +4168,40 @@ void MainWindow::saveCardmapLightForgeOriginal(const QByteArray &jsonData)
     QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
     Utility::dumpOnFile(jsonData, cardMapLF);
     Utility::fixLightforgeTierlist();
+    downloadHearthArenaTierlistOriginal();
+}
+
+
+void MainWindow::downloadHearthArenaTierlistOriginal()
+{
+    networkManager->get(QNetworkRequest(QUrl(HEARTHARENA_TIERLIST_URL)));
+    qDebug()<<"DEBUG: Heartharena Tierlist --> Download from:" << QString(HEARTHARENA_TIERLIST_URL);
+}
+
+
+void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
+{
+    QString haDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/Json extract/";
+    Utility::dumpOnFile(html, haDir + "haTL.html");
+
+    //Lanza script HATLsed.sh
+    QProcess p;
+    p.start("\"/home/triodo/Documentos/ArenaTracker/HearthArena/Json extract/HATLsed.sh\"");
+    p.waitForFinished(-1);
+
+    //Copy to local and source
+    QString fixedLF1 = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/Json extract/hearthArena.json";
+    QString fixedLF2 = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/hearthArena.json";
+    QString fixedLF3 = Utility::extraPath() + "/hearthArena.json";
+    QFile::remove(fixedLF2);
+    QFile::remove(fixedLF3);
+    QFile::copy(fixedLF1, fixedLF2);
+    QFile::copy(fixedLF1, fixedLF3);
+    QFile::remove(fixedLF1);
+
+    qDebug()<<"DEBUG: heartharena.json created (source and local)";
+
+    Utility::checkTierlistsCount();
 }
 
 
@@ -4248,6 +4289,7 @@ void MainWindow::testSynergies()
 void MainWindow::testTierlists()
 {
     downloadLightForgeJsonOriginal();
+//    downloadHearthArenaTierlistOriginal();
 //    Utility::checkTierlistsCount();
 }
 
@@ -4313,7 +4355,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Utility::isFromStandardSet(QString code) --> DALARAN
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
-//Update Json HA tierlist --> HATLsed.sh --- 6/4/19: Re-introduce previously banned cards
+//Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
 //Comparar tier lists con Utility::check
 //Subir cartas al github.
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)

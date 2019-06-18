@@ -886,6 +886,7 @@ void Utility::fixLightforgeTierlist()
         data.replace(lfCode, code);
     }
 
+    //Copy to local and source
     QFile tierListFixed(fixedLF1);
     tierListFixed.open(QIODevice::WriteOnly | QIODevice::Text);
     tierListFixed.write(data.toUtf8());
