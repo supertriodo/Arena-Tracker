@@ -1451,6 +1451,25 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
 }
 
 
+void SynergyHandler::debugMissingSynergiesAllSets()
+{
+    initSynergyCodes();
+    int num = 0;
+    for(const QString &code: Utility::getWildCodes())
+    {
+        if(!code.startsWith("HERO_") && !synergyCodes.contains(code))
+        {
+            debugSynergiesCode(code, ++num);
+        }
+    }
+
+    if(num == 0)
+    {
+        qDebug()<<endl<<"NO MISSING SYNERGIES";
+    }
+}
+
+
 void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 {
     QStringList mec;

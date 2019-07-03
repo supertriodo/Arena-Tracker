@@ -4278,6 +4278,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Forbidden Words");
 //    qDebug()<<Utility::getCardAttribute("DAL_605", "set").toString();
 
+//    draftHandler->debugMissingSynergiesAllSets();
 //    draftHandler->debugSynergiesSet("DALARAN", true);
 //    draftHandler->debugSynergiesCode("DAL_400");
 //    draftHandler->testSynergies();

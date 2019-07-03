@@ -1956,6 +1956,12 @@ void DraftHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
 }
 
 
+void DraftHandler::debugMissingSynergiesAllSets()
+{
+    synergyHandler->debugMissingSynergiesAllSets();
+}
+
+
 void DraftHandler::debugSynergiesCode(const QString &code)
 {
     synergyHandler->debugSynergiesCode(code);

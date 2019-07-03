@@ -162,6 +162,7 @@ public:
     QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
     void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
+    void debugMissingSynergiesAllSets();
     void debugSynergiesCode(const QString &code);
     void checkSynergyCodes();
     void testSynergies();

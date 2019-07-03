@@ -29,6 +29,7 @@ private:
 public:
     void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code, int num=0);
+    void debugMissingSynergiesAllSets();
     bool isValidSynergyCode(const QString &mechanic);
     void testSynergies();
     void checkSynergyCodes();
