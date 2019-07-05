@@ -374,11 +374,6 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Cards played winrate --> Download Success.");
             startProcessHSRCardsPlayed(QJsonDocument::fromJson(reply->readAll()).object());
         }
-        //Light Forge version
-        else if(endUrl == "lfVersion.json")
-        {
-            downloadLightForgeJson(QJsonDocument::fromJson(reply->readAll()).object());
-        }
 #ifdef QT_DEBUG
         //Light Forge (Debug)
         else if(fullUrl == LIGHTFORGE_JSON_URL)
@@ -401,6 +396,11 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             saveHearthArenaTierlistOriginal(html);
         }
 #endif
+        //Light Forge version
+        else if(endUrl == "lfVersion.json")
+        {
+            downloadLightForgeJson(QJsonDocument::fromJson(reply->readAll()).object());
+        }
         //Light Forge json
         else if(endUrl == "lightForge.json")
         {
@@ -697,6 +697,35 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 
     if(needDownload)
     {
+        bool redownloadCards = jsonObject.value("redownloadCards").toBool(false);
+        bool redownloadHeroes = jsonObject.value("redownloadHeroes").toBool(false);
+        if(redownloadCards)
+        {
+            removeHSCards();
+            Utility::createDir(Utility::hscardsPath());
+        }
+        else if(redownloadHeroes)
+        {
+            QDir dir(Utility::hscardsPath());
+            dir.setFilter(QDir::Files);
+            dir.setSorting(QDir::Time);
+            QStringList filterName;
+            filterName << "*.png";
+            dir.setNameFilters(filterName);
+
+            QStringList files = dir.entryList();
+
+            for(const QString &file: files)
+            {
+                if(file.startsWith("HERO_0"))
+                {
+                    dir.remove(file);
+                    pDebug(file + " removed.");
+                }
+            }
+        }
+
+        //Remove lightForge.json
         if(fileInfo.exists())
         {
             QFile file(Utility::extraPath() + "/lightForge.json");
@@ -704,6 +733,7 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
             emit pDebug("Extra: Json LightForge removed.");
         }
 
+        //Download lightForge.json
         settings.setValue("lfVersion", version);
         networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
         emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
@@ -2484,12 +2514,7 @@ void MainWindow::createDataDir()
     Utility::createDir(Utility::dataPath());
     if(REMOVE_CARDS_ON_VERSION_UPDATE)  removeHSCards();//Redownload HSCards en esta version
     if(REMOVE_EXTRA_ON_VERSION_UPDATE)  removeExtra();//Redownload Extra en esta version
-    if(Utility::createDir(Utility::hscardsPath()))
-    {
-        //Necesitamos bajar todas las cartas
-        allCardsDownloadNeeded = true;
-        //checkArenaCards(); Con seguridad cardsjson no se ha cargado
-    }
+    if(Utility::createDir(Utility::hscardsPath()))  allCardsDownloadNeeded = true;
     Utility::createDir(Utility::gameslogPath());
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());

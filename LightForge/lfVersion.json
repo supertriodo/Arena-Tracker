@@ -1,4 +1,6 @@
 {
   "lfVersion": 27,
-  "lfDownloadOriginal": false
+  "lfDownloadOriginal": false,
+  "redownloadCards": false,
+  "redownloadHeroes": false
 }
