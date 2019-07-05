@@ -175,7 +175,7 @@ private:
     int getAutoTamCard();
     void createNetworkManager();
     void initCardsJson();
-    void removeHSCards();   //Desactivado: Remove HSCards when upgrading version
+    void removeHSCards(bool forceRemove = false);
     void removeExtra();
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void askLinuxShortcut();
