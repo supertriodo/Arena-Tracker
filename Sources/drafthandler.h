@@ -140,12 +140,12 @@ private:
     void updateAvgScoresVisibility();
     void endHeroDraft();
     void showNewHeroes();
-    void buildHeroCodesList();
     void createTwitchHandler();
     void deleteTwitchHandler();
     QString getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
 
 public:
+    void buildHeroCodesList();
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);

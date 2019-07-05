@@ -321,6 +321,7 @@ void MainWindow::createCardsJsonMap(QByteArray &jsonData)
     }
 
     cardsJsonLoaded = true;
+    if(draftHandler != nullptr) draftHandler->buildHeroCodesList();
     checkArenaCards();
 }
 
@@ -830,6 +831,7 @@ void MainWindow::createDraftHandler()
             draftHandler, SLOT(minimizeScoreWindow()));
 
     downloadHSRHeroesWinrate();
+    if(cardsJsonLoaded) draftHandler->buildHeroCodesList();
 }
 
 

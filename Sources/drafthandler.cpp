@@ -35,7 +35,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
 
     createScoreItems();
     createSynergyHandler();
-    buildHeroCodesList();
     completeUI();
 
     connect(&futureFindScreenRects, SIGNAL(finished()), this, SLOT(finishFindScreenRects()));
@@ -2006,31 +2005,17 @@ void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWin
 
 void DraftHandler::buildHeroCodesList()
 {
-    heroCodesList.append("HERO_01");
-    heroCodesList.append("HERO_01a");
-    heroCodesList.append("HERO_02");
-    heroCodesList.append("HERO_02a");
-    heroCodesList.append("HERO_02b");
-    heroCodesList.append("HERO_02c");
-    heroCodesList.append("HERO_03");
-    heroCodesList.append("HERO_03a");
-    heroCodesList.append("HERO_04");
-    heroCodesList.append("HERO_04a");
-    heroCodesList.append("HERO_04b");
-    heroCodesList.append("HERO_04c");
-    heroCodesList.append("HERO_05");
-    heroCodesList.append("HERO_05a");
-    heroCodesList.append("HERO_06");
-    heroCodesList.append("HERO_06a");
-    heroCodesList.append("HERO_07");
-    heroCodesList.append("HERO_07a");
-    heroCodesList.append("HERO_07b");
-    heroCodesList.append("HERO_08");
-    heroCodesList.append("HERO_08a");
-    heroCodesList.append("HERO_08b");
-    heroCodesList.append("HERO_09");
-    heroCodesList.append("HERO_09a");
-    heroCodesList.append("HERO_09b");
+    heroCodesList.clear();
+
+    for(const QString &code: Utility::getSetCodes("CORE"))
+    {
+        if(code.startsWith("HERO_0"))   heroCodesList.append(code);
+    }
+    for(const QString &code: Utility::getSetCodes("HERO_SKINS"))
+    {
+        if(code.startsWith("HERO_0"))   heroCodesList.append(code);
+    }
+//    qDebug()<<endl<<"HERO CODES!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
 
     //Si añadimos uno necesitamos borrar todas las cartas y forzar un redownload
     //ya que si alguien ha necesitado el retrato mientras no estaba en el github
