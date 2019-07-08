@@ -225,6 +225,7 @@ private:
     void saveCardmapLightForgeOriginal(const QByteArray &jsonData);
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html);
+    bool checkHeroPortrait(QString code);
 
 //Override events
 protected:
@@ -269,6 +270,7 @@ private slots:
     void testPlan();
     void testDelay();
     void testSynergies();
+    void testHeroPortraits();
     void testTierlists();
     void confirmNewArenaDraft(QString hero);
     void transparentAlways();

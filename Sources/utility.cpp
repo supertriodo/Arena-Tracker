@@ -893,7 +893,7 @@ void Utility::fixLightforgeTierlist()
     tierListFixed.close();
     QFile::remove(fixedLF2);
     QFile::copy(fixedLF1, fixedLF2);
-    qDebug()<<"DEBUG: lightForge.json created (source and local)";
+    qDebug()<<"DEBUG TL: lightForge.json created (source and local)";
 }
 
 

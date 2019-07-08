@@ -378,20 +378,20 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         //Light Forge (Debug)
         else if(fullUrl == LIGHTFORGE_JSON_URL)
         {
-            qDebug()<<"DEBUG: Json LightForge original --> Download Success.";
+            qDebug()<<"DEBUG TL: Json LightForge original --> Download Success.";
             QByteArray jsonData = reply->readAll();
             saveLightForgeJsonOriginal(jsonData);
         }
         else if(fullUrl == LIGHTFORGE_CARDMAP_URL)
         {
-            qDebug()<<"DEBUG: Card Map LightForge original --> Download Success.";
+            qDebug()<<"DEBUG TL: Card Map LightForge original --> Download Success.";
             QByteArray jsonData = reply->readAll();
             saveCardmapLightForgeOriginal(jsonData);
         }
         //Hearth Arena (Debug)
         else if(fullUrl == HEARTHARENA_TIERLIST_URL)
         {
-            qDebug()<<"DEBUG: Heartharena Tierlist --> Download Success.";
+            qDebug()<<"DEBUG TL: Heartharena Tierlist --> Download Success.";
             QByteArray html = reply->readAll();
             saveHearthArenaTierlistOriginal(html);
         }
@@ -4153,7 +4153,7 @@ void MainWindow::showPremiumDialog()
 void MainWindow::downloadLightForgeJsonOriginal()
 {
     networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
-    qDebug()<<"DEBUG: Json LightForge original --> Download from:" << QString(LIGHTFORGE_JSON_URL);
+    qDebug()<<"DEBUG TL: Json LightForge original --> Download from:" << QString(LIGHTFORGE_JSON_URL);
 }
 
 
@@ -4175,17 +4175,17 @@ void MainWindow::saveLightForgeJsonOriginal(const QByteArray &jsonData)
         {
             settings.setValue("lightforgeCreatedon", createdOn);
             networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_CARDMAP_URL)));
-            qDebug()<<"DEBUG: Lightforge json updated" << lightforgeCreatedon << "<-->" << createdOn;
-            qDebug()<<"DEBUG: Card Map LightForge original --> Download from:" << QString(LIGHTFORGE_CARDMAP_URL);
+            qDebug()<<"DEBUG TL: Lightforge json updated" << lightforgeCreatedon << "<-->" << createdOn;
+            qDebug()<<"DEBUG TL: Card Map LightForge original --> Download from:" << QString(LIGHTFORGE_CARDMAP_URL);
         }
         else
         {
-            qDebug()<<"DEBUG: Lightforge json unchanged" << lightforgeCreatedon << "<-->" << createdOn;
+            qDebug()<<"DEBUG TL: OK - Lightforge json unchanged" << lightforgeCreatedon << "<-->" << createdOn;
         }
     }
     else
     {
-        qDebug()<<"DEBUG WARNING: Card Map:" << cardMapUrl << "<-->" << QString(LIGHTFORGE_CARDMAP_URL);
+        qDebug()<<"DEBUG TL WARNING: Card Map:" << cardMapUrl << "<-->" << QString(LIGHTFORGE_CARDMAP_URL);
     }
 }
 
@@ -4202,7 +4202,7 @@ void MainWindow::saveCardmapLightForgeOriginal(const QByteArray &jsonData)
 void MainWindow::downloadHearthArenaTierlistOriginal()
 {
     networkManager->get(QNetworkRequest(QUrl(HEARTHARENA_TIERLIST_URL)));
-    qDebug()<<"DEBUG: Heartharena Tierlist --> Download from:" << QString(HEARTHARENA_TIERLIST_URL);
+    qDebug()<<"DEBUG TL: Heartharena Tierlist --> Download from:" << QString(HEARTHARENA_TIERLIST_URL);
 }
 
 
@@ -4226,9 +4226,20 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
     QFile::copy(fixedLF1, fixedLF3);
     QFile::remove(fixedLF1);
 
-    qDebug()<<"DEBUG: heartharena.json created (source and local)";
+    qDebug()<<"DEBUG TL: heartharena.json created (source and local)";
 
     Utility::checkTierlistsCount();
+}
+
+
+bool MainWindow::checkHeroPortrait(QString code)
+{
+    if(code.isEmpty())  return false;
+
+    QFileInfo cardFile(QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneCards/" + code + ".png");
+
+    if(!cardFile.exists())  return false;
+    return true;
 }
 
 
@@ -4300,6 +4311,21 @@ void MainWindow::test()
 }
 
 
+void MainWindow::testHeroPortraits()
+{
+    bool everythingOk = true;
+    for(const QString &code: draftHandler->getAllHeroCodes())
+    {
+        if(!checkHeroPortrait(code))
+        {
+            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "missing.";
+            everythingOk = false;
+        }
+    }
+    if(everythingOk)    qDebug()<<"DEBUG HEROES: OK - All portraits in place.";
+}
+
+
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Forbidden Words");
@@ -4324,6 +4350,8 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDelay()
 {
+    qDebug()<<endl;
+    testHeroPortraits();
     testTierlists();
 //    testSynergies();
 //    Utility::resizeGoldenCards();
@@ -4381,23 +4409,25 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
-//Update Utility::isFromStandardSet(QString code) --> DALARAN
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Comparar tier lists con Utility::check
+//Comparar tier lists con Utility::check --> Automatico al bajar nuevas tier lists
+//Update Utility::isFromStandardSet(QString code) --> DALARAN
 //Subir cartas al github.
+    //Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-//Incluir codigos de nuevos heroes en DraftHandler::buildHeroCodesList
+    //Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
     //requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero -- To remove it, search "Whizbang support"
 //Update secrets
-//Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
-//Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-//Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-//Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
-//(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
+//Cartas especiales --> SynergyHandler::testSynergies()
+    //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
+    //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
+    //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+    //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
+    //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
+    //(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
 //|-Check evolveSyn cards
@@ -4454,6 +4484,8 @@ void MainWindow::testDelay()
 //TODDO
 //Tier list update - bar message
 //download cards on next run if AT was closed before downloading all
+//Golden cards new basics
+//New hero portrait
 
 
 //1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.

@@ -2016,11 +2016,6 @@ void DraftHandler::buildHeroCodesList()
         if(code.startsWith("HERO_0"))   heroCodesList.append(code);
     }
 //    qDebug()<<endl<<"HERO CODES!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
-
-    //Si añadimos uno necesitamos borrar todas las cartas y forzar un redownload
-    //ya que si alguien ha necesitado el retrato mientras no estaba en el github
-    //se habra bajado el retrato basico con el codigo del especifico y
-    //no se detectara el nuevo retrato entre los heroes de arena
 }
 
 
