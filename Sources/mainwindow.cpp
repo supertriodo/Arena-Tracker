@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
+    QSettings settings("Arena Tracker", "Arena Tracker");
 
     ui->setupUi(this);
 
@@ -31,9 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
-    cardsJsonLoaded = lightForgeJsonLoaded = allCardsDownloadNeeded = false;
     patreonVersion = false;
     transparency = AutoTransparent;
+    cardsJsonLoaded = lightForgeJsonLoaded = false;
+    allCardsDownloadNeeded = !settings.value("allCardsDownloaded", false).toBool();
 
     logLoader = nullptr;
     gameWatcher = nullptr;
@@ -4006,6 +4008,8 @@ void MainWindow::checkArenaCards()
 
     if(allCardsDownloadNeeded || arenaSets.isEmpty())
     {
+        settings.setValue("allCardsDownloaded", false);
+
         QStringList codeList = draftHandler->getAllArenaCodes();
         arenaSets.clear();
         downloadAllArenaCodes(codeList);
@@ -4081,8 +4085,11 @@ void MainWindow::updateProgressAllCardsDownload(QString code)
 
 void MainWindow::allCardsDownloaded()
 {
+    QSettings settings("Arena Tracker", "Arena Tracker");
+
     if(allCardsDownloadNeeded)
     {
+        settings.setValue("allCardsDownloaded", true);
         allCardsDownloadNeeded = false;
         allCardsDownloadList.clear();
         hideProgressBarMini();
@@ -4483,7 +4490,6 @@ void MainWindow::testDelay()
 
 //TODDO
 //Tier list update - bar message
-//download cards on next run if AT was closed before downloading all
 //Golden cards new basics
 //New hero portrait
 
