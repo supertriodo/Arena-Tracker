@@ -407,6 +407,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else if(endUrl == "lightForge.json")
         {
             emit pDebug("Extra: Json LightForge github --> Download Success.");
+            showMessageProgressBar("Tier List updated");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
             allCardsDownloadNeeded = true;
@@ -423,6 +424,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else if(endUrl == "hearthArena.json")
         {
             emit pDebug("Extra: Json HearthArena --> Download Success.");
+            showMessageProgressBar("Tier List updated");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/hearthArena.json");
         }
@@ -4489,7 +4491,6 @@ void MainWindow::testDelay()
 
 
 //TODDO
-//Tier list update - bar message
 //Golden cards new basics
 //New hero portrait
 
