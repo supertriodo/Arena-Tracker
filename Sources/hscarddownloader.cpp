@@ -159,7 +159,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         webImage.loadFromData(data);
         if(!isHero && webImage.width()!=200)
         {
-            webImage = webImage.copy(8, -6, 241, 365);
+            webImage = webImage.copy(4, -8, 246, 372);
             webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
         }
 
