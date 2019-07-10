@@ -972,6 +972,49 @@ void Utility::checkTierlistsCount()
 }
 
 
+bool Utility::checkHeroPortrait(QString code)
+{
+    if(code.isEmpty())  return false;
+
+    QFileInfo cardFile(QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneCards/" + code + ".png");
+
+    if(!cardFile.exists())  return false;
+    return true;
+}
+
+
+void Utility::checkMissingGoldenCards()
+{
+    QDir dir(QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneCards");
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Name);
+    QStringList filterName;
+    filterName << "*.png";
+    dir.setNameFilters(filterName);
+
+    QStringList files = dir.entryList();
+
+    for(int i = 0; i < (files.count()-1); i++)
+    {
+        if(!files[i].endsWith("_premium.png") && files[i+1].endsWith("_premium.png"))
+        {
+            QString code = files[i].left(files[i].length()-4);
+            if(code == files[i+1].left(files[i+1].length()-12))
+            {
+                if(QFileInfo(dir.absoluteFilePath(files[i])).size() == QFileInfo(dir.absoluteFilePath(files[i+1])).size())
+                {
+                    qDebug()<<"DEBUG MISSING GOLDEN:" << code << "-" << Utility::cardEnNameFromCode(code);
+                }
+            }
+            else
+            {
+                qDebug()<<"DEBUG MISSING GOLDEN: ERROR: Files missing"<<files[i]<<files[i+1];
+            }
+        }
+    }
+}
+
+
 //Whizband Decks
 QString Utility::whizbangDeckString(QString code)
 {

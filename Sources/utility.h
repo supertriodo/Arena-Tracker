@@ -132,6 +132,8 @@ public:
     static void checkTierlistsCount();
     static bool hasGoldenImage(QString code);
     static void resizeGoldenCards();
+    static bool checkHeroPortrait(QString code);
+    static void checkMissingGoldenCards();
 };
 
 #endif // UTILITY_H

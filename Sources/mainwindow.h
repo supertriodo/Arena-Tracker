@@ -225,7 +225,6 @@ private:
     void saveCardmapLightForgeOriginal(const QByteArray &jsonData);
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html);
-    bool checkHeroPortrait(QString code);
 
 //Override events
 protected:
