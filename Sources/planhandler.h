@@ -173,6 +173,7 @@ public:
     bool isCardBomb(QString code);
     QJsonArray getJsonCardHistory();
     void setTheme();
+    bool isMinionOnBoard(bool friendly, int id, Board *board = nullptr);
 
 signals:
     void checkCardImage(QString code, bool isHero);

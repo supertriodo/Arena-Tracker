@@ -1,10 +1,11 @@
 #include "secretshandler.h"
 #include <QtWidgets>
 
-SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler) : QObject(parent)
+SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler, PlanHandler *planHandler) : QObject(parent)
 {
     this->ui = ui;
     this->enemyHandHandler = enemyHandHandler;
+    this->planHandler = planHandler;
     this->secretsAnimating = false;
     this->lastMinionDead = "";
     this->lastMinionPlayed = "";
@@ -381,7 +382,8 @@ void SecretsHandler::resetSecretsInterface()
     ui->secretsTreeWidget->setHidden(true);
     ui->secretsTreeWidget->clear();
     activeSecretList.clear();
-    secretTests.clear();
+    secretTestQueue.clear();
+    magneticPlayedQueue.clear();
 }
 
 
@@ -398,9 +400,9 @@ void SecretsHandler::secretRevealed(int id, QString code)
         }
     }
 
-    for(int i=0; i<secretTests.count(); i++)
+    for(int i=0; i<secretTestQueue.count(); i++)
     {
-        secretTests[i].secretRevealedLastSecond = true;
+        secretTestQueue[i].secretRevealedLastSecond = true;
     }
     adjustSize();
 
@@ -421,9 +423,9 @@ void SecretsHandler::secretRevealed(int id, QString code)
 
 void SecretsHandler::discardSecretOptionDelay()
 {
-    if(secretTests.isEmpty())   return;
+    if(secretTestQueue.isEmpty())   return;
 
-    SecretTest secretTest = secretTests.dequeue();
+    SecretTest secretTest = secretTestQueue.dequeue();
     if(secretTest.secretRevealedLastSecond)
     {
         emit pDebug("Option not discarded: " + secretTest.code + " (A secret revealed)");
@@ -468,7 +470,7 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
         SecretTest secretTest;
         secretTest.code = code;
         secretTest.secretRevealedLastSecond = false;
-        secretTests.enqueue(secretTest);
+        secretTestQueue.enqueue(secretTest);
 
         QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
     }
@@ -528,9 +530,46 @@ void SecretsHandler::playerHeroPower()
 }
 
 
-void SecretsHandler::playerMinionPlayed(QString code, int playerMinions)
+void SecretsHandler::playerMinionPlayed(QString code, int id, int playerMinions)
 {
-    Q_UNUSED(playerMinions);
+    QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+    if(mechanics.contains(QJsonValue("MODULAR")))
+    {
+        //Workaround for magnetic minions discarding secrets like mirror entity when played on magnetize mode
+        //https://github.com/supertriodo/Arena-Tracker/issues/112
+        MagneticPlayed magneticPlayed;
+        magneticPlayed.code = code;
+        magneticPlayed.id = id;
+        magneticPlayed.playerMinions = playerMinions;
+        magneticPlayedQueue.enqueue(magneticPlayed);
+
+        QTimer::singleShot(3000, this, SLOT(playerMinionPlayedDelay()));
+    }
+    else
+    {
+        playerMinionPlayedNow(code, playerMinions);
+    }
+}
+
+
+void SecretsHandler::playerMinionPlayedDelay()
+{
+    if(magneticPlayedQueue.isEmpty())   return;
+
+    MagneticPlayed magneticPlayed = magneticPlayedQueue.dequeue();
+    if(planHandler->isMinionOnBoard(true, magneticPlayed.id))
+    {
+        playerMinionPlayedNow(magneticPlayed.code, magneticPlayed.playerMinions);
+    }
+    else
+    {
+        emit pDebug("Minion played secrets not discarded (Magnetized minion played)");
+    }
+}
+
+
+void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
+{
     lastMinionPlayed = code;
 
     discardSecretOptionNow(FROZEN_CLONE);//No necesita objetivo

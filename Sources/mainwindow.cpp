@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createGraveyardHandler();
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->CardDownloader
-    createSecretsHandler();//-->EnemyHandHandler
+    createSecretsHandler();//-->EnemyHandHandler -->PlanHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
@@ -871,7 +871,7 @@ void MainWindow::createDraftHandler()
 
 void MainWindow::createSecretsHandler()
 {
-    secretsHandler = new SecretsHandler(this, ui, enemyHandHandler);
+    secretsHandler = new SecretsHandler(this, ui, enemyHandHandler, planHandler);
     connect(secretsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(secretsHandler, SIGNAL(revealCreatedByCard(QString,QString,int)),
@@ -1307,8 +1307,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerSpellObjHeroPlayed()));
     connect(gameWatcher, SIGNAL(playerBattlecryObjHeroPlayed()),
             secretsHandler, SLOT(playerBattlecryObjHeroPlayed()));
-    connect(gameWatcher, SIGNAL(playerMinionPlayed(QString, int)),
-            secretsHandler, SLOT(playerMinionPlayed(QString, int)));
+    connect(gameWatcher, SIGNAL(playerMinionPlayed(QString, int, int)),
+            secretsHandler, SLOT(playerMinionPlayed(QString, int, int)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
             secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool)));
     connect(gameWatcher, SIGNAL(avengeTested()),

@@ -541,6 +541,12 @@ MinionGraphicsItem * PlanHandler::findMinion(bool friendly, int id, Board *board
 }
 
 
+bool PlanHandler::isMinionOnBoard(bool friendly, int id, Board *board)
+{
+    return findMinion(friendly, id, board) != nullptr;
+}
+
+
 
 void PlanHandler::playerMinionPosChange(int id, int pos)
 {

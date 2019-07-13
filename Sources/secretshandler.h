@@ -4,10 +4,19 @@
 #include "Widgets/ui_extended.h"
 #include "Cards/secretcard.h"
 #include "enemyhandhandler.h"
+#include "planhandler.h"
 #include "utility.h"
 #include <QQueue>
 #include <QObject>
 
+
+class MagneticPlayed
+{
+public:
+    QString code;
+    int id;
+    int playerMinions;
+};
 
 
 class SecretTest
@@ -31,15 +40,17 @@ class SecretsHandler : public QObject
 {
     Q_OBJECT
 public:
-    SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler);
+    SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandler *enemyHandHandler, PlanHandler *planHandler);
     ~SecretsHandler();
 
 //Variables
 private:
     Ui::Extended *ui;
     EnemyHandHandler *enemyHandHandler;
+    PlanHandler *planHandler;
     QList<ActiveSecret> activeSecretList;
-    QQueue<SecretTest> secretTests;
+    QQueue<SecretTest> secretTestQueue;
+    QQueue<MagneticPlayed> magneticPlayedQueue;
     bool secretsAnimating;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     QStringList arenaSets;
@@ -57,6 +68,7 @@ private:
     void knownSecretPlayed(int id, CardClass hero, QString code);
     bool isFromArenaSets(QString code);
     void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret);
+    void playerMinionPlayedNow(QString code, int playerMinions);
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -84,7 +96,7 @@ public slots:
     void playerSpellObjMinionPlayed();
     void playerSpellObjHeroPlayed();
     void playerBattlecryObjHeroPlayed();
-    void playerMinionPlayed(QString code, int playerMinions);
+    void playerMinionPlayed(QString code, int id, int playerMinions);
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
     void avengeTested();
     void handOfSalvationTested();
@@ -99,6 +111,7 @@ private slots:
     void clearSecretsAnimating();
     void adjustSize();
     void findSecretCardEntered(QTreeWidgetItem *item);
+    void playerMinionPlayedDelay();
 };
 
 #endif // SECRETSHANDLER_H
