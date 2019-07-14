@@ -4329,12 +4329,11 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Forbidden Words");
 //    qDebug()<<Utility::getCardAttribute("DAL_605", "set").toString();
 
-//    draftHandler->debugMissingSynergiesAllSets();
 //    draftHandler->debugSynergiesSet("DALARAN", true);
 //    draftHandler->debugSynergiesCode("DAL_400");
 //    draftHandler->testSynergies();
 
-    draftHandler->checkSynergyCodes();
+    draftHandler->debugMissingSynergiesAllSets();
 }
 
 
@@ -4348,10 +4347,11 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDelay()
 {
-    qDebug()<<endl;
+    qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     testHeroPortraits();
+    testSynergies();
     testTierlists();
-//    testSynergies();
+
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 }

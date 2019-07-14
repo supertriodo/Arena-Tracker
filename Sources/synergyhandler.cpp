@@ -1346,27 +1346,6 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
 }
 
 
-void SynergyHandler::checkSynergyCodes()
-{
-    qDebug()<<endl<<"-----Check Synergies.json-----"<<endl;
-    initSynergyCodes();
-    for(const QString &code: Utility::getWildCodes())
-    {
-        if(synergyCodes.contains(code))
-        {
-            QStringList invalidMecs;
-            for(const QString &mechanic: synergyCodes[code])
-            {
-                if(!isValidSynergyCode(mechanic))   invalidMecs.append(mechanic);
-            }
-            if(!invalidMecs.isEmpty())  qDebug()<<"Code:"<<code<<"No mecs:"<<invalidMecs;
-            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
-        }
-    }
-    qDebug()<<endl<<"-----Check complete-----"<<endl;
-}
-
-
 bool SynergyHandler::containsAll(const QString &text, const QString &words)
 {
     for(const QString &word: words.split(" "))
@@ -1461,11 +1440,21 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         {
             debugSynergiesCode(code, ++num);
         }
+        else if(synergyCodes.contains(code))
+        {
+            QStringList invalidMecs;
+            for(const QString &mechanic: synergyCodes[code])
+            {
+                if(!isValidSynergyCode(mechanic))   invalidMecs.append(mechanic);
+            }
+            if(!invalidMecs.isEmpty())  qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"No mecs:"<<invalidMecs;
+            StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
+        }
     }
 
     if(num == 0)
     {
-        qDebug()<<endl<<"NO MISSING SYNERGIES";
+        qDebug()<<"DEBUG SYNERGIES: OK - No missing synergies.";
     }
 }
 
