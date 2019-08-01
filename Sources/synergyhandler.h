@@ -139,6 +139,7 @@ private:
     bool isOtherClassGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isTreantGen(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isLackeyGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -212,6 +213,7 @@ private:
     bool isOtherClassSyn(const QString &code, const QString &text, const CardClass &cardClass);
     bool isSilverHandSyn(const QString &code);
     bool isTreantSyn(const QString &code);
+    bool isLackeySyn(const QString &code);
 
 signals:
     void pLog(QString line);
