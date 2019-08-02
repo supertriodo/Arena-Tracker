@@ -1366,9 +1366,9 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: Utility::getSetCodes("DALARAN"))
+    for(const QString &code: Utility::getSetCodes("ULDUM"))
 //    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+//    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1384,7 +1384,7 @@ void SynergyHandler::testSynergies()
 //                (text.contains("destroy") && text.contains("friendly") && text.contains("minion"))
 //                && (cardClass == NEUTRAL || cardClass == PALADIN)
 //                && cardType == MINION
-//                mechanics.contains(QJsonValue("DEATHRATTLE"))
+//                mechanics.contains(QJsonValue("SECRET"))
 //                isLackeyGen(code, text)
 
 
@@ -3320,11 +3320,13 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == LUNAS_POCKET_GALAXY) return 0;
     if(code == ACADEMIC_ESPIONAGE)  return 0;
     if(code == HAUNTING_VISIONS)    return 0;
+    if(code == ANCIENT_MYSTERIES)   return 0;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
     if(code == DREAMPETAL_FLORIST)  return 3;
     if(code == PILOTED_REAPER)      return 3;
+    if(code == MOGU_FLESHSHAPER)    return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;

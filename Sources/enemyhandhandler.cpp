@@ -596,6 +596,8 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == URSATRON)           return true;
     if(lastCreatedByCode == CALL_TO_ADVENTURE)  return true;
     if(lastCreatedByCode == JEPETTO_JOYBUZZ)    return true;
+    if(lastCreatedByCode == SALHETS_PRIDE)      return true;
+    if(lastCreatedByCode == ANCIENT_MYSTERIES)  return true;
 
     return false;
 }
