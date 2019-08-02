@@ -45,6 +45,7 @@
 #define SNAKE_TRAP QString("EX1_554")
 #define WANDERING_MONSTER QString("LOOT_079")
 #define RAT_TRAP QString("GIL_577")
+#define PRESSURE_PLATE QString("ULD_152")
 
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
@@ -59,6 +60,7 @@
 #define SPELLBENDER QString("tt_010")
 #define ICE_BLOCK QString("EX1_295")
 #define EXPLOSIVE_RUNES QString("LOOT_101")
+#define FLAME_WARD QString("ULD_239")
 
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")

@@ -243,6 +243,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
                 unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
@@ -260,6 +261,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
                 unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
                 unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(FLAME_WARD, inArena, activeSecret);
                 unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(EXPLOSIVE_RUNES, inArena, activeSecret);
@@ -501,6 +503,7 @@ void SecretsHandler::playerSpellPlayed(QString code)
     discardSecretOptionNow(MANA_BIND);
 
     discardSecretOptionNow(CAT_TRICK);
+    discardSecretOptionNow(PRESSURE_PLATE);
 
     discardSecretOptionNow(NEVER_SURRENDER);
 }
@@ -678,8 +681,9 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
         //Minion -> hero
         if(isHeroTo)
         {
-            discardSecretOptionNow(VAPORIZE);
-            discardSecretOptionNow(ICE_BARRIER);
+            discardSecretOptionNow(FLAME_WARD);//No necesita objetivo
+            discardSecretOption(VAPORIZE);//Ocultado por FLAME_WARD
+            discardSecretOptionNow(ICE_BARRIER);//No necesita objetivo
 
             discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
             discardSecretOptionNow(BEAR_TRAP);
@@ -765,14 +769,14 @@ void SecretsHandler::createSecretsByPickrate(const QMap<QString, float> cardsPic
     });
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
-                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP;
+                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP << PRESSURE_PLATE;
     qSort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[HUNTER][code1] > cardsPickratesMap[HUNTER][code2];
     });
 
     secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
-                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK;
+                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << FLAME_WARD;
     qSort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[MAGE][code1] > cardsPickratesMap[MAGE][code2];
