@@ -212,7 +212,6 @@ private:
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
-    void getArenaSets(QStringList &arenaSets, const QStringList &codeList);
     void processHSRCardClass(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap);
     void updateDraftMethodUnchecked();
     void downloadHSRCards();

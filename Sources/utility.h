@@ -13,7 +13,7 @@
 #include <QPropertyAnimation>
 
 
-#define REMOVE_CARDS_ON_VERSION_UPDATE true
+#define REMOVE_CARDS_ON_VERSION_UPDATE false
 #define REMOVE_EXTRA_ON_VERSION_UPDATE false
 #define DEBUG_REPLAY_AUTO_ADVANCE false
 #define WILD_ARENA false
@@ -134,6 +134,7 @@ public:
     static void resizeGoldenCards();
     static bool checkHeroPortrait(QString code);
     static void checkMissingGoldenCards();
+    static QStringList getArenaSets(const QStringList &codeList);
 };
 
 #endif // UTILITY_H

@@ -1379,12 +1379,10 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                containsAll(text, "lackey")
-//                || containsAll(text, "destroy")// || containsAll(text, "give minion attack")
-//                (text.contains("destroy") && text.contains("friendly") && text.contains("minion"))
-//                && (cardClass == NEUTRAL || cardClass == PALADIN)
+                containsAll(text, "destroy")
+//                && (cardClass == NEUTRAL || cardClass == PRIEST)
 //                && cardType == MINION
-//                mechanics.contains(QJsonValue("SECRET"))
+//                && !mechanics.contains(QJsonValue("BATTLECRY"))
 //                isLackeyGen(code, text)
 
 
@@ -1401,7 +1399,7 @@ void SynergyHandler::testSynergies()
             )
         {
 //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-            qDebug()<<code + " " + Utility::cardEnNameFromCode(code)<<endl<<++num<<text;
+            qDebug()<<++num<<code + " " + Utility::cardEnNameFromCode(code)<<endl<<text;
 //            debugSynergiesCode(code, ++num);
 //            qDebug()<<mechanics<<endl<<referencedTags;
         }
@@ -3448,7 +3446,7 @@ REGLAS
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
-    rush implica pingGen/damageMinionsGen
+    rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
 +toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
@@ -3460,7 +3458,7 @@ REGLAS
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
-+pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle (random o no)
++pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
 +aoeGen puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen
@@ -3472,7 +3470,8 @@ REGLAS
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
     o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
-+Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor, es una sinergia muy debil.
++Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor,
+    es una sinergia muy debil.
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 
 

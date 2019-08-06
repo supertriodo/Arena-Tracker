@@ -189,7 +189,10 @@ QString Utility::cardEnCodeFromName(QString name, bool onlyCollectible)
     {
         if(it->value("name").toObject().value("enUS").toString() == name)
         {
-            if(!onlyCollectible || it->value("collectible").toBool())    return it.key();
+            if(!onlyCollectible || ((it->value("collectible").toBool()) && (it->value("set").toString() != "HERO_SKINS")))
+            {
+                return it.key();
+            }
         }
     }
 
@@ -945,7 +948,10 @@ void Utility::checkTierlistsCount()
         }
 
         qDebug()<<heroString<<"LightForge count:"<<lfCodes.count();
+        qDebug()<<getArenaSets(lfCodes);
+
         qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
+        qDebug()<<getArenaSets(haCodes);
 
         //Check Missing cards
         bool missing = false;
@@ -969,6 +975,18 @@ void Utility::checkTierlistsCount()
         }
         if(!missing)    qDebug()<<"LightForge OK!";
     }
+}
+
+
+QStringList Utility::getArenaSets(const QStringList &codeList)
+{
+    QStringList arenaSets;
+    for(const QString &code: codeList)
+    {
+        QString cardSet = Utility::getCardAttribute(code, "set").toString();
+        if(!arenaSets.contains(cardSet))    arenaSets.append(cardSet);
+    }
+    return arenaSets;
 }
 
 
