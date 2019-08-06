@@ -1726,7 +1726,7 @@
 "OG_303" : [ "spellAllSyn", "spellDamageGen" ],
 "OG_308" : [  ],
 "OG_309" : [ "battlecry", "returnSyn", "deathrattleGoodAllSyn" ],
-"OG_310" : [ "divineShieldGen", "=SynMinionHealth1" ],
+"OG_310" : [ "divineShieldGen", "=SynMinionHealth1", "lackeySyn" ],
 "OG_311" : [ "discover" ],
 "OG_312" : [ "battlecry", "returnSyn", "weaponGen", "pingGen" ],
 "OG_313" : [ "tokenSyn", "attackBuffGen", "healthBuffGen" ],
@@ -1914,6 +1914,141 @@
 "TOT_342" : [ "damageMinionsGen", "reachGen" ],
 "TOT_343" : [ "toYourHandGen2" ],
 "TOT_345" : [ "discover", "echoGen" ],
+"ULD_003" : [ "battlecry", "returnSyn", "discover" ],
+"ULD_131" : [  ],
+"ULD_133" : [ "drawGen" ],
+"ULD_134" : [ "tokenGen", "damageMinionsGen" ],
+"ULD_135" : [ "restoreTargetMinionGen", "restoreFriendlyHeroGen", "tauntGen" ],
+"ULD_136" : [ "discover" ],
+"ULD_137" : [ "battlecry", "returnSyn", "=>SynSpellCost5" ],
+"ULD_138" : [ "=>SynSpellCost5", "taunt" ],
+"ULD_139" : [ "battlecry", "returnSyn", "toYourHandGen3" ],
+"ULD_140" : [  ],
+"ULD_143" : [ "attackBuffGen", "healthBuffGen", "tauntGen", "divineShieldGen", "spellBuffGen" ],
+"ULD_145" : [ "tokenSyn" ],
+"ULD_151" : [ "beastSyn", "battlecry", "returnSyn" ],
+"ULD_152" : [ "secret" ],
+"ULD_154" : [ "battlecry", "secretAllSyn", "returnSyn" ],
+"ULD_155" : [  ],
+"ULD_156" : [ "battlecry", "returnSyn", "damageMinionsGen", "reachGen", "beastGen" ],
+"ULD_157" : [ "battlecry" ],
+"ULD_158" : [ "aoeGen", "pingGen", "overload", "battlecry", "returnSyn" ],
+"ULD_160" : [ "discover", "tokenCardGen", "lackeyGen" ],
+"ULD_161" : [ "damageFriendlyHeroGen" ],
+"ULD_162" : [ "battlecry", "lackeySyn", "returnSyn" ],
+"ULD_163" : [ "toYourHandGen", "deathrattle", "battlecry", "discardGen" ],
+"ULD_165" : [ "destroyGen", "battlecry", "returnSyn", "damageFriendlyHeroGen" ],
+"ULD_167" : [ "damageFriendlyHeroSyn" ],
+"ULD_168" : [ "battlecry", "lackeySyn" ],
+"ULD_169" : [ "damageMinionsGen", "rush" ],
+"ULD_170" : [ "battlecry", "lackeySyn", "returnSyn" ],
+"ULD_171" : [ "totemAllSyn", "tokenCardGen" ],
+"ULD_172" : [ "murlocGen", "tokenSyn" ],
+"ULD_173" : [ "overloadSyn" ],
+"ULD_174" : [ "eggGen", "deathrattle", "tauntGiverSyn", "attackBuffSyn", "beastGen" ],
+"ULD_177" : [ "drawGen5", "deathrattle" ],
+"ULD_178" : [ "rushGen", "battlecry", "tauntGen", "divineShieldGen", "damageMinionsGen" ],
+"ULD_179" : [ "tauntAllSyn" ],
+"ULD_180" : [ "silenceOwnSyn" ],
+"ULD_181" : [ "aoeGen", "spellDamageSyn" ],
+"ULD_182" : [ "enrageSyn" ],
+"ULD_183" : [ "deathrattle", "attackBuffGen", "healthBuffGen", "handBuffGen" ],
+"ULD_184" : [ "reachGen", "deathrattle" ],
+"ULD_185" : [ "enrageGen", "healthBuffSyn" ],
+"ULD_186" : [ "toYourHandGen", "battlecry", "returnSyn" ],
+"ULD_188" : [ "discover", "battlecry", "returnSyn" ],
+"ULD_189" : [ "battlecry", "taunt", "handBuffSyn" ],
+"ULD_190" : [ "damageMinionsGen", "reachGen", "battlecry", "returnSyn" ],
+"ULD_191" : [ "battlecry", "healthBuffGen", "returnSyn" ],
+"ULD_193" : [ "taunt" ],
+"ULD_194" : [  ],
+"ULD_195" : [ "discover", "battlecry", "taunt", "returnSyn" ],
+"ULD_196" : [ "battlecry", "restoreFriendlyMinionGen", "returnSyn" ],
+"ULD_197" : [ "battlecry", "returnSyn" ],
+"ULD_198" : [ "taunt", "silenceOwnSyn" ],
+"ULD_205" : [  ],
+"ULD_206" : [ "damageMinionsGen", "rush" ],
+"ULD_207" : [ "lifesteal" ],
+"ULD_208" : [ "deathrattle", "restoreFriendlyHeroGen", "taunt" ],
+"ULD_209" : [ "discover", "battlecry", "returnSyn", "spellGen" ],
+"ULD_212" : [ "battlecry" ],
+"ULD_214" : [  ],
+"ULD_215" : [ "tokenGen", "tauntGen", "beastGen" ],
+"ULD_216" : [  ],
+"ULD_217" : [ "attackBuffGen" ],
+"ULD_229" : [ "battlecry" ],
+"ULD_231" : [ "comboSyn" ],
+"ULD_236" : [ "spellSyn", "battlecry", "returnSyn" ],
+"ULD_238" : [ "aoeGen", "battlecry", "returnSyn", "pingGen" ],
+"ULD_239" : [ "aoeGen", "secret" ],
+"ULD_240" : [ "secretSyn" ],
+"ULD_250" : [ "tokenCardGen", "deathrattle", "taunt", "beastGen", "tokenGen" ],
+"ULD_253" : [ "battlecry", "taunt", "returnSyn", "handBuffSyn" ],
+"ULD_256" : [ "tauntSyn" ],
+"ULD_258" : [ "taunt", "tauntSyn" ],
+"ULD_262" : [ "healthBuffGen" ],
+"ULD_265" : [ "spellBuffGen" ],
+"ULD_266" : [ "deathrattle", "attackBuffGen", "healthBuffGen" ],
+"ULD_268" : [ "battlecry", "returnSyn" ],
+"ULD_269" : [ "eggSyn", "battlecry", "returnSyn" ],
+"ULD_270" : [ "restoreFriendlyHeroGen", "restoreFriendlyMinionGen" ],
+"ULD_271" : [ "taunt", "battlecry", "restoreTargetMinionSyn", "restoreFriendlyMinionSyn" ],
+"ULD_272" : [ "aoeGen", "pingGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen", "spellDamageSyn" ],
+"ULD_273" : [ "drawGen5", "restoreFriendlyMinionGen", "restoreFriendlyHeroGen" ],
+"ULD_274" : [ "reachGen", "stealthGen" ],
+"ULD_275" : [ "taunt" ],
+"ULD_276" : [ "tokenCardGen", "lackeyGen", "tokenGen" ],
+"ULD_280" : [ "deathrattle" ],
+"ULD_282" : [ "deathrattle", "tokenCardGen", "tokenGen" ],
+"ULD_285" : [ "damageMinionsGen", "reachGen", "comboGen" ],
+"ULD_286" : [ "drawSyn" ],
+"ULD_288" : [ "deathrattleSyn", "battlecry" ],
+"ULD_289" : [ "murlocGen", "battlecry", "toYourHandGen" ],
+"ULD_290" : [ "attackBuffGen", "healthBuffGen", "handBuffGen" ],
+"ULD_291" : [  ],
+"ULD_292" : [ "damageMinionsGen", "rush", "handBuffSyn" ],
+"ULD_293" : [ "battlecry", "secretAllSyn", "returnSyn" ],
+"ULD_304" : [ "spellAllSyn", "battlecry", "returnSyn" ],
+"ULD_309" : [ "discoverSyn" ],
+"ULD_324" : [ "destroyGen" ],
+"ULD_326" : [  ],
+"ULD_327" : [ "toYourHandGen", "damageMinionsGen", "rush", "battlecry", "otherClassGen", "returnSyn" ],
+"ULD_328" : [ "toYourHandGen2", "otherClassGen", "spellGen" ],
+"ULD_329" : [ "spellAllSyn" ],
+"ULD_410" : [ "beastSyn", "battlecry", "returnSyn" ],
+"ULD_413" : [ "totemAllSyn", "damageMinionsGen", "reachGen", "battlecry" ],
+"ULD_429" : [ "beastGen", "weaponGen", "toYourHandGen3", "secretGen" ],
+"ULD_430" : [ "pingGen", "rushGen", "tokenGen", "beastGen" ],
+"ULD_431" : [  ],
+"ULD_433" : [  ],
+"ULD_435" : [ "spellAllSyn", "battlecry" ],
+"ULD_438" : [ "drawGen", "deathrattle", "=SynMinionHealth1", "tokenGen", "tokenCardGen" ],
+"ULD_439" : [ "tokenGen", "tokenCardGen", "battlecry", "returnSyn" ],
+"ULD_450" : [ "lifesteal" ],
+"ULD_500" : [ "heroPowerGen", "battlecry", "returnSyn" ],
+"ULD_702" : [  ],
+"ULD_703" : [  ],
+"ULD_705" : [ "battlecry" ],
+"ULD_706" : [ "deathrattle", "spawnEnemyGen" ],
+"ULD_707" : [ "aoeGen", "pingSyn", "tokenSyn" ],
+"ULD_708" : [ "damageMinionsGen", "reachGen", "tokenCardGen", "tokenGen", "lackeyGen" ],
+"ULD_709" : [ "weaponAllSyn", "heroAttackSyn" ],
+"ULD_711" : [  ],
+"ULD_712" : [ "rushGen", "pingGen", "beastGen", "battlecry", "tokenGen", "returnSyn" ],
+"ULD_713" : [ "rushGen", "pingGen", "beastGen", "tokenGen" ],
+"ULD_714" : [ "damageMinionsGen", "lifesteal" ],
+"ULD_715" : [ "weaponGen", "reachGen", "destroyGen" ],
+"ULD_716" : [ "murlocSyn" ],
+"ULD_717" : [ "aoeGen", "eggSyn", "tokenSyn" ],
+"ULD_718" : [ "aoeGen" ],
+"ULD_719" : [ "battlecry", "tokenGen", "returnSyn" ],
+"ULD_720" : [ "battlecry", "returnSyn", "enrageGen" ],
+"ULD_721" : [ "divineShield" ],
+"ULD_723" : [  ],
+"ULD_724" : [  ],
+"ULD_726" : [ "drawGen", "secretSyn" ],
+"ULD_727" : [ "battlecry" ],
+"ULD_728" : [ "destroyGen" ],
 "UNG_001" : [ "battlecry" ],
 "UNG_002" : [ "battlecry" ],
 "UNG_004" : [ "attackBuffGen", "healthBuffGen", "spellBuffGen", "eggSyn" ],
@@ -2053,6 +2188,8 @@
 "tt_010" : [ "secret" ],
 "DIRECT_LINKS":
 {
+
+
   "CFM_855": ["CFM_667","EX1_577","KAR_041",
     "OG_147","ICC_025","ICC_099",
     "LOOT_144","FP1_026","FP1_029",
@@ -2061,21 +2198,26 @@
   "ICC_206": ["CFM_667","ICC_025","ICC_099",
     "FP1_009"],
 
+
+
+
   "DAL_773": ["DAL_354","ICC_065",
     "LOOT_165","LOOT_358","LOOT_363",
     "OG_291","UNG_018","GIL_212","AT_113",
     "UNG_845","BOT_102","BOT_538","TRL_900",
-    "DAL_752"],
+    "DAL_752","ULD_250","ULD_282","ULD_439"],
 	"GIL_607": ["DAL_354","ICC_065",
     "LOOT_165","LOOT_358","LOOT_363",
     "OG_291","UNG_018","GIL_212","AT_113",
     "UNG_845","BOT_102","BOT_538","TRL_900",
-    "DAL_752"],
+    "DAL_752","ULD_250","ULD_282","ULD_439"],
   "DAL_372": ["DAL_354","ICC_065",
     "LOOT_165","LOOT_358","LOOT_363",
     "OG_291","UNG_018","GIL_212","AT_113",
     "UNG_845","BOT_102","BOT_538","TRL_900",
-    "DAL_752"],
+    "DAL_752","ULD_250","ULD_282","ULD_439"],
+
+
 
   "ICC_901": ["AT_019","AT_063t","BOT_107",
     "BOT_423","BRM_028","CFM_639",
@@ -2091,7 +2233,11 @@
     "NEW1_037","NEW1_038","NEW1_040","OG_042",
     "OG_229","OG_286","TRL_057",
     "UNG_201","DAL_553","DAL_558",
-    "DAL_721"],
+    "DAL_721","ULD_133","ULD_215",
+    "ULD_217","ULD_258","ULD_270",
+    "ULD_276"],
+
+
 
   "BOT_559": ["AT_035","BOT_087",
     "BOT_288","BOT_511","BRM_007","CFM_095",
@@ -2104,7 +2250,8 @@
     "TRL_502","TRL_541","UNG_851",
     "UNG_914","UNG_957","DAL_010",
     "DAL_060","DAL_063","DAL_565",
-    "DAL_582","DAL_602"],
+    "DAL_582","DAL_602","ULD_286",
+    "ULD_727"],
   "DAL_719": ["BOT_087","BOT_288","BRM_007",
     "CFM_324","CFM_602","CFM_660","GIL_815",
     "GIL_828","GVG_035","ICC_091","ICC_215",
@@ -2112,62 +2259,77 @@
     "LOOT_056","LOOT_106","LOOT_542","TRL_306",
     "TRL_502","UNG_851","UNG_914",
     "UNG_957","DAL_010","DAL_565",
-    "DAL_582","DAL_602"],
+    "DAL_582","DAL_602",
+    "ULD_198","ULD_286","ULD_324",
+    "ULD_727"],
+
+
+
 
 	"BOT_550": ["BOT_539","KAR_057","LOE_003",
     "LOE_115","UNG_835","UNG_941",
-    "DAL_371","DAL_416"],
+    "DAL_371","DAL_416","ULD_209"],
   "DAL_539": ["BOT_539","KAR_057","LOE_003",
     "LOE_115","UNG_835","UNG_941",
-    "DAL_371","DAL_416"],
+    "DAL_371","DAL_416","ULD_209"],
+  "ULD_137": ["BOT_539","KAR_057","LOE_003",
+    "LOE_115","UNG_835","UNG_941",
+    "DAL_371","DAL_416","ULD_209"],
+
+
+
 
   "NEW1_041": ["EX1_360","EX1_382","BOT_234",
     "AT_081","GIL_665","CFM_661",
-    "GVG_011","DAL_011"],
+    "GVG_011","DAL_011","ULD_728","ULD_197"],
   "LOOT_111": ["EX1_360","EX1_382","BOT_234",
     "AT_081","GIL_665","CFM_661",
-    "GVG_011","DAL_011"],
+    "GVG_011","DAL_011","ULD_728","ULD_197"],
   "GIL_124": ["EX1_360","EX1_382","BOT_234",
     "AT_081","GIL_665","CFM_661",
-    "GVG_011","DAL_011"],
+    "GVG_011","DAL_011","ULD_728","ULD_197"],
+
 
   "EX1_005": ["EX1_046","CS2_188"],
 
   "TRL_533": ["ICC_855"],
 
-	"BOT_267": ["GIL_213","GIL_212"],
-
-  "OG_173": ["UNG_022","UNG_948",
-    "EX1_564","OG_316","OG_291","UNG_927",
-    "LOOT_064","LOOT_329","LOOT_161",
-    "GIL_813","BOT_507","BOT_529",
-    "TRL_400","BOT_099","LOOT_412"],
 
   "OG_315": ["OG_312"],
 
+
   "AT_105": ["EX1_392","CS2_104","EX1_402",
 		"EX1_604","UNG_927","ICC_450",
-    "OG_276","GVG_052"],
+    "OG_276","GVG_052","ULD_270","ULD_720"],
   "CS2_181": ["EX1_392","CS2_104","EX1_402",
 		"EX1_604","UNG_927","ICC_450",
-    "OG_276","GVG_052"],
+    "OG_276","GVG_052","ULD_270","ULD_720"],
   "BOT_448": ["EX1_392","CS2_104","EX1_402",
 		"EX1_604","UNG_927","ICC_450",
-    "OG_276","GVG_052"],
+    "OG_276","GVG_052","ULD_270","ULD_720"],
+  "ULD_271": ["EX1_392","CS2_104","EX1_402",
+		"EX1_604","UNG_927","ICC_450",
+    "OG_276","GVG_052","ULD_270","ULD_720"],
+
 
   "DAL_064": ["DAL_060","DAL_063"],
+
 
 	"EX1_007": ["UNG_025"],
 
 	"ICC_289": ["ICC_855"],
 
+
 	"LOOT_518": ["LOOT_062","LOOT_344",
 		"TRL_012","AT_046","KAR_021"],
+
+
 
 	"ICC_811": ["UNG_057","UNG_058","GIL_687",
 		"TRL_509","OG_080","AT_031","GVG_082",
     "GVG_115","OG_122","LOE_012",
     "GVG_078"],
+
 
 	"ICC_809": ["EX1_097","EX1_102",
 		"EX1_249","NEW1_019","NEW1_020",
@@ -2175,6 +2337,7 @@
     "CFM_341","FP1_024","GVG_076",
     "LOE_046","OG_151","GIL_117",
     "DAL_775"],
+
 
 	"CS2_074": ["CS2_233","ICC_240","ICC_018",
 		"ICC_221","NEW1_018","NEW1_022",
@@ -2186,14 +2349,18 @@
 		"ICC_221","NEW1_018","NEW1_022",
     "CFM_342"],
 
+
 	"BOT_283": ["BOT_283","GIL_815","BOT_288",
-    "BRM_007","DAL_010"],
+    "BRM_007","DAL_010","ULD_286","ULD_727"],
+
+
 
 	"EX1_619": ["CS2_093","EX1_384","NEW1_020",
 		"EX1_097","EX1_249","UNG_848",
 		"BOT_107","TRL_526","OG_161",
     "OG_151","GVG_076","FP1_024",
     "CFM_341","DAL_775"],
+
 
   "OG_310": ["AT_100","BOT_102",
     "BOT_312","BOT_445","BOT_535",
@@ -2205,7 +2372,12 @@
     "KAR_114","LOOT_153","LOOT_233","OG_156",
     "OG_273","TRL_020","UNG_010",
     "UNG_076","UNG_950","UNG_960","EX1_136",
-    "ICC_244","LOOT_363"],
+    "ICC_244","LOOT_363","ULD_215",
+    "ULD_250","ULD_439","ULD_712","ULD_719"],
+
+
+
+
 
   "OG_044": ["AT_037","AT_042",
     "BRM_010","CFM_308","CFM_602",
@@ -2215,16 +2387,26 @@
     "ICC_051","ICC_832","LOE_115",
     "NEW1_007","NEW1_008","OG_047","OG_195",
     "OG_202","UNG_101","GIL_188","BOT_422",
-    "TRL_343","TRL_254","ICC_047","DAL_350"],
+    "TRL_343","TRL_254","ICC_047","DAL_350",
+    "ULD_135","ULD_136","ULD_292"],
   "DAL_732": ["AT_037","CFM_602","EX1_154",
     "EX1_155","EX1_160","EX1_164","GVG_041",
     "LOE_115","NEW1_007","OG_047","OG_195",
-    "TRL_254","DAL_350"],
+    "TRL_254","DAL_350",
+    "ULD_135","ULD_136"],
+
 
   "UNG_078": ["CFM_617","UNG_086",
     "UNG_109"],
 
+
+
+
+
+
   "CS2_004": ["NEW1_020"],
+
+
 
   "OG_147": ["EX1_591","OG_104",
     "TRL_501"],
@@ -2233,17 +2415,24 @@
   "DAL_040": ["EX1_591","OG_104",
     "TRL_501"],
 
+
 	"EX1_335": ["CS2_004","CS2_236","EX1_004",
 		"EX1_623","ICC_028","LOOT_152",
-    "CFM_626","FP1_023"],
+    "CFM_626","FP1_023","ULD_191"],
 
-	"GIL_683": ["EX1_334","EX1_091","CFM_603"],
+
+	"GIL_683": ["EX1_334","EX1_091",
+    "CFM_603"],
+
+
 
   "CFM_661": ["CFM_603","EX1_334",
     "CS2_234","OG_100","EX1_091"],
   "GVG_011": ["CFM_603","EX1_334",
     "CS2_234","OG_100","EX1_091"],
   "DAL_011": ["CFM_603","EX1_334",
+    "CS2_234","OG_100","EX1_091"],
+  "ULD_197": ["CFM_603","EX1_334",
     "CS2_234","OG_100","EX1_091"]
 }
 }
