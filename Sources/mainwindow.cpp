@@ -4397,11 +4397,11 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 ///Update Json cartas --> Automatico
-//Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
-//Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Comparar tier lists con Utility::check --> Automatico al bajar nuevas tier lists
+///Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
+///Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
+///Comparar tier lists con Utility::check --> Automatico al bajar nuevas tier lists
 ///Update Utility::isFromStandardSet(QString code) --> ULDUM
-//Subir cartas al github.
+///Subir cartas al github.
     ///Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 ///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     ///Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
