@@ -4419,9 +4419,9 @@ void MainWindow::testDelay()
     ///(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 ///Update synergies.json
-//|-Check evolveSyn cards
+///|-Check evolveSyn cards
 ///|-Check individual synergies
-//|-Check new individual synergies (in the new set)
+///|-Check new individual synergies (in the new set)
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
