@@ -412,7 +412,6 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             allCardsDownloadNeeded = true;
             lightForgeJsonLoaded = true;
             checkArenaCards();
-            showMessageProgressBar("Tier List updated");
         }
         //Hearth Arena version
         else if(endUrl == "haVersion.json")
@@ -426,7 +425,6 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             emit pDebug("Extra: Json HearthArena --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/hearthArena.json");
-            showMessageProgressBar("Tier List updated");
         }
         //Synergies version
         else if(endUrl == "synergiesVersion.json")
