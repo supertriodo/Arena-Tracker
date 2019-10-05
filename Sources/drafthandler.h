@@ -93,6 +93,7 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
     TwitchHandler *twitchHandler;
+    bool multiclassArena;
 
 
 //Metodos
@@ -171,6 +172,7 @@ public:
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9]);
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
+    void setMulticlassArena(bool multiclassArena);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

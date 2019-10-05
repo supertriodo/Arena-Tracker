@@ -185,7 +185,7 @@ bool SecretsHandler::isFromArenaSets(QString code)
 
 void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret)
 {
-    if( (inArena && (WILD_ARENA || isFromArenaSets(code))) ||
+    if( (inArena && isFromArenaSets(code)) ||
         (!inArena && Utility::isFromStandardSet(code)))
     {
         activeSecret.children.append(SecretCard(code));

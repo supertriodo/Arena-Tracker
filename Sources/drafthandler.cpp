@@ -26,6 +26,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->draftMethodAvgScore = LightForge;
     this->normalizedLF = true;
     this->twitchHandler = nullptr;
+    this->multiclassArena = false;
 
     for(int i=0; i<3; i++)
     {
@@ -130,6 +131,12 @@ void DraftHandler::completeUI()
 
     connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
                 this, SLOT(refreshCapturedCards()));
+}
+
+
+void DraftHandler::setMulticlassArena(bool multiclassArena)
+{
+    this->multiclassArena = multiclassArena;
 }
 
 
@@ -348,8 +355,8 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
         startFindScreenRects();
 
         const QString heroString = Utility::heroString2FromLogNumber(hero);
-        this->lightForgeTiers = initLightForgeTiers(heroString, MULTICLASS_ARENA);
-        initHearthArenaTiers(heroString, MULTICLASS_ARENA);
+        this->lightForgeTiers = initLightForgeTiers(heroString, this->multiclassArena);
+        initHearthArenaTiers(heroString, this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
     else //if(heroDrafting)

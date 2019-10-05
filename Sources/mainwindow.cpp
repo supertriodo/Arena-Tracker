@@ -699,6 +699,10 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 
     if(needDownload)
     {
+        bool multiclassArena = jsonObject.value("multiclassArena").toBool(false);
+        if(draftHandler != nullptr) draftHandler->setMulticlassArena(multiclassArena);
+        settings.setValue("multiclassArena", multiclassArena);
+
         bool redownloadCards = jsonObject.value("redownloadCards").toBool(false);
         bool redownloadHeroes = jsonObject.value("redownloadHeroes").toBool(false);
         if(redownloadCards)
@@ -864,6 +868,10 @@ void MainWindow::createDraftHandler()
 
     downloadHSRHeroesWinrate();
     if(cardsJsonLoaded) draftHandler->buildHeroCodesList();
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    bool multiclassArena = settings.value("multiclassArena", false).toBool();
+    draftHandler->setMulticlassArena(multiclassArena);
 }
 
 
