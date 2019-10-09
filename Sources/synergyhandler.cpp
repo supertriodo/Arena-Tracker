@@ -1459,6 +1459,10 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     {
         qDebug()<<"DEBUG SYNERGIES: OK - No missing synergies.";
     }
+    else
+    {
+        qDebug()<<"DEBUG SYNERGIES: Those synergies missing.";
+    }
 }
 
 
