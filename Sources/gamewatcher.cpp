@@ -447,10 +447,10 @@ void GameWatcher::processPowerHero(QString &line, qint64 numLine)
 void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 {
     //Jugador/Enemigo names, playerTag y firstPlayer
-    //GameState.DebugPrintEntityChoices() - id=1 Player=fayatime TaskList=3 ChoiceType=MULLIGAN CountMin=0 CountMax=5
-    //GameState.DebugPrintEntityChoices() - id=2 Player=Винсент TaskList=4 ChoiceType=MULLIGAN CountMin=0 CountMax=3
+    //GameState.DebugPrintEntityChoices() - id=1 Player=UNKNOWN HUMAN PLAYER TaskList= ChoiceType=MULLIGAN CountMin=0 CountMax=3
+    //GameState.DebugPrintEntityChoices() - id=2 Player=triodo#2541 TaskList= ChoiceType=MULLIGAN CountMin=0 CountMax=5
     if(line.contains(QRegularExpression(
-                "GameState\\.DebugPrintEntityChoices\\(\\) - id=(\\d+) Player=(.*) TaskList=\\d+ ChoiceType=MULLIGAN CountMin=0 CountMax=(\\d+)"
+                "GameState\\.DebugPrintEntityChoices\\(\\) - id=(\\d+) Player=(.*) TaskList=\\d* ChoiceType=MULLIGAN CountMin=0 CountMax=(\\d+)"
                   ), match))
     {
         QString player = match->captured(1);
