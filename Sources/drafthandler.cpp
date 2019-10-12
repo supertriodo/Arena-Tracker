@@ -640,7 +640,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 
             deckRatingHA += hearthArenaTiers[code];
             deckRatingLF += lightForgeTiers[code].score;
-            deckRatingHSR += cardsPlayedWinratesMap[this->arenaHero][code];
+            deckRatingHSR += cardsIncludedWinratesMap[this->arenaHero][code];
         }
     }
 
@@ -994,7 +994,7 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsPlayedWinratesMap[this->arenaHero][code]);
+        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsIncludedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
@@ -1104,8 +1104,8 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     float ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
     float ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
     float ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
-    showNewRatings(ratingPlayed1, ratingPlayed2, ratingPlayed3,
-                   ratingIncluded1, ratingIncluded2, ratingIncluded3,
+    showNewRatings(ratingIncluded1, ratingIncluded2, ratingIncluded3,
+                   ratingPlayed1, ratingPlayed2, ratingPlayed3,
                    -1, -1, -1,
                    HSReplay);
 
@@ -1165,8 +1165,8 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
     if(!patreonVersion) return;
 
     int numCards = synergyHandler->draftedCardsCount();
-    deckRatingHA += cardRatingHA;
-    deckRatingLF += cardRatingLF;
+    deckRatingHA += static_cast<int>(cardRatingHA);
+    deckRatingLF += static_cast<int>(cardRatingLF);
     deckRatingHSR += cardRatingHSR;
     int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
     int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
