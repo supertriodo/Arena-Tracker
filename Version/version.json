@@ -4,5 +4,5 @@
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/Arena.Tracker.v7.05.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/Arena.Tracker.v7.05.Windows.zip",
-	"log": "Hotfix: Fix a bug that will cause all your games to be recognized as loses and going first.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.04'>github</a>"
+	"log": "Hotfix: Fix a bug that will cause all your games to be recognized as loses and going first.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.05'>github</a>"
 }
