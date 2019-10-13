@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.7","v6.71","v6.72","v6.73","v6.74","v6.75","v6.76","v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.04/Arena.Tracker.v7.04.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.04/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.04/Arena.Tracker.v7.04.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.04/Arena.Tracker.v7.04.Windows.zip",
-	"log": "Hotfix: Prepare AT for dual class arenas.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.04'>github</a>"
+	"versionFree": ["v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04","v7.05"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/Arena.Tracker.v7.05.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/Arena.Tracker.v7.05.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.05/Arena.Tracker.v7.05.Windows.zip",
+	"log": "Hotfix: Fix a bug that will cause all your games to be recognized as loses and going first.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.04'>github</a>"
 }
