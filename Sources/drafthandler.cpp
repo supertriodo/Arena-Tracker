@@ -960,7 +960,10 @@ void DraftHandler::pickCard(QString code)
         delayCapture = false;
     }
 
-    if(patreonVersion)
+    //Avoid the pick of hero powers in dual class arena
+    bool pickHeroPower = (Utility::getTypeFromCode(code) == HERO_POWER);
+
+    if(patreonVersion && !pickHeroPower)
     {
         if(!lavaButton->isEnabled())
         {
@@ -1024,8 +1027,11 @@ void DraftHandler::pickCard(QString code)
     this->extendedCapture = false;
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
-    emit pDebug("Pick card: " + code);
-    emit newDeckCard(code);
+    if(!pickHeroPower)
+    {
+        emit pDebug("Pick card: " + code);
+        emit newDeckCard(code);
+    }
     this->justPickedCard = code;
 
     newCaptureDraftLoop(delayCapture);
