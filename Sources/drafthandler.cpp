@@ -109,8 +109,6 @@ void DraftHandler::createSynergyHandler()
 
 void DraftHandler::completeUI()
 {
-    setPremium(false);
-
     comboBoxCard[0] = ui->comboBoxCard1;
     comboBoxCard[1] = ui->comboBoxCard2;
     comboBoxCard[2] = ui->comboBoxCard3;
@@ -131,6 +129,8 @@ void DraftHandler::completeUI()
 
     connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
                 this, SLOT(refreshCapturedCards()));
+
+    setPremium(false);
 }
 
 
@@ -153,6 +153,8 @@ void DraftHandler::setPremium(bool premium)
     {
         ui->labelDeckScore->hide();
     }
+
+    updateScoresVisibility();
 }
 
 
@@ -1825,7 +1827,7 @@ void DraftHandler::updateScoresVisibility()
         {
             labelLFscore[i]->setVisible(draftMethodLF);
             labelHAscore[i]->setVisible(draftMethodHA);
-            labelHSRscore[i]->setVisible(draftMethodHSR);
+            labelHSRscore[i]->setVisible(draftMethodHSR && patreonVersion);
         }
     }
 }

@@ -196,7 +196,7 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
 
 void MainWindow::closedDetachWindow(DetachWindow *detachWindow, QWidget *paneWidget)
 {
-    Q_UNUSED(paneWidget);
+    Q_UNUSED(paneWidget)
     disconnect(ui->minimizeButton, nullptr, detachWindow, nullptr);
     disconnect(detachWindow, nullptr, this, nullptr);
 
@@ -3757,6 +3757,7 @@ void MainWindow::completeConfigTab()
 
     //Draft
     ui->configCheckMechanicsOverlay->hide();
+    ui->configCheckHSR->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftScoresOverlay()));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftMechanicsOverlay()));
     connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
