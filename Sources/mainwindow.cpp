@@ -4407,7 +4407,7 @@ void MainWindow::testDelay()
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
 //Comparar tier lists con Utility::check --> Automatico al bajar nuevas tier lists
-//Update Utility::isFromStandardSet(QString code) --> ULDUM
+//Update Utility::isFromStandardSet(QString code) --> DRAGONS
 //Subir cartas al github.
     ///Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)

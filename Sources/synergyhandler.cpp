@@ -1439,11 +1439,14 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     int num = 0;
     for(const QString &code: Utility::getWildCodes())
     {
-        if(!code.startsWith("HERO_") && !synergyCodes.contains(code))
+        if(!synergyCodes.contains(code))
         {
-            debugSynergiesCode(code, ++num);
+            if(!code.startsWith("HERO_") && Utility::getCardAttribute(code, "set") != "WILD_EVENT")
+            {
+                debugSynergiesCode(code, ++num);
+            }
         }
-        else if(synergyCodes.contains(code))
+        else
         {
             QStringList invalidMecs;
             for(const QString &mechanic: synergyCodes[code])
