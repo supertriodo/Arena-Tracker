@@ -598,6 +598,10 @@ bool EnemyHandHandler::isDrawSpecificCards()
     if(lastCreatedByCode == JEPETTO_JOYBUZZ)    return true;
     if(lastCreatedByCode == SALHETS_PRIDE)      return true;
     if(lastCreatedByCode == ANCIENT_MYSTERIES)  return true;
+    if(lastCreatedByCode == DIVING_GRYPHON)     return true;
+    if(lastCreatedByCode == ANCHARRR)           return true;
+    if(lastCreatedByCode == NECRIUM_APOTHECARY) return true;
+    if(lastCreatedByCode == ELEMENTAL_ALLIES)   return true;
 
     return false;
 }

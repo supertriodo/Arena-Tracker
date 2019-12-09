@@ -1366,7 +1366,7 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("ULDUM"))
+    for(const QString &code: Utility::getSetCodes("DRAGONS"))
 //    for(const QString &code: Utility::getStandardCodes())
 //    for(const QString &code: Utility::getWildCodes())
     {
@@ -1478,6 +1478,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     CardClass cardClass = deckCard.getCardClass();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
     int cost = deckCard.getCost();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
@@ -1572,10 +1573,11 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isOtherClassSyn(code, text, cardClass))                              mec<<"otherClassSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
-    qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
     else                            qDebug()<<code<<": ["<<mec<<"],";
-    qDebug()<<"Texto:"<<text<<endl;
+    qDebug()<<"Texto:"<<text;
+    qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
+    qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
 }
 
 
@@ -3344,6 +3346,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FORBIDDEN_WORDS)     return 4;
     if(code == DEMONBOLT)           return 5;
     if(code == RABBLE_BOUNCER)      return 5;
+    if(code == EMBIGGEN)            return 5;
     if(code == SEA_GIANT)           return 6;
     if(code == KALECGOS)            return 6;
     if(code == MULCHMUNCHER)        return 8;
@@ -3443,6 +3446,7 @@ SPELL BUFF: spellBuffGen/spellBuffSyn
 OTHER CLASS: otherClassGen/otherClassSyn
 SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn
+LACKEY: lackeyGen/lackeySyn
 
 
 
@@ -3480,6 +3484,9 @@ REGLAS
 +Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor,
     es una sinergia muy debil.
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
++No usamos los "=Gen(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)" ya que al no poder distinguir si se generan en el tablero, mano o mazo
+no se pueden asociar bien con los syn.
+
 
 
 

@@ -4325,7 +4325,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Flame Ward");
 //    qDebug()<<Utility::getCardAttribute("ULD_709", "set").toString();
 
-//    draftHandler->debugSynergiesSet("ULDUM", true);
+//    draftHandler->debugSynergiesSet("DRAGONS", true);
 //    draftHandler->debugSynergiesCode("DAL_400");
 //    draftHandler->testSynergies();
 
@@ -4426,9 +4426,9 @@ void MainWindow::testDelay()
     ///(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
+//|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
-//|-Check individual synergies
-//|-Check new individual synergies (in the new set)
+////|-(IGNORAR) Check individual synergies
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
