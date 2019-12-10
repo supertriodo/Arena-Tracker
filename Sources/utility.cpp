@@ -1014,19 +1014,27 @@ void Utility::checkMissingGoldenCards()
 
     for(int i = 0; i < (files.count()-1); i++)
     {
-        if(!files[i].endsWith("_premium.png") && files[i+1].endsWith("_premium.png"))
+        if(!files[i].endsWith("_premium.png"))
         {
             QString code = files[i].left(files[i].length()-4);
-            if(code == files[i+1].left(files[i+1].length()-12))
+
+            if(files[i+1].endsWith("_premium.png"))
             {
-                if(QFileInfo(dir.absoluteFilePath(files[i])).size() == QFileInfo(dir.absoluteFilePath(files[i+1])).size())
+                if(code == files[i+1].left(files[i+1].length()-12))
                 {
-                    qDebug()<<"DEBUG MISSING GOLDEN:" << code << "-" << Utility::cardEnNameFromCode(code);
+                    if(QFileInfo(dir.absoluteFilePath(files[i])).size() == QFileInfo(dir.absoluteFilePath(files[i+1])).size())
+                    {
+                        qDebug()<<"Same golden:" << code << "-" << Utility::cardEnNameFromCode(code);
+                    }
+                }
+                else
+                {
+                    qDebug()<<"DEBUG MISSING GOLDEN: ERROR: Files missing"<<files[i]<<files[i+1];
                 }
             }
-            else
+            else if(hasGoldenImage(code) && !code.startsWith("HERO_"))
             {
-                qDebug()<<"DEBUG MISSING GOLDEN: ERROR: Files missing"<<files[i]<<files[i+1];
+                qDebug()<<"----- NO golden:" << code << "-" << Utility::cardEnNameFromCode(code);
             }
         }
     }
