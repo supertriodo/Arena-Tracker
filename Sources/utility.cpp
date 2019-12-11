@@ -1044,39 +1044,39 @@ void Utility::checkMissingGoldenCards()
 //Whizband Decks
 QString Utility::whizbangDeckString(QString code)
 {
-    if(code == QString("2275")) return "### Untapped Potential\nAAECAZICBiRfrtIC9fwCyZwD+KEDDEBWigH3A8QGi+4C4fsCypwDr6IDyKID3KID2akDAA==";
-    else if(code == QString("2276")) return "### Unseal the Vault\nAAECAR8GuwXtCcn4AuOLA+aWA6SlAwy1A94E2wmBCvbsAqCFA6SIA9ePA56dA8edA+SkA5ipAwA=";
-    else if(code == QString("2277")) return "### Perfect Justice\nAAECAZ8FHooB3APSBN4F8gX0Bc8G+gaKB68H9gf+B48J+wz57AKb8AL9+wKE/ALd/gKggAO9hgPjhgPshgPsiQODoQOhoQP8owPDpAOEpwOWrAMAAA==";
-    else if(code == QString("2278")) return "### Reno's Riches\nAAECAf0EHk2KAbsCiwPJA6sEywSWBd4F8gWKB+wH+wzL7AKe8AK38QLF8wLG+AKggAOvhwPsiQPnlQO9mQOfmwOKngOhoQP8owOSpAO/pAOEpwMAAA==";
-    else if(code == QString("2279")) return "### Activate the Obelisk\nAAECAa0GBqCAA4OUA6mlA7ulA9OlA92rAwz4AuUE9gfVCNEK0gryDPsMvfMC5fcC0qUDhKgDAA==";
-    else if(code == QString("2280")) return "### Bazaar Burglary\nAAECAaIHBLIC6/ACtIYDp6gDDbQBmwWIB90IhgnH+AKPlwOQlwP7mgP+mgO7pQOqqAOtqAMA";
-    else if(code == QString("2281")) return "### Corrupt the Waters\nAAECAaoICqbwAu/3AqH4Aur6ArmZA72ZA8WZA9qdA4SnA+GoAwr1BN4F/gWyBu/xAq2RA7SRA8aZA7ulA8+lAwA=";
-    else if(code == QString("2282")) return "### Supreme Archaeology\nAAECAf0GCtsGxAjMCMLxApz4AqCAA4+CA5eXA4mdA+ujAwowtgfzDMXzAtqWA8KZA9qbA6GhA7ulA9KlAwA=";
-    else if(code == QString("2283")) return "### Hack the System\nAAECAQcES6CAA/KoA/eoAw3/A6IE/wf7DJ3wApvzAvT1Ap77ArP8AoiHA5+hA/WoA/aoAwA=";
-    else if(code == QString("2284")) return "### Nature's Restoration\nAAECAZICBpvwAvX8AqCAA9OUA8mcA9ulAwxAVpMExAaYB+QI6PwCuZQDypwDu58Dr6IDyKIDAA==";
-    else if(code == QString("2285")) return "### The Scrap Heap\nAAECAR8Gh/sCoIADm4UD8ZYD+ZYDn7cDDLUDlwjg9QLi9QLv9QLw9QK09gK5+AKY+wL2/QLylgO2nAMA";
-    else if(code == QString("2286")) return "### The Sunreavers' Secrets\nAAECAZ8FBowBrwTIBMD9AqeCA5SaAwyeAc8G7gavB63yAtj+AvWJA/mTA76YA46aA5CaA8OkAwA=";
-    else if(code == QString("2287")) return "### Archmages of Dalaran\nAAECAf0EBO0FuAju9gKJlgMNuwKrBLQE5gSWBZX/Arn/AqOHA8iHA5+bA+KbA/+dA4ipAwA=";
-    else if(code == QString("2288")) return "### Day of the Dead\nAAECAa0GCNcKvfMC+/4CoIAD1pkDk5sDg6ADn6kDC/gC5QTRCtMK8vECl4cD/okDgpQDmJsDmZsD0qUDAA==";
-    else if(code == QString("2289")) return "### Cursed Crew\nAAECAaIHBrICyAPdCKbvAtaMA9uMAwy0AagF1AWIB+cHhgnf7wKq/wLVjAOPlwOQlwP/pQMA";
-    else if(code == QString("2290")) return "### Underbelly Underlings\nAAECAaoIAt6CA5ybAw7FA9sD/gPjBdAHpwiTCeKJA4yUA7WYA8aZA/SZA6+nA8qrAwA=";
-    else if(code == QString("2291")) return "### Ultimate Impfestation\nAAECAf0GAA8w0wHOB9kHsQjCCJDuAp7xAvT3AquRA7+YA4CaA4edA4idA/qkAwA=";
-    else if(code == QString("2292")) return "### Droppin' the Boom\nAAECAQcK0gL8BLj2ApL4AoP7AqCAA5qHA5uKA/aWA9+pAwpLogSRBv8Hsgjy8QKb8wKO+wLYjAOWlAMA";
+    if(code == QString("2648")) return "### Ysera's Dream Defenders\nAAECAZICBvX8AuyJA+iUA/atA4iwA4exAwxAX8QGjQiJ8QK/8gLoiQOvogOwrQP9rQOMrgOBsQMA";
+    else if(code == QString("2650")) return "### Trees are Friends\nAAECAZICBNWDA8OUA9OcA/etAw39Au0D9wPmBdfvAt/7Ar/9ArSJA86UA6+iA/ytA/6tA/+tAwA=";
+    else if(code == QString("2652")) return "### Galakrond's Fury\nAAECAaoIBpMJ7/cC9ooD5qUD47QD08ADDI/7Apz/ArSXA8aZA8+lA9SlA7WtA7atA7etA7mtA6qvA9CvAwA=";
+    else if(code == QString("2654")) return "### Corrupt the Waters\nAAECAaoICqbwAu/3Aur6ArmZA72ZA8WZA9qdA4SnA+GoA/CtAwr1BN4F/gWyBu/xAq2RA7SRA8aZA7ulA8+lAwA=";
+    else if(code == QString("2656")) return "### Drop the Ancharrr!\nAAECAQcEyAOvBN6tA+iwAw0csAL/A6gF1AXuBucHnfACn6ED9agD3K0D3a0D6bADAA==";
+    else if(code == QString("2657")) return "### Hack the System\nAAECAQcES6CAA/eoA+iwAw3/A6IE/wf7DJ3wApvzAvT1Ap77ArP8AoiHA5+hA/WoA/aoAwA=";
+    else if(code == QString("2658")) return "### Galakrond's Guile\nAAECAaIHCJwCsgKvBPYEtIYDkpcD/q4Dy8ADC7QBlwaIB90Ihgm0kQOPlwO2rgO5rgOqrwPOrwMA";
+    else if(code == QString("2659")) return "### Bazaar Burglary\nAAECAaIHBrICmwXr8AK0hgOnqAOqqAMMtAGIB90IhgnH+AKPlwOQlwP7mgP+mgO7pQOtqAO3rgMA";
+    else if(code == QString("2661")) return "### Lightforged Retribution\nAAECAZ8FAvoG/fsCDtwDrwf+B9b+Atn+AsWhA8OkA5amA5asA4ytA4euA5CuA5uuA5yuAwA=";
+    else if(code == QString("2662")) return "### Perfect Justice\nAAECAZ8FHooB3APSBN4F8gX0Bc8G+gavB/YH/gePCfsMm/AC/fsChPwCoIADvYYD44YD7IYD7IkDg6EDoaED/KMDw6QDhKcDlqwDiK4DkK4DkbEDAAA=";
+    else if(code == QString("2665")) return "### Dragonbane's Devastation\nAAECAR8KxwOvBMkErgaY8AKA8wKnggOghQOfpQOHsAMKngG1A4cE/gz1iQO+mAOipQP7rwP8rwOFsAMA";
+    else if(code == QString("2666")) return "### Unseal the Vault\nAAECAR8GuwXtCcn4AuOLA+aWA6SlAwy1A94E2wmBCvbsAqCFA6SIA9ePA56dA8edA+SkA5ipAwA=";
+    else if(code == QString("2667")) return "### The Clutches of Valdris\nAAECAf0GBsQInPgCoIAD7IkD8KwD8awDDIoB4QeNCPMM8fcC2pYDoaED+qQD5awD66wD7KwD7qwDAA==";
+    else if(code == QString("2668")) return "### Ultimate Impfestation\nAAECAf0GAA8w0wHOB9kHsQjCCJDuAp7xAvT3AquRA7+YA4CaA4edA4idA/qkAwA=";
+    else if(code == QString("2670")) return "### Aspects of the Arcane\nAAECAf0EBJaaA4qeA4GxA+G2Aw3hB40Izu8CifEC6IkD7IkD55UDg5YDoJsD9awD+qwD8K8Dh7EDAA==";
+    else if(code == QString("2671")) return "### Reno's Riches\nAAECAf0EHk2KAbsCiwPJA6sEywSWBd4F8gWKB+wH+wye8AK38QLG+AKggAPsiQPnlQO9mQOfmwOKngOhoQP8owOSpAO/pAOEpwP1rAPsrwORsQMAAA==";
+    else if(code == QString("2672")) return "### Galakrond's Wit\nAAECAa0GCPYH5fcCg5QDqaUDmakDqq8D47QDyMADC+UE1QjSCvIMl4cD0qUDhKgD16wD2qwD/q4Dza8DAA==";
+    else if(code == QString("2673")) return "### Day of the Dead\nAAECAa0GCNcKvfMC+/4CoIAD1pkDk5sDg6ADn6kDC/gC5QTRCtMK8vECl4cDgpQDmJsDmZsD0qUD2awDAA==";
 
     else                             return "";
 }
 
 CardClass Utility::whizbangHero(QString code)
 {
-    if(code == QString("2275") || code == QString("2284")) return DRUID;
-    else if(code == QString("2276") || code == QString("2285")) return HUNTER;
-    else if(code == QString("2278") || code == QString("2287")) return MAGE;
-    else if(code == QString("2277") || code == QString("2286")) return PALADIN;
-    else if(code == QString("2279") || code == QString("2288")) return PRIEST;
-    else if(code == QString("2280") || code == QString("2289")) return ROGUE;
-    else if(code == QString("2281") || code == QString("2290")) return SHAMAN;
-    else if(code == QString("2282") || code == QString("2291")) return WARLOCK;
-    else if(code == QString("2283") || code == QString("2292")) return WARRIOR;
+    if(code == QString("2648") || code == QString("2650")) return DRUID;
+    else if(code == QString("2665") || code == QString("2666")) return HUNTER;
+    else if(code == QString("2670") || code == QString("2671")) return MAGE;
+    else if(code == QString("2661") || code == QString("2662")) return PALADIN;
+    else if(code == QString("2672") || code == QString("2673")) return PRIEST;
+    else if(code == QString("2658") || code == QString("2659")) return ROGUE;
+    else if(code == QString("2652") || code == QString("2654")) return SHAMAN;
+    else if(code == QString("2667") || code == QString("2668")) return WARLOCK;
+    else if(code == QString("2656") || code == QString("2657")) return WARRIOR;
 
     else                                                         return INVALID_CLASS;
 }
