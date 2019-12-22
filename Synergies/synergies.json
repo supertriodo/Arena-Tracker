@@ -1498,7 +1498,7 @@
 "ICC_903" : [ "battlecry", "eggSyn" ],
 "ICC_904" : [ "battlecry", "tokenSyn" ],
 "ICC_905" : [ "restoreFriendlyHeroGen", "lifesteal" ],
-"ICC_910" : [ "damageMinionsGen", "reachGen", "comboGen", "returnSyn", "tokenCardSyn" ],
+"ICC_910" : [ "comboGen", "returnSyn", "tokenCardSyn" ],
 "ICC_911" : [ "silenceOwnSyn" ],
 "ICC_912" : [ "battlecry", "tauntSyn", "divineShieldSyn", "windfuryMinionSyn", "lifestealMinionSyn", "tauntGen" ],
 "ICC_913" : [ "spellDamageGen", "divineShield" ],
