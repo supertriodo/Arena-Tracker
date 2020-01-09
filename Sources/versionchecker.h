@@ -26,7 +26,7 @@ private:
     void checkUpdate(const QJsonObject &versionJsonObject);
     void downloadLatestVersion(const QJsonObject &versionJsonObject);
     void saveRestart(const QByteArray &data);
-    void removeOldVersion();
+    void removeOldNewVersion();
     void saveRestartAppImage(const QByteArray &data);
     void showVersionLog(QString changesLog);
 
