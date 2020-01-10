@@ -3,6 +3,7 @@
 
 #include "utility.h"
 #include <QNetworkAccessManager>
+#include <QFutureWatcher>
 
 #define VERSION QString("v7.1")
 #define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version/version.json"
@@ -20,6 +21,7 @@ private:
     QNetworkAccessManager * networkManager;
     QString latestVersion;
     bool newVersion;
+    QFutureWatcher<void> futureNewAppReplace;
 
 //Metodos
 private:
@@ -29,6 +31,8 @@ private:
     void removeOldNewVersion();
     void saveRestartAppImage(const QByteArray &data);
     void showVersionLog(QString changesLog);
+    bool isNewApp();
+    void newAppReplace();
 
 signals:
     void startProgressBar(int maximum, QString text);
@@ -42,6 +46,8 @@ public slots:
 
 private slots:
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void startNewAppReplace();
+    void finishNewAppReplace();
 };
 
 #endif // VERSIONCHECKER_H

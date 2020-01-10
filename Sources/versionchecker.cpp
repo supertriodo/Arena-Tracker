@@ -2,6 +2,7 @@
 #include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
@@ -11,14 +12,17 @@ VersionChecker::VersionChecker(QObject *parent) : QObject(parent)
             this, SLOT(replyFinished(QNetworkReply*)));
 
     networkManager->get(QNetworkRequest(QUrl(VERSION_URL)));
-    removeOldNewVersion();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString runVersion = settings.value("runVersion", VERSION).toString();
     newVersion = (runVersion != VERSION);
     settings.setValue("runVersion", VERSION);
-
     qApp->setApplicationVersion(VERSION);
+
+    //ArenaTracker.new run - WIN 10 updater
+    connect(&futureNewAppReplace, SIGNAL(finished()), this, SLOT(finishNewAppReplace()));
+    if(isNewApp())    startNewAppReplace();
+    removeOldNewVersion();
 }
 
 
@@ -324,14 +328,54 @@ void VersionChecker::removeOldNewVersion()
     QFile appOld(Utility::dataPath() + "/ArenaTracker.old");
     if(appOld.exists())
     {
-        emit pDebug(Utility::dataPath() + "/ArenaTracker.old removed.");
+        qDebug() << Utility::dataPath() + "/ArenaTracker.old" << "removed.";
         appOld.remove();
     }
 
     QFile appNew(Utility::dataPath() + "/ArenaTracker.new");
     if(appNew.exists())
     {
-        emit pDebug(Utility::dataPath() + "/ArenaTracker.new removed.");
+        qDebug() << Utility::dataPath() + "/ArenaTracker.new" << "removed.";
         appNew.remove();
     }
+}
+
+
+bool VersionChecker::isNewApp()
+{
+    QString runningBinaryName = QCoreApplication::applicationFilePath().split("/").last();
+    return runningBinaryName == "ArenaTracker.new";
+}
+
+
+void VersionChecker::newAppReplace()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString runningBinaryPath = settings.value("runningBinaryPath", "").toString();
+    QString runningBinaryName = runningBinaryPath.split("/").last();
+    QString dataBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
+
+    qDebug() << "ArenaTracker.new running...";
+
+    QFile appFile(runningBinaryPath);
+    if(!appFile.exists())   return;
+    while(!appFile.remove())    QThread::sleep(1);
+
+    qDebug() << runningBinaryPath << "removed.";
+
+    QFile appDataFile(dataBinaryPath);
+    while(!appDataFile.rename(runningBinaryPath))    QThread::sleep(1);
+
+    qDebug() << dataBinaryPath << "renamed to" << runningBinaryPath;
+}
+
+
+void VersionChecker::startNewAppReplace()
+{
+    if(!futureNewAppReplace.isRunning()) futureNewAppReplace.setFuture(QtConcurrent::run(this, &VersionChecker::newAppReplace));
+}
+void VersionChecker::finishNewAppReplace()
+{
+    emit pDebug("ArenaTracker replaced by downloaded version.");
+    emit showMessageProgressBar(VERSION + " ready to use");
 }
