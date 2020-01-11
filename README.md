@@ -11,7 +11,8 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 
 
 ## Download (Windows/Mac/Linux)
-[Download here](https://github.com/supertriodo/Arena-Tracker/releases/latest)
+[![Download](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/downloadButton.png)](https://github.com/supertriodo/Arena-Tracker/releases/latest)
+
 * Tested on Windows 7/8/10
 * Tested on Mac OS X 10.11
 * Tested on Ubuntu/Linux Mint
