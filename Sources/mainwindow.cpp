@@ -4340,6 +4340,11 @@ void MainWindow::testTierlists()
 //    Utility::checkTierlistsCount();
 }
 
+void MainWindow::testDownloadCards()
+{
+    QStringList codes = {"DAL_433", "DRG_076", "ULD_169"};
+    for(const QString &code: codes)     checkCardImage(code, false);
+}
 
 void MainWindow::testDelay()
 {
@@ -4350,6 +4355,7 @@ void MainWindow::testDelay()
 
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
+//    testDownloadCards();
 }
 
 
