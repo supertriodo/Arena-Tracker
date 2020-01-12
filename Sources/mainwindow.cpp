@@ -4342,7 +4342,7 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDownloadCards()
 {
-    QStringList codes = {"DAL_433", "DRG_076", "ULD_169"};
+    QStringList codes = {};
     for(const QString &code: codes)     checkCardImage(code, false);
 }
 
