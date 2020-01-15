@@ -247,6 +247,37 @@ void VersionChecker::saveRestart(const QByteArray &data)
     #endif
 #endif
 
+#ifdef Q_OS_WIN
+    saveRestartNew(data);
+#else
+    saveRestartOld(data);
+#endif
+}
+
+
+void VersionChecker::saveRestartAppImage(const QByteArray &data)
+{
+    QString runningBinaryName = "ArenaTracker.Linux.AppImage";
+    QString runningBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
+
+    QFile appFile(runningBinaryPath);
+    if(appFile.exists())    appFile.rename(Utility::dataPath() + "/ArenaTracker.old");
+
+    Utility::dumpOnFile(data, runningBinaryPath);
+    QFile::setPermissions(runningBinaryPath, QFileDevice::ExeOther|QFileDevice::ReadOther|
+                          QFileDevice::ExeGroup|QFileDevice::ReadGroup|
+                          QFileDevice::ExeUser|QFileDevice::WriteUser|QFileDevice::ReadUser|
+                          QFileDevice::ExeOwner|QFileDevice::WriteOwner|QFileDevice::ReadOwner);
+
+    QProcess::startDetached(runningBinaryPath, qApp->arguments());
+    static_cast<QMainWindow*>(this->parent())->close();
+}
+
+
+void VersionChecker::saveRestartOld(const QByteArray &data)
+{
+    emit pDebug("Using ArenaTracker.old renaming for Linux/Mac.");
+
     QString runningBinaryName = QCoreApplication::applicationFilePath().split("/").last();
     QString runningBinaryPath = Utility::appPath() + "/" + runningBinaryName;
 
@@ -257,31 +288,8 @@ void VersionChecker::saveRestart(const QByteArray &data)
 
     if(!appFile.rename(Utility::dataPath() + "/ArenaTracker.old"))
     {
-        emit pDebug("Rename failed. Using ArenaTracker.new workaround for WIN10.");
-
-        QString dataBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
-
-        Utility::dumpOnFile(data, Utility::dataPath() + "/binaryTemp.zip");
-        Utility::unZip(Utility::dataPath() + "/binaryTemp.zip", Utility::dataPath());
-        QFile zipFile(Utility::dataPath() + "/binaryTemp.zip");
-        zipFile.remove();
-
-        emit pDebug("Extract ArenaTracker on " + Utility::dataPath());
-
-        QFile::setPermissions(dataBinaryPath, permissions);
-
-        QFile appDataFile(dataBinaryPath);
-        appDataFile.copy(Utility::dataPath() + "/ArenaTracker.new");
-
-        emit pDebug("Copy downloaded ArenaTracker on " + Utility::dataPath() + "/ArenaTracker.new");
-
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        settings.setValue("runningBinaryPath", runningBinaryPath);
-
-        emit pDebug("Start ArenaTracker.new...");
-
-        QProcess::startDetached(Utility::dataPath() + "/ArenaTracker.new", qApp->arguments());
-        static_cast<QMainWindow*>(this->parent())->close();
+        emit pDebug("Rename failed.");
+        saveRestartNew(data);
     }
     else
     {
@@ -304,21 +312,37 @@ void VersionChecker::saveRestart(const QByteArray &data)
 }
 
 
-void VersionChecker::saveRestartAppImage(const QByteArray &data)
+void VersionChecker::saveRestartNew(const QByteArray &data)
 {
-    QString runningBinaryName = "ArenaTracker.Linux.AppImage";
-    QString runningBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
+    emit pDebug("Using ArenaTracker.new workaround for WIN10.");
+
+    QString runningBinaryName = QCoreApplication::applicationFilePath().split("/").last();
+    QString runningBinaryPath = Utility::appPath() + "/" + runningBinaryName;
+    QString dataBinaryPath = Utility::dataPath() + "/" + runningBinaryName;
 
     QFile appFile(runningBinaryPath);
-    if(appFile.exists())    appFile.rename(Utility::dataPath() + "/ArenaTracker.old");
+    QFile::Permissions permissions = appFile.permissions();
 
-    Utility::dumpOnFile(data, runningBinaryPath);
-    QFile::setPermissions(runningBinaryPath, QFileDevice::ExeOther|QFileDevice::ReadOther|
-                          QFileDevice::ExeGroup|QFileDevice::ReadGroup|
-                          QFileDevice::ExeUser|QFileDevice::WriteUser|QFileDevice::ReadUser|
-                          QFileDevice::ExeOwner|QFileDevice::WriteOwner|QFileDevice::ReadOwner);
+    Utility::dumpOnFile(data, Utility::dataPath() + "/binaryTemp.zip");
+    Utility::unZip(Utility::dataPath() + "/binaryTemp.zip", Utility::dataPath());
+    QFile zipFile(Utility::dataPath() + "/binaryTemp.zip");
+    zipFile.remove();
 
-    QProcess::startDetached(runningBinaryPath, qApp->arguments());
+    emit pDebug("Extract ArenaTracker on " + Utility::dataPath());
+
+    QFile::setPermissions(dataBinaryPath, permissions);
+
+    QFile appDataFile(dataBinaryPath);
+    appDataFile.copy(Utility::dataPath() + "/ArenaTracker.new");
+
+    emit pDebug("Copy downloaded ArenaTracker on " + Utility::dataPath() + "/ArenaTracker.new");
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("runningBinaryPath", runningBinaryPath);
+
+    emit pDebug("Start ArenaTracker.new...");
+
+    QProcess::startDetached(Utility::dataPath() + "/ArenaTracker.new", qApp->arguments());
     static_cast<QMainWindow*>(this->parent())->close();
 }
 

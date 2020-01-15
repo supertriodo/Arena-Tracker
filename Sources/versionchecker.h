@@ -33,6 +33,8 @@ private:
     void showVersionLog(QString changesLog);
     bool isNewApp();
     void newAppReplace();
+    void saveRestartOld(const QByteArray &data);
+    void saveRestartNew(const QByteArray &data);
 
 signals:
     void startProgressBar(int maximum, QString text);
