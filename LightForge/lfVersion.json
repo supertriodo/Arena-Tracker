@@ -1,7 +1,7 @@
 {
-  "lfVersion": 42,
+  "lfVersion": 43,
   "lfDownloadOriginal": false,
   "multiclassArena": false,
-  "redownloadCards": false,
+  "redownloadCards": true,
   "redownloadHeroes": false
 }
