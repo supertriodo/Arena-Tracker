@@ -20,7 +20,7 @@
 
 using namespace cv;
 
-#define FLOATEQ(X, Y)  (abs(X - Y) < 0.000001f)
+#define FLOATEQ(X, Y)  (fabs(X - Y) < 0.000001f)
 #define ANIMATION_TIME 750
 #define SHOW_EASING_CURVE QEasingCurve::OutCubic
 #define HIDE_EASING_CURVE QEasingCurve::InCubic
