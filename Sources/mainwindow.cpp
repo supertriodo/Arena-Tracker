@@ -2499,7 +2499,14 @@ void MainWindow::resetSettings()
 
 void MainWindow::createLogFile()
 {
-    atLogFile = new QFile(Utility::dataPath() + "/ArenaTrackerLog.txt");
+    QString logPath = Utility::dataPath() + "/ArenaTrackerLog.txt";
+    QString logOldPath = Utility::dataPath() + "/ArenaTrackerLog.old";
+
+    //Copy log from previous session
+    QFile::remove(logOldPath);
+    QFile::rename(logPath, logOldPath);
+
+    atLogFile = new QFile(logPath);
     if(atLogFile->exists())  atLogFile->remove();
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
