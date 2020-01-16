@@ -50,7 +50,7 @@ private:
 
 //Metodos
 protected:
-    QPixmap draw(int total, bool drawRarity, QColor nameColor=BLACK, bool resize=true);
+    QPixmap draw(int total, bool drawRarity, QColor nameColor=BLACK, bool resize=true, QString manaText="");
     QPixmap drawCustomCard(QString customCode, QString customText);
     QColor getRarityColor();
     QPixmap resizeCardHeight(QPixmap &canvas);

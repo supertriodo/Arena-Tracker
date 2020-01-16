@@ -183,12 +183,12 @@ bool SecretsHandler::isFromArenaSets(QString code)
 }
 
 
-void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret)
+void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
 {
     if( (inArena && isFromArenaSets(code)) ||
         (!inArena && Utility::isFromStandardSet(code)))
     {
-        activeSecret.children.append(SecretCard(code));
+        activeSecret.children.append(SecretCard(code, manaText));
     }
 }
 
@@ -211,7 +211,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
     {
         for(const QString &code: secretsByPickrate[hero])
         {
-            unknownSecretPlayedAddOption(code, inArena, activeSecret);
+            unknownSecretPlayedAddOption(code, inArena, activeSecret, QString::number((int)round(cardsPickratesMap[hero][code]))+"%");
         }
     }
     //Opciones ordenadas por rareza
@@ -756,6 +756,12 @@ QStringList SecretsHandler::getSecretOptionCodes(int id)
         }
     }
     return QStringList();
+}
+
+
+void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[9])
+{
+    this->cardsPickratesMap = cardsPickratesMap;
 }
 
 

@@ -9,12 +9,14 @@ class SecretCard : public DeckCard
 public:
     SecretCard();
     SecretCard(QString code);
+    SecretCard(QString code, QString manaText);
     ~SecretCard();
 
 //Variables
 public:
     QTreeWidgetItem *treeItem;
     CardClass hero;
+    QString manaText;
 
 //Metodos
 public:

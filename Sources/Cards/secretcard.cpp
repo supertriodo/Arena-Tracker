@@ -7,12 +7,21 @@ SecretCard::SecretCard() : DeckCard("")
 {
     treeItem = nullptr;
     hero = INVALID_CLASS;
+    this->manaText = "";
 }
 
 SecretCard::SecretCard(QString code) : DeckCard(code)
 {
     treeItem = nullptr;
     hero = INVALID_CLASS;
+    this->manaText = "";
+}
+
+SecretCard::SecretCard(QString code, QString manaText) : DeckCard(code)
+{
+    treeItem = nullptr;
+    hero = INVALID_CLASS;
+    this->manaText = manaText;
 }
 
 SecretCard::~SecretCard()
@@ -28,7 +37,7 @@ void SecretCard::draw()
 
     if(this->code != "")
     {
-        canvas = DeckCard::draw(1, true, BLACK, false);
+        canvas = DeckCard::draw(1, true, BLACK, false, manaText);
     }
     else
     {

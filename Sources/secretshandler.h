@@ -56,6 +56,7 @@ private:
     QStringList arenaSets;
     //List of code secrets ordered by pickrate for all 9 classes, used as options for a new unknown secret played.
     QList<QString> secretsByPickrate[9];
+    QMap<QString, float> *cardsPickratesMap;
 
 
 //Metodos
@@ -67,7 +68,7 @@ private:
     void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover=false);
     void knownSecretPlayed(int id, CardClass hero, QString code);
     bool isFromArenaSets(QString code);
-    void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret);
+    void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");
     void playerMinionPlayedNow(QString code, int playerMinions);
 
 public:
@@ -78,6 +79,7 @@ public:
     QStringList getSecretOptionCodes(int id);
     void setArenaSets(QStringList &arenaSets);
     void createSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
+    void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
 
 signals:
     void checkCardImage(QString code);

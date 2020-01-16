@@ -637,6 +637,7 @@ void MainWindow::finishProcessHSRCardsIncluded()
     HSRCardsMaps hsrCardsMaps = futureProcessHSRCardsIncluded.result();
     this->cardsPickratesMap = hsrCardsMaps.cardsPickratesMap;
     this->cardsIncludedWinratesMap = hsrCardsMaps.cardsWinratesMap;
+    secretsHandler->setCardsPickratesMap(cardsPickratesMap);
     secretsHandler->createSecretsByPickrate(cardsPickratesMap);
     draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
 }
