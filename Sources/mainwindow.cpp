@@ -1070,7 +1070,7 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(hide()));
     connect(ui->enemyHandListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
-    connect(ui->secretsTreeWidget, SIGNAL(leave()),
+    connect(ui->secretsListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(draftHandler, SIGNAL(overlayCardLeave()),
             cardWindow, SLOT(hide()));
@@ -1268,7 +1268,7 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(enemySecretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSecretStolen(int,QString)),
             planHandler, SLOT(playerSecretStolen(int,QString)));
-    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
+    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString,LoadingScreenState)),
             planHandler, SLOT(enemySecretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
             planHandler, SLOT(playerCardDraw(int,QString,int)));
@@ -1300,8 +1300,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(resetSecretsInterface()));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass, LoadingScreenState)),
             secretsHandler, SLOT(secretPlayed(int,CardClass, LoadingScreenState)));
-    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString)),
-            secretsHandler, SLOT(secretStolen(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString,LoadingScreenState)),
+            secretsHandler, SLOT(secretStolen(int,QString,LoadingScreenState)));
     connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
             secretsHandler, SLOT(secretRevealed(int, QString)));
     connect(gameWatcher, SIGNAL(playerSecretStolen(int, QString)),

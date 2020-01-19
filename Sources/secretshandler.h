@@ -27,11 +27,19 @@ public:
 };
 
 
-class ActiveSecret
+class ActiveSecretId
 {
 public:
     int id;
-    SecretCard root;
+    QList<QString> codes;
+};
+
+
+class ActiveSecret
+{
+public:
+    CardClass hero;
+    QList<ActiveSecretId> activeSecretIds;
     QList<SecretCard> children;
 };
 
@@ -64,12 +72,12 @@ private:
     void completeUI();
     void discardSecretOption(QString code, int delay=8000);
     void discardSecretOptionNow(QString code);
-    void checkLastSecretOption(ActiveSecret &activeSecret);
-    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover=false);
-    void knownSecretPlayed(int id, CardClass hero, QString code);
+    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
+    void knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState);
     bool isFromArenaSets(QString code);
     void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");
     void playerMinionPlayedNow(QString code, int playerMinions);
+    ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -91,7 +99,7 @@ signals:
 
 public slots:
     void secretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
-    void secretStolen(int id, QString code);
+    void secretStolen(int id, QString code, LoadingScreenState loadingScreenState);
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();
     void playerSpellPlayed(QString code);
@@ -112,7 +120,7 @@ private slots:
     void discardSecretOptionDelay();
     void clearSecretsAnimating();
     void adjustSize();
-    void findSecretCardEntered(QTreeWidgetItem *item);
+    void findSecretCardEntered(QListWidgetItem *item);
     void playerMinionPlayedDelay();
 };
 

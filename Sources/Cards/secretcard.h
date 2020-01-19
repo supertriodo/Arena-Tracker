@@ -14,8 +14,6 @@ public:
 
 //Variables
 public:
-    QTreeWidgetItem *treeItem;
-    CardClass hero;
     QString manaText;
 
 //Metodos

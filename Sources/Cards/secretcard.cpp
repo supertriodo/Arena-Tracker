@@ -5,22 +5,16 @@
 
 SecretCard::SecretCard() : DeckCard("")
 {
-    treeItem = nullptr;
-    hero = INVALID_CLASS;
     this->manaText = "";
 }
 
 SecretCard::SecretCard(QString code) : DeckCard(code)
 {
-    treeItem = nullptr;
-    hero = INVALID_CLASS;
     this->manaText = "";
 }
 
 SecretCard::SecretCard(QString code, QString manaText) : DeckCard(code)
 {
-    treeItem = nullptr;
-    hero = INVALID_CLASS;
     this->manaText = manaText;
 }
 
@@ -37,7 +31,7 @@ void SecretCard::draw()
 
     if(this->code != "")
     {
-        canvas = DeckCard::draw(1, true, BLACK, false, manaText);
+        canvas = DeckCard::draw(1, true, BLACK, true, manaText);
     }
     else
     {
@@ -49,41 +43,9 @@ void SecretCard::draw()
         painter.end();
     }
 
-    //Pinta ? de color
-    painter.begin(&canvas);
-    switch(hero)
-    {
-        case MAGE:
-            painter.drawPixmap(25,4,QPixmap(":Images/secretMage.png"));
-            painter.drawPixmap(166,4,QPixmap(":Images/secretMage.png"));
-            break;
-
-        case HUNTER:
-            painter.drawPixmap(25,4,QPixmap(":Images/secretHunter.png"));
-            painter.drawPixmap(166,4,QPixmap(":Images/secretHunter.png"));
-            break;
-
-        case PALADIN:
-            painter.drawPixmap(25,4,QPixmap(":Images/secretPaladin.png"));
-            painter.drawPixmap(166,4,QPixmap(":Images/secretPaladin.png"));
-            break;
-
-        case ROGUE:
-            painter.drawPixmap(25,4,QPixmap(":Images/secretRogue.png"));
-            painter.drawPixmap(166,4,QPixmap(":Images/secretRogue.png"));
-            break;
-
-        default:
-            break;
-    }
-    painter.end();
-
     if(this->listItem != nullptr)
     {
-        this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
-    }
-    if(this->treeItem != nullptr)
-    {
-        this->treeItem->setIcon(0, QIcon(resizeCardHeight(canvas)));
+        if(remaining == 0)  this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(canvas.size(), QIcon::Disabled, QIcon::On)));
+        else                this->listItem->setIcon(QIcon(canvas));
     }
 }

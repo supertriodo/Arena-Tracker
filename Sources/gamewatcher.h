@@ -128,7 +128,7 @@ signals:
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void playerSecretPlayed(int id, QString code);
-    void enemySecretStolen(int id, QString code);
+    void enemySecretStolen(int id, QString code, LoadingScreenState loadingScreenState);
     void playerSecretStolen(int id, QString code);
     void enemySecretRevealed(int id, QString code);
     void playerSecretRevealed(int id, QString code);

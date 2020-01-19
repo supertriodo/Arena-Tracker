@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -947,13 +947,7 @@ draft mechanics becoming a patron (3$)</string>
            <widget class="MoveListWidget" name="enemyHandListWidget"/>
           </item>
           <item>
-           <widget class="MoveTreeWidget" name="secretsTreeWidget">
-            <column>
-             <property name="text">
-              <string notr="true">1</string>
-             </property>
-            </column>
-           </widget>
+           <widget class="MoveListWidget" name="secretsListWidget"/>
           </item>
           <item>
            <widget class="MoveListWidget" name="drawListWidget"/>
@@ -1577,7 +1571,7 @@ draft mechanics becoming a patron (3$)</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>875</height>
+               <height>852</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">

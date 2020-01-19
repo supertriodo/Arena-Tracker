@@ -22,21 +22,13 @@ SecretsHandler::~SecretsHandler()
 
 void SecretsHandler::completeUI()
 {
-    ui->secretsTreeWidget->setHidden(true);
+    ui->secretsListWidget->setHidden(true);
+    ui->secretsListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    ui->secretsListWidget->setMouseTracking(true);
+    ui->secretsListWidget->setFixedHeight(0);
 
-    ui->secretsTreeWidget->setColumnCount(1);
-    ui->secretsTreeWidget->setIconSize(10*CARD_SIZE);
-    ui->secretsTreeWidget->setStyleSheet("QTreeView{background-color: transparent;}"
-                                         "QTreeView::item{padding: 0px;}");
-    ui->secretsTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    ui->secretsTreeWidget->setRootIsDecorated(false);
-    ui->secretsTreeWidget->setIndentation(0);
-    ui->secretsTreeWidget->setItemsExpandable(false);
-    ui->secretsTreeWidget->setMouseTracking(true);
-    ui->secretsTreeWidget->setFixedHeight(0);
-
-    connect(ui->secretsTreeWidget, SIGNAL(itemEntered(QTreeWidgetItem*,int)),
-            this, SLOT(findSecretCardEntered(QTreeWidgetItem*)));
+    connect(ui->secretsListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
+            this, SLOT(findSecretCardEntered(QListWidgetItem*)));
 }
 
 
@@ -70,28 +62,28 @@ void SecretsHandler::adjustSize()
         return;
     }
 
-    int rowHeight = ui->secretsTreeWidget->sizeHintForRow(0);
+    int rowHeight = ui->secretsListWidget->sizeHintForRow(0);
     int rows = 0;
 
     for(int i=0; i<activeSecretList.count(); i++)
     {
-        rows += activeSecretList[i].children.count() + 1;
+        rows += activeSecretList[i].children.count();
     }
 
-    int height = rows*rowHeight + 2*ui->secretsTreeWidget->frameWidth();
-    int maxHeight = (ui->secretsTreeWidget->height()+ui->enemyHandListWidget->height())*4/5;
+    int height = rows*rowHeight + 2*ui->secretsListWidget->frameWidth();
+    int maxHeight = (ui->secretsListWidget->height()+ui->enemyHandListWidget->height())*4/5;
     if(height>maxHeight)    height = maxHeight;
 
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->secretsTreeWidget, "minimumHeight");
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->secretsListWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(ui->secretsTreeWidget->minimumHeight());
+    animation->setStartValue(ui->secretsListWidget->minimumHeight());
     animation->setEndValue(height);
     animation->setEasingCurve(SHOW_EASING_CURVE);
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
-    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->secretsTreeWidget, "maximumHeight");
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->secretsListWidget, "maximumHeight");
     animation2->setDuration(ANIMATION_TIME);
-    animation2->setStartValue(ui->secretsTreeWidget->maximumHeight());
+    animation2->setStartValue(ui->secretsListWidget->maximumHeight());
     animation2->setEndValue(height);
     animation2->setEasingCurve(SHOW_EASING_CURVE);
     animation2->start(QPropertyAnimation::DeleteWhenStopped);
@@ -105,13 +97,13 @@ void SecretsHandler::adjustSize()
 void SecretsHandler::clearSecretsAnimating()
 {
     this->secretsAnimating = false;
-    if(activeSecretList.empty())    ui->secretsTreeWidget->setHidden(true);
+    if(activeSecretList.empty())    ui->secretsListWidget->setHidden(true);
 }
 
 
-void SecretsHandler::secretStolen(int id, QString code)
+void SecretsHandler::secretStolen(int id, QString code, LoadingScreenState loadingScreenState)
 {
-    knownSecretPlayed(id, INVALID_CLASS, code);
+    knownSecretPlayed(id, Utility::getClassFromCode(code), code, loadingScreenState);
 }
 
 
@@ -127,17 +119,12 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         //Secreto conocido
         if(!code.isEmpty() && Utility::isASecret(code))
         {
-            knownSecretPlayed(id, hero, code);
+            knownSecretPlayed(id, hero, code, loadingScreenState);
         }
         //Pocion de polimorfia
         else if(createdByCode == KABAL_CHEMIST)
         {
-            knownSecretPlayed(id, hero, POTION_OF_POLIMORPH);
-        }
-        //Discover card, puede ser cualquier secreto standard, incluido los baneados de arena
-        else if(!createdByCode.isEmpty())
-        {
-            unknownSecretPlayed(id, hero, loadingScreenState, true);
+            knownSecretPlayed(id, hero, POTION_OF_POLIMORPH, loadingScreenState);
         }
         //Deck Card
         else
@@ -152,26 +139,34 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
 }
 
 
-void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code)
+void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState)
 {
-    ActiveSecret activeSecret;
-    activeSecret.id = id;
-    activeSecret.root.hero = hero;
+    emit pDebug("Secret known played. Code: " + code);
 
-    activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
-    activeSecret.root.treeItem->setExpanded(true);
-    activeSecret.root.setCode(code);
-    activeSecret.root.draw();
-    emit checkCardImage(code);
+    //No puede haber dos secretos iguales discard en los demas
+    //Eliminar de las opciones, secretos que ya hemos reducido a 1 opcion
+    //No es necesario ya que visualmente esa opcion tiene que estar activa y cuando se desvele ese secreto se eliminara como opcion de los demas
 
-    activeSecretList.append(activeSecret);
+    bool inArena = (loadingScreenState == arena);
 
-    ui->secretsTreeWidget->setHidden(false);
-    emit isolatedSecret(activeSecret.id, activeSecret.root.getCode());
+    ActiveSecret *activeSecret = getActiveSecret(hero, inArena);
+    ActiveSecretId activeSecretId;
+    activeSecretId.id = id;
+    activeSecretId.codes.append(code);
+    activeSecret->activeSecretIds.append(activeSecretId);
 
-    //No puede haber dos secretos iguales
-    discardSecretOptionNow(code);
+    for(QList<SecretCard>::iterator it = activeSecret->children.begin(); it != activeSecret->children.end(); it++)
+    {
+        if(it->getCode() == code)
+        {
+            it->remaining = it->total = 1;
+        }
+        it->draw();
+    }
 
+    emit isolatedSecret(id, code);
+
+    ui->secretsListWidget->setHidden(false);
     adjustSize();
 }
 
@@ -193,18 +188,19 @@ void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, Ac
 }
 
 
-void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, bool discover)
+//Devuelve o crea las opciones de secretos del heroe. No modifica su numero (total/remaining) ni rellena su id + codes
+ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
 {
-    Q_UNUSED(discover);
-    bool inArena = (loadingScreenState == arena);
+    for(ActiveSecret &activeSecret: activeSecretList)
+    {
+        if(hero == activeSecret.hero)
+        {
+            return &activeSecret;
+        }
+    }
 
     ActiveSecret activeSecret;
-    activeSecret.id = id;
-    activeSecret.root.hero = hero;
-
-    activeSecret.root.treeItem = new QTreeWidgetItem(ui->secretsTreeWidget);
-    activeSecret.root.treeItem->setExpanded(true);
-    activeSecret.root.draw();
+    activeSecret.hero = hero;
 
     //Opciones ordenadas por pickrate en arena
     if(inArena)
@@ -290,37 +286,39 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         }
     }
 
-    emit pDebug("Secret played. Hero: " + QString::number(hero));
-
-    //Eliminar de las opciones, secretos que ya hemos reducido a 1 opcion
-    foreach(ActiveSecret activeSecretOld, activeSecretList)
-    {
-        QString code = activeSecretOld.root.getCode();
-        if(!code.isEmpty())
-        {
-            for(int i=0; i<activeSecret.children.count(); i++)
-            {
-                if(activeSecret.children[i].getCode() == code)
-                {
-                    emit pDebug("Option discarded on just played secret (already guessed on an active secret): " + code);
-                    activeSecret.children.removeAt(i);
-                    break;
-                }
-            }
-        }
-    }
-
+    //Creamos los QListWidgetItem
     for(QList<SecretCard>::iterator it = activeSecret.children.begin(); it != activeSecret.children.end(); it++)
     {
-        it->treeItem = new QTreeWidgetItem(activeSecret.root.treeItem);
-        it->draw();
+        it->remaining = it->total = 0;
+        it->listItem = new QListWidgetItem(ui->secretsListWidget);
         emit checkCardImage(it->getCode());
     }
 
     activeSecretList.append(activeSecret);
+    return &activeSecretList.last();
+}
 
-    ui->secretsTreeWidget->setHidden(false);
 
+void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
+{
+    emit pDebug("Secret unknown played. Hero: " + QString::number(hero));
+
+    bool inArena = (loadingScreenState == arena);
+
+    ActiveSecret *activeSecret = getActiveSecret(hero, inArena);
+    ActiveSecretId activeSecretId;
+    activeSecretId.id = id;
+
+    for(QList<SecretCard>::iterator it = activeSecret->children.begin(); it != activeSecret->children.end(); it++)
+    {
+        activeSecretId.codes.append(it->getCode());
+        it->remaining = it->total = 1;
+        it->draw();
+    }
+
+    activeSecret->activeSecretIds.append(activeSecretId);
+
+    ui->secretsListWidget->setHidden(false);
     adjustSize();
 }
 
@@ -329,7 +327,6 @@ void SecretsHandler::redrawDownloadedCardImage(QString code)
 {
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
-        if(it->root.getCode() == code)    it->root.draw();
         for(QList<SecretCard>::iterator it2 = it->children.begin(); it2 != it->children.end(); it2++)
         {
             if(it2->getCode() == code)    it2->draw();
@@ -342,7 +339,6 @@ void SecretsHandler::redrawClassCards()
 {
     foreach(ActiveSecret activeSecret, activeSecretList)
     {
-        if(activeSecret.root.getCardClass()<9)   activeSecret.root.draw();
         foreach(SecretCard secretCard, activeSecret.children)
         {
             if(secretCard.getCardClass()<9)   secretCard.draw();
@@ -355,11 +351,9 @@ void SecretsHandler::redrawSpellWeaponCards()
 {
     foreach(ActiveSecret activeSecret, activeSecretList)
     {
-        CardType cardType = activeSecret.root.getType();
-        if(cardType == SPELL || cardType == WEAPON)   activeSecret.root.draw();
         foreach(SecretCard secretCard, activeSecret.children)
         {
-            cardType = secretCard.getType();
+            CardType cardType = secretCard.getType();
             if(cardType == SPELL || cardType == WEAPON)   secretCard.draw();
         }
     }
@@ -370,7 +364,6 @@ void SecretsHandler::redrawAllCards()
 {
     foreach(ActiveSecret activeSecret, activeSecretList)
     {
-        activeSecret.root.draw();
         foreach(SecretCard secretCard, activeSecret.children)
         {
             secretCard.draw();
@@ -381,8 +374,9 @@ void SecretsHandler::redrawAllCards()
 
 void SecretsHandler::resetSecretsInterface()
 {
-    ui->secretsTreeWidget->setHidden(true);
-    ui->secretsTreeWidget->clear();
+    ui->secretsListWidget->setHidden(true);
+    ui->secretsListWidget->clear();
+    ui->secretsListWidget->setFixedHeight(0);
     activeSecretList.clear();
     secretTestQueue.clear();
     magneticPlayedQueue.clear();
@@ -391,27 +385,70 @@ void SecretsHandler::resetSecretsInterface()
 
 void SecretsHandler::secretRevealed(int id, QString code)
 {
+    emit pDebug("Secret revealed: " + code);
+
+    CardClass hero = Utility::getClassFromCode(code);
     for(int i=0; i<activeSecretList.count(); i++)
     {
-        if(activeSecretList[i].id == id)
+        if(activeSecretList[i].hero == hero)
         {
-            ui->secretsTreeWidget->takeTopLevelItem(i);
-            delete activeSecretList[i].root.treeItem;
-            activeSecretList.removeAt(i);
-            break;
+            //Eliminamos la id
+            for(int j=0; j<activeSecretList[i].activeSecretIds.count(); j++)
+            {
+                if(activeSecretList[i].activeSecretIds[j].id == id)
+                {
+                    activeSecretList[i].activeSecretIds.removeAt(j);
+                    break;
+                }
+            }
+
+            //Borramos el activeSecret si esta vacio
+            if(activeSecretList[i].activeSecretIds.isEmpty())
+            {
+                for(SecretCard &secretCard: activeSecretList[i].children)
+                {
+                    delete secretCard.listItem;
+                }
+                activeSecretList.removeAt(i);
+                adjustSize();
+                break;
+            }
+            //Descartamos la opcion de secreto y recalculamos las opciones restantes
+            else
+            {
+                discardSecretOptionNow(code);
+
+                for(SecretCard &secretCard: activeSecretList[i].children)
+                {
+                    if(secretCard.remaining > 0)
+                    {
+                        bool codeFound = false;
+                        QString scode = secretCard.getCode();
+                        for(ActiveSecretId &activeSecretId: activeSecretList[i].activeSecretIds)
+                        {
+                            if(activeSecretId.codes.contains(scode))
+                            {
+                                codeFound = true;
+                                break;
+                            }
+                        }
+
+                        if(!codeFound)
+                        {
+                            secretCard.remaining = secretCard.total = 0;
+                            secretCard.draw();
+                        }
+                    }
+                }
+            }
         }
     }
+
 
     for(int i=0; i<secretTestQueue.count(); i++)
     {
         secretTestQueue[i].secretRevealedLastSecond = true;
     }
-    adjustSize();
-
-    //No puede haber dos secretos iguales
-    discardSecretOptionNow(code);
-
-    emit pDebug("Secret revealed: " + code);
 
 
     //Reveal cards in Hand
@@ -440,20 +477,34 @@ void SecretsHandler::discardSecretOptionDelay()
 
 void SecretsHandler::discardSecretOptionNow(QString code)
 {
+    emit pDebug("Option discarded: " + code);
+
+    CardClass hero = Utility::getClassFromCode(code);
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
-        for(int i=0; i<it->children.count(); i++)
+        if(it->hero == hero)
         {
-            if(it->children[i].getCode() == code)
+            for(SecretCard &secretCard: it->children)
             {
-                emit pDebug("Option discarded: " + code);
-                delete it->children[i].treeItem;
-                it->children.removeAt(i);
-                QTimer::singleShot(10, this, SLOT(adjustSize()));
+                if(secretCard.getCode() == code)
+                {
+                    secretCard.remaining = secretCard.total = 0;
+                    secretCard.draw();
+                    break;
+                }
+            }
 
-                //Comprobar unica posibilidad
-                checkLastSecretOption(*it);
-                break;
+            for(ActiveSecretId &activeSecretId: it->activeSecretIds)
+            {
+                activeSecretId.codes.removeOne(code);
+
+                if(activeSecretId.codes.count() == 1)
+                {
+                    emit isolatedSecret(activeSecretId.id, activeSecretId.codes.first());
+                }
+
+                //Eliminar de las opciones, secretos que ya hemos reducido a 1 opcion
+                //No es necesario ya que visualmente esa opcion tiene que estar activa y cuando se desvele ese secreto se eliminara como opcion de los demas
             }
         }
     }
@@ -475,22 +526,6 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
         secretTestQueue.enqueue(secretTest);
 
         QTimer::singleShot(delay, this, SLOT(discardSecretOptionDelay()));
-    }
-}
-
-
-void SecretsHandler::checkLastSecretOption(ActiveSecret &activeSecret)
-{
-    if(activeSecret.children.count() == 1)
-    {
-        activeSecret.root.setCode(activeSecret.children.first().getCode());
-        activeSecret.root.draw();
-        activeSecret.root.treeItem->removeChild(activeSecret.children.first().treeItem);
-        activeSecret.children.clear();
-        emit isolatedSecret(activeSecret.id, activeSecret.root.getCode());
-
-        //No puede haber dos secretos iguales
-        discardSecretOptionNow(activeSecret.root.getCode());
     }
 }
 
@@ -681,7 +716,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
         //Minion -> hero
         if(isHeroTo)
         {
-            discardSecretOptionNow(FLAME_WARD);//No necesita objetivo
+            discardSecretOption(FLAME_WARD);//Ocultado por VAPORIZE
             discardSecretOption(VAPORIZE);//Ocultado por FLAME_WARD
             discardSecretOptionNow(ICE_BARRIER);//No necesita objetivo
 
@@ -713,46 +748,42 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
 }
 
 
-void SecretsHandler::findSecretCardEntered(QTreeWidgetItem * item)
+void SecretsHandler::findSecretCardEntered(QListWidgetItem * item)
 {
-    QString code;
-    int indexTopLevel = ui->secretsTreeWidget->indexOfTopLevelItem(item);
-    int indexLowLevel = -1;
-    if(indexTopLevel == -1)//Low level item
+    QString code = "";
+
+    for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end() && code.isEmpty(); it++)
     {
-        indexTopLevel = ui->secretsTreeWidget->indexOfTopLevelItem(item->parent());
-        indexLowLevel = item->parent()->indexOfChild(item);
-        code = activeSecretList[indexTopLevel].children[indexLowLevel].getCode();
-    }
-    else//Top level item
-    {
-        code = activeSecretList[indexTopLevel].root.getCode();
+        for(SecretCard &secretCard: it->children)
+        {
+            if(secretCard.listItem == item)
+            {
+                code = secretCard.getCode();
+                break;
+            }
+        }
     }
 
-    QRect rectCard = ui->secretsTreeWidget->visualItemRect(item);
-    QPoint posCard = ui->secretsTreeWidget->mapToGlobal(rectCard.topLeft());
+    QRect rectCard = ui->secretsListWidget->visualItemRect(item);
+    QPoint posCard = ui->secretsListWidget->mapToGlobal(rectCard.topLeft());
     QRect globalRectCard = QRect(posCard, rectCard.size());
 
-    int secretListTop = ui->secretsTreeWidget->mapToGlobal(QPoint(0,0)).y();
-    int secretListBottom = ui->secretsTreeWidget->mapToGlobal(QPoint(0,ui->secretsTreeWidget->height())).y();
+    int secretListTop = ui->secretsListWidget->mapToGlobal(QPoint(0,0)).y();
+    int secretListBottom = ui->secretsListWidget->mapToGlobal(QPoint(0,ui->secretsListWidget->height())).y();
     emit cardEntered(code, globalRectCard, secretListTop, secretListBottom);
 }
 
 
 QStringList SecretsHandler::getSecretOptionCodes(int id)
 {
-    foreach(ActiveSecret secret, activeSecretList)
+    for(ActiveSecret &activeSecret: activeSecretList)
     {
-        if(secret.id == id)
+        for(ActiveSecretId &activeSecretId: activeSecret.activeSecretIds)
         {
-            if(secret.children.isEmpty())   return QStringList(secret.root.getCode());
-
-            QStringList codes;
-            foreach(SecretCard secretCard, secret.children)
+            if(activeSecretId.id == id)
             {
-                codes.append(secretCard.getCode());
+                return activeSecretId.codes;
             }
-            return codes;
         }
     }
     return QStringList();
