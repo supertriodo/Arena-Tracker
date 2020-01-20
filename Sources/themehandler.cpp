@@ -47,7 +47,7 @@ QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfO
 QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrCloseFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
 QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
 QString ThemeHandler::speedDWTextFile_, ThemeHandler::speedTwitchTextFile_;
-QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYUnknownFile_;
+QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYFile2_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
@@ -666,6 +666,12 @@ QString ThemeHandler::handCardBYFile()
 }
 
 
+QString ThemeHandler::handCardBYFile2()
+{
+    return handCardBYFile2_;
+}
+
+
 QString ThemeHandler::handCardBYUnknownFile()
 {
     return handCardBYUnknownFile_;
@@ -926,6 +932,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     //"-----ENEMY HAND TAB-----": 0,
     handCardFile_ = loadThemeFile(themePath, jsonObject, "handCardFile");
     handCardBYFile_ = loadThemeFile(themePath, jsonObject, "handCardBYFile");
+    handCardBYFile2_ = loadThemeFile(themePath, jsonObject, "handCardBYFile2");
     handCardBYUnknownFile_ = loadThemeFile(themePath, jsonObject, "handCardBYUnknownFile");
     bgTotalAttackFile_ = loadThemeFile(themePath, jsonObject, "bgTotalAttackFile");
 
@@ -1235,6 +1242,7 @@ void ThemeHandler::defaultEmptyValues()
     if(speedTwitchTextFile_.isEmpty())  speedTwitchTextFile_ = ":/Images/speedTwitchText.png";
     if(handCardFile_.isEmpty())         handCardFile_ = ":/Images/handCard1.png";
     if(handCardBYFile_.isEmpty())       handCardBYFile_ = ":/Images/handCard3.png";
+    if(handCardBYFile2_.isEmpty())      handCardBYFile2_ = ":/Images/handCard4.png";
     if(handCardBYUnknownFile_.isEmpty())handCardBYUnknownFile_ = ":/Images/handCard2.png";
     if(starFile_.isEmpty())             starFile_ = ":/Images/legendaryStar.png";
     if(manaLimitFile_.isEmpty())        manaLimitFile_ = ":/Images/manaLimit.png";

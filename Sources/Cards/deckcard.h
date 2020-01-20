@@ -30,6 +30,7 @@ public:
     int remaining;
     bool special;
     int id;
+    QList<int> outsiderIds;
 
 
 protected:

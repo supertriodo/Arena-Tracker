@@ -58,7 +58,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code, bool mulligan);
-    void newDeckCard(QString code, int total=1, bool add=false, bool outsider=false, int id=0);
+    void newDeckCard(QString code, bool outsider=false, int id=0);
     void drawFromDeck(QString code, int id);
     void showDeckButtons();
     void hideDeckButtons();
@@ -121,7 +121,6 @@ public slots:
     void importWhizbangDeck(QString whizbangDeckCode);
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
-    void newDeckCardWeb(QString code, int total);
     void newDeckCardOutsider(QString code, int id);
     void playerCardDraw(QString code, int id);
     void playerCardToHand(int id, QString code, int turn);

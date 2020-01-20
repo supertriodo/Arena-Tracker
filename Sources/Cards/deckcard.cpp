@@ -298,8 +298,18 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setRenderHint(QPainter::TextAntialiasing);
 
+        //Borders behind
+        if(ThemeHandler::manaLimitBehind())
+        {
+            QPixmap pixmap(ThemeHandler::manaLimitFile());
+            int pixmapHMid = pixmap.height()/2;
+            int pixmapW = pixmap.width();
+            if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+            if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+        }
+
         //Card
-        QRectF target = QRectF(113,6,100,25);;
+        QRectF target;
         QRectF source;
 
         QFileInfo cardFI(Utility::hscardsPath() + "/" + customCode + ".png");
@@ -307,16 +317,26 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         {
             if(type==MINION)        source = QRectF(46,72,100,25);
             else                    source = QRectF(46,98,100,25);
+            if(total == 1)          target = QRectF(113,6,100,25);
+            else                    target = QRectF(100,6,100,25);
             painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + customCode + ".png"), source);
         }
         else
         {
             source = QRectF(63,18,100,25);
+            target = QRectF(113,6,100,25);
             painter.drawPixmap(target, QPixmap(ThemeHandler::unknownFile()), source);
         }
 
         //Background
-        painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardBYFile()));
+        if(total == 1)
+        {
+            painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardBYFile()));
+        }
+        else
+        {
+            painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardBYFile2()));
+        }
 
         //BY
         int fontSize = 15;
@@ -327,10 +347,9 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         painter.setPen(QPen(WHITE));
         Utility::drawShadowText(painter, font, customText, 10, 20, false);
 
-
         //Name
         int nameWide = fm.width(name);
-        int maxNameLong = 194 - customTextWide;
+        int maxNameLong = 194 - customTextWide + (total==1?0:-19);
         while(nameWide>maxNameLong)
         {
             fontSize--;
@@ -347,6 +366,23 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         else                                            painter.setBrush(WHITE);
 
         Utility::drawShadowText(painter, font, name, 14 + customTextWide, 20, false);
+
+        //#cards
+        if(total > 1)
+        {
+            font.setPixelSize(22);//16pt
+            Utility::drawShadowText(painter, font, QString::number(total), 202, 19, true);
+        }
+
+        //Borders front
+        if(!ThemeHandler::manaLimitBehind())
+        {
+            QPixmap pixmap(ThemeHandler::manaLimitFile());
+            int pixmapHMid = pixmap.height()/2;
+            int pixmapW = pixmap.width();
+            if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+            if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+        }
     painter.end();
 
     return resizeCardHeight(canvas);

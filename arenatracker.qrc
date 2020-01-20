@@ -34,7 +34,6 @@
         <file>Images/remove64.png</file>
         <file>Images/minus64.png</file>
         <file>Images/plus64.png</file>
-        <file>Images/handCard3.png</file>
         <file>Images/deck.png</file>
         <file>Images/hand.png</file>
         <file>Images/config.png</file>
@@ -154,5 +153,7 @@
         <file>Images/userGuide.png</file>
         <file>Images/hsrClose.png</file>
         <file>Images/bgScoreHSR.png</file>
+        <file>Images/handCard3.png</file>
+        <file>Images/handCard4.png</file>
     </qresource>
 </RCC>

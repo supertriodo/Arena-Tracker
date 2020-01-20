@@ -52,7 +52,7 @@ private:
     static QString hsrBestFile_, hsrCloseFile_, hsrOpenFile_, hsrTextFile_;
     static QString speedLavaFile_, speedCloseFile_, speedOpenFile_;
     static QString speedDWTextFile_, speedTwitchTextFile_;
-    static QString handCardFile_, handCardBYFile_, handCardBYUnknownFile_;
+    static QString handCardFile_, handCardBYFile_, handCardBYFile2_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
     static QString minionsCounterFile_, spellsCounterFile_, weaponsCounterFile_, manaCounterFile_;
     static QString aoeMechanicFile_, tauntMechanicFile_, survivalMechanicFile_, drawMechanicFile_;
@@ -130,6 +130,7 @@ public:
     static QString tabHandFile();
     static QString handCardFile();
     static QString handCardBYFile();
+    static QString handCardBYFile2();
     static QString handCardBYUnknownFile();
     static QString haOpenFile();
     static QString haTextFile();

@@ -511,29 +511,23 @@ int DeckHandler::getNumCardRows()
 
 void DeckHandler::newDeckCardAsset(QString code)
 {
-    newDeckCard(code, 1, true);
+    newDeckCard(code);
 }
 
 
 void DeckHandler::newDeckCardDraft(QString code)
 {
-    newDeckCard(code, 1, true);
-}
-
-
-void DeckHandler::newDeckCardWeb(QString code, int total)
-{
-    newDeckCard(code, total, false);
+    newDeckCard(code);
 }
 
 
 void DeckHandler::newDeckCardOutsider(QString code, int id)
 {
-    newDeckCard(code, 1, false, true, id);
+    newDeckCard(code, true, id);
 }
 
 
-void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, int id)
+void DeckHandler::newDeckCard(QString code, bool outsider, int id)
 {
     outsider = outsider || (id >= this->firstOutsiderId);
     if(outsider)
@@ -553,26 +547,30 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
 //        return;
 //    }
 
-    //Carta existente (No outsider) - Los outsider no stack pq necesitamos guardar el id de cada uno
+    //Carta existente
     bool found = false;
-    if(!outsider)
+    for(int i=0; i<deckCardList.length(); i++)
     {
-        for(int i=0; i<deckCardList.length(); i++)
+        if((outsider && deckCardList[i].isOutsider()) &&
+            (deckCardList[i].getCode() == code) &&
+            (!code.isEmpty() || deckCardList[i].getCreatedByCode() == this->lastCreatedByCode))
         {
-            if(deckCardList[i].getCode() == code)
-            {
-                if(!add)
-                {
-                    emit pDebug(Utility::getCardAttribute(code, "name").toString() + " already in deck.");
-                    return;
-                }
+            found = true;
+        }
 
-                found = true;
-                deckCardList[i].total+=total;
-                deckCardList[i].remaining+=total;
-                deckCardList[i].draw();
-                break;
-            }
+        if((!outsider && !deckCardList[i].isOutsider()) &&
+            (deckCardList[i].getCode() == code))
+        {
+            found = true;
+        }
+
+        if(found)
+        {
+            if(outsider)    deckCardList[i].outsiderIds.append(id);
+            deckCardList[i].total++;
+            deckCardList[i].remaining++;
+            deckCardList[i].draw();
+            break;
         }
     }
 
@@ -580,14 +578,14 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     if(!found)
     {
         DeckCard deckCard(code, outsider);
-        deckCard.total = total;
-        deckCard.remaining = total;
+        deckCard.total = 1;
+        deckCard.remaining = 1;
         deckCard.listItem = new QListWidgetItem();
 
         //Outsider
         if(outsider)
         {
-            deckCard.id = id;
+            deckCard.outsiderIds.append(id);
 
             if(code.isEmpty())
             {
@@ -607,19 +605,19 @@ void DeckHandler::newDeckCard(QString code, int total, bool add, bool outsider, 
     {
         if(deckCardList[0].total > 0)
         {
-            deckCardList[0].total-=total;
+            deckCardList[0].total--;
             if(deckCardList[0].total <= 0)  hideUnknown();
             else                            deckCardList[0].draw();
         }
         else
         {
-            deckCardList[0].total-=total;
+            deckCardList[0].total--;
         }
     }
 
     if(!this->inArena && !outsider)   enableDeckButtonSave();
 
-    emit pDebug("Add to deck" + (outsider?QString(" (OUTSIDER)"):QString("")) + ": (" + QString::number(total) + ")" +
+    emit pDebug("Add to deck" + (outsider?QString(" (OUTSIDER)"):QString("")) + ": " +
                 Utility::getCardAttribute(code, "name").toString());
 }
 
@@ -747,11 +745,12 @@ void DeckHandler::drawFromDeck(QString code, int id)
     for(int i=1; i<deckCardList.length(); i++)
     {
         DeckCard *card = &deckCardList[i];
-        if(card->isOutsider() && card->id == id)
+        if(card->isOutsider() && card->outsiderIds.contains(id))
         {
-            if(card->remaining > 1)
+            card->outsiderIds.removeOne(id);
+            if(!card->outsiderIds.isEmpty())
             {
-                card->remaining--;
+                card->remaining = card->total = card->outsiderIds.count();
                 card->draw();
                 emit pDebug("Draw outsider: " + card->getName() + ". " +
                             QString::number(card->remaining) + " left.");
@@ -1148,7 +1147,6 @@ void DeckHandler::unlockDeckInterface()
         }
         else
         {
-            card->id = 0;
             card->remaining = card->total;
             card->draw();
         }
