@@ -4354,6 +4354,14 @@ void MainWindow::testDownloadCards()
     for(const QString &code: codes)     checkCardImage(code, false);
 }
 
+void MainWindow::testSecretsHSR()
+{
+    secretsHandler->secretPlayed(1, PALADIN, arena);
+    secretsHandler->secretPlayed(2, HUNTER, arena);
+    secretsHandler->secretPlayed(3, ROGUE, arena);
+    secretsHandler->secretPlayed(4, MAGE, arena);
+}
+
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
@@ -4364,6 +4372,7 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 //    testDownloadCards();
+//    QTimer::singleShot(3000, this, SLOT(testSecretsHSR()));
 }
 
 
