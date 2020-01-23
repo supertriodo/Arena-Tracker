@@ -58,7 +58,7 @@ private:
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
     void newDrawCard(QString code, bool mulligan);
-    void newDeckCard(QString code, bool outsider=false, int id=0);
+    void newDeckCard(QString code, int total=1, bool outsider=false, int id=0);
     void drawFromDeck(QString code, int id);
     void showDeckButtons();
     void hideDeckButtons();

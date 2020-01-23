@@ -523,11 +523,11 @@ void DeckHandler::newDeckCardDraft(QString code)
 
 void DeckHandler::newDeckCardOutsider(QString code, int id)
 {
-    newDeckCard(code, true, id);
+    newDeckCard(code, 1, true, id);
 }
 
 
-void DeckHandler::newDeckCard(QString code, bool outsider, int id)
+void DeckHandler::newDeckCard(QString code, int total, bool outsider, int id)
 {
     outsider = outsider || (id >= this->firstOutsiderId);
     if(outsider)
@@ -567,8 +567,8 @@ void DeckHandler::newDeckCard(QString code, bool outsider, int id)
         if(found)
         {
             if(outsider)    deckCardList[i].outsiderIds.append(id);
-            deckCardList[i].total++;
-            deckCardList[i].remaining++;
+            deckCardList[i].total+=total;
+            deckCardList[i].remaining+=total;
             deckCardList[i].draw();
             break;
         }
@@ -578,8 +578,8 @@ void DeckHandler::newDeckCard(QString code, bool outsider, int id)
     if(!found)
     {
         DeckCard deckCard(code, outsider);
-        deckCard.total = 1;
-        deckCard.remaining = 1;
+        deckCard.total = total;
+        deckCard.remaining = total;
         deckCard.listItem = new QListWidgetItem();
 
         //Outsider
@@ -605,13 +605,13 @@ void DeckHandler::newDeckCard(QString code, bool outsider, int id)
     {
         if(deckCardList[0].total > 0)
         {
-            deckCardList[0].total--;
+            deckCardList[0].total-=total;
             if(deckCardList[0].total <= 0)  hideUnknown();
             else                            deckCardList[0].draw();
         }
         else
         {
-            deckCardList[0].total--;
+            deckCardList[0].total-=total;
         }
     }
 
