@@ -4331,9 +4331,9 @@ void MainWindow::testHeroPortraits()
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Flame Ward");
-//    qDebug()<<Utility::getCardAttribute("ULD_709", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("YOD_001", "set").toString();
 
-//    draftHandler->debugSynergiesSet("DRAGONS", true);
+//    draftHandler->debugSynergiesSet("YEAR_OF_THE_DRAGON", true);
 //    draftHandler->debugSynergiesCode("DAL_400");
 //    draftHandler->testSynergies();
 
@@ -4429,16 +4429,15 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Comparar tier lists con Utility::check --> Automatico al bajar nuevas tier lists
 //Update Utility::isFromStandardSet(QString code) --> DRAGONS
 //Subir cartas al github.
-    ///Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
+    ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-    ///Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
-    ///requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
-    ///guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
+    ///-Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
+    ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
+    ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero
-    //To remove it, search "Whizbang support"
+    ///-To remove it, search "Whizbang support"
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
@@ -4446,12 +4445,11 @@ void MainWindow::testDelay()
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
-    ///(IGNORAR) Update ARMS_DEALING cards != 1 --> EnemyHandHandler::getCardBuff (Ya no se usa esta mecanica, pueden bufar mano pero no es visible las cartas bufadas)
 
 //Update synergies.json
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
-////|-(IGNORAR) Check individual synergies
+
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)

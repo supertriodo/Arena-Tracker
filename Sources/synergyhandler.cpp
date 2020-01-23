@@ -1366,7 +1366,7 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("DRAGONS"))
+    for(const QString &code: Utility::getSetCodes("YEAR_OF_THE_DRAGON"))
 //    for(const QString &code: Utility::getStandardCodes())
 //    for(const QString &code: Utility::getWildCodes())
     {
@@ -1577,7 +1577,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     else                            qDebug()<<code<<": ["<<mec<<"],";
     qDebug()<<"Texto:"<<text;
     qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
-    qDebug()<<num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
+    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()<<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
 }
 
 
@@ -3328,12 +3328,14 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == ACADEMIC_ESPIONAGE)  return 0;
     if(code == HAUNTING_VISIONS)    return 0;
     if(code == ANCIENT_MYSTERIES)   return 0;
+    if(code == WAXMANCY)            return 0;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
     if(code == DREAMPETAL_FLORIST)  return 3;
     if(code == PILOTED_REAPER)      return 3;
     if(code == MOGU_FLESHSHAPER)    return 3;
+    if(code == FRENZIED_FELWING)    return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -3460,7 +3462,7 @@ REGLAS
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
-+toYourHandGen/tokenCardGen: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
++toYourHandGen/tokenCardGen/twinspell: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
     (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
@@ -3478,15 +3480,14 @@ REGLAS
 +spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
-+evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
-    Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
-    o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 +Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor,
     es una sinergia muy debil.
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +No usamos los "=Gen(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)" ya que al no poder distinguir si se generan en el tablero, mano o mazo
-no se pueden asociar bien con los syn.
-
+    no se pueden asociar bien con los syn.
++evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
+    Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
+    o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 
 
 
