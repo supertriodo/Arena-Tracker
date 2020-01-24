@@ -285,30 +285,21 @@ void VersionChecker::saveRestartOld(const QByteArray &data)
     QFile::Permissions permissions = appFile.permissions();
 
     emit pDebug(runningBinaryPath + " rename " + Utility::dataPath() + "/ArenaTracker.old");
+    appFile.rename(Utility::dataPath() + "/ArenaTracker.old");
 
-    if(!appFile.rename(Utility::dataPath() + "/ArenaTracker.old"))
-    {
-        emit pDebug("Rename failed.");
-        saveRestartNew(data);
-    }
-    else
-    {
-        emit pDebug("Rename success.");
+    Utility::dumpOnFile(data, Utility::dataPath() + "/binaryTemp.zip");
+    Utility::unZip(Utility::dataPath() + "/binaryTemp.zip", Utility::appPath());
+    QFile zipFile(Utility::dataPath() + "/binaryTemp.zip");
+    zipFile.remove();
 
-        Utility::dumpOnFile(data, Utility::dataPath() + "/binaryTemp.zip");
-        Utility::unZip(Utility::dataPath() + "/binaryTemp.zip", Utility::appPath());
-        QFile zipFile(Utility::dataPath() + "/binaryTemp.zip");
-        zipFile.remove();
+    emit pDebug("Extract ArenaTracker on " + Utility::appPath());
 
-        emit pDebug("Extract ArenaTracker on " + Utility::appPath());
+    QFile::setPermissions(runningBinaryPath, permissions);
 
-        QFile::setPermissions(runningBinaryPath, permissions);
+    emit pDebug("Start downloaded ArenaTracker...");
 
-        emit pDebug("Start downloaded ArenaTracker...");
-
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-        static_cast<QMainWindow*>(this->parent())->close();
-    }
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    static_cast<QMainWindow*>(this->parent())->close();
 }
 
 
