@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04","v7.05","v7.1","v7.2"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.2/Arena.Tracker.v7.2.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.2/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.2/Arena.Tracker.v7.2.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.2/Arena.Tracker.v7.2.Windows.zip",
-	"log": "AT gets updated for the year of the dragon solo adventure. Rework of secrets, outsiders in your deck list and more...<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.2'>github</a>"
+	"versionFree": ["v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04","v7.05","v7.1","v7.2","v7.21"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.21/Arena.Tracker.v7.21.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.21/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.21/Arena.Tracker.v7.21.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v7.21/Arena.Tracker.v7.21.Windows.zip",
+	"log": "AT gets updated for the year of the dragon solo adventure. Rework of secrets, outsiders in your deck list and more... (Fix all outsiders bug of v7.2)<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v7.21'>github</a>"
 }
