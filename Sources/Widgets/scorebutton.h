@@ -40,6 +40,7 @@ public:
 
 signals:
     void spreadLearningShow(bool value);
+    void showHSRwebPicks();
 };
 
 #endif // SCOREBUTTON_H

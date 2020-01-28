@@ -50,6 +50,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton3[i]->hide();
         connect(scoresPushButton3[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
+        connect(scoresPushButton3[i], SIGNAL(showHSRwebPicks()),
+                this, SIGNAL(showHSRwebPicks()));
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
         twitchButton[i]->setFixedHeight(static_cast<int>(scoreWidth*0.75));

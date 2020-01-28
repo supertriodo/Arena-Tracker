@@ -57,6 +57,21 @@ QString Utility::heroToLogNumber(CardClass cardClass)
 }
 
 
+QString Utility::heroToHeroString(CardClass cardClass)
+{
+    if(cardClass == DRUID)        return QString("DRUID");
+    else if(cardClass == HUNTER)  return QString("HUNTER");
+    else if(cardClass == MAGE)    return QString("MAGE");
+    else if(cardClass == PALADIN) return QString("PALADIN");
+    else if(cardClass == PRIEST)  return QString("PRIEST");
+    else if(cardClass == ROGUE)   return QString("ROGUE");
+    else if(cardClass == SHAMAN)  return QString("SHAMAN");
+    else if(cardClass == WARLOCK) return QString("WARLOCK");
+    else if(cardClass == WARRIOR) return QString("WARRIOR");
+    else return QString();
+}
+
+
 CardClass Utility::heroFromLogNumber(QString hero)
 {
     if(hero == QString("06"))       return DRUID;

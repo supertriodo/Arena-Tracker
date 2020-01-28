@@ -79,6 +79,7 @@ private:
 public:
     static QString heroToLogNumber(const QString &hero);
     static QString heroToLogNumber(CardClass cardClass);
+    static QString heroToHeroString(CardClass cardClass);
     static CardClass heroFromLogNumber(QString hero);
     static QString heroStringFromLogNumber(QString hero);
     static QString heroString2FromLogNumber(QString hero);

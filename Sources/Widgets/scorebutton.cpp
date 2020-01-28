@@ -27,11 +27,9 @@ void ScoreButton::mousePressEvent(QMouseEvent *event)
             "http://thelightforge.com"
             ));
     }
-    else
+    else if(scoreSource == Score_HSReplay)
     {
-        QDesktopServices::openUrl(QUrl(
-            "https://hsreplay.net"
-            ));
+        emit showHSRwebPicks();
     }
 
     QLabel::mousePressEvent(event);

@@ -218,6 +218,7 @@ private slots:
     void refreshCapturedCards();
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3);
+    void showHSRwebPicks();
 };
 
 #endif // DRAFTHANDLER_H

@@ -57,6 +57,7 @@ public:
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
+    void showHSRwebPicks();
 
 private slots:
     void hideSynergies(int index);

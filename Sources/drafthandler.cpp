@@ -1611,6 +1611,8 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
         connect(draftScoreWindow, SIGNAL(cardLeave()),
                 this, SIGNAL(overlayCardLeave()));
+        connect(draftScoreWindow, SIGNAL(showHSRwebPicks()),
+                this, SLOT(showHSRwebPicks()));
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
@@ -1633,6 +1635,17 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     }
 
     showOverlay();
+}
+
+
+void DraftHandler::showHSRwebPicks()
+{
+    QString url = "https://hsreplay.net/cards/#playerClass=";
+    url += Utility::heroToHeroString(this->arenaHero);
+    url += "&gameType=ARENA&text=";
+    url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
+
+    QDesktopServices::openUrl(QUrl(url));
 }
 
 
