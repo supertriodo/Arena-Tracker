@@ -1569,7 +1569,7 @@ draft mechanics becoming a patron (3$)</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-284</y>
                <width>435</width>
                <height>852</height>
               </rect>
@@ -2166,7 +2166,7 @@ so it can be compared along with HearthArena score.</string>
               <item>
                <widget class="QGroupBox" name="configBoxZero">
                 <property name="title">
-                 <string>Zero To Heroes</string>
+                 <string>Replay logs</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <property name="spacing">
