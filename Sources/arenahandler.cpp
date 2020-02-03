@@ -86,10 +86,11 @@ void ArenaHandler::createTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
-    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-
-    connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-            this, SLOT(changedRow(QTreeWidgetItem*)));
+    //Zero2Heroes upload disabled
+    ui->replayButton->setHidden(true);
+//    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+//    connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+//            this, SLOT(changedRow(QTreeWidgetItem*)));
 
     arenaHomeless = new QTreeWidgetItem(treeWidget);
     arenaHomeless->setExpanded(true);
@@ -116,7 +117,9 @@ void ArenaHandler::deselectRow()
 
 void ArenaHandler::changedRow(QTreeWidgetItem *current)
 {
-    if(trackobotUploader->isConnected() && ui->arenaTreeWidget->selectionMode()!=QAbstractItemView::NoSelection && replayLogsMap.contains(current))
+    //Evitamos DRAFT en Z2H
+    if(trackobotUploader->isConnected() && ui->arenaTreeWidget->selectionMode()!=QAbstractItemView::NoSelection &&
+            replayLogsMap.contains(current) && !replayLogsMap[current].startsWith("DRAFT"))
     {
         ui->replayButton->setEnabled(true);
     }
