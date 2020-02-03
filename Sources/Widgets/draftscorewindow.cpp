@@ -208,10 +208,12 @@ void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bo
 
 
 void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
-                                 DraftMethod draftMethod)
+                                 DraftMethod draftMethod,
+                                 int includedDecks1, int includedDecks2, int includedDecks3)
 {
     float bestRating = std::max(std::max(rating1, rating2), rating3);
     float ratings[3] = {rating1, rating2, rating3};
+    int includedDecks[3] = {includedDecks1, includedDecks2, includedDecks3};
 
     for(int i=0; i<3; i++)
     {
@@ -222,7 +224,7 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
         }
         else if(draftMethod == HSReplay)
         {
-            scoresPushButton3[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
+            scoresPushButton3[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating), includedDecks[i]);
             Utility::fadeInWidget(scoresPushButton3[i]);
         }
         else if(draftMethod == HearthArena)

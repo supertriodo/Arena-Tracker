@@ -55,7 +55,8 @@ class HSRCardsMaps
 {
 public:
     QMap<QString, float> *cardsPickratesMap;
-    QMap<QString, float> *cardsWinratesMap;
+    QMap<QString, float> *cardsIncludedWinratesMap;
+    QMap<QString, int> *cardsIncludedDecksMap;
 };
 
 
@@ -113,6 +114,7 @@ private:
     DraftMethod draftMethodAvgScore;
     QMap<QString, float> *cardsPickratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
+    QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
     QFutureWatcher<HSRCardsMaps> futureProcessHSRCardsIncluded;
     QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayed;
@@ -214,7 +216,8 @@ private:
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
-    void processHSRCardClass(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap);
+    void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap);
+    void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
     void updateDraftMethodUnchecked();
     void downloadHSRCards();
     HSRCardsMaps processHSRCardsIncluded(const QJsonObject &jsonObject);

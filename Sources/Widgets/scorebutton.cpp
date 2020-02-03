@@ -90,10 +90,13 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 }
 
 
-void ScoreButton::setScore(float score, bool isBestScore)
+void ScoreButton::setScore(float score, bool isBestScore, int includedDecks)
 {
     this->score = score;
     this->isBestScore = isBestScore;
+    this->includedDecks = includedDecks;
+    if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " decks");
+    else    this->setToolTip("");
     draw();
 }
 
@@ -169,6 +172,15 @@ void ScoreButton::paintEvent(QPaintEvent *event)
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
             else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
+        }
+
+        //Not enough HSR decks
+        if(scoreSource == Score_HSReplay && includedDecks >= 0 && includedDecks < MIN_HSR_DECKS)
+        {
+            float closeHeight = (1 - includedDecks/static_cast<float>(MIN_HSR_DECKS)) * 72 + 28;
+            QRect source(0, 0, 128, closeHeight);
+            QRect target(0, 0, width(), closeHeight/128*height());
+            painter.drawPixmap(target, QPixmap(ThemeHandler::speedCloseFile()), source);
         }
 
         //Draw Score

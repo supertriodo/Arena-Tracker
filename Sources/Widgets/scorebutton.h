@@ -5,6 +5,8 @@
 #include <QLabel>
 #include "../utility.h"
 
+#define MIN_HSR_DECKS 500
+
 class ScoreButton : public QLabel
 {
     Q_OBJECT
@@ -18,6 +20,7 @@ private:
     float score;
     bool learningMode, learningShow;
     bool isBestScore;
+    int includedDecks;
     ScoreSource scoreSource;
     bool normalizedLF;
 
@@ -32,7 +35,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setScore(float score, bool isBest);
+    void setScore(float score, bool isBest, int includedDecks=-1);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void setNormalizedLF(bool value);

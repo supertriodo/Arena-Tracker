@@ -44,7 +44,7 @@ private:
     void checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch);
 
 public:
-    void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod);
+    void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod, int includedDecks1, int includedDecks2, int includedDecks3);
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);

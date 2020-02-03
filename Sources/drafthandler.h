@@ -91,6 +91,7 @@ private:
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
+    QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
     TwitchHandler *twitchHandler;
     bool multiclassArena;
@@ -169,6 +170,7 @@ public:
     void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9]);
+    void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9]);
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
@@ -201,7 +203,8 @@ public slots:
     void endDraftDeleteMechanicsWindow();
     void showNewRatings(float rating1, float rating2, float rating3,
                         float tierScore1, float tierScore2, float tierScore3,
-                        int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod);
+                        int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod,
+                        int includedDecks1=-1, int includedDecks2=-1, int includedDecks3=-1);
     void pickCard(QString code);
     void enterArena();
     void leaveArena();

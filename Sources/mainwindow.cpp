@@ -113,6 +113,7 @@ MainWindow::~MainWindow()
     //Delete HSR maps
     delete[] cardsPickratesMap;
     delete[] cardsIncludedWinratesMap;
+    delete[] cardsIncludedDecksMap;
     delete[] cardsPlayedWinratesMap;
 }
 
@@ -578,7 +579,7 @@ void MainWindow::downloadHSRCards()
 }
 
 
-void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap)
+void MainWindow::processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap)
 {
     bool trunk = (tag == "winrate");//popularity
     for(const QJsonValue card: jsonArray)
@@ -592,33 +593,55 @@ void MainWindow::processHSRCardClass(const QJsonArray &jsonArray, const QString 
 }
 
 
+void MainWindow::processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap)
+{
+    for(const QJsonValue card: jsonArray)
+    {
+        QJsonObject cardObject = card.toObject();
+        QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
+        cardsMap[code] = cardObject.value(tag).toInt();
+    }
+}
+
+
 HSRCardsMaps MainWindow::processHSRCardsIncluded(const QJsonObject &jsonObject)
 {
     HSRCardsMaps hsrCardsMaps;
     hsrCardsMaps.cardsPickratesMap = new QMap<QString, float>[9];
-    hsrCardsMaps.cardsWinratesMap = new QMap<QString, float>[9];
+    hsrCardsMaps.cardsIncludedWinratesMap = new QMap<QString, float>[9];
+    hsrCardsMaps.cardsIncludedDecksMap = new QMap<QString, int>[9];
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    processHSRCardClass(data.value("DRUID").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[DRUID]);
-    processHSRCardClass(data.value("HUNTER").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[HUNTER]);
-    processHSRCardClass(data.value("MAGE").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[MAGE]);
-    processHSRCardClass(data.value("PALADIN").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[PALADIN]);
-    processHSRCardClass(data.value("PRIEST").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[PRIEST]);
-    processHSRCardClass(data.value("ROGUE").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[ROGUE]);
-    processHSRCardClass(data.value("SHAMAN").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[SHAMAN]);
-    processHSRCardClass(data.value("WARLOCK").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARLOCK]);
-    processHSRCardClass(data.value("WARRIOR").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARRIOR]);
+    processHSRCardClassDouble(data.value("DRUID").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[DRUID]);
+    processHSRCardClassDouble(data.value("HUNTER").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[HUNTER]);
+    processHSRCardClassDouble(data.value("MAGE").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[MAGE]);
+    processHSRCardClassDouble(data.value("PALADIN").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[PALADIN]);
+    processHSRCardClassDouble(data.value("PRIEST").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[PRIEST]);
+    processHSRCardClassDouble(data.value("ROGUE").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[ROGUE]);
+    processHSRCardClassDouble(data.value("SHAMAN").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[SHAMAN]);
+    processHSRCardClassDouble(data.value("WARLOCK").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARLOCK]);
+    processHSRCardClassDouble(data.value("WARRIOR").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARRIOR]);
 
-    processHSRCardClass(data.value("DRUID").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[DRUID]);
-    processHSRCardClass(data.value("HUNTER").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[HUNTER]);
-    processHSRCardClass(data.value("MAGE").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[MAGE]);
-    processHSRCardClass(data.value("PALADIN").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[PALADIN]);
-    processHSRCardClass(data.value("PRIEST").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[PRIEST]);
-    processHSRCardClass(data.value("ROGUE").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[ROGUE]);
-    processHSRCardClass(data.value("SHAMAN").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[SHAMAN]);
-    processHSRCardClass(data.value("WARLOCK").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[WARLOCK]);
-    processHSRCardClass(data.value("WARRIOR").toArray(), "winrate", hsrCardsMaps.cardsWinratesMap[WARRIOR]);
+    processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[DRUID]);
+    processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[HUNTER]);
+    processHSRCardClassDouble(data.value("MAGE").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[MAGE]);
+    processHSRCardClassDouble(data.value("PALADIN").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[PALADIN]);
+    processHSRCardClassDouble(data.value("PRIEST").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[PRIEST]);
+    processHSRCardClassDouble(data.value("ROGUE").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[ROGUE]);
+    processHSRCardClassDouble(data.value("SHAMAN").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[SHAMAN]);
+    processHSRCardClassDouble(data.value("WARLOCK").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[WARLOCK]);
+    processHSRCardClassDouble(data.value("WARRIOR").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[WARRIOR]);
+
+    processHSRCardClassInt(data.value("DRUID").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[DRUID]);
+    processHSRCardClassInt(data.value("HUNTER").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[HUNTER]);
+    processHSRCardClassInt(data.value("MAGE").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[MAGE]);
+    processHSRCardClassInt(data.value("PALADIN").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[PALADIN]);
+    processHSRCardClassInt(data.value("PRIEST").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[PRIEST]);
+    processHSRCardClassInt(data.value("ROGUE").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[ROGUE]);
+    processHSRCardClassInt(data.value("SHAMAN").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[SHAMAN]);
+    processHSRCardClassInt(data.value("WARLOCK").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[WARLOCK]);
+    processHSRCardClassInt(data.value("WARRIOR").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[WARRIOR]);
 
     return hsrCardsMaps;
 }
@@ -636,10 +659,12 @@ void MainWindow::finishProcessHSRCardsIncluded()
 
     HSRCardsMaps hsrCardsMaps = futureProcessHSRCardsIncluded.result();
     this->cardsPickratesMap = hsrCardsMaps.cardsPickratesMap;
-    this->cardsIncludedWinratesMap = hsrCardsMaps.cardsWinratesMap;
+    this->cardsIncludedWinratesMap = hsrCardsMaps.cardsIncludedWinratesMap;
+    this->cardsIncludedDecksMap = hsrCardsMaps.cardsIncludedDecksMap;
     secretsHandler->setCardsPickratesMap(cardsPickratesMap);
     secretsHandler->createSecretsByPickrate(cardsPickratesMap);
     draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
+    draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
 }
 
 
@@ -649,15 +674,15 @@ QMap<QString, float> * MainWindow::processHSRCardsPlayed(const QJsonObject &json
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    processHSRCardClass(data.value("DRUID").toArray(), "winrate", cardsWinratesMap[DRUID]);
-    processHSRCardClass(data.value("HUNTER").toArray(), "winrate", cardsWinratesMap[HUNTER]);
-    processHSRCardClass(data.value("MAGE").toArray(), "winrate", cardsWinratesMap[MAGE]);
-    processHSRCardClass(data.value("PALADIN").toArray(), "winrate", cardsWinratesMap[PALADIN]);
-    processHSRCardClass(data.value("PRIEST").toArray(), "winrate", cardsWinratesMap[PRIEST]);
-    processHSRCardClass(data.value("ROGUE").toArray(), "winrate", cardsWinratesMap[ROGUE]);
-    processHSRCardClass(data.value("SHAMAN").toArray(), "winrate", cardsWinratesMap[SHAMAN]);
-    processHSRCardClass(data.value("WARLOCK").toArray(), "winrate", cardsWinratesMap[WARLOCK]);
-    processHSRCardClass(data.value("WARRIOR").toArray(), "winrate", cardsWinratesMap[WARRIOR]);
+    processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate", cardsWinratesMap[DRUID]);
+    processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate", cardsWinratesMap[HUNTER]);
+    processHSRCardClassDouble(data.value("MAGE").toArray(), "winrate", cardsWinratesMap[MAGE]);
+    processHSRCardClassDouble(data.value("PALADIN").toArray(), "winrate", cardsWinratesMap[PALADIN]);
+    processHSRCardClassDouble(data.value("PRIEST").toArray(), "winrate", cardsWinratesMap[PRIEST]);
+    processHSRCardClassDouble(data.value("ROGUE").toArray(), "winrate", cardsWinratesMap[ROGUE]);
+    processHSRCardClassDouble(data.value("SHAMAN").toArray(), "winrate", cardsWinratesMap[SHAMAN]);
+    processHSRCardClassDouble(data.value("WARLOCK").toArray(), "winrate", cardsWinratesMap[WARLOCK]);
+    processHSRCardClassDouble(data.value("WARRIOR").toArray(), "winrate", cardsWinratesMap[WARRIOR]);
 
     return cardsWinratesMap;
 }

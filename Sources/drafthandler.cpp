@@ -1112,10 +1112,14 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     float ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
     float ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
     float ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
+    int includedDecks1 = cardsIncludedDecksMap[this->arenaHero][codes[0]];
+    int includedDecks2 = cardsIncludedDecksMap[this->arenaHero][codes[1]];
+    int includedDecks3 = cardsIncludedDecksMap[this->arenaHero][codes[2]];
     showNewRatings(ratingIncluded1, ratingIncluded2, ratingIncluded3,
                    ratingPlayed1, ratingPlayed2, ratingPlayed3,
                    -1, -1, -1,
-                   HSReplay);
+                   HSReplay,
+                   includedDecks1, includedDecks2, includedDecks3);
 
     //Twitch Handler
     if(this->twitchHandler != nullptr)
@@ -1225,12 +1229,14 @@ void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScore
 void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
                                   float tierScore1, float tierScore2, float tierScore3,
                                   int maxCard1, int maxCard2, int maxCard3,
-                                  DraftMethod draftMethod)
+                                  DraftMethod draftMethod,
+                                  int includedDecks1, int includedDecks2, int includedDecks3)
 {
     float ratings[3] = {rating1,rating2,rating3};
     float tierScore[3] = {tierScore1, tierScore2, tierScore3};
     int maxCards[3] = {maxCard1, maxCard2, maxCard3};
     float maxRating = std::max(std::max(rating1,rating2),rating3);
+    int includedDecks[3] = {includedDecks1, includedDecks2, includedDecks3};
 
     for(int i=0; i<3; i++)
     {
@@ -1243,8 +1249,14 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         }
         else if(draftMethod == HSReplay)
         {
-            labelHSRscore[i]->setText(QString::number(static_cast<double>(ratings[i])) + "% -- " +
-                                      QString::number(static_cast<double>(tierScore[i])) + "%");
+            QString text = QString::number(static_cast<double>(ratings[i])) + "% -- " +
+                    QString::number(static_cast<double>(tierScore[i])) + "%";
+            if(includedDecks[i] >= 0 && includedDecks[i] < MIN_HSR_DECKS)
+            {
+                text += " -- in " + QString::number(includedDecks[i]) + " decks";
+            }
+
+            labelHSRscore[i]->setText(text);
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHSRscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
@@ -1257,7 +1269,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
     //Mostrar score
     if(draftScoreWindow != nullptr)
     {
-        draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod);
+        draftScoreWindow->setScores(rating1, rating2, rating3, draftMethod, includedDecks1, includedDecks2, includedDecks3);
     }
 }
 
@@ -2016,6 +2028,12 @@ void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
 void DraftHandler::setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9])
 {
     this->cardsIncludedWinratesMap = cardsIncludedWinratesMap;
+}
+
+
+void DraftHandler::setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[9])
+{
+    this->cardsIncludedDecksMap = cardsIncludedDecksMap;
 }
 
 
