@@ -16,6 +16,7 @@ PKGCONFIG += opencv libzip
 LIBS += -lz
 
 SOURCES += Sources/main.cpp\
+    Sources/Cards/popularcard.cpp \
     Sources/mainwindow.cpp \
     Sources/logloader.cpp \
     Sources/logworker.cpp \
@@ -24,6 +25,7 @@ SOURCES += Sources/main.cpp\
     Sources/deckhandler.cpp \
     Sources/enemyhandhandler.cpp \
     Sources/arenahandler.cpp \
+    Sources/popularcardshandler.cpp \
     Sources/secretshandler.cpp \
     Sources/drafthandler.cpp \
     Sources/heartharenamentor.cpp \
@@ -80,6 +82,7 @@ SOURCES += Sources/main.cpp\
     Sources/Widgets/twitchbutton.cpp
 
 HEADERS  += Sources/mainwindow.h \
+    Sources/Cards/popularcard.h \
     Sources/logloader.h \
     Sources/logworker.h \
     Sources/gamewatcher.h \
@@ -87,6 +90,7 @@ HEADERS  += Sources/mainwindow.h \
     Sources/deckhandler.h \
     Sources/enemyhandhandler.h \
     Sources/arenahandler.h \
+    Sources/popularcardshandler.h \
     Sources/secretshandler.h \
     Sources/drafthandler.h \
     Sources/heartharenamentor.h \

@@ -203,6 +203,16 @@ HandCard *EnemyHandHandler::getHandCard(int id)
 }
 
 
+bool EnemyHandHandler::isCoinInHand()
+{
+    for(HandCard &handCard: enemyHandList)
+    {
+        if(handCard.getCode() == COIN)  return true;
+    }
+    return false;
+}
+
+
 void EnemyHandHandler::lastHandCardIsCoin()
 {
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas

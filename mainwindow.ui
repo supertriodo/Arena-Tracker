@@ -947,10 +947,13 @@ draft mechanics becoming a patron (3$)</string>
            <widget class="MoveListWidget" name="enemyHandListWidget"/>
           </item>
           <item>
+           <widget class="MoveListWidget" name="drawListWidget"/>
+          </item>
+          <item>
            <widget class="MoveListWidget" name="secretsListWidget"/>
           </item>
           <item>
-           <widget class="MoveListWidget" name="drawListWidget"/>
+           <widget class="MoveListWidget" name="popularCardsListWidget"/>
           </item>
           <item>
            <widget class="MoveListWidget" name="rngListWidget"/>
@@ -1569,9 +1572,9 @@ draft mechanics becoming a patron (3$)</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-284</y>
+               <y>0</y>
                <width>435</width>
-               <height>852</height>
+               <height>876</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1981,38 +1984,81 @@ Changing to/from Framed need a restart to fully take effective.</string>
                  <item>
                   <layout class="QHBoxLayout" name="configHandHorizontalLayout1">
                    <item>
-                    <widget class="QLabel" name="configLabelDrawTime">
-                     <property name="toolTip">
-                      <string>Draw: Time new cards drawn
+                    <layout class="QVBoxLayout" name="configHandVerticalLayout1">
+                     <item>
+                      <widget class="QLabel" name="configLabelDrawTime">
+                       <property name="toolTip">
+                        <string>Draw: Time new cards drawn
 are shown on screen</string>
-                     </property>
-                     <property name="text">
-                      <string>Draw</string>
-                     </property>
-                    </widget>
+                       </property>
+                       <property name="text">
+                        <string>Draw</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="configLabelPopular">
+                       <property name="toolTip">
+                        <string>Popular: Cards your opponent might play on his next turn in arena,
+ordered by popularity on HSReplay.net</string>
+                       </property>
+                       <property name="text">
+                        <string>Popular</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QSlider" name="configSliderDrawTime">
-                     <property name="minimum">
-                      <number>0</number>
-                     </property>
-                     <property name="maximum">
-                      <number>11</number>
-                     </property>
-                     <property name="pageStep">
-                      <number>1</number>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configHandVerticalLayout2">
+                     <item>
+                      <widget class="QSlider" name="configSliderDrawTime">
+                       <property name="minimum">
+                        <number>0</number>
+                       </property>
+                       <property name="maximum">
+                        <number>11</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>1</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="configSliderPopular">
+                       <property name="maximum">
+                        <number>11</number>
+                       </property>
+                       <property name="pageStep">
+                        <number>1</number>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QLabel" name="configLabelDrawTimeValue">
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configHandVerticalLayout3">
+                     <item>
+                      <widget class="QLabel" name="configLabelDrawTimeValue">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="configLabelPopularValue">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>

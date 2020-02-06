@@ -13,6 +13,7 @@
 #include "planhandler.h"
 #include "arenahandler.h"
 #include "secretshandler.h"
+#include "popularcardshandler.h"
 #include "drafthandler.h"
 #include "trackobotuploader.h"
 #include "premiumhandler.h"
@@ -86,6 +87,7 @@ private:
     PlanHandler *planHandler;
     ArenaHandler *arenaHandler;
     SecretsHandler *secretsHandler;
+    PopularCardsHandler *popularCardsHandler;
     DraftHandler * draftHandler;
     CardWindow *cardWindow;
     CardListWindow *cardListWindow;
@@ -138,6 +140,7 @@ private:
     void createEnemyHandHandler();
     void createPlanHandler();
     void createSecretsHandler();
+    void createPopularCardsHandler();
     void createDraftHandler();
     void createVersionChecker();
     void createTrackobotUploader();
@@ -167,7 +170,7 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -283,6 +286,7 @@ private slots:
     void transparentNever();
     void transparentFramed();
     void updateTimeDraw(int value);
+    void updatePopularCardsShown(int value);
     void updateTamCard(int value);
     void toggleShowDraftScoresOverlay();
     void toggleShowDraftMechanicsOverlay();
@@ -331,6 +335,7 @@ private slots:
     void configureTwitchDialogs();
     void finishProcessHSRCardsIncluded();
     void finishProcessHSRCardsPlayed();
+    void processPopularCardsHandlerPickrates();
 };
 
 #endif // MAINWINDOW_H

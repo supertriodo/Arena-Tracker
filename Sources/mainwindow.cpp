@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyDeckHandler = nullptr;
     graveyardHandler = nullptr;
     secretsHandler = nullptr;
+    popularCardsHandler = nullptr;
     trackobotUploader = nullptr;
     premiumHandler = nullptr;
     twitchTester = nullptr;
@@ -71,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler -->PlanHandler
+    createPopularCardsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
@@ -104,6 +106,7 @@ MainWindow::~MainWindow()
     if(enemyHandHandler != nullptr)    delete enemyHandHandler;
     if(draftHandler != nullptr)        delete draftHandler;
     if(deckHandler != nullptr)         delete deckHandler;
+    if(popularCardsHandler != nullptr) delete popularCardsHandler;
     if(secretsHandler != nullptr)      delete secretsHandler;
     if(trackobotUploader != nullptr)   delete trackobotUploader;
     if(ui != nullptr)                  delete ui;
@@ -661,10 +664,25 @@ void MainWindow::finishProcessHSRCardsIncluded()
     this->cardsPickratesMap = hsrCardsMaps.cardsPickratesMap;
     this->cardsIncludedWinratesMap = hsrCardsMaps.cardsIncludedWinratesMap;
     this->cardsIncludedDecksMap = hsrCardsMaps.cardsIncludedDecksMap;
-    secretsHandler->setCardsPickratesMap(cardsPickratesMap);
-    secretsHandler->createSecretsByPickrate(cardsPickratesMap);
     draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
     draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
+    secretsHandler->setCardsPickratesMap(cardsPickratesMap);
+    secretsHandler->createSecretsByPickrate(cardsPickratesMap);
+    popularCardsHandler->setCardsPickratesMap(cardsPickratesMap);
+    processPopularCardsHandlerPickrates();
+}
+
+
+void MainWindow::processPopularCardsHandlerPickrates()
+{
+    if(lightForgeJsonLoaded)
+    {
+        popularCardsHandler->createCardsByPickrate(cardsPickratesMap, draftHandler->getAllArenaCodes());
+    }
+    else
+    {
+        QTimer::singleShot(1000, this, SLOT(processPopularCardsHandlerPickrates()));
+    }
 }
 
 
@@ -778,19 +796,6 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 }
 
 
-void MainWindow::setPremium(bool premium)
-{
-    this->patreonVersion = premium;
-
-    ui->configCheckMechanicsOverlay->setHidden(!patreonVersion);
-    ui->configCheckHSR->setHidden(!patreonVersion);
-
-    updateTabIcons();
-    resizeChecks();//Recoloca botones -X y reajusta tabBar size
-    calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
-}
-
-
 void MainWindow::createNetworkManager()
 {
     networkManager = new QNetworkAccessManager(this);
@@ -828,6 +833,8 @@ void MainWindow::createPremiumHandler()
             planHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             graveyardHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            popularCardsHandler, SLOT(setPremium(bool)));
     connect(trackobotUploader, SIGNAL(connected(QString,QString)),
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
@@ -913,6 +920,18 @@ void MainWindow::createSecretsHandler()
     connect(secretsHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createPopularCardsHandler()
+{
+    popularCardsHandler = new PopularCardsHandler(this, ui, enemyHandHandler);
+    connect(popularCardsHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(popularCardsHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(popularCardsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
@@ -1074,6 +1093,8 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(secretsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(popularCardsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(draftHandler, SIGNAL(overlayCardEntered(QString, QRect, int, int, bool)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int, bool)));
     connect(planHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
@@ -1096,6 +1117,8 @@ void MainWindow::createCardWindow()
     connect(ui->enemyHandListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(ui->secretsListWidget, SIGNAL(leave()),
+            cardWindow, SLOT(hide()));
+    connect(ui->popularCardsListWidget, SIGNAL(leave()),
             cardWindow, SLOT(hide()));
     connect(draftHandler, SIGNAL(overlayCardLeave()),
             cardWindow, SLOT(hide()));
@@ -1358,6 +1381,19 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
 
+    connect(gameWatcher, SIGNAL(endGame(bool,bool)),
+            popularCardsHandler, SLOT(resetCardsInterface()));
+    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
+            popularCardsHandler, SLOT(newTurn(bool,int)));
+    connect(gameWatcher, SIGNAL(enemyHero(QString)),
+            popularCardsHandler, SLOT(setEnemyClass(QString)));
+    connect(gameWatcher, SIGNAL(enemyTagChange(QString,QString)),
+            popularCardsHandler, SLOT(enemyTagChange(QString,QString)));
+    connect(gameWatcher, SIGNAL(enterArena()),
+            popularCardsHandler, SLOT(enterArena()));
+    connect(gameWatcher, SIGNAL(leaveArena()),
+            popularCardsHandler, SLOT(leaveArena()));
+
     connect(gameWatcher, SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(arenaChoosingHeroe()),
@@ -1522,108 +1558,6 @@ void MainWindow::initConfigTheme(QString theme)
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
-                               bool showClassColor, bool showSpellColor, bool showManaLimits,
-                               bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               bool normalizedLF, bool twitchChatVotes, QString theme,
-                               bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
-{
-    //UI
-    switch(transparency)
-    {
-        case Transparent:
-            ui->configRadioTransparent->setChecked(true);
-            break;
-        case AutoTransparent:
-            ui->configRadioAuto->setChecked(true);
-            break;
-        case Opaque:
-            ui->configRadioOpaque->setChecked(true);
-            break;
-        case Framed:
-            ui->configRadioFramed->setChecked(true);
-            break;
-//        default:
-//            transparency = AutoTransparent;
-//            ui->configRadioAuto->setChecked(true);
-//            break;
-    }
-
-    initConfigTheme(theme);
-
-    //Deck
-    if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
-    if(ui->configSliderCardSize->value() == cardHeight)   updateTamCard(cardHeight);
-    else    ui->configSliderCardSize->setValue(cardHeight);
-
-    if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
-    if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
-    else ui->configSliderTooltipSize->setValue(tooltipScale);
-
-    ui->configCheckAutoSize->setChecked(autoSize);
-
-    ui->configCheckClassColor->setChecked(showClassColor);
-    updateShowClassColor(showClassColor);
-
-    ui->configCheckSpellColor->setChecked(showSpellColor);
-    updateShowSpellColor(showSpellColor);
-
-    ui->configCheckManaLimits->setChecked(showManaLimits);
-    updateShowManaLimits(showManaLimits);
-
-    //Hand
-    //Slider            0  - Ns - 11
-    //DrawDissapear     -1 - Ns - 0
-    switch(this->drawDisappear)
-    {
-        case -1:
-            ui->configSliderDrawTime->setValue(0);
-            updateTimeDraw(0);
-            break;
-        case 0:
-            ui->configSliderDrawTime->setValue(11);
-            break;
-        default:
-            if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
-            ui->configSliderDrawTime->setValue(this->drawDisappear);
-            break;
-    }
-
-    ui->configCheckTotalAttack->setChecked(showTotalAttack);
-    updateShowTotalAttack(showTotalAttack);
-
-    ui->configCheckRngList->setChecked(showRngList);
-    updateShowRngList(showRngList);
-
-
-    //Draft
-    if(this->showDraftScoresOverlay) ui->configCheckScoresOverlay->setChecked(true);
-    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
-
-    if(this->showDraftMechanicsOverlay) ui->configCheckMechanicsOverlay->setChecked(true);
-    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
-
-    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
-    draftHandler->setLearningMode(this->draftLearningMode);
-
-    if(normalizedLF)    ui->configCheckNormalizeLF->setChecked(true);
-    updateDraftNormalizeLF(normalizedLF);
-
-    ui->configCheckHA->setChecked(draftMethodHA);
-    ui->configCheckLF->setChecked(draftMethodLF);
-    ui->configCheckHSR->setChecked(draftMethodHSR);
-    spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
-
-    //Zero To Heroes
-    ui->configSliderZero->setValue(maxGamesLog);
-    updateMaxGamesLog(maxGamesLog);
-
-    //Twitch
-    ui->configCheckVotes->setChecked(twitchChatVotes);
-    updateTwitchChatVotes(twitchChatVotes);
-}
-
-
 void MainWindow::moveInScreen(QPoint pos, QSize size)
 {
     QRect appRect(pos, size);
@@ -1770,6 +1704,8 @@ void MainWindow::checkTwitchConnection()
 
 void MainWindow::readSettings()
 {
+    //New Config Step 1 - Cargar valores
+
     QSettings settings("Arena Tracker", "Arena Tracker");
     QPoint pos;
     QSize size;
@@ -1782,6 +1718,7 @@ void MainWindow::readSettings()
 
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
+    int popularCardsShown = settings.value("popularCardsShown", 5).toInt();
     this->showDraftScoresOverlay = settings.value("showDraftScoresOverlay", true).toBool();
     this->showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
@@ -1801,7 +1738,7 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR);
+                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1825,6 +1762,8 @@ void MainWindow::readSettings()
 
 void MainWindow::writeSettings()
 {
+    //New Config Step 2 - Guardar valores
+
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
@@ -1832,6 +1771,7 @@ void MainWindow::writeSettings()
     settings.setValue("theme", ui->configComboTheme->currentText());
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
+    settings.setValue("popularCardsShown", ui->configSliderPopular->value());
     settings.setValue("showDraftScoresOverlay", this->showDraftScoresOverlay);
     settings.setValue("showDraftMechanicsOverlay", this->showDraftMechanicsOverlay);
     settings.setValue("draftLearningMode", this->draftLearningMode);
@@ -1855,6 +1795,114 @@ void MainWindow::writeSettings()
     settings.setValue("enemyDeckWindow", enemyDeckWindow != nullptr);
     settings.setValue("graveyardWindow", graveyardWindow != nullptr);
     settings.setValue("planWindow", planWindow != nullptr);
+}
+
+
+void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
+                               bool showClassColor, bool showSpellColor, bool showManaLimits,
+                               bool showTotalAttack, bool showRngList, int maxGamesLog,
+                               bool normalizedLF, bool twitchChatVotes, QString theme,
+                               bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
+                               int popularCardsShown)
+{
+    //New Config Step 3 - Actualizar UI con valores cargados
+
+    //UI
+    switch(transparency)
+    {
+        case Transparent:
+            ui->configRadioTransparent->setChecked(true);
+            break;
+        case AutoTransparent:
+            ui->configRadioAuto->setChecked(true);
+            break;
+        case Opaque:
+            ui->configRadioOpaque->setChecked(true);
+            break;
+        case Framed:
+            ui->configRadioFramed->setChecked(true);
+            break;
+//        default:
+//            transparency = AutoTransparent;
+//            ui->configRadioAuto->setChecked(true);
+//            break;
+    }
+
+    initConfigTheme(theme);
+
+    //Deck
+    if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
+    if(ui->configSliderCardSize->value() == cardHeight)   updateTamCard(cardHeight);
+    else    ui->configSliderCardSize->setValue(cardHeight);
+
+    if(tooltipScale<ui->configSliderTooltipSize->minimum() || tooltipScale>ui->configSliderTooltipSize->maximum())  tooltipScale = 10;
+    if(ui->configSliderTooltipSize->value() == tooltipScale) updateTooltipScale(tooltipScale);
+    else ui->configSliderTooltipSize->setValue(tooltipScale);
+
+    ui->configCheckAutoSize->setChecked(autoSize);
+
+    ui->configCheckClassColor->setChecked(showClassColor);
+    updateShowClassColor(showClassColor);
+
+    ui->configCheckSpellColor->setChecked(showSpellColor);
+    updateShowSpellColor(showSpellColor);
+
+    ui->configCheckManaLimits->setChecked(showManaLimits);
+    updateShowManaLimits(showManaLimits);
+
+    //Hand
+    //Slider            0  - Ns - 11
+    //DrawDissapear     -1 - Ns - 0
+    switch(this->drawDisappear)
+    {
+        case -1:
+            ui->configSliderDrawTime->setValue(0);
+            updateTimeDraw(0);
+            break;
+        case 0:
+            ui->configSliderDrawTime->setValue(11);
+            break;
+        default:
+            if(this->drawDisappear<-1 || this->drawDisappear>10)    this->drawDisappear = 5;
+            ui->configSliderDrawTime->setValue(this->drawDisappear);
+            break;
+    }
+
+    ui->configSliderPopular->setValue(popularCardsShown);
+    updatePopularCardsShown(popularCardsShown);
+
+    ui->configCheckTotalAttack->setChecked(showTotalAttack);
+    updateShowTotalAttack(showTotalAttack);
+
+    ui->configCheckRngList->setChecked(showRngList);
+    updateShowRngList(showRngList);
+
+
+    //Draft
+    if(this->showDraftScoresOverlay) ui->configCheckScoresOverlay->setChecked(true);
+    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
+
+    if(this->showDraftMechanicsOverlay) ui->configCheckMechanicsOverlay->setChecked(true);
+    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
+
+    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
+    draftHandler->setLearningMode(this->draftLearningMode);
+
+    if(normalizedLF)    ui->configCheckNormalizeLF->setChecked(true);
+    updateDraftNormalizeLF(normalizedLF);
+
+    ui->configCheckHA->setChecked(draftMethodHA);
+    ui->configCheckLF->setChecked(draftMethodLF);
+    ui->configCheckHSR->setChecked(draftMethodHSR);
+    spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
+
+    //Zero To Heroes
+    ui->configSliderZero->setValue(maxGamesLog);
+    updateMaxGamesLog(maxGamesLog);
+
+    //Twitch
+    ui->configCheckVotes->setChecked(twitchChatVotes);
+    updateTwitchChatVotes(twitchChatVotes);
 }
 
 
@@ -2481,6 +2529,7 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     enemyHandHandler->redrawDownloadedCardImage(code);
     planHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
+    popularCardsHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
     if(!allCardsDownloadList.isEmpty())     this->updateProgressAllCardsDownload(code);
 }
@@ -3019,6 +3068,8 @@ void MainWindow::showWindowFrame(bool showFrame)
 //Update Config and Log tabs transparency
 void MainWindow::updateOtherTabsTransparency()
 {
+    //New Config Step 4 - CSS nuevos controles
+
     if(!mouseInApp && transparency==Transparent)
     {
         ui->tabLog->setAttribute(Qt::WA_NoBackground);
@@ -3047,6 +3098,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDeckTooltip2->setStyleSheet(labelCSS);
         ui->configLabelDrawTime->setStyleSheet(labelCSS);
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
+        ui->configLabelPopular->setStyleSheet(labelCSS);
+        ui->configLabelPopularValue->setStyleSheet(labelCSS);
         ui->configLabelZero->setStyleSheet(labelCSS);
         ui->configLabelZero2->setStyleSheet(labelCSS);
         ui->configLabelTheme->setStyleSheet(labelCSS);
@@ -3100,6 +3153,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDeckTooltip2->setStyleSheet("");
         ui->configLabelDrawTime->setStyleSheet("");
         ui->configLabelDrawTimeValue->setStyleSheet("");
+        ui->configLabelPopular->setStyleSheet("");
+        ui->configLabelPopularValue->setStyleSheet("");
         ui->configLabelZero->setStyleSheet("");
         ui->configLabelZero2->setStyleSheet("");
         ui->configLabelTheme->setStyleSheet("");
@@ -3213,6 +3268,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     graveyardHandler->redrawAllCards();
     enemyHandHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
+    popularCardsHandler->redrawAllCards();
     if(redrawAllGames) this->redrawAllGames();
     resizeChecks();//Recoloca botones -X
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
@@ -3510,6 +3566,7 @@ void MainWindow::spreadTamCard(int value)
     if(enemyDeckHandler != nullptr)    enemyDeckHandler->redrawAllCards();
     if(graveyardHandler != nullptr)    graveyardHandler->redrawAllCards();
     if(secretsHandler != nullptr)      secretsHandler->redrawAllCards();
+    if(popularCardsHandler != nullptr) popularCardsHandler->redrawAllCards();
     if(enemyHandHandler != nullptr)
     {
         enemyHandHandler->redrawAllCards();
@@ -3563,6 +3620,7 @@ void MainWindow::updateShowClassColor(bool checked)
     DeckCard::setDrawClassColor(checked);
     deckHandler->redrawClassCards();
     secretsHandler->redrawClassCards();
+    popularCardsHandler->redrawClassCards();
     enemyHandHandler->redrawClassCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawClassCards();
@@ -3575,6 +3633,7 @@ void MainWindow::updateShowSpellColor(bool checked)
     DeckCard::setDrawSpellWeaponColor(checked);
     deckHandler->redrawSpellWeaponCards();
     secretsHandler->redrawSpellWeaponCards();
+    popularCardsHandler->redrawSpellWeaponCards();
     enemyHandHandler->redrawSpellWeaponCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawSpellWeaponCards();
@@ -3603,7 +3662,7 @@ void MainWindow::updateTimeDraw(int value)
     {
         case 0:
             this->drawDisappear = -1;
-            labelText = "No";
+            labelText = "Off";
             break;
         case 11:
             this->drawDisappear = 0;
@@ -3619,6 +3678,33 @@ void MainWindow::updateTimeDraw(int value)
     ui->configSliderDrawTime->setToolTip(labelText);
 
     deckHandler->setDrawDisappear(this->drawDisappear);
+}
+
+
+void MainWindow::updatePopularCardsShown(int value)
+{
+    QString labelText;
+    QString tooltipText;
+
+    switch(value)
+    {
+        case 0:
+            tooltipText = labelText = "Off";
+            break;
+        case 11:
+            tooltipText = labelText = "All";
+            tooltipText = labelText + " cards";
+            break;
+        default:
+            labelText = QString::number(value);
+            tooltipText = labelText + " cards";
+            break;
+    }
+
+    ui->configLabelPopularValue->setText(labelText);
+    ui->configSliderPopular->setToolTip(tooltipText);
+
+    popularCardsHandler->setPopularCardsShown(value);
 }
 
 
@@ -3760,8 +3846,29 @@ void MainWindow::completeConfigComboTheme()
 }
 
 
+void MainWindow::setPremium(bool premium)
+{
+    this->patreonVersion = premium;
+
+    //New Config Step 5 - Mostrar opciones premium
+    ui->configCheckMechanicsOverlay->setHidden(!patreonVersion);
+    ui->configCheckHSR->setHidden(!patreonVersion);
+    ui->configLabelPopular->setHidden(!patreonVersion);
+    ui->configLabelPopularValue->setHidden(!patreonVersion);
+    ui->configSliderPopular->setHidden(!patreonVersion);
+//    ui->configCheckRngList->setHidden(!patreonVersion);
+
+    updateTabIcons();
+    resizeChecks();//Recoloca botones -X y reajusta tabBar size
+    calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
+}
+
+
 void MainWindow::completeConfigTab()
 {
+    //New Config Step 6 - Ocultar opciones premium - Ajustar tamanos
+    //New Config Step 7 - Connect controles - funciones y crear funciones
+
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
     //Actions
     addDraftMenu(ui->configButtonForceDraft);
@@ -3784,7 +3891,12 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckManaLimits, SIGNAL(clicked(bool)), this, SLOT(updateShowManaLimits(bool)));
 
     //Hand
+    ui->configLabelPopular->hide();
+    ui->configLabelPopularValue->hide();
+    ui->configSliderPopular->hide();
+//    ui->configCheckRngList->hide();
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
+    connect(ui->configSliderPopular, SIGNAL(valueChanged(int)), this, SLOT(updatePopularCardsShown(int)));
     connect(ui->configCheckTotalAttack, SIGNAL(clicked(bool)), this, SLOT(updateShowTotalAttack(bool)));
     connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
 
@@ -4494,11 +4606,14 @@ void MainWindow::testDelay()
 //Colores->Tono y saturacion...(2 opcion) Luminosidad +50
 
 //NUEVOS CONTROLES CONFIG TAB
-//readSettings --> Cargar valores
-//initConfigTab --> Actualizar UI con valores cargados
-//updateOtherTabsTransparency --> CSS nuevos controles
-//completeConfigTab --> Connect controles - funciones y crear funciones
-//writeSettings --> Guardar valores
+//Marcado codigo con //New Config Step
+//New Config Step 1 - Cargar valores --> readSettings
+//New Config Step 2 - Guardar valores --> writeSettings
+//New Config Step 3 - Actualizar UI con valores cargados --> initConfigTab
+//New Config Step 4 - CSS nuevos controles --> updateOtherTabsTransparency
+//New Config Step 5 - Mostrar opciones premium --> setPremium
+//New Config Step 6 - Ocultar opciones premium --> completeConfigTab
+//New Config Step 7 - Connect controles - funciones y crear funciones --> completeConfigTab
 
 //NUEVA HEBRA
 //QFutureWatcher<QString> futureFUNCION;

@@ -583,6 +583,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         //TAG_CHANGE jugadores conocido
         //D 10:48:46.1127070 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=SerKolobok tag=RESOURCES value=3
+        //D 20:08:22.6854340 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=The Innkeeper tag=OVERLOAD_OWED value=2
         if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
             "Entity=(.*) tag=(\\w+) value=(\\w+)"
@@ -593,7 +594,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             QString value = match->captured(3);
             bool isPlayer = (name == playerTag);
 
-            if(tag == "RESOURCES" || tag == "RESOURCES_USED" || tag == "CURRENT_SPELLPOWER")
+            if(tag == "RESOURCES" || tag == "RESOURCES_USED" || tag == "CURRENT_SPELLPOWER" || tag == "OVERLOAD_OWED")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
                             " -- Name: " + name, numLine);

@@ -62,6 +62,7 @@ public:
     void setShowAttackBar(bool value);
     void setTheme();
     void redrawTotalAttack();
+    bool isCoinInHand();
 
 signals:
     void checkCardImage(QString code);

@@ -169,8 +169,8 @@ void DeckHandler::adjustRngSize()
     int rowHeight = ui->rngListWidget->sizeHintForRow(0);
     int rows = rngCardList.count();
     int height = rows*rowHeight + 2*ui->rngListWidget->frameWidth();
-    int maxHeight = (ui->rngListWidget->height()+ui->enemyHandListWidget->height())*4/5;
-    if(height>maxHeight)    height = maxHeight;
+//    int maxHeight = (ui->rngListWidget->height()+ui->enemyHandListWidget->height())*4/5;
+//    if(height>maxHeight)    height = maxHeight;
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->rngListWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
@@ -432,8 +432,8 @@ void DeckHandler::adjustDrawSize()
     int rowHeight = ui->drawListWidget->sizeHintForRow(0);
     int rows = drawCardList.count();
     int height = rows*rowHeight + 2*ui->drawListWidget->frameWidth();
-    int maxHeight = (ui->drawListWidget->height()+ui->enemyHandListWidget->height())*4/5;
-    if(height>maxHeight)    height = maxHeight;
+//    int maxHeight = (ui->drawListWidget->height()+ui->enemyHandListWidget->height())*4/5;
+//    if(height>maxHeight)    height = maxHeight;
 
     QPropertyAnimation *animation = new QPropertyAnimation(ui->drawListWidget, "minimumHeight");
     animation->setDuration(ANIMATION_TIME);
