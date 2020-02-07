@@ -4,6 +4,7 @@
 #include "Widgets/ui_extended.h"
 #include "gamewatcher.h"
 #include "deckhandler.h"
+#include "planhandler.h"
 #include "utility.h"
 #include "trackobotuploader.h"
 #include <QObject>

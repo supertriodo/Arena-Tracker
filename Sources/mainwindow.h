@@ -14,6 +14,8 @@
 #include "arenahandler.h"
 #include "secretshandler.h"
 #include "popularcardshandler.h"
+#include "drawcardhandler.h"
+#include "rngcardhandler.h"
 #include "drafthandler.h"
 #include "trackobotuploader.h"
 #include "premiumhandler.h"
@@ -82,6 +84,8 @@ private:
     HSCardDownloader *cardDownloader;
     EnemyDeckHandler *enemyDeckHandler;
     GraveyardHandler *graveyardHandler;
+    DrawCardHandler *drawCardHandler;
+    RngCardHandler *rngCardHandler;
     DeckHandler *deckHandler;
     EnemyHandHandler *enemyHandHandler;
     PlanHandler *planHandler;
@@ -136,6 +140,8 @@ private:
     void createCardDownloader();
     void createEnemyDeckHandler();
     void createGraveyardHandler();
+    void createDrawCardHandler();
+    void createRngCardHandler();
     void createDeckHandler();
     void createEnemyHandHandler();
     void createPlanHandler();

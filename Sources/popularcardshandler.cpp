@@ -16,7 +16,8 @@ PopularCardsHandler::PopularCardsHandler(QObject *parent, Ui::Extended *ui, Enem
 
 PopularCardsHandler::~PopularCardsHandler()
 {
-
+    popularCardList.clear();
+    ui->popularCardsListWidget->clear();
 }
 
 

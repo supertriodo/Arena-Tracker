@@ -175,7 +175,7 @@ signals:
     void handOfSalvationTested();
     void _3CardsPlayedTested();
     void cSpiritTested();
-    void clearDrawList(bool forceClear=false);
+    void clearDrawList();
     void newTurn(bool isPlayerTurn, int numTurn);
     void logTurn();
     void needResetDeck();

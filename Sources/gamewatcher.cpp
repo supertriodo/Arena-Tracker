@@ -367,7 +367,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             {
                 powerState = inGameState;
                 mulliganEnemyDone = mulliganPlayerDone = true;
-                emit clearDrawList(true);
+                emit clearDrawList();
                 emit pDebug("WARNING: Heroes/Players info missing (powerState = inGameState, mulliganDone = true)", 0, Warning);
             }
         }
@@ -498,7 +498,7 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
                 emit pDebug("Player mulligan end.", numLine);
                 mulliganPlayerDone = true;
                 turn = 1;
-                emit clearDrawList(true);
+                emit clearDrawList();
 
                 if(mulliganEnemyDone)
                 {

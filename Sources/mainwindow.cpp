@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
     cardDownloader = nullptr;
     enemyHandHandler = nullptr;
     draftHandler = nullptr;
+    drawCardHandler = nullptr;
+    rngCardHandler = nullptr;
     deckHandler = nullptr;
     enemyDeckHandler = nullptr;
     graveyardHandler = nullptr;
@@ -69,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createEnemyHandHandler();//-->PlanHandler
     createEnemyDeckHandler();
     createGraveyardHandler();
+    createDrawCardHandler();
+    createRngCardHandler();//-->PlanHandler
     createDeckHandler();//-->EnemyDeckHandler
     createDraftHandler();//-->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler -->PlanHandler
@@ -106,6 +110,8 @@ MainWindow::~MainWindow()
     if(enemyHandHandler != nullptr)    delete enemyHandHandler;
     if(draftHandler != nullptr)        delete draftHandler;
     if(deckHandler != nullptr)         delete deckHandler;
+    if(rngCardHandler != nullptr)      delete rngCardHandler;
+    if(drawCardHandler != nullptr)     delete drawCardHandler;
     if(popularCardsHandler != nullptr) delete popularCardsHandler;
     if(secretsHandler != nullptr)      delete secretsHandler;
     if(trackobotUploader != nullptr)   delete trackobotUploader;
@@ -835,6 +841,8 @@ void MainWindow::createPremiumHandler()
             graveyardHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             popularCardsHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            rngCardHandler, SLOT(setPremium(bool)));
     connect(trackobotUploader, SIGNAL(connected(QString,QString)),
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
@@ -936,6 +944,30 @@ void MainWindow::createPopularCardsHandler()
 }
 
 
+void MainWindow::createDrawCardHandler()
+{
+    drawCardHandler = new DrawCardHandler(this, ui);
+    connect(drawCardHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(drawCardHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(drawCardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
+void MainWindow::createRngCardHandler()
+{
+    rngCardHandler = new RngCardHandler(this, ui, planHandler);
+    connect(rngCardHandler, SIGNAL(checkCardImage(QString)),
+            this, SLOT(checkCardImage(QString)));
+    connect(rngCardHandler, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(rngCardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
+}
+
+
 void MainWindow::createArenaHandler()
 {
     arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
@@ -986,7 +1018,7 @@ void MainWindow::createGraveyardHandler()
 
 void MainWindow::createDeckHandler()
 {
-    deckHandler = new DeckHandler(this, ui, enemyDeckHandler, planHandler);
+    deckHandler = new DeckHandler(this, ui, enemyDeckHandler);
     connect(deckHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
     connect(deckHandler, SIGNAL(needMainWindowFade(bool)),
@@ -1095,6 +1127,8 @@ void MainWindow::createCardWindow()
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(popularCardsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(drawCardHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
+            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
     connect(draftHandler, SIGNAL(overlayCardEntered(QString, QRect, int, int, bool)),
             cardWindow, SLOT(loadCard(QString, QRect, int, int, bool)));
     connect(planHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
@@ -1189,14 +1223,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(newDeckCardAsset(QString)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString, int)),
             deckHandler, SLOT(playerCardDraw(QString, int)));
-    connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
-            deckHandler, SLOT(playerCardToHand(int,QString,int)));
-    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
-            deckHandler, SLOT(removeRngCard(int,QString)));
     connect(gameWatcher, SIGNAL(playerReturnToDeck(QString, int)),
             deckHandler, SLOT(returnToDeck(QString, int)));
-    connect(gameWatcher, SIGNAL(clearDrawList(bool)),
-            deckHandler, SLOT(clearDrawList(bool)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -1393,6 +1421,20 @@ void MainWindow::createGameWatcher()
             popularCardsHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             popularCardsHandler, SLOT(leaveArena()));
+
+    connect(gameWatcher, SIGNAL(endGame(bool,bool)),
+            rngCardHandler, SLOT(clearRngList()));
+    connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
+            rngCardHandler, SLOT(playerCardToHand(int,QString,int)));
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
+            rngCardHandler, SLOT(removeRngCard(int,QString)));
+
+    connect(gameWatcher, SIGNAL(endGame(bool,bool)),
+            drawCardHandler, SLOT(clearDrawList()));
+    connect(gameWatcher, SIGNAL(clearDrawList()),
+            drawCardHandler, SLOT(clearDrawList()));
+    connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
+            drawCardHandler, SLOT(playerCardToHand(int,QString,int)));
 
     connect(gameWatcher, SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
@@ -2500,6 +2542,10 @@ void MainWindow::logReset()
 {
     deckHandler->unlockDeckInterface();
     deckHandler->leaveArena();
+    rngCardHandler->clearRngList();
+    drawCardHandler->clearDrawList();
+    popularCardsHandler->resetCardsInterface();
+    popularCardsHandler->leaveArena();
     enemyHandHandler->unlockEnemyInterface();
     gameWatcher->reset();
 }
@@ -2530,6 +2576,8 @@ void MainWindow::redrawDownloadedCardImage(QString code)
     planHandler->redrawDownloadedCardImage(code);
     secretsHandler->redrawDownloadedCardImage(code);
     popularCardsHandler->redrawDownloadedCardImage(code);
+    drawCardHandler->redrawDownloadedCardImage(code);
+    rngCardHandler->redrawDownloadedCardImage(code);
     draftHandler->reHistDownloadedCardImage(code);
     if(!allCardsDownloadList.isEmpty())     this->updateProgressAllCardsDownload(code);
 }
@@ -3258,6 +3306,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     updateTabIcons();
     arenaHandler->setTheme();
     deckHandler->setTheme();
+    rngCardHandler->setTheme();
     draftHandler->setTheme();
     planHandler->setTheme();
     graveyardHandler->setTheme();
@@ -3269,6 +3318,8 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     enemyHandHandler->redrawAllCards();
     secretsHandler->redrawAllCards();
     popularCardsHandler->redrawAllCards();
+    drawCardHandler->redrawAllCards();
+    rngCardHandler->redrawAllCards();
     if(redrawAllGames) this->redrawAllGames();
     resizeChecks();//Recoloca botones -X
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
@@ -3567,6 +3618,8 @@ void MainWindow::spreadTamCard(int value)
     if(graveyardHandler != nullptr)    graveyardHandler->redrawAllCards();
     if(secretsHandler != nullptr)      secretsHandler->redrawAllCards();
     if(popularCardsHandler != nullptr) popularCardsHandler->redrawAllCards();
+    if(drawCardHandler != nullptr)     drawCardHandler->redrawAllCards();
+    if(rngCardHandler != nullptr)      rngCardHandler->redrawAllCards();
     if(enemyHandHandler != nullptr)
     {
         enemyHandHandler->redrawAllCards();
@@ -3621,6 +3674,8 @@ void MainWindow::updateShowClassColor(bool checked)
     deckHandler->redrawClassCards();
     secretsHandler->redrawClassCards();
     popularCardsHandler->redrawClassCards();
+    drawCardHandler->redrawClassCards();
+    rngCardHandler->redrawClassCards();
     enemyHandHandler->redrawClassCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawClassCards();
@@ -3634,6 +3689,8 @@ void MainWindow::updateShowSpellColor(bool checked)
     deckHandler->redrawSpellWeaponCards();
     secretsHandler->redrawSpellWeaponCards();
     popularCardsHandler->redrawSpellWeaponCards();
+    drawCardHandler->redrawSpellWeaponCards();
+    rngCardHandler->redrawSpellWeaponCards();
     enemyHandHandler->redrawSpellWeaponCards();
     draftHandler->redrawAllCards();
     enemyDeckHandler->redrawSpellWeaponCards();
@@ -3677,7 +3734,7 @@ void MainWindow::updateTimeDraw(int value)
     ui->configLabelDrawTimeValue->setText(labelText);
     ui->configSliderDrawTime->setToolTip(labelText);
 
-    deckHandler->setDrawDisappear(this->drawDisappear);
+    drawCardHandler->setDrawDisappear(this->drawDisappear);
 }
 
 
@@ -3716,7 +3773,7 @@ void MainWindow::updateShowTotalAttack(bool checked)
 
 void MainWindow::updateShowRngList(bool checked)
 {
-    deckHandler->setShowRngList(checked);
+    rngCardHandler->setShowRngList(checked);
 }
 
 
@@ -3856,7 +3913,7 @@ void MainWindow::setPremium(bool premium)
     ui->configLabelPopular->setHidden(!patreonVersion);
     ui->configLabelPopularValue->setHidden(!patreonVersion);
     ui->configSliderPopular->setHidden(!patreonVersion);
-//    ui->configCheckRngList->setHidden(!patreonVersion);
+    ui->configCheckRngList->setHidden(!patreonVersion);
 
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
@@ -3894,7 +3951,7 @@ void MainWindow::completeConfigTab()
     ui->configLabelPopular->hide();
     ui->configLabelPopularValue->hide();
     ui->configSliderPopular->hide();
-//    ui->configCheckRngList->hide();
+    ui->configCheckRngList->hide();
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
     connect(ui->configSliderPopular, SIGNAL(valueChanged(int)), this, SLOT(updatePopularCardsShown(int)));
     connect(ui->configCheckTotalAttack, SIGNAL(clicked(bool)), this, SLOT(updateShowTotalAttack(bool)));

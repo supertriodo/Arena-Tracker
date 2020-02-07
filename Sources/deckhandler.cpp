@@ -4,20 +4,16 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler, PlanHandler *planHandler) : QObject(parent)
+DeckHandler::DeckHandler(QObject *parent, Ui::Extended *ui, EnemyDeckHandler *enemyDeckHandler) : QObject(parent)
 {
     this->ui = ui;
     this->inGame = false;
     this->inArena = false;
     this->transparency = Opaque;
-    this->drawAnimating = false;
-    this->rngAnimating = false;
-    this->drawDisappear = 10;
     this->loadedDeckName = QString();
     this->loadDeckItemsMap.clear();
     this->mouseInApp = false;
     this->enemyDeckHandler = enemyDeckHandler;
-    this->planHandler = planHandler;
     this->showManaLimits = false;
     this->lastCreatedByCode = "";
 
@@ -29,8 +25,6 @@ DeckHandler::~DeckHandler()
 {
     ui->deckListWidget->clear();
     deckCardList.clear();
-    drawCardList.clear();
-    delete bombWindow;
 }
 
 
@@ -44,20 +38,8 @@ void DeckHandler::completeUI()
     enableDeckButtonSave(false);
     ui->deckButtonDeleteDeck->setEnabled(false);
 
-    ui->drawListWidget->setHidden(true);
-    ui->drawListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    ui->drawListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->drawListWidget->setFixedHeight(0);
-    ui->drawListWidget->setMouseTracking(true);
-
     ui->deckListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->deckListWidget->setMouseTracking(true);
-
-    ui->rngListWidget->setHidden(true);
-    ui->rngListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    ui->rngListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->rngListWidget->setFixedHeight(0);
-    ui->rngListWidget->setMouseTracking(true);
 
     createLoadDeckTreeWidget();
 
@@ -69,8 +51,6 @@ void DeckHandler::completeUI()
             this, SLOT(findDeckCardEntered(QListWidgetItem*)));
     connect(ui->deckListWidget, SIGNAL(xLeave()),
             this, SLOT(deselectRow()));
-    connect(ui->drawListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
-            this, SLOT(findDrawCardEntered(QListWidgetItem*)));
     connect(ui->deckButtonMin, SIGNAL(clicked()),
             this, SLOT(cardTotalMin()));
     connect(ui->deckButtonPlus, SIGNAL(clicked()),
@@ -90,120 +70,6 @@ void DeckHandler::completeUI()
             this, SLOT(removeDeck()));
 
     addNewDeckMenu(ui->deckButtonNew);
-    createBombWindow();
-}
-
-
-void DeckHandler::createBombWindow()
-{
-    bombWindow = new BombWindow(static_cast<QWidget*>(this->parent()), ui->planGraphicsView->scene());
-    connect(ui->rngListWidget,SIGNAL(leave()),
-            bombWindow, SLOT(hide()));
-    connect(ui->rngListWidget,SIGNAL(leave()),
-            planHandler, SLOT(resetDeadProbs()));
-    connect(ui->rngListWidget, SIGNAL(itemEntered(QListWidgetItem*)),
-            this, SLOT(rngCardEntered(QListWidgetItem*)));
-}
-
-
-void DeckHandler::rngCardEntered(QListWidgetItem * item)
-{
-    RngCard rngCard = rngCardList[ui->rngListWidget->row(item)];
-    QString code = rngCard.getCode();
-    planHandler->showLastTurn();
-    planHandler->resetDeadProbs();
-    showBombWindow();
-    planHandler->checkBomb(code);
-}
-
-
-void DeckHandler::showBombWindow()
-{
-    QSize sizeTab = ui->tabEnemy->geometry().size();
-    QPoint topLeft = ui->tabEnemy->mapToGlobal(ui->tabEnemy->geometry().topLeft());
-    QRect rectTab(topLeft, sizeTab);
-    bombWindow->showAt(rectTab);
-}
-
-
-void DeckHandler::newRngCard(QString code, int id)
-{
-    RngCard rngCard(code);
-    rngCard.id = id;
-    rngCard.listItem = new QListWidgetItem();
-    rngCardList.append(rngCard);
-    ui->rngListWidget->addItem(rngCard.listItem);
-    rngCard.draw();
-    emit checkCardImage(code);
-    if(showRngList)     ui->rngListWidget->setHidden(false);
-    QTimer::singleShot(10, this, SLOT(adjustRngSize()));
-}
-
-
-void DeckHandler::removeRngCard(int id, QString code)
-{
-    (void) code;
-
-    int i=0;
-    for (QList<RngCard>::iterator it = rngCardList.begin(); it != rngCardList.end(); it++, i++)
-    {
-        if(it->id == id)
-        {
-            delete it->listItem;
-            rngCardList.removeAt(i);
-            QTimer::singleShot(10, this, SLOT(adjustRngSize()));
-            return;
-        }
-    }
-}
-
-
-void DeckHandler::adjustRngSize()
-{
-    if(rngAnimating)
-    {
-        QTimer::singleShot(ANIMATION_TIME+50, this, SLOT(adjustRngSize()));
-        return;
-    }
-
-    int rowHeight = ui->rngListWidget->sizeHintForRow(0);
-    int rows = rngCardList.count();
-    int height = rows*rowHeight + 2*ui->rngListWidget->frameWidth();
-//    int maxHeight = (ui->rngListWidget->height()+ui->enemyHandListWidget->height())*4/5;
-//    if(height>maxHeight)    height = maxHeight;
-
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->rngListWidget, "minimumHeight");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(ui->rngListWidget->minimumHeight());
-    animation->setEndValue(height);
-    animation->setEasingCurve(SHOW_EASING_CURVE);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->rngListWidget, "maximumHeight");
-    animation2->setDuration(ANIMATION_TIME);
-    animation2->setStartValue(ui->rngListWidget->maximumHeight());
-    animation2->setEndValue(height);
-    animation2->setEasingCurve(SHOW_EASING_CURVE);
-    animation2->start(QPropertyAnimation::DeleteWhenStopped);
-
-    this->rngAnimating = true;
-    connect(animation, SIGNAL(finished()),
-            this, SLOT(clearRngAnimating()));
-}
-
-
-void DeckHandler::clearRngAnimating()
-{
-    this->rngAnimating = false;
-    if(rngCardList.empty())    ui->rngListWidget->setHidden(true);
-}
-
-
-void DeckHandler::setShowRngList(bool value)
-{
-    this->showRngList = value;
-    if(!value)                      ui->rngListWidget->setHidden(true);
-    else if(!rngCardList.empty())   ui->rngListWidget->setHidden(false);
 }
 
 
@@ -421,53 +287,11 @@ void DeckHandler::enableDeckButtonSave(bool enable)
 }
 
 
-void DeckHandler::adjustDrawSize()
-{
-    if(drawAnimating)
-    {
-        QTimer::singleShot(ANIMATION_TIME+50, this, SLOT(adjustDrawSize()));
-        return;
-    }
-
-    int rowHeight = ui->drawListWidget->sizeHintForRow(0);
-    int rows = drawCardList.count();
-    int height = rows*rowHeight + 2*ui->drawListWidget->frameWidth();
-//    int maxHeight = (ui->drawListWidget->height()+ui->enemyHandListWidget->height())*4/5;
-//    if(height>maxHeight)    height = maxHeight;
-
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->drawListWidget, "minimumHeight");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(ui->drawListWidget->minimumHeight());
-    animation->setEndValue(height);
-    animation->setEasingCurve(SHOW_EASING_CURVE);
-    animation->start(QPropertyAnimation::DeleteWhenStopped);
-
-    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->drawListWidget, "maximumHeight");
-    animation2->setDuration(ANIMATION_TIME);
-    animation2->setStartValue(ui->drawListWidget->maximumHeight());
-    animation2->setEndValue(height);
-    animation2->setEasingCurve(SHOW_EASING_CURVE);
-    animation2->start(QPropertyAnimation::DeleteWhenStopped);
-
-    this->drawAnimating = true;
-    connect(animation, SIGNAL(finished()),
-            this, SLOT(clearDrawAnimating()));
-}
-
-
-void DeckHandler::clearDrawAnimating()
-{
-    this->drawAnimating = false;
-    if(drawCardList.empty())    ui->drawListWidget->setHidden(true);
-}
-
-
 void DeckHandler::reset()
 {
     this->firstOutsiderId = 68;
     ui->deckListWidget->clear();
     deckCardList.clear();
-    clearDrawList(true);
 
     DeckCard deckCard("");
     deckCard.total = 30;
@@ -697,44 +521,9 @@ void DeckHandler::hideUnknown(bool hidden)
 }
 
 
-void DeckHandler::newDrawCard(QString code, bool mulligan)
-{
-    DrawCard drawCard(code);
-    drawCard.listItem = new QListWidgetItem();
-    drawCardList.append(drawCard);
-    ui->drawListWidget->addItem(drawCard.listItem);
-    drawCard.draw();
-    emit checkCardImage(code);
-    ui->drawListWidget->setHidden(false);
-    QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
-
-    if(!mulligan && this->drawDisappear>0)
-    {
-        QTimer::singleShot(this->drawDisappear*1000, this, SLOT(removeOldestDrawCard()));
-    }
-}
-
-
-void DeckHandler::removeOldestDrawCard()
-{
-    if(drawCardList.empty())    return;
-    DrawCard drawCard = drawCardList.takeFirst();
-    ui->drawListWidget->removeItemWidget(drawCard.listItem);
-    delete drawCard.listItem;
-    QTimer::singleShot(10, this, SLOT(adjustDrawSize()));
-}
-
-
 void DeckHandler::playerCardDraw(QString code, int id)
 {
     drawFromDeck(code, id);
-}
-
-
-void DeckHandler::playerCardToHand(int id, QString code, int turn)
-{
-    if(this->drawDisappear>=0)          newDrawCard(code, turn==0);
-    if(planHandler->isCardBomb(code))   newRngCard(code, id);
 }
 
 
@@ -871,22 +660,6 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
             it->draw();
         }
     }
-
-    for(QList<DrawCard>::iterator it = drawCardList.begin(); it != drawCardList.end(); it++)
-    {
-        if(it->getCode() == code)
-        {
-            it->draw();
-        }
-    }
-
-    for(QList<RngCard>::iterator it = rngCardList.begin(); it != rngCardList.end(); it++)
-    {
-        if(it->getCode() == code)
-        {
-            it->draw();
-        }
-    }
 }
 
 
@@ -897,22 +670,6 @@ void DeckHandler::redrawClassCards()
         if(deckCard.getCardClass()<9)
         {
             deckCard.draw();
-        }
-    }
-
-    foreach(DrawCard drawCard, drawCardList)
-    {
-        if(drawCard.getCardClass()<9)
-        {
-            drawCard.draw();
-        }
-    }
-
-    foreach(RngCard rngCard, rngCardList)
-    {
-        if(rngCard.getCardClass()<9)
-        {
-            rngCard.draw();
         }
     }
 }
@@ -928,24 +685,6 @@ void DeckHandler::redrawSpellWeaponCards()
             deckCard.draw();
         }
     }
-
-    foreach(DrawCard drawCard, drawCardList)
-    {
-        CardType cardType = drawCard.getType();
-        if(cardType == SPELL || cardType == WEAPON)
-        {
-            drawCard.draw();
-        }
-    }
-
-    foreach(RngCard rngCard, rngCardList)
-    {
-        CardType cardType = rngCard.getType();
-        if(cardType == SPELL || cardType == WEAPON)
-        {
-            rngCard.draw();
-        }
-    }
 }
 
 
@@ -954,16 +693,6 @@ void DeckHandler::redrawAllCards()
     foreach(DeckCard deckCard, deckCardList)
     {
         deckCard.draw();
-    }
-
-    foreach(DrawCard drawCard, drawCardList)
-    {
-        drawCard.draw();
-    }
-
-    foreach(RngCard rngCard, rngCardList)
-    {
-        rngCard.draw();
     }
 }
 
@@ -1125,8 +854,6 @@ void DeckHandler::lockDeckInterface()
     hideManageDecksButtons();
 
     updateTransparency();
-    clearDrawList(true);
-    clearRngList();
     this->lastCreatedByCode = "";
 }
 
@@ -1159,8 +886,6 @@ void DeckHandler::unlockDeckInterface()
     showManageDecksButtons();
 
     updateTransparency();
-    clearDrawList(true);
-    clearRngList();
 }
 
 
@@ -1217,41 +942,11 @@ void DeckHandler::setTheme()
 
     ui->loadDeckTreeWidget->setTheme(true);
     ui->deckListWidget->setTheme();
-    bombWindow->setTheme();
 
     for(int i=0; i<9; i++)
     {
         loadDeckClasses[i]->setIcon(0, QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
     }
-}
-
-
-void DeckHandler::clearRngList()
-{
-    ui->rngListWidget->clear();
-    ui->rngListWidget->setHidden(true);
-    ui->rngListWidget->setFixedHeight(0);
-    rngCardList.clear();
-}
-
-
-void DeckHandler::clearDrawList(bool forceClear)
-{
-    if(!forceClear && this->drawDisappear>0)     return;
-
-    ui->drawListWidget->clear();
-    ui->drawListWidget->setHidden(true);
-    ui->drawListWidget->setFixedHeight(0);
-    drawCardList.clear();
-
-    emit pDebug("Clear Draw List.");
-}
-
-
-void DeckHandler::setDrawDisappear(int value)
-{
-    this->drawDisappear = value;
-    clearDrawList(true);
 }
 
 
@@ -1268,20 +963,6 @@ void DeckHandler::findDeckCardEntered(QListWidgetItem * item)
     int deckListTop = ui->deckListWidget->mapToGlobal(QPoint(0,0)).y();
     int deckListBottom = ui->deckListWidget->mapToGlobal(QPoint(0,ui->deckListWidget->height())).y();
     emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
-}
-
-
-void DeckHandler::findDrawCardEntered(QListWidgetItem * item)
-{
-    QString code = drawCardList[ui->drawListWidget->row(item)].getCode();
-
-    QRect rectCard = ui->drawListWidget->visualItemRect(item);
-    QPoint posCard = ui->drawListWidget->mapToGlobal(rectCard.topLeft());
-    QRect globalRectCard = QRect(posCard, rectCard.size());
-
-    int drawListTop = -1;
-    int drawListBottom = ui->tabEnemy->mapToGlobal(QPoint(0,ui->tabEnemy->height())).y();
-    emit cardEntered(code, globalRectCard, drawListTop, drawListBottom);
 }
 
 
