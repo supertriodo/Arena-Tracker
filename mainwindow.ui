@@ -1905,30 +1905,6 @@ Changing to/from Framed need a restart to fully take effective.</string>
                  <item>
                   <layout class="QHBoxLayout" name="configDeckHorizontalLayout2">
                    <item>
-                    <layout class="QVBoxLayout" name="configDeckVerticalLayout4">
-                     <item>
-                      <widget class="QCheckBox" name="configCheckAutoSize">
-                       <property name="toolTip">
-                        <string>Auto Size: Adapt card size to deck window size.</string>
-                       </property>
-                       <property name="text">
-                        <string>Auto Size</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="configCheckManaLimits">
-                       <property name="toolTip">
-                        <string>Mana Limits: Show marks to organize cards by mana cost.</string>
-                       </property>
-                       <property name="text">
-                        <string>Mana Limits</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
                     <layout class="QVBoxLayout" name="configDeckVerticalLayout5">
                      <item>
                       <widget class="QCheckBox" name="configCheckClassColor">
@@ -1947,6 +1923,30 @@ Changing to/from Framed need a restart to fully take effective.</string>
                        </property>
                        <property name="text">
                         <string>Spell Color</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="configDeckVerticalLayout4">
+                     <item>
+                      <widget class="QCheckBox" name="configCheckAutoSize">
+                       <property name="toolTip">
+                        <string>Auto Size: Adapt card size to deck window size.</string>
+                       </property>
+                       <property name="text">
+                        <string>Auto Size</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="configCheckManaLimits">
+                       <property name="toolTip">
+                        <string>Mana Limits: Show marks to organize cards by mana cost.</string>
+                       </property>
+                       <property name="text">
+                        <string>Mana Limits</string>
                        </property>
                       </widget>
                      </item>

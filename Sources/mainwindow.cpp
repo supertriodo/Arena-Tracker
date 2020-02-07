@@ -1770,7 +1770,7 @@ void MainWindow::readSettings()
     bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", false).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
-    bool autoSize = settings.value("autoSize", false).toBool();
+    bool autoSize = false;//settings.value("autoSize", false).toBool();//Disable autoSize
     bool showClassColor = settings.value("showClassColor", true).toBool();
     bool showSpellColor = settings.value("showSpellColor", true).toBool();
     bool showManaLimits = settings.value("showManaLimits", true).toBool();
@@ -3940,6 +3940,7 @@ void MainWindow::completeConfigTab()
     completeConfigComboTheme();
 
     //Deck
+    ui->configCheckAutoSize->hide();//Disable autoSize
     connect(ui->configSliderCardSize, SIGNAL(valueChanged(int)), this, SLOT(updateTamCard(int)));
     connect(ui->configSliderTooltipSize, SIGNAL(valueChanged(int)), this, SLOT(updateTooltipScale(int)));
     connect(ui->configCheckAutoSize, SIGNAL(clicked()), this, SLOT(spreadCorrectTamCard()));
