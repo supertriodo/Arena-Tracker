@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>8</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -1572,9 +1572,9 @@ draft mechanics becoming a patron (3$)</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-98</y>
                <width>435</width>
-               <height>876</height>
+               <height>906</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2065,25 +2065,44 @@ ordered by popularity on HSReplay.net</string>
                  <item>
                   <layout class="QHBoxLayout" name="configHandHorizontalLayout2">
                    <item>
-                    <widget class="QCheckBox" name="configCheckTotalAttack">
-                     <property name="toolTip">
-                      <string>Total Attack: Show the sum of your minions + your hero attack.</string>
-                     </property>
-                     <property name="text">
-                      <string>Total Attack</string>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configHandVerticalLayout4">
+                     <item>
+                      <widget class="QCheckBox" name="configCheckTotalAttack">
+                       <property name="toolTip">
+                        <string>Total Attack: Show the sum of your minions + your hero attack.</string>
+                       </property>
+                       <property name="text">
+                        <string>Total Attack</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="configCheckRngList">
+                       <property name="toolTip">
+                        <string>RNG list: Show the cards in your hand which throw bombs/missiles.
+Hover your mouse over to check the odds of killing in the board.</string>
+                       </property>
+                       <property name="text">
+                        <string>RNG list</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="configCheckRngList">
-                     <property name="toolTip">
-                      <string>RNG list: Show the cards in your hand which throw bombs/missiles.
-Hover your mouse over to check the odds of killing in the board.</string>
-                     </property>
-                     <property name="text">
-                      <string>RNG list</string>
-                     </property>
-                    </widget>
+                    <layout class="QVBoxLayout" name="configHandVerticalLayout5">
+                     <item>
+                      <widget class="QCheckBox" name="configCheckSecrets">
+                       <property name="toolTip">
+                        <string>Secrets: Show possibilities
+when the opponent plays a secret.</string>
+                       </property>
+                       <property name="text">
+                        <string>Secrets</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>

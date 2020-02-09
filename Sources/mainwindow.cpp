@@ -1776,11 +1776,13 @@ void MainWindow::readSettings()
     bool showManaLimits = settings.value("showManaLimits", true).toBool();
     bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
     bool showRngList = settings.value("showRngList", true).toBool();
+    bool showSecrets = settings.value("showSecrets", true).toBool();
     int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown);
+                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
+                  showSecrets);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1829,6 +1831,7 @@ void MainWindow::writeSettings()
     settings.setValue("showManaLimits", ui->configCheckManaLimits->isChecked());
     settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
+    settings.setValue("showSecrets", ui->configCheckSecrets->isChecked());
     settings.setValue("maxGamesLog", ui->configSliderZero->value());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
     settings.setValue("deckWindow", deckWindow != nullptr);
@@ -1845,7 +1848,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
                                bool showTotalAttack, bool showRngList, int maxGamesLog,
                                bool normalizedLF, bool twitchChatVotes, QString theme,
                                bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
-                               int popularCardsShown)
+                               int popularCardsShown, bool showSecrets)
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -1918,6 +1921,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
     ui->configCheckRngList->setChecked(showRngList);
     updateShowRngList(showRngList);
+
+    ui->configCheckSecrets->setChecked(showSecrets);
+    updateShowSecrets(showSecrets);
 
 
     //Draft
@@ -3170,6 +3176,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckManaLimits->setStyleSheet(checkCSS);
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
         ui->configCheckRngList->setStyleSheet(checkCSS);
+        ui->configCheckSecrets->setStyleSheet(checkCSS);
         ui->configCheckVotes->setStyleSheet(checkCSS);
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
@@ -3223,6 +3230,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckManaLimits->setStyleSheet("");
         ui->configCheckTotalAttack->setStyleSheet("");
         ui->configCheckRngList->setStyleSheet("");
+        ui->configCheckSecrets->setStyleSheet("");
         ui->configCheckVotes->setStyleSheet("");
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
@@ -3777,6 +3785,12 @@ void MainWindow::updateShowRngList(bool checked)
 }
 
 
+void MainWindow::updateShowSecrets(bool checked)
+{
+    secretsHandler->setShowSecrets(checked);
+}
+
+
 void MainWindow::toggleShowDraftScoresOverlay()
 {
     this->showDraftScoresOverlay = !this->showDraftScoresOverlay;
@@ -3957,6 +3971,7 @@ void MainWindow::completeConfigTab()
     connect(ui->configSliderPopular, SIGNAL(valueChanged(int)), this, SLOT(updatePopularCardsShown(int)));
     connect(ui->configCheckTotalAttack, SIGNAL(clicked(bool)), this, SLOT(updateShowTotalAttack(bool)));
     connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
+    connect(ui->configCheckSecrets, SIGNAL(clicked(bool)), this, SLOT(updateShowSecrets(bool)));
 
     //Draft
     ui->configCheckMechanicsOverlay->hide();
@@ -4567,7 +4582,7 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 //    testDownloadCards();
-//    QTimer::singleShot(3000, this, SLOT(testSecretsHSR()));
+//    QTimer::singleShot(5000, this, SLOT(testSecretsHSR()));
 }
 
 

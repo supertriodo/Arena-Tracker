@@ -7,6 +7,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->enemyHandHandler = enemyHandHandler;
     this->planHandler = planHandler;
     this->secretsAnimating = false;
+    this->showSecrets = true;
     this->lastMinionDead = "";
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
@@ -166,7 +167,7 @@ void SecretsHandler::knownSecretPlayed(int id, CardClass hero, QString code, Loa
 
     emit isolatedSecret(id, code);
 
-    ui->secretsListWidget->setHidden(false);
+    updateShowSecrets();
     adjustSize();
 }
 
@@ -318,7 +319,7 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
 
     activeSecret->activeSecretIds.append(activeSecretId);
 
-    ui->secretsListWidget->setHidden(false);
+    updateShowSecrets();
     adjustSize();
 }
 
@@ -787,6 +788,20 @@ QStringList SecretsHandler::getSecretOptionCodes(int id)
         }
     }
     return QStringList();
+}
+
+
+void SecretsHandler::setShowSecrets(bool value)
+{
+    this->showSecrets = value;
+    updateShowSecrets();
+}
+
+
+void SecretsHandler::updateShowSecrets()
+{
+    if(!showSecrets || activeSecretList.empty())    ui->secretsListWidget->setHidden(true);
+    else                                            ui->secretsListWidget->setHidden(false);
 }
 
 
