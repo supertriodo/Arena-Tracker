@@ -1,6 +1,6 @@
 Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl.
 
-**Free version features:**
+# Free version features:
 
 * Go over your deck while you play.
 * Track your enemy's deck
@@ -30,7 +30,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 
 ![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
 
-**Patreon version features**
+# Patreon version features:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
 * Check the most popular cards played by your enemy on his next turn.
@@ -45,7 +45,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
-* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and reveiew the whole game in a matter of seconds. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
+* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
@@ -64,7 +64,7 @@ My Hearthstone ID: triodo#2541 (EU region)
 
 If you like the app, consider supporting me.
 
-## Support:
+# Support:
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
 
 [![PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-rect-paypal-44px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=triodo%40gmail%2ecom&lc=GB&item_name=Arena%20Tracker&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
