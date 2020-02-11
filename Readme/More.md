@@ -1,4 +1,8 @@
-Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl.
+Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl, but it was created from the ground with arena players in mind.
+
+Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3$ a month.
+
+Next you can check a brief explanation of its features divided in free and patreon versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/).
 
 # Free version features:
 
@@ -57,8 +61,6 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/graveyard-tab.html)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
-
-Arena Tracker is free and open source.
 
 My Hearthstone ID: triodo#2541 (EU region)
 
