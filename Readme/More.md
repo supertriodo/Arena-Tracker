@@ -31,6 +31,9 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 **Patreon version features**
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
+* Check the most popular cards played by your enemy on his next turn.
+
+![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
 * Draft your arena with HSReplay winrates of cards.
 
 ![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
@@ -40,9 +43,6 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
-* Check the most popular cards played by your enemy on his next turn.
-
-![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
 * Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
