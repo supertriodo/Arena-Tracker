@@ -10,7 +10,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
 * When playing arena secrets are ordered by their popularity acording to hsreplay.net
 
-![EnemyHandWithSecretHSR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyHandWithSecretHSR.png.png)
+![EnemyHandWithSecretHSR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyHandWithSecretHSR.png)
 * Save and organize your constructed decks.
 * Import/export your deck with Hearthstone.
 
