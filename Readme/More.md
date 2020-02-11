@@ -33,28 +33,28 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 # Patreon version features:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
-* Check the most popular cards played by your enemy on his next turn.
+* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#popularlist)
 
 ![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
 * Draft your arena with HSReplay winrates of cards.
 
 ![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
-* While drafting, check the synergies of the next picks with the rest of your deck.
+* While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#rateofcards)
 
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
-* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
+* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#mechanics)
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
-* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
+* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
-* Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
+* Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html#planning)
 
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
-* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/57ncm6/in_the_works_check_the_odds_of_bombingmissiles/)
+* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#rng)
 
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Check the cards (minions and weapons) that died during the game on each side of the board.
+* Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/graveyard-tab.html)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
