@@ -6,9 +6,11 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Track your enemy's deck
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
 * Test enemy secrets. Watch the remaining posibilities while you make your moves.
+* Check new cards drawn before the animation even begins in Hearthstone.
+* Check the total attack of all your minions and enemy ones.
 
 ![InGame](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/inGame.png)
-* When playing arena secrets are ordered by their popularity acording to hsreplay.net
+* When playing arena, secrets are ordered by their popularity acording to hsreplay.net, know what to test first.
 
 ![EnemyHandWithSecretHSR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyHandWithSecretHSR.png)
 * Save and organize your constructed decks.
