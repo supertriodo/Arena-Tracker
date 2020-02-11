@@ -1,4 +1,6 @@
 Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl.
+
+**Free version features:**
 * Go over your deck while you play.
 * Track your enemy's deck
 * Get value info of enemy's hand. Cards sent back from the board, spare parts or the coin (among others).
@@ -8,12 +10,6 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
 * Draft your arena with HearthArena or LightForge advice, or why not both.
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
-* [Patreon only:](https://www.patreon.com/triodo) Draft your arena with HSReplay winrates of cards.
-![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
-* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the synergies of the next picks with the rest of your deck.
-![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
-* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
-![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
 ![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
 * Upload your stats to your track-o-bot account.
@@ -21,7 +17,14 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 * Save and organize your constructed decks.
 * Import/export your deck with Hearthstone.
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
-* Upload your draft and games to [ZeroToHeroes](http://www.zerotoheroes.com/s/hearthstone) and improve with the community.
+
+**Patreon version features**
+* [Patreon only:](https://www.patreon.com/triodo) Draft your arena with HSReplay winrates of cards.
+![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
+* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the synergies of the next picks with the rest of your deck.
+![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
+* [Patreon only:](https://www.patreon.com/triodo) While drafting, check the strenghts and weaknesses of your deck through the mechanics summary.
+![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
 * [Patreon only:](https://www.patreon.com/triodo) Replay your matches to find your mistakes. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/4r2ra2/v40_replay/)
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
 * [Patreon only:](https://www.patreon.com/triodo) Plan your turn beforehand. [Learn more...](https://www.reddit.com/r/ArenaTracker/comments/5hwiqy/v44_plan_your_turn/)
