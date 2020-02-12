@@ -111,6 +111,7 @@ private:
     bool isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isDeathrattleGoodAll(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const CardType &cardType);
     bool isBattlecry(const QString &code, const QJsonArray &mechanics);
+    bool isBattlecryGen(const QString &code);
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
@@ -184,7 +185,8 @@ private:
     bool isDiscardSyn(const QString &code, const QString &text);
     bool isDeathrattleSyn(const QString &code);
     bool isDeathrattleGoodAllSyn(const QString &code);
-    bool isBattlecrySyn(const QString &code, const QJsonArray &referencedTags);
+    bool isBattlecrySyn(const QString &code);
+    bool isBattlecryAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
