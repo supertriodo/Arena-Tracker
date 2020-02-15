@@ -1761,11 +1761,12 @@ void MainWindow::readSettings()
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
     int popularCardsShown = settings.value("popularCardsShown", 5).toInt();
-    this->showDraftScoresOverlay = settings.value("showDraftScoresOverlay", true).toBool();
-    this->showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
-    this->draftLearningMode = settings.value("draftLearningMode", false).toBool();
+    bool showDraftScoresOverlay = settings.value("showDraftScoresOverlay", true).toBool();
+    bool showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
+    bool draftLearningMode = settings.value("draftLearningMode", false).toBool();
+    bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
     this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", LightForge).toInt());
-    bool normalizedLF = settings.value("draftNormalizedLF", false).toBool();
+    bool draftNormalizedLF = settings.value("draftNormalizedLF", false).toBool();
     bool draftMethodHA = settings.value("draftMethodHA", false).toBool();
     bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", false).toBool();
@@ -1781,8 +1782,8 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, normalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
-                  showSecrets);
+                  maxGamesLog, draftNormalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
+                  showSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1816,9 +1817,10 @@ void MainWindow::writeSettings()
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
     settings.setValue("popularCardsShown", ui->configSliderPopular->value());
-    settings.setValue("showDraftScoresOverlay", this->showDraftScoresOverlay);
-    settings.setValue("showDraftMechanicsOverlay", this->showDraftMechanicsOverlay);
-    settings.setValue("draftLearningMode", this->draftLearningMode);
+    settings.setValue("showDraftScoresOverlay", ui->configCheckScoresOverlay->isChecked());
+    settings.setValue("showDraftMechanicsOverlay", ui->configCheckMechanicsOverlay->isChecked());
+    settings.setValue("draftLearningMode", ui->configCheckLearning->isChecked());
+    settings.setValue("draftShowDrops", ui->configCheckShowDrops->isChecked());
     settings.setValue("draftMethodAvgScore", static_cast<int>(this->draftMethodAvgScore));
     settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
     settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
@@ -1843,12 +1845,11 @@ void MainWindow::writeSettings()
 }
 
 
-void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
-                               bool showClassColor, bool showSpellColor, bool showManaLimits,
-                               bool showTotalAttack, bool showRngList, int maxGamesLog,
-                               bool normalizedLF, bool twitchChatVotes, QString theme,
-                               bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
-                               int popularCardsShown, bool showSecrets)
+void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
+                               bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF,
+                               bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
+                               int popularCardsShown, bool showSecrets, bool showDraftScoresOverlay, bool showDraftMechanicsOverlay,
+                               bool draftLearningMode, bool draftShowDrops)
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -1927,17 +1928,20 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize,
 
 
     //Draft
-    if(this->showDraftScoresOverlay) ui->configCheckScoresOverlay->setChecked(true);
-    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
+    if(showDraftScoresOverlay)      ui->configCheckScoresOverlay->setChecked(true);
+    updateShowDraftScoresOverlay(showDraftScoresOverlay);
 
-    if(this->showDraftMechanicsOverlay) ui->configCheckMechanicsOverlay->setChecked(true);
-    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
+    if(showDraftMechanicsOverlay)   ui->configCheckMechanicsOverlay->setChecked(true);
+    updateShowDraftMechanicsOverlay(showDraftMechanicsOverlay);
 
-    if(this->draftLearningMode) ui->configCheckLearning->setChecked(true);
-    draftHandler->setLearningMode(this->draftLearningMode);
+    if(draftLearningMode)           ui->configCheckLearning->setChecked(true);
+    updateDraftLearningMode(draftLearningMode);
 
-    if(normalizedLF)    ui->configCheckNormalizeLF->setChecked(true);
-    updateDraftNormalizeLF(normalizedLF);
+    if(draftShowDrops)              ui->configCheckShowDrops->setChecked(true);
+    updateDraftShowDrops(draftShowDrops);
+
+    if(draftNormalizedLF)           ui->configCheckNormalizeLF->setChecked(true);
+    updateDraftNormalizeLF(draftNormalizedLF);
 
     ui->configCheckHA->setChecked(draftMethodHA);
     ui->configCheckLF->setChecked(draftMethodLF);
@@ -3142,7 +3146,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
         ui->configBoxZero->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
-        ui->configBoxDraftExtra->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraftMechanics->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraftScores->setStyleSheet(groupBoxCSS);
         ui->configBoxTwitch->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
@@ -3171,6 +3176,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckScoresOverlay->setStyleSheet(checkCSS);
         ui->configCheckMechanicsOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
+        ui->configCheckShowDrops->setStyleSheet(checkCSS);
         ui->configCheckNormalizeLF->setStyleSheet(checkCSS);
         ui->configCheckAutoSize->setStyleSheet(checkCSS);
         ui->configCheckManaLimits->setStyleSheet(checkCSS);
@@ -3198,7 +3204,8 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraft->setStyleSheet("");
         ui->configBoxZero->setStyleSheet("");
         ui->configBoxDraftMethod->setStyleSheet("");
-        ui->configBoxDraftExtra->setStyleSheet("");
+        ui->configBoxDraftMechanics->setStyleSheet("");
+        ui->configBoxDraftScores->setStyleSheet("");
         ui->configBoxTwitch->setStyleSheet("");
 
 
@@ -3225,6 +3232,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckScoresOverlay->setStyleSheet("");
         ui->configCheckMechanicsOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
+        ui->configCheckShowDrops->setStyleSheet("");
         ui->configCheckNormalizeLF->setStyleSheet("");
         ui->configCheckAutoSize->setStyleSheet("");
         ui->configCheckManaLimits->setStyleSheet("");
@@ -3791,24 +3799,27 @@ void MainWindow::updateShowSecrets(bool checked)
 }
 
 
-void MainWindow::toggleShowDraftScoresOverlay()
+void MainWindow::updateShowDraftScoresOverlay(bool checked)
 {
-    this->showDraftScoresOverlay = !this->showDraftScoresOverlay;
-    draftHandler->setShowDraftScoresOverlay(this->showDraftScoresOverlay);
+    draftHandler->setShowDraftScoresOverlay(checked);
 }
 
 
-void MainWindow::toggleShowDraftMechanicsOverlay()
+void MainWindow::updateShowDraftMechanicsOverlay(bool checked)
 {
-    this->showDraftMechanicsOverlay = !this->showDraftMechanicsOverlay;
-    draftHandler->setShowDraftMechanicsOverlay(this->showDraftMechanicsOverlay);
+    draftHandler->setShowDraftMechanicsOverlay(checked);
 }
 
 
-void MainWindow::toggleDraftLearningMode()
+void MainWindow::updateDraftLearningMode(bool checked)
 {
-    this->draftLearningMode = !this->draftLearningMode;
-    draftHandler->setLearningMode(this->draftLearningMode);
+    draftHandler->setLearningMode(checked);
+}
+
+
+void MainWindow::updateDraftShowDrops(bool checked)
+{
+    draftHandler->setShowDrops(checked);
 }
 
 
@@ -3922,7 +3933,9 @@ void MainWindow::setPremium(bool premium)
     this->patreonVersion = premium;
 
     //New Config Step 5 - Mostrar opciones premium
+    ui->configBoxDraftMechanics->setHidden(!patreonVersion);
     ui->configCheckMechanicsOverlay->setHidden(!patreonVersion);
+    ui->configCheckShowDrops->setHidden(!patreonVersion);
     ui->configCheckHSR->setHidden(!patreonVersion);
     ui->configLabelPopular->setHidden(!patreonVersion);
     ui->configLabelPopularValue->setHidden(!patreonVersion);
@@ -3974,11 +3987,14 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckSecrets, SIGNAL(clicked(bool)), this, SLOT(updateShowSecrets(bool)));
 
     //Draft
+    ui->configBoxDraftMechanics->hide();
     ui->configCheckMechanicsOverlay->hide();
+    ui->configCheckShowDrops->hide();
     ui->configCheckHSR->hide();
-    connect(ui->configCheckScoresOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftScoresOverlay()));
-    connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked()), this, SLOT(toggleShowDraftMechanicsOverlay()));
-    connect(ui->configCheckLearning, SIGNAL(clicked()), this, SLOT(toggleDraftLearningMode()));
+    connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
+    connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
+    connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
+    connect(ui->configCheckShowDrops, SIGNAL(clicked(bool)), this, SLOT(updateDraftShowDrops(bool)));
     connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
     connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHA(bool)));
     connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodLF(bool)));
@@ -4653,6 +4669,7 @@ void MainWindow::testDelay()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
+        //|-Vigilar synergias drop2, drop3, drop4
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 

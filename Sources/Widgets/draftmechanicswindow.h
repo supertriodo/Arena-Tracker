@@ -24,10 +24,10 @@ private:
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     HoverLabel *helpMark;
-    DraftItemCounter **cardTypeCounters, **mechanicCounters;
+    DraftItemCounter **cardTypeCounters, **dropCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     int scoreWidth;
-    bool showingHelp;
+    bool showingHelp, showDrops;
     DraftMethod draftMethodAvgScore;
 
 //Metodos
@@ -36,9 +36,13 @@ private:
 
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
+    void setShowDrops(bool value);
     void setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR);
     void updateManaCounter(int numIncrease, int numCards);
-    void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList, QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList, QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+    void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                        QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
+                        QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
     void setNormalizedLF(bool value);

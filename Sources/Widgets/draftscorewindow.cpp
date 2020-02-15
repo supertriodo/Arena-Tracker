@@ -301,6 +301,7 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
 }
 
 
+//TODO drops verdes y rojos
 QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, int count)
 {
     QPixmap pixmap(mechanicIcon);
@@ -343,6 +344,9 @@ QString DraftScoreWindow::getMechanicTooltip(QString iconName)
     else if(iconName == ThemeHandler::damageMechanicFile())     return "Removal";
     else if(iconName == ThemeHandler::destroyMechanicFile())    return "Hard\nRemoval";
     else if(iconName == ThemeHandler::reachMechanicFile())      return "Reach";
+    else if(iconName == ThemeHandler::drop2CounterFile())       return "2 Drop";
+    else if(iconName == ThemeHandler::drop3CounterFile())       return "3 Drop";
+    else if(iconName == ThemeHandler::drop4CounterFile())       return "4 Drop";
     else    return "";
 }
 

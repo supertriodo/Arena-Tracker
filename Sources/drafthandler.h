@@ -77,7 +77,7 @@ private:
     DraftScoreWindow *draftScoreWindow;
     DraftMechanicsWindow * draftMechanicsWindow;
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
-    bool learningMode;
+    bool learningMode, showDrops;
     QString justPickedCard; //Evita doble pick card en Arena.log
     bool draftMethodHA, draftMethodLF, draftMethodHSR;
     DraftMethod draftMethodAvgScore;
@@ -154,6 +154,7 @@ public:
     void setShowDraftScoresOverlay(bool value);
     void setShowDraftMechanicsOverlay(bool value);
     void setLearningMode(bool value);
+    void setShowDrops(bool value);
     void redrawAllCards();
     void updateTamCard();
     void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);

@@ -106,8 +106,6 @@ private:
     DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *graveyardWindow, *planWindow;
     int cardHeight;
     int drawDisappear;
-    bool showDraftScoresOverlay, showDraftMechanicsOverlay;
-    bool draftLearningMode;
     QString draftLogFile;
     bool copyGameLogs;
     QNetworkAccessManager *networkManager;
@@ -176,7 +174,10 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool normalizedLF, bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets);
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
+                       bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF, bool twitchChatVotes, QString theme,
+                       bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets,
+                       bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -294,9 +295,10 @@ private slots:
     void updateTimeDraw(int value);
     void updatePopularCardsShown(int value);
     void updateTamCard(int value);
-    void toggleShowDraftScoresOverlay();
-    void toggleShowDraftMechanicsOverlay();
-    void toggleDraftLearningMode();
+    void updateShowDraftScoresOverlay(bool checked);
+    void updateShowDraftMechanicsOverlay(bool checked);
+    void updateDraftLearningMode(bool checked);
+    void updateDraftShowDrops(bool checked);
     void updateDraftNormalizeLF(bool checked);
     void updateTooltipScale(int value);
     void closeApp();

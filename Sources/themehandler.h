@@ -55,10 +55,11 @@ private:
     static QString handCardFile_, handCardBYFile_, handCardBYFile2_, handCardBYUnknownFile_;
     static QString starFile_, manaLimitFile_, unknownFile_;
     static QString minionsCounterFile_, spellsCounterFile_, weaponsCounterFile_, manaCounterFile_;
+    static QString drop2CounterFile_, drop3CounterFile_, drop4CounterFile_;
     static QString aoeMechanicFile_, tauntMechanicFile_, survivalMechanicFile_, drawMechanicFile_;
     static QString pingMechanicFile_, damageMechanicFile_, destroyMechanicFile_, reachMechanicFile_;
     static QString goldenMechanicFile_;
-    static QString bgDraftMechanicsFile_, bgDraftMechanicsHelpFile_, fgDraftMechanicsColor_;
+    static QString bgDraftMechanicsFile_, bgDraftMechanicsHelpFile_, bgDraftMechanicsHelpDropsFile_, fgDraftMechanicsColor_;
     static bool manaLimitBehind_;
     static QString themeLoaded_;
 
@@ -185,6 +186,9 @@ public:
     static QString spellsCounterFile();
     static QString weaponsCounterFile();
     static QString manaCounterFile();
+    static QString drop2CounterFile();
+    static QString drop3CounterFile();
+    static QString drop4CounterFile();
     static QString aoeMechanicFile();
     static QString tauntMechanicFile();
     static QString survivalMechanicFile();
@@ -197,6 +201,7 @@ public:
     static QString bgDraftMechanicsFile();
     static QString fgDraftMechanicsColor();
     static QString bgDraftMechanicsHelpFile();
+    static QString bgDraftMechanicsHelpDropsFile();
 };
 
 #endif // THEMEHANDLER_H

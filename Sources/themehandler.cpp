@@ -50,10 +50,11 @@ QString ThemeHandler::speedDWTextFile_, ThemeHandler::speedTwitchTextFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYFile2_, ThemeHandler::handCardBYUnknownFile_;
 QString ThemeHandler::starFile_, ThemeHandler::manaLimitFile_, ThemeHandler::unknownFile_;
 QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, ThemeHandler::weaponsCounterFile_, ThemeHandler::manaCounterFile_;
+QString ThemeHandler::drop2CounterFile_, ThemeHandler::drop3CounterFile_, ThemeHandler::drop4CounterFile_;
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
 QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
 QString ThemeHandler::goldenMechanicFile_;
-QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::fgDraftMechanicsColor_;
+QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::bgDraftMechanicsHelpDropsFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
 
@@ -708,6 +709,24 @@ QString ThemeHandler::manaCounterFile()
 }
 
 
+QString ThemeHandler::drop2CounterFile()
+{
+    return drop2CounterFile_;
+}
+
+
+QString ThemeHandler::drop3CounterFile()
+{
+    return drop3CounterFile_;
+}
+
+
+QString ThemeHandler::drop4CounterFile()
+{
+    return drop4CounterFile_;
+}
+
+
 QString ThemeHandler::aoeMechanicFile()
 {
     return aoeMechanicFile_;
@@ -771,6 +790,12 @@ QString ThemeHandler::bgDraftMechanicsFile()
 QString ThemeHandler::bgDraftMechanicsHelpFile()
 {
     return bgDraftMechanicsHelpFile_;
+}
+
+
+QString ThemeHandler::bgDraftMechanicsHelpDropsFile()
+{
+    return bgDraftMechanicsHelpDropsFile_;
 }
 
 
@@ -972,11 +997,15 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
 
     bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
     bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
+    bgDraftMechanicsHelpDropsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpDropsFile");
     fgDraftMechanicsColor_ = jsonObject.value("fgDraftMechanicsColor").toString("");
     minionsCounterFile_ = loadThemeFile(themePath, jsonObject, "minionsCounterFile");
     spellsCounterFile_ = loadThemeFile(themePath, jsonObject, "spellsCounterFile");
     weaponsCounterFile_ = loadThemeFile(themePath, jsonObject, "weaponsCounterFile");
     manaCounterFile_ = loadThemeFile(themePath, jsonObject, "manaCounterFile");
+    drop2CounterFile_ = loadThemeFile(themePath, jsonObject, "drop2CounterFile");
+    drop3CounterFile_ = loadThemeFile(themePath, jsonObject, "drop3CounterFile");
+    drop4CounterFile_ = loadThemeFile(themePath, jsonObject, "drop4CounterFile");
     aoeMechanicFile_ = loadThemeFile(themePath, jsonObject, "aoeMechanicFile");
     tauntMechanicFile_ = loadThemeFile(themePath, jsonObject, "tauntMechanicFile");
     survivalMechanicFile_ = loadThemeFile(themePath, jsonObject, "survivalMechanicFile");
@@ -1251,6 +1280,9 @@ void ThemeHandler::defaultEmptyValues()
     if(spellsCounterFile_.isEmpty())    spellsCounterFile_ = ":/Images/spellsCounter.png";
     if(weaponsCounterFile_.isEmpty())   weaponsCounterFile_ = ":/Images/weaponsCounter.png";
     if(manaCounterFile_.isEmpty())      manaCounterFile_ = ":/Images/manaCounter.png";
+    if(drop2CounterFile_.isEmpty())     drop2CounterFile_ = ":/Images/drop2Counter.png";
+    if(drop3CounterFile_.isEmpty())     drop3CounterFile_ = ":/Images/drop3Counter.png";
+    if(drop4CounterFile_.isEmpty())     drop4CounterFile_ = ":/Images/drop4Counter.png";
     if(aoeMechanicFile_.isEmpty())      aoeMechanicFile_ = ":/Images/aoeMechanic.png";
     if(tauntMechanicFile_.isEmpty())    tauntMechanicFile_ = ":/Images/tauntMechanic.png";
     if(goldenMechanicFile_.isEmpty())   goldenMechanicFile_ = ":/Images/goldenMechanic.png";
@@ -1261,6 +1293,7 @@ void ThemeHandler::defaultEmptyValues()
     if(destroyMechanicFile_.isEmpty())  destroyMechanicFile_ = ":/Images/destroyMechanic.png";
     if(reachMechanicFile_.isEmpty())    reachMechanicFile_ = ":/Images/reachMechanic.png";
     if(bgDraftMechanicsFile_.isEmpty()) bgDraftMechanicsFile_ = ":/Images/bgDraftMechanics.png";
-    if(bgDraftMechanicsHelpFile_.isEmpty()) bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
+    if(bgDraftMechanicsHelpFile_.isEmpty())         bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
+    if(bgDraftMechanicsHelpDropsFile_.isEmpty())    bgDraftMechanicsHelpDropsFile_ = ":/Images/bgDraftMechanicsHelpDrops.png";
     if(fgDraftMechanicsColor_.isEmpty())fgDraftMechanicsColor_ = fgColor_;
 }

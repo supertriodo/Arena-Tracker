@@ -27,6 +27,8 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->normalizedLF = true;
     this->twitchHandler = nullptr;
     this->multiclassArena = false;
+    this->learningMode = false;
+    this->showDrops = true;
 
     for(int i=0; i<3; i++)
     {
@@ -621,6 +623,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
     }
 
     QStringList spellList, minionList, weaponList,
+                drop2List, drop3List, drop4List,
                 aoeList, tauntList, survivabilityList, drawList,
                 pingList, damageList, destroyList, reachList;
     int tdraw, ttoYourHand, tdiscover;
@@ -633,6 +636,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         {
             int draw, toYourHand, discover;
             synergyHandler->updateCounters(deckCard, spellList, minionList, weaponList,
+                           drop2List, drop3List, drop4List,
                            aoeList, tauntList, survivabilityList, drawList,
                            pingList, damageList, destroyList, reachList,
                            draw, toYourHand, discover);
@@ -989,10 +993,12 @@ void DraftHandler::pickCard(QString code)
         if(cardIndex > 2)   draftCard = DraftCard(code);
 
         QStringList spellList, minionList, weaponList,
+                    drop2List, drop3List, drop4List,
                     aoeList, tauntList, survivabilityList, drawList,
                     pingList, damageList, destroyList, reachList;
         int draw, toYourHand, discover;
         synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
+                                       drop2List, drop3List, drop4List,
                                        aoeList, tauntList, survivabilityList, drawList,
                                        pingList, damageList, destroyList, reachList,
                                        draw, toYourHand, discover);
@@ -1003,6 +1009,7 @@ void DraftHandler::pickCard(QString code)
         if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                                 drop2List, drop3List, drop4List,
                                                  aoeList, tauntList, survivabilityList, drawList,
                                                  pingList, damageList, destroyList, reachList);
             draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
@@ -1586,14 +1593,17 @@ void DraftHandler::initDraftMechanicsWindowCounters()
     if(numCards == 0 || !patreonVersion || draftMechanicsWindow == nullptr)    return;
 
     QStringList spellList, minionList, weaponList,
+                drop2List, drop3List, drop4List,
                 aoeList, tauntList, survivabilityList, drawList,
                 pingList, damageList, destroyList, reachList;
     int draw, toYourHand, discover;
     int manaCounter = synergyHandler->getCounters(spellList, minionList, weaponList,
+                                                  drop2List, drop3List, drop4List,
                                                   aoeList, tauntList, survivabilityList, drawList,
                                                   pingList, damageList, destroyList, reachList,
                                                   draw, toYourHand, discover);
     draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
+                                         drop2List, drop3List, drop4List,
                                          aoeList, tauntList, survivabilityList, drawList,
                                          pingList, damageList, destroyList, reachList);
     draftMechanicsWindow->updateManaCounter(manaCounter, numCards);
@@ -1631,6 +1641,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
                                                         patreonVersion, this->normalizedLF);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
+        draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();
 
         connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
@@ -1804,9 +1815,16 @@ void DraftHandler::showOverlay()
 void DraftHandler::setLearningMode(bool value)
 {
     this->learningMode = value;
-    if(this->draftScoreWindow != nullptr)  draftScoreWindow->setLearningMode(value);
+    if(this->draftScoreWindow != nullptr)   draftScoreWindow->setLearningMode(value);
 
     updateScoresVisibility();
+}
+
+
+void DraftHandler::setShowDrops(bool value)
+{
+    this->showDrops = value;
+    if(this->draftMechanicsWindow != nullptr)   draftMechanicsWindow->setShowDrops(value);
 }
 
 

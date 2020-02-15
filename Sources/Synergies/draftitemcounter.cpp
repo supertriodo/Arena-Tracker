@@ -98,7 +98,7 @@ void DraftItemCounter::hide()
 void DraftItemCounter::show()
 {
     labelIcon->setHidden(false);
-    if(labelIcon->isEnabled())  labelCounter->setHidden(false);
+    /*if(labelIcon->isEnabled())*/  labelCounter->setHidden(false);
 }
 
 

@@ -42,7 +42,7 @@
       <item row="0" column="0">
        <widget class="MoveTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>8</number>
+         <number>0</number>
         </property>
         <property name="tabBarAutoHide">
          <bool>false</bool>
@@ -1572,9 +1572,9 @@ draft mechanics becoming a patron (3$)</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>-98</y>
+               <y>0</y>
                <width>435</width>
-               <height>906</height>
+               <height>979</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2079,11 +2079,11 @@ ordered by popularity on HSReplay.net</string>
                      <item>
                       <widget class="QCheckBox" name="configCheckRngList">
                        <property name="toolTip">
-                        <string>RNG list: Show the cards in your hand which throw bombs/missiles.
+                        <string>RNG List: Show the cards in your hand which throw bombs/missiles.
 Hover your mouse over to check the odds of killing in the board.</string>
                        </property>
                        <property name="text">
-                        <string>RNG list</string>
+                        <string>RNG List</string>
                        </property>
                       </widget>
                      </item>
@@ -2173,57 +2173,81 @@ when the opponent plays a secret.</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QGroupBox" name="configBoxDraftExtra">
-                   <property name="title">
-                    <string/>
-                   </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_15">
-                    <item>
-                     <widget class="QCheckBox" name="configCheckMechanicsOverlay">
-                      <property name="toolTip">
-                       <string>Mechanics Overlay: Show/Hide mechanics overlay
+                  <layout class="QVBoxLayout" name="verticalLayout_4">
+                   <item>
+                    <widget class="QGroupBox" name="configBoxDraftMechanics">
+                     <property name="title">
+                      <string>Mechanics</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_15">
+                      <item>
+                       <widget class="QCheckBox" name="configCheckMechanicsOverlay">
+                        <property name="toolTip">
+                         <string>Mechanics Overlay: Show/Hide mechanics overlay
 shown above the cards while drafting.</string>
-                      </property>
-                      <property name="text">
-                       <string>Mechanics Overlay</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckScoresOverlay">
-                      <property name="toolTip">
-                       <string>Scores Overlay: Show/Hide scores overlay
+                        </property>
+                        <property name="text">
+                         <string>Mechanics Overlay</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="configCheckShowDrops">
+                        <property name="toolTip">
+                         <string>Show Drops: On the mechanics overlay show card drops for turns 2, 3 and 4
+instead of mechanics (reach, taunt, survival and draw)</string>
+                        </property>
+                        <property name="text">
+                         <string>Show Drops</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="configBoxDraftScores">
+                     <property name="title">
+                      <string>Scores</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_7">
+                      <item>
+                       <widget class="QCheckBox" name="configCheckScoresOverlay">
+                        <property name="toolTip">
+                         <string>Scores Overlay: Show/Hide scores overlay
 shown below the cards while drafting.</string>
-                      </property>
-                      <property name="text">
-                       <string>Scores Overlay</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckLearning">
-                      <property name="toolTip">
-                       <string>Learning: This mode will hide card scores unless
+                        </property>
+                        <property name="text">
+                         <string>Scores Overlay</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="configCheckLearning">
+                        <property name="toolTip">
+                         <string>Hide Scores: This mode will hide card scores unless
 you hover your mouse on the scores.</string>
-                      </property>
-                      <property name="text">
-                       <string>Learning</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckNormalizeLF">
-                      <property name="toolTip">
-                       <string>Normalize LF: Normalize LightForge score to 0-100 range
+                        </property>
+                        <property name="text">
+                         <string>Hide Scores</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QCheckBox" name="configCheckNormalizeLF">
+                        <property name="toolTip">
+                         <string>Normalize LF: Normalize LightForge score to 0-100 range
 so it can be compared along with HearthArena score.</string>
-                      </property>
-                      <property name="text">
-                       <string>Normalize LF</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
+                        </property>
+                        <property name="text">
+                         <string>Normalize LF</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </widget>

@@ -21,9 +21,9 @@ private:
     QMap<QString, QList<QString>> synergyCodes, directLinks;
     StatSynergies costMinions, attackMinions, healthMinions, costSpells;
 //    StatSynergies costWeapons, attackWeapons, healthWeapons;
-    DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
+    DraftItemCounter **raceCounters, **cardTypeCounters, **dropCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
-    QHBoxLayout *horLayoutCardTypes, *horLayoutMechanics1, *horLayoutMechanics2;
+    QHBoxLayout *horLayoutCardTypes, *horLayoutDrops, *horLayoutMechanics1, *horLayoutMechanics2;
 
 //Metodos
 public:
@@ -33,9 +33,11 @@ public:
     bool isValidSynergyCode(const QString &mechanic);
     void testSynergies();
     int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                        QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                        QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
@@ -56,12 +58,14 @@ private:
     void updateManaCounter(DeckCard &deckCard);
     void updateRaceCounters(DeckCard &deckCard);
     void updateCardTypeCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList);
+    void updateDropCounters(DeckCard &deckCard, QStringList &drop2List, QStringList &drop3List, QStringList &drop4List);
     void updateMechanicCounters(DeckCard &deckCard,
                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
@@ -141,6 +145,9 @@ private:
     bool isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isTreantGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isLackeyGen(const QString &code, const QString &text);
+    bool isDrop2(const QString &code, int cost);
+    bool isDrop3(const QString &code, int cost);
+    bool isDrop4(const QString &code, int cost);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);

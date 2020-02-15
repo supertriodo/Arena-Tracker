@@ -19,6 +19,7 @@ SynergyHandler::~SynergyHandler()
 void SynergyHandler::createDraftItemCounters()
 {
     horLayoutCardTypes = new QHBoxLayout();
+    horLayoutDrops = new QHBoxLayout();
     horLayoutMechanics1 = new QHBoxLayout();
     horLayoutMechanics2 = new QHBoxLayout();
 
@@ -30,8 +31,26 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()), false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
 
-
     manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
+
+    dropCounters = new DraftItemCounter *[V_NUM_DROPS];
+    dropCounters[V_DROP2] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop2CounterFile()));
+    dropCounters[V_DROP3] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop3CounterFile()));
+    dropCounters[V_DROP4] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop4CounterFile()));
+
+    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+
+    connect(dropCounters[V_DROP2], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(dropCounters[V_DROP3], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(dropCounters[V_DROP4], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
     raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
@@ -53,7 +72,7 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this);
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::reachMechanicFile()));
     mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::tauntMechanicFile()));
     mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::survivalMechanicFile()));
     mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::drawMechanicFile()));
@@ -61,7 +80,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::pingMechanicFile()));
     mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::damageMechanicFile()));
     mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::destroyMechanicFile()));
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::reachMechanicFile()));
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::aoeMechanicFile()));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
@@ -154,9 +173,11 @@ void SynergyHandler::createDraftItemCounters()
 
 
     horLayoutCardTypes->addStretch();
+    horLayoutDrops->addStretch();
     horLayoutMechanics1->addStretch();
     horLayoutMechanics2->addStretch();
     ui->draftVerticalLayout->addLayout(horLayoutCardTypes);
+    ui->draftVerticalLayout->addLayout(horLayoutDrops);
     ui->draftVerticalLayout->addLayout(horLayoutMechanics1);
     ui->draftVerticalLayout->addLayout(horLayoutMechanics2);
 }
@@ -170,6 +191,12 @@ void SynergyHandler::deleteDraftItemCounters()
         delete cardTypeCounters[i];
     }
     delete []cardTypeCounters;
+
+    for(int i=0; i<V_NUM_DROPS; i++)
+    {
+        delete dropCounters[i];
+    }
+    delete []dropCounters;
 
     for(int i=0; i<V_NUM_RACES; i++)
     {
@@ -191,6 +218,10 @@ void SynergyHandler::setTheme()
     cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()));
     cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()));
     manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()));
+
+    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()));
+    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()));
+    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()));
 
     mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()));
     mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()));
@@ -279,6 +310,10 @@ void SynergyHandler::clearLists(bool keepCounters)
         {
             cardTypeCounters[i]->reset();
         }
+        for(int i=0; i<V_NUM_DROPS; i++)
+        {
+            dropCounters[i]->reset();
+        }
         for(int i=0; i<V_NUM_RACES; i++)
         {
             raceCounters[i]->reset();
@@ -306,6 +341,10 @@ void SynergyHandler::setHidden(bool hide)
         cardTypeCounters[V_WEAPON]->hide();
         manaCounter->hide();
 
+        dropCounters[V_DROP2]->hide();
+        dropCounters[V_DROP3]->hide();
+        dropCounters[V_DROP4]->hide();
+
         mechanicCounters[V_AOE]->hide();
         mechanicCounters[V_TAUNT_ALL]->hide();
         mechanicCounters[V_SURVIVABILITY]->hide();
@@ -322,6 +361,10 @@ void SynergyHandler::setHidden(bool hide)
         cardTypeCounters[V_SPELL]->show();
         cardTypeCounters[V_WEAPON]->show();
         manaCounter->show();
+
+        dropCounters[V_DROP2]->show();
+        dropCounters[V_DROP3]->show();
+        dropCounters[V_DROP4]->show();
 
         mechanicCounters[V_AOE]->show();
         mechanicCounters[V_TAUNT_ALL]->show();
@@ -354,6 +397,10 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
     {
         cardTypeCounters[i]->setTransparency(transparency, mouseInApp);
     }
+    for(int i=0; i<V_NUM_DROPS; i++)
+    {
+        dropCounters[i]->setTransparency(transparency, mouseInApp);
+    }
     for(int i=0; i<V_NUM_RACES; i++)
     {
         raceCounters[i]->setTransparency(transparency, mouseInApp);
@@ -366,6 +413,7 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 
 
 int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                                QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
                                 int &draw, int &toYourHand, int &discover)
@@ -385,6 +433,20 @@ int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList,
     for(DeckCard &deckCard: cardTypeCounters[V_WEAPON]->getDeckCardList())
     {
         for(int i=0; i<deckCard.total; i++)    weaponList.append(deckCard.getCode());
+    }
+
+
+    for(DeckCard &deckCard: dropCounters[V_DROP2]->getDeckCardList())
+    {
+        for(int i=0; i<deckCard.total; i++)    drop2List.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: dropCounters[V_DROP3]->getDeckCardList())
+    {
+        for(int i=0; i<deckCard.total; i++)    drop3List.append(deckCard.getCode());
+    }
+    for(DeckCard &deckCard: dropCounters[V_DROP4]->getDeckCardList())
+    {
+        for(int i=0; i<deckCard.total; i++)    drop4List.append(deckCard.getCode());
     }
 
 
@@ -455,12 +517,14 @@ int SynergyHandler::getManaCounterCount()
 
 
 void SynergyHandler::updateCounters(DeckCard &deckCard, QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                                    QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                                     QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                     QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
                                     int &draw, int &toYourHand, int &discover)
 {
     updateRaceCounters(deckCard);
     updateCardTypeCounters(deckCard, spellList, minionList, weaponList);
+    updateDropCounters(deckCard, drop2List, drop3List, drop4List);
     updateManaCounter(deckCard);
     updateMechanicCounters(deckCard, aoeList, tauntList, survivabilityList, drawList, pingList, damageList, destroyList, reachList,
                            draw, toYourHand, discover);
@@ -580,6 +644,29 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QStringList &spe
     else if(isSpellAllSyn(code, text))  cardTypeCounters[V_SPELL_ALL]->increaseSyn(code);
     if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
     else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
+}
+
+
+void SynergyHandler::updateDropCounters(DeckCard &deckCard, QStringList &drop2List, QStringList &drop3List, QStringList &drop4List)
+{
+    QString code = deckCard.getCode();
+    int cost = deckCard.getCost();
+
+    if(isDrop2(code, cost))
+    {
+        dropCounters[V_DROP2]->increase(code);
+        drop2List.append(code);
+    }
+    else if(isDrop3(code, cost))
+    {
+        dropCounters[V_DROP3]->increase(code);
+        drop3List.append(code);
+    }
+    else if(isDrop4(code, cost))
+    {
+        dropCounters[V_DROP4]->increase(code);
+        drop4List.append(code);
+    }
 }
 
 
@@ -896,6 +983,7 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
 {
     getCardTypeSynergies(deckCard, synergies);
+    getDropMechanicIcons(deckCard, mechanicIcons);
     getRaceSynergies(deckCard, synergies);
     getMechanicSynergies(deckCard, synergies, mechanicIcons);
     getDirectLinkSynergies(deckCard, synergies);
@@ -928,6 +1016,26 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergies);
     if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergies);
     else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergies);
+}
+
+
+void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons)
+{
+    QString code = deckCard.getCode();
+    int cost = deckCard.getCost();
+
+    if(isDrop2(code, cost))
+    {
+        mechanicIcons[ThemeHandler::drop2CounterFile()] = dropCounters[V_DROP2]->count() + 1;
+    }
+    else if(isDrop3(code, cost))
+    {
+        mechanicIcons[ThemeHandler::drop3CounterFile()] = dropCounters[V_DROP3]->count() + 1;
+    }
+    else if(isDrop4(code, cost))
+    {
+        mechanicIcons[ThemeHandler::drop4CounterFile()] = dropCounters[V_DROP4]->count() + 1;
+    }
 }
 
 
@@ -1324,6 +1432,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "spellSyn", "weaponSyn", "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn",
         "spellAllSyn", "weaponAllSyn", "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn", "dragonAllSyn",
 
+        "drop2", "drop3", "drop4",
+
         "discover", "drawGen", "toYourHandGen", "enemyDrawGen",
         "discoverSyn", "drawSyn", "toYourHandSyn", "enemyDrawSyn",
 
@@ -1508,6 +1618,10 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isWeaponGen(code, text))             mec<<"weaponGen";
     if(isSpellAllSyn(code, text))           mec<<"spellAllSyn";
     if(isWeaponAllSyn(code, text))          mec<<"weaponAllSyn";
+
+    if(isDrop2(code, cost))                 mec<<"drop2";
+    if(isDrop3(code, cost))                 mec<<"drop3";
+    if(isDrop4(code, cost))                 mec<<"drop4";
 
     if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
     if(isDrawGen(code, text))                                               mec<<"drawGen";
@@ -2562,6 +2676,42 @@ bool SynergyHandler::isLackeyGen(const QString &code, const QString &text)
     }
     return false;
 }
+bool SynergyHandler::isDrop2(const QString &code, int cost)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("drop2");
+    }
+    else if(cost == 2)
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isDrop3(const QString &code, int cost)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("drop3");
+    }
+    else if(cost == 3)
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isDrop4(const QString &code, int cost)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("drop4");
+    }
+    else if(cost == 4)
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 10
 
 
@@ -3430,7 +3580,8 @@ eggGen/eggSyn
 
 
 Mechanics list:
-spellGen, weaponGen
+spellGen, weaponGen,
+drop2, drop3, drop4,
 murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen
 discover, drawGen, toYourHandGen, enemyDrawGen
 taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
@@ -3517,6 +3668,7 @@ REGLAS
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
     o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
++drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
 
 
 

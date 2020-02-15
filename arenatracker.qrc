@@ -155,5 +155,9 @@
         <file>Images/bgScoreHSR.png</file>
         <file>Images/handCard3.png</file>
         <file>Images/handCard4.png</file>
+        <file>Images/drop2Counter.png</file>
+        <file>Images/drop3Counter.png</file>
+        <file>Images/drop4Counter.png</file>
+        <file>Images/bgDraftMechanicsHelpDrops.png</file>
     </qresource>
 </RCC>

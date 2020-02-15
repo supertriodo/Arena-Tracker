@@ -94,19 +94,38 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
                 this, SIGNAL(showPremiumDialog()));
     }
 
-    //Mechanics
+    //Mechanics & drops
     QGridLayout *mechanicsLayout = new QGridLayout();
 
-    mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, mechanicsLayout, 0, 0, QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, mechanicsLayout, 0, 1, QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, mechanicsLayout, 0, 2, QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, mechanicsLayout, 0, 3, QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
+    dropCounters = new DraftItemCounter *[V_NUM_DROPS];
+    dropCounters[V_DROP2] = new DraftItemCounter(this, mechanicsLayout, 0, 0, QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2);
+    dropCounters[V_DROP3] = new DraftItemCounter(this, mechanicsLayout, 0, 1, QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2);
+    dropCounters[V_DROP4] = new DraftItemCounter(this, mechanicsLayout, 0, 2, QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, mechanicsLayout, 1, 0, QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, mechanicsLayout, 1, 1, QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
+    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+
+    connect(dropCounters[V_DROP2], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(dropCounters[V_DROP3], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(dropCounters[V_DROP4], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+
+    mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, mechanicsLayout, 1, 0, QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, mechanicsLayout, 1, 1, QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, mechanicsLayout, 1, 2, QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, mechanicsLayout, 1, 3, QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
+
+    mechanicCounters[V_PING] = new DraftItemCounter(this, mechanicsLayout, 2, 0, QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, mechanicsLayout, 2, 1, QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, mechanicsLayout, 2, 2, QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, mechanicsLayout, 2, 3, QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
 
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
@@ -183,6 +202,11 @@ void DraftMechanicsWindow::deleteDraftItemCounters()
     delete cardTypeCounters[V_WEAPON];
     delete []cardTypeCounters;
 
+    delete dropCounters[V_DROP2];
+    delete dropCounters[V_DROP3];
+    delete dropCounters[V_DROP4];
+    delete []dropCounters;
+
     delete mechanicCounters[V_AOE];
     delete mechanicCounters[V_TAUNT_ALL];
     delete mechanicCounters[V_SURVIVABILITY];
@@ -204,6 +228,10 @@ void DraftMechanicsWindow::setTheme()
     cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2, true);
     cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2, true);
     manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, true);
+
+    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2, true);
+    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2, true);
+    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2, true);
 
     mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2, true);
     mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2, true);
@@ -243,6 +271,14 @@ void DraftMechanicsWindow::setDraftMethodAvgScore(DraftMethod draftMethodAvgScor
 }
 
 
+void DraftMechanicsWindow::setShowDrops(bool value)
+{
+    this->showDrops = value;
+    if(showingHelp) showHelp();
+    else            hideHelp();
+}
+
+
 void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR)
 {
     scoreButtonLF->setScore(deckScoreLF, true);
@@ -261,7 +297,7 @@ void DraftMechanicsWindow::showHelp()
 {
     showingHelp = true;
     centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
-                                 ThemeHandler::bgDraftMechanicsHelpFile() +
+                                 (showDrops?ThemeHandler::bgDraftMechanicsHelpDropsFile():ThemeHandler::bgDraftMechanicsHelpFile()) +
                                  ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     scoreButtonLF->hide();
     scoreButtonHA->hide();
@@ -273,7 +309,11 @@ void DraftMechanicsWindow::showHelp()
     cardTypeCounters[V_WEAPON]->hide();
     manaCounter->hide();
 
-    mechanicCounters[V_AOE]->hide();
+    dropCounters[V_DROP2]->hide();
+    dropCounters[V_DROP3]->hide();
+    dropCounters[V_DROP4]->hide();
+
+    mechanicCounters[V_REACH]->hide();
     mechanicCounters[V_TAUNT_ALL]->hide();
     mechanicCounters[V_SURVIVABILITY]->hide();
     mechanicCounters[V_DISCOVER_DRAW]->hide();
@@ -281,7 +321,7 @@ void DraftMechanicsWindow::showHelp()
     mechanicCounters[V_PING]->hide();
     mechanicCounters[V_DAMAGE]->hide();
     mechanicCounters[V_DESTROY]->hide();
-    mechanicCounters[V_REACH]->hide();
+    mechanicCounters[V_AOE]->hide();
 }
 
 
@@ -300,15 +340,33 @@ void DraftMechanicsWindow::hideHelp()
     cardTypeCounters[V_WEAPON]->show();
     manaCounter->show();
 
-    mechanicCounters[V_AOE]->show();
-    mechanicCounters[V_TAUNT_ALL]->show();
-    mechanicCounters[V_SURVIVABILITY]->show();
-    mechanicCounters[V_DISCOVER_DRAW]->show();
+    if(showDrops)
+    {
+        mechanicCounters[V_REACH]->hide();
+        mechanicCounters[V_TAUNT_ALL]->hide();
+        mechanicCounters[V_SURVIVABILITY]->hide();
+        mechanicCounters[V_DISCOVER_DRAW]->hide();
+
+        dropCounters[V_DROP2]->show();
+        dropCounters[V_DROP3]->show();
+        dropCounters[V_DROP4]->show();
+    }
+    else
+    {
+        dropCounters[V_DROP2]->hide();
+        dropCounters[V_DROP3]->hide();
+        dropCounters[V_DROP4]->hide();
+
+        mechanicCounters[V_REACH]->show();
+        mechanicCounters[V_TAUNT_ALL]->show();
+        mechanicCounters[V_SURVIVABILITY]->show();
+        mechanicCounters[V_DISCOVER_DRAW]->show();
+    }
 
     mechanicCounters[V_PING]->show();
     mechanicCounters[V_DAMAGE]->show();
     mechanicCounters[V_DESTROY]->show();
-    mechanicCounters[V_REACH]->show();
+    mechanicCounters[V_AOE]->show();
 }
 
 
@@ -321,12 +379,17 @@ void DraftMechanicsWindow::updateDeckWeight(int numCards, int draw, int toYourHa
 
 
 void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
+                                    QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                                     QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                     QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
 {
     for(const QString &code: spellList)     cardTypeCounters[V_SPELL]->increase(code);
     for(const QString &code: minionList)    cardTypeCounters[V_MINION]->increase(code);
     for(const QString &code: weaponList)    cardTypeCounters[V_WEAPON]->increase(code);
+
+    for(const QString &code: drop2List)     dropCounters[V_DROP2]->increase(code);
+    for(const QString &code: drop3List)     dropCounters[V_DROP3]->increase(code);
+    for(const QString &code: drop4List)     dropCounters[V_DROP4]->increase(code);
 
     for(const QString &code: aoeList)       mechanicCounters[V_AOE]->increase(code);
     for(const QString &code: tauntList)     mechanicCounters[V_TAUNT_ALL]->increase(code);
