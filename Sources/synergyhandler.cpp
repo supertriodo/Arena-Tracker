@@ -25,18 +25,32 @@ void SynergyHandler::createDraftItemCounters()
 
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()), false);
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()), false);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()));
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()));
     cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()), false);
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()));
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
+
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
 
     manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
 
-    dropCounters = new DraftItemCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop2CounterFile()));
-    dropCounters[V_DROP3] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop3CounterFile()));
-    dropCounters[V_DROP4] = new DraftItemCounter(this, horLayoutDrops, QPixmap(ThemeHandler::drop4CounterFile()));
+    dropCounters = new DraftDropCounter *[V_NUM_DROPS];
+    dropCounters[V_DROP2] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_2, QPixmap(ThemeHandler::drop2CounterFile()));
+    dropCounters[V_DROP3] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_3, QPixmap(ThemeHandler::drop3CounterFile()));
+    dropCounters[V_DROP4] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_4, QPixmap(ThemeHandler::drop4CounterFile()));
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
@@ -412,98 +426,60 @@ void SynergyHandler::setTransparency(Transparency transparency, bool mouseInApp)
 }
 
 
+void SynergyHandler::codeMap2CodeList(const QMap<QString, int> &codeMap, QStringList &codeList)
+{
+    for(const QString &code: codeMap.keys())
+    {
+        for(int i=0; i<codeMap[code]; i++)  codeList.append(code);
+    }
+}
+
+
 int SynergyHandler::getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                                 QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                                 QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
                                 int &draw, int &toYourHand, int &discover)
 {
-    for(DeckCard &deckCard: cardTypeCounters[V_SPELL]->getDeckCardList())
-    {
-        QString code = deckCard.getCode();
-        if(DeckCard(code).getType() == SPELL)
-        {
-            for(int i=0; i<deckCard.total; i++)    spellList.append(code);
-        }
-    }
-    for(DeckCard &deckCard: cardTypeCounters[V_MINION]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    minionList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: cardTypeCounters[V_WEAPON]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    weaponList.append(deckCard.getCode());
-    }
+    codeMap2CodeList(cardTypeCounters[V_SPELL]->getCodeMap(), spellList);
+    codeMap2CodeList(cardTypeCounters[V_MINION]->getCodeMap(), minionList);
+    codeMap2CodeList(cardTypeCounters[V_WEAPON]->getCodeMap(), weaponList);
 
+    codeMap2CodeList(dropCounters[V_DROP2]->getCodeMap(), drop2List);
+    codeMap2CodeList(dropCounters[V_DROP3]->getCodeMap(), drop3List);
+    codeMap2CodeList(dropCounters[V_DROP4]->getCodeMap(), drop4List);
 
-    for(DeckCard &deckCard: dropCounters[V_DROP2]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    drop2List.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: dropCounters[V_DROP3]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    drop3List.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: dropCounters[V_DROP4]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    drop4List.append(deckCard.getCode());
-    }
-
-
-    for(DeckCard &deckCard: mechanicCounters[V_AOE]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    aoeList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_TAUNT_ALL]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    tauntList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_SURVIVABILITY]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    survivabilityList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_DISCOVER_DRAW]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    drawList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_PING]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    pingList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_DAMAGE]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    damageList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_DESTROY]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    destroyList.append(deckCard.getCode());
-    }
-    for(DeckCard &deckCard: mechanicCounters[V_REACH]->getDeckCardList())
-    {
-        for(int i=0; i<deckCard.total; i++)    reachList.append(deckCard.getCode());
-    }
+    codeMap2CodeList(mechanicCounters[V_AOE]->getCodeMap(), aoeList);
+    codeMap2CodeList(mechanicCounters[V_TAUNT_ALL]->getCodeMap(), tauntList);
+    codeMap2CodeList(mechanicCounters[V_SURVIVABILITY]->getCodeMap(), survivabilityList);
+    codeMap2CodeList(mechanicCounters[V_DISCOVER_DRAW]->getCodeMap(), drawList);
+    codeMap2CodeList(mechanicCounters[V_PING]->getCodeMap(), pingList);
+    codeMap2CodeList(mechanicCounters[V_DAMAGE]->getCodeMap(), damageList);
+    codeMap2CodeList(mechanicCounters[V_DESTROY]->getCodeMap(), destroyList);
+    codeMap2CodeList(mechanicCounters[V_REACH]->getCodeMap(), reachList);
 
     discover = draw = toYourHand = 0;
-    for(DeckCard &deckCard: mechanicCounters[V_DISCOVER]->getDeckCardList())
+    QMap<QString, int> codeMap;
+    codeMap = mechanicCounters[V_DISCOVER]->getCodeMap();
+    for(const QString &code: codeMap.keys())
     {
-        QString code = deckCard.getCode();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-        discover += deckCard.total * numDiscoverGen(code, mechanics, referencedTags);
+        discover += codeMap[code] * numDiscoverGen(code, mechanics, referencedTags);
     }
-    for(DeckCard &deckCard: mechanicCounters[V_DRAW]->getDeckCardList())
+    codeMap = mechanicCounters[V_DRAW]->getCodeMap();
+    for(const QString &code: codeMap.keys())
     {
-        QString code = deckCard.getCode();
         QString text = Utility::cardEnTextFromCode(code).toLower();
-        draw += deckCard.total * numDrawGen(code, text);
+        draw += codeMap[code] * numDrawGen(code, text);
     }
-    for(DeckCard &deckCard: mechanicCounters[V_TOYOURHAND]->getDeckCardList())
+    codeMap = mechanicCounters[V_TOYOURHAND]->getCodeMap();
+    for(const QString &code: codeMap.keys())
     {
-        QString code = deckCard.getCode();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QString text = Utility::cardEnTextFromCode(code).toLower();
-        int cost = deckCard.getCost();
-        toYourHand += deckCard.total * numToYourHandGen(code, cost, mechanics, text);
+        int cost = Utility::getCardAttribute(code, "cost").toInt();
+        toYourHand += codeMap[code] * numToYourHandGen(code, cost, mechanics, text);
     }
 
     return manaCounter->count();
@@ -666,6 +642,12 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QStringList &drop2Li
     {
         dropCounters[V_DROP4]->increase(code);
         drop4List.append(code);
+    }
+
+    //Hay una carta mas en el mazo
+    for(int i=0; i<V_NUM_DROPS; i++)
+    {
+        dropCounters[i]->increaseNumCards();
     }
 }
 
@@ -980,10 +962,11 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
+void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons,
+                                  MechanicBorderColor &dropBorderColor)
 {
     getCardTypeSynergies(deckCard, synergies);
-    getDropMechanicIcons(deckCard, mechanicIcons);
+    getDropMechanicIcons(deckCard, mechanicIcons, dropBorderColor);
     getRaceSynergies(deckCard, synergies);
     getMechanicSynergies(deckCard, synergies, mechanicIcons);
     getDirectLinkSynergies(deckCard, synergies);
@@ -1019,7 +1002,8 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
 }
 
 
-void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons)
+void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons,
+                                          MechanicBorderColor &dropBorderColor)
 {
     QString code = deckCard.getCode();
     int cost = deckCard.getCost();
@@ -1027,14 +1011,21 @@ void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int>
     if(isDrop2(code, cost))
     {
         mechanicIcons[ThemeHandler::drop2CounterFile()] = dropCounters[V_DROP2]->count() + 1;
+        dropBorderColor = dropCounters[V_DROP2]->getMechanicBorderColor();
     }
     else if(isDrop3(code, cost))
     {
         mechanicIcons[ThemeHandler::drop3CounterFile()] = dropCounters[V_DROP3]->count() + 1;
+        dropBorderColor = dropCounters[V_DROP3]->getMechanicBorderColor();
     }
     else if(isDrop4(code, cost))
     {
         mechanicIcons[ThemeHandler::drop4CounterFile()] = dropCounters[V_DROP4]->count() + 1;
+        dropBorderColor = dropCounters[V_DROP4]->getMechanicBorderColor();
+    }
+    else
+    {
+        dropBorderColor = MechanicBorderGrey;
     }
 }
 

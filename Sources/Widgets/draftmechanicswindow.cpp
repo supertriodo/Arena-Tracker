@@ -44,10 +44,24 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *cardTypeLayout = new QGridLayout();
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, cardTypeLayout, 0, 0, QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2, false);
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, cardTypeLayout, 0, 1, QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2, false);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2, false);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, cardTypeLayout, 0, 0, QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, cardTypeLayout, 0, 1, QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
+
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
 
 
     //SCORES
@@ -97,10 +111,13 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     //Mechanics & drops
     QGridLayout *mechanicsLayout = new QGridLayout();
 
-    dropCounters = new DraftItemCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftItemCounter(this, mechanicsLayout, 0, 0, QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP3] = new DraftItemCounter(this, mechanicsLayout, 0, 1, QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP4] = new DraftItemCounter(this, mechanicsLayout, 0, 2, QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
+    dropCounters = new DraftDropCounter *[V_NUM_DROPS];
+    dropCounters[V_DROP2] = new DraftDropCounter(this, mechanicsLayout, 0, 0, TARGET_DROP_2,
+                                                 QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2);
+    dropCounters[V_DROP3] = new DraftDropCounter(this, mechanicsLayout, 0, 1, TARGET_DROP_3,
+                                                 QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2);
+    dropCounters[V_DROP4] = new DraftDropCounter(this, mechanicsLayout, 0, 2, TARGET_DROP_4,
+                                                 QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
@@ -222,7 +239,8 @@ void DraftMechanicsWindow::deleteDraftItemCounters()
 
 void DraftMechanicsWindow::setTheme()
 {
-    this->centralWidget()->setStyleSheet(".QWidget{border-image: url(" + ThemeHandler::bgDraftMechanicsFile() + ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    if(showingHelp) showHelp();
+    else            hideHelp();
 
     cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2, true);
     cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2, true);
@@ -284,12 +302,6 @@ void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float dec
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
     scoreButtonHSR->setScore(deckScoreHSR, true);
-}
-
-
-void DraftMechanicsWindow::updateManaCounter(int numIncrease, int numCards)
-{
-    manaCounter->increase(numIncrease, numCards);
 }
 
 
@@ -378,10 +390,17 @@ void DraftMechanicsWindow::updateDeckWeight(int numCards, int draw, int toYourHa
 }
 
 
+void DraftMechanicsWindow::updateManaCounter(int manaIncrease, int numCards)
+{
+    manaCounter->increase(manaIncrease, numCards);
+}
+
+
 void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                                     QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                                     QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList)
+                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
+                                    int manaIncrease, int numCards)
 {
     for(const QString &code: spellList)     cardTypeCounters[V_SPELL]->increase(code);
     for(const QString &code: minionList)    cardTypeCounters[V_MINION]->increase(code);
@@ -400,6 +419,10 @@ void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &m
     for(const QString &code: damageList)    mechanicCounters[V_DAMAGE]->increase(code);
     for(const QString &code: destroyList)   mechanicCounters[V_DESTROY]->increase(code);
     for(const QString &code: reachList)     mechanicCounters[V_REACH]->increase(code);
+
+    updateManaCounter(manaIncrease, numCards);
+
+    for(int i=0; i<V_NUM_DROPS; i++)        dropCounters[i]->setNumCards(numCards);
 }
 
 

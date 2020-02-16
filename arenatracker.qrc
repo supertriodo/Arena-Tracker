@@ -159,5 +159,7 @@
         <file>Images/drop3Counter.png</file>
         <file>Images/drop4Counter.png</file>
         <file>Images/bgDraftMechanicsHelpDrops.png</file>
+        <file>Images/greenMechanic.png</file>
+        <file>Images/redMechanic.png</file>
     </qresource>
 </RCC>

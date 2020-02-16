@@ -1011,8 +1011,8 @@ void DraftHandler::pickCard(QString code)
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
                                                  drop2List, drop3List, drop4List,
                                                  aoeList, tauntList, survivabilityList, drawList,
-                                                 pingList, damageList, destroyList, reachList);
-            draftMechanicsWindow->updateManaCounter(synergyHandler->getCorrectedCardMana(draftCard), numCards);
+                                                 pingList, damageList, destroyList, reachList,
+                                                 synergyHandler->getCorrectedCardMana(draftCard), numCards);
             draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
         }
     }
@@ -1152,8 +1152,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
             {
                 QMap<QString, int> synergies;
                 QMap<QString, int> mechanicIcons;
-                synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons);
-                draftScoreWindow->setSynergies(i, synergies, mechanicIcons);
+                MechanicBorderColor dropBorderColor;
+                synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons, dropBorderColor);
+                draftScoreWindow->setSynergies(i, synergies, mechanicIcons, dropBorderColor);
             }
         }
     }
@@ -1605,8 +1606,8 @@ void DraftHandler::initDraftMechanicsWindowCounters()
     draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
                                          drop2List, drop3List, drop4List,
                                          aoeList, tauntList, survivabilityList, drawList,
-                                         pingList, damageList, destroyList, reachList);
-    draftMechanicsWindow->updateManaCounter(manaCounter, numCards);
+                                         pingList, damageList, destroyList, reachList,
+                                         manaCounter, numCards);
     draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
     updateDeckScore();
 }

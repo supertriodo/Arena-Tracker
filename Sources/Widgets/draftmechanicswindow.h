@@ -6,6 +6,7 @@
 #include "scorebutton.h"
 #include "lavabutton.h"
 #include "../Synergies/draftitemcounter.h"
+#include "../Synergies/draftdropcounter.h"
 
 
 class DraftMechanicsWindow : public QMainWindow
@@ -24,8 +25,9 @@ private:
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     HoverLabel *helpMark;
-    DraftItemCounter **cardTypeCounters, **dropCounters, **mechanicCounters;
+    DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
+    DraftDropCounter **dropCounters;
     int scoreWidth;
     bool showingHelp, showDrops;
     DraftMethod draftMethodAvgScore;
@@ -33,16 +35,16 @@ private:
 //Metodos
 private:
     void deleteDraftItemCounters();
+    void updateManaCounter(int manaIncrease, int numCards);
 
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setShowDrops(bool value);
     void setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR);
-    void updateManaCounter(int numIncrease, int numCards);
     void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList);
+                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int manaIncrease, int numCards);
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
     void setNormalizedLF(bool value);

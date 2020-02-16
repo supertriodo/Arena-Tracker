@@ -4,6 +4,7 @@
 #include <QObject>
 #include "Widgets/ui_extended.h"
 #include "Synergies/draftitemcounter.h"
+#include "Synergies/draftdropcounter.h"
 #include "Synergies/statsynergies.h"
 #include "utility.h"
 
@@ -21,8 +22,9 @@ private:
     QMap<QString, QList<QString>> synergyCodes, directLinks;
     StatSynergies costMinions, attackMinions, healthMinions, costSpells;
 //    StatSynergies costWeapons, attackWeapons, healthWeapons;
-    DraftItemCounter **raceCounters, **cardTypeCounters, **dropCounters, **mechanicCounters;
+    DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
+    DraftDropCounter **dropCounters;
     QHBoxLayout *horLayoutCardTypes, *horLayoutDrops, *horLayoutMechanics1, *horLayoutMechanics2;
 
 //Metodos
@@ -40,7 +42,7 @@ public:
                         QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
-    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
+    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
@@ -53,6 +55,7 @@ public:
 private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
+    void codeMap2CodeList(const QMap<QString, int> &codeMap, QStringList &codeList);
     bool containsAll(const QString &text, const QString &words);
 
     void updateManaCounter(DeckCard &deckCard);
@@ -65,7 +68,7 @@ private:
     void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
-    void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons);
+    void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);

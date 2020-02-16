@@ -22,6 +22,22 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int
 }
 
 
+DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
+{
+    //Synergy keys sin icono, solo datos
+    labelIcon = nullptr;
+    labelCounter = nullptr;
+    reset();
+}
+
+
+DraftItemCounter::~DraftItemCounter()
+{
+    if(labelIcon != nullptr)       delete labelIcon;
+    if(labelCounter != nullptr)    delete labelCounter;
+}
+
+
 void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
 {
     labelIcon = new HoverLabel();
@@ -41,22 +57,7 @@ void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
 }
 
 
-DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
-{
-    labelIcon = nullptr;
-    labelCounter = nullptr;
-    reset();
-}
-
-
-DraftItemCounter::~DraftItemCounter()
-{
-    if(labelIcon != nullptr)       delete labelIcon;
-    if(labelCounter != nullptr)    delete labelCounter;
-}
-
-
-void DraftItemCounter::setIcon(QPixmap pixmap, int iconWidth)
+void DraftItemCounter::setIcon(QPixmap &pixmap, int iconWidth)
 {
     labelIcon->setPixmap(pixmap.scaledToWidth(iconWidth, Qt::SmoothTransformation));
 }
@@ -64,12 +65,15 @@ void DraftItemCounter::setIcon(QPixmap pixmap, int iconWidth)
 
 void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth, bool inDraftMechanicsWindow)
 {
-    QFont font(ThemeHandler::bigFont());
-    font.setPixelSize(static_cast<int>(iconWidth*0.6));
-    labelCounter->setFont(font);
-    if(inDraftMechanicsWindow)  labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
+    if(labelIcon != nullptr)
+    {
+        QFont font(ThemeHandler::bigFont());
+        font.setPixelSize(static_cast<int>(iconWidth*0.6));
+        labelCounter->setFont(font);
+        if(inDraftMechanicsWindow)  labelCounter->setStyleSheet(".QLabel { color: " + ThemeHandler::fgDraftMechanicsColor() + ";}");
 
-    setIcon(pixmap, iconWidth);
+        setIcon(pixmap, iconWidth);
+    }
 }
 
 
@@ -77,34 +81,40 @@ void DraftItemCounter::reset()
 {
     this->counter = 0;
     this->deckCardList.clear();
-    this->deckCardListSyn.clear();
+    this->codeMap.clear();
+    this->codeSynMap.clear();
 
-    if(labelIcon != nullptr && labelCounter != nullptr)
+    if(labelIcon != nullptr)
     {
         labelCounter->setText("0");
         labelIcon->setDisabled(true);
-        labelCounter->setHidden(true);
     }
 }
 
 
 void DraftItemCounter::hide()
 {
-    labelIcon->setHidden(true);
-    labelCounter->setHidden(true);
+    if(labelIcon != nullptr)
+    {
+        labelIcon->setHidden(true);
+        labelCounter->setHidden(true);
+    }
 }
 
 
 void DraftItemCounter::show()
 {
-    labelIcon->setHidden(false);
-    /*if(labelIcon->isEnabled())*/  labelCounter->setHidden(false);
+    if(labelIcon != nullptr)
+    {
+        labelIcon->setHidden(false);
+        labelCounter->setHidden(false);
+    }
 }
 
 
 void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInApp)
 {
-    if(labelIcon != nullptr && labelCounter != nullptr)
+    if(labelIcon != nullptr)
     {
         if(!mouseInApp && transparency == Transparent)
         {
@@ -120,46 +130,48 @@ void DraftItemCounter::setTransparency(Transparency transparency, bool mouseInAp
 }
 
 
+//Mana counter increase
 void DraftItemCounter::increase(int numIncrease, int draftedCardsCount)
 {
-    if(labelIcon != nullptr && labelCounter != nullptr)
+    if(labelIcon != nullptr)
     {
         if(counter == 0)
         {
             labelIcon->setDisabled(false);
-            if(!labelIcon->isHidden())  labelCounter->setHidden(false);
         }
         this->counter += numIncrease;
         labelCounter->setText(QString::number((counter*10/std::max(1,draftedCardsCount))/10.0));
     }
 }
-void DraftItemCounter::increase(const QString &code, bool count)
+void DraftItemCounter::increase(const QString &code)
 {
-    bool duplicatedCard = false;
-    for(DeckCard &deckCard: deckCardList)
+    if(codeMap.contains(code))  codeMap[code]++;
+    else                        codeMap[code] = 1;
+
+    if(labelIcon != nullptr)
     {
-        if(deckCard.getCode() == code)
+        bool duplicatedCard = false;
+        for(DeckCard &deckCard: deckCardList)
         {
-            deckCard.total++;
-            deckCard.remaining = deckCard.total;
-            duplicatedCard = true;
-            break;
+            if(deckCard.getCode() == code)
+            {
+                deckCard.total++;
+                deckCard.remaining = deckCard.total;
+                duplicatedCard = true;
+                break;
+            }
         }
-    }
 
-    if(!duplicatedCard)
-    {
-        deckCardList.append(DeckCard(code));
-    }
+        if(!duplicatedCard)
+        {
+            deckCardList.append(DeckCard(code));
+        }
 
-    if(labelIcon != nullptr && labelCounter != nullptr && count)
-    {
         this->counter++;
         labelCounter->setText(QString::number(counter));
         if(counter == 1)
         {
             labelIcon->setDisabled(false);
-            if(!labelIcon->isHidden())  labelCounter->setHidden(false);
         }
     }
 }
@@ -167,37 +179,21 @@ void DraftItemCounter::increase(const QString &code, bool count)
 
 void DraftItemCounter::increaseSyn(const QString &code)
 {
-    bool duplicatedCard = false;
-    for(DeckCard &deckCard: deckCardListSyn)
-    {
-        if(deckCard.getCode() == code)
-        {
-            deckCard.total++;
-            deckCard.remaining = deckCard.total;
-            duplicatedCard = true;
-            break;
-        }
-    }
-
-    if(!duplicatedCard)
-    {
-        deckCardListSyn.append(DeckCard(code));
-    }
+    if(codeSynMap.contains(code))   codeSynMap[code]++;
+    else                            codeSynMap[code] = 1;
 }
 
 
+//Se usa para obtener las sinergias de los direct links
 bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergies)
 {
-    for(DeckCard &deckCard: deckCardList)
+    if(codeMap.contains(code))
     {
-        if(code == deckCard.getCode())
+        if(!synergies.contains(code))
         {
-            if(!synergies.contains(code))
-            {
-                synergies[code] = deckCard.total;
-            }
-            return true;
+            synergies[code] = codeMap[code];
         }
+        return true;
     }
     return false;
 }
@@ -205,12 +201,11 @@ bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergi
 
 void DraftItemCounter::insertCards(QMap<QString,int> &synergies)
 {
-    for(DeckCard &deckCard: deckCardList)
+    for(QString code: codeMap.keys())
     {
-        QString code = deckCard.getCode();
         if(!synergies.contains(code))
         {
-            synergies[code] = deckCard.total;
+            synergies[code] = codeMap[code];
         }
     }
 }
@@ -218,20 +213,13 @@ void DraftItemCounter::insertCards(QMap<QString,int> &synergies)
 
 void DraftItemCounter::insertSynCards(QMap<QString,int> &synergies)
 {
-    for(DeckCard &deckCard: deckCardListSyn)
+    for(QString code: codeSynMap.keys())
     {
-        QString code = deckCard.getCode();
         if(!synergies.contains(code))
         {
-            synergies[code] = deckCard.total;
+            synergies[code] = codeSynMap[code];
         }
     }
-}
-
-
-bool DraftItemCounter::isEmpty()
-{
-    return counter == 0;
 }
 
 
@@ -241,9 +229,9 @@ int DraftItemCounter::count()
 }
 
 
-QList<DeckCard> DraftItemCounter::getDeckCardList()
+QMap<QString, int> &DraftItemCounter::getCodeMap()
 {
-    return deckCardList;
+    return codeMap;
 }
 
 

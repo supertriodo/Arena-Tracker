@@ -18,29 +18,31 @@ public:
 
 //Variables
 private:
-    HoverLabel *labelIcon;
     QLabel *labelCounter;
     int counter;
-    QList<DeckCard> deckCardList, deckCardListSyn;
+    QList<DeckCard> deckCardList;
+    QMap<QString, int> codeMap, codeSynMap;
+
+protected:
+    HoverLabel *labelIcon;
 
 //Metodos
 private:
     void init(QHBoxLayout *hLayout, bool iconHover);
+    void setIcon(QPixmap &pixmap, int iconWidth=32);
 
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
     void increase(int numIncrease, int draftedCardsCount);
-    void increase(const QString &code, bool count=true);
-    bool isEmpty();
+    void increase(const QString &code);
     bool insertCode(const QString code, QMap<QString, int> &synergies);
     void insertCards(QMap<QString, int> &synergies);
     void increaseSyn(const QString &code);
     void insertSynCards(QMap<QString, int> &synergies);
     int count();
-    QList<DeckCard> getDeckCardList();
+    QMap<QString, int> &getCodeMap();
     void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);
-    void setIcon(QPixmap pixmap, int iconWidth=32);
     void hide();
     void show();
 

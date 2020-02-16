@@ -260,7 +260,8 @@ void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3)
 }
 
 
-void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
+void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons,
+                                    const MechanicBorderColor dropBorderColor)
 {
     if(posCard < 0 || posCard > 2)  return;
 
@@ -291,7 +292,7 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
     for(const QString &mechanicIcon: mechanicIcons.keys())
     {
         QLabel *label = new QLabel();
-        label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon]));
+        label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor));
         label->setToolTip(getMechanicTooltip(mechanicIcon));
         label->hide();
         horLayoutMechanics[posCard]->addWidget(label);
@@ -301,8 +302,32 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
 }
 
 
-//TODO drops verdes y rojos
-QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, int count)
+bool DraftScoreWindow::paintDropBorder(QPainter &painter, const QString &mechanicIcon,
+                                       const MechanicBorderColor dropBorderColor)
+{
+    if(     mechanicIcon == ThemeHandler::drop2CounterFile() ||
+            mechanicIcon == ThemeHandler::drop3CounterFile() ||
+            mechanicIcon == ThemeHandler::drop4CounterFile())
+    {
+        if(dropBorderColor == MechanicBorderRed)
+        {
+            painter.drawPixmap(0, 0, QPixmap(ThemeHandler::redMechanicFile()));
+        }
+        else if(dropBorderColor == MechanicBorderGreen)
+        {
+            painter.drawPixmap(0, 0, QPixmap(ThemeHandler::greenMechanicFile()));
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, int count,
+                                                   const MechanicBorderColor dropBorderColor)
 {
     QPixmap pixmap(mechanicIcon);
     QString text = count<10?QString::number(count):"+";
@@ -314,11 +339,22 @@ QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, 
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setRenderHint(QPainter::TextAntialiasing);
 
-        if(count == 1)
+        bool drawNumber;
+        if(paintDropBorder(painter, mechanicIcon, dropBorderColor))
+        {
+            drawNumber = true;
+        }
+        else if(count == 1)
         {
             painter.drawPixmap(0, 0, QPixmap(ThemeHandler::goldenMechanicFile()));
+            drawNumber = false;
         }
         else
+        {
+            drawNumber = true;
+        }
+
+        if(drawNumber)
         {
             QFont font(ThemeHandler::bigFont());
             font.setPixelSize(30);
