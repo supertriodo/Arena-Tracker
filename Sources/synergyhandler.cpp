@@ -3668,12 +3668,13 @@ REGLAS
     Los buffos no son drops a no ser que pongan un cuerpo de stats suficiente alto por si mismos.
     Los minions can't attack no son drops, a no ser que sea muy facil hacerlos atacar (hero power)
     Los drop ideales son minions con altos stats. Una bola de fuego no es un drop4, el 3/3 que hace 3 de dano al azar si es un drop4
-    ya que lo que mata es un drop3 enemigo.
+        ya que lo que mata es un drop3 enemigo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
+        1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
     Stats minimos sin ningun extra en tempo: Drop2: 3 (no 1/2) - Drop3: 4 - Drop4: 5
-    Un 1/1 que roba no es un drop2, demasiada perdida de stats. Un 1/1 que te da un lackey si es drop2, ya que el lackey es tempo futuro.
-    Un 2/2 que descubre es un drop3, justo en stats.
-    Un 3/4 que roba una carta es un drop4 ya que es eficiente de jugar en el turno 4.
+        Un 1/1 que roba no es un drop2, demasiada perdida de stats. Un 1/1 que te da un lackey si es drop2, ya que el lackey es tempo futuro.
+        Un 2/2 que descubre es un drop3, justo en stats.
+        Un 3/4 que roba una carta es un drop4 ya que es eficiente de jugar en el turno 4.
 
 
 
