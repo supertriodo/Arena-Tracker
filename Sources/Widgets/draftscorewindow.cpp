@@ -342,7 +342,7 @@ QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, 
         bool drawNumber;
         if(paintDropBorder(painter, mechanicIcon, dropBorderColor))
         {
-            drawNumber = true;
+            drawNumber = false;
         }
         else if(count == 1)
         {

@@ -74,6 +74,7 @@ MechanicBorderColor DraftDropCounter::getMechanicBorderColor()
 bool DraftDropCounter::isGreenTargetDrop()
 {
     int currentTargetDrops = targetDrops * numCards / 30;
+    if(numCards >= 30)  currentTargetDrops = targetDrops - 1;
     return count() >= currentTargetDrops;
 }
 
