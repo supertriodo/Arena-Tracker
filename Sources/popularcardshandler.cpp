@@ -157,8 +157,11 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 }
 
 
-void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[9], QStringList codeList)
+void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[9], QStringList codeList,
+                                                SynergyHandler *synergyHandler)
 {
+    synergyHandler->initSynergyCodes();
+
     for(QString &code: codeList)
     {
         CardClass cardClass = Utility::getClassFromCode(code);
@@ -173,20 +176,35 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                     {
                         if(cardsPickratesMap[i][code]>=10)
                         {
-
-                            cardsByPickrate[i][cost-2].append(code);
+                            if( (cost==2 && synergyHandler->isDrop2(code, cost)) ||
+                                (cost==3 && synergyHandler->isDrop3(code, cost)) ||
+                                (cost==4 && synergyHandler->isDrop4(code, cost)) ||
+                                cost>4
+                                )
+                            {
+                                cardsByPickrate[i][cost-2].append(code);
+                            }
                         }
                     }
                 break;
                 default:
                     if(cardClass<9 && cardsPickratesMap[cardClass][code]>=10)
                     {
-                        cardsByPickrate[cardClass][cost-2].append(code);
+                        if( (cost==2 && synergyHandler->isDrop2(code, cost)) ||
+                            (cost==3 && synergyHandler->isDrop3(code, cost)) ||
+                            (cost==4 && synergyHandler->isDrop4(code, cost)) ||
+                            cost>4
+                            )
+                        {
+                            cardsByPickrate[cardClass][cost-2].append(code);
+                        }
                     }
                 break;
             }
         }
     }
+
+    synergyHandler->clearLists(true);
 
     for(int i=0; i<9; i++)
     {

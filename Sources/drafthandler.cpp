@@ -109,6 +109,12 @@ void DraftHandler::createSynergyHandler()
 }
 
 
+SynergyHandler * DraftHandler::getSynergyHandler()
+{
+    return this->synergyHandler;
+}
+
+
 void DraftHandler::completeUI()
 {
     comboBoxCard[0] = ui->comboBoxCard1;
@@ -2005,36 +2011,6 @@ void DraftHandler::deMinimizeScoreWindow()
     if(this->draftHeroWindow != nullptr)                                                       draftHeroWindow->setWindowState(Qt::WindowActive);
     if(this->draftScoreWindow != nullptr && showDraftScoresOverlay)                            draftScoreWindow->setWindowState(Qt::WindowActive);
     if(this->draftMechanicsWindow != nullptr && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->setWindowState(Qt::WindowActive);
-}
-
-
-void DraftHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
-{
-    synergyHandler->debugSynergiesSet(set, onlyCollectible);
-}
-
-
-void DraftHandler::debugMissingSynergiesAllSets()
-{
-    synergyHandler->debugMissingSynergiesAllSets();
-}
-
-
-void DraftHandler::debugSynergiesCode(const QString &code)
-{
-    synergyHandler->debugSynergiesCode(code);
-}
-
-
-void DraftHandler::testSynergies()
-{
-    synergyHandler->testSynergies();
-}
-
-
-void DraftHandler::initSynergyCodes()
-{
-    synergyHandler->initSynergyCodes();
 }
 
 

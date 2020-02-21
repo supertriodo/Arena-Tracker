@@ -52,6 +52,10 @@ public:
     int getManaCounterCount();
     void setHidden(bool hide);
 
+    bool isDrop2(const QString &code, int cost);
+    bool isDrop3(const QString &code, int cost);
+    bool isDrop4(const QString &code, int cost);
+
 private:
     void createDraftItemCounters();
     void deleteDraftItemCounters();
@@ -147,10 +151,7 @@ private:
     bool isOtherClassGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass);
     bool isTreantGen(const QString &code, const QString &text, const CardClass &cardClass);
-    bool isLackeyGen(const QString &code, const QString &text);
-    bool isDrop2(const QString &code, int cost);
-    bool isDrop3(const QString &code, int cost);
-    bool isDrop4(const QString &code, int cost);
+    bool isLackeyGen(const QString &code, const QString &text);    
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);

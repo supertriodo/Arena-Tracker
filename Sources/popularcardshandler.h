@@ -4,6 +4,7 @@
 #include "Widgets/ui_extended.h"
 #include "Cards/popularcard.h"
 #include "enemyhandhandler.h"
+#include "synergyhandler.h"
 #include <QObject>
 
 class PopularCardsHandler : public QObject
@@ -40,7 +41,7 @@ public:
     void redrawClassCards();
     void redrawSpellWeaponCards();
     void redrawAllCards();
-    void createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList);
+    void createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList, SynergyHandler *synergyHandler);
     void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
     void setPopularCardsShown(int value);
 

@@ -683,7 +683,7 @@ void MainWindow::processPopularCardsHandlerPickrates()
 {
     if(lightForgeJsonLoaded)
     {
-        popularCardsHandler->createCardsByPickrate(cardsPickratesMap, draftHandler->getAllArenaCodes());
+        popularCardsHandler->createCardsByPickrate(cardsPickratesMap, draftHandler->getAllArenaCodes(), draftHandler->getSynergyHandler());
     }
     else
     {
@@ -4559,11 +4559,11 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Flame Ward");
 //    qDebug()<<Utility::getCardAttribute("YOD_001", "set").toString();
 
-//    draftHandler->debugSynergiesSet("YEAR_OF_THE_DRAGON", true);
-//    draftHandler->debugSynergiesCode("DAL_400");
-//    draftHandler->testSynergies();
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("YEAR_OF_THE_DRAGON", true);
+//    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
+//    draftHandler->getSynergyHandler()->testSynergies();
 
-    draftHandler->debugMissingSynergiesAllSets();
+    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
 

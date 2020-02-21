@@ -1525,6 +1525,8 @@ void SynergyHandler::testSynergies()
         Q_UNUSED(mechanics);
         Q_UNUSED(referencedTags);
     }
+
+    clearLists(true);
 }
 
 
@@ -1544,6 +1546,8 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
     {
         debugSynergiesCode(code, ++num);
     }
+
+    clearLists(true);
 }
 
 
@@ -1580,6 +1584,8 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     {
         qDebug()<<"DEBUG SYNERGIES: Those synergies missing.";
     }
+
+    clearLists(true);
 }
 
 

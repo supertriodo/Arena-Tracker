@@ -164,11 +164,6 @@ public:
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
-    void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
-    void debugMissingSynergiesAllSets();
-    void debugSynergiesCode(const QString &code);
-    void testSynergies();
-    void initSynergyCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
@@ -176,6 +171,7 @@ public:
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
+    SynergyHandler *getSynergyHandler();
 
 signals:
     void checkCardImage(QString code, bool isHero=false);
