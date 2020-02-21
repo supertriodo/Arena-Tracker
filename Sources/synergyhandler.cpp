@@ -1545,6 +1545,9 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
     for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
     {
         debugSynergiesCode(code, ++num);
+        QDesktopServices::openUrl(QUrl(
+            "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+            ));
     }
 
     clearLists(true);
