@@ -48,7 +48,8 @@ Next you can check a brief explanation of its features divided in free and patre
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
 * While drafting, check the strenghts and weaknesses of your deck through the mechanics summary. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#mechanics)
 
-![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftMechanicsHelp.png)
+![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
+![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
 * Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
