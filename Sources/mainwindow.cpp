@@ -4349,14 +4349,14 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 void MainWindow::showPremiumDialog()
 {
     QMessageBox msgBox(this);
-    msgBox.setText("Becoming a patron (3$+) will let you activate the premium version of Arena Tracker, "
+    msgBox.setText("Becoming a patron (3$/month) will let you activate the premium version of Arena Tracker, "
                    "which implements some extra features: (replays, planning, graveyard, popularity lists, "
                    "synergies, HSReplay winrate scores and draft mechanics/drops overview). "
                    "<a href='https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md'>Learn more...</a>"
                    "<br><br>If you are already a patron use the \"Unlock premium\" button and "
                    "type the e-mail address that appears in your patron profile. "
                    "Your version will be upgraded in less than 24 hours. This is not an automated process so it might take some hours."
-                   "<br><br>Got any question? <a href='mailto:arenatracker@gmail.com'>Contact me.</a>"
+                   "<br><br>Got any question? <a href='mailto:arenatracker@gmail.com'>Contact link.</a>"
                    "<br><br>Thanks for your support!");
     msgBox.setWindowTitle(tr("Premium"));
     msgBox.setTextFormat(Qt::RichText);
