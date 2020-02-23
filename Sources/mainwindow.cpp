@@ -4350,7 +4350,7 @@ void MainWindow::showPremiumDialog()
 {
     QMessageBox msgBox(this);
     msgBox.setText("Becoming a patron (3$/month) will let you activate the premium version of Arena Tracker, "
-                   "which implements some extra features: (replays, planning, graveyard, popularity lists, "
+                   "which implements some extra features: (replays, planning, graveyard, popular lists, "
                    "synergies, HSReplay winrate scores and draft mechanics/drops overview). "
                    "<a href='https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md'>Learn more...</a>"
                    "<br><br>If you are already a patron use the \"Unlock premium\" button and "
