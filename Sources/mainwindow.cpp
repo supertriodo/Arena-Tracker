@@ -342,16 +342,30 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 
+    QString fullUrl = reply->url().toString();
+    QString endUrl = fullUrl.split("/").last();
+
     if(reply->error() != QNetworkReply::NoError)
     {
         emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
-        networkManager->get(QNetworkRequest(reply->url()));
+
+        if(fullUrl == HSR_CARDS_INCLUDED)
+        {
+            emit pDebug("Extra: Cards included winrate --> Download from: " + QString(HSR_CARDS_INCLUDED_14DAYS));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_INCLUDED_14DAYS)));
+        }
+        else if(fullUrl == HSR_CARDS_PLAYED)
+        {
+            emit pDebug("Extra: Cards played winrate --> Download from: " + QString(HSR_CARDS_PLAYED_14DAYS));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PLAYED_14DAYS)));
+        }
+        else
+        {
+            networkManager->get(QNetworkRequest(reply->url()));
+        }
     }
     else
     {
-        QString fullUrl = reply->url().toString();
-        QString endUrl = fullUrl.split("/").last();
-
         //Cards json
         if(endUrl == "cards.json")
         {
@@ -376,12 +390,12 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //HSR Cards Pickrate/Winrate
-        else if(fullUrl == HSR_CARDS_INCLUDED)
+        else if(fullUrl == HSR_CARDS_INCLUDED|| fullUrl == HSR_CARDS_INCLUDED_14DAYS)
         {
             emit pDebug("Extra: Cards included winrate --> Download Success.");
             startProcessHSRCardsIncluded(QJsonDocument::fromJson(reply->readAll()).object());
         }
-        else if(fullUrl == HSR_CARDS_PLAYED)
+        else if(fullUrl == HSR_CARDS_PLAYED || fullUrl == HSR_CARDS_PLAYED_14DAYS)
         {
             emit pDebug("Extra: Cards played winrate --> Download Success.");
             startProcessHSRCardsPlayed(QJsonDocument::fromJson(reply->readAll()).object());
