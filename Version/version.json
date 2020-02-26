@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04","v7.05","v7.1","v7.2","v7.21","v8.0"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.0/Arena.Tracker.v8.0.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.0/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.0/Arena.Tracker.v8.0.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.0/Arena.Tracker.v8.0.Windows.zip",
-	"log": "AT now track the number of 2,3,4 drops in your deck while you draft.<br>Show as part of HSReplay score, the number of decks that data is taken from.<br>Show at the bottom of hand tab the most popular cards your opponent might play on its next turn.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.0'>github</a>"
+	"versionFree": ["v6.8","v6.81","v7.0","v7.01","v7.02","v7.03","v7.04","v7.05","v7.1","v7.2","v7.21","v8.0","v8.01"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.01/Arena.Tracker.v8.01.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.01/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.01/Arena.Tracker.v8.01.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.01/Arena.Tracker.v8.01.Windows.zip",
+	"log": "AT now track the number of 2,3,4 drops in your deck while you draft.<br>Show as part of HSReplay score, the number of decks that data is taken from.<br>Show at the bottom of hand tab the most popular cards your opponent might play on its next turn.<br>Fix v8.0 crash on draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.01'>github</a>"
 }
