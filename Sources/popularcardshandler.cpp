@@ -177,11 +177,8 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                     {
                         if(cardsPickratesMap[i][code]>=10)
                         {
-                            if( (cost==2 && synergyHandler->isDrop2(code, cost)) ||
-                                (cost==3 && synergyHandler->isDrop3(code, cost)) ||
-                                (cost==4 && synergyHandler->isDrop4(code, cost)) ||
-                                cost>4
-                                )
+                            if(cost>4 || synergyHandler->isDrop2(code, cost) ||
+                                synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
                             {
                                 cardsByPickrate[i][cost-2].append(code);
                             }
@@ -191,11 +188,8 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 default:
                     if(cardClass<9 && cardsPickratesMap[cardClass][code]>=10)
                     {
-                        if( (cost==2 && synergyHandler->isDrop2(code, cost)) ||
-                            (cost==3 && synergyHandler->isDrop3(code, cost)) ||
-                            (cost==4 && synergyHandler->isDrop4(code, cost)) ||
-                            cost>4
-                            )
+                        if(cost>4 || synergyHandler->isDrop2(code, cost) ||
+                            synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
                         {
                             cardsByPickrate[cardClass][cost-2].append(code);
                         }

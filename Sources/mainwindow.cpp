@@ -4608,6 +4608,13 @@ void MainWindow::testSecretsHSR()
     secretsHandler->secretPlayed(4, MAGE, arena);
 }
 
+
+void MainWindow::testPopularList()
+{
+    popularCardsHandler->setEnemyClass("02");
+    popularCardsHandler->newTurn(true, 2);
+}
+
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
@@ -4618,6 +4625,7 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 //    testDownloadCards();
+//    QTimer::singleShot(5000, this, SLOT(testPopularList()));
 //    QTimer::singleShot(5000, this, SLOT(testSecretsHSR()));
 }
 

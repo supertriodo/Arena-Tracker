@@ -287,6 +287,7 @@ private slots:
     void testTierlists();
     void testDownloadCards();
     void testSecretsHSR();
+    void testPopularList();
     void confirmNewArenaDraft(QString hero);
     void transparentAlways();
     void transparentAuto();
