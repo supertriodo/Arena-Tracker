@@ -80,6 +80,7 @@ private:
     void playerMinionPlayedNow(QString code, int playerMinions);
     ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
     void updateShowSecrets();
+    void createSecretsByPickrate();
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -88,7 +89,7 @@ public:
     void redrawAllCards();
     QStringList getSecretOptionCodes(int id);
     void setArenaSets(QStringList &arenaSets);
-    void createSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
+    void sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
     void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
     void setShowSecrets(bool value);
 

@@ -10,6 +10,7 @@ PopularCardsHandler::PopularCardsHandler(QObject *parent, Ui::Extended *ui, Enem
     this->enemyMana = -1;
     this->enemyOverloadOwed = 0;
     this->inArena = false;
+    this->cardsPickratesMap = nullptr;
 
     completeUI();
 }
@@ -252,7 +253,7 @@ void PopularCardsHandler::showPopularCards()
 
     for(QString &code: cardsByPickrate[enemyClass][enemyMana-2])
     {
-        QString manaText = QString::number((int)round(cardsPickratesMap[enemyClass][code]))+"%";
+        QString manaText = (cardsPickratesMap == nullptr) ? "-" : QString::number((int)round(cardsPickratesMap[enemyClass][code]))+"%";
         PopularCard popularCard(code, manaText);
         popularCard.listItem = new QListWidgetItem(ui->popularCardsListWidget);
         popularCard.draw();

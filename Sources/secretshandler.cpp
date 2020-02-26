@@ -11,8 +11,10 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->lastMinionDead = "";
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
+    this->cardsPickratesMap = nullptr;
 
     completeUI();
+    createSecretsByPickrate();
 }
 
 SecretsHandler::~SecretsHandler()
@@ -208,7 +210,9 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
     {
         for(const QString &code: secretsByPickrate[hero])
         {
-            unknownSecretPlayedAddOption(code, inArena, activeSecret, QString::number((int)round(cardsPickratesMap[hero][code]))+"%");
+            unknownSecretPlayedAddOption(code, inArena, activeSecret,
+                                         (cardsPickratesMap == nullptr) ? "-" :
+                                            QString::number((int)round(cardsPickratesMap[hero][code]))+"%");
         }
     }
     //Opciones ordenadas por rareza
@@ -811,36 +815,43 @@ void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap
 }
 
 
-void SecretsHandler::createSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[9])
+void SecretsHandler::createSecretsByPickrate()
 {
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM;
+
+    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
+                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP << PRESSURE_PLATE;
+
+    secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
+                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << FLAME_WARD;
+
+    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION;
+}
+
+
+void SecretsHandler::sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[9])
+{
     qSort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[PALADIN][code1] > cardsPickratesMap[PALADIN][code2];
     });
 
-    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
-                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP << PRESSURE_PLATE;
     qSort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[HUNTER][code1] > cardsPickratesMap[HUNTER][code2];
     });
 
-    secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
-                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << FLAME_WARD;
     qSort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[MAGE][code1] > cardsPickratesMap[MAGE][code2];
     });
 
-    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION;
     qSort(secretsByPickrate[ROGUE].begin(), secretsByPickrate[ROGUE].end(), [=](const QString &code1, const QString &code2)
     {
         return cardsPickratesMap[ROGUE][code1] > cardsPickratesMap[ROGUE][code2];
     });
 }
-
 
 /* Secrets interactions. Kobolds & Catacombs update.
 Hey guys!

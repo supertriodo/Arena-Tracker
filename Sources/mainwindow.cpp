@@ -36,6 +36,10 @@ MainWindow::MainWindow(QWidget *parent) :
     transparency = AutoTransparent;
     cardsJsonLoaded = lightForgeJsonLoaded = false;
     allCardsDownloadNeeded = !settings.value("allCardsDownloaded", false).toBool();
+    cardsPickratesMap = nullptr;
+    cardsIncludedWinratesMap = nullptr;
+    cardsIncludedDecksMap = nullptr;
+    cardsPlayedWinratesMap = nullptr;
 
     logLoader = nullptr;
     gameWatcher = nullptr;
@@ -120,10 +124,10 @@ MainWindow::~MainWindow()
     QFontDatabase::removeAllApplicationFonts();
 
     //Delete HSR maps
-    delete[] cardsPickratesMap;
-    delete[] cardsIncludedWinratesMap;
-    delete[] cardsIncludedDecksMap;
-    delete[] cardsPlayedWinratesMap;
+    if(cardsPickratesMap != nullptr)        delete[] cardsPickratesMap;
+    if(cardsIncludedWinratesMap != nullptr) delete[] cardsIncludedWinratesMap;
+    if(cardsIncludedDecksMap != nullptr)    delete[] cardsIncludedDecksMap;
+    if(cardsPlayedWinratesMap != nullptr)   delete[] cardsPlayedWinratesMap;
 }
 
 
@@ -687,7 +691,7 @@ void MainWindow::finishProcessHSRCardsIncluded()
     draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
     draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
     secretsHandler->setCardsPickratesMap(cardsPickratesMap);
-    secretsHandler->createSecretsByPickrate(cardsPickratesMap);
+    secretsHandler->sortSecretsByPickrate(cardsPickratesMap);
     popularCardsHandler->setCardsPickratesMap(cardsPickratesMap);
     processPopularCardsHandlerPickrates();
 }

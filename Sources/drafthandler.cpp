@@ -29,6 +29,9 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
     this->multiclassArena = false;
     this->learningMode = false;
     this->showDrops = true;
+    this->cardsIncludedWinratesMap = nullptr;
+    this->cardsIncludedDecksMap = nullptr;
+    this->cardsPlayedWinratesMap = nullptr;
 
     for(int i=0; i<3; i++)
     {
@@ -652,7 +655,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 
             deckRatingHA += hearthArenaTiers[code];
             deckRatingLF += lightForgeTiers[code].score;
-            deckRatingHSR += cardsIncludedWinratesMap[this->arenaHero][code];
+            deckRatingHSR += (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code];
         }
     }
 
@@ -1011,7 +1014,8 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score, cardsIncludedWinratesMap[this->arenaHero][code]);
+        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score,
+                        (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
             draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
@@ -1119,15 +1123,31 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    HearthArena);
 
     //HSReplay
-    float ratingPlayed1 = cardsPlayedWinratesMap[this->arenaHero][codes[0]];
-    float ratingPlayed2 = cardsPlayedWinratesMap[this->arenaHero][codes[1]];
-    float ratingPlayed3 = cardsPlayedWinratesMap[this->arenaHero][codes[2]];
-    float ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
-    float ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
-    float ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
-    int includedDecks1 = cardsIncludedDecksMap[this->arenaHero][codes[0]];
-    int includedDecks2 = cardsIncludedDecksMap[this->arenaHero][codes[1]];
-    int includedDecks3 = cardsIncludedDecksMap[this->arenaHero][codes[2]];
+    float ratingPlayed1, ratingPlayed2, ratingPlayed3;
+    float ratingIncluded1, ratingIncluded2, ratingIncluded3;
+    int includedDecks1, includedDecks2, includedDecks3;
+    ratingPlayed1 = ratingPlayed2 = ratingPlayed3 = 0;
+    ratingIncluded1 = ratingIncluded2 = ratingIncluded3 = 0;
+    includedDecks1 = includedDecks2 = includedDecks3 = 0;
+
+    if(cardsPlayedWinratesMap != nullptr)
+    {
+        ratingPlayed1 = cardsPlayedWinratesMap[this->arenaHero][codes[0]];
+        ratingPlayed2 = cardsPlayedWinratesMap[this->arenaHero][codes[1]];
+        ratingPlayed3 = cardsPlayedWinratesMap[this->arenaHero][codes[2]];
+    }
+    if(cardsIncludedWinratesMap != nullptr)
+    {
+        ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
+        ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
+        ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
+    }
+    if(cardsIncludedDecksMap != nullptr)
+    {
+        includedDecks1 = cardsIncludedDecksMap[this->arenaHero][codes[0]];
+        includedDecks2 = cardsIncludedDecksMap[this->arenaHero][codes[1]];
+        includedDecks3 = cardsIncludedDecksMap[this->arenaHero][codes[2]];
+    }
     showNewRatings(ratingIncluded1, ratingIncluded2, ratingIncluded3,
                    ratingPlayed1, ratingPlayed2, ratingPlayed3,
                    -1, -1, -1,
