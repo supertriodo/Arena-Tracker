@@ -72,6 +72,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TrackobotUploader");
 
 public slots:
+    void importAccount(QByteArray jsonData);
 
 private slots:
     void replyFinished(QNetworkReply *reply);

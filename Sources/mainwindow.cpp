@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
     createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
-    createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler
+    createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler -->TrackobotUploader
 
     downloadHSRCards();//-->DraftHandler -->SecretHandler
 
@@ -865,6 +865,8 @@ void MainWindow::createPremiumHandler()
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
             premiumHandler, SLOT(checkPremium()));
+    connect(premiumHandler, SIGNAL(importAccount(QByteArray)),
+            trackobotUploader, SLOT(importAccount(QByteArray)));
     connect(premiumHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(premiumHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

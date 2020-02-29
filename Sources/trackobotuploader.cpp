@@ -63,7 +63,7 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         {
             emit pDebug("New account --> Download success.");
             QByteArray jsonData = reply->readAll();
-            if(loadAccount(jsonData))   saveAccount();
+            importAccount(jsonData);
         }
         else if(fullUrl == TRACKOBOT_PROFILE_URL)
         {
@@ -141,6 +141,12 @@ bool TrackobotUploader::loadAccount(QByteArray jsonData)
 void TrackobotUploader::importAccount(QString fileName)
 {
     if(loadAccount(fileName))   saveAccount();
+}
+
+
+void TrackobotUploader::importAccount(QByteArray jsonData)
+{
+    if(loadAccount(jsonData))   saveAccount();
 }
 
 
