@@ -8,6 +8,8 @@
 #include "../Synergies/draftitemcounter.h"
 #include "../Synergies/draftdropcounter.h"
 
+#define M_NUM_TYPES 3
+
 
 class DraftMechanicsWindow : public QMainWindow
 {
@@ -48,6 +50,7 @@ public:
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
     void setNormalizedLF(bool value);
+    int draftedCardsCount();
 
 public slots:
     void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);

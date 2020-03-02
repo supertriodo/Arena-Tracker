@@ -43,7 +43,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     //Card Types
     QGridLayout *cardTypeLayout = new QGridLayout();
 
-    cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
+    cardTypeCounters = new DraftItemCounter *[M_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, cardTypeLayout, 0, 0, QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, cardTypeLayout, 0, 1, QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
@@ -443,4 +443,15 @@ void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &l
 void DraftMechanicsWindow::setNormalizedLF(bool value)
 {
     scoreButtonLF->setNormalizedLF(value);
+}
+
+
+int DraftMechanicsWindow::draftedCardsCount()
+{
+    int num = 0;
+    for(int i=0; i<M_NUM_TYPES; i++)
+    {
+        num += cardTypeCounters[i]->count();
+    }
+    return num;
 }

@@ -3,9 +3,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler) : QObject(parent)
 {
     this->ui = ui;
+    this->deckHandler = deckHandler;
     this->deckRatingHA = this->deckRatingLF = 0;
     this->deckRatingHSR = 0;
     this->numCaptured = 0;
@@ -299,7 +300,8 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft)
+QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft,
+                                                        const bool createCardHist)
 {
     QMap<QString, LFtier> lightForgeTiers;
 
@@ -339,8 +341,11 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
 
                 if(!lightForgeTiers.contains(code))
                 {
-                    addCardHist(code, false);
-                    addCardHist(code, true);
+                    if(createCardHist)
+                    {
+                        addCardHist(code, false);
+                        addCardHist(code, true);
+                    }
 
                     //En multiclass guardaremos el primer score que aparezca
                     //En cartas neutrales sera el hero == nullptr
@@ -363,31 +368,34 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     cardsDownloading.clear();
     cardsHist.clear();
 
-    if(drafting)
-    {
-        startFindScreenRects();
-
-        const QString heroString = Utility::heroString2FromLogNumber(hero);
-        this->lightForgeTiers = initLightForgeTiers(heroString, this->multiclassArena);
-        initHearthArenaTiers(heroString, this->multiclassArena);
-        synergyHandler->initSynergyCodes();
-    }
-    else //if(heroDrafting)
+    if(heroDrafting)
     {
         QTimer::singleShot(1000, this, SLOT(startFindScreenRects()));
 
         for(const QString &code: heroCodesList)     addCardHist(code, false, true);
     }
+    else //if(drafting) ||Build mechanics window
+    {
+        startFindScreenRects();
+
+        const QString heroString = Utility::heroString2FromLogNumber(hero);
+        this->lightForgeTiers = initLightForgeTiers(heroString, this->multiclassArena, drafting);
+        initHearthArenaTiers(heroString, this->multiclassArena);
+        synergyHandler->initSynergyCodes();
+    }
 
     //Wait for cards
-    if(cardsDownloading.isEmpty())
+    if(drafting || heroDrafting)
     {
-        newCaptureDraftLoop();
-    }
-    else
-    {
-        emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
-        emit downloadStarted();
+        if(cardsDownloading.isEmpty())
+        {
+            newCaptureDraftLoop();
+        }
+        else
+        {
+            emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
+            emit downloadStarted();
+        }
     }
 }
 
@@ -485,9 +493,10 @@ void DraftHandler::clearLists(bool keepCounters)
 
 void DraftHandler::enterArena()
 {
+    showOverlay();
+
     if(drafting)
     {
-        showOverlay();
         if(draftCards[0].getCode().isEmpty())
         {
             newCaptureDraftLoop(true);
@@ -498,6 +507,9 @@ void DraftHandler::enterArena()
 
 void DraftHandler::leaveArena()
 {
+    if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
+    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
+
     if(drafting)
     {
         if(capturing)
@@ -514,16 +526,15 @@ void DraftHandler::leaveArena()
                 bestMatchesMaps[i].clear();
             }
         }
-        if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
-        if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
     }
     else if(heroDrafting)   endHeroDraft();
-    else    deleteDraftMechanicsWindow();
 }
 
 
 void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 {
+    deleteDraftMechanicsWindow();
+
     if(heroDrafting)   endHeroDraft();
 
     bool alreadyDrafting = drafting;
@@ -714,10 +725,79 @@ void DraftHandler::endDraft()
 }
 
 
-void DraftHandler::endDraftDeleteMechanicsWindow()
+void DraftHandler::heroDraftDeck(QString hero)
 {
-    endDraft();
+    CardClass newArenaHero = Utility::heroFromLogNumber(hero);
+
+    //Cierra mechanics si el heroe de la arena es diferente, permite cambiar de servidor
+    if(draftMechanicsWindow != nullptr && this->arenaHero != newArenaHero)
+    {
+        emit pDebug("Delete draft mechanic window of different hero.", DebugLevel::Warning);
+        deleteDraftMechanicsWindow();
+    }
+
+    this->arenaHero = newArenaHero;
+}
+
+
+//End game or end draft or enter previous arena (create Mechanics Window)
+void DraftHandler::endDraftShowMechanicsWindow()
+{
+    if(drafting)    endDraft();
+    else if(draftMechanicsWindow != nullptr)    showOverlay();
+    else
+    {
+        //Build mechanics window and init mechanics.
+        buildDraftMechanicsWindow();
+    }
+}
+
+
+//Start game
+void DraftHandler::endDraftHideMechanicsWindow()
+{
+    if(drafting)    endDraft();
+    if(draftMechanicsWindow != nullptr)
+    {
+        draftMechanicsWindow->hide();
+
+        //Cierra mechanics si esta incompleto asi se volvera a crear una vez la decklist este completa
+        if(draftMechanicsWindow->draftedCardsCount() != 30)
+        {
+            emit pDebug("Delete draft mechanic window of incomplete deck.", DebugLevel::Warning);
+            deleteDraftMechanicsWindow();
+        }
+    }
+}
+
+
+void DraftHandler::buildDraftMechanicsWindow()
+{
     deleteDraftMechanicsWindow();
+
+    QString hero = Utility::heroToLogNumber(this->arenaHero);
+    QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
+
+    int heroInt = hero.toInt();
+    if(deckCardList == nullptr)
+    {
+        emit pDebug("Build draft mechanic window of incomplete deck.", DebugLevel::Warning);
+        return;
+    }
+    else if(heroInt<1 || heroInt>9)
+    {
+        emit pDebug("Build draft mechanic window of unknown hero: " + hero, DebugLevel::Error);
+        return;
+    }
+    else
+    {
+        emit pDebug("Build draft mechanic window. Heroe: " + hero);
+    }
+
+    clearLists(false);
+
+    initCodesAndHistMaps(hero);
+    initSynergyCounters(*deckCardList);
 }
 
 
@@ -1475,8 +1555,7 @@ bool DraftHandler::screenFound()
 
 void DraftHandler::startFindScreenRects()
 {
-    if(!futureFindScreenRects.isRunning() &&
-            (drafting || heroDrafting))  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    if(!futureFindScreenRects.isRunning())  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
 }
 
 
@@ -1504,7 +1583,7 @@ void DraftHandler::finishFindScreenRects()
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
 
         createDraftWindows(screenDetection.screenScale);
-        newCaptureDraftLoop();
+        if(drafting || heroDrafting)    newCaptureDraftLoop();
     }
 }
 
@@ -1514,17 +1593,17 @@ ScreenDetection DraftHandler::findScreenRects()
     ScreenDetection screenDetection;
 
     std::vector<Point2f> templatePoints(6);
-    if(drafting)
-    {
-        templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
-        templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
-        templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
-    }
-    else// if(heroDrafting)
+    if(heroDrafting)
     {
         templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
         templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
         templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
+    }
+    else// if(drafting) || buildMechanicsWindow
+    {
+        templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
+        templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
+        templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
     }
 
 
@@ -1534,7 +1613,11 @@ ScreenDetection DraftHandler::findScreenRects()
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(drafting?"arenaTemplate.png":"heroesTemplate.png", screen,
+        QString arenaTemplate;
+        if(drafting)    arenaTemplate = "arenaTemplate.png";
+        else if(heroDrafting)   arenaTemplate = "heroesTemplate.png";
+        else                    arenaTemplate = "mechanicsTemplate.png";
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen,
                                                                           templatePoints, screenDetection.screenScale);
         if(screenPoints.empty())    continue;
 
@@ -1557,6 +1640,7 @@ void DraftHandler::beginHeroDraft()
 {
     emit pDebug("Begin hero draft.");
 
+    deleteDraftMechanicsWindow();
     clearLists(false);
     this->heroDrafting = true;
     this->leavingArena = false;
@@ -1678,10 +1762,27 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
         connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),
                 this, SIGNAL(showPremiumDialog()));
     }
-    else// if(heroDrafting)
+    else if(heroDrafting)
     {
         draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
+    }
+    else//buildMechanicsWindow
+    {
+        draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
+                                                        patreonVersion, this->normalizedLF);
+        draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
+        draftMechanicsWindow->setShowDrops(this->showDrops);
+        initDraftMechanicsWindowCounters();
+        //Despues de calcular todo podemos limpiar draftHandler, lo que nos interesa esta todo en draftMechanicsWindow
+        clearLists(false);
+
+        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
+                this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
+        connect(draftMechanicsWindow, SIGNAL(itemLeave()),
+                this, SIGNAL(itemLeave()));
+        connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),
+                this, SIGNAL(showPremiumDialog()));
     }
 
     showOverlay();

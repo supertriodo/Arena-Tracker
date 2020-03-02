@@ -44,13 +44,14 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, Ui::Extended *ui);
+    DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler);
     ~DraftHandler();
 
 //Variables
 private:
     bool patreonVersion;
     Ui::Extended *ui;
+    DeckHandler *deckHandler;
     SynergyHandler *synergyHandler;
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
@@ -105,6 +106,7 @@ private:
     void initCodesAndHistMaps(QString hero="");
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
+    void endDraft();
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
     void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0, float cardRatingHSR=0);
@@ -114,12 +116,11 @@ private:
     void highlightScore(QLabel *label, DraftMethod draftMethod);
     void deleteDraftHeroWindow();
     void deleteDraftScoreWindow();
-    void deleteDraftMechanicsWindow();
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
-    QMap<QString, LFtier> initLightForgeTiers(const QString &heroString, const bool multiClassDraft);
+    QMap<QString, LFtier> initLightForgeTiers(const QString &heroString, const bool multiClassDraft, const bool createCardHist);
     void createDraftWindows(const QPointF &screenScale);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -145,6 +146,7 @@ private:
     void createTwitchHandler();
     void deleteTwitchHandler();
     QString getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
+    void buildDraftMechanicsWindow();
 
 public:
     void buildHeroCodesList();
@@ -196,8 +198,10 @@ signals:
 public slots:
     void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
     void beginHeroDraft();
-    void endDraft();
-    void endDraftDeleteMechanicsWindow();
+    void heroDraftDeck(QString hero);
+    void endDraftShowMechanicsWindow();
+    void endDraftHideMechanicsWindow();
+    void deleteDraftMechanicsWindow();
     void showNewRatings(float rating1, float rating2, float rating3,
                         float tierScore1, float tierScore2, float tierScore3,
                         int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod,

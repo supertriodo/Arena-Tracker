@@ -316,7 +316,7 @@ void SynergyHandler::clearLists(bool keepCounters)
     synergyCodes.clear();
     directLinks.clear();
 
-    if(!keepCounters)
+    if(!keepCounters)//endDraft
     {
         //Reset counters
         manaCounter->reset();

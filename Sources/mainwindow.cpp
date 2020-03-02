@@ -892,7 +892,7 @@ void MainWindow::createTrackobotUploader()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, ui);
+    draftHandler = new DraftHandler(this, ui, deckHandler);
     connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
@@ -1460,10 +1460,14 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(arenaChoosingHeroe()),
             draftHandler, SLOT(beginHeroDraft()));
+    connect(gameWatcher, SIGNAL(heroDraftDeck(QString)),
+            draftHandler, SLOT(heroDraftDeck(QString)));
     connect(gameWatcher, SIGNAL(activeDraftDeck()),
-            draftHandler, SLOT(endDraft()));
-    connect(gameWatcher, SIGNAL(startGame()),    //Salida alternativa de drafting (+seguridad)
-            draftHandler, SLOT(endDraftDeleteMechanicsWindow()));
+            draftHandler, SLOT(endDraftShowMechanicsWindow()));
+    connect(gameWatcher, SIGNAL(startGame()),
+            draftHandler, SLOT(endDraftHideMechanicsWindow()));
+    connect(gameWatcher, SIGNAL(inRewards()),
+            draftHandler, SLOT(deleteDraftMechanicsWindow()));
     connect(gameWatcher, SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
     connect(gameWatcher, SIGNAL(enterArena()),
@@ -1599,7 +1603,8 @@ void MainWindow::closeApp()
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
     removeNonCompleteDraft();
     resetSizePlan();
-    draftHandler->endDraftDeleteMechanicsWindow();
+    draftHandler->endDraftHideMechanicsWindow();
+    draftHandler->deleteDraftMechanicsWindow();
     close();
 }
 
@@ -2091,7 +2096,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_1)  draftHandler->pickCard("0");
             else if(event->key() == Qt::Key_2)  draftHandler->pickCard("1");
             else if(event->key() == Qt::Key_3)  draftHandler->pickCard("2");
-            else if(event->key() == Qt::Key_5)  draftHandler->endDraft();
+            else if(event->key() == Qt::Key_5)  draftHandler->endDraftShowMechanicsWindow();
 #ifdef Q_OS_LINUX
             else if(event->key() == Qt::Key_S)  askLinuxShortcut();
 #endif
@@ -2702,6 +2707,9 @@ void MainWindow::downloadExtraFiles()
 
     file = QFileInfo(Utility::extraPath() + "/heroesTemplate.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/heroesTemplate.png"))));
+
+    file = QFileInfo(Utility::extraPath() + "/mechanicsTemplate.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/mechanicsTemplate.png"))));
 
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));

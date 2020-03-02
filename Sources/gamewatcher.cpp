@@ -70,7 +70,7 @@ void GameWatcher::endReadingDeck()
 {
     if(arenaState != readingDeck)    return;
     arenaState = deckRead;
-    emit arenaDeckRead();
+    emit arenaDeckRead();   //completeArenaDeck will draft file
     emit pDebug("End reading deck (arenaState = deckRead).", 0);
     emit pLog(tr("Log: Active deck read."));
 }
@@ -195,7 +195,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         QString hero = match->captured(1);
         emit pDebug("New arena. Heroe: " + hero, numLine);
         emit pLog(tr("Log: New arena."));
-        emit newArena(hero); //(sync)Begin draft //(sync)resetDeckDontRead (arenaState = deckRead)
+        emit newArena(hero); //(connect)Begin draft //(connect)resetDeckDontRead (arenaState = deckRead)
     }
     //DRAFTING PICK CARD
     //[Arena] Client chooses: Profesora violeta (NEW1_026)
@@ -211,18 +211,20 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     //START READING DECK
     //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
     else if(line.contains(QRegularExpression(
-                "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_\\d+"), match))
+                "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card = HERO_(\\d+)"), match))
     {
-        emit pDebug("Found DraftManager.OnChoicesAndContents", numLine);
+        QString hero = match->captured(1);
+        emit pDebug("Found Hero Draft Deck. Heroe: " + hero, numLine);
         startReadingDeck();
+        emit heroDraftDeck(hero);
     }
     //END READING DECK
     //[Arena] SetDraftMode - ACTIVE_DRAFT_DECK
     else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
     {
         emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
-        emit activeDraftDeck(); //End draft
         endReadingDeck();
+        emit activeDraftDeck(); //(connect)End draft/Show mechanics
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
@@ -243,12 +245,12 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         emit arenaChoosingHeroe();
     }
     //IN REWARDS
-    //[Arena] SetDraftMode - IN_REWARDS
-//    else if(line.contains("SetDraftMode - IN_REWARDS"))
-//    {
-//        emit pDebug("Found IN_REWARDS.", numLine);
-//        emit inRewards();   //Show rewards input
-//    }
+    //SetDraftMode - IN_REWARDS
+    else if(line.contains("SetDraftMode - IN_REWARDS"))
+    {
+        emit pDebug("Found IN_REWARDS.", numLine);
+        emit inRewards();   //Remove mechanics window
+    }
 }
 
 

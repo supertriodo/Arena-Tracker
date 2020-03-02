@@ -179,6 +179,7 @@ signals:
     void newTurn(bool isPlayerTurn, int numTurn);
     void logTurn();
     void needResetDeck();
+    void heroDraftDeck(QString hero);
     void activeDraftDeck();
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString blockType, int id1, int id2);
