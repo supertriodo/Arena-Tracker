@@ -1458,6 +1458,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newArena(QString)),
             draftHandler, SLOT(beginDraft(QString)));
+    connect(gameWatcher, SIGNAL(continueDraft()),
+            draftHandler, SLOT(continueDraft()));
     connect(gameWatcher, SIGNAL(arenaChoosingHeroe()),
             draftHandler, SLOT(beginHeroDraft()));
     connect(gameWatcher, SIGNAL(heroDraftDeck(QString)),

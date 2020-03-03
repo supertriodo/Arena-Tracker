@@ -109,6 +109,7 @@ public:
 signals:
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch);
     void newArena(QString hero);
+    void continueDraft();
     void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);
@@ -179,7 +180,7 @@ signals:
     void newTurn(bool isPlayerTurn, int numTurn);
     void logTurn();
     void needResetDeck();
-    void heroDraftDeck(QString hero);
+    void heroDraftDeck(QString hero="");
     void activeDraftDeck();
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString blockType, int id1, int id2);

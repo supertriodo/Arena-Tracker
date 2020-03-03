@@ -197,6 +197,7 @@ signals:
 
 public slots:
     void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
+    void continueDraft();
     void beginHeroDraft();
     void heroDraftDeck(QString hero);
     void endDraftShowMechanicsWindow();

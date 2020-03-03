@@ -1433,7 +1433,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
 {
     if(deckCardList[0].total == 0)
     {
-        emit pDebug("Completing Arena Deck: Deck complete from log.");
+        emit pDebug("Completing Arena Deck: Deck was complete.");
         return;
     }
 

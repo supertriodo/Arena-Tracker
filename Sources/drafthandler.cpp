@@ -568,6 +568,19 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 }
 
 
+void DraftHandler::continueDraft()
+{
+    if(!drafting && arenaHero != INVALID_CLASS)
+    {
+        beginDraft(Utility::heroToLogNumber(arenaHero), deckHandler->getDeckCardList());
+    }
+    else
+    {
+        emit pDebug("No continue draft because already drafting or no hero.", DebugLevel::Warning);
+    }
+}
+
+
 void DraftHandler::createTwitchHandler()
 {
     if(TwitchHandler::isWellConfigured())
@@ -727,7 +740,7 @@ void DraftHandler::endDraft()
 
 void DraftHandler::heroDraftDeck(QString hero)
 {
-    CardClass newArenaHero = Utility::heroFromLogNumber(hero);
+    CardClass newArenaHero = Utility::heroFromLogNumber(hero);//INVALID_CLASS if empty
 
     //Cierra mechanics si el heroe de la arena es diferente, permite cambiar de servidor
     if(draftMechanicsWindow != nullptr && this->arenaHero != newArenaHero)

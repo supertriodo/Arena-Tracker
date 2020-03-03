@@ -70,7 +70,7 @@ void GameWatcher::endReadingDeck()
 {
     if(arenaState != readingDeck)    return;
     arenaState = deckRead;
-    emit arenaDeckRead();   //completeArenaDeck will draft file
+    emit arenaDeckRead();   //completeArenaDeck with draft file
     emit pDebug("End reading deck (arenaState = deckRead).", 0);
     emit pLog(tr("Log: Active deck read."));
 }
@@ -223,8 +223,12 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     else if(line.contains("SetDraftMode - ACTIVE_DRAFT_DECK"))
     {
         emit pDebug("Found ACTIVE_DRAFT_DECK.", numLine);
-        endReadingDeck();
-        emit activeDraftDeck(); //(connect)End draft/Show mechanics
+        endReadingDeck();//completeArenaDeck with draft file
+        emit activeDraftDeck(); //(connect)End draft/Show mechanics, debe estar detras de endReadingDeck
+        //para primero completar el deck y luego mostrar la mechanics window del deck completo
+        emit arenaDeckRead();   //completeArenaDeck with draft file, debemos repetirlo para el caso de end draft
+        //para primero completar el fichero del draft deck (se hace en endDraft) y luego rellenar el deck con lo que le falte
+        //por si hemos salido de la arena y vuelto a entrar durante el draft.
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012
@@ -242,13 +246,20 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
                             "DraftManager\\.OnChoicesAndContents - Draft Deck ID: \\d+, Hero Card ="), match))
     {
         emit pDebug("New arena: choosing heroe.", numLine);
+        emit heroDraftDeck();//No hero
         emit arenaChoosingHeroe();
     }
-    //IN REWARDS
+    //SetDraftMode - DRAFTING
+    else if(line.contains("SetDraftMode - DRAFTING"))
+    {
+        emit pDebug("Found SetDraftMode - DRAFTING.", numLine);
+        emit continueDraft();   //(connect) continueDraft
+    }
     //SetDraftMode - IN_REWARDS
     else if(line.contains("SetDraftMode - IN_REWARDS"))
     {
-        emit pDebug("Found IN_REWARDS.", numLine);
+        emit pDebug("Found SetDraftMode - IN_REWARDS.", numLine);
+        emit heroDraftDeck();//No hero
         emit inRewards();   //Remove mechanics window
     }
 }
