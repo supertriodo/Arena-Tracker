@@ -10,6 +10,7 @@
 #include "Widgets/draftmechanicswindow.h"
 #include "synergyhandler.h"
 #include "twitchhandler.h"
+#include "arenahandler.h"
 #include <QObject>
 #include <QFutureWatcher>
 
@@ -44,7 +45,7 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler);
+    DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler, ArenaHandler *arenaHandler);
     ~DraftHandler();
 
 //Variables
@@ -52,6 +53,7 @@ private:
     bool patreonVersion;
     Ui::Extended *ui;
     DeckHandler *deckHandler;
+    ArenaHandler *arenaHandler;
     SynergyHandler *synergyHandler;
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;

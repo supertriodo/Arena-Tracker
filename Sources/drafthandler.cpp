@@ -3,10 +3,11 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler, ArenaHandler *arenaHandler) : QObject(parent)
 {
     this->ui = ui;
     this->deckHandler = deckHandler;
+    this->arenaHandler = arenaHandler;
     this->deckRatingHA = this->deckRatingLF = 0;
     this->deckRatingHSR = 0;
     this->numCaptured = 0;
@@ -572,7 +573,9 @@ void DraftHandler::continueDraft()
 {
     if(!drafting && arenaHero != INVALID_CLASS)
     {
-        beginDraft(Utility::heroToLogNumber(arenaHero), deckHandler->getDeckCardList());
+        QString heroLog = Utility::heroToLogNumber(arenaHero);
+        arenaHandler->newArena(heroLog);
+        beginDraft(heroLog, deckHandler->getDeckCardList());
     }
     else
     {

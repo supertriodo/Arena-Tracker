@@ -78,10 +78,10 @@ MainWindow::MainWindow(QWidget *parent) :
     createDrawCardHandler();
     createRngCardHandler();//-->PlanHandler
     createDeckHandler();//-->EnemyDeckHandler
-    createDraftHandler();//-->CardDownloader
     createSecretsHandler();//-->EnemyHandHandler -->PlanHandler
     createPopularCardsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
+    createDraftHandler();//-->CardDownloader -->DeckHandler -->ArenaHandler
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
@@ -892,7 +892,7 @@ void MainWindow::createTrackobotUploader()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, ui, deckHandler);
+    draftHandler = new DraftHandler(this, ui, deckHandler, arenaHandler);
     connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
             this, SLOT(startProgressBar(int, QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
