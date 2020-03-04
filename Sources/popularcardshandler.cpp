@@ -218,16 +218,22 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
 
 void PopularCardsHandler::newTurn(bool isPlayerTurn, int numTurn)
 {
-    if(!isPlayerTurn)   return;
-
     enemyMana = (numTurn + 1)/2;
 
-    //El rival tendra uno mas de mana si tiene la moneda o es el primer jugador
-    //A veces la moneda se puede crear en la mano enemiga despues de pasar al primer turno
-    if(enemyHandHandler->isCoinInHand() || numTurn%2==0 || numTurn==1)    enemyMana++;
+    if(isPlayerTurn)
+    {
+        //El rival tendra uno mas de mana si tiene la moneda o es el primer jugador
+        //A veces la moneda se puede crear en la mano enemiga despues de pasar al primer turno
+        if(enemyHandHandler->isCoinInHand() || numTurn%2==0 || numTurn==1)    enemyMana++;
 
-    //Si pasamos del limite de 10 mana no queremos mostrar popular cards mas
-    if(enemyMana <= 10) enemyMana -= enemyOverloadOwed;
+        //Si pasamos del limite de 10 mana no queremos mostrar popular cards mas
+        if(enemyMana <= 10) enemyMana -= enemyOverloadOwed;
+    }
+    else
+    {
+        enemyMana++;
+        if(enemyHandHandler->isCoinInHand())    enemyMana++;
+    }
 
     showPopularCards();
 }
