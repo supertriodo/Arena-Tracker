@@ -2092,7 +2092,7 @@ void DraftHandler::craftGoldenCopy(int cardIndex)
     params << QDir::toNativeSeparators(Utility::extraPath() + "/goldenCrafter.py");
     params << Utility::removeAccents(draftCards[cardIndex].getName());//Card Name
 
-    emit pDebug("Start script:\n" + params.join(" - "));
+    qDebug()<<"Start script:\n" + params.join(" - ");
 
 #ifdef Q_OS_WIN
     p.start("python", params);
