@@ -509,7 +509,10 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 
     iconFile = (gameResult.enemyHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.enemyHero));
     item->setIcon(1, QIcon(iconFile));
-    if(!gameResult.enemyName.isEmpty())     item->setToolTip(1, gameResult.enemyName);
+    if(!gameResult.enemyName.isEmpty() && gameResult.enemyName != "UNKNOWN HUMAN PLAYER")
+    {
+        item->setToolTip(1, gameResult.enemyName);
+    }
     item->setIcon(2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
     item->setIcon(3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
 
