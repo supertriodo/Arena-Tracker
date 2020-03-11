@@ -3966,7 +3966,6 @@ void MainWindow::setPremium(bool premium)
     ui->configBoxDraftMechanics->setHidden(!patreonVersion);
     ui->configCheckMechanicsOverlay->setHidden(!patreonVersion);
     ui->configCheckShowDrops->setHidden(!patreonVersion);
-    ui->configCheckHSR->setHidden(!patreonVersion);
     ui->configLabelPopular->setHidden(!patreonVersion);
     ui->configLabelPopularValue->setHidden(!patreonVersion);
     ui->configSliderPopular->setHidden(!patreonVersion);
@@ -4020,7 +4019,6 @@ void MainWindow::completeConfigTab()
     ui->configBoxDraftMechanics->hide();
     ui->configCheckMechanicsOverlay->hide();
     ui->configCheckShowDrops->hide();
-    ui->configCheckHSR->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
