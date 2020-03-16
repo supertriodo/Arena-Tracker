@@ -152,6 +152,12 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
     qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
 
+    if(getMinionList(friendly)->count() >= 7)
+    {
+        qDebug()<<"AVOID - NUM MINIONS = " << getMinionList(friendly)->count();
+        return;
+    }
+
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
     updateMinionFromCard(minion);
     addMinion(friendly, minion, pos);
@@ -230,6 +236,12 @@ void PlanHandler::enemyMinionZonePlayAddTriggered(QString code, int id, int pos)
 void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int pos)
 {
     qDebug()<<"NEW MINION TRIGGERED--> id"<<id<<"pos"<<pos;
+
+    if(getMinionList(friendly)->count() >= 7)
+    {
+        qDebug()<<"AVOID - NUM MINIONS = " << getMinionList(friendly)->count();
+        return;
+    }
 
     MinionGraphicsItem* minion = new MinionGraphicsItem(code, id, friendly, nowBoard->playerTurn, graphicsItemSender);
     addMinion(friendly, minion, pos);
