@@ -4635,8 +4635,8 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 //    testDownloadCards();
-//    QTimer::singleShot(5000, this, SLOT(testPopularList()));
-//    QTimer::singleShot(5000, this, SLOT(testSecretsHSR()));
+//    QTimer::singleShot(7000, this, SLOT(testPopularList()));
+//    QTimer::singleShot(7000, this, SLOT(testSecretsHSR()));
 }
 
 
