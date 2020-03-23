@@ -4641,53 +4641,6 @@ void MainWindow::testDelay()
 
 
 
-//REPLAY BUGS
-//Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
-
-//Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
-
-//Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir. Aceptable
-//Mismo problema con Experimentador gnomo al convertir un esbirro en pollo.
-
-//Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
-//El addon es de la fuente que lo robo. Aceptable
-
-//Viejo ojosombrio incrementa su ATK al aparecer otros murlocs, Si los murlocs nuevos son TRIGGERED,
-//el addon sobre ojosombrio sera incorrecto. Aceptable
-
-//Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad. Aceptable
-//Dificil de arreglar, se cambia el damage antes del health.
-//Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
-
-//Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
-//ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND
-//ZoneChangeList.ProcessChanges() - id=87 local=False [name=¡Maldito! id=152 zone=HAND zonePos=6 cardId=LOE_007t player=2] zone from OPPOSING HAND ->
-
-//Se produce entre el PLAY y el POWER
-//PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
-//GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
-
-//El minion copiado por mirror entity no tiene las modificaciones a ataque o vida ya que estas no estan en append el suficiente tiempo.
-
-//Algunos esbirros creados con efecto de copia (manipulador ignoto) no tienen mareo de invocacion, en el log reciben exhausted --> 0
-
-//Lich heroes no ponen 5 armadura, no aparece el TAG_CHANGE en el log
-
-
-//SPECTATOR GAMES
-//Si empiezan desde el principio es correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
-//Por lo tanto no seran restadas del mazo, y si son devueltas en el mulligan apareceran como OUTSIDERS
-//Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
-
-//BUGS CONOCIDOS
-//Tab Config ScrollArea slider transparent CSS
-//Solo mode da problemas con las cartas iniciales en el enemigo, son de turn 1 y no hay moneda.
-//Baron seboso (Blubber baron) no tiene atk/health correctos en el replay ya que modifica sus atributos en mano y no usa TAG_CHANGE ARMS_DEALING
-//Acechador solitario (Forlorn Stalker), los minions que buffan tienen atk/health correctos por la misma razon.
-//Cartas a mano sin code, arreglado obteniendo el code del nombre:
-//id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
-//Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
-
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json cartas --> Automatico
@@ -4715,6 +4668,8 @@ void MainWindow::testDelay()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 
+//Cards changes
+//Patch 16.6.0.43246 (2020-03-17)
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
@@ -4767,7 +4722,52 @@ void MainWindow::testDelay()
 
 
 
-//TODDO
+//REPLAY BUGS
+//Mandar a pending tag changes durante 5 segundos, carta robada por mana blind no se pone a 0 mana. Aceptable
+
+//Cambios al ataque de un arma en el turno del otro jugador no crean addons ya que el ataque del heroe estara oculto. Aceptable
+
+//Renuncia a la oscuridad muestra como jugadas las cartas sustituidas. Van a zone vacia como los hechizos asi que no se puede distinguir. Aceptable
+//Mismo problema con Experimentador gnomo al convertir un esbirro en pollo.
+
+//Al robar un minion de un zone con auras, aparecera un addon extra en el minion robado, al cambiar su ATK/HEALTH.
+//El addon es de la fuente que lo robo. Aceptable
+
+//Viejo ojosombrio incrementa su ATK al aparecer otros murlocs, Si los murlocs nuevos son TRIGGERED,
+//el addon sobre ojosombrio sera incorrecto. Aceptable
+
+//Efectos que cambien el max vida pondran addons de vida incorrectos, igualdad. Aceptable
+//Dificil de arreglar, se cambia el damage antes del health.
+//Al morir stormwind champion, apareceran addons de vida de lo que lo mato en el resto de minions heridos de la zona.
+
+//Al lanzar la maldicion del brujo la carta se roba y se juega como hechizo en el enemigo
+//ZoneChangeList.ProcessChanges() - id=87 local=False [id=152 cardId= type=INVALID zone=HAND zonePos=6 player=2] zone from  -> OPPOSING HAND
+//ZoneChangeList.ProcessChanges() - id=87 local=False [name=¡Maldito! id=152 zone=HAND zonePos=6 cardId=LOE_007t player=2] zone from OPPOSING HAND ->
+
+//Se produce entre el PLAY y el POWER
+//PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[name=Jaina Valiente id=64 zone=PLAY zonePos=0 cardId=HERO_08 player=1] tag=HEAVILY_ARMORED value=1
+//GameWatcher(41192): Trigger(TRIGGER): Eremita Cho
+
+//El minion copiado por mirror entity no tiene las modificaciones a ataque o vida ya que estas no estan en append el suficiente tiempo.
+
+//Algunos esbirros creados con efecto de copia (manipulador ignoto) no tienen mareo de invocacion, en el log reciben exhausted --> 0
+
+//Lich heroes no ponen 5 armadura, no aparece el TAG_CHANGE en el log
+
+
+//SPECTATOR GAMES
+//Si empiezan desde el principio es correcto. A veces las cartas iniciales no apareceran en la draw list, se debe a que a veces vienen del vacio en lugar del DECK.
+//Por lo tanto no seran restadas del mazo, y si son devueltas en el mulligan apareceran como OUTSIDERS
+//Si empiezan a medias faltara: name1, name2, playerTag, firstPlayer
+
+//BUGS CONOCIDOS
+//Tab Config ScrollArea slider transparent CSS
+//Solo mode da problemas con las cartas iniciales en el enemigo, son de turn 1 y no hay moneda.
+//Baron seboso (Blubber baron) no tiene atk/health correctos en el replay ya que modifica sus atributos en mano y no usa TAG_CHANGE ARMS_DEALING
+//Acechador solitario (Forlorn Stalker), los minions que buffan tienen atk/health correctos por la misma razon.
+//Cartas a mano sin code, arreglado obteniendo el code del nombre:
+//id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
+//Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
 
 
 
@@ -4794,12 +4794,4 @@ void MainWindow::testDelay()
 //DEBUG MISSING GOLDEN: "GVG_018" - "Queen of Pain"
 
 
-//1)Specify where are enemy secrets played coming from, like BY: Cabalist's Tome. In case they are generated by other cards.
-//2)Show BY: cards that are specific as the only option they can be. Example: Gilded gargoyle's created card can only be a coin .
-//3)Twitch integration. Let your viewers vote which card you would play this turn.
-//Group similar outsider cards (purple text cards on your deck) so they don't take so much space in your deck window.
-//In the replay tab when hovering over a card that has its atributes modified, show the card's tooltip with its current attack/life/mana.
-//Add checkboxes to config tab to select which tabs will be shown in the main window and which ones will be hidden.
-//Mostrar draft mechanics overlay al volver a arena para saber como es nuestro mazo
-//Show cards drawn and discarded when your hand is full on replay tab.
 
