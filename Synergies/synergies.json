@@ -307,6 +307,7 @@
 "BRM_031" : [ "toYourHandGen", "drawSyn" ],
 "BRM_033" : [ "dragonSyn", "battlecry", "drop3" ],
 "BRM_034" : [ "battlecry", "dragonSyn", "returnSyn" ],
+"BT_255" : [ "spellAllSyn" ],
 "CFM_020" : [ "battlecry" ],
 "CFM_021" : [ "freezeEnemyGen", "tokenCardGen" ],
 "CFM_025" : [ "healthBuffSyn" ],
