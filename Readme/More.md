@@ -30,6 +30,9 @@ Next you can check a brief explanation of its features divided in free and patre
 * Draft your arena with HearthArena or LightForge advice, or why not both.
 
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
+* Draft your arena with HSReplay winrates of cards.
+
+![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
 
 ![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
@@ -37,12 +40,6 @@ Next you can check a brief explanation of its features divided in free and patre
 # Patreon version features:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
-* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#popularlist)
-
-![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
-* Draft your arena with HSReplay winrates of cards.
-
-![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
 * While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#rateofcards)
 
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
@@ -56,6 +53,9 @@ Next you can check a brief explanation of its features divided in free and patre
 * Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html#planning)
 
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
+* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#popularlist)
+
+![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
 * Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#rng)
 
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
