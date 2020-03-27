@@ -204,7 +204,7 @@ QString Utility::cardEnCodeFromName(QString name, bool onlyCollectible)
     {
         if(it->value("name").toObject().value("enUS").toString() == name)
         {
-            if(!onlyCollectible || ((it->value("collectible").toBool()) && (it->value("set").toString() != "HERO_SKINS")))
+            if(!onlyCollectible || ((it->value("collectible").toBool()) && (!it.key().startsWith("HERO_"))))
             {
                 return it.key();
             }
