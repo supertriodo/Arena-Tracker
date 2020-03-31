@@ -4587,9 +4587,9 @@ void MainWindow::testHeroPortraits()
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Flame Ward");
-//    qDebug()<<Utility::getCardAttribute("YOD_001", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("BT_728", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("YEAR_OF_THE_DRAGON", true);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("BLACK_TEMPLE", true);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();
 
@@ -4646,7 +4646,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Update Utility::isFromStandardSet(QString code) --> DRAGONS
+//Update Utility::isFromStandardSet(QString code) --> BLACK_TEMPLE
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4667,9 +4667,11 @@ void MainWindow::testDelay()
 //Update synergies.json
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
+//|-Check drops cards
+// Librams direct links
 
 //Cards changes
-//Patch 16.6.0.43246 (2020-03-17)
+//Patch 17.0.0.44222 (2020-03-26)
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
