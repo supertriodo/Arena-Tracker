@@ -1479,7 +1479,7 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("YEAR_OF_THE_DRAGON"))
+    for(const QString &code: Utility::getSetCodes("BLACK_TEMPLE"))
 //    for(const QString &code: Utility::getStandardCodes())
 //    for(const QString &code: Utility::getWildCodes())
     {
@@ -3508,6 +3508,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == HAUNTING_VISIONS)    return 0;
     if(code == ANCIENT_MYSTERIES)   return 0;
     if(code == WAXMANCY)            return 0;
+    if(code == IMPRISONED_SATYR)    return 0;
+    if(code == SKULL_OF_GULDAN)     return 0;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
@@ -3530,6 +3532,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == EMBIGGEN)            return 5;
     if(code == SEA_GIANT)           return 6;
     if(code == KALECGOS)            return 6;
+    if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 8;
 

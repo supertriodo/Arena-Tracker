@@ -2831,6 +2831,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
         missiles = 6;
         playerIn = true;
     }
+    else if(code == PRIESTESS_OF_FURY)
+    {
+        missiles = 6;
+        playerIn = false;
+    }
     else if(code == SPREADING_MADNESS)
     {
         missiles = 9;
