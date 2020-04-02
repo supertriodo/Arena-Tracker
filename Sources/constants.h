@@ -233,6 +233,7 @@
 #define IMPRISONED_SATYR "BT_127"
 #define BLOODBOIL_BRUTE "BT_138"
 #define SKULL_OF_GULDAN "BT_601"
+#define EYE_BEAM "BT_801"
 
 
 #endif // CONSTANTS_H

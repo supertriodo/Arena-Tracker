@@ -1479,7 +1479,7 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("BLACK_TEMPLE"))
+    for(const QString &code: Utility::getSetCodes("DEMON_HUNTER_INITIATE"))
 //    for(const QString &code: Utility::getStandardCodes())
 //    for(const QString &code: Utility::getWildCodes())
     {
@@ -3510,6 +3510,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == WAXMANCY)            return 0;
     if(code == IMPRISONED_SATYR)    return 0;
     if(code == SKULL_OF_GULDAN)     return 0;
+    if(code == EYE_BEAM)            return 0;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
