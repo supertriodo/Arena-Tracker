@@ -24,6 +24,7 @@ QByteArray DeckStringHandler::readDeckStringPage(QString &text, QString &deckNam
 }
 
 
+//TODO revisar Class: "Demonhunter"
 QString DeckStringHandler::writeDeckStringPage(const QList<CodeAndCount> &deckList, const QString &deckName, const QByteArray &encodedDeckString)
 {
     QString text;
@@ -171,17 +172,18 @@ QString DeckStringHandler::getHeroLog(const QList<CodeAndCount> &deckList)
     {
         QString code = codeAndCount.code;
         DeckCard deckCard(code);
-        QString hero = Utility::heroToLogNumber(deckCard.getCardClass());
+        QString hero = Utility::classEnum2classLogNumber(deckCard.getCardClass());
         if(!hero.isEmpty())     return hero;
     }
     return "";
 }
 
 
+//TODO revisar devolver Demonhunter
 QString DeckStringHandler::getHeroString(const QList<CodeAndCount> &deckList)
 {
     QString hero = getHeroLog(deckList);
-    return Utility::heroString2FromLogNumber(hero);
+    return Utility::classLogNumber2classULName(hero);
 }
 
 

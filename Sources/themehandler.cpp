@@ -37,7 +37,7 @@ QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, T
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
 QString ThemeHandler::buttonGraveyardPlayerFile_, ThemeHandler::buttonGraveyardEnemyFile_;
 QString ThemeHandler::buttonGraveyardMinionsFile_, ThemeHandler::buttonGraveyardWeaponsFile_;
-QString ThemeHandler::bgCard1Files_[10], ThemeHandler::bgCard2Files_[10], ThemeHandler::heroFiles_[9];
+QString ThemeHandler::bgCard1Files_[NUM_HEROS+1], ThemeHandler::bgCard2Files_[NUM_HEROS+1], ThemeHandler::heroFiles_[NUM_HEROS];
 QString ThemeHandler::bgTotalAttackFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
 QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
@@ -486,28 +486,28 @@ QString ThemeHandler::buttonGraveyardWeaponsFile()
 
 QString ThemeHandler::bgCard1File(int order)
 {
-    if(order>8) return bgCard1Files_[9];
+    if(order>(NUM_HEROS-1) || order<0)  return bgCard1Files_[NUM_HEROS];
     return bgCard1Files_[order];
 }
 
 
 QString ThemeHandler::bgCard2File(int order)
 {
-    if(order>8 || order<0)  return bgCard2Files_[9];
+    if(order>(NUM_HEROS-1) || order<0)  return bgCard2Files_[NUM_HEROS];
     return bgCard2Files_[order];
 }
 
 
 QString ThemeHandler::heroFile(int order)
 {
-    if(order>8 || order<0)  return "";
+    if(order>(NUM_HEROS-1) || order<0)  return "";
     return heroFiles_[order];
 }
 
 
 QString ThemeHandler::heroFile(QString heroLog)
 {
-    return heroFile(Utility::heroLogNumber2HeroOrder(heroLog));
+    return heroFile(Utility::classLogNumber2classOrder(heroLog));
 }
 
 
@@ -917,27 +917,32 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     manaLimitFile_ = loadThemeFile(themePath, jsonObject, "manaLimitFile");
     manaLimitBehind_ = jsonObject.value("manaLimitBehind").toBool(true);
 
-    bgCard1Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard1File");
-    bgCard1Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
-    bgCard1Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard1HunterFile");
-    bgCard1Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard1MageFile");
-    bgCard1Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard1PaladinFile");
-    bgCard1Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard1PriestFile");
-    bgCard1Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard1RogueFile");
-    bgCard1Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard1ShamanFile");
-    bgCard1Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard1WarlockFile");
-    bgCard1Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard1WarriorFile");
+    //--------------------------------------------------------
+    //----NEW HERO CLASS - orden alfabetico
+    //--------------------------------------------------------
+    bgCard1Files_[NUM_HEROS] = loadThemeFile(themePath, jsonObject, "bgCard1File");
+    bgCard1Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard1DemonhunterFile");
+    bgCard1Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
+    bgCard1Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard1HunterFile");
+    bgCard1Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard1MageFile");
+    bgCard1Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard1PaladinFile");
+    bgCard1Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard1PriestFile");
+    bgCard1Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard1RogueFile");
+    bgCard1Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard1ShamanFile");
+    bgCard1Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard1WarlockFile");
+    bgCard1Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard1WarriorFile");
 
-    bgCard2Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard2File");
-    bgCard2Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard2DruidFile");
-    bgCard2Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard2HunterFile");
-    bgCard2Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard2MageFile");
-    bgCard2Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard2PaladinFile");
-    bgCard2Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard2PriestFile");
-    bgCard2Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard2RogueFile");
-    bgCard2Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard2ShamanFile");
-    bgCard2Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard2WarlockFile");
-    bgCard2Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
+    bgCard2Files_[NUM_HEROS] = loadThemeFile(themePath, jsonObject, "bgCard2File");
+    bgCard2Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard2DemonhunterFile");
+    bgCard2Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard2DruidFile");
+    bgCard2Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard2HunterFile");
+    bgCard2Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard2MageFile");
+    bgCard2Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard2PaladinFile");
+    bgCard2Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard2PriestFile");
+    bgCard2Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard2RogueFile");
+    bgCard2Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard2ShamanFile");
+    bgCard2Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard2WarlockFile");
+    bgCard2Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
 
     //"-----GAMES TAB-----": 0,
     gamesOnZ2HColor_ = jsonObject.value("gamesOnZ2HColor").toString("");
@@ -956,15 +961,19 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     loseFile_ = loadThemeFile(themePath, jsonObject, "loseFile");
     winFile_ = loadThemeFile(themePath, jsonObject, "winFile");
 
-    heroFiles_[0] = loadThemeFile(themePath, jsonObject, "heroDruidFile");
-    heroFiles_[1] = loadThemeFile(themePath, jsonObject, "heroHunterFile");
-    heroFiles_[2] = loadThemeFile(themePath, jsonObject, "heroMageFile");
-    heroFiles_[3] = loadThemeFile(themePath, jsonObject, "heroPaladinFile");
-    heroFiles_[4] = loadThemeFile(themePath, jsonObject, "heroPriestFile");
-    heroFiles_[5] = loadThemeFile(themePath, jsonObject, "heroRogueFile");
-    heroFiles_[6] = loadThemeFile(themePath, jsonObject, "heroShamanFile");
-    heroFiles_[7] = loadThemeFile(themePath, jsonObject, "heroWarlockFile");
-    heroFiles_[8] = loadThemeFile(themePath, jsonObject, "heroWarriorFile");
+    //--------------------------------------------------------
+    //----NEW HERO CLASS - orden alfabetico
+    //--------------------------------------------------------
+    heroFiles_[0] = loadThemeFile(themePath, jsonObject, "heroDemonhunterFile");
+    heroFiles_[1] = loadThemeFile(themePath, jsonObject, "heroDruidFile");
+    heroFiles_[2] = loadThemeFile(themePath, jsonObject, "heroHunterFile");
+    heroFiles_[3] = loadThemeFile(themePath, jsonObject, "heroMageFile");
+    heroFiles_[4] = loadThemeFile(themePath, jsonObject, "heroPaladinFile");
+    heroFiles_[5] = loadThemeFile(themePath, jsonObject, "heroPriestFile");
+    heroFiles_[6] = loadThemeFile(themePath, jsonObject, "heroRogueFile");
+    heroFiles_[7] = loadThemeFile(themePath, jsonObject, "heroShamanFile");
+    heroFiles_[8] = loadThemeFile(themePath, jsonObject, "heroWarlockFile");
+    heroFiles_[9] = loadThemeFile(themePath, jsonObject, "heroWarriorFile");
 
     //"-----ENEMY HAND TAB-----": 0,
     handCardFile_ = loadThemeFile(themePath, jsonObject, "handCardFile");
@@ -1228,37 +1237,36 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonGraveyardMinionsFile_.isEmpty())   buttonGraveyardMinionsFile_ = ":/Images/minionsCounter.png";
     if(buttonGraveyardWeaponsFile_.isEmpty())   buttonGraveyardWeaponsFile_ = ":/Images/weaponsCounter.png";
 
-    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUM_HEROS; i++)
     {
         if(bgCard1Files_[i].isEmpty())
         {
-            if(bgCard1Files_[9].isEmpty())
+            if(bgCard1Files_[NUM_HEROS].isEmpty())
             {
-                bgCard1Files_[i] = ":/Images/bgCard1" + heroes[i] + ".png";
+                bgCard1Files_[i] = ":/Images/bgCard1" + Utility::classOrder2classULName(i) + ".png";
             }
             else
             {
-                bgCard1Files_[i] = bgCard1Files_[9];
+                bgCard1Files_[i] = bgCard1Files_[NUM_HEROS];
             }
         }
 
         if(bgCard2Files_[i].isEmpty())
         {
-            if(bgCard2Files_[9].isEmpty())
+            if(bgCard2Files_[NUM_HEROS].isEmpty())
             {
-                bgCard2Files_[i] = ":/Images/bgCard2" + heroes[i] + ".png";
+                bgCard2Files_[i] = ":/Images/bgCard2" + Utility::classOrder2classULName(i) + ".png";
             }
             else
             {
-                bgCard2Files_[i] = bgCard2Files_[9];
+                bgCard2Files_[i] = bgCard2Files_[NUM_HEROS];
             }
         }
 
-        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + Utility::getHeroLogNumber(i) + ".png";
+        if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + Utility::classOrder2classLogNumber(i) + ".png";
     }
-    if(bgCard1Files_[9].isEmpty())      bgCard1Files_[9] = ":/Images/bgCard1.png";
-    if(bgCard2Files_[9].isEmpty())      bgCard2Files_[9] = ":/Images/bgCard2.png";
+    if(bgCard1Files_[NUM_HEROS].isEmpty())  bgCard1Files_[NUM_HEROS] = ":/Images/bgCard1.png";
+    if(bgCard2Files_[NUM_HEROS].isEmpty())  bgCard2Files_[NUM_HEROS] = ":/Images/bgCard2.png";
     if(bgTotalAttackFile_.isEmpty())    bgTotalAttackFile_ = ":/Images/bgTotalAttack.png";
     if(branchClosedFile_.isEmpty())     branchClosedFile_ = ":/Images/branchClosed.png";
     if(branchOpenFile_.isEmpty())       branchOpenFile_ = ":/Images/branchOpen.png";

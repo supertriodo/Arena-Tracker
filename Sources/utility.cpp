@@ -27,7 +27,11 @@ Utility::~Utility()
 }
 
 
-QString Utility::heroToLogNumber(const QString &hero)
+//--------------------------------------------------------
+//----Conversiones de clases
+//----NEW HERO CLASS
+//--------------------------------------------------------
+QString Utility::className2classLogNumber(const QString &hero)
 {
     if(hero.toLower().compare("druid")==0)        return QString("06");
     else if(hero.toLower().compare("hunter")==0)  return QString("05");
@@ -38,11 +42,12 @@ QString Utility::heroToLogNumber(const QString &hero)
     else if(hero.toLower().compare("shaman")==0)  return QString("02");
     else if(hero.toLower().compare("warlock")==0) return QString("07");
     else if(hero.toLower().compare("warrior")==0) return QString("01");
+    else if(hero.toLower().compare("demonhunter")==0) return QString("10");
     else return QString();
 }
 
 
-QString Utility::heroToLogNumber(CardClass cardClass)
+QString Utility::classEnum2classLogNumber(CardClass cardClass)
 {
     if(cardClass == DRUID)        return QString("06");
     else if(cardClass == HUNTER)  return QString("05");
@@ -53,11 +58,12 @@ QString Utility::heroToLogNumber(CardClass cardClass)
     else if(cardClass == SHAMAN)  return QString("02");
     else if(cardClass == WARLOCK) return QString("07");
     else if(cardClass == WARRIOR) return QString("01");
+    else if(cardClass == DEMONHUNTER) return QString("10");
     else return QString();
 }
 
 
-QString Utility::heroToHeroString(CardClass cardClass)
+QString Utility::classEnum2classUName(CardClass cardClass)
 {
     if(cardClass == DRUID)        return QString("DRUID");
     else if(cardClass == HUNTER)  return QString("HUNTER");
@@ -68,11 +74,12 @@ QString Utility::heroToHeroString(CardClass cardClass)
     else if(cardClass == SHAMAN)  return QString("SHAMAN");
     else if(cardClass == WARLOCK) return QString("WARLOCK");
     else if(cardClass == WARRIOR) return QString("WARRIOR");
+    else if(cardClass == DEMONHUNTER) return QString("DEMONHUNTER");
     else return QString();
 }
 
 
-CardClass Utility::heroFromLogNumber(QString hero)
+CardClass Utility::classLogNumber2classEnum(QString hero)
 {
     if(hero == QString("06"))       return DRUID;
     else if(hero == QString("05"))  return HUNTER;
@@ -83,26 +90,12 @@ CardClass Utility::heroFromLogNumber(QString hero)
     else if(hero == QString("02"))  return SHAMAN;
     else if(hero == QString("07"))  return WARLOCK;
     else if(hero == QString("01"))  return WARRIOR;
+    else if(hero == QString("10"))  return DEMONHUNTER;
     else                            return INVALID_CLASS;
 }
 
 
-QString Utility::heroStringFromLogNumber(QString hero)
-{
-    if(hero == QString("06"))       return "DRUID";
-    else if(hero == QString("05"))  return "HUNTER";
-    else if(hero == QString("08"))  return "MAGE";
-    else if(hero == QString("04"))  return "PALADIN";
-    else if(hero == QString("09"))  return "PRIEST";
-    else if(hero == QString("03"))  return "ROGUE";
-    else if(hero == QString("02"))  return "SHAMAN";
-    else if(hero == QString("07"))  return "WARLOCK";
-    else if(hero == QString("01"))  return "WARRIOR";
-    else                            return "";
-}
-
-
-QString Utility::heroString2FromLogNumber(QString hero)
+QString Utility::classLogNumber2classULName(QString hero)
 {
     if(hero == QString("06"))       return "Druid";
     else if(hero == QString("05"))  return "Hunter";
@@ -113,40 +106,61 @@ QString Utility::heroString2FromLogNumber(QString hero)
     else if(hero == QString("02"))  return "Shaman";
     else if(hero == QString("07"))  return "Warlock";
     else if(hero == QString("01"))  return "Warrior";
+    else if(hero == QString("10"))  return "Demonhunter";
     else                            return "";
 }
 
 
-//Return info about heroes in alphabetical order
-QString Utility::getHeroColor(int order)
+QString Utility::classLogNumber2classUName(QString hero)
 {
-    QString heroesColors[10] = {"#7f4f29", "#347c2c", "#699cd5", "#de9a3e", "#a4a4a4", "#4c4e54", "#0070DE", "#6c4177", "#912a21", "#A9A9A9"};
+    return Utility::classLogNumber2classULName(hero).toUpper();
+}
+
+
+QString Utility::classLogNumber2classLName(QString hero)
+{
+    return Utility::classLogNumber2classULName(hero).toLower();
+}
+
+
+//--------------------------------------------------------
+//----Return info about heroes in alphabetical order
+//----NEW HERO CLASS
+//--------------------------------------------------------
+QString Utility::classOrder2classColor(int order)
+{
+    QString heroesColors[NUM_HEROS+1] = {"#1e5b3d", "#7f4f29", "#347c2c", "#699cd5", "#de9a3e", "#a4a4a4", "#4c4e54", "#0070DE", "#6c4177", "#912a21", "#A9A9A9"};
+    if(order < 0 || order > NUM_HEROS)    return "";
     return heroesColors[order];
 }
 
 
-QString Utility::getHeroName(int order)
+QString Utility::classOrder2classULName(int order)
 {
-    QString heroes[9] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
-    if(order>8) return "";
+    QString heroes[NUM_HEROS] = {"Demonhunter", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    if(order < 0 || order > (NUM_HEROS-1))  return "";
     return heroes[order];
 }
 
 
-QString Utility::getHeroLogNumber(int order)
+QString Utility::classOrder2classLogNumber(int order)
 {
-    QString heroesLogNumber[9] = {"06", "05", "08", "04", "09", "03", "02", "07", "01"};
+    QString heroesLogNumber[NUM_HEROS] = {"10", "06", "05", "08", "04", "09", "03", "02", "07", "01"};
+    if(order < 0 || order > (NUM_HEROS-1))  return "";
     return heroesLogNumber[order];
 }
 
 
-int Utility::heroLogNumber2HeroOrder(QString heroLog)
+int Utility::classLogNumber2classOrder(QString heroLog)
 {
-    int heroeOrder[9] = {8, 6, 5, 3, 1, 0, 7, 2, 4};
+    int heroeOrder[NUM_HEROS] = {9, 7, 6, 4, 2, 1, 8, 3, 5, 0};
     int heroLogInt = heroLog.toInt() - 1;
-    if(heroLogInt < 0 || heroLogInt > 8)    return 0;
-    else                                    return heroeOrder[heroLogInt];
+    if(heroLogInt < 0 || heroLogInt > (NUM_HEROS-1))    return -1;
+    return heroeOrder[heroLogInt];
 }
+
+
+
 
 
 QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
@@ -325,11 +339,15 @@ CardRace Utility::getRaceFromCode(QString code)
 }
 
 
+//--------------------------------------------------------
+//----NEW HERO CLASS
+//--------------------------------------------------------
 CardClass Utility::getClassFromCode(QString code)
 {
     QString value = Utility::getCardAttribute(code, "cardClass").toString();
     if(value == "")             return NEUTRAL;
     else if(value == "NEUTRAL") return NEUTRAL;
+    else if(value == "DEMONHUNTER") return DEMONHUNTER;
     else if(value == "DRUID")   return DRUID;
     else if(value == "HUNTER")  return HUNTER;
     else if(value == "MAGE")    return MAGE;
@@ -339,7 +357,6 @@ CardClass Utility::getClassFromCode(QString code)
     else if(value == "SHAMAN")  return SHAMAN;
     else if(value == "WARLOCK") return WARLOCK;
     else if(value == "WARRIOR") return WARRIOR;
-    else if(value == "DREAM")   return DREAM;
     else                        return INVALID_CLASS;
 }
 
@@ -916,9 +933,12 @@ void Utility::fixLightforgeTierlist()
 }
 
 
+//TODO revisar lightforge y heartharena usan "Demonhunter"
 void Utility::checkTierlistsCount()
 {
-    QString allHeroes[] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    QString allHeroes[NUM_HEROS];
+    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classULName(i);
+
     for(const QString &heroString: allHeroes)
     {
         qDebug()<<endl<<"-----"<<heroString<<"-----";

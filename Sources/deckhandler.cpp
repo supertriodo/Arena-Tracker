@@ -105,21 +105,21 @@ void DeckHandler::createLoadDeckTreeWidget()
     treeWidget->setHidden(true);
     treeWidget->setFixedHeight(0);
 
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUM_HEROS; i++)
     {
         loadDeckClasses[i] = new QTreeWidgetItem(treeWidget);
         loadDeckClasses[i]->setHidden(true);
         loadDeckClasses[i]->setExpanded(true);
-        loadDeckClasses[i]->setText(0, Utility::getHeroName(i));
-        loadDeckClasses[i]->setForeground(0, QBrush(QColor(Utility::getHeroColor(i))));
+        loadDeckClasses[i]->setText(0, Utility::classOrder2classULName(i));
+        loadDeckClasses[i]->setForeground(0, QBrush(QColor(Utility::classOrder2classColor(i))));
     }
 
-    loadDeckClasses[9] = new QTreeWidgetItem(treeWidget);
-    loadDeckClasses[9]->setHidden(true);
-    loadDeckClasses[9]->setExpanded(true);
-    loadDeckClasses[9]->setText(0, "Multi class");
-    loadDeckClasses[9]->setIcon(0, QIcon(":/Images/secretHunter.png"));
-    loadDeckClasses[9]->setForeground(0, QBrush(QColor(Utility::getHeroColor(9))));
+    loadDeckClasses[NUM_HEROS] = new QTreeWidgetItem(treeWidget);
+    loadDeckClasses[NUM_HEROS]->setHidden(true);
+    loadDeckClasses[NUM_HEROS]->setExpanded(true);
+    loadDeckClasses[NUM_HEROS]->setText(0, "Multi class");
+    loadDeckClasses[NUM_HEROS]->setIcon(0, QIcon(":/Images/secretHunter.png"));
+    loadDeckClasses[NUM_HEROS]->setForeground(0, QBrush(QColor(Utility::classOrder2classColor(NUM_HEROS))));
 
     connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(unselectClassItems()));
     connect(treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(hideIfDeckSelected()));
@@ -128,7 +128,7 @@ void DeckHandler::createLoadDeckTreeWidget()
 
 bool DeckHandler::isItemClass(QTreeWidgetItem *item)
 {
-    for(int i=0; i<10; i++) if(item == loadDeckClasses[i])  return true;
+    for(int i=0; i<(NUM_HEROS + 1); i++) if(item == loadDeckClasses[i])  return true;
     return false;
 }
 
@@ -667,7 +667,7 @@ void DeckHandler::redrawClassCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.getCardClass()<9)
+        if(deckCard.getCardClass()<NUM_HEROS)
         {
             deckCard.draw();
         }
@@ -943,9 +943,9 @@ void DeckHandler::setTheme()
     ui->loadDeckTreeWidget->setTheme(true);
     ui->deckListWidget->setTheme();
 
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUM_HEROS; i++)
     {
-        loadDeckClasses[i]->setIcon(0, QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+        loadDeckClasses[i]->setIcon(0, QIcon(ThemeHandler::heroFile(Utility::classOrder2classLogNumber(i))));
     }
 }
 
@@ -1029,12 +1029,9 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
         return;
     }
 
-    int indexClassArray[9] = {8,6,5,3,1,0,7,2,4};
     QString heroLog = decksJson[deckName].toObject()["hero"].toString();
-    int numberClass = heroLog.toInt()-1;
-    int indexClass;
-    if(numberClass<0 || numberClass>8)      indexClass = 9;
-    else                                    indexClass = indexClassArray[numberClass];
+    int indexClass = Utility::classLogNumber2classOrder(heroLog);
+    if(indexClass == -1)    indexClass = NUM_HEROS;
     QTreeWidgetItem *deckClass = loadDeckClasses[indexClass];
     if(deckClass->isHidden())   deckClass->setHidden(false);
 
@@ -1042,7 +1039,7 @@ void DeckHandler::addDeckToLoadTree(QString deckName)
     QTreeWidgetItem *item = new QTreeWidgetItem(deckClass);
     item->setText(0, deckName);
     item->setToolTip(0, deckName);
-    item->setForeground(0, QBrush(QColor(Utility::getHeroColor(indexClass))));
+    item->setForeground(0, QBrush(QColor(Utility::classOrder2classColor(indexClass))));
     loadDeckItemsMap[deckName] = item;
     deckClass->sortChildren(0, Qt::AscendingOrder);
 }
@@ -1112,7 +1109,7 @@ void DeckHandler::saveDeck()
             jsonObjectDeck.insert(deckCard.getCode(), static_cast<int>(deckCard.total));
             if(hero.isEmpty())
             {
-                hero = Utility::heroToLogNumber(deckCard.getCardClass());
+                hero = Utility::classEnum2classLogNumber(deckCard.getCardClass());
             }
         }
     }

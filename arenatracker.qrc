@@ -161,5 +161,8 @@
         <file>Images/bgDraftMechanicsHelpDrops.png</file>
         <file>Images/greenMechanic.png</file>
         <file>Images/redMechanic.png</file>
+        <file>Images/hero10.png</file>
+        <file>Images/bgCard1Demonhunter.png</file>
+        <file>Images/bgCard2Demonhunter.png</file>
     </qresource>
 </RCC>

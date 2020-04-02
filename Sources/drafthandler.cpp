@@ -238,12 +238,15 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 
     if(multiClassDraft)
     {
+        //TODO verificar hearthArena usa "Demonhunter" (MultiClassDraft)
         QJsonObject heroJsonObject = jsonDoc.object().value(heroString).toObject();
-        QJsonObject othersJsonObject[8];
-        QString allHeroes[] = {"Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
-        for(int j=0, i=0; j<9; j++)
+        QJsonObject othersJsonObject[NUM_HEROS-1];
+        for(int j=0, i=0; j<NUM_HEROS; j++)
         {
-            if(heroString != allHeroes[j])   othersJsonObject[i++] = jsonDoc.object().value(allHeroes[j]).toObject();
+            if(heroString != Utility::classOrder2classULName(j))
+            {
+                othersJsonObject[i++] = jsonDoc.object().value(Utility::classOrder2classULName(j)).toObject();
+            }
         }
         for(const QString &code: lightForgeTiers.keys())
         {
@@ -251,7 +254,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
             if(heroJsonObject.contains(name))   hearthArenaTiers[code] = heroJsonObject.value(name).toInt();
             else
             {
-                for(int i=0; i<8; i++)
+                for(int i=0; i<(NUM_HEROS-1); i++)
                 {
                     if(othersJsonObject[i].contains(name))
                     {
@@ -266,6 +269,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
     }
     else
     {
+        //TODO verificar hearthArena usa "Demonhunter"
         QJsonObject jsonNamesObject = jsonDoc.object().value(heroString).toObject();
         for(const QString &code: lightForgeTiers.keys())
         {
@@ -322,6 +326,7 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
             QJsonObject jsonScoreObject = jsonScore.toObject();
             QString hero = jsonScoreObject.value("Hero").toString();
 
+            //TODO revisar lightforge usa "Demonhunter"
             if(multiClassDraft || hero == nullptr || hero == heroString)
             {
                 LFtier lfTier;
@@ -379,7 +384,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     {
         startFindScreenRects();
 
-        const QString heroString = Utility::heroString2FromLogNumber(hero);
+        const QString heroString = Utility::classLogNumber2classULName(hero);
         this->lightForgeTiers = initLightForgeTiers(heroString, this->multiclassArena, drafting);
         initHearthArenaTiers(heroString, this->multiclassArena);
         synergyHandler->initSynergyCodes();
@@ -540,7 +545,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     bool alreadyDrafting = drafting;
     int heroInt = hero.toInt();
-    if(heroInt<1 || heroInt>9)
+    if(heroInt<1 || heroInt>NUM_HEROS)
     {
         emit pDebug("Begin draft of unknown hero: " + hero, DebugLevel::Error);
         emit pLog(tr("Draft: ERROR: Started draft of unknown hero ") + hero);
@@ -557,7 +562,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     clearLists(true);
 
-    this->arenaHero = Utility::heroFromLogNumber(hero);
+    this->arenaHero = Utility::classLogNumber2classEnum(hero);
     this->drafting = true;
     this->leavingArena = false;
     this->justPickedCard = "";
@@ -573,7 +578,7 @@ void DraftHandler::continueDraft()
 {
     if(!drafting && arenaHero != INVALID_CLASS)
     {
-        QString heroLog = Utility::heroToLogNumber(arenaHero);
+        QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
         arenaHandler->newArena(heroLog);
         beginDraft(heroLog, deckHandler->getDeckCardList());
     }
@@ -743,7 +748,7 @@ void DraftHandler::endDraft()
 
 void DraftHandler::heroDraftDeck(QString hero)
 {
-    CardClass newArenaHero = Utility::heroFromLogNumber(hero);//INVALID_CLASS if empty
+    CardClass newArenaHero = Utility::classLogNumber2classEnum(hero);//INVALID_CLASS if empty
 
     //Cierra mechanics si el heroe de la arena es diferente, permite cambiar de servidor
     if(draftMechanicsWindow != nullptr && this->arenaHero != newArenaHero)
@@ -791,7 +796,7 @@ void DraftHandler::buildDraftMechanicsWindow()
 {
     deleteDraftMechanicsWindow();
 
-    QString hero = Utility::heroToLogNumber(this->arenaHero);
+    QString hero = Utility::classEnum2classLogNumber(this->arenaHero);
     QList<DeckCard> *deckCardList = deckHandler->getDeckComplete();
 
     int heroInt = hero.toInt();
@@ -800,7 +805,7 @@ void DraftHandler::buildDraftMechanicsWindow()
         emit pDebug("Build draft mechanic window of incomplete deck.", DebugLevel::Warning);
         return;
     }
-    else if(heroInt<1 || heroInt>9)
+    else if(heroInt<1 || heroInt>NUM_HEROS)
     {
         emit pDebug("Build draft mechanic window of unknown hero: " + hero, DebugLevel::Error);
         return;
@@ -1805,10 +1810,11 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 }
 
 
+//TODO Verificar la web usa "DEMONHUNTER"
 void DraftHandler::showHSRwebPicks()
 {
     QString url = "https://hsreplay.net/cards/#playerClass=";
-    url += Utility::heroToHeroString(this->arenaHero);
+    url += Utility::classEnum2classUName(this->arenaHero);
     url += "&gameType=ARENA&text=";
     url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
 
@@ -2157,19 +2163,19 @@ void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
 }
 
 
-void DraftHandler::setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9])
+void DraftHandler::setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[])
 {
     this->cardsIncludedWinratesMap = cardsIncludedWinratesMap;
 }
 
 
-void DraftHandler::setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[9])
+void DraftHandler::setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[])
 {
     this->cardsIncludedDecksMap = cardsIncludedDecksMap;
 }
 
 
-void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9])
+void DraftHandler::setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[])
 {
     this->cardsPlayedWinratesMap = cardsPlayedWinratesMap;
 }

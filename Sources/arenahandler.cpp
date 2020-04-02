@@ -100,7 +100,7 @@ void ArenaHandler::createTreeWidget()
     arenaCurrent = nullptr;
     arenaCurrentHero = "";
 
-    for(int i=0; i<9; i++)  rankedTreeItem[i] = nullptr;
+    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
     casualTreeItem = nullptr;
     adventureTreeItem = nullptr;
     tavernBrawlTreeItem = nullptr;
@@ -393,7 +393,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             emit pDebug("Create GameResult from ranked with hero " + gameResult.playerHero + ".");
             emit pLog(tr("Log: New ranked game."));
 
-            if(indexHero<0||indexHero>8)  return nullptr;
+            if(indexHero<0||indexHero>(NUM_HEROS-1))    return nullptr;
 
             if(rankedTreeItem[indexHero] == nullptr)
             {
@@ -476,8 +476,8 @@ QTreeWidgetItem *ArenaHandler::showGameResultLog(const QString &logFileName)
     {
         GameResult gameResult;
         LoadingScreenState loadingScreen = Utility::getLoadingScreenFromString(match.captured(1));
-        gameResult.playerHero = Utility::heroToLogNumber(match.captured(2));
-        gameResult.enemyHero = Utility::heroToLogNumber(match.captured(3));
+        gameResult.playerHero = Utility::className2classLogNumber(match.captured(2));
+        gameResult.enemyHero = Utility::className2classLogNumber(match.captured(3));
         gameResult.isWinner = match.captured(4)=="WIN";
         gameResult.isFirst = match.captured(5)=="FIRST";
 
@@ -534,7 +534,7 @@ void ArenaHandler::showArenaLog(const QString &logFileName)
     QRegularExpressionMatch match;
     if(logFileName.contains(QRegularExpression("DRAFT \\w+-\\d+ \\d+-\\d+ (\\w+)(\\.\\w+)?\\.arenatracker"), &match))
     {
-        QString playerHero = Utility::heroToLogNumber(match.captured(1));
+        QString playerHero = Utility::className2classLogNumber(match.captured(1));
         showArena(playerHero);
         if(!match.captured(2).isEmpty())    setRowColor(this->arenaCurrent, QColor(ThemeHandler::gamesOnZ2HColor()));
         linkDraftLogToArenaCurrent(logFileName);
@@ -701,7 +701,7 @@ void ArenaHandler::clearAllGames()
     arenaCurrent = nullptr;
     arenaCurrentHero = "";
 
-    for(int i=0; i<9; i++)  rankedTreeItem[i] = nullptr;
+    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
     casualTreeItem = nullptr;
     adventureTreeItem = nullptr;
     tavernBrawlTreeItem = nullptr;

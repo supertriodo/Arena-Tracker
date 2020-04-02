@@ -24,6 +24,7 @@ using namespace cv;
 #define ANIMATION_TIME 750
 #define SHOW_EASING_CURVE QEasingCurve::OutCubic
 #define HIDE_EASING_CURVE QEasingCurve::InCubic
+#define NUM_HEROS 10
 
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
@@ -79,15 +80,16 @@ private:
 
 //Metodos
 public:
-    static QString heroToLogNumber(const QString &hero);
-    static QString heroToLogNumber(CardClass cardClass);
-    static QString heroToHeroString(CardClass cardClass);
-    static CardClass heroFromLogNumber(QString hero);
-    static QString heroStringFromLogNumber(QString hero);
-    static QString heroString2FromLogNumber(QString hero);
-    static QString getHeroColor(int order);
-    static QString getHeroName(int order);
-    static QString getHeroLogNumber(int order);
+    static QString className2classLogNumber(const QString &hero);
+    static QString classEnum2classLogNumber(CardClass cardClass);
+    static QString classEnum2classUName(CardClass cardClass);
+    static CardClass classLogNumber2classEnum(QString hero);
+    static QString classLogNumber2classUName(QString hero);
+    static QString classLogNumber2classULName(QString hero);
+    static QString classLogNumber2classLName(QString hero);
+    static QString classOrder2classColor(int order);
+    static QString classOrder2classULName(int order);
+    static QString classOrder2classLogNumber(int order);
     static QString whizbangDeckString(QString whizbangDeckCode);
     static CardClass whizbangHero(QString whizbangDeckCode);
     static QJsonValue getCardAttribute(QString code, QString attribute);
@@ -119,7 +121,7 @@ public:
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
     static QString themesPath();
-    static int heroLogNumber2HeroOrder(QString heroLog);
+    static int classLogNumber2classOrder(QString heroLog);
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets);
     static void showItemsLayout(QLayout *layout);

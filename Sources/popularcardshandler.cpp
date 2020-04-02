@@ -91,7 +91,7 @@ void PopularCardsHandler::redrawClassCards()
 {
     for(PopularCard &popularCard: popularCardList)
     {
-        if(popularCard.getCardClass()<9)
+        if(popularCard.getCardClass()<NUM_HEROS)
         {
             popularCard.draw();
         }
@@ -152,13 +152,13 @@ void PopularCardsHandler::findCardEntered(QListWidgetItem * item)
 }
 
 
-void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[9])
+void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[])
 {
     this->cardsPickratesMap = cardsPickratesMap;
 }
 
 
-void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[9], QStringList codeList,
+void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList,
                                                 SynergyHandler *synergyHandler)
 {
     synergyHandler->initSynergyCodes();
@@ -173,7 +173,7 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
             switch(cardClass)
             {
                 case NEUTRAL:
-                    for(int i=0; i<9; i++)
+                    for(int i=0; i<NUM_HEROS; i++)
                     {
                         if(cardsPickratesMap[i][code]>=10)
                         {
@@ -186,7 +186,7 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                     }
                 break;
                 default:
-                    if(cardClass<9 && cardsPickratesMap[cardClass][code]>=10)
+                    if(cardClass<NUM_HEROS && cardsPickratesMap[cardClass][code]>=10)
                     {
                         if(cost>4 || synergyHandler->isDrop2(code, cost) ||
                             synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
@@ -201,9 +201,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
 
     synergyHandler->clearLists(true);
 
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUM_HEROS; i++)
     {
-        for(int j=0; j<9; j++)
+        for(int j=0; j<NUM_HEROS; j++)
         {
             qSort(cardsByPickrate[i][j].begin(), cardsByPickrate[i][j].end(), [=](const QString &code1, const QString &code2)
             {
@@ -242,7 +242,7 @@ void PopularCardsHandler::newTurn(bool isPlayerTurn, int numTurn)
 void PopularCardsHandler::showPopularCards()
 {
     if(!patreonVersion || popularCardsShown == 0 || !inArena ||
-            enemyMana < 2 || enemyMana > 10 || enemyClass < 0 || enemyClass > 8)
+            enemyMana < 2 || enemyMana > 10 || enemyClass < 0 || enemyClass > (NUM_HEROS-1))
     {
         clearAndHide();
         return;
@@ -270,7 +270,7 @@ void PopularCardsHandler::showPopularCards()
 
 void PopularCardsHandler::setEnemyClass(QString hero)
 {
-    this->enemyClass = Utility::heroFromLogNumber(hero);
+    this->enemyClass = Utility::classLogNumber2classEnum(hero);
 }
 
 

@@ -634,12 +634,17 @@ void MainWindow::processHSRCardClassInt(const QJsonArray &jsonArray, const QStri
 HSRCardsMaps MainWindow::processHSRCardsIncluded(const QJsonObject &jsonObject)
 {
     HSRCardsMaps hsrCardsMaps;
-    hsrCardsMaps.cardsPickratesMap = new QMap<QString, float>[9];
-    hsrCardsMaps.cardsIncludedWinratesMap = new QMap<QString, float>[9];
-    hsrCardsMaps.cardsIncludedDecksMap = new QMap<QString, int>[9];
+    hsrCardsMaps.cardsPickratesMap = new QMap<QString, float>[NUM_HEROS];
+    hsrCardsMaps.cardsIncludedWinratesMap = new QMap<QString, float>[NUM_HEROS];
+    hsrCardsMaps.cardsIncludedDecksMap = new QMap<QString, int>[NUM_HEROS];
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
+    //TODO verificar la api usa "DEMONHUNTER"
+    //--------------------------------------------------------
+    //----NEW HERO CLASS
+    //--------------------------------------------------------
+    processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[DEMONHUNTER]);
     processHSRCardClassDouble(data.value("DRUID").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[DRUID]);
     processHSRCardClassDouble(data.value("HUNTER").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[HUNTER]);
     processHSRCardClassDouble(data.value("MAGE").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[MAGE]);
@@ -650,6 +655,7 @@ HSRCardsMaps MainWindow::processHSRCardsIncluded(const QJsonObject &jsonObject)
     processHSRCardClassDouble(data.value("WARLOCK").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARLOCK]);
     processHSRCardClassDouble(data.value("WARRIOR").toArray(), "popularity", hsrCardsMaps.cardsPickratesMap[WARRIOR]);
 
+    processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[DEMONHUNTER]);
     processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[DRUID]);
     processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[HUNTER]);
     processHSRCardClassDouble(data.value("MAGE").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[MAGE]);
@@ -660,6 +666,7 @@ HSRCardsMaps MainWindow::processHSRCardsIncluded(const QJsonObject &jsonObject)
     processHSRCardClassDouble(data.value("WARLOCK").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[WARLOCK]);
     processHSRCardClassDouble(data.value("WARRIOR").toArray(), "winrate", hsrCardsMaps.cardsIncludedWinratesMap[WARRIOR]);
 
+    processHSRCardClassInt(data.value("DEMONHUNTER").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[DEMONHUNTER]);
     processHSRCardClassInt(data.value("DRUID").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[DRUID]);
     processHSRCardClassInt(data.value("HUNTER").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[HUNTER]);
     processHSRCardClassInt(data.value("MAGE").toArray(), "decks", hsrCardsMaps.cardsIncludedDecksMap[MAGE]);
@@ -712,10 +719,15 @@ void MainWindow::processPopularCardsHandlerPickrates()
 
 QMap<QString, float> * MainWindow::processHSRCardsPlayed(const QJsonObject &jsonObject)
 {
-    QMap<QString, float> * cardsWinratesMap = new QMap<QString, float>[9];
+    QMap<QString, float> * cardsWinratesMap = new QMap<QString, float>[NUM_HEROS];
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
+    //TODO verificar la api usa "DEMONHUNTER"
+    //--------------------------------------------------------
+    //----NEW HERO CLASS
+    //--------------------------------------------------------
+    processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "winrate", cardsWinratesMap[DEMONHUNTER]);
     processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate", cardsWinratesMap[DRUID]);
     processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate", cardsWinratesMap[HUNTER]);
     processHSRCardClassDouble(data.value("MAGE").toArray(), "winrate", cardsWinratesMap[MAGE]);
@@ -2468,7 +2480,7 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             removeNonCompleteDraft();
 
             QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
-            QString playerHero = Utility::heroStringFromLogNumber(match.captured(1));
+            QString playerHero = Utility::classLogNumber2classUName(match.captured(1));
             QString fileName = "DRAFT " + timeStamp + " " + playerHero + ".arenatracker";
 
             QFile logDraft(Utility::gameslogPath() + "/" + fileName);
@@ -3021,10 +3033,10 @@ void MainWindow::addDraftMenu(QPushButton *button)
 
     QSignalMapper* mapper = new QSignalMapper(button);
 
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUM_HEROS; i++)
     {
-        QAction *action = newArenaMenu->addAction(Utility::getHeroName(i));
-        mapper->setMapping(action, Utility::getHeroName(i));
+        QAction *action = newArenaMenu->addAction(Utility::classOrder2classULName(i));
+        mapper->setMapping(action, Utility::classOrder2classULName(i));
         connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
     }
 
@@ -3046,7 +3058,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     {
         pDebug("Manual draft: " + hero);
         pLog(tr("Menu: Force draft: ") + hero);
-        QString heroLog = Utility::heroToLogNumber(hero);
+        QString heroLog = Utility::className2classLogNumber(hero);
         draftHandler->beginDraft(heroLog, deckHandler->getDeckCardList());
     }
 }
@@ -3609,7 +3621,7 @@ void MainWindow::updateButtonsTheme()
     QList<QAction *> actions = ui->configButtonForceDraft->menu()->actions();
     for(int i=0; i<actions.count(); i++)
     {
-        actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::getHeroLogNumber(i))));
+        actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::classOrder2classLogNumber(i))));
     }
 
     ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
@@ -4681,6 +4693,9 @@ void MainWindow::testDelay()
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
 //Ejemplo gen-gen V_JADE_GOLEM/jadeGolemGen
 //Marcado codigo con //New Synergy Step
+
+//NUEVOS HERO CLASS
+//Buscar NEW HERO CLASS
 
 //ELIMINAR NAMES synergiesNames.json --> synergies.json
 // +\w[ \w\.\,\'\:\-\!]+"

@@ -26,7 +26,7 @@ private:
     int popularCardsShown;
     int enemyMana;
     int enemyOverloadOwed;
-    QList<QString> cardsByPickrate[9][9];
+    QList<QString> cardsByPickrate[NUM_HEROS][NUM_HEROS];
     QMap<QString, float> *cardsPickratesMap;
 
 

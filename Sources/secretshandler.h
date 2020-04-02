@@ -63,8 +63,8 @@ private:
     bool showSecrets;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     QStringList arenaSets;
-    //List of code secrets ordered by pickrate for all 9 classes, used as options for a new unknown secret played.
-    QList<QString> secretsByPickrate[9];
+    //List of code secrets ordered by pickrate for all classes, used as options for a new unknown secret played.
+    QList<QString> secretsByPickrate[NUM_HEROS];
     QMap<QString, float> *cardsPickratesMap;
 
 

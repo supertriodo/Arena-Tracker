@@ -30,7 +30,7 @@ private:
     PlanHandler *planHandler;
     Ui::Extended *ui;
     QTreeWidgetItem *arenaHomeless, *arenaCurrent;
-    QTreeWidgetItem *rankedTreeItem[9];
+    QTreeWidgetItem *rankedTreeItem[NUM_HEROS];
     QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem, *casualTreeItem;
     QString arenaCurrentHero;
     QMap<QTreeWidgetItem *, QString> replayLogsMap;

@@ -346,7 +346,7 @@ void SecretsHandler::redrawClassCards()
     {
         foreach(SecretCard secretCard, activeSecret.children)
         {
-            if(secretCard.getCardClass()<9)   secretCard.draw();
+            if(secretCard.getCardClass()<NUM_HEROS)   secretCard.draw();
         }
     }
 }
@@ -809,7 +809,7 @@ void SecretsHandler::updateShowSecrets()
 }
 
 
-void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[9])
+void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[])
 {
     this->cardsPickratesMap = cardsPickratesMap;
 }
@@ -830,7 +830,7 @@ void SecretsHandler::createSecretsByPickrate()
 }
 
 
-void SecretsHandler::sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[9])
+void SecretsHandler::sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[])
 {
     qSort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
     {

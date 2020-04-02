@@ -84,8 +84,8 @@ void TrackobotUploader::uploadNextXlsResult()
 {
     ArenaItem arenaItem = arenaItemXlsList.takeFirst();
     GameResult gameResult = arenaItem.gameResult;
-    QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
-                    Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
+    QString text =  Utility::classLogNumber2classULName(gameResult.playerHero) + " vs " +
+                    Utility::classLogNumber2classULName(gameResult.enemyHero) + " uploaded";
     emit advanceProgressBar(arenaItemXlsList.count(), text);
     uploadResult(gameResult, arena, QDateTime::currentMSecsSinceEpoch()/1000, arenaItem.dateTime, QJsonArray());
     if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar("All games uploaded");
@@ -217,13 +217,14 @@ void TrackobotUploader::openTBProfile()
 }
 
 
+//TODO verificar trackobot acepta "demonhunter"
 void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen,
                                      qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory)
 {
     QJsonObject result;
     result["coin"]          = !gameResult.isFirst;
-    result["hero"]          = Utility::heroStringFromLogNumber(gameResult.playerHero).toLower();
-    result["opponent"]      = Utility::heroStringFromLogNumber(gameResult.enemyHero).toLower();
+    result["hero"]          = Utility::classLogNumber2classLName(gameResult.playerHero);
+    result["opponent"]      = Utility::classLogNumber2classLName(gameResult.enemyHero);
     result["win"]           = gameResult.isWinner;
     result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
     result["duration"]      = QDateTime::currentMSecsSinceEpoch()/1000 - startGameEpoch;
@@ -241,8 +242,8 @@ void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState l
     networkManager->post(request, data);
     emit pDebug("Uploading result...");
 
-    QString text =  Utility::heroString2FromLogNumber(gameResult.playerHero) + " vs " +
-                    Utility::heroString2FromLogNumber(gameResult.enemyHero) + " uploaded";
+    QString text =  Utility::classLogNumber2classULName(gameResult.playerHero) + " vs " +
+                    Utility::classLogNumber2classULName(gameResult.enemyHero) + " uploaded";
     if(arenaItemXlsList.isEmpty())  emit showMessageProgressBar(text);
 }
 
@@ -294,7 +295,7 @@ QList<ArenaItem> TrackobotUploader::extractXls(xlsWorkBook* pWB)
                 ArenaItem arenaItem;
                 arenaItem.dateTime = dateTime;
                 arenaItem.gameResult.playerHero = playerHero;
-                arenaItem.gameResult.enemyHero = Utility::heroToLogNumber(
+                arenaItem.gameResult.enemyHero = Utility::className2classLogNumber(
                             getStringCellXls(row, 3).mid(3).toLower()
                             );
                 arenaItem.gameResult.isWinner = (getStringCellXls(row, 4) == "Win");
@@ -308,7 +309,7 @@ QList<ArenaItem> TrackobotUploader::extractXls(xlsWorkBook* pWB)
             dateTime = getRowDateXls(row);
             if(dateTime.isValid())
             {
-                playerHero = Utility::heroToLogNumber(getStringCellXls(row, 1).toLower());
+                playerHero = Utility::className2classLogNumber(getStringCellXls(row, 1).toLower());
             }
             else
             {

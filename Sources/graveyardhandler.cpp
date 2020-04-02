@@ -330,7 +330,7 @@ void GraveyardHandler::redrawClassCards()
 {
     foreach(DeckCard deckCard, deckCardListPlayer)
     {
-        if(deckCard.getCardClass()<9)
+        if(deckCard.getCardClass()<NUM_HEROS)
         {
             deckCard.draw();
         }
@@ -338,7 +338,7 @@ void GraveyardHandler::redrawClassCards()
 
     foreach(DeckCard deckCard, deckCardListEnemy)
     {
-        if(deckCard.getCardClass()<9)
+        if(deckCard.getCardClass()<NUM_HEROS)
         {
             deckCard.draw();
         }

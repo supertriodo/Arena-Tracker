@@ -152,7 +152,7 @@ void DrawCardHandler::redrawClassCards()
 {
     foreach(DrawCard drawCard, drawCardList)
     {
-        if(drawCard.getCardClass()<9)
+        if(drawCard.getCardClass()<NUM_HEROS)
         {
             drawCard.draw();
         }

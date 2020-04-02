@@ -12,9 +12,12 @@
 
 enum CardRarity {INVALID_RARITY, COMMON, RARE, EPIC, LEGENDARY};
 enum CardType {INVALID_TYPE, HERO, MINION, SPELL, ENCHANTMENT, WEAPON, HERO_POWER};
-enum CardClass {DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, DREAM, INVALID_CLASS, NEUTRAL};
 enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,
                WORGEN, GOBLIN2, MURLOC, DEMON, SCOURGE, MECHANICAL, ELEMENTAL, OGRE, BEAST, TOTEM, NERUBIAN, PIRATE, DRAGON};
+//--------------------------------------------------------
+//----NEW HERO CLASS
+//--------------------------------------------------------
+enum CardClass {DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, INVALID_CLASS, NEUTRAL};
 
 
 class DeckCard
@@ -63,7 +66,6 @@ public:
     QString getName();
     CardRarity getRarity();
     CardClass getCardClass();
-    QString getHeroLogNumber();
     CardRace getRace();
     int getCost();
     void setCode(QString code);

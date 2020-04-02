@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QJsonObject>
+#include "utility.h"
 
 class ThemeHandler
 {
@@ -42,7 +43,7 @@ private:
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
     static QString buttonGraveyardPlayerFile_, buttonGraveyardEnemyFile_;
     static QString buttonGraveyardMinionsFile_, buttonGraveyardWeaponsFile_;
-    static QString bgCard1Files_[10], bgCard2Files_[10], heroFiles_[9];
+    static QString bgCard1Files_[NUM_HEROS+1], bgCard2Files_[NUM_HEROS+1], heroFiles_[NUM_HEROS];
     static QString bgTotalAttackFile_;
     static QString branchClosedFile_, branchOpenFile_;
     static QString coinFile_, firstFile_;
@@ -111,8 +112,8 @@ public:
     static QString bigFont();
     static int cardsFontOffsetY();
     static QString tabArenaFile();
-    static QString bgCard1File(int order=9);
-    static QString bgCard2File(int order=9);
+    static QString bgCard1File(int order=NUM_HEROS);
+    static QString bgCard2File(int order=NUM_HEROS);
     static QString branchClosedFile();
     static QString branchOpenFile();
     static QString buttonRemoveDeckFile();

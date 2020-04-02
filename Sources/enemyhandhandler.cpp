@@ -277,7 +277,7 @@ void EnemyHandHandler::redrawClassCards()
 {
     foreach(HandCard handCard, enemyHandList)
     {
-        if(handCard.getCardClass()<9)
+        if(handCard.getCardClass()<NUM_HEROS)
         {
             handCard.draw();
         }

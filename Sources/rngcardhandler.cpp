@@ -197,7 +197,7 @@ void RngCardHandler::redrawClassCards()
 {
     foreach(RngCard rngCard, rngCardList)
     {
-        if(rngCard.getCardClass()<9)
+        if(rngCard.getCardClass()<NUM_HEROS)
         {
             rngCard.draw();
         }

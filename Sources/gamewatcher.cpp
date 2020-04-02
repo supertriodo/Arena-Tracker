@@ -445,13 +445,13 @@ void GameWatcher::processPowerHero(QString &line, qint64 numLine)
     {
         if(whizbangPlayerID == "1") {
             whizbangDeckCode1 = match->captured(1);
-            hero1 = Utility::heroToLogNumber(Utility::whizbangHero(whizbangDeckCode1));
+            hero1 = Utility::classEnum2classLogNumber(Utility::whizbangHero(whizbangDeckCode1));
             emit pDebug("Found whizbandDeckCode 1: " + whizbangDeckCode1 + ", Hero 1: " + hero1, numLine);
         }
         else //if(whizbangPlayerID == "2")
         {
             whizbangDeckCode2 = match->captured(1);
-            hero2 = Utility::heroToLogNumber(Utility::whizbangHero(whizbangDeckCode2));
+            hero2 = Utility::classEnum2classLogNumber(Utility::whizbangHero(whizbangDeckCode2));
             emit pDebug("Found whizbandDeckCode 2: " + whizbangDeckCode2 + ", Hero 2: " + hero2, numLine);
         }
     }
@@ -1160,7 +1160,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyHero((playerID == 1)?hero2:hero1);
                 emit pDebug("Found playerID: " + player, numLine);
 
-                secretHero = Utility::heroFromLogNumber((playerID == 1)?hero1:hero2);
+                secretHero = Utility::classLogNumber2classEnum((playerID == 1)?hero1:hero2);
 
                 if(playerTag.isEmpty())
                 {
@@ -1567,13 +1567,13 @@ QString GameWatcher::createGameLog()
     QString playerHero, enemyHero;
     if(playerID == 1)
     {
-        playerHero = Utility::heroStringFromLogNumber(hero1);
-        enemyHero = Utility::heroStringFromLogNumber(hero2);
+        playerHero = Utility::classLogNumber2classUName(hero1);
+        enemyHero = Utility::classLogNumber2classUName(hero2);
     }
     else
     {
-        playerHero = Utility::heroStringFromLogNumber(hero2);
-        enemyHero = Utility::heroStringFromLogNumber(hero1);
+        playerHero = Utility::classLogNumber2classUName(hero2);
+        enemyHero = Utility::classLogNumber2classUName(hero1);
     }
     QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win + " " + coin + ".arenatracker";
 

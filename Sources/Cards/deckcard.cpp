@@ -456,12 +456,6 @@ CardClass DeckCard::getCardClass()
 }
 
 
-QString DeckCard::getHeroLogNumber()
-{
-    return Utility::heroToLogNumber(cardClass);
-}
-
-
 CardRace DeckCard::getRace()
 {
     return cardRace;

@@ -29,7 +29,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     bool showManaLimits;
-    QTreeWidgetItem *loadDeckClasses[10];
+    QTreeWidgetItem *loadDeckClasses[NUM_HEROS + 1];
     QMap<QString, QTreeWidgetItem *> loadDeckItemsMap;
     EnemyDeckHandler *enemyDeckHandler;
     QString lastCreatedByCode;

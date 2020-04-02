@@ -53,7 +53,7 @@ void EnemyDeckHandler::reset()
 
 void EnemyDeckHandler::setEnemyClass(QString hero)
 {
-    this->enemyClass = Utility::heroFromLogNumber(hero);
+    this->enemyClass = Utility::classLogNumber2classEnum(hero);
 }
 
 
@@ -253,7 +253,7 @@ void EnemyDeckHandler::redrawClassCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.getCardClass()<9)
+        if(deckCard.getCardClass()<NUM_HEROS)
         {
             deckCard.draw();
         }

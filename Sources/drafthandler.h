@@ -169,9 +169,9 @@ public:
     QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
     void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
-    void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[9]);
+    void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
-    void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[9]);
+    void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[]);
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
