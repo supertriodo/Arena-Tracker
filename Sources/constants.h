@@ -46,6 +46,7 @@
 #define WANDERING_MONSTER QString("LOOT_079")
 #define RAT_TRAP QString("GIL_577")
 #define PRESSURE_PLATE QString("ULD_152")
+#define PACK_TACTICS QString("BT_203")
 
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
@@ -61,10 +62,14 @@
 #define ICE_BLOCK QString("EX1_295")
 #define EXPLOSIVE_RUNES QString("LOOT_101")
 #define FLAME_WARD QString("ULD_239")
+#define NETHERWIND_PORTAL QString("BT_003")
 
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")
 #define EVASION QString("LOOT_214")
+#define AMBUSH QString("BT_707")
+#define BAMBOOZLE QString("BT_042")
+#define DIRTY_TRICKS QString("BT_709")
 
 //Cartas
 #define MAD_SCIENTIST "FP1_004"

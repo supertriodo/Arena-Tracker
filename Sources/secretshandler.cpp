@@ -220,6 +220,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
     {
         switch(hero)
         {
+        //NUEVO SECRETO 1 - construido - si dudamos ponlo primero
             case PALADIN:
                 //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
                 //COMMON
@@ -232,6 +233,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
                 //RARE
+                unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
                 unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
                 //EPIC
@@ -259,6 +261,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
 
             case MAGE:
                 //COMMON
+                unknownSecretPlayedAddOption(NETHERWIND_PORTAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
                 unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
@@ -279,10 +282,13 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
 
             case ROGUE:
                 //COMMON
+                unknownSecretPlayedAddOption(DIRTY_TRICKS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
                 //RARE
+                unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
                 //EPIC
+                unknownSecretPlayedAddOption(BAMBOOZLE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
             break;
 
@@ -456,6 +462,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     }
 
 
+    //NUEVO SECRETO 2 - cartas a mano
     //Reveal cards in Hand
     if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())       emit revealCreatedByCard(lastMinionDead, code, 1);
     else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
@@ -535,17 +542,21 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
 }
 
 
+//NUEVO SECRETO 3 condicion trigger
 void SecretsHandler::playerSpellPlayed(QString code)
 {
     if(lastSpellPlayed.isEmpty())    lastSpellPlayed = code;
 
     discardSecretOptionNow(COUNTERSPELL);
     discardSecretOptionNow(MANA_BIND);
+    discardSecretOptionNow(NETHERWIND_PORTAL);
 
     discardSecretOptionNow(CAT_TRICK);
     discardSecretOptionNow(PRESSURE_PLATE);
 
     discardSecretOptionNow(NEVER_SURRENDER);
+
+    discardSecretOptionNow(DIRTY_TRICKS);
 }
 
 
@@ -630,6 +641,7 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     }
     else    discardSecretOptionNow(REPENTANCE);
 
+    discardSecretOptionNow(AMBUSH);
 }
 
 
@@ -709,11 +721,14 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
         {
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
+            discardSecretOptionNow(PACK_TACTICS);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
 
             discardSecretOptionNow(SPLITTING_IMAGE);
+
+            discardSecretOptionNow(BAMBOOZLE);
         }
     }
     else
@@ -743,11 +758,14 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(FREEZING_TRAP);
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
+            discardSecretOptionNow(PACK_TACTICS);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
 
             discardSecretOptionNow(SPLITTING_IMAGE);
+
+            discardSecretOptionNow(BAMBOOZLE);
         }
     }
 }
@@ -815,18 +833,21 @@ void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap
 }
 
 
+//NUEVO SECRETO 4 arena - ponlo al final
 void SecretsHandler::createSecretsByPickrate()
 {
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM;
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
-                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP << PRESSURE_PLATE;
+                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP
+                              << PRESSURE_PLATE << PACK_TACTICS;
 
     secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
-                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << FLAME_WARD;
+                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK
+                            << FLAME_WARD << NETHERWIND_PORTAL;
 
-    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION;
+    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION << AMBUSH << BAMBOOZLE << DIRTY_TRICKS;
 }
 
 
