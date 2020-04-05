@@ -72,6 +72,8 @@
 #define DIRTY_TRICKS QString("BT_709")
 
 //Cartas
+#define VARIAN_WRYNN "AT_072"
+#define GNOMISH_EXPERIMENTER "GVG_092"
 #define MAD_SCIENTIST "FP1_004"
 #define THE_COIN "GAME_005"
 #define SWIPE "CS2_012"
