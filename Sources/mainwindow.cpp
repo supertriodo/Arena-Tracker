@@ -1622,6 +1622,9 @@ void MainWindow::closeApp()
     resetSizePlan();
     draftHandler->endDraftHideMechanicsWindow();
     draftHandler->deleteDraftMechanicsWindow();
+    hide();
+    if(futureProcessHSRCardsIncluded.isRunning())   futureProcessHSRCardsIncluded.waitForFinished();
+    if(futureProcessHSRCardsPlayed.isRunning())     futureProcessHSRCardsPlayed.waitForFinished();
     close();
 }
 
