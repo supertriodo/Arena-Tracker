@@ -2534,5 +2534,9 @@
 "tt_010" : [ "Spellbender" ],
 "DIRECT_LINKS":
 {
+  "BT_020 Aldor Attendant": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
+    "BT_025 Libram of Wisdom"],
+  "BT_026 Aldor Truthseeker": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
+    "BT_025 Libram of Wisdom"]
 }
 }
