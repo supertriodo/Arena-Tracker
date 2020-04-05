@@ -191,7 +191,10 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
 void HSCardDownloader::reuseOldHero(QString code)
 {
-    if(code.length() > 7 && code.startsWith("HERO_0"))
+    //--------------------------------------------------------
+    //----NEW HERO CLASS
+    //--------------------------------------------------------
+    if(code.length() > 7 && (code.startsWith("HERO_0") || code.startsWith("HERO_1")))
     {
         QString oldHeroCode = code.left(7);
         QFile heroFile(Utility::hscardsPath() + "/" + oldHeroCode + ".png");

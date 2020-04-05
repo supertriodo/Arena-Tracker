@@ -803,7 +803,10 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
 
             for(const QString &file: files)
             {
-                if(file.startsWith("HERO_0"))
+                //--------------------------------------------------------
+                //----NEW HERO CLASS
+                //--------------------------------------------------------
+                if(file.startsWith("HERO_0") || file.startsWith("HERO_1"))
                 {
                     dir.remove(file);
                     pDebug(file + " removed.");
