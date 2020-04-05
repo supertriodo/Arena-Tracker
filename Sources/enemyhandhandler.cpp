@@ -566,53 +566,19 @@ bool EnemyHandHandler::isClonerCard(QString code)
 
 bool EnemyHandHandler::isDrawSpecificCards()
 {
-    if(lastCreatedByCode == SENSE_DEMONS)       return true;
-    if(lastCreatedByCode == HOLY_WRATH)         return true;
-    if(lastCreatedByCode == ICE_FISHING)        return true;
-    if(lastCreatedByCode == FORGE_OF_SOULS)     return true;
-    if(lastCreatedByCode == HOWLING_COMMANDER)  return true;
-    if(lastCreatedByCode == THE_CURATOR)        return true;
-    if(lastCreatedByCode == ARCANOLOGIST)       return true;
-    if(lastCreatedByCode == BRIGHTEYED_SCOUT)   return true;
-    if(lastCreatedByCode == TOLVIR_WARDEN)      return true;
-    if(lastCreatedByCode == SMALLTIME_RECRUITS) return true;
-    if(lastCreatedByCode == WONDROUS_WAND)      return true;
-    if(lastCreatedByCode == RAVEN_FAMILIAR)     return true;
-    if(lastCreatedByCode == CAVERN_SHINYFINDER) return true;
-    if(lastCreatedByCode == ELVEN_MINSTREL)     return true;
-    if(lastCreatedByCode == CURSED_CASTAWAY)    return true;
-    if(lastCreatedByCode == BOGSHAPER)          return true;
-    if(lastCreatedByCode == TOWN_CRIER)         return true;
-    if(lastCreatedByCode == DOLLMASTER_DORIAN)  return true;
-    if(lastCreatedByCode == COUNTESS_ASHMORE)   return true;
-    if(lastCreatedByCode == SANDBINDER)         return true;
-    if(lastCreatedByCode == WITCHWOOD_PIPER)    return true;
-    if(lastCreatedByCode == SUBJECT_9)          return true;
-    if(lastCreatedByCode == STORM_CHASER)       return true;
-    if(lastCreatedByCode == DEAD_RINGER)        return true;
-    if(lastCreatedByCode == PRISMATIC_LENS)     return true;
-    if(lastCreatedByCode == CRYSTOLOGY)         return true;
-    if(lastCreatedByCode == JUICY_PSYCHMELON)   return true;
-    if(lastCreatedByCode == PREDATORY_INSTINCTS)return true;
-    if(lastCreatedByCode == BWONSAMDI_THE_DEAD) return true;
-    if(lastCreatedByCode == MURLOC_TASTYFIN)    return true;
-    if(lastCreatedByCode == SPIRIT_OF_THE_FROG) return true;
-    if(lastCreatedByCode == AKALI_THE_RHINO)    return true;
-    if(lastCreatedByCode == MASTERS_CALL)       return true;
-    if(lastCreatedByCode == RAIDING_PARTY)      return true;
-    if(lastCreatedByCode == KINGS_ELEKK)        return true;
-    if(lastCreatedByCode == CAPTAINS_PARROT)    return true;
-    if(lastCreatedByCode == ARCANE_FLETCHER)    return true;
-    if(lastCreatedByCode == URSATRON)           return true;
-    if(lastCreatedByCode == CALL_TO_ADVENTURE)  return true;
-    if(lastCreatedByCode == JEPETTO_JOYBUZZ)    return true;
-    if(lastCreatedByCode == SALHETS_PRIDE)      return true;
-    if(lastCreatedByCode == ANCIENT_MYSTERIES)  return true;
-    if(lastCreatedByCode == DIVING_GRYPHON)     return true;
-    if(lastCreatedByCode == ANCHARRR)           return true;
-    if(lastCreatedByCode == NECRIUM_APOTHECARY) return true;
-    if(lastCreatedByCode == ELEMENTAL_ALLIES)   return true;
+    QStringList candidates = {
+        SENSE_DEMONS,HOLY_WRATH,ICE_FISHING,FORGE_OF_SOULS,HOWLING_COMMANDER,THE_CURATOR,ARCANOLOGIST,BRIGHTEYED_SCOUT
+        ,TOLVIR_WARDEN,SMALLTIME_RECRUITS,WONDROUS_WAND,RAVEN_FAMILIAR,CAVERN_SHINYFINDER,ELVEN_MINSTREL,CURSED_CASTAWAY
+        ,BOGSHAPER,TOWN_CRIER,DOLLMASTER_DORIAN,COUNTESS_ASHMORE,SANDBINDER,WITCHWOOD_PIPER,BOOK_OF_SPECTERS
+        ,SUBJECT_9,STORM_CHASER,DEAD_RINGER,PRISMATIC_LENS,CRYSTOLOGY,JUICY_PSYCHMELON,PREDATORY_INSTINCTS,BWONSAMDI_THE_DEAD
+        ,MURLOC_TASTYFIN,SPIRIT_OF_THE_FROG,AKALI_THE_RHINO,MASTERS_CALL,RAIDING_PARTY,KINGS_ELEKK,CAPTAINS_PARROT
+        ,ARCANE_FLETCHER,URSATRON,CALL_TO_ADVENTURE,JEPETTO_JOYBUZZ,SALHETS_PRIDE,ANCIENT_MYSTERIES
+        ,DIVING_GRYPHON,ANCHARRR,NECRIUM_APOTHECARY,ELEMENTAL_ALLIES,GALADROND_THE_UNBREAKABLE,GALADROND_THE_UNBREAKABLE2
+        ,GALADROND_THE_UNBREAKABLE3,GALADROND_THE_NIGHTMARE,GALADROND_THE_NIGHTMARE2,GALADROND_THE_NIGHTMARE3,KRONX_DRAGONHOOF
+        ,TRANSMOGRIFIER,TENTACLED_MENACE,STOWAWAY
+        ,STARSCRYER,CORSAIR_CACHE,FUNGAL_FORTUNES,SCAVENGERS_INGENUITY,THE_DARK_PORTAL,SKULL_OF_GULDAN,VASHJ_PRIME
+    };
 
-    return false;
+    return candidates.contains(lastCreatedByCode);
 }
 

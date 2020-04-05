@@ -1479,7 +1479,7 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("DEMON_HUNTER_INITIATE"))
+    for(const QString &code: Utility::getSetCodes("BLACK_TEMPLE"))
 //    for(const QString &code: Utility::getStandardCodes())
 //    for(const QString &code: Utility::getWildCodes())
     {
@@ -1502,12 +1502,12 @@ void SynergyHandler::testSynergies()
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
 //containsAll(text, "damage randomly")
-///Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
+///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 //containsAll(text, "gain mana this turn only")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
 //containsAll(text, "spend all your mana") || text.contains("cost")
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//containsAll(text, "draw from your deck")
+//containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //containsAll(text, "draw cop")
             )
@@ -1516,6 +1516,11 @@ void SynergyHandler::testSynergies()
             qDebug()<<++num<<code + " " + Utility::cardEnNameFromCode(code)<<endl<<text;
 //            debugSynergiesCode(code, ++num);
 //            qDebug()<<mechanics<<endl<<referencedTags;
+
+            QDesktopServices::openUrl(QUrl(
+                "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                ));
+            QThread::msleep(100);
         }
         Q_UNUSED(cardType);
         Q_UNUSED(cardClass);
@@ -1530,7 +1535,7 @@ void SynergyHandler::testSynergies()
 }
 
 
-void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
+void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible, int openFrom, int openTo)
 {
     initSynergyCodes();
 
@@ -1545,9 +1550,14 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible)
     for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
     {
         debugSynergiesCode(code, ++num);
-        QDesktopServices::openUrl(QUrl(
-            "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-            ));
+
+        if(num>=openFrom && num<=openTo)
+        {
+            QDesktopServices::openUrl(QUrl(
+                "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                ));
+            QThread::msleep(100);
+        }
     }
 
     clearLists(true);
@@ -1704,7 +1714,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     else                            qDebug()<<code<<": ["<<mec<<"],";
     qDebug()<<"Texto:"<<text;
     qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
-    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()<<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
+    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()
+            <<"--"<<Utility::getCardAttribute(code, "set").toString()
+            <<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
 }
 
 
@@ -3603,7 +3615,7 @@ otherClassGen, silverHandGen, treantGen, lackeyGen
 //New Synergy Step 12
 
 Double check:
-DAMAGE/DESTROY: reachGen, pingGen(enrageSyn), aoeGen(spellDamageSyn/eggSyn), damageMinionsGen, destroyGen
+DAMAGE/DESTROY: reachGen(no atk1), pingGen(enrageSyn), aoeGen(spellDamageSyn/eggSyn), damageMinionsGen, destroyGen
 BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/TAKE DAMAGE: enrageGen(take damage),
 SUMMON: tokenGen(summon)
@@ -3626,7 +3638,7 @@ MAGNETIC: magnetic <--> mechAllSyn
 
 SPAWN ENEMIES: spawnEnemyGen
 DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
-HERO ATTACK: heroAttackGen/heroAttackSyn
+HERO ATTACK: heroAttackGen/heroAttackSyn <--> weaponAllSyn
 HERO POWER: heroPowerGen
 SPELL BUFF: spellBuffGen/spellBuffSyn
 OTHER CLASS: otherClassGen/otherClassSyn
@@ -3658,9 +3670,9 @@ REGLAS
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
 +aoeGen puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
-+aoeGen: no son destroyGen ni damageMinionsGen
++aoeGen: no son destroyGen ni damageMinionsGen (excepto token rush)
 +pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
-+pingGen: Todos los bombing/missiles cards son pingGen, si tienen los suficientes misiles aoeGen (cinderstorm).
++pingGen: Todos los bombing/missiles cards son pingGen, si tienen los suficientes misiles aoeGen (cinderstorm) pero nunca reachGen ya que no son fiables.
 +spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
@@ -3669,12 +3681,13 @@ REGLAS
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +No usamos los "=Gen(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)" ya que al no poder distinguir si se generan en el tablero, mano o mazo
     no se pueden asociar bien con los syn.
++Outcast: suponemos que siempre ocurre
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 3+ mana de lo que deberian por stats (Sewer Crawler lo aceptamos 1/1 coste 3 por coste bajo (<5))
     o 2+ si tienen reduccion de coste (nerubian prophet, thing from below)
 +drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
 +Un drop debe ser eficiente jugado en su turno suponiendo que el enemigo tenga en juego un minion del turno anterior.
-    Un drop debe poner algo en la mesa, aunque sea un secreto. Si solo elimina cosas ,roba cartas o buffa no es un drop.
+    Un drop debe poner algo en la mesa, aunque sea un secreto. Si solo elimina cosas, roba cartas o buffa no es un drop.
     Si dan cristales de mana son drops.
     Es un dropX si X es el turno mas eficiente en el que se puede jugar.
     Los minions con 0 de ataque no son drops, huevos tampoco, ya que su uso optimo es en otro turno.

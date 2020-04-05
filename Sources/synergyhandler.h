@@ -29,7 +29,7 @@ private:
 
 //Metodos
 public:
-    void debugSynergiesSet(const QString &set, bool onlyCollectible=true);
+    void debugSynergiesSet(const QString &set, bool onlyCollectible=true, int openFrom=0, int openTo=-1);
     void debugSynergiesCode(const QString &code, int num=0);
     void debugMissingSynergiesAllSets();
     bool isValidSynergyCode(const QString &mechanic);

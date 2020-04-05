@@ -4598,10 +4598,10 @@ void MainWindow::testHeroPortraits()
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Flame Ward");
-//    qDebug()<<Utility::getCardAttribute("BT_728", "set").toString();
+//    qDebug()<<Utility::cardEnCodeFromName("Blur");
+//    qDebug()<<Utility::getCardAttribute("BT_752", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("BLACK_TEMPLE", true);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE", true, 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();
 
@@ -4658,7 +4658,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Update Utility::isFromStandardSet(QString code) --> BLACK_TEMPLE
+//Update Utility::isFromStandardSet(QString code) --> BLACK_TEMPLE | DEMON_HUNTER_INITIATE
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
