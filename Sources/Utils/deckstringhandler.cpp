@@ -179,7 +179,6 @@ QString DeckStringHandler::getHeroLog(const QList<CodeAndCount> &deckList)
 }
 
 
-//TODO revisar devolver Demonhunter
 QString DeckStringHandler::getHeroString(const QList<CodeAndCount> &deckList)
 {
     QString hero = getHeroLog(deckList);
