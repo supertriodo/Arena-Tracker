@@ -4686,7 +4686,6 @@ void MainWindow::testDelay()
 //|-Check synergies in the new set --> New synergy keys
 //|-Check evolveSyn cards
 //|-Check drops cards
-// Librams direct links
 
 //Cards changes
 //Patch 17.0.0.44222 (2020-03-26)
