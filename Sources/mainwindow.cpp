@@ -640,7 +640,6 @@ HSRCardsMaps MainWindow::processHSRCardsIncluded(const QJsonObject &jsonObject)
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    //TODO verificar la api usa "DEMONHUNTER"
     //--------------------------------------------------------
     //----NEW HERO CLASS
     //--------------------------------------------------------
@@ -723,7 +722,6 @@ QMap<QString, float> * MainWindow::processHSRCardsPlayed(const QJsonObject &json
 
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    //TODO verificar la api usa "DEMONHUNTER"
     //--------------------------------------------------------
     //----NEW HERO CLASS
     //--------------------------------------------------------

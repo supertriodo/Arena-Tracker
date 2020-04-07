@@ -110,7 +110,7 @@ void DeckHandler::createLoadDeckTreeWidget()
         loadDeckClasses[i] = new QTreeWidgetItem(treeWidget);
         loadDeckClasses[i]->setHidden(true);
         loadDeckClasses[i]->setExpanded(true);
-        loadDeckClasses[i]->setText(0, Utility::classOrder2classULName(i));
+        loadDeckClasses[i]->setText(0, Utility::classOrder2classUL_ULName(i));
         loadDeckClasses[i]->setForeground(0, QBrush(QColor(Utility::classOrder2classColor(i))));
     }
 

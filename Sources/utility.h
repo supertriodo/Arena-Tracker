@@ -85,10 +85,12 @@ public:
     static QString classEnum2classUName(CardClass cardClass);
     static CardClass classLogNumber2classEnum(QString hero);
     static QString classLogNumber2classUName(QString hero);
+    static QString classLogNumber2classUL_ULName(QString hero);
     static QString classLogNumber2classULName(QString hero);
     static QString classLogNumber2classLName(QString hero);
     static QString classOrder2classColor(int order);
     static QString classOrder2classULName(int order);
+    static QString classOrder2classUL_ULName(int order);
     static QString classOrder2classLogNumber(int order);
     static QString whizbangDeckString(QString whizbangDeckCode);
     static CardClass whizbangHero(QString whizbangDeckCode);

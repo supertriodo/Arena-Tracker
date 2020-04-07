@@ -95,6 +95,22 @@ CardClass Utility::classLogNumber2classEnum(QString hero)
 }
 
 
+QString Utility::classLogNumber2classUL_ULName(QString hero)
+{
+    if(hero == QString("06"))       return "Druid";
+    else if(hero == QString("05"))  return "Hunter";
+    else if(hero == QString("08"))  return "Mage";
+    else if(hero == QString("04"))  return "Paladin";
+    else if(hero == QString("09"))  return "Priest";
+    else if(hero == QString("03"))  return "Rogue";
+    else if(hero == QString("02"))  return "Shaman";
+    else if(hero == QString("07"))  return "Warlock";
+    else if(hero == QString("01"))  return "Warrior";
+    else if(hero == QString("10"))  return "Demon Hunter";
+    else                            return "";
+}
+
+
 QString Utility::classLogNumber2classULName(QString hero)
 {
     if(hero == QString("06"))       return "Druid";
@@ -138,6 +154,14 @@ QString Utility::classOrder2classColor(int order)
 QString Utility::classOrder2classULName(int order)
 {
     QString heroes[NUM_HEROS] = {"Demonhunter", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
+    if(order < 0 || order > (NUM_HEROS-1))  return "";
+    return heroes[order];
+}
+
+
+QString Utility::classOrder2classUL_ULName(int order)
+{
+    QString heroes[NUM_HEROS] = {"Demon Hunter", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};
     if(order < 0 || order > (NUM_HEROS-1))  return "";
     return heroes[order];
 }
@@ -933,11 +957,10 @@ void Utility::fixLightforgeTierlist()
 }
 
 
-//TODO revisar lightforge y heartharena usan "Demonhunter"
 void Utility::checkTierlistsCount()
 {
     QString allHeroes[NUM_HEROS];
-    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classULName(i);
+    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classUL_ULName(i);
 
     for(const QString &heroString: allHeroes)
     {

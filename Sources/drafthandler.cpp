@@ -238,14 +238,13 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 
     if(multiClassDraft)
     {
-        //TODO verificar hearthArena usa "Demonhunter" (MultiClassDraft)
         QJsonObject heroJsonObject = jsonDoc.object().value(heroString).toObject();
         QJsonObject othersJsonObject[NUM_HEROS-1];
         for(int j=0, i=0; j<NUM_HEROS; j++)
         {
-            if(heroString != Utility::classOrder2classULName(j))
+            if(heroString != Utility::classOrder2classUL_ULName(j))
             {
-                othersJsonObject[i++] = jsonDoc.object().value(Utility::classOrder2classULName(j)).toObject();
+                othersJsonObject[i++] = jsonDoc.object().value(Utility::classOrder2classUL_ULName(j)).toObject();
             }
         }
         for(const QString &code: lightForgeTiers.keys())
@@ -269,7 +268,6 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
     }
     else
     {
-        //TODO verificar hearthArena usa "Demonhunter"
         QJsonObject jsonNamesObject = jsonDoc.object().value(heroString).toObject();
         for(const QString &code: lightForgeTiers.keys())
         {
@@ -326,7 +324,6 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
             QJsonObject jsonScoreObject = jsonScore.toObject();
             QString hero = jsonScoreObject.value("Hero").toString();
 
-            //TODO revisar lightforge usa "Demonhunter"
             if(multiClassDraft || hero == nullptr || hero == heroString)
             {
                 LFtier lfTier;
@@ -384,9 +381,8 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     {
         startFindScreenRects();
 
-        const QString heroString = Utility::classLogNumber2classULName(hero);
-        this->lightForgeTiers = initLightForgeTiers(heroString, this->multiclassArena, drafting);
-        initHearthArenaTiers(heroString, this->multiclassArena);
+        this->lightForgeTiers = initLightForgeTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena, drafting);
+        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
 
