@@ -24,7 +24,6 @@ QByteArray DeckStringHandler::readDeckStringPage(QString &text, QString &deckNam
 }
 
 
-//TODO revisar Class: "Demonhunter"
 QString DeckStringHandler::writeDeckStringPage(const QList<CodeAndCount> &deckList, const QString &deckName, const QByteArray &encodedDeckString)
 {
     QString text;

@@ -1806,7 +1806,6 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 }
 
 
-//TODO Verificar la web usa "DEMONHUNTER"
 void DraftHandler::showHSRwebPicks()
 {
     QString url = "https://hsreplay.net/cards/#playerClass=";
