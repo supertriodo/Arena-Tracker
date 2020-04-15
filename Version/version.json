@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v7.1","v7.2","v7.21","v8.0","v8.01","v8.02","v8.1","v8.11","v8.12"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.12/Arena.Tracker.v8.12.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.12/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.12/Arena.Tracker.v8.12.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.12/Arena.Tracker.v8.12.Windows.zip",
-	"log": "AT updates for outland expansion.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.12'>github</a>"
+	"versionFree": ["v7.1","v7.2","v7.21","v8.0","v8.01","v8.02","v8.1","v8.11","v8.12","v8.13"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.13/Arena.Tracker.v8.13.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.13/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.13/Arena.Tracker.v8.13.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.13/Arena.Tracker.v8.13.Windows.zip",
+	"log": "Fix HSReplay data for new cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.13'>github</a>"
 }
