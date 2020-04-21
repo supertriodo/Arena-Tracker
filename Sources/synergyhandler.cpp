@@ -3523,13 +3523,13 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == IMPRISONED_SATYR)    return 0;
     if(code == SKULL_OF_GULDAN)     return 0;
     if(code == EYE_BEAM)            return 1;
+    if(code == FRENZIED_FELWING)    return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
     if(code == DREAMPETAL_FLORIST)  return 3;
     if(code == PILOTED_REAPER)      return 3;
     if(code == MOGU_FLESHSHAPER)    return 3;
-    if(code == FRENZIED_FELWING)    return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
