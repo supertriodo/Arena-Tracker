@@ -385,6 +385,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         case noGame:
             break;
         case heroType1State:
+        case heroPower1State:
         case heroType2State:
             processPowerHero(line, numLine);
             break;
@@ -399,19 +400,31 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
 
 void GameWatcher::processPowerHero(QString &line, qint64 numLine)
 {
-    if(line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
+    if(powerState == heroPower1State)
     {
-        if(powerState == heroType1State)
+        if(line.contains(QRegularExpression("Creating ID=\\d+ CardID=(\\w+)"), match))
         {
             powerState = heroType2State;
-            hero1 = match->captured(1);
-            emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
+            QString hp1 = match->captured(1);
+            emit pDebug("Skip hero power 1: " + hp1 + " (powerState = heroType2State)", numLine);
         }
-        else //if(powerState == heroType2State
+    }
+    else// powerState == heroType1State || powerState == heroType2State
+    {
+        if(line.contains(QRegularExpression("Creating ID=\\d+ CardID=HERO_(\\d+)"), match))
         {
-            powerState = mulliganState;
-            hero2 = match->captured(1);
-            emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
+            if(powerState == heroType1State)
+            {
+                powerState = heroPower1State;
+                hero1 = match->captured(1);
+                emit pDebug("Found hero 1: " + hero1 + " (powerState = heroPower1State)", numLine);
+            }
+            else //if(powerState == heroType2State
+            {
+                powerState = mulliganState;
+                hero2 = match->captured(1);
+                emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
+            }
         }
     }
 }

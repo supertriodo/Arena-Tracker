@@ -50,7 +50,7 @@ public:
     ~GameWatcher();
 
 private:
-    enum PowerState { noGame, heroType1State, heroType2State, mulliganState, inGameState };
+    enum PowerState { noGame, heroType1State, heroPower1State, heroType2State, mulliganState, inGameState };
     enum ArenaState { noDeckRead, deckRead, readingDeck };
 
 //Variables
