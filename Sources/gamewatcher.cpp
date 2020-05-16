@@ -321,11 +321,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         mulliganEnemyDone = mulliganPlayerDone = false;
         turn = turnReal = 0;
 
-        //Whizbang support
-        whizbangDeckCode1.clear();
-        whizbangDeckCode2.clear();
-        whizbangPlayerID.clear();
-
         hero1.clear();
         hero2.clear();
         name1.clear();
@@ -409,50 +404,14 @@ void GameWatcher::processPowerHero(QString &line, qint64 numLine)
         if(powerState == heroType1State)
         {
             powerState = heroType2State;
-            if(whizbangDeckCode1.isEmpty())
-            {
-                hero1 = match->captured(1);
-                emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
-            }
-            else
-            {
-                emit pDebug("Found hero 1 but using whizband hero: " + hero1 + " (powerState = heroType2State)", numLine);
-            }
+            hero1 = match->captured(1);
+            emit pDebug("Found hero 1: " + hero1 + " (powerState = heroType2State)", numLine);
         }
         else //if(powerState == heroType2State
         {
             powerState = mulliganState;
-            if(whizbangDeckCode2.isEmpty())
-            {
-                hero2 = match->captured(1);
-                emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
-            }
-            else
-            {
-                emit pDebug("Found hero 2 but using whizband hero: " + hero2 + " (powerState = mulliganState)", numLine);
-            }
-        }
-    }
-
-    //Whizbang support
-    else if(line.contains(QRegularExpression("Player EntityID=\\d+ PlayerID=(\\d+) GameAccountId="), match))
-    {
-        whizbangPlayerID = match->captured(1);
-//        emit pDebug("Found whizbandPlayerID: " + whizbangPlayerID, numLine);
-    }
-    else if(!whizbangPlayerID.isEmpty() &&
-            line.contains(QRegularExpression("tag=WHIZBANG_DECK_ID value=(\\d+)"), match))
-    {
-        if(whizbangPlayerID == "1") {
-            whizbangDeckCode1 = match->captured(1);
-            hero1 = Utility::classEnum2classLogNumber(Utility::whizbangHero(whizbangDeckCode1));
-            emit pDebug("Found whizbandDeckCode 1: " + whizbangDeckCode1 + ", Hero 1: " + hero1, numLine);
-        }
-        else //if(whizbangPlayerID == "2")
-        {
-            whizbangDeckCode2 = match->captured(1);
-            hero2 = Utility::classEnum2classLogNumber(Utility::whizbangHero(whizbangDeckCode2));
-            emit pDebug("Found whizbandDeckCode 2: " + whizbangDeckCode2 + ", Hero 2: " + hero2, numLine);
+            hero2 = match->captured(1);
+            emit pDebug("Found hero 2: " + hero2 + " (powerState = mulliganState)", numLine);
         }
     }
 }
@@ -1167,8 +1126,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     playerTag = (playerID == 1)?name1:name2;
                     if(!playerTag.isEmpty())    emit pDebug("Found playerTag: " + playerTag, numLine);
                 }
-                //Whizbang support
-                checkWhizbangDeck(numLine);
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
@@ -1478,18 +1435,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyMinionPosChange(id.toInt(), zonePosInt);
             }
         }
-    }
-}
-
-
-//Whizbang support
-void GameWatcher::checkWhizbangDeck(qint64 numLine)
-{
-    QString& whizbangDeckCode = (playerID == 1)?whizbangDeckCode1:whizbangDeckCode2;
-    if(!whizbangDeckCode.isEmpty())
-    {
-        emit pDebug("Found whizbang deck: " + whizbangDeckCode, numLine);
-        emit whizbangDeck(whizbangDeckCode);
     }
 }
 

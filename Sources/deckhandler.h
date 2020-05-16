@@ -99,7 +99,6 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DeckHandler");
 
 public slots:
-    void importWhizbangDeck(QString whizbangDeckCode);
     void newDeckCardAsset(QString code);
     void newDeckCardDraft(QString code);
     void newDeckCardOutsider(QString code, int id);

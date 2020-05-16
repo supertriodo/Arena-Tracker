@@ -1270,9 +1270,6 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(setLastCreatedByCode(QString, QString)));
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             deckHandler, SLOT(setFirstOutsiderId(int)));
-    //Whizbang support
-    connect(gameWatcher, SIGNAL(whizbangDeck(QString)),
-            deckHandler, SLOT(importWhizbangDeck(QString)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
@@ -4669,8 +4666,6 @@ void MainWindow::testDelay()
     ///-Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Update whizbang decks --> Script deck-templates.py --> Utility::whizbangDeckString, Utility::whizbangHero
-    ///-To remove it, search "Whizbang support"
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)

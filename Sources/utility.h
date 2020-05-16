@@ -92,8 +92,6 @@ public:
     static QString classOrder2classULName(int order);
     static QString classOrder2classUL_ULName(int order);
     static QString classOrder2classLogNumber(int order);
-    static QString whizbangDeckString(QString whizbangDeckCode);
-    static CardClass whizbangHero(QString whizbangDeckCode);
     static QJsonValue getCardAttribute(QString code, QString attribute);
     static QString appPath();
     static QString dataPath();

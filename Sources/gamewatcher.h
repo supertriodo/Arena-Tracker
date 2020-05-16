@@ -60,8 +60,6 @@ private:
     ArenaState arenaState;
     LoadingScreenState loadingScreenState;
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
-    //Whizbang support
-    QString whizbangDeckCode1, whizbangDeckCode2, whizbangPlayerID;
     int playerID;
     CardClass secretHero;
     int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
@@ -98,7 +96,6 @@ private:
     void endReadingDeck();
     bool isHeroPower(QString code);
     QString createGameLog();
-    void checkWhizbangDeck(qint64 numLine);
     bool isCheatingCard(const QString &code);
 
 public:
@@ -113,7 +110,6 @@ signals:
     void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);
-    void whizbangDeck(QString whizbangDeckCode);
     void startGame();
     void endGame(bool playerWon=false, bool playerUnknown=true);
     void enemyHero(QString hero);
