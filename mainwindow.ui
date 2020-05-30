@@ -2102,6 +2102,17 @@ when the opponent plays a secret.</string>
                        </property>
                       </widget>
                      </item>
+                     <item>
+                      <widget class="QCheckBox" name="configCheckWildSecrets">
+                       <property name="toolTip">
+                        <string>Wild Secrets: In constructed play, show wild possibilities
+when the opponent plays a secret.</string>
+                       </property>
+                       <property name="text">
+                        <string>Wild Secrets</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </item>
                   </layout>

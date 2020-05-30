@@ -874,6 +874,8 @@ void MainWindow::createPremiumHandler()
             popularCardsHandler, SLOT(setPremium(bool)));
     connect(premiumHandler, SIGNAL(setPremium(bool)),
             rngCardHandler, SLOT(setPremium(bool)));
+    connect(premiumHandler, SIGNAL(setPremium(bool)),
+            secretsHandler, SLOT(setPremium(bool)));
     connect(trackobotUploader, SIGNAL(connected(QString,QString)),
             premiumHandler, SLOT(checkPremium(QString,QString)));
     connect(trackobotUploader, SIGNAL(disconnected()),
@@ -1818,12 +1820,13 @@ void MainWindow::readSettings()
     bool showTotalAttack = settings.value("showTotalAttack", true).toBool();
     bool showRngList = settings.value("showRngList", true).toBool();
     bool showSecrets = settings.value("showSecrets", true).toBool();
+    bool showWildSecrets = settings.value("showWildSecrets", false).toBool();
     int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
                   maxGamesLog, draftNormalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
-                  showSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
+                  showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
     if(TwitchHandler::loadSettings())   checkTwitchConnection();
 
@@ -1874,6 +1877,7 @@ void MainWindow::writeSettings()
     settings.setValue("showTotalAttack", ui->configCheckTotalAttack->isChecked());
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
     settings.setValue("showSecrets", ui->configCheckSecrets->isChecked());
+    settings.setValue("showWildSecrets", ui->configCheckWildSecrets->isChecked());
     settings.setValue("maxGamesLog", ui->configSliderZero->value());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
     settings.setValue("deckWindow", deckWindow != nullptr);
@@ -1888,8 +1892,8 @@ void MainWindow::writeSettings()
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
                                bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF,
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
-                               int popularCardsShown, bool showSecrets, bool showDraftScoresOverlay, bool showDraftMechanicsOverlay,
-                               bool draftLearningMode, bool draftShowDrops)
+                               int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
+                               bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops)
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -1965,6 +1969,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
 
     ui->configCheckSecrets->setChecked(showSecrets);
     updateShowSecrets(showSecrets);
+
+    ui->configCheckWildSecrets->setChecked(showWildSecrets);
+    updateShowWildSecrets(showWildSecrets);
 
 
     //Draft
@@ -3226,6 +3233,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
         ui->configCheckRngList->setStyleSheet(checkCSS);
         ui->configCheckSecrets->setStyleSheet(checkCSS);
+        ui->configCheckWildSecrets->setStyleSheet(checkCSS);
         ui->configCheckVotes->setStyleSheet(checkCSS);
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
@@ -3282,6 +3290,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckTotalAttack->setStyleSheet("");
         ui->configCheckRngList->setStyleSheet("");
         ui->configCheckSecrets->setStyleSheet("");
+        ui->configCheckWildSecrets->setStyleSheet("");
         ui->configCheckVotes->setStyleSheet("");
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
@@ -3842,6 +3851,12 @@ void MainWindow::updateShowSecrets(bool checked)
 }
 
 
+void MainWindow::updateShowWildSecrets(bool checked)
+{
+    secretsHandler->setShowWildSecrets(checked);
+}
+
+
 void MainWindow::updateShowDraftScoresOverlay(bool checked)
 {
     draftHandler->setShowDraftScoresOverlay(checked);
@@ -3983,6 +3998,7 @@ void MainWindow::setPremium(bool premium)
     ui->configLabelPopularValue->setHidden(!patreonVersion);
     ui->configSliderPopular->setHidden(!patreonVersion);
     ui->configCheckRngList->setHidden(!patreonVersion);
+    ui->configCheckWildSecrets->setHidden(!patreonVersion);
 
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
@@ -4022,11 +4038,13 @@ void MainWindow::completeConfigTab()
     ui->configLabelPopularValue->hide();
     ui->configSliderPopular->hide();
     ui->configCheckRngList->hide();
+    ui->configCheckWildSecrets->hide();
     connect(ui->configSliderDrawTime, SIGNAL(valueChanged(int)), this, SLOT(updateTimeDraw(int)));
     connect(ui->configSliderPopular, SIGNAL(valueChanged(int)), this, SLOT(updatePopularCardsShown(int)));
     connect(ui->configCheckTotalAttack, SIGNAL(clicked(bool)), this, SLOT(updateShowTotalAttack(bool)));
     connect(ui->configCheckRngList, SIGNAL(clicked(bool)), this, SLOT(updateShowRngList(bool)));
     connect(ui->configCheckSecrets, SIGNAL(clicked(bool)), this, SLOT(updateShowSecrets(bool)));
+    connect(ui->configCheckWildSecrets, SIGNAL(clicked(bool)), this, SLOT(updateShowWildSecrets(bool)));
 
     //Draft
     ui->configBoxDraftMechanics->hide();

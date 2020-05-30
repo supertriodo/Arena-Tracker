@@ -60,7 +60,8 @@ private:
     QQueue<SecretTest> secretTestQueue;
     QQueue<MagneticPlayed> magneticPlayedQueue;
     bool secretsAnimating;
-    bool showSecrets;
+    bool patreonVersion;
+    bool showSecrets, showWildSecrets;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     QStringList arenaSets;
     //List of code secrets ordered by pickrate for all classes, used as options for a new unknown secret played.
@@ -92,6 +93,7 @@ public:
     void sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[]);
     void setCardsPickratesMap(QMap<QString, float> cardsPickratesMap[]);
     void setShowSecrets(bool value);
+    void setShowWildSecrets(bool value);
 
 signals:
     void checkCardImage(QString code);
@@ -119,6 +121,7 @@ public slots:
     void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void resetLastMinionDead(QString code, QString subType);
     void playerHeroPower();
+    void setPremium(bool premium);
 
 private slots:
     void discardSecretOptionDelay();

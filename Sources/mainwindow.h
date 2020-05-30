@@ -176,7 +176,7 @@ private:
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
                        bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF, bool twitchChatVotes, QString theme,
-                       bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets,
+                       bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
@@ -317,6 +317,7 @@ private slots:
     void updateShowTotalAttack(bool checked);
     void updateShowRngList(bool checked);
     void updateShowSecrets(bool checked);
+    void updateShowWildSecrets(bool checked);
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
     void checkLinuxShortcut();

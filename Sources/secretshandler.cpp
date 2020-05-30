@@ -6,8 +6,10 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->ui = ui;
     this->enemyHandHandler = enemyHandHandler;
     this->planHandler = planHandler;
+    this->patreonVersion = false;
     this->secretsAnimating = false;
     this->showSecrets = true;
+    this->showWildSecrets = false;
     this->lastMinionDead = "";
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
@@ -183,8 +185,11 @@ bool SecretsHandler::isFromArenaSets(QString code)
 
 void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
 {
-    if( (inArena && isFromArenaSets(code)) ||
-        (!inArena && Utility::isFromStandardSet(code)))
+    if
+    (
+        (inArena && isFromArenaSets(code)) ||
+        (!inArena && (Utility::isFromStandardSet(code) || (showWildSecrets && patreonVersion)))
+    )
     {
         activeSecret.children.append(SecretCard(code, manaText));
     }
@@ -810,6 +815,18 @@ QStringList SecretsHandler::getSecretOptionCodes(int id)
         }
     }
     return QStringList();
+}
+
+
+void SecretsHandler::setPremium(bool premium)
+{
+    this->patreonVersion = premium;
+}
+
+
+void SecretsHandler::setShowWildSecrets(bool value)
+{
+    this->showWildSecrets = value;
 }
 
 
