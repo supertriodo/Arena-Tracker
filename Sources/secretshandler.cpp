@@ -233,7 +233,6 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
                 //RARE
-                unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
                 unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
                 //EPIC
@@ -249,6 +248,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
                 //RARE
+                unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
                 unknownSecretPlayedAddOption(VENOMSTRIKE_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
@@ -839,15 +839,15 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM;
 
-    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << DART_TRAP << WANDERING_MONSTER
-                              << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE << SNAKE_TRAP << RAT_TRAP
-                              << PRESSURE_PLATE << PACK_TACTICS;
+    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
+                              << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
+                              << SNAKE_TRAP << RAT_TRAP;
 
-    secretsByPickrate[MAGE] << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << ICE_BARRIER << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH
-                            << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK
-                            << FLAME_WARD << NETHERWIND_PORTAL;
+    secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
+                            << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK;
 
-    secretsByPickrate[ROGUE] << SUDDEN_BETRAYAL << CHEAT_DEATH << EVASION << AMBUSH << BAMBOOZLE << DIRTY_TRICKS;
+    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION;
 }
 
 
