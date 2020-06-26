@@ -18,6 +18,7 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 * Tested on Ubuntu/Linux Mint
   * You can downloading **Arena.Tracker.X.Linux.zip** or **ArenaTracker.Linux.AppImage**.
   * For Arch Linux users there's a package in [AUR](https://aur.archlinux.org/packages/arenatracker-bin/) maintained by [Strit](https://github.com/Strit).
+  * If you're having problems running HS with AT on linux, HS dont accept mouse clicks, try Windowed (virtual desktop) option and it will work perfectly. You can do it easily with lutris.
 
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
