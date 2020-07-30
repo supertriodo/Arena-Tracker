@@ -4700,7 +4700,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> Patch 17.6.0.53261 (2020-07-14)
-//|-Synergy / Code  --> Patch 17.0.2.45932 (2020-04-20)
+//|-Synergy / Code  --> Patch 17.6.0.53261 (2020-07-14)
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
