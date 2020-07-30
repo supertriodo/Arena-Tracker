@@ -4618,9 +4618,9 @@ void MainWindow::testHeroPortraits()
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("BT_752", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE", true, 1, 20);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("SCHOLOMANCE", true, 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();
 
@@ -4677,7 +4677,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Update Utility::isFromStandardSet(QString code) --> BLACK_TEMPLE | DEMON_HUNTER_INITIATE
+//Update Utility::isFromStandardSet(QString code) --> SCHOLOMANCE
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4699,7 +4699,7 @@ void MainWindow::testDelay()
 //|-Check drops cards
 
 //Cards changes
-//|-Imagenes cartas --> Patch 17.0.0.44222 (2020-03-26)
+//|-Imagenes cartas --> Patch 17.6.0.53261 (2020-07-14)
 //|-Synergy / Code  --> Patch 17.0.2.45932 (2020-04-20)
 
 //STANDARD CYCLE
