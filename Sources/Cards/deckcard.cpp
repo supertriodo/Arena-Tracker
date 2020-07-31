@@ -82,7 +82,7 @@ void DeckCard::setCode(QString code)
         type = INVALID_TYPE;
         name = "unknown";
         rarity = INVALID_RARITY;
-        cardClass = INVALID_CLASS;
+        cardClass = {INVALID_CLASS};
         cardRace = INVALID_RACE;
     }
 }
@@ -110,7 +110,7 @@ void DeckCard::setCreatedByCode(QString code)
         type = INVALID_TYPE;
         name = "unknown";
         rarity = INVALID_RARITY;
-        cardClass = INVALID_CLASS;
+        cardClass = {INVALID_CLASS};
         cardRace = INVALID_RACE;
     }
 }
@@ -200,12 +200,23 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         if(total == 1 && rarity != LEGENDARY)
         {
             maxNameLong = 174;
-            painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard1File(cardClass):ThemeHandler::bgCard1File()));
+            if(cardClass.count() > 0)
+                painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard1File(cardClass[0]):ThemeHandler::bgCard1File()));
+            if(cardClass.count() > 1)
+                painter.drawPixmap(0, CARD_SIZE.height()/2,
+                                   QPixmap(drawClassColor?ThemeHandler::bgCard1File(cardClass[1]):ThemeHandler::bgCard1File()),
+                                   0, CARD_SIZE.height()/2, CARD_SIZE.width(), CARD_SIZE.height() - CARD_SIZE.height()/2);
         }
         else
         {
             maxNameLong = 155;
-            painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass):ThemeHandler::bgCard2File()));
+
+            if(cardClass.count() > 0)
+                painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass[0]):ThemeHandler::bgCard2File()));
+            if(cardClass.count() > 1)
+                painter.drawPixmap(0, CARD_SIZE.height()/2,
+                                   QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass[1]):ThemeHandler::bgCard2File()),
+                                   0, CARD_SIZE.height()/2, CARD_SIZE.width(), CARD_SIZE.height() - CARD_SIZE.height()/2);
 
             if(total > 1)
             {
@@ -450,7 +461,7 @@ CardRarity DeckCard::getRarity()
 }
 
 
-CardClass DeckCard::getCardClass()
+QList<CardClass> DeckCard::getCardClass()
 {
     return cardClass;
 }

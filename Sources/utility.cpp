@@ -267,6 +267,12 @@ QString Utility::cardLocalCodeFromName(QString name)
 }
 
 
+bool Utility::cardsJsonContains(QString code, QString attribute)
+{
+    return (*cardsJson)[code].contains(attribute);
+}
+
+
 QJsonValue Utility::getCardAttribute(QString code, QString attribute)
 {
     if(attribute == "text" || attribute == "name")
@@ -366,9 +372,28 @@ CardRace Utility::getRaceFromCode(QString code)
 //--------------------------------------------------------
 //----NEW HERO CLASS
 //--------------------------------------------------------
-CardClass Utility::getClassFromCode(QString code)
+QList<CardClass> Utility::getClassFromCode(QString code)
 {
-    QString value = Utility::getCardAttribute(code, "cardClass").toString();
+    QJsonValue jsonVclasses = Utility::getCardAttribute(code, "classes");
+    if(jsonVclasses.isUndefined() || !jsonVclasses.isArray())
+    {
+        QString stringCardClass = Utility::getCardAttribute(code, "cardClass").toString();
+        return {classString2cardClass(stringCardClass)};
+    }
+    else
+    {
+        QList<CardClass> cardClassList;
+        for(const QJsonValue &jsonVclass: jsonVclasses.toArray())
+        {
+            cardClassList << classString2cardClass(jsonVclass.toString());
+        }
+        return cardClassList;
+    }
+}
+
+
+CardClass Utility::classString2cardClass(QString value)
+{
     if(value == "")             return NEUTRAL;
     else if(value == "NEUTRAL") return NEUTRAL;
     else if(value == "DEMONHUNTER") return DEMONHUNTER;

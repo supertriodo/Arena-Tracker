@@ -667,10 +667,7 @@ void DeckHandler::redrawClassCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.getCardClass()<NUM_HEROS)
-        {
-            deckCard.draw();
-        }
+        deckCard.draw();
     }
 }
 
@@ -1109,7 +1106,11 @@ void DeckHandler::saveDeck()
             jsonObjectDeck.insert(deckCard.getCode(), static_cast<int>(deckCard.total));
             if(hero.isEmpty())
             {
-                hero = Utility::classEnum2classLogNumber(deckCard.getCardClass());
+                QList<CardClass> cardClass = deckCard.getCardClass();
+                if(cardClass.count() == 1)
+                {
+                    hero = Utility::classEnum2classLogNumber(cardClass[0]);
+                }
             }
         }
     }

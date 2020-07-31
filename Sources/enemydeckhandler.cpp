@@ -129,9 +129,13 @@ void EnemyDeckHandler::newDeckCard(QString code, int id, int total, bool add)
     if(!found)
     {
         DeckCard deckCard(code, outsider);
-        CardClass cardClass = deckCard.getCardClass();
+        QList<CardClass> cardClass = deckCard.getCardClass();
 
-        if(!outsider && enemyClass != INVALID_CLASS && cardClass != enemyClass && cardClass != NEUTRAL)
+        if(!(outsider ||
+            enemyClass == INVALID_CLASS ||
+            cardClass[0] == NEUTRAL ||
+            cardClass[0] == enemyClass ||
+            (cardClass.count()>1 && cardClass[1] == enemyClass)))
         {
             emit pDebug("Wrong class card: Not adding: (" + QString::number(total) + ") " +
                         Utility::getCardAttribute(code, "name").toString(), Warning);
@@ -253,10 +257,7 @@ void EnemyDeckHandler::redrawClassCards()
 {
     foreach(DeckCard deckCard, deckCardList)
     {
-        if(deckCard.getCardClass()<NUM_HEROS)
-        {
-            deckCard.draw();
-        }
+        deckCard.draw();
     }
 }
 

@@ -1373,11 +1373,12 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Add
 }
 
 
+//TODO Dual color secrets
 void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == nullptr) return;
     DeckCard deckCard(code);
-    nowBoard->playerHero->addSecret(id, deckCard.getCardClass());
+    nowBoard->playerHero->addSecret(id, deckCard.getCardClass()[0]);
 }
 
 

@@ -663,7 +663,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
-    CardClass cardClass = deckCard.getCardClass();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
 
@@ -721,7 +720,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
     if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
-    if(isHeroPowerGen(code, text, cardClass))                               mechanicCounters[V_HERO_POWER]->increase(code);
+    if(isHeroPowerGen(code, text))                                          mechanicCounters[V_HERO_POWER]->increase(code);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
     if(isDiscardGen(code, text))                                            mechanicCounters[V_DISCARD]->increase(code);
     if(isDeathrattleMinion(code, mechanics, cardType))                      mechanicCounters[V_DEATHRATTLE]->increase(code);
@@ -750,9 +749,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isEnemyDrawGen(code, text))                                          mechanicCounters[V_ENEMY_DRAW]->increase(code);
     if(isHeroAttackGen(code, text))                                         mechanicCounters[V_HERO_ATTACK]->increase(code);
     if(isSpellBuffGen(code, text, mechanics, cardType))                     mechanicCounters[V_SPELL_BUFF]->increase(code);
-    if(isOtherClassGen(code, text, cardClass))                              mechanicCounters[V_OTHER_CLASS]->increase(code);
-    if(isSilverHandGen(code, text, cardClass))                              mechanicCounters[V_SILVER_HAND]->increase(code);
-    if(isTreantGen(code, text, cardClass))                                  mechanicCounters[V_TREANT]->increase(code);
+    if(isOtherClassGen(code, text))                                         mechanicCounters[V_OTHER_CLASS]->increase(code);
+    if(isSilverHandGen(code, text))                                         mechanicCounters[V_SILVER_HAND]->increase(code);
+    if(isTreantGen(code, text))                                             mechanicCounters[V_TREANT]->increase(code);
     if(isLackeyGen(code, text))                                             mechanicCounters[V_LACKEY]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
@@ -843,7 +842,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isEnemyDrawSyn(code, text))                                          mechanicCounters[V_ENEMY_DRAW]->increaseSyn(code);
     if(isHeroAttackSyn(code))                                               mechanicCounters[V_HERO_ATTACK]->increaseSyn(code);
     if(isSpellBuffSyn(code, text))                                          mechanicCounters[V_SPELL_BUFF]->increaseSyn(code);
-    if(isOtherClassSyn(code, text, cardClass))                              mechanicCounters[V_OTHER_CLASS]->increaseSyn(code);
+    if(isOtherClassSyn(code, text))                                         mechanicCounters[V_OTHER_CLASS]->increaseSyn(code);
     if(isSilverHandSyn(code))                                               mechanicCounters[V_SILVER_HAND]->increaseSyn(code);
     if(isTreantSyn(code))                                                   mechanicCounters[V_TREANT]->increaseSyn(code);
     if(isLackeySyn(code))                                                   mechanicCounters[V_LACKEY]->increaseSyn(code);
@@ -1112,7 +1111,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
-    CardClass cardClass = deckCard.getCardClass();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int cost = deckCard.getCost();
     bool addRestoreIcon = false;
@@ -1172,7 +1170,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
     if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);//Sinergias gen-gen
-    if(isHeroPowerGen(code, text, cardClass))                   mechanicCounters[V_HERO_POWER]->insertCards(synergies);//Sinergias gen-gen
+    if(isHeroPowerGen(code, text))                              mechanicCounters[V_HERO_POWER]->insertCards(synergies);//Sinergias gen-gen
     if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergies);
     if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergies);
     if(isToYourHandGen(code, cost, mechanics, text))            mechanicCounters[V_TOYOURHAND]->insertSynCards(synergies);
@@ -1201,9 +1199,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isEnemyDrawGen(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertSynCards(synergies);
     if(isHeroAttackGen(code, text))                             mechanicCounters[V_HERO_ATTACK]->insertSynCards(synergies);
     if(isSpellBuffGen(code, text, mechanics, cardType))         mechanicCounters[V_SPELL_BUFF]->insertSynCards(synergies);
-    if(isOtherClassGen(code, text, cardClass))                  mechanicCounters[V_OTHER_CLASS]->insertSynCards(synergies);
-    if(isSilverHandGen(code, text, cardClass))                  mechanicCounters[V_SILVER_HAND]->insertSynCards(synergies);
-    if(isTreantGen(code, text, cardClass))                      mechanicCounters[V_TREANT]->insertSynCards(synergies);
+    if(isOtherClassGen(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertSynCards(synergies);
+    if(isSilverHandGen(code, text))                             mechanicCounters[V_SILVER_HAND]->insertSynCards(synergies);
+    if(isTreantGen(code, text))                                 mechanicCounters[V_TREANT]->insertSynCards(synergies);
     if(isLackeyGen(code, text))                                 mechanicCounters[V_LACKEY]->insertSynCards(synergies);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
@@ -1285,7 +1283,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isEnemyDrawSyn(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertCards(synergies);
     if(isHeroAttackSyn(code))                                   mechanicCounters[V_HERO_ATTACK]->insertCards(synergies);
     if(isSpellBuffSyn(code, text))                              mechanicCounters[V_SPELL_BUFF]->insertCards(synergies);
-    if(isOtherClassSyn(code, text, cardClass))                  mechanicCounters[V_OTHER_CLASS]->insertCards(synergies);
+    if(isOtherClassSyn(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertCards(synergies);
     if(isSilverHandSyn(code))                                   mechanicCounters[V_SILVER_HAND]->insertCards(synergies);
     if(isTreantSyn(code))                                       mechanicCounters[V_TREANT]->insertCards(synergies);
     if(isLackeySyn(code))                                       mechanicCounters[V_LACKEY]->insertCards(synergies);
@@ -1485,7 +1483,6 @@ void SynergyHandler::testSynergies()
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
-        CardClass cardClass = deckCard.getCardClass();
         QString text = Utility::cardEnTextFromCode(code).toLower();
         int attack = Utility::getCardAttribute(code, "attack").toInt();
         int cost = deckCard.getCost();
@@ -1493,7 +1490,6 @@ void SynergyHandler::testSynergies()
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
                 containsAll(text, "discover battlecry")
-//                && (cardClass == NEUTRAL || cardClass == PRIEST)
 //                && cardType == MINION
 //                && !mechanics.contains(QJsonValue("BATTLECRY"))
 //                && referencedTags.contains(QJsonValue("BATTLECRY"))
@@ -1523,7 +1519,6 @@ void SynergyHandler::testSynergies()
             QThread::msleep(100);
         }
         Q_UNUSED(cardType);
-        Q_UNUSED(cardClass);
         Q_UNUSED(text);
         Q_UNUSED(attack);
         Q_UNUSED(cost);
@@ -1608,7 +1603,6 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 
     DeckCard deckCard(code);
     CardType cardType = deckCard.getType();
-    CardClass cardClass = deckCard.getCardClass();
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int health = Utility::getCardAttribute(code, "health").toInt();
@@ -1643,7 +1637,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
     if(isOverload(code))                                                    mec<<"overload";
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
-    if(isHeroPowerGen(code, text, cardClass))                               mec<<"heroPowerGen";
+    if(isHeroPowerGen(code, text))                                          mec<<"heroPowerGen";
     if(isSecret(code, mechanics))                                           mec<<"secret";
     if(isEcho(code, mechanics))                                             mec<<"echo";
     if(isEchoGen(code, referencedTags))                                     mec<<"echoGen";
@@ -1683,9 +1677,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isEnemyDrawGen(code, text))                                          mec<<"enemyDrawGen";
     if(isHeroAttackGen(code, text))                                         mec<<"heroAttackGen";
     if(isSpellBuffGen(code, text, mechanics, cardType))                     mec<<"spellBuffGen";
-    if(isOtherClassGen(code, text, cardClass))                              mec<<"otherClassGen";
-    if(isSilverHandGen(code, text, cardClass))                              mec<<"silverHandGen";
-    if(isTreantGen(code, text, cardClass))                                  mec<<"treantGen";
+    if(isOtherClassGen(code, text))                                         mec<<"otherClassGen";
+    if(isSilverHandGen(code, text))                                         mec<<"silverHandGen";
+    if(isTreantGen(code, text))                                             mec<<"treantGen";
     if(isLackeyGen(code, text))                                             mec<<"lackeyGen";
     //New Synergy Step 8
 
@@ -1707,7 +1701,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isHandBuffSyn(code, text))                                           mec<<"handBuffSyn";
     if(isEnemyDrawSyn(code, text))                                          mec<<"enemyDrawSyn";
     if(isSpellBuffSyn(code, text))                                          mec<<"spellBuffSyn";
-    if(isOtherClassSyn(code, text, cardClass))                              mec<<"otherClassSyn";
+    if(isOtherClassSyn(code, text))                                         mec<<"otherClassSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
@@ -2062,7 +2056,7 @@ bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mecha
     }
     return false;
 }
-bool SynergyHandler::isHeroPowerGen(const QString &code, const QString &text, const CardClass &cardClass)
+bool SynergyHandler::isHeroPowerGen(const QString &code, const QString &text)
 {
     //TEST
     //text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST)
@@ -2070,7 +2064,7 @@ bool SynergyHandler::isHeroPowerGen(const QString &code, const QString &text, co
     {
         return synergyCodes[code].contains("heroPowerGen");
     }
-    else if(text.contains("hero power") || (text.contains("heal") && text.contains("deal damage") && cardClass == PRIEST))
+    else if(text.contains("hero power") || (text.contains("heal") && text.contains("deal damage")))
     {
         return true;
     }
@@ -2626,7 +2620,7 @@ bool SynergyHandler::isSpellBuffGen(const QString &code, const QString &text, co
     }
     return false;
 }
-bool SynergyHandler::isOtherClassGen(const QString &code, const QString &text, const CardClass &cardClass)
+bool SynergyHandler::isOtherClassGen(const QString &code, const QString &text)
 {
     //TEST
     //(text.contains("opponent") || text.contains("another")) && text.contains("class")
@@ -2635,14 +2629,13 @@ bool SynergyHandler::isOtherClassGen(const QString &code, const QString &text, c
     {
         return synergyCodes[code].contains("otherClassGen");
     }
-    else if((text.contains("opponent") || text.contains("another")) && text.contains("class")
-            && (cardClass == NEUTRAL || cardClass == ROGUE))
+    else if((text.contains("opponent") || text.contains("another")) && text.contains("class"))
     {
         return true;
     }
     return false;
 }
-bool SynergyHandler::isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass)
+bool SynergyHandler::isSilverHandGen(const QString &code, const QString &text)
 {
     //TEST
     //text.contains("silver hand")
@@ -2651,14 +2644,13 @@ bool SynergyHandler::isSilverHandGen(const QString &code, const QString &text, c
     {
         return synergyCodes[code].contains("silverHandGen");
     }
-    else if(text.contains("silver hand")
-            && (cardClass == NEUTRAL || cardClass == PALADIN))
+    else if(text.contains("silver hand"))
     {
         return true;
     }
     return false;
 }
-bool SynergyHandler::isTreantGen(const QString &code, const QString &text, const CardClass &cardClass)
+bool SynergyHandler::isTreantGen(const QString &code, const QString &text)
 {
     //TEST
     //text.contains("treant")
@@ -2667,8 +2659,7 @@ bool SynergyHandler::isTreantGen(const QString &code, const QString &text, const
     {
         return synergyCodes[code].contains("treantGen");
     }
-    else if(text.contains("treant")
-            && (cardClass == NEUTRAL || cardClass == DRUID))
+    else if(text.contains("treant"))
     {
         return true;
     }
@@ -3459,7 +3450,7 @@ bool SynergyHandler::isSpellBuffSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isOtherClassSyn(const QString &code, const QString &text, const CardClass &cardClass)
+bool SynergyHandler::isOtherClassSyn(const QString &code, const QString &text)
 {
     //TEST
     //text.contains("card") && text.contains("from another class")
@@ -3468,8 +3459,7 @@ bool SynergyHandler::isOtherClassSyn(const QString &code, const QString &text, c
     {
         return synergyCodes[code].contains("otherClassSyn");
     }
-    else if(text.contains("card") && text.contains("from another class")
-            && (cardClass == NEUTRAL || cardClass == ROGUE))
+    else if(text.contains("card") && text.contains("from another class"))
     {
         return true;
     }

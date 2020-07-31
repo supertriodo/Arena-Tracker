@@ -79,6 +79,9 @@ private:
 
 
 //Metodos
+private:
+    static CardClass classString2cardClass(QString value);
+
 public:
     static QString className2classLogNumber(const QString &hero);
     static QString classEnum2classLogNumber(CardClass cardClass);
@@ -92,6 +95,7 @@ public:
     static QString classOrder2classULName(int order);
     static QString classOrder2classUL_ULName(int order);
     static QString classOrder2classLogNumber(int order);
+    static bool cardsJsonContains(QString code, QString attribute);
     static QJsonValue getCardAttribute(QString code, QString attribute);
     static QString appPath();
     static QString dataPath();
@@ -113,7 +117,7 @@ public:
     static bool isLeftOfScreen(QPoint center);
     static CardType getTypeFromCode(QString code);
     static CardRarity getRarityFromCode(QString code);
-    static CardClass getClassFromCode(QString code);
+    static QList<CardClass> getClassFromCode(QString code);
     static CardRace getRaceFromCode(QString code);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);

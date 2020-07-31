@@ -106,7 +106,7 @@ private:
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics);
     bool isOverload(const QString &code);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
-    bool isHeroPowerGen(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isHeroPowerGen(const QString &code, const QString &text);
     bool isSecret(const QString &code, const QJsonArray &mechanics);
     bool isSecretGen(const QString &code);
     bool isEcho(const QString &code, const QJsonArray &mechanics);
@@ -148,9 +148,9 @@ private:
     bool isEnemyDrawGen(const QString &code, const QString &text);
     bool isHeroAttackGen(const QString &code, const QString &text);
     bool isSpellBuffGen(const QString &code, const QString &text, const QJsonArray &mechanics, const CardType &cardType);
-    bool isOtherClassGen(const QString &code, const QString &text, const CardClass &cardClass);
-    bool isSilverHandGen(const QString &code, const QString &text, const CardClass &cardClass);
-    bool isTreantGen(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isOtherClassGen(const QString &code, const QString &text);
+    bool isSilverHandGen(const QString &code, const QString &text);
+    bool isTreantGen(const QString &code, const QString &text);
     bool isLackeyGen(const QString &code, const QString &text);    
 
     bool isMurlocSyn(const QString &code);
@@ -223,7 +223,7 @@ private:
     bool isEnemyDrawSyn(const QString &code, const QString &text);
     bool isHeroAttackSyn(const QString &code);
     bool isSpellBuffSyn(const QString &code, const QString &text);
-    bool isOtherClassSyn(const QString &code, const QString &text, const CardClass &cardClass);
+    bool isOtherClassSyn(const QString &code, const QString &text);
     bool isSilverHandSyn(const QString &code);
     bool isTreantSyn(const QString &code);
     bool isLackeySyn(const QString &code);

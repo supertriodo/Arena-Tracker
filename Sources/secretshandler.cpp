@@ -106,9 +106,10 @@ void SecretsHandler::clearSecretsAnimating()
 }
 
 
+//TODO Dual color secrets
 void SecretsHandler::secretStolen(int id, QString code, LoadingScreenState loadingScreenState)
 {
-    knownSecretPlayed(id, Utility::getClassFromCode(code), code, loadingScreenState);
+    knownSecretPlayed(id, Utility::getClassFromCode(code)[0], code, loadingScreenState);
 }
 
 
@@ -357,7 +358,7 @@ void SecretsHandler::redrawClassCards()
     {
         foreach(SecretCard secretCard, activeSecret.children)
         {
-            if(secretCard.getCardClass()<NUM_HEROS)   secretCard.draw();
+            secretCard.draw();
         }
     }
 }
@@ -403,10 +404,10 @@ void SecretsHandler::secretRevealed(int id, QString code)
 {
     emit pDebug("Secret revealed: " + code);
 
-    CardClass hero = Utility::getClassFromCode(code);
+    QList<CardClass> cardClass = Utility::getClassFromCode(code);
     for(int i=0; i<activeSecretList.count(); i++)
     {
-        if(activeSecretList[i].hero == hero)
+        if(activeSecretList[i].hero == cardClass[0] || (cardClass.count()>1 && activeSecretList[i].hero == cardClass[1]))
         {
             //Eliminamos la id
             for(int j=0; j<activeSecretList[i].activeSecretIds.count(); j++)
@@ -496,10 +497,10 @@ void SecretsHandler::discardSecretOptionNow(QString code)
 {
     emit pDebug("Option discarded: " + code);
 
-    CardClass hero = Utility::getClassFromCode(code);
+    QList<CardClass> cardClass = Utility::getClassFromCode(code);
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
     {
-        if(it->hero == hero)
+        if(it->hero == cardClass[0] || (cardClass.count()>1 && it->hero == cardClass[1]))
         {
             for(SecretCard &secretCard: it->children)
             {

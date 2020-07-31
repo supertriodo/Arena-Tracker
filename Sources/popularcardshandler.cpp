@@ -91,10 +91,7 @@ void PopularCardsHandler::redrawClassCards()
 {
     for(PopularCard &popularCard: popularCardList)
     {
-        if(popularCard.getCardClass()<NUM_HEROS)
-        {
-            popularCard.draw();
-        }
+        popularCard.draw();
     }
 }
 
@@ -158,6 +155,7 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 }
 
 
+//TODO Revisar que los maps siguen la misma estructura en la API
 void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList,
                                                 SynergyHandler *synergyHandler)
 {
@@ -165,36 +163,38 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
 
     for(QString &code: codeList)
     {
-        CardClass cardClass = Utility::getClassFromCode(code);
+        QList<CardClass> cardClass = Utility::getClassFromCode(code);
         int cost = std::min(Utility::getCardAttribute(code, "cost").toInt(), 10);
 
         if(cost>=2)
         {
-            switch(cardClass)
+            if(cardClass.count() == 1 && cardClass[0] == NEUTRAL)
             {
-                case NEUTRAL:
-                    for(int i=0; i<NUM_HEROS; i++)
-                    {
-                        if(cardsPickratesMap[i][code]>=10)
-                        {
-                            if(cost>4 || synergyHandler->isDrop2(code, cost) ||
-                                synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
-                            {
-                                cardsByPickrate[i][cost-2].append(code);
-                            }
-                        }
-                    }
-                break;
-                default:
-                    if(cardClass<NUM_HEROS && cardsPickratesMap[cardClass][code]>=10)
+                for(int i=0; i<NUM_HEROS; i++)
+                {
+                    if(cardsPickratesMap[i][code]>=10)
                     {
                         if(cost>4 || synergyHandler->isDrop2(code, cost) ||
                             synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
                         {
-                            cardsByPickrate[cardClass][cost-2].append(code);
+                            cardsByPickrate[i][cost-2].append(code);
                         }
                     }
-                break;
+                }
+            }
+            else
+            {
+                for(const CardClass &cardClassItem: cardClass)
+                {
+                    if(cardClassItem<NUM_HEROS && cardsPickratesMap[cardClassItem][code]>=10)
+                    {
+                        if(cost>4 || synergyHandler->isDrop2(code, cost) ||
+                            synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
+                        {
+                            cardsByPickrate[cardClassItem][cost-2].append(code);
+                        }
+                    }
+                }
             }
         }
     }

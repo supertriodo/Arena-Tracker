@@ -171,8 +171,12 @@ QString DeckStringHandler::getHeroLog(const QList<CodeAndCount> &deckList)
     {
         QString code = codeAndCount.code;
         DeckCard deckCard(code);
-        QString hero = Utility::classEnum2classLogNumber(deckCard.getCardClass());
-        if(!hero.isEmpty())     return hero;
+        QList<CardClass> cardClass = deckCard.getCardClass();
+        if(cardClass.count() == 1)
+        {
+            QString hero = Utility::classEnum2classLogNumber(cardClass[0]);
+            if(!hero.isEmpty())     return hero;
+        }
     }
     return "";
 }
