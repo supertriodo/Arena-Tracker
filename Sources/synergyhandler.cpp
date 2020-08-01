@@ -2756,7 +2756,8 @@ bool SynergyHandler::isSpellAllSyn(const QString &code, const QString &text)
     }
     else
     {
-        return  text.contains("spell") && (text.contains("you cast") || text.contains("cost"));
+        return  text.contains("spellburst:") ||
+                (text.contains("spell") && (text.contains("you cast") || text.contains("cost")));
     }
 }
 bool SynergyHandler::isWeaponSyn(const QString &code)
