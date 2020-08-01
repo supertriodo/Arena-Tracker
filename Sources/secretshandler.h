@@ -121,6 +121,7 @@ public slots:
     void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void resetLastMinionDead(QString code, QString subType);
     void playerHeroPower();
+    void newTurn(bool isPlayerTurn);
     void setPremium(bool premium);
 
 private slots:

@@ -1440,6 +1440,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerHeroPower()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
+    connect(gameWatcher, SIGNAL(newTurn(bool, int)),
+            secretsHandler, SLOT(newTurn(bool)));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             popularCardsHandler, SLOT(resetCardsInterface()));

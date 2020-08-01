@@ -291,6 +291,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(DIRTY_TRICKS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
+                unknownSecretPlayedAddOption(PLAGIARIZE, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
                 //EPIC
@@ -590,6 +591,12 @@ void SecretsHandler::playerHeroPower()
 }
 
 
+void SecretsHandler::newTurn(bool isPlayerTurn)
+{
+    if(!isPlayerTurn)   discardSecretOptionNow(PLAGIARIZE);
+}
+
+
 void SecretsHandler::playerMinionPlayed(QString code, int id, int playerMinions)
 {
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -865,7 +872,7 @@ void SecretsHandler::createSecretsByPickrate()
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
                             << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK;
 
-    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION;
+    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE;
 }
 
 

@@ -70,6 +70,7 @@
 #define AMBUSH QString("BT_707")
 #define BAMBOOZLE QString("BT_042")
 #define DIRTY_TRICKS QString("BT_709")
+#define PLAGIARIZE QString("SCH_706")
 
 //Cartas
 #define VARIAN_WRYNN "AT_072"
