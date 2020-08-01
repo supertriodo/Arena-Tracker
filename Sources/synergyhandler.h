@@ -152,7 +152,7 @@ private:
     bool isSilverHandGen(const QString &code, const QString &text);
     bool isTreantGen(const QString &code, const QString &text);
     bool isLackeyGen(const QString &code, const QString &text);    
-    bool isOutcastGen(const QString &code, const QJsonArray &mechanics);
+    bool isOutcast(const QString &code, const QJsonArray &mechanics);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);

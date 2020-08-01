@@ -754,7 +754,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSilverHandGen(code, text))                                         mechanicCounters[V_SILVER_HAND]->increase(code);
     if(isTreantGen(code, text))                                             mechanicCounters[V_TREANT]->increase(code);
     if(isLackeyGen(code, text))                                             mechanicCounters[V_LACKEY]->increase(code);
-    if(isOutcastGen(code, mechanics))                                       mechanicCounters[V_OUTCAST]->increase(code);
+    if(isOutcast(code, mechanics))                                          mechanicCounters[V_OUTCAST]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1206,7 +1206,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isSilverHandGen(code, text))                             mechanicCounters[V_SILVER_HAND]->insertSynCards(synergies);
     if(isTreantGen(code, text))                                 mechanicCounters[V_TREANT]->insertSynCards(synergies);
     if(isLackeyGen(code, text))                                 mechanicCounters[V_LACKEY]->insertSynCards(synergies);
-    if(isOutcastGen(code, mechanics))                           mechanicCounters[V_OUTCAST]->insertSynCards(synergies);
+    if(isOutcast(code, mechanics))                              mechanicCounters[V_OUTCAST]->insertSynCards(synergies);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1458,7 +1458,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "eggGen", "damageFriendlyHeroGen", "echo", "echoGen", "rush", "rushGen", "magnetic", "magneticGen",
         "eggSyn", "damageFriendlyHeroSyn", "echoSyn", "echoAllSyn", "rushSyn", "rushAllSyn", "magneticSyn", "magneticAllSyn",
 
-        "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcastGen",
+        "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcast",
         "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn"
         //New Synergy Step 7
     };
@@ -1685,7 +1685,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSilverHandGen(code, text))                                         mec<<"silverHandGen";
     if(isTreantGen(code, text))                                             mec<<"treantGen";
     if(isLackeyGen(code, text))                                             mec<<"lackeyGen";
-    if(isOutcastGen(code, mechanics))                                       mec<<"outcastGen";
+    if(isOutcast(code, mechanics))                                          mec<<"outcast";
     //New Synergy Step 8
 
     //Solo analizamos los que tienen patrones definidos
@@ -2685,11 +2685,11 @@ bool SynergyHandler::isLackeyGen(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isOutcastGen(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isOutcast(const QString &code, const QJsonArray &mechanics)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("outcastGen");
+        return synergyCodes[code].contains("outcast");
     }
     else if(mechanics.contains(QJsonValue("OUTCAST")))
     {
@@ -3630,7 +3630,7 @@ enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen, handBuffGen,
 tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
-otherClassGen, silverHandGen, treantGen, lackeyGen, outcastGen
+otherClassGen, silverHandGen, treantGen, lackeyGen, outcast
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12
@@ -3666,7 +3666,7 @@ OTHER CLASS: otherClassGen/otherClassSyn
 SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn
 LACKEY: lackeyGen/lackeySyn
-OUTCAST: outcastGen/outcastSyn
+OUTCAST: outcast/outcastSyn
 
 
 
