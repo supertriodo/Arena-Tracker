@@ -681,13 +681,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
 
         //Enemigo accion desconocida
-        //BLOCK_START BlockType=PLAY Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2]
-        //EffectCardId= EffectIndex=0 Target=0
+        //BLOCK_START BlockType=PLAY Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=29 zone=HAND zonePos=2 cardId= player=1]
+        //EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
-            "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\] "
-            "EffectCardId=\\w* EffectIndex=-?\\d+ "
-            "Target="
+            "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=\\d+\\]"
             ), match))
         {
             QString blockType = match->captured(1);
@@ -800,7 +798,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         else if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - BLOCK_START BlockType=(\\w+) "
             "Entity=\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=(\\d+)\\] "
-            "EffectCardId=\\w* EffectIndex=-?\\d+ "
+            "EffectCardId=.* EffectIndex=-?\\d+ "
             "Target=(?:\\[entityName=(.*) id=(\\d+) zone=(\\w+) zonePos=\\d+ cardId=(\\w+) player=\\d+\\])?"
             ), match))
         {
