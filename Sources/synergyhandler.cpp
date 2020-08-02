@@ -1482,9 +1482,9 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: Utility::getSetCodes("BLACK_TEMPLE"))
+    for(const QString &code: Utility::getSetCodes("SCHOLOMANCE"))
 //    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+//    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1494,9 +1494,9 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                containsAll(text, "outcast")
+                containsAll(text, "outcast")
 //                && cardType == MINION
-                mechanics.contains(QJsonValue("OUTCAST"))
+//                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
 //                isLackeyGen(code, text)
 
@@ -1712,11 +1712,13 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
     else                            qDebug()<<code<<": ["<<mec<<"],";
-    qDebug()<<"Texto:"<<text;
-    qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
-    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()
-            <<"--"<<Utility::getCardAttribute(code, "set").toString()
-            <<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
+    qDebug()<<num<<Utility::cardEnNameFromCode(code)+": "+text;
+//    qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
+//    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()
+//            <<"--"<<Utility::getCardAttribute(code, "set").toString()
+//            <<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
+
+    Q_UNUSED(health);
 }
 
 
@@ -2756,7 +2758,7 @@ bool SynergyHandler::isSpellAllSyn(const QString &code, const QString &text)
     }
     else
     {
-        return  text.contains("spellburst:") ||
+        return  text.contains("spellburst") ||
                 (text.contains("spell") && (text.contains("you cast") || text.contains("cost")));
     }
 }
@@ -3543,6 +3545,12 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == WAXMANCY)            return 0;
     if(code == IMPRISONED_SATYR)    return 0;
     if(code == SKULL_OF_GULDAN)     return 0;
+    if(code == DEMONIC_STUDIES)     return 0;
+    if(code == DRACONIC_STUDIES)    return 0;
+    if(code == ATHLETIC_STUDIES)    return 0;
+    if(code == PRIMORDIAL_STUDIES)  return 0;
+    if(code == CARRION_STUDIES)     return 0;
+    if(code == NATURE_STUDIES)      return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
@@ -3551,6 +3559,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == DREAMPETAL_FLORIST)  return 3;
     if(code == PILOTED_REAPER)      return 3;
     if(code == MOGU_FLESHSHAPER)    return 3;
+    if(code == FEL_GUARDIANS)       return 3;
+    if(code == CUTTING_CLASS)       return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -3564,9 +3574,11 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == DEMONBOLT)           return 5;
     if(code == RABBLE_BOUNCER)      return 5;
     if(code == EMBIGGEN)            return 5;
+    if(code == DEVOUT_PUPIL)        return 5;
     if(code == SEA_GIANT)           return 6;
     if(code == KALECGOS)            return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
+    if(code == FLESH_GIANT)         return 6;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 8;
 
@@ -3678,7 +3690,7 @@ REGLAS
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
-+tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2 las 2 o
++tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
 +toYourHandGen/tokenCardGen/twinspell: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
     (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
