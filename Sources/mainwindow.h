@@ -51,16 +51,6 @@ class Extended;
 
 class DetachWindow;
 
-class HSRCardsMaps
-{
-public:
-    QMap<QString, float> *cardsPickratesMap;
-    QMap<QString, float> *cardsIncludedWinratesMap;
-    QMap<QString, int> *cardsIncludedDecksMap;
-    QMap<QString, float> *cardsPlayedWinratesMap;
-};
-
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -118,7 +108,10 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
-    QFutureWatcher<HSRCardsMaps> futureProcessHSRCards;
+    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPickrates;
+    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsIncludedWinrates;
+    QFutureWatcher<QMap<QString, int> *> futureProcessHSRCardsIncludedDecks;
+    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayedWinrates;
 
 
 
@@ -227,7 +220,6 @@ private:
     void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
     void updateDraftMethodUnchecked();
     void downloadHSRCards();
-    HSRCardsMaps processHSRCards(const QJsonObject &jsonObject);
     void startProcessHSRCards(const QJsonObject &jsonObject);
     void downloadLightForgeJsonOriginal();
     void saveLightForgeJsonOriginal(const QByteArray &jsonData);
@@ -339,7 +331,6 @@ private slots:
     void twitchTesterConnectionOk(bool ok);
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
-    void finishProcessHSRCards();
     void processPopularCardsHandlerPickrates();
 };
 
