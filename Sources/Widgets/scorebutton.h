@@ -5,7 +5,7 @@
 #include <QLabel>
 #include "../utility.h"
 
-#define MIN_HSR_DECKS 500
+#define MIN_HSR_DECKS 2000
 
 class ScoreButton : public QLabel
 {

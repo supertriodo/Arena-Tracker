@@ -95,7 +95,7 @@ void ScoreButton::setScore(float score, bool isBestScore, int includedDecks)
     this->score = score;
     this->isBestScore = isBestScore;
     this->includedDecks = includedDecks;
-    if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " decks");
+    if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " played");
     else    this->setToolTip("");
     draw();
 }

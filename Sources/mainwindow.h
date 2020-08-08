@@ -35,11 +35,8 @@
 #define LIGHTFORGE_CARDMAP_URL "http://thelightforge.com/api/TierList/CardMap"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
-//#define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
-#define HSR_CARDS_INCLUDED_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report_v2/?GameType=ARENA&TimeRange=LAST_14_DAYS"
-#define HSR_CARDS_PLAYED_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_played_popularity_report_v2/?GameType=ARENA&TimeRange=LAST_14_DAYS"
-#define HSR_CARDS_INCLUDED "https://hsreplay.net/api/v1/analytics/query/card_included_popularity_report_v2/?GameType=ARENA&TimeRange=CURRENT_PATCH"
-#define HSR_CARDS_PLAYED "https://hsreplay.net/api/v1/analytics/query/card_played_popularity_report_v2/?GameType=ARENA&TimeRange=CURRENT_PATCH"
+#define HSR_CARDS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
+#define HSR_CARDS_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=LAST_14_DAYS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
@@ -60,6 +57,7 @@ public:
     QMap<QString, float> *cardsPickratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
+    QMap<QString, float> *cardsPlayedWinratesMap;
 };
 
 
@@ -120,8 +118,7 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
-    QFutureWatcher<HSRCardsMaps> futureProcessHSRCardsIncluded;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayed;
+    QFutureWatcher<HSRCardsMaps> futureProcessHSRCards;
 
 
 
@@ -226,14 +223,12 @@ private:
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
-    void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap);
+    void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap, bool trunk=false);
     void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
     void updateDraftMethodUnchecked();
     void downloadHSRCards();
-    HSRCardsMaps processHSRCardsIncluded(const QJsonObject &jsonObject);
-    void startProcessHSRCardsIncluded(const QJsonObject &jsonObject);
-    QMap<QString, float> * processHSRCardsPlayed(const QJsonObject &jsonObject);
-    void startProcessHSRCardsPlayed(const QJsonObject &jsonObject);
+    HSRCardsMaps processHSRCards(const QJsonObject &jsonObject);
+    void startProcessHSRCards(const QJsonObject &jsonObject);
     void downloadLightForgeJsonOriginal();
     void saveLightForgeJsonOriginal(const QByteArray &jsonData);
     void saveCardmapLightForgeOriginal(const QByteArray &jsonData);
@@ -344,8 +339,7 @@ private slots:
     void twitchTesterConnectionOk(bool ok);
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
-    void finishProcessHSRCardsIncluded();
-    void finishProcessHSRCardsPlayed();
+    void finishProcessHSRCards();
     void processPopularCardsHandlerPickrates();
 };
 

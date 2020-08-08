@@ -217,6 +217,7 @@ QStringList DraftHandler::getAllArenaCodes()
         codeList.append(code);
     }
 
+    codeList.removeDuplicates();
     return codeList;
 }
 
@@ -1384,7 +1385,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
                     QString::number(static_cast<double>(tierScore[i])) + "%";
             if(includedDecks[i] >= 0 && includedDecks[i] < MIN_HSR_DECKS)
             {
-                text += " -- in " + QString::number(includedDecks[i]) + " decks";
+                text += " -- " + QString::number(includedDecks[i]) + " played";
             }
 
             labelHSRscore[i]->setText(text);
