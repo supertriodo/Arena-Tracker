@@ -53,7 +53,7 @@ On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
 
-## [FAQ](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/faq.html)
+## [FAQ](https://triodo.gitbook.io/arena-tracker-documentation/)
 
 
 
