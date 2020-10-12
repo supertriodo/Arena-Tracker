@@ -35,7 +35,7 @@
 #define LIGHTFORGE_CARDMAP_URL "http://thelightforge.com/api/TierList/CardMap"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
-#define HSR_CARDS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
+#define HSR_CARDS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_PATCH"
 #define HSR_CARDS_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=LAST_14_DAYS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
