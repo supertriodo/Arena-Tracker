@@ -89,13 +89,11 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
         emit missingOnWeb(code);
         return;
     }
-    else//Hearthsim card
+    else//Hearthsim or Hearthpwn(golden) card
     {
         if(code.endsWith("_premium"))
         {
-            emit pDebug("Golden card " + code + " won't be downloaded from hearthsim.", DebugLevel::Warning);
-            emit missingOnWeb(code);
-            return;
+            urlString = HEARTHPWN_CARDS_URL + code + "_000.png";
         }
         else
         {
@@ -105,7 +103,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     gettingWebCards[reply] = downCard;
-    emit pDebug("Downloading (" + QString(fromHearthsim?"Hearthsim":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
+    emit pDebug("Downloading (" + QString(fromHearthsim?"Hearthsim/Hearthpwn":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
                 ") - " + QString::number(pendingDownloads.count()));
 }
 
@@ -125,9 +123,9 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
 
 
     QByteArray data = reply->readAll();
+    QString fullUrl = reply->url().toString();
     if(reply->error() != QNetworkReply::NoError)
     {
-        QString fullUrl = reply->url().toString();
         if(isHero)//Github hero
         {
             emit pDebug("Failed to download hero card image(Github): " + code, DebugLevel::Warning);
@@ -136,14 +134,14 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         }
         else if(fullUrl.startsWith(AT_CARDS_URL))//Github card
         {
-            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying Hearthsim.", DebugLevel::Warning);
-            emit pLog(tr("Web: Failed to download card image(GitHub). Trying Hearthsim."));
+            emit pDebug("Failed to download card image(GitHub): " + code + " - Trying Hearthsim/Hearthpwn.", DebugLevel::Warning);
+            emit pLog(tr("Web: Failed to download card image(GitHub). Trying Hearthsim/Hearthpwn."));
             downloadWebImage(code, isHero, false, true);
         }
-        else//Hearthsim card
+        else//Hearthsim/Hearthpwn card
         {
-            emit pDebug("Failed to download card image(Hearthsim): " + code + "", DebugLevel::Warning);
-            emit pLog(tr("Web: Failed to download card image(Hearthsim)."));
+            emit pDebug("Failed to download card image(Hearthsim/Hearthpwn): " + code + "", DebugLevel::Warning);
+            emit pLog(tr("Web: Failed to download card image(Hearthsim/Hearthpwn)."));
         }
     }
     else if(data.isEmpty())
@@ -158,7 +156,14 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         webImage.loadFromData(data);
         if(!isHero && webImage.width()!=200)
         {
-            webImage = webImage.copy(4, -8, 246, 372);
+            if(fullUrl.startsWith(HEARTHSIM_CARDS_URL))//Plain from hearthsim
+            {
+                webImage = webImage.copy(4, -8, 246, 372);
+            }
+            else if(fullUrl.startsWith(HEARTHPWN_CARDS_URL))//Golden from hearthpwn
+            {
+                webImage = webImage.copy(-9, -30, 295, 447);
+            }
             webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
         }
 
