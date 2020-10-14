@@ -2,7 +2,7 @@ Arena Tracker reads the Hearthstone log to give your all the info you need. Aren
 
 Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3$ a month.
 
-Next you can check a brief explanation of its features divided in free and patreon versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/).
+Next you can check a brief explanation of its features divided in free and patreon versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
 # Free version features:
 
@@ -40,26 +40,26 @@ Next you can check a brief explanation of its features divided in free and patre
 # Patreon version features:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
-* While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#rateofcards)
+* While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#rateofcards)
 
 ![DraftSynergies](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/ScoresSynergiesOverlay.png)
-* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/drafting-tab.html#mechanics)
+* While drafting, check the strenghts and weaknesses of your deck through the mechanics summary. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#mechanics)
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
 ![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
-* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html)
+* Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
-* Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/replay-tab.html#planning)
+* Plan your turn beforehand. Use the advanced replay tab to organize your thoughts before making a move in Hearthstone. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab#planning)
 
 ![Planning](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/planning.gif)
-* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#popularlist)
+* Check the most popular cards played by your enemy on his next turn. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#popularlist)
 
 ![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
-* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/enemy-hand-tab.html#rng)
+* Check the odds of minions/heroes dying when using bombers or missiles. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#rng)
 
 ![Bomber](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bomber.png)
-* Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://arena-tracker.gitbooks.io/arena-tracker-documentation/en/graveyard-tab.html)
+* Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 

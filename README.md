@@ -1,7 +1,7 @@
 # Arena-Tracker
 Arena Tracker reads the Hearthstone log to give your all the info you need. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
 
-Too complicated? [Check the User Guide](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/).
+Too complicated? [Check the User Guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
 Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/ArenaTracker/) and support its development at the [Arena Tracker patreon](https://www.patreon.com/triodo).
 
@@ -53,7 +53,7 @@ On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
 
-## [FAQ](https://arena-tracker.gitbooks.io/arena-tracker-documentation/content/en/faq.html)
+## [FAQ](https://triodo.gitbook.io/arena-tracker-documentation/)
 
 
 
@@ -82,7 +82,7 @@ If you build on Mac check:
 [Yes](https://twitter.com/bdbrode/status/511151446038179840)  
 
 
-## Video examples
+## The evolution of AT
 * v4.41: https://www.youtube.com/watch?v=k6pOHXFQrzQ
 * v3.21: https://www.youtube.com/watch?v=U-XzJZ5UG2k
 * v2.0: https://www.youtube.com/watch?v=IMckn_lmW84
