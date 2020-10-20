@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.17/Arena.Tracker.v8.17.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.17/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.17/Arena.Tracker.v8.17.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.17/Arena.Tracker.v8.17.Windows.zip",
-	"log": "Fix winrates, popularity and other HSReplay data shown for the new cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.17'>github</a>"
+	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17","v8.18"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.18/Arena.Tracker.v8.18.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.18/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.18/Arena.Tracker.v8.18.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.18/Arena.Tracker.v8.18.Windows.zip",
+	"log": "AT improves detection of golden cards during the draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.18'>github</a>"
 }
