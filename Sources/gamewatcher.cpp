@@ -120,7 +120,7 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
             loadingScreenState = arena;
             emit pDebug("Entering ARENA (loadingScreenState = arena).", numLine);
 
-            if(prevMode == "HUB" || prevMode == "FRIENDLY")
+            if(prevMode == "GAME_MODE" || prevMode == "FRIENDLY")
             {
                 emit enterArena();//enterArena deckHandler
             }
@@ -129,6 +129,11 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         {
             loadingScreenState = menu;
             emit pDebug("Entering MENU (loadingScreenState = menu).", numLine);
+        }
+        else if(currMode == "GAME_MODE")
+        {
+            loadingScreenState = gameMode;
+            emit pDebug("Entering GAME_MODE (loadingScreenState = gameMode).", numLine);
 
             if(prevMode == "DRAFT")
             {

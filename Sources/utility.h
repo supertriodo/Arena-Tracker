@@ -28,7 +28,7 @@ using namespace cv;
 
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
-enum LoadingScreenState { menu, arena, ranked, adventure, tavernBrawl, friendly, casual, unknown };
+enum LoadingScreenState { menu, arena, ranked, adventure, tavernBrawl, friendly, casual, gameMode, unknown };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logAsset, logInvalid };
 enum DraftMethod { HearthArena, LightForge, HSReplay, None };
 enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes, Score_HSReplay };
