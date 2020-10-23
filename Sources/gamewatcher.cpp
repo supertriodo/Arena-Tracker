@@ -143,8 +143,8 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         }
         else if(currMode == "TOURNAMENT")
         {
-            loadingScreenState = casual;
-            emit pDebug("Entering CASUAL/RANKED (loadingScreenState = casual).", numLine);
+            loadingScreenState = ranked;
+            emit pDebug("Entering CASUAL/RANKED (loadingScreenState = ranked).", numLine);
         }
         else if(currMode == "ADVENTURE")
         {
@@ -173,15 +173,18 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
 
 void GameWatcher::processAsset(QString &line, qint64 numLine)
 {
-    if(powerState != noGame)   return;
+    Q_UNUSED(line);
+    Q_UNUSED(numLine);
 
-    //Definimos RANKED solo si venimos de loadScreen TOURNAMENT y
-    //acabamos de encontrar el WON pero aun no hemos createResult
-    if(loadingScreenState == casual && logSeekWon != -1 && line.contains("assetPath=rank_window"))
-    {
-        loadingScreenState = ranked;
-        emit pDebug("On RANKED (loadingScreenState = ranked).", numLine);
-    }
+//    if(powerState != noGame)   return;
+
+//    //Definimos RANKED solo si venimos de loadScreen TOURNAMENT y
+//    //acabamos de encontrar el WON pero aun no hemos createResult
+//    if(loadingScreenState == casual && logSeekWon != -1 && line.contains("assetPath=rank_window"))
+//    {
+//        loadingScreenState = ranked;
+//        emit pDebug("On RANKED (loadingScreenState = ranked).", numLine);
+//    }
 }
 
 
