@@ -2113,6 +2113,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_5)  draftHandler->endDraftShowMechanicsWindow();
 #ifdef Q_OS_LINUX
             else if(event->key() == Qt::Key_S)  askLinuxShortcut();
+            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
+            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
+            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
 #endif
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_D)  createDebugPack();
@@ -2129,9 +2132,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 this->resize(QSize(270, 1030));
                 this->move(1920-270, 0);
             }
-            else if(event->key() == Qt::Key_8)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 0);
-            else if(event->key() == Qt::Key_9)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 1);
-            else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
 #endif
         }
     }
