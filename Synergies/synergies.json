@@ -312,7 +312,7 @@
 "BT_142" : [ "pingGen", "battlecry", "heroAttackGen", "returnSyn" ],
 "BT_235" : [ "aoeGen", "spellDamageSyn", "eggSyn" ],
 "BT_323" : [ "drop2", "battlecry" ],
-"BT_352" : [ "drop3", "heroAttackSyn" ],
+"BT_352" : [ "drop4", "heroAttackSyn" ],
 "BT_495" : [ "reachGen", "battlecry", "heroAttackSyn", "returnSyn", "damageMinionsGen" ],
 "BT_512" : [ "destroyGen", "reachGen", "heroAttackGen" ],
 "BT_740" : [ "damageMinionsGen", "lifesteal", "spellDamageSyn" ],
