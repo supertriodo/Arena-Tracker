@@ -341,7 +341,7 @@
 "BT_003" : [ "drop3", "secret" ],
 "BT_004" : [ "drop3", "aoeGen" ],
 "BT_006" : [ "discardGen", "toYourHandGen2" ],
-"BT_008" : [ "drop2", "deathrattle", "tokenGen", "demonGen", "spellDamageGen" ],
+"BT_008" : [ "drop2", "deathrattle", "demonGen", "spellDamageGen" ],
 "BT_009" : [ "tokenGen" ],
 "BT_010" : [ "murlocAllSyn", "drop4", "battlecry", "returnSyn" ],
 "BT_011" : [ "aoeGen", "tokenSyn", "pingSyn", "pingGen" ],
