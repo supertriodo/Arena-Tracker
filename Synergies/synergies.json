@@ -823,7 +823,7 @@
 "DAL_719" : [  ],
 "DAL_720" : [ "damageMinionsGen", "reachGen", "returnGen", "drop4" ],
 "DAL_721" : [  ],
-"DAL_723" : [ "damageMinionsGen" ],
+"DAL_723" : [ "destroyGen" ],
 "DAL_724" : [  ],
 "DAL_726" : [ "murlocSyn", "drop4" ],
 "DAL_727" : [ "drawGen", "drop3" ],
