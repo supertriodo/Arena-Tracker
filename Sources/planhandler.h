@@ -184,6 +184,7 @@ signals:
     void heroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
     void showPremiumDialog();
     void swapSize(bool customSize);
+    void noHeroDamageTested();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
 
@@ -222,6 +223,7 @@ public slots:
     void zonePlayAttack(QString code, int id1, int id2);
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
+    void checkEnemyHeroHealthChanged();
     void newTurn(bool playerTurn, int numTurn);
     void setLastTriggerId(QString code, QString blockType, int id, int idTarget);
     void lockPlanInterface();

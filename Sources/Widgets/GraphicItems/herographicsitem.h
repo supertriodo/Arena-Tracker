@@ -58,6 +58,7 @@ public:
     void setMinionsAttack(int minionsAttack, bool sendHandTab);
     void setResources(int resources);
     int getResources();
+    int getArmorHealth();
     void setResourcesUsed(int resourcesUsed);
     void setMinionsMaxAttack(int minionsMaxAttack);
     void setHeroWeapon(WeaponGraphicsItem * heroWeapon = nullptr, bool isNowBoard = true);

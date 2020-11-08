@@ -63,6 +63,7 @@
 #define EXPLOSIVE_RUNES QString("LOOT_101")
 #define FLAME_WARD QString("ULD_239")
 #define NETHERWIND_PORTAL QString("BT_003")
+#define RIGGED_FAIRE_GAME QString("")
 
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")

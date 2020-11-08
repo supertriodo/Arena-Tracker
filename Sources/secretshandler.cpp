@@ -700,6 +700,12 @@ void SecretsHandler::cSpiritTested()
 }
 
 
+void SecretsHandler::noHeroDamageTested()
+{
+    discardSecretOptionNow(RIGGED_FAIRE_GAME);
+}
+
+
 /*
  * http://hearthstone.gamepedia.com/Secret
  *

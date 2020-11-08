@@ -154,6 +154,12 @@ int HeroGraphicsItem::getResources()
 }
 
 
+int HeroGraphicsItem::getArmorHealth()
+{
+    return (this->armor + this->health - this->damage);
+}
+
+
 void HeroGraphicsItem::damagePlanningMinion(int damage)
 {
     if(damage > armor)

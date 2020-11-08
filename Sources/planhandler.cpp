@@ -1718,6 +1718,16 @@ void PlanHandler::minionCodeChange(bool friendly, int id, QString newCode)
 }
 
 
+//Test secreto de no danar al rival en tu turno
+void PlanHandler::checkEnemyHeroHealthChanged()
+{
+    if(turnBoards.count()<2)    return;
+    int nowHealth = turnBoards.last()->enemyHero->getArmorHealth();
+    int prevHealth = turnBoards[turnBoards.count()-2]->enemyHero->getArmorHealth();
+    if(nowHealth == prevHealth) emit noHeroDamageTested();
+}
+
+
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     if(numTurn == 2)    fixTurn1Card();
@@ -1765,6 +1775,9 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
 #ifdef QT_DEBUG
     if(DEBUG_REPLAY_AUTO_ADVANCE)   showNextTurn();//Auto avanzar turno para testing
 #endif
+
+    //Secret no damage test
+    if(!playerTurn) checkEnemyHeroHealthChanged();
 }
 
 

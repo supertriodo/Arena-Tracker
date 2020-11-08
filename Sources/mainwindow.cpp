@@ -948,6 +948,8 @@ void MainWindow::createSecretsHandler()
             enemyHandHandler, SLOT(revealCreatedByCard(QString,QString,int)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
+    connect(planHandler, SIGNAL(noHeroDamageTested()),
+            secretsHandler, SLOT(noHeroDamageTested()));
     connect(secretsHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -4599,7 +4601,7 @@ void MainWindow::testHeroPortraits()
     {
         if(!Utility::checkHeroPortrait(code))
         {
-            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "missing.";
+            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "missing. Resize 300.";
             everythingOk = false;
         }
     }
