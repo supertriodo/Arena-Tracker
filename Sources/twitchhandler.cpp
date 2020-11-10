@@ -117,6 +117,7 @@ void TwitchHandler::reset()
 {
     participants.clear();
     for(int i = 0; i < 3; i++)  votes[i]=0;
+    emit pDebug("\nReset");
 }
 
 
@@ -165,10 +166,14 @@ void TwitchHandler::textMessageReceived(QString message)
 
     //PICK TAG
     else if(message.contains(QRegularExpression("\\:(\\w+)!\\w*@\\w*\\.tmi\\.twitch\\.tv PRIVMSG " + TwitchHandler::channel +
-                                           " :" + TwitchHandler::pickTag + "([1-3]).*\\r\\n"), &match))
+                                           " :" + TwitchHandler::pickTag + "([1-3])\\r\\n"), &match))
     {
+        emit pDebug(match.captured(0).trimmed());
+
         QString username = match.captured(1);
         int pick = match.captured(2).toInt() - 1;
+
+        QString debugStr = username + " pick " + QString::number(pick+1);
 
         //Eliminamos su voto anterior
         if(participants.contains(username))
@@ -179,10 +184,17 @@ void TwitchHandler::textMessageReceived(QString message)
             {
                 votes[oldPick]--;
             }
+
+            debugStr += " from " + QString::number(oldPick+1);
         }
 
         participants[username] = pick;
         votes[pick]++;
+
+        emit pDebug(debugStr);
+        emit pDebug("Participants(" + QString::number(participants.count()) + "): " +
+                    QString::number(votes[0]) + " - " + QString::number(votes[1]) + " - " + QString::number(votes[2]));
+
         emit voteUpdate(votes[0], votes[1], votes[2]);
     }
 }

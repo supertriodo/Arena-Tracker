@@ -1,6 +1,7 @@
 #ifndef TWITCHHANDLER_H
 #define TWITCHHANDLER_H
 
+#include "utility.h"
 #include <QObject>
 #include <QtWebSockets/QtWebSockets>
 
@@ -45,6 +46,8 @@ public:
 signals:
     void connectionOk(bool ok=true);
     void voteUpdate(int vote1, int vote2, int vote3);
+    void pLog(QString line);
+    void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TwitchHandler");
 
 public slots:
 

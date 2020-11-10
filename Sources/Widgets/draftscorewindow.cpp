@@ -256,6 +256,8 @@ void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3)
     float totalVotes = votes[0] + votes[1] + votes[2];
     float topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
 
+    emit pDebug(QString::number(votes[0]) + " - " + QString::number(votes[1]) + " - " + QString::number(votes[2]));
+
     for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes));
 }
 

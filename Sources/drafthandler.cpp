@@ -595,6 +595,10 @@ void DraftHandler::createTwitchHandler()
                 this, SLOT(twitchHandlerConnectionOk(bool)));
         connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
                 this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
+        connect(twitchHandler, SIGNAL(pLog(QString)),
+                this, SIGNAL(pLog(QString)));
+        connect(twitchHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
+                this, SIGNAL(pDebug(QString,DebugLevel,QString)));
     }
 }
 
@@ -1764,6 +1768,10 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
                 this, SIGNAL(overlayCardLeave()));
         connect(draftScoreWindow, SIGNAL(showHSRwebPicks()),
                 this, SLOT(showHSRwebPicks()));
+        connect(draftScoreWindow, SIGNAL(pLog(QString)),
+                this, SIGNAL(pLog(QString)));
+        connect(draftScoreWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
+                this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
