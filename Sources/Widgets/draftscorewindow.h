@@ -12,6 +12,15 @@
 
 
 #define MARGIN 10
+#define SYNERGY_MOTION_UPDATE_TIME 50
+
+
+class SynergyMotion
+{
+public:
+    bool moveDown, moving;
+    int value, maximum, stepValue;
+};
 
 class DraftScoreWindow : public QMainWindow
 {
@@ -31,6 +40,7 @@ private:
     TwitchButton *twitchButton[3];
     MoveListWidget *synergiesListWidget[3];
     QList<DeckCard> synergiesDeckCardLists[3];
+    SynergyMotion synergyMotions[3];
     int scoreWidth;
     int maxSynergyHeight;
 
@@ -67,6 +77,8 @@ private slots:
     void showSynergies();
     void findSynergyCardEntered(QListWidgetItem *item);
     void spreadLearningShow(bool value);
+    void stepScrollSynergies(int indexList);
+    void resumeSynergyMotion();
 };
 
 #endif // DRAFTSCOREWINDOW_H

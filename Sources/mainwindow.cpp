@@ -4663,6 +4663,7 @@ void MainWindow::testDelay()
 //    testDownloadCards();
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
 //    QTimer::singleShot(7000, this, SLOT(testSecretsHSR()));
+//    draftHandler->beginDraft("01", deckHandler->getDeckCardList());
 }
 
 
@@ -4749,6 +4750,7 @@ void MainWindow::testDelay()
 //    {
 //    }
 //https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f
+//QTimer::singleShot(100, this, [] () {MySlot(0); });
 
 
 

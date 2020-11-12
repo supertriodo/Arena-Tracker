@@ -90,12 +90,15 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         synergiesListWidget[i]->setIconSize(QSize(synergyWidth, static_cast<int>(synergyWidth/218.0*35)));
         synergiesListWidget[i]->setMouseTracking(true);
+        synergiesListWidget[i]->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
         hideSynergies(i);
 
         connect(synergiesListWidget[i], SIGNAL(itemEntered(QListWidgetItem*)),
                 this, SLOT(findSynergyCardEntered(QListWidgetItem*)));
         connect(synergiesListWidget[i], SIGNAL(leave()),
                 this, SIGNAL(cardLeave()));
+        connect(synergiesListWidget[i], SIGNAL(leave()),
+                this, SLOT(resumeSynergyMotion()));
 
         verLayoutSynergy->addLayout(horLayoutMechanics[i]);
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
@@ -428,6 +431,7 @@ void DraftScoreWindow::showSynergies()
     {
         synergiesListWidget[i]->show();
         Utility::showItemsLayout(horLayoutMechanics[i]);
+        stepScrollSynergies(i);
     }
     this->update();
 }
@@ -464,10 +468,16 @@ void DraftScoreWindow::resizeSynergyList()
         int rowHeight = list->sizeHintForRow(0);
         int rows = list->count();
         int height = rows*rowHeight + 2*list->frameWidth();
-        if(height>maxSynergyHeight)    height = maxSynergyHeight;
-
-        list->setFixedHeight(height);
+        if(height>maxSynergyHeight) list->setFixedHeight(maxSynergyHeight);
+        else                        list->setFixedHeight(height);
         if(rows>0)  width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+
+        //Moving scroll init
+        synergyMotions[i].moveDown = true;
+        synergyMotions[i].moving = true;
+        synergyMotions[i].maximum = height - maxSynergyHeight;
+        synergyMotions[i].stepValue = synergyMotions[i].maximum/(2000/SYNERGY_MOTION_UPDATE_TIME);
+        synergyMotions[i].value = -(2000/SYNERGY_MOTION_UPDATE_TIME)*synergyMotions[i].stepValue;
     }
 
     if(width>0)
@@ -475,6 +485,33 @@ void DraftScoreWindow::resizeSynergyList()
         for(int i=0; i<3; i++)
         {
             synergiesListWidget[i]->setFixedWidth(width);
+        }
+    }
+}
+
+
+void DraftScoreWindow::stepScrollSynergies(int indexList)
+{
+    SynergyMotion &sm = synergyMotions[indexList];
+    MoveListWidget *lw = synergiesListWidget[indexList];
+    if(sm.maximum <= 0 || lw->count()==0)
+        return;
+
+    QTimer::singleShot(SYNERGY_MOTION_UPDATE_TIME, this, [=]() {stepScrollSynergies(indexList);});
+    if(sm.moving)
+    {
+        sm.value = sm.value + (sm.moveDown?sm.stepValue:-sm.stepValue);
+        lw->verticalScrollBar()->setValue(sm.value);
+
+        if(sm.moveDown && sm.value >= sm.maximum)
+        {
+            sm.moveDown = !sm.moveDown;
+            sm.value = sm.maximum + (2000/SYNERGY_MOTION_UPDATE_TIME)*sm.stepValue;
+        }
+        else if(!sm.moveDown && sm.value <= 0)
+        {
+            sm.moveDown = !sm.moveDown;
+            sm.value = -(2000/SYNERGY_MOTION_UPDATE_TIME)*sm.stepValue;
         }
     }
 }
@@ -496,6 +533,8 @@ void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
     }
     if(indexList == -1) return;
 
+    synergyMotions[indexList].moving = false;
+
     QString code = synergiesDeckCardLists[indexList][listWidget->row(item)].getCode();
 
     QRect rectCard = listWidget->visualItemRect(item);
@@ -505,6 +544,16 @@ void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
     int synergyListTop = listWidget->mapToGlobal(QPoint(0,0)).y();
     int synergyListBottom = listWidget->mapToGlobal(QPoint(0,listWidget->height())).y();
     emit cardEntered(code, globalRectCard, synergyListTop, synergyListBottom);
+}
+
+
+void DraftScoreWindow::resumeSynergyMotion()
+{
+    for(int i=0; i<3; i++)
+    {
+        synergyMotions[i].moving = true;
+        synergyMotions[i].value = synergiesListWidget[i]->verticalScrollBar()->value();
+    }
 }
 
 
