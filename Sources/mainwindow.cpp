@@ -950,6 +950,8 @@ void MainWindow::createSecretsHandler()
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
     connect(planHandler, SIGNAL(noHeroDamageTested()),
             secretsHandler, SLOT(noHeroDamageTested()));
+    connect(planHandler, SIGNAL(minions2Tested()),
+            secretsHandler, SLOT(minions2Tested()));
     connect(secretsHandler, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

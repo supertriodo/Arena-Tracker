@@ -243,6 +243,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
+                unknownSecretPlayedAddOption(OH_MY_YOGG, inArena, activeSecret);
             break;
 
             case HUNTER:
@@ -253,6 +254,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(OPEN_THE_CAGES, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
@@ -283,6 +285,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 //EPIC
                 unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
+                unknownSecretPlayedAddOption(RIGGED_FAIRE_GAME, inArena, activeSecret);
                 unknownSecretPlayedAddOption(ICE_BLOCK, inArena, activeSecret);
             break;
 
@@ -293,6 +296,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PLAGIARIZE, inArena, activeSecret);
                 //RARE
+                unknownSecretPlayedAddOption(SHADOW_CLONE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(BAMBOOZLE, inArena, activeSecret);
@@ -562,6 +566,7 @@ void SecretsHandler::playerSpellPlayed(QString code)
     discardSecretOptionNow(PRESSURE_PLATE);
 
     discardSecretOptionNow(NEVER_SURRENDER);
+    discardSecretOptionNow(OH_MY_YOGG);
 
     discardSecretOptionNow(DIRTY_TRICKS);
 }
@@ -706,6 +711,12 @@ void SecretsHandler::noHeroDamageTested()
 }
 
 
+void SecretsHandler::minions2Tested()
+{
+    discardSecretOptionNow(OPEN_THE_CAGES);
+}
+
+
 /*
  * http://hearthstone.gamepedia.com/Secret
  *
@@ -765,11 +776,12 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOption(MISDIRECTION);//Ocultado por FREEZING_TRAP y EXPLOSIVE_TRAP
             discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
 
-            discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
             discardSecretOptionNow(NOBLE_SACRIFICE);
+            discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
 
             if(playerMinions > 1)   discardSecretOptionNow(SUDDEN_BETRAYAL);
             discardSecretOption(EVASION);//Ocultado por SUDDEN_BETRAYAL
+            discardSecretOption(SHADOW_CLONE);//Ocultado por SUDDEN_BETRAYAL
         }
         //Minion -> minion
         else
@@ -868,17 +880,19 @@ void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap
 void SecretsHandler::createSecretsByPickrate()
 {
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
-                              << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM;
+                              << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM
+                              << OH_MY_YOGG;
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
-                              << SNAKE_TRAP << RAT_TRAP;
+                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
-                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK;
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME;
 
-    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE;
+    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
+                             << SHADOW_CLONE;
 }
 
 

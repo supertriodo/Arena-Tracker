@@ -119,6 +119,7 @@ public slots:
     void _3CardsPlayedTested();
     void cSpiritTested();
     void noHeroDamageTested();
+    void minions2Tested();
     void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
     void resetLastMinionDead(QString code, QString subType);
     void playerHeroPower();

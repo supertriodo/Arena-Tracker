@@ -32,6 +32,7 @@
 #define HIDDEN_WISDOM QString("GIL_903")
 #define AUTODEFENSE_MATRIX QString("BOT_908")
 #define NEVER_SURRENDER QString("DAL_570")
+#define OH_MY_YOGG QString("DMF_236")
 
 #define FREEZING_TRAP QString("EX1_611")
 #define EXPLOSIVE_TRAP QString("EX1_610")
@@ -47,6 +48,7 @@
 #define RAT_TRAP QString("GIL_577")
 #define PRESSURE_PLATE QString("ULD_152")
 #define PACK_TACTICS QString("BT_203")
+#define OPEN_THE_CAGES QString("DMF_123")
 
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
@@ -63,7 +65,7 @@
 #define EXPLOSIVE_RUNES QString("LOOT_101")
 #define FLAME_WARD QString("ULD_239")
 #define NETHERWIND_PORTAL QString("BT_003")
-#define RIGGED_FAIRE_GAME QString("")
+#define RIGGED_FAIRE_GAME QString("DMF_107")
 
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")
@@ -72,6 +74,7 @@
 #define BAMBOOZLE QString("BT_042")
 #define DIRTY_TRICKS QString("BT_709")
 #define PLAGIARIZE QString("SCH_706")
+#define SHADOW_CLONE QString("DMF_513")
 
 //Cartas
 #define VARIAN_WRYNN "AT_072"
