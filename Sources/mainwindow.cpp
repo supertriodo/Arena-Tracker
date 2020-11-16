@@ -1804,11 +1804,11 @@ void MainWindow::readSettings()
     bool showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     bool draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
-    this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", LightForge).toInt());
+    this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", HSReplay).toInt());
     bool draftNormalizedLF = settings.value("draftNormalizedLF", false).toBool();
-    bool draftMethodHA = settings.value("draftMethodHA", false).toBool();
+    bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
     bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
-    bool draftMethodHSR = settings.value("draftMethodHSR", false).toBool();
+    bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = false;//settings.value("autoSize", false).toBool();//Disable autoSize
     bool showClassColor = settings.value("showClassColor", true).toBool();
@@ -3886,33 +3886,33 @@ void MainWindow::updateDraftNormalizeLF(bool checked)
 
 void MainWindow::updateDraftMethodHA(bool checked)
 {
-    if(checked) this->draftMethodAvgScore = HearthArena;
-    else        updateDraftMethodUnchecked();
+    if(checked)                                         this->draftMethodAvgScore = HearthArena;
+    else if(this->draftMethodAvgScore == HearthArena)   updateDraftMethodUnchecked();
     spreadDraftMethod();
 }
 
 
 void MainWindow::updateDraftMethodLF(bool checked)
 {
-    if(checked) this->draftMethodAvgScore = LightForge;
-    else        updateDraftMethodUnchecked();
+    if(checked)                                         this->draftMethodAvgScore = LightForge;
+    else if(this->draftMethodAvgScore == LightForge)    updateDraftMethodUnchecked();
     spreadDraftMethod();
 }
 
 
 void MainWindow::updateDraftMethodHSR(bool checked)
 {
-    if(checked) this->draftMethodAvgScore = HSReplay;
-    else        updateDraftMethodUnchecked();
+    if(checked)                                         this->draftMethodAvgScore = HSReplay;
+    else if(this->draftMethodAvgScore == HSReplay)      updateDraftMethodUnchecked();
     spreadDraftMethod();
 }
 
 
 void MainWindow::updateDraftMethodUnchecked()
 {
-    if(ui->configCheckLF->isChecked())          this->draftMethodAvgScore = LightForge;
+    if(ui->configCheckHSR->isChecked())         this->draftMethodAvgScore = HSReplay;
+    else if(ui->configCheckLF->isChecked())     this->draftMethodAvgScore = LightForge;
     else if(ui->configCheckHA->isChecked())     this->draftMethodAvgScore = HearthArena;
-    else if(ui->configCheckHSR->isChecked())    this->draftMethodAvgScore = HSReplay;
     else                                        this->draftMethodAvgScore = None;
 }
 
@@ -4837,3 +4837,4 @@ void MainWindow::testDelay()
 //test secrets
 //test corrupt cards draw INSIGHT_CORRUPT, STAGE_DIVE_CORRUPT
 //test copy draw GRAND_EMPRESS_SHEKZARA
+//TL y cards al github
