@@ -4617,7 +4617,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("SCHOLOMANCE", true, 1, 20);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", true, 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();
 
@@ -4675,7 +4675,7 @@ void MainWindow::testDelay()
 //Update Json cartas --> Automatico
 //Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
 //Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
-//Update Utility::isFromStandardSet(QString code) --> SCHOLOMANCE
+//Update Utility::isFromStandardSet(QString code) --> DARKMOON_FAIRE
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4829,3 +4829,11 @@ void MainWindow::testDelay()
 
 
 
+//TODO
+//outcastGen/outcastAllSyn
+//comboGen/comboAllSyn
+//missiles
+//deck AVG
+//test secrets
+//test corrupt cards draw INSIGHT_CORRUPT, STAGE_DIVE_CORRUPT
+//test copy draw GRAND_EMPRESS_SHEKZARA

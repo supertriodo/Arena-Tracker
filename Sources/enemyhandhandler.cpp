@@ -553,10 +553,11 @@ int EnemyHandHandler::getCardBuff(QString code)
 
 bool EnemyHandHandler::isClonerCard(QString code)
 {
-    if(code == MIMIC_POD)           return true;
-    if(code == THISTLE_TEA)         return true;
-    if(code == TOLINS_GOBLET)       return true;
-    if(code == ELEMENTARY_REACTION) return true;
+    if(code == MIMIC_POD)               return true;
+    if(code == THISTLE_TEA)             return true;
+    if(code == TOLINS_GOBLET)           return true;
+    if(code == ELEMENTARY_REACTION)     return true;
+    if(code == GRAND_EMPRESS_SHEKZARA)  return true;
     return false;
 }
 
@@ -574,7 +575,9 @@ bool EnemyHandHandler::isDrawSpecificCards()
         GALADROND_THE_UNBREAKABLE3,GALADROND_THE_NIGHTMARE,GALADROND_THE_NIGHTMARE2,GALADROND_THE_NIGHTMARE3,KRONX_DRAGONHOOF,
         TRANSMOGRIFIER,TENTACLED_MENACE,STOWAWAY,
         STARSCRYER,CORSAIR_CACHE,FUNGAL_FORTUNES,SCAVENGERS_INGENUITY,THE_DARK_PORTAL,SKULL_OF_GULDAN,VASHJ_PRIME,
-        DOUBLE_JUMP
+        DOUBLE_JUMP,
+        INSIGHT,INSIGHT_CORRUPT,GHUUN_THE_BLOOD_GOD,CLAW_MACHINE,FREE_ADMISSION,REDSCALE_DRAGONTAMER,SWINDLE,
+        GRAND_EMPRESS_SHEKZARA,RINGMASTER_WHATLEY,STAGE_DIVE,STAGE_DIVE_CORRUPT,CAGEMATCH_CUSTODIAN
     };
 
     return candidates.contains(lastCreatedByCode);
