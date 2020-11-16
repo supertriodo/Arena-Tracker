@@ -365,6 +365,9 @@ CardRace Utility::getRaceFromCode(QString code)
     else if(value == "NERUBIAN")    return NERUBIAN;
     else if(value == "PIRATE")      return PIRATE;
     else if(value == "DRAGON")      return DRAGON;
+    else if(value == "BLANK")       return BLANK;
+    else if(value == "ALL")         return ALL;
+    else if(value == "EGG")         return EGG;
     else                            return INVALID_RACE;
 }
 
