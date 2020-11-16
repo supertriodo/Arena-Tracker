@@ -4638,12 +4638,12 @@ void MainWindow::testDownloadCards()
     for(const QString &code: codes)     checkCardImage(code, false);
 }
 
-void MainWindow::testSecretsHSR()
+void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
 {
-    secretsHandler->secretPlayed(1, PALADIN, arena);
-    secretsHandler->secretPlayed(2, HUNTER, arena);
-    secretsHandler->secretPlayed(3, ROGUE, arena);
-    secretsHandler->secretPlayed(4, MAGE, arena);
+    secretsHandler->secretPlayed(1, PALADIN, loadingScreenState);
+    secretsHandler->secretPlayed(2, HUNTER, loadingScreenState);
+    secretsHandler->secretPlayed(3, ROGUE, loadingScreenState);
+    secretsHandler->secretPlayed(4, MAGE, loadingScreenState);
 }
 
 
@@ -4660,11 +4660,12 @@ void MainWindow::testDelay()
     testSynergies();
     testTierlists();
 
+//    testDownloadCards();
+//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); });
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
-//    testDownloadCards();
+
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
-//    QTimer::singleShot(7000, this, SLOT(testSecretsHSR()));
 //    draftHandler->beginDraft("01", deckHandler->getDeckCardList());
 }
 
@@ -4833,8 +4834,5 @@ void MainWindow::testDelay()
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
 //missiles
-//deck AVG
-//test secrets
 //test corrupt cards draw INSIGHT_CORRUPT, STAGE_DIVE_CORRUPT
-//test copy draw GRAND_EMPRESS_SHEKZARA
 //TL y cards al github
