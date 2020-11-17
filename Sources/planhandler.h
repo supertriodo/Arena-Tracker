@@ -31,6 +31,14 @@ public:
 };
 
 
+class DeadProbs
+{
+public:
+    QList<float> dp;
+    bool playerIn, onlyMinions;
+};
+
+
 class Board
 {
 public:
@@ -78,7 +86,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     GraphicsItemSender *graphicsItemSender;
-    QFutureWatcher<QList<float> > futureBombs;
+    QFutureWatcher<DeadProbs> futureBombs;
     bool abortFutureBombs;
     QPushButton *planPatreonButton;
 
@@ -145,11 +153,11 @@ private:
     void cardTagChangePrevTurn(int id, bool friendly, QString tag, QString value);
     bool updateInPendingTagChange(int id, QString tag, QString value);
     void createGraphicsItemSender();
-    QMap<QString, float> bomb(QMap<QString, float> &oldStates);
+    QMap<QString, float> bomb(QMap<QString, float> &oldStates, int missileDamage);
     QList<int> decodeBombState(QString state);
     QString encodeBombState(QList<int> targets);
-    QList<float> bombDeads(QList<int> targets, int missiles);
-    bool isCardBomb(QString code, bool &playerIn, int &missiles);
+    DeadProbs bombDeads(QList<int> targets, bool playerIn, bool onlyMinions, int missiles, int missileDamage);
+    bool isCardBomb(QString code, bool &playerIn, bool &onlyMinions, int &missiles, int &missileDamage);
     bool isMechOnBoard();
     int flamewakersOnBoard();
     void updateTurnSliderRange();

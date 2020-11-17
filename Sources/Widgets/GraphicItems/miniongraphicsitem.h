@@ -82,7 +82,7 @@ public:
     int getPotencialDamage(bool ignoreExausted=false);
     int getRemainingHealth();
     void setDeadProb(float value=0);
-    int getHitsToDie();
+    int getHitsToDie(int missileDamage);
     void selectMinion(bool isSelected=true);
     void damagePlanningMinion(int damage=1);
     void setExausted(bool value=true);

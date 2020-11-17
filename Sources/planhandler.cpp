@@ -2665,39 +2665,25 @@ void PlanHandler::resetDeadProbs()
 
 void PlanHandler::checkBomb(QString code)
 {
-    if(code.isEmpty() || viewBoard!=nowBoard)   return;
+    if(code.isEmpty() || viewBoard!=nowBoard || nowBoard->enemyHero == nullptr || nowBoard->playerHero == nullptr)  return;
 
-    bool playerIn;
-    int missiles;
-    if(!isCardBomb(code, playerIn, missiles))   return;
+    bool playerIn, onlyMinions;
+    int missiles, missileDamage;
+    if(!isCardBomb(code, playerIn, onlyMinions, missiles, missileDamage))   return;
 
     //Targets
-    if(nowBoard->enemyHero == nullptr)             return;
-    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
-    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
-
-    HeroGraphicsItem *playerHero = nullptr;
-    QList<MinionGraphicsItem *> *playerMinions = nullptr;
-    if(playerIn)
-    {
-        if(nowBoard->playerHero == nullptr)        return;
-        playerHero = nowBoard->playerHero;
-        playerMinions = getMinionList(true);
-    }
-
-    //Targets List
     QList<int> targets;
-    targets.append(enemyHero->getHitsToDie());
-    foreach(MinionGraphicsItem *minion, *enemyMinions)          targets.append(minion->getHitsToDie());
 
+    if(!onlyMinions)    targets.append(nowBoard->enemyHero->getHitsToDie(missileDamage));
+    foreach(MinionGraphicsItem *minion, *getMinionList(false))  targets.append(minion->getHitsToDie(missileDamage));
     if(playerIn)
     {
-        targets.append(playerHero->getHitsToDie());
-        foreach(MinionGraphicsItem *minion, *playerMinions)     targets.append(minion->getHitsToDie());
+        if(!onlyMinions)    targets.append(nowBoard->playerHero->getHitsToDie(missileDamage));
+        foreach(MinionGraphicsItem *minion, *getMinionList(true))   targets.append(minion->getHitsToDie(missileDamage));
     }
 
     //Get dead probs
-    futureBombs.setFuture(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, missiles));
+    futureBombs.setFuture(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, playerIn, onlyMinions, missiles, missileDamage));
     abortFutureBombs = false;
 }
 
@@ -2706,30 +2692,30 @@ void PlanHandler::setDeadProbs()
 {
     if(abortFutureBombs)    return;
 
-    QList<float> deadProbs = futureBombs.result();
+    DeadProbs dp = futureBombs.result();
+    QList<float> &deadProbs = dp.dp;
+    bool playerIn = dp.playerIn;
+    bool onlyMinions = dp.onlyMinions;
 
-    HeroGraphicsItem *enemyHero = nowBoard->enemyHero;
-    QList<MinionGraphicsItem *> *enemyMinions = getMinionList(false);
-    enemyHero->setDeadProb(deadProbs.takeFirst());
-    foreach(MinionGraphicsItem *minion, *enemyMinions)          minion->setDeadProb(deadProbs.takeFirst());
+    if(!onlyMinions)    nowBoard->enemyHero->setDeadProb(deadProbs.takeFirst());
+    foreach(MinionGraphicsItem *minion, *getMinionList(false))  minion->setDeadProb(deadProbs.takeFirst());
 
-    if(!deadProbs.isEmpty())
+    if(playerIn)
     {
-        HeroGraphicsItem *playerHero = nowBoard->playerHero;
-        QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-        playerHero->setDeadProb(deadProbs.takeFirst());
-        foreach(MinionGraphicsItem *minion, *playerMinions)     minion->setDeadProb(deadProbs.takeFirst());
+        if(!onlyMinions)    nowBoard->playerHero->setDeadProb(deadProbs.takeFirst());
+        foreach(MinionGraphicsItem *minion, *getMinionList(true))   minion->setDeadProb(deadProbs.takeFirst());
     }
 }
 
 
-QList<float> PlanHandler::bombDeads(QList<int> targets, int missiles)
+DeadProbs PlanHandler::bombDeads(QList<int> targets, bool playerIn, bool onlyMinions, int missiles, int missileDamage)
 {
     QMap<QString, float> states;
     states[encodeBombState(targets)] = 1;
-    for(int i=0; i<missiles; i++)           states = bomb(states);
+    for(int i=0; i<missiles; i++)           states = bomb(states, missileDamage);
 
-    QList<float> deadProbs;
+    DeadProbs dp;
+    QList<float> &deadProbs = dp.dp;
     for(int i=0; i<targets.count(); i++)    deadProbs.append(0);
 
     foreach(QString state, states.keys())
@@ -2742,7 +2728,9 @@ QList<float> PlanHandler::bombDeads(QList<int> targets, int missiles)
         }
     }
 
-    return deadProbs;
+    dp.playerIn = playerIn;
+    dp.onlyMinions = onlyMinions;
+    return dp;
 }
 
 
@@ -2762,7 +2750,7 @@ QString PlanHandler::encodeBombState(QList<int> targets)
 }
 
 
-QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates)
+QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int missileDamage)
 {
     QMap<QString, float> newStates;
 
@@ -2783,7 +2771,8 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates)
             if(oldTargets[i] > 0)
             {
                 QList<int> newTargets(oldTargets);
-                newTargets[i]--;
+                newTargets[i]-=missileDamage;
+                if(newTargets[i]<0) newTargets[i]=0;
                 QString newState = encodeBombState(newTargets);
 
                 //Update probabilities
@@ -2834,10 +2823,12 @@ bool PlanHandler::isCardBomb(QString code)
 }
 
 
-bool PlanHandler::isCardBomb(QString code, bool &playerIn, int &missiles)
+bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, int &missiles, int &missileDamage)
 {
     missiles = 0;
+    missileDamage = 1;
     playerIn = false;
+    onlyMinions = false;
 
     if(code == MAD_BOMBER)
     {

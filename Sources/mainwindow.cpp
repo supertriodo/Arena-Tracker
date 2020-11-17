@@ -4534,11 +4534,11 @@ void MainWindow::testPlan()
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
     planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
     planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
-    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 5, 1);
-    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 6, 1);
-    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
+    planHandler->playerMinionZonePlayAdd("CS1_042", 5, 1);
+//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 6, 1);
+//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-    planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
+//    planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
     planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);

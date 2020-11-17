@@ -134,9 +134,9 @@ int MinionGraphicsItem::getHealth()
 }
 
 
-int MinionGraphicsItem::getHitsToDie()
+int MinionGraphicsItem::getHitsToDie(int missileDamage)
 {
-    if(shield)  return getRemainingHealth() + 1;
+    if(shield)  return getRemainingHealth() + missileDamage;
     else        return getRemainingHealth();
 }
 
