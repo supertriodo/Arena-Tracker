@@ -4535,23 +4535,23 @@ void MainWindow::testPlan()
     planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
     planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
     planHandler->playerMinionZonePlayAdd("CS1_042", 5, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 6, 1);
-//    planHandler->playerMinionZonePlayAdd(FLAMEWAKER, 7, 1);
+    planHandler->playerMinionZonePlayAdd("AT_096", 6, 1);
+    planHandler->playerMinionZonePlayAdd("CFM_325", 7, 1);
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
-//    planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
+    planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
     planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);
 
     planHandler->newTurn(true, 1);
-    planHandler->playerCardDraw(22, "EX1_384",2);
-    planHandler->playerCardDraw(23, "OG_116",2);
-    planHandler->playerCardDraw(21, "GVG_090",2);
-    planHandler->playerCardDraw(21, "EX1_082",2);
-    planHandler->playerCardDraw(24, "EX1_277",2);
-    planHandler->playerCardDraw(41, "GVG_004",2);
-    planHandler->playerCardDraw(44, "BRM_002",2);
-    planHandler->playerCardDraw(45, "GVG_050",2);
+    planHandler->playerCardDraw(21, MAD_BOMBER,2);
+    planHandler->playerCardDraw(24, VOLCANO,2);
+    planHandler->playerCardDraw(41, MASK_OF_CTHUN,2);
+    planHandler->playerCardDraw(22, GREATER_ARCANE_MISSILES,2);
+    planHandler->playerCardDraw(21, RENO_THE_RELICOLOGIST,2);
+    planHandler->playerCardDraw(23, GOBLIN_BLASTMAGE,2);
+    planHandler->playerCardDraw(44, CANNON_BARRAGE,2);
+    planHandler->playerCardDraw(45, DARK_SKIES,2);
     planHandler->zonePlayAttack("AT_003",1,2);
     planHandler->zonePlayAttack("AT_003",3,2);
     planHandler->zonePlayAttack("AT_003",11,4);
@@ -4833,6 +4833,4 @@ void MainWindow::testDelay()
 //TODO
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
-//missiles
 //test corrupt cards draw INSIGHT_CORRUPT, STAGE_DIVE_CORRUPT
-//TL y cards al github

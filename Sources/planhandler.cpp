@@ -2669,7 +2669,7 @@ void PlanHandler::checkBomb(QString code)
 
     bool playerIn, onlyMinions;
     int missiles, missileDamage;
-    if(!isCardBomb(code, playerIn, onlyMinions, missiles, missileDamage))   return;
+    if(!isCardBomb(code, playerIn, onlyMinions, missiles, missileDamage) || missiles==0)    return;
 
     //Targets
     QList<int> targets;
@@ -2681,6 +2681,7 @@ void PlanHandler::checkBomb(QString code)
         if(!onlyMinions)    targets.append(nowBoard->playerHero->getHitsToDie(missileDamage));
         foreach(MinionGraphicsItem *minion, *getMinionList(true))   targets.append(minion->getHitsToDie(missileDamage));
     }
+    if(targets.isEmpty())   return;
 
     //Get dead probs
     futureBombs.setFuture(QtConcurrent::run(this, &PlanHandler::bombDeads, targets, playerIn, onlyMinions, missiles, missileDamage));
@@ -2734,22 +2735,6 @@ DeadProbs PlanHandler::bombDeads(QList<int> targets, bool playerIn, bool onlyMin
 }
 
 
-QList<int> PlanHandler::decodeBombState(QString state)
-{
-    QList<int> targets;
-    foreach(QString targetString, state.split(":"))  targets.append(targetString.toInt());
-    return targets;
-}
-
-
-QString PlanHandler::encodeBombState(QList<int> targets)
-{
-    QStringList targetsString;
-    foreach(int target, targets)      targetsString.append(QString::number(target));
-    return targetsString.join(":");
-}
-
-
 QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int missileDamage)
 {
     QMap<QString, float> newStates;
@@ -2763,6 +2748,12 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int miss
         for(int i=0; i<oldTargets.count(); i++)
         {
             if(oldTargets[i] > 0)   livingTargets++;
+        }
+
+        //Nada vivo, copiamos estado
+        if(livingTargets == 0)
+        {
+            newStates[oldState] = oldProb;
         }
 
         //Apply an attack to each living targets
@@ -2786,6 +2777,22 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int miss
 }
 
 
+QList<int> PlanHandler::decodeBombState(QString state)
+{
+    QList<int> targets;
+    foreach(QString targetString, state.split(":"))  targets.append(targetString.toInt());
+    return targets;
+}
+
+
+QString PlanHandler::encodeBombState(QList<int> targets)
+{
+    QStringList targetsString;
+    foreach(int target, targets)      targetsString.append(QString::number(target));
+    return targetsString.join(":");
+}
+
+
 int PlanHandler::flamewakersOnBoard()
 {
     int num = 0;
@@ -2798,28 +2805,23 @@ int PlanHandler::flamewakersOnBoard()
 }
 
 
-bool PlanHandler::isMechOnBoard()
+int PlanHandler::numRaceOnBoard(CardRace cardRace)
 {
-    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-    foreach(MinionGraphicsItem *minion, *playerMinions)
+    int numRace = 0;
+    foreach(MinionGraphicsItem *minion, *getMinionList(true))
     {
-        if(DeckCard(minion->getCode()).getRace() == MECHANICAL)     return true;
+        if(Utility::getRaceFromCode(minion->getCode()) == cardRace) numRace++;
     }
-    return false;
+    return numRace;
 }
 
 
 //Card bombs
 bool PlanHandler::isCardBomb(QString code)
 {
-    if((code == MAD_BOMBER) || (code == MADDER_BOMBER) || (code == SPREADING_MADNESS) ||
-            (code == ARCANE_MISSILES) || (code == AVENGING_WRATH) || (code == GOBLIN_BLASTMAGE) ||
-            (code == KOBOLD_APPRENTICE) || (code == CINDERSTORM) || (code == METEOROLOGIST) ||
-            (code == PRIESTESS_OF_FURY))
-    {
-        return true;
-    }
-    return false;
+    bool playerIn, onlyMinions;
+    int missiles, missileDamage;
+    return isCardBomb(code, playerIn, onlyMinions, missiles, missileDamage);
 }
 
 
@@ -2830,68 +2832,118 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     playerIn = false;
     onlyMinions = false;
 
+    //ALL
     if(code == MAD_BOMBER)
     {
         missiles = 3;
         playerIn = true;
-    }
-    else if(code == ARCANE_MISSILES || code == KOBOLD_APPRENTICE)
-    {
-        missiles = 3;
-        playerIn = false;
-    }
-    else if(code == AVENGING_WRATH)
-    {
-        missiles = 8;
-        playerIn = false;
     }
     else if(code == MADDER_BOMBER)
     {
         missiles = 6;
         playerIn = true;
     }
-    else if(code == PRIESTESS_OF_FURY)
-    {
-        missiles = 6;
-        playerIn = false;
-    }
     else if(code == SPREADING_MADNESS)
     {
         missiles = 9;
         playerIn = true;
     }
-    else if(code == GOBLIN_BLASTMAGE && isMechOnBoard())
+    //ALL minions
+    else if(code == MINEFIELD)
     {
-        missiles = 4;
-        playerIn = false;
+        missiles = 5;
+        playerIn = true;
+        onlyMinions = true;
+    }
+    else if(code == SCAVENGING_SHIVARRA)
+    {
+        missiles = 6;
+        playerIn = true;
+        onlyMinions = true;
+    }
+    else if(code == VOLCANO)
+    {
+        missiles = 15;
+        playerIn = true;
+        onlyMinions = true;
+    }
+    //Enemy
+    else if(code == ARCANE_MISSILES || code == KOBOLD_APPRENTICE)
+    {
+        missiles = 3;
+    }
+    else if(code == GREATER_ARCANE_MISSILES)
+    {
+        missiles = 3;
+        missileDamage = 3;
     }
     else if(code == CINDERSTORM)
     {
         missiles = 5;
-        playerIn = false;
+    }
+    else if(code == PRIESTESS_OF_FURY)
+    {
+        missiles = 6;
+    }
+    else if(code == AVENGING_WRATH)
+    {
+        missiles = 8;
+    }
+    else if(code == MASK_OF_CTHUN)
+    {
+        missiles = 10;
+    }
+    //Enemy minions
+    else if(code == FIREBRAND)
+    {
+        missiles = 4;
+        onlyMinions = true;
+    }
+    else if(code == RENO_THE_RELICOLOGIST)
+    {
+        missiles = 10;
+        onlyMinions = true;
+    }
+    //Extra
+    else if(code == GOBLIN_BLASTMAGE)
+    {
+        if(numRaceOnBoard(MECHANICAL)>0)
+        {
+            missiles = 4;
+        }
+    }
+    else if(code == CANNON_BARRAGE)
+    {
+        missiles = numRaceOnBoard(PIRATE) + 1;
+        missileDamage = 3;
     }
     else if(code == METEOROLOGIST)
     {
-        missiles = getHandList(true)->count()-1;
-        playerIn = false;
+        missiles = getHandList(true)->count() - 1;
+    }
+    else if(code == DARK_SKIES)
+    {
+        missiles = getHandList(true)->count();
+        playerIn = true;
+        onlyMinions = true;
+    }
+    else
+    {
+        return false;
     }
 
-    if(DeckCard(code).getType() == SPELL)
+    if(Utility::getTypeFromCode(code) == SPELL)
     {
         //SpellDamage
         HeroGraphicsItem *hero = getHero(true, nullptr);
-        if(hero != nullptr)            missiles += hero->getSpellDamage();
-
-        //Flamewakers, evitamos con SPREADING_MADNESS (!playerIn)
-        if(!playerIn)
+        if(hero != nullptr)
         {
-            int flamewakers = flamewakersOnBoard();
-            if(flamewakers > 0)     missiles += flamewakers * 2;
+            if(missileDamage == 1)  missiles += hero->getSpellDamage();
+            else                    missileDamage += hero->getSpellDamage();
         }
     }
 
-    if(missiles > 0)    return true;
-    else                return false;
+    return true;
 }
 
 

@@ -158,7 +158,7 @@ private:
     QString encodeBombState(QList<int> targets);
     DeadProbs bombDeads(QList<int> targets, bool playerIn, bool onlyMinions, int missiles, int missileDamage);
     bool isCardBomb(QString code, bool &playerIn, bool &onlyMinions, int &missiles, int &missileDamage);
-    bool isMechOnBoard();
+    int numRaceOnBoard(CardRace cardRace);
     int flamewakersOnBoard();
     void updateTurnSliderRange();
     Board *copyBoard(Board *origBoard, int numTurn = 0, bool copySecretCodes=false);
