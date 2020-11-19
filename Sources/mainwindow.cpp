@@ -4833,4 +4833,3 @@ void MainWindow::testDelay()
 //TODO
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
-//test corrupt cards draw INSIGHT_CORRUPT, STAGE_DIVE_CORRUPT
