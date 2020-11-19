@@ -100,9 +100,14 @@ void LogWorker::readLog()
     isLogReset();
 
     QFile logFile(logPath);
+    if(!logFile.exists())
+    {
+        if(this->logComponent == logLoadingScreen)  emit pDebug("Missing log LoadingScreen.", DebugLevel::Warning);
+        return;
+    }
     if(!logFile.open(QIODevice::ReadOnly))
     {
-        emit pDebug("Cannot open log " + this->logComponentString, DebugLevel::Error);
+        emit pDebug("Cannot open existing log " + this->logComponentString, DebugLevel::Error);
         return;
     }
 
