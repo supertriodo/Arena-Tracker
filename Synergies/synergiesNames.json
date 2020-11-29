@@ -2804,12 +2804,40 @@
 "tt_010" : [ "Spellbender" ],
 "DIRECT_LINKS":
 {
-  "EX1_619 Equality": ["CS2_093 Consecration"],
+  "-----------------------------------------WARRIOR------------------------------------------------": "",
+  "OG_315 Bloodsail Cultist": ["OG_312 NZoths First Mate"],
+
+  "-----------------------------------------SHAMAN-------------------------------------------------": "",
+	"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans"],
+
+  "-----------------------------------------ROGUE--------------------------------------------------": "",
+
+  "-----------------------------------------PALADIN------------------------------------------------": "",
+  "EX1_619 Equality": ["CS2_093 Consecration","NEW1_020 Wild Pyromancer",
+    "EX1_097 Abomination","FP1_024 Unstable Ghoul"],
 
   "BT_020 Aldor Attendant": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
     "BT_025 Libram of Wisdom"],
   "BT_026 Aldor Truthseeker": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
     "BT_025 Libram of Wisdom"],
+
+  "-----------------------------------------HUNTER-------------------------------------------------": "",
+
+  "-----------------------------------------DRUID--------------------------------------------------": "",
+  "UNG_078 Tortollan Forager": ["UNG_086 Giant Anaconda","UNG_109 Elder Longneck"],
+
+  "-----------------------------------------WARLOCK------------------------------------------------": "",
+
+  "-----------------------------------------MAGE---------------------------------------------------": "",
+
+  "-----------------------------------------PRIEST-------------------------------------------------": "",
+  "EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
+    "EX1_623 Temple Enforcer"],
+
+"--------------------------------------------ALL---------------------------------------------------": "",
+  "EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
+
+  "BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
 
   "SCH_700 Spirit Jailer": ["SCH_517 Shadowlight Scholar", "SCH_355 Shardshatter Mystic",
     "SCH_704 Soulshard Lapidary", "SCH_343 Void Drinker", "SCH_703 Soulciologist Malicia"],

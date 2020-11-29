@@ -152,6 +152,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_COMBO] = new DraftItemCounter(this);
     mechanicCounters[V_WINDFURY_MINION] = new DraftItemCounter(this);
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
+    mechanicCounters[V_ATTACK_NERF] = new DraftItemCounter(this);
     mechanicCounters[V_HEALTH_BUFF] = new DraftItemCounter(this);
     mechanicCounters[V_RETURN] = new DraftItemCounter(this);
     mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
@@ -735,6 +736,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
+    if(isAttackNerfGen(code, text))                                         mechanicCounters[V_ATTACK_NERF]->increase(code);
     if(isHealthBuffGen(code, text))                                         mechanicCounters[V_HEALTH_BUFF]->increase(code);
     if(isReturnGen(code, text))                                             mechanicCounters[V_RETURN]->increase(code);
     if(isStealthGen(code, mechanics))                                       mechanicCounters[V_STEALTH]->increase(code);
@@ -827,6 +829,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isComboSyn(code, referencedTags))                                    mechanicCounters[V_COMBO]->increaseSyn(code);
     if(isWindfuryMinionSyn(code))                                           mechanicCounters[V_WINDFURY_MINION]->increaseSyn(code);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
+    if(isAttackNerfSyn(code, text))                                         mechanicCounters[V_ATTACK_NERF]->increaseSyn(code);
     if(isHealthBuffSyn(code))                                               mechanicCounters[V_HEALTH_BUFF]->increaseSyn(code);
     if(isReturnSyn(code, mechanics, cardType, text))                        mechanicCounters[V_RETURN]->increaseSyn(code);
     if(isStealthSyn(code))                                                  mechanicCounters[V_STEALTH]->increaseSyn(code);
@@ -1189,6 +1192,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergies);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
+    if(isAttackNerfGen(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertSynCards(synergies);
     if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
     if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
     if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
@@ -1269,6 +1273,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isComboSyn(code, referencedTags))                        mechanicCounters[V_COMBO]->insertCards(synergies);
     if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergies);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
+    if(isAttackNerfSyn(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertCards(synergies);
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
     //returnSyn es synergia debil
 //    if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
@@ -1446,8 +1451,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "enrageGen", "tauntGiverGen", "evolveGen", "spawnEnemyGen", "spellDamageGen", "handBuffGen", "spellBuffGen",
         "enrageSyn", "tauntGiverSyn", "evolveSyn", "spawnEnemySyn", "spellDamageSyn", "handBuffSyn", "spellBuffSyn",
 
-        "tokenGen", "tokenCardGen", "comboGen", "attackBuffGen", "healthBuffGen", "heroAttackGen",
-        "tokenSyn", "tokenCardSyn", "comboSyn", "attackBuffSyn", "healthBuffSyn", "heroAttackSyn",
+        "tokenGen", "tokenCardGen", "comboGen", "attackBuffGen", "attackNerfGen", "healthBuffGen", "heroAttackGen",
+        "tokenSyn", "tokenCardSyn", "comboSyn", "attackBuffSyn", "attackNerfSyn", "healthBuffSyn", "heroAttackSyn",
 
         "restoreTargetMinionGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen",
         "restoreTargetMinionSyn", "restoreFriendlyHeroSyn", "restoreFriendlyMinionSyn",
@@ -1494,12 +1499,11 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                containsAll(text, "outcast")
+                containsAll(text, "destroy less attack")
 //                && cardType == MINION
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
-//                isLackeyGen(code, text)
-
+//                isAttackNerfGen(code, text)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -1659,6 +1663,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTokenCardGen(code, cost, mechanics, text))                         mec<<"tokenCardGen";
     if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
     if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
+    if(isAttackNerfGen(code, text))                                         mec<<"attackNerfGen";
     if(isHealthBuffGen(code, text))                                         mec<<"healthBuffGen";
     if(isReturnGen(code, text))                                             mec<<"returnGen";
     if(isStealthGen(code, mechanics))                                       mec<<"stealthGen";
@@ -1697,6 +1702,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSilenceOwnSyn(code, mechanics))                                    mec<<"silenceOwnSyn";
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mec<<"tauntGiverSyn";
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mec<<"attackBuffSyn";
+    if(isAttackNerfSyn(code, text))                                         mec<<"attackNerfSyn";
     if(isTokenSyn(code, text))                                              mec<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
@@ -2357,6 +2363,24 @@ bool SynergyHandler::isAttackBuffGen(const QString &code, const QString &text)
             && (text.contains("minion") || text.contains("character"))
             && (text.contains("attack") || text.contains("/+"))
             &&/* !text.contains("hand") && *//*!text.contains("random") && */!text.contains("c'thun"))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isAttackNerfGen(const QString &code, const QString &text)
+{
+    //TEST
+//    containsAll(text, "change minion attack 1")
+//    || containsAll(text, "set minion attack 1")
+//    || containsAll(text, "give minion attack -")
+//    || containsAll(text, "reduce minion attack")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("attackNerfGen");
+    }
+    else if(containsAll(text, "change minion attack 1") || containsAll(text, "set minion attack 1")
+            || containsAll(text, "give minion attack -") || containsAll(text, "reduce minion attack"))
     {
         return true;
     }
@@ -3264,6 +3288,21 @@ bool SynergyHandler::isAttackBuffSyn(const QString &code, const QJsonArray &mech
     }
     return false;
 }
+bool SynergyHandler::isAttackNerfSyn(const QString &code, const QString &text)
+{
+    //TEST
+    //    containsAll(text, "destroy less attack")
+    //    || containsAll(text, "control less attack")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("attackNerfSyn");
+    }
+    else if(containsAll(text, "destroy less attack") || containsAll(text, "control less attack"))
+    {
+        return true;
+    }
+    return false;
+}
 bool SynergyHandler::isHealthBuffSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -3644,7 +3683,7 @@ jadeGolemGen, heroPowerGen, secret, secretGen, freezeEnemyGen, discardGen, steal
 damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, battlecryGen, returnGen
 enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen, handBuffGen, spellBuffGen
-tokenGen, tokenCardGen, comboGen, attackBuffGen, healthBuffGen, heroAttackGen
+tokenGen, tokenCardGen, comboGen, attackBuffGen, attackNerfGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
 otherClassGen, silverHandGen, treantGen, lackeyGen, outcast
@@ -3679,6 +3718,7 @@ DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
 HERO ATTACK: heroAttackGen/heroAttackSyn <--> weaponAllSyn
 HERO POWER: heroPowerGen
 SPELL BUFF: spellBuffGen/spellBuffSyn
+ATK/HEALTH: attackNerfGen, attackBuffGen, healthBuffGen
 OTHER CLASS: otherClassGen/otherClassSyn
 SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn

@@ -130,6 +130,7 @@ private:
     bool isComboGen(const QString &code, const QJsonArray &mechanics);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);
+    bool isAttackNerfGen(const QString &code, const QString &text);
     bool isHealthBuffGen(const QString &code, const QString &text);
     bool isReturnGen(const QString &code, const QString &text);
     bool isStealthGen(const QString &code, const QJsonArray &mechanics);
@@ -206,6 +207,7 @@ private:
     bool isComboSyn(const QString &code, const QJsonArray &referencedTags);
     bool isWindfuryMinionSyn(const QString &code);
     bool isAttackBuffSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
+    bool isAttackNerfSyn(const QString &code, const QString &text);
     bool isHealthBuffSyn(const QString &code);
     bool isReturnSyn(const QString &code, const QJsonArray &mechanics, const CardType &cardType, const QString &text);
     bool isStealthSyn(const QString &code);
