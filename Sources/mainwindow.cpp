@@ -353,7 +353,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     {
         emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
 
-        if(fullUrl == HSR_CARDS)
+        if(fullUrl == HSR_CARDS_PATCH)
         {
             emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
@@ -389,7 +389,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //HSR Cards Pickrate/Winrate
-        else if(fullUrl == HSR_CARDS || fullUrl == HSR_CARDS_14DAYS)
+        else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_14DAYS)
         {
             emit pDebug("Extra: HSR cards --> Download Success.");
             startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
@@ -725,8 +725,8 @@ void MainWindow::downloadHSRCards()
             draftHandler->setCardsPlayedWinratesMap(cardsPlayedWinratesMap);
         }
     );
-    emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS));
-    networkManager->get(QNetworkRequest(QUrl(HSR_CARDS)));
+    emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
+    networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
 }
 
 
@@ -4661,7 +4661,7 @@ void MainWindow::testDelay()
     testTierlists();
 
 //    testDownloadCards();
-//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); });
+//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 
