@@ -259,8 +259,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
             //Mana cost
             if(manaText.isEmpty())
             {
-                int manaSize = cost>9?26:static_cast<int>(18+1.5*cost);
-                font.setPixelSize(manaSize);//20pt | 14 + cost
+                font.setPixelSize(22);
                 Utility::drawShadowText(painter, font, QString::number(cost), 13, 20, true);
             }
             //Custom mana number
