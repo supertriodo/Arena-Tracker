@@ -355,6 +355,11 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 
         if(fullUrl == HSR_CARDS_PATCH)
         {
+            emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_EXP));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP)));
+        }
+        else if(fullUrl == HSR_CARDS_EXP)
+        {
             emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
         }
@@ -389,9 +394,9 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //HSR Cards Pickrate/Winrate
-        else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_14DAYS)
+        else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_EXP || fullUrl == HSR_CARDS_14DAYS)
         {
-            emit pDebug("Extra: HSR cards --> Download Success.");
+            emit pDebug("Extra: HSR cards --> Download Success from: " + fullUrl);
             startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
         }
 #ifdef QT_DEBUG
