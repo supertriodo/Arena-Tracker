@@ -18,6 +18,7 @@ void TwitchButton::reset()
 
 void TwitchButton::setValue(float value, int votes, bool isBestScore, QString username)
 {
+    if(votes <= this->votes)  username = "";
     this->votes = votes;
     this->value = value;
     this->isBestScore = isBestScore;
