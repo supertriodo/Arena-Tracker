@@ -247,21 +247,22 @@ void DraftScoreWindow::resetTwitchScore()
 {
     for(int i=0; i<3; i++)
     {
-        twitchButton[i]->setValue(0, 0, false);
+        twitchButton[i]->reset();
         Utility::fadeInWidget(twitchButton[i]);
     }
 }
 
 
-void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3)
+void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3, QString username)
 {
     int votes[3] = {vote1, vote2, vote3};
     float totalVotes = votes[0] + votes[1] + votes[2];
     float topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
 
-    emit pDebug(QString::number(votes[0]) + " - " + QString::number(votes[1]) + " - " + QString::number(votes[2]));
+    emit pDebug(username + ": " + QString::number(votes[0]) + " - " +
+            QString::number(votes[1]) + " - " + QString::number(votes[2]));
 
-    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes));
+    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes), username);
 }
 
 

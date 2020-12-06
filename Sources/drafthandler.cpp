@@ -593,8 +593,8 @@ void DraftHandler::createTwitchHandler()
         this->twitchHandler = new TwitchHandler(this);
         connect(twitchHandler, SIGNAL(connectionOk(bool)),
                 this, SLOT(twitchHandlerConnectionOk(bool)));
-        connect(twitchHandler, SIGNAL(voteUpdate(int,int,int)),
-                this, SLOT(twitchHandlerVoteUpdate(int,int,int)));
+        connect(twitchHandler, SIGNAL(voteUpdate(int,int,int,QString)),
+                this, SLOT(twitchHandlerVoteUpdate(int,int,int,QString)));
         connect(twitchHandler, SIGNAL(pLog(QString)),
                 this, SIGNAL(pLog(QString)));
         connect(twitchHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -627,10 +627,10 @@ void DraftHandler::twitchHandlerConnectionOk(bool ok)
 }
 
 
-void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3)
+void DraftHandler::twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username)
 {
-    if(draftScoreWindow != nullptr)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3);
-    if(draftHeroWindow != nullptr)     draftHeroWindow->setTwitchScores(vote1, vote2, vote3);
+    if(draftScoreWindow != nullptr)    draftScoreWindow->setTwitchScores(vote1, vote2, vote3, username);
+    if(draftHeroWindow != nullptr)     draftHeroWindow->setTwitchScores(vote1, vote2, vote3, username);
 }
 
 

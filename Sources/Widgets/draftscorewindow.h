@@ -63,7 +63,7 @@ public:
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor);
     void setNormalizedLF(bool value);
-    void setTwitchScores(int vote1, int vote2, int vote3);
+    void setTwitchScores(int vote1, int vote2, int vote3, QString username);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

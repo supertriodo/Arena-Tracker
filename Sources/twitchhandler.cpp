@@ -195,6 +195,6 @@ void TwitchHandler::textMessageReceived(QString message)
         emit pDebug("Participants(" + QString::number(participants.count()) + "): " +
                     QString::number(votes[0]) + " - " + QString::number(votes[1]) + " - " + QString::number(votes[2]));
 
-        emit voteUpdate(votes[0], votes[1], votes[2]);
+        emit voteUpdate(votes[0], votes[1], votes[2], username);
     }
 }

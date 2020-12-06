@@ -224,7 +224,7 @@ private slots:
     void comboBoxChanged();
     void refreshCapturedCards();
     void twitchHandlerConnectionOk(bool ok);
-    void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3);
+    void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();
 };
 

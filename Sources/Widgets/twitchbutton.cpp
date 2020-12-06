@@ -12,13 +12,11 @@ TwitchButton::TwitchButton(QWidget *parent, float min, float max) : QLabel(paren
 
 void TwitchButton::reset()
 {
-    this->votes = 0;
-    this->value = 0;
-    update();
+    setValue(0, 0, false);
 }
 
 
-void TwitchButton::setValue(float value, int votes, bool isBestScore)
+void TwitchButton::setValue(float value, int votes, bool isBestScore, QString username)
 {
     this->votes = votes;
     this->value = value;
@@ -27,13 +25,35 @@ void TwitchButton::setValue(float value, int votes, bool isBestScore)
     this->value_0_1 = (value - min)/(max - min);
     if(value_0_1 > 1) value_0_1 = 1;
     if(value_0_1 < 0) value_0_1 = 0;
-    draw();
+
+    bool needDraw = ftList.isEmpty();
+
+    if(!username.isEmpty())
+    {
+        FloatingText ft;
+        ft.username = username;
+        ft.birth = QDateTime::currentMSecsSinceEpoch();
+        if(ftList.isEmpty())    ft.up = qrand()%2;
+        else                    ft.up = !ftList.first().up;
+        ftList.prepend(ft);
+    }
+
+    if(needDraw)    draw();
+    else            update();
 }
 
 
 void TwitchButton::draw()
 {
-    this->update();
+    if(!ftList.isEmpty())   QTimer::singleShot(FT_DRAW_STEP, this, SLOT(draw()));
+    for(int i=0; i<ftList.count();)
+    {
+        qint64 ftLife = QDateTime::currentMSecsSinceEpoch() - ftList[i].birth;
+        if(ftLife>FT_MAX_LIFE)  ftList.removeAt(i);
+        else                    i++;
+    }
+
+    update();
 }
 
 
@@ -72,20 +92,46 @@ void TwitchButton::paintEvent(QPaintEvent *event)
     QString text;
     if(votes > 9999)    text = QString::number(int(votes/1000)) + 'K';
     else                text = QString::number(int(votes));
-    QFontMetrics fm = QFontMetrics(font);
-    int textWide = fm.width(text);
-    int textHigh = fm.height();
 
-    QPainterPath path;
-#ifdef Q_OS_WIN
-    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.3, font, text);
-#else
-    path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, font, text);
-#endif
-    painter.drawPath(path);
+    Utility::drawShadowText(painter, font, text, this->width()/2, this->height()/2, true, false);
 
     painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedOpenFile()));
     if(isBestScore) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedTwitchTextFile()));
+
+    //Floating text
+    for(const FloatingText &ft: ftList)
+    {
+        qint64 ftLife = QDateTime::currentMSecsSinceEpoch() - ft.birth;
+        int ftSize = static_cast<int>((width()/3.0)*(0+(ftLife/FT_SIZE)));
+        font.setPixelSize(ftSize>0?ftSize:1);
+        pen.setWidth(font.pixelSize()/20);
+        painter.setPen(pen);
+        painter.setOpacity(1-(ftLife/FT_OPACITY));
+        int y = ft.up?(this->height()/2) * (1-(ftLife/FT_OFFSET)):(this->height()/2) * (1+(ftLife/FT_OFFSET));
+
+        double offsetY = 0.25;
+        #ifdef Q_OS_WIN
+            offsetY += 0.05;
+        #else
+            offsetY += 0.1;//Necesitaba un reajuste, 0.15 se queda descuadrado
+        #endif
+        QFontMetrics fm(font);
+        int textWide = fm.width(ft.username);
+        int textHigh = fm.height();
+        if(textWide>this->width())
+        {
+            QPainterPath path;
+            path.addText(0, y + textHigh*offsetY, font, ft.username);
+            painter.drawPath(path);
+        }
+        else
+        {
+            QPainterPath path;
+            path.addText((this->width()/2) - (textWide/2), y + textHigh*offsetY, font, ft.username);
+            painter.drawPath(path);
+        }
+    }
+    painter.setOpacity(1.0);
 
     QPainter painterObject(this);
     if(isEnabled())
@@ -98,4 +144,3 @@ void TwitchButton::paintEvent(QPaintEvent *event)
         painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
     }
 }
-

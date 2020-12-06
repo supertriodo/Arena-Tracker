@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
     QSettings settings("Arena Tracker", "Arena Tracker");
 
+    qsrand((uint)QTime::currentTime().msec());
+
     ui->setupUi(this);
 
     atLogFile = nullptr;

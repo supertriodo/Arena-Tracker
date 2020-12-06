@@ -45,7 +45,7 @@ public:
 
 signals:
     void connectionOk(bool ok=true);
-    void voteUpdate(int vote1, int vote2, int vote3);
+    void voteUpdate(int vote1, int vote2, int vote3, QString username);
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TwitchHandler");
 

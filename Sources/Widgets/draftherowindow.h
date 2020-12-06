@@ -33,7 +33,7 @@ public:
     void setScores(float rating1, float rating2, float rating3);
     void hideScores(bool quick=false);
     void showTwitchScores(bool show=true);
-    void setTwitchScores(int vote1, int vote2, int vote3);
+    void setTwitchScores(int vote1, int vote2, int vote3, QString username);
 };
 
 #endif // DRAFTHEROWINDOW_H
