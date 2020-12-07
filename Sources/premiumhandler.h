@@ -13,6 +13,7 @@ public:
 
 public:
     void unlockPremium(QString email);
+    void checkTwitchSent();
 
 public slots:
     void checkPremium(QString username="", QString password="");

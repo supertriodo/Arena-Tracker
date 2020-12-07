@@ -23,3 +23,6 @@ void PremiumHandler::unlockPremium(QString email)
 }
 
 
+void PremiumHandler::checkTwitchSent()
+{
+}
