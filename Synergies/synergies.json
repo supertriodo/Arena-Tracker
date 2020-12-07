@@ -949,7 +949,7 @@
 "DMF_247" : [ "drop3", "lifestealGen", "taunt" ],
 "DMF_248" : [ "weaponGen", "damageMinionsGen", "reachGen", "drop3" ],
 "DMF_249" : [ "drawGen3" ],
-"DMF_254" : [ "aoeGen", "pingGen", "reachGen", "battlecry", "returnSyn", "drawSyn", "evolveSyn", "spellGen" ],
+"DMF_254" : [ "aoeGen", "pingGen", "reachGen", "battlecry", "returnSyn", "evolveSyn", "spellGen" ],
 "DMF_511" : [ "drop2", "battlecry", "returnSyn", "comboSyn" ],
 "DMF_512" : [  ],
 "DMF_513" : [ "drop2", "secret" ],
