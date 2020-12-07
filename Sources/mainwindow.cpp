@@ -1767,7 +1767,11 @@ void MainWindow::twitchTesterConnectionOk(bool ok)
     ui->configCheckVotes->setEnabled(ok);
     ui->configLabelVotesStatus->setEnabled(true);
     ui->configLabelVotesStatus->setPixmap(ok?ThemeHandler::winFile():ThemeHandler::loseFile());
-    if(!ok)
+    if(ok)
+    {
+        premiumHandler->checkTwitchSent();
+    }
+    else
     {
         ui->configCheckVotes->setChecked(false);
         updateTwitchChatVotes(false);
