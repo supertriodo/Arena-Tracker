@@ -28,8 +28,8 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
         scoresPushButton[i]->setFixedWidth(scoreWidth);
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
-        twitchButton[i]->setFixedHeight(static_cast<int>(scoreWidth*0.75));
-        twitchButton[i]->setFixedWidth(static_cast<int>(scoreWidth*0.75));
+        twitchButton[i]->setFixedHeight(scoreWidth);
+        twitchButton[i]->setFixedWidth(scoreWidth);
         twitchButton[i]->hide();
 
         //Opacity effects

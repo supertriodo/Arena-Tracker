@@ -6,9 +6,9 @@
 #include "../utility.h"
 
 #define FT_DRAW_STEP 50
-#define FT_MAX_LIFE 2500
-#define FT_SIZE static_cast<float>(2000)
-#define FT_OPACITY static_cast<float>(3000)
+#define FT_MAX_LIFE 6000
+#define FT_SIZE static_cast<float>(6000)
+#define FT_OPACITY static_cast<float>(2000)
 #define FT_OFFSET static_cast<float>(3000)
 
 class FloatingText
@@ -16,6 +16,7 @@ class FloatingText
 public:
     QString username;
     qint64 birth;
+    int pixelSize;
     bool up;
 };
 

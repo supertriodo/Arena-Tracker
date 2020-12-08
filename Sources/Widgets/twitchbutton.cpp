@@ -16,6 +16,14 @@ void TwitchButton::reset()
 }
 
 
+//void TwitchButton::test()
+//{
+//    QTimer::singleShot(qrand()%3000+500, this, SLOT(test()));
+//    QStringList names = {"Triodo", "supertriodo", "bellapala", "keludar", "hibadino", "HnT123", "shadybunny", "Trumpsc", "Judge"};
+//    setValue(0, 0, false, names[qrand()%names.length()]);
+//}
+
+
 void TwitchButton::setValue(float value, int votes, bool isBestScore, QString username)
 {
     if(votes <= this->votes)  username = "";
@@ -34,9 +42,10 @@ void TwitchButton::setValue(float value, int votes, bool isBestScore, QString us
         FloatingText ft;
         ft.username = username;
         ft.birth = QDateTime::currentMSecsSinceEpoch();
+        ft.pixelSize = 1;
         if(ftList.isEmpty())    ft.up = qrand()%2;
-        else                    ft.up = !ftList.first().up;
-        ftList.prepend(ft);
+        else                    ft.up = !ftList.last().up;
+        ftList.append(ft);
     }
 
     if(needDraw)    draw();
@@ -100,15 +109,30 @@ void TwitchButton::paintEvent(QPaintEvent *event)
     if(isBestScore) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::speedTwitchTextFile()));
 
     //Floating text
-    for(const FloatingText &ft: ftList)
+    for(FloatingText &ft: ftList)
     {
         qint64 ftLife = QDateTime::currentMSecsSinceEpoch() - ft.birth;
-        int ftSize = static_cast<int>((width()/3.0)*(0+(ftLife/FT_SIZE)));
+        int ftSize = static_cast<int>(width()*(0+
+                                               (ftLife<FT_MAX_LIFE/3?(ftLife/FT_SIZE):(FT_MAX_LIFE/3)/FT_SIZE)
+                                               ));
         font.setPixelSize(ftSize>0?ftSize:1);
+        QFontMetrics fm(font);
+        int textWide = fm.width(ft.username);
+        int textHigh = fm.height();
+        if(textWide>this->width())
+        {
+            font.setPixelSize(ft.pixelSize);
+            QFontMetrics fm(font);
+            textWide = fm.width(ft.username);
+            textHigh = fm.height();
+        }
+        else    ft.pixelSize = font.pixelSize();
+
         pen.setWidth(font.pixelSize()/20);
         painter.setPen(pen);
-        painter.setOpacity(1-(ftLife/FT_OPACITY));
-        int y = ft.up?(this->height()/2) * (1-(ftLife/FT_OFFSET)):(this->height()/2) * (1+(ftLife/FT_OFFSET));
+        painter.setOpacity(1-(ftLife<FT_MAX_LIFE*2/3?0:(ftLife-FT_MAX_LIFE*2/3)/FT_OPACITY));
+        float moveY = (ftLife<FT_MAX_LIFE/3?(ftLife/FT_OFFSET):(FT_MAX_LIFE/3)/FT_OFFSET);
+        int y = (this->height()/2) * (1+(ft.up?-moveY:moveY));
 
         double offsetY = 0.25;
         #ifdef Q_OS_WIN
@@ -116,21 +140,10 @@ void TwitchButton::paintEvent(QPaintEvent *event)
         #else
             offsetY += 0.1;//Necesitaba un reajuste, 0.15 se queda descuadrado
         #endif
-        QFontMetrics fm(font);
-        int textWide = fm.width(ft.username);
-        int textHigh = fm.height();
-        if(textWide>this->width())
-        {
-            QPainterPath path;
-            path.addText(0, y + textHigh*offsetY, font, ft.username);
-            painter.drawPath(path);
-        }
-        else
-        {
-            QPainterPath path;
-            path.addText((this->width()/2) - (textWide/2), y + textHigh*offsetY, font, ft.username);
-            painter.drawPath(path);
-        }
+
+        QPainterPath path;
+        path.addText((this->width()/2) - (textWide/2), y + textHigh*offsetY, font, ft.username);
+        painter.drawPath(path);
     }
     painter.setOpacity(1.0);
 
