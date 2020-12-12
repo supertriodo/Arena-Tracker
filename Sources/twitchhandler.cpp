@@ -165,8 +165,10 @@ void TwitchHandler::textMessageReceived(QString message)
     }
 
     //PICK TAG
+    //Aceptamos cualquier mensaje que comienze con el tag. Esto permite votar el mismo numero (con distinta frase)
+    //y saltar la restriccion de twitch de repetir un mensaje identico en menos de 30 segundos.
     else if(message.contains(QRegularExpression("\\:(\\w+)!\\w*@\\w*\\.tmi\\.twitch\\.tv PRIVMSG " + TwitchHandler::channel +
-                                           " :" + TwitchHandler::pickTag + "([1-3])\\r\\n"), &match))
+                                           " :" + TwitchHandler::pickTag + "([1-3]).*\\r\\n"), &match))
     {
         emit pDebug(match.captured(0).trimmed());
 
