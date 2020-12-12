@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17","v8.18","v8.19","v8.2","v8.3"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.3/Arena.Tracker.v8.3.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.3/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.3/Arena.Tracker.v8.3.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.3/Arena.Tracker.v8.3.Windows.zip",
-	"log": "AT now shows on screen the names of voters during a twitch chat draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.3'>github</a>"
+	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17","v8.18","v8.19","v8.2","v8.3","v8.31"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.31/Arena.Tracker.v8.31.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.31/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.31/Arena.Tracker.v8.31.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.31/Arena.Tracker.v8.31.Windows.zip",
+	"log": "Names of voters during a twitch chat draft are more visible.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.31'>github</a>"
 }
