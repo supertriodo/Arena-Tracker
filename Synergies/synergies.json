@@ -900,7 +900,7 @@
 "DMF_107" : [ "drawGen3", "secret" ],
 "DMF_108" : [ "spellSyn", "drawSyn" ],
 "DMF_109" : [ "drawGen2", "battlecry", "secretAllSyn", "returnSyn" ],
-"DMF_110" : [ "demonAllSyn", "drop4", "aoeGen", "battlecry", "returnSyn" ],
+"DMF_110" : [ "demonAllSyn", "drop4", "aoeGen", "battlecry", "returnSyn", "eggSyn" ],
 "DMF_111" : [ "demonAllSyn", "drop3", "battlecry", "returnSyn" ],
 "DMF_113" : [ "demonSyn", "drawGen2" ],
 "DMF_114" : [ "drop2", "taunt" ],
@@ -2818,6 +2818,7 @@
 
   "EX1_005": ["EX1_046","CS2_188"],
   "BOT_550": ["BOT_539"],
+  "SCH_311": ["SCH_605"],
   "SCH_700": ["SCH_517", "SCH_355", "SCH_704", "SCH_343", "SCH_703"],
   "SCH_701": ["SCH_517", "SCH_355", "SCH_704", "SCH_343", "SCH_703"],
   "SCH_307": ["SCH_517", "SCH_355", "SCH_704", "SCH_343", "SCH_703"],
