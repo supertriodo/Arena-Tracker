@@ -904,7 +904,7 @@
 "DMF_111" : [ "demonAllSyn", "drop3", "battlecry", "returnSyn" ],
 "DMF_113" : [ "demonSyn", "drawGen2" ],
 "DMF_114" : [ "drop2", "taunt" ],
-"DMF_115" : [ "drop3", "battlecry", "returnSyn" ],
+"DMF_115" : [ "battlecry", "returnSyn" ],
 "DMF_116" : [ "drop4", "battlecry", "returnSyn" ],
 "DMF_117" : [ "aoeGen", "destroyGen" ],
 "DMF_118" : [ "battlecry", "returnSyn", "=>SynSpellCost7", "=>SynMinionCost7", "=>SynWeaponCost7" ],
