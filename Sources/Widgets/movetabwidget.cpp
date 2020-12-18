@@ -62,8 +62,9 @@ void MoveTabBar::mousePressEvent(QMouseEvent* event)
     {
         dragStartPos = event->pos();
 
-        //TabConfig mueve la ventana
-        if(tabAt(dragStartPos) == (count()-1))
+        //TabConfig/TabDraft mueven la ventana
+        QString tooltip = tabToolTip(tabAt(dragStartPos));
+        if(tooltip == "Draft" || tooltip == "Config")
         {
             draggingConfig = true;
             event->ignore();
