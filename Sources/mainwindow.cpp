@@ -4677,7 +4677,7 @@ void MainWindow::testDelay()
 //    Utility::resizeGoldenCards();
 
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
-//    draftHandler->beginDraft("01", deckHandler->getDeckCardList());
+//    QTimer::singleShot(5000, this, [=] () {draftHandler->beginDraft("09", deckHandler->getDeckCardList());});
 }
 
 

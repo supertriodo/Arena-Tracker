@@ -839,7 +839,7 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
 }
 
 
-void Utility::clearLayout(QLayout* layout, bool deleteWidgets)
+void Utility::clearLayout(QLayout* layout, bool deleteWidgets, bool recursive)
 {
     while(QLayoutItem* item = layout->takeAt(0))
     {
@@ -852,9 +852,9 @@ void Utility::clearLayout(QLayout* layout, bool deleteWidgets)
         }
         if(QLayout* childLayout = item->layout())
         {
-            clearLayout(childLayout, deleteWidgets);
+            if(recursive)   clearLayout(childLayout, deleteWidgets, recursive);
         }
-        delete item;
+        if(deleteWidgets)   delete item;
     }
 }
 

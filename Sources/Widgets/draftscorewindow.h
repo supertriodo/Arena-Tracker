@@ -33,7 +33,9 @@ public:
 
 //Variables
 private:
-    QHBoxLayout *horLayoutMechanics[3];
+    QHBoxLayout *horLayoutScores[3];
+    QHBoxLayout *horLayoutScores2[3];
+    QGridLayout *gridLayoutMechanics[3];
     ScoreButton *scoresPushButton[3];
     ScoreButton *scoresPushButton2[3];
     ScoreButton *scoresPushButton3[3];
@@ -43,6 +45,7 @@ private:
     SynergyMotion synergyMotions[3];
     int scoreWidth;
     int maxSynergyHeight;
+    bool scores2Rows;
 
 
 //Metodos
@@ -53,6 +56,7 @@ private:
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
     void checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch);
     bool paintDropBorder(QPainter &painter, const QString &mechanicIcon, const MechanicBorderColor dropBorderColor);
+    void reorderMechanics();
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod, int includedDecks1, int includedDecks2, int includedDecks3);

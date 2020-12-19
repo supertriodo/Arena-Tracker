@@ -22,14 +22,12 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
 
     QWidget *centralWidget = new QWidget(this);
-    QVBoxLayout *verLayout = new QVBoxLayout(centralWidget);
-    QHBoxLayout *horLayoutScores = new QHBoxLayout();
-    QHBoxLayout *horLayoutSynergies = new QHBoxLayout();
-    verLayout->addLayout(horLayoutScores);
-    verLayout->addLayout(horLayoutSynergies);
+    QHBoxLayout *horLayout = new QHBoxLayout(centralWidget);
+    QVBoxLayout *verLayout[3];
 
     for(int i=0; i<3; i++)
     {
+        //Scores
         scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, normalizedLF);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
@@ -73,18 +71,33 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         effect->setOpacity(0);
         twitchButton[i]->setGraphicsEffect(effect);
 
-        horLayoutScores->addStretch();
-        horLayoutScores->addWidget(scoresPushButton[i]);
-        horLayoutScores->addWidget(scoresPushButton3[i]);
-        horLayoutScores->addWidget(twitchButton[i]);
-        horLayoutScores->addWidget(scoresPushButton2[i]);
-        horLayoutScores->addStretch();
+        //LAYOUTS scores
+        horLayoutScores[i] = new QHBoxLayout();
+        horLayoutScores[i]->addWidget(scoresPushButton[i]);
+        horLayoutScores[i]->addWidget(scoresPushButton3[i]);
+        horLayoutScores[i]->addWidget(twitchButton[i]);
+        horLayoutScores[i]->addWidget(scoresPushButton2[i]);
 
+        QHBoxLayout *horLayoutScoresG = new QHBoxLayout();
+        horLayoutScoresG->addStretch();
+        horLayoutScoresG->addLayout(horLayoutScores[i]);
+        horLayoutScoresG->addStretch();
 
-        QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
+        verLayout[i] = new QVBoxLayout();
+        verLayout[i]->addLayout(horLayoutScoresG);
 
-        horLayoutMechanics[i] = new QHBoxLayout();
+        gridLayoutMechanics[i] = new QGridLayout();
+        horLayoutScores2[i] = new QHBoxLayout();
+        horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
 
+        QHBoxLayout *horLayoutScores2G = new QHBoxLayout();
+        horLayoutScores2G->addStretch();
+        horLayoutScores2G->addLayout(horLayoutScores2[i]);
+        horLayoutScores2G->addStretch();
+
+        verLayout[i]->addLayout(horLayoutScores2G);
+
+        //Synergies
         synergiesListWidget[i] = new MoveListWidget(centralWidget);
         synergiesListWidget[i]->setFixedHeight(0);
         synergiesListWidget[i]->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -100,16 +113,25 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         connect(synergiesListWidget[i], SIGNAL(leave()),
                 this, SLOT(resumeSynergyMotion()));
 
-        verLayoutSynergy->addLayout(horLayoutMechanics[i]);
+        //LAYOUTS synergies
+        QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
         verLayoutSynergy->addWidget(synergiesListWidget[i]);
         verLayoutSynergy->addStretch();
 
-        horLayoutSynergies->addStretch();
-        horLayoutSynergies->addLayout(verLayoutSynergy);
-        horLayoutSynergies->addStretch();
+        QHBoxLayout *horLayoutSynergiesG = new QHBoxLayout();
+        horLayoutSynergiesG->addStretch();
+        horLayoutSynergiesG->addLayout(verLayoutSynergy);
+        horLayoutSynergiesG->addStretch();
+
+        verLayout[i]->addLayout(horLayoutSynergiesG);
+
+        horLayout->addStretch();
+        horLayout->addLayout(verLayout[i]);
+        horLayout->addStretch();
     }
 
-    maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2*scoreWidth; //Extra scoreWidth
+    maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.5*scoreWidth;
+    scores2Rows = false;
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Scores");
@@ -154,43 +176,42 @@ void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, 
     {
         for(int i=0; i<3; i++)
         {
-            int smallWidth = static_cast<int>(scoreWidth*0.75);
-            scoresPushButton[i]->setFixedHeight(smallWidth);
-            scoresPushButton[i]->setFixedWidth(smallWidth);
-            scoresPushButton[i]->draw();
-
-            scoresPushButton2[i]->setFixedHeight(smallWidth);
-            scoresPushButton2[i]->setFixedWidth(smallWidth);
-            scoresPushButton2[i]->draw();
-
-            scoresPushButton3[i]->setFixedHeight(smallWidth);
-            scoresPushButton3[i]->setFixedWidth(smallWidth);
-            scoresPushButton3[i]->draw();
-
-            twitchButton[i]->setFixedHeight(smallWidth);
-            twitchButton[i]->setFixedWidth(smallWidth);
-            twitchButton[i]->update();
+            horLayoutScores[i]->removeWidget(twitchButton[i]);
+            horLayoutScores2[i]->insertWidget(0, twitchButton[i]);
         }
     }
     else
     {
         for(int i=0; i<3; i++)
         {
-            scoresPushButton[i]->setFixedHeight(scoreWidth);
-            scoresPushButton[i]->setFixedWidth(scoreWidth);
-            scoresPushButton[i]->draw();
+            horLayoutScores2[i]->removeWidget(twitchButton[i]);
+            horLayoutScores[i]->insertWidget(2, twitchButton[i]);
+        }
+    }
+    bool oldScores2Rows = scores2Rows;
+    scores2Rows = draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch;
+    if(oldScores2Rows != scores2Rows)   reorderMechanics();
+}
 
-            scoresPushButton2[i]->setFixedHeight(scoreWidth);
-            scoresPushButton2[i]->setFixedWidth(scoreWidth);
-            scoresPushButton2[i]->draw();
 
-            scoresPushButton3[i]->setFixedHeight(scoreWidth);
-            scoresPushButton3[i]->setFixedWidth(scoreWidth);
-            scoresPushButton3[i]->draw();
-
-            twitchButton[i]->setFixedHeight(scoreWidth);
-            twitchButton[i]->setFixedWidth(scoreWidth);
-            twitchButton[i]->update();
+void DraftScoreWindow::reorderMechanics()
+{
+    for(int index=0; index<3; index++)
+    {
+        QList<QWidget *> labels;
+        while(QLayoutItem* item = gridLayoutMechanics[index]->takeAt(0))
+        {
+            if(QWidget* widget = item->widget())
+            {
+                labels.append(widget);
+            }
+        }
+        int i=0;
+        for(QWidget* label: labels)
+        {
+            if(scores2Rows) gridLayoutMechanics[index]->addWidget(label, i%2, i/2);
+            else            gridLayoutMechanics[index]->addWidget(label, 0, i);
+            i++;
         }
     }
 }
@@ -279,6 +300,13 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
 {
     if(posCard < 0 || posCard > 2)  return;
 
+//TODO remove
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
+//        "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
+//        "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163"};
+//    for(const QString &code: codes) synergies[code]=1;
+
     synergiesListWidget[posCard]->clear();
     synergiesDeckCardLists[posCard].clear();
 
@@ -300,19 +328,19 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
 
 
     //Add mechanic icons
-    Utility::clearLayout(horLayoutMechanics[posCard], true);
-    horLayoutMechanics[posCard]->addStretch();
+    Utility::clearLayout(gridLayoutMechanics[posCard], true, false);
 
+    int i=0;
     for(const QString &mechanicIcon: mechanicIcons.keys())
     {
         QLabel *label = new QLabel();
         label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor));
         label->setToolTip(getMechanicTooltip(mechanicIcon));
         label->hide();
-        horLayoutMechanics[posCard]->addWidget(label);
+        if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, i%2, i/2);
+        else            gridLayoutMechanics[posCard]->addWidget(label, 0, i);
+        i++;
     }
-
-    horLayoutMechanics[posCard]->addStretch();
 }
 
 
@@ -439,7 +467,7 @@ void DraftScoreWindow::showSynergies()
     for(int i=0; i<3; i++)
     {
         synergiesListWidget[i]->show();
-        Utility::showItemsLayout(horLayoutMechanics[i]);
+        Utility::showItemsLayout(gridLayoutMechanics[i]);
         stepScrollSynergies(i);
     }
     this->update();
@@ -451,7 +479,7 @@ void DraftScoreWindow::hideSynergies(int index)
     synergiesListWidget[index]->hide();
     synergiesListWidget[index]->clear();
     synergiesDeckCardLists[index].clear();
-    Utility::clearLayout(horLayoutMechanics[index], true);
+    Utility::clearLayout(gridLayoutMechanics[index], true, false);
 }
 
 
