@@ -13,6 +13,7 @@ TwitchButton::TwitchButton(QWidget *parent, float min, float max) : QLabel(paren
 void TwitchButton::reset()
 {
     setValue(0, 0, false);
+    ftList.clear();
 }
 
 
@@ -22,6 +23,7 @@ void TwitchButton::reset()
 //    QStringList names = {"citizen233", "supertriodo", "bellapala1234567890", "keludar", "hibadino",
 //                         "robinstalk235688", "shadybunny", "Trumpsc", "Judge"};
 //    setValue(0, 0, false, names[qrand()%names.length()]);
+//    //Comentar primer if de setValue
 //}
 
 
