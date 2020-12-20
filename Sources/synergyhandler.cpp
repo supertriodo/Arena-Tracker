@@ -731,8 +731,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
     //TokenCard es synergia debil
-    //Evitamos que aparezcan token cards synergies en cada combo card
-//    if(isTokenCardGen(code, cost))                                          mechanicCounters[V_TOKEN_CARD]->increase(code);
+    //Evitamos que aparezcan token cards synergies en cada combo card, es sinergia debil
+    if(isTokenCardGen(code, cost, mechanics, text))                         mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
@@ -985,13 +985,13 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    //Evita mostrar spellSyn cards en cada hechizo que veamos
-//    if(cardType == SPELL)
-//    {
-//        cardTypeCounters[V_SPELL]->insertSynCards(synergies);
-//        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
-//    }
-//    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
+    //Evita mostrar spellSyn cards en cada hechizo que veamos, es sinergia debil
+    if(cardType == SPELL)
+    {
+        cardTypeCounters[V_SPELL]->insertSynCards(synergies);
+        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
+    }
+    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
     if(cardType == WEAPON)
     {
         cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
@@ -1275,7 +1275,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
     if(isAttackNerfSyn(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertCards(synergies);
     if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
-    //returnSyn es synergia debil
+    //returnSyn es sinergia debil
 //    if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
     if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
     if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergies);
