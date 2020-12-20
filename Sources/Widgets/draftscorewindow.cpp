@@ -301,11 +301,20 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
     if(posCard < 0 || posCard > 2)  return;
 
 //TODO remove
+//    if(posCard==0){
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101"};
+//    for(const QString &code: codes) synergies[code]=1;}
+//    if(posCard==1){
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101", "DMF_244", "DMF_064"};
+//    for(const QString &code: codes) synergies[code]=1;}
+//    if(posCard==2){
 //    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
 //        "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
 //        "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
 //        "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163"};
-//    for(const QString &code: codes) synergies[code]=1;
+//    for(const QString &code: codes) synergies[code]=1;}
 
     synergiesListWidget[posCard]->clear();
     synergiesDeckCardLists[posCard].clear();
@@ -505,15 +514,23 @@ void DraftScoreWindow::resizeSynergyList()
         int rowHeight = list->sizeHintForRow(0);
         int rows = list->count();
         int height = rows*rowHeight + 2*list->frameWidth();
-        if(height>maxSynergyHeight) list->setFixedHeight(maxSynergyHeight);
-        else                        list->setFixedHeight(height);
-        if(rows>0)  width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+        int maxSynergyHeightFit = maxSynergyHeight;
+        if(rows>0)
+        {
+            width = list->sizeHintForColumn(0) + 2 * list->frameWidth();
+            maxSynergyHeightFit-=maxSynergyHeightFit%list->sizeHintForRow(0);
+        }
+        if(height>maxSynergyHeightFit)  list->setFixedHeight(maxSynergyHeightFit);
+        else                            list->setFixedHeight(height);
 
         //Moving scroll init
         synergyMotions[i].moveDown = true;
         synergyMotions[i].moving = true;
-        synergyMotions[i].maximum = height - maxSynergyHeight;
-        synergyMotions[i].stepValue = synergyMotions[i].maximum/(2000/SYNERGY_MOTION_UPDATE_TIME);
+        synergyMotions[i].maximum = height - maxSynergyHeightFit;
+        synergyMotions[i].stepValue = std::max(1,
+                std::min(synergyMotions[i].maximum,maxSynergyHeightFit/2)
+                /(2000/SYNERGY_MOTION_UPDATE_TIME)
+                );
         synergyMotions[i].value = -(2000/SYNERGY_MOTION_UPDATE_TIME)*synergyMotions[i].stepValue;
     }
 
