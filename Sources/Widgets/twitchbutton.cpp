@@ -19,7 +19,8 @@ void TwitchButton::reset()
 //void TwitchButton::test()
 //{
 //    QTimer::singleShot(qrand()%3000+500, this, SLOT(test()));
-//    QStringList names = {"Triodo", "supertriodo", "bellapala", "keludar", "hibadino", "HnT123", "shadybunny", "Trumpsc", "Judge"};
+//    QStringList names = {"citizen233", "supertriodo", "bellapala1234567890", "keludar", "hibadino",
+//                         "robinstalk235688", "shadybunny", "Trumpsc", "Judge"};
 //    setValue(0, 0, false, names[qrand()%names.length()]);
 //}
 
@@ -112,21 +113,29 @@ void TwitchButton::paintEvent(QPaintEvent *event)
     for(FloatingText &ft: ftList)
     {
         qint64 ftLife = QDateTime::currentMSecsSinceEpoch() - ft.birth;
-        int ftSize = static_cast<int>(width()*(0+
-                                               (ftLife<FT_MAX_LIFE/3?(ftLife/FT_SIZE):(FT_MAX_LIFE/3)/FT_SIZE)
-                                               ));
-        font.setPixelSize(ftSize>0?ftSize:1);
+        float ftSizeK = (0+
+                         (ftLife<FT_MAX_LIFE/3?(ftLife/FT_SIZE):(FT_MAX_LIFE/3)/FT_SIZE)
+                         );
+        int ftSize = static_cast<int>(width()*ftSizeK);
+        ftSize = ftSize>0?ftSize:1;
+        font.setPixelSize(ftSize);
         QFontMetrics fm(font);
         int textWide = fm.width(ft.username);
         int textHigh = fm.height();
         if(textWide>this->width())
         {
+            //Chop long username
+            if(ftSizeK<0.2)
+            {
+                ft.username.chop(1);
+                ft.pixelSize = ftSize;
+            }
             font.setPixelSize(ft.pixelSize);
             QFontMetrics fm(font);
             textWide = fm.width(ft.username);
             textHigh = fm.height();
         }
-        else    ft.pixelSize = font.pixelSize();
+        else    ft.pixelSize = ftSize;
 
         pen.setWidth(font.pixelSize()/20);
         painter.setPen(pen);
