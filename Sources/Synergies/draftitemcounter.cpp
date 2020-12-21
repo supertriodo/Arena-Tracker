@@ -199,11 +199,12 @@ bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergi
 }
 
 
-void DraftItemCounter::insertCards(QMap<QString,int> &synergies)
+//Se usa en heroPowerGen(V_HERO_POWER), sinergia gen-gen, para evitar sinergias de una carta con ella misma
+void DraftItemCounter::insertCards(QMap<QString,int> &synergies, QString avoidCode)
 {
     for(QString code: codeMap.keys())
     {
-        if(!synergies.contains(code))
+        if(!synergies.contains(code) && code!=avoidCode)
         {
             synergies[code] = codeMap[code];
         }
