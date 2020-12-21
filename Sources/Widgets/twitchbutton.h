@@ -10,6 +10,7 @@
 #define FT_SIZE static_cast<float>(6000)
 #define FT_OPACITY static_cast<float>(2000)
 #define FT_OFFSET static_cast<float>(3000)
+#define FT_MIN_SIZE 0.2//0.16
 
 class FloatingText
 {
@@ -37,6 +38,7 @@ private:
 
 //Metodos
 private:
+    void chopUsername(FloatingText &ft);
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
