@@ -75,7 +75,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         horLayoutScores[i] = new QHBoxLayout();
         horLayoutScores[i]->addWidget(scoresPushButton[i]);
         horLayoutScores[i]->addWidget(scoresPushButton3[i]);
-        horLayoutScores[i]->addWidget(twitchButton[i]);
         horLayoutScores[i]->addWidget(scoresPushButton2[i]);
 
         QHBoxLayout *horLayoutScoresG = new QHBoxLayout();
@@ -88,6 +87,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
         gridLayoutMechanics[i] = new QGridLayout();
         horLayoutScores2[i] = new QHBoxLayout();
+        horLayoutScores2[i]->addWidget(twitchButton[i]);
         horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
 
         QHBoxLayout *horLayoutScores2G = new QHBoxLayout();
@@ -131,7 +131,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     }
 
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.5*scoreWidth;
-    scores2Rows = false;
+    scores2Rows = true;
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Scores");
@@ -172,25 +172,45 @@ void DraftScoreWindow::spreadLearningShow(bool value)
 
 void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch)
 {
-    if(draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch)
+    bool oldScores2Rows = scores2Rows;
+    scores2Rows = draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch;
+    if(oldScores2Rows == scores2Rows)   return;
+    reorderMechanics();
+
+    if(scores2Rows)
     {
         for(int i=0; i<3; i++)
         {
-            horLayoutScores[i]->removeWidget(twitchButton[i]);
-            horLayoutScores2[i]->insertWidget(0, twitchButton[i]);
+            Utility::clearLayout(horLayoutScores[i], false, false);
+            Utility::clearLayout(horLayoutScores2[i], false, false);
+
+            horLayoutScores[i]->addWidget(scoresPushButton[i]);
+            horLayoutScores[i]->addWidget(scoresPushButton3[i]);
+            horLayoutScores[i]->addWidget(scoresPushButton2[i]);
+            horLayoutScores2[i]->addWidget(twitchButton[i]);
+            horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
+
+//            horLayoutScores[i]->removeWidget(twitchButton[i]);
+//            horLayoutScores2[i]->insertWidget(0, twitchButton[i]);
         }
     }
     else
     {
         for(int i=0; i<3; i++)
         {
-            horLayoutScores2[i]->removeWidget(twitchButton[i]);
-            horLayoutScores[i]->insertWidget(2, twitchButton[i]);
+            Utility::clearLayout(horLayoutScores[i], false, false);
+            Utility::clearLayout(horLayoutScores2[i], false, false);
+
+            horLayoutScores[i]->addWidget(scoresPushButton[i]);
+            horLayoutScores[i]->addWidget(scoresPushButton3[i]);
+            horLayoutScores[i]->addWidget(twitchButton[i]);
+            horLayoutScores[i]->addWidget(scoresPushButton2[i]);
+            horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
+
+//            horLayoutScores2[i]->removeWidget(twitchButton[i]);
+//            horLayoutScores[i]->insertWidget(2, twitchButton[i]);
         }
     }
-    bool oldScores2Rows = scores2Rows;
-    scores2Rows = draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch;
-    if(oldScores2Rows != scores2Rows)   reorderMechanics();
 }
 
 
@@ -299,22 +319,6 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
                                     const MechanicBorderColor dropBorderColor)
 {
     if(posCard < 0 || posCard > 2)  return;
-
-//TODO remove
-//    if(posCard==0){
-//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
-//        "DMF_105", "DMF_101"};
-//    for(const QString &code: codes) synergies[code]=1;}
-//    if(posCard==1){
-//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
-//        "DMF_105", "DMF_101", "DMF_244", "DMF_064"};
-//    for(const QString &code: codes) synergies[code]=1;}
-//    if(posCard==2){
-//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
-//        "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
-//        "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
-//        "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163"};
-//    for(const QString &code: codes) synergies[code]=1;}
 
     synergiesListWidget[posCard]->clear();
     synergiesDeckCardLists[posCard].clear();
