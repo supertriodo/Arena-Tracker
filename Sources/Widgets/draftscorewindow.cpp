@@ -104,7 +104,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         synergiesListWidget[i]->setIconSize(QSize(synergyWidth, static_cast<int>(synergyWidth/218.0*35)));
         synergiesListWidget[i]->setMouseTracking(true);
         synergiesListWidget[i]->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-        hideSynergies(i);
 
         connect(synergiesListWidget[i], SIGNAL(itemEntered(QListWidgetItem*)),
                 this, SLOT(findSynergyCardEntered(QListWidgetItem*)));
@@ -130,6 +129,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         horLayout->addStretch();
     }
 
+    hideSynergies();
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.5*scoreWidth;
     scores2Rows = true;
     setCentralWidget(centralWidget);
@@ -189,9 +189,6 @@ void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, 
             horLayoutScores[i]->addWidget(scoresPushButton2[i]);
             horLayoutScores2[i]->addWidget(twitchButton[i]);
             horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
-
-//            horLayoutScores[i]->removeWidget(twitchButton[i]);
-//            horLayoutScores2[i]->insertWidget(0, twitchButton[i]);
         }
     }
     else
@@ -206,9 +203,6 @@ void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, 
             horLayoutScores[i]->addWidget(twitchButton[i]);
             horLayoutScores[i]->addWidget(scoresPushButton2[i]);
             horLayoutScores2[i]->addLayout(gridLayoutMechanics[i]);
-
-//            horLayoutScores2[i]->removeWidget(twitchButton[i]);
-//            horLayoutScores[i]->insertWidget(2, twitchButton[i]);
         }
     }
 }
@@ -349,7 +343,8 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
         QLabel *label = new QLabel();
         label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor));
         label->setToolTip(getMechanicTooltip(mechanicIcon));
-        label->hide();
+        Utility::fadeInWidget(label);
+        label->show();
         if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, i%2, i/2);
         else            gridLayoutMechanics[posCard]->addWidget(label, 0, i);
         i++;
@@ -444,9 +439,9 @@ QString DraftScoreWindow::getMechanicTooltip(QString iconName)
 
 void DraftScoreWindow::hideScores(bool quick)
 {
-    for(int i=0; i<3; i++)
+    if(quick)
     {
-        if(quick)
+        for(int i=0; i<3; i++)
         {
             QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton[i]->graphicsEffect());
             eff->setOpacity(0);
@@ -457,19 +452,37 @@ void DraftScoreWindow::hideScores(bool quick)
             eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
         }
-        else
+        clearMechanics();
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
         {
             QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
             Utility::fadeOutWidget(scoresPushButton2[i]);
             Utility::fadeOutWidget(scoresPushButton3[i]);
             Utility::fadeOutWidget(twitchButton[i]);
+            Utility::fadeOutLayout(gridLayoutMechanics[i]);
 
-            if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
+            if(i==0 && animation != nullptr)
+            {
+                connect(animation, SIGNAL(finished()), this, SLOT(clearMechanics()));
+                connect(animation, SIGNAL(finished()), this, SLOT(update()));
+            }
         }
-
-        hideSynergies(i);
     }
+
+    hideSynergies();
     this->update();
+}
+
+
+void DraftScoreWindow::clearMechanics()
+{
+    for(int index=0; index<3; index++)
+    {
+        Utility::clearLayout(gridLayoutMechanics[index], true, false);
+    }
 }
 
 
@@ -480,19 +493,20 @@ void DraftScoreWindow::showSynergies()
     for(int i=0; i<3; i++)
     {
         synergiesListWidget[i]->show();
-        Utility::showItemsLayout(gridLayoutMechanics[i]);
         stepScrollSynergies(i);
     }
     this->update();
 }
 
 
-void DraftScoreWindow::hideSynergies(int index)
+void DraftScoreWindow::hideSynergies()
 {
-    synergiesListWidget[index]->hide();
-    synergiesListWidget[index]->clear();
-    synergiesDeckCardLists[index].clear();
-    Utility::clearLayout(gridLayoutMechanics[index], true, false);
+    for(int index=0; index<3; index++)
+    {
+        synergiesListWidget[index]->hide();
+        synergiesListWidget[index]->clear();
+        synergiesDeckCardLists[index].clear();
+    }
 }
 
 

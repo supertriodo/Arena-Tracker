@@ -77,12 +77,13 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftScoreWindow");
 
 private slots:
-    void hideSynergies(int index);
+    void hideSynergies();
     void showSynergies();
     void findSynergyCardEntered(QListWidgetItem *item);
     void spreadLearningShow(bool value);
     void stepScrollSynergies(int indexList);
     void resumeSynergyMotion();
+    void clearMechanics();
 };
 
 #endif // DRAFTSCOREWINDOW_H

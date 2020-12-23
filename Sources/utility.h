@@ -81,6 +81,7 @@ private:
 //Metodos
 private:
     static CardClass classString2cardClass(QString value);
+    static void fadeLayout(QLayout *layout, bool in);
 
 public:
     static QString className2classLogNumber(const QString &hero);
@@ -142,6 +143,8 @@ public:
     static bool checkHeroPortrait(QString code);
     static void checkMissingGoldenCards();
     static QStringList getArenaSets(const QStringList &codeList);
+    static void fadeOutLayout(QLayout *layout);
+    static void fadeInLayout(QLayout *layout);
 };
 
 #endif // UTILITY_H

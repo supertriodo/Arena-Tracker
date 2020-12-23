@@ -714,7 +714,7 @@ QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
     {
         eff = new QGraphicsOpacityEffect(widget);
         widget->setGraphicsEffect(eff);
-        eff->setOpacity(1);
+        eff->setOpacity(0);
     }
 
     if(eff->opacity() < 1)
@@ -867,6 +867,33 @@ void Utility::showItemsLayout(QLayout* layout)
         QWidget *widget = child->widget();
         if(widget != nullptr)  widget->show();
 //        if (QLayout* childLayout = child->layout())  showItemsLayout(childLayout);
+    }
+}
+
+
+void Utility::fadeInLayout(QLayout* layout)
+{
+    fadeLayout(layout, true);
+}
+
+
+void Utility::fadeOutLayout(QLayout* layout)
+{
+    fadeLayout(layout, false);
+}
+
+
+void Utility::fadeLayout(QLayout* layout, bool in)
+{
+    for(int i=0; i<layout->count(); i++)
+    {
+        QLayoutItem *child = layout->itemAt(i);
+        QWidget *widget = child->widget();
+        if(widget != nullptr)
+        {
+            if(in)  fadeInWidget(widget);
+            else    fadeOutWidget(widget);
+        }
     }
 }
 
