@@ -46,6 +46,7 @@ private:
     int scoreWidth;
     int maxSynergyHeight;
     bool scores2Rows;
+    bool showHA, showLF, showHSR, showTwitch;
 
 
 //Metodos
@@ -54,7 +55,7 @@ private:
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
-    void checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch);
+    void checkScoresSpace();
     bool paintDropBorder(QPainter &painter, const QString &mechanicIcon, const MechanicBorderColor dropBorderColor);
     void reorderMechanics();
 

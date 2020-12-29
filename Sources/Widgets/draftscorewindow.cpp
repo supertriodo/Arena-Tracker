@@ -132,6 +132,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     hideSynergies();
     maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.5*scoreWidth;
     scores2Rows = true;
+    showLF = showHSR = showHA = showTwitch = false;
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Scores");
@@ -170,15 +171,16 @@ void DraftScoreWindow::spreadLearningShow(bool value)
 }
 
 
-void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, bool showTwitch)
+void DraftScoreWindow::checkScoresSpace()
 {
     bool oldScores2Rows = scores2Rows;
-    scores2Rows = draftMethodHA && draftMethodLF && draftMethodHSR && showTwitch;
+    scores2Rows = showHA && showLF && showHSR && showTwitch;
     if(oldScores2Rows == scores2Rows)   return;
     reorderMechanics();
 
     if(scores2Rows)
     {
+        emit pDebug("Scores - 2 rows");
         for(int i=0; i<3; i++)
         {
             Utility::clearLayout(horLayoutScores[i], false, false);
@@ -193,6 +195,7 @@ void DraftScoreWindow::checkScoresSpace(bool draftMethodHA, bool draftMethodLF, 
     }
     else
     {
+        emit pDebug("Scores - 1 row");
         for(int i=0; i<3; i++)
         {
             Utility::clearLayout(horLayoutScores[i], false, false);
@@ -233,22 +236,25 @@ void DraftScoreWindow::reorderMechanics()
 
 void DraftScoreWindow::showTwitchScores(bool show)
 {
-    checkScoresSpace(scoresPushButton2[0]->isVisible(), scoresPushButton[0]->isVisible(),
-            scoresPushButton3[0]->isVisible(), show);
+    showTwitch = show;
+    checkScoresSpace();
 
-    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(show);
+    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(showTwitch);
 }
 
 
 void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
-    checkScoresSpace(draftMethodHA, draftMethodLF, draftMethodHSR, twitchButton[0]->isVisible());
+    showHA = draftMethodHA;
+    showLF = draftMethodLF;
+    showHSR = draftMethodHSR;
+    checkScoresSpace();
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setVisible(draftMethodLF);
-        scoresPushButton2[i]->setVisible(draftMethodHA);
-        scoresPushButton3[i]->setVisible(draftMethodHSR);
+        scoresPushButton[i]->setVisible(showLF);
+        scoresPushButton2[i]->setVisible(showHA);
+        scoresPushButton3[i]->setVisible(showHSR);
     }
 }
 
