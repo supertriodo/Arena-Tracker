@@ -1607,6 +1607,10 @@ void GameWatcher::setCopyGameLogs(bool value)
 bool GameWatcher::isCheatingCard(const QString &code)
 {
     if(code == PRINCE_MALCHEZAAR)   return true;
+    else if(code == BODY_OF_CTHUN)  return true;
+    else if(code == EYE_OF_CTHUN)   return true;
+    else if(code == HEART_OF_CTHUN) return true;
+    else if(code == MAW_OF_CTHUN)   return true;
     return false;
 }
 
