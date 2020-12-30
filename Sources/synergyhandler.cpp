@@ -1505,7 +1505,7 @@ void SynergyHandler::testSynergies()
 //                && cardType == MINION
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
-//                isAttackNerfGen(code, text)
+//                isSpellAllSyn(code, text)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -3731,10 +3731,10 @@ OUTCAST: outcast/outcastSyn
 
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen, pq necesitariamos 3 cartas,
-    la que genera 1/1s, el dragon y el que tiene tokenSyn, ni siquiera con cartas que requieran hechizos.
+    la que genera 1/1s, el dragon y el que tiene tokenSyn, con hechizos si.
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
-    Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles. Synergias SPELLBURST no.
-    Synergias CORRUPT si. Synergias OUTCAST si.
+    Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles. Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo.
+    Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
@@ -3753,7 +3753,8 @@ REGLAS
 +pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
 +aoeGen puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
-+aoeGen: no son destroyGen ni damageMinionsGen (ni siquiera token rush), a no ser que haga mucho dano a uno y poco a los demas.
++aoeGen: no son destroyGen ni damageMinionsGen (ni siquiera token rush),
+    a no ser que haga mucho dano a uno y poco a los demas, o que tenga 2 modos.
 +pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
 +pingGen: Todos los bombing/missiles cards son pingGen, si tienen los suficientes misiles aoeGen (cinderstorm) pero nunca reachGen ya que no son fiables.
 +spellDamageSyn es para aoe o damage a 2 objetivos
