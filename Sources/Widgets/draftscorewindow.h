@@ -58,6 +58,7 @@ private:
     void checkScoresSpace();
     bool paintDropBorder(QPainter &painter, const QString &mechanicIcon, const MechanicBorderColor dropBorderColor);
     void reorderMechanics();
+    void createMechanicIcon(int posCard, int posMech, const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod, int includedDecks1, int includedDecks2, int includedDecks3);

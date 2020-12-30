@@ -343,18 +343,38 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
     //Add mechanic icons
     Utility::clearLayout(gridLayoutMechanics[posCard], true, false);
 
-    int i=0;
+    //Drop mechanic first
+    int posMech=0;
     for(const QString &mechanicIcon: mechanicIcons.keys())
     {
-        QLabel *label = new QLabel();
-        label->setPixmap(createMechanicIconPixmap(mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor));
-        label->setToolTip(getMechanicTooltip(mechanicIcon));
-        Utility::fadeInWidget(label);
-        label->show();
-        if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, i%2, i/2);
-        else            gridLayoutMechanics[posCard]->addWidget(label, 0, i);
-        i++;
+        if(     mechanicIcon == ThemeHandler::drop2CounterFile() ||
+                mechanicIcon == ThemeHandler::drop3CounterFile() ||
+                mechanicIcon == ThemeHandler::drop4CounterFile())
+        {
+            createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
+            posMech++;
+            mechanicIcons.remove(mechanicIcon);
+        }
     }
+    //Other mechanics
+    for(const QString &mechanicIcon: mechanicIcons.keys())
+    {
+        createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
+        posMech++;
+    }
+}
+
+
+void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, const QString &mechanicIcon, int count,
+                                          const MechanicBorderColor dropBorderColor)
+{
+    QLabel *label = new QLabel();
+    label->setPixmap(createMechanicIconPixmap(mechanicIcon, count, dropBorderColor));
+    label->setToolTip(getMechanicTooltip(mechanicIcon));
+    Utility::fadeInWidget(label);
+    label->show();
+    if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, posMech%2, posMech/2);
+    else            gridLayoutMechanics[posCard]->addWidget(label, 0, posMech);
 }
 
 
