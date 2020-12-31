@@ -130,7 +130,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     }
 
     hideSynergies();
-    maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.5*scoreWidth;
+    maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.2*scoreWidth;
     scores2Rows = true;
     showLF = showHSR = showHA = showTwitch = false;
     setCentralWidget(centralWidget);
@@ -319,6 +319,22 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
                                     const MechanicBorderColor dropBorderColor)
 {
     if(posCard < 0 || posCard > 2)  return;
+
+    //TODO testing
+//    if(posCard==0){
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101"};
+//    for(const QString &code: codes) synergies[code]=1;}
+//    if(posCard==1){
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101", "DMF_244", "DMF_064"};
+//    for(const QString &code: codes) synergies[code]=1;}
+//    if(posCard==2){
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
+//        "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
+//        "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
+//        "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163"};
+//    for(const QString &code: codes) synergies[code]=1;}
 
     synergiesListWidget[posCard]->clear();
     synergiesDeckCardLists[posCard].clear();
