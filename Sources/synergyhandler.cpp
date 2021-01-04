@@ -1506,6 +1506,7 @@ void SynergyHandler::testSynergies()
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
 //                isSpellAllSyn(code, text)
+//                && isSpellGen(code)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -3735,6 +3736,7 @@ REGLAS
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles. Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
++Una carta no es spellGen si para generarlos requiere otros hechizos.
 +spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
