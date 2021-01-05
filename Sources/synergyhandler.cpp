@@ -1489,23 +1489,23 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
+//    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
 //    for(const QString &code: Utility::getStandardCodes())
-//    for(const QString &code: Utility::getWildCodes())
+    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
         QString text = Utility::cardEnTextFromCode(code).toLower();
         int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
         int cost = deckCard.getCost();
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                containsAll(text, "destroy less attack")
-//                && cardType == MINION
+//                containsAll(text, "destroy less attack")
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
-//                isSpellAllSyn(code, text)
+                isDrop4(code, cost) && attack>3 && health<3 && cardType == MINION
 //                && isSpellGen(code)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -1524,10 +1524,13 @@ void SynergyHandler::testSynergies()
             debugSynergiesCode(code, ++num);
 //            qDebug()<<mechanics<<endl<<referencedTags;
 
-//            QDesktopServices::openUrl(QUrl(
-//                "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-//                ));
-//            QThread::msleep(100);
+            if(num>0 && num<152)
+            {
+                QDesktopServices::openUrl(QUrl(
+                    "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                    ));
+                QThread::msleep(100);
+            }
         }
         Q_UNUSED(cardType);
         Q_UNUSED(text);
@@ -3788,10 +3791,12 @@ REGLAS
         ya que lo que mata es un drop3 enemigo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
         1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
-    Stats minimos sin ningun extra en tempo: Drop2: 3 (no 1/2) - Drop3: 4 - Drop4: 5
+    Stats minimos sin ningun extra en tempo o robo:
+        Drop2 (2/1) - Drop3 (3/2) - Drop4 (4/3+, 3/5+, 2/5+, no 1/x)
         Un 1/1 que roba no es un drop2, demasiada perdida de stats. Un 1/1 que te da un lackey si es drop2, ya que el lackey es tempo futuro.
         Un 2/2 que descubre es un drop3, justo en stats.
         Un 3/4 que roba una carta es un drop4 ya que es eficiente de jugar en el turno 4.
+    No es un drop2 si preferimos crear un 1/1 con heropower ha sacarlo.
 
 
 
