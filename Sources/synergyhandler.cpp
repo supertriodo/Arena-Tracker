@@ -629,18 +629,20 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QStringList &drop2Li
 {
     QString code = deckCard.getCode();
     int cost = deckCard.getCost();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
 
-    if(isDrop2(code, cost))
+    if(isDrop2(code, cost, attack, health))
     {
         dropCounters[V_DROP2]->increase(code);
         drop2List.append(code);
     }
-    else if(isDrop3(code, cost))
+    else if(isDrop3(code, cost, attack, health))
     {
         dropCounters[V_DROP3]->increase(code);
         drop3List.append(code);
     }
-    else if(isDrop4(code, cost))
+    else if(isDrop4(code, cost, attack, health))
     {
         dropCounters[V_DROP4]->increase(code);
         drop4List.append(code);
@@ -1012,18 +1014,20 @@ void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int>
 {
     QString code = deckCard.getCode();
     int cost = deckCard.getCost();
+    int attack = Utility::getCardAttribute(code, "attack").toInt();
+    int health = Utility::getCardAttribute(code, "health").toInt();
 
-    if(isDrop2(code, cost))
+    if(isDrop2(code, cost, attack, health))
     {
         mechanicIcons[ThemeHandler::drop2CounterFile()] = dropCounters[V_DROP2]->count() + 1;
         dropBorderColor = dropCounters[V_DROP2]->getMechanicBorderColor();
     }
-    else if(isDrop3(code, cost))
+    else if(isDrop3(code, cost, attack, health))
     {
         mechanicIcons[ThemeHandler::drop3CounterFile()] = dropCounters[V_DROP3]->count() + 1;
         dropBorderColor = dropCounters[V_DROP3]->getMechanicBorderColor();
     }
-    else if(isDrop4(code, cost))
+    else if(isDrop4(code, cost, attack, health))
     {
         mechanicIcons[ThemeHandler::drop4CounterFile()] = dropCounters[V_DROP4]->count() + 1;
         dropBorderColor = dropCounters[V_DROP4]->getMechanicBorderColor();
@@ -1489,9 +1493,9 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
+    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
 //    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+//    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1502,10 +1506,10 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-//                containsAll(text, "destroy less attack")
+                containsAll(text, "destroy less attack")
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
-                isDrop4(code, cost) && attack>3 && health<3 && cardType == MINION
+//                && cardType == MINION
 //                && isSpellGen(code)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -1535,6 +1539,7 @@ void SynergyHandler::testSynergies()
         Q_UNUSED(cardType);
         Q_UNUSED(text);
         Q_UNUSED(attack);
+        Q_UNUSED(health);
         Q_UNUSED(cost);
         Q_UNUSED(mechanics);
         Q_UNUSED(referencedTags);
@@ -1637,9 +1642,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isSpellAllSyn(code, text))           mec<<"spellAllSyn";
     if(isWeaponAllSyn(code, text))          mec<<"weaponAllSyn";
 
-    if(isDrop2(code, cost))                 mec<<"drop2";
-    if(isDrop3(code, cost))                 mec<<"drop3";
-    if(isDrop4(code, cost))                 mec<<"drop4";
+    if(isDrop2(code, cost, attack, health)) mec<<"drop2";
+    if(isDrop3(code, cost, attack, health)) mec<<"drop3";
+    if(isDrop4(code, cost, attack, health)) mec<<"drop4";
 
     if(isDiscoverGen(code, mechanics, referencedTags))                      mec<<"discover";
     if(isDrawGen(code, text))                                               mec<<"drawGen";
@@ -2729,37 +2734,49 @@ bool SynergyHandler::isOutcast(const QString &code, const QJsonArray &mechanics)
     }
     return false;
 }
-bool SynergyHandler::isDrop2(const QString &code, int cost)
+bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("drop2");
     }
-    else if(cost == 2)
+    else if(cost == 2 && !(
+                (attack==1 && health<4) ||
+                (attack==2 && health==1)
+                ))
     {
         return true;
     }
     return false;
 }
-bool SynergyHandler::isDrop3(const QString &code, int cost)
+bool SynergyHandler::isDrop3(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("drop3");
     }
-    else if(cost == 3)
+    else if(cost == 3 && !(
+                (attack==1 && health<7) ||
+                (attack==2 && health<4) ||
+                (attack==3 && health<2)
+                ))
     {
         return true;
     }
     return false;
 }
-bool SynergyHandler::isDrop4(const QString &code, int cost)
+bool SynergyHandler::isDrop4(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("drop4");
     }
-    else if(cost == 4)
+    else if(cost == 4 && !(
+                (attack==1) ||
+                (attack==2 && health<5) ||
+                (attack==3 && health<5) ||
+                (attack==4 && health<3)
+                ))
     {
         return true;
     }
@@ -3791,8 +3808,9 @@ REGLAS
         ya que lo que mata es un drop3 enemigo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
         1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
-    Stats minimos sin ningun extra en tempo o robo:
-        Drop2 (2/1) - Drop3 (3/2) - Drop4 (4/3+, 3/5+, 2/5+, no 1/x)
+    Stats minimos sin ningun extra en tempo o robo o rush o reach, considerar que las condiciones con cartas especificas no se cumplen,
+        como secretos, razas, hechizos, quizas holding.
+        Drop2 (Derrota 2/2 --> 2/2+, 1/4+) - Drop3 (Derrota 3/3 --> 3/2+, 2/4+, 1/7+) - Drop4 (Derrota 4/4 --> 4/3+, 3/5+, 2/5+, no 1/x)
         Un 1/1 que roba no es un drop2, demasiada perdida de stats. Un 1/1 que te da un lackey si es drop2, ya que el lackey es tempo futuro.
         Un 2/2 que descubre es un drop3, justo en stats.
         Un 3/4 que roba una carta es un drop4 ya que es eficiente de jugar en el turno 4.

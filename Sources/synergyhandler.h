@@ -52,9 +52,9 @@ public:
     int getManaCounterCount();
     void setHidden(bool hide);
 
-    bool isDrop2(const QString &code, int cost);
-    bool isDrop3(const QString &code, int cost);
-    bool isDrop4(const QString &code, int cost);
+    bool isDrop2(const QString &code, int cost, int attack, int health);
+    bool isDrop3(const QString &code, int cost, int attack, int health);
+    bool isDrop4(const QString &code, int cost, int attack, int health);
 
 private:
     void createDraftItemCounters();

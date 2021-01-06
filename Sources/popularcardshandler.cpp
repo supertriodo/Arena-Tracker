@@ -165,6 +165,8 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
     {
         QList<CardClass> cardClass = Utility::getClassFromCode(code);
         int cost = std::min(Utility::getCardAttribute(code, "cost").toInt(), 10);
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
 
         if(cost>=2)
         {
@@ -174,8 +176,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardsPickratesMap[i][code]>=10)
                     {
-                        if(cost>4 || synergyHandler->isDrop2(code, cost) ||
-                            synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
+                        if(cost>4 || synergyHandler->isDrop2(code, cost, attack, health) ||
+                            synergyHandler->isDrop3(code, cost, attack, health) ||
+                            synergyHandler->isDrop4(code, cost, attack, health))
                         {
                             cardsByPickrate[i][cost-2].append(code);
                         }
@@ -188,8 +191,9 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
                 {
                     if(cardClassItem<NUM_HEROS && cardsPickratesMap[cardClassItem][code]>=10)
                     {
-                        if(cost>4 || synergyHandler->isDrop2(code, cost) ||
-                            synergyHandler->isDrop3(code, cost) || synergyHandler->isDrop4(code, cost))
+                        if(cost>4 || synergyHandler->isDrop2(code, cost, attack, health) ||
+                            synergyHandler->isDrop3(code, cost, attack, health) ||
+                            synergyHandler->isDrop4(code, cost, attack, health))
                         {
                             cardsByPickrate[cardClassItem][cost-2].append(code);
                         }
