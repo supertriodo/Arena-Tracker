@@ -732,7 +732,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
-    //TokenCard es synergia debil
+    //TokenCard es sinergia debil
     //Evitamos que aparezcan token cards synergies en cada combo card, es sinergia debil
     if(isTokenCardGen(code, cost, mechanics, text))                         mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
@@ -1493,9 +1493,9 @@ void SynergyHandler::testSynergies()
     initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
+//    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
 //    for(const QString &code: Utility::getStandardCodes())
-//    for(const QString &code: Utility::getWildCodes())
+    for(const QString &code: Utility::getWildCodes())
     {
         DeckCard deckCard(code);
         CardType cardType = deckCard.getType();
@@ -1506,11 +1506,11 @@ void SynergyHandler::testSynergies()
         QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
         QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
         if(
-                containsAll(text, "destroy less attack")
+//                containsAll(text, "destroy less attack")
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
 //                && cardType == MINION
-//                && isSpellGen(code)
+                isPingGen(code, mechanics, referencedTags, text, cardType, attack)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -1528,7 +1528,7 @@ void SynergyHandler::testSynergies()
             debugSynergiesCode(code, ++num);
 //            qDebug()<<mechanics<<endl<<referencedTags;
 
-            if(num>0 && num<152)
+            if(num>65 && num<200)
             {
                 QDesktopServices::openUrl(QUrl(
                     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -3271,7 +3271,7 @@ bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
     //text.contains("play") && text.contains("card") && !text.contains("player")
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("tokenCardSyn") || synergyCodes[code].contains("comboGen");
+        return synergyCodes[code].contains("tokenCardSyn");// || synergyCodes[code].contains("comboGen");
     }
     else if(text.contains("play") && text.contains("card") && !text.contains("player"))
     {
@@ -3757,7 +3757,8 @@ REGLAS
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles. Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
-+spell, tokenCard, combo y return son synergias debiles por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
++spell, tokenCard, combo y return son sinergia debil por eso solo las mostramos en un sentido,
+    para evitar mostrarlas continuamente en todos lados. Update, solo ocultamos return.
 +tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
@@ -3772,13 +3773,13 @@ REGLAS
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
-+pingGen, damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
++pingGen: tienen como proposito eliminar divineShield y rematar, deben ser proactivos, no random ni deathrattle.
++damageMinionsGen y destroyGen deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
 +aoeGen puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen (ni siquiera token rush),
     a no ser que haga mucho dano a uno y poco a los demas, o que tenga 2 modos.
-+pingGen: tienen como proposito eliminar divineShield y rematar, deben ser baratos en coste.
-+pingGen: Todos los bombing/missiles cards son pingGen, si tienen los suficientes misiles aoeGen (cinderstorm) pero nunca reachGen ya que no son fiables.
++aoeGen: Los bombing/missiles no son pingGen, si tienen los suficientes misiles/bombs (3) aoeGen pero nunca reachGen ya que no son fiables.
 +spellDamageSyn es para aoe o damage a 2 objetivos
 +No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
