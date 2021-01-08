@@ -1687,9 +1687,8 @@ void MainWindow::configureTwitchDialogs()
                    "<br><br>1) Get an OAuth Password by login with your twitch account."
                    " e.g. oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                    "<br><br>2) Set your twitch username."
-                   "<br><br>3) Set the tag your chat will use to vote cards. The default one is !pick, "
-                   "this means chat will type !pick1, !pick2 or !pick3 to vote for cards 1, 2 or 3. "
-                   "If left empty, chat will vote typing 1, 2 or 3.");
+                   "<br><br>3) Set the tag your chat will use to vote cards. The default one is empty, "
+                   "this means chat will type 1, 2 or 3 to vote for cards 1, 2 or 3.");
     msgBox.setWindowTitle(tr("Twitch Chat Vote"));
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setIcon(QMessageBox::Information);

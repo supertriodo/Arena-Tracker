@@ -14,7 +14,7 @@ bool TwitchHandler::loadSettings()
 
     TwitchHandler::oauth = settings.value("twitchOauth", QString("oauth:xxxxxxxxxx")).toString();
     TwitchHandler::channel = settings.value("twitchChannel", QString("")).toString();
-    TwitchHandler::pickTag = settings.value("twitchPickTag", QString("!pick")).toString();
+    TwitchHandler::pickTag = settings.value("twitchPickTag", QString("")).toString();
 
     TwitchHandler::wellConfigured = false;
 
