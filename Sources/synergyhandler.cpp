@@ -1510,7 +1510,7 @@ void SynergyHandler::testSynergies()
 //                mechanics.contains(QJsonValue("OUTCAST"))
 //                referencedTags.contains(QJsonValue("OUTCAST"))
 //                && cardType == MINION
-                isPingGen(code, mechanics, referencedTags, text, cardType, attack)
+                isAoeGen(code, text) && isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -1528,7 +1528,7 @@ void SynergyHandler::testSynergies()
             debugSynergiesCode(code, ++num);
 //            qDebug()<<mechanics<<endl<<referencedTags;
 
-            if(num>65 && num<200)
+            if(num>0 && num<100)
             {
                 QDesktopServices::openUrl(QUrl(
                     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -1941,7 +1941,7 @@ bool SynergyHandler::isPingGen(const QString &code, const QJsonArray &mechanics,
     else if(text.contains("deal") && text.contains("1 damage") &&
             !text.contains("hero"))
     {
-        if(mechanics.contains("DEATHRATTLE") && text.contains("random"))    return false;
+        if(mechanics.contains("DEATHRATTLE") || text.contains("random"))    return false;
         else return true;
     }
     else if(attack != 1)  return false;
