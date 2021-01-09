@@ -59,6 +59,7 @@ protected:
     QPixmap drawCustomCard(QString customCode, QString customText);
     QColor getRarityColor();
     QPixmap resizeCardHeight(QPixmap &canvas);
+    void disablePixmap(QPixmap &canvas);
 
 public:
     void draw();

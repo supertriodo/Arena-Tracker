@@ -137,9 +137,22 @@ void DeckCard::draw()
     }
 
 
-    if(remaining == 0)      this->listItem->setIcon(QIcon(QIcon(canvas).pixmap(
-                                                              canvas.size(), QIcon::Disabled, QIcon::On)));
-    else                    this->listItem->setIcon(QIcon(canvas));
+    if(remaining == 0)  disablePixmap(canvas);
+    this->listItem->setIcon(QIcon(canvas));
+}
+
+
+void DeckCard::disablePixmap(QPixmap &canvas)
+{
+    QPainter painter;
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        painter.fillRect(canvas.rect(), QBrush(QColor(0,0,0,200)));
+    painter.end();
 }
 
 
