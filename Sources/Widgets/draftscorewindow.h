@@ -8,7 +8,7 @@
 #include "scorebutton.h"
 #include "twitchbutton.h"
 #include "../utility.h"
-#include "../Cards/deckcard.h"
+#include "../Cards/synergycard.h"
 
 
 #define MARGIN 10
@@ -41,7 +41,7 @@ private:
     ScoreButton *scoresPushButton3[3];
     TwitchButton *twitchButton[3];
     MoveListWidget *synergiesListWidget[3];
-    QList<DeckCard> synergiesDeckCardLists[3];
+    QList<SynergyCard> synergyCardLists[3];
     SynergyMotion synergyMotions[3];
     int scoreWidth;
     int maxSynergyHeight;

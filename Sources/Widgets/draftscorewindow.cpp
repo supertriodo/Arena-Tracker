@@ -18,7 +18,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
     move(rectScreen.x() + rect.x() - MARGIN - midCards/2,
          static_cast<int>(rectScreen.y() + rect.y() - MARGIN + 2.65*sizeCard.height()));
-    int synergyWidth = this->width()/3-10;  //List Widget need 10 px (maybe 11px) extra space more than the sizeCard.
+    int synergyWidth = this->width()/3.5;  //List Widget need 25 px extra space more than the sizeCard.
+    SynergyCard::setSynergyWidth(synergyWidth);
 
 
     QWidget *centralWidget = new QWidget(this);
@@ -144,7 +145,7 @@ DraftScoreWindow::~DraftScoreWindow()
     for(int i=0; i<3; i++)
     {
         synergiesListWidget[i]->clear();
-        synergiesDeckCardLists[i].clear();
+        synergyCardLists[i].clear();
     }
 }
 
@@ -337,22 +338,22 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, Q
 //    for(const QString &code: codes) synergies[code]=1;}
 
     synergiesListWidget[posCard]->clear();
-    synergiesDeckCardLists[posCard].clear();
+    synergyCardLists[posCard].clear();
 
-    QMap<int,DeckCard> deckCardMap;
+    QMap<int,SynergyCard> synergyCardMap;
     for(const QString &code: synergies.keys())
     {
         int total = synergies[code];
-        DeckCard deckCard(code);
-        deckCard.total = deckCard.remaining = total;
-        deckCardMap.insertMulti(deckCard.getCost(), deckCard);
+        SynergyCard synergyCard(code);
+        synergyCard.total = synergyCard.remaining = total;
+        synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
     }
 
-    for(DeckCard &deckCard: deckCardMap.values())
+    for(SynergyCard &synergyCard: synergyCardMap.values())
     {
-        deckCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
-        deckCard.draw();
-        synergiesDeckCardLists[posCard].append(deckCard);
+        synergyCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
+        synergyCard.draw();
+        synergyCardLists[posCard].append(synergyCard);
     }
 
 
@@ -547,7 +548,7 @@ void DraftScoreWindow::hideSynergies()
     {
         synergiesListWidget[index]->hide();
         synergiesListWidget[index]->clear();
-        synergiesDeckCardLists[index].clear();
+        synergyCardLists[index].clear();
     }
 }
 
@@ -556,9 +557,9 @@ void DraftScoreWindow::redrawSynergyCards()
 {
     for(int i=0; i<3; i++)
     {
-        for(DeckCard &deckCard: synergiesDeckCardLists[i])
+        for(SynergyCard &synergyCard: synergyCardLists[i])
         {
-            deckCard.draw();
+            synergyCard.draw();
         }
     }
     resizeSynergyList();
@@ -649,7 +650,7 @@ void DraftScoreWindow::findSynergyCardEntered(QListWidgetItem * item)
 
     synergyMotions[indexList].moving = false;
 
-    QString code = synergiesDeckCardLists[indexList][listWidget->row(item)].getCode();
+    QString code = synergyCardLists[indexList][listWidget->row(item)].getCode();
 
     QRect rectCard = listWidget->visualItemRect(item);
     QPoint posCard = listWidget->mapToGlobal(rectCard.topLeft());
