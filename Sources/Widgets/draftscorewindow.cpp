@@ -131,7 +131,9 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     }
 
     hideSynergies();
-    maxSynergyHeight = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.2*scoreWidth;
+    maxSynergyHeight1Row = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 1.7*scoreWidth;
+    maxSynergyHeight2Row = rectScreen.y() + rectScreen.height() - this->y() - 2*MARGIN - 2.2*scoreWidth;
+    maxSynergyHeight = maxSynergyHeight2Row;
     scores2Rows = true;
     showLF = showHSR = showHA = showTwitch = false;
     setCentralWidget(centralWidget);
@@ -182,6 +184,9 @@ void DraftScoreWindow::checkScoresSpace()
     if(scores2Rows)
     {
         emit pDebug("Scores - 2 rows");
+        maxSynergyHeight = maxSynergyHeight2Row;
+        resizeSynergyList();
+
         for(int i=0; i<3; i++)
         {
             Utility::clearLayout(horLayoutScores[i], false, false);
@@ -197,6 +202,9 @@ void DraftScoreWindow::checkScoresSpace()
     else
     {
         emit pDebug("Scores - 1 row");
+        maxSynergyHeight = maxSynergyHeight1Row;
+        resizeSynergyList();
+
         for(int i=0; i<3; i++)
         {
             Utility::clearLayout(horLayoutScores[i], false, false);
@@ -562,7 +570,6 @@ void DraftScoreWindow::redrawSynergyCards()
             synergyCard.draw();
         }
     }
-    resizeSynergyList();
 }
 
 

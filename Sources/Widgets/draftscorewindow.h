@@ -44,7 +44,7 @@ private:
     QList<SynergyCard> synergyCardLists[3];
     SynergyMotion synergyMotions[3];
     int scoreWidth;
-    int maxSynergyHeight;
+    int maxSynergyHeight, maxSynergyHeight1Row, maxSynergyHeight2Row;
     bool scores2Rows;
     bool showHA, showLF, showHSR, showTwitch;
 
