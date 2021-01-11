@@ -595,6 +595,8 @@ void DraftHandler::createTwitchHandler()
                 this, SLOT(twitchHandlerConnectionOk(bool)));
         connect(twitchHandler, SIGNAL(voteUpdate(int,int,int,QString)),
                 this, SLOT(twitchHandlerVoteUpdate(int,int,int,QString)));
+        connect(twitchHandler, SIGNAL(showMessageProgressBar(QString,int)),
+                this, SIGNAL(showMessageProgressBar(QString,int)));
         connect(twitchHandler, SIGNAL(pLog(QString)),
                 this, SIGNAL(pLog(QString)));
         connect(twitchHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),

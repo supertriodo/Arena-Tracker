@@ -329,7 +329,7 @@ private slots:
     void calculateMinimumWidth();
     void changingTabUpdateDraftSize();
     void setPremium(bool premium);
-    void twitchTesterConnectionOk(bool ok);
+    void twitchTesterConnectionOk(bool ok, bool setup = true);
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
     void processPopularCardsHandlerPickrates();

@@ -15,8 +15,8 @@ bool TwitchHandler::loadSettings()
     TwitchHandler::oauth = settings.value("twitchOauth", QString("oauth:xxxxxxxxxx")).toString();
     TwitchHandler::channel = settings.value("twitchChannel", QString("")).toString();
     TwitchHandler::pickTag = settings.value("twitchPickTag", QString("")).toString();
-
-    TwitchHandler::wellConfigured = false;
+    TwitchHandler::wellConfigured = settings.value("twitchWellConfigured",
+        !(TwitchHandler::oauth.isEmpty() || TwitchHandler::channel.isEmpty())).toBool();
 
     return !(TwitchHandler::oauth.isEmpty() || TwitchHandler::channel.isEmpty());
 }
@@ -46,6 +46,15 @@ void TwitchHandler::setPickTag(QString pickTag)
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     settings.setValue("twitchPickTag", pickTag);
+}
+
+
+void TwitchHandler::setWellConfigured(bool wellConfigured)
+{
+    TwitchHandler::wellConfigured = wellConfigured;
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("twitchWellConfigured", wellConfigured);
 }
 
 
@@ -89,7 +98,8 @@ TwitchHandler::TwitchHandler(QObject *parent) : QObject(parent)
 {
     reset();
     this->connectionOk_ = false;
-    QTimer::singleShot(10000, this, SLOT(endTestConnection()));
+    this->attempts = 1;
+    QTimer::singleShot(ATTEMP_DELAY, this, SLOT(endTestConnection()));
 
     connect(&twitchSocket, SIGNAL(connected()),
                 this, SLOT(connected()));
@@ -107,8 +117,18 @@ void TwitchHandler::endTestConnection()
 {
     if(!connectionOk_)
     {
-        TwitchHandler::wellConfigured = false;
-        emit connectionOk(false);
+        if(attempts>=MAX_ATTEMPTS)
+        {
+            emit showMessageProgressBar("Twitch failed");
+            emit connectionOk(false);
+        }
+        else
+        {
+            attempts++;
+            emit showMessageProgressBar("Twitch retry " + QString::number(attempts), 15000);
+            twitchSocket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
+            QTimer::singleShot(ATTEMP_DELAY, this, SLOT(endTestConnection()));
+        }
     }
 }
 
@@ -123,6 +143,7 @@ void TwitchHandler::reset()
 
 void TwitchHandler::connected()
 {
+    if(attempts==1) emit showMessageProgressBar("Twitch connecting...", 20000);
     connect(&twitchSocket, SIGNAL(textMessageReceived(QString)),
                 this, SLOT(textMessageReceived(QString)));
     twitchSocket.sendTextMessage("PASS " + TwitchHandler::oauth);
@@ -152,9 +173,12 @@ void TwitchHandler::textMessageReceived(QString message)
     //TESTING CONNECTION
     if(message.contains(":Welcome, GLHF!"))
     {
-        TwitchHandler::wellConfigured = true;
-        this->connectionOk_ = true;
-        emit connectionOk();
+        if(!connectionOk_)
+        {
+            this->connectionOk_ = true;
+            emit showMessageProgressBar("Twitch OK");
+            emit connectionOk();
+        }
         return;
     }
 

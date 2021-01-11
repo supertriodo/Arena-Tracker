@@ -1761,14 +1761,14 @@ void MainWindow::deleteTwitchTester()
 }
 
 
-void MainWindow::twitchTesterConnectionOk(bool ok)
+void MainWindow::twitchTesterConnectionOk(bool ok, bool setup)
 {
     ui->configCheckVotes->setEnabled(ok);
     ui->configLabelVotesStatus->setEnabled(true);
     ui->configLabelVotesStatus->setPixmap(ok?ThemeHandler::winFile():ThemeHandler::loseFile());
     if(ok)
     {
-        premiumHandler->checkTwitchSent();
+        if(setup)   premiumHandler->checkTwitchSent();
     }
     else
     {
@@ -1776,7 +1776,11 @@ void MainWindow::twitchTesterConnectionOk(bool ok)
         updateTwitchChatVotes(false);
     }
 
-    deleteTwitchTester();
+    if(setup)
+    {
+        TwitchHandler::setWellConfigured(ok);
+        deleteTwitchTester();
+    }
 }
 
 
@@ -1790,6 +1794,12 @@ void MainWindow::checkTwitchConnection()
     twitchTester = new TwitchHandler(this);
     connect(twitchTester, SIGNAL(connectionOk(bool)),
             this, SLOT(twitchTesterConnectionOk(bool)));
+    connect(twitchTester, SIGNAL(showMessageProgressBar(QString,int)),
+            this, SLOT(showMessageProgressBar(QString,int)));
+    connect(twitchTester, SIGNAL(pLog(QString)),
+            this, SLOT(pLog(QString)));
+    connect(twitchTester, SIGNAL(pDebug(QString,DebugLevel,QString)),
+            this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
 
 
@@ -1835,7 +1845,7 @@ void MainWindow::readSettings()
                   maxGamesLog, draftNormalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
-    if(TwitchHandler::loadSettings())   checkTwitchConnection();
+    if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
 
     this->setAttribute(Qt::WA_TranslucentBackground, transparency!=Framed);
     this->showWindowFrame(transparency == Framed);
