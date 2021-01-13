@@ -714,7 +714,7 @@ QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
     {
         eff = new QGraphicsOpacityEffect(widget);
         widget->setGraphicsEffect(eff);
-        eff->setOpacity(0);
+        eff->setOpacity(1);
     }
 
     if(eff->opacity() < 1)

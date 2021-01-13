@@ -396,6 +396,12 @@ void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, const QStrin
     QLabel *label = new QLabel();
     label->setPixmap(createMechanicIconPixmap(mechanicIcon, count, dropBorderColor));
     label->setToolTip(getMechanicTooltip(mechanicIcon));
+
+    //Opacity effect
+    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(label);
+    effect->setOpacity(0);
+    label->setGraphicsEffect(effect);
+
     Utility::fadeInWidget(label);
     label->show();
     if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, posMech%2, posMech/2);
