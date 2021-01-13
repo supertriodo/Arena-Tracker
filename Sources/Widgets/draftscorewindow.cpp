@@ -293,7 +293,11 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
             scoresPushButton2[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
-            if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+            if(i==0)
+            {
+                if(animation != nullptr)    connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
+                else                        showSynergies();
+            }
         }
     }
 
@@ -521,10 +525,12 @@ void DraftScoreWindow::hideScores(bool quick)
             Utility::fadeOutWidget(twitchButton[i]);
             Utility::fadeOutLayout(gridLayoutMechanics[i]);
 
-            if(i==0 && animation != nullptr)
+            if(i==0)
             {
-                connect(animation, SIGNAL(finished()), this, SLOT(clearMechanics()));
-                connect(animation, SIGNAL(finished()), this, SLOT(update()));
+                if(animation != nullptr)    connect(animation, SIGNAL(finished()), this, SLOT(clearMechanics()));
+                //Comentado pq en caso de no ocultar las scores prefiero dejar visibles las mechanics.
+                //Se hara el clear al crear las mechanics del siguiente bucket.
+                //else    clearMechanics();
             }
         }
     }
@@ -540,6 +546,7 @@ void DraftScoreWindow::clearMechanics()
     {
         Utility::clearLayout(gridLayoutMechanics[index], true, false);
     }
+    update();
 }
 
 
