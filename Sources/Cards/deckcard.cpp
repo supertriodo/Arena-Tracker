@@ -248,7 +248,8 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         {
             font.setPixelSize(14);//10pt
             painter.setPen(QPen(BLACK));
-            painter.setBrush(QColor(ThemeHandler::themeColor1()));
+            QColor themeColor1 = QColor(ThemeHandler::themeColor1());
+            painter.setBrush(themeColor1.isValid()?themeColor1:WHITE);
             Utility::drawShadowText(painter, font, "Unknown", 34, 20, false);
         }
         else
