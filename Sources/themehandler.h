@@ -20,6 +20,7 @@ private:
     static QString bgWidgets_;
     static QString bgTabsColor_, hoverTabsColor_, selectedTabsColor_;
     static QString bgTopButtonsColor_, hoverTopButtonsColor_;
+    static QString synergyTagColor_;
     static QString fgMenuColor_, bgMenuColor_;
     static QString bgSelectedItemMenuColor_, fgSelectedItemMenuColor_;
     static int borderDecksWidth_;
@@ -87,6 +88,7 @@ public:
     static QString selectedTabsColor();
     static QString bgTopButtonsColor();
     static QString hoverTopButtonsColor();
+    static QString synergyTagColor();
     static QString fgMenuColor();
     static QString bgSelectedItemMenuColor();
     static QString fgSelectedItemMenuColor();

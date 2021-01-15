@@ -13,6 +13,7 @@ QString ThemeHandler::themeColor2_;
 QString ThemeHandler::bgWidgets_;
 QString ThemeHandler::bgTabsColor_, ThemeHandler::hoverTabsColor_, ThemeHandler::selectedTabsColor_;
 QString ThemeHandler::bgTopButtonsColor_, ThemeHandler::hoverTopButtonsColor_;
+QString ThemeHandler::synergyTagColor_;
 QString ThemeHandler::fgMenuColor_, ThemeHandler::bgMenuColor_;
 QString ThemeHandler::bgSelectedItemMenuColor_, ThemeHandler::fgSelectedItemMenuColor_;
 int ThemeHandler::borderDecksWidth_;
@@ -127,6 +128,12 @@ QString ThemeHandler::bgTopButtonsColor()
 QString ThemeHandler::hoverTopButtonsColor()
 {
     return hoverTopButtonsColor_;
+}
+
+
+QString ThemeHandler::synergyTagColor()
+{
+    return synergyTagColor_;
 }
 
 
@@ -1020,6 +1027,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
     bgDraftMechanicsHelpDropsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpDropsFile");
     fgDraftMechanicsColor_ = jsonObject.value("fgDraftMechanicsColor").toString("");
+    synergyTagColor_ = jsonObject.value("synergyTagColor").toString("");
     minionsCounterFile_ = loadThemeFile(themePath, jsonObject, "minionsCounterFile");
     spellsCounterFile_ = loadThemeFile(themePath, jsonObject, "spellsCounterFile");
     weaponsCounterFile_ = loadThemeFile(themePath, jsonObject, "weaponsCounterFile");
@@ -1320,4 +1328,5 @@ void ThemeHandler::defaultEmptyValues()
     if(bgDraftMechanicsHelpFile_.isEmpty())         bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
     if(bgDraftMechanicsHelpDropsFile_.isEmpty())    bgDraftMechanicsHelpDropsFile_ = ":/Images/bgDraftMechanicsHelpDrops.png";
     if(fgDraftMechanicsColor_.isEmpty())fgDraftMechanicsColor_ = fgColor_;
+    if(synergyTagColor_.isEmpty())      synergyTagColor_ = themeColor1_;
 }
