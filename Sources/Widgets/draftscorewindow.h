@@ -59,6 +59,7 @@ private:
     bool paintDropBorder(QPainter &painter, const QString &mechanicIcon, const MechanicBorderColor dropBorderColor);
     void reorderMechanics();
     void createMechanicIcon(int posCard, int posMech, const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
+    void groupSynergyTags(QMap<QString, QMap<QString, int> > &synergyTagMap);
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod, int includedDecks1, int includedDecks2, int includedDecks3);
@@ -67,7 +68,7 @@ public:
     void showTwitchScores(bool show=true);
     void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void redrawSynergyCards();
-    void setSynergies(int posCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor);
+    void setSynergies(int posCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor);
     void setNormalizedLF(bool value);
     void setTwitchScores(int vote1, int vote2, int vote3, QString username);
 

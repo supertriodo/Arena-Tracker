@@ -233,7 +233,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
 
             if(total > 1)
             {
-                font.setPixelSize(22);//16pt
+                font.setPixelSize(22);
                 Utility::drawShadowText(painter, font, QString::number(total), 202, 19, true);
             }
             else
@@ -246,7 +246,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         //Name and mana
         if(name == "unknown")
         {
-            font.setPixelSize(14);//10pt
+            font.setPixelSize(15);
             painter.setPen(QPen(BLACK));
             QColor themeColor1 = QColor(ThemeHandler::themeColor1());
             painter.setBrush(themeColor1.isValid()?themeColor1:WHITE);
@@ -256,14 +256,14 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         {
             //Name
             int fontSize = 15;
-            font.setPixelSize(fontSize);//11pt
+            font.setPixelSize(fontSize);
 
             QFontMetrics fm(font);
             int textWide = fm.width(name);
             while(textWide>maxNameLong)
             {
                 fontSize--;
-                font.setPixelSize(fontSize);//<11pt
+                font.setPixelSize(fontSize);
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
             }

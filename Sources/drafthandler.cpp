@@ -1280,11 +1280,11 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         {
             for(int i=0; i<3; i++)
             {
-                QMap<QString, int> synergies;
+                QMap<QString, QMap<QString, int>> synergyTagMap;
                 QMap<QString, int> mechanicIcons;
                 MechanicBorderColor dropBorderColor;
-                synergyHandler->getSynergies(bestCards[i], synergies, mechanicIcons, dropBorderColor);
-                draftScoreWindow->setSynergies(i, synergies, mechanicIcons, dropBorderColor);
+                synergyHandler->getSynergies(bestCards[i], synergyTagMap, mechanicIcons, dropBorderColor);
+                draftScoreWindow->setSynergies(i, synergyTagMap, mechanicIcons, dropBorderColor);
             }
         }
     }

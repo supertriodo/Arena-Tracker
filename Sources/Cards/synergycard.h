@@ -12,10 +12,16 @@ public:
 
 //Variables
 private:
+    QString synergyTag;
+
     static int synergyWidth;
 
 //Metodos
+private:
+    void drawSynergyTag(QPixmap &canvas);
+
 public:
+    void setSynergyTag(QString synergyTag);
     void draw();
 
     static void setSynergyWidth(int value);

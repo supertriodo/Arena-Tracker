@@ -3,7 +3,7 @@
 #include <QtWidgets>
 
 DraftDropCounter::DraftDropCounter(QObject *parent, QHBoxLayout *hLayout, int targetDrops, QPixmap pixmap, bool iconHover) :
-    DraftItemCounter(parent, hLayout, pixmap, iconHover)
+    DraftItemCounter(parent, "", hLayout, pixmap, iconHover)
 {
     //Constructor MainWindow
     init(targetDrops);

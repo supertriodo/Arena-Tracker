@@ -11,9 +11,10 @@ class DraftItemCounter : public QObject
 {
     Q_OBJECT
 public:
-    DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
-    DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap, int iconWidth, bool iconHover=true);
-    DraftItemCounter(QObject *parent);
+    DraftItemCounter(QObject *parent, QString synergyTag, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
+    DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
+                     int iconWidth, bool iconHover=true);
+    DraftItemCounter(QObject *parent, QString synergyTag);
     ~DraftItemCounter();
 
 //Variables
@@ -22,6 +23,7 @@ private:
     int counter;
     QList<DeckCard> deckCardList;
     QMap<QString, int> codeMap, codeSynMap;
+    QString synergyTag;
 
 protected:
     HoverLabel *labelIcon;
@@ -37,9 +39,9 @@ public:
     void increase(int numIncrease, int draftedCardsCount);
     void increase(const QString &code);
     bool insertCode(const QString code, QMap<QString, int> &synergies);
-    void insertCards(QMap<QString, int> &synergies, QString avoidCode="");
+    void insertCards(QMap<QString, QMap<QString, int> > &synergyTagMap, QString avoidCode="");
     void increaseSyn(const QString &code);
-    void insertSynCards(QMap<QString, int> &synergies);
+    void insertSynCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
     int count();
     QMap<QString, int> &getCodeMap();
     void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);

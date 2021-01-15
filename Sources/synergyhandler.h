@@ -42,7 +42,7 @@ public:
                         QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
-    void getSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
+    void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     void initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
@@ -71,12 +71,12 @@ private:
                                 QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void updateStatsCards(DeckCard &deckCard);
 
-    void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
     void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
-    void getRaceSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
-    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, int> &synergies, QMap<QString, int> &mechanicIcons);
+    void getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
-    void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
+    void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
 
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code, const QString &text);

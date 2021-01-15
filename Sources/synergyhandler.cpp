@@ -25,11 +25,11 @@ void SynergyHandler::createDraftItemCounters()
 
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()));
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()));
-    cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()));
-    cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", horLayoutCardTypes, QPixmap(ThemeHandler::minionsCounterFile()));
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", horLayoutCardTypes, QPixmap(ThemeHandler::spellsCounterFile()));
+    cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this, "Spell");
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", horLayoutCardTypes, QPixmap(ThemeHandler::weaponsCounterFile()));
+    cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this, "Weapon");
 
     connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
@@ -45,7 +45,7 @@ void SynergyHandler::createDraftItemCounters()
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    manaCounter = new DraftItemCounter(this, horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
+    manaCounter = new DraftItemCounter(this, "Mana", horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
     dropCounters[V_DROP2] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_2, QPixmap(ThemeHandler::drop2CounterFile()));
@@ -67,34 +67,34 @@ void SynergyHandler::createDraftItemCounters()
             this, SIGNAL(itemLeave()));
 
     raceCounters = new DraftItemCounter *[V_NUM_RACES];
-    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this);
-    raceCounters[V_BEAST] = new DraftItemCounter(this);
-    raceCounters[V_MURLOC] = new DraftItemCounter(this);
-    raceCounters[V_DRAGON] = new DraftItemCounter(this);
-    raceCounters[V_PIRATE] = new DraftItemCounter(this);
-    raceCounters[V_MECHANICAL] = new DraftItemCounter(this);
-    raceCounters[V_DEMON] = new DraftItemCounter(this);
-    raceCounters[V_TOTEM] = new DraftItemCounter(this);
+    raceCounters[V_ELEMENTAL] = new DraftItemCounter(this, "Elemental");
+    raceCounters[V_BEAST] = new DraftItemCounter(this, "Beast");
+    raceCounters[V_MURLOC] = new DraftItemCounter(this, "Murloc");
+    raceCounters[V_DRAGON] = new DraftItemCounter(this, "Dragon");
+    raceCounters[V_PIRATE] = new DraftItemCounter(this, "Pirate");
+    raceCounters[V_MECHANICAL] = new DraftItemCounter(this, "Mech");
+    raceCounters[V_DEMON] = new DraftItemCounter(this, "Demon");
+    raceCounters[V_TOTEM] = new DraftItemCounter(this, "Totem");
 
-    raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this);
-    raceCounters[V_BEAST_ALL] = new DraftItemCounter(this);
-    raceCounters[V_MURLOC_ALL] = new DraftItemCounter(this);
-    raceCounters[V_DRAGON_ALL] = new DraftItemCounter(this);
-    raceCounters[V_PIRATE_ALL] = new DraftItemCounter(this);
-    raceCounters[V_MECHANICAL_ALL] = new DraftItemCounter(this);
-    raceCounters[V_DEMON_ALL] = new DraftItemCounter(this);
-    raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this);
+    raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this, "Elemental");
+    raceCounters[V_BEAST_ALL] = new DraftItemCounter(this, "Beast");
+    raceCounters[V_MURLOC_ALL] = new DraftItemCounter(this, "Murloc");
+    raceCounters[V_DRAGON_ALL] = new DraftItemCounter(this, "Dragon");
+    raceCounters[V_PIRATE_ALL] = new DraftItemCounter(this, "Pirate");
+    raceCounters[V_MECHANICAL_ALL] = new DraftItemCounter(this, "Mech");
+    raceCounters[V_DEMON_ALL] = new DraftItemCounter(this, "Demon");
+    raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this, "Totem");
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::reachMechanicFile()));
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::tauntMechanicFile()));
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::survivalMechanicFile()));
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, horLayoutMechanics1, QPixmap(ThemeHandler::drawMechanicFile()));
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", horLayoutMechanics1, QPixmap(ThemeHandler::reachMechanicFile()));
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", horLayoutMechanics1, QPixmap(ThemeHandler::tauntMechanicFile()));
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", horLayoutMechanics1, QPixmap(ThemeHandler::survivalMechanicFile()));
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", horLayoutMechanics1, QPixmap(ThemeHandler::drawMechanicFile()));
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::pingMechanicFile()));
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::damageMechanicFile()));
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::destroyMechanicFile()));
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, horLayoutMechanics2, QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", horLayoutMechanics2, QPixmap(ThemeHandler::pingMechanicFile()));
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", horLayoutMechanics2, QPixmap(ThemeHandler::damageMechanicFile()));
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard removal", horLayoutMechanics2, QPixmap(ThemeHandler::destroyMechanicFile()));
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", horLayoutMechanics2, QPixmap(ThemeHandler::aoeMechanicFile()));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
@@ -130,61 +130,61 @@ void SynergyHandler::createDraftItemCounters()
     connect(mechanicCounters[V_REACH], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    mechanicCounters[V_DISCOVER] = new DraftItemCounter(this);
-    mechanicCounters[V_DRAW] = new DraftItemCounter(this);
-    mechanicCounters[V_TOYOURHAND] = new DraftItemCounter(this);
-    mechanicCounters[V_TAUNT] = new DraftItemCounter(this);
-    mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this);
-    mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this);
-    mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this);
-    mechanicCounters[V_SECRET] = new DraftItemCounter(this);
-    mechanicCounters[V_SECRET_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_FREEZE_ENEMY] = new DraftItemCounter(this);
-    mechanicCounters[V_DISCARD] = new DraftItemCounter(this);
-    mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this);
-    mechanicCounters[V_DEATHRATTLE_GOOD_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this);
-    mechanicCounters[V_BATTLECRY_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_SILENCE] = new DraftItemCounter(this);
-    mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this);
-    mechanicCounters[V_TOKEN] = new DraftItemCounter(this);
-    mechanicCounters[V_TOKEN_CARD] = new DraftItemCounter(this);
-    mechanicCounters[V_COMBO] = new DraftItemCounter(this);
-    mechanicCounters[V_WINDFURY_MINION] = new DraftItemCounter(this);
-    mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this);
-    mechanicCounters[V_ATTACK_NERF] = new DraftItemCounter(this);
-    mechanicCounters[V_HEALTH_BUFF] = new DraftItemCounter(this);
-    mechanicCounters[V_RETURN] = new DraftItemCounter(this);
-    mechanicCounters[V_STEALTH] = new DraftItemCounter(this);
-    mechanicCounters[V_SPELL_DAMAGE] = new DraftItemCounter(this);
-    mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this);
-    mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_ENRAGED] = new DraftItemCounter(this);
-    mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this);
-    mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this);
-    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this);
-    mechanicCounters[V_ARMOR] = new DraftItemCounter(this);
-    mechanicCounters[V_EVOLVE] = new DraftItemCounter(this);
-    mechanicCounters[V_SPAWN_ENEMY] = new DraftItemCounter(this);
-    mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this);
-    mechanicCounters[V_LIFESTEAL_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_EGG] = new DraftItemCounter(this);
-    mechanicCounters[V_DAMAGE_FRIENDLY_HERO] = new DraftItemCounter(this);
-    mechanicCounters[V_RUSH] = new DraftItemCounter(this);
-    mechanicCounters[V_RUSH_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_ECHO] = new DraftItemCounter(this);
-    mechanicCounters[V_ECHO_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_MAGNETIC] = new DraftItemCounter(this);
-    mechanicCounters[V_MAGNETIC_ALL] = new DraftItemCounter(this);
-    mechanicCounters[V_HAND_BUFF] = new DraftItemCounter(this);
-    mechanicCounters[V_ENEMY_DRAW] = new DraftItemCounter(this);
-    mechanicCounters[V_HERO_ATTACK] = new DraftItemCounter(this);
-    mechanicCounters[V_SPELL_BUFF] = new DraftItemCounter(this);
-    mechanicCounters[V_OTHER_CLASS] = new DraftItemCounter(this);
-    mechanicCounters[V_SILVER_HAND] = new DraftItemCounter(this);
-    mechanicCounters[V_TREANT] = new DraftItemCounter(this);
-    mechanicCounters[V_LACKEY] = new DraftItemCounter(this);
-    mechanicCounters[V_OUTCAST] = new DraftItemCounter(this);
+    mechanicCounters[V_DISCOVER] = new DraftItemCounter(this, "Discover");
+    mechanicCounters[V_DRAW] = new DraftItemCounter(this, "Draw");
+    mechanicCounters[V_TOYOURHAND] = new DraftItemCounter(this, "Gen Cards");
+    mechanicCounters[V_TAUNT] = new DraftItemCounter(this, "Taunt");
+    mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this, "Overload");
+    mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this, "Jade Golem");
+    mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this, "Hero Power");
+    mechanicCounters[V_SECRET] = new DraftItemCounter(this, "Secret");
+    mechanicCounters[V_SECRET_ALL] = new DraftItemCounter(this, "Secret");
+    mechanicCounters[V_FREEZE_ENEMY] = new DraftItemCounter(this, "Freeze");
+    mechanicCounters[V_DISCARD] = new DraftItemCounter(this, "Discard");
+    mechanicCounters[V_DEATHRATTLE] = new DraftItemCounter(this, "Deathrattle");
+    mechanicCounters[V_DEATHRATTLE_GOOD_ALL] = new DraftItemCounter(this, "Deathrattle");
+    mechanicCounters[V_BATTLECRY] = new DraftItemCounter(this, "Battlecry");
+    mechanicCounters[V_BATTLECRY_ALL] = new DraftItemCounter(this, "Battlecry");
+    mechanicCounters[V_SILENCE] = new DraftItemCounter(this, "Silence");
+    mechanicCounters[V_TAUNT_GIVER] = new DraftItemCounter(this, "Taunt");
+    mechanicCounters[V_TOKEN] = new DraftItemCounter(this, "Token");
+    mechanicCounters[V_TOKEN_CARD] = new DraftItemCounter(this, "Token Card");
+    mechanicCounters[V_COMBO] = new DraftItemCounter(this, "Combo");
+    mechanicCounters[V_WINDFURY_MINION] = new DraftItemCounter(this, "Windfury");
+    mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this, "Attack Buff");
+    mechanicCounters[V_ATTACK_NERF] = new DraftItemCounter(this, "Attack Nerf");
+    mechanicCounters[V_HEALTH_BUFF] = new DraftItemCounter(this, "Health Buff");
+    mechanicCounters[V_RETURN] = new DraftItemCounter(this, "Return");
+    mechanicCounters[V_STEALTH] = new DraftItemCounter(this, "Stealth");
+    mechanicCounters[V_SPELL_DAMAGE] = new DraftItemCounter(this, "Spell Damage");
+    mechanicCounters[V_DIVINE_SHIELD] = new DraftItemCounter(this, "Divine Shield");
+    mechanicCounters[V_DIVINE_SHIELD_ALL] = new DraftItemCounter(this, "Divine Shield");
+    mechanicCounters[V_ENRAGED] = new DraftItemCounter(this, "Enrage");
+    mechanicCounters[V_RESTORE_FRIENDLY_MINION] = new DraftItemCounter(this, "Heal");
+    mechanicCounters[V_RESTORE_TARGET_MINION] = new DraftItemCounter(this, "Heal");
+    mechanicCounters[V_RESTORE_FRIENDLY_HEROE] = new DraftItemCounter(this, "Heal");
+    mechanicCounters[V_ARMOR] = new DraftItemCounter(this, "Armor");
+    mechanicCounters[V_EVOLVE] = new DraftItemCounter(this, "Evolve");
+    mechanicCounters[V_SPAWN_ENEMY] = new DraftItemCounter(this, "Spawn Enemy");
+    mechanicCounters[V_LIFESTEAL_MINION] = new DraftItemCounter(this, "Lifesteal");
+    mechanicCounters[V_LIFESTEAL_ALL] = new DraftItemCounter(this, "Lifesteal");
+    mechanicCounters[V_EGG] = new DraftItemCounter(this, "Egg");
+    mechanicCounters[V_DAMAGE_FRIENDLY_HERO] = new DraftItemCounter(this, "Self Damage");
+    mechanicCounters[V_RUSH] = new DraftItemCounter(this, "Rush");
+    mechanicCounters[V_RUSH_ALL] = new DraftItemCounter(this, "Rush");
+    mechanicCounters[V_ECHO] = new DraftItemCounter(this, "Echo");
+    mechanicCounters[V_ECHO_ALL] = new DraftItemCounter(this, "Echo");
+    mechanicCounters[V_MAGNETIC] = new DraftItemCounter(this, "Magnetic");
+    mechanicCounters[V_MAGNETIC_ALL] = new DraftItemCounter(this, "Magnetic");
+    mechanicCounters[V_HAND_BUFF] = new DraftItemCounter(this, "Hand Buff");
+    mechanicCounters[V_ENEMY_DRAW] = new DraftItemCounter(this, "Draw Enemy");
+    mechanicCounters[V_HERO_ATTACK] = new DraftItemCounter(this, "Hero Attack");
+    mechanicCounters[V_SPELL_BUFF] = new DraftItemCounter(this, "Enchant");
+    mechanicCounters[V_OTHER_CLASS] = new DraftItemCounter(this, "Other Class");
+    mechanicCounters[V_SILVER_HAND] = new DraftItemCounter(this, "Silver Hand");
+    mechanicCounters[V_TREANT] = new DraftItemCounter(this, "Treant");
+    mechanicCounters[V_LACKEY] = new DraftItemCounter(this, "Lackey");
+    mechanicCounters[V_OUTCAST] = new DraftItemCounter(this, "Outcast");
     //New Synergy Step 2
 
 
@@ -969,19 +969,19 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 }
 
 
-void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons,
-                                  MechanicBorderColor &dropBorderColor)
+void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
+                                  QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor)
 {
-    getCardTypeSynergies(deckCard, synergies);
+    getCardTypeSynergies(deckCard, synergyTagMap);
     getDropMechanicIcons(deckCard, mechanicIcons, dropBorderColor);
-    getRaceSynergies(deckCard, synergies);
-    getMechanicSynergies(deckCard, synergies, mechanicIcons);
-    getDirectLinkSynergies(deckCard, synergies);
-    getStatsCardsSynergies(deckCard, synergies);
+    getRaceSynergies(deckCard, synergyTagMap);
+    getMechanicSynergies(deckCard, synergyTagMap, mechanicIcons);
+    getDirectLinkSynergies(deckCard, synergyTagMap["Extra"]);
+    getStatsCardsSynergies(deckCard, synergyTagMap);
 }
 
 
-void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
 {
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
@@ -990,22 +990,22 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString,int> 
     //Evita mostrar spellSyn cards en cada hechizo que veamos, es sinergia debil
     if(cardType == SPELL)
     {
-        cardTypeCounters[V_SPELL]->insertSynCards(synergies);
-        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
+        cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
+        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergies);
+    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
     if(cardType == WEAPON)
     {
-        cardTypeCounters[V_WEAPON]->insertSynCards(synergies);
-        cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergies);
+        cardTypeCounters[V_WEAPON]->insertSynCards(synergyTagMap);
+        cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergies);
+    else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
 
 
-    if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergies);
-    else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergies);
-    if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergies);
-    else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergies);
+    if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergyTagMap);
+    else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergyTagMap);
+    if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergyTagMap);
+    else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1039,7 +1039,7 @@ void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int>
 }
 
 
-void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
 {
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
@@ -1048,73 +1048,74 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString,int> &syn
 
     if(cardRace == MURLOC || cardRace == ALL)
     {
-        raceCounters[V_MURLOC]->insertSynCards(synergies);
-        raceCounters[V_MURLOC_ALL]->insertSynCards(synergies);
+        raceCounters[V_MURLOC]->insertSynCards(synergyTagMap);
+        raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->insertSynCards(synergies);
+    else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == DEMON || cardRace == ALL)
     {
-        raceCounters[V_DEMON]->insertSynCards(synergies);
-        raceCounters[V_DEMON_ALL]->insertSynCards(synergies);
+        raceCounters[V_DEMON]->insertSynCards(synergyTagMap);
+        raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->insertSynCards(synergies);
+    else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == MECHANICAL || cardRace == ALL)
     {
-        raceCounters[V_MECHANICAL]->insertSynCards(synergies);
-        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergies);
+        raceCounters[V_MECHANICAL]->insertSynCards(synergyTagMap);
+        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergies);
+    else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == ELEMENTAL || cardRace == ALL)
     {
-        raceCounters[V_ELEMENTAL]->insertSynCards(synergies);
-        raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergies);
+        raceCounters[V_ELEMENTAL]->insertSynCards(synergyTagMap);
+        raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergies);
+    else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == BEAST || cardRace == ALL)
     {
-        raceCounters[V_BEAST]->insertSynCards(synergies);
-        raceCounters[V_BEAST_ALL]->insertSynCards(synergies);
+        raceCounters[V_BEAST]->insertSynCards(synergyTagMap);
+        raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->insertSynCards(synergies);
+    else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == TOTEM || cardRace == ALL)
     {
-        raceCounters[V_TOTEM]->insertSynCards(synergies);
-        raceCounters[V_TOTEM_ALL]->insertSynCards(synergies);
+        raceCounters[V_TOTEM]->insertSynCards(synergyTagMap);
+        raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->insertSynCards(synergies);
+    else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == PIRATE || cardRace == ALL)
     {
-        raceCounters[V_PIRATE]->insertSynCards(synergies);
-        raceCounters[V_PIRATE_ALL]->insertSynCards(synergies);
+        raceCounters[V_PIRATE]->insertSynCards(synergyTagMap);
+        raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->insertSynCards(synergies);
+    else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
     if(cardRace == DRAGON || cardRace == ALL)
     {
-        raceCounters[V_DRAGON]->insertSynCards(synergies);
-        raceCounters[V_DRAGON_ALL]->insertSynCards(synergies);
+        raceCounters[V_DRAGON]->insertSynCards(synergyTagMap);
+        raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->insertSynCards(synergies);
+    else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
 
-    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergies);
-    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergies);
-    if(isDemonSyn(code))                            raceCounters[V_DEMON]->insertCards(synergies);
-    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->insertCards(synergies);
-    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->insertCards(synergies);
-    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->insertCards(synergies);
-    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->insertCards(synergies);
-    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->insertCards(synergies);
-    if(isBeastSyn(code))                            raceCounters[V_BEAST]->insertCards(synergies);
-    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->insertCards(synergies);
-    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->insertCards(synergies);
-    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->insertCards(synergies);
-    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->insertCards(synergies);
-    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->insertCards(synergies);
-    if(isDragonSyn(code, text))                     raceCounters[V_DRAGON]->insertCards(synergies);
-    else if(isDragonAllSyn(code))                   raceCounters[V_DRAGON_ALL]->insertCards(synergies);
+    if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergyTagMap);
+    else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergyTagMap);
+    if(isDemonSyn(code))                            raceCounters[V_DEMON]->insertCards(synergyTagMap);
+    else if(isDemonAllSyn(code, text))              raceCounters[V_DEMON_ALL]->insertCards(synergyTagMap);
+    if(isMechSyn(code))                             raceCounters[V_MECHANICAL]->insertCards(synergyTagMap);
+    else if(isMechAllSyn(code, mechanics, text))    raceCounters[V_MECHANICAL_ALL]->insertCards(synergyTagMap);
+    if(isElementalSyn(code))                        raceCounters[V_ELEMENTAL]->insertCards(synergyTagMap);
+    else if(isElementalAllSyn(code, text))          raceCounters[V_ELEMENTAL_ALL]->insertCards(synergyTagMap);
+    if(isBeastSyn(code))                            raceCounters[V_BEAST]->insertCards(synergyTagMap);
+    else if(isBeastAllSyn(code, text))              raceCounters[V_BEAST_ALL]->insertCards(synergyTagMap);
+    if(isTotemSyn(code))                            raceCounters[V_TOTEM]->insertCards(synergyTagMap);
+    else if(isTotemAllSyn(code, text))              raceCounters[V_TOTEM_ALL]->insertCards(synergyTagMap);
+    if(isPirateSyn(code))                           raceCounters[V_PIRATE]->insertCards(synergyTagMap);
+    else if(isPirateAllSyn(code, text))             raceCounters[V_PIRATE_ALL]->insertCards(synergyTagMap);
+    if(isDragonSyn(code, text))                     raceCounters[V_DRAGON]->insertCards(synergyTagMap);
+    else if(isDragonAllSyn(code))                   raceCounters[V_DRAGON_ALL]->insertCards(synergyTagMap);
 }
 
 
-void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons)
+void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
+                                          QMap<QString, int> &mechanicIcons)
 {
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -1132,23 +1133,23 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     }
     if(isTaunt(code, mechanics))
     {
-        mechanicCounters[V_TAUNT]->insertSynCards(synergies);
-        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_TAUNT]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
         mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     else if(isTauntGen(code, referencedTags))
     {
-        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
         mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     if(isAoeGen(code, text))
     {
-        mechanicCounters[V_AOE]->insertSynCards(synergies);
+        mechanicCounters[V_AOE]->insertSynCards(synergyTagMap);
         mechanicIcons[ThemeHandler::aoeMechanicFile()] = mechanicCounters[V_AOE]->count() + 1;
     }
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicCounters[V_PING]->insertSynCards(synergies);
+        mechanicCounters[V_PING]->insertSynCards(synergyTagMap);
         mechanicIcons[ThemeHandler::pingMechanicFile()] = mechanicCounters[V_PING]->count() + 1;
     }
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
@@ -1165,163 +1166,163 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString,int> 
     }
     if(isArmorGen(code, text))
     {
-        mechanicCounters[V_ARMOR]->insertSynCards(synergies);
+        mechanicCounters[V_ARMOR]->insertSynCards(synergyTagMap);
         addRestoreIcon = true;
     }
     if(isRestoreFriendlyHeroGen(code, mechanics, referencedTags, text))
     {
-        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergies);
+        mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertSynCards(synergyTagMap);
         addRestoreIcon = true;
     }
     if(addRestoreIcon)
     {
         mechanicIcons[ThemeHandler::survivalMechanicFile()] = mechanicCounters[V_SURVIVABILITY]->count() + 1;
     }
-    if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergies);
-    if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergies);
+    if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergyTagMap);
+    if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergyTagMap);
     //Sinergias gen-gen
-    if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergies);
+    if(isJadeGolemGen(code, mechanics, referencedTags))         mechanicCounters[V_JADE_GOLEM]->insertCards(synergyTagMap);
     //Sinergias gen-gen -- Evitamos sinergias con la misma carta
-    if(isHeroPowerGen(code, text))                              mechanicCounters[V_HERO_POWER]->insertCards(synergies, code);
-    if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergies);
-    if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergies);
-    if(isToYourHandGen(code, cost, mechanics, text))            mechanicCounters[V_TOYOURHAND]->insertSynCards(synergies);
-    if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergies);
-    if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergies);
-    if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergies);
-    if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergies);
-    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergies);
-    if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergies);
-    if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergies);
-    if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergies);
-    if(isTokenCardGen(code, cost, mechanics, text))             mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergies);
-    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergies);
-    if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergies);
-    if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergies);
-    if(isAttackNerfGen(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertSynCards(synergies);
-    if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergies);
-    if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergies);
-    if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergies);
-    if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergies);
-    if(isEvolveGen(code, text))                                 mechanicCounters[V_EVOLVE]->insertSynCards(synergies);
-    if(isSpawnEnemyGen(code, text))                             mechanicCounters[V_SPAWN_ENEMY]->insertSynCards(synergies);
-    if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergies);
-    if(isEggGen(code, mechanics, attack, cardType))             mechanicCounters[V_EGG]->insertSynCards(synergies);
-    if(isDamageFriendlyHeroGen(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertSynCards(synergies);
-    if(isHandBuffGen(code, text))                               mechanicCounters[V_HAND_BUFF]->insertSynCards(synergies);
-    if(isEnemyDrawGen(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertSynCards(synergies);
-    if(isHeroAttackGen(code, text))                             mechanicCounters[V_HERO_ATTACK]->insertSynCards(synergies);
-    if(isSpellBuffGen(code, text, mechanics, cardType))         mechanicCounters[V_SPELL_BUFF]->insertSynCards(synergies);
-    if(isOtherClassGen(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertSynCards(synergies);
-    if(isSilverHandGen(code, text))                             mechanicCounters[V_SILVER_HAND]->insertSynCards(synergies);
-    if(isTreantGen(code, text))                                 mechanicCounters[V_TREANT]->insertSynCards(synergies);
-    if(isLackeyGen(code, text))                                 mechanicCounters[V_LACKEY]->insertSynCards(synergies);
-    if(isOutcast(code, mechanics))                              mechanicCounters[V_OUTCAST]->insertSynCards(synergies);
+    if(isHeroPowerGen(code, text))                              mechanicCounters[V_HERO_POWER]->insertCards(synergyTagMap, code);
+    if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergyTagMap);
+    if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergyTagMap);
+    if(isToYourHandGen(code, cost, mechanics, text))            mechanicCounters[V_TOYOURHAND]->insertSynCards(synergyTagMap);
+    if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergyTagMap);
+    if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergyTagMap);
+    if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergyTagMap);
+    if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergyTagMap);
+    if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergyTagMap);
+    if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergyTagMap);
+    if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergyTagMap);
+    if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergyTagMap);
+    if(isTokenCardGen(code, cost, mechanics, text))             mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergyTagMap);
+    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
+    if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergyTagMap);
+    if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergyTagMap);
+    if(isAttackNerfGen(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertSynCards(synergyTagMap);
+    if(isHealthBuffGen(code, text))                             mechanicCounters[V_HEALTH_BUFF]->insertSynCards(synergyTagMap);
+    if(isReturnGen(code, text))                                 mechanicCounters[V_RETURN]->insertSynCards(synergyTagMap);
+    if(isStealthGen(code, mechanics))                           mechanicCounters[V_STEALTH]->insertSynCards(synergyTagMap);
+    if(isSpellDamageGen(code))                                  mechanicCounters[V_SPELL_DAMAGE]->insertSynCards(synergyTagMap);
+    if(isEvolveGen(code, text))                                 mechanicCounters[V_EVOLVE]->insertSynCards(synergyTagMap);
+    if(isSpawnEnemyGen(code, text))                             mechanicCounters[V_SPAWN_ENEMY]->insertSynCards(synergyTagMap);
+    if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergyTagMap);
+    if(isEggGen(code, mechanics, attack, cardType))             mechanicCounters[V_EGG]->insertSynCards(synergyTagMap);
+    if(isDamageFriendlyHeroGen(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertSynCards(synergyTagMap);
+    if(isHandBuffGen(code, text))                               mechanicCounters[V_HAND_BUFF]->insertSynCards(synergyTagMap);
+    if(isEnemyDrawGen(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertSynCards(synergyTagMap);
+    if(isHeroAttackGen(code, text))                             mechanicCounters[V_HERO_ATTACK]->insertSynCards(synergyTagMap);
+    if(isSpellBuffGen(code, text, mechanics, cardType))         mechanicCounters[V_SPELL_BUFF]->insertSynCards(synergyTagMap);
+    if(isOtherClassGen(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertSynCards(synergyTagMap);
+    if(isSilverHandGen(code, text))                             mechanicCounters[V_SILVER_HAND]->insertSynCards(synergyTagMap);
+    if(isTreantGen(code, text))                                 mechanicCounters[V_TREANT]->insertSynCards(synergyTagMap);
+    if(isLackeyGen(code, text))                                 mechanicCounters[V_LACKEY]->insertSynCards(synergyTagMap);
+    if(isOutcast(code, mechanics))                              mechanicCounters[V_OUTCAST]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
-        mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergies);
-        mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_DIVINE_SHIELD]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergies);
+    else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergyTagMap);
 
     if(isSecret(code, mechanics))
     {
-        mechanicCounters[V_SECRET]->insertSynCards(synergies);
-        mechanicCounters[V_SECRET_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_SECRET]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_SECRET_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isSecretGen(code))                                  mechanicCounters[V_SECRET_ALL]->insertSynCards(synergies);
+    else if(isSecretGen(code))                                  mechanicCounters[V_SECRET_ALL]->insertSynCards(synergyTagMap);
     if(isEcho(code, mechanics))
     {
-        mechanicCounters[V_ECHO]->insertSynCards(synergies);
-        mechanicCounters[V_ECHO_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_ECHO]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_ECHO_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isEchoGen(code, referencedTags))                    mechanicCounters[V_ECHO_ALL]->insertSynCards(synergies);
+    else if(isEchoGen(code, referencedTags))                    mechanicCounters[V_ECHO_ALL]->insertSynCards(synergyTagMap);
     if(isRush(code, mechanics))
     {
-        mechanicCounters[V_RUSH]->insertSynCards(synergies);
-        mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_RUSH]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_RUSH_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isRushGen(code, referencedTags))                    mechanicCounters[V_RUSH_ALL]->insertSynCards(synergies);
+    else if(isRushGen(code, referencedTags))                    mechanicCounters[V_RUSH_ALL]->insertSynCards(synergyTagMap);
     if(isMagnetic(code, mechanics))
     {
-        mechanicCounters[V_MAGNETIC]->insertSynCards(synergies);
-        mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_MAGNETIC]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isMagneticGen(code))                                mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergies);
+    else if(isMagneticGen(code))                                mechanicCounters[V_MAGNETIC_ALL]->insertSynCards(synergyTagMap);
     if(isLifestealMinon(code, mechanics, cardType))
     {
-        mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergies);
-        mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_LIFESTEAL_MINION]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isLifestealGen(code, referencedTags))               mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergies);
+    else if(isLifestealGen(code, referencedTags))               mechanicCounters[V_LIFESTEAL_ALL]->insertSynCards(synergyTagMap);
     if(isBattlecry(code, mechanics))
     {
-        mechanicCounters[V_BATTLECRY]->insertSynCards(synergies);
-        mechanicCounters[V_BATTLECRY_ALL]->insertSynCards(synergies);
+        mechanicCounters[V_BATTLECRY]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_BATTLECRY_ALL]->insertSynCards(synergyTagMap);
     }
-    else if(isBattlecryGen(code))                               mechanicCounters[V_BATTLECRY_ALL]->insertSynCards(synergies);
+    else if(isBattlecryGen(code))                               mechanicCounters[V_BATTLECRY_ALL]->insertSynCards(synergyTagMap);
 
 
     //SYN
-    if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergies);
-    if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergies);
-    if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergies);
-    if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergies);
-    if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergies);
-    if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergies);
-    if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergies);
-    if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergies);
-    if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergies);
-    if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergies);
-    if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergies);
-    if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergies);
-    if(isComboSyn(code, referencedTags))                        mechanicCounters[V_COMBO]->insertCards(synergies);
-    if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergies);
-    if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergies);
-    if(isAttackNerfSyn(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertCards(synergies);
-    if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergies);
+    if(isAoeSyn(code))                                          mechanicCounters[V_AOE]->insertCards(synergyTagMap);
+    if(isPingSyn(code))                                         mechanicCounters[V_PING]->insertCards(synergyTagMap);
+    if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergyTagMap);
+    if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergyTagMap);
+    if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergyTagMap);
+    if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergyTagMap);
+    if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergyTagMap);
+    if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergyTagMap);
+    if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergyTagMap);
+    if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergyTagMap);
+    if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergyTagMap);
+    if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergyTagMap);
+    if(isComboSyn(code, referencedTags))                        mechanicCounters[V_COMBO]->insertCards(synergyTagMap);
+    if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergyTagMap);
+    if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergyTagMap);
+    if(isAttackNerfSyn(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertCards(synergyTagMap);
+    if(isHealthBuffSyn(code))                                   mechanicCounters[V_HEALTH_BUFF]->insertCards(synergyTagMap);
     //returnSyn es sinergia debil
 //    if(isReturnSyn(code, mechanics, cardType, text))            mechanicCounters[V_RETURN]->insertCards(synergies);
-    if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergies);
-    if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergies);
-    if(isEvolveSyn(code))                                       mechanicCounters[V_EVOLVE]->insertCards(synergies);
-    if(isSpawnEnemySyn(code))                                   mechanicCounters[V_SPAWN_ENEMY]->insertCards(synergies);
-    if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergies);
-    if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergies);
-    if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergies);
-    if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergies);
-    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergies);
-    if(isEggSyn(code, text))                                    mechanicCounters[V_EGG]->insertCards(synergies);
-    if(isDamageFriendlyHeroSyn(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertCards(synergies);
-    if(isHandBuffSyn(code, text))                               mechanicCounters[V_HAND_BUFF]->insertCards(synergies);
-    if(isEnemyDrawSyn(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertCards(synergies);
-    if(isHeroAttackSyn(code))                                   mechanicCounters[V_HERO_ATTACK]->insertCards(synergies);
-    if(isSpellBuffSyn(code, text))                              mechanicCounters[V_SPELL_BUFF]->insertCards(synergies);
-    if(isOtherClassSyn(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertCards(synergies);
-    if(isSilverHandSyn(code))                                   mechanicCounters[V_SILVER_HAND]->insertCards(synergies);
-    if(isTreantSyn(code))                                       mechanicCounters[V_TREANT]->insertCards(synergies);
-    if(isLackeySyn(code))                                       mechanicCounters[V_LACKEY]->insertCards(synergies);
-    if(isOutcastSyn(code, referencedTags))                      mechanicCounters[V_OUTCAST]->insertCards(synergies);
+    if(isStealthSyn(code))                                      mechanicCounters[V_STEALTH]->insertCards(synergyTagMap);
+    if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergyTagMap);
+    if(isEvolveSyn(code))                                       mechanicCounters[V_EVOLVE]->insertCards(synergyTagMap);
+    if(isSpawnEnemySyn(code))                                   mechanicCounters[V_SPAWN_ENEMY]->insertCards(synergyTagMap);
+    if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergyTagMap);
+    if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergyTagMap);
+    if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergyTagMap);
+    if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergyTagMap);
+    if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergyTagMap);
+    if(isEggSyn(code, text))                                    mechanicCounters[V_EGG]->insertCards(synergyTagMap);
+    if(isDamageFriendlyHeroSyn(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertCards(synergyTagMap);
+    if(isHandBuffSyn(code, text))                               mechanicCounters[V_HAND_BUFF]->insertCards(synergyTagMap);
+    if(isEnemyDrawSyn(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertCards(synergyTagMap);
+    if(isHeroAttackSyn(code))                                   mechanicCounters[V_HERO_ATTACK]->insertCards(synergyTagMap);
+    if(isSpellBuffSyn(code, text))                              mechanicCounters[V_SPELL_BUFF]->insertCards(synergyTagMap);
+    if(isOtherClassSyn(code, text))                             mechanicCounters[V_OTHER_CLASS]->insertCards(synergyTagMap);
+    if(isSilverHandSyn(code))                                   mechanicCounters[V_SILVER_HAND]->insertCards(synergyTagMap);
+    if(isTreantSyn(code))                                       mechanicCounters[V_TREANT]->insertCards(synergyTagMap);
+    if(isLackeySyn(code))                                       mechanicCounters[V_LACKEY]->insertCards(synergyTagMap);
+    if(isOutcastSyn(code, referencedTags))                      mechanicCounters[V_OUTCAST]->insertCards(synergyTagMap);
     //New Synergy Step 6
-    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergies);
-    else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergies);
-    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergies);
-    else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergies);
-    if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergies);
-    else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergies);
-    if(isSecretSyn(code))                                       mechanicCounters[V_SECRET]->insertCards(synergies);
-    else if(isSecretAllSyn(code, referencedTags))               mechanicCounters[V_SECRET_ALL]->insertCards(synergies);
-    if(isEchoSyn(code))                                         mechanicCounters[V_ECHO]->insertCards(synergies);
-    else if(isEchoAllSyn(code))                                 mechanicCounters[V_ECHO_ALL]->insertCards(synergies);
-    if(isRushSyn(code))                                         mechanicCounters[V_RUSH]->insertCards(synergies);
-    else if(isRushAllSyn(code))                                 mechanicCounters[V_RUSH_ALL]->insertCards(synergies);
-    if(isMagneticSyn(code))                                     mechanicCounters[V_MAGNETIC]->insertCards(synergies);
-    else if(isMagneticAllSyn(code))                             mechanicCounters[V_MAGNETIC_ALL]->insertCards(synergies);
-    if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergies);
-    else if(isLifestealAllSyn(code))                            mechanicCounters[V_LIFESTEAL_ALL]->insertCards(synergies);
-    if(isBattlecrySyn(code))                                    mechanicCounters[V_BATTLECRY]->insertCards(synergies);
-    else if(isBattlecryAllSyn(code, referencedTags))            mechanicCounters[V_BATTLECRY_ALL]->insertCards(synergies);
+    if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
+    else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
+    if(isDeathrattleSyn(code))                                  mechanicCounters[V_DEATHRATTLE]->insertCards(synergyTagMap);
+    else if(isDeathrattleGoodAllSyn(code))                      mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergyTagMap);
+    if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergyTagMap);
+    else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergyTagMap);
+    if(isSecretSyn(code))                                       mechanicCounters[V_SECRET]->insertCards(synergyTagMap);
+    else if(isSecretAllSyn(code, referencedTags))               mechanicCounters[V_SECRET_ALL]->insertCards(synergyTagMap);
+    if(isEchoSyn(code))                                         mechanicCounters[V_ECHO]->insertCards(synergyTagMap);
+    else if(isEchoAllSyn(code))                                 mechanicCounters[V_ECHO_ALL]->insertCards(synergyTagMap);
+    if(isRushSyn(code))                                         mechanicCounters[V_RUSH]->insertCards(synergyTagMap);
+    else if(isRushAllSyn(code))                                 mechanicCounters[V_RUSH_ALL]->insertCards(synergyTagMap);
+    if(isMagneticSyn(code))                                     mechanicCounters[V_MAGNETIC]->insertCards(synergyTagMap);
+    else if(isMagneticAllSyn(code))                             mechanicCounters[V_MAGNETIC_ALL]->insertCards(synergyTagMap);
+    if(isLifestealMinionSyn(code))                              mechanicCounters[V_LIFESTEAL_MINION]->insertCards(synergyTagMap);
+    else if(isLifestealAllSyn(code))                            mechanicCounters[V_LIFESTEAL_ALL]->insertCards(synergyTagMap);
+    if(isBattlecrySyn(code))                                    mechanicCounters[V_BATTLECRY]->insertCards(synergyTagMap);
+    else if(isBattlecryAllSyn(code, referencedTags))            mechanicCounters[V_BATTLECRY_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1343,7 +1344,7 @@ void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int
 }
 
 
-void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int> &synergies)
+void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap)
 {
     QString code = deckCard.getCode();
 
@@ -1353,13 +1354,13 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int
         int attack = Utility::getCardAttribute(code, "attack").toInt();
         int health = Utility::getCardAttribute(code, "health").toInt();
 
-        costMinions.insertCards(true, deckCard.getCost(), synergies);
-        attackMinions.insertCards(true, attack, synergies);
-        healthMinions.insertCards(true, health, synergies);
+        costMinions.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
+        attackMinions.insertCards(true, attack, synergyTagMap["Attack"]);
+        healthMinions.insertCards(true, health, synergyTagMap["Health"]);
     }
     else if(deckCard.getType() == SPELL)
     {
-        costSpells.insertCards(true, deckCard.getCost(), synergies);
+        costSpells.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
     }
 //    else if(deckCard.getType() == WEAPON)
 //    {
@@ -1382,16 +1383,16 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int
                 switch(statSyn.statKind)
                 {
                     case S_COST:
-                        if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergies);
-                        else                costMinions.insertStatCards(statSyn, synergies);
+                        if(statSyn.isGen)   costMinions.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                        else                costMinions.insertStatCards(statSyn, synergyTagMap["Cost"]);
                     break;
                     case S_ATTACK:
-                        if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergies);
-                        else                attackMinions.insertStatCards(statSyn, synergies);
+                        if(statSyn.isGen)   attackMinions.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
+                        else                attackMinions.insertStatCards(statSyn, synergyTagMap["Attack"]);
                     break;
                     case S_HEALTH:
-                        if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergies);
-                        else                healthMinions.insertStatCards(statSyn, synergies);
+                        if(statSyn.isGen)   healthMinions.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
+                        else                healthMinions.insertStatCards(statSyn, synergyTagMap["Health"]);
                     break;
                 }
             break;
@@ -1399,8 +1400,8 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString,int
                 switch(statSyn.statKind)
                 {
                     case S_COST:
-                        if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergies);
-                        else                costSpells.insertStatCards(statSyn, synergies);
+                        if(statSyn.isGen)   costSpells.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                        else                costSpells.insertStatCards(statSyn, synergyTagMap["Cost"]);
                     break;
                     case S_ATTACK:
                     case S_HEALTH:

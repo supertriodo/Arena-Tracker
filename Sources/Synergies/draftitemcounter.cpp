@@ -2,9 +2,11 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-DraftItemCounter::DraftItemCounter(QObject *parent, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover) : QObject(parent)
+DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QHBoxLayout *hLayout, QPixmap pixmap,
+                                   bool iconHover) : QObject(parent)
 {
     //Constructor MainWindow
+    this->synergyTag = synergyTag;
     init(hLayout, iconHover);
     setTheme(pixmap);
 }
@@ -14,6 +16,7 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int
                                    QPixmap pixmap, int iconWidth, bool iconHover) : QObject(parent)
 {
     //Constructor DraftMechanicsWindow
+    this->synergyTag = "";
     QHBoxLayout *hLayout = new QHBoxLayout();
     init(hLayout, iconHover);
     setTheme(pixmap, iconWidth, true);
@@ -22,11 +25,12 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int
 }
 
 
-DraftItemCounter::DraftItemCounter(QObject *parent) : QObject(parent)
+DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag) : QObject(parent)
 {
     //Synergy keys sin icono, solo datos
     labelIcon = nullptr;
     labelCounter = nullptr;
+    this->synergyTag = synergyTag;
     reset();
 }
 
@@ -200,8 +204,11 @@ bool DraftItemCounter::insertCode(const QString code, QMap<QString,int> &synergi
 
 
 //Se usa en heroPowerGen(V_HERO_POWER), sinergia gen-gen, para evitar sinergias de una carta con ella misma
-void DraftItemCounter::insertCards(QMap<QString,int> &synergies, QString avoidCode)
+void DraftItemCounter::insertCards(QMap<QString, QMap<QString, int>> &synergyTagMap, QString avoidCode)
 {
+    QMap<QString,int> synergies;
+    if(synergyTagMap.contains(synergyTag))  synergies = synergyTagMap[synergyTag];
+
     for(QString code: codeMap.keys())
     {
         if(!synergies.contains(code) && code!=avoidCode)
@@ -209,11 +216,16 @@ void DraftItemCounter::insertCards(QMap<QString,int> &synergies, QString avoidCo
             synergies[code] = codeMap[code];
         }
     }
+
+    if(!synergies.isEmpty())    synergyTagMap[synergyTag] = synergies;
 }
 
 
-void DraftItemCounter::insertSynCards(QMap<QString,int> &synergies)
+void DraftItemCounter::insertSynCards(QMap<QString, QMap<QString, int>> &synergyTagMap)
 {
+    QMap<QString,int> synergies;
+    if(synergyTagMap.contains(synergyTag))  synergies = synergyTagMap[synergyTag];
+
     for(QString code: codeSynMap.keys())
     {
         if(!synergies.contains(code))
@@ -221,6 +233,8 @@ void DraftItemCounter::insertSynCards(QMap<QString,int> &synergies)
             synergies[code] = codeSynMap[code];
         }
     }
+
+    if(!synergies.isEmpty())    synergyTagMap[synergyTag] = synergies;
 }
 
 

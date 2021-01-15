@@ -328,44 +328,95 @@ void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3, QString 
 }
 
 
-void DraftScoreWindow::setSynergies(int posCard, QMap<QString,int> &synergies, QMap<QString, int> &mechanicIcons,
-                                    const MechanicBorderColor dropBorderColor)
+void DraftScoreWindow::groupSynergyTags(QMap<QString, QMap<QString, int>> &synergyTagMap)
+{
+    //Obtenemos codigos duplicados
+    QStringList dupCodes;
+    QList<QString> synergyTagMapKeys = synergyTagMap.keys();
+    for(int i=0; i<synergyTagMapKeys.count(); i++)
+    {
+        for(const QString &code: synergyTagMap[synergyTagMapKeys[i]].keys())
+        {
+            for(int j=i+1; j<synergyTagMapKeys.count() && !dupCodes.contains(code); j++)
+            {
+                if(synergyTagMap[synergyTagMapKeys[j]].contains(code))  dupCodes.append(code);
+            }
+        }
+    }
+
+    //Agrupamos tags de codigos duplicados
+    for(const QString &code: dupCodes)
+    {
+        QString synergyTagJoin = "";
+        int numCards = 0;
+        for(int i=0; i<synergyTagMapKeys.count(); i++)
+        {
+            QString synergyTag = synergyTagMapKeys[i];
+            if(synergyTagMap[synergyTag].contains(code))
+            {
+                if(synergyTagJoin.isEmpty())    synergyTagJoin.append(synergyTag);
+                else                            synergyTagJoin.append(" - " + synergyTag);
+                numCards = synergyTagMap[synergyTag][code];
+                synergyTagMap[synergyTag].remove(code);
+            }
+        }
+        synergyTagMap[synergyTagJoin][code] = numCards;
+    }
+
+    //Eliminamos synergyTag vacios
+    for(int i=0; i<synergyTagMapKeys.count(); i++)
+    {
+        QString synergyTag = synergyTagMapKeys[i];
+        if(synergyTagMap[synergyTag].isEmpty()) synergyTagMap.remove(synergyTag);
+    }
+}
+
+
+void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
+                                    QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor)
 {
     if(posCard < 0 || posCard > 2)  return;
 
     //TODO testing
 //    if(posCard==0){
-//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
-//        "DMF_105", "DMF_101"};
-//    for(const QString &code: codes) synergies[code]=1;}
+//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090", "DMF_105"};
+//    for(const QString &code: codes) synergyTagMap["Attack"][code]=1;
+//    QString codes2[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730"};
+//    for(const QString &code: codes2) synergyTagMap["Health"][code]=1;}
 //    if(posCard==1){
 //    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
 //        "DMF_105", "DMF_101", "DMF_244", "DMF_064"};
-//    for(const QString &code: codes) synergies[code]=1;}
+//    for(const QString &code: codes) synergyTagMap["Attack Buff"][code]=1;}
 //    if(posCard==2){
 //    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083", "DMF_090",
 //        "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
 //        "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
 //        "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163"};
-//    for(const QString &code: codes) synergies[code]=1;}
+//    for(const QString &code: codes) synergyTagMap["Health"][code]=1;}
 
     synergiesListWidget[posCard]->clear();
     synergyCardLists[posCard].clear();
+    groupSynergyTags(synergyTagMap);
 
-    QMap<int,SynergyCard> synergyCardMap;
-    for(const QString &code: synergies.keys())
+    for(const QString &synergyTag: synergyTagMap.keys())
     {
-        int total = synergies[code];
-        SynergyCard synergyCard(code);
-        synergyCard.total = synergyCard.remaining = total;
-        synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
-    }
+        QMap<int,SynergyCard> synergyCardMap;
+        for(const QString &code: synergyTagMap[synergyTag].keys())
+        {
+            int total = synergyTagMap[synergyTag][code];
+            SynergyCard synergyCard(code);
+            synergyCard.total = synergyCard.remaining = total;
+            synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+        }
 
-    for(SynergyCard &synergyCard: synergyCardMap.values())
-    {
-        synergyCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
-        synergyCard.draw();
-        synergyCardLists[posCard].append(synergyCard);
+        if(!synergyCardMap.isEmpty())   synergyCardMap.first().setSynergyTag(synergyTag);
+
+        for(SynergyCard &synergyCard: synergyCardMap.values())
+        {
+            synergyCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
+            synergyCard.draw();
+            synergyCardLists[posCard].append(synergyCard);
+        }
     }
 
 
