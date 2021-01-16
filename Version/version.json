@@ -4,5 +4,5 @@
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/Arena.Tracker.v9.0.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/Arena.Tracker.v9.0.Windows.zip",
-	"log": "Fix a bug when showing 3 scores + chat voting. Avoid showing Cthun fragments as revealed in enemy hand. And more...<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.0'>github</a>"
+	"log": "Synergies shown under the picks now specify which synergy are satisfying. Also enjoy 8 new themes, choose your favourite in the config tab!!!<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.0'>github</a>"
 }
