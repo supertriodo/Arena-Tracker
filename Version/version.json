@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17","v8.18","v8.19","v8.2","v8.3","v8.31","v8.32","v8.33","v8.34"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.34/Arena.Tracker.v8.34.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.34/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.34/Arena.Tracker.v8.34.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v8.34/Arena.Tracker.v8.34.Windows.zip",
-	"log": "Fix a bug when showing 3 scores + chat voting. Avoid showing Cthun fragments as revealed in enemy hand. And more...<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v8.34'>github</a>"
+	"versionFree": ["v8.1","v8.11","v8.12","v8.13","v8.14","v8.15","v8.16","v8.17","v8.18","v8.19","v8.2","v8.3","v8.31","v8.32","v8.33","v8.34","v9.0"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/Arena.Tracker.v9.0.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/Arena.Tracker.v9.0.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.0/Arena.Tracker.v9.0.Windows.zip",
+	"log": "Fix a bug when showing 3 scores + chat voting. Avoid showing Cthun fragments as revealed in enemy hand. And more...<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.0'>github</a>"
 }
