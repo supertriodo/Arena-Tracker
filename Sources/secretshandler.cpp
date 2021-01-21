@@ -13,6 +13,8 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->lastMinionDead = "";
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
+    this->playerCardsDrawn = 0;
+    this->isPlayerTurn = false;
     this->cardsPickratesMap = nullptr;
 
     completeUI();
@@ -298,6 +300,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 //RARE
                 unknownSecretPlayedAddOption(SHADOW_CLONE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
+                unknownSecretPlayedAddOption(SHENANIGANS, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(BAMBOOZLE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
@@ -598,7 +601,16 @@ void SecretsHandler::playerHeroPower()
 
 void SecretsHandler::newTurn(bool isPlayerTurn)
 {
+    this->isPlayerTurn = isPlayerTurn;
+    this->playerCardsDrawn = 0;
     if(!isPlayerTurn)   discardSecretOptionNow(PLAGIARIZE);
+}
+
+
+void SecretsHandler::playerCardDraw()
+{
+    this->playerCardsDrawn++;
+    if(isPlayerTurn && playerCardsDrawn>1) discardSecretOptionNow(SHENANIGANS);
 }
 
 
@@ -892,7 +904,7 @@ void SecretsHandler::createSecretsByPickrate()
                             << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
-                             << SHADOW_CLONE;
+                             << SHADOW_CLONE << SHENANIGANS;
 }
 
 

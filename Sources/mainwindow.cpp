@@ -1441,6 +1441,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
     connect(gameWatcher, SIGNAL(newTurn(bool, int)),
             secretsHandler, SLOT(newTurn(bool)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int)),
+            secretsHandler, SLOT(playerCardDraw()));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             popularCardsHandler, SLOT(resetCardsInterface()));
@@ -4718,8 +4720,8 @@ void MainWindow::testDelay()
 //|-Check drops cards
 
 //Cards changes
-//|-Imagenes cartas --> Patch 18.4.0.60352 (2020-09-29)
-//|-Synergy / Code  --> Patch 18.4.0.60352 (2020-09-29)
+//|-Imagenes cartas --> Patch 19.2.1.70828 (2021-01-08)
+//|-Synergy / Code  --> Patch 19.2.1.70828 (2021-01-08)
 
 //STANDARD CYCLE
 //(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
@@ -4853,3 +4855,6 @@ void MainWindow::testDelay()
 //TODO
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
+
+//biscuit
+//Test secret/banana en mano

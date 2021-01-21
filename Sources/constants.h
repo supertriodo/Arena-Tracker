@@ -75,6 +75,7 @@
 #define DIRTY_TRICKS QString("BT_709")
 #define PLAGIARIZE QString("SCH_706")
 #define SHADOW_CLONE QString("DMF_513")
+#define SHENANIGANS QString("")//TODO
 
 //Cartas
 #define VARIAN_WRYNN "AT_072"
