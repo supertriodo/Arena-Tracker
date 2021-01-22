@@ -1555,14 +1555,14 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible,
     initSynergyCodes();
 
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
-    for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
+    for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
         qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
     }
 
     qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
-    for(const QString &code: Utility::getSetCodes(set, onlyCollectible))
+    for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
         debugSynergiesCode(code, ++num);
 
@@ -3760,7 +3760,7 @@ REGLAS
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +spell, tokenCard, combo y return son sinergia debil por eso solo las mostramos en un sentido,
     para evitar mostrarlas continuamente en todos lados. Update, solo ocultamos return.
-+tokenCardGen ya implica comboSyn (no hace falta poner comboSyn), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
++tokenCardGen ya implica comboSyn (Update, ya no), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).

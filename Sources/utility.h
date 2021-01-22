@@ -130,7 +130,7 @@ public:
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets, bool recursive);
     static void showItemsLayout(QLayout *layout);
-    static QStringList getSetCodes(const QString &set, bool onlyCollectible=true);
+    static QStringList getSetCodes(const QString &set, bool excludeHeroes, bool onlyCollectible);
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
     static float normalizeLF(float score, bool doit);

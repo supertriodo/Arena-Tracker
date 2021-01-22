@@ -122,7 +122,8 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
-    QMap<QString, LFtier> initLightForgeTiers(const QString &heroString, const bool multiClassDraft, const bool createCardHist);
+    void initLightForgeTiers(const QString &heroString, const bool multiClassDraft, const bool createCardHist);
+    void fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft);
     void createDraftWindows(const QPointF &screenScale);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);

@@ -470,14 +470,17 @@ bool Utility::isASecret(QString code)
 }
 
 
-QStringList Utility::getSetCodes(const QString &set, bool onlyCollectible)
+QStringList Utility::getSetCodes(const QString &set, bool excludeHeroes, bool onlyCollectible)
 {
     QStringList setCodes;
     for(const QString &code: Utility::cardsJson->keys())
     {
         if(getCardAttribute(code, "set").toString() == set)
         {
-            if(!onlyCollectible || getCardAttribute(code, "collectible").toBool())
+            if  (
+                (!onlyCollectible || getCardAttribute(code, "collectible").toBool()) &&
+                (!excludeHeroes || !(code.startsWith("HERO_0") || code.startsWith("HERO_1")))
+                )
             {
                 setCodes.append(code);
             }

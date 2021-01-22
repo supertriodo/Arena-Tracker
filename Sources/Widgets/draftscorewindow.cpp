@@ -377,7 +377,6 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
 {
     if(posCard < 0 || posCard > 2)  return;
 
-    //TODO testing
 //    if(posCard==0){
 //    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083"};
 //    for(const QString &code: codes) synergyTagMap["Attack"][code]=1;

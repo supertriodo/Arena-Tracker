@@ -304,10 +304,49 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft,
+void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft)
+{
+    QStringList arenaSets = {"EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
+                             "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"};//TODO
+    for(const QString &code: lightForgeTiers.keys())
+    {
+        QString set = Utility::getCardAttribute(code, "set").toString();
+        if(!arenaSets.contains(set))
+        {
+            lightForgeTiers.remove(code);
+        }
+        else
+        {
+            addCardHist(code, false);
+            addCardHist(code, true);
+        }
+    }
+    for(const QString &set: arenaSets)
+    {
+        for(const QString &code: Utility::getSetCodes(set, true, true))
+        {
+            QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+            if  (
+                    !lightForgeTiers.contains(code) &&
+                    (multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+                )
+            {
+                addCardHist(code, false);
+                addCardHist(code, true);
+
+                LFtier lfTier;
+                lightForgeTiers[code] = lfTier;
+            }
+        }
+    }
+    emit pDebug("LightForge Fixed Cards: " + QString::number(lightForgeTiers.count()));
+}
+
+
+void DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft,
                                                         const bool createCardHist)
 {
-    QMap<QString, LFtier> lightForgeTiers;
+    lightForgeTiers.clear();
 
     QFile jsonFile(Utility::extraPath() + "/lightForge.json");
     jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -363,7 +402,6 @@ QMap<QString, LFtier> DraftHandler::initLightForgeTiers(const QString &heroStrin
     }
 
     emit pDebug("LightForge Cards: " + QString::number(lightForgeTiers.count()));
-    return lightForgeTiers;
 }
 
 
@@ -382,7 +420,8 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     {
         startFindScreenRects();
 
-        this->lightForgeTiers = initLightForgeTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena, drafting);
+        initLightForgeTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena, false/*drafting*/);//TODO
+        fixLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena);//TODO
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
@@ -2194,11 +2233,11 @@ void DraftHandler::buildHeroCodesList()
     //--------------------------------------------------------
     //----NEW HERO CLASS
     //--------------------------------------------------------
-    for(const QString &code: Utility::getSetCodes("CORE"))
+    for(const QString &code: Utility::getSetCodes("CORE", false, true))
     {
         if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
     }
-    for(const QString &code: Utility::getSetCodes("HERO_SKINS"))
+    for(const QString &code: Utility::getSetCodes("HERO_SKINS", false, true))
     {
         if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
     }
