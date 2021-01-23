@@ -123,7 +123,7 @@ private:
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
     void initLightForgeTiers(const QString &heroString, const bool multiClassDraft, const bool createCardHist);
-    void fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft);
+    void fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft, const bool createCardHist);
     void createDraftWindows(const QPointF &screenScale);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);

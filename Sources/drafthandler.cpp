@@ -293,7 +293,8 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
     QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
     if(cardFile.exists())
     {
-        cardsHist[fileNameCode] = getHist(fileNameCode);
+        cv::MatND histBase = getHist(fileNameCode);
+        if(!histBase.empty())   cardsHist[fileNameCode] = histBase;
     }
     else
     {
@@ -304,7 +305,8 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft)
+void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
+                                      const bool createCardHist)
 {
     QStringList arenaSets = {"EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
                              "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"};//TODO
@@ -315,7 +317,7 @@ void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool mul
         {
             lightForgeTiers.remove(code);
         }
-        else
+        else if(createCardHist)
         {
             addCardHist(code, false);
             addCardHist(code, true);
@@ -331,8 +333,11 @@ void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool mul
                     (multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
                 )
             {
-                addCardHist(code, false);
-                addCardHist(code, true);
+                if(createCardHist)
+                {
+                    addCardHist(code, false);
+                    addCardHist(code, true);
+                }
 
                 LFtier lfTier;
                 lightForgeTiers[code] = lfTier;
@@ -344,7 +349,7 @@ void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool mul
 
 
 void DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft,
-                                                        const bool createCardHist)
+                                       const bool createCardHist)
 {
     lightForgeTiers.clear();
 
@@ -421,7 +426,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
         startFindScreenRects();
 
         initLightForgeTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena, false/*drafting*/);//TODO
-        fixLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena);//TODO
+        fixLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);//TODO
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
@@ -446,7 +451,11 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
 {
     if(!cardsDownloading.contains(fileNameCode)) return; //No forma parte del drafting
 
-    if(!fileNameCode.isEmpty() && !missingOnWeb)  cardsHist[fileNameCode] = getHist(fileNameCode);
+    if(!fileNameCode.isEmpty() && !missingOnWeb)
+    {
+        cv::MatND histBase = getHist(fileNameCode);
+        if(!histBase.empty())   cardsHist[fileNameCode] = histBase;
+    }
     cardsDownloading.removeOne(fileNameCode);
     emit advanceProgressBar(cardsDownloading.count(), fileNameCode.split("_premium").first() + " downloaded");
     if(cardsDownloading.isEmpty())
@@ -946,7 +955,7 @@ void DraftHandler::captureDraft()
             getBestCards(bestCards);
             showNewCards(bestCards);
         }
-        else// if(heroDrafting)
+        else if(heroDrafting)
         {
             showNewHeroes();
         }
@@ -1013,7 +1022,7 @@ void DraftHandler::buildBestMatchesMaps()
             }
         }
     }
-    else// if(heroDrafting)
+    else if(heroDrafting)
     {
         for(int i=0; i<3; i++)
         {
@@ -1033,6 +1042,7 @@ CardRarity DraftHandler::getBestRarity()
     CardRarity rarity[3];
     for(int i=0; i<3; i++)
     {
+        if(bestMatchesMaps[i].isEmpty())    return INVALID_RARITY;
         QString code = bestMatchesMaps[i].first();
         //No restringimos rarezas si hay cartas unicas de arena (no colleccionables) (que no tienen rareza)
         if(!Utility::getCardAttribute(degoldCode(code), "collectible").toBool())    return INVALID_RARITY;
@@ -1567,11 +1577,35 @@ cv::MatND DraftHandler::getHist(const QString &code)
     cv::Mat srcBase;
     if(drafting)
     {
-        if(code.endsWith("_premium"))   srcBase = fullCard(cv::Rect(57,71,80,80));
-        else                            srcBase = fullCard(cv::Rect(60,71,80,80));
+        if(code.endsWith("_premium"))
+        {
+            if(fullCard.cols<(57+80) || fullCard.rows<(71+80))
+            {
+                emit pDebug("Card premium cv::Rect overflow.");
+                cv::MatND emptyHist;
+                return emptyHist;
+            }
+            srcBase = fullCard(cv::Rect(57,71,80,80));
+        }
+        else
+        {
+            if(fullCard.cols<(60+80) || fullCard.rows<(71+80))
+            {
+                emit pDebug("Card cv::Rect overflow.");
+                cv::MatND emptyHist;
+                return emptyHist;
+            }
+            srcBase = fullCard(cv::Rect(60,71,80,80));
+        }
     }
-    else //if(heroDrafting)
+    else if(heroDrafting)
     {
+        if(fullCard.cols<(75+160) || fullCard.rows<(201+160))
+        {
+            emit pDebug("Hero cv::Rect overflow.");
+            cv::MatND emptyHist;
+            return emptyHist;
+        }
         srcBase = fullCard(cv::Rect(75,201,160,160));
 //#ifdef QT_DEBUG
 //        cv::imshow(code.toStdString(), srcBase);
