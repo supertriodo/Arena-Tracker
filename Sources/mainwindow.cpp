@@ -4342,7 +4342,10 @@ void MainWindow::checkArenaCards()
         emit pDebug("CheckArenaCards: Arena cards and sets unchanged.");
         emit pDebug("CheckArenaCards: Unchanged arena sets: " + arenaSets.join(" "));
     }
-    secretsHandler->setArenaSets(arenaSets);
+    QStringList tempArenaSets = {"EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
+                             "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"};//TODO remove
+    secretsHandler->setArenaSets(tempArenaSets);//TODO remove
+//    secretsHandler->setArenaSets(arenaSets);
 }
 
 
