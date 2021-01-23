@@ -734,7 +734,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
     //TokenCard es sinergia debil
     //Evitamos que aparezcan token cards synergies en cada combo card, es sinergia debil
-    if(isTokenCardGen(code, cost, mechanics, text))                         mechanicCounters[V_TOKEN_CARD]->increase(code);
+    if(isTokenCardGen(code, cost, mechanics, referencedTags , text))        mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
@@ -1195,7 +1195,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergyTagMap);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergyTagMap);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergyTagMap);
-    if(isTokenCardGen(code, cost, mechanics, text))             mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergyTagMap);
+    if(isTokenCardGen(code, cost, mechanics, referencedTags, text)) mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergyTagMap);
     if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergyTagMap);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergyTagMap);
@@ -1557,21 +1557,25 @@ void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible,
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
     for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
-        qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
+        if(code.startsWith("YOP_"))
+        {qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";}
     }
 
     qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
-        debugSynergiesCode(code, ++num);
-
-        if(num>=openFrom && num<=openTo)
+        if(code.startsWith("YOP_"))
         {
-            QDesktopServices::openUrl(QUrl(
-                "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                ));
-            QThread::msleep(100);
+            debugSynergiesCode(code, ++num);
+
+            if(num>=openFrom && num<=openTo)
+            {
+                QDesktopServices::openUrl(QUrl(
+                    "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                    ));
+                QThread::msleep(100);
+            }
         }
     }
 
@@ -1672,7 +1676,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isBattlecry(code, mechanics))                                        mec<<"battlecry";
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
     if(isTokenGen(code, text))                                              mec<<"tokenGen";
-    if(isTokenCardGen(code, cost, mechanics, text))                         mec<<"tokenCardGen";
+    if(isTokenCardGen(code, cost, mechanics, referencedTags, text))         mec<<"tokenCardGen";
     if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
     if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
     if(isAttackNerfGen(code, text))                                         mec<<"attackNerfGen";
@@ -2323,15 +2327,23 @@ bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text)
+bool SynergyHandler::isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics,
+                                    const QJsonArray &referencedTags, const QString &text)
 {
     //Incluimos cartas que en conjunto permitan jugar 2+ cartas de coste 0/1/2
+    //Resumen: 2+2, 1+X, 0
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("tokenCardGen") || synergyCodes[code].contains("lackeyGen");
     }
     else if(cost == 0)                                                  return true;
-    else if(cost == 1 && mechanics.contains(QJsonValue("TWINSPELL")))   return true;
+    else if (cost == 1 &&
+                (mechanics.contains(QJsonValue("TWINSPELL")) ||
+                isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
+            )
+                                                                        return true;
+    else if(cost == 2 && mechanics.contains(QJsonValue("TWINSPELL")))   return true;
+    else if(cost < 4 && isEcho(code, mechanics))                        return true;
     else if(text.contains("lackey"))                                    return true;
     return false;
 }

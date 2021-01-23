@@ -126,7 +126,7 @@ private:
     bool isSilenceOwnGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
-    bool isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
+    bool isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isComboGen(const QString &code, const QJsonArray &mechanics);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);
