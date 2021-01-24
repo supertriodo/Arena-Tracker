@@ -4642,7 +4642,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", true, 1, 50);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", true, 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();
 
@@ -4858,6 +4858,8 @@ void MainWindow::testDelay()
 //TODO
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
+//soulFragments -- YOP_003
+//corrupt -- YOP_007 - YOP_011 - YOP_015 - YOP_025
 
-//biscuit
+//biscuit - YOP_019
 //Test secret/banana en mano
