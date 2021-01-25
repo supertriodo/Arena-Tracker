@@ -1,4 +1,4 @@
-#include "synergyhandler.h"
+﻿#include "synergyhandler.h"
 #include "themehandler.h"
 #include <QtWidgets>
 
@@ -1489,29 +1489,31 @@ bool SynergyHandler::containsAll(const QString &text, const QString &words)
 }
 
 
-void SynergyHandler::testSynergies()
+void SynergyHandler::testSynergies(const QString &miniSet)
 {
     initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE"))
+    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE", true, true))
 //    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+//    for(const QString &code: Utility::getWildCodes())
     {
-        DeckCard deckCard(code);
-        CardType cardType = deckCard.getType();
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        int attack = Utility::getCardAttribute(code, "attack").toInt();
-        int health = Utility::getCardAttribute(code, "health").toInt();
-        int cost = deckCard.getCost();
-        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-        if(
-//                containsAll(text, "destroy less attack")
-//                mechanics.contains(QJsonValue("OUTCAST"))
-//                referencedTags.contains(QJsonValue("OUTCAST"))
-//                && cardType == MINION
-                isAoeGen(code, text) && isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
+        if(miniSet.isEmpty() || code.startsWith(miniSet))
+        {
+            DeckCard deckCard(code);
+            CardType cardType = deckCard.getType();
+            QString text = Utility::cardEnTextFromCode(code).toLower();
+            int attack = Utility::getCardAttribute(code, "attack").toInt();
+            int health = Utility::getCardAttribute(code, "health").toInt();
+            int cost = deckCard.getCost();
+            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+            QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+            if(
+//                    containsAll(text, "destroy less attack")
+//                    mechanics.contains(QJsonValue("OUTCAST"))
+//                    referencedTags.contains(QJsonValue("OUTCAST"))
+//                    && cardType == MINION
+                    isAoeGen(code, text) && isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -1523,49 +1525,52 @@ void SynergyHandler::testSynergies()
 //containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //containsAll(text, "draw cop")
-            )
-        {
-//            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
-            debugSynergiesCode(code, ++num);
-//            qDebug()<<mechanics<<endl<<referencedTags;
-
-            if(num>0 && num<100)
+                )
             {
-                QDesktopServices::openUrl(QUrl(
-                    "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-                    ));
-                QThread::msleep(100);
+    //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+                debugSynergiesCode(code, ++num);
+    //            qDebug()<<mechanics<<endl<<referencedTags;
+
+                if(num>0 && num<100)
+                {
+                    QDesktopServices::openUrl(QUrl(
+                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                        ));
+                    QThread::msleep(100);
+                }
             }
+            Q_UNUSED(cardType);
+            Q_UNUSED(text);
+            Q_UNUSED(attack);
+            Q_UNUSED(health);
+            Q_UNUSED(cost);
+            Q_UNUSED(mechanics);
+            Q_UNUSED(referencedTags);
         }
-        Q_UNUSED(cardType);
-        Q_UNUSED(text);
-        Q_UNUSED(attack);
-        Q_UNUSED(health);
-        Q_UNUSED(cost);
-        Q_UNUSED(mechanics);
-        Q_UNUSED(referencedTags);
     }
 
     clearLists(true);
 }
 
 
-void SynergyHandler::debugSynergiesSet(const QString &set, bool onlyCollectible, int openFrom, int openTo)
+void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int openTo, const QString &miniSet, bool onlyCollectible)
 {
     initSynergyCodes();
 
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
     for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
-        if(code.startsWith("YOP_"))
-        {qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";}
+        if(miniSet.isEmpty() || code.startsWith(miniSet))
+        {
+            qDebug()<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],";
+        }
     }
 
     qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
     for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
     {
-        if(code.startsWith("YOP_"))
+        if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
             debugSynergiesCode(code, ++num);
 
@@ -3626,6 +3631,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == PRIMORDIAL_STUDIES)  return 0;
     if(code == CARRION_STUDIES)     return 0;
     if(code == NATURE_STUDIES)      return 0;
+    if(code == ILLIDARI_STUDIES)    return 0;
     if(code == INSIGHT)             return 0;
     if(code == GHUUN_THE_BLOOD_GOD) return 0;
     if(code == EYE_BEAM)            return 1;

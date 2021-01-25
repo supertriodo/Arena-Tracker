@@ -4642,9 +4642,9 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", true, 1, 20);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies();
+//    draftHandler->getSynergyHandler()->testSynergies("YOP_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }

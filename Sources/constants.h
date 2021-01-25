@@ -301,5 +301,6 @@
 #define EYE_OF_CTHUN "DMF_254t3"
 #define HEART_OF_CTHUN "DMF_254t4"
 #define MAW_OF_CTHUN "DMF_254t7"
+#define ILLIDARI_STUDIES "YOP_001"
 
 #endif // CONSTANTS_H

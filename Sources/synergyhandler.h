@@ -29,11 +29,11 @@ private:
 
 //Metodos
 public:
-    void debugSynergiesSet(const QString &set, bool onlyCollectible=true, int openFrom=0, int openTo=-1);
+    void debugSynergiesSet(const QString &set, int openFrom=0, int openTo=-1, const QString &miniSet="", bool onlyCollectible=true);
     void debugSynergiesCode(const QString &code, int num=0);
     void debugMissingSynergiesAllSets();
     bool isValidSynergyCode(const QString &mechanic);
-    void testSynergies();
+    void testSynergies(const QString &miniSet="");
     int getCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
                         QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
