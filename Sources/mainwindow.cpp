@@ -4858,8 +4858,6 @@ void MainWindow::testDelay()
 //TODO
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
-//soulFragments -- YOP_003
-//corrupt -- YOP_007 - YOP_011 - YOP_015 - YOP_025
 
 //biscuit - YOP_019
 //Test secret/banana en mano

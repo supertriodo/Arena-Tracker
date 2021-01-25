@@ -2850,10 +2850,11 @@
   "EX1_619 Equality": ["CS2_093 Consecration","NEW1_020 Wild Pyromancer",
     "EX1_097 Abomination","FP1_024 Unstable Ghoul"],
 
+  "-----LIBRAM-----": "",
   "BT_020 Aldor Attendant": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
-    "BT_025 Libram of Wisdom"],
+    "BT_025 Libram of Wisdom", "YOP_011 Libram of Judgment"],
   "BT_026 Aldor Truthseeker": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
-    "BT_025 Libram of Wisdom"],
+    "BT_025 Libram of Wisdom", "YOP_011 Libram of Judgment"],
 
   "-----------------------------------------HUNTER-------------------------------------------------": "",
 
@@ -2868,13 +2869,14 @@
   "EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
     "EX1_623 Temple Enforcer"],
 
-"--------------------------------------------ALL---------------------------------------------------": "",
+  "--------------------------------------------ALL---------------------------------------------------": "",
   "EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
 
   "BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
 
   "SCH_311 Animated Broomstick": ["SCH_605 Lake Thresher"],
 
+  "-----SOUL FRAGMENTS-----": "",
   "SCH_700 Spirit Jailer": ["SCH_517 Shadowlight Scholar", "SCH_355 Shardshatter Mystic",
     "SCH_704 Soulshard Lapidary", "SCH_343 Void Drinker", "SCH_703 Soulciologist Malicia"],
   "SCH_701 Soul Shear": ["SCH_517 Shadowlight Scholar", "SCH_355 Shardshatter Mystic",
@@ -2883,7 +2885,19 @@
     "SCH_704 Soulshard Lapidary", "SCH_343 Void Drinker", "SCH_703 Soulciologist Malicia"],
   "SCH_252 Marrowslicer": ["SCH_517 Shadowlight Scholar", "SCH_355 Shardshatter Mystic",
     "SCH_704 Soulshard Lapidary", "SCH_343 Void Drinker", "SCH_703 Soulciologist Malicia"],
+  "YOP_003 Luckysoul Hoarder": ["SCH_517 Shadowlight Scholar", "SCH_355 Shardshatter Mystic",
+    "SCH_704 Soulshard Lapidary", "SCH_343 Void Drinker", "SCH_703 Soulciologist Malicia"],
 
+  "-----CORRUPT-----": "",
+  "YOP_007 Dark Inquisitor Xanesh": ["DMF_248 Felsteel Executioner", "DMF_247 Insatiable Felhound",
+    "DMF_061 Faire Arborist", "DMF_730 Moontouched Amulet", "DMF_083 Dancing Cobra",
+    "DMF_090 Don't Feed the Animals", "DMF_105 Ring Toss", "DMF_101 Firework Elemental",
+    "DMF_244 Day at the Faire", "DMF_064 Carousel Gryphon", "DMF_054 Insight", "DMF_184 Fairground Fool",
+    "DMF_186 Auspicious Spirits", "DMF_517 Sweet Tooth", "DMF_703 Pit Master", "DMF_701 Dunk Tank",
+    "DMF_117 Cascading Disaster", "DMF_118 Tickatus", "DMF_526 Stage Dive", "DMF_124 Horrendous Growth",
+    "DMF_073 Darkmoon Dirigible", "DMF_082 Darkmoon Statue", "DMF_174 Circus Medic",
+    "DMF_080 Fleethoof Pearltusk", "DMF_078 Strongman", "DMF_163 Carnival Clown",
+    "YOP_015 Nitroboost Poison", "YOP_025 Dreaming Drake", "YOP_011 Libram of Judgment"],
   "DMF_188 Y'Shaarj, the Defiler": ["DMF_248 Felsteel Executioner", "DMF_247 Insatiable Felhound",
     "DMF_061 Faire Arborist", "DMF_730 Moontouched Amulet", "DMF_083 Dancing Cobra",
     "DMF_090 Don't Feed the Animals", "DMF_105 Ring Toss", "DMF_101 Firework Elemental",
@@ -2891,6 +2905,7 @@
     "DMF_186 Auspicious Spirits", "DMF_517 Sweet Tooth", "DMF_703 Pit Master", "DMF_701 Dunk Tank",
     "DMF_117 Cascading Disaster", "DMF_118 Tickatus", "DMF_526 Stage Dive", "DMF_124 Horrendous Growth",
     "DMF_073 Darkmoon Dirigible", "DMF_082 Darkmoon Statue", "DMF_174 Circus Medic",
-    "DMF_080 Fleethoof Pearltusk", "DMF_078 Strongman", "DMF_163 Carnival Clown" ]
+    "DMF_080 Fleethoof Pearltusk", "DMF_078 Strongman", "DMF_163 Carnival Clown",
+    "YOP_015 Nitroboost Poison", "YOP_025 Dreaming Drake", "YOP_011 Libram of Judgment"]
 }
 }
