@@ -1959,7 +1959,7 @@ int PlanHandler::getPotentialMana(Board *board)
     {
         if(!card->isPlayed())
         {
-            int manaCard = card->getManaSpent();
+            int manaCard = card->getManaSpent(false);
             if(manaCard < 0)    mana -= manaCard;
         }
     }
@@ -1988,7 +1988,7 @@ int PlanHandler::getPotentialManaNextTurn()
     int mana = nowBoard->playerHero->getResources() + 1;
     foreach(CardGraphicsItem* card, nowBoard->playerHandList)
     {
-        int manaCard = card->getManaSpent();
+        int manaCard = card->getManaSpent(false);
         if(manaCard < 0)    mana -= manaCard;
     }
 
@@ -2055,7 +2055,7 @@ void PlanHandler::cardPress(CardGraphicsItem* card, Qt::MouseButton mouseButton)
     {
         card->togglePlayed();
         selectedCode = (card->isPlayed()?card->getCode():"");
-        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getManaSpent():-card->getManaSpent());
+        futureBoard->playerHero->addResourcesUsed(card->isPlayed()?card->getManaSpent(true):-card->getManaSpent(true));
         showManaPlayableCards(futureBoard);
     }
 }

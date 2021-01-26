@@ -302,5 +302,6 @@
 #define HEART_OF_CTHUN "DMF_254t4"
 #define MAW_OF_CTHUN "DMF_254t7"
 #define ILLIDARI_STUDIES "YOP_001"
+#define MANA_BISCUIT "YOP_019t"
 
 #endif // CONSTANTS_H

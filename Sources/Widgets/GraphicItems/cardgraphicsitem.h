@@ -60,7 +60,7 @@ public:
     QString getCode();
     QString getCreatedByCode();
     void showManaPlayable(int mana);
-    int getManaSpent();
+    int getManaSpent(bool includeRefresh);
     void setShowTransparent(bool value=true);
     bool isTransparent();
     void changeCode(QString newCode);

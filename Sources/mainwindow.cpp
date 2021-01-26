@@ -4859,5 +4859,4 @@ void MainWindow::testDelay()
 //outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
 
-//biscuit - YOP_019
 //Test secret/banana en mano
