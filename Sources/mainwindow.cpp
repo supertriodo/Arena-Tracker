@@ -4644,9 +4644,9 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("YOP_");
+    draftHandler->getSynergyHandler()->testSynergies("");
 
-    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
+//    draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
 
@@ -4856,7 +4856,5 @@ void MainWindow::testDelay()
 
 
 //TODO
-//outcastGen/outcastAllSyn
 //comboGen/comboAllSyn
 
-//Test secret/banana en mano

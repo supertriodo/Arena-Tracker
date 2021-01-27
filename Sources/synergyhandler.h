@@ -154,6 +154,7 @@ private:
     bool isTreantGen(const QString &code, const QString &text);
     bool isLackeyGen(const QString &code, const QString &text);    
     bool isOutcast(const QString &code, const QJsonArray &mechanics);
+    bool isOutcastGen(const QString &code);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -230,7 +231,8 @@ private:
     bool isSilverHandSyn(const QString &code);
     bool isTreantSyn(const QString &code);
     bool isLackeySyn(const QString &code);
-    bool isOutcastSyn(const QString &code, const QJsonArray &referencedTags);
+    bool isOutcastSyn(const QString &code);
+    bool isOutcastAllSyn(const QString &code, const QJsonArray &referencedTags);
 
 signals:
     void pLog(QString line);
