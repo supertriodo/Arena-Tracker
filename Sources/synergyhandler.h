@@ -127,7 +127,8 @@ private:
     bool isTauntGiverGen(const QString &code);
     bool isTokenGen(const QString &code, const QString &text);
     bool isTokenCardGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
-    bool isComboGen(const QString &code, const QJsonArray &mechanics);
+    bool isCombo(const QString &code, const QJsonArray &mechanics);
+    bool isComboGen(const QString &code);
     bool isWindfuryMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);
     bool isAttackBuffGen(const QString &code, const QString &text);
     bool isAttackNerfGen(const QString &code, const QString &text);
@@ -205,7 +206,8 @@ private:
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isTokenSyn(const QString &code, const QString &text);
     bool isTokenCardSyn(const QString &code, const QString &text);
-    bool isComboSyn(const QString &code, const QJsonArray &referencedTags);
+    bool isComboSyn(const QString &code);
+    bool isComboAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isWindfuryMinionSyn(const QString &code);
     bool isAttackBuffSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
     bool isAttackNerfSyn(const QString &code, const QString &text);

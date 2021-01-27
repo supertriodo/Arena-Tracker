@@ -150,6 +150,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_TOKEN] = new DraftItemCounter(this, "Token");
     mechanicCounters[V_TOKEN_CARD] = new DraftItemCounter(this, "Token Card");
     mechanicCounters[V_COMBO] = new DraftItemCounter(this, "Combo");
+    mechanicCounters[V_COMBO_ALL] = new DraftItemCounter(this, "Combo");
     mechanicCounters[V_WINDFURY_MINION] = new DraftItemCounter(this, "Windfury");
     mechanicCounters[V_ATTACK_BUFF] = new DraftItemCounter(this, "Attack Buff");
     mechanicCounters[V_ATTACK_NERF] = new DraftItemCounter(this, "Attack Nerf");
@@ -733,10 +734,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
-    //TokenCard es sinergia debil
-    //Evitamos que aparezcan token cards synergies en cada combo card, es sinergia debil
     if(isTokenCardGen(code, cost, mechanics, referencedTags , text))        mechanicCounters[V_TOKEN_CARD]->increase(code);
-    if(isComboGen(code, mechanics))                                         mechanicCounters[V_COMBO]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
     if(isAttackNerfGen(code, text))                                         mechanicCounters[V_ATTACK_NERF]->increase(code);
@@ -819,6 +817,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_OUTCAST_ALL]->increase(code);
     }
     else if(isOutcastGen(code))                                             mechanicCounters[V_OUTCAST_ALL]->increase(code);
+    if(isCombo(code, mechanics))
+    {
+        mechanicCounters[V_COMBO]->increase(code);
+        mechanicCounters[V_COMBO_ALL]->increase(code);
+    }
+    else if(isComboGen(code))                                               mechanicCounters[V_COMBO_ALL]->increase(code);
 
 
     //SYN
@@ -834,7 +838,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
     if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isTokenCardSyn(code, text))                                          mechanicCounters[V_TOKEN_CARD]->increaseSyn(code);
-    if(isComboSyn(code, referencedTags))                                    mechanicCounters[V_COMBO]->increaseSyn(code);
     if(isWindfuryMinionSyn(code))                                           mechanicCounters[V_WINDFURY_MINION]->increaseSyn(code);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
     if(isAttackNerfSyn(code, text))                                         mechanicCounters[V_ATTACK_NERF]->increaseSyn(code);
@@ -880,6 +883,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isBattlecryAllSyn(code, referencedTags))                        mechanicCounters[V_BATTLECRY_ALL]->increaseSyn(code);
     if(isOutcastSyn(code))                                                  mechanicCounters[V_OUTCAST]->increaseSyn(code);
     else if(isOutcastAllSyn(code, referencedTags))                          mechanicCounters[V_OUTCAST_ALL]->increaseSyn(code);
+    if(isComboSyn(code))                                                    mechanicCounters[V_COMBO]->increaseSyn(code);
+    else if(isComboAllSyn(code, referencedTags))                            mechanicCounters[V_COMBO_ALL]->increaseSyn(code);
 }
 
 
@@ -1203,7 +1208,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergyTagMap);
     if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergyTagMap);
     if(isTokenCardGen(code, cost, mechanics, referencedTags, text)) mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergyTagMap);
-    if(isComboGen(code, mechanics))                             mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergyTagMap);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergyTagMap);
     if(isAttackNerfGen(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertSynCards(synergyTagMap);
@@ -1274,7 +1278,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
         mechanicCounters[V_OUTCAST_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isOutcastGen(code))                                 mechanicCounters[V_OUTCAST_ALL]->insertSynCards(synergyTagMap);
-
+    if(isCombo(code, mechanics))
+    {
+        mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_COMBO_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isComboGen(code))                                   mechanicCounters[V_COMBO_ALL]->insertSynCards(synergyTagMap);
 
 
     //SYN
@@ -1290,7 +1299,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergyTagMap);
     if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergyTagMap);
     if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergyTagMap);
-    if(isComboSyn(code, referencedTags))                        mechanicCounters[V_COMBO]->insertCards(synergyTagMap);
     if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergyTagMap);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergyTagMap);
     if(isAttackNerfSyn(code, text))                             mechanicCounters[V_ATTACK_NERF]->insertCards(synergyTagMap);
@@ -1337,6 +1345,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     else if(isBattlecryAllSyn(code, referencedTags))            mechanicCounters[V_BATTLECRY_ALL]->insertCards(synergyTagMap);
     if(isOutcastSyn(code))                                      mechanicCounters[V_OUTCAST]->insertCards(synergyTagMap);
     else if(isOutcastAllSyn(code, referencedTags))              mechanicCounters[V_OUTCAST_ALL]->insertCards(synergyTagMap);
+    if(isComboSyn(code))                                        mechanicCounters[V_COMBO]->insertCards(synergyTagMap);
+    else if(isComboAllSyn(code, referencedTags))                mechanicCounters[V_COMBO_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1472,8 +1482,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "enrageGen", "tauntGiverGen", "evolveGen", "spawnEnemyGen", "spellDamageGen", "handBuffGen", "spellBuffGen",
         "enrageSyn", "tauntGiverSyn", "evolveSyn", "spawnEnemySyn", "spellDamageSyn", "handBuffSyn", "spellBuffSyn",
 
-        "tokenGen", "tokenCardGen", "comboGen", "attackBuffGen", "attackNerfGen", "healthBuffGen", "heroAttackGen",
-        "tokenSyn", "tokenCardSyn", "comboSyn", "attackBuffSyn", "attackNerfSyn", "healthBuffSyn", "heroAttackSyn",
+        "tokenGen", "tokenCardGen", "combo", "comboGen", "attackBuffGen", "attackNerfGen", "healthBuffGen", "heroAttackGen",
+        "tokenSyn", "tokenCardSyn", "comboSyn", "comboAllSyn", "attackBuffSyn", "attackNerfSyn", "healthBuffSyn", "heroAttackSyn",
 
         "restoreTargetMinionGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen",
         "restoreTargetMinionSyn", "restoreFriendlyHeroSyn", "restoreFriendlyMinionSyn",
@@ -1524,8 +1534,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
 //                    containsAll(text, "destroy less attack")
-//                    mechanics.contains(QJsonValue("OUTCAST"))
-                    referencedTags.contains(QJsonValue("OUTCAST"))
+//                    mechanics.contains(QJsonValue("COMBO"))
+                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    isAoeGen(code, text) && isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack)
 
@@ -1716,7 +1726,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isDivineShield(code, mechanics))                                     mec<<"divineShield";
     else if(isDivineShieldGen(code, referencedTags))                        mec<<"divineShieldGen";
     if(isEnrageGen(code, mechanics))                                        mec<<"enrageGen";
-    if(isComboGen(code, mechanics))                                         mec<<"comboGen";
+    if(isCombo(code, mechanics))                                            mec<<"combo";
     if(isHandBuffGen(code, text))                                           mec<<"handBuffGen";
     if(isEnemyDrawGen(code, text))                                          mec<<"enemyDrawGen";
     if(isHeroAttackGen(code, text))                                         mec<<"heroAttackGen";
@@ -1726,7 +1736,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isTreantGen(code, text))                                             mec<<"treantGen";
     if(isLackeyGen(code, text))                                             mec<<"lackeyGen";
     if(isOutcast(code, mechanics))                                          mec<<"outcast";
-    //New Synergy Step 8
+    //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
     if(isOverloadSyn(code, text))                                           mec<<"overloadSyn";
@@ -1742,6 +1752,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
     if(isEnrageSyn(code, text))                                             mec<<"enrageSyn";
+    if(isComboAllSyn(code, referencedTags))                                 mec<<"comboAllSyn";
     if(isTokenCardSyn(code, text))                                          mec<<"tokenCardSyn";
     if(isEggSyn(code, text))                                                mec<<"eggSyn";
     if(isHandBuffSyn(code, text))                                           mec<<"handBuffSyn";
@@ -2366,15 +2377,23 @@ bool SynergyHandler::isTokenCardGen(const QString &code, int cost, const QJsonAr
     else if(text.contains("lackey"))                                    return true;
     return false;
 }
-bool SynergyHandler::isComboGen(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isCombo(const QString &code, const QJsonArray &mechanics)
 {
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("comboGen");
+        return synergyCodes[code].contains("combo");
     }
     else if(mechanics.contains(QJsonValue("COMBO")))
     {
         return true;
+    }
+    return false;
+}
+bool SynergyHandler::isComboGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("comboGen");
     }
     return false;
 }
@@ -3319,11 +3338,19 @@ bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isComboSyn(const QString &code, const QJsonArray &referencedTags)
+bool SynergyHandler::isComboSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("comboSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isComboAllSyn(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("comboAllSyn");
     }
     else if(referencedTags.contains(QJsonValue("COMBO")))
     {
@@ -3755,7 +3782,7 @@ jadeGolemGen, heroPowerGen, secret, secretGen, freezeEnemyGen, discardGen, steal
 damageMinionsGen, reachGen, pingGen, aoeGen, destroyGen
 deathrattle, deathrattleGen, deathrattleOpponent, silenceOwnGen, battlecry, battlecryGen, returnGen
 enrageGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen, handBuffGen, spellBuffGen
-tokenGen, tokenCardGen, comboGen, attackBuffGen, attackNerfGen, healthBuffGen, heroAttackGen
+tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen
 otherClassGen, silverHandGen, treantGen, lackeyGen, outcast, outcastGen
