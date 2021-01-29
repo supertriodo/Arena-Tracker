@@ -151,7 +151,7 @@ void DeckCard::disablePixmap(QPixmap &canvas)
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
         painter.setRenderHint(QPainter::TextAntialiasing);
 
-        painter.fillRect(canvas.rect(), QBrush(QColor(0,0,0,200)));
+        painter.fillRect(canvas.rect(), QBrush(QColor(0,0,0,150)));
     painter.end();
 }
 
