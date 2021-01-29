@@ -901,13 +901,6 @@ void Utility::fadeLayout(QLayout* layout, bool in)
 }
 
 
-float Utility::normalizeLF(float score, bool doit)
-{
-    if(doit)    return score - 45;
-    else        return score;
-}
-
-
 bool Utility::createDir(QString pathDir)
 {
     QFileInfo dirInfo(pathDir);

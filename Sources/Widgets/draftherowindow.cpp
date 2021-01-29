@@ -23,7 +23,7 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget, Score_Heroes, false);
+        scoresPushButton[i] = new ScoreButton(centralWidget, Score_Heroes);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
 

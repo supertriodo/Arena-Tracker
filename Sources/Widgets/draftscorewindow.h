@@ -28,7 +28,7 @@ class DraftScoreWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool normalizedLF);
+    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex);
     ~DraftScoreWindow();
 
 //Variables
@@ -69,7 +69,6 @@ public:
     void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void redrawSynergyCards();
     void setSynergies(int posCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor);
-    void setNormalizedLF(bool value);
     void setTwitchScores(int vote1, int vote2, int vote3, QString username);
 
 signals:

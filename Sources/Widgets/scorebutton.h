@@ -13,7 +13,7 @@ class ScoreButton : public QLabel
 
 //Constructor
 public:
-    ScoreButton(QWidget * parent, ScoreSource scoreSource, bool normalizedLF);
+    ScoreButton(QWidget * parent, ScoreSource scoreSource);
 
 //Variables
 private:
@@ -22,7 +22,6 @@ private:
     bool isBestScore;
     int includedDecks;
     ScoreSource scoreSource;
-    bool normalizedLF;
 
 //Metodos
 private:
@@ -38,7 +37,6 @@ public:
     void setScore(float score, bool isBest, int includedDecks=-1);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
-    void setNormalizedLF(bool value);
     void draw();
 
 signals:

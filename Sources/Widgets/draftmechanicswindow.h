@@ -17,7 +17,7 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, bool normalizedLF);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion);
     ~DraftMechanicsWindow();
 
 
@@ -49,7 +49,6 @@ public:
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int manaIncrease, int numCards);
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
-    void setNormalizedLF(bool value);
     int draftedCardsCount();
 
 public slots:

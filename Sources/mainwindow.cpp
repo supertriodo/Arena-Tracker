@@ -1827,7 +1827,6 @@ void MainWindow::readSettings()
     bool draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
     this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", HSReplay).toInt());
-    bool draftNormalizedLF = settings.value("draftNormalizedLF", false).toBool();
     bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
     bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
@@ -1844,7 +1843,7 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, draftNormalizedLF, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
+                  maxGamesLog, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
@@ -1884,7 +1883,6 @@ void MainWindow::writeSettings()
     settings.setValue("draftLearningMode", ui->configCheckLearning->isChecked());
     settings.setValue("draftShowDrops", ui->configCheckShowDrops->isChecked());
     settings.setValue("draftMethodAvgScore", static_cast<int>(this->draftMethodAvgScore));
-    settings.setValue("draftNormalizedLF", ui->configCheckNormalizeLF->isChecked());
     settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
     settings.setValue("draftMethodLF", ui->configCheckLF->isChecked());
     settings.setValue("draftMethodHSR", ui->configCheckHSR->isChecked());
@@ -1909,7 +1907,7 @@ void MainWindow::writeSettings()
 
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
-                               bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF,
+                               bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog,
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
                                bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops)
@@ -2005,9 +2003,6 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
 
     if(draftShowDrops)              ui->configCheckShowDrops->setChecked(true);
     updateDraftShowDrops(draftShowDrops);
-
-    if(draftNormalizedLF)           ui->configCheckNormalizeLF->setChecked(true);
-    updateDraftNormalizeLF(draftNormalizedLF);
 
     ui->configCheckHA->setChecked(draftMethodHA);
     ui->configCheckLF->setChecked(draftMethodLF);
@@ -3246,7 +3241,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckMechanicsOverlay->setStyleSheet(checkCSS);
         ui->configCheckLearning->setStyleSheet(checkCSS);
         ui->configCheckShowDrops->setStyleSheet(checkCSS);
-        ui->configCheckNormalizeLF->setStyleSheet(checkCSS);
         ui->configCheckAutoSize->setStyleSheet(checkCSS);
         ui->configCheckManaLimits->setStyleSheet(checkCSS);
         ui->configCheckTotalAttack->setStyleSheet(checkCSS);
@@ -3303,7 +3297,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckMechanicsOverlay->setStyleSheet("");
         ui->configCheckLearning->setStyleSheet("");
         ui->configCheckShowDrops->setStyleSheet("");
-        ui->configCheckNormalizeLF->setStyleSheet("");
         ui->configCheckAutoSize->setStyleSheet("");
         ui->configCheckManaLimits->setStyleSheet("");
         ui->configCheckTotalAttack->setStyleSheet("");
@@ -3900,12 +3893,6 @@ void MainWindow::updateDraftShowDrops(bool checked)
 }
 
 
-void MainWindow::updateDraftNormalizeLF(bool checked)
-{
-    draftHandler->setNormalizedLF(checked);
-}
-
-
 void MainWindow::updateDraftMethodHA(bool checked)
 {
     if(checked)                                         this->draftMethodAvgScore = HearthArena;
@@ -4073,7 +4060,6 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
     connect(ui->configCheckShowDrops, SIGNAL(clicked(bool)), this, SLOT(updateDraftShowDrops(bool)));
-    connect(ui->configCheckNormalizeLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftNormalizeLF(bool)));
     connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHA(bool)));
     connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodLF(bool)));
     connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHSR(bool)));

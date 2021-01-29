@@ -166,7 +166,7 @@ private:
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
-                       bool showTotalAttack, bool showRngList, int maxGamesLog, bool draftNormalizedLF, bool twitchChatVotes, QString theme,
+                       bool showTotalAttack, bool showRngList, int maxGamesLog, bool twitchChatVotes, QString theme,
                        bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
     void moveInScreen(QPoint pos, QSize size);
@@ -288,7 +288,6 @@ private slots:
     void updateShowDraftMechanicsOverlay(bool checked);
     void updateDraftLearningMode(bool checked);
     void updateDraftShowDrops(bool checked);
-    void updateDraftNormalizeLF(bool checked);
     void updateTooltipScale(int value);
     void closeApp();
     void updateShowClassColor(bool checked);

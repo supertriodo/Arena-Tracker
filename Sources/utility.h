@@ -134,7 +134,6 @@ public:
     static QStringList getSetCodes(const QString &set, bool excludeHeroes, bool onlyCollectible);
     static QStringList getWildCodes();
     static QStringList getStandardCodes();
-    static float normalizeLF(float score, bool doit);
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
     static void fixLightforgeTierlist();

@@ -90,7 +90,6 @@ private:
     QLabel *labelHSRscore[3];
     QComboBox *comboBoxCard[3];
     bool extendedCapture;
-    bool normalizedLF;
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
@@ -141,14 +140,14 @@ private:
     void clearAndDisconnectComboBox(int index);
     void initDraftMechanicsWindowCounters();
     void initSynergyCounters(QList<DeckCard> &deckCardList);
-    void updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards);
-    void showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
+    void updateLabelDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR, int numCards);
+    void showMessageDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
     void updateAvgScoresVisibility();
     void endHeroDraft();
     void showNewHeroes();
     void createTwitchHandler();
     void deleteTwitchHandler();
-    QString getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR);
+    QString getDeckAvgString(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
     void buildDraftMechanicsWindow();
 
 public:
@@ -215,7 +214,6 @@ public slots:
     void leaveArena();
     void minimizeScoreWindow();
     void setPremium(bool premium);
-    void setNormalizedLF(bool value);
     void updateMinimumHeight();
 
 private slots:

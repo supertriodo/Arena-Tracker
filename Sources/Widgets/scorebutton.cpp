@@ -2,9 +2,8 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, bool normalizedLF) : QLabel(parent)
+ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource) : QLabel(parent)
 {
-    this->normalizedLF = normalizedLF;
     this->learningMode = false;
     this->learningShow = false;
     this->isBestScore = false;
@@ -70,13 +69,6 @@ void ScoreButton::setLearningMode(bool value)
 }
 
 
-void ScoreButton::setNormalizedLF(bool value)
-{
-    this->normalizedLF = value;
-    //No necesita draw porque al cambiar normalized en draftHandler el vuelve a mostrar los scores lo que en cascada causara un draw aqui.
-}
-
-
 void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 {
     int rating255 = 0;
@@ -106,7 +98,7 @@ void ScoreButton::draw()
     bool hideScore = learningMode && !learningShow;
 
     int r, g, b;
-    getScoreColor(r, g, b, (scoreSource == Score_LightForge)?Utility::normalizeLF(score, true):score);
+    getScoreColor(r, g, b, score);
 
     QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
     QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
@@ -141,7 +133,7 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::TextAntialiasing);
 
     float drawScore = 0;
-    if(scoreSource == Score_LightForge)         drawScore = static_cast<int>(Utility::normalizeLF(score, this->normalizedLF));
+    if(scoreSource == Score_LightForge)         drawScore = static_cast<int>(score);
     else if(scoreSource == Score_HearthArena)   drawScore = static_cast<int>(score);
     else                                        drawScore = score;
 

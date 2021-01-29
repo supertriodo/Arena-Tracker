@@ -26,7 +26,6 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->draftMethodLF = true;
     this->draftMethodHSR = false;
     this->draftMethodAvgScore = LightForge;
-    this->normalizedLF = true;
     this->twitchHandler = nullptr;
     this->multiclassArena = false;
     this->learningMode = false;
@@ -68,21 +67,21 @@ void DraftHandler::createScoreItems()
     lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
-    scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge, false);
+    scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge);
     scoreButtonLF->setFixedHeight(width);
     scoreButtonLF->setFixedWidth(width);
     scoreButtonLF->setScore(0, true);
     scoreButtonLF->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
-    scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena, false);
+    scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena);
     scoreButtonHA->setFixedHeight(width);
     scoreButtonHA->setFixedWidth(width);
     scoreButtonHA->setScore(0, true);
     scoreButtonHA->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
-    scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay, false);
+    scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay);
     scoreButtonHSR->setFixedHeight(width);
     scoreButtonHSR->setFixedWidth(width);
     scoreButtonHSR->setScore(0, true);
@@ -492,7 +491,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
         ui->tabWidget->setTabToolTip(0, "Draft");
 
         //Reset scores
-        scoreButtonLF->setNormalizedLF(normalizedLF);
         synergyHandler->setHidden(!patreonVersion);
         lavaButton->setHidden(!patreonVersion);
         scoreButtonHA->setEnabled(false);
@@ -782,9 +780,9 @@ void DraftHandler::endDraft()
     {
         int numCards = synergyHandler->draftedCardsCount();
         int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
-        int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
+        int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
         float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
-        showMessageDeckScore(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
+        showMessageDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR);
     }
 
     clearLists(false);
@@ -1369,9 +1367,8 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
     deckRatingHSR += cardRatingHSR;
     int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
     int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
-    int deckScoreLFNormalized = (numCards==0)?0:static_cast<int>(Utility::normalizeLF((deckRatingLF/numCards), this->normalizedLF));
     float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
-    updateLabelDeckScore(deckScoreLFNormalized, deckScoreHA, deckScoreHSR, numCards);
+    updateLabelDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR, numCards);
     scoreButtonLF->setScore(deckScoreLF, true);
     scoreButtonHA->setScore(deckScoreHA, true);
     scoreButtonHSR->setScore(deckScoreHSR, true);
@@ -1380,10 +1377,10 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
 }
 
 
-QString DraftHandler::getDeckAvgString(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
+QString DraftHandler::getDeckAvgString(int deckScoreLF, int deckScoreHA, float deckScoreHSR)
 {
     QString scoreText = "";
-    if(draftMethodLF)   scoreText += "LF: " + QString::number(deckScoreLFNormalized);
+    if(draftMethodLF)   scoreText += "LF: " + QString::number(deckScoreLF);
     if(draftMethodHSR)
     {
         if(!scoreText.isEmpty())    scoreText += " -- ";
@@ -1398,17 +1395,17 @@ QString DraftHandler::getDeckAvgString(int deckScoreLFNormalized, int deckScoreH
 }
 
 
-void DraftHandler::updateLabelDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR, int numCards)
+void DraftHandler::updateLabelDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR, int numCards)
 {
-    QString scoreText = getDeckAvgString(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
+    QString scoreText = getDeckAvgString(deckScoreLF, deckScoreHA, deckScoreHSR);
     scoreText += " (" + QString::number(numCards) + "/30)";
     ui->labelDeckScore->setText(scoreText);
 }
 
 
-void DraftHandler::showMessageDeckScore(int deckScoreLFNormalized, int deckScoreHA, float deckScoreHSR)
+void DraftHandler::showMessageDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR)
 {
-    QString scoreText = getDeckAvgString(deckScoreLFNormalized, deckScoreHA, deckScoreHSR);
+    QString scoreText = getDeckAvgString(deckScoreLF, deckScoreHA, deckScoreHSR);
     if(!scoreText.isEmpty())    emit showMessageProgressBar(scoreText, 10000);
 }
 
@@ -1430,7 +1427,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         //Update score label
         if(draftMethod == LightForge)
         {
-            labelLFscore[i]->setText(QString::number(static_cast<int>(Utility::normalizeLF(ratings[i], this->normalizedLF))) +
+            labelLFscore[i]->setText(QString::number(static_cast<int>(ratings[i])) +
                                                (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
@@ -1833,7 +1830,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
     if(drafting)
     {
-        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, this->normalizedLF);
+        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -1851,7 +1848,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
 
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                        patreonVersion, this->normalizedLF);
+                                                        patreonVersion);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();
@@ -1871,7 +1868,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     else//buildMechanicsWindow
     {
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                        patreonVersion, this->normalizedLF);
+                                                        patreonVersion);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();
@@ -2191,32 +2188,6 @@ void DraftHandler::craftGoldenCopy(int cardIndex)
 bool DraftHandler::isDrafting()
 {
     return this->drafting;
-}
-
-
-void DraftHandler::setNormalizedLF(bool value)
-{
-    this->normalizedLF = value;
-    if(!isDrafting())   return;
-
-    if(this->draftScoreWindow != nullptr)      draftScoreWindow->setNormalizedLF(value);
-    if(this->draftMechanicsWindow != nullptr)  draftMechanicsWindow->setNormalizedLF(value);
-    scoreButtonLF->setNormalizedLF(value);
-
-    //Re Show new ratings
-    int rating1 = lightForgeTiers[draftCards[0].getCode()].score;
-    int rating2 = lightForgeTiers[draftCards[1].getCode()].score;
-    int rating3 = lightForgeTiers[draftCards[2].getCode()].score;
-    int maxCard1 = lightForgeTiers[draftCards[0].getCode()].maxCard;
-    int maxCard2 = lightForgeTiers[draftCards[1].getCode()].maxCard;
-    int maxCard3 = lightForgeTiers[draftCards[2].getCode()].maxCard;
-    showNewRatings(rating1, rating2, rating3,
-                   rating1, rating2, rating3,
-                   maxCard1, maxCard2, maxCard3,
-                   LightForge);
-
-    //Re UpdateDeckScore
-    updateDeckScore();
 }
 
 

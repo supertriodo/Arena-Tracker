@@ -1574,7 +1574,7 @@ draft mechanics becoming a patron (3$)</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>979</height>
+               <height>951</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2241,17 +2241,6 @@ you hover your mouse on the scores.</string>
                         </property>
                         <property name="text">
                          <string>Hide Scores</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QCheckBox" name="configCheckNormalizeLF">
-                        <property name="toolTip">
-                         <string>Normalize LF: Normalize LightForge score to 0-100 range
-so it can be compared along with HearthArena score.</string>
-                        </property>
-                        <property name="text">
-                         <string>Normalize LF</string>
                         </property>
                        </widget>
                       </item>
