@@ -156,6 +156,8 @@ private:
     bool isLackeyGen(const QString &code, const QString &text);    
     bool isOutcast(const QString &code, const QJsonArray &mechanics);
     bool isOutcastGen(const QString &code);
+    bool isEndTurnGen(const QString &code, const QString &text);
+    bool isRushGiverGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -199,7 +201,7 @@ private:
     bool isFreezeEnemySyn(const QString &code, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardSyn(const QString &code, const QString &text);
     bool isDeathrattleSyn(const QString &code);
-    bool isDeathrattleGoodAllSyn(const QString &code);
+    bool isDeathrattleGoodAllSyn(const QString &code, const QString &text);
     bool isBattlecrySyn(const QString &code);
     bool isBattlecryAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
@@ -235,6 +237,8 @@ private:
     bool isLackeySyn(const QString &code);
     bool isOutcastSyn(const QString &code);
     bool isOutcastAllSyn(const QString &code, const QJsonArray &referencedTags);
+    bool isEndTurnSyn(const QString &code, const QString &text);
+    bool isRushGiverSyn(const QString &code, const QString &text);
 
 signals:
     void pLog(QString line);

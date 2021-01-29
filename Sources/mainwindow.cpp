@@ -4652,7 +4652,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-    downloadLightForgeJsonOriginal();
+//    downloadLightForgeJsonOriginal();
 //    downloadHearthArenaTierlistOriginal();
 //    Utility::checkTierlistsCount();
 }
