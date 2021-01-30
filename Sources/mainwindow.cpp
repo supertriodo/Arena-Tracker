@@ -4547,7 +4547,6 @@ void MainWindow::testEnemyHand()
     enemyHandHandler->showEnemyCardDraw(2, 2, false, "");
     enemyHandHandler->showEnemyCardDraw(3, 3, false, "");
     enemyHandHandler->showEnemyCardDraw(4, 4, true, "");
-    enemyHandHandler->showEnemyCardDraw(5, 5, true, "");
     enemyHandHandler->buffHandCard(3);
 }
 

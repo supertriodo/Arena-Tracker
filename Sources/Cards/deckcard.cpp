@@ -304,15 +304,15 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
         else
         {
             //Name
-            int fontSize = 15;
-            font.setPixelSize(fontSize*scale);
+            int fontSize = 15*scale;
+            font.setPixelSize(fontSize);
 
             QFontMetrics fm(font);
             int textWide = fm.width(name);
             while(textWide>maxNameLong)
             {
                 fontSize--;
-                font.setPixelSize(fontSize*scale);
+                font.setPixelSize(fontSize);
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
             }
@@ -437,8 +437,8 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //BY
-        int fontSize = 15;
-        font.setPixelSize(fontSize*scale);
+        int fontSize = 15*scale;
+        font.setPixelSize(fontSize);
         QFontMetrics fm(font);
         int customTextWide = fm.width(customText);
         painter.setBrush(BLACK);
@@ -451,7 +451,7 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         while(nameWide>maxNameLong)
         {
             fontSize--;
-            font.setPixelSize(fontSize*scale);
+            font.setPixelSize(fontSize);
             fm = QFontMetrics(font);
             nameWide = fm.width(name);
         }
