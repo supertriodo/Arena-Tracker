@@ -8,6 +8,7 @@
 
 
 #define CARD_SIZE QSize(218,35)
+#define DISABLE_OPACITY 150
 
 
 enum CardRarity {INVALID_RARITY, COMMON, RARE, EPIC, LEGENDARY};
