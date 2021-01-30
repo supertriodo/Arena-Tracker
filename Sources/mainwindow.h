@@ -268,6 +268,7 @@ public slots:
 
 private slots:
     void test();
+    void testEnemyHand();
     void testPlan();
     void testDelay();
     void testSynergies();

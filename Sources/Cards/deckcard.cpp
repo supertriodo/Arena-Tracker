@@ -156,17 +156,27 @@ void DeckCard::disablePixmap(QPixmap &canvas)
 }
 
 
-QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize, QString manaText)
+QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString manaText, int cardWidth)
 {
-    QFont font(ThemeHandler::cardsFont());
-    font.setBold(true);
-    font.setKerning(true);
-#ifdef Q_OS_WIN
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
-#else
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
-#endif
+    //Scale
+    float scale;
+    int offsetY = 0;
+    if(cardWidth == 0)
+    {
+        if(cardHeight <= 35)
+        {
+            scale = 1;
+            offsetY = (35 - cardHeight)/2;
+        }
+        else    scale = cardHeight/35.0;
+    }
+    else
+    {
+        scale = cardWidth/218.0;
+    }
 
+
+    //Imagenes
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;
@@ -198,21 +208,11 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         if(name == "unknown")   painter.drawPixmap(target, QPixmap(ThemeHandler::unknownFile()), source);
         else    painter.drawPixmap(target, QPixmap(Utility::hscardsPath() + "/" + code + ".png"), source);
 
-        //Background and #cards
-        painter.setPen(QPen(BLACK));
-
-        if(nameColor!=BLACK)                            painter.setBrush(nameColor);
-        else if(drawRarity)                             painter.setBrush(getRarityColor());
-        else if(outsider)                               painter.setBrush(VIOLET);
-        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
-        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
-        else                                            painter.setBrush(WHITE);
-
-
+        //Background and legendary star
         int maxNameLong;
         if(total == 1 && rarity != LEGENDARY)
         {
-            maxNameLong = 174;
+            maxNameLong = 174*scale;
             if(cardClass.count() > 0)
                 painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard1File(cardClass[0]):ThemeHandler::bgCard1File()));
             if(cardClass.count() > 1)
@@ -222,7 +222,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
         }
         else
         {
-            maxNameLong = 155;
+            maxNameLong = 155*scale;
 
             if(cardClass.count() > 0)
                 painter.drawPixmap(0,0,QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass[0]):ThemeHandler::bgCard2File()));
@@ -230,89 +230,129 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, bool resize
                 painter.drawPixmap(0, CARD_SIZE.height()/2,
                                    QPixmap(drawClassColor?ThemeHandler::bgCard2File(cardClass[1]):ThemeHandler::bgCard2File()),
                                    0, CARD_SIZE.height()/2, CARD_SIZE.width(), CARD_SIZE.height() - CARD_SIZE.height()/2);
-
-            if(total > 1)
-            {
-                font.setPixelSize(22);
-                Utility::drawShadowText(painter, font, QString::number(total), 202, 19, true);
-            }
-            else
+            //Legendary star
+            if(total == 1 && rarity == LEGENDARY)
             {
                 painter.drawPixmap(195, 8, QPixmap(ThemeHandler::starFile()));
             }
+        }
+
+        //Borders front
+        if(!ThemeHandler::manaLimitBehind())
+        {
+            QPixmap pixmap(ThemeHandler::manaLimitFile());
+            int pixmapHMid = pixmap.height()/2;
+            int pixmapW = pixmap.width();
+            if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
+            if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+        }
+    painter.end();
+
+
+
+    //Adapt to size
+    if(cardWidth == 0)  canvas = resizeCardHeight(canvas);
+    else                canvas = canvas.scaled(QSize(cardWidth,35),
+                            cardWidth<218?Qt::KeepAspectRatio:Qt::KeepAspectRatioByExpanding,
+                            Qt::SmoothTransformation);
+
+
+
+    //Texto
+    QFont font(ThemeHandler::cardsFont());
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+    font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+
+        //Text pen/brush color
+        painter.setPen(QPen(BLACK));
+        if(nameColor!=BLACK)                            painter.setBrush(nameColor);
+        else if(drawRarity)                             painter.setBrush(getRarityColor());
+        else if(outsider)                               painter.setBrush(VIOLET);
+        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
+        else                                            painter.setBrush(WHITE);
+
+        //Number cards
+        if(total > 1)
+        {
+            font.setPixelSize(22*scale);
+            Utility::drawShadowText(painter, font, QString::number(total), 202*scale, (19*scale) - offsetY, true);
         }
 
 
         //Name and mana
         if(name == "unknown")
         {
-            font.setPixelSize(15);
+            font.setPixelSize(15*scale);
             painter.setPen(QPen(BLACK));
             QColor themeColor1 = QColor(ThemeHandler::themeColor1());
             painter.setBrush(themeColor1.isValid()?themeColor1:WHITE);
-            Utility::drawShadowText(painter, font, "Unknown", 34, 20, false);
+            Utility::drawShadowText(painter, font, "Unknown", 34*scale, (20*scale) - offsetY, false);
         }
         else
         {
             //Name
             int fontSize = 15;
-            font.setPixelSize(fontSize);
+            font.setPixelSize(fontSize*scale);
 
             QFontMetrics fm(font);
             int textWide = fm.width(name);
             while(textWide>maxNameLong)
             {
                 fontSize--;
-                font.setPixelSize(fontSize);
+                font.setPixelSize(fontSize*scale);
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
             }
 
-            Utility::drawShadowText(painter, font, name, 34, 20, false);
+            Utility::drawShadowText(painter, font, name, 34*scale, (20*scale) - offsetY, false);
 
             //Mana cost
             if(manaText.isEmpty())
             {
-                font.setPixelSize(22);
-                Utility::drawShadowText(painter, font, QString::number(cost), 13, 20, true);
+                font.setPixelSize(22*scale);
+                Utility::drawShadowText(painter, font, QString::number(cost), 13*scale, (20*scale) - offsetY, true);
             }
             //Custom mana number
             else
             {
                 painter.setBrush(WHITE);
-                font.setPixelSize(16);
-                Utility::drawShadowText(painter, font, manaText, 13, 20, true);
-            }
-
-            //Borders front
-            if(!ThemeHandler::manaLimitBehind())
-            {
-                QPixmap pixmap(ThemeHandler::manaLimitFile());
-                int pixmapHMid = pixmap.height()/2;
-                int pixmapW = pixmap.width();
-                if(topManaLimit)        painter.drawPixmap(0, 0, pixmap, 0, pixmapHMid, pixmapW, pixmapHMid);
-                if(bottomManaLimit)     painter.drawPixmap(0, 35-pixmapHMid, pixmap, 0, 0, pixmapW, pixmapHMid);
+                font.setPixelSize(16*scale);
+                Utility::drawShadowText(painter, font, manaText, 13*scale, (20*scale) - offsetY, true);
             }
         }
     painter.end();
 
-    //Adapt to size
-    if(resize)  return resizeCardHeight(canvas);
-    else        return canvas;
+    return canvas;
 }
 
 
 QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
 {
-    QFont font(ThemeHandler::cardsFont());
-    font.setBold(true);
-    font.setKerning(true);
-#ifdef Q_OS_WIN
-        font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
-#else
-        font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
-#endif
+    //Scale
+    float scale;
+    int offsetY = 0;
+    if(cardHeight <= 35)
+    {
+        scale = 1;
+        offsetY = (35 - cardHeight)/2;
+    }
+    else    scale = cardHeight/35.0;
 
+
+    //Imagenes
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;
@@ -362,42 +402,6 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
             painter.drawPixmap(0,0,QPixmap(ThemeHandler::handCardBYFile2()));
         }
 
-        //BY
-        int fontSize = 15;
-        font.setPixelSize(fontSize);//11pt
-        QFontMetrics fm(font);
-        int customTextWide = fm.width(customText);
-        painter.setBrush(BLACK);
-        painter.setPen(QPen(WHITE));
-        Utility::drawShadowText(painter, font, customText, 10, 20, false);
-
-        //Name
-        int nameWide = fm.width(name);
-        int maxNameLong = 194 - customTextWide + (total==1?0:-19);
-        while(nameWide>maxNameLong)
-        {
-            fontSize--;
-            font.setPixelSize(fontSize);//<11pt
-            fm = QFontMetrics(font);
-            nameWide = fm.width(name);
-        }
-
-        painter.setPen(QPen(BLACK));
-
-        if(outsider)                                    painter.setBrush(VIOLET);
-        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
-        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
-        else                                            painter.setBrush(WHITE);
-
-        Utility::drawShadowText(painter, font, name, 14 + customTextWide, 20, false);
-
-        //#cards
-        if(total > 1)
-        {
-            font.setPixelSize(22);//16pt
-            Utility::drawShadowText(painter, font, QString::number(total), 202, 19, true);
-        }
-
         //Borders front
         if(!ThemeHandler::manaLimitBehind())
         {
@@ -409,7 +413,66 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
         }
     painter.end();
 
-    return resizeCardHeight(canvas);
+
+
+    //Adapt to size
+    canvas = resizeCardHeight(canvas);
+
+
+
+    //Texto
+    QFont font(ThemeHandler::cardsFont());
+    font.setBold(true);
+    font.setKerning(true);
+#ifdef Q_OS_WIN
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+#else
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+#endif
+
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //BY
+        int fontSize = 15;
+        font.setPixelSize(fontSize*scale);
+        QFontMetrics fm(font);
+        int customTextWide = fm.width(customText);
+        painter.setBrush(BLACK);
+        painter.setPen(QPen(WHITE));
+        Utility::drawShadowText(painter, font, customText, 10*scale, (20*scale) - offsetY, false);
+
+        //Name
+        int nameWide = fm.width(name);
+        int maxNameLong = ((total==1?194:175)*scale) - customTextWide;
+        while(nameWide>maxNameLong)
+        {
+            fontSize--;
+            font.setPixelSize(fontSize*scale);
+            fm = QFontMetrics(font);
+            nameWide = fm.width(name);
+        }
+
+        painter.setPen(QPen(BLACK));
+        if(outsider)                                    painter.setBrush(VIOLET);
+        else if(drawSpellWeaponColor && type==SPELL)    painter.setBrush(YELLOW);
+        else if(drawSpellWeaponColor && type==WEAPON)   painter.setBrush(ORANGE);
+        else                                            painter.setBrush(WHITE);
+
+        Utility::drawShadowText(painter, font, name, (14*scale) + customTextWide, (20*scale) - offsetY, false);
+
+        //#cards
+        if(total > 1)
+        {
+            font.setPixelSize(22*scale);
+            Utility::drawShadowText(painter, font, QString::number(total), 202*scale, (19*scale) - offsetY, true);
+        }
+    painter.end();
+
+    return canvas;
 }
 
 

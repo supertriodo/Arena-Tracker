@@ -40,7 +40,18 @@ void HandCard::draw()
 
 void HandCard::drawDefaultHandCard()
 {
-    QFont font(ThemeHandler::cardsFont());
+    //Scale
+    float scale;
+    int offsetY = 0;
+    if(cardHeight <= 35)
+    {
+        scale = 1;
+        offsetY = (35 - cardHeight)/2;
+    }
+    else    scale = cardHeight/35.0;
+
+
+    //Imagenes
     QPixmap canvas(CARD_SIZE);
     canvas.fill(Qt::transparent);
     QPainter painter;
@@ -52,34 +63,48 @@ void HandCard::drawDefaultHandCard()
 
         //Background
         painter.drawPixmap(0,0,QPixmap(this->special?ThemeHandler::handCardBYUnknownFile():ThemeHandler::handCardFile()));
+    painter.end();
 
-        //Turn
-        font.setPixelSize(25);//18
-        font.setBold(true);
-        font.setKerning(true);
+
+
+    //Adapt to size
+    canvas = resizeCardHeight(canvas);
+
+
+
+    //Texto
+    QFont font(ThemeHandler::cardsFont());
+    font.setBold(true);
+    font.setKerning(true);
 #ifdef Q_OS_WIN
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
 #else
-            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+        font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
 #endif
 
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Turn
+        font.setPixelSize(25*scale);
         QString text = "T" + QString::number((this->turn+1)/2);
-        painter.setFont(font);
         painter.setBrush(WHITE);
         painter.setPen(QPen(BLACK));
-        Utility::drawShadowText(painter, font, text, 172, 20, true);
+        Utility::drawShadowText(painter, font, text, 172*scale, (20*scale) - offsetY, true);
 
         //Buff
         if(buffAttack > 0 || buffHealth > 0)
         {
-            font.setPixelSize(20);
+            font.setPixelSize(20*scale);
             text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
-            painter.setFont(font);
             painter.setBrush(BLACK);
             painter.setPen(QPen(GREEN));
-            Utility::drawShadowText(painter, font, text, 42, 19, true);
+            Utility::drawShadowText(painter, font, text, 42*scale, (19*scale) - offsetY, true);
         }
     painter.end();
 
-    this->listItem->setIcon(QIcon(resizeCardHeight(canvas)));
+    this->listItem->setIcon(QIcon(canvas));
 }

@@ -4540,6 +4540,18 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
 }
 
 
+void MainWindow::testEnemyHand()
+{
+    enemyHandHandler->setLastCreatedByCode("KAR_076");
+    enemyHandHandler->showEnemyCardDraw(1, 1, true, "KAR_076");
+    enemyHandHandler->showEnemyCardDraw(2, 2, false, "");
+    enemyHandHandler->showEnemyCardDraw(3, 3, false, "");
+    enemyHandHandler->showEnemyCardDraw(4, 4, true, "");
+    enemyHandHandler->showEnemyCardDraw(5, 5, true, "");
+    enemyHandHandler->buffHandCard(3);
+}
+
+
 void MainWindow::testPlan()
 {
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
@@ -4660,6 +4672,7 @@ void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
 
 void MainWindow::testPopularList()
 {
+    //Comentar !inArena en PopularCardsHandler::showPopularCards()
     popularCardsHandler->setEnemyClass("02");
     popularCardsHandler->newTurn(true, 2);
 }

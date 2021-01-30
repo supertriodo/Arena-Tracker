@@ -14,7 +14,7 @@ PopularCard::~PopularCard()
 
 void PopularCard::draw()
 {
-    QPixmap canvas = DeckCard::draw(1, false, BLACK, true, manaText);
+    QPixmap canvas = DeckCard::draw(1, false, BLACK, manaText);
     this->listItem->setIcon(QIcon(canvas));
 }
 

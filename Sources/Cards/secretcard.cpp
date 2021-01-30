@@ -31,7 +31,7 @@ void SecretCard::draw()
 
     if(this->code != "")
     {
-        canvas = DeckCard::draw(1, true, BLACK, true, manaText);
+        canvas = DeckCard::draw(1, true, BLACK, manaText);
     }
     else
     {
