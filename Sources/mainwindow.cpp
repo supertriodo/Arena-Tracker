@@ -4614,7 +4614,6 @@ void MainWindow::testPlan()
 
 void MainWindow::test()
 {
-//    testPlan();
     QTimer::singleShot(1000, this, SLOT(testDelay()));
 }
 
@@ -4689,7 +4688,7 @@ void MainWindow::testDelay()
 //    Utility::resizeGoldenCards();
 
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
-//    QTimer::singleShot(2000, this, [=] () {draftHandler->beginDraft("09", deckHandler->getDeckCardList());});
+//    draftHandler->beginDraft(Utility::classEnum2classLogNumber(PALADIN), deckHandler->getDeckCardList());
 }
 
 

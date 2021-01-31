@@ -43,7 +43,7 @@ public:
                         QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
                         QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
-    void initSynergyCodes();
+    bool initSynergyCodes();
     void clearLists(bool keepCounters);
     int draftedCardsCount();
     void setTransparency(Transparency transparency, bool mouseInApp);

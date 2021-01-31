@@ -273,8 +273,10 @@ void SynergyHandler::sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRe
 }
 
 
-void SynergyHandler::initSynergyCodes()
+bool SynergyHandler::initSynergyCodes()
 {
+    if(!synergyCodes.isEmpty()) return false;
+
     synergyCodes.clear();
     directLinks.clear();
 
@@ -314,6 +316,8 @@ void SynergyHandler::initSynergyCodes()
         }
     }
     emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
+
+    return true;
 }
 
 
@@ -1531,7 +1535,7 @@ bool SynergyHandler::containsAll(const QString &text, const QString &words)
 
 void SynergyHandler::testSynergies(const QString &miniSet)
 {
-    initSynergyCodes();
+    bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
 //    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE", true, true))
@@ -1590,13 +1594,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
         }
     }
 
-    clearLists(true);
+    if(needSynergyClear)    clearLists(true);
 }
 
 
 void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int openTo, const QString &miniSet, bool onlyCollectible)
 {
-    initSynergyCodes();
+    bool needSynergyClear = initSynergyCodes();
 
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
     for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
@@ -1625,13 +1629,13 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         }
     }
 
-    clearLists(true);
+    if(needSynergyClear)    clearLists(true);
 }
 
 
 void SynergyHandler::debugMissingSynergiesAllSets()
 {
-    initSynergyCodes();
+    bool needSynergyClear = initSynergyCodes();
     int num = 0;
     for(const QString &code: Utility::getWildCodes())
     {
@@ -1663,7 +1667,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         qDebug()<<"DEBUG SYNERGIES: Those synergies missing.";
     }
 
-    clearLists(true);
+    if(needSynergyClear)    clearLists(true);
 }
 
 

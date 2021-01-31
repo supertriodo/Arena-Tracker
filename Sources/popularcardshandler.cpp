@@ -155,11 +155,10 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 }
 
 
-//TODO Revisar que los maps siguen la misma estructura en la API
 void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList,
                                                 SynergyHandler *synergyHandler)
 {
-    synergyHandler->initSynergyCodes();
+    bool needSynergyClear = synergyHandler->initSynergyCodes();
 
     for(QString &code: codeList)
     {
@@ -203,7 +202,8 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
         }
     }
 
-    synergyHandler->clearLists(true);
+    if(needSynergyClear)    synergyHandler->clearLists(true);
+    else                    emit pDebug("Synergy Codes were being used when creating cardsByPickRate map.", Warning);
 
     for(int i=0; i<NUM_HEROS; i++)
     {
