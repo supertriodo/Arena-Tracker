@@ -1,0 +1,8 @@
+{
+  "arenaVersion": 1,
+  "arenaSets": ["EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
+                             "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"],
+  "multiclassArena": false,
+  "redownloadCards": false,
+  "redownloadHeroes": false
+}
