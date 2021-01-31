@@ -975,42 +975,6 @@ void Utility::resizeGoldenCards()
 }
 
 
-void Utility::fixLightforgeTierlist()
-{
-    QString originalLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/originalLF.json";
-    QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
-    QString fixedLF1 = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/lightForge.json";
-    QString fixedLF2 = Utility::extraPath() + "/lightForge.json";
-
-    QFile tierList(originalLF);
-    tierList.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString data = QString::fromUtf8(tierList.readAll());
-    tierList.close();
-
-    QFile jsonFile(cardMapLF);
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
-    const QJsonArray jsonArray = jsonDoc.object().value("CardMaps").toArray();
-    for(QJsonValue jsonCardMap: jsonArray)
-    {
-        QJsonObject jsonCardMapObject = jsonCardMap.toObject();
-        QString lfCode = jsonCardMapObject.value("CardId").toString();
-        QString code = jsonCardMapObject.value("ClientId").toString();
-        data.replace(lfCode, code);
-    }
-
-    //Copy to local and source
-    QFile tierListFixed(fixedLF1);
-    tierListFixed.open(QIODevice::WriteOnly | QIODevice::Text);
-    tierListFixed.write(data.toUtf8());
-    tierListFixed.close();
-    QFile::remove(fixedLF2);
-    QFile::copy(fixedLF1, fixedLF2);
-    qDebug()<<"DEBUG TL: lightForge.json created (source and local)";
-}
-
-
 void Utility::checkTierlistsCount()
 {
     QString allHeroes[NUM_HEROS];

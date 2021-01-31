@@ -136,7 +136,6 @@ public:
     static QStringList getStandardCodes();
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
-    static void fixLightforgeTierlist();
     static void checkTierlistsCount();
     static bool hasGoldenImage(QString code);
     static void resizeGoldenCards();

@@ -402,19 +402,6 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
         }
 #ifdef QT_DEBUG
-        //Light Forge (Debug)
-        else if(fullUrl == LIGHTFORGE_JSON_URL)
-        {
-            qDebug()<<"DEBUG TL: Json LightForge original --> Download Success.";
-            QByteArray jsonData = reply->readAll();
-            saveLightForgeJsonOriginal(jsonData);
-        }
-        else if(fullUrl == LIGHTFORGE_CARDMAP_URL)
-        {
-            qDebug()<<"DEBUG TL: Card Map LightForge original --> Download Success.";
-            QByteArray jsonData = reply->readAll();
-            saveCardmapLightForgeOriginal(jsonData);
-        }
         //Hearth Arena (Debug)
         else if(fullUrl == HEARTHARENA_TIERLIST_URL)
         {
@@ -741,7 +728,8 @@ void MainWindow::processPopularCardsHandlerPickrates()
 {
     if(lightForgeJsonLoaded)
     {
-        popularCardsHandler->createCardsByPickrate(cardsPickratesMap, draftHandler->getAllArenaCodes(), draftHandler->getSynergyHandler());
+        popularCardsHandler->createCardsByPickrate(cardsPickratesMap,
+            draftHandler->getAllArenaCodes(), draftHandler->getSynergyHandler());
     }
     else
     {
@@ -1828,7 +1816,7 @@ void MainWindow::readSettings()
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
     this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", HSReplay).toInt());
     bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
-    bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
+    bool draftMethodLF = false;//settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = false;//settings.value("autoSize", false).toBool();//Disable autoSize
@@ -4056,6 +4044,7 @@ void MainWindow::completeConfigTab()
     ui->configBoxDraftMechanics->hide();
     ui->configCheckMechanicsOverlay->hide();
     ui->configCheckShowDrops->hide();
+    ui->configCheckLF->hide();//Disable lightforge
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
@@ -4458,55 +4447,6 @@ void MainWindow::showPremiumDialog()
 }
 
 
-void MainWindow::downloadLightForgeJsonOriginal()
-{
-    networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_JSON_URL)));
-    qDebug()<<"DEBUG TL: Json LightForge original --> Download from:" << QString(LIGHTFORGE_JSON_URL);
-}
-
-
-void MainWindow::saveLightForgeJsonOriginal(const QByteArray &jsonData)
-{
-    QString originalLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/originalLF.json";
-    Utility::dumpOnFile(jsonData, originalLF);
-
-    QJsonObject jsonObject = QJsonDocument::fromJson(jsonData).object();
-    QString createdOn = jsonObject.value("CreatedOn").toString();
-    QString cardMapUrl = jsonObject.value("CardMapLink").toString();
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    QString lightforgeCreatedon = settings.value("lightforgeCreatedon", "").toString();
-
-    //Download card map
-    if(cardMapUrl == LIGHTFORGE_CARDMAP_URL)
-    {
-        if(lightforgeCreatedon != createdOn)
-        {
-            settings.setValue("lightforgeCreatedon", createdOn);
-            networkManager->get(QNetworkRequest(QUrl(LIGHTFORGE_CARDMAP_URL)));
-            qDebug()<<"DEBUG TL: Lightforge json updated" << lightforgeCreatedon << "<-->" << createdOn;
-            qDebug()<<"DEBUG TL: Card Map LightForge original --> Download from:" << QString(LIGHTFORGE_CARDMAP_URL);
-        }
-        else
-        {
-            qDebug()<<"DEBUG TL: OK - Lightforge json unchanged" << lightforgeCreatedon << "<-->" << createdOn;
-        }
-    }
-    else
-    {
-        qDebug()<<"DEBUG TL WARNING: Card Map:" << cardMapUrl << "<-->" << QString(LIGHTFORGE_CARDMAP_URL);
-    }
-}
-
-
-void MainWindow::saveCardmapLightForgeOriginal(const QByteArray &jsonData)
-{
-    QString cardMapLF = QDir::homePath() + "/Documentos/ArenaTracker/LightForge/Json extract/lightForgeCardMaps.json";
-    Utility::dumpOnFile(jsonData, cardMapLF);
-    Utility::fixLightforgeTierlist();
-    downloadHearthArenaTierlistOriginal();
-}
-
-
 void MainWindow::downloadHearthArenaTierlistOriginal()
 {
     networkManager->get(QNetworkRequest(QUrl(HEARTHARENA_TIERLIST_URL)));
@@ -4648,7 +4588,6 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-//    downloadLightForgeJsonOriginal();
 //    downloadHearthArenaTierlistOriginal();
 //    Utility::checkTierlistsCount();
 }

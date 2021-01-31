@@ -31,8 +31,6 @@
 #define SMALL_BUTTONS_H 19
 #define DEFAULT_THEME "Classic"
 #define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
-#define LIGHTFORGE_JSON_URL "http://thelightforge.com/api/TierList/Latest?locale=enUS"
-#define LIGHTFORGE_CARDMAP_URL "http://thelightforge.com/api/TierList/CardMap"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
 #define HSR_CARDS_PATCH "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_PATCH"
@@ -222,9 +220,6 @@ private:
     void updateDraftMethodUnchecked();
     void downloadHSRCards();
     void startProcessHSRCards(const QJsonObject &jsonObject);
-    void downloadLightForgeJsonOriginal();
-    void saveLightForgeJsonOriginal(const QByteArray &jsonData);
-    void saveCardmapLightForgeOriginal(const QByteArray &jsonData);
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html);
 
