@@ -26,13 +26,6 @@
 #define CAPTURE_EXTENDED_CANDIDATES            15
 
 
-class LFtier
-{
-public:
-    int score = 0;
-    int maxCard = -1;
-};
-
 class ScreenDetection
 {
 public:
@@ -58,7 +51,7 @@ private:
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     QMap<QString, int> hearthArenaTiers;
-    QMap<QString, LFtier> lightForgeTiers;
+    QMap<QString, int> lightForgeTiers;
     QMap<QString, cv::MatND> cardsHist;
     QStringList cardsDownloading;
     DraftCard draftCards[3];
@@ -97,6 +90,7 @@ private:
     QMap<QString, float> *cardsPlayedWinratesMap;
     TwitchHandler *twitchHandler;
     bool multiclassArena;
+    QStringList arenaSets;
 
 
 //Metodos
@@ -121,8 +115,7 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
-    void initLightForgeTiers(const QString &heroString, const bool multiClassDraft, const bool createCardHist);
-    void fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft, const bool createCardHist);
+    void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft, const bool createCardHist);
     void createDraftWindows(const QPointF &screenScale);
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -176,6 +169,7 @@ public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
     SynergyHandler *getSynergyHandler();
+    void setArenaSets(QStringList arenaSets);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);
@@ -206,8 +200,7 @@ public slots:
     void endDraftHideMechanicsWindow();
     void deleteDraftMechanicsWindow();
     void showNewRatings(float rating1, float rating2, float rating3,
-                        float tierScore1, float tierScore2, float tierScore3,
-                        int maxCard1, int maxCard2, int maxCard3, DraftMethod draftMethod,
+                        float tierScore1, float tierScore2, float tierScore3, DraftMethod draftMethod,
                         int includedDecks1=-1, int includedDecks2=-1, int includedDecks3=-1);
     void pickCard(QString code);
     void enterArena();

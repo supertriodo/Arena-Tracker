@@ -200,23 +200,17 @@ void DraftHandler::clearAndDisconnectComboBox(int index)
 }
 
 
+void DraftHandler::setArenaSets(QStringList arenaSets)
+{
+    this->arenaSets = arenaSets;
+}
+
+
 QStringList DraftHandler::getAllArenaCodes()
 {
     QStringList codeList;
 
-    QFile jsonFile(Utility::extraPath() + "/lightForge.json");
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
-    const QJsonArray jsonCardsArray = jsonDoc.object().value("Cards").toArray();
-    for(QJsonValue jsonCard: jsonCardsArray)
-    {
-        QJsonObject jsonCardObject = jsonCard.toObject();
-        QString code = jsonCardObject.value("CardId").toString();
-        codeList.append(code);
-    }
-
-    codeList.removeDuplicates();
+    for(const QString &set: arenaSets)  codeList.append(Utility::getSetCodes(set, true, true));
     return codeList;
 }
 
@@ -304,108 +298,29 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-void DraftHandler::fixLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
-                                      const bool createCardHist)
-{
-    QStringList arenaSets = {"EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
-                             "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"};//TODO
-    for(const QString &code: lightForgeTiers.keys())
-    {
-        QString set = Utility::getCardAttribute(code, "set").toString();
-        if(!arenaSets.contains(set))
-        {
-            lightForgeTiers.remove(code);
-        }
-        else if(createCardHist)
-        {
-            addCardHist(code, false);
-            addCardHist(code, true);
-        }
-    }
-    for(const QString &set: arenaSets)
-    {
-        for(const QString &code: Utility::getSetCodes(set, true, true))
-        {
-            QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-            if  (
-                    !lightForgeTiers.contains(code) &&
-                    (multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
-                )
-            {
-                if(createCardHist)
-                {
-                    addCardHist(code, false);
-                    addCardHist(code, true);
-                }
-
-                LFtier lfTier;
-                lightForgeTiers[code] = lfTier;
-            }
-        }
-    }
-    emit pDebug("LightForge Fixed Cards: " + QString::number(lightForgeTiers.count()));
-}
-
-
-void DraftHandler::initLightForgeTiers(const QString &heroString, const bool multiClassDraft,
+void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
                                        const bool createCardHist)
 {
     lightForgeTiers.clear();
 
-    QFile jsonFile(Utility::extraPath() + "/lightForge.json");
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
-    const QJsonArray jsonCardsArray = jsonDoc.object().value("Cards").toArray();
-    for(QJsonValue jsonCard: jsonCardsArray)
+    for(const QString &code: getAllArenaCodes())
     {
-        QJsonObject jsonCardObject = jsonCard.toObject();
-        QString code = jsonCardObject.value("CardId").toString();
-
-        const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
-        for(QJsonValue jsonScore: jsonScoresArray)
+        QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+        if  (
+                !lightForgeTiers.contains(code) &&
+                (multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
+            )
         {
-            QJsonObject jsonScoreObject = jsonScore.toObject();
-            QString hero = jsonScoreObject.value("Hero").toString();
-
-            if(multiClassDraft || hero == nullptr || hero == heroString)
+            if(createCardHist)
             {
-                LFtier lfTier;
-                lfTier.score = static_cast<int>(jsonScoreObject.value("Score").toDouble());
-
-                if(jsonScoreObject.value("StopAfterFirst").toBool())
-                {
-                    lfTier.maxCard = 1;
-                }
-                else if(jsonScoreObject.value("StopAfterSecond").toBool())
-                {
-                    lfTier.maxCard = 2;
-                }
-                else
-                {
-                    lfTier.maxCard = -1;
-                }
-
-                if(!lightForgeTiers.contains(code))
-                {
-                    if(createCardHist)
-                    {
-                        addCardHist(code, false);
-                        addCardHist(code, true);
-                    }
-
-                    //En multiclass guardaremos el primer score que aparezca
-                    //En cartas neutrales sera el hero == nullptr
-                    //En cartas de clase sera la clase especifica
-                    if(multiClassDraft) lightForgeTiers[code] = lfTier;
-                }
-                //En uniclass guardaremos el ultimo score que aparezca que sera el de la clase del draft
-                if(!multiClassDraft)    lightForgeTiers[code] = lfTier;
+                addCardHist(code, false);
+                addCardHist(code, true);
             }
+
+            lightForgeTiers[code] = 0;
         }
     }
-
-    emit pDebug("LightForge Cards: " + QString::number(lightForgeTiers.count()));
+    emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
 }
 
 
@@ -424,8 +339,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     {
         startFindScreenRects();
 
-        initLightForgeTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena, false/*drafting*/);//TODO
-        fixLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);//TODO
+        initLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
@@ -735,7 +649,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
             tdiscover += discover;
 
             deckRatingHA += hearthArenaTiers[code];
-            deckRatingLF += lightForgeTiers[code].score;
+            deckRatingLF += lightForgeTiers[code];
             deckRatingHSR += (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code];
         }
     }
@@ -1165,7 +1079,7 @@ void DraftHandler::pickCard(QString code)
 
         int numCards = synergyHandler->draftedCardsCount();
         lavaButton->setValue(synergyHandler->getManaCounterCount(), numCards, draw, toYourHand, discover);
-        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code].score,
+        updateDeckScore(hearthArenaTiers[code], lightForgeTiers[code],
                         (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
@@ -1252,15 +1166,11 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     QString codes[3] = {bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
 
     //LightForge
-    int rating1 = lightForgeTiers[codes[0]].score;
-    int rating2 = lightForgeTiers[codes[1]].score;
-    int rating3 = lightForgeTiers[codes[2]].score;
-    int maxCard1 = lightForgeTiers[codes[0]].maxCard;
-    int maxCard2 = lightForgeTiers[codes[1]].maxCard;
-    int maxCard3 = lightForgeTiers[codes[2]].maxCard;
+    int rating1 = lightForgeTiers[codes[0]];
+    int rating2 = lightForgeTiers[codes[1]];
+    int rating3 = lightForgeTiers[codes[2]];
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
-                   maxCard1, maxCard2, maxCard3,
                    LightForge);
 
 
@@ -1270,7 +1180,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     rating3 = hearthArenaTiers[codes[2]];
     showNewRatings(rating1, rating2, rating3,
                    rating1, rating2, rating3,
-                   -1, -1, -1,
                    HearthArena);
 
     //HSReplay
@@ -1301,7 +1210,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     }
     showNewRatings(ratingIncluded1, ratingIncluded2, ratingIncluded3,
                    ratingPlayed1, ratingPlayed2, ratingPlayed3,
-                   -1, -1, -1,
                    HSReplay,
                    includedDecks1, includedDecks2, includedDecks3);
 
@@ -1412,13 +1320,11 @@ void DraftHandler::showMessageDeckScore(int deckScoreLF, int deckScoreHA, float 
 
 void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
                                   float tierScore1, float tierScore2, float tierScore3,
-                                  int maxCard1, int maxCard2, int maxCard3,
                                   DraftMethod draftMethod,
                                   int includedDecks1, int includedDecks2, int includedDecks3)
 {
     float ratings[3] = {rating1,rating2,rating3};
     float tierScore[3] = {tierScore1, tierScore2, tierScore3};
-    int maxCards[3] = {maxCard1, maxCard2, maxCard3};
     float maxRating = std::max(std::max(rating1,rating2),rating3);
     int includedDecks[3] = {includedDecks1, includedDecks2, includedDecks3};
 
@@ -1427,8 +1333,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         //Update score label
         if(draftMethod == LightForge)
         {
-            labelLFscore[i]->setText(QString::number(static_cast<int>(ratings[i])) +
-                                               (maxCards[i]!=-1?(" - MAX(" + QString::number(maxCards[i]) + ")"):""));
+            labelLFscore[i]->setText(QString::number(static_cast<int>(ratings[i])));
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HSReplay)

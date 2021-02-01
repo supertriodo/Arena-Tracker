@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cardHeight = -1;
     patreonVersion = false;
     transparency = AutoTransparent;
-    cardsJsonLoaded = lightForgeJsonLoaded = false;
+    cardsJsonLoaded = arenaSetsLoaded = false;
     allCardsDownloadNeeded = !settings.value("allCardsDownloaded", false).toBool();
     cardsPickratesMap = nullptr;
     cardsIncludedWinratesMap = nullptr;
@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createLogFile();
     completeUI();
     initCardsJson();
-    downloadLightForgeVersion();
+    downloadArenaVersion();
     downloadHearthArenaVersion();
     downloadSynergiesVersion();
     downloadExtraFiles();
@@ -410,28 +410,18 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             saveHearthArenaTierlistOriginal(html);
         }
 #endif
-        //Light Forge version
-        else if(endUrl == "lfVersion.json")
+        //Arena version
+        else if(endUrl == "arenaVersion.json")
         {
-            downloadLightForgeJson(QJsonDocument::fromJson(reply->readAll()).object());
+            checkArenaVersionJson(QJsonDocument::fromJson(reply->readAll()).object());
         }
-        //Light Forge json
-        else if(endUrl == "lightForge.json")
-        {
-            emit pDebug("Extra: Json LightForge github --> Download Success.");
-            QByteArray jsonData = reply->readAll();
-            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/lightForge.json");
-            allCardsDownloadNeeded = true;
-            lightForgeJsonLoaded = true;
-            checkArenaCards();
-        }
-        //Hearth Arena version
+        //HearthArena version
         else if(endUrl == "haVersion.json")
         {
             int haVersion = QJsonDocument::fromJson(reply->readAll()).object().value("haVersion").toInt();
             downloadHearthArenaJson(haVersion);
         }
-        //Hearth Arena json
+        //HearthArena json
         else if(endUrl == "hearthArena.json")
         {
             emit pDebug("Extra: Json HearthArena --> Download Success.");
@@ -726,7 +716,7 @@ void MainWindow::downloadHSRCards()
 
 void MainWindow::processPopularCardsHandlerPickrates()
 {
-    if(lightForgeJsonLoaded)
+    if(arenaSetsLoaded)
     {
         popularCardsHandler->createCardsByPickrate(cardsPickratesMap,
             draftHandler->getAllArenaCodes(), draftHandler->getSynergyHandler());
@@ -738,34 +728,34 @@ void MainWindow::processPopularCardsHandlerPickrates()
 }
 
 
-void MainWindow::downloadLightForgeVersion()
+void MainWindow::downloadArenaVersion()
 {
-    networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lfVersion.json"))));
+    networkManager->get(QNetworkRequest(QUrl(ARENA_URL + QString("/arenaVersion.json"))));
 }
 
 
-void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
+void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
 {
-    int version = jsonObject.value("lfVersion").toInt();
-    bool needDownload = false;
+    int version = jsonObject.value("arenaVersion").toInt();
+    bool needProcess = false;
     QSettings settings("Arena Tracker", "Arena Tracker");
-    int storedVersion = settings.value("lfVersion", 0).toInt();
+    int storedVersion = settings.value("arenaVersion", 0).toInt();
+    if(version != storedVersion)    needProcess = true;
 
-    QFileInfo fileInfo(Utility::extraPath() + "/lightForge.json");
-    if(!fileInfo.exists())          needDownload = true;
-    if(version != storedVersion)    needDownload = true;
+    emit pDebug("Extra: Json Arena github: Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needProcess?" up-to-date":""));
 
-    emit pDebug("Extra: Json LightForge github: Local(" + QString::number(storedVersion) + ") - "
-                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
-
-    if(needDownload)
+    if(needProcess)
     {
         bool multiclassArena = jsonObject.value("multiclassArena").toBool(false);
         if(draftHandler != nullptr) draftHandler->setMulticlassArena(multiclassArena);
         settings.setValue("multiclassArena", multiclassArena);
+        emit pDebug("CheckArenaVersion: multiclassArena: " + QString(multiclassArena?"true":"false"));
 
         bool redownloadCards = jsonObject.value("redownloadCards").toBool(false);
         bool redownloadHeroes = jsonObject.value("redownloadHeroes").toBool(false);
+        emit pDebug("CheckArenaVersion: redownloadCards: " + QString(redownloadCards?"true":"false"));
+        emit pDebug("CheckArenaVersion: redownloadHeroes: " + QString(redownloadHeroes?"true":"false"));
         if(redownloadCards)
         {
             removeHSCards(true);
@@ -795,24 +785,27 @@ void MainWindow::downloadLightForgeJson(const QJsonObject &jsonObject)
             }
         }
 
-        //Remove lightForge.json
-        if(fileInfo.exists())
-        {
-            QFile file(Utility::extraPath() + "/lightForge.json");
-            file.remove();
-            emit pDebug("Extra: Json LightForge removed.");
-        }
+        //Arena Sets
+        QStringList arenaSets;
+        const QJsonArray jsonArray = jsonObject.value("arenaSets").toArray();
+        for(const QJsonValue &jsonValue: jsonArray) arenaSets.append(jsonValue.toString());
 
-        //Download lightForge.json
-        settings.setValue("lfVersion", version);
-        networkManager->get(QNetworkRequest(QUrl(LF_URL + QString("/lightForge.json"))));
-        emit pDebug("Extra: Json LightForge github --> Download from: " + QString(LF_URL) + QString("/lightForge.json"));
+        settings.setValue("arenaSets", arenaSets);
+        if(secretsHandler != nullptr)   secretsHandler->setArenaSets(arenaSets);
+        if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
+        emit pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
+
+        allCardsDownloadNeeded = true;
+        settings.setValue("arenaVersion", version);
     }
     else
     {
-        lightForgeJsonLoaded = true;
-        checkArenaCards();
+        emit pDebug("CheckArenaVersion: Unchanged arena sets: " +
+                    settings.value("arenaSets", QStringList()).toStringList().join(" "));
     }
+
+    arenaSetsLoaded = true;
+    checkArenaCards();
 }
 
 
@@ -930,7 +923,9 @@ void MainWindow::createDraftHandler()
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     bool multiclassArena = settings.value("multiclassArena", false).toBool();
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     draftHandler->setMulticlassArena(multiclassArena);
+    draftHandler->setArenaSets(arenaSets);
 }
 
 
@@ -951,6 +946,10 @@ void MainWindow::createSecretsHandler()
             this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    secretsHandler->setArenaSets(arenaSets);
 }
 
 
@@ -4294,33 +4293,23 @@ void MainWindow::checkFirstRunNewVersion()
 }
 
 
-//Solo baja las cartas si LF ha cambiado de version o HSCards se ha borrado
+//Solo baja las cartas si arenaVersion ha cambiado de version o HSCards se ha borrado
 void MainWindow::checkArenaCards()
 {
-    if(draftHandler == nullptr || secretsHandler == nullptr || !cardsJsonLoaded || !lightForgeJsonLoaded)    return;
+    if(draftHandler == nullptr || !cardsJsonLoaded || !arenaSetsLoaded)    return;
 
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
 
-    if(allCardsDownloadNeeded || arenaSets.isEmpty())
+    if(allCardsDownloadNeeded)
     {
         settings.setValue("allCardsDownloaded", false);
-
         QStringList codeList = draftHandler->getAllArenaCodes();
         downloadAllArenaCodes(codeList);
-        arenaSets = Utility::getArenaSets(codeList);
-        settings.setValue("arenaSets", arenaSets);
-        emit pDebug("CheckArenaCards: New arena sets: " + arenaSets.join(" "));
     }
     else
     {
-        emit pDebug("CheckArenaCards: Arena cards and sets unchanged.");
-        emit pDebug("CheckArenaCards: Unchanged arena sets: " + arenaSets.join(" "));
+        emit pDebug("CheckArenaCards: No arena cards downloads.");
     }
-    QStringList tempArenaSets = {"EXPERT1", "SCHOLOMANCE", "CORE", "DARKMOON_FAIRE", "BLACK_TEMPLE",
-                             "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"};//TODO remove
-    secretsHandler->setArenaSets(tempArenaSets);//TODO remove
-//    secretsHandler->setArenaSets(arenaSets);
 }
 
 
@@ -4634,14 +4623,13 @@ void MainWindow::testDelay()
 
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//Update Json cartas --> Automatico
-//Update Json LF tierlist --> Automatico / downloadLightForgeJsonOriginal()
-//Update Json HA tierlist --> Automatico / downloadHearthArenaTierlistOriginal()
+//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+//Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> DARKMOON_FAIRE
 //Subir cartas al github.
-    ///-Si hay modificaciones en cartas: lfVersion.json --> "redownloadCards": true
+    ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-    ///-Si son nuevos retratos de heroe: lfVersion.json --> "redownloadHeroes": true
+    ///-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Update secrets

@@ -463,7 +463,7 @@
 "BT_729" : [ "damageMinionsGen", "battlecry", "returnSyn" ],
 "BT_730" : [ "drop3", "taunt", "restoreTargetMinionSyn", "restoreFriendlyMinionSyn" ],
 "BT_731" : [ "rushGiverSyn" ],
-"BT_732" : [ "aoeGen", "battlecry", "returnSyn", "eggSyn", "enrageSyn" ],
+"BT_732" : [ "aoeGen", "battlecry", "returnSyn", "enrageSyn" ],
 "BT_733" : [ "drop2" ],
 "BT_734" : [ "tauntGiverSyn" ],
 "BT_735" : [ "deathrattle" ],

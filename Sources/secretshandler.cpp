@@ -39,7 +39,7 @@ void SecretsHandler::completeUI()
 }
 
 
-void SecretsHandler::setArenaSets(QStringList &arenaSets)
+void SecretsHandler::setArenaSets(QStringList arenaSets)
 {
     this->arenaSets = arenaSets;
 }

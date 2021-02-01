@@ -40,7 +40,7 @@
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
-#define LF_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/LightForge"
+#define ARENA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Arena"
 #define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
 
 
@@ -101,7 +101,7 @@ private:
     //Gestionan si es necesario bajar todas las cartas usadas en arena debido a que el directorio de cartas se haya borrado
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
-    bool cardsJsonLoaded, lightForgeJsonLoaded, allCardsDownloadNeeded;
+    bool cardsJsonLoaded, arenaSetsLoaded, allCardsDownloadNeeded;
     DraftMethod draftMethodAvgScore;
     QMap<QString, float> *cardsPickratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
@@ -204,8 +204,8 @@ private:
     void downloadTheme(QString theme, int version);
     void downloadHearthArenaVersion();
     void downloadHearthArenaJson(int version);
-    void downloadLightForgeVersion();
-    void downloadLightForgeJson(const QJsonObject &jsonObject);
+    void downloadArenaVersion();
+    void checkArenaVersionJson(const QJsonObject &jsonObject);
     void downloadSynergiesVersion();
     void downloadSynergiesJson(int version);
     void updateTabIcons();

@@ -977,34 +977,29 @@ void Utility::resizeGoldenCards()
 
 void Utility::checkTierlistsCount()
 {
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    QStringList haCodesAll;
     QString allHeroes[NUM_HEROS];
-    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classUL_ULName(i);
+    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classLogNumber(i);
 
-    for(const QString &heroString: allHeroes)
+    for(const QString &heroLog: allHeroes)
     {
-        qDebug()<<endl<<"-----"<<heroString<<"-----";
-        QStringList lfCodes, haCodes;
+        const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
+        const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
 
-        //LightForge Codes List
-        QFile jsonFileLF(Utility::extraPath() + "/lightForge.json");
-        jsonFileLF.open(QIODevice::ReadOnly | QIODevice::Text);
-        QJsonDocument jsonDocLF = QJsonDocument::fromJson(jsonFileLF.readAll());
-        jsonFileLF.close();
-        const QJsonArray jsonCardsArrayLF = jsonDocLF.object().value("Cards").toArray();
-        for(QJsonValue jsonCard: jsonCardsArrayLF)
+        qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
+        QStringList arenaCodes, haCodes;
+
+        //Arena Codes List
+        for(const QString &set: arenaSets)
         {
-            QJsonObject jsonCardObject = jsonCard.toObject();
-            QString code = jsonCardObject.value("CardId").toString();
-
-            const QJsonArray jsonScoresArray = jsonCardObject.value("Scores").toArray();
-            for(QJsonValue jsonScore: jsonScoresArray)
+            for(const QString &code: Utility::getSetCodes(set, true, true))
             {
-                QJsonObject jsonScoreObject = jsonScore.toObject();
-                QString hero = jsonScoreObject.value("Hero").toString();
-
-                if(hero == nullptr || hero == heroString)
+                QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+                if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
                 {
-                    if(!lfCodes.contains(code))  lfCodes.append(code);
+                    arenaCodes.append(code);
                 }
             }
         }
@@ -1023,16 +1018,14 @@ void Utility::checkTierlistsCount()
             if(code.isEmpty())  qDebug()<<"HearthArena wrong name:"<<name;
             else                haCodes.append(code);
         }
+        haCodesAll.append(haCodes);
 
-        qDebug()<<heroString<<"LightForge count:"<<lfCodes.count();
-        qDebug()<<getArenaSets(lfCodes);
-
+        qDebug()<<heroString<<"Arena count:"<<arenaCodes.count();
         qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
-        qDebug()<<getArenaSets(haCodes);
 
         //Check Missing cards
         bool missing = false;
-        for(const QString &code: lfCodes)
+        for(const QString &code: arenaCodes)
         {
             if(!haCodes.contains(code))
             {
@@ -1044,14 +1037,21 @@ void Utility::checkTierlistsCount()
         missing = false;
         for(const QString &code: haCodes)
         {
-            if(!lfCodes.contains(code))
+            if(!arenaCodes.contains(code))
             {
-                qDebug()<<"LightForge missing:"<<code<<Utility::cardEnNameFromCode(code);
+                qDebug()<<"Arena missing:"<<code<<Utility::cardEnNameFromCode(code);
                 missing = true;
             }
         }
-        if(!missing)    qDebug()<<"LightForge OK!";
+        if(!missing)    qDebug()<<"Arena OK!";
     }
+
+    qDebug()<<endl<<"---------------------------------------------------------------------------"
+                "SETS ---------------------------------------------------------------------------";
+    qDebug()<<"Arena Sets:"<<arenaSets;
+    qDebug()<<"HA    Sets:"<<Utility::getArenaSets(haCodesAll);
+    qDebug()<<"---------------------------------------------------------------------------"
+                "SETS ---------------------------------------------------------------------------"<<endl;
 }
 
 
