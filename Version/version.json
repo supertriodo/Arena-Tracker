@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v8.3","v8.31","v8.32","v8.33","v8.34","v9.0","v9.01","v9.02"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.02/Arena.Tracker.v9.02.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.02/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.02/Arena.Tracker.v9.02.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.02/Arena.Tracker.v9.02.Windows.zip",
-	"log": "Hot Fix: When returning to arena with a deck drafted from a previous session AT will crash. Now it's fixed.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.02'>github</a>"
+	"versionFree": ["v8.3","v8.31","v8.32","v8.33","v8.34","v9.0","v9.01","v9.02","v9.1"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Windows.zip",
+	"log": "Remove lightforge as assistant. Improve text quality on cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.1'>github</a>"
 }
