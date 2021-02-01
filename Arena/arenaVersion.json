@@ -4,5 +4,5 @@
                              "DEMON_HUNTER_INITIATE", "KARA", "BOOMSDAY", "UNGORO"],
   "multiclassArena": false,
   "redownloadCards": false,
-  "redownloadHeroes": false
+  "redownloadHeroes": true
 }
