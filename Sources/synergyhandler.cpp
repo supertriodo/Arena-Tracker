@@ -1521,7 +1521,7 @@ bool SynergyHandler::containsAll(const QString &text, const QString &words)
 {
     for(const QString &word: words.split(" "))
     {
-        if(word == '/')
+        if(word == "/")
         {
             QString textNobold = text;
             textNobold.remove("</");
