@@ -49,15 +49,15 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
-    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+//    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
+//            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
 
-    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
-            this, SIGNAL(itemLeave()));
+//    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
+//            this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
