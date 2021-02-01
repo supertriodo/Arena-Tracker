@@ -1994,6 +1994,8 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
     ui->configCheckHA->setChecked(draftMethodHA);
     ui->configCheckLF->setChecked(draftMethodLF);
     ui->configCheckHSR->setChecked(draftMethodHSR);
+    //TODO remove - Evita deckAvg LF de antes de esta version.
+    if(this->draftMethodAvgScore == LightForge)     updateDraftMethodUnchecked();
     spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
 
     //Zero To Heroes
