@@ -15,6 +15,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->drafting = false;
     this->heroDrafting = false;
     this->capturing = false;
+    this->findingFrame = false;
     this->leavingArena = false;
     this->transparency = Opaque;
     this->draftHeroWindow = nullptr;
@@ -456,11 +457,13 @@ void DraftHandler::clearLists(bool keepCounters)
 
 void DraftHandler::enterArena()
 {
+    this->leavingArena = false;
     showOverlay();
 
     if(drafting)
     {
-        if(draftCards[0].getCode().isEmpty())
+        if(!screenFound())  startFindScreenRects();
+        else if(draftCards[0].getCode().isEmpty())
         {
             newCaptureDraftLoop(true);
         }
@@ -470,6 +473,7 @@ void DraftHandler::enterArena()
 
 void DraftHandler::leaveArena()
 {
+    this->leavingArena = true;
     if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
 
@@ -477,7 +481,6 @@ void DraftHandler::leaveArena()
     {
         if(capturing)
         {
-            this->leavingArena = true;
             this->numCaptured = 0;
             this->extendedCapture = false;
 
@@ -843,7 +846,6 @@ void DraftHandler::captureDraft()
     if((!drafting && !heroDrafting) || missingTierLists ||
         leavingArena || !screenFound() || !cardsDownloading.isEmpty())
     {
-        leavingArena = false;
         capturing = false;
         return;
     }
@@ -1554,13 +1556,23 @@ bool DraftHandler::screenFound()
 
 void DraftHandler::startFindScreenRects()
 {
-    if(!futureFindScreenRects.isRunning())  futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    if(!findingFrame && !futureFindScreenRects.isRunning())
+    {
+        findingFrame = true;
+        futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
+    }
 }
 
 
 void DraftHandler::finishFindScreenRects()
 {
     ScreenDetection screenDetection = futureFindScreenRects.result();
+
+    if(leavingArena)
+    {
+        findingFrame = false;
+        return;
+    }
 
     if(screenDetection.screenIndex == -1)
     {
@@ -1570,6 +1582,7 @@ void DraftHandler::finishFindScreenRects()
     }
     else
     {
+        findingFrame = false;
         this->screenIndex = screenDetection.screenIndex;
         for(int i=0; i<3; i++)
         {

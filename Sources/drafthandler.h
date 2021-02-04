@@ -66,7 +66,7 @@ private:
     cv::Rect screenRects[3];
     int screenIndex;
     int numCaptured;
-    bool drafting, heroDrafting, capturing, leavingArena;
+    bool drafting, heroDrafting, capturing, findingFrame, leavingArena;
     bool mouseInApp;
     Transparency transparency;
     DraftHeroWindow *draftHeroWindow;
