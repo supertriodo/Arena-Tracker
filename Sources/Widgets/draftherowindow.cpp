@@ -75,7 +75,7 @@ void DraftHeroWindow::setScores(float rating1, float rating2, float rating3)
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
+        scoresPushButton[i]->setScore(ratings[i], bestRating);
         Utility::fadeInWidget(scoresPushButton[i]);
     }
 

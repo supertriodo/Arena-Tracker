@@ -280,17 +280,17 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
     {
         if(draftMethod == LightForge)
         {
-            scoresPushButton[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
+            scoresPushButton[i]->setScore(ratings[i], bestRating);
             Utility::fadeInWidget(scoresPushButton[i]);
         }
         else if(draftMethod == HSReplay)
         {
-            scoresPushButton3[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating), includedDecks[i]);
+            scoresPushButton3[i]->setScore(ratings[i], bestRating, includedDecks[i]);
             Utility::fadeInWidget(scoresPushButton3[i]);
         }
         else if(draftMethod == HearthArena)
         {
-            scoresPushButton2[i]->setScore(ratings[i], FLOATEQ(ratings[i], bestRating));
+            scoresPushButton2[i]->setScore(ratings[i], bestRating);
             QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
 
             if(i==0)

@@ -70,21 +70,21 @@ void DraftHandler::createScoreItems()
     scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge);
     scoreButtonLF->setFixedHeight(width);
     scoreButtonLF->setFixedWidth(width);
-    scoreButtonLF->setScore(0, true);
+    scoreButtonLF->setScore(0, 0);
     scoreButtonLF->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
     scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena);
     scoreButtonHA->setFixedHeight(width);
     scoreButtonHA->setFixedWidth(width);
-    scoreButtonHA->setScore(0, true);
+    scoreButtonHA->setScore(0, 0);
     scoreButtonHA->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
     scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay);
     scoreButtonHSR->setFixedHeight(width);
     scoreButtonHSR->setFixedWidth(width);
-    scoreButtonHSR->setScore(0, true);
+    scoreButtonHSR->setScore(0, 0);
     scoreButtonHSR->setToolTip("HSReplay winrate deck average");
     scoreButtonHSR->hide();
 
@@ -1277,9 +1277,9 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
     int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
     float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
     updateLabelDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR, numCards);
-    scoreButtonLF->setScore(deckScoreLF, true);
-    scoreButtonHA->setScore(deckScoreHA, true);
-    scoreButtonHSR->setScore(deckScoreHSR, true);
+    scoreButtonLF->setScore(deckScoreLF, deckScoreLF);
+    scoreButtonHA->setScore(deckScoreHA, deckScoreHA);
+    scoreButtonHSR->setScore(deckScoreHSR, deckScoreHSR);
 
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setScores(deckScoreHA, deckScoreLF, deckScoreHSR);
 }

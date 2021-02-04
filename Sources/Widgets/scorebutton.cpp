@@ -6,7 +6,7 @@ ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource) : QLabel(pare
 {
     this->learningMode = false;
     this->learningShow = false;
-    this->isBestScore = false;
+    this->bestScoreOpacity = 0;
     this->scoreSource = scoreSource;
     this->score = 0;
 }
@@ -82,10 +82,15 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 }
 
 
-void ScoreButton::setScore(float score, bool isBestScore, int includedDecks)
+void ScoreButton::setScore(float score, float bestScore, int includedDecks)
 {
     this->score = score;
-    this->isBestScore = isBestScore;
+
+    if(scoreSource == Score_HSReplay || scoreSource == Score_Heroes)    bestScoreOpacity = (1 - (bestScore - score));
+    else                                                                bestScoreOpacity = (1 - ((bestScore - score)/10.0));
+    bestScoreOpacity = std::fmax(0, std::fmin(1, bestScoreOpacity));
+    if(bestScoreOpacity>0)              bestScoreOpacity = 0.5 + (bestScoreOpacity/2.0);
+
     this->includedDecks = includedDecks;
     if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " played");
     else    this->setToolTip("");
@@ -159,11 +164,13 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     else
     {
         //Best Score background
-        if(isBestScore)
+        if(bestScoreOpacity>0)
         {
+            painter.setOpacity(bestScoreOpacity);
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
             else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
+            painter.setOpacity(1.0);
         }
 
         //Not enough HSR decks
@@ -212,11 +219,13 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
 
         //Best Score text
-        if(isBestScore)
+        if(bestScoreOpacity>0)
         {
+            painter.setOpacity(bestScoreOpacity);
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haTextFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfTextFile()));
             else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
+            painter.setOpacity(1.0);
         }
     }
 

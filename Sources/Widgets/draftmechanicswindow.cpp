@@ -73,19 +73,19 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoreButtonLF = new ScoreButton(centralWidget, Score_LightForge);
     scoreButtonLF->setFixedHeight(scoreWidth);
     scoreButtonLF->setFixedWidth(scoreWidth);
-    scoreButtonLF->setScore(0, true);
+    scoreButtonLF->setScore(0, 0);
     scoreButtonLF->setToolTip("LightForge deck average");
 
     scoreButtonHA = new ScoreButton(centralWidget, Score_HearthArena);
     scoreButtonHA->setFixedHeight(scoreWidth);
     scoreButtonHA->setFixedWidth(scoreWidth);
-    scoreButtonHA->setScore(0, true);
+    scoreButtonHA->setScore(0, 0);
     scoreButtonHA->setToolTip("HearthArena deck average");
 
     scoreButtonHSR = new ScoreButton(centralWidget, Score_HSReplay);
     scoreButtonHSR->setFixedHeight(scoreWidth);
     scoreButtonHSR->setFixedWidth(scoreWidth);
-    scoreButtonHSR->setScore(0, true);
+    scoreButtonHSR->setScore(0, 0);
     scoreButtonHSR->setToolTip("HSReplay winrate deck average");
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
@@ -299,9 +299,9 @@ void DraftMechanicsWindow::setShowDrops(bool value)
 
 void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR)
 {
-    scoreButtonLF->setScore(deckScoreLF, true);
-    scoreButtonHA->setScore(deckScoreHA, true);
-    scoreButtonHSR->setScore(deckScoreHSR, true);
+    scoreButtonLF->setScore(deckScoreLF, deckScoreLF);
+    scoreButtonHA->setScore(deckScoreHA, deckScoreHA);
+    scoreButtonHSR->setScore(deckScoreHSR, deckScoreHSR);
 }
 
 

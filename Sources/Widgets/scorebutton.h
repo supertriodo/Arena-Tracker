@@ -19,7 +19,7 @@ public:
 private:
     float score;
     bool learningMode, learningShow;
-    bool isBestScore;
+    float bestScoreOpacity;
     int includedDecks;
     ScoreSource scoreSource;
 
@@ -34,7 +34,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setScore(float score, bool isBest, int includedDecks=-1);
+    void setScore(float score, float bestScore, int includedDecks=-1);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void draw();
