@@ -2129,6 +2129,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_0)  QtConcurrent::run(this->draftHandler, &DraftHandler::craftGoldenCopy, 2);
 #endif
 #ifdef QT_DEBUG
+            else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
@@ -4618,7 +4619,9 @@ void MainWindow::testDelay()
 //    Utility::resizeGoldenCards();
 
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
-//    draftHandler->beginDraft(Utility::classEnum2classLogNumber(PALADIN), deckHandler->getDeckCardList());
+//    draftHandler->beginHeroDraft();
+//    QTimer::singleShot(1000, this, [=] () {
+//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(PALADIN), deckHandler->getDeckCardList());});
 }
 
 

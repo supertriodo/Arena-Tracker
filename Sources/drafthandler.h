@@ -218,6 +218,7 @@ private slots:
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();
+    void newFindScreenLoop();
 };
 
 #endif // DRAFTHANDLER_H

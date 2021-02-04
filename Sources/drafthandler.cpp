@@ -332,13 +332,13 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
 
     if(heroDrafting)
     {
-        QTimer::singleShot(1000, this, SLOT(startFindScreenRects()));
+        QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
 
         for(const QString &code: heroCodesList)     addCardHist(code, false, true);
     }
     else //if(drafting) ||Build mechanics window
     {
-        startFindScreenRects();
+        newFindScreenLoop();
 
         initLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
@@ -462,7 +462,7 @@ void DraftHandler::enterArena()
 
     if(drafting)
     {
-        if(!screenFound())  startFindScreenRects();
+        if(!screenFound())  newFindScreenLoop();
         else if(draftCards[0].getCode().isEmpty())
         {
             newCaptureDraftLoop(true);
@@ -1554,11 +1554,20 @@ bool DraftHandler::screenFound()
 }
 
 
-void DraftHandler::startFindScreenRects()
+void DraftHandler::newFindScreenLoop()
 {
-    if(!findingFrame && !futureFindScreenRects.isRunning())
+    if(!findingFrame)
     {
         findingFrame = true;
+        startFindScreenRects();
+    }
+}
+
+
+void DraftHandler::startFindScreenRects()
+{
+    if(!futureFindScreenRects.isRunning())
+    {
         futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));
     }
 }
