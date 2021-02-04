@@ -75,7 +75,7 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
     if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);//0<-->100
     else if(scoreSource == Score_LightForge)    rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
     else if(scoreSource == Score_Heroes)        rating255 = std::max(std::min(static_cast<int>((score-45)/10*255), 255), 0);//45<-->55
-    else if(scoreSource == Score_HSReplay)      rating255 = std::max(std::min(static_cast<int>((score-40)/20*255), 255), 0);//40<-->60
+    else if(scoreSource == Score_HSReplay)      rating255 = std::max(std::min(static_cast<int>((score-50)/10*255), 255), 0);//50<-->60
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
