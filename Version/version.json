@@ -4,5 +4,5 @@
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Windows.zip",
-	"log": "Remove lightforge as assistant. Improve text quality on cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.1'>github</a>"
+	"log": "Remove lightforge as assistant. Improve text quality on cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
