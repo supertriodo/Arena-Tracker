@@ -1,6 +1,6 @@
 {
 	"versionFree": ["v8.3","v8.31","v8.32","v8.33","v8.34","v9.0","v9.01","v9.02","v9.1"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Linux.zip",
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.1/Arena.Tracker.v9.1.Windows.zip",
