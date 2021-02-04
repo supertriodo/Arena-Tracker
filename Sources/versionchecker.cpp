@@ -67,7 +67,7 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
         //Check version
         else if(fullUrl == VERSION_URL)
         {
-            checkUpdate(QJsonDocument::fromJson(reply->readAll()).object());
+            checkUpdate(reply->readAll());
         }
 
         //New version downloaded
@@ -80,8 +80,23 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
 }
 
 
-void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
+void VersionChecker::checkUpdate(QByteArray versionJson)
 {
+    //Get latest version
+    QJsonObject versionJsonObject = QJsonDocument::fromJson(versionJson).object();
+    QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
+    QStringList allowedVersions;
+    for(QJsonValue value: versionArray)
+    {
+        allowedVersions.append(value.toString());
+    }
+    this->latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
+
+    //Replace url versions
+    versionJson.replace("vx.x", this->latestVersion.toUtf8());
+    versionJsonObject = QJsonDocument::fromJson(versionJson).object();
+
+
     //AppImage version se baja siempre en el primer run para que el usuario ejecute el
     //AppImage de ~/Arena Tracker
     //Al reiniciar se crearan los shortcut
@@ -96,13 +111,6 @@ void VersionChecker::checkUpdate(const QJsonObject &versionJsonObject)
     #endif
 #endif
 
-    QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
-    QStringList allowedVersions;
-    for(QJsonValue value: versionArray)
-    {
-        allowedVersions.append(value.toString());
-    }
-    this->latestVersion = allowedVersions.isEmpty()?"":allowedVersions.last();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString remindedVersion = settings.value("version", "").toString();

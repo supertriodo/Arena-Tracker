@@ -25,7 +25,7 @@ private:
 
 //Metodos
 private:
-    void checkUpdate(const QJsonObject &versionJsonObject);
+    void checkUpdate(QByteArray versionJson);
     void downloadLatestVersion(const QJsonObject &versionJsonObject);
     void saveRestart(const QByteArray &data);
     void removeOldNewVersion();
