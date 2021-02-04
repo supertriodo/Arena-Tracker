@@ -106,8 +106,19 @@ void TrackobotUploader::saveAccount()
     out << this->username;
     out << this->password;
     out << "https://trackobot.com";
+
+    saveSettings();
+
     emit pDebug("New account " + this->username + " --> Saved.");
     emit showMessageProgressBar("New track-o-bot account");
+}
+
+
+void TrackobotUploader::saveSettings()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("tbUsername", this->username);
+    settings.setValue("tbPassword", this->password);
 }
 
 
@@ -150,6 +161,16 @@ void TrackobotUploader::importAccount(QByteArray jsonData)
 }
 
 
+void TrackobotUploader::loadAccount(QString username, QString password)
+{
+    this->username = username;
+    this->password = password;
+    this->connectSuccess = true;
+    emit pDebug("Account " + this->username + " --> Loaded.");
+    emit connected(username, password);
+}
+
+
 bool TrackobotUploader::loadAccount(QString fileName)
 {
     if(fileName.isEmpty())  fileName = Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE;
@@ -169,11 +190,7 @@ bool TrackobotUploader::loadAccount(QString fileName)
 
     if(!username.isEmpty() && !password.isEmpty())
     {
-        this->username = username;
-        this->password = password;
-        this->connectSuccess = true;
-        emit pDebug("Account " + this->username + " --> Loaded.");
-        emit connected(username, password);
+        loadAccount(username, password);
         return true;
     }
     else
@@ -189,14 +206,28 @@ bool TrackobotUploader::loadAccount(QString fileName)
 
 void TrackobotUploader::checkAccount()
 {
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString username = settings.value("tbUsername", "").toString();
+    QString password = settings.value("tbPassword", "").toString();
     QFileInfo file(Utility::dataPath() + "/" + TRACKOBOT_ACCOUNT_FILE);
 
-    if(file.exists())   loadAccount();
+    if(!username.isEmpty() && !password.isEmpty())
+    {
+        loadAccount(username, password);
+        if(!file.exists())  saveAccount();
+    }
     else
     {
-        emit pDebug("Account missing --> Download from: " + QString(TRACKOBOT_NEWUSER_URL));
-        QNetworkRequest request(QUrl(TRACKOBOT_NEWUSER_URL));
-        networkManager->post(request, "");
+        if(file.exists())
+        {
+            if(loadAccount())   saveSettings();
+        }
+        else
+        {
+            emit pDebug("Account missing --> Download from: " + QString(TRACKOBOT_NEWUSER_URL));
+            QNetworkRequest request(QUrl(TRACKOBOT_NEWUSER_URL));
+            networkManager->post(request, "");
+        }
     }
 }
 

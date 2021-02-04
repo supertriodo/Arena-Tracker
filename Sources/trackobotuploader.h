@@ -52,6 +52,8 @@ private:
     QDateTime getRowDateXls(st_row::st_row_data *row);
     QList<ArenaItem> extractXls(xlsWorkBook *pWB);
     void uploadNextXlsResult();
+    void saveSettings();
+    void loadAccount(QString username, QString password);
 
 public:
     void checkAccount();
