@@ -16,7 +16,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->heroDrafting = false;
     this->capturing = false;
     this->findingFrame = false;
-    this->leavingArena = false;
+    this->stopLoops = true;
     this->transparency = Opaque;
     this->draftHeroWindow = nullptr;
     this->draftScoreWindow = nullptr;
@@ -452,12 +452,12 @@ void DraftHandler::clearLists(bool keepCounters)
     screenIndex = -1;
     numCaptured = 0;
     extendedCapture = false;
+    stopLoops = true;
 }
 
 
 void DraftHandler::enterArena()
 {
-    this->leavingArena = false;
     showOverlay();
 
     if(drafting)
@@ -473,7 +473,8 @@ void DraftHandler::enterArena()
 
 void DraftHandler::leaveArena()
 {
-    this->leavingArena = true;
+    stopLoops = true;
+
     if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
 
@@ -524,7 +525,6 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 
     this->arenaHero = Utility::classLogNumber2classEnum(hero);
     this->drafting = true;
-    this->leavingArena = false;
     this->justPickedCard = "";
 
     initCodesAndHistMaps(hero);
@@ -761,11 +761,9 @@ void DraftHandler::endDraftHideMechanicsWindow()
 
 void DraftHandler::closeFindScreenRects()
 {
-    if(findingFrame)
-    {
-        leavingArena = true;
-        if(futureFindScreenRects.isRunning())   futureFindScreenRects.waitForFinished();
-    }
+    stopLoops = true;
+
+    if(findingFrame && futureFindScreenRects.isRunning())   futureFindScreenRects.waitForFinished();
 }
 
 
@@ -837,6 +835,8 @@ void DraftHandler::deleteDraftMechanicsWindow()
 
 void DraftHandler::newCaptureDraftLoop(bool delayed)
 {
+    stopLoops = false;
+
     if(!capturing && screenFound() && cardsDownloading.isEmpty() &&
         ((drafting && !lightForgeTiers.empty() && !hearthArenaTiers.empty()) || heroDrafting))
     {
@@ -855,7 +855,7 @@ void DraftHandler::captureDraft()
 
     bool missingTierLists = drafting && (lightForgeTiers.empty() || hearthArenaTiers.empty());
     if((!drafting && !heroDrafting) || missingTierLists ||
-        leavingArena || !screenFound() || !cardsDownloading.isEmpty())
+        stopLoops || !screenFound() || !cardsDownloading.isEmpty())
     {
         capturing = false;
         return;
@@ -1567,6 +1567,8 @@ bool DraftHandler::screenFound()
 
 void DraftHandler::newFindScreenLoop()
 {
+    stopLoops = false;
+
     if(!findingFrame)
     {
         findingFrame = true;
@@ -1577,7 +1579,7 @@ void DraftHandler::newFindScreenLoop()
 
 void DraftHandler::startFindScreenRects()
 {
-    if(leavingArena)
+    if(stopLoops)
     {
         findingFrame = false;
         return;
@@ -1593,7 +1595,7 @@ void DraftHandler::finishFindScreenRects()
 {
     ScreenDetection screenDetection = futureFindScreenRects.result();
 
-    if(leavingArena)
+    if(stopLoops)
     {
         findingFrame = false;
         return;
@@ -1705,7 +1707,6 @@ void DraftHandler::beginHeroDraft()
     deleteDraftMechanicsWindow();
     clearLists(false);
     this->heroDrafting = true;
-    this->leavingArena = false;
 
     initCodesAndHistMaps();
     createTwitchHandler();
