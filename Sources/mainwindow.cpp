@@ -1610,6 +1610,7 @@ void MainWindow::closeApp()
     draftHandler->endDraftHideMechanicsWindow();
     draftHandler->deleteDraftMechanicsWindow();
     hide();
+    draftHandler->closeFindScreenRects();
     if(futureProcessHSRCardsPickrates.isRunning())          futureProcessHSRCardsPickrates.waitForFinished();
     if(futureProcessHSRCardsIncludedWinrates.isRunning())   futureProcessHSRCardsIncludedWinrates.waitForFinished();
     if(futureProcessHSRCardsIncludedDecks.isRunning())      futureProcessHSRCardsIncludedDecks.waitForFinished();

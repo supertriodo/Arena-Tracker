@@ -743,7 +743,8 @@ void DraftHandler::endDraftShowMechanicsWindow()
 //Start game
 void DraftHandler::endDraftHideMechanicsWindow()
 {
-    if(drafting)    endDraft();
+    if(drafting)            endDraft();
+    else if(heroDrafting)   endHeroDraft();
     if(draftMechanicsWindow != nullptr)
     {
         draftMechanicsWindow->hide();
@@ -754,6 +755,16 @@ void DraftHandler::endDraftHideMechanicsWindow()
             emit pDebug("Delete draft mechanic window of incomplete deck.", DebugLevel::Warning);
             deleteDraftMechanicsWindow();
         }
+    }
+}
+
+
+void DraftHandler::closeFindScreenRects()
+{
+    if(findingFrame)
+    {
+        leavingArena = true;
+        if(futureFindScreenRects.isRunning())   futureFindScreenRects.waitForFinished();
     }
 }
 
@@ -1566,6 +1577,11 @@ void DraftHandler::newFindScreenLoop()
 
 void DraftHandler::startFindScreenRects()
 {
+    if(leavingArena)
+    {
+        findingFrame = false;
+        return;
+    }
     if(!futureFindScreenRects.isRunning())
     {
         futureFindScreenRects.setFuture(QtConcurrent::run(this, &DraftHandler::findScreenRects));

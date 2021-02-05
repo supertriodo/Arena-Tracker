@@ -171,6 +171,7 @@ public:
     void setMulticlassArena(bool multiclassArena);
     SynergyHandler *getSynergyHandler();
     void setArenaSets(QStringList arenaSets);
+    void closeFindScreenRects();
 
 signals:
     void checkCardImage(QString code, bool isHero=false);
