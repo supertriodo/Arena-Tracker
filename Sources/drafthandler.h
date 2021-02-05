@@ -18,7 +18,7 @@
 #define CAPTUREDRAFT_START_TIME         1500
 #define CAPTUREDRAFT_LOOP_TIME          100
 #define CAPTUREDRAFT_LOOP_TIME_FADING   200
-#define CAPTUREDRAFT_LOOP_FLANN_TIME    200
+#define FINDINGFRAME_LOOP_TIME          200
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
@@ -31,6 +31,7 @@ class ScreenDetection
 public:
     cv::Rect screenRects[3];
     int screenIndex = -1;
+    int screenHeight = 1;
     QPointF screenScale = QPointF(0,0);
 };
 

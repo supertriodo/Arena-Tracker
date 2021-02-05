@@ -1585,22 +1585,47 @@ void DraftHandler::finishFindScreenRects()
 
     if(screenDetection.screenIndex == -1)
     {
-        this->screenIndex = -1;
         emit pDebug("Hearthstone arena screen not found. Retrying...");
-        QTimer::singleShot(CAPTUREDRAFT_LOOP_FLANN_TIME, this, SLOT(startFindScreenRects()));
+        QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
     }
     else
     {
-        findingFrame = false;
-        this->screenIndex = screenDetection.screenIndex;
         for(int i=0; i<3; i++)
         {
             this->screenRects[i] = screenDetection.screenRects[i];
-//#ifdef QT_DEBUG
 //            qDebug()<<"[" + QString::number(i) + "]"<<screenRects[i].x<<screenRects[i].y<<screenRects[i].width<<screenRects[i].height;
-//#endif
         }
 
+        //Prueba de fallos
+//        "[0]" 438 274 119 118
+//        "[1]" 719 274 119 118
+//        "[2]" 999 274 119 118
+//        DRAFT -> 0.109259 BIEN / HERO DRAFT -> 0.146296 BIEN
+//        "[0]" 421 344 159 158
+//        "[1]" 702 344 159 158
+//        "[2]" 982 344 159 158
+//        DRAFT -> 0.146296 MAL
+        float maxDistortion;
+        if(heroDrafting)    maxDistortion = 0.156;
+        else                maxDistortion = 0.119;// if(drafting) || buildMechanicsWindow
+        for(int i=0; i<3; i++)
+        {
+            if(((screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) > maxDistortion) ||
+                    ((screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) > maxDistortion))
+            {
+                emit pDebug("WARNING: Hearthstone arena screen detected: Bad shape: "
+                            "W(" + QString::number(screenRects[i].width) + "/" + QString::number(screenDetection.screenHeight) +
+                            "=" + QString::number(screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) +
+                            ") H(" + QString::number(screenRects[i].height) + "/" + QString::number(screenDetection.screenHeight) +
+                            "=" + QString::number(screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) +
+                            "). Retrying...");
+                QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
+                return;
+            }
+        }
+
+        findingFrame = false;
+        this->screenIndex = screenDetection.screenIndex;
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
 
         createDraftWindows(screenDetection.screenScale);
@@ -1638,8 +1663,8 @@ ScreenDetection DraftHandler::findScreenRects()
         if(drafting)    arenaTemplate = "arenaTemplate.png";
         else if(heroDrafting)   arenaTemplate = "heroesTemplate.png";
         else                    arenaTemplate = "mechanicsTemplate.png";
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen,
-                                                                          templatePoints, screenDetection.screenScale);
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen, templatePoints,
+                                                screenDetection.screenScale, screenDetection.screenHeight);
         if(screenPoints.empty())    continue;
 
         //Calculamos screenRect

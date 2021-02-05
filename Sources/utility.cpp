@@ -614,15 +614,18 @@ QString Utility::removeAccents(QString s)
 }
 
 
-std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints, QPointF &screenScale)
+std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints,
+                                                   QPointF &screenScale, int &screenHeight)
 {
     std::vector<Point2f> screenPoints;
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
 
+    //Bug Fix: When using a resolution scale in you OS, draft scores will be postioned outside the screen. Now it's fixed.
     //Screen scale
     screenScale.setX(rect.width() / static_cast<qreal>(image.width()));
     screenScale.setY(rect.height() / static_cast<qreal>(image.height()));
+    screenHeight = image.height();
 
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
     cv::Mat screenCapture = mat.clone();
