@@ -65,6 +65,7 @@ private:
     int deckRatingHA, deckRatingLF;
     float deckRatingHSR;
     cv::Rect screenRects[3];
+    QPointF screenScale;
     int screenIndex;
     int numCaptured;
     bool drafting, heroDrafting, capturing, findingFrame, stopLoops;
@@ -117,7 +118,7 @@ private:
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
     void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft, const bool createCardHist);
-    void createDraftWindows(const QPointF &screenScale);
+    void createDraftWindows();
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
@@ -143,6 +144,11 @@ private:
     void deleteTwitchHandler();
     QString getDeckAvgString(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
     void buildDraftMechanicsWindow();
+    bool loadTemplateSettings();
+    bool saveTemplateSettings();
+    bool isFindScreenOk(ScreenDetection &screenDetection);
+    bool isFindScreenAsSettings(ScreenDetection &screenDetection);
+    void refreshHeroes();
 
 public:
     void buildHeroCodesList();

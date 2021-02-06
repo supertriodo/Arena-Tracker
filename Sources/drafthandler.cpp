@@ -34,6 +34,8 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->cardsIncludedWinratesMap = nullptr;
     this->cardsIncludedDecksMap = nullptr;
     this->cardsPlayedWinratesMap = nullptr;
+    this->screenIndex = -1;
+    this->screenScale = QPointF(1,1);
 
     for(int i=0; i<3; i++)
     {
@@ -338,7 +340,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     }
     else //if(drafting) ||Build mechanics window
     {
-        newFindScreenLoop();
+        QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
 
         initLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
@@ -450,6 +452,7 @@ void DraftHandler::clearLists(bool keepCounters)
     }
 
     screenIndex = -1;
+    screenScale = QPointF(1,1);
     numCaptured = 0;
     extendedCapture = false;
     stopLoops = true;
@@ -462,7 +465,7 @@ void DraftHandler::enterArena()
 
     if(drafting)
     {
-        if(!screenFound())  newFindScreenLoop();
+        if(!screenFound())  QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
         else if(draftCards[0].getCode().isEmpty())
         {
             newCaptureDraftLoop(true);
@@ -502,7 +505,11 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
 {
     deleteDraftMechanicsWindow();
 
-    if(heroDrafting)   endHeroDraft();
+    if(heroDrafting)
+    {
+        saveTemplateSettings();
+        endHeroDraft();
+    }
 
     bool alreadyDrafting = drafting;
     int heroInt = hero.toInt();
@@ -730,7 +737,11 @@ void DraftHandler::heroDraftDeck(QString hero)
 //End game or end draft or enter previous arena (create Mechanics Window)
 void DraftHandler::endDraftShowMechanicsWindow()
 {
-    if(drafting)    endDraft();
+    if(drafting)
+    {
+        saveTemplateSettings();
+        endDraft();
+    }
     else if(draftMechanicsWindow != nullptr)    showOverlay();
     else
     {
@@ -743,6 +754,8 @@ void DraftHandler::endDraftShowMechanicsWindow()
 //Start game
 void DraftHandler::endDraftHideMechanicsWindow()
 {
+    stopLoops = true;
+
     if(drafting)            endDraft();
     else if(heroDrafting)   endHeroDraft();
     if(draftMechanicsWindow != nullptr)
@@ -1137,10 +1150,7 @@ void DraftHandler::pickCard(QString code)
 
 void DraftHandler::refreshCapturedCards()
 {
-    if(!drafting)
-    {
-        return;
-    }
+    if(!drafting)   return;
 
     //Clear cards and score
     clearAndDisconnectAllComboBox();
@@ -1161,7 +1171,23 @@ void DraftHandler::refreshCapturedCards()
     this->extendedCapture = true;
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
-    newCaptureDraftLoop(false);
+    newCaptureDraftLoop();
+}
+
+
+void DraftHandler::refreshHeroes()
+{
+    for(int i=0; i<3; i++)
+    {
+        cardDetected[i] = false;
+        draftCardMaps[i].clear();
+        bestMatchesMaps[i].clear();
+    }
+
+    numCaptured = 0;
+    if(draftHeroWindow != nullptr)  draftHeroWindow->hideScores();
+
+    newCaptureDraftLoop();
 }
 
 
@@ -1565,11 +1591,155 @@ bool DraftHandler::screenFound()
 }
 
 
+bool DraftHandler::loadTemplateSettings()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    if(heroDrafting)
+    {
+        screenIndex = settings.value("heroDraftingScreenIndex", -1).toInt();
+        if(screenIndex == -1)   return false;
+
+        QRect rect;
+        rect = settings.value("heroDraftingScreenRect0", QRect()).value<QRect>();
+        screenRects[0]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        rect = settings.value("heroDraftingScreenRect1", QRect()).value<QRect>();
+        screenRects[1]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        rect = settings.value("heroDraftingScreenRect2", QRect()).value<QRect>();
+        screenRects[2]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+
+        screenScale = settings.value("heroDraftingScreenScale", QPointF(1,1)).value<QPointF>();
+    }
+    else// if(drafting) || buildMechanicsWindow
+    {
+        screenIndex = settings.value("draftingScreenIndex", -1).toInt();
+        if(screenIndex == -1)   return false;
+
+        QRect rect;
+        rect = settings.value("draftingScreenRect0", QRect()).value<QRect>();
+        screenRects[0]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        rect = settings.value("draftingScreenRect1", QRect()).value<QRect>();
+        screenRects[1]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        rect = settings.value("draftingScreenRect2", QRect()).value<QRect>();
+        screenRects[2]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+
+        screenScale = settings.value("draftingScreenScale", QPointF(1,1)).value<QPointF>();
+    }
+    return true;
+}
+
+
+bool DraftHandler::saveTemplateSettings()
+{
+    if(screenIndex == -1)   return false;
+
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    if(heroDrafting)
+    {
+        settings.setValue("heroDraftingScreenIndex", screenIndex);
+
+        QRect rect0(screenRects[0].x, screenRects[0].y, screenRects[0].width, screenRects[0].height);
+        settings.setValue("heroDraftingScreenRect0", rect0);
+        QRect rect1(screenRects[1].x, screenRects[1].y, screenRects[1].width, screenRects[1].height);
+        settings.setValue("heroDraftingScreenRect1", rect1);
+        QRect rect2(screenRects[2].x, screenRects[2].y, screenRects[2].width, screenRects[2].height);
+        settings.setValue("heroDraftingScreenRect2", rect2);
+
+        settings.setValue("heroDraftingScreenScale", screenScale);
+    }
+    else// if(drafting) //buildMechanicsWindow no guarda valores pq no hace startFindScreenRects();
+    {
+        settings.setValue("draftingScreenIndex", screenIndex);
+
+        QRect rect0(screenRects[0].x, screenRects[0].y, screenRects[0].width, screenRects[0].height);
+        settings.setValue("draftingScreenRect0", rect0);
+        QRect rect1(screenRects[1].x, screenRects[1].y, screenRects[1].width, screenRects[1].height);
+        settings.setValue("draftingScreenRect1", rect1);
+        QRect rect2(screenRects[2].x, screenRects[2].y, screenRects[2].width, screenRects[2].height);
+        settings.setValue("draftingScreenRect2", rect2);
+
+        settings.setValue("draftingScreenScale", screenScale);
+    }
+    return true;
+}
+
+
+bool DraftHandler::isFindScreenOk(ScreenDetection &screenDetection)
+{
+    //Prueba de fallos
+//        "[0]" 438 274 119 118
+//        "[1]" 719 274 119 118
+//        "[2]" 999 274 119 118
+//        DRAFT -> 0.109259 BIEN / HERO DRAFT -> 0.146296 BIEN
+//        "[0]" 421 344 159 158
+//        "[1]" 702 344 159 158
+//        "[2]" 982 344 159 158
+//        DRAFT -> 0.146296 MAL
+    float maxDistortion;
+    if(heroDrafting)    maxDistortion = 0.156;
+    else                maxDistortion = 0.119;// if(drafting) || buildMechanicsWindow
+    for(int i=0; i<3; i++)
+    {
+        if(((screenDetection.screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) > maxDistortion) ||
+                ((screenDetection.screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) > maxDistortion))
+        {
+            emit pDebug("WARNING: Hearthstone arena screen detected: Bad shape: "
+                    "W(" + QString::number(screenDetection.screenRects[i].width) + "/" +
+                    QString::number(screenDetection.screenHeight) +
+                    "=" + QString::number(screenDetection.screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) +
+                    ") H(" + QString::number(screenDetection.screenRects[i].height) + "/" +
+                    QString::number(screenDetection.screenHeight) +
+                    "=" + QString::number(screenDetection.screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) +
+                    "). Retrying...");
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool DraftHandler::isFindScreenAsSettings(ScreenDetection &screenDetection)
+{
+    int maxDiff = screenRects[0].width/20;
+
+    emit pDebug("Screen Settings: I(" + QString::number(screenIndex) + ")");
+    for(int i=0; i<3; i++)
+        emit pDebug("[" + QString::number(i) + "](" +
+                QString::number(screenRects[i].x) + "," + QString::number(screenRects[i].y) + "," +
+                QString::number(screenRects[i].width) + "," + QString::number(screenRects[i].height) + ")");
+    emit pDebug("Screen Found: I(" + QString::number(screenDetection.screenIndex) + ")");
+    for(int i=0; i<3; i++)
+        emit pDebug("[" + QString::number(i) + "](" +
+                QString::number(screenDetection.screenRects[i].x) + "," + QString::number(screenDetection.screenRects[i].y) + "," +
+                QString::number(screenDetection.screenRects[i].width) + "," + QString::number(screenDetection.screenRects[i].height) + ")");
+
+    if(screenIndex != screenDetection.screenIndex)  return false;
+    for(int i=0; i<3; i++)
+    {
+        if(std::abs(screenRects[i].x - screenDetection.screenRects[i].x) > maxDiff)             return false;
+        if(std::abs(screenRects[i].y - screenDetection.screenRects[i].y) > maxDiff)             return false;
+        if(std::abs(screenRects[i].width - screenDetection.screenRects[i].width) > maxDiff)     return false;
+        if(std::abs(screenRects[i].height - screenDetection.screenRects[i].height) > maxDiff)   return false;
+    }
+    return true;
+}
+
+
 void DraftHandler::newFindScreenLoop()
 {
     stopLoops = false;
 
-    if(!findingFrame)
+    if(loadTemplateSettings())
+    {
+        createDraftWindows();
+        if(drafting || heroDrafting)
+        {
+            newCaptureDraftLoop();
+            if(draftMechanicsWindow != nullptr) draftMechanicsWindow->hide();
+        }
+        else    return;
+    }
+
+    if(!findingFrame && (drafting || heroDrafting))//buildMechanicsWindow no busca frame
     {
         findingFrame = true;
         startFindScreenRects();
@@ -1606,49 +1776,35 @@ void DraftHandler::finishFindScreenRects()
         emit pDebug("Hearthstone arena screen not found. Retrying...");
         QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
     }
-    else
+    else if(isFindScreenOk(screenDetection))
     {
-        for(int i=0; i<3; i++)
-        {
-            this->screenRects[i] = screenDetection.screenRects[i];
-//            qDebug()<<"[" + QString::number(i) + "]"<<screenRects[i].x<<screenRects[i].y<<screenRects[i].width<<screenRects[i].height;
-        }
-
-        //Prueba de fallos
-//        "[0]" 438 274 119 118
-//        "[1]" 719 274 119 118
-//        "[2]" 999 274 119 118
-//        DRAFT -> 0.109259 BIEN / HERO DRAFT -> 0.146296 BIEN
-//        "[0]" 421 344 159 158
-//        "[1]" 702 344 159 158
-//        "[2]" 982 344 159 158
-//        DRAFT -> 0.146296 MAL
-        float maxDistortion;
-        if(heroDrafting)    maxDistortion = 0.156;
-        else                maxDistortion = 0.119;// if(drafting) || buildMechanicsWindow
-        for(int i=0; i<3; i++)
-        {
-            if(((screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) > maxDistortion) ||
-                    ((screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) > maxDistortion))
-            {
-                emit pDebug("WARNING: Hearthstone arena screen detected: Bad shape: "
-                            "W(" + QString::number(screenRects[i].width) + "/" + QString::number(screenDetection.screenHeight) +
-                            "=" + QString::number(screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) +
-                            ") H(" + QString::number(screenRects[i].height) + "/" + QString::number(screenDetection.screenHeight) +
-                            "=" + QString::number(screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) +
-                            "). Retrying...");
-                QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
-                return;
-            }
-        }
-
+        bool isSame = isFindScreenAsSettings(screenDetection);
+        bool needCreate = (screenIndex == -1);
         findingFrame = false;
         this->screenIndex = screenDetection.screenIndex;
-        emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex));
+        this->screenScale = screenDetection.screenScale;
+        for(int i=0; i<3; i++)  this->screenRects[i] = screenDetection.screenRects[i];
+        emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex) +
+                    ". " + (isSame?QString("It's"):QString("Not")) + " the same.");
 
-        createDraftWindows(screenDetection.screenScale);
-        if(drafting || heroDrafting)    newCaptureDraftLoop();
+        if(needCreate)
+        {
+            createDraftWindows();
+            if(drafting || heroDrafting)    newCaptureDraftLoop();
+        }
+        else
+        {
+            if(isSame)  showOverlay();
+            else
+            {
+                createDraftWindows();
+
+                if(drafting)            refreshCapturedCards();
+                else if(heroDrafting)   refreshHeroes();
+            }
+        }
     }
+    else    QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
 }
 
 
@@ -1786,7 +1942,7 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 }
 
 
-void DraftHandler::createDraftWindows(const QPointF &screenScale)
+void DraftHandler::createDraftWindows()
 {
     deleteDraftHeroWindow();
     deleteDraftScoreWindow();
@@ -1799,6 +1955,7 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
 
     if(drafting)
     {
+        emit pDebug("Create drafting windows.");
         draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
@@ -1831,11 +1988,13 @@ void DraftHandler::createDraftWindows(const QPointF &screenScale)
     }
     else if(heroDrafting)
     {
+        emit pDebug("Create heroDrafting windows.");
         draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
     }
     else//buildMechanicsWindow
     {
+        emit pDebug("Create mechanic window.");
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
                                                         patreonVersion);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);

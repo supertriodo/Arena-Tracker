@@ -2131,6 +2131,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #endif
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
+            else if(event->key() == Qt::Key_7)
+                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARRIOR), deckHandler->getDeckCardList());
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
@@ -4621,8 +4623,8 @@ void MainWindow::testDelay()
 
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
-//    QTimer::singleShot(1000, this, [=] () {
-//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(PALADIN), deckHandler->getDeckCardList());});
+//    QTimer::singleShot(5000, this, [=] () {
+//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
 }
 
 
