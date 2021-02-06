@@ -327,7 +327,7 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
 }
 
 
-void DraftHandler::initCodesAndHistMaps(QString hero)
+void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 {
     cardsDownloading.clear();
     cardsHist.clear();
@@ -340,7 +340,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero)
     }
     else //if(drafting) ||Build mechanics window
     {
-        QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
+        QTimer::singleShot(1000, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
         initLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
@@ -501,7 +501,7 @@ void DraftHandler::leaveArena()
 }
 
 
-void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
+void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool skipScreenSettings)
 {
     deleteDraftMechanicsWindow();
 
@@ -534,7 +534,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList)
     this->drafting = true;
     this->justPickedCard = "";
 
-    initCodesAndHistMaps(hero);
+    initCodesAndHistMaps(hero, skipScreenSettings);
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
     createTwitchHandler();
@@ -1724,12 +1724,14 @@ bool DraftHandler::isFindScreenAsSettings(ScreenDetection &screenDetection)
 }
 
 
-void DraftHandler::newFindScreenLoop()
+void DraftHandler::newFindScreenLoop(bool skipScreenSettings)
 {
     stopLoops = false;
 
-    if(loadTemplateSettings())
+    //skipScreenSettings = Force Draft
+    if(!skipScreenSettings && loadTemplateSettings())
     {
+        emit pDebug("Hearthstone arena screen loaded from settings.");
         createDraftWindows();
         if(drafting || heroDrafting)
         {
@@ -1737,6 +1739,10 @@ void DraftHandler::newFindScreenLoop()
             if(draftMechanicsWindow != nullptr) draftMechanicsWindow->hide();
         }
         else    return;
+    }
+    else
+    {
+        emit pDebug("Hearthstone arena screen NOT loaded from settings.");
     }
 
     if(!findingFrame && (drafting || heroDrafting))//buildMechanicsWindow no busca frame

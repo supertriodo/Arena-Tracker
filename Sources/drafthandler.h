@@ -100,7 +100,7 @@ private:
     void completeUI();
     cv::MatND getHist(const QString &code);
     cv::MatND getHist(cv::Mat &srcBase);
-    void initCodesAndHistMaps(QString hero="");
+    void initCodesAndHistMaps(QString hero="", bool skipScreenSettings=false);
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
     void endDraft();
@@ -200,7 +200,7 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
 public slots:
-    void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>());
+    void beginDraft(QString hero, QList<DeckCard> deckCardList = QList<DeckCard>(), bool skipScreenSettings=false);
     void continueDraft();
     void beginHeroDraft();
     void heroDraftDeck(QString hero);
@@ -226,7 +226,7 @@ private slots:
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();
-    void newFindScreenLoop();
+    void newFindScreenLoop(bool skipScreenSettings=false);
 };
 
 #endif // DRAFTHANDLER_H

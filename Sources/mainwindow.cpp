@@ -3074,7 +3074,7 @@ void MainWindow::confirmNewArenaDraft(QString hero)
         pDebug("Manual draft: " + hero);
         pLog(tr("Menu: Force draft: ") + hero);
         QString heroLog = Utility::className2classLogNumber(hero);
-        draftHandler->beginDraft(heroLog, deckHandler->getDeckCardList());
+        draftHandler->beginDraft(heroLog, deckHandler->getDeckCardList(), true);
     }
 }
 
