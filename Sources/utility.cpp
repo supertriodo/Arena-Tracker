@@ -75,6 +75,7 @@ QString Utility::classEnum2classUName(CardClass cardClass)
     else if(cardClass == WARLOCK) return QString("WARLOCK");
     else if(cardClass == WARRIOR) return QString("WARRIOR");
     else if(cardClass == DEMONHUNTER) return QString("DEMONHUNTER");
+    else if(cardClass == NEUTRAL) return QString("NEUTRAL");
     else return QString();
 }
 

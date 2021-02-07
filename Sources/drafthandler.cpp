@@ -279,28 +279,23 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 }
 
 
-void DraftHandler::loadCardHist(QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::loadCardHist(QStringList &codes, QString classUName)
 {
-    for(const CardClass &cardClass: codesByClass.keys())
+    std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
+    cv::FileStorage fs(filename, cv::FileStorage::READ);
+    for(QString code: codes)
     {
-        QString classUName = Utility::classEnum2classUName(cardClass);
-        std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
-        cv::FileStorage fs(filename, cv::FileStorage::READ);
-        for(QString code: codesByClass[cardClass])
-        {
-            cv::MatND hist;
-            fs[code.toStdString()] >> hist;
-            if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
-            else                cardsHist[code] = hist;
+        cv::MatND hist;
+        fs[code.toStdString()] >> hist;
+        if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
+        else                cardsHist[code] = hist;
 
-            code +=  + "_premium";
-            fs[code.toStdString()] >> hist;
-            if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
-            else                cardsHist[code] = hist;
-        }
-        fs.release();
+        code +=  + "_premium";
+        fs[code.toStdString()] >> hist;
+        if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
+        else                cardsHist[code] = hist;
     }
-    emit pDebug("Load Arena Hists: " + QString::number(cardsHist.count()));
+    fs.release();
 }
 
 
@@ -327,22 +322,30 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
     for(const CardClass &cardClass: codesByClass.keys())
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
-        std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
-        cv::FileStorage fs(filename, cv::FileStorage::WRITE);
-        for(QString code: codesByClass[cardClass])
+        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + ".xml");
+        if(fi.exists())
         {
-            if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
-            else                            fs << code.toStdString() << cardsHist[code];
-
-            code +=  + "_premium";
-            if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
-            else                            fs << code.toStdString() << cardsHist[code];
+            emit pDebug("Save Arena Hists SKIP (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
         }
-        fs.release();
+        else
+        {
+            std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
+            cv::FileStorage fs(filename, cv::FileStorage::WRITE);
+            for(QString code: codesByClass[cardClass])
+            {
+                if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
+                else                            fs << code.toStdString() << cardsHist[code];
+
+                code +=  + "_premium";
+                if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
+                else                            fs << code.toStdString() << cardsHist[code];
+            }
+            fs.release();
+            emit pDebug("Save Arena Hists SAVED (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
+        }
     }
 
     needSaveCardHist = false;
-    emit pDebug("Save Arena Hists: " + QString::number(cardsHist.count()));
 }
 
 
@@ -368,41 +371,37 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-void DraftHandler::processCardHist()
+void DraftHandler::processCardHist(QStringList &codes)
 {
-    for(const QString &code: lightForgeTiers.keys())
+    for(const QString &code: codes)
     {
         addCardHist(code, false);
         addCardHist(code, true);
     }
-    emit pDebug("Process Arena Hists: " + QString::number(cardsHist.count()));
 }
 
 
 bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
 {
-    bool inCache = true;
+    bool processed = false;
     for(const CardClass &cardClass: codesByClass.keys())
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
         QFileInfo fi(Utility::histogramsPath() + "/" + classUName + ".xml");
-        if(!fi.exists())
+        if(fi.exists())
         {
-            inCache = false;
-            break;
+            loadCardHist(codesByClass[cardClass], classUName);
+            emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()));
+        }
+        else
+        {
+            processCardHist(codesByClass[cardClass]);
+            emit pDebug("Process Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()));
+            processed = true;
         }
     }
 
-    if(inCache)
-    {
-        loadCardHist(codesByClass);
-        return false;
-    }
-    else
-    {
-        processCardHist();
-        return true;
-    }
+    return processed;
 }
 
 
@@ -433,7 +432,7 @@ void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClas
     for(const CardClass &cardClass: codesByClass.keys())
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
-        emit pDebug("-- " + classUName + ": " + QString::number(codesByClass[cardClass].count()));
+        emit pDebug("-- (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
     }
 }
 

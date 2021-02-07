@@ -150,9 +150,9 @@ private:
     bool isFindScreenOk(ScreenDetection &screenDetection);
     bool isFindScreenAsSettings(ScreenDetection &screenDetection);
     void refreshHeroes();
-    void processCardHist();
+    void processCardHist(QStringList &codes);
     bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
-    void loadCardHist(QMap<CardClass, QStringList> &codesByClass);
+    void loadCardHist(QStringList &codes, QString classUName);
     void saveCardHist(const bool multiClassDraft);
 
 public:
