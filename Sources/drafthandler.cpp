@@ -352,17 +352,20 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
 void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
     //Evitamos golden cards de cartas no colleccionables
-    if(premium &&
-        (!Utility::getCardAttribute(code, "collectible").toBool())) return;
+    if(premium && !Utility::getCardAttribute(code, "collectible").toBool()) return;
 
     QString fileNameCode = premium?(code + "_premium"): code;
+    //Puede ocurrir con dual class cards en multiclassArena.
+    if(cardsHist.contains(fileNameCode))    return;
+
     QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
     if(cardFile.exists())
     {
         cv::MatND histBase = getHist(fileNameCode);
         if(!histBase.empty())   cardsHist[fileNameCode] = histBase;
     }
-    else
+    //cardsDownloading no puede contener duplicados, puede ocurrir con dual class cards en multiclassArena.
+    else if(!cardsDownloading.contains(fileNameCode))
     {
         //La bajamos de github/hearthSim
         emit checkCardImage(fileNameCode, isHero);
@@ -391,12 +394,12 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
         if(fi.exists())
         {
             loadCardHist(codesByClass[cardClass], classUName);
-            emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()));
+            emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()) + " hists.");
         }
         else
         {
             processCardHist(codesByClass[cardClass]);
-            emit pDebug("Process Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()));
+            emit pDebug("Process Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()) + " hists.");
             processed = true;
         }
     }
@@ -454,9 +457,9 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
         QTimer::singleShot(1000, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
         QMap<CardClass, QStringList> codesByClass;
-        initLightForgeTiers(this->multiclassArena, codesByClass);
+        initLightForgeTiers(multiclassArena, codesByClass);
         if(drafting)    needSaveCardHist = initCardHist(codesByClass);
-        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
+        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
         synergyHandler->initSynergyCodes();
     }
 
