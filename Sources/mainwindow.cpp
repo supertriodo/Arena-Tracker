@@ -795,6 +795,10 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
         emit pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
 
+        //Remove histograms
+        removeHistograms();
+        Utility::createDir(Utility::histogramsPath());
+
         allCardsDownloadNeeded = true;
         settings.setValue("arenaVersion", version);
     }
@@ -2722,6 +2726,7 @@ void MainWindow::createDataDir()
     Utility::createDir(Utility::gameslogPath());
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());
+    Utility::createDir(Utility::histogramsPath());
 
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }
@@ -2875,6 +2880,14 @@ void MainWindow::removeExtra()
         extraDir.removeRecursively();
         emit pDebug(Utility::extraPath() + " removed.");
     }
+}
+
+
+void MainWindow::removeHistograms()
+{
+    QDir dir = QDir(Utility::histogramsPath());
+    dir.removeRecursively();
+    emit pDebug(Utility::histogramsPath() + " removed.");
 }
 
 
@@ -4331,7 +4344,7 @@ void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
             allCardsDownloadList.append(code);
         }
         //Solo bajamos golden cards de cartas colleccionables
-        if( Utility::hasGoldenImage(code) &&
+        if( /*Utility::hasGoldenImage(code) &&*/
             Utility::getCardAttribute(code, "collectible").toBool() &&
             !checkCardImage(code + "_premium"))
         {

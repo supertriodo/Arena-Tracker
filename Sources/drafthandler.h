@@ -92,6 +92,7 @@ private:
     QMap<QString, float> *cardsPlayedWinratesMap;
     TwitchHandler *twitchHandler;
     bool multiclassArena;
+    bool needSaveCardHist;
     QStringList arenaSets;
 
 
@@ -117,7 +118,7 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
-    void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft, const bool createCardHist);
+    void initLightForgeTiers(const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass);
     void createDraftWindows();
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -149,6 +150,10 @@ private:
     bool isFindScreenOk(ScreenDetection &screenDetection);
     bool isFindScreenAsSettings(ScreenDetection &screenDetection);
     void refreshHeroes();
+    void processCardHist();
+    bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
+    void loadCardHist(QMap<CardClass, QStringList> &codesByClass);
+    void saveCardHist(const bool multiClassDraft);
 
 public:
     void buildHeroCodesList();

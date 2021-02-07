@@ -36,6 +36,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->cardsPlayedWinratesMap = nullptr;
     this->screenIndex = -1;
     this->screenScale = QPointF(1,1);
+    this->needSaveCardHist = false;
 
     for(int i=0; i<3; i++)
     {
@@ -278,11 +279,78 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 }
 
 
+void DraftHandler::loadCardHist(QMap<CardClass, QStringList> &codesByClass)
+{
+    for(const CardClass &cardClass: codesByClass.keys())
+    {
+        QString classUName = Utility::classEnum2classUName(cardClass);
+        std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
+        cv::FileStorage fs(filename, cv::FileStorage::READ);
+        for(QString code: codesByClass[cardClass])
+        {
+            cv::MatND hist;
+            fs[code.toStdString()] >> hist;
+            if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
+            else                cardsHist[code] = hist;
+
+            code +=  + "_premium";
+            fs[code.toStdString()] >> hist;
+            if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
+            else                cardsHist[code] = hist;
+        }
+        fs.release();
+    }
+    emit pDebug("Load Arena Hists: " + QString::number(cardsHist.count()));
+}
+
+
+void DraftHandler::saveCardHist(const bool multiClassDraft)
+{
+    //Build codesByClass
+    QMap<CardClass, QStringList> codesByClass;
+    for(const QString &code: lightForgeTiers.keys())
+    {
+        QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+        if(multiClassDraft)
+        {
+            for(const CardClass &cardClass: cardClassList)
+            {
+                if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: saveCardHist found INVALID_CLASS: " + code);
+                else                            codesByClass[cardClass].append(code);
+            }
+        }
+        else if(cardClassList.contains(NEUTRAL))    codesByClass[NEUTRAL].append(code);
+        else if(cardClassList.contains(arenaHero))  codesByClass[arenaHero].append(code);
+    }
+
+    //Save
+    for(const CardClass &cardClass: codesByClass.keys())
+    {
+        QString classUName = Utility::classEnum2classUName(cardClass);
+        std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
+        cv::FileStorage fs(filename, cv::FileStorage::WRITE);
+        for(QString code: codesByClass[cardClass])
+        {
+            if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
+            else                            fs << code.toStdString() << cardsHist[code];
+
+            code +=  + "_premium";
+            if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
+            else                            fs << code.toStdString() << cardsHist[code];
+        }
+        fs.release();
+    }
+
+    needSaveCardHist = false;
+    emit pDebug("Save Arena Hists: " + QString::number(cardsHist.count()));
+}
+
+
 void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
     //Evitamos golden cards de cartas no colleccionables
     if(premium &&
-        (!Utility::hasGoldenImage(code) ||
+        (/*!Utility::hasGoldenImage(code) ||*/
          !Utility::getCardAttribute(code, "collectible").toBool())) return;
 
     QString fileNameCode = premium?(code + "_premium"): code;
@@ -301,29 +369,73 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 }
 
 
-void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
-                                       const bool createCardHist)
+void DraftHandler::processCardHist()
+{
+    for(const QString &code: lightForgeTiers.keys())
+    {
+        addCardHist(code, false);
+        addCardHist(code, true);
+    }
+    emit pDebug("Process Arena Hists: " + QString::number(cardsHist.count()));
+}
+
+
+bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
+{
+    bool inCache = true;
+    for(const CardClass &cardClass: codesByClass.keys())
+    {
+        QString classUName = Utility::classEnum2classUName(cardClass);
+        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + ".xml");
+        if(!fi.exists())
+        {
+            inCache = false;
+            break;
+        }
+    }
+
+    if(inCache)
+    {
+        loadCardHist(codesByClass);
+        return false;
+    }
+    else
+    {
+        processCardHist();
+        return true;
+    }
+}
+
+
+void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass)
 {
     lightForgeTiers.clear();
 
     for(const QString &code: getAllArenaCodes())
     {
         QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-        if  (
-                !lightForgeTiers.contains(code) &&
-                (multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
-            )
+        if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(arenaHero))
         {
-            if(createCardHist)
-            {
-                addCardHist(code, false);
-                addCardHist(code, true);
-            }
-
             lightForgeTiers[code] = 0;
+
+            if(multiClassDraft)
+            {
+                for(const CardClass &cardClass: cardClassList)
+                {
+                    if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: initLightForgeTiers found INVALID_CLASS: " + code);
+                    else                            codesByClass[cardClass].append(code);
+                }
+            }
+            else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
+            else/* if(cardClassList.contains(arenaHero))*/  codesByClass[arenaHero].append(code);
         }
     }
     emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
+    for(const CardClass &cardClass: codesByClass.keys())
+    {
+        QString classUName = Utility::classEnum2classUName(cardClass);
+        emit pDebug("-- " + classUName + ": " + QString::number(codesByClass[cardClass].count()));
+    }
 }
 
 
@@ -331,6 +443,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 {
     cardsDownloading.clear();
     cardsHist.clear();
+    needSaveCardHist = false;
 
     if(heroDrafting)
     {
@@ -342,7 +455,9 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         QTimer::singleShot(1000, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
-        initLightForgeTiers(Utility::classLogNumber2classEnum(hero), this->multiclassArena, drafting);
+        QMap<CardClass, QStringList> codesByClass;
+        initLightForgeTiers(this->multiclassArena, codesByClass);
+        if(drafting)    needSaveCardHist = initCardHist(codesByClass);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), this->multiclassArena);
         synergyHandler->initSynergyCodes();
     }
@@ -352,6 +467,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         if(cardsDownloading.isEmpty())
         {
+            if(needSaveCardHist)    saveCardHist(multiclassArena);
             newCaptureDraftLoop();
         }
         else
@@ -376,6 +492,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
     emit advanceProgressBar(cardsDownloading.count(), fileNameCode.split("_premium").first() + " downloaded");
     if(cardsDownloading.isEmpty())
     {
+        if(needSaveCardHist)    saveCardHist(multiclassArena);
         emit showMessageProgressBar("All cards downloaded");
         emit downloadEnded();
         newCaptureDraftLoop();
@@ -436,6 +553,7 @@ void DraftHandler::clearLists(bool keepCounters)
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
     cardsHist.clear();
+    needSaveCardHist = false;
 
     if(!keepCounters)//endDraft
     {

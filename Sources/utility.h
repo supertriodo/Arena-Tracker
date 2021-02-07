@@ -127,6 +127,7 @@ public:
     static QString getCodeFromCardAttribute(QString attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
     static QString themesPath();
+    static QString histogramsPath();
     static int classLogNumber2classOrder(QString heroLog);
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets, bool recursive);
@@ -137,13 +138,14 @@ public:
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
     static void checkTierlistsCount();
-    static bool hasGoldenImage(QString code);
+//    static bool hasGoldenImage(QString code);
     static void resizeGoldenCards();
     static bool checkHeroPortrait(QString code);
     static void checkMissingGoldenCards();
     static QStringList getArenaSets(const QStringList &codeList);
     static void fadeOutLayout(QLayout *layout);
     static void fadeInLayout(QLayout *layout);
+    static void timeStamp(QString tag);
 };
 
 #endif // UTILITY_H

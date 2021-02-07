@@ -180,6 +180,7 @@ private:
     void initCardsJson();
     void removeHSCards(bool forceRemove = false);
     void removeExtra();
+    void removeHistograms();
     void checkCardsJsonVersion(QString cardsJsonVersion);
     void askLinuxShortcut();
     void showMessageAppImageShortcut();

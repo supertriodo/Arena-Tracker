@@ -435,8 +435,8 @@ bool Utility::isFromStandardSet(QString code)
 }
 
 
-bool Utility::hasGoldenImage(QString code)
-{
+//bool Utility::hasGoldenImage(QString code)
+//{
 //    QString cardSet = getCardAttribute(code, "set").toString();
 
 //    if( cardSet == "CORE" || cardSet == "EXPERT1" ||
@@ -453,9 +453,9 @@ bool Utility::hasGoldenImage(QString code)
 //        return false;
 //    }
 
-    Q_UNUSED(code);
-    return true;
-}
+//    Q_UNUSED(code);
+//    return true;
+//}
 
 
 bool Utility::isASecret(QString code)
@@ -571,6 +571,12 @@ QString Utility::extraPath()
 QString Utility::themesPath()
 {
     return dataPath() + "/Themes";
+}
+
+
+QString Utility::histogramsPath()
+{
+    return dataPath() + "/Histograms";
 }
 
 
@@ -1112,7 +1118,7 @@ void Utility::checkMissingGoldenCards()
                     qDebug()<<"DEBUG MISSING GOLDEN: ERROR: Files missing"<<files[i]<<files[i+1];
                 }
             }
-            else if(hasGoldenImage(code) && !code.startsWith("HERO_"))
+            else if(/*hasGoldenImage(code) && */!code.startsWith("HERO_"))
             {
                 qDebug()<<"----- NO golden:" << code << "-" << Utility::cardEnNameFromCode(code);
             }
@@ -1121,4 +1127,11 @@ void Utility::checkMissingGoldenCards()
 }
 
 
+void Utility::timeStamp(QString tag)
+{
+    static qint64 start;
+    qint64 end = QDateTime::currentMSecsSinceEpoch();
+    qDebug()<<tag<<end-start;
+    start = end;
+}
 
