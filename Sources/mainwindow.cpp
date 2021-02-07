@@ -4344,8 +4344,7 @@ void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
             allCardsDownloadList.append(code);
         }
         //Solo bajamos golden cards de cartas colleccionables
-        if( /*Utility::hasGoldenImage(code) &&*/
-            Utility::getCardAttribute(code, "collectible").toBool() &&
+        if( Utility::getCardAttribute(code, "collectible").toBool() &&
             !checkCardImage(code + "_premium"))
         {
             allCardsDownloadList.append(code + "_premium");

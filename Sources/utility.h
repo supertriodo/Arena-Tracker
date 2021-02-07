@@ -138,7 +138,6 @@ public:
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
     static void checkTierlistsCount();
-//    static bool hasGoldenImage(QString code);
     static void resizeGoldenCards();
     static bool checkHeroPortrait(QString code);
     static void checkMissingGoldenCards();

@@ -435,29 +435,6 @@ bool Utility::isFromStandardSet(QString code)
 }
 
 
-//bool Utility::hasGoldenImage(QString code)
-//{
-//    QString cardSet = getCardAttribute(code, "set").toString();
-
-//    if( cardSet == "CORE" || cardSet == "EXPERT1" ||
-//        cardSet == "HOF" || cardSet == "NAXX" || cardSet == "GVG" ||
-//        cardSet == "BRM" || cardSet == "TGT" || cardSet == "LOE" ||
-//        cardSet == "OG" || cardSet == "KARA" || cardSet == "GANGS" ||
-//        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
-//        cardSet == "GILNEAS" || cardSet == "BOOMSDAY")
-//    {
-//        return true;
-//    }
-//    else
-//    {
-//        return false;
-//    }
-
-//    Q_UNUSED(code);
-//    return true;
-//}
-
-
 bool Utility::isASecret(QString code)
 {
     QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
@@ -1118,7 +1095,7 @@ void Utility::checkMissingGoldenCards()
                     qDebug()<<"DEBUG MISSING GOLDEN: ERROR: Files missing"<<files[i]<<files[i+1];
                 }
             }
-            else if(/*hasGoldenImage(code) && */!code.startsWith("HERO_"))
+            else if(!code.startsWith("HERO_"))
             {
                 qDebug()<<"----- NO golden:" << code << "-" << Utility::cardEnNameFromCode(code);
             }

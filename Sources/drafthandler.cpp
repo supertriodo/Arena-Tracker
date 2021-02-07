@@ -350,8 +350,7 @@ void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
     //Evitamos golden cards de cartas no colleccionables
     if(premium &&
-        (/*!Utility::hasGoldenImage(code) ||*/
-         !Utility::getCardAttribute(code, "collectible").toBool())) return;
+        (!Utility::getCardAttribute(code, "collectible").toBool())) return;
 
     QString fileNameCode = premium?(code + "_premium"): code;
     QFileInfo cardFile(Utility::hscardsPath() + "/" + fileNameCode + ".png");
