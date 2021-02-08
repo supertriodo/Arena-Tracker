@@ -1812,6 +1812,8 @@ bool DraftHandler::saveTemplateSettings()
         settings.setValue("heroDraftingScreenRect2", rect2);
 
         settings.setValue("heroDraftingScreenScale", screenScale);
+
+        emit pDebug("Save HERO_DRAFT Screen Settings.");
     }
     else// if(drafting) //buildMechanicsWindow no guarda valores pq no hace startFindScreenRects();
     {
@@ -1825,6 +1827,8 @@ bool DraftHandler::saveTemplateSettings()
         settings.setValue("draftingScreenRect2", rect2);
 
         settings.setValue("draftingScreenScale", screenScale);
+
+        emit pDebug("Save DRAFT Screen Settings.");
     }
     return true;
 }
