@@ -25,6 +25,8 @@
 #define CAPTURE_MIN_CANDIDATES                 7
 #define CAPTURE_EXTENDED_CANDIDATES            15
 
+#define HISTOGRAM_EXT                   ".dat"
+
 
 class ScreenDetection
 {
@@ -152,7 +154,7 @@ private:
     void refreshHeroes();
     void processCardHist(QStringList &codes);
     bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
-    void loadCardHist(QStringList &codes, QString classUName);
+    void loadCardHist(QString classUName);
     void saveCardHist(const bool multiClassDraft);
 
 public:

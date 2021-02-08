@@ -279,23 +279,40 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
 }
 
 
-void DraftHandler::loadCardHist(QStringList &codes, QString classUName)
+void DraftHandler::loadCardHist(QString classUName)
 {
-    std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
-    cv::FileStorage fs(filename, cv::FileStorage::READ);
-    for(QString code: codes)
-    {
-        cv::MatND hist;
-        fs[code.toStdString()] >> hist;
-        if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
-        else                cardsHist[code] = hist;
+    QString code;
+    int type, rows, cols;
+    bool continuous;
 
-        code +=  + "_premium";
-        fs[code.toStdString()] >> hist;
-        if(hist.empty())    emit pDebug("WARNING: loadCardHist " + classUName + ": " + code + " not found.");
-        else                cardsHist[code] = hist;
+    QFile file(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        emit pDebug("ERROR: Cannot open " + file.fileName(), DebugLevel::Error);
+        return;
     }
-    fs.release();
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_5_5);
+
+    while(!in.atEnd())
+    {
+        in >> code >> type >> rows >> cols >> continuous;
+        cv::Mat mat = cv::Mat(rows, cols, type);
+
+        if(continuous)
+        {
+            size_t const dataSize = rows * cols * mat.elemSize();
+            in.readRawData(reinterpret_cast<char*>(mat.ptr()), dataSize);
+        }
+        else
+        {
+            size_t const rowSize(cols * mat.elemSize());
+            for(int i=0; i<rows; i++)   in.readRawData(reinterpret_cast<char*>(mat.ptr(i)), rowSize);
+        }
+
+        cardsHist[code] = mat;
+    }
+    file.close();
 }
 
 
@@ -322,25 +339,56 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
     for(const CardClass &cardClass: codesByClass.keys())
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
-        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + ".xml");
+        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
         if(fi.exists())
         {
             emit pDebug("Save Arena Hists SKIP (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
         }
         else
         {
-            std::string filename = (Utility::histogramsPath() + "/" + classUName + ".xml").toStdString();
-            cv::FileStorage fs(filename, cv::FileStorage::WRITE);
+            int type, rows, cols;
+            bool continuous;
+
+            QFile file(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
+            if(!file.open(QIODevice::WriteOnly))
+            {
+                emit pDebug("ERROR: Cannot open " + file.fileName(), DebugLevel::Error);
+                return;
+            }
+            QDataStream out(&file);
+            out.setVersion(QDataStream::Qt_5_5);
+
             for(QString code: codesByClass[cardClass])
             {
-                if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
-                else                            fs << code.toStdString() << cardsHist[code];
+                for(int i=0; i<2; i++)
+                {
+                    if(i==1)    code += "_premium";
+                    if(!cardsHist.contains(code))
+                    {
+                        emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
+                        continue;
+                    }
 
-                code +=  + "_premium";
-                if(!cardsHist.contains(code))   emit pDebug("WARNING: saveCardHist " + classUName + ": " + code + " not found.");
-                else                            fs << code.toStdString() << cardsHist[code];
+                    cv::Mat &mat = cardsHist[code];
+                    type = mat.type();
+                    rows = mat.rows;
+                    cols = mat.cols;
+                    continuous = mat.isContinuous();
+                    out << code << type << rows << cols << continuous;
+
+                    if(continuous)
+                    {
+                        size_t const dataSize = rows * cols * mat.elemSize();
+                        out.writeRawData(reinterpret_cast<char const*>(mat.ptr()), dataSize);
+                    }
+                    else
+                    {
+                        size_t const rowSize(cols * mat.elemSize());
+                        for(int i=0; i<rows; i++)   out.writeRawData(reinterpret_cast<char const*>(mat.ptr(i)), rowSize);
+                    }
+                }
             }
-            fs.release();
+            file.close();
             emit pDebug("Save Arena Hists SAVED (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
         }
     }
@@ -390,10 +438,10 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
     for(const CardClass &cardClass: codesByClass.keys())
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
-        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + ".xml");
+        QFileInfo fi(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
         if(fi.exists())
         {
-            loadCardHist(codesByClass[cardClass], classUName);
+            loadCardHist(classUName);
             emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()) + " hists.");
         }
         else
