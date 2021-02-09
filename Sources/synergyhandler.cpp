@@ -2855,7 +2855,7 @@ bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int heal
     }
     else if(cost == 2 && !(
                 (attack==1 && health<4) ||
-                (attack==2 && health==1)
+                (attack==2 && health<2)
                 ))
     {
         return true;
@@ -2868,10 +2868,9 @@ bool SynergyHandler::isDrop3(const QString &code, int cost, int attack, int heal
     {
         return synergyCodes[code].contains("drop3");
     }
-    else if(cost == 3 && !(
+    else if(cost == 3 && health != 1 && !(
                 (attack==1 && health<7) ||
-                (attack==2 && health<4) ||
-                (attack==3 && health<2)
+                (attack==2 && health<4)
                 ))
     {
         return true;
@@ -2884,7 +2883,7 @@ bool SynergyHandler::isDrop4(const QString &code, int cost, int attack, int heal
     {
         return synergyCodes[code].contains("drop4");
     }
-    else if(cost == 4 && !(
+    else if(cost == 4 && health != 1 && !(
                 (attack==1) ||
                 (attack==2 && health<5) ||
                 (attack==3 && health<5) ||
@@ -3975,15 +3974,17 @@ REGLAS
     Si dan cristales de mana son drops.
     Es un dropX si X es el turno mas eficiente en el que se puede jugar.
     Los minions con 0 de ataque no son drops, huevos tampoco, ya que su uso optimo es en otro turno.
-    Los buffos no son drops a no ser que pongan un cuerpo de stats suficiente alto por si mismos.
+    Los buffos no son drops, supon que tu board esta vacio.
     Los minions can't attack no son drops, a no ser que sea muy facil hacerlos atacar (hero power)
     Los drop ideales son minions con altos stats. Una bola de fuego no es un drop4, el 3/3 que hace 3 de dano al azar si es un drop4
         ya que lo que mata es un drop3 enemigo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
         1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
-    Stats minimos sin ningun extra en tempo o robo o rush o reach, considerar que las condiciones con cartas especificas no se cumplen,
+    Stats minimos sin ningun extra en tempo, considerar que las condiciones con cartas especificas no se cumplen,
         como secretos, razas, hechizos, quizas holding.
-        Drop2 (Derrota 2/2 --> 2/2+, 1/4+) - Drop3 (Derrota 3/3 --> 3/2+, 2/4+, 1/7+) - Drop4 (Derrota 4/4 --> 4/3+, 3/5+, 2/5+, no 1/x)
+        - Drop2 (Derrota 2/2 --> 3+/1+, 2/2+, 1/4+)
+        - Drop3 (Derrota 3/3 --> 3+/2+, 2/4+, 1/7+), no health 1
+        - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+, 3/5+, 2/5+, no 1/x), no health 1
         Un 1/1 que roba no es un drop2, demasiada perdida de stats. Un 1/1 que te da un lackey si es drop2, ya que el lackey es tempo futuro.
         Un 2/2 que descubre es un drop3, justo en stats.
         Un 3/4 que roba una carta es un drop4 ya que es eficiente de jugar en el turno 4.
