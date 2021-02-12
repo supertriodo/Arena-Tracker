@@ -953,7 +953,7 @@
 "DMF_511" : [ "drop2", "battlecry", "returnSyn", "comboAllSyn" ],
 "DMF_512" : [  ],
 "DMF_513" : [ "drop2", "secret" ],
-"DMF_514" : [ "drop3", "deathrattle", "drawSyn" ],
+"DMF_514" : [ "drop3", "deathrattle" ],
 "DMF_515" : [ "drawGen2", "combo" ],
 "DMF_516" : [ "drawGen", "battlecry", "returnSyn" ],
 "DMF_517" : [ "drop2", "reachGen", "stealthGen" ],
