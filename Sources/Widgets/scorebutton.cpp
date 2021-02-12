@@ -164,13 +164,11 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     else
     {
         //Best Score background
-        if(bestScoreOpacity>0)
+        if(bestScoreOpacity==1)
         {
-            painter.setOpacity(bestScoreOpacity);
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
             else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
-            painter.setOpacity(1.0);
         }
 
         //Not enough HSR decks
