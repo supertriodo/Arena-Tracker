@@ -2063,6 +2063,7 @@ void DraftHandler::endHeroDraft()
 void DraftHandler::showNewHeroes()
 {
     float scores[3];
+    int classOrder[3];
     for(int i=0; i<3; i++)
     {
         double match = bestMatchesMaps[i].firstKey();
@@ -2074,8 +2075,9 @@ void DraftHandler::showNewHeroes()
 
         QString HSRkey = Utility::getCardAttribute(code, "cardClass").toString();
         scores[i] = heroWinratesMap[HSRkey];
+        classOrder[i] = Utility::className2classOrder(HSRkey);
     }
-    if(draftHeroWindow != nullptr)     draftHeroWindow->setScores(scores[0], scores[1], scores[2]);
+    if(draftHeroWindow != nullptr)     draftHeroWindow->setScores(scores, classOrder);
 
     //Twitch Handler
     if(this->twitchHandler != nullptr)

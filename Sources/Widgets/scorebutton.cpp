@@ -82,7 +82,7 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 }
 
 
-void ScoreButton::setScore(float score, float bestScore, int includedDecks)
+void ScoreButton::setScore(float score, float bestScore, int includedDecks, int classOrder)
 {
     this->score = score;
 
@@ -92,6 +92,7 @@ void ScoreButton::setScore(float score, float bestScore, int includedDecks)
     if(bestScoreOpacity>0)              bestScoreOpacity = 0.5 + (bestScoreOpacity/2.0);
 
     this->includedDecks = includedDecks;
+    this->classOrder = classOrder;
     if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " played");
     else    this->setToolTip("");
     draw();
@@ -224,6 +225,15 @@ void ScoreButton::paintEvent(QPaintEvent *event)
             else if(scoreSource == Score_LightForge)    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfTextFile()));
             else                                        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
             painter.setOpacity(1.0);
+        }
+
+        //Class icon
+        if(scoreSource == Score_Heroes && classOrder >= 0)
+        {
+            int iconWidth = width()*0.30;
+
+            painter.drawPixmap(width()*0.35, height()*0.7, iconWidth, iconWidth,
+                               QPixmap(ThemeHandler::heroFile(classOrder)));
         }
     }
 

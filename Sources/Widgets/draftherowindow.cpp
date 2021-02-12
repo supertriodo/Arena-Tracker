@@ -68,14 +68,13 @@ void DraftHeroWindow::showTwitchScores(bool show)
 }
 
 
-void DraftHeroWindow::setScores(float rating1, float rating2, float rating3)
+void DraftHeroWindow::setScores(float ratings[3], int classOrder[3])
 {
-    float bestRating = std::max(std::max(rating1, rating2), rating3);
-    float ratings[3] = {rating1, rating2, rating3};
+    float bestRating = std::max(std::max(ratings[0], ratings[1]), ratings[2]);
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setScore(ratings[i], bestRating);
+        scoresPushButton[i]->setScore(ratings[i], bestRating, -1, classOrder[i]);
         Utility::fadeInWidget(scoresPushButton[i]);
     }
 

@@ -145,6 +145,7 @@ public:
     static void fadeOutLayout(QLayout *layout);
     static void fadeInLayout(QLayout *layout);
     static void timeStamp(QString tag);
+    static int className2classOrder(QString className);
 };
 
 #endif // UTILITY_H

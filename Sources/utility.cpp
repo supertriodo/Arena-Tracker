@@ -185,6 +185,13 @@ int Utility::classLogNumber2classOrder(QString heroLog)
 }
 
 
+int Utility::className2classOrder(QString className)
+{
+    QString logNumber = Utility::className2classLogNumber(className);
+    return classLogNumber2classOrder(logNumber);
+}
+
+
 
 
 
