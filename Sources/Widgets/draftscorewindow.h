@@ -51,7 +51,6 @@ private:
 
 //Metodos
 private:
-    void resetTwitchScore();
     void resizeSynergyList();
     QString getMechanicTooltip(QString iconName);
     QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);

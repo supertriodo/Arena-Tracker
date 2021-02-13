@@ -301,16 +301,10 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
         }
     }
 
-    if(draftMethod == HearthArena)  resetTwitchScore();
-}
-
-
-void DraftScoreWindow::resetTwitchScore()
-{
-    for(int i=0; i<3; i++)
+    //Fade-in twitch scores
+    if(draftMethod == HearthArena)
     {
-        twitchButton[i]->reset();
-        Utility::fadeInWidget(twitchButton[i]);
+        for(int i=0; i<3; i++)  Utility::fadeInWidget(twitchButton[i]);
     }
 }
 
@@ -321,10 +315,17 @@ void DraftScoreWindow::setTwitchScores(int vote1, int vote2, int vote3, QString 
     float totalVotes = votes[0] + votes[1] + votes[2];
     float topVotes = std::max(std::max(votes[0], votes[1]), votes[2]);
 
-    emit pDebug(username + ": " + QString::number(votes[0]) + " - " +
-            QString::number(votes[1]) + " - " + QString::number(votes[2]));
-
-    for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes), username);
+    if(totalVotes == 0)
+    {
+        for(int i=0; i<3; i++)  twitchButton[i]->reset();
+        emit pDebug("Twitch scores reset.");
+    }
+    else
+    {
+        for(int i=0; i<3; i++)  twitchButton[i]->setValue(votes[i]/totalVotes, votes[i], FLOATEQ(votes[i], topVotes), username);
+        emit pDebug(username + ": " + QString::number(votes[0]) + " - " +
+                QString::number(votes[1]) + " - " + QString::number(votes[2]));
+    }
 }
 
 

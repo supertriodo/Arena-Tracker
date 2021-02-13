@@ -12,6 +12,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->deckRatingHSR = 0;
     this->numCaptured = 0;
     this->extendedCapture = false;
+    this->resetTwitchScores = true;
     this->drafting = false;
     this->heroDrafting = false;
     this->capturing = false;
@@ -622,6 +623,7 @@ void DraftHandler::clearLists(bool keepCounters)
     screenScale = QPointF(1,1);
     numCaptured = 0;
     extendedCapture = false;
+    resetTwitchScores = true;
     stopLoops = true;
 }
 
@@ -635,6 +637,8 @@ void DraftHandler::enterArena()
         if(!screenFound())  QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
         else if(draftCards[0].getCode().isEmpty())
         {
+            this->extendedCapture = false;
+            this->resetTwitchScores = true;
             newCaptureDraftLoop(true);
         }
     }
@@ -653,7 +657,6 @@ void DraftHandler::leaveArena()
         if(capturing)
         {
             this->numCaptured = 0;
-            this->extendedCapture = false;
 
             //Clear guessed cards
             for(int i=0; i<3; i++)
@@ -1302,6 +1305,7 @@ void DraftHandler::pickCard(QString code)
 
     this->numCaptured = 0;
     this->extendedCapture = false;
+    this->resetTwitchScores = true;
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
     if(!pickHeroPower)
@@ -1336,6 +1340,7 @@ void DraftHandler::refreshCapturedCards()
 
     this->numCaptured = 0;
     this->extendedCapture = true;
+    this->resetTwitchScores = false;
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
     newCaptureDraftLoop();
@@ -1422,7 +1427,8 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     //Twitch Handler
     if(this->twitchHandler != nullptr)
     {
-        twitchHandler->reset();
+        //No twitch reset al usar boton refresh o comboBox change.
+        if(this->resetTwitchScores) twitchHandler->reset();
 
         if(TwitchHandler::isActive())
         {
@@ -1467,6 +1473,7 @@ void DraftHandler::comboBoxChanged()
     }
 
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
+    this->resetTwitchScores = false;
     showNewCards(bestCards);
 }
 

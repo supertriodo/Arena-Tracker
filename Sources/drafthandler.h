@@ -86,7 +86,7 @@ private:
     QLabel *labelHAscore[3];
     QLabel *labelHSRscore[3];
     QComboBox *comboBoxCard[3];
-    bool extendedCapture;
+    bool extendedCapture, resetTwitchScores;
     QStringList heroCodesList;
     QMap<QString, float> heroWinratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;

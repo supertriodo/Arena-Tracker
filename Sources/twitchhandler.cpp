@@ -138,6 +138,7 @@ void TwitchHandler::reset()
     participants.clear();
     for(int i = 0; i < 3; i++)  votes[i]=0;
     emit pDebug("\nReset");
+    emit voteUpdate(0, 0, 0, "");
 }
 
 
