@@ -728,6 +728,8 @@ void DraftHandler::continueDraft()
 
 void DraftHandler::createTwitchHandler()
 {
+    deleteTwitchHandler();
+
     if(TwitchHandler::isWellConfigured())
     {
         this->twitchHandler = new TwitchHandler(this);
@@ -749,7 +751,7 @@ void DraftHandler::deleteTwitchHandler()
 {
     if(twitchHandler != nullptr)
     {
-        twitchHandler->deleteLater();
+        delete twitchHandler;
         twitchHandler = nullptr;
     }
 }
