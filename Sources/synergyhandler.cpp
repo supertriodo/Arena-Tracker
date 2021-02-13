@@ -2061,7 +2061,11 @@ bool SynergyHandler::isDamageMinionsGen(const QString &code, const QJsonArray &m
 //                !text.contains("1 damage") && !text.contains("all") && !text.contains("hero")) &&
     if(synergyCodes.contains(code))
     {
-        return synergyCodes[code].contains("damageMinionsGen");
+        return synergyCodes[code].contains("damageMinionsGen") || synergyCodes[code].contains("rushGiverGen");
+    }
+    else if(isRushGiverGen(code, text))
+    {
+        return true;
     }
     //Anything that deals damage (no pings)
     else if(text.contains("damage") && text.contains("deal") &&
