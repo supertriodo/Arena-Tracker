@@ -2,17 +2,18 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-DraftDropCounter::DraftDropCounter(QObject *parent, QHBoxLayout *hLayout, int targetDrops, QPixmap pixmap, bool iconHover) :
-    DraftItemCounter(parent, "", hLayout, pixmap, iconHover)
+DraftDropCounter::DraftDropCounter(QObject *parent, QString synergyTag, QHBoxLayout *hLayout, int targetDrops,
+                                   QPixmap pixmap, bool iconHover) :
+    DraftItemCounter(parent, synergyTag, hLayout, pixmap, iconHover)
 {
     //Constructor MainWindow
     init(targetDrops);
 }
 
 
-DraftDropCounter::DraftDropCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol, int targetDrops,
+DraftDropCounter::DraftDropCounter(QObject *parent, QString synergyTag, QGridLayout *gridLayout, int gridRow, int gridCol, int targetDrops,
                                    QPixmap pixmap, int iconWidth, bool iconHover) :
-    DraftItemCounter(parent, gridLayout, gridRow, gridCol, pixmap, iconWidth, iconHover)
+    DraftItemCounter(parent, synergyTag, gridLayout, gridRow, gridCol, pixmap, iconWidth, iconHover)
 {
     //Constructor DraftMechanicsWindow
     init(targetDrops);

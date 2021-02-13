@@ -45,12 +45,12 @@ void SynergyHandler::createDraftItemCounters()
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    manaCounter = new DraftItemCounter(this, "Mana", horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
+    manaCounter = new DraftItemCounter(this, "Mana AVG", horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_2, QPixmap(ThemeHandler::drop2CounterFile()));
-    dropCounters[V_DROP3] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_3, QPixmap(ThemeHandler::drop3CounterFile()));
-    dropCounters[V_DROP4] = new DraftDropCounter(this, horLayoutDrops, TARGET_DROP_4, QPixmap(ThemeHandler::drop4CounterFile()));
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 drop", horLayoutDrops, TARGET_DROP_2, QPixmap(ThemeHandler::drop2CounterFile()));
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 drop", horLayoutDrops, TARGET_DROP_3, QPixmap(ThemeHandler::drop3CounterFile()));
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 drop", horLayoutDrops, TARGET_DROP_4, QPixmap(ThemeHandler::drop4CounterFile()));
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));

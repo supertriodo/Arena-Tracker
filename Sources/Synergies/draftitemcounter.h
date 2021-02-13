@@ -13,7 +13,7 @@ class DraftItemCounter : public QObject
     Q_OBJECT
 public:
     DraftItemCounter(QObject *parent, QString synergyTag, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
-    DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
+    DraftItemCounter(QObject *parent, QString synergyTag, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
                      int iconWidth, bool iconHover=true);
     DraftItemCounter(QObject *parent, QString synergyTag);
     ~DraftItemCounter();

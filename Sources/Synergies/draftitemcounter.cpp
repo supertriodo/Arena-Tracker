@@ -12,11 +12,11 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QHBoxLay
 }
 
 
-DraftItemCounter::DraftItemCounter(QObject *parent, QGridLayout *gridLayout, int gridRow, int gridCol,
+DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QGridLayout *gridLayout, int gridRow, int gridCol,
                                    QPixmap pixmap, int iconWidth, bool iconHover) : QObject(parent)
 {
     //Constructor DraftMechanicsWindow
-    this->synergyTag = "";
+    this->synergyTag = synergyTag;
     QHBoxLayout *hLayout = new QHBoxLayout();
     init(hLayout, iconHover);
     setTheme(pixmap, iconWidth, true);
@@ -252,13 +252,20 @@ QMap<QString, int> &DraftItemCounter::getCodeMap()
 
 void DraftItemCounter::sendIconEnter()
 {
+    if(synergyCardList.isEmpty())   return;
+
     QPoint topLeft = labelIcon->mapToGlobal(QPoint(0,0));
     QPoint bottomRight = labelIcon->mapToGlobal(QPoint(labelIcon->width(),labelIcon->height()));
     QRect labelRect = QRect(topLeft, bottomRight);
 
     QMap<int,SynergyCard> synergyCardMap;
-    for(SynergyCard &synergyCard: synergyCardList)   synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+    for(SynergyCard &synergyCard: synergyCardList)
+    {
+        synergyCard.setSynergyTag("");
+        synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+    }
     QList<SynergyCard> synergyCardOrderedList = synergyCardMap.values();
+    synergyCardOrderedList.first().setSynergyTag(synergyTag);
 
     emit iconEnter(synergyCardOrderedList, labelRect);
 }
