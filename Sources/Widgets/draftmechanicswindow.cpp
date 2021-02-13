@@ -49,12 +49,12 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
     manaCounter = new DraftItemCounter(this, cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
-//    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
-//            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
-    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
-    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<DeckCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect &)));
+//    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
+//            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
 
 //    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
 //            this, SIGNAL(itemLeave()));
@@ -119,12 +119,12 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     dropCounters[V_DROP4] = new DraftDropCounter(this, mechanicsLayout, 0, 2, TARGET_DROP_4,
                                                  QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
 
-    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(dropCounters[V_DROP2], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -145,22 +145,22 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     mechanicCounters[V_AOE] = new DraftItemCounter(this, mechanicsLayout, 2, 3, QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
 
 
-    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
-    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<DeckCard>&,QRect&)),
-            this, SLOT(sendItemEnter(QList<DeckCard>&,QRect&)));
+    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -426,7 +426,7 @@ void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &m
 }
 
 
-void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect)
+void DraftMechanicsWindow::sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect)
 {
     QPoint topLeftWindow = this->mapToGlobal(QPoint(0,0));
     QPoint bottomRightWindow = this->mapToGlobal(QPoint(width(),height()));
@@ -436,7 +436,7 @@ void DraftMechanicsWindow::sendItemEnter(QList<DeckCard> &deckCardList, QRect &l
     int maxLeft = topLeftWindow.x();
     int maxRight = bottomRightWindow.x();
 
-    emit itemEnter(deckCardList, originList, maxLeft, maxRight);
+    emit itemEnter(synergyCardList, originList, maxLeft, maxRight);
 }
 
 

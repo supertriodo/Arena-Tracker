@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include "../Widgets/hoverlabel.h"
 #include "../utility.h"
+#include "../Cards/synergycard.h"
 
 class DraftItemCounter : public QObject
 {
@@ -21,7 +22,7 @@ public:
 private:
     QLabel *labelCounter;
     int counter;
-    QList<DeckCard> deckCardList;
+    QList<SynergyCard> synergyCardList;
     QMap<QString, int> codeMap, codeSynMap;
     QString synergyTag;
 
@@ -49,7 +50,7 @@ public:
     void show();
 
 signals:
-    void iconEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
+    void iconEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
     void iconLeave();
 
 public slots:

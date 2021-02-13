@@ -198,8 +198,8 @@ signals:
     void advanceProgressBar(int remaining, QString text);
     void startProgressBar(int maximum, QString text);
     void showMessageProgressBar(QString text, int hideDelay = 5000);
-    void itemEnter(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
-    void itemEnterOverlay(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
+    void itemEnter(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
+    void itemEnterOverlay(QList<SynergyCard> &synergyCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
     void itemLeave();
     void showPremiumDialog();
     void calculateMinimumWidth();

@@ -107,8 +107,8 @@ void DraftHandler::createScoreItems()
 void DraftHandler::createSynergyHandler()
 {
     this->synergyHandler = new SynergyHandler(this->parent(),ui);
-    connect(synergyHandler, SIGNAL(itemEnter(QList<DeckCard>&,QRect&,int,int)),
-            this, SIGNAL(itemEnter(QList<DeckCard>&,QRect&,int,int)));
+    connect(synergyHandler, SIGNAL(itemEnter(QList<SynergyCard>&,QRect&,int,int)),
+            this, SIGNAL(itemEnter(QList<SynergyCard>&,QRect&,int,int)));
     connect(synergyHandler, SIGNAL(itemLeave()),
             this, SIGNAL(itemLeave()));
     connect(synergyHandler, SIGNAL(pLog(QString)),
@@ -2167,8 +2167,8 @@ void DraftHandler::createDraftWindows()
         draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();
 
-        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
-                this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
+        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<SynergyCard>&,QPoint&,int,int)),
+                this, SIGNAL(itemEnterOverlay(QList<SynergyCard>&,QPoint&,int,int)));
         connect(draftMechanicsWindow, SIGNAL(itemLeave()),
                 this, SIGNAL(itemLeave()));
         connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),
@@ -2191,8 +2191,8 @@ void DraftHandler::createDraftWindows()
         //Despues de calcular todo podemos limpiar draftHandler, lo que nos interesa esta todo en draftMechanicsWindow
         clearLists(false);
 
-        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<DeckCard>&,QPoint&,int,int)),
-                this, SIGNAL(itemEnterOverlay(QList<DeckCard>&,QPoint&,int,int)));
+        connect(draftMechanicsWindow, SIGNAL(itemEnter(QList<SynergyCard>&,QPoint&,int,int)),
+                this, SIGNAL(itemEnterOverlay(QList<SynergyCard>&,QPoint&,int,int)));
         connect(draftMechanicsWindow, SIGNAL(itemLeave()),
                 this, SIGNAL(itemLeave()));
         connect(draftMechanicsWindow, SIGNAL(showPremiumDialog()),

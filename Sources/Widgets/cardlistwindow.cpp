@@ -1,6 +1,5 @@
 #include "cardlistwindow.h"
 #include "../Cards/secretcard.h"
-#include "../Cards/deckcard.h"
 #include "../utility.h"
 #include <QtWidgets>
 
@@ -66,18 +65,18 @@ void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBott
 }
 
 
-void CardListWindow::loadDraftItem(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
+void CardListWindow::loadDraftItem(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     //Clear and delete items
     listWidget->clear();
 
-    if(deckCardList.isEmpty())
+    if(synergyCardList.isEmpty())
     {
         hide();
         return;
     }
 
-    foreach(DeckCard card, deckCardList)
+    foreach(SynergyCard card, synergyCardList)
     {
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
         listWidget->addItem(card.listItem);
@@ -109,18 +108,18 @@ void CardListWindow::loadDraftItem(QList<DeckCard> &deckCardList, QRect &rectCar
 }
 
 
-void CardListWindow::loadDraftOverlayItem(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight)
+void CardListWindow::loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, QPoint &originList, int maxLeft, int maxRight)
 {
     //Clear and delete items
     listWidget->clear();
 
-    if(deckCardList.isEmpty())
+    if(synergyCardList.isEmpty())
     {
         hide();
         return;
     }
 
-    foreach(DeckCard card, deckCardList)
+    foreach(SynergyCard card, synergyCardList)
     {
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
         listWidget->addItem(card.listItem);

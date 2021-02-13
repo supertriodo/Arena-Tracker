@@ -52,14 +52,14 @@ public:
     int draftedCardsCount();
 
 public slots:
-    void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
+    void sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
 
 private slots:
     void showHelp();
     void hideHelp();
 
 signals:
-    void itemEnter(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft, int maxRight);
+    void itemEnter(QList<SynergyCard> &synergyCardList, QPoint &originList, int maxLeft, int maxRight);
     void itemLeave();
     void showPremiumDialog();
 };

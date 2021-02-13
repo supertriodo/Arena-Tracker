@@ -243,11 +243,11 @@ private:
 signals:
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SynergyHandler");
-    void itemEnter(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
+    void itemEnter(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
     void itemLeave();
 
 private slots:
-    void sendItemEnter(QList<DeckCard> &deckCardList, QRect &labelRect);
+    void sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
 };
 
 #endif // SYNERGYHANDLER_H

@@ -5,6 +5,7 @@
 #include <QObject>
 #include "movelistwidget.h"
 #include "../secretshandler.h"
+#include "../Cards/synergycard.h"
 
 
 class CardListWindow : public QMainWindow
@@ -30,8 +31,8 @@ signals:
 
 public slots:
     void loadSecret(int id, QRect &rectCard, int maxTop=-1, int maxBottom=-1, bool alignReverse=false);
-    void loadDraftItem(QList<DeckCard> &deckCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1, bool alignReverse=false);
-    void loadDraftOverlayItem(QList<DeckCard> &deckCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
+    void loadDraftItem(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1, bool alignReverse=false);
+    void loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, QPoint &originList, int maxLeft=-1, int maxRight=-1);
 };
 
 

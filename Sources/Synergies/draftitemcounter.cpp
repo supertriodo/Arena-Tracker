@@ -84,7 +84,7 @@ void DraftItemCounter::setTheme(QPixmap pixmap, int iconWidth, bool inDraftMecha
 void DraftItemCounter::reset()
 {
     this->counter = 0;
-    this->deckCardList.clear();
+    this->synergyCardList.clear();
     this->codeMap.clear();
     this->codeSynMap.clear();
 
@@ -155,12 +155,12 @@ void DraftItemCounter::increase(const QString &code)
     if(labelIcon != nullptr)
     {
         bool duplicatedCard = false;
-        for(DeckCard &deckCard: deckCardList)
+        for(SynergyCard &synergyCard: synergyCardList)
         {
-            if(deckCard.getCode() == code)
+            if(synergyCard.getCode() == code)
             {
-                deckCard.total++;
-                deckCard.remaining = deckCard.total;
+                synergyCard.total++;
+                synergyCard.remaining = synergyCard.total;
                 duplicatedCard = true;
                 break;
             }
@@ -168,7 +168,7 @@ void DraftItemCounter::increase(const QString &code)
 
         if(!duplicatedCard)
         {
-            deckCardList.append(DeckCard(code));
+            synergyCardList.append(SynergyCard(code));
         }
 
         this->counter++;
@@ -256,11 +256,11 @@ void DraftItemCounter::sendIconEnter()
     QPoint bottomRight = labelIcon->mapToGlobal(QPoint(labelIcon->width(),labelIcon->height()));
     QRect labelRect = QRect(topLeft, bottomRight);
 
-    QMap<int,DeckCard> deckCardMap;
-    for(DeckCard &deckCard: deckCardList)   deckCardMap.insertMulti(deckCard.getCost(), deckCard);
-    QList<DeckCard> deckCardOrderedList = deckCardMap.values();
+    QMap<int,SynergyCard> synergyCardMap;
+    for(SynergyCard &synergyCard: synergyCardList)   synergyCardMap.insertMulti(synergyCard.getCost(), synergyCard);
+    QList<SynergyCard> synergyCardOrderedList = synergyCardMap.values();
 
-    emit iconEnter(deckCardOrderedList, labelRect);
+    emit iconEnter(synergyCardOrderedList, labelRect);
 }
 
 
