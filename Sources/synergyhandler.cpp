@@ -671,13 +671,13 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QStrin
         drop2Map.insertMulti(code, "");
         if(cost == 3)
         {
-            dropCounters[V_DROP3]->increaseExtra(code, "2 drop");
-            drop3Map.insertMulti(code, "2 drop");
+            dropCounters[V_DROP3]->increaseExtra(code, "2 Drop");
+            drop3Map.insertMulti(code, "2 Drop");
         }
         else if(cost == 4)
         {
-            dropCounters[V_DROP4]->increaseExtra(code, "2 drop");
-            drop4Map.insertMulti(code, "2 drop");
+            dropCounters[V_DROP4]->increaseExtra(code, "2 Drop");
+            drop4Map.insertMulti(code, "2 Drop");
         }
     }
     else if(isDrop3(code, cost, attack, health))
@@ -686,13 +686,13 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QStrin
         drop3Map.insertMulti(code, "");
         if(cost == 2)
         {
-            dropCounters[V_DROP2]->increaseExtra(code, "3 drop");
-            drop2Map.insertMulti(code, "3 drop");
+            dropCounters[V_DROP2]->increaseExtra(code, "3 Drop");
+            drop2Map.insertMulti(code, "3 Drop");
         }
         else if(cost == 4)
         {
-            dropCounters[V_DROP4]->increaseExtra(code, "3 drop");
-            drop4Map.insertMulti(code, "3 drop");
+            dropCounters[V_DROP4]->increaseExtra(code, "3 Drop");
+            drop4Map.insertMulti(code, "3 Drop");
         }
     }
     else if(isDrop4(code, cost, attack, health))
@@ -701,13 +701,13 @@ void SynergyHandler::updateDropCounters(DeckCard &deckCard, QMap<QString, QStrin
         drop4Map.insertMulti(code, "");
         if(cost == 2)
         {
-            dropCounters[V_DROP2]->increaseExtra(code, "4 drop");
-            drop2Map.insertMulti(code, "4 drop");
+            dropCounters[V_DROP2]->increaseExtra(code, "4 Drop");
+            drop2Map.insertMulti(code, "4 Drop");
         }
         else if(cost == 3)
         {
-            dropCounters[V_DROP3]->increaseExtra(code, "4 drop");
-            drop3Map.insertMulti(code, "4 drop");
+            dropCounters[V_DROP3]->increaseExtra(code, "4 Drop");
+            drop3Map.insertMulti(code, "4 Drop");
         }
     }
     else
