@@ -12,8 +12,10 @@ class DraftItemCounter : public QObject
 {
     Q_OBJECT
 public:
-    DraftItemCounter(QObject *parent, QString synergyTag, QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
-    DraftItemCounter(QObject *parent, QString synergyTag, QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
+    DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
+                     QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
+    DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
+                     QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
                      int iconWidth, bool iconHover=true);
     DraftItemCounter(QObject *parent, QString synergyTag);
     ~DraftItemCounter();
@@ -22,9 +24,9 @@ public:
 private:
     QLabel *labelCounter;
     int counter;
-    QList<SynergyCard> synergyCardList;
+    QList<SynergyCard> synergyCardList, extraCardList;
     QMap<QString, int> codeMap, codeSynMap;
-    QString synergyTag;
+    QString synergyTag, synergyTagExtra;
 
 protected:
     HoverLabel *labelIcon;
@@ -37,6 +39,7 @@ private:
 public:
     void reset();
     void setTransparency(Transparency transparency, bool mouseInApp);
+    void increaseExtra(const QString &code, const QString &synergyTagExc="");
     void increase(int numIncrease, int draftedCardsCount);
     void increase(const QString &code);
     bool insertCode(const QString code, QMap<QString, int> &synergies);
@@ -45,6 +48,7 @@ public:
     void insertSynCards(QMap<QString, QMap<QString, int> > &synergyTagMap);
     int count();
     QMap<QString, int> &getCodeMap();
+    QMap<QString, QString> getCodeTagMap();
     void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);
     void hide();
     void show();

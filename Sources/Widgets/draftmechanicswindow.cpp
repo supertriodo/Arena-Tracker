@@ -44,10 +44,14 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *cardTypeLayout = new QGridLayout();
 
     cardTypeCounters = new DraftItemCounter *[M_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", cardTypeLayout, 0, 0, QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", cardTypeLayout, 0, 1, QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", cardTypeLayout, 1, 0, QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
-    manaCounter = new DraftItemCounter(this, "Mana AVG", cardTypeLayout, 1, 1, QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", cardTypeLayout, 0, 0,
+                                                      QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", cardTypeLayout, 0, 1,
+                                                     QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", cardTypeLayout, 1, 0,
+                                                      QPixmap(ThemeHandler::weaponsCounterFile()), scoreWidth/2);
+    manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", cardTypeLayout, 1, 1,
+                                       QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
 //    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
 //            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
@@ -112,11 +116,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *mechanicsLayout = new QGridLayout();
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 drop", mechanicsLayout, 0, 0, TARGET_DROP_2,
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 drop", "2 cost", mechanicsLayout, 0, 0, TARGET_DROP_2,
                                                  QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 drop", mechanicsLayout, 0, 1, TARGET_DROP_3,
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 drop", "3 cost", mechanicsLayout, 0, 1, TARGET_DROP_3,
                                                  QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 drop", mechanicsLayout, 0, 2, TARGET_DROP_4,
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 drop", "4 cost", mechanicsLayout, 0, 2, TARGET_DROP_4,
                                                  QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
@@ -134,15 +138,23 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
             this, SIGNAL(itemLeave()));
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", mechanicsLayout, 1, 0, QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", mechanicsLayout, 1, 1, QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", mechanicsLayout, 1, 2, QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", mechanicsLayout, 1, 3, QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", "Reach", mechanicsLayout, 1, 0,
+                                                     QPixmap(ThemeHandler::reachMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", "Taunt", mechanicsLayout, 1, 1,
+                                                         QPixmap(ThemeHandler::tauntMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", "Survival", mechanicsLayout, 1, 2,
+                                                             QPixmap(ThemeHandler::survivalMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", "Draw", mechanicsLayout, 1, 3,
+                                                             QPixmap(ThemeHandler::drawMechanicFile()), scoreWidth/2);
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", mechanicsLayout, 2, 0, QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", mechanicsLayout, 2, 1, QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard removal", mechanicsLayout, 2, 2, QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", mechanicsLayout, 2, 3, QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", "Ping", mechanicsLayout, 2, 0,
+                                                    QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", mechanicsLayout, 2, 1,
+                                                      QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard removal", "Hard removal", mechanicsLayout, 2, 2,
+                                                       QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", mechanicsLayout, 2, 3,
+                                                   QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
 
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
@@ -396,29 +408,44 @@ void DraftMechanicsWindow::updateManaCounter(int manaIncrease, int numCards)
 }
 
 
-void DraftMechanicsWindow::updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
-                                    QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
-                                    QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                                    QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList,
-                                    int manaIncrease, int numCards)
+void DraftMechanicsWindow::updateCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
 {
-    for(const QString &code: spellList)     cardTypeCounters[V_SPELL]->increase(code);
-    for(const QString &code: minionList)    cardTypeCounters[V_MINION]->increase(code);
-    for(const QString &code: weaponList)    cardTypeCounters[V_WEAPON]->increase(code);
+    for(const QString &code: codeTagMap.keys())
+    {
+        QString tag = codeTagMap[code];
+        if(tag.isEmpty())   counter->increase(code);
+        else if(tag == ".") counter->increaseExtra(code);
+        else                counter->increaseExtra(code, tag);
+    }
+}
 
-    for(const QString &code: drop2List)     dropCounters[V_DROP2]->increase(code);
-    for(const QString &code: drop3List)     dropCounters[V_DROP3]->increase(code);
-    for(const QString &code: drop4List)     dropCounters[V_DROP4]->increase(code);
 
-    for(const QString &code: aoeList)       mechanicCounters[V_AOE]->increase(code);
-    for(const QString &code: tauntList)     mechanicCounters[V_TAUNT_ALL]->increase(code);
-    for(const QString &code: survivabilityList) mechanicCounters[V_SURVIVABILITY]->increase(code);
-    for(const QString &code: drawList)      mechanicCounters[V_DISCOVER_DRAW]->increase(code);
+void DraftMechanicsWindow::updateCounters(
+        QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
+        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
+        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
+        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+        int manaIncrease, int numCards)
+{
+    updateCounter(spellMap, cardTypeCounters[V_SPELL]);
+    updateCounter(minionMap, cardTypeCounters[V_MINION]);
+    updateCounter(weaponMap, cardTypeCounters[V_WEAPON]);
 
-    for(const QString &code: pingList)      mechanicCounters[V_PING]->increase(code);
-    for(const QString &code: damageList)    mechanicCounters[V_DAMAGE]->increase(code);
-    for(const QString &code: destroyList)   mechanicCounters[V_DESTROY]->increase(code);
-    for(const QString &code: reachList)     mechanicCounters[V_REACH]->increase(code);
+    updateCounter(drop2Map, dropCounters[V_DROP2]);
+    updateCounter(drop3Map, dropCounters[V_DROP3]);
+    updateCounter(drop4Map, dropCounters[V_DROP4]);
+
+    updateCounter(aoeMap, mechanicCounters[V_AOE]);
+    updateCounter(tauntMap, mechanicCounters[V_TAUNT_ALL]);
+    updateCounter(survivabilityMap, mechanicCounters[V_SURVIVABILITY]);
+    updateCounter(drawMap, mechanicCounters[V_DISCOVER_DRAW]);
+
+    updateCounter(pingMap, mechanicCounters[V_PING]);
+    updateCounter(damageMap, mechanicCounters[V_DAMAGE]);
+    updateCounter(destroyMap, mechanicCounters[V_DESTROY]);
+    updateCounter(reachMap, mechanicCounters[V_REACH]);
 
     updateManaCounter(manaIncrease, numCards);
 

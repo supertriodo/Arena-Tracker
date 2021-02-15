@@ -21,6 +21,7 @@ private:
     void drawSynergyTag(QPixmap &canvas);
 
 public:
+    QString getSynergyTag();
     void setSynergyTag(QString synergyTag);
     void draw();
 

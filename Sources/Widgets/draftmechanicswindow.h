@@ -38,15 +38,19 @@ private:
 private:
     void deleteDraftItemCounters();
     void updateManaCounter(int manaIncrease, int numCards);
+    void updateCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter);
 
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setShowDrops(bool value);
     void setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR);
-    void updateCounters(QStringList &spellList, QStringList &minionList, QStringList &weaponList,
-                        QStringList &drop2List, QStringList &drop3List, QStringList &drop4List,
-                        QStringList &aoeList, QStringList &tauntList, QStringList &survivabilityList, QStringList &drawList,
-                        QStringList &pingList, QStringList &damageList, QStringList &destroyList, QStringList &reachList, int manaIncrease, int numCards);
+    void updateCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
+                        QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
+                        QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,
+                        QMap<QString, QString> &survivabilityMap, QMap<QString, QString> &drawMap,
+                        QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
+                        QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
+                        int manaIncrease, int numCards);
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
     int draftedCardsCount();

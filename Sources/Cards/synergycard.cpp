@@ -21,11 +21,16 @@ void SynergyCard::setSynergyTag(QString synergyTag)
 {
     this->synergyTag = synergyTag;
 }
+QString SynergyCard::getSynergyTag()
+{
+    return this->synergyTag;
+}
 
 
 void SynergyCard::draw()
 {
     QPixmap canvas = DeckCard::draw(total, false, BLACK, "", synergyWidth);
+    if(remaining == 0)          disablePixmap(canvas);
     if(!synergyTag.isEmpty())   drawSynergyTag(canvas);
 
     this->listItem->setIcon(QIcon(canvas));

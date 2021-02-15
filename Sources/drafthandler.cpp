@@ -808,10 +808,10 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         lavaButton->setEnabled(true);
     }
 
-    QStringList spellList, minionList, weaponList,
-                drop2List, drop3List, drop4List,
-                aoeList, tauntList, survivabilityList, drawList,
-                pingList, damageList, destroyList, reachList;
+    QMap<QString, QString> spellMap, minionMap, weaponMap,
+                drop2Map, drop3Map, drop4Map,
+                aoeMap, tauntMap, survivabilityMap, drawMap,
+                pingMap, damageMap, destroyMap, reachMap;
     int tdraw, ttoYourHand, tdiscover;
     tdraw = ttoYourHand = tdiscover = 0;
     for(DeckCard &deckCard: deckCardList)
@@ -821,10 +821,12 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
         for(int i=0; i<deckCard.total; i++)
         {
             int draw, toYourHand, discover;
-            synergyHandler->updateCounters(deckCard, spellList, minionList, weaponList,
-                           drop2List, drop3List, drop4List,
-                           aoeList, tauntList, survivabilityList, drawList,
-                           pingList, damageList, destroyList, reachList,
+            synergyHandler->updateCounters(
+                           deckCard,
+                           spellMap, minionMap, weaponMap,
+                           drop2Map, drop3Map, drop4Map,
+                           aoeMap, tauntMap, survivabilityMap, drawMap,
+                           pingMap, damageMap, destroyMap, reachMap,
                            draw, toYourHand, discover);
             tdraw += draw;
             ttoYourHand += toYourHand;
@@ -1264,15 +1266,16 @@ void DraftHandler::pickCard(QString code)
 
         if(cardIndex > 2)   draftCard = DraftCard(code);
 
-        QStringList spellList, minionList, weaponList,
-                    drop2List, drop3List, drop4List,
-                    aoeList, tauntList, survivabilityList, drawList,
-                    pingList, damageList, destroyList, reachList;
+        QMap<QString, QString> spellMap, minionMap, weaponMap,
+                    drop2Map, drop3Map, drop4Map,
+                    aoeMap, tauntMap, survivabilityMap, drawMap,
+                    pingMap, damageMap, destroyMap, reachMap;
         int draw, toYourHand, discover;
-        synergyHandler->updateCounters(draftCard, spellList, minionList, weaponList,
-                                       drop2List, drop3List, drop4List,
-                                       aoeList, tauntList, survivabilityList, drawList,
-                                       pingList, damageList, destroyList, reachList,
+        synergyHandler->updateCounters(draftCard,
+                                       spellMap, minionMap, weaponMap,
+                                       drop2Map, drop3Map, drop4Map,
+                                       aoeMap, tauntMap, survivabilityMap, drawMap,
+                                       pingMap, damageMap, destroyMap, reachMap,
                                        draw, toYourHand, discover);
 
         int numCards = synergyHandler->draftedCardsCount();
@@ -1281,10 +1284,10 @@ void DraftHandler::pickCard(QString code)
                         (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[this->arenaHero][code]);
         if(draftMechanicsWindow != nullptr)
         {
-            draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
-                                                 drop2List, drop3List, drop4List,
-                                                 aoeList, tauntList, survivabilityList, drawList,
-                                                 pingList, damageList, destroyList, reachList,
+            draftMechanicsWindow->updateCounters(spellMap, minionMap, weaponMap,
+                                                 drop2Map, drop3Map, drop4Map,
+                                                 aoeMap, tauntMap, survivabilityMap, drawMap,
+                                                 pingMap, damageMap, destroyMap, reachMap,
                                                  synergyHandler->getCorrectedCardMana(draftCard), numCards);
             draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
         }
@@ -2110,20 +2113,20 @@ void DraftHandler::initDraftMechanicsWindowCounters()
 
     if(numCards == 0 || !patreonVersion || draftMechanicsWindow == nullptr)    return;
 
-    QStringList spellList, minionList, weaponList,
-                drop2List, drop3List, drop4List,
-                aoeList, tauntList, survivabilityList, drawList,
-                pingList, damageList, destroyList, reachList;
+    QMap<QString, QString> spellMap, minionMap, weaponMap,
+                drop2Map, drop3Map, drop4Map,
+                aoeMap, tauntMap, survivabilityMap, drawMap,
+                pingMap, damageMap, destroyMap, reachMap;
     int draw, toYourHand, discover;
-    int manaCounter = synergyHandler->getCounters(spellList, minionList, weaponList,
-                                                  drop2List, drop3List, drop4List,
-                                                  aoeList, tauntList, survivabilityList, drawList,
-                                                  pingList, damageList, destroyList, reachList,
+    int manaCounter = synergyHandler->getCounters(spellMap, minionMap, weaponMap,
+                                                  drop2Map, drop3Map, drop4Map,
+                                                  aoeMap, tauntMap, survivabilityMap, drawMap,
+                                                  pingMap, damageMap, destroyMap, reachMap,
                                                   draw, toYourHand, discover);
-    draftMechanicsWindow->updateCounters(spellList, minionList, weaponList,
-                                         drop2List, drop3List, drop4List,
-                                         aoeList, tauntList, survivabilityList, drawList,
-                                         pingList, damageList, destroyList, reachList,
+    draftMechanicsWindow->updateCounters(spellMap, minionMap, weaponMap,
+                                         drop2Map, drop3Map, drop4Map,
+                                         aoeMap, tauntMap, survivabilityMap, drawMap,
+                                         pingMap, damageMap, destroyMap, reachMap,
                                          manaCounter, numCards);
     draftMechanicsWindow->updateDeckWeight(numCards, draw, toYourHand, discover);
     updateDeckScore();
