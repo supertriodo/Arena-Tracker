@@ -51,11 +51,11 @@ void SynergyHandler::createDraftItemCounters()
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 drop", "2 cost", horLayoutDrops, TARGET_DROP_2,
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", horLayoutDrops, TARGET_DROP_2,
                                                  QPixmap(ThemeHandler::drop2CounterFile()));
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 drop", "3 cost", horLayoutDrops, TARGET_DROP_3,
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", horLayoutDrops, TARGET_DROP_3,
                                                  QPixmap(ThemeHandler::drop3CounterFile()));
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 drop", "4 cost", horLayoutDrops, TARGET_DROP_4,
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", horLayoutDrops, TARGET_DROP_4,
                                                  QPixmap(ThemeHandler::drop4CounterFile()));
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
@@ -105,7 +105,7 @@ void SynergyHandler::createDraftItemCounters()
                                                     QPixmap(ThemeHandler::pingMechanicFile()));
     mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", horLayoutMechanics2,
                                                       QPixmap(ThemeHandler::damageMechanicFile()));
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard removal", "Hard removal", horLayoutMechanics2,
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard Removal", "Hard Removal", horLayoutMechanics2,
                                                        QPixmap(ThemeHandler::destroyMechanicFile()));
     mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", horLayoutMechanics2,
                                                    QPixmap(ThemeHandler::aoeMechanicFile()));

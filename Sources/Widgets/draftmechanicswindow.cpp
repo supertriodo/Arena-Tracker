@@ -116,11 +116,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QGridLayout *mechanicsLayout = new QGridLayout();
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 drop", "2 cost", mechanicsLayout, 0, 0, TARGET_DROP_2,
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 0, 0, TARGET_DROP_2,
                                                  QPixmap(ThemeHandler::drop2CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 drop", "3 cost", mechanicsLayout, 0, 1, TARGET_DROP_3,
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", mechanicsLayout, 0, 1, TARGET_DROP_3,
                                                  QPixmap(ThemeHandler::drop3CounterFile()), scoreWidth/2);
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 drop", "4 cost", mechanicsLayout, 0, 2, TARGET_DROP_4,
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 0, 2, TARGET_DROP_4,
                                                  QPixmap(ThemeHandler::drop4CounterFile()), scoreWidth/2);
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
@@ -151,7 +151,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
                                                     QPixmap(ThemeHandler::pingMechanicFile()), scoreWidth/2);
     mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", mechanicsLayout, 2, 1,
                                                       QPixmap(ThemeHandler::damageMechanicFile()), scoreWidth/2);
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard removal", "Hard removal", mechanicsLayout, 2, 2,
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard Removal", "Hard Removal", mechanicsLayout, 2, 2,
                                                        QPixmap(ThemeHandler::destroyMechanicFile()), scoreWidth/2);
     mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", mechanicsLayout, 2, 3,
                                                    QPixmap(ThemeHandler::aoeMechanicFile()), scoreWidth/2);
@@ -408,7 +408,19 @@ void DraftMechanicsWindow::updateManaCounter(int manaIncrease, int numCards)
 }
 
 
-void DraftMechanicsWindow::updateCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
+void DraftMechanicsWindow::updateDropCounter(QMap<QString, QString> &codeTagMap, DraftDropCounter *counter)
+{
+    for(const QString &code: codeTagMap.keys())
+    {
+        QString tag = codeTagMap[code];
+        if(tag.isEmpty())   counter->increase(code);
+        else if(tag == ".") counter->increaseExtra(code);
+        else                counter->increaseExtra(code, tag);
+    }
+}
+
+
+void DraftMechanicsWindow::updateItemCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
 {
     for(const QString &code: codeTagMap.keys())
     {
@@ -429,23 +441,23 @@ void DraftMechanicsWindow::updateCounters(
         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
         int manaIncrease, int numCards)
 {
-    updateCounter(spellMap, cardTypeCounters[V_SPELL]);
-    updateCounter(minionMap, cardTypeCounters[V_MINION]);
-    updateCounter(weaponMap, cardTypeCounters[V_WEAPON]);
+    updateItemCounter(spellMap, cardTypeCounters[V_SPELL]);
+    updateItemCounter(minionMap, cardTypeCounters[V_MINION]);
+    updateItemCounter(weaponMap, cardTypeCounters[V_WEAPON]);
 
-    updateCounter(drop2Map, dropCounters[V_DROP2]);
-    updateCounter(drop3Map, dropCounters[V_DROP3]);
-    updateCounter(drop4Map, dropCounters[V_DROP4]);
+    updateDropCounter(drop2Map, dropCounters[V_DROP2]);
+    updateDropCounter(drop3Map, dropCounters[V_DROP3]);
+    updateDropCounter(drop4Map, dropCounters[V_DROP4]);
 
-    updateCounter(aoeMap, mechanicCounters[V_AOE]);
-    updateCounter(tauntMap, mechanicCounters[V_TAUNT_ALL]);
-    updateCounter(survivabilityMap, mechanicCounters[V_SURVIVABILITY]);
-    updateCounter(drawMap, mechanicCounters[V_DISCOVER_DRAW]);
+    updateItemCounter(aoeMap, mechanicCounters[V_AOE]);
+    updateItemCounter(tauntMap, mechanicCounters[V_TAUNT_ALL]);
+    updateItemCounter(survivabilityMap, mechanicCounters[V_SURVIVABILITY]);
+    updateItemCounter(drawMap, mechanicCounters[V_DISCOVER_DRAW]);
 
-    updateCounter(pingMap, mechanicCounters[V_PING]);
-    updateCounter(damageMap, mechanicCounters[V_DAMAGE]);
-    updateCounter(destroyMap, mechanicCounters[V_DESTROY]);
-    updateCounter(reachMap, mechanicCounters[V_REACH]);
+    updateItemCounter(pingMap, mechanicCounters[V_PING]);
+    updateItemCounter(damageMap, mechanicCounters[V_DAMAGE]);
+    updateItemCounter(destroyMap, mechanicCounters[V_DESTROY]);
+    updateItemCounter(reachMap, mechanicCounters[V_REACH]);
 
     updateManaCounter(manaIncrease, numCards);
 

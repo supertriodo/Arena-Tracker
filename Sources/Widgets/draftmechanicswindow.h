@@ -38,7 +38,8 @@ private:
 private:
     void deleteDraftItemCounters();
     void updateManaCounter(int manaIncrease, int numCards);
-    void updateCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter);
+    void updateItemCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter);
+    void updateDropCounter(QMap<QString, QString> &codeTagMap, DraftDropCounter *counter);
 
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
