@@ -24,6 +24,7 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
     void setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards);

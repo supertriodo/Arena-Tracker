@@ -18,6 +18,19 @@ void LavaButton::reset()
 }
 
 
+void LavaButton::mousePressEvent(QMouseEvent *event)
+{
+    if(this->toolTip() == "Deck weight")
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#deck-weight-only-patreon"
+            ));
+    }
+
+    QLabel::mousePressEvent(event);
+}
+
+
 void LavaButton::setValue(int totalMana, int numCards, int drawCards, int toYourHandCards, int discoverCards)
 {
     this->drawCards += drawCards;

@@ -18,11 +18,13 @@ bool HoverLabel::event(QEvent *e)
         emit leave();
         return true;
     }
-//    else if(e->type() == QEvent::MouseButtonPress)
-//    {
-//        emit clicked();
-//        return true;
-//    }
+    else if(e->type() == QEvent::MouseButtonPress)
+    {
+        QDesktopServices::openUrl(QUrl(
+            "https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#mechanics"
+            ));
+        return true;
+    }
 //    else if(e->type() == QEvent::MouseButtonDblClick)
 //    {
 //        emit doubleClicked();
