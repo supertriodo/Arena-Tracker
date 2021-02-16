@@ -12,10 +12,8 @@ class DraftDropCounter : public DraftItemCounter
     Q_OBJECT
 public:
     DraftDropCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
-                     QHBoxLayout *hLayout, int targetDrops, QPixmap pixmap, bool iconHover=true);
-    DraftDropCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
                      QGridLayout *gridLayout, int gridRow, int gridCol, int targetDrops,
-                     QPixmap pixmap, int iconWidth, bool iconHover=true);
+                     QPixmap pixmap, int iconWidth, bool iconHover=true, bool inDraftMechanicsWindow=true);
 
 //Variables
 private:

@@ -298,7 +298,8 @@ void DraftHandler::loadCardHist(QString classUName)
     while(!in.atEnd())
     {
         in >> code >> type >> rows >> cols >> continuous;
-        cv::Mat mat = cv::Mat(rows, cols, type);
+        cardsHist[code] = cv::Mat(rows, cols, type);
+        cv::Mat &mat = cardsHist[code];
 
         if(continuous)
         {
@@ -310,8 +311,6 @@ void DraftHandler::loadCardHist(QString classUName)
             size_t const rowSize(cols * mat.elemSize());
             for(int i=0; i<rows; i++)   in.readRawData(reinterpret_cast<char*>(mat.ptr(i)), rowSize);
         }
-
-        cardsHist[code] = mat;
     }
     file.close();
 }

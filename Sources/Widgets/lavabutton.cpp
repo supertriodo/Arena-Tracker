@@ -5,6 +5,7 @@
 LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
 {
     this->value = this->min = min;
+    this->value_0_1 = 0;
     this->max = max;
     this->drawCards = this->toYourHandCards = this->discoverCards = 0;
 }

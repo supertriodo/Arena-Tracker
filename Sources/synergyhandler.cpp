@@ -18,20 +18,17 @@ SynergyHandler::~SynergyHandler()
 
 void SynergyHandler::createDraftItemCounters()
 {
-    horLayoutCardTypes = new QHBoxLayout();
-    horLayoutDrops = new QHBoxLayout();
-    horLayoutMechanics1 = new QHBoxLayout();
-    horLayoutMechanics2 = new QHBoxLayout();
+    QGridLayout *mechanicsLayout = new QGridLayout();
 
 
     cardTypeCounters = new DraftItemCounter *[V_NUM_TYPES];
-    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", horLayoutCardTypes,
-                                                      QPixmap(ThemeHandler::minionsCounterFile()));
-    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", horLayoutCardTypes,
-                                                     QPixmap(ThemeHandler::spellsCounterFile()));
+    cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", mechanicsLayout, 0, 0,
+                                                    QPixmap(ThemeHandler::minionsCounterFile()), 32, true, false);
+    cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", mechanicsLayout, 0, 1,
+                                                     QPixmap(ThemeHandler::spellsCounterFile()), 32, true, false);
     cardTypeCounters[V_SPELL_ALL] = new DraftItemCounter(this, "Spell");
-    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", horLayoutCardTypes,
-                                                      QPixmap(ThemeHandler::weaponsCounterFile()));
+    cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", mechanicsLayout, 0, 2,
+                                                      QPixmap(ThemeHandler::weaponsCounterFile()), 32, true, false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this, "Weapon");
 
     connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
@@ -48,15 +45,16 @@ void SynergyHandler::createDraftItemCounters()
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
 
-    manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", horLayoutCardTypes, QPixmap(ThemeHandler::manaCounterFile()), false);
+    manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", mechanicsLayout, 0, 3,
+                                       QPixmap(ThemeHandler::manaCounterFile()), 32, false, false);
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
-    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", horLayoutDrops, TARGET_DROP_2,
-                                                 QPixmap(ThemeHandler::drop2CounterFile()));
-    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", horLayoutDrops, TARGET_DROP_3,
-                                                 QPixmap(ThemeHandler::drop3CounterFile()));
-    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", horLayoutDrops, TARGET_DROP_4,
-                                                 QPixmap(ThemeHandler::drop4CounterFile()));
+    dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 1, 0, TARGET_DROP_2,
+                                                 QPixmap(ThemeHandler::drop2CounterFile()), 32, true, false);
+    dropCounters[V_DROP3] = new DraftDropCounter(this, "3 Drop", "3 Cost", mechanicsLayout, 1, 1, TARGET_DROP_3,
+                                                 QPixmap(ThemeHandler::drop3CounterFile()), 32, true, false);
+    dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
+                                                 QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
 
     connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
@@ -92,23 +90,23 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this, "Totem");
 
     mechanicCounters = new DraftItemCounter *[V_NUM_MECHANICS];
-    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", "Reach", horLayoutMechanics1,
-                                                     QPixmap(ThemeHandler::reachMechanicFile()));
-    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", "Taunt", horLayoutMechanics1,
-                                                         QPixmap(ThemeHandler::tauntMechanicFile()));
-    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", "Survival", horLayoutMechanics1,
-                                                             QPixmap(ThemeHandler::survivalMechanicFile()));
-    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", "Draw", horLayoutMechanics1,
-                                                             QPixmap(ThemeHandler::drawMechanicFile()));
+    mechanicCounters[V_REACH] = new DraftItemCounter(this, "Reach", "Reach", mechanicsLayout, 2, 0,
+                                                     QPixmap(ThemeHandler::reachMechanicFile()), 32, true, false);
+    mechanicCounters[V_TAUNT_ALL] = new DraftItemCounter(this, "Taunt", "Taunt", mechanicsLayout, 2, 1,
+                                                         QPixmap(ThemeHandler::tauntMechanicFile()), 32, true, false);
+    mechanicCounters[V_SURVIVABILITY] = new DraftItemCounter(this, "Survival", "Survival", mechanicsLayout, 2, 2,
+                                                             QPixmap(ThemeHandler::survivalMechanicFile()), 32, true, false);
+    mechanicCounters[V_DISCOVER_DRAW] = new DraftItemCounter(this, "Draw", "Draw", mechanicsLayout, 2, 3,
+                                                             QPixmap(ThemeHandler::drawMechanicFile()), 32, true, false);
 
-    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", "Ping", horLayoutMechanics2,
-                                                    QPixmap(ThemeHandler::pingMechanicFile()));
-    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", horLayoutMechanics2,
-                                                      QPixmap(ThemeHandler::damageMechanicFile()));
-    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard Removal", "Hard Removal", horLayoutMechanics2,
-                                                       QPixmap(ThemeHandler::destroyMechanicFile()));
-    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", horLayoutMechanics2,
-                                                   QPixmap(ThemeHandler::aoeMechanicFile()));
+    mechanicCounters[V_PING] = new DraftItemCounter(this, "Ping", "Ping", mechanicsLayout, 3, 0,
+                                                    QPixmap(ThemeHandler::pingMechanicFile()), 32, true, false);
+    mechanicCounters[V_DAMAGE] = new DraftItemCounter(this, "Removal", "Removal", mechanicsLayout, 3, 1,
+                                                      QPixmap(ThemeHandler::damageMechanicFile()), 32, true, false);
+    mechanicCounters[V_DESTROY] = new DraftItemCounter(this, "Hard Removal", "Hard Removal", mechanicsLayout, 3, 2,
+                                                       QPixmap(ThemeHandler::destroyMechanicFile()), 32, true, false);
+    mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", mechanicsLayout, 3, 3,
+                                                   QPixmap(ThemeHandler::aoeMechanicFile()), 32, true, false);
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
@@ -206,14 +204,10 @@ void SynergyHandler::createDraftItemCounters()
     //New Synergy Step 2
 
 
-    horLayoutCardTypes->addStretch();
-    horLayoutDrops->addStretch();
-    horLayoutMechanics1->addStretch();
-    horLayoutMechanics2->addStretch();
-    ui->draftVerticalLayout->addLayout(horLayoutCardTypes);
-    ui->draftVerticalLayout->addLayout(horLayoutDrops);
-    ui->draftVerticalLayout->addLayout(horLayoutMechanics1);
-    ui->draftVerticalLayout->addLayout(horLayoutMechanics2);
+    QHBoxLayout *horLayoutMechanics = new QHBoxLayout();
+    horLayoutMechanics->addLayout(mechanicsLayout);
+    horLayoutMechanics->addStretch();
+    ui->draftVerticalLayout->addLayout(horLayoutMechanics);
 }
 
 
@@ -248,24 +242,24 @@ void SynergyHandler::deleteDraftItemCounters()
 
 void SynergyHandler::setTheme()
 {
-    cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()));
-    cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()));
-    cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()));
-    manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()));
+    cardTypeCounters[V_MINION]->setTheme(QPixmap(ThemeHandler::minionsCounterFile()), 32, false);
+    cardTypeCounters[V_SPELL]->setTheme(QPixmap(ThemeHandler::spellsCounterFile()), 32, false);
+    cardTypeCounters[V_WEAPON]->setTheme(QPixmap(ThemeHandler::weaponsCounterFile()), 32, false);
+    manaCounter->setTheme(QPixmap(ThemeHandler::manaCounterFile()), 32, false);
 
-    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()));
-    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()));
-    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()));
+    dropCounters[V_DROP2]->setTheme(QPixmap(ThemeHandler::drop2CounterFile()), 32, false);
+    dropCounters[V_DROP3]->setTheme(QPixmap(ThemeHandler::drop3CounterFile()), 32, false);
+    dropCounters[V_DROP4]->setTheme(QPixmap(ThemeHandler::drop4CounterFile()), 32, false);
 
-    mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()));
-    mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()));
-    mechanicCounters[V_SURVIVABILITY]->setTheme(QPixmap(ThemeHandler::survivalMechanicFile()));
-    mechanicCounters[V_DISCOVER_DRAW]->setTheme(QPixmap(ThemeHandler::drawMechanicFile()));
+    mechanicCounters[V_AOE]->setTheme(QPixmap(ThemeHandler::aoeMechanicFile()), 32, false);
+    mechanicCounters[V_TAUNT_ALL]->setTheme(QPixmap(ThemeHandler::tauntMechanicFile()), 32, false);
+    mechanicCounters[V_SURVIVABILITY]->setTheme(QPixmap(ThemeHandler::survivalMechanicFile()), 32, false);
+    mechanicCounters[V_DISCOVER_DRAW]->setTheme(QPixmap(ThemeHandler::drawMechanicFile()), 32, false);
 
-    mechanicCounters[V_PING]->setTheme(QPixmap(ThemeHandler::pingMechanicFile()));
-    mechanicCounters[V_DAMAGE]->setTheme(QPixmap(ThemeHandler::damageMechanicFile()));
-    mechanicCounters[V_DESTROY]->setTheme(QPixmap(ThemeHandler::destroyMechanicFile()));
-    mechanicCounters[V_REACH]->setTheme(QPixmap(ThemeHandler::reachMechanicFile()));
+    mechanicCounters[V_PING]->setTheme(QPixmap(ThemeHandler::pingMechanicFile()), 32, false);
+    mechanicCounters[V_DAMAGE]->setTheme(QPixmap(ThemeHandler::damageMechanicFile()), 32, false);
+    mechanicCounters[V_DESTROY]->setTheme(QPixmap(ThemeHandler::destroyMechanicFile()), 32, false);
+    mechanicCounters[V_REACH]->setTheme(QPixmap(ThemeHandler::reachMechanicFile()), 32, false);
 }
 
 

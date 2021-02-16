@@ -2,30 +2,19 @@
 #include "../themehandler.h"
 #include <QtWidgets>
 
-DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
-                                   QHBoxLayout *hLayout, QPixmap pixmap,
-                                   bool iconHover) : QObject(parent)
-{
-    //Constructor MainWindow
-    this->synergyTag = synergyTag;
-    this->synergyTagExtra = synergyTagExtra;
-    init(hLayout, iconHover);
-    setTheme(pixmap);
-}
-
 
 DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
                                    QGridLayout *gridLayout, int gridRow, int gridCol,
-                                   QPixmap pixmap, int iconWidth, bool iconHover) : QObject(parent)
+                                   QPixmap pixmap, int iconWidth, bool iconHover, bool inDraftMechanicsWindow) : QObject(parent)
 {
-    //Constructor DraftMechanicsWindow
+    //Constructor DraftMechanicsWindow/MainWindow
     this->synergyTag = synergyTag;
     this->synergyTagExtra = synergyTagExtra;
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    init(hLayout, iconHover);
-    setTheme(pixmap, iconWidth, true);
+    this->horLayout = new QHBoxLayout();
+    init(horLayout, iconHover);
+    setTheme(pixmap, iconWidth, inDraftMechanicsWindow);
 
-    gridLayout->addLayout(hLayout, gridRow, gridCol);
+    gridLayout->addLayout(horLayout, gridRow, gridCol);
 }
 
 
@@ -36,14 +25,15 @@ DraftItemCounter::DraftItemCounter(QObject *parent, QString synergyTag) : QObjec
     labelCounter = nullptr;
     this->synergyTag = synergyTag;
     this->synergyTagExtra = "";
+    this->horLayout = nullptr;
     reset();
 }
 
 
 DraftItemCounter::~DraftItemCounter()
 {
-    if(labelIcon != nullptr)       delete labelIcon;
-    if(labelCounter != nullptr)    delete labelCounter;
+    if(labelIcon != nullptr)        delete labelIcon;
+    if(labelCounter != nullptr)     delete labelCounter;
 }
 
 
@@ -63,6 +53,13 @@ void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
     }
 
     reset();
+}
+
+
+void DraftItemCounter::moveLayout(QGridLayout *gridLayout, int gridRow, int gridCol)
+{
+    gridLayout->removeItem(horLayout);
+    gridLayout->addLayout(horLayout, gridRow, gridCol);
 }
 
 

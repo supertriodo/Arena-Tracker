@@ -7,6 +7,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
                                            bool patreonVersion) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
+    this->showDrops = true;
     this->patreonVersion = patreonVersion;
     scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
@@ -45,7 +46,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
     cardTypeCounters = new DraftItemCounter *[M_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", cardTypeLayout, 0, 0,
-                                                      QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
+                                                      QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2, false);
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", cardTypeLayout, 0, 1,
                                                      QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", cardTypeLayout, 1, 0,
@@ -53,15 +54,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", cardTypeLayout, 1, 1,
                                        QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
-//    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-//            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
 
-//    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
-//            this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),
@@ -113,7 +110,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     }
 
     //Mechanics & drops
-    QGridLayout *mechanicsLayout = new QGridLayout();
+    mechanicsLayout = new QGridLayout();
 
     dropCounters = new DraftDropCounter *[V_NUM_DROPS];
     dropCounters[V_DROP2] = new DraftDropCounter(this, "2 Drop", "2 Cost", mechanicsLayout, 0, 0, TARGET_DROP_2,
@@ -366,10 +363,11 @@ void DraftMechanicsWindow::hideHelp()
 
     if(showDrops)
     {
+        mechanicCounters[V_DISCOVER_DRAW]->moveLayout(mechanicsLayout, 0, 3);
+
         mechanicCounters[V_REACH]->hide();
         mechanicCounters[V_TAUNT_ALL]->hide();
         mechanicCounters[V_SURVIVABILITY]->hide();
-        mechanicCounters[V_DISCOVER_DRAW]->hide();
 
         dropCounters[V_DROP2]->show();
         dropCounters[V_DROP3]->show();
@@ -377,6 +375,8 @@ void DraftMechanicsWindow::hideHelp()
     }
     else
     {
+        mechanicCounters[V_DISCOVER_DRAW]->moveLayout(mechanicsLayout, 1, 3);
+
         dropCounters[V_DROP2]->hide();
         dropCounters[V_DROP3]->hide();
         dropCounters[V_DROP4]->hide();
@@ -384,9 +384,9 @@ void DraftMechanicsWindow::hideHelp()
         mechanicCounters[V_REACH]->show();
         mechanicCounters[V_TAUNT_ALL]->show();
         mechanicCounters[V_SURVIVABILITY]->show();
-        mechanicCounters[V_DISCOVER_DRAW]->show();
     }
 
+    mechanicCounters[V_DISCOVER_DRAW]->show();
     mechanicCounters[V_PING]->show();
     mechanicCounters[V_DAMAGE]->show();
     mechanicCounters[V_DESTROY]->show();

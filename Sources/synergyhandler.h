@@ -25,7 +25,6 @@ private:
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     DraftDropCounter **dropCounters;
-    QHBoxLayout *horLayoutCardTypes, *horLayoutDrops, *horLayoutMechanics1, *horLayoutMechanics2;
 
 //Metodos
 public:

@@ -33,6 +33,7 @@ private:
     int scoreWidth;
     bool showingHelp, showDrops;
     DraftMethod draftMethodAvgScore;
+    QGridLayout *mechanicsLayout;
 
 //Metodos
 private:

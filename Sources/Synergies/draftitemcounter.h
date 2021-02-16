@@ -13,10 +13,8 @@ class DraftItemCounter : public QObject
     Q_OBJECT
 public:
     DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
-                     QHBoxLayout *hLayout, QPixmap pixmap, bool iconHover=true);
-    DraftItemCounter(QObject *parent, QString synergyTag, QString synergyTagExtra,
                      QGridLayout *gridLayout, int gridRow, int gridCol, QPixmap pixmap,
-                     int iconWidth, bool iconHover=true);
+                     int iconWidth, bool iconHover=true, bool inDraftMechanicsWindow=true);
     DraftItemCounter(QObject *parent, QString synergyTag);
     ~DraftItemCounter();
 
@@ -24,6 +22,7 @@ public:
 private:
     QLabel *labelCounter;
     int counter;
+    QHBoxLayout *horLayout;
     QList<SynergyCard> synergyCardList, extraCardList;
     QMap<QString, int> codeMap, codeSynMap;
     QString synergyTag, synergyTagExtra;
@@ -49,9 +48,10 @@ public:
     int count();
     QMap<QString, int> &getCodeMap();
     QMap<QString, QString> getCodeTagMap();
-    void setTheme(QPixmap pixmap, int iconWidth=32, bool inDraftMechanicsWindow=false);
+    void setTheme(QPixmap pixmap, int iconWidth, bool inDraftMechanicsWindow);
     void hide();
     void show();
+    void moveLayout(QGridLayout *gridLayout, int gridRow, int gridCol);
 
 signals:
     void iconEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
