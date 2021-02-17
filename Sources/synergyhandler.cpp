@@ -1628,7 +1628,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
-//                    isDeathrattleGoodAllSyn(code)
+//                    isDragonSyn(code, text)
+//                    isDragonGen(code)
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
@@ -4003,6 +4004,7 @@ REGLAS
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +spell, tokenCard, combo y return son sinergia debil por eso solo las mostramos en un sentido,
     para evitar mostrarlas continuamente en todos lados. Update, solo ocultamos return.
++elementalGen/dragonGen solo para generacion de cartas en mano, no en board.
 +tokenCardGen ya implica comboSyn (Update, ya no), eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen,
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o

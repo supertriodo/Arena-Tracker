@@ -4595,7 +4595,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-//    downloadHearthArenaTierlistOriginal();
+    downloadHearthArenaTierlistOriginal();
 //    Utility::checkTierlistsCount();
 }
 
@@ -4626,7 +4626,7 @@ void MainWindow::testDelay()
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     testHeroPortraits();
     testSynergies();
-    testTierlists();
+//    testTierlists();
 
 //    testDownloadCards();
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
