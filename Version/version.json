@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v8.3","v8.31","v8.32","v8.33","v8.34","v9.0","v9.01","v9.02","v9.1","v9.2"],
-	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.2/Arena.Tracker.v9.2.Linux.zip",
-	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.2/ArenaTracker.Linux.AppImage",
-	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.2/Arena.Tracker.v9.2.Mac.zip",
-	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.2/Arena.Tracker.v9.2.Windows.zip",
-	"log": "Faster start for every draft. Show as good score any that is up to (10 points / 1%) lower than the best one.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.2'>github</a>"
+	"versionFree": ["v9.2","v9.3"],
+	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.3/Arena.Tracker.v9.3.Linux.zip",
+	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.3/ArenaTracker.Linux.AppImage",
+	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.3/Arena.Tracker.v9.3.Mac.zip",
+	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/v9.3/Arena.Tracker.v9.3.Windows.zip",
+	"log": "Show more detailed lists for drops/spells/weapons. Show the icon class below the HSR class score when choosing hero at the start of a draft.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/v9.3'>github</a>"
 }
