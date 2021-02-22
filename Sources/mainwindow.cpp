@@ -4602,7 +4602,7 @@ void MainWindow::testTierlists()
 void MainWindow::testDownloadCards()
 {
     QStringList codes = {};
-    for(const QString &code: codes)     checkCardImage(code, false);
+    for(const QString &code: codes)     cardDownloader->downloadWebImage(code, false, false, true);
 }
 
 void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
