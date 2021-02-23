@@ -334,16 +334,16 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 }
 
 
-QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtEnd)
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart)
 {
     QTreeWidgetItem *item;
 
-    if(addAtEnd)    item = new QTreeWidgetItem(ui->arenaTreeWidget);
-    else
+    if(addAtStart)
     {
         item = new QTreeWidgetItem();
         ui->arenaTreeWidget->insertTopLevelItem(0, item);
     }
+    else    item = new QTreeWidgetItem(ui->arenaTreeWidget);
 
     item->setExpanded(true);
     item->setText(0, title);
@@ -379,12 +379,14 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 
                 if(arenaHomeless->isHidden())   arenaHomeless->setHidden(false);
 
-                item = new QTreeWidgetItem(arenaHomeless);
+                item = new QTreeWidgetItem();
+                arenaHomeless->insertChild(0, item);
             }
             else
             {
                 emit pDebug("Create GameResult from arena in arenaCurrent.");
-                item = new QTreeWidgetItem(arenaCurrent);
+                item = new QTreeWidgetItem();
+                arenaCurrent->insertChild(0, item);
                 updateWinLose(gameResult.isWinner, arenaCurrent);
             }
         break;
@@ -401,7 +403,8 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
                 rankedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
             }
 
-            item = new QTreeWidgetItem(rankedTreeItem[indexHero]);
+            item = new QTreeWidgetItem();
+            rankedTreeItem[indexHero]->insertChild(0, item);
             updateWinLose(gameResult.isWinner, rankedTreeItem[indexHero]);
         break;
 
@@ -415,7 +418,8 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
                 casualTreeItem = createTopLevelItem("Casual", "", false);
             }
 
-            item = new QTreeWidgetItem(casualTreeItem);
+            item = new QTreeWidgetItem();
+            casualTreeItem->insertChild(0, item);
             updateWinLose(gameResult.isWinner, casualTreeItem);
         break;
 
@@ -429,7 +433,8 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
                 adventureTreeItem = createTopLevelItem("Solo", "", false);
             }
 
-            item = new QTreeWidgetItem(adventureTreeItem);
+            item = new QTreeWidgetItem();
+            adventureTreeItem->insertChild(0, item);
             updateWinLose(gameResult.isWinner, adventureTreeItem);
         break;
 
@@ -443,7 +448,8 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
                 tavernBrawlTreeItem = createTopLevelItem("Brawl", "", false);
             }
 
-            item = new QTreeWidgetItem(tavernBrawlTreeItem);
+            item = new QTreeWidgetItem();
+            tavernBrawlTreeItem->insertChild(0, item);
             updateWinLose(gameResult.isWinner, tavernBrawlTreeItem);
         break;
 
@@ -457,7 +463,8 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
                 friendlyTreeItem = createTopLevelItem("Duel", "", false);
             }
 
-            item = new QTreeWidgetItem(friendlyTreeItem);
+            item = new QTreeWidgetItem();
+            friendlyTreeItem->insertChild(0, item);
             updateWinLose(gameResult.isWinner, friendlyTreeItem);
         break;
 

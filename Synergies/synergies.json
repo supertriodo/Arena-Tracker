@@ -1205,7 +1205,7 @@
 "EX1_136" : [ "secret" ],
 "EX1_137" : [ "combo", "reachGen", "toYourHandGen5" ],
 "EX1_144" : [ "tokenCardGen", "returnGen" ],
-"EX1_145" : [ "=>SynSpellCost3" ],
+"EX1_145" : [ "=>SynSpellCost2" ],
 "EX1_154" : [ "drawGen", "pingGen", "damageMinionsGen", "enrageSyn" ],
 "EX1_155" : [ "tauntGen", "tauntGiverGen", "attackBuffGen", "healthBuffGen", "spellBuffGen" ],
 "EX1_158" : [ "tokenSyn", "deathrattleGen", "treantGen" ],

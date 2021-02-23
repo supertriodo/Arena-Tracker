@@ -48,7 +48,7 @@ private:
     QColor getRowColor(QTreeWidgetItem *item);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
-    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtEnd);
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtStart);
     QString compressLog(QString logFileName);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void showArena(QString hero);
