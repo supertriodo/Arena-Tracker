@@ -3840,15 +3840,16 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 //    if(code == TIMEBOUND_GIANT)     return 6;
 //    if(code == TIMEWAY_WANDERER)    return 0;
 
+    //Evitar draw/discover cost 0 -> no draw y mantenemos coste original
+    //Descuento minions on board -> suponemos 2 aliados y 2 enemigos (4 total)
+    //Descuento spells cast this game -> 3
     if(code == BLOODBLOOM)          return 0;
     if(code == PRIMORDIAL_GLYPH)    return 0;
     if(code == FAR_SIGHT)           return 0;
     if(code == CHEAT_DEATH)         return 0;
-    if(code == MANA_BIND)           return 0;
     if(code == LUNAS_POCKET_GALAXY) return 0;
     if(code == ACADEMIC_ESPIONAGE)  return 0;
     if(code == HAUNTING_VISIONS)    return 0;
-    if(code == ANCIENT_MYSTERIES)   return 0;
     if(code == WAXMANCY)            return 0;
     if(code == IMPRISONED_SATYR)    return 0;
     if(code == SKULL_OF_GULDAN)     return 0;
@@ -3860,16 +3861,14 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == NATURE_STUDIES)      return 0;
     if(code == ILLIDARI_STUDIES)    return 0;
     if(code == INSIGHT)             return 0;
-    if(code == GHUUN_THE_BLOOD_GOD) return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == PALM_READING)        return 2;
+    if(code == PILOTED_REAPER)      return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
     if(code == DREAMPETAL_FLORIST)  return 3;
-    if(code == PILOTED_REAPER)      return 3;
-    if(code == MOGU_FLESHSHAPER)    return 3;
     if(code == FEL_GUARDIANS)       return 3;
     if(code == CUTTING_CLASS)       return 3;
     if(code == MOLTEN_BLADE)        return 4;
@@ -3882,18 +3881,18 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FORBIDDEN_RITUAL)    return 4;
     if(code == FORBIDDEN_ANCIENT)   return 4;
     if(code == FORBIDDEN_WORDS)     return 4;
+    if(code == UMBRAL_OWL)          return 4;
     if(code == TENT_TRASHER)        return 4;
-    if(code == DEMONBOLT)           return 5;
+    if(code == MOGU_FLESHSHAPER)    return 5;
     if(code == RABBLE_BOUNCER)      return 5;
-    if(code == EMBIGGEN)            return 5;
     if(code == DEVOUT_PUPIL)        return 5;
-    if(code == UMBRAL_OWL)          return 5;
+    if(code == DEMONBOLT)           return 6;
+    if(code == EMBIGGEN)            return 6;
     if(code == SEA_GIANT)           return 6;
-    if(code == KALECGOS)            return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == FLESH_GIANT)         return 6;
     if(code == MULCHMUNCHER)        return 8;
-    if(code == GRAVE_HORROR)        return 8;
+    if(code == GRAVE_HORROR)        return 9;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
