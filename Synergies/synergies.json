@@ -131,6 +131,7 @@
 "AT_131" : [ "drop3" ],
 "AT_132" : [ "battlecry", "heroPowerGen" ],
 "AT_133" : [ "battlecry" ],
+"BAR_080" : [ "battlecry", "returnSyn", "destroyGen" ],
 "BCON_001" : [ "damageMinionsGen" ],
 "BCON_004" : [ "destroyGen", "tokenSyn" ],
 "BCON_008" : [ "attackBuffGen", "healthBuffGen", "returnGen" ],
