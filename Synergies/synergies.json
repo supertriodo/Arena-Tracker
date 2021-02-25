@@ -2206,7 +2206,7 @@
 "SCH_138" : [ "attackBuffGen", "healthBuffGen", "spellBuffGen" ],
 "SCH_139" : [ "spellBuffSyn", "taunt", "divineShield" ],
 "SCH_140" : [ "damageFriendlyHeroSyn", "restoreFriendlyHeroSyn" ],
-"SCH_141" : [ "spellAllSyn", "drop4", "spellBuffSyn" ],
+"SCH_141" : [ "spellAllSyn", "spellBuffSyn" ],
 "SCH_142" : [ "drawGen2", "endTurnGen" ],
 "SCH_143" : [ "drop4", "divineShield" ],
 "SCH_145" : [ "tokenCardGen" ],

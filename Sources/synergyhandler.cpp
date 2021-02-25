@@ -1629,14 +1629,14 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    isDragonSyn(code, text)
-//                    isDragonGen(code)
+
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 //containsAll(text, "gain mana this turn only")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-//containsAll(text, "spend all your mana") || text.contains("cost")
+//containsAll(text, "spend all your mana") || text.contains("cost") || isTokenCardGen(code, cost, mechanics, referencedTags, text)
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
 //containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
