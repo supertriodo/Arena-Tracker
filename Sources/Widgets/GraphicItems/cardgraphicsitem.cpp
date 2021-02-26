@@ -384,14 +384,17 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 int CardGraphicsItem::getManaSpent(bool includeRefresh)
 {
     int saveMana = 0;
-    if(code == THE_COIN)                saveMana = 1;
+
+    if(Utility::cardEnNameFromCode(code) == "The Coin") saveMana = 1;
+
     else if(code == COUNTERFEIT_COIN)   saveMana = 1;
     else if(code == INNERVATE)          saveMana = 1;
     else if(code == LIGHTNING_BLOOM)    saveMana = 2;
 
-    if(includeRefresh)
+    else if(includeRefresh)
     {
         if(code == MANA_BISCUIT)        saveMana = 2;
     }
+
     return cost - saveMana;
 }

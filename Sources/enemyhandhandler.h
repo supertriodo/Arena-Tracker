@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QMap>
 
-#define COIN QString("GAME_005")
 
 class EnemyHandHandler : public QObject
 {

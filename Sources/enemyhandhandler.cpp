@@ -207,7 +207,7 @@ bool EnemyHandHandler::isCoinInHand()
 {
     for(HandCard &handCard: enemyHandList)
     {
-        if(handCard.getCode() == COIN)  return true;
+        if(handCard.getCode() == THE_COIN)  return true;
     }
     return false;
 }
@@ -218,11 +218,11 @@ void EnemyHandHandler::lastHandCardIsCoin()
     if(enemyHandList.empty())   return;//En modo practica el mulligan enemigo termina antes de robar las cartas
 
     HandCard& coin = enemyHandList.last();
-    coin.setCode(COIN);
+    coin.setCode(THE_COIN);
     coin.draw();
 
-    emit revealEnemyCard(coin.id, COIN);
-    emit checkCardImage(COIN);
+    emit revealEnemyCard(coin.id, THE_COIN);
+    emit checkCardImage(THE_COIN);
 }
 
 
