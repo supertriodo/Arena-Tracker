@@ -232,6 +232,7 @@ public slots:
     void zonePlayAttack(QString code, int id1, int id2);
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
+    bool isReckoningTested(bool isHeroTo, int id1, int id2);
     void checkEnemyHeroHealthChanged();
     void check2Minions();
     void newTurn(bool playerTurn, int numTurn);

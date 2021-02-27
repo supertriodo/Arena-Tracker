@@ -1718,6 +1718,28 @@ void PlanHandler::minionCodeChange(bool friendly, int id, QString newCode)
 }
 
 
+//Test secreto Reckoning
+bool PlanHandler::isReckoningTested(bool isHeroTo, int id1, int id2)
+{
+    MinionGraphicsItem * minion1 = findMinion(true, id1);
+    if(minion1 == nullptr)  return false;
+    int attack1 = minion1->getAttack();
+    if(attack1 < 3) return false;
+    //Minion -> hero
+    if(isHeroTo)    return true;
+    //Minion -> minion
+    else
+    {
+        MinionGraphicsItem * minion2 = findMinion(false, id2);
+        if(minion2 == nullptr)  return false;
+        int attack2 = minion2->getAttack();
+        int health1 = minion1->getHealth();
+        if(health1 > attack2)   return true;
+        else                    return false;
+    }
+}
+
+
 //Test secreto de no danar al rival en tu turno
 void PlanHandler::checkEnemyHeroHealthChanged()
 {

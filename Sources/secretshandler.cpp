@@ -739,7 +739,7 @@ void SecretsHandler::minions2Tested()
  * Note that this rule only applies for Secrets which require specific targets; Secrets such as Explosive Trap and Snake Trap do not require targets,
  * and will always take effect once triggered, even if the original trigger minion has been removed from play.
  */
-void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions)
+void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions, int id1, int id2)
 {
     if(isHeroFrom)
     {
@@ -790,6 +790,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
+            if(planHandler->isReckoningTested(isHeroTo, id1, id2))  discardSecretOption(RECKONING);//Ocultado por NOBLE_SACRIFICE (si el atacante tiene <= 2 health pq muere)
 
             if(playerMinions > 1)   discardSecretOptionNow(SUDDEN_BETRAYAL);
             discardSecretOption(EVASION);//Ocultado por SUDDEN_BETRAYAL
@@ -805,6 +806,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
+            if(planHandler->isReckoningTested(isHeroTo, id1, id2))  discardSecretOption(RECKONING);//Ocultado por AUTODEFENSE_MATRIX
 
             discardSecretOptionNow(SPLITTING_IMAGE);
 

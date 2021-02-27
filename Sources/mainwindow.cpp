@@ -1424,8 +1424,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(_3CardsPlayedTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
-    connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int)),
-            secretsHandler, SLOT(playerAttack(bool,bool,int)));
+    connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int,int,int)),
+            secretsHandler, SLOT(playerAttack(bool,bool,int,int,int)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),

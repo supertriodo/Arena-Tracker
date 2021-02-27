@@ -160,7 +160,7 @@ signals:
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
     void playerWeaponGraveyard(int id, QString code);
     void enemyWeaponGraveyard(int id, QString code);
-    void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions);
+    void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions, int id1, int id2);
     void zonePlayAttack(QString code, int id1, int id2);
     void playerSpellObjHeroPlayed();
     void playerSpellObjMinionPlayed();

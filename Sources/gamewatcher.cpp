@@ -891,7 +891,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (heroe)vs(heroe) " + name2, numLine);
-                            if(isPlayer && isPlayerTurn)    emit playerAttack(true, true, playerMinions);
+                            if(isPlayer && isPlayerTurn)    emit playerAttack(true, true, playerMinions, id1.toInt(), id2.toInt());
                         }
                         else
                         {
@@ -901,7 +901,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                             {
                                 emit pDebug("Saltamos comprobacion de secretos";
                             }
-                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false, playerMinions);
+                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(true, false, playerMinions, id1.toInt(), id2.toInt());
                         }
                     }
                     else
@@ -910,7 +910,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (minion)vs(heroe) " + name2, numLine);
-                            if(isPlayer && isPlayerTurn)    emit playerAttack(false, true, playerMinions);
+                            if(isPlayer && isPlayerTurn)    emit playerAttack(false, true, playerMinions, id1.toInt(), id2.toInt());
                         }
                         else
                         {
@@ -920,7 +920,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                             {
                                 emit pDebug("Saltamos comprobacion de secretos";
                             }
-                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false, playerMinions);
+                            else */if(isPlayer && isPlayerTurn)    emit playerAttack(false, false, playerMinions, id1.toInt(), id2.toInt());
                         }
                     }
                 }
