@@ -1623,13 +1623,14 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-//                    containsAll(text, "poisonous")
+                    containsAll(text, "poisonous")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    isDragonSyn(code, text)
-                    isToYourHandGen(code, cost, mechanics, text)
+//                    isToYourHandGen(code, cost, mechanics, text)
+//                    mechanics.contains(QJsonValue("TWINSPELL"))
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -3876,19 +3877,19 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
     if(code == CHAMELEOS)           return 4;
-    if(code == FORBIDDEN_SHAPING)   return 4;
-    if(code == FORBIDDEN_FLAME)     return 4;
-    if(code == FORBIDDEN_HEALING)   return 4;
-    if(code == FORBIDDEN_RITUAL)    return 4;
-    if(code == FORBIDDEN_ANCIENT)   return 4;
-    if(code == FORBIDDEN_WORDS)     return 4;
     if(code == UMBRAL_OWL)          return 4;
     if(code == TENT_TRASHER)        return 4;
+    if(code == FORBIDDEN_SHAPING)   return 5;
+    if(code == FORBIDDEN_FLAME)     return 5;
+    if(code == FORBIDDEN_HEALING)   return 5;
+    if(code == FORBIDDEN_RITUAL)    return 5;
+    if(code == FORBIDDEN_ANCIENT)   return 5;
+    if(code == FORBIDDEN_WORDS)     return 5;
     if(code == MOGU_FLESHSHAPER)    return 5;
     if(code == RABBLE_BOUNCER)      return 5;
     if(code == DEVOUT_PUPIL)        return 5;
+    if(code == EMBIGGEN)            return 5;
     if(code == DEMONBOLT)           return 6;
-    if(code == EMBIGGEN)            return 6;
     if(code == SEA_GIANT)           return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == FLESH_GIANT)         return 6;
