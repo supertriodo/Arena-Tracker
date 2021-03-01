@@ -1623,12 +1623,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "poisonous")
+//                    containsAll(text, "poisonous")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    isDragonSyn(code, text)
+                    isToYourHandGen(code, cost, mechanics, text)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -1647,7 +1648,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 debugSynergiesCode(code, ++num);
     //            qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<100)
+                if(num>0 && num<=50)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -4013,7 +4014,8 @@ REGLAS
     (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
 +drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
-    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
+    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen. Costes 2-6 son toYourHandGen(1).
+    Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
 +tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
