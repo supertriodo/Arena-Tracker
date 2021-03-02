@@ -33,16 +33,17 @@ Utility::~Utility()
 //--------------------------------------------------------
 QString Utility::className2classLogNumber(const QString &hero)
 {
-    if(hero.toLower().compare("druid")==0)        return QString("06");
-    else if(hero.toLower().compare("hunter")==0)  return QString("05");
-    else if(hero.toLower().compare("mage")==0)    return QString("08");
-    else if(hero.toLower().compare("paladin")==0) return QString("04");
-    else if(hero.toLower().compare("priest")==0)  return QString("09");
-    else if(hero.toLower().compare("rogue")==0)   return QString("03");
-    else if(hero.toLower().compare("shaman")==0)  return QString("02");
-    else if(hero.toLower().compare("warlock")==0) return QString("07");
-    else if(hero.toLower().compare("warrior")==0) return QString("01");
-    else if(hero.toLower().compare("demonhunter")==0) return QString("10");
+    const QString heroL = hero.toLower();
+    if(heroL.compare("druid")==0)           return QString("06");
+    else if(heroL.compare("hunter")==0)     return QString("05");
+    else if(heroL.compare("mage")==0)       return QString("08");
+    else if(heroL.compare("paladin")==0)    return QString("04");
+    else if(heroL.compare("priest")==0)     return QString("09");
+    else if(heroL.compare("rogue")==0)      return QString("03");
+    else if(heroL.compare("shaman")==0)     return QString("02");
+    else if(heroL.compare("warlock")==0)    return QString("07");
+    else if(heroL.compare("warrior")==0)    return QString("01");
+    else if(heroL.compare("demonhunter")==0) return QString("10");
     else return QString();
 }
 
@@ -394,7 +395,7 @@ QList<CardClass> Utility::getClassFromCode(QString code)
     else
     {
         QList<CardClass> cardClassList;
-        for(const QJsonValue &jsonVclass: jsonVclasses.toArray())
+        for(const QJsonValue &jsonVclass: (const QJsonArray)jsonVclasses.toArray())
         {
             cardClassList << classString2cardClass(jsonVclass.toString());
         }
@@ -445,9 +446,9 @@ bool Utility::isFromStandardSet(QString code)
 
 bool Utility::isASecret(QString code)
 {
-    QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
+    const QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
 
-    foreach(QJsonValue mechanic, mechanics)
+    for(const QJsonValue &mechanic: mechanics)
     {
         if(mechanic.toString() == "SECRET") return true;
     }
@@ -458,7 +459,8 @@ bool Utility::isASecret(QString code)
 QStringList Utility::getSetCodes(const QString &set, bool excludeHeroes, bool onlyCollectible)
 {
     QStringList setCodes;
-    for(const QString &code: Utility::cardsJson->keys())
+    const QList<QString> codeList = Utility::cardsJson->keys();
+    for(const QString &code: codeList)
     {
         if(getCardAttribute(code, "set").toString() == set)
         {
@@ -478,7 +480,8 @@ QStringList Utility::getSetCodes(const QString &set, bool excludeHeroes, bool on
 QStringList Utility::getWildCodes()
 {
     QStringList setCodes;
-    for(const QString &code: Utility::cardsJson->keys())
+    const QList<QString> codeList = Utility::cardsJson->keys();
+    for(const QString &code: codeList)
     {
         if(getCardAttribute(code, "collectible").toBool() == true)
         {
@@ -492,7 +495,8 @@ QStringList Utility::getWildCodes()
 QStringList Utility::getStandardCodes()
 {
     QStringList setCodes;
-    for(const QString &code: Utility::cardsJson->keys())
+    const QList<QString> codeList = Utility::cardsJson->keys();
+    for(const QString &code: codeList)
     {
         if(Utility::isFromStandardSet(code) &&
             (getCardAttribute(code, "collectible").toBool() == true))
@@ -951,7 +955,7 @@ void Utility::resizeGoldenCards()
     filterName << "*.png";
     dir.setNameFilters(filterName);
 
-    for(const QString &file: dir.entryList())
+    for(const QString &file: (const QStringList)dir.entryList())
     {
         QImage webImage(goldenDir + "/" + file);
         webImage = webImage.scaledToWidth(205, Qt::SmoothTransformation);
@@ -972,12 +976,12 @@ void Utility::resizeGoldenCards()
 void Utility::checkTierlistsCount()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    const QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     QStringList haCodesAll;
-    QString allHeroes[NUM_HEROS];
+    QStringList allHeroes;
     for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classLogNumber(i);
 
-    for(const QString &heroLog: allHeroes)
+    for(const QString &heroLog: (const QStringList)allHeroes)
     {
         const QString heroString = Utility::classLogNumber2classUL_ULName(heroLog);
         const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
@@ -988,7 +992,7 @@ void Utility::checkTierlistsCount()
         //Arena Codes List
         for(const QString &set: arenaSets)
         {
-            for(const QString &code: Utility::getSetCodes(set, true, true))
+            for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, true))
             {
                 QList<CardClass> cardClassList = Utility::getClassFromCode(code);
                 if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
@@ -1005,7 +1009,7 @@ void Utility::checkTierlistsCount()
         jsonFileHA.close();
 
         QJsonObject jsonNamesObjectHA = jsonDocHA.object().value(heroString).toObject();
-        for(const QString &name: jsonNamesObjectHA.keys())
+        for(const QString &name: (const QStringList)jsonNamesObjectHA.keys())
         {
             QString code = Utility::cardEnCodeFromName(name);
             if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);

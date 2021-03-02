@@ -4714,7 +4714,12 @@ void MainWindow::testDelay()
 //}
 
 //FOR EACH C++
-//for(const QString &key: jsonObject.keys())
+//for(const QString &key: (const QStringList)jsonObject.keys())
+//qAsConst()
+
+//Warnings
+//const QList<QString> codeList = Utility::cardsJson->keys();
+//for(const QString &code: codeList)
 
 //Connect, function def inline
 //connect(animation, &QPropertyAnimation::finished,

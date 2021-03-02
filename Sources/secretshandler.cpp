@@ -111,7 +111,8 @@ void SecretsHandler::clearSecretsAnimating()
 //TODO Dual color secrets
 void SecretsHandler::secretStolen(int id, QString code, LoadingScreenState loadingScreenState)
 {
-    knownSecretPlayed(id, Utility::getClassFromCode(code)[0], code, loadingScreenState);
+    QList<CardClass> classList = Utility::getClassFromCode(code);
+    knownSecretPlayed(id, classList.first(), code, loadingScreenState);
 }
 
 
@@ -216,7 +217,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
     //Opciones ordenadas por pickrate en arena
     if(inArena)
     {
-        for(const QString &code: secretsByPickrate[hero])
+        for(const QString &code: qAsConst(secretsByPickrate[hero]))
         {
             unknownSecretPlayedAddOption(code, inArena, activeSecret,
                                          (cardsPickratesMap == nullptr) ? "-" :

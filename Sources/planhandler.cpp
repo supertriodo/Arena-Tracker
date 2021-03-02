@@ -164,7 +164,8 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
     emit checkCardImage(code, false);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addMinionTagChange(tagChange, minion);
     }
@@ -248,7 +249,8 @@ void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int po
     emit checkCardImage(code, false);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addMinionTagChange(tagChange, minion);
     }
@@ -472,7 +474,8 @@ void PlanHandler::addHero(bool friendly, QString code, int id)
     else                            emit checkCardImage("HERO_" + code, true);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addHeroTagChange(tagChange);
     }
@@ -1154,7 +1157,8 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     if(heroLast != nullptr)    addAddonToLastTurn(code, id, heroLast->getId(), Addon::AddonNeutral);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addWeaponTagChange(tagChange);
     }
@@ -1259,7 +1263,8 @@ void PlanHandler::addHeroPower(bool friendly, QString code, int id)
     emit checkCardImage(code, false);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addHeroPowerTagChange(tagChange);
     }
@@ -1378,7 +1383,8 @@ void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == nullptr) return;
     DeckCard deckCard(code);
-    nowBoard->playerHero->addSecret(id, deckCard.getCardClass()[0]);
+    QList<CardClass> classList = deckCard.getCardClass();
+    nowBoard->playerHero->addSecret(id, classList.first());
 }
 
 
@@ -1530,7 +1536,8 @@ CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QS
     if(!createdByCode.isEmpty())    emit checkCardImage(createdByCode, false);
 
     //Pending Tag Changes
-    for(const TagChange &tagChange: pendingTagChanges.values(id))
+    const QList<TagChange> tagChangeList = pendingTagChanges.values(id);
+    for(const TagChange &tagChange: tagChangeList)
     {
         addCardTagChange(tagChange, card);
     }
@@ -1787,10 +1794,10 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     {
         this->firstStoredTurn = numTurn;
 
-        if(numTurn > 5 && nowBoard->playerHero->getResources() == 1)
+        if(numTurn > 5 && nowBoard->playerHero != nullptr && nowBoard->playerHero->getResources() == 1)
         {
-            nowBoard->playerHero->setResources(10);
-            nowBoard->enemyHero->setResources(10);
+            if(nowBoard->playerHero != nullptr) nowBoard->playerHero->setResources(10);
+            if(nowBoard->enemyHero != nullptr)  nowBoard->enemyHero->setResources(10);
         }
     }
     pendingTagChanges.clear();
@@ -1963,8 +1970,8 @@ void PlanHandler::redrawDownloadedCardImage(QString code)
 void PlanHandler::createFutureBoard()
 {
     futureBoard = copyBoard(nowBoard, 0, true);
-    futureBoard->playerHero->setShowAllInfo();
-    futureBoard->enemyHero->setShowAllInfo();
+    if(futureBoard->playerHero != nullptr)  futureBoard->playerHero->setShowAllInfo();
+    if(futureBoard->enemyHero != nullptr)   futureBoard->enemyHero->setShowAllInfo();
     viewBoard = futureBoard;
     loadViewBoard();
     ui->planButtonLast->setIcon(QIcon(ThemeHandler::buttonPlanRefreshFile()));
@@ -2741,7 +2748,8 @@ DeadProbs PlanHandler::bombDeads(QList<int> targets, bool playerIn, bool onlyMin
     QList<float> &deadProbs = dp.dp;
     for(int i=0; i<targets.count(); i++)    deadProbs.append(0);
 
-    foreach(QString state, states.keys())
+    const QList<QString> stateList = states.keys();
+    for(const QString &state: stateList)
     {
         float prob = states[state];
         QList<int> targets = decodeBombState(state);
@@ -2761,7 +2769,8 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int miss
 {
     QMap<QString, float> newStates;
 
-    foreach(QString oldState, oldStates.keys())
+    const QList<QString> oldStateList = oldStates.keys();
+    for(const QString &oldState: oldStateList)
     {
         float oldProb = oldStates[oldState];
         QList<int> oldTargets = decodeBombState(oldState);
@@ -2802,7 +2811,7 @@ QMap<QString, float> PlanHandler::bomb(QMap<QString, float> &oldStates, int miss
 QList<int> PlanHandler::decodeBombState(QString state)
 {
     QList<int> targets;
-    foreach(QString targetString, state.split(":"))  targets.append(targetString.toInt());
+    for(const QString &targetString: (const QStringList)state.split(":"))  targets.append(targetString.toInt());
     return targets;
 }
 
@@ -2978,7 +2987,7 @@ QJsonArray PlanHandler::getJsonCardHistory()
 {
     QJsonArray cardHistory;
 
-    for(const Board *board: turnBoards)
+    for(const Board *board: (const QList<Board *>)turnBoards)
     {
         QJsonObject item;
         item[ "turn" ] = (board->numTurn + 1)/2;

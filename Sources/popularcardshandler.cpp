@@ -186,7 +186,7 @@ void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cards
             }
             else
             {
-                for(const CardClass &cardClassItem: cardClass)
+                for(const CardClass &cardClassItem: qAsConst(cardClass))
                 {
                     if(cardClassItem<NUM_HEROS && cardsPickratesMap[cardClassItem][code]>=10)
                     {

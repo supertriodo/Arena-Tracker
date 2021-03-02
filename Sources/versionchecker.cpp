@@ -84,9 +84,9 @@ void VersionChecker::checkUpdate(QByteArray versionJson)
 {
     //Get latest version
     QJsonObject versionJsonObject = QJsonDocument::fromJson(versionJson).object();
-    QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
+    const QJsonArray versionArray = versionJsonObject.value("versionFree").toArray();
     QStringList allowedVersions;
-    for(QJsonValue value: versionArray)
+    for(const QJsonValue &value: versionArray)
     {
         allowedVersions.append(value.toString());
     }
