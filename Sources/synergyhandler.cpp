@@ -31,12 +31,12 @@ void SynergyHandler::createDraftItemCounters()
                                                       QPixmap(ThemeHandler::weaponsCounterFile()), 32, true, false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this, "Weapon");
 
-    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -56,12 +56,12 @@ void SynergyHandler::createDraftItemCounters()
     dropCounters[V_DROP4] = new DraftDropCounter(this, "4 Drop", "4 Cost", mechanicsLayout, 1, 2, TARGET_DROP_4,
                                                  QPixmap(ThemeHandler::drop4CounterFile()), 32, true, false);
 
-    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(dropCounters[V_DROP2], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(dropCounters[V_DROP3], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(dropCounters[V_DROP4], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(dropCounters[V_DROP2], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -108,22 +108,22 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_AOE] = new DraftItemCounter(this, "AOE", "AOE", mechanicsLayout, 3, 3,
                                                    QPixmap(ThemeHandler::aoeMechanicFile()), 32, true, false);
 
-    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(mechanicCounters[V_AOE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_TAUNT_ALL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_SURVIVABILITY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DISCOVER_DRAW], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_PING], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DAMAGE], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_DESTROY], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(mechanicCounters[V_REACH], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(mechanicCounters[V_AOE], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -294,7 +294,7 @@ bool SynergyHandler::initSynergyCodes()
     jsonFile.close();
     QJsonObject jsonObject = jsonDoc.object();
 
-    for(const QString &code: jsonObject.keys())
+    for(const QString &code: (const QStringList)jsonObject.keys())
     {
         if(jsonObject.value(code).isArray())
         {
@@ -311,7 +311,7 @@ bool SynergyHandler::initSynergyCodes()
 
     //Direct links
     QJsonObject dlObject = jsonObject.value("DIRECT_LINKS").toObject();
-    for(const QString &code: dlObject.keys())
+    for(const QString &code: (const QStringList)dlObject.keys())
     {
         if(dlObject.value(code).isArray())
         {
@@ -471,27 +471,35 @@ int SynergyHandler::getCounters(
     reachMap = mechanicCounters[V_REACH]->getCodeTagMap();
 
     discover = draw = toYourHand = 0;
-    QMap<QString, int> codeMap;
-    codeMap = mechanicCounters[V_DISCOVER]->getCodeMap();
-    for(const QString &code: codeMap.keys())
     {
-        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-        QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
-        discover += codeMap[code] * numDiscoverGen(code, mechanics, referencedTags);
+        QMap<QString, int> codeMap = mechanicCounters[V_DISCOVER]->getCodeMap();
+        const QList<QString> codeList = codeMap.keys();
+        for(const QString &code: codeList)
+        {
+            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+            QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
+            discover += codeMap[code] * numDiscoverGen(code, mechanics, referencedTags);
+        }
     }
-    codeMap = mechanicCounters[V_DRAW]->getCodeMap();
-    for(const QString &code: codeMap.keys())
     {
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        draw += codeMap[code] * numDrawGen(code, text);
+        QMap<QString, int> codeMap = mechanicCounters[V_DRAW]->getCodeMap();
+        const QList<QString> codeList = codeMap.keys();
+        for(const QString &code: codeList)
+        {
+            QString text = Utility::cardEnTextFromCode(code).toLower();
+            draw += codeMap[code] * numDrawGen(code, text);
+        }
     }
-    codeMap = mechanicCounters[V_TOYOURHAND]->getCodeMap();
-    for(const QString &code: codeMap.keys())
     {
-        QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
-        QString text = Utility::cardEnTextFromCode(code).toLower();
-        int cost = Utility::getCardAttribute(code, "cost").toInt();
-        toYourHand += codeMap[code] * numToYourHandGen(code, cost, mechanics, text);
+        QMap<QString, int> codeMap = mechanicCounters[V_TOYOURHAND]->getCodeMap();
+        const QList<QString> codeList = codeMap.keys();
+        for(const QString &code: codeList)
+        {
+            QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
+            QString text = Utility::cardEnTextFromCode(code).toLower();
+            int cost = Utility::getCardAttribute(code, "cost").toInt();
+            toYourHand += codeMap[code] * numToYourHandGen(code, cost, mechanics, text);
+        }
     }
 
     return manaCounter->count();
@@ -997,7 +1005,7 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 //    }
 
     //Synergies
-    QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
+    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
     for(const StatSyn &statSyn: statSyns)
     {
         switch(statSyn.cardType)
@@ -1439,9 +1447,9 @@ void SynergyHandler::getDirectLinkSynergies(DeckCard &deckCard, QMap<QString,int
 
     if(directLinks.contains(code))
     {
-        QList<QString> linkCodes = directLinks[code];
+        const QList<QString> linkCodes = directLinks[code];
 
-        for(QString linkCode: linkCodes)
+        for(const QString &linkCode: linkCodes)
         {
             if(cardTypeCounters[V_MINION]->insertCode(linkCode, synergies)){}
             else if(cardTypeCounters[V_WEAPON]->insertCode(linkCode, synergies)){}
@@ -1481,7 +1489,7 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QM
 //    }
 
     //Synergies
-    QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
+    const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
     for(const StatSyn &statSyn: statSyns)
     {
         switch(statSyn.cardType)
@@ -1589,7 +1597,7 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
 
 bool SynergyHandler::containsAll(const QString &text, const QString &words)
 {
-    for(const QString &word: words.split(" "))
+    for(const QString &word: (const QStringList)words.split(" "))
     {
         if(word == "/")
         {
@@ -1608,9 +1616,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: Utility::getSetCodes("DARKMOON_FAIRE", true, true))
-//    for(const QString &code: Utility::getStandardCodes())
-    for(const QString &code: Utility::getWildCodes())
+//    for(const QString &code: (const QStringList)Utility::getSetCodes("DARKMOON_FAIRE", true, true))
+//    for(const QString &code: (const QStringList)Utility::getStandardCodes())
+    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1676,7 +1684,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
     bool needSynergyClear = initSynergyCodes();
 
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
-    for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
+    for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, onlyCollectible))
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1686,7 +1694,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
 
     qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
-    for(const QString &code: Utility::getSetCodes(set, true, onlyCollectible))
+    for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, onlyCollectible))
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1710,7 +1718,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 {
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
-    for(const QString &code: Utility::getWildCodes())
+    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(!synergyCodes.contains(code))
         {
@@ -1722,7 +1730,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         else
         {
             QStringList invalidMecs;
-            for(const QString &mechanic: synergyCodes[code])
+            for(const QString &mechanic: (const QStringList)synergyCodes[code])
             {
                 if(!isValidSynergyCode(mechanic))   invalidMecs.append(mechanic);
             }
@@ -1951,7 +1959,7 @@ int SynergyHandler::numDiscoverGen(const QString &code, const QJsonArray &mechan
     //&& text.contains("discover")
     if(synergyCodes.contains(code))
     {
-        for(QString mechanic: synergyCodes[code])
+        for(QString mechanic: (const QStringList)synergyCodes[code])
         {
             if(mechanic.startsWith("discover"))
             {
@@ -1978,7 +1986,7 @@ int SynergyHandler::numDrawGen(const QString &code, const QString &text)
     //&& text.contains("draw")
     if(synergyCodes.contains(code))
     {
-        for(QString mechanic: synergyCodes[code])
+        for(QString mechanic: (const QStringList)synergyCodes[code])
         {
             if(mechanic.startsWith("drawGen"))
             {
@@ -2005,7 +2013,7 @@ int SynergyHandler::numToYourHandGen(const QString &code, int cost, const QJsonA
     //&& (text.contains("to") && text.contains("your") && text.contains("hand"))
     if(synergyCodes.contains(code))
     {
-        for(QString mechanic: synergyCodes[code])
+        for(QString mechanic: (const QStringList)synergyCodes[code])
         {
             if(mechanic.startsWith("toYourHandGen"))
             {
@@ -3895,6 +3903,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FLESH_GIANT)         return 6;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 9;
+    if(code == LIVING_MANA)         return 10;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
