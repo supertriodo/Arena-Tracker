@@ -46,7 +46,8 @@ void HSCardDownloader::downloadWebImage(DownloadingCard downCard, bool force)
 void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, bool fromHearthsim)
 {
     //Already downloading
-    foreach(DownloadingCard downCard, gettingWebCards.values())
+    const QList<DownloadingCard> downCardList = gettingWebCards.values();
+    for(const DownloadingCard &downCard: downCardList)
     {
         if(downCard.code == code && downCard.isHero == isHero)
         {

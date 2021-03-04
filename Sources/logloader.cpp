@@ -54,8 +54,8 @@ void LogLoader::createLogWorker(QString logComponent)
     {
         connect(logWorker, SIGNAL(logReset()),
                 this, SIGNAL(logReset()));
-        connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
-                this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+        connect(logWorker, SIGNAL(newLogLineRead(LogComponent,QString,qint64,qint64)),
+                this, SLOT(emitNewLogLineRead(LogComponent,QString,qint64,qint64)));
     }
 
     logWorkerMap[logComponent] = logWorker;
@@ -99,10 +99,10 @@ bool LogLoader::readLogsDirPath()
 
         if(!initPath.isEmpty())
         {
-            if(QFileInfo (initPath).exists())
+            if(QFileInfo::exists(initPath))
             {
                 logsDirPath = initPath + "/Logs";
-                if(!QFileInfo (logsDirPath).exists())
+                if(!QFileInfo::exists(logsDirPath))
                 {
                     QDir().mkdir(logsDirPath);
                     emit pDebug(logsDirPath + " created.");
@@ -124,7 +124,7 @@ bool LogLoader::readLogsDirPath()
     emit pDebug("Path Logs Dir: " + logsDirPath + " - " + QString::number(logsDirPath.length()));
     emit pLog("Settings: Path Logs Dir: " + logsDirPath);
 
-    if(!QFileInfo(logsDirPath).exists())
+    if(!QFileInfo::exists(logsDirPath))
     {
         settings.setValue("logsDirPath", "");
         emit pDebug("Logs dir not found.");
@@ -170,7 +170,7 @@ bool LogLoader::readLogConfigPath()
     emit pDebug("Path log.config: " + logConfig + " - " + QString::number(logConfig.length()));
     emit pLog(tr("Settings: Path log.config: ") + logConfig);
 
-    if(!QFileInfo(logConfig).exists())
+    if(!QFileInfo::exists(logConfig))
     {
         settings.setValue("logConfig", "");
         emit pDebug("log.config not found.");
@@ -273,7 +273,8 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
 
 LogLoader::~LogLoader()
 {
-    foreach(LogWorker *worker, logWorkerMap.values())   delete worker;
+    const QList<LogWorker *> workerList = logWorkerMap.values();
+    for(const LogWorker *worker: workerList)   delete worker;
     logWorkerMap.clear();
     delete match;
 }
@@ -288,8 +289,8 @@ void LogLoader::sendLogWorkerFirstRun()
 
         if(logComponent != "LoadingScreen")
         {
-            connect(logWorker, SIGNAL(newLogLineRead(LogComponent, QString, qint64, qint64)),
-                    this, SLOT(emitNewLogLineRead(LogComponent, QString, qint64, qint64)));
+            connect(logWorker, SIGNAL(newLogLineRead(LogComponent,QString,qint64,qint64)),
+                    this, SLOT(emitNewLogLineRead(LogComponent,QString,qint64,qint64)));
         }
     }
 

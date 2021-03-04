@@ -1454,6 +1454,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit enemyMinionPosChange(id.toInt(), zonePosInt);
             }
         }
+        Q_UNUSED(name);
     }
 }
 

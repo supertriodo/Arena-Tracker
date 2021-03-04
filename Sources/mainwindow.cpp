@@ -197,8 +197,8 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
 
     connect(ui->minimizeButton, SIGNAL(clicked()),
             detachWindow, SLOT(showMinimized()));
-    connect(detachWindow, SIGNAL(closed(DetachWindow *, QWidget *)),
-            this, SLOT(closedDetachWindow(DetachWindow *, QWidget *)));
+    connect(detachWindow, SIGNAL(closed(DetachWindow*,QWidget*)),
+            this, SLOT(closedDetachWindow(DetachWindow*,QWidget*)));
     connect(detachWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
     connect(detachWindow, SIGNAL(pLog(QString)),
@@ -266,7 +266,7 @@ QString MainWindow::getHSLanguage()
             lang = "enUS";
             break;
         case 1:
-            foreach(QString file, dir.entryList())
+            for(const QString &file: (const QStringList)dir.entryList())
             {
                 lang = file.mid(5,4);
             }
@@ -276,7 +276,7 @@ QString MainWindow::getHSLanguage()
             lang = files.takeFirst().mid(5,4);
 
             //Remove old languages files
-            foreach(QString file, files)
+            for(const QString &file: qAsConst(files))
             {
                 dir.remove(file);
                 pDebug(file + " removed.");
@@ -328,11 +328,11 @@ QString MainWindow::getHSLanguage()
 
 void MainWindow::createCardsJsonMap(QByteArray &jsonData)
 {
-    emit pDebug("Create Json Map.");
+    pDebug("Create Json Map.");
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-    QJsonArray jsonArray = jsonDoc.array();
-    foreach(QJsonValue jsonCard, jsonArray)
+    const QJsonArray jsonArray = jsonDoc.array();
+    for(const QJsonValue &jsonCard: jsonArray)
     {
         QJsonObject jsonCardObject = jsonCard.toObject();
         cardsJson[jsonCardObject.value("id").toString()] = jsonCardObject;
@@ -353,16 +353,16 @@ void MainWindow::replyFinished(QNetworkReply *reply)
 
     if(reply->error() != QNetworkReply::NoError)
     {
-        emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
+        pDebug(reply->url().toString() + " --> Failed. Retrying...");
 
         if(fullUrl == HSR_CARDS_PATCH)
         {
-            emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_EXP));
+            pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_EXP));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP)));
         }
         else if(fullUrl == HSR_CARDS_EXP)
         {
-            emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
+            pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
         }
         else
@@ -381,7 +381,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             }
             else
             {
-                emit pDebug("Extra: Json Cards --> Download Success.");
+                pDebug("Extra: Json Cards --> Download Success.");
                 QSettings settings("Arena Tracker", "Arena Tracker");
                 settings.setValue("cardsJsonVersion", fullUrl);
                 QByteArray jsonData = reply->readAll();
@@ -392,13 +392,13 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         //HSR Heroes Winrate
         else if(fullUrl == HSR_HEROES_WINRATE)
         {
-            emit pDebug("Extra: Heroes winrate --> Download Success.");
+            pDebug("Extra: Heroes winrate --> Download Success.");
             processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
         }
         //HSR Cards Pickrate/Winrate
         else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_EXP || fullUrl == HSR_CARDS_14DAYS)
         {
-            emit pDebug("Extra: HSR cards --> Download Success from: " + fullUrl);
+            pDebug("Extra: HSR cards --> Download Success from: " + fullUrl);
             startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
         }
 #ifdef QT_DEBUG
@@ -424,7 +424,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         //HearthArena json
         else if(endUrl == "hearthArena.json")
         {
-            emit pDebug("Extra: Json HearthArena --> Download Success.");
+            pDebug("Extra: Json HearthArena --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/hearthArena.json");
         }
@@ -437,7 +437,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         //Synergies json
         else if(endUrl == "synergies.json")
         {
-            emit pDebug("Extra: Json synergies --> Download Success.");
+            pDebug("Extra: Json synergies --> Download Success.");
             QByteArray jsonData = reply->readAll();
             Utility::dumpOnFile(jsonData, Utility::extraPath() + "/synergies.json");
         }
@@ -445,7 +445,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else if(endUrl == "Themes.json")
         {
             QJsonObject jsonObject = QJsonDocument::fromJson(reply->readAll()).object();
-            for(const QString &key: jsonObject.keys())
+            for(const QString &key: (const QStringList)jsonObject.keys())
             {
                 downloadTheme(key, jsonObject.value(key).toInt());
             }
@@ -491,19 +491,19 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString storedCardsJsonVersion = settings.value("cardsJsonVersion", "").toString();
     QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
-    emit pDebug("Extra: Json Cards --> Latest version: " + cardsJsonVersion);
-    emit pDebug("Extra: Json Cards --> Stored version: " + storedCardsJsonVersion);
+    pDebug("Extra: Json Cards --> Latest version: " + cardsJsonVersion);
+    pDebug("Extra: Json Cards --> Stored version: " + storedCardsJsonVersion);
 
     //Need download
     if(cardsJsonVersion != storedCardsJsonVersion || !cardsJsonFile.exists())
     {
-        emit pDebug("Extra: Json Cards --> Download from: " + cardsJsonVersion);
+        pDebug("Extra: Json Cards --> Download from: " + cardsJsonVersion);
         networkManager->get(QNetworkRequest(QUrl(cardsJsonVersion)));
     }
     //No download
     else
     {
-        emit pDebug("Extra: Json Cards --> Use local cards.json");
+        pDebug("Extra: Json Cards --> Use local cards.json");
     }
 }
 
@@ -519,7 +519,7 @@ void MainWindow::initCardsJson()
 {
     Utility::setCardsJson(&cardsJson);
     networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
-    emit pDebug("Extra: Json Cards --> Trying: " + QString(JSON_CARDS_URL));
+    pDebug("Extra: Json Cards --> Trying: " + QString(JSON_CARDS_URL));
 
     //Load local cards.json (Incluso aunque haya una version nueva para bajar)
     QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
@@ -527,7 +527,7 @@ void MainWindow::initCardsJson()
     {
         if(!cardsJsonFile.open(QIODevice::ReadOnly))
         {
-            emit pDebug("ERROR: Failed to open cards.json");
+            pDebug("ERROR: Failed to open cards.json");
             return;
         }
         QByteArray jsonData = cardsJsonFile.readAll();
@@ -539,7 +539,7 @@ void MainWindow::initCardsJson()
 
 void MainWindow::downloadHSRHeroesWinrate()
 {
-    emit pDebug("Extra: Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
+    pDebug("Extra: Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
     networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
 }
 
@@ -551,9 +551,9 @@ void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
     QMap<QString, float> heroWinratesMap;
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
-    for(const QString &key: data.keys())
+    for(const QString &key: (const QStringList)data.keys())
     {
-        for(const QJsonValue gameWinrate: data.value(key).toArray())
+        for(const QJsonValue &gameWinrate: (const QJsonArray)data.value(key).toArray())
         {
             QJsonObject gameWinrateObject = gameWinrate.toObject();
             if(gameWinrateObject.value("game_type").toInt() == 3)
@@ -569,7 +569,7 @@ void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 
 void MainWindow::processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap, bool trunk)
 {
-    for(const QJsonValue card: jsonArray)
+    for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
         QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
@@ -582,7 +582,7 @@ void MainWindow::processHSRCardClassDouble(const QJsonArray &jsonArray, const QS
 
 void MainWindow::processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap)
 {
-    for(const QJsonValue card: jsonArray)
+    for(const QJsonValue &card: jsonArray)
     {
         QJsonObject cardObject = card.toObject();
         QString code = Utility::getCodeFromCardAttribute("dbfId", cardObject.value("dbf_id"));
@@ -670,10 +670,10 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
 
 void MainWindow::downloadHSRCards()
 {
-    connect(&futureProcessHSRCardsPickrates, &QFutureWatcher<QMap<QString, float> *>::finished,
+    connect(&futureProcessHSRCardsPickrates, &QFutureWatcher<QMap<QString, float> *>::finished, secretsHandler,
         [this]()
         {
-            emit pDebug("Extra: HSR cards (Pickrates) --> Thread end.");
+            pDebug("Extra: HSR cards (Pickrates) --> Thread end.");
 
             this->cardsPickratesMap = futureProcessHSRCardsPickrates.result();
             secretsHandler->setCardsPickratesMap(cardsPickratesMap);
@@ -683,33 +683,33 @@ void MainWindow::downloadHSRCards()
         }
     );
 
-    connect(&futureProcessHSRCardsIncludedWinrates, &QFutureWatcher<QMap<QString, float> *>::finished,
+    connect(&futureProcessHSRCardsIncludedWinrates, &QFutureWatcher<QMap<QString, float> *>::finished, draftHandler,
         [this]()
         {
-            emit pDebug("Extra: HSR cards (IncludedWinrate) --> Thread end.");
+            pDebug("Extra: HSR cards (IncludedWinrate) --> Thread end.");
             this->cardsIncludedWinratesMap = futureProcessHSRCardsIncludedWinrates.result();
             draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
         }
     );
 
-    connect(&futureProcessHSRCardsIncludedDecks, &QFutureWatcher<QMap<QString, int> *>::finished,
+    connect(&futureProcessHSRCardsIncludedDecks, &QFutureWatcher<QMap<QString, int> *>::finished, draftHandler,
         [this]()
         {
-            emit pDebug("Extra: HSR cards (TimesPlayed) --> Thread end.");
+            pDebug("Extra: HSR cards (TimesPlayed) --> Thread end.");
             this->cardsIncludedDecksMap = futureProcessHSRCardsIncludedDecks.result();
             draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
         }
     );
 
-    connect(&futureProcessHSRCardsPlayedWinrates, &QFutureWatcher<QMap<QString, float> *>::finished,
+    connect(&futureProcessHSRCardsPlayedWinrates, &QFutureWatcher<QMap<QString, float> *>::finished, draftHandler,
         [this]()
         {
-            emit pDebug("Extra: HSR cards (PlayedWinrate) --> Thread end.");
+            pDebug("Extra: HSR cards (PlayedWinrate) --> Thread end.");
             this->cardsPlayedWinratesMap = futureProcessHSRCardsPlayedWinrates.result();
             draftHandler->setCardsPlayedWinratesMap(cardsPlayedWinratesMap);
         }
     );
-    emit pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
+    pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
     networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
 }
 
@@ -742,7 +742,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
     int storedVersion = settings.value("arenaVersion", 0).toInt();
     if(version != storedVersion)    needProcess = true;
 
-    emit pDebug("Extra: Json Arena github: Local(" + QString::number(storedVersion) + ") - "
+    pDebug("Extra: Json Arena github: Local(" + QString::number(storedVersion) + ") - "
                         "Web(" + QString::number(version) + ")" + (!needProcess?" up-to-date":""));
 
     if(needProcess)
@@ -750,12 +750,12 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         bool multiclassArena = jsonObject.value("multiclassArena").toBool(false);
         if(draftHandler != nullptr) draftHandler->setMulticlassArena(multiclassArena);
         settings.setValue("multiclassArena", multiclassArena);
-        emit pDebug("CheckArenaVersion: multiclassArena: " + QString(multiclassArena?"true":"false"));
+        pDebug("CheckArenaVersion: multiclassArena: " + QString(multiclassArena?"true":"false"));
 
         bool redownloadCards = jsonObject.value("redownloadCards").toBool(false);
         bool redownloadHeroes = jsonObject.value("redownloadHeroes").toBool(false);
-        emit pDebug("CheckArenaVersion: redownloadCards: " + QString(redownloadCards?"true":"false"));
-        emit pDebug("CheckArenaVersion: redownloadHeroes: " + QString(redownloadHeroes?"true":"false"));
+        pDebug("CheckArenaVersion: redownloadCards: " + QString(redownloadCards?"true":"false"));
+        pDebug("CheckArenaVersion: redownloadHeroes: " + QString(redownloadHeroes?"true":"false"));
         if(redownloadCards)
         {
             removeHSCards(true);
@@ -793,7 +793,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         settings.setValue("arenaSets", arenaSets);
         if(secretsHandler != nullptr)   secretsHandler->setArenaSets(arenaSets);
         if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
-        emit pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
+        pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
 
         //Remove histograms
         removeHistograms();
@@ -804,7 +804,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
     }
     else
     {
-        emit pDebug("CheckArenaVersion: Unchanged arena sets: " +
+        pDebug("CheckArenaVersion: Unchanged arena sets: " +
                     settings.value("arenaSets", QStringList()).toStringList().join(" "));
     }
 
@@ -824,12 +824,12 @@ void MainWindow::createNetworkManager()
 void MainWindow::createVersionChecker()
 {
     VersionChecker *versionChecker = new VersionChecker(this);
-    connect(versionChecker, SIGNAL(startProgressBar(int, QString)),
-            this, SLOT(startProgressBar(int, QString)));
-    connect(versionChecker, SIGNAL(advanceProgressBar(int, QString)),
-            this, SLOT(advanceProgressBar(int, QString)));
-    connect(versionChecker, SIGNAL(showMessageProgressBar(QString, int)),
-            this, SLOT(showMessageProgressBar(QString, int)));
+    connect(versionChecker, SIGNAL(startProgressBar(int,QString)),
+            this, SLOT(startProgressBar(int,QString)));
+    connect(versionChecker, SIGNAL(advanceProgressBar(int,QString)),
+            this, SLOT(advanceProgressBar(int,QString)));
+    connect(versionChecker, SIGNAL(showMessageProgressBar(QString,int)),
+            this, SLOT(showMessageProgressBar(QString,int)));
     connect(versionChecker, SIGNAL(pLog(QString)),
             this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
@@ -872,10 +872,10 @@ void MainWindow::createPremiumHandler()
 void MainWindow::createTrackobotUploader()
 {
     trackobotUploader = new TrackobotUploader(this);
-    connect(trackobotUploader, SIGNAL(startProgressBar(int, QString)),
-            this, SLOT(startProgressBar(int, QString)));
-    connect(trackobotUploader, SIGNAL(advanceProgressBar(int, QString)),
-            this, SLOT(advanceProgressBar(int, QString)));
+    connect(trackobotUploader, SIGNAL(startProgressBar(int,QString)),
+            this, SLOT(startProgressBar(int,QString)));
+    connect(trackobotUploader, SIGNAL(advanceProgressBar(int,QString)),
+            this, SLOT(advanceProgressBar(int,QString)));
     connect(trackobotUploader, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(trackobotUploader, SIGNAL(pLog(QString)),
@@ -888,14 +888,14 @@ void MainWindow::createTrackobotUploader()
 void MainWindow::createDraftHandler()
 {
     draftHandler = new DraftHandler(this, ui, deckHandler, arenaHandler);
-    connect(draftHandler, SIGNAL(startProgressBar(int, QString)),
-            this, SLOT(startProgressBar(int, QString)));
-    connect(draftHandler, SIGNAL(advanceProgressBar(int, QString)),
-            this, SLOT(advanceProgressBar(int, QString)));
-    connect(draftHandler, SIGNAL(showMessageProgressBar(QString, int)),
-            this, SLOT(showMessageProgressBar(QString, int)));
-    connect(draftHandler, SIGNAL(checkCardImage(QString, bool)),
-            this, SLOT(checkCardImage(QString, bool)));
+    connect(draftHandler, SIGNAL(startProgressBar(int,QString)),
+            this, SLOT(startProgressBar(int,QString)));
+    connect(draftHandler, SIGNAL(advanceProgressBar(int,QString)),
+            this, SLOT(advanceProgressBar(int,QString)));
+    connect(draftHandler, SIGNAL(showMessageProgressBar(QString,int)),
+            this, SLOT(showMessageProgressBar(QString,int)));
+    connect(draftHandler, SIGNAL(checkCardImage(QString,bool)),
+            this, SLOT(checkCardImage(QString,bool)));
     connect(draftHandler, SIGNAL(showPremiumDialog()),
             this, SLOT(showPremiumDialog()));
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
@@ -996,10 +996,10 @@ void MainWindow::createRngCardHandler()
 void MainWindow::createArenaHandler()
 {
     arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
-    connect(arenaHandler, SIGNAL(startProgressBar(int, QString)),
-            this, SLOT(startProgressBar(int, QString)));
-    connect(arenaHandler, SIGNAL(advanceProgressBar(int, QString)),
-            this, SLOT(advanceProgressBar(int, QString)));
+    connect(arenaHandler, SIGNAL(startProgressBar(int,QString)),
+            this, SLOT(startProgressBar(int,QString)));
+    connect(arenaHandler, SIGNAL(advanceProgressBar(int,QString)),
+            this, SLOT(advanceProgressBar(int,QString)));
     connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
     connect(arenaHandler, SIGNAL(showPremiumDialog()),
@@ -1086,8 +1086,8 @@ void MainWindow::createEnemyHandHandler()
 void MainWindow::createPlanHandler()
 {
     planHandler = new PlanHandler(this, ui);
-    connect(planHandler, SIGNAL(checkCardImage(QString, bool)),
-            this, SLOT(checkCardImage(QString, bool)));
+    connect(planHandler, SIGNAL(checkCardImage(QString,bool)),
+            this, SLOT(checkCardImage(QString,bool)));
     connect(planHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
     connect(planHandler, SIGNAL(showPremiumDialog()),
@@ -1140,24 +1140,24 @@ void MainWindow::swapSizePlan(bool sizePlan)
 void MainWindow::createCardWindow()
 {
     cardWindow = new CardWindow(this);
-    connect(deckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(enemyDeckHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(graveyardHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(enemyHandHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(secretsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(popularCardsHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(drawCardHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
-    connect(draftHandler, SIGNAL(overlayCardEntered(QString, QRect, int, int, bool)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int, bool)));
-    connect(planHandler, SIGNAL(cardEntered(QString, QRect, int, int)),
-            cardWindow, SLOT(loadCard(QString, QRect, int, int)));
+    connect(deckHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(enemyDeckHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(graveyardHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(enemyHandHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(secretsHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(popularCardsHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(drawCardHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
+    connect(draftHandler, SIGNAL(overlayCardEntered(QString,QRect,int,int,bool)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int,bool)));
+    connect(planHandler, SIGNAL(cardEntered(QString,QRect,int,int)),
+            cardWindow, SLOT(loadCard(QString,QRect,int,int)));
 
     connect(planHandler, SIGNAL(cardLeave()),
             cardWindow, SLOT(hide()));
@@ -1236,8 +1236,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult, LoadingScreenState, QString, qint64)),
-            arenaHandler, SLOT(newGameResult(GameResult, LoadingScreenState, QString, qint64)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult,LoadingScreenState,QString,qint64)),
+            arenaHandler, SLOT(newGameResult(GameResult,LoadingScreenState,QString,qint64)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     //Rewards input disabled with track-o-bot stats
@@ -1246,10 +1246,10 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int)),
-            deckHandler, SLOT(playerCardDraw(QString, int)));
-    connect(gameWatcher, SIGNAL(playerReturnToDeck(QString, int)),
-            deckHandler, SLOT(returnToDeck(QString, int)));
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString,int)),
+            deckHandler, SLOT(playerCardDraw(QString,int)));
+    connect(gameWatcher, SIGNAL(playerReturnToDeck(QString,int)),
+            deckHandler, SLOT(returnToDeck(QString,int)));
     connect(gameWatcher, SIGNAL(startGame()),
             deckHandler, SLOT(lockDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -1258,17 +1258,17 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             deckHandler, SLOT(leaveArena()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
-            deckHandler, SLOT(setLastCreatedByCode(QString, QString)));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
+            deckHandler, SLOT(setLastCreatedByCode(QString,QString)));
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             deckHandler, SLOT(setFirstOutsiderId(int)));
 
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             enemyDeckHandler, SLOT(enemyCardPlayed(int,QString)));
-    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
-            enemyDeckHandler, SLOT(enemySecretRevealed(int, QString)));
-    connect(gameWatcher, SIGNAL(enemyKnownCardDraw(int, QString)),
-            enemyDeckHandler, SLOT(enemyKnownCardDraw(int, QString)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
+            enemyDeckHandler, SLOT(enemySecretRevealed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemyKnownCardDraw(int,QString)),
+            enemyDeckHandler, SLOT(enemyKnownCardDraw(int,QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyDeckHandler, SLOT(lockEnemyDeckInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -1278,8 +1278,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
 
-//    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
-//            graveyardHandler, SLOT(enemySecretRevealed(int, QString)));
+//    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
+//            graveyardHandler, SLOT(enemySecretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerMinionGraveyard(int,QString)),
             graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
@@ -1299,7 +1299,7 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(hideEnemyCardPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(lastHandCardIsCoin()),
             enemyHandHandler, SLOT(lastHandCardIsCoin()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(buffHandCard(int)),
             enemyHandHandler, SLOT(buffHandCard(int)));
@@ -1324,10 +1324,10 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerHeroPowerZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(enemyHeroPowerZonePlayAdd(QString,int)),
             planHandler, SLOT(enemyHeroPowerZonePlayAdd(QString,int)));
-    connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString, int)),
-            planHandler, SLOT(playerWeaponZonePlayAdd(QString, int)));
-    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString, int)),
-            planHandler, SLOT(enemyWeaponZonePlayAdd(QString, int)));
+    connect(gameWatcher, SIGNAL(playerWeaponZonePlayAdd(QString,int)),
+            planHandler, SLOT(playerWeaponZonePlayAdd(QString,int)));
+    connect(gameWatcher, SIGNAL(enemyWeaponZonePlayAdd(QString,int)),
+            planHandler, SLOT(enemyWeaponZonePlayAdd(QString,int)));
     connect(gameWatcher, SIGNAL(playerWeaponZonePlayRemove(int)),
             planHandler, SLOT(playerWeaponZonePlayRemove(int)));
     connect(gameWatcher, SIGNAL(enemyWeaponZonePlayRemove(int)),
@@ -1354,8 +1354,8 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerTagChange(QString,QString)));
     connect(gameWatcher, SIGNAL(enemyTagChange(QString,QString)),
             planHandler, SLOT(enemyTagChange(QString,QString)));
-    connect(gameWatcher, SIGNAL(zonePlayAttack(QString, int,int)),
-            planHandler, SLOT(zonePlayAttack(QString, int,int)));
+    connect(gameWatcher, SIGNAL(zonePlayAttack(QString,int,int)),
+            planHandler, SLOT(zonePlayAttack(QString,int,int)));
     connect(gameWatcher, SIGNAL(playerSecretPlayed(int,QString)),
             planHandler, SLOT(playerSecretPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass,LoadingScreenState)),
@@ -1378,12 +1378,12 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerCardCodeChange(int,QString)));
     connect(gameWatcher, SIGNAL(minionCodeChange(bool,int,QString)),
             planHandler, SLOT(minionCodeChange(bool,int,QString)));
-    connect(gameWatcher, SIGNAL(newTurn(bool, int)),
-            planHandler, SLOT(newTurn(bool, int)));
+    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
+            planHandler, SLOT(newTurn(bool,int)));
     connect(gameWatcher, SIGNAL(logTurn()),
             planHandler, SLOT(resetLastPowerAddon()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int, int)),
-            planHandler, SLOT(setLastTriggerId(QString,QString,int, int)));
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
+            planHandler, SLOT(setLastTriggerId(QString,QString,int,int)));
     connect(gameWatcher, SIGNAL(playerCardObjPlayed(QString,int,int)),
             planHandler, SLOT(playerCardObjPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyCardObjPlayed(QString,int,int)),
@@ -1396,14 +1396,14 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             secretsHandler, SLOT(resetSecretsInterface()));
-    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass, LoadingScreenState)),
-            secretsHandler, SLOT(secretPlayed(int,CardClass, LoadingScreenState)));
+    connect(gameWatcher, SIGNAL(enemySecretPlayed(int,CardClass,LoadingScreenState)),
+            secretsHandler, SLOT(secretPlayed(int,CardClass,LoadingScreenState)));
     connect(gameWatcher, SIGNAL(enemySecretStolen(int,QString,LoadingScreenState)),
             secretsHandler, SLOT(secretStolen(int,QString,LoadingScreenState)));
-    connect(gameWatcher, SIGNAL(enemySecretRevealed(int, QString)),
-            secretsHandler, SLOT(secretRevealed(int, QString)));
-    connect(gameWatcher, SIGNAL(playerSecretStolen(int, QString)),
-            secretsHandler, SLOT(secretRevealed(int, QString)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
+            secretsHandler, SLOT(secretRevealed(int,QString)));
+    connect(gameWatcher, SIGNAL(playerSecretStolen(int,QString)),
+            secretsHandler, SLOT(secretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed(QString)),
             secretsHandler, SLOT(playerSpellPlayed(QString)));
     connect(gameWatcher, SIGNAL(playerSpellObjMinionPlayed()),
@@ -1412,8 +1412,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerSpellObjHeroPlayed()));
     connect(gameWatcher, SIGNAL(playerBattlecryObjHeroPlayed()),
             secretsHandler, SLOT(playerBattlecryObjHeroPlayed()));
-    connect(gameWatcher, SIGNAL(playerMinionPlayed(QString, int, int)),
-            secretsHandler, SLOT(playerMinionPlayed(QString, int, int)));
+    connect(gameWatcher, SIGNAL(playerMinionPlayed(QString,int,int)),
+            secretsHandler, SLOT(playerMinionPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
             secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool)));
     connect(gameWatcher, SIGNAL(avengeTested()),
@@ -1428,11 +1428,11 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerAttack(bool,bool,int,int,int)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
-    connect(gameWatcher, SIGNAL(specialCardTrigger(QString, QString, int, int)),
-            secretsHandler, SLOT(resetLastMinionDead(QString, QString)));
-    connect(gameWatcher, SIGNAL(newTurn(bool, int)),
+    connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
+            secretsHandler, SLOT(resetLastMinionDead(QString,QString)));
+    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
             secretsHandler, SLOT(newTurn(bool)));
-    connect(gameWatcher, SIGNAL(playerCardDraw(QString, int)),
+    connect(gameWatcher, SIGNAL(playerCardDraw(QString,int)),
             secretsHandler, SLOT(playerCardDraw()));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -1490,8 +1490,8 @@ void MainWindow::createLogLoader()
     logLoader = new LogLoader(this);
     connect(logLoader, SIGNAL(logReset()),
             this, SLOT(logReset()));
-    connect(logLoader, SIGNAL(newLogLineRead(LogComponent, QString,qint64,qint64)),
-            gameWatcher, SLOT(processLogLine(LogComponent, QString,qint64,qint64)));
+    connect(logLoader, SIGNAL(newLogLineRead(LogComponent,QString,qint64,qint64)),
+            gameWatcher, SLOT(processLogLine(LogComponent,QString,qint64,qint64)));
     connect(logLoader, SIGNAL(logConfigSet()),
             this, SLOT(setLocalLang()));
     connect(logLoader, SIGNAL(showMessageProgressBar(QString)),
@@ -2766,7 +2766,7 @@ void MainWindow::downloadHearthArenaJson(int version)
     if(!fileInfo.exists())          needDownload = true;
     if(version != storedVersion)    needDownload = true;
 
-    emit pDebug("Extra: Json HearthArena: Local(" + QString::number(storedVersion) + ") - "
+    pDebug("Extra: Json HearthArena: Local(" + QString::number(storedVersion) + ") - "
                         "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
 
     if(needDownload)
@@ -2775,12 +2775,12 @@ void MainWindow::downloadHearthArenaJson(int version)
         {
             QFile file(Utility::extraPath() + "/hearthArena.json");
             file.remove();
-            emit pDebug("Extra: Json HearthArena removed.");
+            pDebug("Extra: Json HearthArena removed.");
         }
 
         settings.setValue("haVersion", version);
         networkManager->get(QNetworkRequest(QUrl(HA_URL + QString("/hearthArena.json"))));
-        emit pDebug("Extra: Json HearthArena --> Download from: " + QString(HA_URL) + QString("/hearthArena.json"));
+        pDebug("Extra: Json HearthArena --> Download from: " + QString(HA_URL) + QString("/hearthArena.json"));
     }
 }
 
@@ -2801,7 +2801,7 @@ void MainWindow::downloadSynergiesJson(int version)
     if(!fileInfo.exists())          needDownload = true;
     if(version != storedVersion)    needDownload = true;
 
-    emit pDebug("Extra: Json Synergies: Local(" + QString::number(storedVersion) + ") - "
+    pDebug("Extra: Json Synergies: Local(" + QString::number(storedVersion) + ") - "
                         "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
 
     if(needDownload)
@@ -2810,12 +2810,12 @@ void MainWindow::downloadSynergiesJson(int version)
         {
             QFile file(Utility::extraPath() + "/synergies.json");
             file.remove();
-            emit pDebug("Extra: Json Synergies removed.");
+            pDebug("Extra: Json Synergies removed.");
         }
 
         settings.setValue("synergiesVersion", version);
         networkManager->get(QNetworkRequest(QUrl(SYNERGIES_URL + QString("/synergies.json"))));
-        emit pDebug("Extra: Json Synergies --> Download from: " + QString(SYNERGIES_URL) + QString("/synergies.json"));
+        pDebug("Extra: Json Synergies --> Download from: " + QString(SYNERGIES_URL) + QString("/synergies.json"));
     }
 }
 
@@ -2836,7 +2836,7 @@ void MainWindow::downloadTheme(QString theme, int version)
     if(!dirInfo.exists())           needDownload = true;
     if(version != storedVersion)    needDownload = true;
 
-    emit pDebug("Themes: " + theme + ": Local(" + QString::number(storedVersion) + ") - "
+    pDebug("Themes: " + theme + ": Local(" + QString::number(storedVersion) + ") - "
                         "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
 
     if(needDownload)
@@ -2845,12 +2845,12 @@ void MainWindow::downloadTheme(QString theme, int version)
         {
             QDir dir(Utility::themesPath() + "/" + theme);
             dir.removeRecursively();
-            emit pDebug("Themes: " + Utility::themesPath() + "/" + theme + " removed.");
+            pDebug("Themes: " + Utility::themesPath() + "/" + theme + " removed.");
         }
 
         settings.setValue(theme + "Theme", version);
         networkManager->get(QNetworkRequest(QUrl(QString(THEMES_URL) + "/" + theme + ".zip")));
-        emit pDebug("Themes: " + theme + ".zip --> Download from: " + THEMES_URL);
+        pDebug("Themes: " + theme + ".zip --> Download from: " + THEMES_URL);
     }
 }
 
@@ -2864,7 +2864,7 @@ void MainWindow::removeHSCards(bool forceRemove)
     {
         QDir cardsDir = QDir(Utility::hscardsPath());
         cardsDir.removeRecursively();
-        emit pDebug(Utility::hscardsPath() + " removed.");
+        pDebug(Utility::hscardsPath() + " removed.");
     }
 }
 
@@ -2878,7 +2878,7 @@ void MainWindow::removeExtra()
     {
         QDir extraDir = QDir(Utility::extraPath());
         extraDir.removeRecursively();
-        emit pDebug(Utility::extraPath() + " removed.");
+        pDebug(Utility::extraPath() + " removed.");
     }
 }
 
@@ -2887,7 +2887,7 @@ void MainWindow::removeHistograms()
 {
     QDir dir = QDir(Utility::histogramsPath());
     dir.removeRecursively();
-    emit pDebug(Utility::histogramsPath() + " removed.");
+    pDebug(Utility::histogramsPath() + " removed.");
 }
 
 
@@ -2949,8 +2949,8 @@ void MainWindow::createLinuxShortcut()
     if(shortcutFile.exists())   shortcutFile.remove();
     if(!shortcutFile.open(QIODevice::WriteOnly))
     {
-        emit pDebug("ERROR: Cannot create Arena Tracker.desktop", DebugLevel::Error);
-        emit pLog(tr("Log: ERROR:Arena Tracker.desktop"));
+        pDebug("ERROR: Cannot create Arena Tracker.desktop", DebugLevel::Error);
+        pLog(tr("Log: ERROR:Arena Tracker.desktop"));
         return;
     }
     shortcutFile.setPermissions(QFileDevice::ExeOwner | QFileDevice::ReadOwner | QFileDevice::WriteOwner);
@@ -2974,8 +2974,8 @@ void MainWindow::createLinuxShortcut()
     if(desktopShortcut.exists())    desktopShortcut.remove();
     shortcutFile.copy(desktopShorcutFilename);
 
-    emit pDebug("Desktop and menu shorcut created pointing to " + appImagePath);
-    emit pLog("Shortcut: Desktop and menu shorcut created pointing to " + appImagePath);
+    pDebug("Desktop and menu shorcut created pointing to " + appImagePath);
+    pLog("Shortcut: Desktop and menu shorcut created pointing to " + appImagePath);
 }
 
 
@@ -3014,7 +3014,7 @@ void MainWindow::checkGamesLogDir()
         //Current arena draft or kept draft
         if((file.startsWith("DRAFT") && i < maxGamesLog) || i == indexDraft)
         {
-            emit pDebug("Show Arena: " + file);
+            pDebug("Show Arena: " + file);
             homelessArenaGames = false;
             arenaHandler->showArenaLog(file);
         }
@@ -3022,7 +3022,7 @@ void MainWindow::checkGamesLogDir()
         else if(((file.startsWith("ARENA") && i < indexDraft) || (i < maxGamesLog)) &&
                 !(file.startsWith("ARENA") && homelessArenaGames))
         {
-            emit pDebug("Show GameResut: " + file);
+            pDebug("Show GameResut: " + file);
             arenaHandler->showGameResultLog(file);
         }
         else
@@ -3350,7 +3350,7 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 
 void MainWindow::redrawAllGames()
 {
-    emit pDebug("Redraw all games.");
+    pDebug("Redraw all games.");
     arenaHandler->clearAllGames();
 
     QFileInfo dirInfo(Utility::gameslogPath());
@@ -3374,12 +3374,12 @@ void MainWindow::redrawAllGames()
         QString file = files[i];
         if(file.startsWith("DRAFT"))
         {
-            emit pDebug("Show Arena: " + file);
+            pDebug("Show Arena: " + file);
             arenaHandler->showArenaLog(file);
         }
         else
         {
-            emit pDebug("Show GameResut: " + file);
+            pDebug("Show GameResut: " + file);
             arenaHandler->showGameResultLog(file);
         }
     }
@@ -3986,7 +3986,7 @@ void MainWindow::updateMaxGamesLog(int value)
 void MainWindow::completeConfigComboTheme()
 {
     QDir themesDir(Utility::themesPath());
-    for(const QFileInfo &themeFI : themesDir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot))
+    for(const QFileInfo &themeFI : (const QFileInfoList)themesDir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot))
     {
         ui->configComboTheme->addItem(themeFI.fileName());
     }
@@ -4156,7 +4156,7 @@ void MainWindow::createDebugPack()
     QFile zoneLog(hsLogsPath + "/Zone.log");
     zoneLog.copy(dirPath + "/Zone.log");
 
-    emit pDebug("Bug pack " + dirPath + " created.");
+    pDebug("Bug pack " + dirPath + " created.");
 }
 
 
@@ -4166,7 +4166,7 @@ void MainWindow::showMessageProgressBar(QString text, int hideDelay)
 
     if(ui->progressBar->value() != ui->progressBar->maximum())
     {
-        emit pDebug("Progress bar message received while counting. " + text, Warning);
+        pDebug("Progress bar message received while counting. " + text, Warning);
         if(!ui->progressBar->isVisible())   showProgressBar(false);
     }
     else
@@ -4251,8 +4251,8 @@ void MainWindow::hideProgressBar()
     animation->start(QPropertyAnimation::DeleteWhenStopped);
 
     connect(
-        animation, &QPropertyAnimation::finished,
-        [=]()
+        animation, &QPropertyAnimation::finished, ui->progressBar,
+        [this]()
         {
             if(ui->progressBar->value() != ui->progressBar->maximum())
             {
@@ -4327,17 +4327,17 @@ void MainWindow::checkArenaCards()
     }
     else
     {
-        emit pDebug("CheckArenaCards: No arena cards downloads.");
+        pDebug("CheckArenaCards: No arena cards downloads.");
     }
 }
 
 
 void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
 {
-    emit pDebug("CheckArenaCards: Downloading all arena cards.");
+    pDebug("CheckArenaCards: Downloading all arena cards.");
     allCardsDownloadList.clear();
 
-    for(QString code: codeList)
+    for(const QString &code: codeList)
     {
         if(!checkCardImage(code))
         {
@@ -4351,8 +4351,8 @@ void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
         }
     }
 
-    QStringList heroList = draftHandler->getAllHeroCodes();
-    for(QString code: heroList)
+    const QStringList heroList = draftHandler->getAllHeroCodes();
+    for(const QString &code: heroList)
     {
         if(!checkCardImage(code, true))
         {
@@ -4389,7 +4389,7 @@ void MainWindow::allCardsDownloaded()
         allCardsDownloadList.clear();
         hideProgressBarMini();
         showMessageProgressBar("All cards downloaded");
-        emit pDebug("CheckArenaCards: All arena cards have been downloaded.");
+        pDebug("CheckArenaCards: All arena cards have been downloaded.");
     }
 }
 
@@ -4568,7 +4568,7 @@ void MainWindow::test()
 void MainWindow::testHeroPortraits()
 {
     bool everythingOk = true;
-    for(const QString &code: draftHandler->getAllHeroCodes())
+    for(const QString &code: (const QStringList)draftHandler->getAllHeroCodes())
     {
         if(!Utility::checkHeroPortrait(code))
         {
@@ -4721,9 +4721,12 @@ void MainWindow::testDelay()
 //const QList<QString> codeList = Utility::cardsJson->keys();
 //for(const QString &code: codeList)
 
+//pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
+//https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
+
 //Connect, function def inline
 //connect(animation, &QPropertyAnimation::finished,
-//    [=]()
+//    [this]()
 //    {
 //    }
 //https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f
