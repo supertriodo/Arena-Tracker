@@ -4718,7 +4718,7 @@ void MainWindow::testDelay()
 //qAsConst()
 
 //Warnings
-//const QList<QString> codeList = Utility::cardsJson->keys();
+//const QList<QString> codeList = map->keys();
 //for(const QString &code: codeList)
 
 //pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]

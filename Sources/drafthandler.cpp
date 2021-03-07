@@ -215,7 +215,7 @@ QStringList DraftHandler::getAllArenaCodes()
 {
     QStringList codeList;
 
-    for(const QString &set: arenaSets)  codeList.append(Utility::getSetCodes(set, true, true));
+    for(const QString &set: qAsConst(arenaSets))  codeList.append(Utility::getSetCodes(set, true, true));
     return codeList;
 }
 
@@ -320,9 +320,10 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
 {
     //Build codesByClass
     QMap<CardClass, QStringList> codesByClass;
-    for(const QString &code: lightForgeTiers.keys())
+    const QList<QString> codeList = lightForgeTiers.keys();
+    for(const QString &code: codeList)
     {
-        QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+        const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
         if(multiClassDraft)
         {
             for(const CardClass &cardClass: cardClassList)
@@ -336,7 +337,8 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
     }
 
     //Save
-    for(const CardClass &cardClass: codesByClass.keys())
+    const QList<CardClass> cardClassList = codesByClass.keys();
+    for(const CardClass &cardClass: cardClassList)
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
         QFileInfo fi(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
@@ -358,7 +360,7 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
             QDataStream out(&file);
             out.setVersion(QDataStream::Qt_5_5);
 
-            for(QString code: codesByClass[cardClass])
+            for(QString code: (const QStringList)codesByClass[cardClass])
             {
                 for(int i=0; i<2; i++)
                 {
@@ -435,7 +437,8 @@ void DraftHandler::processCardHist(QStringList &codes)
 bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
 {
     bool processed = false;
-    for(const CardClass &cardClass: codesByClass.keys())
+    const QList<CardClass> cardClassList = codesByClass.keys();
+    for(const CardClass &cardClass: cardClassList)
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
         QFileInfo fi(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
@@ -460,9 +463,9 @@ void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClas
 {
     lightForgeTiers.clear();
 
-    for(const QString &code: getAllArenaCodes())
+    for(const QString &code: (const QStringList)getAllArenaCodes())
     {
-        QList<CardClass> cardClassList = Utility::getClassFromCode(code);
+        const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
         if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(arenaHero))
         {
             lightForgeTiers[code] = 0;
@@ -480,7 +483,8 @@ void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClas
         }
     }
     emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
-    for(const CardClass &cardClass: codesByClass.keys())
+    const QList<CardClass> cardClassList = codesByClass.keys();
+    for(const CardClass &cardClass: cardClassList)
     {
         QString classUName = Utility::classEnum2classUName(cardClass);
         emit pDebug("-- (" + classUName + "): " + QString::number(codesByClass[cardClass].count()));
@@ -498,7 +502,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
 
-        for(const QString &code: heroCodesList)     addCardHist(code, false, true);
+        for(const QString &code: qAsConst(heroCodesList))     addCardHist(code, false, true);
     }
     else //if(drafting) ||Build mechanics window
     {
@@ -1097,7 +1101,8 @@ bool DraftHandler::areCardsDetected()
 double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
 {
     double minMatch = 1;
-    for(DraftCard card: draftCardMaps.values())
+    const QList<DraftCard> cardList = draftCardMaps.values();
+    for(DraftCard card: cardList)
     {
         double match = card.getBestQualityMatches();
         if(match < minMatch)    minMatch = match;
@@ -1113,7 +1118,8 @@ void DraftHandler::buildBestMatchesMaps()
         for(int i=0; i<3; i++)
         {
             QMap<double, QString> bestMatchesDups;
-            for(QString code: draftCardMaps[i].keys())
+            const QList<QString> codeList = draftCardMaps[i].keys();
+            for(const QString &code: codeList)
             {
                 double match = draftCardMaps[i][code].getBestQualityMatches();
                 bestMatchesDups.insertMulti(match, code);
@@ -1121,7 +1127,8 @@ void DraftHandler::buildBestMatchesMaps()
 
             comboBoxCard[i]->clear();
             QStringList insertedCodes;
-            for(const QString &code: bestMatchesDups.values())
+            const QList<QString> codeListBest = bestMatchesDups.values();
+            for(const QString &code: codeListBest)
             {
                 if(!insertedCodes.contains(degoldCode(code)))
                 {
@@ -1137,7 +1144,8 @@ void DraftHandler::buildBestMatchesMaps()
     {
         for(int i=0; i<3; i++)
         {
-            for(QString code: draftCardMaps[i].keys())
+            const QList<QString> codeList = draftCardMaps[i].keys();
+            for(const QString &code: codeList)
             {
                 double match = draftCardMaps[i][code].getBestQualityMatches();
                 bestMatchesMaps[i].insertMulti(match, code);
@@ -2460,7 +2468,8 @@ void DraftHandler::redrawAllCards()
     {
         int currentIndex = comboBoxCard[i]->currentIndex();
         clearAndDisconnectComboBox(i);
-        for(const QString &code: bestMatchesMaps[i].values())
+        const QList<QString> codeList = bestMatchesMaps[i].values();
+        for(const QString &code: codeList)
         {
             draftCardMaps[i][code].draw(comboBoxCard[i]);
         }
@@ -2556,11 +2565,11 @@ void DraftHandler::buildHeroCodesList()
     //--------------------------------------------------------
     //----NEW HERO CLASS
     //--------------------------------------------------------
-    for(const QString &code: Utility::getSetCodes("CORE", false, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("CORE", false, true))
     {
         if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
     }
-    for(const QString &code: Utility::getSetCodes("HERO_SKINS", false, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("HERO_SKINS", false, true))
     {
         if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
     }

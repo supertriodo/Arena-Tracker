@@ -1082,7 +1082,7 @@ void DeckHandler::loadDeck(QString deckName)
     //Desactiva showManaLimits durante la carga
     bool oldShowManaLimits = showManaLimits;
     showManaLimits = false;
-    foreach(QString key, jsonObjectDeck.keys())
+    for(const QString &key: (const QStringList)jsonObjectDeck.keys())
     {
         if(key != "hero")   newDeckCard(key, jsonObjectDeck[key].toInt());
     }
@@ -1269,7 +1269,7 @@ void DeckHandler::importDeckString()
 void DeckHandler::importDeckString(QString deckString)
 {
     QString deckName;
-    QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(deckString, deckName);
+    const QList<CodeAndCount> deckList = DeckStringHandler::readDeckString(deckString, deckName);
 
     if(deckList.isEmpty())
     {
@@ -1478,7 +1478,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
     }
 
     //Complete deck
-    foreach(QString code, cardsToAdd)
+    for(const QString &code: cardsToAdd)
     {
         newDeckCardDraft(code);
     }

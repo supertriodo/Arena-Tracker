@@ -168,8 +168,6 @@ void ArenaHandler::replayLog()
     }
 
 
-    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-
     logFileName = compressLog(logFileName);
     QFile *file = new QFile(Utility::gameslogPath() + "/" + logFileName);
     if(!file->open(QIODevice::ReadOnly))
@@ -177,6 +175,8 @@ void ArenaHandler::replayLog()
         emit pDebug("Failed to open " + Utility::gameslogPath() + "/" + logFileName);
         return;
     }
+
+    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
     QHttpPart textPart;
     textPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"data\"; filename=\""+file->fileName()+"\""));
