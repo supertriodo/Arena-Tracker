@@ -51,7 +51,8 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->setZValue(copy->zValue());
     setAcceptHoverEvents(true);
 
-    foreach(Addon addon, copy->addons)
+    const QList<Addon> addonList = copy->addons;
+    for(const Addon &addon: addonList)
     {
         this->addons.append(addon);
     }
@@ -92,7 +93,7 @@ void MinionGraphicsItem::initCode(QString code)
     this->changeHealth = ChangeNone;
     this->deadProb = 0;
 
-    foreach(QJsonValue value, Utility::getCardAttribute(code, "mechanics").toArray())
+    for(const QJsonValue &value: (const QJsonArray)Utility::getCardAttribute(code, "mechanics").toArray())
     {
         processTagChange(value.toString(), "1");
     }

@@ -32,7 +32,7 @@ void CardListWindow::loadSecret(int id, QRect &rectCard, int maxTop, int maxBott
         return;
     }
 
-    foreach(QString code, codes)
+    for(const QString &code: qAsConst(codes))
     {
         SecretCard card(code);
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()

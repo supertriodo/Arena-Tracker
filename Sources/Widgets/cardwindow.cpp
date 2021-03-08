@@ -39,7 +39,7 @@ void CardWindow::scale(int value_x10)
 void CardWindow::loadCard(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse)
 {
     if(alwaysHidden || code.isEmpty() ||
-        !QFileInfo(Utility::hscardsPath() + "/" + code + ".png").exists())
+        !QFileInfo::exists(Utility::hscardsPath() + "/" + code + ".png"))
     {
         hide();
         return;

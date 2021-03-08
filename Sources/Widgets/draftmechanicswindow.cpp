@@ -54,10 +54,10 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", cardTypeLayout, 1, 1,
                                        QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
-    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
-    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect &)),
-            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect &)));
+    connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
+    connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
@@ -410,7 +410,8 @@ void DraftMechanicsWindow::updateManaCounter(int manaIncrease, int numCards)
 
 void DraftMechanicsWindow::updateDropCounter(QMap<QString, QString> &codeTagMap, DraftDropCounter *counter)
 {
-    for(const QString &code: codeTagMap.keys())
+    const QList<QString> codeList = codeTagMap.keys();
+    for(const QString &code: codeList)
     {
         QString tag = codeTagMap[code];
         if(tag.isEmpty())   counter->increase(code);
@@ -422,7 +423,8 @@ void DraftMechanicsWindow::updateDropCounter(QMap<QString, QString> &codeTagMap,
 
 void DraftMechanicsWindow::updateItemCounter(QMap<QString, QString> &codeTagMap, DraftItemCounter *counter)
 {
-    for(const QString &code: codeTagMap.keys())
+    const QList<QString> codeList = codeTagMap.keys();
+    for(const QString &code: codeList)
     {
         QString tag = codeTagMap[code];
         if(tag.isEmpty())   counter->increase(code);

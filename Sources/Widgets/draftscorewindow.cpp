@@ -336,7 +336,8 @@ void DraftScoreWindow::groupSynergyTags(QMap<QString, QMap<QString, int>> &syner
     QList<QString> synergyTagMapKeys = synergyTagMap.keys();
     for(int i=0; i<synergyTagMapKeys.count(); i++)
     {
-        for(const QString &code: synergyTagMap[synergyTagMapKeys[i]].keys())
+        const QList<QString> codeList = synergyTagMap[synergyTagMapKeys[i]].keys();
+        for(const QString &code: codeList)
         {
             for(int j=i+1; j<synergyTagMapKeys.count() && !dupCodes.contains(code); j++)
             {
@@ -400,10 +401,12 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
     synergyCardLists[posCard].clear();
     groupSynergyTags(synergyTagMap);
 
-    for(const QString &synergyTag: synergyTagMap.keys())
+    const QList<QString> codeList = synergyTagMap.keys();
+    for(const QString &synergyTag: codeList)
     {
         QMap<int,SynergyCard> synergyCardMap;
-        for(const QString &code: synergyTagMap[synergyTag].keys())
+        const QList<QString> codeList = synergyTagMap[synergyTag].keys();
+        for(const QString &code: codeList)
         {
             int total = synergyTagMap[synergyTag][code];
             SynergyCard synergyCard(code);
@@ -413,7 +416,8 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
 
         if(!synergyCardMap.isEmpty())   synergyCardMap.first().setSynergyTag(synergyTag);
 
-        for(SynergyCard &synergyCard: synergyCardMap.values())
+        QList<SynergyCard> cardList = synergyCardMap.values();
+        for(SynergyCard &synergyCard: cardList)
         {
             synergyCard.listItem = new QListWidgetItem(synergiesListWidget[posCard]);
             synergyCard.draw();
@@ -427,7 +431,8 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
 
     //Drop mechanic first
     int posMech=0;
-    for(const QString &mechanicIcon: mechanicIcons.keys())
+    const QList<QString> iconList = mechanicIcons.keys();
+    for(const QString &mechanicIcon: iconList)
     {
         if(     mechanicIcon == ThemeHandler::drop2CounterFile() ||
                 mechanicIcon == ThemeHandler::drop3CounterFile() ||
@@ -439,7 +444,7 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         }
     }
     //Other mechanics
-    for(const QString &mechanicIcon: mechanicIcons.keys())
+    for(const QString &mechanicIcon: iconList)
     {
         createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
         posMech++;

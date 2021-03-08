@@ -40,7 +40,8 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     this->showAllInfo = false;
     this->heroWeapon = nullptr; //Al copiar el weapon en copyBoard se lo asignaremos al heroe a traves de setHeroWeapon()
 
-    foreach(SecretIcon secretIcon, copy->secretsList)
+    QList<SecretIcon> secretIconList = copy->secretsList;
+    for(SecretIcon &secretIcon: secretIconList)
     {
         if(!copySecretCodes)
         {
@@ -171,7 +172,6 @@ void HeroGraphicsItem::damagePlanningMinion(int damage)
     else
     {
         armor -= damage;
-        damage = 0;
     }
 
     update();
@@ -403,7 +403,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(option);
 
     QString heroCodePath = Utility::hscardsPath() + "/" + heroCode + ".png";
-    if(QFileInfo(heroCodePath).exists())
+    if(QFileInfo::exists(heroCodePath))
     {
         QRectF target = QRectF( -80, -92, 160, 184);
         QRectF source(34, 112, 240, 276);
