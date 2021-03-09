@@ -128,14 +128,14 @@ QByteArray DeckStringHandler::writeDeckStringBA(const QList<CodeAndCount> &deckL
 
     qSort(cardsx1);
     writeVarint(cardsx1.count(), data);
-    for(const quint64 &id: cardsx1)
+    for(const quint64 &id: qAsConst(cardsx1))
     {
         writeVarint(id, data);
     }
 
     qSort(cardsx2);
     writeVarint(cardsx2.count(), data);
-    for(const quint64 &id: cardsx2)
+    for(const quint64 &id: qAsConst(cardsx2))
     {
         writeVarint(id, data);
     }
@@ -143,7 +143,7 @@ QByteArray DeckStringHandler::writeDeckStringBA(const QList<CodeAndCount> &deckL
     QList<quint64> cardsxNList = cardsxN.keys();
     qSort(cardsxNList);
     writeVarint(cardsxNList.count(), data);
-    for(const quint64 &id: cardsxNList)
+    for(const quint64 &id: qAsConst(cardsxNList))
     {
         quint64 count = cardsxN[id];
         writeVarint(id, data);
@@ -215,7 +215,8 @@ QList<CodeAndCount> DeckStringHandler::buildDeck(const QList<quint64> &cardsx1, 
         else    deckList.append(CodeAndCount(code, 2));
     }
 
-    for(const quint64 &id: cardsxN.keys())
+    const QList<unsigned long long> idList = cardsxN.keys();
+    for(const quint64 &id: idList)
     {
         QString code = getCode(id);
         int count = cardsxN[id];

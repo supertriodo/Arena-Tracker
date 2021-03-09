@@ -237,7 +237,8 @@ void DraftItemCounter::insertCards(QMap<QString, QMap<QString, int>> &synergyTag
     QMap<QString,int> synergies;
     if(synergyTagMap.contains(synergyTag))  synergies = synergyTagMap[synergyTag];
 
-    for(QString code: codeMap.keys())
+    const QList<QString> codeList = codeMap.keys();
+    for(const QString &code: codeList)
     {
         if(!synergies.contains(code) && code!=avoidCode)
         {
@@ -254,7 +255,8 @@ void DraftItemCounter::insertSynCards(QMap<QString, QMap<QString, int>> &synergy
     QMap<QString,int> synergies;
     if(synergyTagMap.contains(synergyTag))  synergies = synergyTagMap[synergyTag];
 
-    for(QString code: codeSynMap.keys())
+    const QList<QString> codeList = codeSynMap.keys();
+    for(const QString &code: codeList)
     {
         if(!synergies.contains(code))
         {

@@ -102,7 +102,8 @@ void StatSynergies::insertCards(bool insertSyn, int statValue, QMap<QString,int>
 void StatSynergies::qDebugContents()
 {
     qDebug()<<"**StatsMinions**";
-    for(const int key: statsMap.keys())
+    const QList<int> keyList = statsMap.keys();
+    for(const int key: keyList)
     {
         qDebug()<<'['<<key<<']'<<endl;
         for(DeckCard &deckCard: statsMap[key])
@@ -112,7 +113,8 @@ void StatSynergies::qDebugContents()
     }
 
     qDebug()<<"**StatsSynergies**";
-    for(const int key: statsMapSyn.keys())
+    const QList<int> keySynList = statsMapSyn.keys();
+    for(const int key: keySynList)
     {
         qDebug()<<'['<<key<<']'<<endl;
         for(DeckCard &deckCard: statsMapSyn[key])
@@ -128,7 +130,7 @@ QList<StatSyn> StatSynergies::getStatsSynergiesFromJson(const QString &code, QMa
     QList<StatSyn> statSyns;
 
     if(!synergyCodes.contains(code))    return statSyns;
-    for(QString mechanic: synergyCodes[code])
+    for(QString mechanic: (const QList<QString>)synergyCodes[code])
     {
         if(mechanic[0] == '=')
         {

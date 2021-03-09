@@ -4714,12 +4714,19 @@ void MainWindow::testDelay()
 //}
 
 //FOR EACH C++
+//for(const auto &elem: map)
+//    cout << elem.key() << ": " << elem.value() << endl;
+
 //for(const QString &key: (const QStringList)jsonObject.keys())
 //qAsConst()
 
 //Warnings
 //const QList<QString> codeList = map->keys();
 //for(const QString &code: codeList)
+
+//Sin const
+//QList<SecretIcon> secretIconList = copy->secretsList;
+//for(SecretIcon &secretIcon: secretIconList)
 
 //pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
 //https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
