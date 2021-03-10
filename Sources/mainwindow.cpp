@@ -4720,15 +4720,16 @@ void MainWindow::testDelay()
 //for(const QString &key: (const QStringList)jsonObject.keys())
 //qAsConst()
 
-//Warnings
+//Warning allocating an unneeded temporary container [clazy-container-anti-pattern]
 //const QList<QString> codeList = map->keys();
 //for(const QString &code: codeList)
+//for(const auto &elem: map)
 
 //Sin const
 //QList<SecretIcon> secretIconList = copy->secretsList;
 //for(SecretIcon &secretIcon: secretIconList)
 
-//pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
+//Warning pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
 //https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
 
 //Connect, function def inline

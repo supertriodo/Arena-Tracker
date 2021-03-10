@@ -444,7 +444,8 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         }
     }
     //Other mechanics
-    for(const QString &mechanicIcon: iconList)
+    const QList<QString> iconList2 = mechanicIcons.keys();
+    for(const QString &mechanicIcon: iconList2)
     {
         createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
         posMech++;

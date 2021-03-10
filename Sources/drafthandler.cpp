@@ -1101,8 +1101,8 @@ bool DraftHandler::areCardsDetected()
 double DraftHandler::getMinMatch(const QMap<QString, DraftCard> &draftCardMaps)
 {
     double minMatch = 1;
-    const QList<DraftCard> cardList = draftCardMaps.values();
-    for(DraftCard card: cardList)
+    QList<DraftCard> cardList = draftCardMaps.values();
+    for(DraftCard &card: cardList)
     {
         double match = card.getBestQualityMatches();
         if(match < minMatch)    minMatch = match;
