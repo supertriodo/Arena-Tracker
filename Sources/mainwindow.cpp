@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint),
     ui(new Ui::Extended)
 {
+    QApplication::setWheelScrollLines(1);
     QFontDatabase::addApplicationFont(":Fonts/hsFont.ttf");
     QFontDatabase::addApplicationFont(":Fonts/LuckiestGuy.ttf");
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4635,7 +4636,7 @@ void MainWindow::testDelay()
 
 //    QTimer::singleShot(7000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
-//    QTimer::singleShot(5000, this, [=] () {
+//    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
 }
 
