@@ -65,7 +65,7 @@ void SynergyCard::drawSynergyTag(QPixmap &canvas)
         QColor synergyTagColor = QColor(ThemeHandler::synergyTagColor());
         painter.setPen(QPen(BLACK));
         painter.setBrush(synergyTagColor.isValid()?synergyTagColor:BLACK);
-        painter.drawRoundRect(20*scale, 0, (10+textWide)*scale, 15*scale, 15, 80);
+        painter.drawRoundRect(20*scale, 0, (10*scale)+textWide, 15*scale, 15, 80);
 
         painter.setPen(QPen(BLACK));
         painter.setBrush(WHITE);

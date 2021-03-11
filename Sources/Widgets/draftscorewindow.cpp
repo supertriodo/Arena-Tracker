@@ -380,9 +380,9 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
     if(posCard < 0 || posCard > 2)  return;
 
 //    if(posCard==0){
-//    QString codes[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730", "DMF_083"};
+//    QString codes[] = {"DMF_004", "DMF_247", "DMF_061", "DMF_730", "DMF_083"};
 //    for(const QString &code: codes) synergyTagMap["Attack"][code]=1;
-//    QString codes2[] = {"DMF_248", "DMF_247", "DMF_061", "DMF_730"};
+//    QString codes2[] = {"DMF_004", "DMF_247", "DMF_061", "DMF_730"};
 //    for(const QString &code: codes2) synergyTagMap["Health"][code]=1;
 //    QString codes3[] = {"DMF_061", "DMF_730"};
 //    for(const QString &code: codes3) synergyTagMap["Cost"][code]=1;}
