@@ -360,6 +360,9 @@ void SynergyHandler::clearLists(bool keepCounters)
         attackMinions.clear();
         healthMinions.clear();
         costSpells.clear();
+        costWeapons.clear();
+        attackWeapons.clear();
+        healthWeapons.clear();
     }
 }
 
@@ -993,16 +996,16 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
     {
         costSpells.appendStatValue(false, deckCard.getCost(), code);
     }
-//    else if(deckCard.getType() == WEAPON)
-//    {
-//        //Stats
-//        int attack = Utility::getCardAttribute(code, "attack").toInt();
-//        int health = Utility::getCardAttribute(code, "health").toInt();
+    else if(deckCard.getType() == WEAPON)
+    {
+        //Stats
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
 
-//        costWeapons.appendStatValue(false, deckCard.getCost(), code);
-//        attackWeapons.appendStatValue(false, attack, code);
-//        healthWeapons.appendStatValue(false, health, code);
-//    }
+        costWeapons.appendStatValue(false, deckCard.getCost(), code);
+        attackWeapons.appendStatValue(false, attack, code);
+        healthWeapons.appendStatValue(false, health, code);
+    }
 
     //Synergies
     const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
@@ -1040,21 +1043,21 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
                 }
             break;
             case S_WEAPON:
-//                switch(statSyn.statKind)
-//                {
-//                    case S_COST:
-//                        if(statSyn.isGen)   costWeapons.appendStatValue(false, statSyn.statValue, code);
-//                        else                costWeapons.updateStatsMapSyn(statSyn, code);
-//                    break;
-//                    case S_ATTACK:
-//                        if(statSyn.isGen)   attackWeapons.appendStatValue(false, statSyn.statValue, code);
-//                        else                attackWeapons.updateStatsMapSyn(statSyn, code);
-//                    break;
-//                    case S_HEALTH:
-//                        if(statSyn.isGen)   healthWeapons.appendStatValue(false, statSyn.statValue, code);
-//                        else                healthWeapons.updateStatsMapSyn(statSyn, code);
-//                    break;
-//                }
+                switch(statSyn.statKind)
+                {
+                    case S_COST:
+                        if(statSyn.isGen)   costWeapons.appendStatValue(false, statSyn.statValue, code);
+                        else                costWeapons.updateStatsMapSyn(statSyn, code);
+                    break;
+                    case S_ATTACK:
+                        if(statSyn.isGen)   attackWeapons.appendStatValue(false, statSyn.statValue, code);
+                        else                attackWeapons.updateStatsMapSyn(statSyn, code);
+                    break;
+                    case S_HEALTH:
+                        if(statSyn.isGen)   healthWeapons.appendStatValue(false, statSyn.statValue, code);
+                        else                healthWeapons.updateStatsMapSyn(statSyn, code);
+                    break;
+                }
             break;
         }
     }
@@ -1477,16 +1480,16 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QM
     {
         costSpells.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
     }
-//    else if(deckCard.getType() == WEAPON)
-//    {
-//        //Stats
-//        int attack = Utility::getCardAttribute(code, "attack").toInt();
-//        int health = Utility::getCardAttribute(code, "health").toInt();
+    else if(deckCard.getType() == WEAPON)
+    {
+        //Stats
+        int attack = Utility::getCardAttribute(code, "attack").toInt();
+        int health = Utility::getCardAttribute(code, "health").toInt();
 
-//        costWeapons.insertCards(true, deckCard.getCost(), synergies);
-//        attackWeapons.insertCards(true, attack, synergies);
-//        healthWeapons.insertCards(true, health, synergies);
-//    }
+        costWeapons.insertCards(true, deckCard.getCost(), synergyTagMap["Cost"]);
+        attackWeapons.insertCards(true, attack, synergyTagMap["Attack"]);
+        healthWeapons.insertCards(true, health, synergyTagMap["Health"]);
+    }
 
     //Synergies
     const QList<StatSyn> statSyns = StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);
@@ -1524,21 +1527,21 @@ void SynergyHandler::getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QM
                 }
             break;
             case S_WEAPON:
-//                switch(statSyn.statKind)
-//                {
-//                    case S_COST:
-//                        if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergies);
-//                        else                costWeapons.insertStatCards(statSyn, synergies);
-//                    break;
-//                    case S_ATTACK:
-//                        if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergies);
-//                        else                attackWeapons.insertStatCards(statSyn, synergies);
-//                    break;
-//                    case S_HEALTH:
-//                        if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergies);
-//                        else                healthWeapons.insertStatCards(statSyn, synergies);
-//                    break;
-//                }
+                switch(statSyn.statKind)
+                {
+                    case S_COST:
+                        if(statSyn.isGen)   costWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Cost"]);
+                        else                costWeapons.insertStatCards(statSyn, synergyTagMap["Cost"]);
+                    break;
+                    case S_ATTACK:
+                        if(statSyn.isGen)   attackWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Attack"]);
+                        else                attackWeapons.insertStatCards(statSyn, synergyTagMap["Attack"]);
+                    break;
+                    case S_HEALTH:
+                        if(statSyn.isGen)   healthWeapons.insertCards(true, statSyn.statValue, synergyTagMap["Health"]);
+                        else                healthWeapons.insertStatCards(statSyn, synergyTagMap["Health"]);
+                    break;
+                }
             break;
         }
     }

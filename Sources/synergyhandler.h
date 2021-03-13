@@ -21,7 +21,7 @@ private:
     Ui::Extended *ui;
     QMap<QString, QList<QString>> synergyCodes, directLinks;
     StatSynergies costMinions, attackMinions, healthMinions, costSpells;
-//    StatSynergies costWeapons, attackWeapons, healthWeapons;
+    StatSynergies costWeapons, attackWeapons, healthWeapons;
     DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     DraftDropCounter **dropCounters;
