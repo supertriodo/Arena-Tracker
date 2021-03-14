@@ -8,7 +8,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
 #ifdef QT_DEBUG
-    #ifdef DEBUG_OVERLAYS_LEFT
+    #if DEBUG_OVERLAYS_LEFT
         screenIndex = 0;
     #endif
 #endif
@@ -52,7 +52,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
     cardTypeCounters = new DraftItemCounter *[M_NUM_TYPES];
     cardTypeCounters[V_MINION] = new DraftItemCounter(this, "Minion", "Minion Gen", cardTypeLayout, 0, 0,
-                                                      QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2, false);
+                                                      QPixmap(ThemeHandler::minionsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_SPELL] = new DraftItemCounter(this, "Spell", "Spell Gen", cardTypeLayout, 0, 1,
                                                      QPixmap(ThemeHandler::spellsCounterFile()), scoreWidth/2);
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", cardTypeLayout, 1, 0,
@@ -60,11 +60,15 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     manaCounter = new DraftItemCounter(this, "Mana AVG", "Mana AVG", cardTypeLayout, 1, 1,
                                        QPixmap(ThemeHandler::manaCounterFile()), scoreWidth/2, false);
 
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
+            this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
 
+    connect(cardTypeCounters[V_MINION], SIGNAL(iconLeave()),
+            this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_SPELL], SIGNAL(iconLeave()),
             this, SIGNAL(itemLeave()));
     connect(cardTypeCounters[V_WEAPON], SIGNAL(iconLeave()),

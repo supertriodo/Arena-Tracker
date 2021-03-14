@@ -7,7 +7,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
 #ifdef QT_DEBUG
-    #ifdef DEBUG_OVERLAYS_LEFT
+    #if DEBUG_OVERLAYS_LEFT
         screenIndex = 0;
     #endif
 #endif
