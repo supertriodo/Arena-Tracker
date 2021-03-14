@@ -6,6 +6,12 @@
 DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
+#ifdef QT_DEBUG
+    #ifdef DEBUG_OVERLAYS_LEFT
+        screenIndex = 0;
+    #endif
+#endif
+
     scoreWidth = static_cast<int>(sizeCard.width()*0.7);
 
     QList<QScreen *> screens = QGuiApplication::screens();

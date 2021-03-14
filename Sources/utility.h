@@ -15,7 +15,9 @@
 
 #define REMOVE_CARDS_ON_VERSION_UPDATE false
 #define REMOVE_EXTRA_ON_VERSION_UPDATE false
+
 #define DEBUG_REPLAY_AUTO_ADVANCE false
+#define DEBUG_OVERLAYS_LEFT false
 
 
 using namespace cv;
