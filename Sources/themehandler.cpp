@@ -1081,6 +1081,8 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
 
 bool ThemeHandler::loadTheme(QString theme)
 {
+    themeLoaded_ = theme;
+
     QFileInfo themeDir(Utility::themesPath() + "/" + theme);
     if(!themeDir.exists() || !themeDir.isDir()) return false;
 
@@ -1091,7 +1093,6 @@ bool ThemeHandler::loadTheme(QString theme)
     jsonFile.close();
     loadThemeValues(themeDir.filePath() + "/", jsonData);
     defaultEmptyValues();
-    themeLoaded_ = theme;
     return true;
 }
 

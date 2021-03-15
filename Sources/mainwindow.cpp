@@ -468,11 +468,8 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             }
             if(ThemeHandler::themeLoaded() == theme)
             {
-                loadTheme(theme);
-            }
-            else if(ThemeHandler::themeLoaded().isEmpty() && theme == DEFAULT_THEME)
-            {
-                ui->configComboTheme->setCurrentText(theme);
+                QString currentTheme = ui->configComboTheme->currentText();
+                if(currentTheme != "Random")    ui->configComboTheme->setCurrentText(theme);
                 loadTheme(theme);
             }
         }
@@ -771,7 +768,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
             filterName << "*.png";
             dir.setNameFilters(filterName);
 
-            QStringList files = dir.entryList();
+            const QStringList files = dir.entryList();
 
             for(const QString &file: files)
             {
@@ -1626,16 +1623,7 @@ void MainWindow::closeApp()
 
 void MainWindow::initConfigTheme(QString theme)
 {
-    int index = ui->configComboTheme->findText(theme);
-    if(index == -1)
-    {
-        theme = DEFAULT_THEME;
-        ui->configComboTheme->setCurrentText(theme);
-    }
-    else
-    {
-        ui->configComboTheme->setCurrentIndex(index);
-    }
+    ui->configComboTheme->setCurrentText(theme);
     loadTheme(theme, true);
 }
 
@@ -1811,7 +1799,6 @@ void MainWindow::readSettings()
 
     this->transparency = static_cast<Transparency>(settings.value("transparent", AutoTransparent).toInt());
     QString theme = settings.value("theme", DEFAULT_THEME).toString();
-
     int cardHeight = settings.value("cardHeight", 35).toInt();
     this->drawDisappear = settings.value("drawDisappear", 5).toInt();
     int popularCardsShown = settings.value("popularCardsShown", 5).toInt();
@@ -1867,7 +1854,8 @@ void MainWindow::writeSettings()
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("transparent", static_cast<int>(this->transparency));
-    settings.setValue("theme", ui->configComboTheme->currentText());
+    QString theme = ui->configComboTheme->currentText();
+    if(!theme.isEmpty())    settings.setValue("theme", theme);
     settings.setValue("cardHeight", ui->configSliderCardSize->value());
     settings.setValue("drawDisappear", this->drawDisappear);
     settings.setValue("popularCardsShown", ui->configSliderPopular->value());
@@ -3986,6 +3974,8 @@ void MainWindow::updateMaxGamesLog(int value)
 
 void MainWindow::completeConfigComboTheme()
 {
+    ui->configComboTheme->addItem("Random");
+
     QDir themesDir(Utility::themesPath());
     for(const QFileInfo &themeFI : (const QFileInfoList)themesDir.entryInfoList(QDir::Dirs|QDir::NoDotAndDotDot))
     {
@@ -4309,6 +4299,9 @@ void MainWindow::checkFirstRunNewVersion()
     {
         pDebug("First run of new version.");
         settings.setValue("neoInt", 0);
+
+        //TODO remove
+        if(ThemeHandler::themeLoaded() == "Classic")    initConfigTheme(DEFAULT_THEME);
     }
 }
 
@@ -4397,6 +4390,12 @@ void MainWindow::allCardsDownloaded()
 
 void MainWindow::loadTheme(QString theme, bool initTheme)
 {
+    if(theme == "Random")
+    {
+        QStringList themeList = Utility::getThemeList();
+        theme = themeList[qrand()%themeList.count()];
+    }
+
     if(ThemeHandler::loadTheme(theme))
     {
         spreadTheme(!initTheme);

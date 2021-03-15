@@ -148,6 +148,7 @@ public:
     static void fadeInLayout(QLayout *layout);
     static void timeStamp(QString tag);
     static int className2classOrder(QString className);
+    static QStringList getThemeList();
 };
 
 #endif // UTILITY_H

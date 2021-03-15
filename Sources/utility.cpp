@@ -1116,6 +1116,19 @@ void Utility::checkMissingGoldenCards()
 }
 
 
+QStringList Utility::getThemeList()
+{
+    return {"Purple",
+             "Aquamarine",
+             "Blue",
+             "Brown",
+             "Gold",
+             "Green",
+             "Red",
+             "Tan" };
+}
+
+
 void Utility::timeStamp(QString tag)
 {
     static qint64 start;
