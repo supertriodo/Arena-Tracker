@@ -979,7 +979,7 @@ void Utility::checkTierlistsCount()
     const QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     QStringList haCodesAll;
     QStringList allHeroes;
-    for(int i=0; i<NUM_HEROS; i++)   allHeroes[i] = Utility::classOrder2classLogNumber(i);
+    for(int i=0; i<NUM_HEROS; i++)   allHeroes << Utility::classOrder2classLogNumber(i);
 
     for(const QString &heroLog: (const QStringList)allHeroes)
     {
