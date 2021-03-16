@@ -1625,12 +1625,11 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
-            DeckCard deckCard(code);
-            CardType cardType = deckCard.getType();
+            CardType cardType = Utility::getTypeFromCode(code);
             QString text = Utility::cardEnTextFromCode(code).toLower();
             int attack = Utility::getCardAttribute(code, "attack").toInt();
             int health = Utility::getCardAttribute(code, "health").toInt();
-            int cost = deckCard.getCost();
+            int cost = Utility::getCardAttribute(code, "cost").toInt();
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
@@ -1759,12 +1758,11 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
 {
     QStringList mec;
 
-    DeckCard deckCard(code);
-    CardType cardType = deckCard.getType();
+    CardType cardType = Utility::getTypeFromCode(code);
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
     int health = Utility::getCardAttribute(code, "health").toInt();
-    int cost = deckCard.getCost();
+    int cost = Utility::getCardAttribute(code, "cost").toInt();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
     QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
 

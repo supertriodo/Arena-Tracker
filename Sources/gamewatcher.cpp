@@ -846,8 +846,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 //Jugador juega carta con objetivo en PLAY, No enemigo pq BlockType=PLAY es de entity desconocida para el enemigo
                 if(blockType == "PLAY" && zone == "HAND")
                 {
-                    DeckCard deckCard(cardId1);
-                    if(deckCard.getType() == SPELL)
+                    if(Utility::getTypeFromCode(cardId1) == SPELL)
                     {
                         emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
                                     name1 + " on target " + name2, numLine);
