@@ -1382,8 +1382,8 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Add
 void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == nullptr) return;
-    DeckCard deckCard(code);
-    QList<CardClass> classList = deckCard.getCardClass();
+    if(!Utility::isASecret(code))       return;
+    QList<CardClass> classList = Utility::getClassFromCode(code);
     nowBoard->playerHero->addSecret(id, classList.first());
 }
 

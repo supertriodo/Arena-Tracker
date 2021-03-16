@@ -126,9 +126,10 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         QString createdByCode = handCard->getCreatedByCode();
 
         //Secreto conocido
-        if(!code.isEmpty() && Utility::isASecret(code))
+        if(!code.isEmpty())
         {
-            knownSecretPlayed(id, hero, code, loadingScreenState);
+            if(Utility::isASecret(code))    knownSecretPlayed(id, hero, code, loadingScreenState);
+            else                            return;
         }
         //Pocion de polimorfia
         else if(createdByCode == KABAL_CHEMIST)

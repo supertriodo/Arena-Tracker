@@ -516,7 +516,7 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
                 pixmap = QPixmap(":Images/secretRogue.png");
                 break;
             default:
-                pixmap = QPixmap(":Images/secretMage.png");
+                pixmap = QPixmap(":Images/secretRogue.png");
                 break;
         }
 
