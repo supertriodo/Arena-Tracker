@@ -185,7 +185,7 @@ void EnemyHandHandler::showEnemyCardDraw(int id, int turn, bool special, QString
 
 bool EnemyHandHandler::isIDinHand(int id)
 {
-    foreach(HandCard handCard, enemyHandList)
+    for(const HandCard &handCard: qAsConst(enemyHandList))
     {
         if(handCard.id == id)   return true;
     }
@@ -275,7 +275,7 @@ void EnemyHandHandler::redrawDownloadedCardImage(QString &code)
 
 void EnemyHandHandler::redrawClassCards()
 {
-    foreach(HandCard handCard, enemyHandList)
+    for(HandCard &handCard: enemyHandList)
     {
         handCard.draw();
     }
@@ -284,7 +284,7 @@ void EnemyHandHandler::redrawClassCards()
 
 void EnemyHandHandler::redrawSpellWeaponCards()
 {
-    foreach(HandCard handCard, enemyHandList)
+    for(HandCard &handCard: enemyHandList)
     {
         CardType cardType = handCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -297,7 +297,7 @@ void EnemyHandHandler::redrawSpellWeaponCards()
 
 void EnemyHandHandler::redrawAllCards()
 {
-    foreach(HandCard handCard, enemyHandList)
+    for(HandCard &handCard: enemyHandList)
     {
         handCard.draw();
     }

@@ -76,7 +76,7 @@ void CardListWindow::loadDraftItem(QList<SynergyCard> &synergyCardList, QRect &r
         return;
     }
 
-    foreach(SynergyCard card, synergyCardList)
+    for(SynergyCard &card: synergyCardList)
     {
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
         listWidget->addItem(card.listItem);
@@ -119,7 +119,7 @@ void CardListWindow::loadDraftOverlayItem(QList<SynergyCard> &synergyCardList, Q
         return;
     }
 
-    foreach(SynergyCard card, synergyCardList)
+    for(SynergyCard &card: synergyCardList)
     {
         card.listItem = new QListWidgetItem();//Items son auto delete en clear()
         listWidget->addItem(card.listItem);

@@ -51,7 +51,7 @@ void PlanGraphicsView::reset()
 void PlanGraphicsView::removeAll()
 {
     if(this->scene() == nullptr)   return;
-    foreach(QGraphicsItem *item, this->scene()->items())
+    for(QGraphicsItem *item: (const QList<QGraphicsItem *>)this->scene()->items())
     {
         this->scene()->removeItem(item);
     }

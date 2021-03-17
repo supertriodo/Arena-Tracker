@@ -291,7 +291,7 @@ void HeroGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 bool HeroGraphicsItem::isYourSecret(int id)
 {
-    foreach(SecretIcon secretIcon, secretsList)
+    for(const SecretIcon &secretIcon: qAsConst(secretsList))
     {
         if(secretIcon.id == id)     return true;
     }
@@ -301,7 +301,7 @@ bool HeroGraphicsItem::isYourSecret(int id)
 
 CardClass HeroGraphicsItem::getSecretHero(int id)
 {
-    foreach(SecretIcon secretIcon, secretsList)
+    for(const SecretIcon &secretIcon: qAsConst(secretsList))
     {
         if(secretIcon.id == id)     return secretIcon.secretHero;
     }

@@ -675,7 +675,7 @@ void DeckHandler::redrawDownloadedCardImage(QString code)
 
 void DeckHandler::redrawClassCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         deckCard.draw();
     }
@@ -684,7 +684,7 @@ void DeckHandler::redrawClassCards()
 
 void DeckHandler::redrawSpellWeaponCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -697,7 +697,7 @@ void DeckHandler::redrawSpellWeaponCards()
 
 void DeckHandler::redrawAllCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         deckCard.draw();
     }
@@ -1018,7 +1018,7 @@ void DeckHandler::loadDecks()
 
     //Load decks to loadDeckTreeWidget
     int deckLoaded = 0;
-    foreach(QString deckName, decksJson.keys())
+    for(const QString &deckName: (const QStringList)decksJson.keys())
     {
         addDeckToLoadTree(deckName);
         deckLoaded++;
@@ -1107,7 +1107,7 @@ void DeckHandler::saveDeck()
     QJsonObject jsonObjectDeck;
     QString hero = "";
 
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         QString code = deckCard.getCode();
         int total = deckCard.total;
@@ -1321,7 +1321,7 @@ void DeckHandler::importEnemyDeck()
 {
     QList<DeckCard> enemyDeckCardList = enemyDeckHandler->getDeckCardList();
 
-    foreach(DeckCard deckCard, enemyDeckCardList)
+    for(DeckCard &deckCard: enemyDeckCardList)
     {
         if(!deckCard.getCode().isEmpty() && !deckCard.isOutsider())  newDeckCard(deckCard.getCode(), deckCard.total);
     }
@@ -1435,7 +1435,7 @@ void DeckHandler::completeArenaDeck(QString draftLog)
     QList<QString> cardsInDeck, cardsToAdd;
 
     //Create cardsInDeck list
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         QString code = deckCard.getCode();
         if(!code.isEmpty())

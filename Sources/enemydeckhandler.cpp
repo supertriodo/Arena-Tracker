@@ -255,7 +255,7 @@ void EnemyDeckHandler::unlockEnemyDeckInterface()
 
 void EnemyDeckHandler::redrawClassCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         deckCard.draw();
     }
@@ -264,7 +264,7 @@ void EnemyDeckHandler::redrawClassCards()
 
 void EnemyDeckHandler::redrawSpellWeaponCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -277,7 +277,7 @@ void EnemyDeckHandler::redrawSpellWeaponCards()
 
 void EnemyDeckHandler::redrawAllCards()
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         deckCard.draw();
     }
@@ -286,7 +286,7 @@ void EnemyDeckHandler::redrawAllCards()
 
 void EnemyDeckHandler::redrawDownloadedCardImage(QString code)
 {
-    foreach(DeckCard deckCard, deckCardList)
+    for(DeckCard &deckCard: deckCardList)
     {
         if(deckCard.getCode() == code)  deckCard.draw();
     }

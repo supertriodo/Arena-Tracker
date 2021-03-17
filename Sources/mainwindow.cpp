@@ -289,7 +289,7 @@ QString MainWindow::getHSLanguage()
 //            QStringList filters("*_*.png");
 //            dirHSCards.setNameFilters(filters);
 
-//            foreach(QString file, dirHSCards.entryList())
+//            for(const QString &file: dirHSCards.entryList())
 //            {
 //                dirHSCards.remove(file);
 //                pDebug(file + " removed.");
@@ -1639,7 +1639,7 @@ void MainWindow::moveInScreen(QPoint pos, QSize size)
             ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")";
     pDebug(message);
 
-    foreach(QScreen *screen, QGuiApplication::screens())
+    for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
     {
         if (!screen)    continue;
         QRect geometry = screen->geometry();
@@ -2066,7 +2066,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
         const int stickyMargin = 10;
 
-        foreach (QScreen *screen, QGuiApplication::screens())
+        for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
         {
             if (!screen)    continue;
             QRect screenRect = screen->geometry();
@@ -2176,7 +2176,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
-    foreach(const QUrl &url, e->mimeData()->urls())
+    for(const QUrl &url: (const QList<QUrl>)e->mimeData()->urls())
     {
         QString fileName = url.toLocalFile();
         pDebug("Dropped " + fileName);
@@ -4095,7 +4095,7 @@ int MainWindow::getScreenHighest()
 {
     int height = 0;
 
-    foreach(QScreen *screen, QGuiApplication::screens())
+    for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
     {
         if (!screen)    continue;
         QRect geometry = screen->geometry();

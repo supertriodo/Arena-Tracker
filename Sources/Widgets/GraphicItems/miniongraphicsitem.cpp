@@ -183,7 +183,7 @@ void MinionGraphicsItem::checkDownloadedCode(QString code)
     bool needUpdate = false;
 
     if(this->code == code)  needUpdate = true;
-    foreach(Addon addon, this->addons)
+    for(const Addon &addon: qAsConst(this->addons))
     {
         if(addon.code == code)   needUpdate = true;
     }
@@ -385,7 +385,7 @@ void MinionGraphicsItem::addAddon(Addon addon)
 
 void MinionGraphicsItem::addAddonNeutral(Addon addon)
 {
-    foreach(Addon storedAddon, this->addons)
+    for(const Addon &storedAddon: qAsConst(this->addons))
     {
         if(storedAddon.id == addon.id)  return;
     }

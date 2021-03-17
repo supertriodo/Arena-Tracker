@@ -328,12 +328,12 @@ void GraveyardHandler::unlockGraveyardInterface()
 
 void GraveyardHandler::redrawClassCards()
 {
-    foreach(DeckCard deckCard, deckCardListPlayer)
+    for(DeckCard &deckCard: deckCardListPlayer)
     {
         deckCard.draw();
     }
 
-    foreach(DeckCard deckCard, deckCardListEnemy)
+    for(DeckCard &deckCard: deckCardListEnemy)
     {
         deckCard.draw();
     }
@@ -342,7 +342,7 @@ void GraveyardHandler::redrawClassCards()
 
 void GraveyardHandler::redrawSpellWeaponCards()
 {
-    foreach(DeckCard deckCard, deckCardListPlayer)
+    for(DeckCard &deckCard: deckCardListPlayer)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -351,7 +351,7 @@ void GraveyardHandler::redrawSpellWeaponCards()
         }
     }
 
-    foreach(DeckCard deckCard, deckCardListEnemy)
+    for(DeckCard &deckCard: deckCardListEnemy)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -364,12 +364,12 @@ void GraveyardHandler::redrawSpellWeaponCards()
 
 void GraveyardHandler::redrawAllCards()
 {
-    foreach(DeckCard deckCard, deckCardListPlayer)
+    for(DeckCard &deckCard: deckCardListPlayer)
     {
         deckCard.draw();
     }
 
-    foreach(DeckCard deckCard, deckCardListEnemy)
+    for(DeckCard &deckCard: deckCardListEnemy)
     {
         deckCard.draw();
     }
@@ -378,12 +378,12 @@ void GraveyardHandler::redrawAllCards()
 
 void GraveyardHandler::redrawDownloadedCardImage(QString code)
 {
-    foreach(DeckCard deckCard, deckCardListPlayer)
+    for(DeckCard &deckCard: deckCardListPlayer)
     {
         if(deckCard.getCode() == code)  deckCard.draw();
     }
 
-    foreach(DeckCard deckCard, deckCardListEnemy)
+    for(DeckCard &deckCard: deckCardListEnemy)
     {
         if(deckCard.getCode() == code)  deckCard.draw();
     }

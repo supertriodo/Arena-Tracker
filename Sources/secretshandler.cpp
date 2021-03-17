@@ -364,9 +364,9 @@ void SecretsHandler::redrawDownloadedCardImage(QString code)
 
 void SecretsHandler::redrawClassCards()
 {
-    foreach(ActiveSecret activeSecret, activeSecretList)
+    for(ActiveSecret &activeSecret: activeSecretList)
     {
-        foreach(SecretCard secretCard, activeSecret.children)
+        for(SecretCard &secretCard: activeSecret.children)
         {
             secretCard.draw();
         }
@@ -376,9 +376,9 @@ void SecretsHandler::redrawClassCards()
 
 void SecretsHandler::redrawSpellWeaponCards()
 {
-    foreach(ActiveSecret activeSecret, activeSecretList)
+    for(ActiveSecret &activeSecret: activeSecretList)
     {
-        foreach(SecretCard secretCard, activeSecret.children)
+        for(SecretCard &secretCard: activeSecret.children)
         {
             CardType cardType = secretCard.getType();
             if(cardType == SPELL || cardType == WEAPON)   secretCard.draw();
@@ -389,9 +389,9 @@ void SecretsHandler::redrawSpellWeaponCards()
 
 void SecretsHandler::redrawAllCards()
 {
-    foreach(ActiveSecret activeSecret, activeSecretList)
+    for(ActiveSecret &activeSecret: activeSecretList)
     {
-        foreach(SecretCard secretCard, activeSecret.children)
+        for(SecretCard &secretCard: activeSecret.children)
         {
             secretCard.draw();
         }

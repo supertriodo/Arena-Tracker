@@ -99,7 +99,7 @@ void DetachWindow::moveInScreen(QPoint pos, QSize size)
             ") - Mid: (" + QString::number(midPoint.x()) + "," + QString::number(midPoint.y()) + ")";
     emit pDebug(message);
 
-    foreach(QScreen *screen, QGuiApplication::screens())
+    for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
     {
         if (!screen)    continue;
         QRect geometry = screen->geometry();
@@ -232,7 +232,7 @@ void DetachWindow::mouseMoveEvent(QMouseEvent *event)
 
         const int stickyMargin = 10;
 
-        foreach (QScreen *screen, QGuiApplication::screens())
+        for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
         {
             if (!screen)    continue;
             QRect screenRect = screen->geometry();

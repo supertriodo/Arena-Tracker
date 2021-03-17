@@ -34,7 +34,7 @@ void ResizeButton::mouseMoveEvent(QMouseEvent *event)
         QPoint newBottomRight = event->globalPos() + dragPosition;
         QPoint midApp = mainWindow->frameGeometry().center();
 
-        foreach (QScreen *screen, QGuiApplication::screens())
+        for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
         {
             if(screen->geometry().contains(midApp))
             {

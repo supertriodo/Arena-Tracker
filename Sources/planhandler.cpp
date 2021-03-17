@@ -207,7 +207,7 @@ void PlanHandler::updateMinionsAttack(bool friendly, Board *board)
 {
     int minionsAttack = 0;
     int minionsMaxAttack = 0;
-    foreach(MinionGraphicsItem *minion, *getMinionList(friendly, board))
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(friendly, board))
     {
         minionsAttack += minion->getPotencialDamage(false);
         if(board == nullptr)   minionsMaxAttack += minion->getPotencialDamage(true);
@@ -512,7 +512,7 @@ void PlanHandler::updateMinionZoneSpots(bool friendly, Board *board)
 
     if(viewBoard == board)
     {
-        foreach(ArrowGraphicsItem * arrow, board->arrows)
+        for(ArrowGraphicsItem *arrow: qAsConst(board->arrows))
         {
             arrow->prepareGeometryChange();
             arrow->update();
@@ -1061,7 +1061,7 @@ bool PlanHandler::appendAttack(ArrowGraphicsItem *attack, Board *board)
     int fromId = attack->getEnd(true)->getId();
     int toId = attack->getEnd(false)->getId();
 
-    foreach(ArrowGraphicsItem *arrow, board->arrows)
+    for(ArrowGraphicsItem *arrow: qAsConst(board->arrows))
     {
         if(arrow->getEnd(true)->getId() == fromId && arrow->getEnd(false)->getId() == toId)
         {
@@ -1348,8 +1348,7 @@ void PlanHandler::addAddonToLastTurn(QString code, int id1, int id2, Addon::Addo
 bool PlanHandler::areThereAuras(bool friendly)
 {
     //Check now board
-    QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
-    foreach(MinionGraphicsItem *minion, *minionsList)
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(friendly))
     {
         if(minion->isAura())    return true;
     }
@@ -1357,8 +1356,7 @@ bool PlanHandler::areThereAuras(bool friendly)
     //Check last turn board
     if(turnBoards.empty())  return false;
     Board *board = turnBoards.last();
-    minionsList = getMinionList(friendly, board);
-    foreach(MinionGraphicsItem *minion, *minionsList)
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(friendly, board))
     {
         if(minion->isAura())    return true;
     }
@@ -1643,7 +1641,7 @@ void PlanHandler::cardPlayed(bool friendly, int id, QString code, bool discard)
 
 void PlanHandler::revealEnemyCardPrevTurns(int id, QString code)
 {
-    foreach(Board *board, turnBoards)
+    for(Board *board: qAsConst(turnBoards))
     {
         CardGraphicsItem *card = findCard(false, id, board);
         if(card != nullptr)
@@ -1774,12 +1772,12 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     //Update nowBoard
     nowBoard->playerTurn = playerTurn;
 
-    foreach(MinionGraphicsItem * minion, nowBoard->playerMinions)
+    for(MinionGraphicsItem *minion: qAsConst(nowBoard->playerMinions))
     {
         minion->setPlayerTurn(playerTurn);
     }
 
-    foreach(MinionGraphicsItem * minion, nowBoard->enemyMinions)
+    for(MinionGraphicsItem *minion: qAsConst(nowBoard->enemyMinions))
     {
         minion->setPlayerTurn(playerTurn);
     }
@@ -1852,22 +1850,22 @@ Board * PlanHandler::copyBoard(Board *origBoard, int numTurn, bool copySecretCod
         if(board->enemyHero != nullptr)       board->enemyHero->setHeroWeapon(board->enemyWeapon, false);
     }
 
-    foreach(MinionGraphicsItem * minion, origBoard->playerMinions)
+    for(MinionGraphicsItem *minion: qAsConst(origBoard->playerMinions))
     {
         board->playerMinions.append(new MinionGraphicsItem(minion));
     }
 
-    foreach(MinionGraphicsItem * minion, origBoard->enemyMinions)
+    for(MinionGraphicsItem *minion: qAsConst(origBoard->enemyMinions))
     {
         board->enemyMinions.append(new MinionGraphicsItem(minion));
     }
 
-    foreach(CardGraphicsItem * card, origBoard->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(origBoard->playerHandList))
     {
         board->playerHandList.append(new CardGraphicsItem(card));
     }
 
-    foreach(CardGraphicsItem * card, origBoard->enemyHandList)
+    for(CardGraphicsItem *card: qAsConst(origBoard->enemyHandList))
     {
         board->enemyHandList.append(new CardGraphicsItem(card));
     }
@@ -1939,19 +1937,19 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
 
 void PlanHandler::redrawDownloadedCardImage(QString code)
 {
-    foreach(MinionGraphicsItem * minion, viewBoard->playerMinions)
+    for(MinionGraphicsItem *minion: qAsConst(viewBoard->playerMinions))
     {
         minion->checkDownloadedCode(code);
     }
-    foreach(MinionGraphicsItem * minion, viewBoard->enemyMinions)
+    for(MinionGraphicsItem *minion: qAsConst(viewBoard->enemyMinions))
     {
         minion->checkDownloadedCode(code);
     }
-    foreach(CardGraphicsItem * card, viewBoard->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(viewBoard->playerHandList))
     {
         card->checkDownloadedCode(code);
     }
-    foreach(CardGraphicsItem * card, viewBoard->enemyHandList)
+    for(CardGraphicsItem *card: qAsConst(viewBoard->enemyHandList))
     {
         card->checkDownloadedCode(code);
     }
@@ -1984,7 +1982,7 @@ void PlanHandler::createFutureBoard()
 int PlanHandler::getPotentialMana(Board *board)
 {
     int mana = board->playerHero->getAvailableResources();
-    foreach(CardGraphicsItem* card, board->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(board->playerHandList))
     {
         if(!card->isPlayed())
         {
@@ -2000,7 +1998,7 @@ int PlanHandler::getPotentialMana(Board *board)
 void PlanHandler::showManaPlayableCards(Board *board)
 {
     int mana = getPotentialMana(board);
-    foreach(CardGraphicsItem* card, board->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(board->playerHandList))
     {
         if(!card->isPlayed())   card->showManaPlayable(mana);
     }
@@ -2015,7 +2013,7 @@ void PlanHandler::showManaPlayableCards(Board *board)
 int PlanHandler::getPotentialManaNextTurn()
 {
     int mana = nowBoard->playerHero->getResources() + 1;
-    foreach(CardGraphicsItem* card, nowBoard->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(nowBoard->playerHandList))
     {
         int manaCard = card->getManaSpent(false);
         if(manaCard < 0)    mana -= manaCard;
@@ -2028,7 +2026,7 @@ int PlanHandler::getPotentialManaNextTurn()
 void PlanHandler::showManaPlayableCardsNextTurn()
 {
     int mana = getPotentialManaNextTurn();
-    foreach(CardGraphicsItem* card, nowBoard->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(nowBoard->playerHandList))
     {
         card->showManaPlayable(mana);
     }
@@ -2515,27 +2513,27 @@ void PlanHandler::loadViewBoard()
     ui->planGraphicsView->updateView(std::max(viewBoard->playerMinions.count(), viewBoard->enemyMinions.count()));
     updateViewCardZoneSpots();
 
-    foreach(MinionGraphicsItem *minion, viewBoard->playerMinions)
+    for(MinionGraphicsItem *minion: qAsConst(viewBoard->playerMinions))
     {
         ui->planGraphicsView->scene()->addItem(minion);
     }
 
-    foreach(MinionGraphicsItem *minion, viewBoard->enemyMinions)
+    for(MinionGraphicsItem *minion: qAsConst(viewBoard->enemyMinions))
     {
         ui->planGraphicsView->scene()->addItem(minion);
     }
 
-    foreach(ArrowGraphicsItem *arrow, viewBoard->arrows)
+    for(ArrowGraphicsItem *arrow: qAsConst(viewBoard->arrows))
     {
         ui->planGraphicsView->scene()->addItem(arrow);
     }
 
-    foreach(CardGraphicsItem *card, viewBoard->playerHandList)
+    for(CardGraphicsItem *card: qAsConst(viewBoard->playerHandList))
     {
         ui->planGraphicsView->scene()->addItem(card);
     }
 
-    foreach(CardGraphicsItem *card, viewBoard->enemyHandList)
+    for(CardGraphicsItem *card: qAsConst(viewBoard->enemyHandList))
     {
         ui->planGraphicsView->scene()->addItem(card);
     }
@@ -2685,8 +2683,8 @@ void PlanHandler::resetDeadProbs()
     if(nowBoard->playerHero != nullptr)    nowBoard->playerHero->setDeadProb();
     if(nowBoard->enemyHero != nullptr)     nowBoard->enemyHero->setDeadProb();
 
-    foreach(MinionGraphicsItem *minion, *getMinionList(true))    minion->setDeadProb();
-    foreach(MinionGraphicsItem *minion, *getMinionList(false))   minion->setDeadProb();
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))    minion->setDeadProb();
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(false))   minion->setDeadProb();
 
     if(futureBombs.isRunning())     abortFutureBombs = true;
 }
@@ -2704,11 +2702,11 @@ void PlanHandler::checkBomb(QString code)
     QList<int> targets;
 
     if(!onlyMinions)    targets.append(nowBoard->enemyHero->getHitsToDie(missileDamage));
-    foreach(MinionGraphicsItem *minion, *getMinionList(false))  targets.append(minion->getHitsToDie(missileDamage));
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(false))  targets.append(minion->getHitsToDie(missileDamage));
     if(playerIn)
     {
         if(!onlyMinions)    targets.append(nowBoard->playerHero->getHitsToDie(missileDamage));
-        foreach(MinionGraphicsItem *minion, *getMinionList(true))   targets.append(minion->getHitsToDie(missileDamage));
+        for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))   targets.append(minion->getHitsToDie(missileDamage));
     }
     if(targets.isEmpty())   return;
 
@@ -2728,12 +2726,12 @@ void PlanHandler::setDeadProbs()
     bool onlyMinions = dp.onlyMinions;
 
     if(!onlyMinions)    nowBoard->enemyHero->setDeadProb(deadProbs.takeFirst());
-    foreach(MinionGraphicsItem *minion, *getMinionList(false))  minion->setDeadProb(deadProbs.takeFirst());
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(false))  minion->setDeadProb(deadProbs.takeFirst());
 
     if(playerIn)
     {
         if(!onlyMinions)    nowBoard->playerHero->setDeadProb(deadProbs.takeFirst());
-        foreach(MinionGraphicsItem *minion, *getMinionList(true))   minion->setDeadProb(deadProbs.takeFirst());
+        for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))   minion->setDeadProb(deadProbs.takeFirst());
     }
 }
 
@@ -2819,7 +2817,7 @@ QList<int> PlanHandler::decodeBombState(QString state)
 QString PlanHandler::encodeBombState(QList<int> targets)
 {
     QStringList targetsString;
-    foreach(int target, targets)      targetsString.append(QString::number(target));
+    for(int target: targets)    targetsString.append(QString::number(target));
     return targetsString.join(":");
 }
 
@@ -2827,8 +2825,7 @@ QString PlanHandler::encodeBombState(QList<int> targets)
 int PlanHandler::flamewakersOnBoard()
 {
     int num = 0;
-    QList<MinionGraphicsItem *> *playerMinions = getMinionList(true);
-    foreach(MinionGraphicsItem *minion, *playerMinions)
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))
     {
         if(minion->getCode() == FLAMEWAKER)     num++;
     }
@@ -2839,7 +2836,7 @@ int PlanHandler::flamewakersOnBoard()
 int PlanHandler::numRaceOnBoard(CardRace cardRace)
 {
     int numRace = 0;
-    foreach(MinionGraphicsItem *minion, *getMinionList(true))
+    for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))
     {
         if(Utility::getRaceFromCode(minion->getCode()) == cardRace) numRace++;
     }

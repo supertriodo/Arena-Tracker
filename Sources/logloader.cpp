@@ -34,7 +34,7 @@ bool LogLoader::init()
 
 void LogLoader::createLogWorkers()
 {
-    foreach(QString component, logComponentList)
+    for(const QString &component: qAsConst(logComponentList))
     {
         createLogWorker(component);
     }
@@ -238,7 +238,7 @@ bool LogLoader::checkLogConfig()
     QTextStream stream(&file);
 
     bool logConfigChanged = false;
-    foreach(QString component, logComponentList)
+    for(const QString &component: qAsConst(logComponentList))
     {
         logConfigChanged = checkLogConfigOption("["+component+"]", data, stream) || logConfigChanged;
     }
@@ -282,7 +282,7 @@ LogLoader::~LogLoader()
 
 void LogLoader::sendLogWorkerFirstRun()
 {
-    foreach(QString logComponent, logComponentList)
+    for(const QString &logComponent: qAsConst(logComponentList))
     {
         LogWorker *logWorker = logWorkerMap[logComponent];
         logWorker->readLog();
@@ -301,7 +301,7 @@ void LogLoader::sendLogWorkerFirstRun()
 
 void LogLoader::sendLogWorker()
 {
-    foreach(QString logComponent, logComponentList)     logWorkerMap[logComponent]->readLog();
+    for(const QString &logComponent: qAsConst(logComponentList))    logWorkerMap[logComponent]->readLog();
     processDataLogs();
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
@@ -316,7 +316,7 @@ void LogLoader::processDataLogs()
     QList<qint64> timeStamps = dataLogs.keys();
     qSort(timeStamps);
 
-    foreach(qint64 timeStamp, timeStamps)
+    for(qint64 timeStamp: qAsConst(timeStamps))
     {
         DataLog dataLog = dataLogs[timeStamp];
         emit newLogLineRead(dataLog.logComponent, dataLog.line, dataLog.numLine, dataLog.logSeek);

@@ -781,7 +781,7 @@ bool Utility::isLeftOfScreen(QPoint center)
     int midX = center.x();
     int midY = center.y();
 
-    foreach (QScreen *screen, QGuiApplication::screens())
+    for(QScreen *screen: (const QList<QScreen *>)QGuiApplication::screens())
     {
         if (!screen)    continue;
         QRect screenRect = screen->geometry();

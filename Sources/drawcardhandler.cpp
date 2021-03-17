@@ -150,7 +150,7 @@ void DrawCardHandler::redrawDownloadedCardImage(QString code)
 
 void DrawCardHandler::redrawClassCards()
 {
-    foreach(DrawCard drawCard, drawCardList)
+    for(DrawCard &drawCard: drawCardList)
     {
         drawCard.draw();
     }
@@ -159,7 +159,7 @@ void DrawCardHandler::redrawClassCards()
 
 void DrawCardHandler::redrawSpellWeaponCards()
 {
-    foreach(DrawCard drawCard, drawCardList)
+    for(DrawCard &drawCard: drawCardList)
     {
         CardType cardType = drawCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
@@ -172,7 +172,7 @@ void DrawCardHandler::redrawSpellWeaponCards()
 
 void DrawCardHandler::redrawAllCards()
 {
-    foreach(DrawCard drawCard, drawCardList)
+    for(DrawCard &drawCard: drawCardList)
     {
         drawCard.draw();
     }
