@@ -70,6 +70,7 @@ public:
     int getAvailableResources();
     void damagePlanningMinion(int damage=1);
     void checkDownloadedCode(QString code);
+    QList<CardClass> getCardClass();
 };
 
 #endif // HEROGRAPHICSITEM_H

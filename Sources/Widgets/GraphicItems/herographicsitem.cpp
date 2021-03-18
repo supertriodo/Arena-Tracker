@@ -161,6 +161,12 @@ int HeroGraphicsItem::getArmorHealth()
 }
 
 
+QList<CardClass> HeroGraphicsItem::getCardClass()
+{
+    return Utility::getClassFromCode(heroCode);
+}
+
+
 void HeroGraphicsItem::damagePlanningMinion(int damage)
 {
     if(damage > armor)

@@ -108,7 +108,6 @@ void SecretsHandler::clearSecretsAnimating()
 }
 
 
-//TODO Dual color secrets
 void SecretsHandler::secretStolen(int id, QString code, LoadingScreenState loadingScreenState)
 {
     QList<CardClass> classList = Utility::getClassFromCode(code);

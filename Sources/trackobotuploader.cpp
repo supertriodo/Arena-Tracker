@@ -248,7 +248,7 @@ void TrackobotUploader::openTBProfile()
 }
 
 
-//TODO verificar trackobot acepta "demonhunter"
+//Trackobot no acepta "demonhunter"
 void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen,
                                      qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory)
 {

@@ -1376,13 +1376,27 @@ void PlanHandler::addAddon(MinionGraphicsItem *minion, QString code, int id, Add
 }
 
 
-//TODO Dual color secrets
 void PlanHandler::playerSecretPlayed(int id, QString code)
 {
     if(nowBoard->playerHero == nullptr) return;
     if(!Utility::isASecret(code))       return;
-    QList<CardClass> classList = Utility::getClassFromCode(code);
-    nowBoard->playerHero->addSecret(id, classList.first());
+    QList<CardClass> secretClassList = Utility::getClassFromCode(code);
+    CardClass secretClass;
+    if(secretClassList.isEmpty())   secretClass = INVALID_CLASS;
+    else                            secretClass = secretClassList.first();
+
+    if(secretClassList.count() > 1)
+    {
+        for(const CardClass &cardClass: (const QList<CardClass>)nowBoard->playerHero->getCardClass())
+        {
+            if(secretClassList.contains(cardClass))
+            {
+                secretClass = cardClass;
+                break;
+            }
+        }
+    }
+    nowBoard->playerHero->addSecret(id, secretClass);
 }
 
 
