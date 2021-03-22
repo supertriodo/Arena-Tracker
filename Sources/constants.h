@@ -33,7 +33,7 @@
 #define AUTODEFENSE_MATRIX QString("BOT_908")
 #define NEVER_SURRENDER QString("DAL_570")
 #define OH_MY_YOGG QString("DMF_236")
-#define RECKONING QString("")
+#define RECKONING QString("")//TODO finish
 
 #define FREEZING_TRAP QString("EX1_611")
 #define EXPLOSIVE_TRAP QString("EX1_610")
