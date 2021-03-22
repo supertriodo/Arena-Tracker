@@ -1797,17 +1797,14 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-//                    containsAll(text, "poisonous")
+                    containsAll(text, "poisonous")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    mechanics.contains(QJsonValue("TWINSPELL"))
-                    isTokenCardGen(code, cost, mechanics, referencedTags, text) &&
-                    isDiscoverDrawGen(code, cost, mechanics, referencedTags, text)
-
-//                    numToYourHandGen(code, cost, mechanics, text)>1 &&
-//                    isTokenCardGen(code, cost, mechanics, referencedTags, text)
+//                    isDiscoverDrawGen(code, cost, mechanics, referencedTags, text) && text.contains("murloc")
+//                    numToYourHandGen(code, cost, mechanics, text)>5// && text.contains("dragon")
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -4366,6 +4363,8 @@ REGLAS
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
     Resumen: 3+3+3(echo), 2+2, 1+X, 0
 +drawGen/toYourHandGen: Costes 3-6 son toYourHandGen(1).
+    Dragones cuentan x2 en mana.
+    Murlocs cuestan %2 en mana.
     Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
