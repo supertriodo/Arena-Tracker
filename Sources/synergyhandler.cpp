@@ -1797,13 +1797,17 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "poisonous")
+//                    containsAll(text, "poisonous")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
-//                    isDrawSyn(code)
 //                    mechanics.contains(QJsonValue("TWINSPELL"))
+                    isTokenCardGen(code, cost, mechanics, referencedTags, text) &&
+                    isDiscoverDrawGen(code, cost, mechanics, referencedTags, text)
+
+//                    numToYourHandGen(code, cost, mechanics, text)>1 &&
+//                    isTokenCardGen(code, cost, mechanics, referencedTags, text)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -1822,7 +1826,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
                 debugSynergiesCode(code, ++num);
     //            qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<=50)
+                if(num>0 && num<=100)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -4360,12 +4364,11 @@ REGLAS
     rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
-    Resumen: 2+2, 1+X, 0
-+toYourHandGen/tokenCardGen/twinspell: si una carta nos da 1+ carta(s) de coste 0 o 1 es tokenCardGen, si es de mas coste sera toYourHandGen
-    (a no ser que el conjunto de cartas que da se acerquen a 4 de mana todas).
-+drawGen/toYourHandGen: Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
+    Resumen: 3+3+3(echo), 2+2, 1+X, 0
++drawGen/toYourHandGen: Costes 3-6 son toYourHandGen(1).
+    Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
-    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen. Costes 2-6 son toYourHandGen(1).
+    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
