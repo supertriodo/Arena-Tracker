@@ -22,7 +22,7 @@ private:
     QMap<QString, QList<QString>> synergyCodes, directLinks;
     StatSynergies costMinions, attackMinions, healthMinions, costSpells;
     StatSynergies costWeapons, attackWeapons, healthWeapons;
-    DraftItemCounter **raceCounters, **cardTypeCounters, **mechanicCounters;
+    DraftItemCounter **raceCounters, **schoolCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     DraftDropCounter **dropCounters;
 
@@ -69,6 +69,7 @@ private:
 
     void updateManaCounter(DeckCard &deckCard);
     void updateRaceCounters(DeckCard &deckCard);
+    void updateSchoolCounters(DeckCard &deckCard);
     void updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QString> &spellMap, QMap<QString,
                                 QString> &minionMap, QMap<QString, QString> &weaponMap);
     void updateDropCounters(DeckCard &deckCard, QMap<QString, QString> &drop2Map,
@@ -84,6 +85,7 @@ private:
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
     void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
+    void getSchoolSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
     void getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
@@ -98,6 +100,13 @@ private:
     bool isTotemGen(const QString &code);
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
+    bool isArcaneGen(const QString &code);
+    bool isFelGen(const QString &code);
+    bool isFireGen(const QString &code);
+    bool isFrostGen(const QString &code);
+    bool isHolyGen(const QString &code);
+    bool isShadowGen(const QString &code);
+    bool isNatureGen(const QString &code);
     bool isDiscoverDrawGen(const QString &code, int cost, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscoverGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isDrawGen(const QString &code, const QString &text);
@@ -176,7 +185,7 @@ private:
     bool isBeastSyn(const QString &code);
     bool isTotemSyn(const QString &code);
     bool isPirateSyn(const QString &code);
-    bool isDragonSyn(const QString &code, const QString &text);
+    bool isDragonSyn(const QString &code);
     bool isMurlocAllSyn(const QString &code, const QString &text);
     bool isDemonAllSyn(const QString &code, const QString &text);
     bool isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
@@ -184,7 +193,21 @@ private:
     bool isBeastAllSyn(const QString &code, const QString &text);
     bool isTotemAllSyn(const QString &code, const QString &text);
     bool isPirateAllSyn(const QString &code, const QString &text);
-    bool isDragonAllSyn(const QString &code);
+    bool isDragonAllSyn(const QString &code, const QString &text);
+    bool isArcaneSyn(const QString &code);
+    bool isFelSyn(const QString &code);
+    bool isFireSyn(const QString &code);
+    bool isFrostSyn(const QString &code);
+    bool isHolySyn(const QString &code);
+    bool isShadowSyn(const QString &code);
+    bool isNatureSyn(const QString &code);
+    bool isArcaneAllSyn(const QString &code, const QString &text);
+    bool isFelAllSyn(const QString &code, const QString &text);
+    bool isFireAllSyn(const QString &code, const QString &text);
+    bool isFrostAllSyn(const QString &code, const QString &text);
+    bool isHolyAllSyn(const QString &code, const QString &text);
+    bool isShadowAllSyn(const QString &code, const QString &text);
+    bool isNatureAllSyn(const QString &code, const QString &text);
     bool isDiscoverSyn(const QString &code);
     bool isDrawSyn(const QString &code);
     bool isToYourHandSyn(const QString &code);

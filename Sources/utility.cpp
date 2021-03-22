@@ -381,6 +381,15 @@ CardRace Utility::getRaceFromCode(QString code)
 }
 
 
+//TODO finish
+CardSchool Utility::getSchoolFromCode(QString code)
+{
+    QString value = Utility::getCardAttribute(code, "school").toString();
+    if(value == "ARCANE")           return ARCANE;
+    else                            return INVALID_SCHOOL;
+}
+
+
 //--------------------------------------------------------
 //----NEW HERO CLASS
 //--------------------------------------------------------

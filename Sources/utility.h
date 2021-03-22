@@ -39,6 +39,9 @@ enum MechanicBorderColor { MechanicBorderRed, MechanicBorderGrey, MechanicBorder
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON,
                   V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL,
                   V_BEAST_ALL, V_TOTEM_ALL, V_PIRATE_ALL, V_DRAGON_ALL, V_NUM_RACES};
+enum VisibleSchool {V_ARCANE, V_FEL, V_FIRE, V_FROST, V_HOLY, V_SHADOW, V_NATURE,
+                    V_ARCANE_ALL, V_FEL_ALL, V_FIRE_ALL, V_FROST_ALL, V_HOLY_ALL,
+                    V_SHADOW_ALL, V_NATURE_ALL, V_NUM_SCHOOLS};
 enum VisibleType {V_MINION, V_SPELL, V_WEAPON, V_SPELL_ALL, V_WEAPON_ALL, V_NUM_TYPES};
 enum VisibleDrop {V_DROP2, V_DROP3, V_DROP4, V_NUM_DROPS};
 enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
@@ -123,6 +126,7 @@ public:
     static CardRarity getRarityFromCode(QString code);
     static QList<CardClass> getClassFromCode(QString code);
     static CardRace getRaceFromCode(QString code);
+    static CardSchool getSchoolFromCode(QString code);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);
     static void dumpOnFile(const QByteArray &data, QString path);

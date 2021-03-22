@@ -16,6 +16,7 @@ enum CardType {INVALID_TYPE, HERO, MINION, SPELL, ENCHANTMENT, WEAPON, HERO_POWE
 enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,
                WORGEN, GOBLIN2, MURLOC, DEMON, SCOURGE, MECHANICAL, ELEMENTAL, OGRE, BEAST, TOTEM, NERUBIAN, PIRATE,
                DRAGON, BLANK, ALL, EGG};
+enum CardSchool {INVALID_SCHOOL, ARCANE, FEL, FIRE, FROST, HOLY, SHADOW, NATURE};
 //--------------------------------------------------------
 //----NEW HERO CLASS
 //--------------------------------------------------------
@@ -44,6 +45,7 @@ protected:
     CardType type;
     QList<CardClass> cardClass;
     CardRace cardRace;
+    CardSchool cardSchool;
     int cost;
     QString createdByCode;
 
@@ -70,6 +72,7 @@ public:
     CardRarity getRarity();
     QList<CardClass> getCardClass();
     CardRace getRace();
+    CardSchool getSchool();
     int getCost();
     void setCode(QString code);
     void setManaLimit(bool top);
