@@ -271,7 +271,7 @@ private:
     bool isOutcastSyn(const QString &code);
     bool isOutcastAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isEndTurnSyn(const QString &code, const QString &text);
-    bool isRushGiverSyn(const QString &code, const QString &text);
+    bool isRushGiverSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
 
 signals:
     void pLog(QString line);

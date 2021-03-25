@@ -1041,7 +1041,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isTreantSyn(code))                                                   mechanicCounters[V_TREANT]->increaseSyn(code);
     if(isLackeySyn(code))                                                   mechanicCounters[V_LACKEY]->increaseSyn(code);
     if(isEndTurnSyn(code, text))                                            mechanicCounters[V_END_TURN]->increaseSyn(code);
-    if(isRushGiverSyn(code, text))                                          mechanicCounters[V_RUSH_GIVER]->increaseSyn(code);
+    if(isRushGiverSyn(code, mechanics, text))                               mechanicCounters[V_RUSH_GIVER]->increaseSyn(code);
     //New Synergy Step 4
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
@@ -1574,7 +1574,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isTreantSyn(code))                                       mechanicCounters[V_TREANT]->insertCards(synergyTagMap);
     if(isLackeySyn(code))                                       mechanicCounters[V_LACKEY]->insertCards(synergyTagMap);
     if(isEndTurnSyn(code, text))                                mechanicCounters[V_END_TURN]->insertCards(synergyTagMap);
-    if(isRushGiverSyn(code, text))                              mechanicCounters[V_RUSH_GIVER]->insertCards(synergyTagMap);
+    if(isRushGiverSyn(code, mechanics, text))                   mechanicCounters[V_RUSH_GIVER]->insertCards(synergyTagMap);
     //New Synergy Step 6
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
@@ -2039,7 +2039,7 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isOtherClassSyn(code, text))                                         mec<<"otherClassSyn";
     if(isOutcastAllSyn(code, referencedTags))                               mec<<"outcastAllSyn";
     if(isEndTurnSyn(code, text))                                            mec<<"endTurnSyn";
-    if(isRushGiverSyn(code, text))                                          mec<<"rushGiverSyn";
+    if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
@@ -2405,7 +2405,7 @@ bool SynergyHandler::isEnrageGen(const QString &code, const QJsonArray &mechanic
     {
         return synergyCodes[code].contains("enrageGen");
     }
-    else if(mechanics.contains(QJsonValue("ENRAGED")))
+    else if(mechanics.contains(QJsonValue("ENRAGED")) || mechanics.contains(QJsonValue("FRENZY")))
     {
         return true;
     }
@@ -4166,13 +4166,17 @@ bool SynergyHandler::isEndTurnSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isRushGiverSyn(const QString &code, const QString &text)
+bool SynergyHandler::isRushGiverSyn(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     //TEST
     //text.contains("poisonous") || text.contains("also damages")
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("rushGiverSyn");
+    }
+    else if(mechanics.contains(QJsonValue("ENRAGED")) || mechanics.contains(QJsonValue("FRENZY")))
+    {
+        return true;
     }
     else if(text.contains("poisonous") || text.contains("also damages"))
     {
@@ -4315,7 +4319,7 @@ silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, rushGiverG
 Double check:
 DAMAGE/DESTROY: reachGen(no atk1), pingGen(enrageSyn), aoeGen(spellDamageSyn/eggSyn), damageMinionsGen, destroyGen(8+ damage/no rush)
 BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
-ENRAGE/TAKE DAMAGE: enrageGen(take damage),
+ENRAGE/FRENZY/TAKE DAMAGE: enrageGen(take damage),
 SUMMON: tokenGen(summon)
 TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen
 PLAY CARDS: tokenCardSyn
@@ -4330,9 +4334,8 @@ COSTE/STATS: evolveSyn
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen
 RESTORE: restoreTargetMinionGen <--> restoreFriendlyHeroGen
 DAMAGE HERO: damageFriendlyHeroGen/damageFriendlyHeroSyn
-CHARGE/RUSH: pingGen(atk1) <--> damageMinionsGen(no atk1) <--> reachGen(no atk1/solo charge)
+CHARGE/RUSH: pingGen(atk1) o damageMinionsGen(no atk1) <--> reachGen(no atk1) o rush
 STEALTH: stealthGen <--> reachGen(no atk1)
-MAGNETIC: magnetic <--> mechAllSyn
 
 SPAWN ENEMIES: spawnEnemyGen
 DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
@@ -4394,6 +4397,7 @@ REGLAS
 +Sinergias con 1/1s incluye lackeySyn y silverHandSyn. (jadeGolemSyn no existe)
 +Summon a 5/5 copy of a minion in your deck, es una sinergia que no mostramos ya que el deck es muy grande y es dificil de acertar.
 +Rush minion nunca los consideramos destroyGen por mucho ataque que tengan.
++RushGiverGen/RushGen: Los rushGiverGen solo son rushGen si automaticamente le dan rush al invocarlas.
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
