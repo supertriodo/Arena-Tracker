@@ -34,6 +34,7 @@
 #define NEVER_SURRENDER QString("DAL_570")
 #define OH_MY_YOGG QString("DMF_236")
 #define RECKONING QString("")//TODO finish
+#define GALLOPING_SAVIOR QString("")//TODO finish
 
 #define FREEZING_TRAP QString("EX1_611")
 #define EXPLOSIVE_TRAP QString("EX1_610")
@@ -67,6 +68,7 @@
 #define FLAME_WARD QString("ULD_239")
 #define NETHERWIND_PORTAL QString("BT_003")
 #define RIGGED_FAIRE_GAME QString("DMF_107")
+#define OASIS_ALLY QString("")//TODO finish
 
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")

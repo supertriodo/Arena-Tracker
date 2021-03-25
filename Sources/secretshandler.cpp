@@ -240,11 +240,13 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(REPENTANCE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(NEVER_SURRENDER, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SACRED_TRIAL, inArena, activeSecret);
+                unknownSecretPlayedAddOption(GALLOPING_SAVIOR, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EYE_FOR_AN_EYE, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(GETAWAY_KODO, inArena, activeSecret);
                 unknownSecretPlayedAddOption(COMPETITIVE_SPIRIT, inArena, activeSecret);
                 //EPIC
+                unknownSecretPlayedAddOption(RECKONING, inArena, activeSecret);
                 unknownSecretPlayedAddOption(HIDDEN_WISDOM, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OH_MY_YOGG, inArena, activeSecret);
             break;
@@ -275,6 +277,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(NETHERWIND_PORTAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MIRROR_ENTITY, inArena, activeSecret);
                 unknownSecretPlayedAddOption(FROZEN_CLONE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(OASIS_ALLY, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DDUPLICATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(FLAME_WARD, inArena, activeSecret);
                 unknownSecretPlayedAddOption(ICE_BARRIER, inArena, activeSecret);
@@ -707,8 +710,10 @@ void SecretsHandler::handOfSalvationTested()
 
 void SecretsHandler::_3CardsPlayedTested()
 {
-    discardSecretOptionNow(RAT_TRAP);
+    discardSecretOptionNow(GALLOPING_SAVIOR);
     discardSecretOptionNow(HIDDEN_WISDOM);
+
+    discardSecretOptionNow(RAT_TRAP);
 }
 
 
@@ -770,6 +775,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
 
             discardSecretOptionNow(SPLITTING_IMAGE);
+            discardSecretOptionNow(OASIS_ALLY);
 
             discardSecretOptionNow(BAMBOOZLE);
         }
@@ -810,6 +816,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             if(planHandler->isReckoningTested(isHeroTo, id1, id2))  discardSecretOption(RECKONING);//Ocultado por AUTODEFENSE_MATRIX
 
             discardSecretOptionNow(SPLITTING_IMAGE);
+            discardSecretOptionNow(OASIS_ALLY);
 
             discardSecretOptionNow(BAMBOOZLE);
         }
@@ -896,7 +903,7 @@ void SecretsHandler::createSecretsByPickrate()
 {
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM
-                              << OH_MY_YOGG;
+                              << OH_MY_YOGG << RECKONING << GALLOPING_SAVIOR;
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
@@ -904,7 +911,7 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
-                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME;
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
                              << SHADOW_CLONE << SHENANIGANS;
