@@ -2708,7 +2708,7 @@ void MainWindow::createDataDir()
 {
     Utility::createDir(Utility::dataPath());
     if(REMOVE_CARDS_ON_VERSION_UPDATE)  removeHSCards();//Redownload HSCards en esta version
-    if(REMOVE_EXTRA_ON_VERSION_UPDATE)  removeExtra();//Redownload Extra en esta version
+    if(REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE)  removeExtraAndHistograms();//Redownload Extra en esta version y recrea histogramas
     if(Utility::createDir(Utility::hscardsPath()))  allCardsDownloadNeeded = true;
     Utility::createDir(Utility::gameslogPath());
     Utility::createDir(Utility::extraPath());
@@ -2856,7 +2856,7 @@ void MainWindow::removeHSCards(bool forceRemove)
 }
 
 
-void MainWindow::removeExtra()
+void MainWindow::removeExtraAndHistograms()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     QString runVersion = settings.value("runVersion", "").toString();
@@ -2866,6 +2866,8 @@ void MainWindow::removeExtra()
         QDir extraDir = QDir(Utility::extraPath());
         extraDir.removeRecursively();
         pDebug(Utility::extraPath() + " removed.");
+
+        removeHistograms();
     }
 }
 
