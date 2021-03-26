@@ -381,12 +381,19 @@ CardRace Utility::getRaceFromCode(QString code)
 }
 
 
-//TODO finish
 CardSchool Utility::getSchoolFromCode(QString code)
 {
-    QString value = Utility::getCardAttribute(code, "school").toString();
-    if(value == "ARCANE")           return ARCANE;
-    else                            return INVALID_SCHOOL;
+    QString value = Utility::getCardAttribute(code, "spellSchool").toString();
+    if(value == "NONE")                 return NONE;
+    else if(value == "ARCANE")          return ARCANE;
+    else if(value == "FEL")             return FEL;
+    else if(value == "FIRE")            return FIRE;
+    else if(value == "FROST")           return FROST;
+    else if(value == "HOLY")            return HOLY;
+    else if(value == "SHADOW")          return SHADOW;
+    else if(value == "NATURE")          return NATURE;
+    else if(value == "PHYSICAL_COMBAT") return PHYSICAL_COMBAT;
+    else                                return INVALID_SCHOOL;
 }
 
 
