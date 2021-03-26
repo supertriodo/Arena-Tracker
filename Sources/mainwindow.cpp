@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
     createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler -->TrackobotUploader
 
-    downloadHSRCards();//-->DraftHandler -->SecretHandler
+    initHSRCards();//-->DraftHandler -->SecretHandler
 
     readSettings();
     checkGamesLogDir();
@@ -366,6 +366,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
         }
+        else if(fullUrl == HSR_CARDS_14DAYS)
+        {
+            localHSRCards();
+        }
+        else if(fullUrl == HSR_HEROES_WINRATE)
+        {
+            localHSRHeroesWinrate();
+        }
         else
         {
             networkManager->get(QNetworkRequest(reply->url()));
@@ -394,13 +402,17 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         else if(fullUrl == HSR_HEROES_WINRATE)
         {
             pDebug("Extra: Heroes winrate --> Download Success.");
-            processHSRHeroesWinrate(QJsonDocument::fromJson(reply->readAll()).object());
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/HSRheroes.json");
+            processHSRHeroesWinrate(QJsonDocument::fromJson(jsonData).object());
         }
         //HSR Cards Pickrate/Winrate
         else if(fullUrl == HSR_CARDS_PATCH || fullUrl == HSR_CARDS_EXP || fullUrl == HSR_CARDS_14DAYS)
         {
             pDebug("Extra: HSR cards --> Download Success from: " + fullUrl);
-            startProcessHSRCards(QJsonDocument::fromJson(reply->readAll()).object());
+            QByteArray jsonData = reply->readAll();
+            Utility::dumpOnFile(jsonData, Utility::extraPath() + "/HSRcards.json");
+            startProcessHSRCards(QJsonDocument::fromJson(jsonData).object());
         }
 #ifdef QT_DEBUG
         //Hearth Arena (Debug)
@@ -535,10 +547,34 @@ void MainWindow::initCardsJson()
 }
 
 
-void MainWindow::downloadHSRHeroesWinrate()
+void MainWindow::initHSRHeroesWinrate()
 {
-    pDebug("Extra: Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
-    networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
+    QFileInfo fi(Utility::extraPath() + "/HSRheroes.json");
+    if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
+    {
+        localHSRHeroesWinrate();
+    }
+    else
+    {
+        pDebug("Extra: Heroes winrate --> Download from: " + QString(HSR_HEROES_WINRATE));
+        networkManager->get(QNetworkRequest(QUrl(HSR_HEROES_WINRATE)));
+    }
+}
+
+
+void MainWindow::localHSRHeroesWinrate()
+{
+    pDebug("Extra: Heroes winrate --> Use local HSRheroes.json");
+
+    QFile file(Utility::extraPath() + "/HSRheroes.json");
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        pDebug("ERROR: Failed to open HSRheroes.json");
+        return;
+    }
+    QByteArray jsonData = file.readAll();
+    file.close();
+    processHSRHeroesWinrate(QJsonDocument::fromJson(jsonData).object());
 }
 
 
@@ -666,7 +702,7 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
 }
 
 
-void MainWindow::downloadHSRCards()
+void MainWindow::initHSRCards()
 {
     connect(&futureProcessHSRCardsPickrates, &QFutureWatcher<QMap<QString, float> *>::finished, secretsHandler,
         [this]()
@@ -707,8 +743,33 @@ void MainWindow::downloadHSRCards()
             draftHandler->setCardsPlayedWinratesMap(cardsPlayedWinratesMap);
         }
     );
-    pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
-    networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
+
+    QFileInfo fi(Utility::extraPath() + "/HSRcards.json");
+    if(fi.exists() && (fi.lastModified().addDays(1)>QDateTime::currentDateTime()))
+    {
+        localHSRCards();
+    }
+    else
+    {
+        pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
+        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
+    }
+}
+
+
+void MainWindow::localHSRCards()
+{
+    pDebug("Extra: HSR cards --> Use local HSRcards.json");
+
+    QFile file(Utility::extraPath() + "/HSRcards.json");
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        pDebug("ERROR: Failed to open HSRcards.json");
+        return;
+    }
+    QByteArray jsonData = file.readAll();
+    file.close();
+    startProcessHSRCards(QJsonDocument::fromJson(jsonData).object());
 }
 
 
@@ -920,7 +981,7 @@ void MainWindow::createDraftHandler()
     connect(ui->minimizeButton, SIGNAL(clicked()),
             draftHandler, SLOT(minimizeScoreWindow()));
 
-    downloadHSRHeroesWinrate();
+    initHSRHeroesWinrate();
     if(cardsJsonLoaded) draftHandler->buildHeroCodesList();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
