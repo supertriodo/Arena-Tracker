@@ -30,7 +30,8 @@
 #define BIG_BUTTONS_H 48
 #define SMALL_BUTTONS_H 19
 #define DEFAULT_THEME "Random"
-#define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
+#define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/26757/all/cards.json"
+//#define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
 #define HSR_CARDS_PATCH "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_PATCH"
