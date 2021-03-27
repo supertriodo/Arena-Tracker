@@ -244,7 +244,7 @@
 "BAR_854" : [ "elementalAllSyn", "battlecry" ],
 "BAR_860" : [ "murlocSyn", "drop2" ],
 "BAR_871" : [ "drop2", "tokenGen", "silverHandGen", "endTurnGen" ],
-"BAR_873" : [ "holySyn", "spellGen", "drawGen", "battlecry", "tokenCardGen", "returnSyn" ],
+"BAR_873" : [ "holySyn", "spellGen", "holyGen", "drawGen", "battlecry", "tokenCardGen", "returnSyn" ],
 "BAR_875" : [ "drop2", "pingGen", "secretSyn" ],
 "BAR_876" : [ "drop3", "battlecry", "secretAllSyn", "returnSyn" ],
 "BAR_878" : [ "holyAllSyn", "drop4" ],
@@ -3000,6 +3000,11 @@
     "DMF_105", "DMF_101", "DMF_244", "DMF_064", "DMF_054", "DMF_184", "DMF_186",
     "DMF_517", "DMF_703", "DMF_701", "DMF_117", "DMF_118", "DMF_526", "DMF_124",
     "DMF_073", "DMF_082", "DMF_174", "DMF_080", "DMF_078", "DMF_163", "YOP_015",
-    "YOP_025", "YOP_011"]
+    "YOP_025", "YOP_011"],
+  "BAR_077": ["BAR_074", "BAR_075", "BAR_076"],
+  "BAR_334": ["BAR_020", "BAR_021", "BAR_022", "BAR_024", "BAR_025", "BAR_031",
+    "BAR_070", "BAR_071", "BAR_073", "BAR_078", "BAR_320", "BAR_538", "BAR_840",
+    "BAR_843", "BAR_896"],
+  "BAR_322": ["BAR_324", "BAR_318", "BAR_321", "CS2_074", "ICC_221", "YOP_015"]
 }
 }

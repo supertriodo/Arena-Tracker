@@ -3039,6 +3039,22 @@
     "DMF_117 Cascading Disaster", "DMF_118 Tickatus", "DMF_526 Stage Dive", "DMF_124 Horrendous Growth",
     "DMF_073 Darkmoon Dirigible", "DMF_082 Darkmoon Statue", "DMF_174 Circus Medic",
     "DMF_080 Fleethoof Pearltusk", "DMF_078 Strongman", "DMF_163 Carnival Clown",
-    "YOP_015 Nitroboost Poison", "YOP_025 Dreaming Drake", "YOP_011 Libram of Judgment"]
+    "YOP_015 Nitroboost Poison", "YOP_025 Dreaming Drake", "YOP_011 Libram of Judgment"],
+
+  "-----WATCH POST-----": "",
+  "BAR_077 Kargal Battlescar": ["BAR_074 Far Watch Post", "BAR_075 Crossroads Watch Post",
+    "BAR_076 Mor'shan Watch Post"],
+
+  "-----FRENZY-----": "",
+  "BAR_334 Overlord Saurfang": ["BAR_020 Razormane Raider", "BAR_021 Gold Road Grunt",
+    "BAR_022 Peon", "BAR_024 Oasis Thrasher", "BAR_025 Sunwell Initiate", "BAR_031 Sunscale Raptor",
+    "BAR_070 Gruntled Patron", "BAR_071 Taurajo Brave", "BAR_073 Barrens Blacksmith",
+    "BAR_078 Blademaster Samuro", "BAR_320 Efficient Octo-bot", "BAR_538 Druid of the Plains",
+    "BAR_840 Whirling Combatant", "BAR_843 Warsong Envoy", "BAR_896 Stonemaul Anchorman"],
+
+  "-----POISON-----": "",
+  "BAR_322 Swinetusk Shank": ["BAR_324 Apothecary Helbrim", "BAR_318 Silverleaf Poison",
+    "BAR_321 Paralytic Poison", "CS2_074 Deadly Poison", "ICC_221 Leeching Poison",
+    "YOP_015 Nitroboost Poison"]
 }
 }
