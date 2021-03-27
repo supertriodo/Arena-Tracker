@@ -1797,7 +1797,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "poisonous")
+                    containsAll(text, "discover deck")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
@@ -2204,7 +2204,7 @@ int SynergyHandler::numDrawGen(const QString &code, const QString &text)
         }
         return 0;
     }
-    else if(text.contains("draw") && !text.contains("drawn"))
+    else if((text.contains("draw") && !text.contains("drawn")) || containsAll(text, "discover deck"))
     {
         return 1;
     }
@@ -4316,8 +4316,8 @@ silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen
 //New Synergy Step 12
 
 Double check:
-DAMAGE/DESTROY: reachGen(no atk1), aoeGen(spellDamageSyn/eggSyn), pingGen(enrageSyn),
-                damageMinionsGen, destroyGen(8+ damage/no rush)
+DAMAGE/DESTROY: reachGen(no atk1), aoeGen(spellDamageSyn/eggSyn),
+                pingGen(enrageSyn), damageMinionsGen, destroyGen(8+ damage/no rush)
 BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/FRENZY/TAKE DAMAGE: enrageGen(take damage)/rushGiverSyn
 RUSHGIVERSYN: enrageGen/frenzy, poison, damage adjacents
@@ -4347,13 +4347,21 @@ SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn
 LACKEY: lackeyGen/lackeySyn
 
+    - Drop2 (Derrota 2/2 --> 3+/1+, 2/2+, 1/4+)
+    - Drop3 (Derrota 3/3 --> 3+/2+, 2/4+, 1/7+), no health 1
+    - Drop4 (Derrota 4/4 --> 5+/2+, 4/3+, 3/5+, 2/5+, no 1/x), no health 1
+
+    +pingGen (NO RANDOM/NO DEATHRATTLE)
+    +damageMinionsGen/destroyGen (SI RANDOM/NO DEATHRATTLE)
+    +aoeGen (SI RANDOM/SI DEATHRATTLE)
 
 
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen,
     pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn, con hechizos si.
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
-    Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles. Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo.
+    Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
+    Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo. Synergias con schools of magic no.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
@@ -4369,6 +4377,7 @@ REGLAS
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
++discover from your deck (no copy) es drawGen ya que la carta viene de tu mazo. (BAR_545)
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
 +tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
