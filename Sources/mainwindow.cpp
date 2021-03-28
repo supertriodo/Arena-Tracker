@@ -4660,16 +4660,20 @@ void MainWindow::testTierlists()
 //    Utility::checkTierlistsCount();
 }
 
-void MainWindow::testDownloadCards()
+
+void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
     arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
     draftHandler->setArenaSets(arenaSets);
-//    QStringList codes = draftHandler->getAllArenaCodes();
     allCardsDownloadNeeded = true;
     checkArenaCards();
+}
 
+
+void MainWindow::testDownloadCards()
+{
     //Download specific cards
     QStringList codes = {};
     for(const QString &code: qAsConst(codes))
@@ -4702,6 +4706,7 @@ void MainWindow::testDelay()
 //    testSynergies();
 //    testTierlists();
 
+    testDownloadRotation();
 //    testDownloadCards();
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();

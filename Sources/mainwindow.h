@@ -272,6 +272,7 @@ private slots:
     void testSynergies();
     void testHeroPortraits();
     void testTierlists();
+    void testDownloadRotation();
     void testDownloadCards();
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList();

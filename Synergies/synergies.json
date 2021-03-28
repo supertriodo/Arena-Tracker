@@ -1552,7 +1552,7 @@
 "EX1_085" : [ "battlecry", "returnSyn", "spawnEnemySyn", "drop3" ],
 "EX1_089" : [ "battlecry", "damageMinionsGen", "reachGen" ],
 "EX1_091" : [ "damageMinionsGen", "battlecry", "returnSyn", "attackNerfSyn" ],
-"EX1_093" : [ "tauntGen", "tauntGiverGen", "battlecry", "returnSyn", "attackBuffGen", "healthBuffGen" ],
+"EX1_093" : [ "tauntGen", "tauntGiverGen", "battlecry", "returnSyn", "attackBuffGen", "healthBuffGen", "tokenSyn" ],
 "EX1_095" : [ "spellAllSyn", "drawGen" ],
 "EX1_096" : [ "drawGen", "deathrattle" ],
 "EX1_097" : [ "aoeGen", "reachGen", "deathrattle", "taunt" ],
