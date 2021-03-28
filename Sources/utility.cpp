@@ -443,7 +443,7 @@ bool Utility::isFromStandardSet(QString code)
     QString cardSet = getCardAttribute(code, "set").toString();
 
     if( cardSet == "CORE" ||
-//        cardSet == "LEGACY" || cardSet == "VANILLA" ||
+//        cardSet == "LEGACY" || cardSet == "VANILLA" || cardSet == "DEMON_HUNTER_INITIATE" ||
 //        cardSet == "BASIC" || cardSet == "EXPERT1" || cardSet == "HOF" || //<-- LEGACY SET
 //        cardSet == "NAXX" || cardSet == "GVG" ||
 //        cardSet == "BRM" || cardSet == "TGT" || cardSet == "LOE" ||
@@ -451,7 +451,7 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
 //        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
-        cardSet == "BLACK_TEMPLE" || cardSet == "DEMON_HUNTER_INITIATE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
+        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
         cardSet == "THE_BARRENS")
     {
         return true;

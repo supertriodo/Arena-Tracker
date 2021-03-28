@@ -1917,10 +1917,16 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 }
 
 
-void SynergyHandler::debugSynergiesCode(const QString &code, int num)
+void SynergyHandler::debugSynergiesCode(QString code, int num)
 {
-    QStringList mec;
+    QString origCode = code;
+    if(code.startsWith("CORE_"))
+    {
+        QString subCode = code.mid(5);
+        if(!synergyCodes.contains(code) && synergyCodes.contains(subCode))  code = subCode;
+    }
 
+    QStringList mec;
     CardType cardType = Utility::getTypeFromCode(code);
     QString text = Utility::cardEnTextFromCode(code).toLower();
     int attack = Utility::getCardAttribute(code, "attack").toInt();
@@ -2041,13 +2047,9 @@ void SynergyHandler::debugSynergiesCode(const QString &code, int num)
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
-    if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<code<<": ["<<synergyCodes[code]<<"],";
-    else                            qDebug()<<code<<": ["<<mec<<"],";
-    qDebug()<<num<<Utility::cardEnNameFromCode(code)+": "+text;
-//    qDebug()<<Utility::getCardAttribute(code, "type").toString()<<"--"<<cost<<"--"<<attack<<"/"<<health;
-//    qDebug()<<num<<Utility::getCardAttribute(code, "cardClass").toString()
-//            <<"--"<<Utility::getCardAttribute(code, "set").toString()
-//            <<"--"<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<endl;
+    if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<origCode<<": ["<<synergyCodes[code]<<"],";
+    else                            qDebug()<<origCode<<": ["<<mec<<"],";
+    qDebug()<<num<<Utility::cardEnNameFromCode(origCode)+": "+text;
 
     Q_UNUSED(health);
 }

@@ -4646,7 +4646,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("DARKMOON_FAIRE", 1, 20);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE", 1, 20);
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("");
 
@@ -4662,8 +4662,21 @@ void MainWindow::testTierlists()
 
 void MainWindow::testDownloadCards()
 {
+    //Download new set cards
+    QStringList arenaSets;
+    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
+    draftHandler->setArenaSets(arenaSets);
+//    QStringList codes = draftHandler->getAllArenaCodes();
+    allCardsDownloadNeeded = true;
+    checkArenaCards();
+
+    //Download specific cards
     QStringList codes = {};
-    for(const QString &code: codes)     cardDownloader->downloadWebImage(code, false, false, true);
+    for(const QString &code: qAsConst(codes))
+    {
+        cardDownloader->downloadWebImage(code, false, true, true);
+//        cardDownloader->downloadWebImage(code + "_premium", false, true, true);
+    }
 }
 
 void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
@@ -4685,8 +4698,8 @@ void MainWindow::testPopularList()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+//    testHeroPortraits();
+//    testSynergies();
 //    testTierlists();
 
 //    testDownloadCards();
@@ -4706,14 +4719,14 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> DARKMOON_FAIRE
-//Subir cartas al github.
+//+Update Utility::isFromStandardSet(QString code) --> THE_BARRENS
+//+Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     ///-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Update secrets
+//+Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
@@ -4722,18 +4735,16 @@ void MainWindow::testDelay()
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 
-//Update synergies.json
-//|-Check synergies in the new set --> New synergy keys
-//|-Check evolveSyn cards
-//|-Check drops cards
+//+Update synergies.json
+//+|-Check synergies in the new set --> New synergy keys
+//+|-Check evolveSyn cards
+//+|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> Patch 19.6.0.74257 (2021-02-19)
-//|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
+//+|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
+//+|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
 
-//STANDARD CYCLE
-//(IGNORAR) Remove secrets rotating out (Ya no es necesario, secretsHandler verifica Utility::isFromStandardSet y arenaSets para saber que secretos mostrar)
-//Actualizar Utility::isFromStandardSet(code)
+
 
 //NUEVA SYNERGY
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
