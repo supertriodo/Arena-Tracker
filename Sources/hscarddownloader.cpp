@@ -163,7 +163,8 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             }
             else if(fullUrl.startsWith(HEARTHPWN_CARDS_URL))//Golden from hearthpwn
             {
-                webImage = webImage.copy(-9, -30, 295, 447);
+                if(Utility::getTypeFromCode(code) == MINION)    webImage = webImage.copy(-9, -30, 295, 447);
+                else                                            webImage = webImage.copy(-5, -32, 296, 448);
             }
             webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
         }

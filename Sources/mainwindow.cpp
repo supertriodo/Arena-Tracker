@@ -4675,11 +4675,11 @@ void MainWindow::testDownloadRotation()
 void MainWindow::testDownloadCards()
 {
     //Download specific cards
-    QStringList codes = {};
+    QStringList codes = {"BAR_321", "BAR_322"};
     for(const QString &code: qAsConst(codes))
     {
-        cardDownloader->downloadWebImage(code, false, true, true);
-//        cardDownloader->downloadWebImage(code + "_premium", false, true, true);
+//        cardDownloader->downloadWebImage(code, false, true, true);
+        cardDownloader->downloadWebImage(code + "_premium", false, true, true);
     }
 }
 
@@ -4703,7 +4703,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
 //    testHeroPortraits();
-    testSynergies();
+//    testSynergies();
 //    testTierlists();
 
 //    testDownloadRotation();
