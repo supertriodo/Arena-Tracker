@@ -210,8 +210,6 @@ QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
             return "BRAWL";
         case friendly:
             return "FRIENDLY";
-        case casual:
-            return "CASUAL";
         default:
             return "UNKNOWN";
     }
@@ -225,7 +223,6 @@ LoadingScreenState Utility::getLoadingScreenFromString(QString loadingScreenStri
     else if(loadingScreenString == "SOLO")      return adventure;
     else if(loadingScreenString == "BRAWL")     return tavernBrawl;
     else if(loadingScreenString == "FRIENDLY")  return friendly;
-    else if(loadingScreenString == "CASUAL")    return casual;
     else                                        return unknown;
 }
 

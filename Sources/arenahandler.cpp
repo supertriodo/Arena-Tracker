@@ -311,7 +311,7 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 
     //Trackobot upload
     if(trackobotUploader != nullptr && planHandler != nullptr &&
-            (loadingScreen == arena || loadingScreen == ranked || loadingScreen == casual || loadingScreen == friendly))
+            (loadingScreen == arena || loadingScreen == ranked || loadingScreen == friendly))
     {
         trackobotUploader->uploadResult(gameResult, loadingScreen, startGameEpoch, QDateTime::currentDateTime(), planHandler->getJsonCardHistory());
     }
@@ -408,21 +408,6 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             updateWinLose(gameResult.isWinner, rankedTreeItem[indexHero]);
         break;
 
-        case casual:
-            emit pDebug("Create GameResult from casual.");
-            emit pLog(tr("Log: New casual game."));
-
-            if(casualTreeItem == nullptr)
-            {
-                emit pDebug("Create Category casual.");
-                casualTreeItem = createTopLevelItem("Casual", "", false);
-            }
-
-            item = new QTreeWidgetItem();
-            casualTreeItem->insertChild(0, item);
-            updateWinLose(gameResult.isWinner, casualTreeItem);
-        break;
-
         case adventure:
             emit pDebug("Create GameResult from adventure.");
             emit pLog(tr("Log: New solo game."));
@@ -460,7 +445,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(friendlyTreeItem == nullptr)
             {
                 emit pDebug("Create Category friendly.");
-                friendlyTreeItem = createTopLevelItem("Duel", "", false);
+                friendlyTreeItem = createTopLevelItem("Friend", "", false);
             }
 
             item = new QTreeWidgetItem();
