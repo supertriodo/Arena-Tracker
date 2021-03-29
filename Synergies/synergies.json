@@ -1228,7 +1228,7 @@
 "DMF_053" : [ "taunt", "endTurnGen" ],
 "DMF_054" : [ "drawGen" ],
 "DMF_055" : [  ],
-"DMF_056" : [ "drawGen2", "battlecry", "returnSyn", "damageFriendlyHeroGen" ],
+"DMF_056" : [ "battlecry", "returnSyn", "damageFriendlyHeroGen" ],
 "DMF_057" : [ "damageMinionsGen" ],
 "DMF_058" : [ "spellAllSyn" ],
 "DMF_059" : [ "damageMinionsGen", "rush", "taunt" ],

@@ -4702,8 +4702,8 @@ void MainWindow::testPopularList()
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
-//    testSynergies();
+    testHeroPortraits();
+    testSynergies();
 //    testTierlists();
 
 //    testDownloadRotation();
@@ -4724,15 +4724,15 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//+Update Utility::isFromStandardSet(QString code) --> THE_BARRENS
-//+Subir cartas al github.
+//Update Utility::isFromStandardSet(QString code) --> THE_BARRENS
+//Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-//+Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     ///-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//+Update secrets
-//+Cartas especiales --> SynergyHandler::testSynergies()
+//Update secrets
+//Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
@@ -4740,20 +4740,20 @@ void MainWindow::testDelay()
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 
-//+Update synergies.json
-//+|-Check synergies in the new set --> New synergy keys
-//+|-Check evolveSyn cards
-//+|-Check direct links
+//Update synergies.json
+//|-Check synergies in the new set --> New synergy keys
+//|-Check evolveSyn cards
+//|-Check direct links
 
-//+Cards changes
-//+|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
-//+|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
+//Cards changes
+//|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
+//|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
 
-//+Rotacion CORE
-//+|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
-//+|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
-//+|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
-//+|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
+//Rotacion CORE
+//|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
+//|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
+//|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
+//|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
 
 
 
