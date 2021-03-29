@@ -2941,7 +2941,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 10;
     }
     //Enemy minions
-    else if(code == FIREBRAND)
+    else if(code == FIREBRAND || code == DEVOURING_PLAGUE)
     {
         missiles = 4;
         onlyMinions = true;

@@ -1783,7 +1783,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: (const QStringList)Utility::getSetCodes("DARKMOON_FAIRE", true, true))
+//    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_BARRENS", true, true))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
     for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
@@ -1811,9 +1811,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 //containsAll(text, "gain mana this turn only")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-//containsAll(text, "spend all your mana") || text.contains("cost") || isTokenCardGen(code, cost, mechanics, referencedTags, text)
+//containsAll(text, "spend all your mana") || text.contains("cost")
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//containsAll(text, "draw")
+//isDrawGen(code, text) || containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //containsAll(text, "draw cop")
                 )
@@ -4197,7 +4197,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 //    if(code == TIMEBOUND_GIANT)     return 6;
 //    if(code == TIMEWAY_WANDERER)    return 0;
 
-    //Evitar draw/discover cost 0 -> no draw y mantenemos coste original
+    //Evitar draw/discover cost 0/1/2 -> no draw y mantenemos coste original
     //Descuento minions on board -> suponemos 2 aliados y 2 enemigos (4 total)
     //Descuento spells cast this game -> 3
     if(code == BLOODBLOOM)          return 0;
@@ -4218,10 +4218,14 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == NATURE_STUDIES)      return 0;
     if(code == ILLIDARI_STUDIES)    return 0;
     if(code == INSIGHT)             return 0;
+    if(code == FLOODSAIL_DECKHAND)  return 0;
+    if(code == EFFICIENT_OCTOBOT)   return 0;
+    if(code == LIVING_SEED)         return 0;
+    if(code == SCABBS_CUTTERBUTTER) return 0;
+    if(code == KINDLING_ELEMENTAL)  return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == PALM_READING)        return 2;
-    if(code == PILOTED_REAPER)      return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
@@ -4244,10 +4248,12 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == RABBLE_BOUNCER)      return 5;
     if(code == DEVOUT_PUPIL)        return 5;
     if(code == EMBIGGEN)            return 5;
+    if(code == POWER_WORD_FORTITUDE)return 5;
     if(code == DEMONBOLT)           return 6;
     if(code == SEA_GIANT)           return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == FLESH_GIANT)         return 6;
+    if(code == CLOCKWORK_GIANT)     return 8;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 9;
     if(code == LIVING_MANA)         return 10;
