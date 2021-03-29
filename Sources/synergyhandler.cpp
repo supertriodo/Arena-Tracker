@@ -1887,7 +1887,8 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     {
         if(!synergyCodes.contains(code))
         {
-            if(!code.startsWith("HERO_") && Utility::getCardAttribute(code, "set") != "WILD_EVENT")
+            QString set = Utility::getCardAttribute(code, "set").toString();
+            if(!code.startsWith("HERO_") && set != "WILD_EVENT" && set != "VANILLA")
             {
                 debugSynergiesCode(code, ++num);
             }

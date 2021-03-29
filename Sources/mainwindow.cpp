@@ -4703,10 +4703,10 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
 //    testHeroPortraits();
-//    testSynergies();
+    testSynergies();
 //    testTierlists();
 
-    testDownloadRotation();
+//    testDownloadRotation();
 //    testDownloadCards();
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
@@ -4748,6 +4748,12 @@ void MainWindow::testDelay()
 //Cards changes
 //+|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
 //+|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
+
+//Rotacion CORE
+//|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
+//|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
+//|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
+//|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
 
 
 
