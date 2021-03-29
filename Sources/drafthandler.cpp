@@ -246,7 +246,8 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
                 othersJsonObject[i++] = jsonDoc.object().value(Utility::classOrder2classUL_ULName(j)).toObject();
             }
         }
-        for(const QString &code: lightForgeTiers.keys())
+        const QStringList lfKeys = lightForgeTiers.keys();
+        for(const QString &code: lfKeys)
         {
             QString name = Utility::cardEnNameFromCode(code);
             if(heroJsonObject.contains(name))   hearthArenaTiers[code] = heroJsonObject.value(name).toInt();
@@ -268,7 +269,8 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
     else
     {
         QJsonObject jsonNamesObject = jsonDoc.object().value(heroString).toObject();
-        for(const QString &code: lightForgeTiers.keys())
+        const QStringList lfKeys = lightForgeTiers.keys();
+        for(const QString &code: lfKeys)
         {
             QString name = Utility::cardEnNameFromCode(code);
             int score = jsonNamesObject.value(name).toInt();

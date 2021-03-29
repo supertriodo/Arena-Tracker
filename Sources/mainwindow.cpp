@@ -4745,15 +4745,15 @@ void MainWindow::testDelay()
 //+|-Check evolveSyn cards
 //+|-Check direct links
 
-//Cards changes
+//+Cards changes
 //+|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
 //+|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
 
-//Rotacion CORE
-//|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
-//|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
-//|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
-//|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
+//+Rotacion CORE
+//+|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
+//+|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
+//+|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
+//+|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
 
 
 

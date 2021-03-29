@@ -995,8 +995,8 @@ void Utility::resizeGoldenCards()
 void Utility::checkTierlistsCount()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    const QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-    QStringList haCodesAll;
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    QStringList haSets;
     QStringList allHeroes;
     for(int i=0; i<NUM_HEROS; i++)   allHeroes << Utility::classOrder2classLogNumber(i);
 
@@ -1006,67 +1006,81 @@ void Utility::checkTierlistsCount()
         const CardClass heroClass = Utility::classLogNumber2classEnum(heroLog);
 
         qDebug()<<endl<<"--------------------"<<heroString<<"--------------------";
-        QStringList arenaCodes, haCodes;
+        QMap<QString, QString> arenaMap;
 
         //Arena Codes List
-        for(const QString &set: arenaSets)
+        for(const QString &set: qAsConst(arenaSets))
         {
             for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, true))
             {
                 QList<CardClass> cardClassList = Utility::getClassFromCode(code);
                 if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
                 {
-                    arenaCodes.append(code);
+                    arenaMap[code] = "";
                 }
             }
         }
 
-        //HearthArena Codes List
+        //HearthArena Names List
         QFile jsonFileHA(Utility::extraPath() + "/hearthArena.json");
         jsonFileHA.open(QIODevice::ReadOnly | QIODevice::Text);
         QJsonDocument jsonDocHA = QJsonDocument::fromJson(jsonFileHA.readAll());
         jsonFileHA.close();
 
-        QJsonObject jsonNamesObjectHA = jsonDocHA.object().value(heroString).toObject();
-        for(const QString &name: (const QStringList)jsonNamesObjectHA.keys())
-        {
-            QString code = Utility::cardEnCodeFromName(name);
-            if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);
-            if(code.isEmpty())  qDebug()<<"HearthArena wrong name:"<<name;
-            else                haCodes.append(code);
-        }
-        haCodesAll.append(haCodes);
+        const QStringList haNames = jsonDocHA.object().value(heroString).toObject().keys();
 
-        qDebug()<<heroString<<"Arena count:"<<arenaCodes.count();
-        qDebug()<<heroString<<"HearthArena count:"<<haCodes.count();
+        qDebug()<<heroString<<"Arena count:"<<arenaMap.count();
+        qDebug()<<heroString<<"HearthArena count:"<<haNames.count();
+
 
         //Check Missing cards
         bool missing = false;
+        const QStringList arenaCodes = arenaMap.keys();
         for(const QString &code: arenaCodes)
         {
-            if(!haCodes.contains(code))
+            QString name = Utility::cardEnNameFromCode(code);
+            if(haNames.contains(name))
             {
-                qDebug()<<"HearthArena missing:"<<code<<Utility::cardEnNameFromCode(code);
+                arenaMap[code] = name;
+
+                QString set = getCardAttribute(code, "set").toString();
+                if(!haSets.contains(set))   haSets << set;
+            }
+            else
+            {
+                qDebug()<<"HearthArena missing:"<<code<<name;
                 missing = true;
             }
         }
         if(!missing)    qDebug()<<"HearthArena OK!";
         missing = false;
-        for(const QString &code: haCodes)
+        QStringList arenaNames = arenaMap.values();
+        for(const QString &name: haNames)
         {
-            if(!arenaCodes.contains(code))
+            if(!arenaNames.contains(name))
             {
-                qDebug()<<"Arena missing:"<<code<<Utility::cardEnNameFromCode(code);
-                missing = true;
+                QString code = Utility::cardEnCodeFromName(name);
+                if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);
+                if(code.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
+                else
+                {
+                    qDebug()<<"Arena missing:"<<code<<name;
+                    missing = true;
+
+                    QString set = getCardAttribute(code, "set").toString();
+                    if(!haSets.contains(set))   haSets << set;
+                }
             }
         }
         if(!missing)    qDebug()<<"Arena OK!";
     }
 
+    arenaSets.sort();
+    haSets.sort();
     qDebug()<<endl<<"---------------------------------------------------------------------------"
                 "SETS ---------------------------------------------------------------------------";
     qDebug()<<"Arena Sets:"<<arenaSets;
-    qDebug()<<"HA    Sets:"<<Utility::getArenaSets(haCodesAll);
+    qDebug()<<"HA    Sets:"<<haSets;
     qDebug()<<"---------------------------------------------------------------------------"
                 "SETS ---------------------------------------------------------------------------"<<endl;
 }
