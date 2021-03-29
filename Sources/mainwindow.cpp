@@ -4675,10 +4675,10 @@ void MainWindow::testDownloadRotation()
 void MainWindow::testDownloadCards()
 {
     //Download specific cards
-    QStringList codes = {"BAR_321", "BAR_322"};
+    QStringList codes = {};
     for(const QString &code: qAsConst(codes))
     {
-//        cardDownloader->downloadWebImage(code, false, true, true);
+        cardDownloader->downloadWebImage(code, false, true, true);
         cardDownloader->downloadWebImage(code + "_premium", false, true, true);
     }
 }
