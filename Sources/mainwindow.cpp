@@ -800,6 +800,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
     QSettings settings("Arena Tracker", "Arena Tracker");
     int storedVersion = settings.value("arenaVersion", 0).toInt();
     if(version != storedVersion)    needProcess = true;
+    if(settings.value("arenaSets", QStringList()).toStringList().isEmpty()) needProcess = true;
 
     pDebug("Extra: Json Arena github: Local(" + QString::number(storedVersion) + ") - "
                         "Web(" + QString::number(version) + ")" + (!needProcess?" up-to-date":""));
@@ -4543,8 +4544,6 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
     QFile::remove(fixedLF1);
 
     qDebug()<<"DEBUG TL: heartharena.json created (source and local)";
-
-    Utility::checkTierlistsCount();
 }
 
 
@@ -4656,8 +4655,13 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-    downloadHearthArenaTierlistOriginal();
-//    Utility::checkTierlistsCount();
+//    downloadHearthArenaTierlistOriginal();
+
+//    QStringList arenaSets;
+//    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    Utility::checkTierlistsCount(arenaSets);
 }
 
 

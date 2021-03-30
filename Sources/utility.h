@@ -143,7 +143,7 @@ public:
     static QStringList getStandardCodes();
     static bool createDir(QString pathDir);
     static void unZip(QString zipName, QString targetPath);
-    static void checkTierlistsCount();
+    static void checkTierlistsCount(QStringList &arenaSets);
     static void resizeGoldenCards();
     static bool checkHeroPortrait(QString code);
     static void checkMissingGoldenCards();

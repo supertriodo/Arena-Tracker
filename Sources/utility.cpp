@@ -921,7 +921,7 @@ bool Utility::createDir(QString pathDir)
     if(!dirInfo.exists())
     {
         QDir().mkdir(pathDir);
-        qDebug() << pathDir + " created.";
+        qDebug() << pathDir + " - created.";
         return true;
     }
     return false;
@@ -989,10 +989,8 @@ void Utility::resizeGoldenCards()
 }
 
 
-void Utility::checkTierlistsCount()
+void Utility::checkTierlistsCount(QStringList &arenaSets)
 {
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     QStringList haSets;
     QStringList allHeroes;
     for(int i=0; i<NUM_HEROS; i++)   allHeroes << Utility::classOrder2classLogNumber(i);
