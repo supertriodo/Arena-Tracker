@@ -4659,6 +4659,7 @@ void MainWindow::testTierlists()
 
 //    QStringList arenaSets;
 //    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
+
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     Utility::checkTierlistsCount(arenaSets);

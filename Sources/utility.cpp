@@ -1036,6 +1036,10 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
             QString name = Utility::cardEnNameFromCode(code);
             if(haNames.contains(name))
             {
+                if(arenaMap.values().contains(name))
+                {
+                    qDebug()<<"Duplicated card in arenaSets:"<<code<<name;
+                }
                 arenaMap[code] = name;
 
                 QString set = getCardAttribute(code, "set").toString();
