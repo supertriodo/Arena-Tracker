@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 4,
+  "arenaVersion": 5,
   "arenaSets": ["CORE", "THE_BARRENS", "DARKMOON_FAIRE", "SCHOLOMANCE", "BLACK_TEMPLE", "DALARAN", "GANGS"],
   "multiclassArena": false,
-  "redownloadCards": true,
-  "redownloadHeroes": false
+  "redownloadCards": false,
+  "redownloadHeroes": true
 }
