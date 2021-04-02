@@ -4802,9 +4802,6 @@ void MainWindow::testDelay()
 //}
 
 //FOR EACH C++
-//for(const auto &elem: map)
-//    cout << elem.key() << ": " << elem.value() << endl;
-
 //for(const QString &key: (const QStringList)jsonObject.keys())
 //qAsConst()
 
