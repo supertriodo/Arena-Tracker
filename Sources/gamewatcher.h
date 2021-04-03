@@ -63,7 +63,6 @@ private:
     int playerID;
     CardClass secretHero;
     int enemyMinions;
-    int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     int playerMinions;
     bool isPlayerTurn;
     QRegularExpressionMatch *match;
@@ -120,7 +119,7 @@ signals:
     void enemyCardDraw(int id, int turn=0, bool special=false, QString code="");
     void playerCardToHand(int id, QString code, int turn);
     void enemyCardPlayed(int id, QString code="", bool discard=false);
-    void playerCardPlayed(int id, QString code, bool discard=false);
+    void playerCardPlayed(int id, QString code, bool discard, bool isPlayerTurn);
     void lastHandCardIsCoin();
     void enemySecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void playerSecretPlayed(int id, QString code);
@@ -167,7 +166,6 @@ signals:
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();
-    void _3CardsPlayedTested();
     void cSpiritTested();
     void clearDrawList();
     void newTurn(bool isPlayerTurn, int numTurn);

@@ -66,6 +66,7 @@ private:
     int playerCardsDrawn;
     int enemyMinionsDeadThisTurn; //Hand of Salvation control (exclusive arena paladin secret)
     int enemyMinionsAliveForAvenge;
+    int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     bool isPlayerTurn;
     QStringList arenaSets;
     //List of code secrets ordered by pickrate for all classes, used as options for a new unknown secret played.
@@ -121,7 +122,6 @@ public slots:
     void playerBattlecryObjHeroPlayed();
     void playerMinionPlayed(QString code, int id, int playerMinions);
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn, int enemyMinions);
-    void _3CardsPlayedTested();
     void cSpiritTested();
     void noHeroDamageTested();
     void minions2Tested();
@@ -130,6 +130,7 @@ public slots:
     void playerHeroPower();
     void newTurn(bool isPlayerTurn);
     void playerCardDraw();
+    void playerCardPlayed(int id, QString code, bool discard, bool isPlayerTurn);
 
 private slots:
     void checkAvengeDelay();

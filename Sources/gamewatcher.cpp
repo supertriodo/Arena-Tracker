@@ -340,7 +340,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         secretHero = INVALID_CLASS;
         playerMinions = 0;
         enemyMinions = 0;
-        playerCardsPlayedThisTurn = 0;
         startGameEpoch = QDateTime::currentMSecsSinceEpoch()/1000;
         tied = true;//Si no se encuentra WON no se llamara a createGameResult() pq tried sigue siendo true
 
@@ -1329,18 +1328,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 discard = true;
             }
 
-            emit playerCardPlayed(id.toInt(), cardId, discard);
-
-            if(isPlayerTurn && !discard)
-            {
-                //Rat trap/Hidden wisdom control
-                playerCardsPlayedThisTurn++;
-                if(playerCardsPlayedThisTurn > 2)
-                {
-                    emit pDebug("Rat trap/Hidden wisdom tested: This turn cards played: " + QString::number(playerCardsPlayedThisTurn), 0);
-                    emit _3CardsPlayedTested();
-                }
-            }
+            emit playerCardPlayed(id.toInt(), cardId, discard, isPlayerTurn);
         }
 
         //Enemigo esbirro muere
@@ -1538,8 +1526,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
             emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions), 0);
             emit cSpiritTested();
         }
-
-        playerCardsPlayedThisTurn = 0; //Rat trap/Hidden wisdom testing
     }
     return advance;
 }

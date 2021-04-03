@@ -1430,7 +1430,7 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(enemySecretStolen(int,QString)));
     connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
             planHandler, SLOT(playerCardDraw(int,QString,int)));
-    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool,bool)),
             planHandler, SLOT(playerCardPlayed(int,QString,bool)));
     connect(gameWatcher, SIGNAL(enemyCardPlayed(int,QString,bool)),
             planHandler, SLOT(enemyCardPlayed(int,QString,bool)));
@@ -1476,8 +1476,6 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerMinionPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
             secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool,int)));
-    connect(gameWatcher, SIGNAL(_3CardsPlayedTested()),
-            secretsHandler, SLOT(_3CardsPlayedTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
             secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int,int,int)),
@@ -1490,6 +1488,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(newTurn(bool)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString,int)),
             secretsHandler, SLOT(playerCardDraw()));
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool,bool)),
+            secretsHandler, SLOT(playerCardPlayed(int,QString,bool,bool)));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             popularCardsHandler, SLOT(resetCardsInterface()));
@@ -1508,7 +1508,7 @@ void MainWindow::createGameWatcher()
             rngCardHandler, SLOT(clearRngList()));
     connect(gameWatcher, SIGNAL(playerCardToHand(int,QString,int)),
             rngCardHandler, SLOT(playerCardToHand(int,QString,int)));
-    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool)),
+    connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool,bool)),
             rngCardHandler, SLOT(removeRngCard(int,QString)));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),

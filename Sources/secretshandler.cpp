@@ -16,6 +16,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->playerCardsDrawn = 0;
     this->enemyMinionsDeadThisTurn = 0;
     this->enemyMinionsAliveForAvenge = -1;
+    this->playerCardsPlayedThisTurn = 0;
     this->isPlayerTurn = false;
     this->cardsPickratesMap = nullptr;
 
@@ -610,6 +611,7 @@ void SecretsHandler::newTurn(bool isPlayerTurn)
     this->isPlayerTurn = isPlayerTurn;
     this->playerCardsDrawn = 0;
     this->enemyMinionsDeadThisTurn = 0; //Hand of salvation testing
+    this->playerCardsPlayedThisTurn = 0; //Rat trap/Hidden wisdom testing
     if(!isPlayerTurn)   discardSecretOptionNow(PLAGIARIZE);
 }
 
@@ -736,12 +738,24 @@ void SecretsHandler::checkAvengeDelay()
 }
 
 
-void SecretsHandler::_3CardsPlayedTested()
+void SecretsHandler::playerCardPlayed(int id, QString code, bool discard, bool isPlayerTurn)
 {
-    discardSecretOptionNow(GALLOPING_SAVIOR);
-    discardSecretOptionNow(HIDDEN_WISDOM);
+    if(isPlayerTurn && !discard)
+    {
+        playerCardsPlayedThisTurn++;
 
-    discardSecretOptionNow(RAT_TRAP);
+        //Secrets 3+ cards
+        if(playerCardsPlayedThisTurn > 2)
+        {
+            discardSecretOptionNow(GALLOPING_SAVIOR);
+            discardSecretOptionNow(HIDDEN_WISDOM);
+
+            discardSecretOptionNow(RAT_TRAP);
+        }
+    }
+
+    Q_UNUSED(id);
+    Q_UNUSED(code);
 }
 
 
