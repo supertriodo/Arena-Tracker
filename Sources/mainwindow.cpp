@@ -1342,7 +1342,7 @@ void MainWindow::createGameWatcher()
 //            graveyardHandler, SLOT(enemySecretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerMinionGraveyard(int,QString)),
             graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
-    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
+    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
             graveyardHandler, SLOT(enemyCardGraveyard(int,QString)));
     connect(gameWatcher, SIGNAL(playerWeaponGraveyard(int,QString)),
             graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
@@ -1474,8 +1474,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerBattlecryObjHeroPlayed()));
     connect(gameWatcher, SIGNAL(playerMinionPlayed(QString,int,int)),
             secretsHandler, SLOT(playerMinionPlayed(QString,int,int)));
-    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool)),
-            secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool)));
+    connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
+            secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool,int)));
     connect(gameWatcher, SIGNAL(avengeTested()),
             secretsHandler, SLOT(avengeTested()));
     connect(gameWatcher, SIGNAL(handOfSalvationTested()),
@@ -4361,9 +4361,6 @@ void MainWindow::checkFirstRunNewVersion()
     {
         pDebug("First run of new version.");
         settings.setValue("neoInt", 0);
-
-        //TODO remove
-        if(ThemeHandler::themeLoaded() == "Classic")    initConfigTheme(DEFAULT_THEME);
     }
 }
 

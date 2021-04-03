@@ -64,6 +64,7 @@ private:
     bool showSecrets, showWildSecrets;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     int playerCardsDrawn;
+    int enemyMinionsAliveForAvenge;
     bool isPlayerTurn;
     QStringList arenaSets;
     //List of code secrets ordered by pickrate for all classes, used as options for a new unknown secret played.
@@ -84,6 +85,7 @@ private:
     ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
     void updateShowSecrets();
     void createSecretsByPickrate();
+    void checkAvenge(int enemyMinions);
 
 public:
     void redrawDownloadedCardImage(QString code);
@@ -116,8 +118,7 @@ public slots:
     void playerSpellObjHeroPlayed();
     void playerBattlecryObjHeroPlayed();
     void playerMinionPlayed(QString code, int id, int playerMinions);
-    void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
-    void avengeTested();
+    void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn, int enemyMinions);
     void handOfSalvationTested();
     void _3CardsPlayedTested();
     void cSpiritTested();
@@ -130,6 +131,7 @@ public slots:
     void playerCardDraw();
 
 private slots:
+    void checkAvengeDelay();
     void discardSecretOptionDelay();
     void clearSecretsAnimating();
     void adjustSize();

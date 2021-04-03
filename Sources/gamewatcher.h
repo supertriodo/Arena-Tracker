@@ -62,7 +62,7 @@ private:
     QString hero1, hero2, name1, name2, firstPlayer, winnerPlayer;
     int playerID;
     CardClass secretHero;
-    int enemyMinions, enemyMinionsAliveForAvenge; //Avenge control
+    int enemyMinions;
     int enemyMinionsDeadThisTurn; //Hand of Salvation control (exclusive arena paladin secret)
     int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     int playerMinions;
@@ -157,7 +157,7 @@ signals:
     void playerCardCodeChange(int id, QString newCode);
     void minionCodeChange(bool friendly, int id, QString newCode);
     void playerMinionGraveyard(int id, QString code);
-    void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn);
+    void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn, int enemyMinions);
     void playerWeaponGraveyard(int id, QString code);
     void enemyWeaponGraveyard(int id, QString code);
     void playerAttack(bool isHeroFrom, bool isHeroTo, int playerMinions, int id1, int id2);
@@ -168,7 +168,6 @@ signals:
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();
-    void avengeTested();
     void handOfSalvationTested();
     void _3CardsPlayedTested();
     void cSpiritTested();
@@ -186,9 +185,6 @@ signals:
     void coinIdFound(int id);
     void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
-
-private slots:
-    void checkAvenge();
 
 public slots:
     void processLogLine(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);

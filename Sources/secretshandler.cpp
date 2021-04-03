@@ -14,6 +14,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
     this->playerCardsDrawn = 0;
+    this->enemyMinionsAliveForAvenge = -1;
     this->isPlayerTurn = false;
     this->cardsPickratesMap = nullptr;
 
@@ -679,13 +680,15 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
 }
 
 
-void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTurn)
+void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTurn, int enemyMinions)
 {
     Q_UNUSED(id);
 
     if(!isPlayerTurn)   return;
 
     if(lastMinionDead.isEmpty())    lastMinionDead = code;
+
+    checkAvenge(enemyMinions);
 
     discardSecretOptionNow(DDUPLICATE);
     discardSecretOptionNow(EFFIGY);
@@ -696,9 +699,26 @@ void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTur
 }
 
 
-void SecretsHandler::avengeTested()
+void SecretsHandler::checkAvenge(int enemyMinions)
 {
-    discardSecretOptionNow(AVENGE);
+    if(enemyMinionsAliveForAvenge == -1)
+    {
+        enemyMinionsAliveForAvenge = enemyMinions;
+        QTimer::singleShot(1000, this, SLOT(checkAvengeDelay()));
+    }
+    else    enemyMinionsAliveForAvenge--;
+}
+
+
+void SecretsHandler::checkAvengeDelay()
+{
+    if(enemyMinionsAliveForAvenge > 0)
+    {
+        discardSecretOptionNow(AVENGE);
+        emit pDebug("Avenge tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge));
+    }
+    else    emit pDebug("Avenge not tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge));
+    enemyMinionsAliveForAvenge = -1;
 }
 
 

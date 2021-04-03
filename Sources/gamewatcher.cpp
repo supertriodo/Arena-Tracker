@@ -340,7 +340,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         secretHero = INVALID_CLASS;
         playerMinions = 0;
         enemyMinions = 0;
-        enemyMinionsAliveForAvenge = -1;
         enemyMinionsDeadThisTurn = 0;
         playerCardsPlayedThisTurn = 0;
         startGameEpoch = QDateTime::currentMSecsSinceEpoch()/1000;
@@ -1354,37 +1353,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 
             if(zoneTo == "OPPOSING GRAVEYARD")
             {
-                emit enemyMinionGraveyard(id.toInt(), cardId, isPlayerTurn);
+                emit enemyMinionGraveyard(id.toInt(), cardId, isPlayerTurn, enemyMinions);
                 if(isPlayerTurn)
                 {
-                    //Avenge control
-                    if(enemyMinionsAliveForAvenge == -1)
-                    {
-                        if(cardId == MAD_SCIENTIST)
-                        {
-                            emit pDebug("Skip avenge testing (Mad Scientist died).", 0);
-                        }
-                        else
-                        {
-                            enemyMinionsAliveForAvenge = enemyMinions;
-                            QTimer::singleShot(1000, this, SLOT(checkAvenge()));
-                        }
-                    }
-                    else    enemyMinionsAliveForAvenge--;
-
                     //Hand of salvation control
                     enemyMinionsDeadThisTurn++;
                     if(enemyMinionsDeadThisTurn > 1)
                     {
-                        if(cardId == MAD_SCIENTIST)
-                        {
-                            emit pDebug("Skip Hand of salvation testing (Mad Scientist died).", 0);
-                        }
-                        else
-                        {
-                            emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
-                            emit handOfSalvationTested();
-                        }
+                        emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
+                        emit handOfSalvationTested();
                     }
                 }
             }
@@ -1461,18 +1438,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
 bool GameWatcher::isHeroPower(QString code)
 {
     return (Utility::getTypeFromCode(code) == HERO_POWER);
-}
-
-
-void GameWatcher::checkAvenge()
-{
-    if(enemyMinionsAliveForAvenge > 0)
-    {
-        emit avengeTested();
-        emit pDebug("Avenge tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge), 0);
-    }
-    else    emit pDebug("Avenge not tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge), 0);
-    enemyMinionsAliveForAvenge = -1;
 }
 
 
