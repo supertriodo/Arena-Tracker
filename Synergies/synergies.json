@@ -3204,7 +3204,7 @@
 "YOP_032" : [ "battlecry", "armorGen", "returnSyn" ],
 "YOP_033" : [ "drawGen3", "damageFriendlyHeroGen" ],
 "YOP_034" : [ "destroyGen", "endTurnGen" ],
-"YOP_035" : [  ],
+"YOP_035" : [ "healthBuffSyn" ],
 "tt_004" : [ "drop3" ],
 "tt_010" : [ "secret" ],
 "DIRECT_LINKS":
