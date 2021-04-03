@@ -14,6 +14,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->lastMinionPlayed = "";
     this->lastSpellPlayed = "";
     this->playerCardsDrawn = 0;
+    this->enemyMinionsDeadThisTurn = 0;
     this->enemyMinionsAliveForAvenge = -1;
     this->isPlayerTurn = false;
     this->cardsPickratesMap = nullptr;
@@ -608,6 +609,7 @@ void SecretsHandler::newTurn(bool isPlayerTurn)
 {
     this->isPlayerTurn = isPlayerTurn;
     this->playerCardsDrawn = 0;
+    this->enemyMinionsDeadThisTurn = 0; //Hand of salvation testing
     if(!isPlayerTurn)   discardSecretOptionNow(PLAGIARIZE);
 }
 
@@ -688,6 +690,7 @@ void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTur
 
     if(lastMinionDead.isEmpty())    lastMinionDead = code;
 
+    checkHandOfSalvation();
     checkAvenge(enemyMinions);
 
     discardSecretOptionNow(DDUPLICATE);
@@ -696,6 +699,17 @@ void SecretsHandler::enemyMinionGraveyard(int id, QString code, bool isPlayerTur
     discardSecretOptionNow(GETAWAY_KODO);
 
     discardSecretOptionNow(CHEAT_DEATH);
+}
+
+
+void SecretsHandler::checkHandOfSalvation()
+{
+    enemyMinionsDeadThisTurn++;
+    if(enemyMinionsDeadThisTurn > 1)
+    {
+        emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn));
+        discardSecretOptionNow(HAND_OF_SALVATION);
+    }
 }
 
 
@@ -719,12 +733,6 @@ void SecretsHandler::checkAvengeDelay()
     }
     else    emit pDebug("Avenge not tested: Survivors: " + QString::number(enemyMinionsAliveForAvenge));
     enemyMinionsAliveForAvenge = -1;
-}
-
-
-void SecretsHandler::handOfSalvationTested()
-{
-    discardSecretOptionNow(HAND_OF_SALVATION);
 }
 
 

@@ -63,7 +63,6 @@ private:
     int playerID;
     CardClass secretHero;
     int enemyMinions;
-    int enemyMinionsDeadThisTurn; //Hand of Salvation control (exclusive arena paladin secret)
     int playerCardsPlayedThisTurn; //Rat trap/Hidden wisdom control (wichwood secrets)
     int playerMinions;
     bool isPlayerTurn;
@@ -168,7 +167,6 @@ signals:
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();
-    void handOfSalvationTested();
     void _3CardsPlayedTested();
     void cSpiritTested();
     void clearDrawList();

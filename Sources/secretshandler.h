@@ -64,6 +64,7 @@ private:
     bool showSecrets, showWildSecrets;
     QString lastMinionDead, lastMinionPlayed, lastSpellPlayed;
     int playerCardsDrawn;
+    int enemyMinionsDeadThisTurn; //Hand of Salvation control (exclusive arena paladin secret)
     int enemyMinionsAliveForAvenge;
     bool isPlayerTurn;
     QStringList arenaSets;
@@ -85,6 +86,7 @@ private:
     ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
     void updateShowSecrets();
     void createSecretsByPickrate();
+    void checkHandOfSalvation();
     void checkAvenge(int enemyMinions);
 
 public:
@@ -119,7 +121,6 @@ public slots:
     void playerBattlecryObjHeroPlayed();
     void playerMinionPlayed(QString code, int id, int playerMinions);
     void enemyMinionGraveyard(int id, QString code, bool isPlayerTurn, int enemyMinions);
-    void handOfSalvationTested();
     void _3CardsPlayedTested();
     void cSpiritTested();
     void noHeroDamageTested();

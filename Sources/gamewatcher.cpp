@@ -340,7 +340,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         secretHero = INVALID_CLASS;
         playerMinions = 0;
         enemyMinions = 0;
-        enemyMinionsDeadThisTurn = 0;
         playerCardsPlayedThisTurn = 0;
         startGameEpoch = QDateTime::currentMSecsSinceEpoch()/1000;
         tied = true;//Si no se encuentra WON no se llamara a createGameResult() pq tried sigue siendo true
@@ -1354,16 +1353,6 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneTo == "OPPOSING GRAVEYARD")
             {
                 emit enemyMinionGraveyard(id.toInt(), cardId, isPlayerTurn, enemyMinions);
-                if(isPlayerTurn)
-                {
-                    //Hand of salvation control
-                    enemyMinionsDeadThisTurn++;
-                    if(enemyMinionsDeadThisTurn > 1)
-                    {
-                        emit pDebug("Hand of salvation tested: This turn died: " + QString::number(enemyMinionsDeadThisTurn), 0);
-                        emit handOfSalvationTested();
-                    }
-                }
             }
         }
 
@@ -1550,7 +1539,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
             emit cSpiritTested();
         }
 
-        enemyMinionsDeadThisTurn = 0; //Hand of salvation testing
         playerCardsPlayedThisTurn = 0; //Rat trap/Hidden wisdom testing
     }
     return advance;

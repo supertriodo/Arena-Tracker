@@ -1476,10 +1476,6 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerMinionPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
             secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool,int)));
-    connect(gameWatcher, SIGNAL(avengeTested()),
-            secretsHandler, SLOT(avengeTested()));
-    connect(gameWatcher, SIGNAL(handOfSalvationTested()),
-            secretsHandler, SLOT(handOfSalvationTested()));
     connect(gameWatcher, SIGNAL(_3CardsPlayedTested()),
             secretsHandler, SLOT(_3CardsPlayedTested()));
     connect(gameWatcher, SIGNAL(cSpiritTested()),
