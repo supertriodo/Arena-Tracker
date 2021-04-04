@@ -166,9 +166,8 @@ signals:
     void playerCardObjPlayed(QString code, int id1, int id2);
     void enemyCardObjPlayed(QString code, int id1, int id2);
     void playerHeroPower();
-    void cSpiritTested();
     void clearDrawList();
-    void newTurn(bool isPlayerTurn, int numTurn);
+    void newTurn(bool isPlayerTurn, int numTurn, int enemyMinions);
     void logTurn();
     void needResetDeck();
     void heroDraftDeck(QString hero="");

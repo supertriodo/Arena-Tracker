@@ -833,7 +833,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 if(blockType == "FATIGUE" && zone == "PLAY")
                 {
                     emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Fatigue damage.", numLine);
-                    if(advanceTurn(isPlayer))       emit newTurn(isPlayerTurn, turnReal);
+                    if(advanceTurn(isPlayer))       emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                 }
             }
 
@@ -959,9 +959,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 {
                     bool advance = advanceTurn(false);
                     emit pDebug("Enemy: Card drawn. ID: " + id, numLine);
-                    if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                    if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                     emit enemyCardDraw(id.toInt(), turnReal);
-                    if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                    if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                 }
                 //Enemigo roba carta especial del vacio
                 else if(zoneFrom.isEmpty())
@@ -1055,10 +1055,10 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                     advance = advanceTurn(false);
                     if(!cheatingCard)   emit enemyKnownCardDraw(id.toInt(), cardId);
                 }
-                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                 if(cheatingCard)                emit enemyCardDraw(id.toInt(), turnReal);
                 else                            emit enemyCardDraw(id.toInt(), turnReal, false, cardId);
-                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
             }
             else
             {
@@ -1079,9 +1079,9 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 {
                     advance = advanceTurn(true);
                 }
-                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal);
+                if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                 emit playerCardToHand(id.toInt(), cardId, turnReal);
-                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal);
+                if(advance && turnReal!=1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
             }
             else
             {
@@ -1260,7 +1260,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             bool advance = advanceTurn(false);
             emit pDebug("Enemy: Card from deck skipped hand (overdraw/recruit): " + name + " ID: " + id, numLine);
             emit enemyKnownCardDraw(id.toInt(), cardId);
-            if(advance)     emit newTurn(isPlayerTurn, turnReal);
+            if(advance)     emit newTurn(isPlayerTurn, turnReal, enemyMinions);
         }
 
         //Jugador roba carta conocida
@@ -1276,7 +1276,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(mulliganPlayerDone)//Evita que las cartas iniciales creen un nuevo Board en PlanHandler al ser robadas
             {
                 bool advance = advanceTurn(true);
-                if(advance)     emit newTurn(isPlayerTurn, turnReal);
+                if(advance)     emit newTurn(isPlayerTurn, turnReal, enemyMinions);
             }
             emit playerCardDraw(cardId, id.toInt());
         }
@@ -1519,13 +1519,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
         if(playerDraw)      emit clearDrawList();
 
         emit specialCardTrigger("", "", -1, -1);    //Evita Cartas createdBy en las cartas recien robadas al empezar el turno
-
-        //Secret CSpirit test
-        if(!isPlayerTurn && enemyMinions > 0)
-        {
-            emit pDebug("CSpirit tested. Minions: " + QString::number(enemyMinions), 0);
-            emit cSpiritTested();
-        }
     }
     return advance;
 }

@@ -1438,7 +1438,7 @@ void MainWindow::createGameWatcher()
             planHandler, SLOT(playerCardCodeChange(int,QString)));
     connect(gameWatcher, SIGNAL(minionCodeChange(bool,int,QString)),
             planHandler, SLOT(minionCodeChange(bool,int,QString)));
-    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
+    connect(gameWatcher, SIGNAL(newTurn(bool,int,int)),
             planHandler, SLOT(newTurn(bool,int)));
     connect(gameWatcher, SIGNAL(logTurn()),
             planHandler, SLOT(resetLastPowerAddon()));
@@ -1476,16 +1476,14 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(playerMinionPlayed(QString,int,int)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
             secretsHandler, SLOT(enemyMinionGraveyard(int,QString,bool,int)));
-    connect(gameWatcher, SIGNAL(cSpiritTested()),
-            secretsHandler, SLOT(cSpiritTested()));
     connect(gameWatcher, SIGNAL(playerAttack(bool,bool,int,int,int)),
             secretsHandler, SLOT(playerAttack(bool,bool,int,int,int)));
     connect(gameWatcher, SIGNAL(playerHeroPower()),
             secretsHandler, SLOT(playerHeroPower()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
             secretsHandler, SLOT(resetLastMinionDead(QString,QString)));
-    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
-            secretsHandler, SLOT(newTurn(bool)));
+    connect(gameWatcher, SIGNAL(newTurn(bool,int,int)),
+            secretsHandler, SLOT(newTurn(bool,int,int)));
     connect(gameWatcher, SIGNAL(playerCardDraw(QString,int)),
             secretsHandler, SLOT(playerCardDraw()));
     connect(gameWatcher, SIGNAL(playerCardPlayed(int,QString,bool,bool)),
@@ -1493,7 +1491,7 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             popularCardsHandler, SLOT(resetCardsInterface()));
-    connect(gameWatcher, SIGNAL(newTurn(bool,int)),
+    connect(gameWatcher, SIGNAL(newTurn(bool,int,int)),
             popularCardsHandler, SLOT(newTurn(bool,int)));
     connect(gameWatcher, SIGNAL(enemyHero(QString)),
             popularCardsHandler, SLOT(setEnemyClass(QString)));

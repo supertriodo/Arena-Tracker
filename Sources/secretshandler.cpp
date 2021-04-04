@@ -606,13 +606,23 @@ void SecretsHandler::playerHeroPower()
 }
 
 
-void SecretsHandler::newTurn(bool isPlayerTurn)
+void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
 {
     this->isPlayerTurn = isPlayerTurn;
     this->playerCardsDrawn = 0;
     this->enemyMinionsDeadThisTurn = 0; //Hand of salvation testing
     this->playerCardsPlayedThisTurn = 0; //Rat trap/Hidden wisdom testing
-    if(!isPlayerTurn)   discardSecretOptionNow(PLAGIARIZE);
+    if(!isPlayerTurn)
+    {
+        discardSecretOptionNow(PLAGIARIZE);
+
+        if(enemyMinions > 0)
+        {
+            discardSecretOptionNow(COMPETITIVE_SPIRIT);
+        }
+    }
+
+    Q_UNUSED(numTurn)
 }
 
 
@@ -756,12 +766,6 @@ void SecretsHandler::playerCardPlayed(int id, QString code, bool discard, bool i
 
     Q_UNUSED(id);
     Q_UNUSED(code);
-}
-
-
-void SecretsHandler::cSpiritTested()
-{
-    discardSecretOptionNow(COMPETITIVE_SPIRIT);
 }
 
 
