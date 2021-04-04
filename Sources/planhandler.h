@@ -193,7 +193,6 @@ signals:
     void showPremiumDialog();
     void swapSize(bool customSize);
     void noHeroDamageTested();
-    void minions2Tested();
     void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
 
@@ -234,7 +233,6 @@ public slots:
     void enemyCardObjPlayed(QString code, int id1, int id2);
     bool isReckoningTested(bool isHeroTo, int id1, int id2);
     void checkEnemyHeroHealthChanged();
-    void check2Minions();
     void newTurn(bool playerTurn, int numTurn);
     void setLastTriggerId(QString code, QString blockType, int id, int idTarget);
     void lockPlanInterface();

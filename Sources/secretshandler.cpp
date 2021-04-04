@@ -616,10 +616,8 @@ void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
     {
         discardSecretOptionNow(PLAGIARIZE);
 
-        if(enemyMinions > 0)
-        {
-            discardSecretOptionNow(COMPETITIVE_SPIRIT);
-        }
+        if(enemyMinions > 0)    discardSecretOptionNow(COMPETITIVE_SPIRIT);
+        if(enemyMinions > 1)    discardSecretOptionNow(OPEN_THE_CAGES);
     }
 
     Q_UNUSED(numTurn)
@@ -772,12 +770,6 @@ void SecretsHandler::playerCardPlayed(int id, QString code, bool discard, bool i
 void SecretsHandler::noHeroDamageTested()
 {
     discardSecretOptionNow(RIGGED_FAIRE_GAME);
-}
-
-
-void SecretsHandler::minions2Tested()
-{
-    discardSecretOptionNow(OPEN_THE_CAGES);
 }
 
 

@@ -1769,15 +1769,6 @@ void PlanHandler::checkEnemyHeroHealthChanged()
 }
 
 
-//Test secreto de empezar el turno con 2 minions
-void PlanHandler::check2Minions()
-{
-    if(turnBoards.count()<1)    return;
-    int enemyMinions = turnBoards.last()->enemyMinions.count();
-    if(enemyMinions >= 2)   emit minions2Tested();
-}
-
-
 void PlanHandler::newTurn(bool playerTurn, int numTurn)
 {
     if(numTurn == 2)    fixTurn1Card();
@@ -1830,7 +1821,6 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
     if(!playerTurn)
     {
         checkEnemyHeroHealthChanged();
-        check2Minions();
     }
 }
 
