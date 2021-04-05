@@ -1752,7 +1752,7 @@ bool PlanHandler::isReckoningTested(bool isHeroTo, int id1, int id2)
         MinionGraphicsItem * minion2 = findMinion(false, id2);
         if(minion2 == nullptr)  return false;
         int attack2 = minion2->getAttack();
-        int health1 = minion1->getHealth();
+        int health1 = minion1->getHitsToDie(attack2);
         if(health1 > attack2)   return true;
         else                    return false;
     }
