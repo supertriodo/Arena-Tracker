@@ -1206,7 +1206,7 @@
 "DAL_736" : [ "battlecry" ],
 "DAL_742" : [ "windfuryMinionSyn" ],
 "DAL_743" : [ "murlocGen", "damageMinionsGen", "rush", "deathrattle", "drop2" ],
-"DAL_744" : [ "battlecry", "healthBuffSyn" ],
+"DAL_744" : [ "battlecry" ],
 "DAL_747" : [ "battlecry", "beastGen", "spawnEnemyGen", "tokenGen", "drop3" ],
 "DAL_748" : [ "spellDamageGen" ],
 "DAL_749" : [ "deathrattle", "attackBuffSyn" ],
