@@ -4642,7 +4642,7 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-//    downloadHearthArenaTierlistOriginal();
+    downloadHearthArenaTierlistOriginal();
 
 //    QStringList arenaSets;
 //    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
