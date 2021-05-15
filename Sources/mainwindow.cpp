@@ -4739,7 +4739,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> Patch 20.0 (planned on March 2021)
-//|-Synergy / Code  --> Patch 20.0 (planned on March 2021)
+//|-Synergy / Code  --> Patch 20.0.2.79904 (April 13, 2021) + 20.2.2 Patch Notes
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
