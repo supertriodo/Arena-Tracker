@@ -272,6 +272,7 @@ private slots:
     void testDelay();
     void testSynergies();
     void testHeroPortraits();
+    void downloadHeroPortrait(QString code);
     void testTierlists();
     void testDownloadRotation();
     void testDownloadCards();

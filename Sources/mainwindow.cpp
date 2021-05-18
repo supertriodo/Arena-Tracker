@@ -4619,11 +4619,44 @@ void MainWindow::testHeroPortraits()
     {
         if(!Utility::checkHeroPortrait(code))
         {
-            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "missing. Resize 300.";
+            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "built.";
+            downloadHeroPortrait(code);
             everythingOk = false;
         }
     }
     if(everythingOk)    qDebug()<<"DEBUG HEROES: OK - All portraits in place.";
+}
+
+
+void MainWindow::downloadHeroPortrait(QString code)
+{
+    QNetworkAccessManager *nm = new QNetworkAccessManager(this);
+    QString urlString = "https://cards.hearthpwn.com/enUS/" + code + ".png";
+    nm->get(QNetworkRequest(QUrl(urlString)));
+
+    connect(nm, &QNetworkAccessManager::finished,
+        [=](QNetworkReply *reply)
+        {
+            reply->deleteLater();
+            nm->deleteLater();
+            QByteArray data = reply->readAll();
+            QString heroDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneHeroPortraits";
+
+            QImage heroImage;
+            heroImage.loadFromData(data);
+            heroImage = heroImage.scaledToWidth(300, Qt::SmoothTransformation);
+            heroImage = heroImage.copy(-14, -107, 262, 373);
+            heroImage = heroImage.copy(0, 0, 306, 464);
+            QImage marcoImage(heroDir + "/Marco.png", "png");
+
+            QPainter painter;
+            painter.begin(&heroImage);
+                painter.drawImage(0, 0, marcoImage);
+            painter.end();
+
+            heroImage.save(heroDir + "/" + code + ".png", "png");
+        }
+    );
 }
 
 
@@ -4811,6 +4844,9 @@ void MainWindow::testDelay()
 //    }
 //https://medium.com/genymobile/how-c-lambda-expressions-can-improve-your-qt-code-8cd524f4ed9f
 //QTimer::singleShot(100, this, [] () {MySlot(0); });
+//connect(nm, &QNetworkAccessManager::finished,
+//    [=](QNetworkReply *reply)
+//    {}
 
 
 
