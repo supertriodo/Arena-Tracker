@@ -435,6 +435,35 @@ CardClass Utility::classString2cardClass(QString value)
 }
 
 
+/*
+ * Core "CORE"
+ * Legacy "LEGACY"
+ * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
+ * Curse of Naxxramas "NAXX"
+ * Goblins vs Gnomes "GVG"
+ * Blackrock Mountain "BRM"
+ * The Grand Tournament "TGT"
+ * League of Explorer "LOE"
+ * Whispers of the Old Gods "OG"
+ * One Night in Karazhan "KARA"
+ * Mean Streets of Gadgetzan "GANGS"
+ * Journey to Un'Goro "UNGORO"
+ * Knights of the Frozen Throne "ICECROWN"
+ * Kobolds and Catacombs "LOOTAPALOOZA"
+ * The Witchwood "GILNEAS"
+ * The boomsday Project "BOOMSDAY"
+ * Rastakhan's Rumble "TROLL"
+ * Rise of Shadows "DALARAN"
+ * Saviors of Uldum "ULDUM"
+ * Descent of Dragons "DRAGONS"
+ * Galakrond's Awakening "YEAR_OF_THE_DRAGON"
+ * Ashes of Outland "BLACK_TEMPLE"
+ * Scholomance Academy "SCHOLOMANCE"
+ * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ * Forged in the Barrens "THE_BARRENS"
+ */
+
+
 bool Utility::isFromStandardSet(QString code)
 {
     QString cardSet = getCardAttribute(code, "set").toString();

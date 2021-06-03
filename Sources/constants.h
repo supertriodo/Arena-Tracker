@@ -37,6 +37,7 @@
 #define OH_MY_YOGG QString("DMF_236")
 #define RECKONING QString("CS3_016")
 #define GALLOPING_SAVIOR QString("BAR_550")
+#define JUDGMENT_OF_JUSTICE QString("TODO")//TODO
 
 //#define FREEZING_TRAP QString("EX1_611")
 #define FREEZING_TRAP QString("CORE_EX1_611")

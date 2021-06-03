@@ -237,6 +237,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 //if(loadingScreenState == arena && !discover) activeSecret.children.append(SecretCard(HAND_OF_SALVATION));//Arena event
                 //COMMON
                 unknownSecretPlayedAddOption(NOBLE_SACRIFICE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(JUDGMENT_OF_JUSTICE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(AUTODEFENSE_MATRIX, inArena, activeSecret);
                 unknownSecretPlayedAddOption(AVENGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(REDEMPTION, inArena, activeSecret);
@@ -830,6 +831,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(WANDERING_MONSTER);//No necesita objetivo
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
+            discardSecretOptionNow(JUDGMENT_OF_JUSTICE);
             discardSecretOption(EYE_FOR_AN_EYE);//Ocultado por NOBLE_SACRIFICE
             if(planHandler->isReckoningTested(isHeroTo, id1, id2))  discardSecretOption(RECKONING);//Ocultado por NOBLE_SACRIFICE (si el atacante tiene <= 2 health pq muere)
 
@@ -846,6 +848,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(PACK_TACTICS);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
+            discardSecretOptionNow(JUDGMENT_OF_JUSTICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
             if(planHandler->isReckoningTested(isHeroTo, id1, id2))  discardSecretOption(RECKONING);//Ocultado por AUTODEFENSE_MATRIX
 
@@ -937,7 +940,7 @@ void SecretsHandler::createSecretsByPickrate()
 {
     secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM
-                              << OH_MY_YOGG << RECKONING << GALLOPING_SAVIOR;
+                              << OH_MY_YOGG << RECKONING << GALLOPING_SAVIOR << JUDGMENT_OF_JUSTICE;
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
