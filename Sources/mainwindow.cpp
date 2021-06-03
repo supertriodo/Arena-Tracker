@@ -4745,7 +4745,12 @@ void MainWindow::testDelay()
 }
 
 
-
+/*
+ * Para mini-sets actualizar a las 19:00 arenaVersion.json y HATL con los nuevos sets, esto detectara todo menos las 35 nuevas cartas.
+ * No esperes a la actualizacion de cards.json pq puede llevar horas, mejor hacer las sinergias al dia siguiente y volver a cambiar
+ * la version de arenaVersion.json para forzar rehacer los histogramas incluyendo las nuevas 35 cartas que apareceran cuando cards.json
+ * se actualice.
+ */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
