@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 7,
+  "arenaVersion": 8,
   "arenaSets": ["CORE", "THE_BARRENS", "DARKMOON_FAIRE", "SCHOLOMANCE", "BLACK_TEMPLE", "GVG", "LOOTAPALOOZA"],
   "multiclassArena": false,
   "redownloadCards": false,
-  "redownloadHeroes": false
+  "redownloadHeroes": true
 }
