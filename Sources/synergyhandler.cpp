@@ -1783,9 +1783,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-//    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_BARRENS", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_BARRENS", true, true))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
-    for(const QString &code: (const QStringList)Utility::getWildCodes())
+//    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {

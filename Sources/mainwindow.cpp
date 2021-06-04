@@ -4667,7 +4667,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_BARRENS", 21, 40, "WC_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("");
+//    draftHandler->getSynergyHandler()->testSynergies("WC_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
