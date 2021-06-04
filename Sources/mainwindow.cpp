@@ -4665,7 +4665,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE", 1, 20);
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_BARRENS", 21, 40, "WC_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("");
 
@@ -4678,7 +4678,6 @@ void MainWindow::testTierlists()
     downloadHearthArenaTierlistOriginal();
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "DALARAN" << "GANGS";
 //    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "GVG" << "LOOTAPALOOZA";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
