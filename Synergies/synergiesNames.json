@@ -3320,7 +3320,8 @@
     "BAR_022 Peon", "BAR_024 Oasis Thrasher", "BAR_025 Sunwell Initiate", "BAR_031 Sunscale Raptor",
     "BAR_070 Gruntled Patron", "BAR_071 Taurajo Brave", "BAR_073 Barrens Blacksmith",
     "BAR_078 Blademaster Samuro", "BAR_320 Efficient Octo-bot", "BAR_538 Druid of the Plains",
-    "BAR_840 Whirling Combatant", "BAR_843 Warsong Envoy", "BAR_896 Stonemaul Anchorman"],
+    "BAR_840 Whirling Combatant", "BAR_843 Warsong Envoy", "BAR_896 Stonemaul Anchorman",
+    "WC_008 Sin'dorei Scentfinder", "WC_026 Kresh, Lord of Turtling"],
 
   "-----POISON-----": "",
   "BAR_322 Swinetusk Shank": ["BAR_324 Apothecary Helbrim", "BAR_318 Silverleaf Poison",
