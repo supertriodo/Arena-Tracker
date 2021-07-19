@@ -54,6 +54,7 @@ private:
     void uploadNextXlsResult();
     void saveSettings();
     void loadAccount(QString username, QString password);
+    QString getRandomString(int rslength);
 
 public:
     void checkAccount();
@@ -63,6 +64,7 @@ public:
     QString getUsername();
     void uploadXls(QString fileName);
     void importAccount(QString fileName);
+    void createFakeAccount();
 
 signals:
     void advanceProgressBar(int remaining, QString text);

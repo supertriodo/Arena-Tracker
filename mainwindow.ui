@@ -1596,7 +1596,7 @@ draft mechanics becoming a patron (3$)</string>
               <item>
                <widget class="QGroupBox" name="configBoxActions">
                 <property name="title">
-                 <string>Actions</string>
+                 <string>Force Draft</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

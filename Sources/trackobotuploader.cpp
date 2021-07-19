@@ -149,6 +149,29 @@ bool TrackobotUploader::loadAccount(QByteArray jsonData)
 }
 
 
+QString TrackobotUploader::getRandomString(int rslength)
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-");
+
+   QString randomString;
+   for(int i=0; i<rslength; i++)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
+
+void TrackobotUploader::createFakeAccount()
+{
+    emit pDebug("New fake account --> Created.");
+    loadAccount(getRandomString(20), getRandomString(10));
+    saveAccount();
+}
+
+
 void TrackobotUploader::importAccount(QString fileName)
 {
     if(loadAccount(fileName))   saveAccount();

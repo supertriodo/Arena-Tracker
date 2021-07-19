@@ -4493,6 +4493,10 @@ void MainWindow::showPremiumDialog()
                                                 "", &ok);
         if(ok)
         {
+            if(!trackobotUploader->isConnected())
+            {
+                trackobotUploader->createFakeAccount();
+            }
             premiumHandler->unlockPremium(email);
             showMessageProgressBar("Premium request sent");
         }
