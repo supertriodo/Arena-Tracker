@@ -191,7 +191,6 @@ private:
     void spreadDraftMethod();
     void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void showProgressBar(bool animated=true);
-    bool askImportXls();
     bool askImportAccount();
     void checkFirstRunNewVersion();
     void startProgressBarMini(int maximum);

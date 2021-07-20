@@ -3,7 +3,6 @@
 
 #include "utility.h"
 #include "gamewatcher.h"
-#include "LibXls/xls.h"
 #include "Widgets/ui_extended.h"
 #include <QDateTime>
 #include <QObject>
@@ -15,8 +14,6 @@
 #define TRACKOBOT_RESULTS_URL "https://trackobot.com/profile/results.json"
 #define TRACKOBOT_PROFILE_URL "https://trackobot.com/one_time_auth.json"
 #define TRACKOBOT_ACCOUNT_FILE "Account.track-o-bot"
-
-using namespace xls;
 
 
 class ArenaItem
@@ -38,7 +35,6 @@ private:
     QNetworkAccessManager *networkManager;
     QString username, password;
     bool connectSuccess;
-    QList<ArenaItem> arenaItemXlsList;
 
 
 //Metodos
@@ -47,11 +43,6 @@ private:
     void saveAccount();
     bool loadAccount(QByteArray jsonData);
     QString credentials();
-    QString getStringCellXls(st_row::st_row_data *row, int col);
-    bool isRowGameXls(st_row::st_row_data *row);
-    QDateTime getRowDateXls(st_row::st_row_data *row);
-    QList<ArenaItem> extractXls(xlsWorkBook *pWB);
-    void uploadNextXlsResult();
     void saveSettings();
     void loadAccount(QString username, QString password);
     QString getRandomString(int rslength);
@@ -62,7 +53,6 @@ public:
     void openTBProfile();
     void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory);
     QString getUsername();
-    void uploadXls(QString fileName);
     void importAccount(QString fileName);
     void createFakeAccount();
 

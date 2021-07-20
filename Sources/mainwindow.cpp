@@ -1652,6 +1652,8 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->setFlat(true);
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
+
+    ui->webButton->hide();
 }
 
 
@@ -2231,15 +2233,7 @@ void MainWindow::dropEvent(QDropEvent *e)
         QString fileName = url.toLocalFile();
         pDebug("Dropped " + fileName);
 
-        if(fileName.endsWith(".xls"))
-        {
-            if(askImportXls())
-            {
-                trackobotUploader->uploadXls(fileName);
-            }
-            break;
-        }
-        else if(fileName.endsWith(".track-o-bot"))
+        if(fileName.endsWith(".track-o-bot"))
         {
             if(askImportAccount())
             {
@@ -2260,27 +2254,6 @@ bool MainWindow::askImportAccount()
     QMessageBox msgBox(this);
     msgBox.setText(text);
     msgBox.setWindowTitle("Import track-o-bot account?");
-    msgBox.setTextFormat(Qt::RichText);
-    msgBox.setIcon(QMessageBox::Question);
-    msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-    msgBox.exec();
-
-    if(msgBox.result() == QMessageBox::Yes) return true;
-    else                                    return false;
-}
-
-
-bool MainWindow::askImportXls()
-{
-    QString text =  "Do you want to upload all the games included"
-                    "<br>on this XLS file to your track-o-bot account?"
-                    "<br><br>Keep in mind the XLS needs to follow"
-                    "<br>Arena Mastery export XLS format."
-                    "<br><a href='https://www.youtube.com/watch?v=LOB1sBU1AOA'>VIDEO</a>";
-
-    QMessageBox msgBox(this);
-    msgBox.setText(text);
-    msgBox.setWindowTitle("Upload XLS?");
     msgBox.setTextFormat(Qt::RichText);
     msgBox.setIcon(QMessageBox::Question);
     msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
