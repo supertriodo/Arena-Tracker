@@ -461,6 +461,10 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
 }
 
 
+/*
+ * lightForgeTiers no contiene ningun tier, solo la lista de codigos en arena
+ * en un futuro podemos usarlo para una nueva tier list
+ */
 void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass)
 {
     lightForgeTiers.clear();
@@ -470,6 +474,24 @@ void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClas
         const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
         if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(arenaHero))
         {
+            if(code.startsWith("CORE_"))
+            {
+                QString noCoreCode = code.mid(5);
+                if(lightForgeTiers.contains(noCoreCode))
+                {
+                    lightForgeTiers.remove(noCoreCode);
+                    const QList<CardClass> cardClassList = codesByClass.keys();
+                    for(const CardClass &cardClass: cardClassList)
+                    {
+                        codesByClass[cardClass].removeAll(noCoreCode);
+                    }
+                }
+            }
+            else
+            {
+                if(lightForgeTiers.contains("CORE_" + code))   continue;
+            }
+
             lightForgeTiers[code] = 0;
 
             if(multiClassDraft)
@@ -1408,35 +1430,31 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
                    HearthArena);
 
     //HSReplay
-    float ratingPlayed1, ratingPlayed2, ratingPlayed3;
-    float ratingIncluded1, ratingIncluded2, ratingIncluded3;
-    int includedDecks1, includedDecks2, includedDecks3;
-    ratingPlayed1 = ratingPlayed2 = ratingPlayed3 = 0;
-    ratingIncluded1 = ratingIncluded2 = ratingIncluded3 = 0;
-    includedDecks1 = includedDecks2 = includedDecks3 = 0;
+    float ratingPlayed[3] = {0,0,0};
+    float ratingIncluded[3] = {0,0,0};
+    int includedDecks[3] = {0,0,0};
 
-    if(cardsPlayedWinratesMap != nullptr)
+    if(cardsPlayedWinratesMap != nullptr && cardsIncludedWinratesMap != nullptr && cardsIncludedDecksMap != nullptr)
     {
-        ratingPlayed1 = cardsPlayedWinratesMap[this->arenaHero][codes[0]];
-        ratingPlayed2 = cardsPlayedWinratesMap[this->arenaHero][codes[1]];
-        ratingPlayed3 = cardsPlayedWinratesMap[this->arenaHero][codes[2]];
+        for(int i=0; i<3; i++)
+        {
+            if(!cardsPlayedWinratesMap[this->arenaHero].contains(codes[i]))
+            {
+                if(codes[i].startsWith("CORE_") &&
+                        cardsPlayedWinratesMap[this->arenaHero].contains(codes[i].mid(5)))      codes[i] = codes[i].mid(5);
+                else if(cardsPlayedWinratesMap[this->arenaHero].contains("CORE_" + codes[i]))   codes[i] = "CORE_" + codes[i];
+            }
+
+            ratingPlayed[i] = cardsPlayedWinratesMap[this->arenaHero][codes[i]];
+            ratingIncluded[i] = cardsIncludedWinratesMap[this->arenaHero][codes[i]];
+            includedDecks[i] = cardsIncludedDecksMap[this->arenaHero][codes[i]];
+        }
     }
-    if(cardsIncludedWinratesMap != nullptr)
-    {
-        ratingIncluded1 = cardsIncludedWinratesMap[this->arenaHero][codes[0]];
-        ratingIncluded2 = cardsIncludedWinratesMap[this->arenaHero][codes[1]];
-        ratingIncluded3 = cardsIncludedWinratesMap[this->arenaHero][codes[2]];
-    }
-    if(cardsIncludedDecksMap != nullptr)
-    {
-        includedDecks1 = cardsIncludedDecksMap[this->arenaHero][codes[0]];
-        includedDecks2 = cardsIncludedDecksMap[this->arenaHero][codes[1]];
-        includedDecks3 = cardsIncludedDecksMap[this->arenaHero][codes[2]];
-    }
-    showNewRatings(ratingIncluded1, ratingIncluded2, ratingIncluded3,
-                   ratingPlayed1, ratingPlayed2, ratingPlayed3,
+
+    showNewRatings(ratingIncluded[0], ratingIncluded[1], ratingIncluded[2],
+                   ratingPlayed[0], ratingPlayed[1], ratingPlayed[2],
                    HSReplay,
-                   includedDecks1, includedDecks2, includedDecks3);
+                   includedDecks[0], includedDecks[1], includedDecks[2]);
 
     //Twitch Handler
     if(this->twitchHandler != nullptr)
@@ -1447,7 +1465,8 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         if(TwitchHandler::isActive())
         {
             QString pickTag = TwitchHandler::getPickTag();
-            twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+"/30] -- "):QString("")) +
+            twitchHandler->sendMessage((patreonVersion?QString("["+QString::number(synergyHandler->draftedCardsCount()+1)+
+                                       "/30] -- "):QString("")) +
                                        "(" + pickTag + "1) " + bestCards[0].getName() +
                                        " / (" + pickTag + "2) " + bestCards[1].getName() +
                                        " / (" + pickTag + "3) " + bestCards[2].getName());
