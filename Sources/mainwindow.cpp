@@ -4351,6 +4351,10 @@ void MainWindow::checkFirstRunNewVersion()
     {
         pDebug("First run of new version.");
         settings.setValue("neoInt", 0);
+
+        //TODO remove
+        removeHistograms();
+        Utility::createDir(Utility::histogramsPath());
     }
 }
 
