@@ -478,7 +478,7 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
         cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
-        cardSet == "THE_BARRENS")
+        cardSet == "THE_BARRENS" || cardSet == "STORMWIND")
     {
         return true;
     }

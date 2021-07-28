@@ -1783,7 +1783,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_BARRENS", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("STORMWIND", true, true))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
 //    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
@@ -4223,15 +4223,23 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == LIVING_SEED)         return 0;
     if(code == SCABBS_CUTTERBUTTER) return 0;
     if(code == KINDLING_ELEMENTAL)  return 0;
+    if(code == CELESTIAL_INK_SET)   return 0;
+    if(code == RUNED_MITHRIL_ROD)   return 0;
+    if(code == SIGIL_OF_ALACRITY)   return 0;
     if(code == EYE_BEAM)            return 1;
+    if(code == AUCTIONHOUSE_GAVEL)  return 1;
+    if(code == SI7_SKULKER)         return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == PALM_READING)        return 2;
+    if(code == FELGORGER)           return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
     if(code == DREAMPETAL_FLORIST)  return 3;
     if(code == FEL_GUARDIANS)       return 3;
     if(code == CUTTING_CLASS)       return 3;
+    if(code == GRANITE_FORGEBORN)   return 3;
+    if(code == CLUMSY_COURIER)      return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -4253,6 +4261,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == SEA_GIANT)           return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == FLESH_GIANT)         return 6;
+    if(code == IREBOUND_BRUTE)      return 6;
+    if(code == GOLDSHIRE_GNOLL)     return 6;
     if(code == CLOCKWORK_GIANT)     return 8;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 9;
