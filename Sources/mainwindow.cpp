@@ -4666,12 +4666,20 @@ void MainWindow::testTierlists()
     Utility::checkTierlistsCount(arenaSets);
 }
 
+/*
+ * The Witchwood "GILNEAS"
+ * Rastakhan's Rumble "TROLL"
+ * Saviors of Uldum "ULDUM"
+ * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
+ */
 
 void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "GVG" << "LOOTAPALOOZA";
+    arenaSets << "CORE" << "STORMWIND" << "THE_BARRENS" << "DARKMOON_FAIRE" << "ULDUM" << "TROLL" << "GILNEAS";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();

@@ -461,6 +461,7 @@ CardClass Utility::classString2cardClass(QString value)
  * Scholomance Academy "SCHOLOMANCE"
  * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
  * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
  */
 
 
