@@ -4644,9 +4644,9 @@ void MainWindow::downloadHeroPortrait(QString code)
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("SCH_199", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("SW_003", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_BARRENS", 21, 40, "WC_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("STORMWIND", 1, 20, "WC_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("WC_");
 
@@ -4735,7 +4735,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> THE_BARRENS
+//Update Utility::isFromStandardSet(QString code) --> STORMWIND
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4757,8 +4757,8 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> Patch 20.8.2.86605 (2021-07-15)
-//|-Synergy / Code  --> Patch 20.8.2.86605 (2021-07-15)
+//|-Imagenes cartas --> Patch 21.0 (2021-07-27)
+//|-Synergy / Code  --> Patch 21.0 (2021-07-27)
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
