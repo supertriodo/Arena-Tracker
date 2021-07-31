@@ -2676,7 +2676,7 @@
 "SCH_607" : [ "beastSyn", "drop3" ],
 "SCH_609" : [ "attackBuffGen", "healthBuffGen", "handBuffGen", "spellBuffGen", "tokenSyn" ],
 "SCH_610" : [ "beastSyn", "rushGen", "damageMinionsGen" ],
-"SCH_612" : [ "totemGen", "overload", "rushGen", "treantGen", "aoeGen" ],
+"SCH_612" : [ "totemGen", "overload", "treantGen", "aoeGen" ],
 "SCH_613" : [ "=>SynSpellCost5", "drop4", "battlecry", "taunt", "returnSyn" ],
 "SCH_614" : [ "spellAllSyn" ],
 "SCH_615" : [ "tokenGen", "deathrattle", "overload" ],
