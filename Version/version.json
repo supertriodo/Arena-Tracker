@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v9.2","v9.3","v9.4","v9.41","v9.42","v9.43"],
+	"versionFree": ["v9.2","v9.3","v9.4","v9.41","v9.42","v9.43","v9.44"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "Fix a bug that shows 0 HSR winrate for some cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "AT gets ready for United in Stormwind expansion.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
