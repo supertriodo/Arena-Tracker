@@ -4655,7 +4655,7 @@ void MainWindow::testTierlists()
     downloadHearthArenaTierlistOriginal();
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "THE_BARRENS" << "DARKMOON_FAIRE" << "SCHOLOMANCE" << "BLACK_TEMPLE" << "GVG" << "LOOTAPALOOZA";
+//    arenaSets << "CORE" << "STORMWIND" << "THE_BARRENS" << "DARKMOON_FAIRE" << "ULDUM" << "TROLL" << "GILNEAS";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
