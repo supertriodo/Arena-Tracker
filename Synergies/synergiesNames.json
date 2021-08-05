@@ -3396,8 +3396,8 @@
     "SW_418 SI:7 Skulker"],
 
   "-----------------------------------------PALADIN------------------------------------------------": "",
-  "EX1_619 Equality": ["CS2_093 Consecration","NEW1_020 Wild Pyromancer",
-    "EX1_097 Abomination","FP1_024 Unstable Ghoul"],
+  "CORE_EX1_619 Equality": ["CORE_CS2_093 Consecration","CORE_NEW1_020 Wild Pyromancer",
+    "CORE_EX1_097 Abomination","CORE_FP1_024 Unstable Ghoul"],
 
   "-----LIBRAM-----": "",
   "BT_020 Aldor Attendant": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
@@ -3415,14 +3415,14 @@
   "-----------------------------------------MAGE---------------------------------------------------": "",
 
   "-----------------------------------------PRIEST-------------------------------------------------": "",
-  "EX1_335 Lightspawn": ["CS2_004 Power Word: Shield","CS2_236 Divine Spirit","EX1_004 Young Priestess",
-    "EX1_623 Temple Enforcer"],
+  "CORE_EX1_335 Lightspawn": ["CORE_CS2_004 Power Word: Shield","CORE_CS2_236 Divine Spirit","CORE_EX1_004 Young Priestess",
+    "CORE_EX1_623 Temple Enforcer"],
 
   "-----------------------------------------DEMON HUNTER-------------------------------------------------": "",
   "SW_042 Persistent Peddler": ["SW_042 Persistent Peddler"],
 
   "--------------------------------------------ALL---------------------------------------------------": "",
-  "EX1_005 Big Game Hunter": ["EX1_046 Dark Iron Dwarf","CS2_188 Abusive Sergeant"],
+  "CORE_EX1_005 Big Game Hunter": ["CORE_EX1_046 Dark Iron Dwarf","CORE_CS2_188 Abusive Sergeant"],
 
   "BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
 
@@ -3472,7 +3472,7 @@
 
   "-----POISON-----": "",
   "BAR_322 Swinetusk Shank": ["BAR_324 Apothecary Helbrim", "BAR_318 Silverleaf Poison",
-    "BAR_321 Paralytic Poison", "CS2_074 Deadly Poison", "ICC_221 Leeching Poison",
+    "BAR_321 Paralytic Poison", "CORE_CS2_074 Deadly Poison", "ICC_221 Leeching Poison",
     "YOP_015 Nitroboost Poison"],
 
   "-----TRADE-----": "",
