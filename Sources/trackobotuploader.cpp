@@ -9,15 +9,15 @@ TrackobotUploader::TrackobotUploader(QObject *parent) : QObject(parent)
     username = password = "";
     connectSuccess = false;
 
-    networkManager = new QNetworkAccessManager(this);
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinished(QNetworkReply*)));
+//    networkManager = new QNetworkAccessManager(this);
+//    connect(networkManager, SIGNAL(finished(QNetworkReply*)),
+//            this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 
 TrackobotUploader::~TrackobotUploader()
 {
-    delete networkManager;
+//    delete networkManager;
 }
 
 
@@ -33,6 +33,7 @@ QString TrackobotUploader::getUsername()
 }
 
 
+/*
 void TrackobotUploader::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -76,6 +77,7 @@ void TrackobotUploader::replyFinished(QNetworkReply *reply)
         }
     }
 }
+*/
 
 
 void TrackobotUploader::saveAccount()
@@ -248,52 +250,49 @@ QString TrackobotUploader::credentials()
 }
 
 
+/*
 void TrackobotUploader::openTBProfile()
 {
-//    QNetworkRequest request(QUrl(TRACKOBOT_PROFILE_URL));
-//    request.setRawHeader( "Authorization", credentials().toLatin1());
-//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-//    networkManager->post(request, "");
-//    emit pDebug("Getting profile url...");
+    QNetworkRequest request(QUrl(TRACKOBOT_PROFILE_URL));
+    request.setRawHeader( "Authorization", credentials().toLatin1());
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    networkManager->post(request, "");
+    emit pDebug("Getting profile url...");
 }
+*/
 
 
+/*
 //Trackobot no acepta "demonhunter"
 void TrackobotUploader::uploadResult(GameResult gameResult, LoadingScreenState loadingScreen,
                                      qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory)
 {
-    Q_UNUSED(gameResult);
-    Q_UNUSED(loadingScreen);
-    Q_UNUSED(startGameEpoch);
-    Q_UNUSED(dateTime);
-    Q_UNUSED(cardHistory);
+    QJsonObject result;
+    result["coin"]          = !gameResult.isFirst;
+    result["hero"]          = Utility::classLogNumber2classLName(gameResult.playerHero);
+    result["opponent"]      = Utility::classLogNumber2classLName(gameResult.enemyHero);
+    result["win"]           = gameResult.isWinner;
+    result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
+    result["duration"]      = QDateTime::currentMSecsSinceEpoch()/1000 - startGameEpoch;
+    result["added"]         = dateTime.toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
+    result["card_history"]  = cardHistory;
 
-//    QJsonObject result;
-//    result["coin"]          = !gameResult.isFirst;
-//    result["hero"]          = Utility::classLogNumber2classLName(gameResult.playerHero);
-//    result["opponent"]      = Utility::classLogNumber2classLName(gameResult.enemyHero);
-//    result["win"]           = gameResult.isWinner;
-//    result["mode"]          = Utility::getLoadingScreenToString(loadingScreen).toLower();
-//    result["duration"]      = QDateTime::currentMSecsSinceEpoch()/1000 - startGameEpoch;
-//    result["added"]         = dateTime.toTimeSpec(Qt::OffsetFromUTC).toString(Qt::ISODate);
-//    result["card_history"]  = cardHistory;
-
-//    QJsonObject params;
-//    params[ "result" ] = result;
-//    QByteArray data = QJsonDocument( params ).toJson();
+    QJsonObject params;
+    params[ "result" ] = result;
+    QByteArray data = QJsonDocument( params ).toJson();
 
 
-//    QNetworkRequest request(QUrl(TRACKOBOT_RESULTS_URL));
-//    request.setRawHeader( "Authorization", credentials().toLatin1());
-//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-//    networkManager->post(request, data);
-//    emit pDebug("Uploading result...");
+    QNetworkRequest request(QUrl(TRACKOBOT_RESULTS_URL));
+    request.setRawHeader( "Authorization", credentials().toLatin1());
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    networkManager->post(request, data);
+    emit pDebug("Uploading result...");
 
-//    QString text =  Utility::classLogNumber2classULName(gameResult.playerHero) + " vs " +
-//                    Utility::classLogNumber2classULName(gameResult.enemyHero) + " uploaded";
-//    emit showMessageProgressBar(text);
+    QString text =  Utility::classLogNumber2classULName(gameResult.playerHero) + " vs " +
+                    Utility::classLogNumber2classULName(gameResult.enemyHero) + " uploaded";
+    emit showMessageProgressBar(text);
 }
-
+*/
 
 
 

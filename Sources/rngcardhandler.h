@@ -43,7 +43,6 @@ public:
 
 signals:
     void checkCardImage(QString code);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="RngCardHandler");
 
 public slots:

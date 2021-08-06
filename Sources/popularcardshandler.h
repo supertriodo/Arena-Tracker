@@ -48,7 +48,6 @@ public:
 signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PopularCardsHandler");
 
 public slots:

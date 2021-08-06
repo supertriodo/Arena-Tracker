@@ -203,7 +203,6 @@ signals:
     void itemLeave();
     void showPremiumDialog();
     void calculateMinimumWidth();
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftHandler");
 
 public slots:

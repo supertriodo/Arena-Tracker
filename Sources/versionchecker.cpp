@@ -42,8 +42,6 @@ void VersionChecker::replyFinished(QNetworkReply *reply)
 {
     reply->deleteLater();
 
-    emit pLog("Settings: Arena Tracker " + VERSION);
-
     if(reply->error() != QNetworkReply::NoError)
     {
         emit pDebug(reply->url().toString() + " --> Failed. Retrying...");
@@ -126,7 +124,6 @@ void VersionChecker::checkUpdate(QByteArray versionJson)
 
     if(!allowedVersions.contains(VERSION))
     {
-        emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
         emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
 
         QMessageBox msgBox(static_cast<QMainWindow*>(this->parent()));
@@ -152,13 +149,11 @@ void VersionChecker::checkUpdate(QByteArray versionJson)
         if(VERSION == latestVersion)
         {
             settings.setValue("version", VERSION);
-            emit pLog("Settings: Arena Tracker is up-to-date.");
             emit pDebug("Arena Tracker is up-to-date.");
             this->deleteLater();
         }
         else
         {
-            emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
             emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
 
             QMessageBox msgBox(static_cast<QMainWindow*>(this->parent()));
@@ -188,13 +183,11 @@ void VersionChecker::checkUpdate(QByteArray versionJson)
     }
     else if(VERSION != latestVersion)
     {
-        emit pLog("Settings: Arena Tracker " + latestVersion + " is available for download.");
         emit pDebug("Arena Tracker " + latestVersion + " is available for download.");
         this->deleteLater();
     }
     else
     {
-        emit pLog("Settings: Arena Tracker is up-to-date.");
         emit pDebug("Arena Tracker is up-to-date.");
         this->deleteLater();
     }

@@ -21,7 +21,6 @@ bool LogLoader::init()
     if(!readSettings()) return false;
 
     emit pDebug("Log found.");
-    emit pLog(tr("Log: Log found."));
 
     updateTime = 1000;
 
@@ -122,13 +121,11 @@ bool LogLoader::readLogsDirPath()
     }
 
     emit pDebug("Path Logs Dir: " + logsDirPath + " - " + QString::number(logsDirPath.length()));
-    emit pLog("Settings: Path Logs Dir: " + logsDirPath);
 
     if(!QFileInfo::exists(logsDirPath))
     {
         settings.setValue("logsDirPath", "");
         emit pDebug("Logs dir not found.");
-        emit pLog(tr("Log: Logs dir not found. Restart Arena Tracker and set the path again."));
         QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
         return false;
     }
@@ -168,13 +165,11 @@ bool LogLoader::readLogConfigPath()
     }
 
     emit pDebug("Path log.config: " + logConfig + " - " + QString::number(logConfig.length()));
-    emit pLog(tr("Settings: Path log.config: ") + logConfig);
 
     if(!QFileInfo::exists(logConfig))
     {
         settings.setValue("logConfig", "");
         emit pDebug("log.config not found.");
-        emit pLog(tr("Log: log.config not found. Restart Arena Tracker and set the path again."));
         QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
         return false;
     }
@@ -227,7 +222,6 @@ bool LogLoader::checkLogConfig()
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         emit pDebug("Cannot access log.config", DebugLevel::Error);
-        emit pLog(tr("Log: ERROR: Cannot access log.config"));
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
         QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
@@ -259,7 +253,6 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
     if(!data.contains(option))
     {
         emit pDebug("Setting log.config");
-        emit pLog(tr("Log: Setting log.config"));
         stream << endl << option << endl;
         stream << "LogLevel=1" << endl;
         stream << "FilePrinting=true" << endl;
@@ -341,12 +334,6 @@ void LogLoader::setMaxUpdateTime(int value)
 {
     maxUpdateTime = value;
     updateTime = std::min(updateTime,maxUpdateTime);
-}
-
-
-void LogLoader::copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName)
-{
-    logWorkerMap["Power"]->copyGameLog(logSeekCreate, logSeekWon, fileName);
 }
 
 

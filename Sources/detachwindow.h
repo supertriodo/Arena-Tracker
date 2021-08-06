@@ -57,7 +57,6 @@ public:
 signals:
     void resized();
     void closed(DetachWindow *detachWindow, QWidget *paneWidget);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DetachWindow");
 
 private slots:

@@ -47,7 +47,6 @@ signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void needMainWindowFade(bool fade);
     void showPremiumDialog();
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="GraveyardHandler");
 
 public slots:

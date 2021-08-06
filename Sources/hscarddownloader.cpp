@@ -130,25 +130,21 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         if(isHero)//Github hero
         {
             emit pDebug("Failed to download hero card image(Github): " + code, DebugLevel::Warning);
-            emit pLog(tr("Web: Failed to download hero card image(Github)."));
             reuseOldHero(code);
         }
         else if(fullUrl.startsWith(AT_CARDS_URL))//Github card
         {
             emit pDebug("Failed to download card image(GitHub): " + code + " - Trying Hearthsim/Hearthpwn.", DebugLevel::Warning);
-            emit pLog(tr("Web: Failed to download card image(GitHub). Trying Hearthsim/Hearthpwn."));
             downloadWebImage(code, isHero, false, true);
         }
         else//Hearthsim/Hearthpwn card
         {
             emit pDebug("Failed to download card image(Hearthsim/Hearthpwn): " + code + "", DebugLevel::Warning);
-            emit pLog(tr("Web: Failed to download card image(Hearthsim/Hearthpwn)."));
         }
     }
     else if(data.isEmpty())
     {
         emit pDebug("Downloaded empty card image: " + code, DebugLevel::Error);
-        emit pLog(tr("Web: Downloaded empty card image."));
         emit missingOnWeb(code);
     }
     else
@@ -174,7 +170,6 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         if(!webImage.save(Utility::hscardsPath() + "/" + code + ".png", "png"))
         {
             emit pDebug("Failed to save card image to disk: " + code, DebugLevel::Error);
-            emit pLog(tr("File: ERROR:Saving card image to disk."));
             emit missingOnWeb(code);
         }
         else

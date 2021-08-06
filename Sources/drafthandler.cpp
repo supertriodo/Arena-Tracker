@@ -713,13 +713,11 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     if(heroInt<1 || heroInt>NUM_HEROS)
     {
         emit pDebug("Begin draft of unknown hero: " + hero, DebugLevel::Error);
-        emit pLog(tr("Draft: ERROR: Started draft of unknown hero ") + hero);
         return;
     }
     else
     {
         emit pDebug("Begin draft. Heroe: " + hero);
-        emit pLog(tr("Draft: New draft started."));
     }
 
     //Set updateTime in log / Hide card Window
@@ -877,10 +875,7 @@ void DraftHandler::endDraft()
 {
     if(!drafting)    return;
 
-    emit pLog(tr("Draft: ") + ui->labelDeckScore->text());
     emit pDebug("End draft.");
-    emit pLog(tr("Draft: Draft ended."));
-
 
     //SizeDraft
     QMainWindow *mainWindow = static_cast<QMainWindow*>(parent());

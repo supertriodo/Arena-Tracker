@@ -95,7 +95,6 @@ private:
     int cardHeight;
     int drawDisappear;
     QString draftLogFile;
-    bool copyGameLogs;
     QNetworkAccessManager *networkManager;
     QStringList allCardsDownloadList;
     TwitchHandler *twitchTester;
@@ -165,7 +164,7 @@ private:
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
-                       bool showTotalAttack, bool showRngList, int maxGamesLog, bool twitchChatVotes, QString theme,
+                       bool showTotalAttack, bool showRngList, bool twitchChatVotes, QString theme,
                        bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
     void moveInScreen(QPoint pos, QSize size);
@@ -198,7 +197,6 @@ private:
     void advanceProgressBarMini(int remaining);
     void updateProgressAllCardsDownload(QString code);
     void completeConfigComboTheme();
-    void redrawAllGames();
     void initConfigTheme(QString theme);
     void downloadExtraFiles();
     void downloadThemes();
@@ -259,7 +257,6 @@ public slots:
     void resizeSlot(QSize size);
 
     //MainWindow
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="MainWindow");
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QString file);
 
@@ -296,7 +293,6 @@ private slots:
     void updateShowManaLimits(bool checked);
     void fadeBarAndButtons(bool fadeOut);
     void spreadMouseInApp();
-    void updateMaxGamesLog(int value);
     void logReset();
     void spreadCorrectTamCard();
     void completeArenaDeck();

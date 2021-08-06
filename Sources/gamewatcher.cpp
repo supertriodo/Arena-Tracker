@@ -23,8 +23,6 @@ void GameWatcher::reset()
     mulliganEnemyDone = mulliganPlayerDone = false;
     turn = turnReal = 0;
     spectating = false;
-    logSeekCreate = -1;
-    logSeekWon = -1;
     tied = true;
     emit pDebug("Reset (powerState = noGame).", 0);
     emit pDebug("Reset (LoadingScreen = menu).", 0);
@@ -33,10 +31,12 @@ void GameWatcher::reset()
 
 void GameWatcher::processLogLine(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek)
 {
+    Q_UNUSED(logSeek);
+
     switch(logComponent)
     {
         case logPower:
-            processPower(line, numLine, logSeek);
+            processPower(line, numLine);
         break;
         case logZone:
             processZone(line, numLine);
@@ -72,7 +72,6 @@ void GameWatcher::endReadingDeck()
     arenaState = deckRead;
     emit arenaDeckRead();   //completeArenaDeck with draft file
     emit pDebug("End reading deck (arenaState = deckRead).", 0);
-    emit pLog(tr("Log: Active deck read."));
 }
 
 
@@ -101,7 +100,7 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         emit pDebug("\nLoadingScreen: " + prevMode + " -> " + currMode, numLine);
 
         //Create result, avoid first run
-        if(prevMode == "GAMEPLAY" && logSeekCreate != -1 && logSeekWon != -1)
+        if(prevMode == "GAMEPLAY")
         {
             if(spectating || loadingScreenState == menu || tied)
             {
@@ -109,8 +108,7 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
             }
             else
             {
-                QString logFileName = createGameLog();
-                createGameResult(logFileName);
+                createGameResult();
             }
             spectating = false;
         }
@@ -202,7 +200,6 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     {
         QString hero = match->captured(1);
         emit pDebug("New arena. Heroe: " + hero, numLine);
-        emit pLog(tr("Log: New arena."));
         emit newArena(hero); //(connect)Begin draft //(connect)resetDeckDontRead (arenaState = deckRead)
     }
     //DRAFTING PICK CARD
@@ -288,7 +285,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
 //20:58:56 - GameWatcher(27258): Found CREATE_GAME (powerState = heroType1State)
 //20:58:56 - GameWatcher(376): LoadingScreen: HUB -> GAMEPLAY
 
-void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
+void GameWatcher::processPower(QString &line, qint64 numLine)
 {
     //================== End Spectator Game ==================
     if(line.contains("End Spectator Game"))
@@ -323,7 +320,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
         }
 
         emit pDebug("\nFound CREATE_GAME (powerState = heroType1State)", numLine);
-        logSeekCreate = logSeek;
         powerState = heroType1State;
 
         mulliganEnemyDone = mulliganPlayerDone = false;
@@ -358,7 +354,6 @@ void GameWatcher::processPower(QString &line, qint64 numLine, qint64 logSeek)
             winnerPlayer = match->captured(1);
             tied = (match->captured(2) == "TIED");
             powerState = noGame;
-            logSeekWon = logSeek;
             if(tied)    emit pDebug("Found TIED (powerState = noGame)", numLine);
             else        emit pDebug("Found WON (powerState = noGame): " + winnerPlayer + (playerTag.isEmpty()?" - Unknown winner":""), numLine);
 
@@ -1418,7 +1413,7 @@ bool GameWatcher::isHeroPower(QString code)
 }
 
 
-void GameWatcher::createGameResult(QString logFileName)
+void GameWatcher::createGameResult()
 {
     GameResult gameResult;
 
@@ -1443,53 +1438,7 @@ void GameWatcher::createGameResult(QString logFileName)
     gameResult.isFirst = (firstPlayer == playerTag);
     gameResult.isWinner = (winnerPlayer == playerTag);
 
-    emit newGameResult(gameResult, loadingScreenState, logFileName, startGameEpoch);
-}
-
-
-QString GameWatcher::createGameLog()
-{
-    if(!copyGameLogs)
-    {
-        emit pDebug("Game log copy disabled.", 0);
-        return "";
-    }
-    if(logSeekCreate == -1)
-    {
-        emit pDebug("Cannot create match log. Not found CREATE_GAME", 0);
-        return "";
-    }
-
-    if(logSeekWon == -1)
-    {
-        emit pDebug("Cannot create match log. Not found WON ", 0);
-        return "";
-    }
-
-    QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
-    QString win = (winnerPlayer == playerTag)?"WIN":"LOSE";
-    QString coin = (firstPlayer == playerTag)?"FIRST":"COIN";
-    QString gameMode = Utility::getLoadingScreenToString(loadingScreenState);
-    QString playerHero, enemyHero;
-    if(playerID == 1)
-    {
-        playerHero = Utility::classLogNumber2classUName(hero1);
-        enemyHero = Utility::classLogNumber2classUName(hero2);
-    }
-    else
-    {
-        playerHero = Utility::classLogNumber2classUName(hero2);
-        enemyHero = Utility::classLogNumber2classUName(hero1);
-    }
-    QString fileName = gameMode + " " + timeStamp + " " + playerHero + "vs" + enemyHero + " " + win + " " + coin + ".arenatracker";
-
-
-    emit pDebug("Game log ready to be copied.", 0);
-    emit gameLogComplete(logSeekCreate, logSeekWon, fileName);
-    logSeekCreate = -1;
-    logSeekWon = -1;
-
-    return fileName;
+    emit newGameResult(gameResult, loadingScreenState);
 }
 
 
@@ -1527,12 +1476,6 @@ bool GameWatcher::advanceTurn(bool playerDraw)
 LoadingScreenState GameWatcher::getLoadingScreen()
 {
     return this->loadingScreenState;
-}
-
-
-void GameWatcher::setCopyGameLogs(bool value)
-{
-    this->copyGameLogs = value;
 }
 
 

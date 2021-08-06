@@ -32,7 +32,7 @@ public:
 
 //Variables
 private:
-    QNetworkAccessManager *networkManager;
+//    QNetworkAccessManager *networkManager;
     QString username, password;
     bool connectSuccess;
 
@@ -50,8 +50,8 @@ private:
 public:
     void checkAccount();
     bool isConnected();
-    void openTBProfile();
-    void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory);
+//    void openTBProfile();
+//    void uploadResult(GameResult gameResult, LoadingScreenState loadingScreen, qint64 startGameEpoch, QDateTime dateTime, QJsonArray cardHistory);
     QString getUsername();
     void importAccount(QString fileName);
     void createFakeAccount();
@@ -62,14 +62,13 @@ signals:
     void showMessageProgressBar(QString text);
     void connected(QString username, QString password);
     void disconnected();
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="TrackobotUploader");
 
 public slots:
     void importAccount(QByteArray jsonData);
 
 private slots:
-    void replyFinished(QNetworkReply *reply);
+//    void replyFinished(QNetworkReply *reply);
 };
 
 #endif // TRACKOBOTUPLOADER_H

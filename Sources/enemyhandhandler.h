@@ -70,7 +70,6 @@ signals:
     void revealEnemyCard(int id, QString code);
     void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyHandHandler");
 
 public slots:

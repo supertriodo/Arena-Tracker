@@ -70,8 +70,6 @@ private:
     //no aparezcan como parte del nuevo turno
     int turn, turnReal;
     bool mulliganEnemyDone, mulliganPlayerDone;
-    qint64 logSeekCreate, logSeekWon;
-    bool copyGameLogs;
     bool spectating, tied;
     ShowEntity lastShowEntity;
     qint64 startGameEpoch;
@@ -80,11 +78,11 @@ private:
 
 //Metodos
 private:
-    void createGameResult(QString logFileName);
+    void createGameResult();
     void processLoadingScreen(QString &line, qint64 numLine);
     void processAsset(QString &line, qint64 numLine);
     void processArena(QString &line, qint64 numLine);
-    void processPower(QString &line, qint64 numLine, qint64 logSeek);
+    void processPower(QString &line, qint64 numLine);
     void processPowerHero(QString &line, qint64 numLine);
     void processPowerMulligan(QString &line, qint64 numLine);
     void processPowerInGame(QString &line, qint64 numLine);
@@ -93,16 +91,14 @@ private:
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);
-    QString createGameLog();
     bool isCheatingCard(const QString &code);
 
 public:
     void reset();
     LoadingScreenState getLoadingScreen();
-    void setCopyGameLogs(bool value);
 
 signals:
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, QString logFileName, qint64 startGameEpoch);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void newArena(QString hero);
     void continueDraft();
     void arenaChoosingHeroe();
@@ -174,11 +170,9 @@ signals:
     void activeDraftDeck();
     void pickCard(QString code);
     void specialCardTrigger(QString code, QString blockType, int id1, int id2);
-    void gameLogComplete(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
     void arenaDeckRead();
     void buffHandCard(int id);
     void coinIdFound(int id);
-    void pLog(QString line);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 
 public slots:

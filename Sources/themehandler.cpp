@@ -25,7 +25,6 @@ QString ThemeHandler::borderLineEditColor_, ThemeHandler::bgLineEditColor_, Them
 QString ThemeHandler::bgSelectionLineEditColor_, ThemeHandler::fgSelectionLineEditColor_;
 QString ThemeHandler::defaultFont_, ThemeHandler::cardsFont_, ThemeHandler::bigFont_;
 int ThemeHandler::cardsFontOffsetY_;
-QString ThemeHandler::gamesOnZ2HColor_;
 QString ThemeHandler::tabArenaFile_, ThemeHandler::tabConfigFile_, ThemeHandler::tabDeckFile_;
 QString ThemeHandler::tabEnemyDeckFile_, ThemeHandler::tabGraveyardFile_;
 QString ThemeHandler::tabGamesFile_, ThemeHandler::tabHandFile_, ThemeHandler::tabLogFile_, ThemeHandler::tabPlanFile_;
@@ -278,12 +277,6 @@ QString ThemeHandler::bigFont()
 int ThemeHandler::cardsFontOffsetY()
 {
     return cardsFontOffsetY_;
-}
-
-
-QString ThemeHandler::gamesOnZ2HColor()
-{
-    return gamesOnZ2HColor_;
 }
 
 
@@ -952,7 +945,6 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     bgCard2Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
 
     //"-----GAMES TAB-----": 0,
-    gamesOnZ2HColor_ = jsonObject.value("gamesOnZ2HColor").toString("");
     buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
     buttonGamesWebFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesWebFile");
     buttonGamesGuideFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesGuideFile");
@@ -1210,7 +1202,6 @@ void ThemeHandler::defaultEmptyValues()
     if(defaultFont_.isEmpty())              defaultFont_ = LG_FONT;
     if(bigFont_.isEmpty())                  bigFont_ = defaultFont_;
     if(cardsFont_.isEmpty())                cardsFont_ = HS_FONT;
-    if(gamesOnZ2HColor_.isEmpty())          gamesOnZ2HColor_ = themeColor2_;
     if(tabArenaFile_.isEmpty())             tabArenaFile_ = ":/Images/arena.png";
     if(tabConfigFile_.isEmpty())            tabConfigFile_ = ":/Images/config.png";
     if(tabDeckFile_.isEmpty())              tabDeckFile_ = ":/Images/deck.png";

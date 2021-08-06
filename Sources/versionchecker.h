@@ -40,7 +40,6 @@ signals:
     void startProgressBar(int maximum, QString text);
     void advanceProgressBar(int remaining, QString text="");
     void showMessageProgressBar(QString text, int hideDelay = 5000);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="VersionChecker");
 
 public slots:

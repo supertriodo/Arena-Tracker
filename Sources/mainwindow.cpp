@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyDeckWindow = nullptr;
     graveyardWindow = nullptr;
     planWindow = nullptr;
-    copyGameLogs = false;
     draftLogFile = "";
     cardHeight = -1;
     patreonVersion = false;
@@ -202,8 +201,6 @@ void MainWindow::createDetachWindow(QWidget *paneWidget, const QPoint& dropPoint
             this, SLOT(closedDetachWindow(DetachWindow*,QWidget*)));
     connect(detachWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    connect(detachWindow, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
 
     updateMainUITheme();//Crea el fondo de la nueva ventana y sus botones
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
@@ -307,19 +304,16 @@ QString MainWindow::getHSLanguage()
             lang != "jaJP" && lang != "thTH")
     {
         pDebug("Language: " + lang + " not supported. Using enUS.");
-        pLog("Settings: Language " + lang + " not supported. Using enUS.");
         lang = "enUS";
     }
     else if(lang == "enGB")
     {
         pDebug("Language: " + lang + ". Using enUS.");
-        pLog("Settings: Language " + lang + ". Using enUS.");
         lang = "enUS";
     }
     else
     {
         pDebug("Language: " + lang + ".");
-        pLog("Settings: Language " + lang + ".");
     }
 
     cardDownloader->setLang(lang);
@@ -890,8 +884,6 @@ void MainWindow::createVersionChecker()
             this, SLOT(advanceProgressBar(int,QString)));
     connect(versionChecker, SIGNAL(showMessageProgressBar(QString,int)),
             this, SLOT(showMessageProgressBar(QString,int)));
-    connect(versionChecker, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(versionChecker, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -922,8 +914,6 @@ void MainWindow::createPremiumHandler()
             premiumHandler, SLOT(checkPremium()));
     connect(premiumHandler, SIGNAL(importAccount(QByteArray)),
             trackobotUploader, SLOT(importAccount(QByteArray)));
-    connect(premiumHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(premiumHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -938,8 +928,6 @@ void MainWindow::createTrackobotUploader()
             this, SLOT(advanceProgressBar(int,QString)));
     connect(trackobotUploader, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
-    connect(trackobotUploader, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(trackobotUploader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -974,8 +962,6 @@ void MainWindow::createDraftHandler()
 //    connect(draftHandler, SIGNAL(draftStarted()),
 //            logLoader, SLOT(setUpdateTimeMin()));
 
-    connect(draftHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(draftHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
@@ -1002,8 +988,6 @@ void MainWindow::createSecretsHandler()
             enemyHandHandler, SLOT(revealCreatedByCard(QString,QString,int)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
-    connect(secretsHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
@@ -1018,8 +1002,6 @@ void MainWindow::createPopularCardsHandler()
     popularCardsHandler = new PopularCardsHandler(this, ui, enemyHandHandler);
     connect(popularCardsHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(popularCardsHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(popularCardsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1030,8 +1012,6 @@ void MainWindow::createDrawCardHandler()
     drawCardHandler = new DrawCardHandler(this, ui);
     connect(drawCardHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(drawCardHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(drawCardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1042,8 +1022,6 @@ void MainWindow::createRngCardHandler()
     rngCardHandler = new RngCardHandler(this, ui, planHandler);
     connect(rngCardHandler, SIGNAL(checkCardImage(QString)),
             this, SLOT(checkCardImage(QString)));
-    connect(rngCardHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(rngCardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1051,17 +1029,9 @@ void MainWindow::createRngCardHandler()
 
 void MainWindow::createArenaHandler()
 {
-    arenaHandler = new ArenaHandler(this, deckHandler, trackobotUploader, planHandler, ui);
-    connect(arenaHandler, SIGNAL(startProgressBar(int,QString)),
-            this, SLOT(startProgressBar(int,QString)));
-    connect(arenaHandler, SIGNAL(advanceProgressBar(int,QString)),
-            this, SLOT(advanceProgressBar(int,QString)));
-    connect(arenaHandler, SIGNAL(showMessageProgressBar(QString)),
-            this, SLOT(showMessageProgressBar(QString)));
+    arenaHandler = new ArenaHandler(this, deckHandler, planHandler, ui);
     connect(arenaHandler, SIGNAL(showPremiumDialog()),
             this, SLOT(showPremiumDialog()));
-    connect(arenaHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1074,8 +1044,6 @@ void MainWindow::createEnemyDeckHandler()
             this, SLOT(checkCardImage(QString)));
     connect(enemyDeckHandler, SIGNAL(needMainWindowFade(bool)),
             this, SLOT(fadeBarAndButtons(bool)));
-    connect(enemyDeckHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(enemyDeckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1090,8 +1058,6 @@ void MainWindow::createGraveyardHandler()
             this, SLOT(fadeBarAndButtons(bool)));
     connect(graveyardHandler, SIGNAL(showPremiumDialog()),
             this, SLOT(showPremiumDialog()));
-    connect(graveyardHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(graveyardHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1106,8 +1072,6 @@ void MainWindow::createDeckHandler()
             this, SLOT(fadeBarAndButtons(bool)));
     connect(deckHandler, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
-    connect(deckHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(deckHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
     connect(deckHandler, SIGNAL(deckSizeChanged()),
@@ -1132,8 +1096,6 @@ void MainWindow::createEnemyHandHandler()
             planHandler, SLOT(revealEnemyCard(int,QString)));
     connect(planHandler, SIGNAL(heroTotalAttackChange(bool,int,int)),
             enemyHandHandler, SLOT(drawHeroTotalAttack(bool,int,int)));
-    connect(enemyHandHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(enemyHandHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1150,8 +1112,6 @@ void MainWindow::createPlanHandler()
             this, SLOT(showPremiumDialog()));
     connect(planHandler, SIGNAL(swapSize(bool)),
             this, SLOT(swapSizePlan(bool)));
-    connect(planHandler, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(planHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1270,8 +1230,6 @@ void MainWindow::createCardDownloader()
             this, SLOT(missingOnWeb(QString)));
     connect(cardDownloader, SIGNAL(allCardsDownloaded()),
             this, SLOT(allCardsDownloaded()));
-    connect(cardDownloader, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(cardDownloader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1287,13 +1245,11 @@ void MainWindow::createGameWatcher()
             this, SLOT(resetDeck()));
     connect(gameWatcher, SIGNAL(arenaDeckRead()),
             this, SLOT(completeArenaDeck()));
-    connect(gameWatcher, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
-    connect(gameWatcher, SIGNAL(newGameResult(GameResult,LoadingScreenState,QString,qint64)),
-            arenaHandler, SLOT(newGameResult(GameResult,LoadingScreenState,QString,qint64)));
+    connect(gameWatcher, SIGNAL(newGameResult(GameResult,LoadingScreenState)),
+            arenaHandler, SLOT(newGameResult(GameResult,LoadingScreenState)));
     connect(gameWatcher, SIGNAL(newArena(QString)),
             arenaHandler, SLOT(newArena(QString)));
     //Rewards input disabled with track-o-bot stats
@@ -1546,12 +1502,8 @@ void MainWindow::createLogLoader()
             this, SLOT(setLocalLang()));
     connect(logLoader, SIGNAL(showMessageProgressBar(QString)),
             this, SLOT(showMessageProgressBar(QString)));
-    connect(logLoader, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(logLoader, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
-    connect(gameWatcher, SIGNAL(gameLogComplete(qint64,qint64,QString)),
-            logLoader, SLOT(copyGameLog(qint64,qint64,QString)));
 
     //Connect de draftHandler
     connect(draftHandler, SIGNAL(draftEnded()),
@@ -1589,26 +1541,21 @@ void MainWindow::completeUI()
             this, SLOT(createDetachWindow(int,QPoint)));
 
 #ifdef QT_DEBUG
-    pLog(tr("MODE DEBUG"));
     pDebug("MODE DEBUG");
 #endif
 
 #ifdef Q_OS_WIN
-    pLog(tr("Settings: Platform: Windows"));
     pDebug("Platform: Windows");
 #endif
 
 #ifdef Q_OS_MAC
-    pLog(tr("Settings: Platform: Mac"));
     pDebug("Platform: Mac");
 #endif
 
 #ifdef Q_OS_LINUX
     #ifdef APPIMAGE
-        pLog(tr("Settings: Platform: Linux AppImage"));
         pDebug("Platform: Linux AppImage");
     #else
-        pLog(tr("Settings: Platform: Linux Static"));
         pDebug("Platform: Linux Static");
     #endif
 #endif
@@ -1652,8 +1599,6 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->setFlat(true);
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
-
-    ui->webButton->hide();
 }
 
 
@@ -1833,8 +1778,6 @@ void MainWindow::checkTwitchConnection()
             this, SLOT(twitchTesterConnectionOk(bool)));
     connect(twitchTester, SIGNAL(showMessageProgressBar(QString,int)),
             this, SLOT(showMessageProgressBar(QString,int)));
-    connect(twitchTester, SIGNAL(pLog(QString)),
-            this, SLOT(pLog(QString)));
     connect(twitchTester, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 }
@@ -1873,11 +1816,10 @@ void MainWindow::readSettings()
     bool showRngList = settings.value("showRngList", true).toBool();
     bool showSecrets = settings.value("showSecrets", true).toBool();
     bool showWildSecrets = settings.value("showWildSecrets", false).toBool();
-    int maxGamesLog = settings.value("maxGamesLog", 15).toInt();
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  maxGamesLog, twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
+                  twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
@@ -1930,7 +1872,6 @@ void MainWindow::writeSettings()
     settings.setValue("showRngList", ui->configCheckRngList->isChecked());
     settings.setValue("showSecrets", ui->configCheckSecrets->isChecked());
     settings.setValue("showWildSecrets", ui->configCheckWildSecrets->isChecked());
-    settings.setValue("maxGamesLog", ui->configSliderZero->value());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
     settings.setValue("deckWindow", deckWindow != nullptr);
     settings.setValue("arenaWindow", arenaWindow != nullptr);
@@ -1942,7 +1883,7 @@ void MainWindow::writeSettings()
 
 
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
-                               bool showManaLimits, bool showTotalAttack, bool showRngList, int maxGamesLog,
+                               bool showManaLimits, bool showTotalAttack, bool showRngList,
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
                                bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops)
@@ -2043,10 +1984,6 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
     ui->configCheckLF->setChecked(draftMethodLF);
     ui->configCheckHSR->setChecked(draftMethodHSR);
     spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
-
-    //Zero To Heroes
-    ui->configSliderZero->setValue(maxGamesLog);
-    updateMaxGamesLog(maxGamesLog);
 
     //Twitch
     ui->configCheckVotes->setChecked(twitchChatVotes);
@@ -2270,8 +2207,6 @@ void MainWindow::leaveEvent(QEvent * e)
 
     this->mouseInApp = false;
     spreadMouseInApp();
-
-    if(arenaHandler != nullptr)    arenaHandler->deselectRow();
 }
 
 
@@ -2433,11 +2368,6 @@ void MainWindow::moveTabTo(QWidget *widget, QTabWidget *tabWidget)
         icon = QIcon(ThemeHandler::tabGraveyardFile());
         tooltip = "Graveyard";
     }
-    else if(widget == ui->tabLog)
-    {
-        icon = QIcon(ThemeHandler::tabLogFile());
-        tooltip = "Log";
-    }
     else if(widget == ui->tabConfig)
     {
         icon = QIcon(ThemeHandler::tabConfigFile());
@@ -2518,7 +2448,6 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
             {
                 pDebug("Cannot create draft log file...", DebugLevel::Error);
-                pLog(tr("Log: ERROR:Cannot create draft log file..."));
                 return;
             }
 
@@ -2557,7 +2486,6 @@ void MainWindow::checkDraftLogLine(QString logLine, QString file)
             if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
             {
                 pDebug("Cannot open draft log file...", DebugLevel::Error);
-                pLog(tr("Log: ERROR:Cannot open draft log file..."));
                 return;
             }
 
@@ -2608,13 +2536,7 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
         stream << logLine << endl;
     }
 
-    if(copyGameLogs)    checkDraftLogLine(logLine, file);
-}
-
-
-void MainWindow::pLog(QString line)
-{
-    ui->logTextEdit->append(line);
+    checkDraftLogLine(logLine, file);
 }
 
 
@@ -2714,7 +2636,6 @@ void MainWindow::createLogFile()
     if(!atLogFile->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         pDebug("Failed to create Arena Tracker log on disk.", DebugLevel::Error);
-        pLog(tr("File: ERROR: Failed to create Arena Tracker log on disk."));
         atLogFile = nullptr;
     }
 }
@@ -2964,7 +2885,6 @@ void MainWindow::createLinuxShortcut()
     if(!shortcutFile.open(QIODevice::WriteOnly))
     {
         pDebug("ERROR: Cannot create Arena Tracker.desktop", DebugLevel::Error);
-        pLog(tr("Log: ERROR:Arena Tracker.desktop"));
         return;
     }
     shortcutFile.setPermissions(QFileDevice::ExeOwner | QFileDevice::ReadOwner | QFileDevice::WriteOwner);
@@ -2989,7 +2909,6 @@ void MainWindow::createLinuxShortcut()
     shortcutFile.copy(desktopShorcutFilename);
 
     pDebug("Desktop and menu shorcut created pointing to " + appImagePath);
-    pLog("Shortcut: Desktop and menu shorcut created pointing to " + appImagePath);
 }
 
 
@@ -3002,14 +2921,6 @@ void MainWindow::checkGamesLogDir()
         return;
     }
 
-    int maxGamesLog = ui->configSliderZero->value();
-    if(maxGamesLog == 100)
-    {
-        pDebug("GamesLog: Keep ALL.");
-        maxGamesLog = std::numeric_limits<int>::max();
-    }
-    else    pDebug("GamesLog: Keep recent " + QString::number(maxGamesLog) + ".");
-
     QDir dir(Utility::gameslogPath());
     dir.setFilter(QDir::Files);
     dir.setSorting(QDir::Time);
@@ -3021,23 +2932,13 @@ void MainWindow::checkGamesLogDir()
     int indexDraft = files.indexOf(QRegularExpression("DRAFT.*"));
     pDebug("Last arena DRAFT: " + (indexDraft==-1?QString("Not Found"):files[indexDraft]));
 
-    bool homelessArenaGames = true;//Evita mostrar juegos de arena sin draft
     for(int i=files.length()-1; i>=0; i--)
     {
         QString file = files[i];
-        //Current arena draft or kept draft
-        if((file.startsWith("DRAFT") && i < maxGamesLog) || i == indexDraft)
+        //Current arena draft
+        if(i == indexDraft)
         {
-            pDebug("Show Arena: " + file);
-            homelessArenaGames = false;
-            arenaHandler->showArenaLog(file);
-        }
-        //Current arena game or kept other games
-        else if(((file.startsWith("ARENA") && i < indexDraft) || (i < maxGamesLog)) &&
-                !(file.startsWith("ARENA") && homelessArenaGames))
-        {
-            pDebug("Show GameResut: " + file);
-            arenaHandler->showGameResultLog(file);
+            arenaHandler->linkDraftLogToArenaCurrent(file);
         }
         else
         {
@@ -3045,8 +2946,6 @@ void MainWindow::checkGamesLogDir()
             pDebug(file + " removed.");
         }
     }
-
-    ui->arenaTreeWidget->collapseAll();
 }
 
 
@@ -3099,7 +2998,6 @@ void MainWindow::confirmNewArenaDraft(QString hero)
     if(ret == QMessageBox::Ok)
     {
         pDebug("Manual draft: " + hero);
-        pLog(tr("Menu: Force draft: ") + hero);
         QString heroLog = Utility::className2classLogNumber(hero);
         draftHandler->beginDraft(heroLog, deckHandler->getDeckCardList(), true);
     }
@@ -3214,8 +3112,6 @@ void MainWindow::updateOtherTabsTransparency()
 
     if(!mouseInApp && transparency==Transparent)
     {
-        ui->tabLog->setAttribute(Qt::WA_NoBackground);
-        ui->tabLog->repaint();
         ui->tabConfig->setAttribute(Qt::WA_NoBackground);
         ui->tabConfig->repaint();
 
@@ -3228,7 +3124,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet(groupBoxCSS);
         ui->configBoxHand->setStyleSheet(groupBoxCSS);
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
-        ui->configBoxZero->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMechanics->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftScores->setStyleSheet(groupBoxCSS);
@@ -3243,8 +3138,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet(labelCSS);
         ui->configLabelPopular->setStyleSheet(labelCSS);
         ui->configLabelPopularValue->setStyleSheet(labelCSS);
-        ui->configLabelZero->setStyleSheet(labelCSS);
-        ui->configLabelZero2->setStyleSheet(labelCSS);
         ui->configLabelTheme->setStyleSheet(labelCSS);
         ui->configLabelVotesStatus->setStyleSheet(labelCSS);
 
@@ -3271,13 +3164,9 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
         ui->configCheckHSR->setStyleSheet(checkCSS);
-
-        ui->logTextEdit->setStyleSheet("QTextEdit{" + ThemeHandler::bgWidgets() + " color: white;}");
     }
     else
     {
-        ui->tabLog->setAttribute(Qt::WA_NoBackground, false);
-        ui->tabLog->repaint();
         ui->tabConfig->setAttribute(Qt::WA_NoBackground, false);
         ui->tabConfig->repaint();
 
@@ -3286,7 +3175,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDeck->setStyleSheet("");
         ui->configBoxHand->setStyleSheet("");
         ui->configBoxDraft->setStyleSheet("");
-        ui->configBoxZero->setStyleSheet("");
         ui->configBoxDraftMethod->setStyleSheet("");
         ui->configBoxDraftMechanics->setStyleSheet("");
         ui->configBoxDraftScores->setStyleSheet("");
@@ -3301,8 +3189,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelDrawTimeValue->setStyleSheet("");
         ui->configLabelPopular->setStyleSheet("");
         ui->configLabelPopularValue->setStyleSheet("");
-        ui->configLabelZero->setStyleSheet("");
-        ui->configLabelZero2->setStyleSheet("");
         ui->configLabelTheme->setStyleSheet("");
         ui->configLabelVotesStatus->setStyleSheet("");
 
@@ -3327,8 +3213,6 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
         ui->configCheckHSR->setStyleSheet("");
-
-        ui->logTextEdit->setStyleSheet("");
     }
 }
 
@@ -3362,49 +3246,11 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 }
 
 
-void MainWindow::redrawAllGames()
-{
-    pDebug("Redraw all games.");
-    arenaHandler->clearAllGames();
-
-    QFileInfo dirInfo(Utility::gameslogPath());
-    if(!dirInfo.exists())
-    {
-        pDebug("Cannot check GamesLog dir. Dir doesn't exist.");
-        return;
-    }
-
-    QDir dir(Utility::gameslogPath());
-    dir.setFilter(QDir::Files);
-    dir.setSorting(QDir::Time);
-    QStringList filterName;
-    filterName << "*.arenatracker";
-    dir.setNameFilters(filterName);
-
-    QStringList files = dir.entryList();
-
-    for(int i=files.length()-1; i>=0; i--)
-    {
-        QString file = files[i];
-        if(file.startsWith("DRAFT"))
-        {
-            pDebug("Show Arena: " + file);
-            arenaHandler->showArenaLog(file);
-        }
-        else
-        {
-            pDebug("Show GameResut: " + file);
-            arenaHandler->showGameResultLog(file);
-        }
-    }
-}
-
-
 void MainWindow::spreadTheme(bool redrawAllGames)
 {
     updateMainUITheme();
     updateTabIcons();
-    arenaHandler->setTheme();
+    arenaHandler->setTheme();//TODO
     deckHandler->setTheme();
     rngCardHandler->setTheme();
     draftHandler->setTheme();
@@ -3420,7 +3266,7 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     popularCardsHandler->redrawAllCards();
     drawCardHandler->redrawAllCards();
     rngCardHandler->redrawAllCards();
-    if(redrawAllGames) this->redrawAllGames();
+//    if(redrawAllGames) this->redrawAllGames();//TODO
     resizeChecks();//Recoloca botones -X
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
 }
@@ -3966,37 +3812,6 @@ void MainWindow::updateTwitchChatVotes(bool checked)
 }
 
 
-void MainWindow::updateMaxGamesLog(int value)
-{
-    if(value == 0)
-    {
-        copyGameLogs = true;//false;//Siempre copiamos los logs de la sesion actual para poder completar el DRAFT actual.
-    }
-    else
-    {
-        copyGameLogs = true;
-    }
-    gameWatcher->setCopyGameLogs(copyGameLogs);
-
-    QString labelText;
-    if(value == 100)
-    {
-        labelText = "ALL";
-    }
-    else if(value == 0)
-    {
-        labelText = "MIN";
-    }
-    else
-    {
-        labelText = QString::number(ui->configSliderZero->value());
-    }
-
-    ui->configLabelZero2->setText(labelText);
-    ui->configSliderZero->setToolTip(labelText);
-}
-
-
 void MainWindow::completeConfigComboTheme()
 {
     ui->configComboTheme->addItem("Random");
@@ -4086,9 +3901,6 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHA(bool)));
     connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodLF(bool)));
     connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHSR(bool)));
-
-    //Zero To Heroes
-    connect(ui->configSliderZero, SIGNAL(valueChanged(int)), this, SLOT(updateMaxGamesLog(int)));
 
     //Twitch
     ui->configLabelVotesStatus->setPixmap(ThemeHandler::loseFile());

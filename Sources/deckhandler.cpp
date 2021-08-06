@@ -998,14 +998,12 @@ void DeckHandler::loadDecks()
     if(!jsonFile.exists())
     {
         emit pDebug("Json decks file doesn't exists.");
-        emit pLog("Deck: Loaded 0 decks.");
         return;
     }
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         emit pDebug("Failed to load Arena Tracker decks json from disk.", DebugLevel::Error);
-        emit pLog(tr("File: ERROR: Loading Arena Tracker decks json from disk."));
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
@@ -1014,7 +1012,6 @@ void DeckHandler::loadDecks()
     decksJson = jsonDoc.object();
 
     emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
-    emit pLog("Deck: Loaded " + QString::number(decksJson.count()) + " decks.");
 
     //Load decks to loadDeckTreeWidget
     int deckLoaded = 0;
@@ -1095,7 +1092,6 @@ void DeckHandler::loadDeck(QString deckName)
     ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Deck " + deckName + " loaded.");
-    emit pLog("Deck: " + deckName + " loaded.");
 }
 
 
@@ -1162,7 +1158,6 @@ void DeckHandler::saveDeck()
     ui->deckButtonDeleteDeck->setEnabled(true);
 
     emit pDebug("Added " + deckName + " to decksJson.");
-    emit pLog("Deck: " + deckName + " saved.");
 
     //Save to disk
     saveDecksJsonFile();
@@ -1183,7 +1178,6 @@ void DeckHandler::saveDecksJsonFile()
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         emit pDebug("Failed to create Arena Tracker decks json on disk.", DebugLevel::Error);
-        emit pLog(tr("File: ERROR: Creating Arena Tracker decks json on disk."));
         return;
     }
     jsonFile.write(jsonDoc.toJson());

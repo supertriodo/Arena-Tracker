@@ -67,7 +67,6 @@ signals:
     void logReset();
     void logConfigSet();
     void showMessageProgressBar(QString text);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogLoader");
 
     //LogWorker signal reemit
@@ -85,7 +84,6 @@ private slots:
 public slots:
     void setUpdateTimeMax();
     void setUpdateTimeMin();
-    void copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
 };
 
 #endif // LOGLOADER_H

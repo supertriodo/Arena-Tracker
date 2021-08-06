@@ -21,7 +21,6 @@ private:
 
 //Metodos
 private:
-    void doCopyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
     int readLine(QFile &file, QString &utf8Line);
     bool isLogReset();
     void reset();
@@ -29,7 +28,6 @@ private:
 
 public:
     void readLog();
-    void copyGameLog(qint64 logSeekCreate, qint64 logSeekWon, QString fileName);
 
     static void setCopyGameLogs(bool value);
 
