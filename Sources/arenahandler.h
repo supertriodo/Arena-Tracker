@@ -7,6 +7,7 @@
 #include "planhandler.h"
 #include <QObject>
 #include <QTreeWidgetItem>
+#include <QJsonObject>
 
 #define USER_GUIDE_URL          "https://triodo.gitbook.io/arena-tracker-documentation/en"
 
@@ -29,6 +30,7 @@ private:
     QString arenaCurrentDraftFile;
     bool mouseInApp;
     Transparency transparency;
+    QJsonObject statsJson;
 
 
 //Metodos
@@ -39,11 +41,14 @@ private:
     QColor getRowColor(QTreeWidgetItem *item);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
-    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtStart);
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtStart, int wins=0, int losses=0);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    void showArena(QString hero);
+    void showArena(QString hero, QString title="Arena", int wins=0, int losses=0);
     void redrawRow(QTreeWidgetItem *item);
     void redrawAllRows();
+    void newArenaStat(QString hero, int wins=0, int losses=0);
+    void newArenaGameStat(GameResult gameResult);
+    void saveStatsJsonFile();
 
 public:
     void setMouseInApp(bool value);
@@ -51,6 +56,7 @@ public:
     void setTheme();
     void linkDraftLogToArenaCurrent(QString logFileName);
     QString getArenaCurrentDraftLog();
+    void loadStatsJsonFile();
 
 signals:
     void showPremiumDialog();
@@ -59,7 +65,7 @@ signals:
 public slots:
     //GameWatcher
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    bool newArena(QString hero);
+    void newArena(QString hero);
 
     //MainWindow
     void setPremium(bool premium);

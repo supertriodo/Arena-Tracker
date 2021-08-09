@@ -86,6 +86,11 @@ void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
     showGameResult(gameResult, loadingScreen);
+    if(loadingScreen == arena)
+    {
+        newArenaGameStat(gameResult);
+        saveStatsJsonFile();
+    }
 }
 
 
@@ -105,23 +110,23 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 }
 
 
-QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart)
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart, int wins, int losses)
 {
     QTreeWidgetItem *item;
 
     if(addAtStart)
     {
         item = new QTreeWidgetItem();
-        ui->arenaTreeWidget->insertTopLevelItem(0, item);
+        ui->arenaTreeWidget->insertTopLevelItem(1, item);
     }
     else    item = new QTreeWidgetItem(ui->arenaTreeWidget);
 
     item->setExpanded(true);
     item->setText(0, title);
     if(!hero.isEmpty())     item->setIcon(1, QIcon(ThemeHandler::heroFile(hero)));
-    item->setText(2, "0");
+    item->setText(2, QString::number(wins));
     item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
-    item->setText(3, "0");
+    item->setText(3, QString::number(losses));
     item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
 
     setRowColor(item, ThemeHandler::fgColor());
@@ -254,18 +259,19 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 }
 
 
-bool ArenaHandler::newArena(QString hero)
+void ArenaHandler::newArena(QString hero)
 {
     showArena(hero);
-    return true;
+    newArenaStat(hero);
+    saveStatsJsonFile();
 }
 
 
-void ArenaHandler::showArena(QString hero)
+void ArenaHandler::showArena(QString hero, QString title, int wins, int losses)
 {
     emit pDebug("Show Arena.");
     arenaCurrentHero = QString(hero);
-    arenaCurrent = createTopLevelItem("Arena", arenaCurrentHero, true);
+    arenaCurrent = createTopLevelItem(title, arenaCurrentHero, true, wins, losses);
 }
 
 
@@ -344,12 +350,10 @@ void ArenaHandler::setMouseInApp(bool value)
 }
 
 
-//Blanco opaco usa un theme diferente a los otros 3
 void ArenaHandler::setTheme()
 {
     ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
     ui->arenaTreeWidget->setTheme(false);
-    setRowColor(arenaHomeless, ThemeHandler::fgColor());
 }
 
 
@@ -357,3 +361,117 @@ QString ArenaHandler::getArenaCurrentDraftLog()
 {
     return arenaCurrentDraftFile;
 }
+
+
+/*
+ * {
+ * "lastGame" -> date ("1234")
+ * date ("1231"/"current") -> ObjectArena
+ * }
+ *
+ * ObjectArena
+ * {
+ * "hero" -> "01"
+ * "wins" -> 7
+ * "losses" -> 3
+ * }
+ */
+void ArenaHandler::loadStatsJsonFile()
+{
+    //Load stats from file
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerStats.json");
+    if(!jsonFile.exists())
+    {
+        emit pDebug("ArenaTrackerStats.json doesn't exists.");
+        return;
+    }
+
+    if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to load ArenaTrackerStats.json from disk.", DebugLevel::Error);
+        return;
+    }
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+
+    statsJson = jsonDoc.object();
+
+    emit pDebug("Loaded " + QString::number(statsJson.count()) + " arenas from ArenaTrackerStats.json.");
+
+    //Load arenas
+    for(const QString &date: (const QStringList)statsJson.keys())
+    {
+        if(date == "lastGame")  continue;
+        QJsonObject objArena = statsJson[date].toObject();
+        QString hero = objArena["hero"].toString();
+        int wins = objArena["wins"].toInt();
+        int losses = objArena["losses"].toInt();
+
+        QString title = (date == "current")?statsJson["lastGame"].toString():date;
+        title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("dd MMM");//("d MMM");
+        showArena(hero, title, wins, losses);
+    }
+}
+
+
+void ArenaHandler::saveStatsJsonFile()
+{
+    //Build json data from statsJson
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(statsJson);
+
+
+    //Save to disk
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerStats.json");
+    if(jsonFile.exists())   jsonFile.remove();
+
+    if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to create ArenaTrackerStats.json on disk.", DebugLevel::Error);
+        return;
+    }
+    jsonFile.write(jsonDoc.toJson());
+    jsonFile.close();
+
+    emit pDebug("ArenaTrackerStats.json updated.");
+}
+
+
+void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
+{
+    //Save date for previous current
+    if(statsJson.contains("current"))
+    {
+        QString date = statsJson["lastGame"].toString();
+        statsJson[date] = statsJson["current"].toObject();
+    }
+
+    QJsonObject objArena;
+    objArena["hero"] = hero;
+    objArena["wins"] = wins;
+    objArena["losses"] = losses;
+    statsJson["current"] = objArena;
+
+    QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
+    statsJson["lastGame"] = date;
+}
+
+
+void ArenaHandler::newArenaGameStat(GameResult gameResult)
+{
+    if(statsJson.contains("current") && (statsJson["current"].toObject()["hero"].toString() == gameResult.playerHero))
+    {
+        QJsonObject objArena = statsJson["current"].toObject();
+        if(gameResult.isWinner) objArena["wins"] = objArena["wins"].toInt()+1;
+        else                    objArena["losses"] = objArena["losses"].toInt()+1;
+        statsJson["current"] = objArena;
+
+        QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
+        statsJson["lastGame"] = date;
+    }
+    else
+    {
+        newArenaStat(gameResult.playerHero, (gameResult.isWinner)?1:0, (gameResult.isWinner)?0:1);
+    }
+}
+

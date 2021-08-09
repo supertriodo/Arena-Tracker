@@ -1034,6 +1034,8 @@ void MainWindow::createArenaHandler()
             this, SLOT(showPremiumDialog()));
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
+
+    arenaHandler->loadStatsJsonFile();
 }
 
 
@@ -3246,11 +3248,11 @@ void MainWindow::fadeBarAndButtons(bool fadeOut)
 }
 
 
-void MainWindow::spreadTheme(bool redrawAllGames)
+void MainWindow::spreadTheme()
 {
     updateMainUITheme();
     updateTabIcons();
-    arenaHandler->setTheme();//TODO
+    arenaHandler->setTheme();
     deckHandler->setTheme();
     rngCardHandler->setTheme();
     draftHandler->setTheme();
@@ -3266,7 +3268,6 @@ void MainWindow::spreadTheme(bool redrawAllGames)
     popularCardsHandler->redrawAllCards();
     drawCardHandler->redrawAllCards();
     rngCardHandler->redrawAllCards();
-//    if(redrawAllGames) this->redrawAllGames();//TODO
     resizeChecks();//Recoloca botones -X
     calculateMinimumWidth();//Si hay borde cambia el minimumWidth
 }
@@ -4232,12 +4233,12 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 
     if(ThemeHandler::loadTheme(theme))
     {
-        spreadTheme(!initTheme);
+        spreadTheme();
         if(!initTheme)  showMessageProgressBar("Theme " + theme + " loaded");
     }
     else
     {
-        if(initTheme)   spreadTheme(!initTheme);
+        if(initTheme)   spreadTheme();
         else            showMessageProgressBar("Theme " + theme + " invalid");
     }
 }
@@ -4391,7 +4392,20 @@ void MainWindow::testPlan()
     planHandler->newTurn(true, 3);
     planHandler->enemyIsolatedSecret(29, "EX1_136");
     planHandler->enemySecretPlayed(30, MAGE);
+}
 
+
+void MainWindow::testArenaGames()
+{
+    GameResult gameResult;
+    gameResult.isFirst = gameResult.isWinner = true;
+    gameResult.playerHero = gameResult.enemyHero = "04";
+    arenaHandler->newArena(gameResult.playerHero);
+    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, arena);
+    gameResult.isFirst = gameResult.isWinner = false;
+    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, arena);
 }
 
 

@@ -147,7 +147,7 @@ private:
     void addDraftMenu(QPushButton *button);
     void spreadTransparency(Transparency newTransparency);
     void updateOtherTabsTransparency();
-    void spreadTheme(bool redrawAllGames);
+    void spreadTheme();
     void updateMainUITheme();
     void updateAllDetachWindowTheme(const QString &mainCSS);
     void updateDetachWindowTheme(QWidget *paneWidget);
@@ -265,6 +265,7 @@ private slots:
     void test();
     void testEnemyHand();
     void testPlan();
+    void testArenaGames();
     void testDelay();
     void testSynergies();
     void testHeroPortraits();
