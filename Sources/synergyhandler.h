@@ -274,7 +274,6 @@ private:
     bool isRushGiverSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
 
 signals:
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SynergyHandler");
     void itemEnter(QList<SynergyCard> &synergyCardList, QRect &rectCard, int maxTop=-1, int maxBottom=-1);
     void itemLeave();

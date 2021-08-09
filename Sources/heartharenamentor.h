@@ -31,7 +31,6 @@ signals:
                 QString synergy1, QString synergy2, QString synergy3,
                 int maxCard1, int maxCard2, int maxCard3,
                 DraftMethod draftMethod);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="HearthArenaMentor");
 
 public slots:

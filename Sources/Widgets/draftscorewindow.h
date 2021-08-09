@@ -74,7 +74,6 @@ signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
     void cardLeave();
     void showHSRwebPicks();
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="DraftScoreWindow");
 
 private slots:

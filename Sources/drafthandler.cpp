@@ -111,8 +111,6 @@ void DraftHandler::createSynergyHandler()
             this, SIGNAL(itemEnter(QList<SynergyCard>&,QRect&,int,int)));
     connect(synergyHandler, SIGNAL(itemLeave()),
             this, SIGNAL(itemLeave()));
-    connect(synergyHandler, SIGNAL(pLog(QString)),
-            this, SIGNAL(pLog(QString)));
     connect(synergyHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 }
@@ -764,8 +762,6 @@ void DraftHandler::createTwitchHandler()
                 this, SLOT(twitchHandlerVoteUpdate(int,int,int,QString)));
         connect(twitchHandler, SIGNAL(showMessageProgressBar(QString,int)),
                 this, SIGNAL(showMessageProgressBar(QString,int)));
-        connect(twitchHandler, SIGNAL(pLog(QString)),
-                this, SIGNAL(pLog(QString)));
         connect(twitchHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
     }
@@ -2178,8 +2174,6 @@ void DraftHandler::createDraftWindows()
                 this, SIGNAL(overlayCardLeave()));
         connect(draftScoreWindow, SIGNAL(showHSRwebPicks()),
                 this, SLOT(showHSRwebPicks()));
-        connect(draftScoreWindow, SIGNAL(pLog(QString)),
-                this, SIGNAL(pLog(QString)));
         connect(draftScoreWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 

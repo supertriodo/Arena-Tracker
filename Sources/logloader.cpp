@@ -44,8 +44,6 @@ void LogLoader::createLogWorker(QString logComponent)
 {
     LogWorker *logWorker;
     logWorker = new LogWorker(this, logsDirPath, logComponent);
-    connect(logWorker, SIGNAL(pLog(QString)),
-            this, SIGNAL(pLog(QString)));
     connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 

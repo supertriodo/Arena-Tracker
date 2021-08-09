@@ -34,7 +34,6 @@ public:
 signals:
     void logReset();
     void newLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
-    void pLog(QString line);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="LogWorker");
 };
 

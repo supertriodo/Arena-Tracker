@@ -997,13 +997,13 @@ void DeckHandler::loadDecks()
     QFile jsonFile(Utility::dataPath() + "/ArenaTrackerDecks.json");
     if(!jsonFile.exists())
     {
-        emit pDebug("Json decks file doesn't exists.");
+        emit pDebug("ArenaTrackerDecks.json doesn't exists.");
         return;
     }
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to load Arena Tracker decks json from disk.", DebugLevel::Error);
+        emit pDebug("Failed to load ArenaTrackerDecks.json from disk.", DebugLevel::Error);
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
@@ -1011,7 +1011,7 @@ void DeckHandler::loadDecks()
 
     decksJson = jsonDoc.object();
 
-    emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from json file.");
+    emit pDebug("Loaded " + QString::number(decksJson.count()) + " decks from ArenaTrackerDecks.json.");
 
     //Load decks to loadDeckTreeWidget
     int deckLoaded = 0;
@@ -1177,13 +1177,13 @@ void DeckHandler::saveDecksJsonFile()
 
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to create Arena Tracker decks json on disk.", DebugLevel::Error);
+        emit pDebug("Failed to create ArenaTrackerDecks.json on disk.", DebugLevel::Error);
         return;
     }
     jsonFile.write(jsonDoc.toJson());
     jsonFile.close();
 
-    emit pDebug("Decks json file updated.");
+    emit pDebug("ArenaTrackerDecks.json updated.");
 }
 
 
