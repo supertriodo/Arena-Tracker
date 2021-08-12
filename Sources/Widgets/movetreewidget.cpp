@@ -11,7 +11,6 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::NoSelection);
-    this->setFocusPolicy(Qt::NoFocus);
     this->setHeaderHidden(true);
     this->header()->close();
 }
@@ -51,12 +50,27 @@ void MoveTreeWidget::mouseMoveEvent(QMouseEvent *event)
 }
 void MoveTreeWidget::mousePressEvent(QMouseEvent *event)
 {
+    if(!this->indexAt(event->pos()).isValid())
+    {
+        this->clearSelection();
+    }
     QTreeWidget::mousePressEvent(event);
     event->ignore();
 }
 void MoveTreeWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QTreeWidget::mouseReleaseEvent(event);
+    event->ignore();
+}
+
+
+void MoveTreeWidget::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape)
+    {
+        this->clearSelection();
+    }
+    QTreeWidget::keyPressEvent(event);
     event->ignore();
 }
 

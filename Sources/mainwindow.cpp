@@ -2134,6 +2134,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #endif
         }
     }
+
+    QMainWindow::keyPressEvent(event);
 }
 
 
@@ -2152,7 +2154,6 @@ void MainWindow::changeEvent(QEvent * event)
             if(planWindow != nullptr)      planWindow->setWindowState(Qt::WindowActive);
             if(draftHandler != nullptr)    draftHandler->deMinimizeScoreWindow();
         }
-
     }
 }
 
