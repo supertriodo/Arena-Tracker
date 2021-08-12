@@ -23,7 +23,7 @@ private:
     DeckHandler *deckHandler;
     PlanHandler *planHandler;
     Ui::Extended *ui;
-    QTreeWidgetItem *arenaHomeless, *arenaCurrent;
+    QTreeWidgetItem *arenaCurrent;
     QTreeWidgetItem *rankedTreeItem[NUM_HEROS];
     QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem, *casualTreeItem;
     QString arenaCurrentHero;
@@ -31,6 +31,11 @@ private:
     bool mouseInApp;
     Transparency transparency;
     QJsonObject statsJson;
+    //Connection QTreeWidgetItem -- key in ArenaTrackerStats.json (date/"current"). Se usa para editar la tabla.
+    QMap<QTreeWidgetItem *, QString> arenaStatLink;
+    QRegularExpressionMatch *match;
+    //Se usa para que itemChanged solo actue cuando el usuario modifica un campo, no cuando el codigo lo hace.
+    bool editingColumnText;
 
 
 //Metodos
@@ -43,12 +48,17 @@ private:
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtStart, int wins=0, int losses=0);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    void showArena(QString hero, QString title="Arena", int wins=0, int losses=0);
+    void showArena(QString hero, QString title="", int wins=0, int losses=0);
     void redrawRow(QTreeWidgetItem *item);
     void redrawAllRows();
     void newArenaStat(QString hero, int wins=0, int losses=0);
     void newArenaGameStat(GameResult gameResult);
     void saveStatsJsonFile();
+    void setColumnText(QTreeWidgetItem *item, int col, const QString &text);
+    void setColumnIcon(QTreeWidgetItem *item, int col, const QIcon &aicon);
+    void itemChangedDate(QTreeWidgetItem *item, int column);
+    void itemChangedHero(QTreeWidgetItem *item, int column);
+    void itemChangedWL(QTreeWidgetItem *item, int column);
 
 public:
     void setMouseInApp(bool value);
@@ -72,6 +82,8 @@ public slots:
 
 private slots:
     void openUserGuide();
+    void itemChanged(QTreeWidgetItem *item, int column);
+    void itemDoubleClicked(QTreeWidgetItem *item, int column);
 };
 
 #endif // ARENAHANDLER_H

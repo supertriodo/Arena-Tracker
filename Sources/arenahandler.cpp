@@ -15,12 +15,15 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->transparency = Opaque;
     this->mouseInApp = false;
     this->arenaCurrentDraftFile = "";
+    this->match = new QRegularExpressionMatch();
+    this->editingColumnText = false;
 
     completeUI();
 }
 
 ArenaHandler::~ArenaHandler()
 {
+    delete match;
 }
 
 
@@ -54,17 +57,14 @@ void ArenaHandler::createTreeWidget()
     QTreeWidget *treeWidget = ui->arenaTreeWidget;
     treeWidget->setColumnCount(5);
     treeWidget->setIconSize(QSize(32,32));
+    treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     treeWidget->setColumnWidth(0, 110);
     treeWidget->setColumnWidth(1, 50);
     treeWidget->setColumnWidth(2, 40);
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
-
-    arenaHomeless = new QTreeWidgetItem(treeWidget);
-    arenaHomeless->setExpanded(true);
-    arenaHomeless->setText(0, "Arena");
-    arenaHomeless->setHidden(true);
 
     arenaCurrent = nullptr;
     arenaCurrentHero = "";
@@ -74,6 +74,11 @@ void ArenaHandler::createTreeWidget()
     adventureTreeItem = nullptr;
     tavernBrawlTreeItem = nullptr;
     friendlyTreeItem = nullptr;
+
+    connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this, SLOT(itemChanged(QTreeWidgetItem*,int)));
+    connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)));
 }
 
 
@@ -94,18 +99,32 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 }
 
 
+void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &text)
+{
+    editingColumnText = false;
+    item->setText(col, text);
+}
+
+
+void ArenaHandler::setColumnIcon(QTreeWidgetItem *item, int col, const QIcon &aicon)
+{
+    editingColumnText = false;
+    item->setIcon(col, aicon);
+}
+
+
 void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 {
     emit pDebug("Recalculate win/loses (1 game).");
     if(isWinner)
     {
         int wins = topLevelItem->text(2).toInt() + 1;
-        topLevelItem->setText(2, QString::number(wins));
+        setColumnText(topLevelItem, 2, QString::number(wins));
     }
     else
     {
         int loses = topLevelItem->text(3).toInt() + 1;
-        topLevelItem->setText(3, QString::number(loses));
+        setColumnText(topLevelItem, 3, QString::number(loses));
     }
 }
 
@@ -117,16 +136,16 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, b
     if(addAtStart)
     {
         item = new QTreeWidgetItem();
-        ui->arenaTreeWidget->insertTopLevelItem(1, item);
+        ui->arenaTreeWidget->insertTopLevelItem(0, item);
     }
     else    item = new QTreeWidgetItem(ui->arenaTreeWidget);
 
     item->setExpanded(true);
-    item->setText(0, title);
-    if(!hero.isEmpty())     item->setIcon(1, QIcon(ThemeHandler::heroFile(hero)));
-    item->setText(2, QString::number(wins));
+    setColumnText(item, 0, title);
+    if(!hero.isEmpty()) setColumnIcon(item, 1, QIcon(ThemeHandler::heroFile(hero)));
+    setColumnText(item, 2, QString::number(wins));
     item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
-    item->setText(3, QString::number(losses));
+    setColumnText(item, 3, QString::number(losses));
     item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
 
     setRowColor(item, ThemeHandler::fgColor());
@@ -147,23 +166,16 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
         break;
 
         case arena:
-
             if(arenaCurrent == nullptr || arenaCurrentHero.compare(gameResult.playerHero)!=0)
             {
-                emit pDebug("Create GameResult from arena in arenaHomeless.");
-
-                if(arenaHomeless->isHidden())   arenaHomeless->setHidden(false);
-
-                item = new QTreeWidgetItem();
-                arenaHomeless->insertChild(0, item);
+                emit pDebug("Create GameResult from arena: Different hero. Create a new arena.");
+                showArena(gameResult.playerHero);
             }
-            else
-            {
-                emit pDebug("Create GameResult from arena in arenaCurrent.");
-                item = new QTreeWidgetItem();
-                arenaCurrent->insertChild(0, item);
-                updateWinLose(gameResult.isWinner, arenaCurrent);
-            }
+            emit pDebug("Create GameResult from arena in arenaCurrent.");
+            item = new QTreeWidgetItem();
+            arenaCurrent->insertChild(0, item);
+            updateWinLose(gameResult.isWinner, arenaCurrent);
+            setColumnText(arenaCurrent, 0, QDateTime::currentDateTime().toString("d MMM"));
         break;
 
         case ranked:
@@ -240,18 +252,18 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
     if(item == nullptr)    return nullptr;
 
     QString iconFile = (gameResult.playerHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.playerHero));
-    item->setIcon(0, QIcon(iconFile));
-    item->setText(0, "vs");
+    setColumnIcon(item, 0, QIcon(iconFile));
+    setColumnText(item, 0, "vs");
     item->setTextAlignment(0, Qt::AlignHCenter|Qt::AlignVCenter);
 
     iconFile = (gameResult.enemyHero==""?":Images/secretHunter.png":ThemeHandler::heroFile(gameResult.enemyHero));
-    item->setIcon(1, QIcon(iconFile));
+    setColumnIcon(item, 1, QIcon(iconFile));
     if(!gameResult.enemyName.isEmpty() && gameResult.enemyName != "UNKNOWN HUMAN PLAYER")
     {
         item->setToolTip(1, gameResult.enemyName);
     }
-    item->setIcon(2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
-    item->setIcon(3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
+    setColumnIcon(item, 2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
+    setColumnIcon(item, 3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
 
     setRowColor(item, ThemeHandler::fgColor());
 
@@ -270,8 +282,12 @@ void ArenaHandler::newArena(QString hero)
 void ArenaHandler::showArena(QString hero, QString title, int wins, int losses)
 {
     emit pDebug("Show Arena.");
+
+    if(title.isEmpty()) title = QDateTime::currentDateTime().toString("d MMM");
+
     arenaCurrentHero = QString(hero);
     arenaCurrent = createTopLevelItem(title, arenaCurrentHero, true, wins, losses);
+    arenaCurrent->setFlags(arenaCurrent->flags() | Qt::ItemIsEditable);
 }
 
 
@@ -408,8 +424,24 @@ void ArenaHandler::loadStatsJsonFile()
         int losses = objArena["losses"].toInt();
 
         QString title = (date == "current")?statsJson["lastGame"].toString():date;
-        title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("dd MMM");//("d MMM");
+        title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("d MMM");
         showArena(hero, title, wins, losses);
+        arenaStatLink[arenaCurrent] = date;
+
+        //Set date of last arena if complete
+        if(date == "current" && (wins>11 || losses>2))
+        {
+            QString date = statsJson["lastGame"].toString();
+            statsJson[date] = statsJson["current"].toObject();
+            statsJson.remove("current");
+
+            //Update arenaStatLink map
+            arenaStatLink[arenaCurrent] = date;
+            arenaCurrent = nullptr;
+            arenaCurrentHero = "";
+
+            saveStatsJsonFile();
+        }
     }
 }
 
@@ -444,6 +476,17 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
     {
         QString date = statsJson["lastGame"].toString();
         statsJson[date] = statsJson["current"].toObject();
+
+        //Update arenaStatLink map
+        QTreeWidgetItem *arenaPrevious = arenaStatLink.key("current", nullptr);
+        if(arenaPrevious != nullptr)
+        {
+            arenaStatLink[arenaPrevious] = date;
+
+            //Update arena title
+            QString title = QDateTime::fromString(date, "yyyy.MM.dd hh:mm").toString("d MMM");
+            setColumnText(arenaPrevious, 0, title);
+        }
     }
 
     QJsonObject objArena;
@@ -451,6 +494,8 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
     objArena["wins"] = wins;
     objArena["losses"] = losses;
     statsJson["current"] = objArena;
+
+    arenaStatLink[arenaCurrent] = "current";
 
     QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
     statsJson["lastGame"] = date;
@@ -475,3 +520,146 @@ void ArenaHandler::newArenaGameStat(GameResult gameResult)
     }
 }
 
+
+void ArenaHandler::itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    if(column == 0)
+    {
+        if(item->childCount()>0)    return;
+
+        QString date = arenaStatLink[item];
+        if(date != "current")
+        {
+            editingColumnText = true;
+            ui->arenaTreeWidget->editItem(item, column);
+        }
+    }
+    else
+    {
+        if(column == 1)
+        {
+            if(item->childCount()>0)    return;
+
+            setColumnText(item, column,
+                Utility::classLogNumber2classLName(
+                statsJson[arenaStatLink[item]].toObject()["hero"].toString()));
+        }
+        editingColumnText = true;
+        ui->arenaTreeWidget->editItem(item, column);
+    }
+}
+
+
+void ArenaHandler::itemChanged(QTreeWidgetItem *item, int column)
+{
+    if(!editingColumnText)return;
+    editingColumnText = false;
+
+    if(column == 0)         itemChangedDate(item, column);
+    else if(column == 1)    itemChangedHero(item, column);
+    else if(column == 2 || column == 3) itemChangedWL(item, column);
+}
+
+
+void ArenaHandler::itemChangedDate(QTreeWidgetItem *item, int column)
+{
+    QString text = item->text(column);
+    QDateTime newDateD;
+
+    if(text.contains(QRegularExpression("^\\d{1,2} \\d{1,2}$"), match))
+    {
+        newDateD = QDateTime::fromString(match->captured(0), "d M");
+    }
+    else if(text.contains(QRegularExpression("^\\d{1,2} \\w+\\.?$"), match))
+    {
+        newDateD = QDateTime::fromString(match->captured(0), "d MMM");
+    }
+
+    if(newDateD.isValid())
+    {
+        QDateTime currentD = QDateTime::currentDateTime();
+        QString year = currentD.toString("yyyy.");
+        QString monthDay = newDateD.toString("MM.dd");
+        newDateD = QDateTime::fromString(year+monthDay, "yyyy.MM.dd");
+
+        //Avoid setting dates in the future
+        if(newDateD>currentD)   newDateD = newDateD.addYears(-1);
+
+        //Add random hh:mm
+        QString newDate;
+        do
+        {
+            newDate = (newDateD.addSecs(qrand()%86400)).toString("yyyy.MM.dd hh:mm");
+        }
+        while(statsJson.contains(newDate));
+
+        QString oldDate = arenaStatLink[item];
+        statsJson[newDate] = statsJson[oldDate].toObject();
+        statsJson.remove(oldDate);
+        arenaStatLink[item] = newDate;
+        saveStatsJsonFile();
+    }
+
+    QString titleDate = QDateTime::fromString(arenaStatLink[item], "yyyy.MM.dd hh:mm").toString("d MMM");
+    setColumnText(item, 0, titleDate);
+}
+
+
+void ArenaHandler::itemChangedHero(QTreeWidgetItem *item, int column)
+{
+    QString text = item->text(column);
+
+    if(text.contains(QRegularExpression("^\\w+"), match))
+    {
+        QString hero = match->captured(0);
+        QString heroLog = "";
+        //--------------------------------------------------------
+        //----NEW HERO CLASS
+        //--------------------------------------------------------
+        if(hero.startsWith("dr"))       heroLog = "06";
+        else if(hero.startsWith("hu"))  heroLog = "05";
+        else if(hero.startsWith("ma"))  heroLog = "08";
+        else if(hero.startsWith("pa"))  heroLog = "04";
+        else if(hero.startsWith("pr"))  heroLog = "09";
+        else if(hero.startsWith("ro"))  heroLog = "03";
+        else if(hero.startsWith("sh"))  heroLog = "02";
+        else if(hero.startsWith("warl"))heroLog = "07";
+        else if(hero.startsWith("warr"))heroLog = "01";
+        else if(hero.startsWith("de"))  heroLog = "10";
+
+        if(!heroLog.isEmpty())
+        {
+            setColumnIcon(item, 1, QIcon(ThemeHandler::heroFile(heroLog)));
+
+            QJsonObject objArena = statsJson[arenaStatLink[item]].toObject();
+            objArena["hero"] = heroLog;
+            statsJson[arenaStatLink[item]] = objArena;
+            saveStatsJsonFile();
+        }
+    }
+
+    setColumnText(item, column, "");
+}
+
+
+void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
+{
+    QString text = item->text(column);
+
+    if(text.contains(QRegularExpression("^\\d{1,2}$"), match))
+    {
+        int score = match->captured(0).toInt();
+
+        //wins[0-12] losses[0-3]
+        if((column == 2 && score < 13)||(column == 3 && score < 4))
+        {
+            QJsonObject objArena = statsJson[arenaStatLink[item]].toObject();
+            objArena[column==2?"wins":"losses"] = score;
+            statsJson[arenaStatLink[item]] = objArena;
+            saveStatsJsonFile();
+        }
+    }
+
+    int score = statsJson[arenaStatLink[item]].toObject()[column==2?"wins":"losses"].toInt();
+    setColumnText(item, column, QString::number(score));
+}

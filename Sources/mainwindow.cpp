@@ -4399,13 +4399,21 @@ void MainWindow::testArenaGames()
 {
     GameResult gameResult;
     gameResult.isFirst = gameResult.isWinner = true;
-    gameResult.playerHero = gameResult.enemyHero = "04";
-    arenaHandler->newArena(gameResult.playerHero);
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
-    gameResult.isFirst = gameResult.isWinner = false;
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
+    gameResult.playerHero = gameResult.enemyHero = "08";
+//    arenaHandler->newArena(gameResult.playerHero);
+//    arenaHandler->newGameResult(gameResult, arena);
+//    gameResult.isFirst = gameResult.isWinner = false;
+//    arenaHandler->newGameResult(gameResult, arena);
+//    arenaHandler->newGameResult(gameResult, arena);
+//    arenaHandler->newGameResult(gameResult, arena);
+
+//    gameResult.playerHero = gameResult.enemyHero = "05";
+//    arenaHandler->newArena(gameResult.playerHero);
+//    arenaHandler->newGameResult(gameResult, arena);
+//    arenaHandler->newGameResult(gameResult, arena);
+//    arenaHandler->newGameResult(gameResult, arena);
+//    gameResult.isFirst = gameResult.isWinner = true;
+//    arenaHandler->newGameResult(gameResult, arena);
 }
 
 
@@ -4552,6 +4560,8 @@ void MainWindow::testDelay()
 //    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
+
+    testArenaGames();
 }
 
 
