@@ -113,6 +113,26 @@
              </spacer>
             </item>
             <item>
+             <widget class="QComboBox" name="arenaRegionComboBox">
+              <property name="toolTip">
+               <string>Change region/account of the selected arena.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="arenaHorizontalSpacer2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="QPushButton" name="donateButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -121,7 +141,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Unlock replays, graveyard, synergies and
+               <string>Unlock more stats, replays, graveyard, synergies and
 draft mechanics becoming a patron (3$)</string>
               </property>
               <property name="text">

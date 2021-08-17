@@ -17,6 +17,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->arenaCurrentDraftFile = "";
     this->match = new QRegularExpressionMatch();
     this->editingColumnText = false;
+    this->lastRegion = 0;
 
     completeUI();
 }
@@ -30,12 +31,32 @@ ArenaHandler::~ArenaHandler()
 void ArenaHandler::completeUI()
 {
     createTreeWidget();
+    createComboBoxArenaRegion();
+
     setPremium(false);
 
     connect(ui->guideButton, SIGNAL(clicked()),
             this, SLOT(openUserGuide()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
+}
+
+
+void ArenaHandler::createComboBoxArenaRegion()
+{
+    int hw = 20;
+    QColor fgColor(ThemeHandler::fgColor());
+    for(const QColor &color: {fgColor, ARENA_YELLOW, ARENA_GREEN, ARENA_RED, ARENA_BLUE})
+    {
+        QPixmap canvas(QSize(hw*2, hw));
+        canvas.fill(color);
+        ui->arenaRegionComboBox->addItem(canvas,"");
+    }
+    ui->arenaRegionComboBox->setIconSize(QSize(hw*2, hw));
+    ui->arenaRegionComboBox->setEnabled(false);
+
+    connect(ui->arenaRegionComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(regionChanged(int)));
 }
 
 
@@ -79,6 +100,8 @@ void ArenaHandler::createTreeWidget()
             this, SLOT(itemChanged(QTreeWidgetItem*,int)));
     connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
             this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)));
+    connect(treeWidget, SIGNAL(itemSelectionChanged()),
+            this, SLOT(itemSelectionChanged()));
 }
 
 
@@ -129,7 +152,7 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 }
 
 
-QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart, int wins, int losses)
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart, int wins, int losses, bool isArena)
 {
     QTreeWidgetItem *item;
 
@@ -148,7 +171,8 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, b
     setColumnText(item, 3, QString::number(losses));
     item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
 
-    setRowColor(item, ThemeHandler::fgColor());
+    if(isArena) setRowColor(item);
+    else        setRowColor(item, ThemeHandler::fgColor());
 
     return item;
 }
@@ -286,7 +310,7 @@ void ArenaHandler::showArena(QString hero, QString title, int wins, int losses)
     if(title.isEmpty()) title = QDateTime::currentDateTime().toString("d MMM");
 
     arenaCurrentHero = QString(hero);
-    arenaCurrent = createTopLevelItem(title, arenaCurrentHero, true, wins, losses);
+    arenaCurrent = createTopLevelItem(title, arenaCurrentHero, true, wins, losses, true);
     arenaCurrent->setFlags(arenaCurrent->flags() | Qt::ItemIsEditable);
 }
 
@@ -296,6 +320,29 @@ void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
     for(int i=0;i<5;i++)
     {
         item->setForeground(i, QBrush(color));
+    }
+}
+
+
+void ArenaHandler::setRowColor(QTreeWidgetItem *item)
+{
+    switch(lastRegion)
+    {
+        case 1:
+            setRowColor(item, ARENA_YELLOW);
+        break;
+        case 2:
+            setRowColor(item, ARENA_GREEN);
+        break;
+        case 3:
+            setRowColor(item, ARENA_RED);
+        break;
+        case 4:
+            setRowColor(item, ARENA_BLUE);
+        break;
+        default:
+            setRowColor(item, ThemeHandler::fgColor());
+        break;
     }
 }
 
@@ -320,22 +367,8 @@ void ArenaHandler::redrawRow(QTreeWidgetItem *item)
 }
 
 
-void ArenaHandler::redrawAllRows()
-{
-    int numTopItems = ui->arenaTreeWidget->topLevelItemCount();
-    for(int i=0; i<numTopItems; i++)
-    {
-        QTreeWidgetItem * item = ui->arenaTreeWidget->topLevelItem(i);
-        int numItems = item->childCount();
-        for(int j=0; j<numItems; j++)   redrawRow(item->child(j));
-        redrawRow(item);
-    }
-}
-
-
 void ArenaHandler::setTransparency(Transparency value)
 {
-    bool transparencyChanged = this->transparency != value;
     this->transparency = value;
 
     if(!mouseInApp && transparency==Transparent)
@@ -347,14 +380,6 @@ void ArenaHandler::setTransparency(Transparency value)
     {
         ui->tabArena->setAttribute(Qt::WA_NoBackground, false);
         ui->tabArena->repaint();
-    }
-
-    //Habra que cambiar los colores si:
-    //1) La transparencia se ha cambiado
-    //2) El raton ha salido/entrado y estamos en transparente
-    if(transparencyChanged || this->transparency == Transparent )
-    {
-        redrawAllRows();
     }
 }
 
@@ -390,6 +415,7 @@ QString ArenaHandler::getArenaCurrentDraftLog()
  * "hero" -> "01"
  * "wins" -> 7
  * "losses" -> 3
+ * "region" -> 0
  * }
  */
 void ArenaHandler::loadStatsJsonFile()
@@ -422,6 +448,7 @@ void ArenaHandler::loadStatsJsonFile()
         QString hero = objArena["hero"].toString();
         int wins = objArena["wins"].toInt();
         int losses = objArena["losses"].toInt();
+        this->lastRegion = objArena["region"].toInt();
 
         QString title = (date == "current")?statsJson["lastGame"].toString():date;
         title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("d MMM");
@@ -434,14 +461,16 @@ void ArenaHandler::loadStatsJsonFile()
             QString date = statsJson["lastGame"].toString();
             statsJson[date] = statsJson["current"].toObject();
             statsJson.remove("current");
-
-            //Update arenaStatLink map
             arenaStatLink[arenaCurrent] = date;
-            arenaCurrent = nullptr;
-            arenaCurrentHero = "";
-
             saveStatsJsonFile();
         }
+    }
+
+    //Sync arenaCurrent
+    if(!statsJson.contains("current"))
+    {
+        arenaCurrent = nullptr;
+        arenaCurrentHero = "";
     }
 }
 
@@ -493,6 +522,7 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
     objArena["hero"] = hero;
     objArena["wins"] = wins;
     objArena["losses"] = losses;
+    objArena["region"] = lastRegion;
     statsJson["current"] = objArena;
 
     arenaStatLink[arenaCurrent] = "current";
@@ -523,6 +553,7 @@ void ArenaHandler::newArenaGameStat(GameResult gameResult)
 
 void ArenaHandler::itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
+    if(!arenaStatLink.contains(item))   return;
     if(column == 0)
     {
         if(item->childCount()>0)    return;
@@ -552,8 +583,13 @@ void ArenaHandler::itemDoubleClicked(QTreeWidgetItem *item, int column)
 
 void ArenaHandler::itemChanged(QTreeWidgetItem *item, int column)
 {
-    if(!editingColumnText)return;
+    if(!editingColumnText)  return;
     editingColumnText = false;
+    if(!arenaStatLink.contains(item))
+    {
+        emit pDebug("ERROR: Trying to edit an arena not in arenaStatLink.");
+        return;
+    }
 
     if(column == 0)         itemChangedDate(item, column);
     else if(column == 1)    itemChangedHero(item, column);
@@ -662,4 +698,42 @@ void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
 
     int score = statsJson[arenaStatLink[item]].toObject()[column==2?"wins":"losses"].toInt();
     setColumnText(item, column, QString::number(score));
+}
+
+
+void ArenaHandler::regionChanged(int index)
+{
+    QList<QTreeWidgetItem *> items = ui->arenaTreeWidget->selectedItems();
+    if(items.count() == 1 && arenaStatLink.contains(items[0]))
+    {
+        QTreeWidgetItem *item = items[0];
+        QJsonObject objArena = statsJson[arenaStatLink[item]].toObject();
+        if(objArena["region"] != index)
+        {
+            objArena["region"] = this->lastRegion = index;
+            statsJson[arenaStatLink[item]] = objArena;
+            saveStatsJsonFile();
+            setRowColor(item);
+        }
+    }
+    else
+    {
+        ui->arenaRegionComboBox->setEnabled(false);
+    }
+}
+
+
+void ArenaHandler::itemSelectionChanged()
+{
+    QList<QTreeWidgetItem *> items = ui->arenaTreeWidget->selectedItems();
+    if(items.count() == 1 && arenaStatLink.contains(items[0]))
+    {
+        int region = statsJson[arenaStatLink[items[0]]].toObject()["region"].toInt();
+        ui->arenaRegionComboBox->setCurrentIndex(region);
+        ui->arenaRegionComboBox->setEnabled(true);
+    }
+    else
+    {
+        ui->arenaRegionComboBox->setEnabled(false);
+    }
 }
