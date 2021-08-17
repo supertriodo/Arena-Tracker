@@ -4562,7 +4562,7 @@ void MainWindow::testDelay()
 //    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
 
-    testArenaGames();
+//    testArenaGames();
 }
 
 
