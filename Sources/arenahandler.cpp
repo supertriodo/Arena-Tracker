@@ -32,13 +32,24 @@ void ArenaHandler::completeUI()
 {
     createTreeWidget();
     createComboBoxArenaRegion();
+    completeButtons();
 
     setPremium(false);
+}
+
+
+void ArenaHandler::completeButtons()
+{
+    ui->arenaDeleteButton->setEnabled(false);
 
     connect(ui->guideButton, SIGNAL(clicked()),
             this, SLOT(openUserGuide()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
+    connect(ui->arenaNewButton, SIGNAL(clicked()),
+            this, SLOT(arenaNewEmpty()));
+    connect(ui->arenaDeleteButton, SIGNAL(clicked()),
+            this, SLOT(arenaDelete()));
 }
 
 
@@ -152,11 +163,17 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 }
 
 
-QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, bool addAtStart, int wins, int losses, bool isArena)
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, int wins, int losses,
+                                                  bool isArena, bool insertPos1)
 {
     QTreeWidgetItem *item;
 
-    if(addAtStart)
+    if(insertPos1 && ui->arenaTreeWidget->topLevelItemCount()>0)
+    {
+        item = new QTreeWidgetItem();
+        ui->arenaTreeWidget->insertTopLevelItem(1, item);
+    }
+    else if(isArena)
     {
         item = new QTreeWidgetItem();
         ui->arenaTreeWidget->insertTopLevelItem(0, item);
@@ -192,7 +209,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
         case arena:
             if(arenaCurrent == nullptr || arenaCurrentHero.compare(gameResult.playerHero)!=0)
             {
-                emit pDebug("Create GameResult from arena: Different hero. Create a new arena.");
+                emit pDebug("Create GameResult from arena: No arenaCurrent/Different hero. Create a new arena.");
                 showArena(gameResult.playerHero);
             }
             emit pDebug("Create GameResult from arena in arenaCurrent.");
@@ -210,7 +227,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(rankedTreeItem[indexHero] == nullptr)
             {
                 emit pDebug("Create Category ranked[" + QString::number(indexHero) + "].");
-                rankedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero, false);
+                rankedTreeItem[indexHero] = createTopLevelItem("Ranked", gameResult.playerHero);
             }
 
             item = new QTreeWidgetItem();
@@ -224,7 +241,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(adventureTreeItem == nullptr)
             {
                 emit pDebug("Create Category adventure.");
-                adventureTreeItem = createTopLevelItem("Solo", "", false);
+                adventureTreeItem = createTopLevelItem("Solo", "");
             }
 
             item = new QTreeWidgetItem();
@@ -238,7 +255,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(tavernBrawlTreeItem == nullptr)
             {
                 emit pDebug("Create Category tavern brawl.");
-                tavernBrawlTreeItem = createTopLevelItem("Brawl", "", false);
+                tavernBrawlTreeItem = createTopLevelItem("Brawl", "");
             }
 
             item = new QTreeWidgetItem();
@@ -252,7 +269,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             if(friendlyTreeItem == nullptr)
             {
                 emit pDebug("Create Category friendly.");
-                friendlyTreeItem = createTopLevelItem("Friend", "", false);
+                friendlyTreeItem = createTopLevelItem("Friend", "");
             }
 
             item = new QTreeWidgetItem();
@@ -303,15 +320,21 @@ void ArenaHandler::newArena(QString hero)
 }
 
 
-void ArenaHandler::showArena(QString hero, QString title, int wins, int losses)
+QTreeWidgetItem *ArenaHandler::showArena(QString hero, QString title, int wins, int losses, bool isArenaNewEmpty)
 {
-    emit pDebug("Show Arena.");
+    emit pDebug("Show Arena" + QString(isArenaNewEmpty?" new empty.":"."));
 
     if(title.isEmpty()) title = QDateTime::currentDateTime().toString("d MMM");
 
-    arenaCurrentHero = QString(hero);
-    arenaCurrent = createTopLevelItem(title, arenaCurrentHero, true, wins, losses, true);
-    arenaCurrent->setFlags(arenaCurrent->flags() | Qt::ItemIsEditable);
+    QTreeWidgetItem *item = createTopLevelItem(title, hero, wins, losses, true, isArenaNewEmpty);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+
+    if(!isArenaNewEmpty)
+    {
+        arenaCurrentHero = hero;
+        arenaCurrent = item;
+    }
+    return item;
 }
 
 
@@ -394,6 +417,8 @@ void ArenaHandler::setMouseInApp(bool value)
 void ArenaHandler::setTheme()
 {
     ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
+    ui->arenaNewButton->setIcon(QIcon(ThemeHandler::buttonPlusFile()));
+    ui->arenaDeleteButton->setIcon(QIcon(ThemeHandler::buttonRemoveFile()));
     ui->arenaTreeWidget->setTheme(false);
 }
 
@@ -459,6 +484,7 @@ void ArenaHandler::loadStatsJsonFile()
         if(date == "current" && (wins>11 || losses>2))
         {
             QString date = statsJson["lastGame"].toString();
+            date = getUniqueDate(date);
             statsJson[date] = statsJson["current"].toObject();
             statsJson.remove("current");
             arenaStatLink[arenaCurrent] = date;
@@ -498,12 +524,36 @@ void ArenaHandler::saveStatsJsonFile()
 }
 
 
-void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
+QString ArenaHandler::getUniqueDate(QString date)
+{
+    if(date.isEmpty())  date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
+    if(!statsJson.contains(date))   return date;
+
+    QDateTime oldDateD = QDateTime::fromString(date, "yyyy.MM.dd hh:mm");
+    QDateTime dateD = QDateTime::fromString(oldDateD.toString("yyyy.MM.dd"), "yyyy.MM.dd");
+
+    //Add random hh:mm
+    do
+    {
+        date = (dateD.addSecs(qrand()%86400)).toString("yyyy.MM.dd hh:mm");
+    }
+    while(statsJson.contains(date));
+
+    return date;
+}
+
+
+/*
+ * Item se usa cuando se crea una nueva arena con el boton arenaNewButton que no se define como current,
+ * sino que se pone en segunda posicion.
+ */
+void ArenaHandler::newArenaStat(QString hero, int wins, int losses, QTreeWidgetItem *item)
 {
     //Save date for previous current
-    if(statsJson.contains("current"))
+    if(item == nullptr && statsJson.contains("current"))
     {
         QString date = statsJson["lastGame"].toString();
+        date = getUniqueDate(date);
         statsJson[date] = statsJson["current"].toObject();
 
         //Update arenaStatLink map
@@ -523,12 +573,21 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses)
     objArena["wins"] = wins;
     objArena["losses"] = losses;
     objArena["region"] = lastRegion;
-    statsJson["current"] = objArena;
 
-    arenaStatLink[arenaCurrent] = "current";
+    if(item == nullptr)
+    {
+        statsJson["current"] = objArena;
+        arenaStatLink[arenaCurrent] = "current";
 
-    QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
-    statsJson["lastGame"] = date;
+        QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
+        statsJson["lastGame"] = date;
+    }
+    else
+    {
+        QString date = getUniqueDate("");
+        statsJson[date] = objArena;
+        arenaStatLink[item] = date;
+    }
 }
 
 
@@ -622,13 +681,8 @@ void ArenaHandler::itemChangedDate(QTreeWidgetItem *item, int column)
         if(newDateD>currentD)   newDateD = newDateD.addYears(-1);
 
         //Add random hh:mm
-        QString newDate;
-        do
-        {
-            newDate = (newDateD.addSecs(qrand()%86400)).toString("yyyy.MM.dd hh:mm");
-        }
-        while(statsJson.contains(newDate));
-
+        QString newDate = newDateD.toString("yyyy.MM.dd hh:mm");
+        newDate = getUniqueDate(newDate);
         QString oldDate = arenaStatLink[item];
         statsJson[newDate] = statsJson[oldDate].toObject();
         statsJson.remove(oldDate);
@@ -731,9 +785,58 @@ void ArenaHandler::itemSelectionChanged()
         int region = statsJson[arenaStatLink[items[0]]].toObject()["region"].toInt();
         ui->arenaRegionComboBox->setCurrentIndex(region);
         ui->arenaRegionComboBox->setEnabled(true);
+        ui->arenaDeleteButton->setEnabled(true);
     }
     else
     {
         ui->arenaRegionComboBox->setEnabled(false);
+        ui->arenaDeleteButton->setEnabled(false);
+    }
+}
+
+
+void ArenaHandler::arenaNewEmpty()
+{
+    int ret = QMessageBox::question(ui->tabArena, "New Arena?",
+                                   "Do you want to create a new arena?",
+                                   QMessageBox::Ok | QMessageBox::Cancel,
+                                   QMessageBox::Cancel);
+    if(ret == QMessageBox::Cancel)  return;
+
+    QString hero = "01";
+    QTreeWidgetItem *item = showArena(hero, "", 0, 0, true);
+    newArenaStat(hero, 0, 0, item);
+    saveStatsJsonFile();
+}
+
+
+void ArenaHandler::arenaDelete()
+{
+
+    int ret = QMessageBox::question(ui->tabArena, "Remove Arena?",
+                                   "Do you want to remove the selected arena?",
+                                   QMessageBox::Ok | QMessageBox::Cancel,
+                                   QMessageBox::Cancel);
+    if(ret == QMessageBox::Cancel)  return;
+
+    QList<QTreeWidgetItem *> items = ui->arenaTreeWidget->selectedItems();
+    if(items.count() == 1 && arenaStatLink.contains(items[0]))
+    {
+        QTreeWidgetItem *item = items[0];
+        QString date = arenaStatLink[item];
+        statsJson.remove(date);
+        arenaStatLink.remove(item);
+
+        if(arenaCurrent == item)
+        {
+            arenaCurrent = nullptr;
+            arenaCurrentHero = "";
+        }
+        delete item;
+        saveStatsJsonFile();
+    }
+    else
+    {
+        ui->arenaDeleteButton->setEnabled(false);
     }
 }

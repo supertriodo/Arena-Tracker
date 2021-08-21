@@ -75,7 +75,7 @@
             <item>
              <widget class="QPushButton" name="guideButton">
               <property name="toolTip">
-               <string>Open user guide.</string>
+               <string>Open the user guide.</string>
               </property>
               <property name="text">
                <string/>
@@ -113,9 +113,57 @@
              </spacer>
             </item>
             <item>
+             <widget class="QPushButton" name="arenaNewButton">
+              <property name="toolTip">
+               <string>Create a new arena.</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/plus64.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QComboBox" name="arenaRegionComboBox">
               <property name="toolTip">
                <string>Change region/account of the selected arena.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="arenaDeleteButton">
+              <property name="toolTip">
+               <string>Remove the selected arena.</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/remove64.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -142,7 +190,7 @@
               </property>
               <property name="toolTip">
                <string>Unlock more stats, replays, graveyard, synergies and
-draft mechanics becoming a patron (3$)</string>
+draft mechanics becoming a patron (3$).</string>
               </property>
               <property name="text">
                <string/>

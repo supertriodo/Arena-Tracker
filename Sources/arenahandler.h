@@ -53,11 +53,12 @@ private:
     QColor getRowColor(QTreeWidgetItem *item);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
-    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, bool addAtStart, int wins=0, int losses=0, bool isArena=false);
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0,
+                                        bool isArena=false, bool insertPos1=false);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    void showArena(QString hero, QString title="", int wins=0, int losses=0);
+    QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, bool isArenaNewEmpty=false);
     void redrawRow(QTreeWidgetItem *item);
-    void newArenaStat(QString hero, int wins=0, int losses=0);
+    void newArenaStat(QString hero, int wins=0, int losses=0, QTreeWidgetItem *item=nullptr);
     void newArenaGameStat(GameResult gameResult);
     void saveStatsJsonFile();
     void setColumnText(QTreeWidgetItem *item, int col, const QString &text);
@@ -65,6 +66,8 @@ private:
     void itemChangedDate(QTreeWidgetItem *item, int column);
     void itemChangedHero(QTreeWidgetItem *item, int column);
     void itemChangedWL(QTreeWidgetItem *item, int column);
+    QString getUniqueDate(QString date);
+    void completeButtons();
 
 public:
     void setMouseInApp(bool value);
@@ -92,6 +95,8 @@ private slots:
     void itemDoubleClicked(QTreeWidgetItem *item, int column);
     void regionChanged(int index);
     void itemSelectionChanged();
+    void arenaNewEmpty();
+    void arenaDelete();
 };
 
 #endif // ARENAHANDLER_H
