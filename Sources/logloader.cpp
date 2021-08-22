@@ -71,7 +71,9 @@ QString LogLoader::findLinuxLogs(QString pattern)
     QProcess p;
     p.start("find \"" + QDir::homePath() + "\" -wholename \"" + pattern + "\"");
     p.waitForFinished(-1);
-    return QString(p.readAll()).trimmed();
+    QString path = QString(p.readAll()).trimmed();
+    emit pDebug(pattern + " " + QString(path.isEmpty()?"missing":"found") + " on disk.");
+    return path;
 }
 
 
@@ -91,7 +93,7 @@ bool LogLoader::readLogsDirPath()
         initPath = "/Applications/Hearthstone";
 #endif
 #ifdef Q_OS_LINUX
-        initPath = findLinuxLogs("*/Program Files/Hearthstone");
+        initPath = findLinuxLogs("*/Program Files*/Hearthstone");
 #endif
 
         if(!initPath.isEmpty())
@@ -187,7 +189,8 @@ QString LogLoader::createDefaultLogConfig()
     initPath = QDir::homePath() + "/Library/Preferences/Blizzard/Hearthstone/log.config";
 #endif
 #ifdef Q_OS_LINUX
-    initPath = findLinuxLogs("*/Local Settings/Application Data/Blizzard/Hearthstone");
+    initPath = findLinuxLogs("*/AppData/Local/Blizzard/Hearthstone");
+    if(initPath.isEmpty())      initPath = findLinuxLogs("*/Local Settings/Application Data/Blizzard/Hearthstone");
     if(!initPath.isEmpty())     initPath += "/log.config";
 #endif
 
