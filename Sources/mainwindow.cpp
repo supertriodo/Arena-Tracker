@@ -2663,6 +2663,7 @@ void MainWindow::createDataDir()
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());
     Utility::createDir(Utility::histogramsPath());
+    Utility::createDir(Utility::arenaStatsPath());
 
     pDebug("Path Arena Tracker Dir: " + Utility::dataPath());
 }

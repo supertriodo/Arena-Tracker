@@ -349,7 +349,7 @@ void ArenaHandler::setColumnIcon(QTreeWidgetItem *item, int col, const QIcon &ai
 
 void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 {
-    emit pDebug("Recalculate win/loses (1 game).");
+    emit pDebug("Recalculate wins/losses (1 game).");
     if(isWinner)
     {
         int wins = getColumnText(topLevelItem, 2).toInt() + 1;
@@ -357,8 +357,8 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
     }
     else
     {
-        int loses = getColumnText(topLevelItem, 3).toInt() + 1;
-        setColumnText(topLevelItem, 3, QString::number(loses));
+        int losses = getColumnText(topLevelItem, 3).toInt() + 1;
+        setColumnText(topLevelItem, 3, QString::number(losses));
     }
 }
 
@@ -577,13 +577,20 @@ void ArenaHandler::setColorWrongArena(QTreeWidgetItem *item)
     if(item == nullptr) return;
 
     int wins = getColumnText(item, 2).toInt();
-    int loses = getColumnText(item, 3).toInt();
+    int losses = getColumnText(item, 3).toInt();
 
-    if(!((loses==3 && wins<12) || (loses<3 && wins==12)))
+    if(!isCompleteArena(wins, losses))
     {
         item->setForeground(2, QBrush(ARENA_WRONG));
         item->setForeground(3, QBrush(ARENA_WRONG));
     }
+}
+
+
+bool ArenaHandler::isCompleteArena(int wins, int losses)
+{
+    if(((losses==3 && wins<12) || (losses<3 && wins==12)))  return true;
+    else                                                    return false;
 }
 
 
@@ -636,8 +643,8 @@ QString ArenaHandler::getArenaCurrentDraftLog()
 
 /*
  * {
- * "lastGame" -> date ("1234")
  * date ("1231"/"current") -> ObjectArena
+ * "extra" -> ObjectExtra
  * }
  *
  * ObjectArena
@@ -647,11 +654,16 @@ QString ArenaHandler::getArenaCurrentDraftLog()
  * "losses" -> 3
  * "region" -> 0
  * }
+ *
+ * ObjectExtra
+ * {
+ * "lastGame" -> date ("1234")
+ * }
  */
 void ArenaHandler::loadStatsJsonFile()
 {
     //Load stats from file
-    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerStats.json");
+    QFile jsonFile(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
     if(!jsonFile.exists())
     {
         emit pDebug("ArenaTrackerStats.json doesn't exists.");
@@ -673,7 +685,7 @@ void ArenaHandler::loadStatsJsonFile()
     //Load arenas
     for(const QString &date: (const QStringList)statsJson.keys())
     {
-        if(date == "lastGame")  continue;
+        if(date == "extra")  continue;
 
         QJsonObject objArena = statsJson[date].toObject();
         QString hero = objArena["hero"].toString();
@@ -681,7 +693,7 @@ void ArenaHandler::loadStatsJsonFile()
         int losses = objArena["losses"].toInt();
         this->lastRegion = objArena["region"].toInt();
 
-        QString title = (date == "current")?statsJson["lastGame"].toString():date;
+        QString title = (date == "current")?getJsonExtra("lastGame"):date;
         title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("d MMM");
         showArena(hero, title, wins, losses);
         arenaStatLink[arenaCurrent] = date;
@@ -689,7 +701,7 @@ void ArenaHandler::loadStatsJsonFile()
         //Set date of last arena if complete
         if(date == "current" && (wins>11 || losses>2))
         {
-            QString date = statsJson["lastGame"].toString();
+            QString date = getJsonExtra("lastGame");
             date = getUniqueDate(date);
             statsJson[date] = statsJson["current"].toObject();
             statsJson.remove("current");
@@ -715,7 +727,7 @@ void ArenaHandler::saveStatsJsonFile()
 
 
     //Save to disk
-    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerStats.json");
+    QFile jsonFile(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
     if(jsonFile.exists())   jsonFile.remove();
 
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -749,6 +761,20 @@ QString ArenaHandler::getUniqueDate(QString date)
 }
 
 
+void ArenaHandler::setJsonExtra(QString key, QString value)
+{
+    QJsonObject objExtra = statsJson["extra"].toObject();
+    objExtra[key] = value;
+    statsJson["extra"] = objExtra;
+}
+
+
+QString ArenaHandler::getJsonExtra(QString key)
+{
+    return statsJson["extra"].toObject()[key].toString();
+}
+
+
 /*
  * Item se usa cuando se crea una nueva arena con el boton arenaNewButton que no se define como current,
  * sino que se pone en segunda posicion.
@@ -758,7 +784,7 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses, QTreeWidgetI
     //Save date for previous current
     if(item == nullptr && statsJson.contains("current"))
     {
-        QString date = statsJson["lastGame"].toString();
+        QString date = getJsonExtra("lastGame");
         date = getUniqueDate(date);
         statsJson[date] = statsJson["current"].toObject();
 
@@ -786,7 +812,7 @@ void ArenaHandler::newArenaStat(QString hero, int wins, int losses, QTreeWidgetI
         arenaStatLink[arenaCurrent] = "current";
 
         QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
-        statsJson["lastGame"] = date;
+        setJsonExtra("lastGame", date);
     }
     else
     {
@@ -807,7 +833,7 @@ void ArenaHandler::newArenaGameStat(GameResult gameResult)
         statsJson["current"] = objArena;
 
         QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
-        statsJson["lastGame"] = date;
+        setJsonExtra("lastGame", date);
     }
     else
     {

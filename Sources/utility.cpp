@@ -615,6 +615,12 @@ QString Utility::histogramsPath()
 }
 
 
+QString Utility::arenaStatsPath()
+{
+    return dataPath() + "/Arena Stats";
+}
+
+
 void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 {
     Utility::cardsJson = cardsJson;

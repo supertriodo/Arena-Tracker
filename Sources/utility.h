@@ -134,6 +134,7 @@ public:
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
     static QString themesPath();
     static QString histogramsPath();
+    static QString arenaStatsPath();
     static int classLogNumber2classOrder(QString heroLog);
     static QString cardEnTextFromCode(QString code);
     static void clearLayout(QLayout *layout, bool deleteWidgets, bool recursive);

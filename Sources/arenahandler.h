@@ -57,6 +57,7 @@ private:
     void setRowColor(QTreeWidgetItem *item, QColor color);
     void setRowColor(QTreeWidgetItem *item, int region=-1);
     void setColorWrongArena(QTreeWidgetItem *item);
+    bool isCompleteArena(int wins, int losses);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0,
@@ -76,6 +77,8 @@ private:
     void completeButtons();
     void showArenaStatsTreeWidget();
     void hideArenaStatsTreeWidget();
+    void setJsonExtra(QString key, QString value);
+    QString getJsonExtra(QString key);
 
 public:
     void setMouseInApp(bool value);
