@@ -108,7 +108,7 @@ void ArenaHandler::createArenaStatsTreeWidget()
     //WINRATES
     winrateTreeItem = new QTreeWidgetItem(treeWidget);
     winrateTreeItem->setExpanded(true);
-    winrateTreeItem->setText(0, "Winrate");
+    winrateTreeItem->setText(0, "Winrate");//TODO
     winrateTreeItem->setText(1, "Avg");
     winrateTreeItem->setText(2, "Runs");
     winrateTreeItem->setText(3, "Win");
@@ -327,6 +327,12 @@ void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadi
 }
 
 
+QString ArenaHandler::getColumnText(QTreeWidgetItem *item, int col)
+{
+    return item->text(col);
+}
+
+
 void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &text)
 {
     editingColumnText = false;
@@ -346,12 +352,12 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
     emit pDebug("Recalculate win/loses (1 game).");
     if(isWinner)
     {
-        int wins = topLevelItem->text(2).toInt() + 1;
+        int wins = getColumnText(topLevelItem, 2).toInt() + 1;
         setColumnText(topLevelItem, 2, QString::number(wins));
     }
     else
     {
-        int loses = topLevelItem->text(3).toInt() + 1;
+        int loses = getColumnText(topLevelItem, 3).toInt() + 1;
         setColumnText(topLevelItem, 3, QString::number(loses));
     }
 }
@@ -528,6 +534,7 @@ QTreeWidgetItem *ArenaHandler::showArena(QString hero, QString title, int wins, 
         arenaCurrentHero = hero;
         arenaCurrent = item;
     }
+    setColorWrongArena(item);
     return item;
 }
 
@@ -565,23 +572,24 @@ void ArenaHandler::setRowColor(QTreeWidgetItem *item, int region)
 }
 
 
-QColor ArenaHandler::getRowColor(QTreeWidgetItem *item)
+void ArenaHandler::setColorWrongArena(QTreeWidgetItem *item)
 {
-    return item->foreground(0).color();
+    if(item == nullptr) return;
+
+    int wins = getColumnText(item, 2).toInt();
+    int loses = getColumnText(item, 3).toInt();
+
+    if(!((loses==3 && wins<12) || (loses<3 && wins==12)))
+    {
+        item->setForeground(2, QBrush(ARENA_WRONG));
+        item->setForeground(3, QBrush(ARENA_WRONG));
+    }
 }
 
 
 void ArenaHandler::openUserGuide()
 {
     QDesktopServices::openUrl(QUrl(USER_GUIDE_URL));
-}
-
-
-void ArenaHandler::redrawRow(QTreeWidgetItem *item)
-{
-    bool isTransparent = transparency == Transparent && !mouseInApp;
-    if(isTransparent)   setRowColor(item, WHITE);
-    else                setRowColor(item, ThemeHandler::fgColor());
 }
 
 
@@ -666,6 +674,7 @@ void ArenaHandler::loadStatsJsonFile()
     for(const QString &date: (const QStringList)statsJson.keys())
     {
         if(date == "lastGame")  continue;
+
         QJsonObject objArena = statsJson[date].toObject();
         QString hero = objArena["hero"].toString();
         int wins = objArena["wins"].toInt();
@@ -855,7 +864,7 @@ void ArenaHandler::itemChanged(QTreeWidgetItem *item, int column)
 
 void ArenaHandler::itemChangedDate(QTreeWidgetItem *item, int column)
 {
-    QString text = item->text(column);
+    QString text = getColumnText(item, column);
     QDateTime newDateD;
 
     if(text.contains(QRegularExpression("^\\d{1,2} \\d{1,2}$"), match))
@@ -894,7 +903,7 @@ void ArenaHandler::itemChangedDate(QTreeWidgetItem *item, int column)
 
 void ArenaHandler::itemChangedHero(QTreeWidgetItem *item, int column)
 {
-    QString text = item->text(column);
+    QString text = getColumnText(item, column);
 
     if(text.contains(QRegularExpression("^\\w+"), match))
     {
@@ -931,7 +940,7 @@ void ArenaHandler::itemChangedHero(QTreeWidgetItem *item, int column)
 
 void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
 {
-    QString text = item->text(column);
+    QString text = getColumnText(item, column);
 
     if(text.contains(QRegularExpression("^\\d{1,2}$"), match))
     {
@@ -947,8 +956,12 @@ void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
         }
     }
 
-    int score = statsJson[arenaStatLink[item]].toObject()[column==2?"wins":"losses"].toInt();
+    QJsonObject objArena = statsJson[arenaStatLink[item]].toObject();
+    int score = objArena[column==2?"wins":"losses"].toInt();
+    int region = objArena["region"].toInt();
     setColumnText(item, column, QString::number(score));
+    setRowColor(item, region);
+    setColorWrongArena(item);
 }
 
 
@@ -965,6 +978,7 @@ void ArenaHandler::regionChanged(int index)
             statsJson[arenaStatLink[item]] = objArena;
             saveStatsJsonFile();
             setRowColor(item);
+            setColorWrongArena(item);
         }
     }
     else

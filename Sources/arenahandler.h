@@ -14,6 +14,7 @@
 #define ARENA_GREEN             QColor(61, 255, 61)
 #define ARENA_RED               QColor(255, 61, 61)
 #define ARENA_BLUE              QColor(122, 122, 255)
+#define ARENA_WRONG             Qt::darkGray
 
 class ArenaHandler : public QObject
 {
@@ -55,17 +56,17 @@ private:
     void createComboBoxArenaRegion();
     void setRowColor(QTreeWidgetItem *item, QColor color);
     void setRowColor(QTreeWidgetItem *item, int region=-1);
-    QColor getRowColor(QTreeWidgetItem *item);
+    void setColorWrongArena(QTreeWidgetItem *item);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0,
                                         bool isArena=false, bool insertPos1=false);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, bool isArenaNewEmpty=false);
-    void redrawRow(QTreeWidgetItem *item);
     void newArenaStat(QString hero, int wins=0, int losses=0, QTreeWidgetItem *item=nullptr);
     void newArenaGameStat(GameResult gameResult);
     void saveStatsJsonFile();
+    QString getColumnText(QTreeWidgetItem *item, int col);
     void setColumnText(QTreeWidgetItem *item, int col, const QString &text);
     void setColumnIcon(QTreeWidgetItem *item, int col, const QIcon &aicon);
     void itemChangedDate(QTreeWidgetItem *item, int column);
