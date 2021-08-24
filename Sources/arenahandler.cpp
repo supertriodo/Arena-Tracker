@@ -416,6 +416,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
             item = new QTreeWidgetItem();
             arenaCurrent->insertChild(0, item);
             updateWinLose(gameResult.isWinner, arenaCurrent);
+            setColorWrongArena(arenaCurrent);
             setColumnText(arenaCurrent, 0, QDateTime::currentDateTime().toString("d MMM"));
         break;
 
@@ -576,14 +577,15 @@ void ArenaHandler::setColorWrongArena(QTreeWidgetItem *item)
 {
     if(item == nullptr) return;
 
+    QBrush brush;
     int wins = getColumnText(item, 2).toInt();
     int losses = getColumnText(item, 3).toInt();
 
-    if(!isCompleteArena(wins, losses))
-    {
-        item->setForeground(2, QBrush(ARENA_WRONG));
-        item->setForeground(3, QBrush(ARENA_WRONG));
-    }
+    if(isCompleteArena(wins, losses))   brush = item->foreground(0);
+    else                                brush = QBrush(ARENA_WRONG);
+
+    item->setForeground(2, brush);
+    item->setForeground(3, brush);
 }
 
 
@@ -984,9 +986,7 @@ void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
 
     QJsonObject objArena = statsJson[arenaStatLink[item]].toObject();
     int score = objArena[column==2?"wins":"losses"].toInt();
-    int region = objArena["region"].toInt();
     setColumnText(item, column, QString::number(score));
-    setRowColor(item, region);
     setColorWrongArena(item);
 }
 
