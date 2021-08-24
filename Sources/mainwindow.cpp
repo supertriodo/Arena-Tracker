@@ -2609,6 +2609,7 @@ void MainWindow::resetSettings()
         settings.setValue("playerTag", "");
         settings.setValue("sizeDraft", QSize(255, 600));
         settings.setValue("shortcutAsked", false);
+        settings.setValue("arenaVersion", 0);
 
         resize(QSize(255, 600));
         move(QPoint(0,0));
