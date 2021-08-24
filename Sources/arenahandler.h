@@ -30,6 +30,10 @@ private:
     QTreeWidgetItem *arenaCurrent;
     QTreeWidgetItem *rankedTreeItem[NUM_HEROS];
     QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem, *casualTreeItem;
+    QTreeWidgetItem *winrateTreeItem;
+    QTreeWidgetItem *winrateClassTreeItem[NUM_HEROS];
+    QTreeWidgetItem *best30TreeItem;
+    QTreeWidgetItem *best30RegionTreeItem[5];
     QString arenaCurrentHero;
     QString arenaCurrentDraftFile;
     bool mouseInApp;
@@ -46,10 +50,11 @@ private:
 //Metodos
 private:
     void completeUI();
-    void createTreeWidget();
+    void createArenaTreeWidget();
+    void createArenaStatsTreeWidget();
     void createComboBoxArenaRegion();
     void setRowColor(QTreeWidgetItem *item, QColor color);
-    void setRowColor(QTreeWidgetItem *item);
+    void setRowColor(QTreeWidgetItem *item, int region=-1);
     QColor getRowColor(QTreeWidgetItem *item);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
@@ -68,6 +73,8 @@ private:
     void itemChangedWL(QTreeWidgetItem *item, int column);
     QString getUniqueDate(QString date);
     void completeButtons();
+    void showArenaStatsTreeWidget();
+    void hideArenaStatsTreeWidget();
 
 public:
     void setMouseInApp(bool value);
@@ -97,6 +104,11 @@ private slots:
     void itemSelectionChanged();
     void arenaNewEmpty();
     void arenaDelete();
+    void toggleArenaStatsTreeWidget();
+    void finishShowArenaStatsTreeWidget();
+    void finishHideArenaTreeWidget();
+    void finishHideArenaStatsTreeWidget();
+    void finishShowArenaTreeWidget();
 };
 
 #endif // ARENAHANDLER_H

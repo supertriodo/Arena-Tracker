@@ -30,7 +30,8 @@ ArenaHandler::~ArenaHandler()
 
 void ArenaHandler::completeUI()
 {
-    createTreeWidget();
+    createArenaTreeWidget();
+    createArenaStatsTreeWidget();
     createComboBoxArenaRegion();
     completeButtons();
 
@@ -50,6 +51,112 @@ void ArenaHandler::completeButtons()
             this, SLOT(arenaNewEmpty()));
     connect(ui->arenaDeleteButton, SIGNAL(clicked()),
             this, SLOT(arenaDelete()));
+    connect(ui->arenaStatsButton, SIGNAL(clicked()),
+            this, SLOT(toggleArenaStatsTreeWidget()));
+}
+
+
+void ArenaHandler::createArenaTreeWidget()
+{
+    QTreeWidget *treeWidget = ui->arenaTreeWidget;
+    treeWidget->setColumnCount(5);
+    treeWidget->setIconSize(QSize(32,32));
+    treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    treeWidget->setColumnWidth(0, 110);
+    treeWidget->setColumnWidth(1, 50);
+    treeWidget->setColumnWidth(2, 40);
+    treeWidget->setColumnWidth(3, 40);
+    treeWidget->setColumnWidth(4, 0);
+
+    arenaCurrent = nullptr;
+    arenaCurrentHero = "";
+
+    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
+    casualTreeItem = nullptr;
+    adventureTreeItem = nullptr;
+    tavernBrawlTreeItem = nullptr;
+    friendlyTreeItem = nullptr;
+
+    connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this, SLOT(itemChanged(QTreeWidgetItem*,int)));
+    connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)));
+    connect(treeWidget, SIGNAL(itemSelectionChanged()),
+            this, SLOT(itemSelectionChanged()));
+}
+
+
+void ArenaHandler::createArenaStatsTreeWidget()
+{
+    QTreeWidget *treeWidget = ui->arenaStatsTreeWidget;
+    treeWidget->setColumnCount(6);
+    treeWidget->setIconSize(QSize(30,30));
+    treeWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    treeWidget->setHidden(true);
+    treeWidget->setFixedHeight(0);
+    treeWidget->setIndentation(10);
+
+    treeWidget->setColumnWidth(0, 130);
+    treeWidget->setColumnWidth(1, 60);
+    treeWidget->setColumnWidth(2, 60);
+    treeWidget->setColumnWidth(3, 90);
+    treeWidget->setColumnWidth(4, 90);
+    treeWidget->setColumnWidth(5, 0);
+
+    //WINRATES
+    winrateTreeItem = new QTreeWidgetItem(treeWidget);
+    winrateTreeItem->setExpanded(true);
+    winrateTreeItem->setText(0, "Winrate");
+    winrateTreeItem->setText(1, "Avg");
+    winrateTreeItem->setText(2, "Runs");
+    winrateTreeItem->setText(3, "Win");
+    winrateTreeItem->setText(4, "Lost");
+    for(int j=1; j<5; j++)  winrateTreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+    setRowColor(winrateTreeItem, QColor(ThemeHandler::fgColor()));
+
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        QTreeWidgetItem *item = winrateClassTreeItem[i] = new QTreeWidgetItem(winrateTreeItem);
+
+        setColumnIcon(item, 0, QIcon(ThemeHandler::heroFile(i)));
+        setColumnText(item, 0, "61.2%");
+        setColumnText(item, 1, "8.27");
+        setColumnText(item, 2, "23");
+        setColumnText(item, 3, QString::number(999));
+        setColumnText(item, 4, QString::number(999));
+        for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+        setRowColor(item, QColor(Utility::classOrder2classColor(i)));
+//        item->setHidden(true);
+    }
+
+
+    //BEST 30
+    new QTreeWidgetItem(treeWidget);//Blank space
+    best30TreeItem = new QTreeWidgetItem(treeWidget);
+    best30TreeItem->setExpanded(true);
+    best30TreeItem->setText(0, "Best 30");
+    best30TreeItem->setText(1, "Avg");
+    best30TreeItem->setText(2, "Runs");
+    best30TreeItem->setText(3, "Start");
+    best30TreeItem->setText(4, "End");
+    for(int j=1; j<5; j++)  best30TreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+    setRowColor(best30TreeItem, QColor(ThemeHandler::fgColor()));
+
+    for(int i=0; i<5; i++)
+    {
+        QTreeWidgetItem *item = best30RegionTreeItem[i] = new QTreeWidgetItem(best30TreeItem);
+
+        setColumnText(item, 0, "Region");
+        setColumnText(item, 1, "8.27");
+        setColumnText(item, 2, "23");
+        setColumnText(item, 3, "15 Ago.");
+        setColumnText(item, 4, "19 Sept.");
+        for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+        setRowColor(item, i);
+//        item->setHidden(true);
+    }
 }
 
 
@@ -84,35 +191,122 @@ void ArenaHandler::setPremium(bool premium)
 }
 
 
-void ArenaHandler::createTreeWidget()
+void ArenaHandler::toggleArenaStatsTreeWidget()
 {
-    QTreeWidget *treeWidget = ui->arenaTreeWidget;
-    treeWidget->setColumnCount(5);
-    treeWidget->setIconSize(QSize(32,32));
-    treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    if(ui->arenaStatsTreeWidget->isHidden())    showArenaStatsTreeWidget();
+    else                                        hideArenaStatsTreeWidget();
+}
 
-    treeWidget->setColumnWidth(0, 110);
-    treeWidget->setColumnWidth(1, 50);
-    treeWidget->setColumnWidth(2, 40);
-    treeWidget->setColumnWidth(3, 40);
-    treeWidget->setColumnWidth(4, 0);
 
-    arenaCurrent = nullptr;
-    arenaCurrentHero = "";
+void ArenaHandler::showArenaStatsTreeWidget()
+{
+    ui->arenaStatsButton->setEnabled(false);
+    ui->arenaNewButton->setEnabled(false);
+    ui->arenaTreeWidget->clearSelection();
+    ui->arenaStatsTreeWidget->setHidden(false);
+    int totalHeight = ui->arenaTreeWidget->height();
 
-    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
-    casualTreeItem = nullptr;
-    adventureTreeItem = nullptr;
-    tavernBrawlTreeItem = nullptr;
-    friendlyTreeItem = nullptr;
+    //Show ArenaStatsTreeWidget
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->arenaStatsTreeWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->arenaStatsTreeWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
 
-    connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-            this, SLOT(itemChanged(QTreeWidgetItem*,int)));
-    connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-            this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)));
-    connect(treeWidget, SIGNAL(itemSelectionChanged()),
-            this, SLOT(itemSelectionChanged()));
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishShowArenaStatsTreeWidget()));
+
+    animation = new QPropertyAnimation(ui->arenaStatsTreeWidget, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->arenaStatsTreeWidget->minimumHeight()+2);
+    animation->setEndValue(totalHeight+2);
+    animation->setEasingCurve(SHOW_EASING_CURVE);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishShowArenaStatsTreeWidget()));
+
+    //Hide ArenaTreeWidget
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->arenaTreeWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(totalHeight);
+    animation2->setEndValue(0);
+    animation2->setEasingCurve(SHOW_EASING_CURVE);
+    animation2->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(animation2, SIGNAL(finished()),
+            this, SLOT(finishHideArenaTreeWidget()));
+}
+
+
+void ArenaHandler::finishShowArenaStatsTreeWidget()
+{
+    ui->arenaStatsTreeWidget->setMinimumHeight(0);
+    ui->arenaStatsTreeWidget->setMaximumHeight(16777215);
+    ui->arenaStatsButton->setEnabled(true);
+}
+
+
+void ArenaHandler::finishHideArenaTreeWidget()
+{
+    ui->arenaTreeWidget->setHidden(true);
+    ui->arenaTreeWidget->setFixedHeight(0);
+}
+
+
+void ArenaHandler::hideArenaStatsTreeWidget()
+{
+    ui->arenaStatsButton->setEnabled(false);
+    ui->arenaTreeWidget->setHidden(false);
+    int totalHeight = ui->arenaStatsTreeWidget->height();
+
+    //Show ArenaTreeWidget
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->arenaTreeWidget, "minimumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->arenaTreeWidget->minimumHeight());
+    animation->setEndValue(totalHeight);
+    animation->setEasingCurve(HIDE_EASING_CURVE);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishShowArenaTreeWidget()));
+
+    animation = new QPropertyAnimation(ui->arenaTreeWidget, "maximumHeight");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(ui->arenaTreeWidget->minimumHeight()+2);
+    animation->setEndValue(totalHeight+2);
+    animation->setEasingCurve(HIDE_EASING_CURVE);
+    animation->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(animation, SIGNAL(finished()),
+            this, SLOT(finishShowArenaTreeWidget()));
+
+    //Hide ArenaStatsTreeWidget
+    QPropertyAnimation *animation2 = new QPropertyAnimation(ui->arenaStatsTreeWidget, "maximumHeight");
+    animation2->setDuration(ANIMATION_TIME);
+    animation2->setStartValue(totalHeight);
+    animation2->setEndValue(0);
+    animation2->setEasingCurve(HIDE_EASING_CURVE);
+    animation2->start(QPropertyAnimation::DeleteWhenStopped);
+
+    connect(animation2, SIGNAL(finished()),
+            this, SLOT(finishHideArenaStatsTreeWidget()));
+}
+
+
+void ArenaHandler::finishHideArenaStatsTreeWidget()
+{
+    ui->arenaStatsTreeWidget->setHidden(true);
+    ui->arenaStatsTreeWidget->setFixedHeight(0);
+}
+
+void ArenaHandler::finishShowArenaTreeWidget()
+{
+    ui->arenaTreeWidget->setMinimumHeight(0);
+    ui->arenaTreeWidget->setMaximumHeight(16777215);
+    ui->arenaStatsButton->setEnabled(true);
+    ui->arenaNewButton->setEnabled(true);
 }
 
 
@@ -347,9 +541,10 @@ void ArenaHandler::setRowColor(QTreeWidgetItem *item, QColor color)
 }
 
 
-void ArenaHandler::setRowColor(QTreeWidgetItem *item)
+void ArenaHandler::setRowColor(QTreeWidgetItem *item, int region)
 {
-    switch(lastRegion)
+    if(region == -1)    region = lastRegion;
+    switch(region)
     {
         case 1:
             setRowColor(item, ARENA_YELLOW);
@@ -417,9 +612,11 @@ void ArenaHandler::setMouseInApp(bool value)
 void ArenaHandler::setTheme()
 {
     ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
+    ui->arenaStatsButton->setIcon(QIcon(ThemeHandler::buttonGamesWebFile()));
     ui->arenaNewButton->setIcon(QIcon(ThemeHandler::buttonPlusFile()));
     ui->arenaDeleteButton->setIcon(QIcon(ThemeHandler::buttonRemoveFile()));
     ui->arenaTreeWidget->setTheme(false);
+    ui->arenaStatsTreeWidget->setTheme(true);
 }
 
 
@@ -463,7 +660,7 @@ void ArenaHandler::loadStatsJsonFile()
 
     statsJson = jsonDoc.object();
 
-    emit pDebug("Loaded " + QString::number(statsJson.count()) + " arenas from ArenaTrackerStats.json.");
+    emit pDebug("Loaded " + QString::number(statsJson.count()) + " entries from ArenaTrackerStats.json.");
 
     //Load arenas
     for(const QString &date: (const QStringList)statsJson.keys())

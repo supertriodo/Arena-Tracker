@@ -53,25 +53,46 @@
          </attribute>
          <layout class="QVBoxLayout" name="tabArenalLayout">
           <property name="spacing">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="leftMargin">
-           <number>10</number>
+           <number>0</number>
           </property>
           <property name="topMargin">
-           <number>45</number>
+           <number>40</number>
           </property>
           <property name="rightMargin">
-           <number>10</number>
+           <number>0</number>
           </property>
           <property name="bottomMargin">
-           <number>10</number>
+           <number>0</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayoutArenaButtons">
             <property name="spacing">
              <number>0</number>
             </property>
+            <item>
+             <widget class="QPushButton" name="arenaStatsButton">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/Images/web.png</normalon>
+               </iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QPushButton" name="guideButton">
               <property name="toolTip">
@@ -211,6 +232,15 @@ draft mechanics becoming a patron (3$).</string>
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="MoveTreeWidget" name="arenaStatsTreeWidget">
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
           </item>
           <item>
            <widget class="MoveTreeWidget" name="arenaTreeWidget">

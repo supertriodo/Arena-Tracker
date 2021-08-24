@@ -11,6 +11,7 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->setSelectionMode(QAbstractItemView::NoSelection);
+    this->setFocusPolicy(Qt::NoFocus);
     this->setHeaderHidden(true);
     this->header()->close();
 }
@@ -19,10 +20,11 @@ MoveTreeWidget::MoveTreeWidget(QWidget *parent) : QTreeWidget(parent)
 void MoveTreeWidget::setTheme(bool standAlone)
 {
     QFont font(ThemeHandler::bigFont());
-    font.setPixelSize(20);
+    font.setPixelSize(22);
     this->setFont(font);
 
-    this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgDecks()+ThemeHandler::borderDecks():ThemeHandler::bgWidgets()) + "; outline: 0;}"
+    this->setStyleSheet("QTreeView{" + (standAlone?ThemeHandler::bgDecks()+ThemeHandler::borderDecks():ThemeHandler::bgWidgets()) +
+                        "; outline: 0; padding-top: 5px;}"
 
     "QTreeView::branch:has-children:!has-siblings:closed,"
     "QTreeView::branch:closed:has-children:has-siblings{border-image: none;image: url(" + ThemeHandler::branchClosedFile() + ");}"
@@ -30,7 +32,8 @@ void MoveTreeWidget::setTheme(bool standAlone)
     "QTreeView::branch:open:has-children:!has-siblings,"
     "QTreeView::branch:open:has-children:has-siblings{border-image: none;image: url(" + ThemeHandler::branchOpenFile() + ");}"
 
-    "QTreeView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() + "; color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
+    "QTreeView::item:selected {background: " + ThemeHandler::bgSelectedItemListColor() +
+                        "; color: " + ThemeHandler::fgSelectedItemListColor() + ";}"
     "QTreeView::branch:selected {background-color: " + ThemeHandler::bgSelectedItemListColor() + "; }"
     );
 

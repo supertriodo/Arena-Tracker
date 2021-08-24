@@ -3334,6 +3334,19 @@ void MainWindow::updateMainUITheme()
                 "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
             "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none;}"
 
+            "QScrollBar:horizontal {background-color: transparent; border: 2px solid " + ThemeHandler::themeColor2() + "; "
+                "height: 15px; margin: 0px 15px 0px 15px;}"
+            "QScrollBar::handle:horizontal {background: " + ThemeHandler::themeColor1() + "; min-width: 20px;}"
+            "QScrollBar::add-line:horizontal {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                "width: 15px; subcontrol-position: right; subcontrol-origin: margin;}"
+            "QScrollBar::sub-line:horizontal {border: 2px solid " + ThemeHandler::themeColor2() + ";background: " + ThemeHandler::themeColor1() + "; "
+                "width: 15px; subcontrol-position: left; subcontrol-origin: margin;}"
+            "QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {border: 2px solid " + ThemeHandler::themeColor1() + "; "
+                "width: 3px; height: 3px; background: " + ThemeHandler::themeColor2() + ";}"
+            "QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none;}"
+
+            "QAbstractScrollArea::corner {background: transparent;}"
+
             "QProgressBar {border: 2px solid " + ThemeHandler::borderProgressBarColor() + "; color: " + ThemeHandler::fgProgressBarColor() + "; "
                 "background-color: " + ThemeHandler::bgProgressBarColor() + ";}"
             "QProgressBar::chunk {background-color: " + ThemeHandler::chunkProgressBarColor() + ";}"
@@ -3424,7 +3437,7 @@ void MainWindow::updateDetachWindowTheme(QWidget *paneWidget)
     {
             detachWindow = arenaWindow;
             paneWidgetName = "TabArena";
-            paneBorder = true;
+            paneBorder = false;
             showThemeBackground = (detachWindow != nullptr &&
                     (transparency == Framed || transparency == Opaque || transparency == AutoTransparent));
     }
