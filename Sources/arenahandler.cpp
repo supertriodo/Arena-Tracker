@@ -4,6 +4,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
+#include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
 ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandler *planHandler,
@@ -109,7 +110,7 @@ void ArenaHandler::createArenaStatsTreeWidget()
     //WINRATES
     winrateTreeItem = new QTreeWidgetItem(treeWidget);
     winrateTreeItem->setExpanded(true);
-    winrateTreeItem->setText(0, "Winrate");//TODO
+    winrateTreeItem->setText(0, "Winrate");
     winrateTreeItem->setText(1, "Avg");
     winrateTreeItem->setText(2, "Runs");
     winrateTreeItem->setText(3, "Win");
@@ -120,16 +121,10 @@ void ArenaHandler::createArenaStatsTreeWidget()
     for(int i=0; i<NUM_HEROS; i++)
     {
         QTreeWidgetItem *item = winrateClassTreeItem[i] = new QTreeWidgetItem(winrateTreeItem);
-
         setColumnIcon(item, 0, QIcon(ThemeHandler::heroFile(i)));
-        setColumnText(item, 0, "61.2%");
-        setColumnText(item, 1, "8.27");
-        setColumnText(item, 2, "23");
-        setColumnText(item, 3, QString::number(999));
-        setColumnText(item, 4, QString::number(999));
         for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
         setRowColor(item, QColor(Utility::classOrder2classColor(i)));
-//        item->setHidden(true);
+        item->setHidden(true);
     }
 
 
@@ -145,19 +140,13 @@ void ArenaHandler::createArenaStatsTreeWidget()
     for(int j=1; j<5; j++)  best30TreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
     setRowColor(best30TreeItem, QColor(ThemeHandler::fgColor()));
 
-    for(int i=0; i<5; i++)
+    for(int i=0; i<NUM_REGIONS; i++)
     {
         QTreeWidgetItem *item = best30RegionTreeItem[i] = new QTreeWidgetItem(best30TreeItem);
         item->setFlags(item->flags() | Qt::ItemIsEditable);
-
-//        setColumnText(item, 0, getJsonExtraRegion(i));//Done in loadRegionNames()
-        setColumnText(item, 1, "8.27");
-        setColumnText(item, 2, "23");
-        setColumnText(item, 3, "15 Ago.");
-        setColumnText(item, 4, "19 Sept.");
         for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
         setRowColor(item, i);
-//        item->setHidden(true);
+        item->setHidden(true);
     }
 
     connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
@@ -169,7 +158,7 @@ void ArenaHandler::createArenaStatsTreeWidget()
 
 void ArenaHandler::loadRegionNames()
 {
-    for(int i=0; i<5; i++)
+    for(int i=0; i<NUM_REGIONS; i++)
     {
         QTreeWidgetItem *item = best30RegionTreeItem[i];
         setColumnText(item, 0, getJsonExtraRegion(i));
@@ -217,6 +206,8 @@ void ArenaHandler::toggleArenaStatsTreeWidget()
 
 void ArenaHandler::showArenaStatsTreeWidget()
 {
+    startProcessArenas2Stats();
+
     ui->arenaStatsButton->setEnabled(false);
     ui->arenaNewButton->setEnabled(false);
     ui->arenaTreeWidget->clearSelection();
@@ -737,6 +728,7 @@ void ArenaHandler::loadStatsJsonFile()
     }
 
     loadRegionNames();
+    startProcessArenas2Stats();
 }
 
 
@@ -1127,7 +1119,7 @@ void ArenaHandler::arenaDelete()
 
 int ArenaHandler::getRegionTreeItemIndex(QTreeWidgetItem *item)
 {
-    for(int i=0; i<5; i++)
+    for(int i=0; i<NUM_REGIONS; i++)
     {
         if(item == best30RegionTreeItem[i]) return i;
     }
@@ -1155,5 +1147,142 @@ void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
     {
         setJsonExtra("region" + QString::number(regionIndex), text);
         saveStatsJsonFile();
+    }
+}
+
+
+void ArenaHandler::startProcessArenas2Stats()
+{
+    if(!futureProcessArenas2Stats.isRunning())
+    {
+        futureProcessArenas2Stats.setFuture(QtConcurrent::run(this, &ArenaHandler::processArenas2Stats));
+    }
+}
+
+
+void ArenaHandler::processArenas2Stats()
+{
+    //Class winrates
+    int classRuns[NUM_HEROS] = {0};
+    int classWins[NUM_HEROS] = {0};
+    int classLost[NUM_HEROS] = {0};
+
+    //Best 30
+    int best30Runs[NUM_REGIONS] = {0};
+    int best30BestWins[NUM_REGIONS] = {0};
+    int best30CurrentWins[NUM_REGIONS] = {0};
+    QList<int> best30ListWins[NUM_REGIONS];
+    QStringList best30ListDates[NUM_REGIONS];
+    QString best30Start[NUM_REGIONS] = {""};
+    QString best30End[NUM_REGIONS] = {""};
+
+    //Load arenas
+    for(const QString &date: (const QStringList)statsJson.keys())
+    {
+        if(date == "extra")  continue;
+
+        QJsonObject objArena = statsJson[date].toObject();
+        int wins = objArena["wins"].toInt();
+        int losses = objArena["losses"].toInt();
+        if(!isCompleteArena(wins, losses))  continue;
+
+        QString heroLog = objArena["hero"].toString();
+        int region = objArena["region"].toInt();
+        QString dateTitle = (date == "current")?getJsonExtra("lastGame"):date;
+        dateTitle = QDateTime::fromString(dateTitle, "yyyy.MM.dd hh:mm").toString("d MMM");
+
+        //Class winrates
+        int heroInt = Utility::classLogNumber2classOrder(heroLog);
+        if(heroInt != -1)
+        {
+            classRuns[heroInt]++;
+            classWins[heroInt] += wins;
+            classLost[heroInt] += losses;
+        }
+
+        //Best 30
+        if(region>-1 && region<NUM_REGIONS)
+        {
+            if(best30Runs[region] < NUM_BEST_ARENAS)
+            {
+                best30Runs[region]++;
+                best30CurrentWins[region] += wins;
+                best30BestWins[region] = best30CurrentWins[region];
+                if(best30Start[region].isEmpty())   best30Start[region] = dateTitle;
+                best30End[region] = dateTitle;
+
+                best30ListWins[region].append(wins);
+                best30ListDates[region].append(dateTitle);
+            }
+            else
+            {
+                int prevWins = best30ListWins[region].takeFirst();
+                best30ListDates[region].removeFirst();
+
+                best30CurrentWins[region] = best30CurrentWins[region] - prevWins + wins;
+                if(best30CurrentWins[region] >= best30BestWins[region])
+                {
+                    best30BestWins[region] = best30CurrentWins[region];
+                    best30Start[region] = best30ListDates[region].first();
+                    best30End[region] = dateTitle;
+                }
+
+                best30ListWins[region].append(wins);
+                best30ListDates[region].append(dateTitle);
+            }
+
+//            qDebug()<<ArenaHandler::getJsonExtraRegion(region)<<best30ListWins[region]<<best30ListDates[region]<<
+//                      best30CurrentWins[region]<<best30BestWins[region]<<best30Start[region]<<best30End[region];
+        }
+    }
+
+    showArenas2StatsClass(classRuns, classWins, classLost);
+    showArenas2StatsBest30(best30Runs, best30BestWins, best30Start, best30End);
+}
+
+
+void ArenaHandler::showArenas2StatsClass(int classRuns[NUM_HEROS], int classWins[NUM_HEROS], int classLost[NUM_HEROS])
+{
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        QTreeWidgetItem *item = winrateClassTreeItem[i];
+        int runs = classRuns[i];
+        if(runs > 0)
+        {
+            int wins = classWins[i];
+            int losses = classLost[i];
+
+            setColumnText(item, 0, QString::number(static_cast<float>(wins*100)/(wins+losses), 'g', 3) + '%');
+            setColumnText(item, 1, QString::number(static_cast<float>(wins)/runs, 'g', 3));
+            setColumnText(item, 2, QString::number(runs));
+            setColumnText(item, 3, QString::number(wins));
+            setColumnText(item, 4, QString::number(losses));
+            item->setHidden(false);
+        }
+        else    item->setHidden(true);
+    }
+}
+
+
+void ArenaHandler::showArenas2StatsBest30(int best30Runs[NUM_REGIONS], int best30BestWins[NUM_REGIONS],
+                                          QString best30Start[NUM_REGIONS], QString best30End[NUM_REGIONS])
+{
+    for(int i=0; i<NUM_REGIONS; i++)
+    {
+        QTreeWidgetItem *item = best30RegionTreeItem[i];
+        int runs = best30Runs[i];
+        if(runs > 0)
+        {
+            int wins = best30BestWins[i];
+            QString start = best30Start[i];
+            QString end = best30End[i];
+
+            setColumnText(item, 1, QString::number(static_cast<float>(wins)/runs, 'g', 3));
+            setColumnText(item, 2, QString::number(runs));
+            setColumnText(item, 3, start);
+            setColumnText(item, 4, end);
+            item->setHidden(false);
+        }
+        else    item->setHidden(true);
     }
 }

@@ -15,6 +15,8 @@
 #define ARENA_RED               QColor(255, 61, 61)
 #define ARENA_BLUE              QColor(122, 122, 255)
 #define ARENA_WRONG             Qt::darkGray
+#define NUM_REGIONS             5
+#define NUM_BEST_ARENAS         30
 
 class ArenaHandler : public QObject
 {
@@ -34,7 +36,7 @@ private:
     QTreeWidgetItem *winrateTreeItem;
     QTreeWidgetItem *winrateClassTreeItem[NUM_HEROS];
     QTreeWidgetItem *best30TreeItem;
-    QTreeWidgetItem *best30RegionTreeItem[5];
+    QTreeWidgetItem *best30RegionTreeItem[NUM_REGIONS];
     QString arenaCurrentHero;
     QString arenaCurrentDraftFile;
     bool mouseInApp;
@@ -46,6 +48,8 @@ private:
     //Se usa para que itemChanged solo actue cuando el usuario modifica un campo, no cuando el codigo lo hace.
     bool editingColumnText;
     int lastRegion;
+    QFutureWatcher<void> futureProcessArenas2Stats;
+
 
 
 //Metodos
@@ -82,6 +86,10 @@ private:
     QString getJsonExtraRegion(int i);
     int getRegionTreeItemIndex(QTreeWidgetItem *item);
     void loadRegionNames();
+    void processArenas2Stats();
+    void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
+    void showArenas2StatsBest30(int best30Runs[], int best30BestWins[], QString best30Start[], QString best30End[]);
+    void startProcessArenas2Stats();
 
 public:
     void setMouseInApp(bool value);
