@@ -79,6 +79,9 @@ private:
     void hideArenaStatsTreeWidget();
     void setJsonExtra(QString key, QString value);
     QString getJsonExtra(QString key);
+    QString getJsonExtraRegion(int i);
+    int getRegionTreeItemIndex(QTreeWidgetItem *item);
+    void loadRegionNames();
 
 public:
     void setMouseInApp(bool value);
@@ -113,6 +116,8 @@ private slots:
     void finishHideArenaTreeWidget();
     void finishHideArenaStatsTreeWidget();
     void finishShowArenaTreeWidget();
+    void statItemDoubleClicked(QTreeWidgetItem *item, int column);
+    void statItemChanged(QTreeWidgetItem *item, int column);
 };
 
 #endif // ARENAHANDLER_H

@@ -93,6 +93,7 @@ void ArenaHandler::createArenaStatsTreeWidget()
     QTreeWidget *treeWidget = ui->arenaStatsTreeWidget;
     treeWidget->setColumnCount(6);
     treeWidget->setIconSize(QSize(30,30));
+    treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::NoSelection);
     treeWidget->setHidden(true);
     treeWidget->setFixedHeight(0);
@@ -147,8 +148,9 @@ void ArenaHandler::createArenaStatsTreeWidget()
     for(int i=0; i<5; i++)
     {
         QTreeWidgetItem *item = best30RegionTreeItem[i] = new QTreeWidgetItem(best30TreeItem);
+        item->setFlags(item->flags() | Qt::ItemIsEditable);
 
-        setColumnText(item, 0, "Region");
+//        setColumnText(item, 0, getJsonExtraRegion(i));//Done in loadRegionNames()
         setColumnText(item, 1, "8.27");
         setColumnText(item, 2, "23");
         setColumnText(item, 3, "15 Ago.");
@@ -156,6 +158,21 @@ void ArenaHandler::createArenaStatsTreeWidget()
         for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
         setRowColor(item, i);
 //        item->setHidden(true);
+    }
+
+    connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+            this, SLOT(statItemChanged(QTreeWidgetItem*,int)));
+    connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(statItemDoubleClicked(QTreeWidgetItem*,int)));
+}
+
+
+void ArenaHandler::loadRegionNames()
+{
+    for(int i=0; i<5; i++)
+    {
+        QTreeWidgetItem *item = best30RegionTreeItem[i];
+        setColumnText(item, 0, getJsonExtraRegion(i));
     }
 }
 
@@ -718,6 +735,8 @@ void ArenaHandler::loadStatsJsonFile()
         arenaCurrent = nullptr;
         arenaCurrentHero = "";
     }
+
+    loadRegionNames();
 }
 
 
@@ -774,6 +793,33 @@ void ArenaHandler::setJsonExtra(QString key, QString value)
 QString ArenaHandler::getJsonExtra(QString key)
 {
     return statsJson["extra"].toObject()[key].toString();
+}
+
+
+QString ArenaHandler::getJsonExtraRegion(int i)
+{
+    QString region = getJsonExtra("region" + QString::number(i));
+
+    if(!region.isEmpty())   return region;
+
+    switch(i)
+    {
+        case 0:
+            return "Main";
+        break;
+        case 1:
+            return "Europe";
+        break;
+        case 2:
+            return "America";
+        break;
+        case 3:
+            return "Asia";
+        break;
+        default:
+            return "Other";
+        break;
+    }
 }
 
 
@@ -1075,5 +1121,39 @@ void ArenaHandler::arenaDelete()
     else
     {
         ui->arenaDeleteButton->setEnabled(false);
+    }
+}
+
+
+int ArenaHandler::getRegionTreeItemIndex(QTreeWidgetItem *item)
+{
+    for(int i=0; i<5; i++)
+    {
+        if(item == best30RegionTreeItem[i]) return i;
+    }
+    return -1;
+}
+
+
+void ArenaHandler::statItemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    int regionIndex = getRegionTreeItemIndex(item);
+    if(column != 0 || regionIndex == -1)    return;
+
+    ui->arenaStatsTreeWidget->editItem(item, column);
+}
+
+
+void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
+{
+    int regionIndex = getRegionTreeItemIndex(item);
+    if(column != 0 || regionIndex == -1)    return;
+
+    QString text = getColumnText(item, column);
+    QString region = getJsonExtraRegion(regionIndex);
+    if(text != region)
+    {
+        setJsonExtra("region" + QString::number(regionIndex), text);
+        saveStatsJsonFile();
     }
 }
