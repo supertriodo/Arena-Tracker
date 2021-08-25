@@ -44,8 +44,6 @@ void ArenaHandler::completeButtons()
 {
     ui->arenaDeleteButton->setEnabled(false);
 
-    connect(ui->guideButton, SIGNAL(clicked()),
-            this, SLOT(openUserGuide()));
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
     connect(ui->arenaNewButton, SIGNAL(clicked()),
@@ -610,12 +608,6 @@ bool ArenaHandler::isCompleteArena(int wins, int losses)
 }
 
 
-void ArenaHandler::openUserGuide()
-{
-    QDesktopServices::openUrl(QUrl(USER_GUIDE_URL));
-}
-
-
 void ArenaHandler::setTransparency(Transparency value)
 {
     this->transparency = value;
@@ -642,7 +634,6 @@ void ArenaHandler::setMouseInApp(bool value)
 
 void ArenaHandler::setTheme()
 {
-    ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
     ui->arenaStatsButton->setIcon(QIcon(ThemeHandler::buttonGamesWebFile()));
     ui->arenaNewButton->setIcon(QIcon(ThemeHandler::buttonPlusFile()));
     ui->arenaDeleteButton->setIcon(QIcon(ThemeHandler::buttonRemoveFile()));

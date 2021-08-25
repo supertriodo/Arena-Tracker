@@ -43,6 +43,7 @@
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
 #define ARENA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Arena"
 #define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
+#define USER_GUIDE_URL          "https://triodo.gitbook.io/arena-tracker-documentation/en"
 
 
 namespace Ui {
@@ -330,6 +331,7 @@ private slots:
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
     void processPopularCardsHandlerPickrates();
+    void openUserGuide();
 };
 
 #endif // MAINWINDOW_H

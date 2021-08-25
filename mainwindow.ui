@@ -94,30 +94,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="guideButton">
-              <property name="toolTip">
-               <string>Open the user guide.</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normalon>:/Images/userGuide.png</normalon>
-               </iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>32</width>
-                <height>32</height>
-               </size>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
              <spacer name="arenaHorizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -1354,7 +1330,7 @@ draft mechanics becoming a patron (3$).</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>886</height>
+               <height>868</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1376,7 +1352,7 @@ draft mechanics becoming a patron (3$).</string>
               <item>
                <widget class="QGroupBox" name="configBoxActions">
                 <property name="title">
-                 <string>Force Draft</string>
+                 <string>Force Draft / User Guide</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1398,51 +1374,52 @@ draft mechanics becoming a patron (3$).</string>
                   <number>5</number>
                  </property>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                   <property name="spacing">
-                    <number>0</number>
+                  <widget class="QPushButton" name="configButtonForceDraft">
+                   <property name="toolTip">
+                    <string>Force Draft: Start a new arena draft from the beginning.</string>
                    </property>
-                   <item>
-                    <widget class="QPushButton" name="configButtonForceDraft">
-                     <property name="toolTip">
-                      <string>Force Draft: Start a new arena draft from the beginning.</string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="icon">
-                      <iconset>
-                       <normalon>:/Images/draft.png</normalon>
-                      </iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>48</width>
-                       <height>48</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="verticalSpacer_2">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Ignored</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/Images/draft.png</normalon>
+                    </iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="guideButton">
+                   <property name="toolTip">
+                    <string>Open the user guide.</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/Images/userGuide.png</normalon>
+                    </iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
+                   </property>
+                   <property name="flat">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>

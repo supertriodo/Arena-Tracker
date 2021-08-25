@@ -9,7 +9,6 @@
 #include <QTreeWidgetItem>
 #include <QJsonObject>
 
-#define USER_GUIDE_URL          "https://triodo.gitbook.io/arena-tracker-documentation/en"
 #define ARENA_YELLOW            QColor(255, 255, 61)
 #define ARENA_GREEN             QColor(61, 255, 61)
 #define ARENA_RED               QColor(255, 61, 61)
@@ -112,7 +111,6 @@ public slots:
     void setPremium(bool premium);
 
 private slots:
-    void openUserGuide();
     void itemChanged(QTreeWidgetItem *item, int column);
     void itemDoubleClicked(QTreeWidgetItem *item, int column);
     void regionChanged(int index);

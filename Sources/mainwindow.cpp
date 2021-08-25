@@ -3529,6 +3529,7 @@ void MainWindow::updateButtonsTheme()
         actions[i]->setIcon(QIcon(ThemeHandler::heroFile(Utility::classOrder2classLogNumber(i))));
     }
 
+    ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
     ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
 }
 
@@ -3866,6 +3867,12 @@ void MainWindow::setPremium(bool premium)
 }
 
 
+void MainWindow::openUserGuide()
+{
+    QDesktopServices::openUrl(QUrl(USER_GUIDE_URL));
+}
+
+
 void MainWindow::completeConfigTab()
 {
     //New Config Step 6 - Ocultar opciones premium - Ajustar tamanos
@@ -3874,6 +3881,8 @@ void MainWindow::completeConfigTab()
     //Cambiar en Designer margenes/spacing de nuevos configBox a 5-9-5-9/5
     //Actions
     addDraftMenu(ui->configButtonForceDraft);
+    connect(ui->guideButton, SIGNAL(clicked()),
+            this, SLOT(openUserGuide()));
     //connect en createDeckHandler
 
     //UI
