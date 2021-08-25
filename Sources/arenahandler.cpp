@@ -64,6 +64,7 @@ void ArenaHandler::createArenaTreeWidget()
     treeWidget->setIconSize(QSize(32,32));
     treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    treeWidget->setFocusPolicy(Qt::ClickFocus);
 
     treeWidget->setColumnWidth(0, 110);
     treeWidget->setColumnWidth(1, 50);
@@ -265,6 +266,9 @@ void ArenaHandler::finishHideArenaTreeWidget()
 
 void ArenaHandler::hideArenaStatsTreeWidget()
 {
+    if(ui->arenaStatsTreeWidget->isHidden())    return;
+    if(!ui->arenaStatsButton->isEnabled())      return;
+
     ui->arenaStatsButton->setEnabled(false);
     ui->arenaTreeWidget->setHidden(false);
     int totalHeight = ui->arenaStatsTreeWidget->height();
@@ -326,6 +330,7 @@ void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 
 void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
+    hideArenaStatsTreeWidget();
     showGameResult(gameResult, loadingScreen);
     if(loadingScreen == arena)
     {
@@ -523,6 +528,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 
 void ArenaHandler::newArena(QString hero)
 {
+    hideArenaStatsTreeWidget();
     showArena(hero);
     newArenaStat(hero);
     saveStatsJsonFile();
