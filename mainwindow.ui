@@ -74,6 +74,10 @@
             </property>
             <item>
              <widget class="QPushButton" name="arenaStatsButton">
+              <property name="toolTip">
+               <string>Show advanced arena stats: class winrates and
+best 30 arenas win average (leaderboard).</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -176,6 +180,13 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item>
+             <widget class="QComboBox" name="arenaStatsJsonComboBox">
+              <property name="toolTip">
+               <string>Change period for arena stats.</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="donateButton">

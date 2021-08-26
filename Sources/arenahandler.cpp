@@ -19,6 +19,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->match = new QRegularExpressionMatch();
     this->editingColumnText = false;
     this->lastRegion = 0;
+    this->statsJsonFile = "";
 
     completeUI();
 }
@@ -34,6 +35,7 @@ void ArenaHandler::completeUI()
     createArenaTreeWidget();
     createArenaStatsTreeWidget();
     createComboBoxArenaRegion();
+    createComboBoxArenaStatsJson();
     completeButtons();
 
     setPremium(false);
@@ -62,7 +64,6 @@ void ArenaHandler::createArenaTreeWidget()
     treeWidget->setIconSize(QSize(32,32));
     treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    treeWidget->setFocusPolicy(Qt::ClickFocus);
 
     treeWidget->setColumnWidth(0, 110);
     treeWidget->setColumnWidth(1, 50);
@@ -85,6 +86,8 @@ void ArenaHandler::createArenaTreeWidget()
             this, SLOT(itemDoubleClicked(QTreeWidgetItem*,int)));
     connect(treeWidget, SIGNAL(itemSelectionChanged()),
             this, SLOT(itemSelectionChanged()));
+    connect(treeWidget, SIGNAL(xLeave()),
+            this, SLOT(deselectRow()));
 }
 
 
@@ -183,6 +186,55 @@ void ArenaHandler::createComboBoxArenaRegion()
 }
 
 
+void ArenaHandler::createComboBoxArenaStatsJson()
+{
+    ui->arenaStatsJsonComboBox->setHidden(true);
+
+    QFileInfo dirInfo(Utility::arenaStatsPath());
+    if(!dirInfo.exists())
+    {
+        emit pDebug("Cannot check Arena Stats dir. Dir doesn't exist.");
+        return;
+    }
+
+    QDir dir(Utility::arenaStatsPath());
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Name|QDir::Reversed);
+    QStringList filterName;
+    filterName << "*.json";
+    dir.setNameFilters(filterName);
+
+    QStringList files = dir.entryList();
+
+    for(int i=0; i<files.length(); i++)
+    {
+        QString file = files[i];
+        QString title = file;
+        if(file == "ArenaTrackerStats.json")    title = "Current period";
+        else
+        {
+            title.chop(5);
+            QDateTime dateD = QDateTime::fromString(title, "yyyy-MM");
+            if(dateD.isValid())
+            {
+                title = dateD.toString("yyyy MMM");
+                dateD = dateD.addMonths(1);
+                title += dateD.toString(" MMM");
+            }
+        }
+
+        ui->arenaStatsJsonComboBox->addItem(title, file);
+    }
+
+    if(files.count() > 1)
+    {
+        ui->arenaStatsJsonComboBox->setHidden(false);
+        connect(ui->arenaStatsJsonComboBox, SIGNAL(currentIndexChanged(int)),
+                this, SLOT(arenaStatsJsonChanged(int)));
+    }
+}
+
+
 void ArenaHandler::setPremium(bool premium)
 {
     if(premium)
@@ -209,6 +261,7 @@ void ArenaHandler::showArenaStatsTreeWidget()
 
     ui->arenaStatsButton->setEnabled(false);
     ui->arenaNewButton->setEnabled(false);
+    ui->arenaStatsJsonComboBox->setEnabled(false);
     ui->arenaTreeWidget->clearSelection();
     ui->arenaStatsTreeWidget->setHidden(false);
     int totalHeight = ui->arenaTreeWidget->height();
@@ -317,6 +370,7 @@ void ArenaHandler::finishShowArenaTreeWidget()
     ui->arenaTreeWidget->setMaximumHeight(16777215);
     ui->arenaStatsButton->setEnabled(true);
     ui->arenaNewButton->setEnabled(true);
+    ui->arenaStatsJsonComboBox->setEnabled(true);
 }
 
 
@@ -328,6 +382,7 @@ void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 
 void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
+    ui->arenaStatsJsonComboBox->setCurrentIndex(0);
     hideArenaStatsTreeWidget();
     showGameResult(gameResult, loadingScreen);
     if(loadingScreen == arena)
@@ -526,6 +581,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 
 void ArenaHandler::newArena(QString hero)
 {
+    ui->arenaStatsJsonComboBox->setCurrentIndex(0);
     hideArenaStatsTreeWidget();
     showArena(hero);
     newArenaStat(hero);
@@ -667,27 +723,34 @@ QString ArenaHandler::getArenaCurrentDraftLog()
  * "lastGame" -> date ("1234")
  * }
  */
-void ArenaHandler::loadStatsJsonFile()
+void ArenaHandler::loadStatsJsonFile(QString statsFile)
 {
+    //Clear arenas data
+    ui->arenaTreeWidget->clear();
+    arenaStatLink.clear();
+
     //Load stats from file
-    QFile jsonFile(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
+    QFile jsonFile(Utility::arenaStatsPath() + "/" + statsFile);
     if(!jsonFile.exists())
     {
-        emit pDebug("ArenaTrackerStats.json doesn't exists.");
+        emit pDebug(statsFile + " doesn't exists.");
+        statsJsonFile = "";
         return;
     }
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to load ArenaTrackerStats.json from disk.", DebugLevel::Error);
+        emit pDebug("Failed to load " + statsFile + " from disk.", DebugLevel::Error);
+        statsJsonFile = "";
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
 
+    statsJsonFile = statsFile;
     statsJson = jsonDoc.object();
 
-    emit pDebug("Loaded " + QString::number(statsJson.count()) + " entries from ArenaTrackerStats.json.");
+    emit pDebug("Loaded " + QString::number(statsJson.count()) + " entries from " + statsFile + ".");
 
     //Load arenas
     for(const QString &date: (const QStringList)statsJson.keys())
@@ -725,30 +788,31 @@ void ArenaHandler::loadStatsJsonFile()
     }
 
     loadRegionNames();
-    startProcessArenas2Stats();
 }
 
 
 void ArenaHandler::saveStatsJsonFile()
 {
+    if(statsJsonFile.isEmpty())  return;
+
     //Build json data from statsJson
     QJsonDocument jsonDoc;
     jsonDoc.setObject(statsJson);
 
 
     //Save to disk
-    QFile jsonFile(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
+    QFile jsonFile(Utility::arenaStatsPath() + "/" + statsJsonFile);
     if(jsonFile.exists())   jsonFile.remove();
 
     if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        emit pDebug("Failed to create ArenaTrackerStats.json on disk.", DebugLevel::Error);
+        emit pDebug("Failed to create " + statsJsonFile + " on disk.", DebugLevel::Error);
         return;
     }
     jsonFile.write(jsonDoc.toJson());
     jsonFile.close();
 
-    emit pDebug("ArenaTrackerStats.json updated.");
+    emit pDebug(statsJsonFile + " updated.");
 }
 
 
@@ -1026,6 +1090,13 @@ void ArenaHandler::itemChangedWL(QTreeWidgetItem *item, int column)
 }
 
 
+void ArenaHandler::arenaStatsJsonChanged(int index)
+{
+    QString file = ui->arenaStatsJsonComboBox->itemData(index).toString();
+    loadStatsJsonFile(file);
+}
+
+
 void ArenaHandler::regionChanged(int index)
 {
     QList<QTreeWidgetItem *> items = ui->arenaTreeWidget->selectedItems();
@@ -1064,6 +1135,12 @@ void ArenaHandler::itemSelectionChanged()
         ui->arenaRegionComboBox->setEnabled(false);
         ui->arenaDeleteButton->setEnabled(false);
     }
+}
+
+
+void ArenaHandler::deselectRow()
+{
+    ui->arenaTreeWidget->clearSelection();
 }
 
 

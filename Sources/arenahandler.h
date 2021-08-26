@@ -41,6 +41,7 @@ private:
     bool mouseInApp;
     Transparency transparency;
     QJsonObject statsJson;
+    QString statsJsonFile;
     //Connection QTreeWidgetItem -- key in ArenaTrackerStats.json (date/"current"). Se usa para editar la tabla.
     QMap<QTreeWidgetItem *, QString> arenaStatLink;
     QRegularExpressionMatch *match;
@@ -57,6 +58,7 @@ private:
     void createArenaTreeWidget();
     void createArenaStatsTreeWidget();
     void createComboBoxArenaRegion();
+    void createComboBoxArenaStatsJson();
     void setRowColor(QTreeWidgetItem *item, QColor color);
     void setRowColor(QTreeWidgetItem *item, int region=-1);
     void setColorWrongArena(QTreeWidgetItem *item);
@@ -96,7 +98,7 @@ public:
     void setTheme();
     void linkDraftLogToArenaCurrent(QString logFileName);
     QString getArenaCurrentDraftLog();
-    void loadStatsJsonFile();
+    void loadStatsJsonFile(QString statsFile="ArenaTrackerStats.json");
 
 signals:
     void showPremiumDialog();
@@ -124,6 +126,8 @@ private slots:
     void finishShowArenaTreeWidget();
     void statItemDoubleClicked(QTreeWidgetItem *item, int column);
     void statItemChanged(QTreeWidgetItem *item, int column);
+    void deselectRow();
+    void arenaStatsJsonChanged(int index);
 };
 
 #endif // ARENAHANDLER_H

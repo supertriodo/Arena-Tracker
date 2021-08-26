@@ -81,5 +81,8 @@ void MoveTreeWidget::keyPressEvent(QKeyEvent *event)
 void MoveTreeWidget::leaveEvent(QEvent * e)
 {
     QTreeWidget::leaveEvent(e);
+
+    int mouseX = this->mapFromGlobal(QCursor::pos()).x();
+    if(mouseX < 0 || mouseX >= size().width())  emit xLeave();
     emit leave();
 }
