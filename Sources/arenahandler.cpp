@@ -774,7 +774,7 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     arenaStatLink.clear();
     arenaCurrent = nullptr;
     arenaCurrentHero = "";
-    statsJsonFile = "";
+    statsJsonFile = statsFile;
     statsJson = QJsonObject();
     lastRegion = 0;
 
@@ -789,12 +789,12 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         emit pDebug("Failed to load " + statsFile + " from disk.", DebugLevel::Error);
+        statsJsonFile = "";
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
 
-    statsJsonFile = statsFile;
     statsJson = jsonDoc.object();
 
     emit pDebug("Loaded " + QString::number(statsJson.count()) + " entries from " + statsFile + ".");
