@@ -226,7 +226,7 @@ void ArenaHandler::createComboBoxArenaStatsJson()
         ui->arenaStatsJsonComboBox->addItem(title, file);
     }
 
-    if(files.count() > 1)
+    if(ui->arenaStatsJsonComboBox->count() > 1)
     {
         ui->arenaStatsJsonComboBox->setHidden(false);
         connect(ui->arenaStatsJsonComboBox, SIGNAL(currentIndexChanged(int)),
@@ -248,8 +248,7 @@ void ArenaHandler::checkNewPeriod()
         if(!title.isEmpty())
         {
             QFile file(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
-            if(file.exists())   file.rename(title + ".json");
-            emit pDebug("Create new period: " + title);
+            if(file.exists())   file.rename(Utility::arenaStatsPath() + "/" + title + ".json");
         }
     }
 
@@ -773,20 +772,23 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     //Clear arenas data
     ui->arenaTreeWidget->clear();
     arenaStatLink.clear();
+    arenaCurrent = nullptr;
+    arenaCurrentHero = "";
+    statsJsonFile = "";
+    statsJson = QJsonObject();
+    lastRegion = 0;
 
     //Load stats from file
     QFile jsonFile(Utility::arenaStatsPath() + "/" + statsFile);
     if(!jsonFile.exists())
     {
         emit pDebug(statsFile + " doesn't exists.");
-        statsJsonFile = "";
         return;
     }
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         emit pDebug("Failed to load " + statsFile + " from disk.", DebugLevel::Error);
-        statsJsonFile = "";
         return;
     }
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
