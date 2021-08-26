@@ -189,6 +189,19 @@ best 30 arenas win average (leaderboard).</string>
              </widget>
             </item>
             <item>
+             <spacer name="arenaHorizontalSpacer3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
              <widget class="QPushButton" name="donateButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -209,7 +222,7 @@ draft mechanics becoming a patron (3$).</string>
               </property>
               <property name="iconSize">
                <size>
-                <width>128</width>
+                <width>75</width>
                 <height>32</height>
                </size>
               </property>

@@ -44,7 +44,7 @@ void ArenaHandler::completeUI()
 
 void ArenaHandler::completeButtons()
 {
-    ui->arenaDeleteButton->setEnabled(false);
+    ui->arenaDeleteButton->setHidden(true);
 
     connect(ui->donateButton, SIGNAL(clicked()),
             this, SIGNAL(showPremiumDialog()));
@@ -179,7 +179,7 @@ void ArenaHandler::createComboBoxArenaRegion()
         ui->arenaRegionComboBox->addItem(canvas,"");
     }
     ui->arenaRegionComboBox->setIconSize(QSize(hw*2, hw));
-    ui->arenaRegionComboBox->setEnabled(false);
+    ui->arenaRegionComboBox->setHidden(true);
 
     connect(ui->arenaRegionComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(regionChanged(int)));
@@ -273,14 +273,9 @@ QString ArenaHandler::isNewPeriod(const QDateTime &leftD, const QDateTime &right
 
 void ArenaHandler::setPremium(bool premium)
 {
-    if(premium)
-    {
-        ui->donateButton->hide();
-    }
-    else
-    {
-        ui->donateButton->show();
-    }
+    this->premium = premium;
+    ui->donateButton->setHidden(premium);
+    ui->arenaStatsButton->setHidden(!premium);
 }
 
 
@@ -296,8 +291,8 @@ void ArenaHandler::showArenaStatsTreeWidget()
     startProcessArenas2Stats();
 
     ui->arenaStatsButton->setEnabled(false);
-    ui->arenaNewButton->setEnabled(false);
-    ui->arenaStatsJsonComboBox->setEnabled(false);
+    ui->arenaNewButton->setHidden(true);
+    ui->arenaStatsJsonComboBox->setHidden(true);
     ui->arenaTreeWidget->clearSelection();
     ui->arenaStatsTreeWidget->setHidden(false);
     int totalHeight = ui->arenaTreeWidget->height();
@@ -405,8 +400,8 @@ void ArenaHandler::finishShowArenaTreeWidget()
     ui->arenaTreeWidget->setMinimumHeight(0);
     ui->arenaTreeWidget->setMaximumHeight(16777215);
     ui->arenaStatsButton->setEnabled(true);
-    ui->arenaNewButton->setEnabled(true);
-    ui->arenaStatsJsonComboBox->setEnabled(true);
+    ui->arenaNewButton->setHidden(false);
+    ui->arenaStatsJsonComboBox->setHidden(false);
 }
 
 
@@ -1162,7 +1157,7 @@ void ArenaHandler::regionChanged(int index)
     }
     else
     {
-        ui->arenaRegionComboBox->setEnabled(false);
+        ui->arenaRegionComboBox->setHidden(true);
     }
 }
 
@@ -1174,13 +1169,13 @@ void ArenaHandler::itemSelectionChanged()
     {
         int region = statsJson[arenaStatLink[items[0]]].toObject()["region"].toInt();
         ui->arenaRegionComboBox->setCurrentIndex(region);
-        ui->arenaRegionComboBox->setEnabled(true);
-        ui->arenaDeleteButton->setEnabled(true);
+        ui->arenaRegionComboBox->setHidden(!premium);
+        ui->arenaDeleteButton->setHidden(false);
     }
     else
     {
-        ui->arenaRegionComboBox->setEnabled(false);
-        ui->arenaDeleteButton->setEnabled(false);
+        ui->arenaRegionComboBox->setHidden(true);
+        ui->arenaDeleteButton->setHidden(true);
     }
 }
 
@@ -1233,7 +1228,7 @@ void ArenaHandler::arenaDelete()
     }
     else
     {
-        ui->arenaDeleteButton->setEnabled(false);
+        ui->arenaDeleteButton->setHidden(true);
     }
 }
 

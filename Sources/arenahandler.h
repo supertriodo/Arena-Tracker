@@ -39,6 +39,7 @@ private:
     QString arenaCurrentHero;
     QString arenaCurrentDraftFile;
     bool mouseInApp;
+    bool premium;
     Transparency transparency;
     QJsonObject statsJson;
     QString statsJsonFile;
