@@ -188,6 +188,7 @@ void ArenaHandler::createComboBoxArenaRegion()
 
 void ArenaHandler::createComboBoxArenaStatsJson()
 {
+    checkNewPeriod();
     ui->arenaStatsJsonComboBox->setHidden(true);
 
     QFileInfo dirInfo(Utility::arenaStatsPath());
@@ -204,23 +205,22 @@ void ArenaHandler::createComboBoxArenaStatsJson()
     filterName << "*.json";
     dir.setNameFilters(filterName);
 
-    QStringList files = dir.entryList();
+    ui->arenaStatsJsonComboBox->addItem("Current period", "ArenaTrackerStats.json");
 
+    QStringList files = dir.entryList();
     for(int i=0; i<files.length(); i++)
     {
         QString file = files[i];
         QString title = file;
-        if(file == "ArenaTrackerStats.json")    title = "Current period";
-        else
+        if(file == "ArenaTrackerStats.json")    continue;
+
+        title.chop(5);
+        QDateTime dateD = QDateTime::fromString(title, "yyyy-MM");
+        if(dateD.isValid())
         {
-            title.chop(5);
-            QDateTime dateD = QDateTime::fromString(title, "yyyy-MM");
-            if(dateD.isValid())
-            {
-                title = dateD.toString("yyyy MMM");
-                dateD = dateD.addMonths(1);
-                title += dateD.toString(" MMM");
-            }
+            title = dateD.toString("yyyy MMM");
+            dateD = dateD.addMonths(1);
+            title += dateD.toString(" MMM");
         }
 
         ui->arenaStatsJsonComboBox->addItem(title, file);
@@ -232,6 +232,43 @@ void ArenaHandler::createComboBoxArenaStatsJson()
         connect(ui->arenaStatsJsonComboBox, SIGNAL(currentIndexChanged(int)),
                 this, SLOT(arenaStatsJsonChanged(int)));
     }
+}
+
+
+void ArenaHandler::checkNewPeriod()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString runDate = settings.value("runDate", "").toString();
+    QDateTime nowDateD = QDateTime::currentDateTime();
+
+    if(!runDate.isEmpty())
+    {
+        QDateTime runDateD = QDateTime::fromString(runDate, "yyyy.MM.dd hh:mm");
+        QString title = isNewPeriod(runDateD, nowDateD);
+        if(!title.isEmpty())
+        {
+            QFile file(Utility::arenaStatsPath() + "/ArenaTrackerStats.json");
+            if(file.exists())   file.rename(title + ".json");
+            emit pDebug("Create new period: " + title);
+        }
+    }
+
+    settings.setValue("runDate", nowDateD.toString("yyyy.MM.dd hh:mm"));
+}
+
+
+QString ArenaHandler::isNewPeriod(const QDateTime &leftD, const QDateTime &rightD)
+{
+    QString title = "";
+    QDateTime limit = QDateTime::fromString(leftD.toString("yyyy.MM.01 10:00"), "yyyy.MM.dd hh:mm");
+    if(limit.date().month()%2==0)   limit = limit.addMonths(1);
+    else if(limit<=leftD)           limit = limit.addMonths(2);
+    if(limit<=rightD)
+    {
+        limit = limit.addMonths(-2);
+        title = limit.toString("yyyy-MM");
+    }
+    return title;
 }
 
 
@@ -380,9 +417,17 @@ void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
 }
 
 
+void ArenaHandler::setCurrentStatsJson()
+{
+    int index = ui->arenaStatsJsonComboBox->findData("ArenaTrackerStats.json");
+    if(index == -1) loadStatsJsonFile();
+    else            ui->arenaStatsJsonComboBox->setCurrentIndex(index);
+}
+
+
 void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
 {
-    ui->arenaStatsJsonComboBox->setCurrentIndex(0);
+    setCurrentStatsJson();
     hideArenaStatsTreeWidget();
     showGameResult(gameResult, loadingScreen);
     if(loadingScreen == arena)
@@ -581,7 +626,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 
 void ArenaHandler::newArena(QString hero)
 {
-    ui->arenaStatsJsonComboBox->setCurrentIndex(0);
+    setCurrentStatsJson();
     hideArenaStatsTreeWidget();
     showArena(hero);
     newArenaStat(hero);

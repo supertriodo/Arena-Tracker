@@ -91,6 +91,9 @@ private:
     void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
     void showArenas2StatsBest30(int best30Runs[], int best30BestWins[], QString best30Start[], QString best30End[]);
     void startProcessArenas2Stats();
+    void checkNewPeriod();
+    QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
+    void setCurrentStatsJson();
 
 public:
     void setMouseInApp(bool value);
