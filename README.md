@@ -23,32 +23,18 @@ Join our community at the [Arena Tracker subreddit](https://www.reddit.com/r/Are
 Extract the zip wherever you want and double click the executable, no installation required.
 (If you want to run it from a terminal don't use sudo.)
 
-Data used by Arena Tracker will be stored in `USER/Arena Tracker` (Windows/Mac) or `USER/.local/share/Arena Tracker` (Linux) with the following structure:
-* Arena Tracker\
-  * ArenaTrackerLog.txt     -- (Log created by Arena Tracker, used for debugging)
-  * ArenaTrackerDecks.json  -- (Your deck collection in Arena Tracker)
-  * Extra\                  -- (Template and scripts used by Arena Tracker)
-  * Games Drafts Logs\      -- (Logs of Games/Drafts to upload to Zero To Heroes)
-  * Hearthstone Cards\      -- (Hearthstone cards images)
+Data used by Arena Tracker will be stored in `USER/Arena Tracker` (Windows/Mac) or `USER/.local/share/Arena Tracker` (Linux) with [this](https://triodo.gitbook.io/arena-tracker-documentation/en/installation#ATdir) structure
   
-Arena Tracker will need to download all Hearthstone card images onto Hearthstone Cards dir. This is done in the background while you use it.
+Arena Tracker will need to download all Hearthstone card images onto Hearthstone Cards dir. This is done in the background while you use it. You don't need to wait, start your draft or your next game, AT will know what to do.
 
 
 ##  First Run
-On **Windows and Mac**: Arena Tracker setup is done automatically unless you didn't install Hearthstone in its default dir. In that case the first time you run Arena Tracker you will be asked for:
+On **Windows and Mac**: Arena Tracker setup is done automatically unless you didn't install Hearthstone in its default dir. In that case the first time you run Arena Tracker you will be asked for several dir/files. Check [this](https://triodo.gitbook.io/arena-tracker-documentation/#i_setup_the_app_but_it_doesnt_work_it_didnt_upload_my_arena_game_it_didnt_start_drafting-1).
 
-1) Logs dir location (If not default).
- * Default (Win/WINE): C:\Program Files (x86)\Hearthstone\Logs
- * Default (Mac): /Applications/Hearthstone/Logs
- * If the Logs dir doesn't exist create it.
-2) log.config location (If not default).
- * Default (Win 7-10/WINE): USER\AppData\Local\Blizzard\Hearthstone\log.config
- * Default (Win XP/WINE): USER\Local Settings\Application Data\Blizzard\Hearthstone\log.config
- * Default (Mac): ~/Library/Preferences/Blizzard/Hearthstone/log.config
- * If the file doesn't exist create an empty log.config in that dir.
-3) Restart Hearthstone (if you have it opened).
+On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). This process can take several minutes, I suggest you to empty your trash bin before, to make it short.
+If it doesn't success it will ask you to find some dir/files, check [this](https://triodo.gitbook.io/arena-tracker-documentation/en/installation).
 
-On **Linux**: Arena Tracker will try to find Hearthstone dir automatically using the command find (Only your HOME dir will be searched). If it doesn't success it will ask you to find the above locations. This process can take several minutes, I suggest you to empty your trash bin before, to make it short.
+If AT doesn't react to what you do in HS, you can try to manually configure HS log like [this](https://triodo.gitbook.io/arena-tracker-documentation/#activate-hs-logs-manually).
 
 If you have problems installing it or using it I'm happy to help you on [reddit](http://www.reddit.com/r/ArenaTracker/).
 
@@ -97,11 +83,7 @@ If you build on Mac check:
 ## Thanks to:
 * https://hsreplay.net
 * http://hearthstonejson.com
-* http://www.zerotoheroes.com/s/hearthstone
-* http://thelightforge.com/TierList
 * http://www.heartharena.com
-* https://sourceforge.net/projects/libxls/
-* https://github.com/stevschmid/track-o-bot
 * https://github.com/probonopd/linuxdeployqt
 * Arena Tracker is a [HearthSim](http://hearthsim.info) project. Join us on [Discord](https://discord.gg/hearthsim).
 
