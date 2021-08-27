@@ -1,5 +1,5 @@
 # Arena-Tracker
-Arena Tracker reads the Hearthstone log to give your all the info you need. [Learn More...](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
+Arena Tracker it's a deck Tracker for Hearthstone with arena in focus. It has a free version and a premium version that you can unlock by becoming a patron. Learn the difference between the two [here](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md)
 
 Too complicated? [Check the User Guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
