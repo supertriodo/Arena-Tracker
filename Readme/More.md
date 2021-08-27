@@ -1,8 +1,8 @@
 Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl, but it was created from the ground with arena players in mind.
 
-Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3$ a month.
+Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3$ a month, the premium version.
 
-Next you can check a brief explanation of its features divided in free and patreon versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
+Next you can check a brief explanation of its features divided in free and premium versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
 # Free version features:
 
@@ -21,23 +21,22 @@ Next you can check a brief explanation of its features divided in free and patre
 * Import/export your deck with Hearthstone.
 
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
-* Upload your stats to your track-o-bot account.
+* Keep your arena stats locally, divided by leaderboard 2-month periods.
 
-![Trackobot](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/trackobotWeb.png)
+![StatsPeriod](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsPeriod.png)
 * Check hsreplay.net hero winrates when choosing your arena class.
 
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
-* Draft your arena with HearthArena or LightForge advice, or why not both.
+* Draft your arena with HSReplay winrates and HearthArena scores.
 
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
-* Draft your arena with HSReplay winrates of cards.
 
 ![DraftHsr](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/hsrCards.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
 
 ![DraftTwitch](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftTwitch.png)
 
-# Patreon version features:
+# Premium version features:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/triodo)
 * While drafting, check the synergies of the next picks with the rest of your deck. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/drafting-tab#rateofcards)
@@ -63,7 +62,6 @@ Next you can check a brief explanation of its features divided in free and patre
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
-My Hearthstone ID: triodo#2541 (EU region)
 
 If you like the app, consider supporting me.
 
