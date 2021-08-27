@@ -57,6 +57,19 @@ void ArenaHandler::completeButtons()
 }
 
 
+void ArenaHandler::setNullTreeItems()
+{
+    arenaCurrent = nullptr;
+    arenaCurrentHero = "";
+
+    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
+    casualTreeItem = nullptr;
+    adventureTreeItem = nullptr;
+    tavernBrawlTreeItem = nullptr;
+    friendlyTreeItem = nullptr;
+}
+
+
 void ArenaHandler::createArenaTreeWidget()
 {
     QTreeWidget *treeWidget = ui->arenaTreeWidget;
@@ -71,14 +84,7 @@ void ArenaHandler::createArenaTreeWidget()
     treeWidget->setColumnWidth(3, 40);
     treeWidget->setColumnWidth(4, 0);
 
-    arenaCurrent = nullptr;
-    arenaCurrentHero = "";
-
-    for(int i=0; i<NUM_HEROS; i++)  rankedTreeItem[i] = nullptr;
-    casualTreeItem = nullptr;
-    adventureTreeItem = nullptr;
-    tavernBrawlTreeItem = nullptr;
-    friendlyTreeItem = nullptr;
+    setNullTreeItems();
 
     connect(treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
             this, SLOT(itemChanged(QTreeWidgetItem*,int)));
@@ -478,12 +484,11 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, i
         item = new QTreeWidgetItem();
         ui->arenaTreeWidget->insertTopLevelItem(1, item);
     }
-    else if(isArena)
+    else
     {
         item = new QTreeWidgetItem();
         ui->arenaTreeWidget->insertTopLevelItem(0, item);
     }
-    else    item = new QTreeWidgetItem(ui->arenaTreeWidget);
 
     item->setExpanded(true);
     setColumnText(item, 0, title);
@@ -767,11 +772,10 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     //Clear arenas data
     ui->arenaTreeWidget->clear();
     arenaStatLink.clear();
-    arenaCurrent = nullptr;
-    arenaCurrentHero = "";
     statsJsonFile = statsFile;
     statsJson = QJsonObject();
     lastRegion = 0;
+    setNullTreeItems();
 
     //Load stats from file
     QFile jsonFile(Utility::arenaStatsPath() + "/" + statsFile);

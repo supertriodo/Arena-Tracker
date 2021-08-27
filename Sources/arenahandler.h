@@ -95,6 +95,7 @@ private:
     void checkNewPeriod();
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
     void setCurrentStatsJson();
+    void setNullTreeItems();
 
 public:
     void setMouseInApp(bool value);
