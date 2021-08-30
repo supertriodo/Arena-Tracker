@@ -3905,7 +3905,8 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
     {
         return synergyCodes[code].contains("echo");
     }
-    else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")))
+    else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")) ||
+            mechanics.contains(QJsonValue("CHOOSE_ONE")))
     {
         if(
                 ((text.contains("summon") || text.contains("give") || text.contains("restore")) && !text.contains("opponent")) ||
@@ -4337,7 +4338,7 @@ silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen
 Double check:
 DAMAGE/DESTROY: reachGen(no atk1), aoeGen(spellDamageSyn/eggSyn),
                 pingGen(enrageSyn), damageMinionsGen, destroyGen(8+ damage/no rush)
-BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
+BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/choose one/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/FRENZY/TAKE DAMAGE: enrageGen(take damage)/rushGiverSyn
 RUSHGIVERSYN: enrageGen/frenzy, poison, damage adjacents
 SUMMON: tokenGen(summon)
