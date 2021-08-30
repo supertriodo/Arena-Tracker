@@ -1887,7 +1887,7 @@
 "GIL_680" : [ "toYourHandGen", "echo", "returnSyn", "drop3", "tokenCardGen" ],
 "GIL_681" : [ "drop3" ],
 "GIL_682" : [ "damageMinionsGen", "rush", "battlecry", "spawnEnemyGen" ],
-"GIL_683" : [ "battlecry", "spawnEnemyGen", "drop3" ],
+"GIL_683" : [ "battlecry", "spawnEnemyGen", "drop3", "pingSyn" ],
 "GIL_685" : [ "attackBuffSyn", "drop3" ],
 "GIL_687" : [ "damageMinionsGen", "spellGen", "tokenCardGen" ],
 "GIL_691" : [ "toYourHandGen" ],
