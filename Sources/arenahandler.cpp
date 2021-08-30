@@ -1198,7 +1198,7 @@ void ArenaHandler::arenaNewEmpty()
     int ret = QMessageBox::question(ui->tabArena, "New Arena?",
                                    "Do you want to create a new arena?",
                                    QMessageBox::Ok | QMessageBox::Cancel,
-                                   QMessageBox::Cancel);
+                                   QMessageBox::Ok);
     if(ret == QMessageBox::Cancel)  return;
 
     QString hero = "01";
