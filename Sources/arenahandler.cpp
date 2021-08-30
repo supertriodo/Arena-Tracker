@@ -72,8 +72,9 @@ void ArenaHandler::setNullTreeItems()
 
 void ArenaHandler::createArenaTreeWidget()
 {
-    QTreeWidget *treeWidget = ui->arenaTreeWidget;
+    MoveTreeWidget *treeWidget = ui->arenaTreeWidget;
     treeWidget->setColumnCount(5);
+    treeWidget->setEditableColumns({0,1,2,3});
     treeWidget->setIconSize(QSize(32,32));
     treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -99,8 +100,9 @@ void ArenaHandler::createArenaTreeWidget()
 
 void ArenaHandler::createArenaStatsTreeWidget()
 {
-    QTreeWidget *treeWidget = ui->arenaStatsTreeWidget;
+    MoveTreeWidget *treeWidget = ui->arenaStatsTreeWidget;
     treeWidget->setColumnCount(6);
+    treeWidget->setEditableColumns({0});
     treeWidget->setIconSize(QSize(30,30));
     treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::NoSelection);
@@ -1022,7 +1024,7 @@ void ArenaHandler::itemDoubleClicked(QTreeWidgetItem *item, int column)
 void ArenaHandler::itemChanged(QTreeWidgetItem *item, int column)
 {
     if(!editingColumnText)  return;
-    editingColumnText = false;
+
     if(!arenaStatLink.contains(item))
     {
         emit pDebug("ERROR: Trying to edit an arena not in arenaStatLink.");
@@ -1032,6 +1034,7 @@ void ArenaHandler::itemChanged(QTreeWidgetItem *item, int column)
     if(column == 0)         itemChangedDate(item, column);
     else if(column == 1)    itemChangedHero(item, column);
     else if(column == 2 || column == 3) itemChangedWL(item, column);
+    editingColumnText = true;
 }
 
 
@@ -1080,7 +1083,7 @@ void ArenaHandler::itemChangedHero(QTreeWidgetItem *item, int column)
 
     if(text.contains(QRegularExpression("^\\w+"), match))
     {
-        QString hero = match->captured(0);
+        QString hero = match->captured(0).toLower();
         QString heroLog = "";
         //--------------------------------------------------------
         //----NEW HERO CLASS

@@ -41,6 +41,12 @@ void MoveTreeWidget::setTheme(bool standAlone)
 }
 
 
+void MoveTreeWidget::setEditableColumns(QList<int> cols)
+{
+    this->editableColumns = cols;
+}
+
+
 void MoveTreeWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     QTreeWidget::mouseDoubleClickEvent(event);
@@ -85,4 +91,55 @@ void MoveTreeWidget::leaveEvent(QEvent * e)
     int mouseX = this->mapFromGlobal(QCursor::pos()).x();
     if(mouseX < 0 || mouseX >= size().width())  emit xLeave();
     emit leave();
+}
+
+
+QModelIndex MoveTreeWidget::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+{
+    if(cursorAction == QAbstractItemView::MoveNext)
+    {
+        QModelIndex index = this->currentIndex();
+        if(index.isValid() && !editableColumns.isEmpty())
+        {
+            int nextCol = index.column();
+            int nextRow = index.row();
+            int cols = this->model()->columnCount();
+            int rows = this->model()->rowCount(index.parent());
+            do
+            {
+                nextCol++;
+                if(nextCol == cols)
+                {
+                    nextRow++;
+                    nextCol = 0;
+                }
+            }while(!editableColumns.contains(nextCol));
+
+            if(nextRow >= rows) return QModelIndex();
+            else                return index.sibling(nextRow, nextCol);
+        }
+    }
+    else if(cursorAction == QAbstractItemView::MovePrevious)
+    {
+        QModelIndex index = this->currentIndex();
+        if(index.isValid() && !editableColumns.isEmpty())
+        {
+            int nextCol = index.column();
+            int nextRow = index.row();
+            int cols = this->model()->columnCount();
+            do
+            {
+                nextCol--;
+                if(nextCol < 0)
+                {
+                    nextRow--;
+                    nextCol = cols - 1;
+                }
+            }while(!editableColumns.contains(nextCol));
+
+            if(nextRow < 0)     return QModelIndex();
+            else                return index.sibling(nextRow, nextCol);
+        }
+    }
+    return QTreeWidget::moveCursor(cursorAction, modifiers);
 }

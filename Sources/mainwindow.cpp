@@ -4423,22 +4423,24 @@ void MainWindow::testPlan()
 void MainWindow::testArenaGames()
 {
     GameResult gameResult;
+    LoadingScreenState gameMode = arena;
     gameResult.isFirst = gameResult.isWinner = true;
     gameResult.playerHero = gameResult.enemyHero = "08";
     arenaHandler->newArena(gameResult.playerHero);
-    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, gameMode);
     gameResult.isFirst = gameResult.isWinner = false;
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, gameMode);
+    arenaHandler->newGameResult(gameResult, gameMode);
+    arenaHandler->newGameResult(gameResult, gameMode);
 
     gameResult.playerHero = gameResult.enemyHero = "05";
+    gameMode = arena;
     arenaHandler->newArena(gameResult.playerHero);
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
-    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, gameMode);
+    arenaHandler->newGameResult(gameResult, gameMode);
+    arenaHandler->newGameResult(gameResult, gameMode);
     gameResult.isFirst = gameResult.isWinner = true;
-    arenaHandler->newGameResult(gameResult, arena);
+    arenaHandler->newGameResult(gameResult, gameMode);
 }
 
 
