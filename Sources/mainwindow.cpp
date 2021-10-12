@@ -2610,6 +2610,8 @@ void MainWindow::resetSettings()
         settings.setValue("sizeDraft", QSize(255, 600));
         settings.setValue("shortcutAsked", false);
         settings.setValue("arenaVersion", 0);
+        settings.setValue("draftingScreenIndex", -1);
+        settings.setValue("heroDraftingScreenIndex", -1);
 
         resize(QSize(255, 600));
         move(QPoint(0,0));

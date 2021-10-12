@@ -2157,6 +2157,14 @@ void DraftHandler::createDraftWindows()
     deleteDraftHeroWindow();
     deleteDraftScoreWindow();
     deleteDraftMechanicsWindow();
+
+    //Screen out of index
+    if(screenIndex >= QGuiApplication::screens().count())
+    {
+        emit pDebug("ScreenIndex out of bounds while creating drafting windows. ScreenIndex: " + QString::number(screenIndex), Warning);
+        return;
+    }
+
     QPoint topLeft(static_cast<int>(screenRects[0].x * screenScale.x()), static_cast<int>(screenRects[0].y * screenScale.y()));
     QPoint bottomRight(static_cast<int>(screenRects[2].x * screenScale.x() + screenRects[2].width * screenScale.x()),
             static_cast<int>(screenRects[2].y * screenScale.y() + screenRects[2].height * screenScale.y()));

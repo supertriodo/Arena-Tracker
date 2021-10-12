@@ -7,11 +7,14 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
 {
     scoreWidth = static_cast<int>(sizeCard.width()*0.65);
 
+    QRect rectScreen;
     QList<QScreen *> screens = QGuiApplication::screens();
-    QScreen *screen = screens[screenIndex];
-    if (!screen) return;
+    if(screenIndex < screens.count())
+    {
+        QScreen *screen = screens[screenIndex];
+        if(screen != nullptr)   rectScreen = screen->geometry();
+    }
 
-    QRect rectScreen = screen->geometry();
     int midCards = (rect.width() - 3*sizeCard.width())/2;
     resize(rect.width() + 2*MARGIN + midCards,
            rect.height() + 2*MARGIN - (sizeCard.height()-scoreWidth));
