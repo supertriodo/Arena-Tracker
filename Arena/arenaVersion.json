@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 11,
+  "arenaVersion": 12,
   "arenaSets": ["CORE", "STORMWIND", "BLACK_TEMPLE", "DALARAN", "ICECROWN", "UNGORO", "GANGS"],
-  "multiclassArena": false,
+  "multiclassArena": true,
   "redownloadCards": false,
   "redownloadHeroes": false
 }
