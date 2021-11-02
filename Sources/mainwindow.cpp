@@ -4518,7 +4518,7 @@ void MainWindow::testTierlists()
     downloadHearthArenaTierlistOriginal();
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "STORMWIND" << "THE_BARRENS" << "DARKMOON_FAIRE" << "ULDUM" << "TROLL" << "GILNEAS";
+//    arenaSets << "CORE" << "STORMWIND" << "BLACK_TEMPLE" << "DALARAN" << "ICECROWN" << "UNGORO" << "GANGS";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4526,11 +4526,12 @@ void MainWindow::testTierlists()
 }
 
 /*
- * The Witchwood "GILNEAS"
- * Rastakhan's Rumble "TROLL"
- * Saviors of Uldum "ULDUM"
- * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
- * Forged in the Barrens "THE_BARRENS"
+ * Core "CORE"
+ * Mean Streets of Gadgetzan "GANGS"
+ * Journey to Un'Goro "UNGORO"
+ * Knights of the Frozen Throne "ICECROWN"
+ * Rise of Shadows "DALARAN"
+ * Ashes of Outland "BLACK_TEMPLE"
  * United in Stormwind "STORMWIND"
  */
 
@@ -4538,7 +4539,7 @@ void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "STORMWIND" << "THE_BARRENS" << "DARKMOON_FAIRE" << "ULDUM" << "TROLL" << "GILNEAS";
+    arenaSets << "CORE" << "STORMWIND" << "BLACK_TEMPLE" << "DALARAN" << "ICECROWN" << "UNGORO" << "GANGS";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
