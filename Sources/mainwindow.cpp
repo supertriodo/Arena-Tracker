@@ -4506,11 +4506,11 @@ void MainWindow::downloadHeroPortrait(QString code)
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("SW_003", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("DED_527", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("STORMWIND", 1, 20, "WC_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("STORMWIND", 1, 20, "DED_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("WC_");
+//    draftHandler->getSynergyHandler()->testSynergies("DED_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
