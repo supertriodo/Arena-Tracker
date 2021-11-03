@@ -4329,8 +4329,11 @@ void MainWindow::downloadHearthArenaTierlistOriginal()
 
 void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
 {
-    QString haDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/Json extract/";
-    Utility::dumpOnFile(html, haDir + "haTL.html"); //Comentar si se rechaza el download, lo bajamos a mano.
+    if(!html.isEmpty())
+    {
+        QString haDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthArena/Json extract/";
+        Utility::dumpOnFile(html, haDir + "haTL.html");
+    }
 
     //Lanza script HATLsed.sh
     QProcess p;
@@ -4516,7 +4519,7 @@ void MainWindow::testSynergies()
 void MainWindow::testTierlists()
 {
     downloadHearthArenaTierlistOriginal();
-//    saveHearthArenaTierlistOriginal(""); //Si se rechaza el download, lo bajamos a mano.
+//    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
 //    arenaSets << "CORE" << "STORMWIND" << "BLACK_TEMPLE" << "DALARAN" << "ICECROWN" << "UNGORO" << "GANGS";

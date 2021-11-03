@@ -223,7 +223,7 @@ private:
     void localHSRCards();
     void startProcessHSRCards(const QJsonObject &jsonObject);
     void downloadHearthArenaTierlistOriginal();
-    void saveHearthArenaTierlistOriginal(const QByteArray &html);
+    void saveHearthArenaTierlistOriginal(const QByteArray &html="");
 
 //Override events
 protected:
