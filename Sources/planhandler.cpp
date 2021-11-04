@@ -2875,6 +2875,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 9;
         playerIn = true;
     }
+    else if(code == MADDEST_BOMBER)
+    {
+        missiles = 12;
+        playerIn = true;
+    }
     //ALL minions
     else if(code == MINEFIELD)
     {
@@ -2948,6 +2953,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = numRaceOnBoard(PIRATE) + 1;
         missileDamage = 3;
+    }
+    else if(code == DEFIAS_BLASTFISHER)
+    {
+        missiles = numRaceOnBoard(BEAST) + 1;
+        missileDamage = 2;
     }
     else if(code == METEOROLOGIST)
     {
