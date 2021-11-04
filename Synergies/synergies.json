@@ -1227,8 +1227,8 @@
 "DED_003" : [ "drawGen", "battlecry", "returnSyn", "tokenCardGen" ],
 "DED_004" : [ "damageMinionsGen", "reachGen" ],
 "DED_005" : [ "toYourHandGen" ],
-"DED_006" : [ "pirateAllSyn" ],
-"DED_007" : [ "beastAllSyn", "damageMinionsGen", "battlecry", "returnSyn" ],
+"DED_006" : [ "pirateAllSyn", "damageMinionsGen", "reachGen" ],
+"DED_007" : [ "beastAllSyn", "damageMinionsGen", "battlecry", "returnSyn", "evolveSyn" ],
 "DED_008" : [ "deathrattleGoodAllSyn", "battlecry", "returnSyn" ],
 "DED_009" : [ "attackBuffGen", "healthBuffGen", "spellBuffGen", "rushGiverGen" ],
 "DED_500" : [ "battlecry", "taunt", "returnSyn", "destroyGen", "eggSyn" ],
@@ -1246,7 +1246,7 @@
 "DED_512" : [ "deathrattleGoodAllSyn" ],
 "DED_513" : [ "shadowAllSyn", "drop2", "battlecry", "returnSyn" ],
 "DED_514" : [ "drop3", "toYourHandGen", "battlecry", "returnSyn" ],
-"DED_515" : [ "=>SynSpellCost5", "battlecry", "returnSyn" ],
+"DED_515" : [ "=>SynSpellCost5", "battlecry", "returnSyn", "evolveSyn" ],
 "DED_516" : [ "spellSyn", "drawGen", "spellGen", "battlecry", "armorGen", "returnSyn" ],
 "DED_517" : [ "destroyGen" ],
 "DED_518" : [ "aoeGen", "pingGen", "spellDamageSyn", "enrageSyn", "damageMinionsGen" ],
@@ -2620,7 +2620,7 @@
 "SCH_149" : [ "battlecry" ],
 "SCH_157" : [ "spellAllSyn" ],
 "SCH_158" : [ "demonGen", "discover", "tokenCardGen" ],
-"SCH_159" : [ "battlecry", "returnSyn" ],
+"SCH_159" : [ "battlecry", "returnSyn", "toYourHandGen" ],
 "SCH_160" : [ "spellGen", "drop2", "tokenCardGen", "battlecry", "returnSyn" ],
 "SCH_162" : [ "deathrattleGen", "battlecry", "tokenGen", "returnSyn", "deathrattleGoodAllSyn" ],
 "SCH_181" : [ "demonGen", "demonSyn", "battlecry", "returnSyn" ],
@@ -3456,7 +3456,7 @@
     "BAR_843", "BAR_896", "WC_008", "WC_026"],
   "BAR_322": ["BAR_324", "BAR_318", "BAR_321", "CORE_CS2_074", "ICC_221", "YOP_015"],
   "SW_045": ["SW_055", "SW_072", "SW_307", "SW_061", "SW_066", "SW_023", "SW_094",
-    "SW_086", "SW_114", "SW_412", "SW_441", "SW_046", "SW_107","SW_463", "SW_429",
-    "SW_042"]
+    "SW_086", "SW_114", "SW_412", "SW_441", "SW_046", "SW_107", "SW_463", "SW_429",
+    "SW_042", "DED_009", "DED_527", "DED_506", "DED_512", "DED_004", "DED_504"]
 }
 }

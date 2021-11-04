@@ -3515,6 +3515,8 @@
     "SW_307 Traveling Merchant", "SW_061 Guild Trader", "SW_066 Royal Librarian",
     "SW_023 Provoke", "SW_094 Heavy Plate", "SW_086 Shady Bartender", "SW_114 Overdraft",
     "SW_412 SI:7 Extortion", "SW_441 Shard of the Naaru", "SW_046 City Tax", "SW_107 Fire Sale",
-    "SW_463 Imported Tarantula", "SW_429 Best in Shell", "SW_042 Persistent Peddler"]
+    "SW_463 Imported Tarantula", "SW_429 Best in Shell", "SW_042 Persistent Peddler",
+    "DED_009 Doggie Biscuit", "DED_527 Blacksmithing Hammer", "DED_506 Need for Greed",
+    "DED_512 Amulet of Undying", "DED_004 Blackwater Cutlass", "DED_504 Wicked Shipment"]
 }
 }
