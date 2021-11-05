@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v9.2","v9.3","v9.4","v9.41","v9.42","v9.43","v9.44","v10.0"],
+	"versionFree": ["v9.2","v9.3","v9.4","v9.41","v9.42","v9.43","v9.44","v10.0","v21.11"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "Your arena stats are now stored on disk. Patrons could see advanced stats: your class winrates and your best 30 arenas for the leaderboard. Check the <a href='https://triodo.gitbook.io/arena-tracker-documentation/en/games-tab'>user guide</a>.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "AT updates for Deadmines mini-set.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
