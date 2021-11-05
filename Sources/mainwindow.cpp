@@ -4697,6 +4697,7 @@ void MainWindow::testDelay()
 //Warning pass a context object as 3rd connect parameter [clazy-connect-3arg-lambda]
 //https://www.kdab.com/nailing-13-signal-slot-mistakes-clazy-1-3/
 
+//Lambda
 //Connect, function def inline
 //connect(animation, &QPropertyAnimation::finished,
 //    [this]()
@@ -4707,6 +4708,9 @@ void MainWindow::testDelay()
 //connect(nm, &QNetworkAccessManager::finished,
 //    [=](QNetworkReply *reply)
 //    {}
+//QtConcurrent::run([=]() {
+//    // Code in this block will run in another thread
+//});
 
 
 
