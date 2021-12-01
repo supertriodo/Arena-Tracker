@@ -4506,7 +4506,7 @@ void MainWindow::downloadHeroPortrait(QString code)
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("DED_527", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("STORMWIND", 1, 20, "DED_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");

@@ -462,6 +462,7 @@ CardClass Utility::classString2cardClass(QString value)
  * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
  * Forged in the Barrens "THE_BARRENS"
  * United in Stormwind "STORMWIND"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
  */
 
 
@@ -479,7 +480,7 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
         cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
-        cardSet == "THE_BARRENS" || cardSet == "STORMWIND")
+        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY")
     {
         return true;
     }

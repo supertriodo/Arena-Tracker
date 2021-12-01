@@ -4395,7 +4395,7 @@ REGLAS
     Murlocs cuestan %2 en mana.
     Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
-    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y esa sera el numero the toYourHandGen.
+    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y ese sera el numero the toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
 +discover from your deck (no copy) es drawGen ya que la carta viene de tu mazo. (BAR_545)
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
