@@ -57,6 +57,7 @@
 #define PRESSURE_PLATE QString("ULD_152")
 #define PACK_TACTICS QString("BT_203")
 #define OPEN_THE_CAGES QString("DMF_123")
+#define ICE_TRAP QString("AV_226")
 
 #define FROZEN_CLONE QString("ICC_082")
 //#define MIRROR_ENTITY QString("EX1_294")

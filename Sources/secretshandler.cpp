@@ -273,6 +273,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(ICE_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(RAT_TRAP, inArena, activeSecret);
             break;
 
@@ -491,6 +492,7 @@ void SecretsHandler::secretRevealed(int id, QString code)
     else if(code == FROZEN_CLONE && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
     else if(code == CHEAT_DEATH && !lastMinionDead.isEmpty())   emit revealCreatedByCard(lastMinionDead, code, 1);
     else if(code == DDUPLICATE && !lastMinionDead.isEmpty())    emit revealCreatedByCard(lastMinionDead, code, 2);
+    else if(code == ICE_TRAP && !lastSpellPlayed.isEmpty())     emit revealCreatedByCard(lastSpellPlayed, code, 1);
 }
 
 
@@ -575,6 +577,7 @@ void SecretsHandler::playerSpellPlayed(QString code)
 
     discardSecretOptionNow(CAT_TRICK);
     discardSecretOptionNow(PRESSURE_PLATE);
+    discardSecretOptionNow(ICE_TRAP);
 
     discardSecretOptionNow(NEVER_SURRENDER);
     discardSecretOptionNow(OH_MY_YOGG);
@@ -944,7 +947,7 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
-                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES;
+                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
