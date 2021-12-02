@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("STORMWIND", 1, 20, "DED_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("ALTERAC_VALLEY", 121, 140);//, "DED_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("DED_");
 
@@ -4543,7 +4543,7 @@ void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "STORMWIND" << "BLACK_TEMPLE" << "DALARAN" << "ICECROWN" << "UNGORO" << "GANGS";
+    arenaSets << "ALTERAC_VALLEY";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
@@ -4609,7 +4609,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> STORMWIND
+//Update Utility::isFromStandardSet(QString code) --> ALTERAC_VALLEY
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)

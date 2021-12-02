@@ -94,7 +94,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
     {
         if(code.endsWith("_premium"))
         {
-            urlString = HEARTHPWN_CARDS_URL + code + "_000.png";
+            urlString = HEARTHPWN_CARDS_GOLDEN_URL + code + "_000.png";
         }
         else
         {
@@ -157,7 +157,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             {
                 webImage = webImage.copy(4, -8, 246, 372);
             }
-            else if(fullUrl.startsWith(HEARTHPWN_CARDS_URL))//Golden from hearthpwn
+            else if(fullUrl.startsWith(HEARTHPWN_CARDS_GOLDEN_URL))//Golden from hearthpwn
             {
                 QString plainCode = code;
                 plainCode.chop(8);

@@ -9,7 +9,8 @@
 
 #define HEARTHSIM_CARDS_URL QString("https://art.hearthstonejson.com/v1/render/latest/enUS/256x/")
 #define AT_CARDS_URL QString("https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthstoneCards/")
-#define HEARTHPWN_CARDS_URL QString("https://cards.hearthpwn.com/enUS/anims/")
+#define HEARTHPWN_CARDS_GOLDEN_URL QString("https://cards.hearthpwn.com/enUS/anims/")
+//#define HEARTHPWN_CARDS_PLAIN_URL QString("https://cards.hearthpwn.com/enUS/")
 #define MAX_DOWNLOADS 10
 #define FORCE_NEXT_DOWNLOAD 100
 
