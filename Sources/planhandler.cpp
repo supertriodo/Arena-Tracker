@@ -2936,6 +2936,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 4;
         onlyMinions = true;
     }
+    else if(code == FULLBLOWN_EVIL)
+    {
+        missiles = 5;
+        onlyMinions = true;
+    }
     else if(code == RENO_THE_RELICOLOGIST)
     {
         missiles = 10;

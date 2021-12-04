@@ -4510,7 +4510,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("ALTERAC_VALLEY", 121, 140);//, "DED_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("DED_");
+//    draftHandler->getSynergyHandler()->testSynergies();//"DED_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4522,7 +4522,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "STORMWIND" << "BLACK_TEMPLE" << "DALARAN" << "ICECROWN" << "UNGORO" << "GANGS";
+//    arenaSets << "CORE" << "BOOMSDAY" << "SCHOLOMANCE" << "LOE" << "LOOTAPALOOZA" << "ULDUM" << "ALTERAC_VALLEY";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4531,19 +4531,19 @@ void MainWindow::testTierlists()
 
 /*
  * Core "CORE"
- * Mean Streets of Gadgetzan "GANGS"
- * Journey to Un'Goro "UNGORO"
- * Knights of the Frozen Throne "ICECROWN"
- * Rise of Shadows "DALARAN"
- * Ashes of Outland "BLACK_TEMPLE"
- * United in Stormwind "STORMWIND"
+ * The boomsday Project "BOOMSDAY"
+ * Scholomance Academy "SCHOLOMANCE"
+ * League of Explorer "LOE"
+ * Kobolds and Catacombs "LOOTAPALOOZA"
+ * Saviors of Uldum "ULDUM"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
  */
 
 void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "ALTERAC_VALLEY";
+    arenaSets << "CORE" << "BOOMSDAY" << "SCHOLOMANCE" << "LOE" << "LOOTAPALOOZA" << "ULDUM" << "ALTERAC_VALLEY";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
@@ -4787,3 +4787,5 @@ void MainWindow::testDelay()
 
 
 
+//TODO
+//ALTERAC 10 HERO PORTRAITS DE HERO CARDS

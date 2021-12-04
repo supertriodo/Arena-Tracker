@@ -1783,7 +1783,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("STORMWIND", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("ALTERAC_VALLEY", true, true))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
 //    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
@@ -4227,12 +4227,20 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == CELESTIAL_INK_SET)   return 0;
     if(code == RUNED_MITHRIL_ROD)   return 0;
     if(code == SIGIL_OF_ALACRITY)   return 0;
+    if(code == TO_THE_FRONT)        return 0;
+    if(code == CERATHINE_FLEETRUNNER)return 0;
+    if(code == RECONNAISSANCE)      return 0;
+    if(code == SHIVERING_SORCERESS) return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == AUCTIONHOUSE_GAVEL)  return 1;
     if(code == SI7_SKULKER)         return 1;
+    if(code == PRIDE_SEEKER)        return 1;
+    if(code == STORMPIKE_MARSHAL)   return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == PALM_READING)        return 2;
     if(code == FELGORGER)           return 2;
+    if(code == FROSTWOLF_WARMASTER) return 2;
+    if(code == STORMPIKE_BATTLE_RAM)return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
@@ -4247,6 +4255,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == CHAMELEOS)           return 4;
     if(code == UMBRAL_OWL)          return 4;
     if(code == TENT_TRASHER)        return 4;
+    if(code == FROSTSABER_MATRIARCH)return 4;
+    if(code == WILDPAW_GNOLL)       return 4;
     if(code == FORBIDDEN_SHAPING)   return 5;
     if(code == FORBIDDEN_FLAME)     return 5;
     if(code == FORBIDDEN_HEALING)   return 5;
@@ -4258,12 +4268,15 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == DEVOUT_PUPIL)        return 5;
     if(code == EMBIGGEN)            return 5;
     if(code == POWER_WORD_FORTITUDE)return 5;
+    if(code == SHIELD_SHATTER)      return 5;
+    if(code == LOKHOLAR_THE_ICE_LORD)return 5;
     if(code == DEMONBOLT)           return 6;
     if(code == SEA_GIANT)           return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
     if(code == FLESH_GIANT)         return 6;
     if(code == IREBOUND_BRUTE)      return 6;
     if(code == GOLDSHIRE_GNOLL)     return 6;
+    if(code == URZUL_GIANT)         return 7;
     if(code == CLOCKWORK_GIANT)     return 8;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 9;

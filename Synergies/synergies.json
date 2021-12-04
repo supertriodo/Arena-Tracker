@@ -248,7 +248,7 @@
 "AV_340" : [ "aoeGen", "reachGen", "endTurnGen" ],
 "AV_341" : [ "damageMinionsGen", "reachGen" ],
 "AV_342" : [ "tauntGen", "restoreFriendlyHeroSyn" ],
-"AV_343" : [ "=<SynSpellCost3", "drawGen", "spellGen", "battlecry", "returnSyn" ],
+"AV_343" : [ "=<SynSpellCost3", "tokenCardGen", "spellGen", "battlecry", "returnSyn" ],
 "AV_344" : [ "drop4", "attackBuffGen", "healthBuffGen", "spellBuffGen" ],
 "AV_345" : [ "damageMinionsGen", "rush", "attackBuffSyn", "healthBuffSyn" ],
 "AV_360" : [ "drop3", "beastGen", "stealthGen", "reachGen" ],
