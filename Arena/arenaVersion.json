@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 13,
-  "arenaSets": ["CORE", "STORMWIND", "BLACK_TEMPLE", "DALARAN", "ICECROWN", "UNGORO", "GANGS"],
-  "multiclassArena": true,
-  "redownloadCards": false,
-  "redownloadHeroes": true
+  "arenaVersion": 14,
+  "arenaSets": ["CORE", "BOOMSDAY", "SCHOLOMANCE", "LOE", "LOOTAPALOOZA", "ULDUM", "ALTERAC_VALLEY"],
+  "multiclassArena": false,
+  "redownloadCards": true,
+  "redownloadHeroes": false
 }
