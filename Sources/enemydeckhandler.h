@@ -1,7 +1,7 @@
 #ifndef ENEMYDECKHANDLER_H
 #define ENEMYDECKHANDLER_H
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include <QObject>
 #include <QMap>
 

@@ -2,7 +2,7 @@
 #define RNGCARDHANDLER_H
 
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Widgets/bombwindow.h"
 #include "Cards/rngcard.h"
 #include "planhandler.h"

@@ -3,7 +3,7 @@
 
 #include "Cards/handcard.h"
 #include "utility.h"
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include <QObject>
 #include <QMap>
 

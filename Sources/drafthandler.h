@@ -1,7 +1,7 @@
 #ifndef DRAFTHANDLER_H
 #define DRAFTHANDLER_H
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "deckhandler.h"
 #include "Cards/draftcard.h"
 #include "utility.h"

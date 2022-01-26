@@ -1,7 +1,7 @@
 #ifndef PLANHANDLER_H
 #define PLANHANDLER_H
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Widgets/GraphicItems/miniongraphicsitem.h"
 #include "Widgets/GraphicItems/herographicsitem.h"
 #include "Widgets/GraphicItems/weapongraphicsitem.h"

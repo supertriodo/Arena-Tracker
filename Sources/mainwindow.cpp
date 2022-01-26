@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "utility.h"
 #include "Widgets/draftscorewindow.h"
 #include "Widgets/cardwindow.h"

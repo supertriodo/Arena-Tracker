@@ -3,7 +3,7 @@
 
 #include "utility.h"
 #include "gamewatcher.h"
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include <QDateTime>
 #include <QObject>
 #include <QNetworkAccessManager>

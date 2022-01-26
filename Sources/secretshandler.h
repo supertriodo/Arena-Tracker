@@ -1,7 +1,7 @@
 #ifndef SECRETSHANDLER_H
 #define SECRETSHANDLER_H
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Cards/secretcard.h"
 #include "enemyhandhandler.h"
 #include "planhandler.h"

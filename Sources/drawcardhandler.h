@@ -2,7 +2,7 @@
 #define DRAWCARDHANDLER_H
 
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Cards/drawcard.h"
 #include <QObject>
 

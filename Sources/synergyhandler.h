@@ -2,7 +2,7 @@
 #define SYNERGYHANDLER_H
 
 #include <QObject>
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Synergies/draftitemcounter.h"
 #include "Synergies/draftdropcounter.h"
 #include "Synergies/statsynergies.h"

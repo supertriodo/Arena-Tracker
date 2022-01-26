@@ -2,7 +2,7 @@
 #define GRAPHICSITEMSENDER_H
 
 #include <QObject>
-#include "../ui_extended.h"
+#include "../extended_ui.h"
 
 class CardGraphicsItem;
 class HeroPowerGraphicsItem;

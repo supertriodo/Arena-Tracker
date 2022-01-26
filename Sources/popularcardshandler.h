@@ -1,7 +1,7 @@
 #ifndef POPULARCARDSHANDLER_H
 #define POPULARCARDSHANDLER_H
 
-#include "Widgets/ui_extended.h"
+#include "Widgets/extended_ui.h"
 #include "Cards/popularcard.h"
 #include "enemyhandhandler.h"
 #include "synergyhandler.h"
