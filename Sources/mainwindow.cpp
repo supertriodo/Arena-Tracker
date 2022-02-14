@@ -4522,7 +4522,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "BOOMSDAY" << "SCHOLOMANCE" << "LOE" << "LOOTAPALOOZA" << "ULDUM" << "ALTERAC_VALLEY";
+//    arenaSets << "CORE" << "DRAGONS" << "GANGS" << "UNGORO" << "BRM" << "KARA" << "ALTERAC_VALLEY";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4531,11 +4531,11 @@ void MainWindow::testTierlists()
 
 /*
  * Core "CORE"
- * The boomsday Project "BOOMSDAY"
- * Scholomance Academy "SCHOLOMANCE"
- * League of Explorer "LOE"
- * Kobolds and Catacombs "LOOTAPALOOZA"
- * Saviors of Uldum "ULDUM"
+ * Descent of Dragons "DRAGONS"
+ * Mean Streets of Gadgetzan "GANGS"
+ * Journey to Un'Goro "UNGORO"
+ * Blackrock Mountain "BRM"
+ * One Night in Karazhan "KARA"
  * Fractured in Alterac Valley "ALTERAC_VALLEY"
  */
 
@@ -4543,7 +4543,7 @@ void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "BOOMSDAY" << "SCHOLOMANCE" << "LOE" << "LOOTAPALOOZA" << "ULDUM" << "ALTERAC_VALLEY";
+    arenaSets << "CORE" << "DRAGONS" << "GANGS" << "UNGORO" << "BRM" << "KARA" << "ALTERAC_VALLEY";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
