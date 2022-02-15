@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 14,
-  "arenaSets": ["CORE", "BOOMSDAY", "SCHOLOMANCE", "LOE", "LOOTAPALOOZA", "ULDUM", "ALTERAC_VALLEY"],
+  "arenaVersion": 15,
+  "arenaSets": ["CORE", "DRAGONS", "GANGS", "UNGORO", "BRM", "KARA", "ALTERAC_VALLEY"],
   "multiclassArena": false,
-  "redownloadCards": true,
+  "redownloadCards": false,
   "redownloadHeroes": false
 }
