@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 15,
+  "arenaVersion": 16,
   "arenaSets": ["CORE", "DRAGONS", "GANGS", "UNGORO", "BRM", "KARA", "ALTERAC_VALLEY"],
   "multiclassArena": false,
   "redownloadCards": false,
-  "redownloadHeroes": false
+  "redownloadHeroes": true
 }
