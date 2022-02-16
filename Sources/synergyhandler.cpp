@@ -4396,6 +4396,7 @@ REGLAS
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
     Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo. Synergias con schools of magic no.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
+    Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen solo para generacion de cartas en mano, no en board.
