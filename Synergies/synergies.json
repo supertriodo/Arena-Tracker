@@ -220,7 +220,7 @@
 "AV_294" : [ "drop2", "pingGen", "battlecry", "attackBuffGen", "heroAttackGen", "tokenSyn", "returnSyn" ],
 "AV_295" : [ "drawGen2" ],
 "AV_296" : [ "drop3", "battlecry" ],
-"AV_298" : [ "damageMinionsGen", "rush", "otherClassSyn" ],
+"AV_298" : [ "damageMinionsGen", "rush", "otherClassSyn", "evolveSyn" ],
 "AV_308" : [ "felAllSyn", "battlecry", "returnSyn" ],
 "AV_309" : [ "deathrattle", "drop3" ],
 "AV_312" : [ "evolveGen", "deathrattleGoodAllSyn", "eggSyn", "battlecry", "returnSyn" ],
