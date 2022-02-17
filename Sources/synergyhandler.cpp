@@ -4231,6 +4231,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == CERATHINE_FLEETRUNNER)return 0;
     if(code == RECONNAISSANCE)      return 0;
     if(code == SHIVERING_SORCERESS) return 0;
+    if(code == BRACING_COLD)        return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == AUCTIONHOUSE_GAVEL)  return 1;
     if(code == SI7_SKULKER)         return 1;
@@ -4442,7 +4443,7 @@ REGLAS
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats
-    o 2+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
+    o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
     o minions que suelen hacer rush sin morir y pierden atributos.
 +drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
 +Un drop debe ser eficiente jugado en su turno suponiendo que el enemigo tenga en juego un minion del turno anterior y

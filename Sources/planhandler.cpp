@@ -2946,6 +2946,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 10;
         onlyMinions = true;
     }
+    else if(code == DONT_STAND_IN_THE_FIRE)
+    {
+        missiles = 10;
+        onlyMinions = true;
+    }
     //Extra
     else if(code == GOBLIN_BLASTMAGE)
     {

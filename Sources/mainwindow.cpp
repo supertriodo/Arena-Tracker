@@ -4510,7 +4510,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("ALTERAC_VALLEY", 1, 30, "ONY_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies();//"DED_");
+//    draftHandler->getSynergyHandler()->testSynergies("ONY_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
