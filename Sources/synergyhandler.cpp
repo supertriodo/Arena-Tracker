@@ -1946,7 +1946,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         if(!wildCodes.contains(code))
         {
             debugSynergiesCode(code, ++num);
-            qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"to be removed.";
         }
     }
     if(num == 0)
@@ -1956,6 +1955,30 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     else
     {
         qDebug()<<"DEBUG SYNERGIES: Those synergies to be removed.";
+    }
+
+
+    num = 0;
+    qDebug()<<"DEBUG SYNERGIES: Checking dup CORE synergies.";
+    for(const QString &code: (const QStringList)synergyCodesKeys)
+    {
+        const QString coreCode = "CORE_" + code;
+        if(synergyCodes.contains(coreCode))
+        {
+            if(synergyCodes[code].toSet() != synergyCodes[coreCode].toSet())
+            {
+                debugSynergiesCode(code, ++num);
+                debugSynergiesCode(coreCode, num);
+            }
+        }
+    }
+    if(num == 0)
+    {
+        qDebug()<<"DEBUG SYNERGIES: OK - All dup CORE synergies are twins.";
+    }
+    else
+    {
+        qDebug()<<"DEBUG SYNERGIES: Those dup CORE synergies differ.";
     }
 
     if(needSynergyClear)    clearLists(true);
