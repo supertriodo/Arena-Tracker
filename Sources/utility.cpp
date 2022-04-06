@@ -374,6 +374,16 @@ CardRace Utility::getRaceFromCode(QString code)
     else if(value == "BLANK")       return BLANK;
     else if(value == "ALL")         return ALL;
     else if(value == "EGG")         return EGG;
+    else if(value == "QUILBOAR")    return QUILBOAR;
+    else if(value == "CENTAUR")     return CENTAUR;
+    else if(value == "FURBOLG")     return FURBOLG;
+    else if(value == "HIGHELF")     return HIGHELF;
+    else if(value == "TREANT")      return TREANT;
+    else if(value == "OWLKIN")      return OWLKIN;
+    else if(value == "HALFORC")     return HALFORC;
+    else if(value == "LOCK")        return LOCK;
+    else if(value == "NAGA")        return NAGA;
+    else if(value == "OLDGOD")      return OLDGOD;
     else                            return INVALID_RACE;
 }
 

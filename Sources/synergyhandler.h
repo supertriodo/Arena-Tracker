@@ -100,6 +100,7 @@ private:
     bool isTotemGen(const QString &code);
     bool isPirateGen(const QString &code);
     bool isDragonGen(const QString &code);
+    bool isNagaGen(const QString &code);
     bool isArcaneGen(const QString &code);
     bool isFelGen(const QString &code);
     bool isFireGen(const QString &code);
@@ -186,6 +187,7 @@ private:
     bool isTotemSyn(const QString &code);
     bool isPirateSyn(const QString &code);
     bool isDragonSyn(const QString &code);
+    bool isNagaSyn(const QString &code);
     bool isMurlocAllSyn(const QString &code, const QString &text);
     bool isDemonAllSyn(const QString &code, const QString &text);
     bool isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
@@ -194,6 +196,7 @@ private:
     bool isTotemAllSyn(const QString &code, const QString &text);
     bool isPirateAllSyn(const QString &code, const QString &text);
     bool isDragonAllSyn(const QString &code, const QString &text);
+    bool isNagaAllSyn(const QString &code, const QString &text);
     bool isArcaneSyn(const QString &code);
     bool isFelSyn(const QString &code);
     bool isFireSyn(const QString &code);
