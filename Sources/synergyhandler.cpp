@@ -1902,8 +1902,11 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 {
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
-    for(const QString &code: (const QStringList)Utility::getWildCodes())
+    qDebug()<<"DEBUG SYNERGIES: Checking missing synergies.";
+    const QStringList wildCodes = Utility::getWildCodes();
+    for(const QString &code: (const QStringList)wildCodes)
     {
+        //Missing synergy
         if(!synergyCodes.contains(code))
         {
             QString set = Utility::getCardAttribute(code, "set").toString();
@@ -1919,11 +1922,11 @@ void SynergyHandler::debugMissingSynergiesAllSets()
             {
                 if(!isValidSynergyCode(mechanic))   invalidMecs.append(mechanic);
             }
+            //Wrong spelled mechanic
             if(!invalidMecs.isEmpty())  qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"No mecs:"<<invalidMecs;
             StatSynergies::getStatsSynergiesFromJson(code, synergyCodes);//Check fallos en synergy stats -> =GenMinionHealth1
         }
     }
-
     if(num == 0)
     {
         qDebug()<<"DEBUG SYNERGIES: OK - No missing synergies.";
@@ -1931,6 +1934,28 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     else
     {
         qDebug()<<"DEBUG SYNERGIES: Those synergies missing.";
+    }
+
+
+    num = 0;
+    qDebug()<<"DEBUG SYNERGIES: Checking extra synergies.";
+    const QStringList synergyCodesKeys = synergyCodes.keys();
+    for(const QString &code: (const QStringList)synergyCodesKeys)
+    {
+        //Extra synergy, not used, need to be removed
+        if(!wildCodes.contains(code))
+        {
+            debugSynergiesCode(code, ++num);
+            qDebug()<<"DEBUG SYNERGIES: Code:"<<code<<"to be removed.";
+        }
+    }
+    if(num == 0)
+    {
+        qDebug()<<"DEBUG SYNERGIES: OK - No extra synergies.";
+    }
+    else
+    {
+        qDebug()<<"DEBUG SYNERGIES: Those synergies to be removed.";
     }
 
     if(needSynergyClear)    clearLists(true);
