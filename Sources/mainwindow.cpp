@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("ALTERAC_VALLEY", 1, 30, "ONY_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE");//, 1, 30, "ONY_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("ONY_");
 
