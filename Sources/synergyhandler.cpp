@@ -1902,7 +1902,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 {
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
-    qDebug()<<"DEBUG SYNERGIES: Checking missing synergies.";
     const QStringList wildCodes = Utility::getWildCodes();
     for(const QString &code: (const QStringList)wildCodes)
     {
@@ -1938,7 +1937,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 
 
     num = 0;
-    qDebug()<<"DEBUG SYNERGIES: Checking extra synergies.";
     const QStringList synergyCodesKeys = synergyCodes.keys();
     for(const QString &code: (const QStringList)synergyCodesKeys)
     {
@@ -1959,7 +1957,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
 
 
     num = 0;
-    qDebug()<<"DEBUG SYNERGIES: Checking dup CORE synergies.";
     for(const QString &code: (const QStringList)synergyCodesKeys)
     {
         const QString coreCode = "CORE_" + code;
