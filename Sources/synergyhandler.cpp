@@ -2113,8 +2113,8 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
-    qDebug()<<num<<Utility::getCardAttribute(origCode, "set").toString()<<Utility::cardEnNameFromCode(origCode)+": "+text;
-
+    qDebug()<<num<<origCode+(origCode==code?"":" COPY of "+code)<<Utility::getCardAttribute(origCode, "set").toString()<<text;
+    qDebug()<<origCode<<": ["<<Utility::cardEnNameFromCode(origCode)<<"],";
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<origCode<<": ["<<synergyCodes[code]<<"],";
     else                            qDebug()<<origCode<<": ["<<mec<<"],";
 
