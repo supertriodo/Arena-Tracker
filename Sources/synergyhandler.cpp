@@ -3996,7 +3996,7 @@ bool SynergyHandler::isReturnSyn(const QString &code, const QJsonArray &mechanic
         return synergyCodes[code].contains("echo");
     }
     else if(mechanics.contains(QJsonValue("BATTLECRY")) || mechanics.contains(QJsonValue("COMBO")) ||
-            mechanics.contains(QJsonValue("CHOOSE_ONE")))
+            mechanics.contains(QJsonValue("CHOOSE_ONE")) || mechanics.contains(QJsonValue("COLOSSAL")))
     {
         if(
                 ((text.contains("summon") || text.contains("give") || text.contains("restore")) && !text.contains("opponent")) ||
@@ -4442,7 +4442,8 @@ silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen
 Double check:
 DAMAGE/DESTROY: reachGen(no atk1), aoeGen(spellDamageSyn/eggSyn),
                 pingGen(enrageSyn), damageMinionsGen, destroyGen(8+ damage/no rush)
-BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/choose one/combo/echo), silenceOwnSyn/evolveSyn(deathrattle/malo)
+BATTLECRY/COMBO/ECHO/DEATHRATTLE: returnsyn(battlecry/choose one/combo/echo),
+                silenceOwnSyn/evolveSyn(deathrattle/malo)
 ENRAGE/FRENZY/TAKE DAMAGE: enrageGen(take damage)/rushGiverSyn
 RUSHGIVERSYN: enrageGen/frenzy, poison, damage adjacents
 SUMMON: tokenGen(summon)
@@ -4490,7 +4491,7 @@ REGLAS
     Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
-+elementalGen/dragonGen solo para generacion de cartas en mano, no en board.
++elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
 +eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).

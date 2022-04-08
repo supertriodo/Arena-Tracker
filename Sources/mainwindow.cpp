@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("CORE");//, 1, 30, "ONY_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 121, 140);//, "ONY_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies("ONY_");
 
@@ -4609,7 +4609,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> ALTERAC_VALLEY
+//Update Utility::isFromStandardSet(QString code) --> THE_SUNKEN_CITY
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)

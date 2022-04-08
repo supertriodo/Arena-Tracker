@@ -473,6 +473,7 @@ CardClass Utility::classString2cardClass(QString value)
  * Forged in the Barrens "THE_BARRENS"
  * United in Stormwind "STORMWIND"
  * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
  */
 
 
@@ -489,8 +490,9 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "UNGORO" || cardSet == "ICECROWN" || cardSet == "LOOTAPALOOZA" ||
 //        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
-        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
-        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY")
+//        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
+        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
+        cardSet == "THE_SUNKEN_CITY")
     {
         return true;
     }
