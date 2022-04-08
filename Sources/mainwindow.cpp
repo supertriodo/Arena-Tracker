@@ -4510,7 +4510,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 121, 140);//, "ONY_");
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("ONY_");
+//    draftHandler->getSynergyHandler()->testSynergies();//"ONY_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4621,7 +4621,6 @@ void MainWindow::testDelay()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-        //|-Vigilar synergias drop2, drop3, drop4
     //Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
     //Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 

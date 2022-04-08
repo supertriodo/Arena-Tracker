@@ -1802,7 +1802,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("ALTERAC_VALLEY", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_SUNKEN_CITY", true, true))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
 //    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
@@ -4322,16 +4322,22 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == RECONNAISSANCE)      return 0;
     if(code == SHIVERING_SORCERESS) return 0;
     if(code == BRACING_COLD)        return 0;
+    if(code == WAYWARD_SAGE)        return 0;
+    if(code == SWIFTSCALE_TRICKSTER)return 0;
+    if(code == FROM_THE_DEPTHS)     return 0;
     if(code == EYE_BEAM)            return 1;
     if(code == AUCTIONHOUSE_GAVEL)  return 1;
     if(code == SI7_SKULKER)         return 1;
     if(code == PRIDE_SEEKER)        return 1;
     if(code == STORMPIKE_MARSHAL)   return 1;
+    if(code == MURKWATER_SCRIBE)    return 1;
     if(code == FRENZIED_FELWING)    return 2;
     if(code == PALM_READING)        return 2;
     if(code == FELGORGER)           return 2;
     if(code == FROSTWOLF_WARMASTER) return 2;
     if(code == STORMPIKE_BATTLE_RAM)return 2;
+    if(code == SEAFLOOR_GATEWAY)    return 2;
+    if(code == GREENTHUMB_GARDENER) return 2;
     if(code == NERUBIAN_PROPHET)    return 3;
     if(code == CORRIDOR_CREEPER)    return 3;
     if(code == SECOND_RATE_BRUISER) return 3;
@@ -4340,6 +4346,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == CUTTING_CLASS)       return 3;
     if(code == GRANITE_FORGEBORN)   return 3;
     if(code == CLUMSY_COURIER)      return 3;
+    if(code == EXCAVATION_SPECIALIST)return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -4367,11 +4374,13 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == FLESH_GIANT)         return 6;
     if(code == IREBOUND_BRUTE)      return 6;
     if(code == GOLDSHIRE_GNOLL)     return 6;
+    if(code == THE_GARDENS_GRACE)   return 6;
     if(code == URZUL_GIANT)         return 7;
     if(code == CLOCKWORK_GIANT)     return 8;
     if(code == MULCHMUNCHER)        return 8;
     if(code == GRAVE_HORROR)        return 9;
     if(code == LIVING_MANA)         return 10;
+    if(code == NAGA_GIANT)          return 10;
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;
