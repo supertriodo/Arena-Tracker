@@ -4522,7 +4522,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "DRAGONS" << "GANGS" << "UNGORO" << "BRM" << "KARA" << "ALTERAC_VALLEY";
+//    arenaSets << "CORE" << "LOE" << "OG" << "TGT" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4531,22 +4531,23 @@ void MainWindow::testTierlists()
 
 /*
  * Core "CORE"
- * Descent of Dragons "DRAGONS"
- * Mean Streets of Gadgetzan "GANGS"
- * Journey to Un'Goro "UNGORO"
- * Blackrock Mountain "BRM"
- * One Night in Karazhan "KARA"
+ * League of Explorer "LOE"
+ * Whispers of the Old Gods "OG"
+ * The Grand Tournament "TGT"
+ * United in Stormwind "STORMWIND"
  * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
  */
 
 void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "DRAGONS" << "GANGS" << "UNGORO" << "BRM" << "KARA" << "ALTERAC_VALLEY";
+    arenaSets << "CORE" << "LOE" << "OG" << "TGT" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
+    //Fallo -- Failed to download card image(Hearthsim/Hearthpwn):
 }
 
 
