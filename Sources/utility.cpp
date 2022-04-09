@@ -536,6 +536,27 @@ QStringList Utility::getSetCodes(const QString &set, bool excludeHeroes, bool on
 }
 
 
+QStringList Utility::getSetIntCodes(const int &set, bool excludeHeroes, bool onlyCollectible)
+{
+    QStringList setCodes;
+    const QList<QString> codeList = Utility::cardsJson->keys();
+    for(const QString &code: codeList)
+    {
+        if(getCardAttribute(code, "set").toInt() == set)
+        {
+            if  (
+                (!onlyCollectible || getCardAttribute(code, "collectible").toBool()) &&
+                (!excludeHeroes || !(code.startsWith("HERO_0") || code.startsWith("HERO_1")))
+                )
+            {
+                setCodes.append(code);
+            }
+        }
+    }
+    return setCodes;
+}
+
+
 QStringList Utility::getWildCodes()
 {
     QStringList setCodes;

@@ -4547,7 +4547,7 @@ void MainWindow::testDownloadRotation()
     draftHandler->setArenaSets(arenaSets);
     allCardsDownloadNeeded = true;
     checkArenaCards();
-    //Fallo -- Failed to download card image(Hearthsim/Hearthpwn):
+    //Fallo --> Failed to download card image(Hearthsim/Hearthpwn):
 }
 
 
@@ -4555,11 +4555,13 @@ void MainWindow::testDownloadCards()
 {
     //Download specific cards
     QStringList codes = {};
+//    QStringList codes = Utility::getSetIntCodes(1810, true, true);
     for(const QString &code: qAsConst(codes))
     {
         cardDownloader->downloadWebImage(code, false, true, true);
         cardDownloader->downloadWebImage(code + "_premium", false, true, true);
     }
+    //Fallo --> Failed to download card image(Hearthsim/Hearthpwn):
 }
 
 void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
