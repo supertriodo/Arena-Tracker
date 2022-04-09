@@ -4633,8 +4633,8 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> Patch 22.0 (2021-11-29)
-//|-Synergy / Code  --> Patch 22.4 (2022-02-10)
+//|-Imagenes cartas --> Patch 23.0 (2022-04-05)
+//|-Synergy / Code  --> Patch 23.0 (2022-04-05)
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
