@@ -63,6 +63,7 @@ public:
     bool isDrop4(const QString &code, int cost, int attack, int health);
 
 private:
+    bool shouldBeInSynergies(const QString &code);
     void createDraftItemCounters();
     void deleteDraftItemCounters();
     bool containsAll(const QString &text, const QString &words);

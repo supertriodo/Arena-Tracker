@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 121, 140);//, "ONY_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY");//, 121, 140);//, "ONY_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();//"ONY_");
 
@@ -4607,6 +4607,12 @@ void MainWindow::testDelay()
  * No esperes a la actualizacion de cards.json pq puede llevar horas, mejor hacer las sinergias al dia siguiente y volver a cambiar
  * la version de arenaVersion.json para forzar rehacer los histogramas incluyendo las nuevas 35 cartas que apareceran cuando cards.json
  * se actualice.
+ */
+
+/* Para rotaciones de CORE, en el pre patch el json tendra las nuevas cartas que se incluiran en el CORE en "set":1810
+ * Al lanzarse la exp el json sera actualizado y las cartas eliminadas de CORE estan en "set":"PLACEHOLDER_202204"
+ * Aunque el json cambia el dia de la expansion los de Hearthsim no han cambiado su version, por lo que para forzar que se vuelva
+ * a descargar usamos la nueva version de AT (REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE true).
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)

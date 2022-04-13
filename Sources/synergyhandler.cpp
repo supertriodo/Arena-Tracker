@@ -1898,6 +1898,13 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
 }
 
 
+bool SynergyHandler::shouldBeInSynergies(const QString &code)
+{
+    const QString &set = Utility::getCardAttribute(code, "set").toString();
+    return (!code.startsWith("HERO_") && set != "WILD_EVENT" && set != "VANILLA") && !set.startsWith("PLACEHOLDER");
+}
+
+
 void SynergyHandler::debugMissingSynergiesAllSets()
 {
     bool needSynergyClear = initSynergyCodes();
@@ -1908,11 +1915,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         //Missing synergy
         if(!synergyCodes.contains(code))
         {
-            QString set = Utility::getCardAttribute(code, "set").toString();
-            if(!code.startsWith("HERO_") && set != "WILD_EVENT" && set != "VANILLA")
-            {
-                debugSynergiesCode(code, ++num);
-            }
+            if(shouldBeInSynergies(code))   debugSynergiesCode(code, ++num);
         }
         else
         {
@@ -1941,10 +1944,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     for(const QString &code: (const QStringList)synergyCodesKeys)
     {
         //Extra synergy, not used, need to be removed
-        if(!wildCodes.contains(code))
-        {
-            debugSynergiesCode(code, ++num);
-        }
+        if(!shouldBeInSynergies(code))  debugSynergiesCode(code, ++num);
     }
     if(num == 0)
     {
