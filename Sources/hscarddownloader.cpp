@@ -161,16 +161,16 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
                 plainCode.chop(8);
                 CardType cardType = Utility::getTypeFromCode(plainCode);
                 if(cardType == MINION)      webImage = webImage.copy(-9, -30, 295, 447);
-                else if(cardType == SPELL)  webImage = webImage.copy(-4, -31, 295, 447);
-                else                        webImage = webImage.copy(-1, -32, 295, 447);
+                else if(cardType == WEAPON) webImage = webImage.copy(-1, -32, 295, 447);
+                else /*SPELL - HERO*/       webImage = webImage.copy(-4, -31, 295, 447);
             }
             //Plain from hearthpwn
             else
             {
                 CardType cardType = Utility::getTypeFromCode(code);
                 if(cardType == MINION)      webImage = webImage.copy(-4, -30, 295, 447);
-                else if(cardType == SPELL)  webImage = webImage.copy(-4, -31, 295, 447);
-                else                        webImage = webImage.copy(-1, -32, 295, 447);
+                else if(cardType == WEAPON) webImage = webImage.copy(-1, -32, 295, 447);
+                else /*SPELL - HERO*/       webImage = webImage.copy(-4, -31, 295, 447);
                 //Old cut for all hearthsim plain cards (minion/spell/weapon)
                 //webImage = webImage.copy(4, -8, 246, 372);
             }
