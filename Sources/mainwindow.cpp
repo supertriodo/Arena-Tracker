@@ -2564,7 +2564,7 @@ bool MainWindow::checkCardImage(QString code, bool isHero)
 
     if(!cardFile.exists())
     {
-        //La bajamos de Github/Hearthsim
+        //La bajamos de Github/Hearthpawn
         cardDownloader->downloadWebImage(code, isHero);
         return false;
     }
@@ -4544,24 +4544,14 @@ void MainWindow::testDownloadRotation()
     //Download new set cards
     QStringList arenaSets;
     arenaSets << "CORE" << "LOE" << "OG" << "TGT" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
-    draftHandler->setArenaSets(arenaSets);
-    allCardsDownloadNeeded = true;
-    checkArenaCards();
-    //Fallo --> Failed to download card image(Hearthsim/Hearthpwn):
-}
-
-
-void MainWindow::testDownloadCards()
-{
-    //Download specific cards
-    QStringList codes = {};
-//    QStringList codes = Utility::getSetIntCodes(1810, true, true);
+    QStringList codes;
+    for(const QString &set: qAsConst(arenaSets))    codes += Utility::getSetCodes(set, true, true);
     for(const QString &code: qAsConst(codes))
     {
-        cardDownloader->downloadWebImage(code, false, true, true);
-        cardDownloader->downloadWebImage(code + "_premium", false, true, true);
+        cardDownloader->downloadWebImage(code, false, false, true);
+        cardDownloader->downloadWebImage(code + "_premium", false, false, true);
     }
-    //Fallo --> Failed to download card image(Hearthsim/Hearthpwn):
+    //Fallo --> Failed to download card image
 }
 
 void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
@@ -4588,7 +4578,6 @@ void MainWindow::testDelay()
 //    testTierlists();
 
 //    testDownloadRotation();
-//    testDownloadCards();
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
@@ -4639,7 +4628,7 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> Patch 23.0 (2022-04-05)
+//|-Imagenes cartas --> testDownloadRotation()
 //|-Synergy / Code  --> Patch 23.2.2 (2022-05-19)
 
 //Rotacion CORE

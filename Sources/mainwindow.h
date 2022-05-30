@@ -273,7 +273,6 @@ private slots:
     void downloadHeroPortrait(QString code);
     void testTierlists();
     void testDownloadRotation();
-    void testDownloadCards();
     void testSecretsHSR(LoadingScreenState loadingScreenState);
     void testPopularList();
     void confirmNewArenaDraft(QString hero);
