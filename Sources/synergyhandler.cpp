@@ -4471,7 +4471,7 @@ CHARGE/RUSH: pingGen(atk1) o damageMinionsGen(no atk1) <--> reachGen(no atk1) o 
 STEALTH: stealthGen <--> reachGen(no atk1)
 
 SPAWN ENEMIES: spawnEnemyGen
-DRAW ENEMY/SHUFFLE ENEMY: enemyDrawGen/enemyDrawSyn
+DRAW ENEMY: enemyDrawGen/enemyDrawSyn
 HERO ATTACK: heroAttackGen/heroAttackSyn <--> weaponAllSyn
 HERO POWER: heroPowerGen
 SPELL BUFF: spellBuffGen/spellBuffSyn
@@ -4513,6 +4513,7 @@ REGLAS
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y ese sera el numero the toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
 +discover from your deck (no copy) es drawGen ya que la carta viene de tu mazo. (BAR_545)
++discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
 +tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
@@ -4531,7 +4532,6 @@ REGLAS
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
 +Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor,
     es una sinergia muy debil.
-+Discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +No usamos los "=Gen(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)" ya que al no poder distinguir si se generan en el tablero, mano o mazo
     no se pueden asociar bien con los syn.
 +Sinergias con 1/1s incluye lackeySyn y silverHandSyn. (jadeGolemSyn no existe)
