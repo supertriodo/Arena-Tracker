@@ -4522,7 +4522,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "LOE" << "OG" << "TGT" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+//    arenaSets << "CORE" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4530,20 +4530,20 @@ void MainWindow::testTierlists()
 }
 
 /*
- * Core "CORE"
- * League of Explorer "LOE"
- * Whispers of the Old Gods "OG"
- * The Grand Tournament "TGT"
- * United in Stormwind "STORMWIND"
- * Fractured in Alterac Valley "ALTERAC_VALLEY"
- * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  Core "CORE"
+ *  The boomsday Project "BOOMSDAY"
+ *  Descent of Dragons "DRAGONS"
+ *  Forged in the Barrens "THE_BARRENS"
+ *  United in Stormwind "STORMWIND"
+ *  Fractured in Alterac Valley "ALTERAC_VALLEY"
+ *  Voyage to the Sunken City "THE_SUNKEN_CITY"
  */
 
 void MainWindow::testDownloadRotation()
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "LOE" << "OG" << "TGT" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+    arenaSets << "CORE" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
     QStringList codes;
     for(const QString &set: qAsConst(arenaSets))    codes += Utility::getSetCodes(set, true, true);
     for(const QString &code: qAsConst(codes))
