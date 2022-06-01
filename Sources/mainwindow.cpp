@@ -4539,17 +4539,27 @@ void MainWindow::testTierlists()
  *  Voyage to the Sunken City "THE_SUNKEN_CITY"
  */
 
-void MainWindow::testDownloadRotation()
+void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
     arenaSets << "CORE" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
-    QStringList codes;
-    for(const QString &set: qAsConst(arenaSets))    codes += Utility::getSetCodes(set, true, true);
-    for(const QString &code: qAsConst(codes))
+
+    if(fromHearth)
     {
-        cardDownloader->downloadWebImage(code, false, false, true);
-        cardDownloader->downloadWebImage(code + "_premium", false, false, true);
+        QStringList codes;
+        for(const QString &set: qAsConst(arenaSets))    codes += Utility::getSetCodes(set, true, true);
+        for(const QString &code: qAsConst(codes))
+        {
+            cardDownloader->downloadWebImage(code, false, false, true);
+            cardDownloader->downloadWebImage(code + "_premium", false, false, true);
+        }
+    }
+    else
+    {
+        draftHandler->setArenaSets(arenaSets);
+        allCardsDownloadNeeded = true;
+        checkArenaCards();
     }
     //Fallo --> Failed to download card image
 }
@@ -4577,7 +4587,7 @@ void MainWindow::testDelay()
     testSynergies();
 //    testTierlists();
 
-//    testDownloadRotation();
+//    testDownloadRotation(true);//Force hearthpwn true
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
