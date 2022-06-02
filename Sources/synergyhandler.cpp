@@ -4368,6 +4368,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == POWER_WORD_FORTITUDE)return 5;
     if(code == SHIELD_SHATTER)      return 5;
     if(code == LOKHOLAR_THE_ICE_LORD)return 5;
+    if(code == LIGHTRAY)            return 5;
     if(code == DEMONBOLT)           return 6;
     if(code == SEA_GIANT)           return 6;
     if(code == BLOODBOIL_BRUTE)     return 6;
