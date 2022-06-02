@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY");//, 121, 140);//, "ONY_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 21, 40, "TID_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();//"ONY_");
 
