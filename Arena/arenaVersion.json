@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 18,
+  "arenaVersion": 19,
   "arenaSets": ["CORE", "BOOMSDAY", "DRAGONS", "THE_BARRENS", "STORMWIND", "ALTERAC_VALLEY", "THE_SUNKEN_CITY"],
   "multiclassArena": false,
-  "redownloadCards": false,
+  "redownloadCards": true,
   "redownloadHeroes": false
 }
