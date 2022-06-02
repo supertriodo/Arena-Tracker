@@ -4510,7 +4510,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 21, 40, "TID_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("TID_");
+//    draftHandler->getSynergyHandler()->testSynergies();//"TID_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }

@@ -220,6 +220,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_OUTCAST_ALL] = new DraftItemCounter(this, "Outcast");
     mechanicCounters[V_END_TURN] = new DraftItemCounter(this, "Each Turn");
     mechanicCounters[V_RUSH_GIVER] = new DraftItemCounter(this, "Rush");
+    mechanicCounters[V_DREDGE] = new DraftItemCounter(this, "Dredge");
     //New Synergy Step 2
 
 
@@ -945,6 +946,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isLackeyGen(code, text))                                             mechanicCounters[V_LACKEY]->increase(code);
     if(isEndTurnGen(code, text))                                            mechanicCounters[V_END_TURN]->increase(code);
     if(isRushGiverGen(code, text))                                          mechanicCounters[V_RUSH_GIVER]->increase(code);
+    if(isDredge(code, mechanics))                                           mechanicCounters[V_DREDGE]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1052,6 +1054,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isLackeySyn(code))                                                   mechanicCounters[V_LACKEY]->increaseSyn(code);
     if(isEndTurnSyn(code, text))                                            mechanicCounters[V_END_TURN]->increaseSyn(code);
     if(isRushGiverSyn(code, mechanics, text))                               mechanicCounters[V_RUSH_GIVER]->increaseSyn(code);
+    if(isDredgeSyn(code, text))                                             mechanicCounters[V_DREDGE]->increaseSyn(code);
     //New Synergy Step 4
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
@@ -1495,6 +1498,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isLackeyGen(code, text))                                 mechanicCounters[V_LACKEY]->insertSynCards(synergyTagMap);
     if(isEndTurnGen(code, text))                                mechanicCounters[V_END_TURN]->insertSynCards(synergyTagMap);
     if(isRushGiverGen(code, text))                              mechanicCounters[V_RUSH_GIVER]->insertSynCards(synergyTagMap);
+    if(isDredge(code, mechanics))                               mechanicCounters[V_DREDGE]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1593,6 +1597,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isLackeySyn(code))                                       mechanicCounters[V_LACKEY]->insertCards(synergyTagMap);
     if(isEndTurnSyn(code, text))                                mechanicCounters[V_END_TURN]->insertCards(synergyTagMap);
     if(isRushGiverSyn(code, mechanics, text))                   mechanicCounters[V_RUSH_GIVER]->insertCards(synergyTagMap);
+    if(isDredgeSyn(code, text))                                 mechanicCounters[V_DREDGE]->insertCards(synergyTagMap);
     //New Synergy Step 6
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
@@ -1773,7 +1778,10 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "eggSyn", "damageFriendlyHeroSyn", "echoSyn", "echoAllSyn", "rushSyn", "rushAllSyn", "magneticSyn", "magneticAllSyn",
 
         "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcast", "outcastGen", "endTurnGen", "rushGiverGen",
-        "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn"
+        "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn",
+
+        "dredge",
+        "dredgeSyn"
         //New Synergy Step 7
     };
     if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
@@ -1816,7 +1824,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "discover deck")
+                    containsAll(text, "bottom deck")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
@@ -2084,6 +2092,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isOutcast(code, mechanics))                                          mec<<"outcast";
     if(isEndTurnGen(code, text))                                            mec<<"endTurnGen";
     if(isRushGiverGen(code, text))                                          mec<<"rushGiverGen";
+    if(isDredge(code, mechanics))                                           mec<<"dredge";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -2111,6 +2120,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isOutcastAllSyn(code, referencedTags))                               mec<<"outcastAllSyn";
     if(isEndTurnSyn(code, text))                                            mec<<"endTurnSyn";
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
+    if(isDredgeSyn(code, text))                                             mec<<"dredgeSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     qDebug()<<num<<origCode+(origCode==code?"":" COPY of "+code)<<Utility::getCardAttribute(origCode, "set").toString()<<text;
@@ -3213,6 +3223,18 @@ bool SynergyHandler::isRushGiverGen(const QString &code, const QString &text)
     }
     return false;
 }
+bool SynergyHandler::isDredge(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("dredge");
+    }
+    else if(mechanics.contains(QJsonValue("DREDGE")))
+    {
+        return true;
+    }
+    return false;
+}
 bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int health)
 {
     if(synergyCodes.contains(code))
@@ -4277,6 +4299,20 @@ bool SynergyHandler::isRushGiverSyn(const QString &code, const QJsonArray &mecha
     }
     return false;
 }
+bool SynergyHandler::isDredgeSyn(const QString &code, const QString &text)
+{
+    //TEST
+//    containsAll(text, "bottom deck")
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("dredgeSyn");
+    }
+    else if(containsAll(text, "bottom deck"))
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 11
 
 
@@ -4444,7 +4480,7 @@ enrageGen, rushGiverGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen
 tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen, otherClassGen,
-silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen
+silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12
@@ -4478,6 +4514,7 @@ HERO POWER: heroPowerGen
 SPELL BUFF: spellBuffGen/spellBuffSyn
 ATK/HEALTH: attackNerfGen, attackBuffGen, healthBuffGen
 OTHER CLASS: otherClassGen/otherClassSyn
+DREDGE: dredge/dredgeSyn
 SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn
 LACKEY: lackeyGen/lackeySyn
