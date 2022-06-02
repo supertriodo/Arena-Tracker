@@ -2993,6 +2993,7 @@
 "SW_094" : [ "armorGen" ],
 "SW_095" : [ "drawGen", "tokenCardGen", "overloadSyn" ],
 "SW_097" : [ "enrageGen", "drop4" ],
+"Story_11_RemoteControlPuzzle" : [ "enrageGen", "drop4" ],
 "SW_107" : [ "aoeGen", "spellDamageSyn", "eggSyn" ],
 "SW_108" : [ "spellDamageSyn", "damageMinionsGen", "tokenCardGen" ],
 "SW_109" : [ "spellAllSyn", "battlecry", "returnSyn", "evolveSyn" ],
