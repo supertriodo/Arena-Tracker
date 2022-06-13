@@ -1,5 +1,5 @@
 # Arena-Tracker
-Arena Tracker is a deck Tracker for Hearthstone with arena in focus. It has a free and a premium version that you can unlock by becoming a patron (3$/month). Learn the difference between the two [here](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md).
+Arena Tracker is a deck Tracker for Hearthstone with arena in focus. It has a free and a premium version that you can unlock by becoming a patron (3€/month). Learn the difference between the two [here](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md).
 
 Too complicated? [Check the User Guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
