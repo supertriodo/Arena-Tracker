@@ -1,6 +1,6 @@
 Arena Tracker reads the Hearthstone log to give your all the info you need. Arena Tracker works in arena, constructed, adventures and tavern-brawl, but it was created from the ground with arena players in mind.
 
-Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3$ a month, the premium version.
+Arena Tracker is free and open source. To support its development I have created a [patreon account](https://www.patreon.com/triodo) which will put in your hands the full potential of this tracker for 3€ a month, the premium version.
 
 Next you can check a brief explanation of its features divided in free and premium versions of the tracker. For a more extended explanation you can take a look at the [user guide](https://triodo.gitbook.io/arena-tracker-documentation/en).
 
