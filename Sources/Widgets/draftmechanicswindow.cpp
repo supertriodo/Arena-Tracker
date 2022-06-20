@@ -115,7 +115,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
         patreonButton->setFlat(true);
         patreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
         patreonButton->setIconSize(QSize(217, 51));
-        patreonButton->setToolTip("Unlock Synergies and draft mechanics becoming a patron (3$)");
+        patreonButton->setToolTip("Unlock Synergies and draft mechanics becoming a patron (3€)");
         scoresLayout->addWidget(patreonButton);
 
         connect(patreonButton, SIGNAL(clicked()),

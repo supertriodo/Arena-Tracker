@@ -4274,7 +4274,7 @@ void MainWindow::loadTheme(QString theme, bool initTheme)
 void MainWindow::showPremiumDialog()
 {
     QMessageBox msgBox(this);
-    msgBox.setText("Becoming a patron (3$/month) will let you activate the premium version of Arena Tracker, "
+    msgBox.setText("Becoming a patron (3€/month) will let you activate the premium version of Arena Tracker, "
                    "which implements some extra features: (replays, planning, graveyard, popular lists, "
                    "synergies, HSReplay winrate scores and draft mechanics/drops overview). "
                    "<a href='https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/More.md'>Learn more...</a>"
@@ -4795,4 +4795,3 @@ void MainWindow::testDelay()
 
 
 //TODO
-//ALTERAC 10 HERO PORTRAITS DE HERO CARDS

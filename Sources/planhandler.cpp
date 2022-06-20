@@ -49,7 +49,7 @@ void PlanHandler::completeUI()
     planPatreonButton->setFlat(true);
     planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
     planPatreonButton->setIconSize(QSize(217, 51));
-    planPatreonButton->setToolTip("Unlock Replays and Planning becoming a patron (3$)");
+    planPatreonButton->setToolTip("Unlock Replays and Planning becoming a patron (3€)");
 
     ui->verticalLayoutPlan->insertWidget(0, planPatreonButton);
 

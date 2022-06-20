@@ -62,7 +62,7 @@ void GraveyardHandler::completeUI()
     planPatreonButton->setFlat(true);
     planPatreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
     planPatreonButton->setIconSize(QSize(217, 51));
-    planPatreonButton->setToolTip("Unlock Graveyard becoming a patron (3$)");
+    planPatreonButton->setToolTip("Unlock Graveyard becoming a patron (3€)");
 
     ui->tabGraveyardVerticalLayout->insertWidget(0, planPatreonButton);
 
