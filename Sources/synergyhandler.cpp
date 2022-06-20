@@ -4360,7 +4360,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == BRACING_COLD)        return 0;
     if(code == WAYWARD_SAGE)        return 0;
     if(code == SWIFTSCALE_TRICKSTER)return 0;
-    if(code == FROM_THE_DEPTHS)     return 0;
+    if(code == FROM_THE_DEPTHS)     return 1;
     if(code == EYE_BEAM)            return 1;
     if(code == AUCTIONHOUSE_GAVEL)  return 1;
     if(code == SI7_SKULKER)         return 1;
