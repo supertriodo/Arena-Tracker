@@ -1811,6 +1811,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     for(const QString &code: (const QStringList)Utility::getSetCodes("THE_SUNKEN_CITY", true, true))
+//    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
 //    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
@@ -1875,8 +1876,12 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
 {
     bool needSynergyClear = initSynergyCodes();
 
+    QStringList codeList;
+    if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+    else                                codeList.append(Utility::getSetCodes(set, true, onlyCollectible));
+
     qDebug()<<endl<<"-----SynergiesNames.json-----"<<endl;
-    for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, onlyCollectible))
+    for(const QString &code: codeList)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1886,7 +1891,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
 
     qDebug()<<endl<<"-----Synergies.json-----"<<endl;
     int num = 0;
-    for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, onlyCollectible))
+    for(const QString &code: codeList)
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {

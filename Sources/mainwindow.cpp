@@ -4506,9 +4506,9 @@ void MainWindow::downloadHeroPortrait(QString code)
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("AV_226", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("THE_SUNKEN_CITY", 21, 40, "TID_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("TAVERNS_OF_TIME", 1, 0);//, "TID_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();//"TID_");
 
@@ -4530,13 +4530,14 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Core "CORE"
- *  The boomsday Project "BOOMSDAY"
- *  Descent of Dragons "DRAGONS"
- *  Forged in the Barrens "THE_BARRENS"
- *  United in Stormwind "STORMWIND"
- *  Fractured in Alterac Valley "ALTERAC_VALLEY"
- *  Voyage to the Sunken City "THE_SUNKEN_CITY"
+ * Core "CORE"
+ * Taverns of Time "TAVERNS_OF_TIME"
+ * The boomsday Project "BOOMSDAY"
+ * Descent of Dragons "DRAGONS"
+ * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth)
@@ -4548,7 +4549,11 @@ void MainWindow::testDownloadRotation(bool fromHearth)
     if(fromHearth)
     {
         QStringList codes;
-        for(const QString &set: qAsConst(arenaSets))    codes += Utility::getSetCodes(set, true, true);
+        for(const QString &set: qAsConst(arenaSets))
+        {
+            if(Utility::needCodesSpecific(set)) codes.append(Utility::getSetCodesSpecific(set));
+            else                                codes.append(Utility::getSetCodes(set, true, true));
+        }
         for(const QString &code: qAsConst(codes))
         {
             cardDownloader->downloadWebImage(code, false, false, true);

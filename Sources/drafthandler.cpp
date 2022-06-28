@@ -213,7 +213,11 @@ QStringList DraftHandler::getAllArenaCodes()
 {
     QStringList codeList;
 
-    for(const QString &set: qAsConst(arenaSets))  codeList.append(Utility::getSetCodes(set, true, true));
+    for(const QString &set: qAsConst(arenaSets))
+    {
+        if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+        else                                codeList.append(Utility::getSetCodes(set, true, true));
+    }
     return codeList;
 }
 

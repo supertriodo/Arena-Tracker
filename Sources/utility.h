@@ -155,6 +155,8 @@ public:
     static void timeStamp(QString tag);
     static int className2classOrder(QString className);
     static QStringList getThemeList();
+    static bool needCodesSpecific(const QString &set);
+    static QStringList getSetCodesSpecific(const QString &set);
 };
 
 #endif // UTILITY_H

@@ -449,6 +449,7 @@ CardClass Utility::classString2cardClass(QString value)
  * Core "CORE"
  * Legacy "LEGACY"
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
+ * Taverns of Time "TAVERNS_OF_TIME"
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
  * Blackrock Mountain "BRM"
@@ -1076,7 +1077,10 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
         //Arena Codes List
         for(const QString &set: qAsConst(arenaSets))
         {
-            for(const QString &code: (const QStringList)Utility::getSetCodes(set, true, true))
+            QStringList codeList;
+            if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+            else                                codeList.append(Utility::getSetCodes(set, true, true));
+            for(const QString &code: (const QStringList)codeList)
             {
                 QList<CardClass> cardClassList = Utility::getClassFromCode(code);
                 if(cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
@@ -1238,5 +1242,57 @@ void Utility::timeStamp(QString tag)
     qint64 end = QDateTime::currentMSecsSinceEpoch();
     qDebug()<<tag<<end-start;
     start = end;
+}
+
+
+//--------------------------------------------------------
+//----Sets non collectible
+//--------------------------------------------------------
+
+
+bool Utility::needCodesSpecific(const QString &set)
+{
+    if(set == "TAVERNS_OF_TIME")    return true;
+    return false;
+}
+
+
+QStringList Utility::getSetCodesSpecific(const QString &set)
+{
+    if(set == "TAVERNS_OF_TIME")
+    {
+        return
+        {
+        "TOT_030",
+        "TOT_056",
+        "TOT_067",
+        "TOT_069",
+        "TOT_102",
+        "TOT_103",
+        "TOT_105",
+        "TOT_107",
+        "TOT_108",
+        "TOT_109",
+        "TOT_110",
+        "TOT_111",
+        "TOT_112",
+        "TOT_116",
+        "TOT_117",
+        "TOT_118",
+        "TOT_308",
+        "TOT_313",
+        "TOT_316",
+        "TOT_320",
+        "TOT_330",
+        "TOT_332",
+        "TOT_334",
+        "TOT_340",
+        "TOT_341",
+        "TOT_342",
+        "TOT_343",
+        "TOT_345"
+        };
+    }
+    return {};
 }
 
