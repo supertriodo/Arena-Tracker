@@ -4325,9 +4325,9 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
     //Tavern of time cards
-//    if(code == GRASP_THE_FUTURE)    return 0;
-//    if(code == TIMEBOUND_GIANT)     return 6;
-//    if(code == TIMEWAY_WANDERER)    return 0;
+    if(code == GRASP_THE_FUTURE)    return 0;
+    if(code == TIMEBOUND_GIANT)     return 6;
+    if(code == TIMEWAY_WANDERER)    return 0;
 
     //Evitar draw/discover cost 0/1/2 -> no draw y mantenemos coste original
     //Descuento minions on board -> suponemos 2 aliados y 2 enemigos (4 total)
