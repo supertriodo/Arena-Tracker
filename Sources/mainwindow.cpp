@@ -4508,7 +4508,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("TAVERNS_OF_TIME", 1, 0);//, "TID_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("TAVERNS_OF_TIME", 1, 20);//, "TID_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();//"TID_");
 
