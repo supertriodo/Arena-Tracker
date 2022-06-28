@@ -4522,11 +4522,11 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
 //    QStringList arenaSets;
-//    arenaSets << "CORE" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+//    arenaSets << "CORE" << "TAVERNS_OF_TIME" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
 
     QSettings settings("Arena Tracker", "Arena Tracker");
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-    Utility::checkTierlistsCount(arenaSets);
+//    Utility::checkTierlistsCount(arenaSets);
 }
 
 /*
@@ -4544,7 +4544,7 @@ void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+    arenaSets << "CORE" << "TAVERNS_OF_TIME" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
 
     if(fromHearth)
     {
