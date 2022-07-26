@@ -20,6 +20,7 @@
 
 
 //Secretos
+//PALADIN
 #define HAND_OF_SALVATION QString("BCON_012")
 //#define AVENGE QString("FP1_020")
 #define AVENGE QString("CORE_FP1_020")
@@ -39,6 +40,7 @@
 #define GALLOPING_SAVIOR QString("BAR_550")
 #define JUDGMENT_OF_JUSTICE QString("WC_033")
 
+//HUNTER
 //#define FREEZING_TRAP QString("EX1_611")
 #define FREEZING_TRAP QString("CORE_EX1_611")
 //#define EXPLOSIVE_TRAP QString("EX1_610")
@@ -59,6 +61,7 @@
 #define OPEN_THE_CAGES QString("DMF_123")
 #define ICE_TRAP QString("AV_226")
 
+//MAGE
 #define FROZEN_CLONE QString("ICC_082")
 #define MIRROR_ENTITY QString("EX1_294")
 #define DDUPLICATE QString("FP1_018")
@@ -79,7 +82,9 @@
 #define NETHERWIND_PORTAL QString("BT_003")
 #define RIGGED_FAIRE_GAME QString("DMF_107")
 #define OASIS_ALLY QString("BAR_812")
+#define VENGEFUL_VISAGE QString()
 
+//ROGUE
 #define CHEAT_DEATH QString("LOOT_204")
 #define SUDDEN_BETRAYAL QString("LOOT_210")
 #define EVASION QString("LOOT_214")
@@ -89,6 +94,9 @@
 #define PLAGIARIZE QString("SCH_706")
 #define SHADOW_CLONE QString("DMF_513")
 #define SHENANIGANS QString("YOP_017")
+#define DOUBLE_CROSS QString()
+#define KIDNAP QString()
+#define STICKY_SITUATION QString()
 
 
 

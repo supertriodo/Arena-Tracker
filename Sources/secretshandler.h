@@ -127,6 +127,7 @@ public slots:
     void newTurn(bool isPlayerTurn, int numTurn, int enemyMinions);
     void playerCardDraw();
     void playerCardPlayed(int id, QString code, bool discard, bool isPlayerTurn);
+    void playerAllManaSpent();
 
 private slots:
     void checkAvengeDelay();

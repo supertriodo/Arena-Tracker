@@ -988,6 +988,8 @@ void MainWindow::createSecretsHandler()
             enemyHandHandler, SLOT(revealCreatedByCard(QString,QString,int)));
     connect(secretsHandler, SIGNAL(isolatedSecret(int,QString)),
             planHandler, SLOT(enemyIsolatedSecret(int,QString)));
+    connect(planHandler, SIGNAL(playerAllManaSpent()),
+            secretsHandler, SLOT(playerAllManaSpent()));
     connect(secretsHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 

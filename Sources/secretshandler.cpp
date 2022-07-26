@@ -295,6 +295,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
                 //EPIC
+                unknownSecretPlayedAddOption(VENGEFUL_VISAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
                 unknownSecretPlayedAddOption(RIGGED_FAIRE_GAME, inArena, activeSecret);
@@ -303,6 +304,8 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
 
             case ROGUE:
                 //COMMON
+                unknownSecretPlayedAddOption(STICKY_SITUATION, inArena, activeSecret);
+                unknownSecretPlayedAddOption(DOUBLE_CROSS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DIRTY_TRICKS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
@@ -312,6 +315,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SHENANIGANS, inArena, activeSecret);
                 //EPIC
+                unknownSecretPlayedAddOption(KIDNAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BAMBOOZLE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EVASION, inArena, activeSecret);
             break;
@@ -584,6 +588,7 @@ void SecretsHandler::playerSpellPlayed(QString code)
     discardSecretOptionNow(OH_MY_YOGG);
 
     discardSecretOptionNow(DIRTY_TRICKS);
+    discardSecretOptionNow(STICKY_SITUATION);
 }
 
 
@@ -628,6 +633,12 @@ void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
     }
 
     Q_UNUSED(numTurn)
+}
+
+
+void SecretsHandler::playerAllManaSpent()
+{
+    discardSecretOptionNow(DOUBLE_CROSS);
 }
 
 
@@ -695,7 +706,8 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     }
     else    discardSecretOptionNow(REPENTANCE);
 
-    discardSecretOptionNow(AMBUSH);
+    discardSecretOptionNow(AMBUSH);//No necesita objetivo
+    discardSecretOptionNow(KIDNAP);
 }
 
 
@@ -829,6 +841,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOption(FLAME_WARD);//Ocultado por VAPORIZE
             discardSecretOption(VAPORIZE);//Ocultado por FLAME_WARD
             discardSecretOptionNow(ICE_BARRIER);//No necesita objetivo
+            discardSecretOption(VENGEFUL_VISAGE);//Ocultado por VAPORIZE
 
             discardSecretOptionNow(EXPLOSIVE_TRAP);//No necesita objetivo
             discardSecretOptionNow(BEAR_TRAP);
@@ -954,10 +967,10 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
-                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY;
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
-                             << SHADOW_CLONE << SHENANIGANS;
+                             << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS;
 }
 
 

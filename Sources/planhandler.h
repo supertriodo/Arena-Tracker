@@ -196,6 +196,7 @@ signals:
     void heroTotalAttackChange(bool friendly, int totalAttack, int totalMaxAttack);
     void showPremiumDialog();
     void swapSize(bool customSize);
+    void playerAllManaSpent();
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="PlanHandler");
 
 private slots:

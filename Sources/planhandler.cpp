@@ -1010,7 +1010,11 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
         //        13:08:35 - GameWatcher(11791): Player: TAG_CHANGE(RESOURCES_USED)= 0 -- Name: triodo
         //El reinicio de los recursos del jugador se hace al final del turno enemigo por eso
         //forzamos a que el de RESOURCES_USED sea para el turno actual del jugador.
-        if(friendly)    showManaPlayableCards(nowBoard);
+        if(friendly)
+        {
+            showManaPlayableCards(nowBoard);
+            if(hero->getAvailableResources() == 0)  emit playerAllManaSpent();
+        }
     }
     else if(tag == "CURRENT_SPELLPOWER")
     {
