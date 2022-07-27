@@ -82,7 +82,7 @@
 #define NETHERWIND_PORTAL QString("BT_003")
 #define RIGGED_FAIRE_GAME QString("DMF_107")
 #define OASIS_ALLY QString("BAR_812")
-#define VENGEFUL_VISAGE QString()
+#define VENGEFUL_VISAGE QString("REV_516")
 
 //ROGUE
 #define CHEAT_DEATH QString("LOOT_204")
@@ -94,9 +94,9 @@
 #define PLAGIARIZE QString("SCH_706")
 #define SHADOW_CLONE QString("DMF_513")
 #define SHENANIGANS QString("YOP_017")
-#define DOUBLE_CROSS QString()
-#define KIDNAP QString()
-#define STICKY_SITUATION QString()
+#define DOUBLE_CROSS QString("REV_825")
+#define KIDNAP QString("REV_828")
+#define STICKY_SITUATION QString("REV_827")
 
 
 
