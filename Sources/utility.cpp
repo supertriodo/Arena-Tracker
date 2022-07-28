@@ -325,9 +325,9 @@ CardType Utility::getTypeFromCode(QString code)
     if(value == "MINION")           return MINION;
     else if(value == "SPELL")       return SPELL;
     else if(value == "WEAPON")      return WEAPON;
-    else if(value == "ENCHANTMENT") return ENCHANTMENT;
     else if(value == "HERO")        return HERO;
     else if(value == "HERO_POWER")  return HERO_POWER;
+    else if(value == "LOCATION")    return LOCATION;
     else                            return INVALID_TYPE;
 }
 
@@ -475,6 +475,7 @@ CardClass Utility::classString2cardClass(QString value)
  * United in Stormwind "STORMWIND"
  * Fractured in Alterac Valley "ALTERAC_VALLEY"
  * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ * Murder at Castle Nathria "REVENDRETH"
  */
 
 

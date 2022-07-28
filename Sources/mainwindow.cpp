@@ -4532,21 +4532,20 @@ void MainWindow::testTierlists()
 }
 
 /*
- * Core "CORE"
- * Taverns of Time "TAVERNS_OF_TIME"
- * The boomsday Project "BOOMSDAY"
- * Descent of Dragons "DRAGONS"
- * Forged in the Barrens "THE_BARRENS"
- * United in Stormwind "STORMWIND"
- * Fractured in Alterac Valley "ALTERAC_VALLEY"
- * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  Core "CORE"
+ *  One Night in Karazhan "KARA"
+ *  Rastakhan's Rumble "TROLL"
+ *  Saviors of Uldum "ULDUM"
+ *  Scholomance Academy "SCHOLOMANCE"
+ *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ *  Murder at Castle Nathria "REVENDRETH"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "TAVERNS_OF_TIME" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+    arenaSets << "CORE" << "KARA" << "TROLL" << "ULDUM" << "SCHOLOMANCE" << "DARKMOON_FAIRE" << "REVENDRETH";
 
     if(fromHearth)
     {
@@ -4593,8 +4592,8 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-
 //    testDownloadRotation(true);//Force hearthpwn true
+
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
@@ -4646,7 +4645,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation()
-//|-Synergy / Code  --> Patch 23.6 (2022-06-27)
+//|-Synergy / Code  --> Patch 24.0 (2022-07-25)
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
