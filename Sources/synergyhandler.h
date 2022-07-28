@@ -244,7 +244,7 @@ private:
     bool isBattlecryAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isSilenceOwnSyn(const QString &code, const QJsonArray &mechanics);
     bool isTauntGiverSyn(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
-    bool isTokenSyn(const QString &code, const QString &text);
+    bool isTokenSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isTokenCardSyn(const QString &code, const QString &text);
     bool isComboSyn(const QString &code);
     bool isComboAllSyn(const QString &code, const QJsonArray &referencedTags);

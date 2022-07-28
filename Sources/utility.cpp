@@ -493,7 +493,7 @@ bool Utility::isFromStandardSet(QString code)
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
         cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
-        cardSet == "THE_SUNKEN_CITY")
+        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH")
     {
         return true;
     }

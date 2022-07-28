@@ -1026,7 +1026,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_TAUNT_GIVER]->increaseSyn(code);
-    if(isTokenSyn(code, text))                                              mechanicCounters[V_TOKEN]->increaseSyn(code);
+    if(isTokenSyn(code, mechanics, text))                                   mechanicCounters[V_TOKEN]->increaseSyn(code);
     if(isTokenCardSyn(code, text))                                          mechanicCounters[V_TOKEN_CARD]->increaseSyn(code);
     if(isWindfuryMinionSyn(code))                                           mechanicCounters[V_WINDFURY_MINION]->increaseSyn(code);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mechanicCounters[V_ATTACK_BUFF]->increaseSyn(code);
@@ -1568,7 +1568,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergyTagMap);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergyTagMap);
     if(isTauntGiverSyn(code, mechanics, attack, cardType))      mechanicCounters[V_TAUNT_GIVER]->insertCards(synergyTagMap);
-    if(isTokenSyn(code, text))                                  mechanicCounters[V_TOKEN]->insertCards(synergyTagMap);
+    if(isTokenSyn(code, mechanics, text))                       mechanicCounters[V_TOKEN]->insertCards(synergyTagMap);
     if(isTokenCardSyn(code, text))                              mechanicCounters[V_TOKEN_CARD]->insertCards(synergyTagMap);
     if(isWindfuryMinionSyn(code))                               mechanicCounters[V_WINDFURY_MINION]->insertCards(synergyTagMap);
     if(isAttackBuffSyn(code, mechanics, attack, cardType))      mechanicCounters[V_ATTACK_BUFF]->insertCards(synergyTagMap);
@@ -1810,7 +1810,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     bool needSynergyClear = initSynergyCodes();
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("THE_SUNKEN_CITY", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("REVENDRETH", true, true))
 //    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
 //    for(const QString &code: (const QStringList)Utility::getWildCodes())
@@ -1830,7 +1830,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
-//                    mechanics.contains(QJsonValue("TWINSPELL"))
+//                    mechanics.contains(QJsonValue("INFUSE"))
 //                    isEnrageGen(code, mechanics)
 
 
@@ -2111,7 +2111,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isTauntGiverSyn(code, mechanics, attack, cardType))                  mec<<"tauntGiverSyn";
     if(isAttackBuffSyn(code, mechanics, attack, cardType))                  mec<<"attackBuffSyn";
     if(isAttackNerfSyn(code, text))                                         mec<<"attackNerfSyn";
-    if(isTokenSyn(code, text))                                              mec<<"tokenSyn";
+    if(isTokenSyn(code, mechanics, text))                                   mec<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
     if(isEnrageSyn(code, text))                                             mec<<"enrageSyn";
@@ -3910,7 +3910,7 @@ bool SynergyHandler::isTauntGiverSyn(const QString &code, const QJsonArray &mech
     }
     return false;
 }
-bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
+bool SynergyHandler::isTokenSyn(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     //TEST
 //    && (text.contains("+") && (text.contains("minions") || text.contains("characters"))
@@ -3919,6 +3919,10 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QString &text)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("tokenSyn");
+    }
+    else if(mechanics.contains(QJsonValue("INFUSE")))
+    {
+        return true;
     }
     else if(text.contains("+")
             && (text.contains("minions") || text.contains("characters"))
@@ -4365,6 +4369,9 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == BRACING_COLD)        return 0;
     if(code == WAYWARD_SAGE)        return 0;
     if(code == SWIFTSCALE_TRICKSTER)return 0;
+    if(code == PLANTED_EVIDENCE)    return 0;
+    if(code == SERRATED_BONE_SPIKE) return 0;
+    if(code == MURLOCULA)           return 0;
     if(code == FROM_THE_DEPTHS)     return 1;
     if(code == EYE_BEAM)            return 1;
     if(code == AUCTIONHOUSE_GAVEL)  return 1;
@@ -4388,6 +4395,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == GRANITE_FORGEBORN)   return 3;
     if(code == CLUMSY_COURIER)      return 3;
     if(code == EXCAVATION_SPECIALIST)return 3;
+    if(code == RELIC_OF_DIMENSIONS) return 3;
     if(code == MOLTEN_BLADE)        return 4;
     if(code == SHIFTER_ZERUS)       return 4;
     if(code == SHIFTING_SCROLL)     return 4;
@@ -4417,6 +4425,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == IREBOUND_BRUTE)      return 6;
     if(code == GOLDSHIRE_GNOLL)     return 6;
     if(code == THE_GARDENS_GRACE)   return 6;
+    if(code == GIGANTOTEM)          return 6;
     if(code == URZUL_GIANT)         return 7;
     if(code == CLOCKWORK_GIANT)     return 8;
     if(code == MULCHMUNCHER)        return 8;
@@ -4541,6 +4550,7 @@ REGLAS
     Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo. Synergias con schools of magic no.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
     Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
+    Synergias INFUSE si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
@@ -4559,7 +4569,7 @@ REGLAS
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
-+tokenGen son 2 small minions (max 2/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
++tokenGen son 2 small minions (max 3/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
@@ -4585,7 +4595,7 @@ REGLAS
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
-    Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats
+    Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats (3/3 es 3 mana, 3/4 es 3.5 mana)
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
     o minions que suelen hacer rush sin morir y pierden atributos.
 +drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
