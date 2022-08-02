@@ -4523,11 +4523,11 @@ void MainWindow::testTierlists()
     downloadHearthArenaTierlistOriginal();
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
-//    QStringList arenaSets;
-//    arenaSets << "CORE" << "TAVERNS_OF_TIME" << "BOOMSDAY" << "DRAGONS" << "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY";
+    QStringList arenaSets;
+    arenaSets << "CORE" << "KARA" << "TROLL" << "ULDUM" << "SCHOLOMANCE" << "DARKMOON_FAIRE" << "REVENDRETH";
 
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+//    QSettings settings("Arena Tracker", "Arena Tracker");
+//    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
 //    Utility::checkTierlistsCount(arenaSets);
 }
 

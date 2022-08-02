@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 20,
-  "arenaSets": ["CORE", "TAVERNS_OF_TIME", "BOOMSDAY", "DRAGONS", "THE_BARRENS", "STORMWIND", "ALTERAC_VALLEY", "THE_SUNKEN_CITY"],
+  "arenaVersion": 21,
+  "arenaSets": ["CORE", "KARA", "TROLL", "ULDUM", "SCHOLOMANCE", "DARKMOON_FAIRE", "REVENDRETH"],
   "multiclassArena": false,
-  "redownloadCards": false,
-  "redownloadHeroes": true
+  "redownloadCards": true,
+  "redownloadHeroes": false
 }
