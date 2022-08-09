@@ -737,7 +737,7 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QS
         cardTypeCounters[V_SPELL]->increaseExtra(code);
         spellMap.insertMulti(code, ".");
     }
-    if(cardType == MINION || cardType == HERO)
+    if(cardType == MINION || cardType == HERO || cardType == LOCATION)
     {
         cardTypeCounters[V_MINION]->increase(code);
         minionMap.insertMulti(code, "");
