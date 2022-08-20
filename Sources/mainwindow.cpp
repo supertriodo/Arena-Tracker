@@ -4645,7 +4645,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation()
-//|-Synergy / Code  --> Patch 24.0 (2022-07-25)
+//|-Synergy / Code  --> 24.0.3 Patch (2022-08-16)
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo
