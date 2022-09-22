@@ -1216,7 +1216,14 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Enemigo juega esbirro
             else if(zoneTo == "OPPOSING PLAY")
             {
-                emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
+                if(Utility::getTypeFromCode(cardId) == MINION)//Evita locations
+                {
+                    emit pDebug("Enemy: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
+                }
+                else
+                {
+                    emit pDebug("Enemy: Non minion played on board: " + name + " ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
+                }
             }
             //Enemigo juega arma
             else if(zoneTo == "OPPOSING PLAY (Weapon)")
@@ -1290,8 +1297,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Jugador juega esbirro
             else if(zoneTo == "FRIENDLY PLAY")
             {
-                emit pDebug("Player: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
-                if(isPlayerTurn)    emit playerMinionPlayed(cardId, id.toInt(), playerMinions);
+                if(Utility::getTypeFromCode(cardId) == MINION)//Evita locations
+                {
+                    emit pDebug("Player: Minion played: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
+                    if(isPlayerTurn)    emit playerMinionPlayed(cardId, id.toInt(), playerMinions);
+                }
+                else
+                {
+                    emit pDebug("Player: Non minion played on board: " + name + " ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
+                }
             }
             //Jugador juega arma
             else if(zoneTo == "FRIENDLY PLAY (Weapon)")
