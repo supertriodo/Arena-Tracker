@@ -1825,13 +1825,15 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "bottom deck")
+                    containsAll(text, "infuse")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("COMBO"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
-//                    mechanics.contains(QJsonValue("INFUSE"))
-//                    isEnrageGen(code, mechanics)
+//                    mechanics.contains(QJsonValue("CORRUPT"))
+//                    && !isDrop2(code, cost, attack, health)
+//                    && !isDrop3(code, cost, attack, health)
+//                    && !isDrop4(code, cost, attack, health)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
@@ -4603,7 +4605,7 @@ REGLAS
         el jugador no tiene ningun minion.
     Un drop debe poner algo en la mesa, aunque sea un secreto. Si solo elimina cosas, roba cartas o buffa no es un drop.
     Si dan cristales de mana son drops.
-    Es un dropX si X es el turno mas eficiente en el que se puede jugar.
+    Si tiene buenos stats para jugarlo como drop, es un drop, aunque sea mejor jugarlo mas tarde (infuse, corrupt).
     Los minions con 0 de ataque no son drops, huevos tampoco, ya que su uso optimo es en otro turno.
     Los buffos no son drops, supon que tu board esta vacio.
     Los minions can't attack no son drops, a no ser que sea muy facil hacerlos atacar (hero power)
