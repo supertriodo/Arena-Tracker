@@ -112,6 +112,8 @@ signals:
 public slots:
     //GameWatcher
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+
+    //DraftHandler
     void newArena(QString hero);
 
     //MainWindow

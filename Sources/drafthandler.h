@@ -41,7 +41,7 @@ class DraftHandler : public QObject
 {
     Q_OBJECT
 public:
-    DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler, ArenaHandler *arenaHandler);
+    DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler);
     ~DraftHandler();
 
 //Variables
@@ -49,7 +49,6 @@ private:
     bool patreonVersion;
     Ui::Extended *ui;
     DeckHandler *deckHandler;
-    ArenaHandler *arenaHandler;
     SynergyHandler *synergyHandler;
     LavaButton *lavaButton;
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
@@ -190,7 +189,7 @@ signals:
     void checkCardImage(QString code, bool isHero=false);
     void newDeckCard(QString code);
     void draftStarted();
-    void draftEnded();
+    void draftEnded(QString heroLog);
     void downloadStarted();
     void downloadEnded();
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);

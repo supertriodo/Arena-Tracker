@@ -935,7 +935,7 @@ void MainWindow::createTrackobotUploader()
 
 void MainWindow::createDraftHandler()
 {
-    draftHandler = new DraftHandler(this, ui, deckHandler, arenaHandler);
+    draftHandler = new DraftHandler(this, ui, deckHandler);
     connect(draftHandler, SIGNAL(startProgressBar(int,QString)),
             this, SLOT(startProgressBar(int,QString)));
     connect(draftHandler, SIGNAL(advanceProgressBar(int,QString)),
@@ -955,6 +955,9 @@ void MainWindow::createDraftHandler()
             cardDownloader, SLOT(setFastMode()));
     connect(draftHandler, SIGNAL(downloadEnded()),
             cardDownloader, SLOT(setSlowMode()));
+
+    connect(draftHandler, SIGNAL(draftEnded(QString)),
+            arenaHandler, SLOT(newArena(QString)));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),
@@ -1254,8 +1257,8 @@ void MainWindow::createGameWatcher()
 
     connect(gameWatcher, SIGNAL(newGameResult(GameResult,LoadingScreenState)),
             arenaHandler, SLOT(newGameResult(GameResult,LoadingScreenState)));
-    connect(gameWatcher, SIGNAL(newArena(QString)),
-            arenaHandler, SLOT(newArena(QString)));
+//    connect(gameWatcher, SIGNAL(newArena(QString)),//Arena stat se crea ahora en endDraft - SIGNAL(draftEnded(QString))
+//            arenaHandler, SLOT(newArena(QString)));
     //Rewards input disabled with track-o-bot stats
 //    connect(gameWatcher, SIGNAL(inRewards()),
 //            arenaHandler, SLOT(showRewards()));
@@ -1510,7 +1513,7 @@ void MainWindow::createLogLoader()
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
     //Connect de draftHandler
-    connect(draftHandler, SIGNAL(draftEnded()),
+    connect(draftHandler, SIGNAL(draftEnded(QString)),
             logLoader, SLOT(setUpdateTimeMax()));
     connect(draftHandler, SIGNAL(draftStarted()),
             logLoader, SLOT(setUpdateTimeMin()));

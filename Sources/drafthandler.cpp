@@ -3,11 +3,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QtWidgets>
 
-DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler, ArenaHandler *arenaHandler) : QObject(parent)
+DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckHandler) : QObject(parent)
 {
     this->ui = ui;
     this->deckHandler = deckHandler;
-    this->arenaHandler = arenaHandler;
     this->deckRatingHA = this->deckRatingLF = 0;
     this->deckRatingHSR = 0;
     this->numCaptured = 0;
@@ -743,7 +742,6 @@ void DraftHandler::continueDraft()
     if(!drafting && arenaHero != INVALID_CLASS)
     {
         QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
-        arenaHandler->newArena(heroLog);
         beginDraft(heroLog, deckHandler->getDeckCardList());
     }
     else
@@ -891,9 +889,10 @@ void DraftHandler::endDraft()
     QSize size = settings.value("size", QSize(400, 400)).toSize();
     mainWindow->resize(size);
 
-    //Upload or complete deck with assets
+    //Create new arena
     //Set updateTime in log
-    emit draftEnded();
+    QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
+    emit draftEnded(heroLog);
 
     //Show Deck Score
     if(patreonVersion)
