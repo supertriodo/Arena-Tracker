@@ -2121,7 +2121,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
             else if(event->key() == Qt::Key_7)
-                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARRIOR), deckHandler->getDeckCardList());
+                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
