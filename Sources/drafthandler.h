@@ -14,8 +14,10 @@
 #include <QObject>
 #include <QFutureWatcher>
 
+#define DRAFT_DELAY_TIME        1500
+#define HERODRAFT_DELAY_TIME    3000
 
-#define CAPTUREDRAFT_START_TIME         1500
+#define CAPTUREDRAFT_DELAY_TIME         1500
 #define CAPTUREDRAFT_LOOP_TIME          100
 #define CAPTUREDRAFT_LOOP_TIME_FADING   200
 #define FINDINGFRAME_LOOP_TIME          200
@@ -124,6 +126,7 @@ private:
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
     bool areCardsDetected();
+    bool isRepeatHero();
     void buildBestMatchesMaps();
     CardRarity getBestRarity();
     void getBestCards(DraftCard bestCards[3]);

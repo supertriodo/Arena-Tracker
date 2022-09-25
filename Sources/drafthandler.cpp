@@ -525,13 +525,13 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 
     if(heroDrafting)
     {
-        QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
+        QTimer::singleShot(HERODRAFT_DELAY_TIME, this, SLOT(newFindScreenLoop()));
 
         for(const QString &code: qAsConst(heroCodesList))     addCardHist(code, false, true);
     }
     else //if(drafting) ||Build mechanics window
     {
-        QTimer::singleShot(1000, this, [=] () {newFindScreenLoop(skipScreenSettings);});
+        QTimer::singleShot(DRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
         QMap<CardClass, QStringList> codesByClass;
         initLightForgeTiers(multiclassArena, codesByClass);
@@ -1050,7 +1050,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
     {
         capturing = true;
 
-        if(delayed)                 QTimer::singleShot(CAPTUREDRAFT_START_TIME, this, SLOT(captureDraft()));
+        if(delayed)                 QTimer::singleShot(CAPTUREDRAFT_DELAY_TIME, this, SLOT(captureDraft()));
         else                        captureDraft();
     }
 }
@@ -1077,9 +1077,10 @@ void DraftHandler::captureDraft()
     }
     mapBestMatchingCodes(screenCardsHist);
 
+    bool cardsFound = false;
     if(areCardsDetected())
     {
-        capturing = false;
+        cardsFound = true;
         buildBestMatchesMaps();
 
         if(drafting)
@@ -1090,14 +1091,45 @@ void DraftHandler::captureDraft()
         }
         else if(heroDrafting)
         {
-            showNewHeroes();
+            if(isRepeatHero())  cardsFound = false;
+            else                showNewHeroes();
         }
+    }
+
+    if(cardsFound)
+    {
+        capturing = false;
     }
     else
     {
         if(numCaptured == 0)    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_FADING, this, SLOT(captureDraft()));
         else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
     }
+}
+
+
+bool DraftHandler::isRepeatHero()
+{
+    QString heroClass[3];
+    for(int i=0; i<3; i++)
+    {
+        QString code = bestMatchesMaps[i].first();
+        heroClass[i] = Utility::getCardAttribute(code, "cardClass").toString();
+    }
+
+    if(heroClass[0]==heroClass[1] || heroClass[0]==heroClass[2] || heroClass[1]==heroClass[2])
+    {
+        emit pDebug("Skip repeated hero draft: " + heroClass[0] + " - " + heroClass[1] + " - " + heroClass[2]);
+        for(int i=0; i<3; i++)
+        {
+            cardDetected[i] = false;
+            draftCardMaps[i].clear();
+            bestMatchesMaps[i].clear();
+        }
+        numCaptured = 0;
+        return true;
+    }
+    return false;
 }
 
 
