@@ -264,6 +264,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OPEN_THE_CAGES, inArena, activeSecret);
+                unknownSecretPlayedAddOption(MOTION_DENIED, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
@@ -310,6 +311,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(SUDDEN_BETRAYAL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(CHEAT_DEATH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PLAGIARIZE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(PERJURY, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(SHADOW_CLONE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(AMBUSH, inArena, activeSecret);
@@ -625,6 +627,7 @@ void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
     if(!isPlayerTurn)
     {
         discardSecretOptionNow(PLAGIARIZE);
+        discardSecretOptionNow(PERJURY);
 
         if(enemyMinions > 0)    discardSecretOptionNow(COMPETITIVE_SPIRIT);
         if(enemyMinions > 1)    discardSecretOptionNow(OPEN_THE_CAGES);
@@ -780,6 +783,7 @@ void SecretsHandler::playerCardPlayed(int id, QString code, bool discard, bool i
             discardSecretOptionNow(HIDDEN_WISDOM);
 
             discardSecretOptionNow(RAT_TRAP);
+            discardSecretOptionNow(MOTION_DENIED);
         }
     }
 
@@ -963,14 +967,14 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
-                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS;
+                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
                             << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
-                             << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS;
+                             << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS << PERJURY;
 }
 
 

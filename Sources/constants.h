@@ -60,6 +60,8 @@
 #define PACK_TACTICS QString("BT_203")
 #define OPEN_THE_CAGES QString("DMF_123")
 #define ICE_TRAP QString("AV_226")
+#define EMERGENCY_MANEUVERS QString("TSC_929")
+#define MOTION_DENIED QString("")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
@@ -97,6 +99,7 @@
 #define DOUBLE_CROSS QString("REV_825")
 #define KIDNAP QString("REV_828")
 #define STICKY_SITUATION QString("REV_827")
+#define PERJURY QString("")
 
 
 
@@ -440,7 +443,6 @@
 #define SMOKESCREEN "ONY_031"
 #define HORN_OF_WRATHION "ONY_017"
 //THE_SUNKEN_CITY
-#define EMERGENCY_MANEUVERS "TSC_929"
 #define SEAFLOOR_GATEWAY "TSC_055"
 #define THE_GARDENS_GRACE "TSC_061"
 #define WAYWARD_SAGE "TSC_217"
