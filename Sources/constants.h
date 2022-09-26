@@ -85,6 +85,7 @@
 #define RIGGED_FAIRE_GAME QString("DMF_107")
 #define OASIS_ALLY QString("BAR_812")
 #define VENGEFUL_VISAGE QString("REV_516")
+#define OBJECTION QString("")
 
 //ROGUE
 #define CHEAT_DEATH QString("LOOT_204")

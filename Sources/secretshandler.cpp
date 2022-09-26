@@ -295,6 +295,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(VAPORIZE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
+                unknownSecretPlayedAddOption(OBJECTION, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(VENGEFUL_VISAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
@@ -697,7 +698,8 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     discardSecretOptionNow(FROZEN_CLONE);//No necesita objetivo
     discardSecretOption(MIRROR_ENTITY);//Ocultado por EXPLOSIVE_RUNES
     discardSecretOption(POTION_OF_POLIMORPH);//Ocultado por EXPLOSIVE_RUNES
-    discardSecretOptionNow(EXPLOSIVE_RUNES);
+    discardSecretOption(EXPLOSIVE_RUNES);//Ocultado por OBJECTION
+    discardSecretOption(OBJECTION);//Ocultado por EXPLOSIVE_RUNES
 
     discardSecretOptionNow(SNIPE);
     discardSecretOptionNow(HIDDEN_CACHE);
@@ -971,7 +973,8 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
-                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE;
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE
+                            << OBJECTION;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
                              << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS << PERJURY;
