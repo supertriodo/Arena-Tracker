@@ -50,6 +50,7 @@ public:
                         int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     bool initSynergyCodes();
+    void initSynergyCode(const QString &code, const QJsonArray &synergies);
     void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes);
     void clearLists(bool keepCounters);
     int draftedCardsCount();

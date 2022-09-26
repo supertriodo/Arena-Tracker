@@ -319,24 +319,23 @@ bool SynergyHandler::initSynergyCodes()
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
     jsonFile.close();
     QJsonObject jsonObject = jsonDoc.object();
+    QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
 
     for(const QString &code: (const QStringList)jsonObject.keys())
     {
         if(jsonObject.value(code).isArray())
         {
-            synergyCodes[code];
             QJsonArray synergies = jsonObject.value(code).toArray();
-            for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
-            {
-                synergyCodes[code].append(it->toString());
-            }
+            initSynergyCode(code, synergies);
+
+            QString coreCode = "CORE_" + code;
+            if(coreCodes.contains(coreCode))    initSynergyCode(coreCode, synergies);
         }
     }
     emit pDebug("Synergy Cards: " + QString::number(synergyCodes.count()));
 
 
     //Direct links
-    QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
     QJsonObject dlObject = jsonObject.value("DIRECT_LINKS").toObject();
     for(const QString &code: (const QStringList)dlObject.keys())
     {
@@ -363,6 +362,18 @@ bool SynergyHandler::initSynergyCodes()
     emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
 
     return true;
+}
+
+
+void SynergyHandler::initSynergyCode(const QString &code, const QJsonArray &synergies)
+{
+    if(synergyCodes.contains(code)) return;
+
+    synergyCodes[code];
+    for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+    {
+        synergyCodes[code].append(it->toString());
+    }
 }
 
 
