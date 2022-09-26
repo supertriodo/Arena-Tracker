@@ -891,13 +891,15 @@ void DraftHandler::endDraft()
 
     //Create new arena
     //Set updateTime in log
-    QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
+    int numCards = synergyHandler->draftedCardsCount();
+    QString heroLog = "";
+    if(numCards==30)    heroLog = Utility::classEnum2classLogNumber(arenaHero);
+    else                emit pDebug("End draft with <30 cards.");
     emit draftEnded(heroLog);
 
     //Show Deck Score
     if(patreonVersion)
     {
-        int numCards = synergyHandler->draftedCardsCount();
         int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
         int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
         float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);

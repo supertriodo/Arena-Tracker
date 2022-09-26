@@ -627,6 +627,12 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
 
 void ArenaHandler::newArena(QString hero)
 {
+    if(hero.isEmpty())
+    {
+        emit pDebug("New arena with empty hero.");
+        return;
+    }
+
     setCurrentStatsJson();
     hideArenaStatsTreeWidget();
     showArena(hero);
