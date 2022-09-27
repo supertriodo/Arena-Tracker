@@ -4582,10 +4582,10 @@ LACKEY: lackeyGen/lackeySyn
 
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen,
-    pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn, con hechizos si.
+    pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn, con hechizos tampoco.
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
     Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
-    Synergias SPELLBURST/(con hechizos) si, suponemos 1 hechizo. Synergias con schools of magic no.
+    Synergias SPELLBURST/(con hechizos) no pero tags si, suponemos 1 hechizo. Synergias con schools of magic no.
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
     Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
     Synergias INFUSE si.

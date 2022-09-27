@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 21,
-  "arenaSets": ["CORE", "KARA", "TROLL", "ULDUM", "SCHOLOMANCE", "DARKMOON_FAIRE", "REVENDRETH"],
+  "arenaVersion": 22,
+  "arenaSets": ["CORE", "BRM", "UNGORO", "LOOTAPALOOZA", "DALARAN", "BLACK_TEMPLE", "REVENDRETH"],
   "multiclassArena": false,
-  "redownloadCards": true,
+  "redownloadCards": false,
   "redownloadHeroes": false
 }
