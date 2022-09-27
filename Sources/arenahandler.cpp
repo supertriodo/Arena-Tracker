@@ -747,6 +747,9 @@ void ArenaHandler::setTheme()
     ui->arenaDeleteButton->setIcon(QIcon(ThemeHandler::buttonRemoveFile()));
     ui->arenaTreeWidget->setTheme(false);
     ui->arenaStatsTreeWidget->setTheme(true);
+
+    setRowColor(winrateTreeItem, QColor(ThemeHandler::themeColor2()));
+    setRowColor(best30TreeItem, QColor(ThemeHandler::themeColor2()));
 }
 
 
@@ -1367,6 +1370,7 @@ void ArenaHandler::processArenas2Stats()
 
     showArenas2StatsClass(classRuns, classWins, classLost);
     showArenas2StatsBest30(best30Runs, best30BestWins, best30Start, best30End);
+//    ui->arenaStatsTreeWidget->sortByColumn(0, Qt::DescendingOrder);//TODO
 }
 
 
