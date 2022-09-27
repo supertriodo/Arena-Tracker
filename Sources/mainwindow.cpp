@@ -4536,11 +4536,11 @@ void MainWindow::testTierlists()
 
 /*
  *  Core "CORE"
- *  One Night in Karazhan "KARA"
- *  Rastakhan's Rumble "TROLL"
- *  Saviors of Uldum "ULDUM"
- *  Scholomance Academy "SCHOLOMANCE"
- *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ *  Blackrock Mountain "BRM"
+ *  Journey to Un'Goro "UNGORO"
+ *  Kobolds and Catacombs "LOOTAPALOOZA"
+ *  Rise of Shadows "DALARAN"
+ *  Ashes of Outland "BLACK_TEMPLE"
  *  Murder at Castle Nathria "REVENDRETH"
  */
 
@@ -4548,7 +4548,7 @@ void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "KARA" << "TROLL" << "ULDUM" << "SCHOLOMANCE" << "DARKMOON_FAIRE" << "REVENDRETH";
+    arenaSets << "CORE" << "BRM" << "UNGORO" << "LOOTAPALOOZA" << "DALARAN" << "BLACK_TEMPLE" << "REVENDRETH";
 
     if(fromHearth)
     {
