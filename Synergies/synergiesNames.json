@@ -4108,6 +4108,9 @@
     "REV_923 Muck Pools", "REV_333 Hedge Maze", "REV_983 Great Hall",
     "REV_290 Cathedral of Atonement", "REV_362 Castle Kennels"],
 
+  "-----SECRET PLAY-----": "",
+  "REV_945 Sketchy Stranger": ["REV_841 Anonymous Informant"],
+
   "-----INFUSE-----": "",
   "MAW_031 Afterlife Attendant": ["MAW_003 Totemic Evidence", "MAW_009 Shadehound",
     "MAW_012 All Fel Breaks Loose", "MAW_031 Afterlife Attendant", "MAW_033 Sylvanas, the Accused",
