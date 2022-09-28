@@ -4513,7 +4513,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("REVENDRETH", 1, 20);//, "TID_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("REVENDRETH", 1, 20, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 //    draftHandler->getSynergyHandler()->testSynergies();//"TID_");
 

@@ -1884,9 +1884,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //containsAll(text, "draw cop")
                 )
             {
-    //            qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+//                qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
                 debugSynergiesCode(code, ++num);
-    //            qDebug()<<mechanics<<endl<<referencedTags;
+//                qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
+//                qDebug()<<mechanics<<endl<<referencedTags;
 
                 if(num>0 && num<=100)
                 {
@@ -1939,6 +1940,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
             {
                 QDesktopServices::openUrl(QUrl(
                     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+//                    "https://cards.hearthpwn.com/enUS/" + code + ".png"
                     ));
                 QThread::msleep(100);
             }
