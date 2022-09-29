@@ -141,6 +141,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
         else//Hearthpwn card
         {
             emit pDebug("Failed to download card image(Hearthpwn): " + code + "", DebugLevel::Warning);
+            emit missingOnWeb(code);
         }
     }
     else if(data.isEmpty())
