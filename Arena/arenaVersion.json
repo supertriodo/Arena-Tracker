@@ -3,5 +3,7 @@
   "arenaSets": ["CORE", "BRM", "UNGORO", "LOOTAPALOOZA", "DALARAN", "BLACK_TEMPLE", "REVENDRETH"],
   "multiclassArena": false,
   "redownloadCards": true,
-  "redownloadHeroes": false
+  "redownloadHeroes": false,
+  "resetCards": 23,
+  "resetHeroes": 0
 }

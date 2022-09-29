@@ -806,8 +806,8 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         settings.setValue("multiclassArena", multiclassArena);
         pDebug("CheckArenaVersion: multiclassArena: " + QString(multiclassArena?"true":"false"));
 
-        bool redownloadCards = jsonObject.value("redownloadCards").toBool(false);
-        bool redownloadHeroes = jsonObject.value("redownloadHeroes").toBool(false);
+        bool redownloadCards = jsonObject.value("resetCards").toInt() > storedVersion;
+        bool redownloadHeroes = jsonObject.value("resetHeroes").toInt() > storedVersion;
         pDebug("CheckArenaVersion: redownloadCards: " + QString(redownloadCards?"true":"false"));
         pDebug("CheckArenaVersion: redownloadHeroes: " + QString(redownloadHeroes?"true":"false"));
         if(redownloadCards)
