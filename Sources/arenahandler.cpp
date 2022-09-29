@@ -1370,7 +1370,6 @@ void ArenaHandler::processArenas2Stats()
 
     showArenas2StatsClass(classRuns, classWins, classLost);
     showArenas2StatsBest30(best30Runs, best30BestWins, best30Start, best30End);
-//    ui->arenaStatsTreeWidget->sortByColumn(0, Qt::DescendingOrder);//TODO
 }
 
 
@@ -1394,6 +1393,8 @@ void ArenaHandler::showArenas2StatsClass(int classRuns[NUM_HEROS], int classWins
         }
         else    item->setHidden(true);
     }
+
+    winrateTreeItem->sortChildren(0, Qt::DescendingOrder);
 }
 
 
