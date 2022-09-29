@@ -14,7 +14,7 @@ public:
 //Variables
 private:
     QString code;
-    int id;
+    int id, cost;
     bool exausted;
     bool friendly, playerTurn;
     bool showTransparent;
@@ -39,6 +39,7 @@ public:
     void toggleExausted();
     bool isExausted();
     QString getCode();
+    int getCost();
     void showManaPlayable(int mana);
     void setShowTransparent(bool value=true);
     bool isTransparent();

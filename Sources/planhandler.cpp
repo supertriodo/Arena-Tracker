@@ -1243,7 +1243,7 @@ void PlanHandler::enemyHeroPowerZonePlayAdd(QString code, int id)
 
 void PlanHandler::addHeroPower(bool friendly, QString code, int id)
 {
-    qDebug()<<"NEW HERO POWER --> id"<<id;
+    qDebug()<<"NEW HERO POWER --> id"<<id<<code;
     //Avoid fancy Hero Powers codes
     if(code.endsWith("_H1"))    code = code.left(code.length()-3);
 
@@ -2120,7 +2120,8 @@ void PlanHandler::heroPowerPress(HeroPowerGraphicsItem* heroPower, Qt::MouseButt
     {
         heroPower->toggleExausted();
         selectedCode = (heroPower->isExausted()?heroPower->getCode():"");
-        futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?2:-2);
+        int cost = heroPower->getCost();
+        futureBoard->playerHero->addResourcesUsed(heroPower->isExausted()?cost:-cost);
         showManaPlayableCards(futureBoard);
     }
 }

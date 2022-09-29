@@ -11,6 +11,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly
     this->friendly = friendly;
     this->graphicsItemSender = graphicsItemSender;
     this->playerTurn = playerTurn;
+    this->cost = Utility::getCardAttribute(code, "cost").toInt(2);
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     const int hHero = HeroGraphicsItem::HEIGHT;
@@ -32,6 +33,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(HeroPowerGraphicsItem *copy)
     this->showTransparent = false;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->playerTurn = copy->playerTurn;
+    this->cost = copy->cost;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
 }
@@ -42,6 +44,7 @@ void HeroPowerGraphicsItem::changeHeroPower(QString code, int id)
     this->code = code;
     this->id = id;
     this->exausted = false;
+    this->cost = Utility::getCardAttribute(code, "cost").toInt(2);
     update();
 }
 
@@ -55,6 +58,12 @@ int HeroPowerGraphicsItem::getId()
 QString HeroPowerGraphicsItem::getCode()
 {
     return this->code;
+}
+
+
+int HeroPowerGraphicsItem::getCost()
+{
+    return this->cost;
 }
 
 
@@ -81,7 +90,7 @@ bool HeroPowerGraphicsItem::isExausted()
 
 void HeroPowerGraphicsItem::showManaPlayable(int mana)
 {
-    if(2 > mana)     this->showTransparent = true;
+    if(cost > mana)     this->showTransparent = true;
     else                this->showTransparent = false;
     update();
 }
@@ -154,7 +163,8 @@ void HeroPowerGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsI
         }
 
         //Marco
-        painter->drawPixmap(-WIDTH/2, -HEIGHT/2, QPixmap(":/Images/bgHeroPower.png"));
+        if(cost == 1)   painter->drawPixmap(-WIDTH/2, -HEIGHT/2, QPixmap(":/Images/bgHeroPower1.png"));
+        else            painter->drawPixmap(-WIDTH/2, -HEIGHT/2, QPixmap(":/Images/bgHeroPower.png"));
     }
     else    painter->drawPixmap(-WIDTH/2, -HEIGHT/2, QPixmap(":/Images/bgHeroPowerClosed.png"));
 }

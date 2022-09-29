@@ -164,5 +164,6 @@
         <file>Images/hero10.png</file>
         <file>Images/bgCard1Demonhunter.png</file>
         <file>Images/bgCard2Demonhunter.png</file>
+        <file>Images/bgHeroPower1.png</file>
     </qresource>
 </RCC>
