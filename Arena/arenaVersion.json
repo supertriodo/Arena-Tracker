@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 22,
+  "arenaVersion": 23,
   "arenaSets": ["CORE", "BRM", "UNGORO", "LOOTAPALOOZA", "DALARAN", "BLACK_TEMPLE", "REVENDRETH"],
   "multiclassArena": false,
-  "redownloadCards": false,
+  "redownloadCards": true,
   "redownloadHeroes": false
 }
