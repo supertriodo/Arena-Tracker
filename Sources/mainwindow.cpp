@@ -4515,7 +4515,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("REVENDRETH", 1, 20, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies();//"TID_");
+//    draftHandler->getSynergyHandler()->testSynergies("MAW_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4648,7 +4648,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation()
-//|-Synergy / Code  --> 24.2.2 Patch (2022-09-09)
+//|-Synergy / Code  --> 24.4 Patch (2022-09-26)
 
 //Rotacion CORE
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo -- POR ULTIMA VEZ

@@ -4444,6 +4444,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     if(code == TENT_TRASHER)        return 4;
     if(code == FROSTSABER_MATRIARCH)return 4;
     if(code == WILDPAW_GNOLL)       return 4;
+    if(code == SCRIBBLING_STENOGRAPHER) return 4;
     if(code == FORBIDDEN_SHAPING)   return 5;
     if(code == FORBIDDEN_FLAME)     return 5;
     if(code == FORBIDDEN_HEALING)   return 5;

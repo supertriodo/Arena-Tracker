@@ -61,7 +61,7 @@
 #define OPEN_THE_CAGES QString("DMF_123")
 #define ICE_TRAP QString("AV_226")
 #define EMERGENCY_MANEUVERS QString("TSC_929")
-#define MOTION_DENIED QString("")
+#define MOTION_DENIED QString("MAW_010")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
@@ -85,7 +85,7 @@
 #define RIGGED_FAIRE_GAME QString("DMF_107")
 #define OASIS_ALLY QString("BAR_812")
 #define VENGEFUL_VISAGE QString("REV_516")
-#define OBJECTION QString("")
+#define OBJECTION QString("MAW_006")
 
 //ROGUE
 #define CHEAT_DEATH QString("LOOT_204")
@@ -100,7 +100,7 @@
 #define DOUBLE_CROSS QString("REV_825")
 #define KIDNAP QString("REV_828")
 #define STICKY_SITUATION QString("REV_827")
-#define PERJURY QString("")
+#define PERJURY QString("MAW_018")
 
 
 
@@ -479,6 +479,9 @@
 #define CONQUERORS_BANNER "REV_931"
 #define DOOR_OF_SHADOWS "REV_938"
 #define SERVICE_BELL "REV_948"
+#define SCRIBBLING_STENOGRAPHER "MAW_020"
+#define ORDER_IN_THE_COURT "MAW_016"
+#define WEAPONS_EXPERT "MAW_029"
 
 
 
