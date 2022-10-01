@@ -31,6 +31,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->shield = copy->shield;
     this->taunt = copy->taunt;
     this->stealth = copy->stealth;
+    this->dormant = copy->dormant;
     this->frozen = copy->frozen;
     this->windfury = copy->windfury;
     this->charge = copy->charge;
@@ -78,6 +79,7 @@ void MinionGraphicsItem::initCode(QString code)
     this->shield = false;
     this->taunt = false;
     this->stealth = false;
+    this->dormant = false;
     this->frozen = false;
     this->windfury = false;
     this->charge = false;
@@ -626,11 +628,15 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     else if(tag == "RUSH")
     {
         this->rush = (value=="1");
-        if(rush)    this->exausted = false;
+        this->exausted = !rush;
     }
     else if(tag == "STEALTH")
     {
         this->stealth = (value=="1");
+    }
+    else if(tag == "DORMANT")
+    {
+        this->dormant = (value=="1");
     }
     else if(tag == "FROZEN")
     {
@@ -674,6 +680,13 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(this->stealth)
     {
         painter->drawPixmap(-52, -71, QPixmap(":Images/bgMinionStealth.png"));
+    }
+
+    //Dormant
+    if(this->dormant)
+    {
+        painter->drawPixmap(-60, -73, QPixmap(":Images/bgMinionDormant.png"));
+        return;
     }
 
     //Taunt/Frozen/Minion template

@@ -545,7 +545,9 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString tag = match->captured(1);
         QString value = match->captured(2);
 
-        if(tag == "ATK" || tag == "HEALTH" || tag == "DAMAGE")
+        if  (tag == "ATK" || tag == "HEALTH" ||
+            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT"))
+            )
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
             if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", numLine, DebugLevel::Error);
@@ -634,7 +636,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
                     tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
-                    tag == "COST")
+                    tag == "COST" || tag == "REBORN" || tag == "DORMANT")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
@@ -670,7 +672,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
                     tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
-                    tag == "COST" || tag == "REBORN")
+                    tag == "COST" || tag == "REBORN" || tag == "DORMANT")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);
@@ -751,7 +753,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": FULL_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
-            lastShowEntity.trackAllTags = false;
+            lastShowEntity.trackAllTags = true;
         }
 
 
