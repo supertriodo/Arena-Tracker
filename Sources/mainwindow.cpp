@@ -4378,6 +4378,9 @@ void MainWindow::testPlan()
     planHandler->playerMinionZonePlayAdd("CS1_042", 5, 1);
     planHandler->playerMinionZonePlayAdd("AT_096", 6, 1);
     planHandler->playerMinionZonePlayAdd("CFM_325", 7, 1);
+    planHandler->playerMinionZonePlayAdd("TSC_007", 8, 1);
+    planHandler->playerBoardTagChange(8, "TSC_007", "DORMANT", "1");
+    planHandler->enemyMinionZonePlayAdd("REV_333", 9, 1);
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
     planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
@@ -4607,6 +4610,7 @@ void MainWindow::testDelay()
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
 
 //    testArenaGames();
+//    testPlan();
 }
 
 

@@ -23,6 +23,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->id = copy->id;
     this->friendly = copy->friendly;
     this->hero = copy->hero;
+    this->location = copy->location;
     this->attack = copy->attack;
     this->origAttack = copy->origAttack;
     this->health = copy->health;
@@ -71,6 +72,7 @@ void MinionGraphicsItem::initCode(QString code)
 {
     this->code = code;
     this->hero = false;
+    this->location = (Utility::getTypeFromCode(code) == LOCATION);
     this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     if(health <= 0) this->health = this->origHealth = Utility::getCardAttribute(code, "durability").toInt();
@@ -139,6 +141,7 @@ int MinionGraphicsItem::getHealth()
 
 int MinionGraphicsItem::getHitsToDie(int missileDamage)
 {
+    if(location || dormant) return 0;
     if(shield)  return getRemainingHealth() + missileDamage;
     else        return getRemainingHealth();
 }
@@ -841,7 +844,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     }
 
     //Dead Prob
-    if(!FLOATEQ(deadProb, 0))
+    if(!this->dormant && !this->location && !FLOATEQ(deadProb, 0))
     {
         painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
 
