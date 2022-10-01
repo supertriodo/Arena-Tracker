@@ -545,7 +545,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString tag = match->captured(1);
         QString value = match->captured(2);
 
-        if(tag == "ATK" || tag == "HEALTH")
+        if(tag == "ATK" || tag == "HEALTH" || tag == "DAMAGE")
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
             if(lastShowEntity.id == -1)         emit pDebug("Show entity id missing.", numLine, DebugLevel::Error);
@@ -670,7 +670,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
                     tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
-                    tag == "COST")
+                    tag == "COST" || tag == "REBORN")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);

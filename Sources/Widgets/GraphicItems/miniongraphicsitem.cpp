@@ -5,11 +5,11 @@
 
 MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)
 {
-    initCode(code);
-
     this->id = id;
     this->friendly = friendly;
     this->playerTurn = playerTurn;
+
+    initCode(code);
 
     this->graphicsItemSender = graphicsItemSender;
     this->setZValue(-50);

@@ -236,7 +236,7 @@ void PlanHandler::enemyMinionZonePlayAddTriggered(QString code, int id, int pos)
 
 void PlanHandler::addMinionTriggered(bool friendly, QString code, int id, int pos)
 {
-    qDebug()<<"NEW MINION TRIGGERED--> id"<<id<<"pos"<<pos;
+    qDebug()<<"NEW MINION TRIGGERED --> id"<<id<<"pos"<<pos;
 
     if(getMinionList(friendly)->count() >= 7)
     {
@@ -701,6 +701,17 @@ void PlanHandler::addCardTagChange(const TagChange &tagChange, CardGraphicsItem 
 void PlanHandler::addMinionTagChange(const TagChange &tagChange, MinionGraphicsItem * minion)
 {
     emit pDebug("Tag Change Minion: Id: " + QString::number(tagChange.id) + " - " + tagChange.tag + " --> " + tagChange.value);
+
+    //Usamos el tag change de reborn a 0 para marcar el lastTriggerId y asi mostrar flecha de reborn a reborn en replay.
+    if(tagChange.tag == "REBORN")
+    {
+        if(tagChange.value == "0")
+        {
+            this->lastTriggerId = tagChange.id;
+        }
+        return;
+    }
+
     checkAtkHealthChange(minion, tagChange.friendly, tagChange.tag, tagChange.value);
     bool healing = minion->processTagChange(tagChange.tag, tagChange.value);
     bool isDead = minion->isDead();
@@ -850,6 +861,12 @@ void PlanHandler::addBoardTagChange(int id, bool friendly, QString tag, QString 
         if(tag == "ZONE")
         {
             emit pDebug("Zone Tag Change not appended: Id: " + QString::number(id) + " - " + tag + " --> " + value);
+        }
+        //Usamos el tag change de reborn a 0 para marcar el lastTriggerId y asi mostrar flecha de reborn a reborn en replay.
+        //Al aparecer el nuevo reborn tambien hay un tag change del nuevo, que podemos evitar si no hacemos pending tag change.
+        else if(tag == "REBORN")
+        {
+            emit pDebug("Reborn Tag Change not appended: Id: " + QString::number(id) + " - " + tag + " --> " + value);
         }
         else
         {
