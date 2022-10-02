@@ -158,6 +158,7 @@ void PopularCardsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickrat
 void PopularCardsHandler::createCardsByPickrate(const QMap<QString, float> cardsPickratesMap[], QStringList codeList,
                                                 SynergyHandler *synergyHandler)
 {
+    this->synergyHandler = synergyHandler;
     synergyHandler->initSynergyCodes();
 
     for(QString &code: codeList)
@@ -254,8 +255,13 @@ void PopularCardsHandler::showPopularCards()
 
     for(QString &code: cardsByPickrate[enemyClass][enemyMana-2])
     {
+        QStringList mechanics;
+        if(synergyHandler->isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
+        if(synergyHandler->isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
+        if(synergyHandler->isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
+
         QString manaText = (cardsPickratesMap == nullptr) ? "-" : QString::number((int)round(cardsPickratesMap[enemyClass][code]))+"%";
-        PopularCard popularCard(code, manaText);
+        PopularCard popularCard(code, manaText, mechanics);
         popularCard.listItem = new QListWidgetItem(ui->popularCardsListWidget);
         popularCard.draw();
         popularCardList.append(popularCard);

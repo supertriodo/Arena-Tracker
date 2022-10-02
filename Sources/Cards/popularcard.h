@@ -7,12 +7,13 @@
 class PopularCard : public DeckCard
 {
 public:
-    PopularCard(QString code, QString manaText);
+    PopularCard(QString code, QString manaText, QStringList mechanics);
     ~PopularCard();
 
 //Variables
-public:
+private:
     QString manaText;
+    QStringList mechanics;
 
 //Metodos
 public:

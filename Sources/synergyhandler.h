@@ -64,6 +64,9 @@ public:
     bool isDrop2(const QString &code, int cost, int attack, int health);
     bool isDrop3(const QString &code, int cost, int attack, int health);
     bool isDrop4(const QString &code, int cost, int attack, int health);
+    bool isAoeGen(const QString &code, const QString &text);
+    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
+    bool isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text);
 
 private:
     void initSynergyCode(const QString &code, const QJsonArray &synergies);
@@ -124,9 +127,6 @@ private:
     int numToYourHandGen(const QString &code, int cost, const QJsonArray &mechanics, const QString &text);
     bool isTaunt(const QString &code, const QJsonArray &mechanics);
     bool isTauntGen(const QString &code, const QJsonArray &referencedTags);
-    bool isAoeGen(const QString &code, const QString &text);
-    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
-    bool isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isPingGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
                    const QString &text, const CardType &cardType, int attack);
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);

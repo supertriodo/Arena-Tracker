@@ -160,7 +160,7 @@ void DeckCard::disablePixmap(QPixmap &canvas)
 }
 
 
-QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString manaText, int cardWidth)
+QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString manaText, int cardWidth, QStringList mechanics)
 {
     //Scale
     float scale;
@@ -238,6 +238,21 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             if(total == 1 && rarity == LEGENDARY)
             {
                 painter.drawPixmap(195, 8, QPixmap(ThemeHandler::starFile()));
+            }
+        }
+
+        //Mechanic icon
+        if(mechanics.count() > 0)
+        {
+            painter.drawPixmap(1, 4, 28, 28, QPixmap(":/Images/" + mechanics[0]));
+
+            if(mechanics.count() > 1)
+            {
+                //Mecanic damage tiene 64x64 en lugar de 62x62 como el resto
+                int mecPx;
+                if(mechanics[1] == "damageMechanic.png")    mecPx = 64;
+                else                                        mecPx = 62;
+                painter.drawPixmap(15, 4, 14, 28, QPixmap(":/Images/" + mechanics[1]), mecPx/2, 0, mecPx/2, mecPx);
             }
         }
 
