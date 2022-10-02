@@ -307,9 +307,13 @@ void SynergyHandler::sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &l
 }
 
 
-bool SynergyHandler::initSynergyCodes()
+bool SynergyHandler::initSynergyCodes(bool all)
 {
-    if(!synergyCodes.isEmpty()) return false;
+    if(!all && !synergyCodes.isEmpty())
+    {
+        emit pDebug("Synergy Cards: Skip reduced synergy lists creation.");
+        return false;
+    }
 
     synergyCodes.clear();
     directLinks.clear();
@@ -320,19 +324,20 @@ bool SynergyHandler::initSynergyCodes()
     jsonFile.close();
     QJsonObject jsonObject = jsonDoc.object();
     QStringList coreCodes = Utility::getSetCodes("CORE", true, true);
+    QStringList arenaCodes = getAllArenaCodes();
 
     for(const QString &code: (const QStringList)jsonObject.keys())
     {
         if(jsonObject.value(code).isArray())
         {
             QJsonArray synergies = jsonObject.value(code).toArray();
-            initSynergyCode(code, synergies);
+            if(all || arenaCodes.contains(code))       initSynergyCode(code, synergies);
 
             QString coreCode = "CORE_" + code;
             if(coreCodes.contains(coreCode))    initSynergyCode(coreCode, synergies);
         }
     }
-    emit pDebug("Synergy Cards: " + QString::number(synergyCodes.count()));
+    emit pDebug("Synergy Cards " + QString(all?"ALL":"MIN") + ": " + QString::number(synergyCodes.count()));
 
 
     //Direct links
@@ -342,10 +347,13 @@ bool SynergyHandler::initSynergyCodes()
         if(dlObject.value(code).isArray())
         {
             QJsonArray synergies = dlObject.value(code).toArray();
-            for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+            if(all || arenaCodes.contains(code))
             {
-                QString code2 = it->toString();
-                initDirectLink(code, code2, coreCodes);
+                for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
+                {
+                    QString code2 = it->toString();
+                    initDirectLink(code, code2, coreCodes, arenaCodes, all);
+                }
             }
 
             QString coreCode = "CORE_" + code;
@@ -354,12 +362,12 @@ bool SynergyHandler::initSynergyCodes()
                 for(QJsonArray::const_iterator it=synergies.constBegin(); it!=synergies.constEnd(); it++)
                 {
                     QString code2 = it->toString();
-                    initDirectLink(coreCode, code2, coreCodes);
+                    initDirectLink(coreCode, code2, coreCodes, arenaCodes, all);
                 }
             }
         }
     }
-    emit pDebug("Direct Link Cards: " + QString::number(directLinks.count()));
+    emit pDebug("Direct Link Cards " + QString(all?"ALL":"MIN") + ": " + QString::number(directLinks.count()));
 
     return true;
 }
@@ -377,10 +385,14 @@ void SynergyHandler::initSynergyCode(const QString &code, const QJsonArray &syne
 }
 
 
-void SynergyHandler::initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes)
+void SynergyHandler::initDirectLink(const QString &code, const QString &code2,
+                                    const QStringList &coreCodes, const QStringList &arenaCodes, bool all)
 {
-    directLinks[code].append(code2);
-    directLinks[code2].append(code);
+    if(all || arenaCodes.contains(code2))
+    {
+        directLinks[code].append(code2);
+        directLinks[code2].append(code);
+    }
 
     QString coreCode2 = "CORE_" + code2;
     if(coreCodes.contains(coreCode2))
@@ -391,45 +403,65 @@ void SynergyHandler::initDirectLink(const QString &code, const QString &code2, c
 }
 
 
-void SynergyHandler::clearLists(bool keepCounters)
+void SynergyHandler::clearSynergyLists()
 {
     synergyCodes.clear();
     directLinks.clear();
+}
 
-    if(!keepCounters)//endDraft
+
+void SynergyHandler::clearCounters()
+{
+    //Reset counters
+    manaCounter->reset();
+    for(int i=0; i<V_NUM_TYPES; i++)
     {
-        //Reset counters
-        manaCounter->reset();
-        for(int i=0; i<V_NUM_TYPES; i++)
-        {
-            cardTypeCounters[i]->reset();
-        }
-        for(int i=0; i<V_NUM_DROPS; i++)
-        {
-            dropCounters[i]->reset();
-        }
-        for(int i=0; i<V_NUM_RACES; i++)
-        {
-            raceCounters[i]->reset();
-        }
-        for(int i=0; i<V_NUM_SCHOOLS; i++)
-        {
-            schoolCounters[i]->reset();
-        }
-        for(int i=0; i<V_NUM_MECHANICS; i++)
-        {
-            mechanicCounters[i]->reset();
-        }
-
-        //Reset stats maps
-        costMinions.clear();
-        attackMinions.clear();
-        healthMinions.clear();
-        costSpells.clear();
-        costWeapons.clear();
-        attackWeapons.clear();
-        healthWeapons.clear();
+        cardTypeCounters[i]->reset();
     }
+    for(int i=0; i<V_NUM_DROPS; i++)
+    {
+        dropCounters[i]->reset();
+    }
+    for(int i=0; i<V_NUM_RACES; i++)
+    {
+        raceCounters[i]->reset();
+    }
+    for(int i=0; i<V_NUM_SCHOOLS; i++)
+    {
+        schoolCounters[i]->reset();
+    }
+    for(int i=0; i<V_NUM_MECHANICS; i++)
+    {
+        mechanicCounters[i]->reset();
+    }
+
+    //Reset stats maps
+    costMinions.clear();
+    attackMinions.clear();
+    healthMinions.clear();
+    costSpells.clear();
+    costWeapons.clear();
+    attackWeapons.clear();
+    healthWeapons.clear();
+}
+
+
+QStringList SynergyHandler::getAllArenaCodes()
+{
+    QStringList codeList;
+
+    for(const QString &set: qAsConst(arenaSets))
+    {
+        if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
+        else                                codeList.append(Utility::getSetCodes(set, true, true));
+    }
+    return codeList;
+}
+
+
+void SynergyHandler::setArenaSets(QStringList arenaSets)
+{
+    this->arenaSets = arenaSets;
 }
 
 
@@ -1843,7 +1875,7 @@ bool SynergyHandler::containsAll(const QString &text, const QString &words)
 
 void SynergyHandler::testSynergies(const QString &miniSet)
 {
-    bool needSynergyClear = initSynergyCodes();
+    initSynergyCodes(true);
     int num = 0;
 
     for(const QString &code: (const QStringList)Utility::getSetCodes("REVENDRETH", true, true))
@@ -1907,13 +1939,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
         }
     }
 
-    if(needSynergyClear)    clearLists(true);
+    clearSynergyLists();
 }
 
 
 void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int openTo, const QString &miniSet, bool onlyCollectible)
 {
-    bool needSynergyClear = initSynergyCodes();
+    initSynergyCodes(true);
 
     QStringList codeList;
     if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
@@ -1947,7 +1979,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         }
     }
 
-    if(needSynergyClear)    clearLists(true);
+    clearSynergyLists();
 }
 
 
@@ -1960,7 +1992,7 @@ bool SynergyHandler::shouldBeInSynergies(const QString &code)
 
 void SynergyHandler::debugMissingSynergiesAllSets()
 {
-    bool needSynergyClear = initSynergyCodes();
+    initSynergyCodes(true);
     int num = 0;
     const QStringList wildCodes = Utility::getWildCodes();
     for(const QString &code: (const QStringList)wildCodes)
@@ -2031,7 +2063,7 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         qDebug()<<"DEBUG SYNERGIES: Those dup CORE synergies differ.";
     }
 
-    if(needSynergyClear)    clearLists(true);
+    clearSynergyLists();
 }
 
 

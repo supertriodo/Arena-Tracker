@@ -25,6 +25,7 @@ private:
     DraftItemCounter **raceCounters, **schoolCounters, **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
     DraftDropCounter **dropCounters;
+    QStringList arenaSets;
 
 //Metodos
 public:
@@ -49,22 +50,25 @@ public:
                         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
                         int &draw, int &toYourHand, int &discover);
     void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
-    bool initSynergyCodes();
-    void initSynergyCode(const QString &code, const QJsonArray &synergies);
-    void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes);
-    void clearLists(bool keepCounters);
+    bool initSynergyCodes(bool all=false);
+    void clearCounters();
     int draftedCardsCount();
     void setTransparency(Transparency transparency, bool mouseInApp);
     void setTheme();
     int getCorrectedCardMana(DeckCard &deckCard);
     int getManaCounterCount();
     void setHidden(bool hide);
+    void setArenaSets(QStringList arenaSets);
+    QStringList getAllArenaCodes();
 
     bool isDrop2(const QString &code, int cost, int attack, int health);
     bool isDrop3(const QString &code, int cost, int attack, int health);
     bool isDrop4(const QString &code, int cost, int attack, int health);
 
 private:
+    void initSynergyCode(const QString &code, const QJsonArray &synergies);
+    void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes, const QStringList &arenaCodes, bool all);
+    void clearSynergyLists();
     bool shouldBeInSynergies(const QString &code);
     void createDraftItemCounters();
     void deleteDraftItemCounters();

@@ -205,19 +205,13 @@ void DraftHandler::clearAndDisconnectComboBox(int index)
 void DraftHandler::setArenaSets(QStringList arenaSets)
 {
     this->arenaSets = arenaSets;
+    synergyHandler->setArenaSets(arenaSets);
 }
 
 
 QStringList DraftHandler::getAllArenaCodes()
 {
-    QStringList codeList;
-
-    for(const QString &set: qAsConst(arenaSets))
-    {
-        if(Utility::needCodesSpecific(set)) codeList.append(Utility::getSetCodesSpecific(set));
-        else                                codeList.append(Utility::getSetCodes(set, true, true));
-    }
-    return codeList;
+    return synergyHandler->getAllArenaCodes();
 }
 
 
@@ -627,7 +621,6 @@ void DraftHandler::resetTab(bool alreadyDrafting)
 void DraftHandler::clearLists(bool keepCounters)
 {
     clearAndDisconnectAllComboBox();
-    synergyHandler->clearLists(keepCounters);//keepCounters = beginDraft
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
     cardsHist.clear();
@@ -635,6 +628,7 @@ void DraftHandler::clearLists(bool keepCounters)
 
     if(!keepCounters)//endDraft
     {
+        synergyHandler->clearCounters();
         deckRatingHA = deckRatingLF = 0;
         deckRatingHSR = 0;
     }
@@ -2439,7 +2433,8 @@ void DraftHandler::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
 {
     this->draftMethodAvgScore = draftMethodAvgScore;
 
-    if(!isDrafting())   return;
+    //Comentado para poder cambiar fuera de draft
+//    if(!isDrafting())   return;
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
 
     updateAvgScoresVisibility();
