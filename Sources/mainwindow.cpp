@@ -4585,11 +4585,17 @@ void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
 }
 
 
-void MainWindow::testPopularList()
+void MainWindow::testPopularList(int i)
 {
     //Comentar !inArena en PopularCardsHandler::showPopularCards()
     popularCardsHandler->setEnemyClass("02");
-    popularCardsHandler->newTurn(true, 2);
+    popularCardsHandler->newTurn(true, i);
+    qDebug()<<"TEST POPULAR!!!";
+    if(i<10)
+    {
+        QTimer::singleShot(2000, this, [=] () {
+            testPopularList(i+2);});
+    }
 }
 
 void MainWindow::testDelay()
@@ -4604,7 +4610,7 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    Utility::resizeGoldenCards();
 
-//    QTimer::singleShot(7000, this, SLOT(testPopularList()));
+//    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});

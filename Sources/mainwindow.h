@@ -274,7 +274,7 @@ private slots:
     void testTierlists();
     void testDownloadRotation(bool fromHearth);
     void testSecretsHSR(LoadingScreenState loadingScreenState);
-    void testPopularList();
+    void testPopularList(int i=2);
     void confirmNewArenaDraft(QString hero);
     void transparentAlways();
     void transparentAuto();
