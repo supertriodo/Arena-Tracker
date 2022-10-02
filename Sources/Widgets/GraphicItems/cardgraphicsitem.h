@@ -14,12 +14,13 @@ friend class MinionGraphicsItem;
 
 //Constructor
 public:
-    CardGraphicsItem(int id, QString code, QString createdByCode, int turn, bool friendly, GraphicsItemSender *graphicsItemSender);
-    CardGraphicsItem(CardGraphicsItem *copy);
+    CardGraphicsItem(int id, QString code, QString createdByCode, int turn, bool friendly, GraphicsItemSender *graphicsItemSender, QStringList mechanics);
+    CardGraphicsItem(CardGraphicsItem *copy, bool showMechanics);
 
 //Variables
 private:
     QString code, createdByCode;
+    QStringList mechanics;
     int id, turn;
     bool played, discard, draw;
     int origAttack, origHealth;

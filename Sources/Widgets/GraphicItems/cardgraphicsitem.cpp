@@ -5,7 +5,8 @@
 #include <QtWidgets>
 
 
-CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn, bool friendly, GraphicsItemSender *graphicsItemSender)
+CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode, int turn, bool friendly,
+                                    GraphicsItemSender *graphicsItemSender, QStringList mechanics)
 {
     this->code = code;
     this->createdByCode = createdByCode;
@@ -19,13 +20,14 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->turn = turn;
     this->friendly = friendly;
     this->showTransparent = false;
+    this->mechanics = mechanics;
     this->graphicsItemSender = graphicsItemSender;
     friendly?this->setZValue(-10):this->setZValue(-30);
     setAcceptHoverEvents(true);
 }
 
 
-CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
+CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy, bool showMechanics)
 {
     this->code = copy->code;
     this->createdByCode = copy->createdByCode;
@@ -45,6 +47,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy)
     this->turn = copy->turn;
     this->friendly = copy->friendly;
     this->showTransparent = false;
+    if(showMechanics)   this->mechanics = copy->mechanics;
     this->graphicsItemSender = copy->graphicsItemSender;
     this->setPos(copy->pos());
     this->setZValue(copy->zValue());
@@ -254,6 +257,17 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         painter->drawPixmap(-WIDTH/2, -heightShow/2+(cardLifted?-CARD_LIFT:0),
                             QPixmap(Utility::hscardsPath() + "/" + code + ".png"), 5, 34, WIDTH,
                             heightShow+(cardLifted?CARD_LIFT:0));
+
+        if(mechanics.count() > 0)
+        {
+            painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+55, 30, 30,
+                                QPixmap(":/Images/" + mechanics[0]));
+            if(mechanics.count() > 1)
+            {
+                painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+90, 30, 30,
+                                    QPixmap(":/Images/" + mechanics[1]));
+            }
+        }
 
         if(cost != origCost)
         {

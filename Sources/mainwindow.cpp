@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createSecretsHandler();//-->EnemyHandHandler -->PlanHandler
     createPopularCardsHandler();//-->EnemyHandHandler
     createArenaHandler();//-->DeckHandler -->TrackobotUploader -->PlanHandler
-    createDraftHandler();//-->CardDownloader -->DeckHandler -->ArenaHandler
+    createDraftHandler();//-->CardDownloader -->DeckHandler -->ArenaHandler -->PlanHandler
     createGameWatcher();//-->A lot
     createLogLoader();//-->GameWatcher -->DraftHandler
     createCardWindow();//-->A lot
@@ -979,6 +979,10 @@ void MainWindow::createDraftHandler()
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
     draftHandler->setMulticlassArena(multiclassArena);
     draftHandler->setArenaSets(arenaSets);
+
+    //SynergyHandler
+    SynergyHandler *synergyHandler = draftHandler->getSynergyHandler();
+    planHandler->setSynergyHandler(synergyHandler);
 }
 
 

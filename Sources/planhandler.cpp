@@ -75,6 +75,12 @@ void PlanHandler::completeUI()
 }
 
 
+void PlanHandler::setSynergyHandler(SynergyHandler *synergyHandler)
+{
+    this->synergyHandler = synergyHandler;
+}
+
+
 void PlanHandler::setPremium(bool premium)
 {
     if(premium)
@@ -1560,7 +1566,15 @@ void PlanHandler::enemyCardDraw(int id, QString code, QString createdByCode, int
 
 CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QString createdByCode, int turn)
 {
-    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly, graphicsItemSender);
+    QStringList mechanics;
+    if(!code.isEmpty())
+    {
+        if(synergyHandler->isAoeGen(code, ""))                                                  mechanics += "aoeMechanic.png";
+        if(synergyHandler->isDestroyGen(code, QJsonArray(), ""))                                mechanics += "destroyMechanic.png";
+        if(synergyHandler->isDamageMinionsGen(code, QJsonArray(), QJsonArray(), "", MINION, 0)) mechanics += "damageMechanic.png";
+    }
+
+    CardGraphicsItem *card = new CardGraphicsItem(id, code, createdByCode, turn, friendly, graphicsItemSender, mechanics);
     getHandList(friendly)->append(card);
     updateCardZoneSpots(friendly);
 
@@ -1586,7 +1600,7 @@ CardGraphicsItem * PlanHandler::cardDraw(bool friendly, int id, QString code, QS
 
             if(drawCard == nullptr || drawCard->isDiscard())
             {
-                drawCard = new CardGraphicsItem(card);
+                drawCard = new CardGraphicsItem(card, false);
                 drawCard->setDraw();
                 getHandList(friendly, board)->append(drawCard);
                 updateCardZoneSpots(friendly, board);
@@ -1880,14 +1894,15 @@ Board * PlanHandler::copyBoard(Board *origBoard, int numTurn, bool copySecretCod
         board->enemyMinions.append(new MinionGraphicsItem(minion));
     }
 
+    bool showMechanics = (numTurn==0);
     for(CardGraphicsItem *card: qAsConst(origBoard->playerHandList))
     {
-        board->playerHandList.append(new CardGraphicsItem(card));
+        board->playerHandList.append(new CardGraphicsItem(card, showMechanics));
     }
 
     for(CardGraphicsItem *card: qAsConst(origBoard->enemyHandList))
     {
-        board->enemyHandList.append(new CardGraphicsItem(card));
+        board->enemyHandList.append(new CardGraphicsItem(card, showMechanics));
     }
 
     return board;

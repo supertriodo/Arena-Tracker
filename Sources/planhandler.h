@@ -11,6 +11,7 @@
 #include "Widgets/GraphicItems/graphicsitemsender.h"
 #include "Cards/handcard.h"
 #include "utility.h"
+#include "synergyhandler.h"
 #include <QObject>
 #include <QFutureWatcher>
 
@@ -67,6 +68,7 @@ public:
 //Variables
 private:
     Ui::Extended *ui;
+    SynergyHandler *synergyHandler;
     QMap<int,TagChange> pendingTagChanges;
     Board *nowBoard;
     Board *viewBoard;
@@ -182,6 +184,9 @@ public:
     QJsonArray getJsonCardHistory();
     void setTheme();
     bool isMinionOnBoard(bool friendly, int id, Board *board = nullptr);
+
+    //SynergyHandler
+    void setSynergyHandler(SynergyHandler *synergyHandler);
 
     //SecretsHandler
     bool isReckoningTested(bool isHeroTo, int id1, int id2);
