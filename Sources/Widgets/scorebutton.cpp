@@ -9,6 +9,8 @@ ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource) : QLabel(pare
     this->bestScoreOpacity = 0;
     this->scoreSource = scoreSource;
     this->score = 0;
+    this->includedDecks = -1;
+    this->classOrder = -1;
 }
 
 
@@ -132,7 +134,24 @@ void ScoreButton::paintEvent(QPaintEvent *event)
 
     QPixmap canvas(width(), height());
     canvas.fill(Qt::transparent);
+    QRect targetAll(0, 0, width(), height());
+    drawPixmap(canvas, targetAll);
 
+    QPainter painterObject(this);
+    if(isEnabled())
+    {
+        painterObject.drawPixmap(targetAll, canvas);
+    }
+    else
+    {
+        QIcon icon(canvas);
+        painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
+    }
+}
+
+
+void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
+{
     QPainter painter(&canvas);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
@@ -144,17 +163,28 @@ void ScoreButton::paintEvent(QPaintEvent *event)
     else                                        drawScore = score;
 
     QFont font(LG_FONT);
-    if( scoreSource == Score_Heroes ||
-        scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/3.5));
-    else if(drawScore > 99)             font.setPixelSize(static_cast<int>(width()/3.2));
-    else                                font.setPixelSize(static_cast<int>(width()/2.7));
+    if(bigFont)
+    {
+        float k = 0.8;
+        if( scoreSource == Score_Heroes ||
+            scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/(3.5*k)));
+        else if(drawScore > 99)             font.setPixelSize(static_cast<int>(width()/(3.2*k)));
+        else                                font.setPixelSize(static_cast<int>(width()/(2.7*k)));
+    }
+    else
+    {
+        if( scoreSource == Score_Heroes ||
+                scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/3.5));
+        else if(drawScore > 99)                 font.setPixelSize(static_cast<int>(width()/3.2));
+        else                                    font.setPixelSize(static_cast<int>(width()/2.7));
+    }
 
     QPen pen(BLACK);
-    pen.setWidth(font.pixelSize()/20);
+    if(bigFont) pen.setWidth(2);
+    else        pen.setWidth(font.pixelSize()/20);
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
-    QRect targetAll(0, 0, width(), height());
     bool hideScore = learningMode && !learningShow;
     if(hideScore)
     {
@@ -188,15 +218,15 @@ void ScoreButton::paintEvent(QPaintEvent *event)
         int textHigh = fm.height();
 
         QPainterPath path;
-#ifdef Q_OS_WIN
+    #ifdef Q_OS_WIN
         path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.3, font, text);
-#else
+    #else
         path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, font, text);
-#endif
+    #endif
         painter.drawPath(path);
 
         //Draw heroe winrate %
-        if(scoreSource == Score_Heroes || scoreSource == Score_HSReplay)
+        if(!bigFont && (scoreSource == Score_Heroes || scoreSource == Score_HSReplay))
         {
             font.setPixelSize(static_cast<int>(width()/5.0));
             QString text = "%";
@@ -205,11 +235,11 @@ void ScoreButton::paintEvent(QPaintEvent *event)
             int textHigh = fm.height();
 
             QPainterPath path;
-#ifdef Q_OS_WIN
+    #ifdef Q_OS_WIN
             path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.3, font, text);
-#else
+    #else
             path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.4, font, text);
-#endif
+    #endif
             painter.drawPath(path);
         }
 
@@ -236,17 +266,28 @@ void ScoreButton::paintEvent(QPaintEvent *event)
                                QPixmap(ThemeHandler::heroFile(classOrder)));
         }
     }
-
-    QPainter painterObject(this);
-    if(isEnabled())
-    {
-        painterObject.drawPixmap(targetAll, canvas);
-    }
-    else
-    {
-        QIcon icon(canvas);
-        painterObject.drawPixmap(targetAll, icon.pixmap(width(), height(), QIcon::Disabled, QIcon::On));
-    }
 }
 
 
+QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
+{
+    ScoreButton scoreButton(nullptr, scoreSource);
+    scoreButton.setFixedSize(size, size);
+    scoreButton.score = score;
+
+    int r, g, b;
+    scoreButton.getScoreColor(r, g, b, score);
+
+    QPixmap canvas(size, size);
+    canvas.fill(Qt::transparent);
+    QPainter painter(&canvas);
+    painter.setBrush(QColor(r, g, b));
+    painter.drawEllipse(QPoint(size/2,size/2), size/3, size/3);
+    painter.end();
+
+    QRect targetAll(0, 0, size, size);
+    scoreButton.drawPixmap(canvas, targetAll, true);
+
+    QIcon icon(canvas.copy(size/8, size/8, size*0.75, size*0.75));
+    return icon;
+}

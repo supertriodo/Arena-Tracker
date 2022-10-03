@@ -26,6 +26,7 @@ private:
 //Metodos
 private:
     void getScoreColor(int &r, int &g, int &b, float score);
+    void drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont=false);
 
 protected:
     void enterEvent(QEvent *e) Q_DECL_OVERRIDE;
@@ -38,6 +39,7 @@ public:
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void draw();
+    static QIcon scoreIcon(ScoreSource scoreSource, float score, int size);
 
 signals:
     void spreadLearningShow(bool value);
