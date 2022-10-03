@@ -91,7 +91,7 @@ private:
     void startReadingDeck();
     void endReadingDeck();
     bool isHeroPower(QString code);
-    bool isCheatingCard(const QString &code);
+    bool isCheatingCard(const QString &zoneFrom);
 
 public:
     void reset();

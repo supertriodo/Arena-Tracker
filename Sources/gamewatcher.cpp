@@ -1044,13 +1044,13 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 //Mostramos todas las cartas marcadas como desveladas en el log y establecemos excepciones (isCheatingCard)
                 bool advance = false;
-                bool cheatingCard = isCheatingCard(cardId);
+                bool cheatingCard = isCheatingCard(zoneFrom);
                 if(cheatingCard)    emit pDebug("Enemy: Known card to hand from deck (Hidden to avoid cheating): " + name + " ID: " + id, numLine);
                 else                emit pDebug("Enemy: Known card to hand: " + name + " ID: " + id, numLine);
                 if(zoneFrom == "OPPOSING DECK")
                 {
                     advance = advanceTurn(false);
-                    if(!cheatingCard)   emit enemyKnownCardDraw(id.toInt(), cardId);
+//                    if(!cheatingCard)   emit enemyKnownCardDraw(id.toInt(), cardId);
                 }
                 if(advance && turnReal==1)      emit newTurn(isPlayerTurn, turnReal, enemyMinions);
                 if(cheatingCard)                emit enemyCardDraw(id.toInt(), turnReal);
@@ -1495,14 +1495,13 @@ LoadingScreenState GameWatcher::getLoadingScreen()
 }
 
 
-bool GameWatcher::isCheatingCard(const QString &code)
+bool GameWatcher::isCheatingCard(const QString &zoneFrom)
 {
-    if(code == PRINCE_MALCHEZAAR)   return true;
-    else if(code == BODY_OF_CTHUN)  return true;
-    else if(code == EYE_OF_CTHUN)   return true;
-    else if(code == HEART_OF_CTHUN) return true;
-    else if(code == MAW_OF_CTHUN)   return true;
-    return false;
+    if(zoneFrom == "FRIENDLY HAND")             return false;
+    if(zoneFrom.startsWith("OPPOSING PLAY"))    return false;
+    if(zoneFrom.startsWith("FRIENDLY PLAY"))    return false;
+    if(zoneFrom == "FRIENDLY SECRET")           return false;
+    return true;
 }
 
 
