@@ -1352,7 +1352,7 @@ draft mechanics becoming a patron (3€).</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>0</y>
+               <y>-300</y>
                <width>435</width>
                <height>868</height>
               </rect>
@@ -1960,6 +1960,36 @@ when the opponent plays a secret.</string>
                        <string>HearthArena</string>
                       </property>
                      </widget>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="configBoxDraftAvg">
+                      <item>
+                       <widget class="QLabel" name="configLabelDraftAvg">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>AVG: Draft assistant chosen to show the average of your deck.</string>
+                        </property>
+                        <property name="text">
+                         <string>AVG</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="configComboDraftAvg">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </widget>

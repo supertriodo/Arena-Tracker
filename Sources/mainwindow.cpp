@@ -1638,6 +1638,13 @@ void MainWindow::initConfigTheme(QString theme)
 }
 
 
+void MainWindow::initConfigAvgScore(QString draftAvg)
+{
+    ui->configComboDraftAvg->setCurrentText(draftAvg);
+    spreadDraftAvg(draftAvg);
+}
+
+
 void MainWindow::moveInScreen(QPoint pos, QSize size)
 {
     QRect appRect(pos, size);
@@ -1814,7 +1821,7 @@ void MainWindow::readSettings()
     bool showDraftMechanicsOverlay = settings.value("showDraftMechanicsOverlay", true).toBool();
     bool draftLearningMode = settings.value("draftLearningMode", false).toBool();
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
-    this->draftMethodAvgScore = static_cast<DraftMethod>(settings.value("draftMethodAvgScore", HSReplay).toInt());
+    QString draftAvg = settings.value("draftAvg", "HSReplay").toString();
     bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
     bool draftMethodLF = false;//settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
@@ -1830,7 +1837,7 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
-                  twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, popularCardsShown,
+                  twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, draftAvg, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
@@ -1870,7 +1877,8 @@ void MainWindow::writeSettings()
     settings.setValue("showDraftMechanicsOverlay", ui->configCheckMechanicsOverlay->isChecked());
     settings.setValue("draftLearningMode", ui->configCheckLearning->isChecked());
     settings.setValue("draftShowDrops", ui->configCheckShowDrops->isChecked());
-    settings.setValue("draftMethodAvgScore", static_cast<int>(this->draftMethodAvgScore));
+    QString draftAvg = ui->configComboDraftAvg->currentText();
+    if(!draftAvg.isEmpty()) settings.setValue("draftAvg", draftAvg);
     settings.setValue("draftMethodHA", ui->configCheckHA->isChecked());
     settings.setValue("draftMethodLF", ui->configCheckLF->isChecked());
     settings.setValue("draftMethodHSR", ui->configCheckHSR->isChecked());
@@ -1896,6 +1904,7 @@ void MainWindow::writeSettings()
 void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
                                bool showManaLimits, bool showTotalAttack, bool showRngList,
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
+                               QString draftAvg,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
                                bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops)
 {
@@ -1995,6 +2004,8 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
     ui->configCheckLF->setChecked(draftMethodLF);
     ui->configCheckHSR->setChecked(draftMethodHSR);
     spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
+
+    initConfigAvgScore(draftAvg);
 
     //Twitch
     ui->configCheckVotes->setChecked(twitchChatVotes);
@@ -3156,6 +3167,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelPopularValue->setStyleSheet(labelCSS);
         ui->configLabelTheme->setStyleSheet(labelCSS);
         ui->configLabelVotesStatus->setStyleSheet(labelCSS);
+        ui->configLabelDraftAvg->setStyleSheet(labelCSS);
 
         QString radioCSS = "QRadioButton {background-color: transparent; color: white;}";
         ui->configRadioTransparent->setStyleSheet(radioCSS);
@@ -3207,6 +3219,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configLabelPopularValue->setStyleSheet("");
         ui->configLabelTheme->setStyleSheet("");
         ui->configLabelVotesStatus->setStyleSheet("");
+        ui->configLabelDraftAvg->setStyleSheet("");
 
         ui->configRadioTransparent->setStyleSheet("");
         ui->configRadioAuto->setStyleSheet("");
@@ -3788,39 +3801,6 @@ void MainWindow::updateDraftShowDrops(bool checked)
 }
 
 
-void MainWindow::updateDraftMethodHA(bool checked)
-{
-    if(checked)                                         this->draftMethodAvgScore = HearthArena;
-    else if(this->draftMethodAvgScore == HearthArena)   updateDraftMethodUnchecked();
-    spreadDraftMethod();
-}
-
-
-void MainWindow::updateDraftMethodLF(bool checked)
-{
-    if(checked)                                         this->draftMethodAvgScore = LightForge;
-    else if(this->draftMethodAvgScore == LightForge)    updateDraftMethodUnchecked();
-    spreadDraftMethod();
-}
-
-
-void MainWindow::updateDraftMethodHSR(bool checked)
-{
-    if(checked)                                         this->draftMethodAvgScore = HSReplay;
-    else if(this->draftMethodAvgScore == HSReplay)      updateDraftMethodUnchecked();
-    spreadDraftMethod();
-}
-
-
-void MainWindow::updateDraftMethodUnchecked()
-{
-    if(ui->configCheckHSR->isChecked())         this->draftMethodAvgScore = HSReplay;
-    else if(ui->configCheckLF->isChecked())     this->draftMethodAvgScore = LightForge;
-    else if(ui->configCheckHA->isChecked())     this->draftMethodAvgScore = HearthArena;
-    else                                        this->draftMethodAvgScore = None;
-}
-
-
 void MainWindow::spreadDraftMethod()
 {
     spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked(), ui->configCheckHSR->isChecked());
@@ -3830,7 +3810,21 @@ void MainWindow::spreadDraftMethod()
 void MainWindow::spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR)
 {
     draftHandler->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
-    draftHandler->setDraftMethodAvgScore(this->draftMethodAvgScore);
+}
+
+
+DraftMethod MainWindow::draftMethodFromString(QString draftAvg)
+{
+    if(draftAvg == "HSReplay")          return HSReplay;
+    else if(draftAvg == "HearthArena")  return HearthArena;
+    else if(draftAvg == "LightForge")   return LightForge;
+    return None;
+}
+
+
+void MainWindow::spreadDraftAvg(QString draftAvg)
+{
+    draftHandler->setDraftMethodAvgScore(draftMethodFromString(draftAvg));
 }
 
 
@@ -3858,6 +3852,19 @@ void MainWindow::completeConfigComboTheme()
 }
 
 
+void MainWindow::completeConfigComboAvg()
+{
+//    ui->configComboDraftAvg->addItem("LightForge");
+    ui->configComboDraftAvg->addItem("HSReplay");
+    ui->configComboDraftAvg->addItem("HearthArena");
+
+    ui->configComboDraftAvg->setEditable(false);
+
+    connect(ui->configComboDraftAvg, SIGNAL(activated(QString)),
+            this, SLOT(spreadDraftAvg(QString)));
+}
+
+
 void MainWindow::setPremium(bool premium)
 {
     this->patreonVersion = premium;
@@ -3871,6 +3878,8 @@ void MainWindow::setPremium(bool premium)
     ui->configSliderPopular->setHidden(!patreonVersion);
     ui->configCheckRngList->setHidden(!patreonVersion);
     ui->configCheckWildSecrets->setHidden(!patreonVersion);
+    ui->configLabelDraftAvg->setHidden(!patreonVersion);
+    ui->configComboDraftAvg->setHidden(!patreonVersion);
 
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
@@ -3931,13 +3940,17 @@ void MainWindow::completeConfigTab()
     ui->configCheckMechanicsOverlay->hide();
     ui->configCheckShowDrops->hide();
     ui->configCheckLF->hide();//Disable lightforge
+    ui->configLabelDraftAvg->hide();
+    ui->configComboDraftAvg->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
     connect(ui->configCheckShowDrops, SIGNAL(clicked(bool)), this, SLOT(updateDraftShowDrops(bool)));
-    connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHA(bool)));
-    connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodLF(bool)));
-    connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(updateDraftMethodHSR(bool)));
+    connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
+    connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
+    connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
+
+    completeConfigComboAvg();
 
     //Twitch
     ui->configLabelVotesStatus->setPixmap(ThemeHandler::loseFile());

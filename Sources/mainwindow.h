@@ -103,7 +103,6 @@ private:
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
     bool cardsJsonLoaded, arenaSetsLoaded, allCardsDownloadNeeded;
-    DraftMethod draftMethodAvgScore;
     QMap<QString, float> *cardsPickratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
@@ -166,7 +165,8 @@ private:
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
     void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
                        bool showTotalAttack, bool showRngList, bool twitchChatVotes, QString theme,
-                       bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, int popularCardsShown, bool showSecrets, bool showWildSecrets,
+                       bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, QString draftAvg,
+                       int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
@@ -188,8 +188,8 @@ private:
     void createLinuxShortcut();
     void createDebugPack();
     void showWindowFrame(bool showFrame=true);
-    void spreadDraftMethod();
     void spreadDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
+    DraftMethod draftMethodFromString(QString draftAvg);
     void showProgressBar(bool animated=true);
     bool askImportAccount();
     void checkFirstRunNewVersion();
@@ -198,6 +198,7 @@ private:
     void advanceProgressBarMini(int remaining);
     void updateProgressAllCardsDownload(QString code);
     void completeConfigComboTheme();
+    void completeConfigComboAvg();
     void initConfigTheme(QString theme);
     void downloadExtraFiles();
     void downloadThemes();
@@ -218,15 +219,15 @@ private:
     void downloadAllArenaCodes(const QStringList &codeList);
     void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap, bool trunk=false);
     void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
-    void updateDraftMethodUnchecked();
     void initHSRCards();
     void localHSRCards();
     void startProcessHSRCards(const QJsonObject &jsonObject);
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html="");
+    void initConfigAvgScore(QString draftAvg);
 
-//Override events
 protected:
+    //Override events
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -306,9 +307,6 @@ private slots:
     void setLocalLang();
     void replyFinished(QNetworkReply *reply);
     void checkLinuxShortcut();
-    void updateDraftMethodHA(bool checked);
-    void updateDraftMethodLF(bool checked);
-    void updateDraftMethodHSR(bool checked);
     void spreadTransparency();
     void startProgressBar(int maximum, QString text);
     void advanceProgressBar(int remaining, QString text="");
@@ -331,6 +329,8 @@ private slots:
     void configureTwitchDialogs();
     void processPopularCardsHandlerPickrates();
     void openUserGuide();
+    void spreadDraftMethod();
+    void spreadDraftAvg(QString draftAvg);
 };
 
 #endif // MAINWINDOW_H
