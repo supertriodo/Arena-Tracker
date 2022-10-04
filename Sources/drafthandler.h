@@ -148,7 +148,7 @@ private:
     void createTwitchHandler();
     void deleteTwitchHandler();
     QString getDeckAvgString(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
-    void buildDraftMechanicsWindow();
+    bool buildDraftMechanicsWindow();
     bool loadTemplateSettings();
     bool saveTemplateSettings();
     bool isFindScreenOk(ScreenDetection &screenDetection);
@@ -193,6 +193,7 @@ signals:
     void newDeckCard(QString code);
     void draftStarted();
     void draftEnded(QString heroLog);
+    void scoreAvg(int deckScoreHA, float deckScoreHSR, QString heroLog);
     void downloadStarted();
     void downloadEnded();
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);

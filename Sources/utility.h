@@ -33,7 +33,7 @@ enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum LoadingScreenState { menu, arena, ranked, adventure, tavernBrawl, friendly, gameMode, unknown };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logAsset, logInvalid };
 enum DraftMethod { HearthArena, LightForge, HSReplay, None };
-enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes, Score_HSReplay };
+enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes, Score_HSReplay, Score_None };
 enum MechanicBorderColor { MechanicBorderRed, MechanicBorderGrey, MechanicBorderGreen };
 
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NAGA,

@@ -898,6 +898,8 @@ void DraftHandler::endDraft()
         int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
         float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
         showMessageDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR);
+
+        if(numCards==30)    emit scoreAvg(deckScoreHA, deckScoreHSR, heroLog);
     }
 
     clearLists(false);
@@ -937,7 +939,18 @@ void DraftHandler::endDraftShowMechanicsWindow()
     else
     {
         //Build mechanics window and init mechanics.
-        buildDraftMechanicsWindow();
+        if(buildDraftMechanicsWindow())
+        {
+            //Send Deck Score
+            if(patreonVersion)
+            {
+                int deckScoreHA = static_cast<int>(deckRatingHA/30);
+                //int deckScoreLF = static_cast<int>(deckRatingLF/30);
+                float deckScoreHSR = static_cast<float>(round(static_cast<double>(deckRatingHSR/30 * 10))/10.0);
+                QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
+                emit scoreAvg(deckScoreHA, deckScoreHSR, heroLog);
+            }
+        }
     }
 }
 
@@ -971,7 +984,7 @@ void DraftHandler::closeFindScreenRects()
 }
 
 
-void DraftHandler::buildDraftMechanicsWindow()
+bool DraftHandler::buildDraftMechanicsWindow()
 {
     deleteDraftMechanicsWindow();
 
@@ -982,12 +995,12 @@ void DraftHandler::buildDraftMechanicsWindow()
     if(deckCardList == nullptr)
     {
         emit pDebug("Build draft mechanic window of incomplete deck.", DebugLevel::Warning);
-        return;
+        return false;
     }
     else if(heroInt<1 || heroInt>NUM_HEROS)
     {
         emit pDebug("Build draft mechanic window of unknown hero: " + hero, DebugLevel::Error);
-        return;
+        return false;
     }
     else
     {
@@ -998,6 +1011,7 @@ void DraftHandler::buildDraftMechanicsWindow()
 
     initCodesAndHistMaps(hero);
     initSynergyCounters(*deckCardList);
+    return true;
 }
 
 

@@ -39,7 +39,7 @@ public:
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void draw();
-    static QIcon scoreIcon(ScoreSource scoreSource, float score, int size);
+    static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80);
 
 signals:
     void spreadLearningShow(bool value);

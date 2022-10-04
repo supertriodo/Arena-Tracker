@@ -49,6 +49,7 @@ private:
     //Se usa para que itemChanged solo actue cuando el usuario modifica un campo, no cuando el codigo lo hace.
     bool editingColumnText;
     int lastRegion;
+    DraftMethod draftMethodAvgScore;
     QFutureWatcher<void> futureProcessArenas2Stats;
 
 
@@ -66,10 +67,11 @@ private:
     bool isCompleteArena(int wins, int losses);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
-    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0,
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
                                         bool isArena=false, bool insertPos1=false);
     QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
-    QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, bool isArenaNewEmpty=false);
+    QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
+                               bool isArenaNewEmpty=false);
     void newArenaStat(QString hero, int wins=0, int losses=0, QTreeWidgetItem *item=nullptr);
     void newArenaGameStat(GameResult gameResult);
     void saveStatsJsonFile();
@@ -96,6 +98,8 @@ private:
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
     void setCurrentStatsJson();
     void setNullTreeItems();
+    ScoreSource scoreSourceFromDraftMethod(DraftMethod draftMethod);
+    void loadSelectedStatsJsonFile();
 
 public:
     void setMouseInApp(bool value);
@@ -104,6 +108,7 @@ public:
     void linkDraftLogToArenaCurrent(QString logFileName);
     QString getArenaCurrentDraftLog();
     void loadStatsJsonFile(QString statsFile="ArenaTrackerStats.json");
+    void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
 
 signals:
     void showPremiumDialog();
@@ -115,9 +120,10 @@ public slots:
 
     //DraftHandler
     void newArena(QString hero);
+    void setCurrentAvgScore(int avgHA, float avgHSR, QString heroLog);
 
     //MainWindow
-    void setPremium(bool premium);
+    void setPremium(bool premium, bool load=true);
 
 private slots:
     void itemChanged(QTreeWidgetItem *item, int column);

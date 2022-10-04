@@ -958,6 +958,8 @@ void MainWindow::createDraftHandler()
 
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             arenaHandler, SLOT(newArena(QString)));
+    connect(draftHandler, SIGNAL(scoreAvg(int, float, QString)),
+            arenaHandler, SLOT(setCurrentAvgScore(int, float, QString)));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),
@@ -1044,7 +1046,9 @@ void MainWindow::createArenaHandler()
     connect(arenaHandler, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SLOT(pDebug(QString,DebugLevel,QString)));
 
-    arenaHandler->loadStatsJsonFile();
+    //La primera carga se hace al llamar
+    //ArenaHandler::setPremium(bool premium)
+//    arenaHandler->loadStatsJsonFile();
 }
 
 
@@ -3824,7 +3828,9 @@ DraftMethod MainWindow::draftMethodFromString(QString draftAvg)
 
 void MainWindow::spreadDraftAvg(QString draftAvg)
 {
-    draftHandler->setDraftMethodAvgScore(draftMethodFromString(draftAvg));
+    DraftMethod dm = draftMethodFromString(draftAvg);
+    draftHandler->setDraftMethodAvgScore(dm);
+    arenaHandler->setDraftMethodAvgScore(dm);
 }
 
 
