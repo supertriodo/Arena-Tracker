@@ -165,7 +165,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     QFont font(LG_FONT);
     if(bigFont)
     {
-        float k = 0.8;
+        float k = 0.85;
         if( scoreSource == Score_Heroes ||
             scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/(3.5*k)));
         else if(drawScore > 99)             font.setPixelSize(static_cast<int>(width()/(3.2*k)));
