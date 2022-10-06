@@ -1085,7 +1085,7 @@ void ArenaHandler::itemDoubleClicked(QTreeWidgetItem *item, int column)
             ui->arenaTreeWidget->editItem(item, column);
         }
     }
-    else
+    else if(column < 4)
     {
         if(column == 1)
         {
