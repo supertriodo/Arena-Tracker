@@ -46,6 +46,9 @@ Next you can check a brief explanation of its features divided in free and premi
 
 ![DraftMechanics](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelp.png)
 ![DraftDrops](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/bgDraftMechanicsHelpDrops.png)
+* Show your deck score average for each run (HA/HSR).
+
+![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsScoreAVG.png)
 * Show your class winrates and how are you doing in your best 30 arenas for the leaderboard.
 
 ![StatsAdvanced](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsAdvanced.png)
