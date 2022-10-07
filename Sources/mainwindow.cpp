@@ -4541,7 +4541,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("REVENDRETH", 1, 20, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("MAW_");
+//    draftHandler->getSynergyHandler()->testSynergies();//"MAW_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }

@@ -1899,6 +1899,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    mechanics.contains(QJsonValue("CORRUPT"))
+//                    attack>1 && health>1 && (attack + health)>8 && cost==4
 //                    && !isDrop2(code, cost, attack, health)
 //                    && !isDrop3(code, cost, attack, health)
 //                    && !isDrop4(code, cost, attack, health)
@@ -1921,7 +1922,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
 //                qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<=100)
+                if(num>0 && num<=50)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
