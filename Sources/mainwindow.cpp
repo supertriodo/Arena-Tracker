@@ -4576,7 +4576,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "BRM" << "UNGORO" << "LOOTAPALOOZA" << "DALARAN" << "BLACK_TEMPLE" << "REVENDRETH";
+    arenaSets << "LEGACY" << "EXPERT1" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
