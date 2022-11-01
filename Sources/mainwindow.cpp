@@ -4534,6 +4534,29 @@ void MainWindow::downloadHeroPortrait(QString code)
 }
 
 
+void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
+{
+    secretsHandler->secretPlayed(1, PALADIN, loadingScreenState);
+    secretsHandler->secretPlayed(2, HUNTER, loadingScreenState);
+    secretsHandler->secretPlayed(3, ROGUE, loadingScreenState);
+    secretsHandler->secretPlayed(4, MAGE, loadingScreenState);
+}
+
+
+void MainWindow::testPopularList(int i)
+{
+    //Comentar !inArena en PopularCardsHandler::showPopularCards()
+    popularCardsHandler->setEnemyClass("02");
+    popularCardsHandler->newTurn(true, i);
+    qDebug()<<"TEST POPULAR!!!";
+    if(i<10)
+    {
+        QTimer::singleShot(2000, this, [=] () {
+            testPopularList(i+2);});
+    }
+}
+
+
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
@@ -4561,20 +4584,19 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Core "CORE"
- *  Blackrock Mountain "BRM"
- *  Journey to Un'Goro "UNGORO"
- *  Kobolds and Catacombs "LOOTAPALOOZA"
- *  Rise of Shadows "DALARAN"
- *  Ashes of Outland "BLACK_TEMPLE"
- *  Murder at Castle Nathria "REVENDRETH"
+ * Legacy "LEGACY"
+ * Curse of Naxxramas "NAXX"
+ * Goblins vs Gnomes "GVG"
+ * Blackrock Mountain "BRM"
+ * The Grand Tournament "TGT"
+ * League of Explorer "LOE"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "BRM" << "UNGORO" << "LOOTAPALOOZA" << "DALARAN" << "BLACK_TEMPLE" << "REVENDRETH";
+    arenaSets << "LEGACY" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
 
     if(fromHearth)
     {
@@ -4599,27 +4621,6 @@ void MainWindow::testDownloadRotation(bool fromHearth)
     //Fallo --> Failed to download card image
 }
 
-void MainWindow::testSecretsHSR(LoadingScreenState loadingScreenState)
-{
-    secretsHandler->secretPlayed(1, PALADIN, loadingScreenState);
-    secretsHandler->secretPlayed(2, HUNTER, loadingScreenState);
-    secretsHandler->secretPlayed(3, ROGUE, loadingScreenState);
-    secretsHandler->secretPlayed(4, MAGE, loadingScreenState);
-}
-
-
-void MainWindow::testPopularList(int i)
-{
-    //Comentar !inArena en PopularCardsHandler::showPopularCards()
-    popularCardsHandler->setEnemyClass("02");
-    popularCardsHandler->newTurn(true, i);
-    qDebug()<<"TEST POPULAR!!!";
-    if(i<10)
-    {
-        QTimer::singleShot(2000, this, [=] () {
-            testPopularList(i+2);});
-    }
-}
 
 void MainWindow::testDelay()
 {
@@ -4627,7 +4628,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true);//Force hearthpwn true
+    testDownloadRotation(true);//Force hearthpwn true
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();

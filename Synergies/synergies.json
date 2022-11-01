@@ -2955,6 +2955,7 @@
 "REV_961" : [ "battlecry" ],
 "REV_983" : [ "destroyGen", "eggSyn" ],
 "REV_990" : [ "pingGen", "attackBuffGen", "enrageSyn" ],
+"RLK_590" : [ "toYourHandGen5" ],
 "SCH_120" : [ "spellAllSyn", "taunt", "damageMinionsGen", "attackNerfSyn" ],
 "SCH_126" : [ "eggSyn", "lackeySyn", "drop4" ],
 "SCH_133" : [ "battlecry", "returnSyn", "tokenGen", "handBuffSyn" ],
