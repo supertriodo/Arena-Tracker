@@ -1,9 +1,9 @@
 {
-  "arenaVersion": 24,
+  "arenaVersion": 23,
   "arenaSets": ["LEGACY", "NAXX", "GVG", "BRM", "TGT", "LOE"],
   "multiclassArena": true,
   "redownloadCards": false,
   "redownloadHeroes": false,
-  "resetCards": 24,
+  "resetCards": 23,
   "resetHeroes": 0
 }
