@@ -447,7 +447,8 @@ CardClass Utility::classString2cardClass(QString value)
 
 /*
  * Core "CORE"
- * Legacy "LEGACY" // Old Basic + Classic
+ * Legacy "LEGACY" // Old Basic
+ * Expert "EXPERT1"// Old Classic
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
  * Taverns of Time "TAVERNS_OF_TIME"
  * Curse of Naxxramas "NAXX"

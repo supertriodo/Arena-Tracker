@@ -4584,7 +4584,8 @@ void MainWindow::testTierlists()
 }
 
 /*
- * Legacy "LEGACY"
+ * Legacy "LEGACY" // Old Basic
+ * Expert "EXPERT1"// Old Classic
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
  * Blackrock Mountain "BRM"
@@ -4596,7 +4597,7 @@ void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "LEGACY" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
+    arenaSets << "LEGACY" << "EXPERT1" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
 
     if(fromHearth)
     {
