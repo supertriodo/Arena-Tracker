@@ -531,37 +531,32 @@ void EnemyHandHandler::buffHandCard(int id)
 
 
 //Card exceptions
-bool EnemyHandHandler::isLastCreatedByCodeValid(QString code)
+bool EnemyHandHandler::isLastCreatedByCodeValid(const QString &code)
 {
-    if(code == DARKSHIRE_COUNCILMAN)    return false;
-    if(code == FLAMEWAKER)              return false;
+    Q_UNUSED(code);
     return true;
 }
 
 
-int EnemyHandHandler::getCardBuff(QString code)
+int EnemyHandHandler::getCardBuff(const QString &code)
 {
-    if(code == DON_HANCHO)          return 5;
-    if(code == STOLEN_GOODS)        return 3;
-    if(code == SMUGGLERS_CRATE)     return 2;
-    if(code == HIDDEN_CACHE)        return 2;
-    if(code == SHAKY_ZYPGUNNER)     return 2;
-    if(code == GRIMY_GADGETEER)     return 2;
+    if(Utility::codeEqConstant(code, DON_HANCHO))       return 5;
+    if(Utility::codeEqConstant(code, STOLEN_GOODS))     return 3;
+    if(Utility::codeEqConstant(code, SMUGGLERS_CRATE))  return 2;
+    if(Utility::codeEqConstant(code, HIDDEN_CACHE))     return 2;
+    if(Utility::codeEqConstant(code, SHAKY_ZYPGUNNER))  return 2;
+    if(Utility::codeEqConstant(code, GRIMY_GADGETEER))  return 2;
     return 1;
 }
 
 
-bool EnemyHandHandler::isClonerCard(QString code)
+bool EnemyHandHandler::isClonerCard(const QString &code)
 {
-    if(code == MIMIC_POD)               return true;
-    if(code == THISTLE_TEA)             return true;
-    if(code == TOLINS_GOBLET)           return true;
-    if(code == ELEMENTARY_REACTION)     return true;
-    if(code == GRAND_EMPRESS_SHEKZARA)  return true;
-    if(code == ENCUMBERED_PACK_MULE)    return true;
-    if(code == DOOR_OF_SHADOWS)         return true;
-    if(code == SERVICE_BELL)            return true;
-    return false;
+    QStringList candidates = { MIMIC_POD, THISTLE_TEA, TOLINS_GOBLET, ELEMENTARY_REACTION, GRAND_EMPRESS_SHEKZARA,
+        ENCUMBERED_PACK_MULE, DOOR_OF_SHADOWS, SERVICE_BELL
+    };
+    QString otherCode = Utility::otherCodeConstant(code);
+    return candidates.contains(code) || candidates.contains(otherCode);
 }
 
 
@@ -595,6 +590,7 @@ bool EnemyHandHandler::isDrawSpecificCards()
         CONQUERORS_BANNER, DOOR_OF_SHADOWS, SERVICE_BELL, ORDER_IN_THE_COURT, WEAPONS_EXPERT
     };
 
-    return candidates.contains(lastCreatedByCode);
+    QString otherCode = Utility::otherCodeConstant(lastCreatedByCode);
+    return candidates.contains(lastCreatedByCode) || candidates.contains(otherCode);
 }
 

@@ -1497,9 +1497,9 @@ QString DeckHandler::getCodeFromDraftLogLine(QString line)
 
 
 //Card exceptions
-bool DeckHandler::isLastCreatedByCodeValid(QString code)
+bool DeckHandler::isLastCreatedByCodeValid(const QString &code)
 {
-    if(code == DARKSHIRE_COUNCILMAN)    return false;
+    Q_UNUSED(code);
     return true;
 }
 

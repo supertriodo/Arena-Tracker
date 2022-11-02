@@ -66,7 +66,7 @@ private:
     void hideUnknown(bool hidden = true);
     QString getCodeFromDraftLogLine(QString line);
     void updateManaLimits();
-    bool isLastCreatedByCodeValid(QString code);
+    bool isLastCreatedByCodeValid(const QString &code);
     void removeFromDeck(int index);
 
 public:

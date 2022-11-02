@@ -38,14 +38,14 @@ private:
     void updateTransparency();
     void convertKnownCard(QString &code, int quantity);
     bool isIDinHand(int id);
-    bool isLastCreatedByCodeValid(QString code);
+    bool isLastCreatedByCodeValid(const QString &code);
     void showHeroAttack();
     void hideHeroAttack();
     void resetHeroAttack();
-    int getCardBuff(QString code);
+    int getCardBuff(const QString &code);
     void linkCards(HandCard &card);
     void revealLinkedCards(QString code, QList<int> &ids);
-    bool isClonerCard(QString code);
+    bool isClonerCard(const QString &code);
     void linkNextCards();
     bool isDrawSpecificCards();
 

@@ -1248,7 +1248,7 @@ void Utility::timeStamp(QString tag)
 
 
 //--------------------------------------------------------
-//----Sets non collectible
+//----Constants
 //--------------------------------------------------------
 
 
@@ -1257,6 +1257,21 @@ bool Utility::codeEqConstant(const QString &code, const QString &codeConstant)
     QString coreCodeConstant = "CORE_" + codeConstant;
     if(code == codeConstant || code == coreCodeConstant)    return true;
     return false;
+}
+
+
+QString Utility::otherCodeConstant(const QString &code)
+{
+    QString otherCode;
+    if(code.startsWith("CORE_"))
+    {
+        otherCode = code.mid(5);
+    }
+    else
+    {
+        otherCode = "CORE_" + code;
+    }
+    return otherCode;
 }
 
 

@@ -158,6 +158,7 @@ public:
     static bool needCodesSpecific(const QString &set);
     static QStringList getSetCodesSpecific(const QString &set);
     static bool codeEqConstant(const QString &code, const QString &codeConstant);
+    static QString otherCodeConstant(const QString &code);
 };
 
 #endif // UTILITY_H

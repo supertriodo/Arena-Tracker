@@ -401,13 +401,13 @@ int CardGraphicsItem::getManaSpent(bool includeRefresh)
 
     if(Utility::cardEnNameFromCode(code) == "The Coin") saveMana = 1;
 
-    else if(code == COUNTERFEIT_COIN)   saveMana = 1;
-    else if(code == INNERVATE)          saveMana = 1;
+    else if(Utility::codeEqConstant(code, COUNTERFEIT_COIN))    saveMana = 1;
+    else if(Utility::codeEqConstant(code, INNERVATE))           saveMana = 1;
 
     else if(includeRefresh)
     {
-        if(code == MANA_BISCUIT)        saveMana = 2;
-        else if(code == LIGHTNING_BLOOM)saveMana = 2;
+        if(Utility::codeEqConstant(code, MANA_BISCUIT))         saveMana = 2;
+        else if(Utility::codeEqConstant(code, LIGHTNING_BLOOM)) saveMana = 2;
     }
 
     return cost - saveMana;

@@ -103,7 +103,7 @@ void MinionGraphicsItem::initCode(QString code)
     }
 
     //Leokk AURA
-    if(code == LEOKK || code == GRIMSCALE_ORACLE)   processTagChange("AURA", "1");
+    if(Utility::codeEqConstant(code, LEOKK) || Utility::codeEqConstant(code, GRIMSCALE_ORACLE))     processTagChange("AURA", "1");
 }
 
 
@@ -402,7 +402,7 @@ void MinionGraphicsItem::addAddonNeutral(Addon addon)
 void MinionGraphicsItem::addAddonDamageLife(Addon addon)
 {
     //Eliminar neutrales
-    if(addon.code != SWIPE && addon.code != EXPLOSIVE_SHOT && addon.code != POWERSHOT)
+    if(!isAoeWithTarget(addon.code))
     {//Siempre queremos ver el objetivo de swipe/...
         for(int i=0; i<addons.count(); i++)
         {
@@ -853,4 +853,13 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         text = QString::number(static_cast<int>(round(deadProb*100))) + "%";
         Utility::drawShadowText(*painter, font, text, 0, 0, true);
     }
+}
+
+
+bool MinionGraphicsItem::isAoeWithTarget(const QString &code)
+{
+    QStringList candidates = { SWIPE, EXPLOSIVE_SHOT, POWERSHOT
+    };
+    QString otherCode = Utility::otherCodeConstant(code);
+    return candidates.contains(code) || candidates.contains(otherCode);
 }

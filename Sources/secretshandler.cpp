@@ -530,24 +530,15 @@ void SecretsHandler::discardSecretOptionDelay()
 }
 
 
-void SecretsHandler::discardSecretOptionNow(QString code)
+void SecretsHandler::discardSecretOptionNow(const QString &code)
 {
-    QString coreCode;
-    if(code.startsWith("CORE_"))
-    {
-        coreCode = code;
-        code = code.mid(5);
-    }
-    else
-    {
-        coreCode = "CORE_" + code;
-    }
+    QString otherCode = Utility::otherCodeConstant(code);
     discardSecretOptionNow2(code);
-    discardSecretOptionNow2(coreCode);
+    discardSecretOptionNow2(otherCode);
 }
 
 
-void SecretsHandler::discardSecretOptionNow2(QString code)
+void SecretsHandler::discardSecretOptionNow2(const QString &code)
 {
     emit pDebug("Option discarded: " + code);
 

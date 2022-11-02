@@ -844,11 +844,11 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     {
                         emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Spell obj played: " +
                                     name1 + " on target " + name2, numLine);
-                        if(cardId2 == MAD_SCIENTIST)
+                        /*if(Utility::codeEqConstant(cardId2, MAD_SCIENTIST))
                         {
                             emit pDebug("Skip spell obj testing (Mad Scientist died).", 0);
                         }
-                        else if(isPlayer && isPlayerTurn)
+                        else */if(isPlayer && isPlayerTurn)
                         {
                             if(cardId2.startsWith("HERO"))  emit playerSpellObjHeroPlayed();
                             else                            emit playerSpellObjMinionPlayed();

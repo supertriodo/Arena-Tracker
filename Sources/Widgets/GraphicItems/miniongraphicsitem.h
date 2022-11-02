@@ -96,6 +96,7 @@ private:
     void stackAddons();
     void healPlanningMinion(bool allowRecoverShield=false);
     void initCode(QString code);
+    bool isAoeWithTarget(const QString &code);
 };
 
 #endif // MINIONGRAPHICSITEM_H

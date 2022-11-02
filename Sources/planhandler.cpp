@@ -429,7 +429,8 @@ void PlanHandler::stealMinion(bool friendly, int id, int pos)
         minion->changeZone();
 
         //Engrave roba el esbirro en el log, y luego lo mata, lo evitamos. Usamos lastPowerAddon.code pq lastTrigger no guarda code.
-        if(this->lastPowerAddon.code == ENGRAVE || this->lastPowerAddon.code == PSYCHIC_SCREAM)
+        if(Utility::codeEqConstant(this->lastPowerAddon.code, ENGRAVE) ||
+            Utility::codeEqConstant(this->lastPowerAddon.code, PSYCHIC_SCREAM))
         {
             emit pDebug("Avoid steal minion by Engrave/Psychic scream.");
         }
@@ -1722,7 +1723,7 @@ void PlanHandler::fixLastEchoCard()
     QString code = card->getCode();
     if(card->isDraw() && card->isPlayed() && !code.isEmpty() &&
             (Utility::getCardAttribute(code, "mechanics").toArray().contains(QJsonValue("ECHO")) ||
-             code == UNSTABLE_EVOLUTION_TOKEN))
+             Utility::codeEqConstant(code, UNSTABLE_EVOLUTION_TOKEN)))
     {
         cardList->removeLast();
         updateCardZoneSpots(board->playerTurn, board);
@@ -2863,7 +2864,7 @@ int PlanHandler::flamewakersOnBoard()
     int num = 0;
     for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))
     {
-        if(minion->getCode() == FLAMEWAKER)     num++;
+        if(Utility::codeEqConstant(minion->getCode(), FLAMEWAKER))      num++;
     }
     return num;
 }
@@ -2897,120 +2898,120 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     onlyMinions = false;
 
     //ALL
-    if(code == MAD_BOMBER)
+    if(Utility::codeEqConstant(code, MAD_BOMBER))
     {
         missiles = 3;
         playerIn = true;
     }
-    else if(code == MADDER_BOMBER)
+    else if(Utility::codeEqConstant(code, MADDER_BOMBER))
     {
         missiles = 6;
         playerIn = true;
     }
-    else if(code == SPREADING_MADNESS)
+    else if(Utility::codeEqConstant(code, SPREADING_MADNESS))
     {
         missiles = 9;
         playerIn = true;
     }
-    else if(code == MADDEST_BOMBER)
+    else if(Utility::codeEqConstant(code, MADDEST_BOMBER))
     {
         missiles = 12;
         playerIn = true;
     }
     //ALL minions
-    else if(code == MINEFIELD)
+    else if(Utility::codeEqConstant(code, MINEFIELD))
     {
         missiles = 5;
         playerIn = true;
         onlyMinions = true;
     }
-    else if(code == SCAVENGING_SHIVARRA)
+    else if(Utility::codeEqConstant(code, SCAVENGING_SHIVARRA))
     {
         missiles = 6;
         playerIn = true;
         onlyMinions = true;
     }
-    else if(code == VOLCANO)
+    else if(Utility::codeEqConstant(code, VOLCANO))
     {
         missiles = 15;
         playerIn = true;
         onlyMinions = true;
     }
     //Enemy
-    else if(code == ARCANE_MISSILES || code == KOBOLD_APPRENTICE)
+    else if(Utility::codeEqConstant(code, ARCANE_MISSILES) || Utility::codeEqConstant(code, KOBOLD_APPRENTICE))
     {
         missiles = 3;
     }
-    else if(code == GREATER_ARCANE_MISSILES)
+    else if(Utility::codeEqConstant(code, GREATER_ARCANE_MISSILES))
     {
         missiles = 3;
         missileDamage = 3;
     }
-    else if(code == NAGRAND_SLAM)
+    else if(Utility::codeEqConstant(code, NAGRAND_SLAM))
     {
         missiles = 4;
         missileDamage = 3;
     }
-    else if(code == CINDERSTORM)
+    else if(Utility::codeEqConstant(code, CINDERSTORM))
     {
         missiles = 5;
     }
-    else if(code == PRIESTESS_OF_FURY)
+    else if(Utility::codeEqConstant(code, PRIESTESS_OF_FURY))
     {
         missiles = 6;
     }
-    else if(code == AVENGING_WRATH)
+    else if(Utility::codeEqConstant(code, AVENGING_WRATH))
     {
         missiles = 8;
     }
-    else if(code == MASK_OF_CTHUN)
+    else if(Utility::codeEqConstant(code, MASK_OF_CTHUN))
     {
         missiles = 10;
     }
     //Enemy minions
-    else if(code == FIREBRAND || code == DEVOURING_PLAGUE)
+    else if(Utility::codeEqConstant(code, FIREBRAND) || Utility::codeEqConstant(code, DEVOURING_PLAGUE))
     {
         missiles = 4;
         onlyMinions = true;
     }
-    else if(code == FULLBLOWN_EVIL)
+    else if(Utility::codeEqConstant(code, FULLBLOWN_EVIL))
     {
         missiles = 5;
         onlyMinions = true;
     }
-    else if(code == RENO_THE_RELICOLOGIST)
+    else if(Utility::codeEqConstant(code, RENO_THE_RELICOLOGIST))
     {
         missiles = 10;
         onlyMinions = true;
     }
-    else if(code == DONT_STAND_IN_THE_FIRE)
+    else if(Utility::codeEqConstant(code, DONT_STAND_IN_THE_FIRE))
     {
         missiles = 10;
         onlyMinions = true;
     }
     //Extra
-    else if(code == GOBLIN_BLASTMAGE)
+    else if(Utility::codeEqConstant(code, GOBLIN_BLASTMAGE))
     {
         if(numRaceOnBoard(MECHANICAL)>0)
         {
             missiles = 4;
         }
     }
-    else if(code == CANNON_BARRAGE)
+    else if(Utility::codeEqConstant(code, CANNON_BARRAGE))
     {
         missiles = numRaceOnBoard(PIRATE) + 1;
         missileDamage = 3;
     }
-    else if(code == DEFIAS_BLASTFISHER)
+    else if(Utility::codeEqConstant(code, DEFIAS_BLASTFISHER))
     {
         missiles = numRaceOnBoard(BEAST) + 1;
         missileDamage = 2;
     }
-    else if(code == METEOROLOGIST)
+    else if(Utility::codeEqConstant(code, METEOROLOGIST))
     {
         missiles = getHandList(true)->count() - 1;
     }
-    else if(code == DARK_SKIES)
+    else if(Utility::codeEqConstant(code, DARK_SKIES))
     {
         missiles = getHandList(true)->count();
         playerIn = true;
@@ -3066,19 +3067,7 @@ QJsonArray PlanHandler::getJsonCardHistory()
 //Cartas que no pueden poner addons ni en otros esbirros ni en heroes
 bool PlanHandler::isAddonCommonValid(const QString &code)
 {
-    if(code == ACOLYTE_OF_PAIN)             return false;
-    if(code == GURUBASHI_BERSERKER)         return false;
-    if(code == FROTHING_BERSEKER)           return false;
-    if(code == LIGHTWARDEN)                 return false;
-    if(code == GOREHOWL)                    return false;
-    if(code == LOREWALKER_CHO)              return false;
-    if(code == SNAKE_TRAP)                  return false;
-    if(code == GLADIATORS_LONGBOW)          return false;
-    if(code == CANDLESHOT)                  return false;
-    if(code == VENOMSTRIKE_TRAP)            return false;
-    if(code == CORRIDOR_CREEPER)            return false;
-    if(code == LESSER_MITHRIL_SPELLSTONE)   return false;
-    if(code == SOLDIER_OF_FORTUNE)          return false;
+    Q_UNUSED(code);
     return true;
 }
 
@@ -3086,7 +3075,6 @@ bool PlanHandler::isAddonCommonValid(const QString &code)
 //Cartas que no pueden poner addons en heroes
 bool PlanHandler::isAddonHeroValid(const QString &code)
 {
-    if(code == LESSER_JASPER_SPELLSTONE)    return false;
     return isAddonCommonValid(code);
 }
 
@@ -3094,10 +3082,6 @@ bool PlanHandler::isAddonHeroValid(const QString &code)
 //Cartas que no pueden poner addons en otros esbirros
 bool PlanHandler::isAddonMinionValid(const QString &code)
 {
-    if(code == ARMORSMITH)              return false;
-    if(code == EYE_FOR_AN_EYE)          return false;
-    if(code == TRUESILVER_CHAMPION)     return false;
-    if(code == BITTERTIDE_HYDRA)        return false;
     return isAddonCommonValid(code);
 }
 
@@ -3105,9 +3089,6 @@ bool PlanHandler::isAddonMinionValid(const QString &code)
 //Cartas que no pueden crear otros esbirros
 bool PlanHandler::isLastTriggerValid(const QString &code)
 {
-    if(code == KNIFE_JUGGLER)           return false;
-    if(code == FROTHING_BERSEKER)       return false;
-    if(code == SWORD_OF_JUSTICE)        return false;
-    if(code == CRYPT_LORD)              return false;
+    Q_UNUSED(code);
     return true;
 }

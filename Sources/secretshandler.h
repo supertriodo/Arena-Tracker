@@ -78,8 +78,8 @@ private:
 private:
     void completeUI();
     void discardSecretOption(QString code, int delay=8000);
-    void discardSecretOptionNow(QString code);
-    void discardSecretOptionNow2(QString code);
+    void discardSecretOptionNow(const QString &code);
+    void discardSecretOptionNow2(const QString &code);
     void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState);
     bool isFromArenaSets(QString code);
