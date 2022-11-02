@@ -157,6 +157,7 @@ public:
     static QStringList getThemeList();
     static bool needCodesSpecific(const QString &set);
     static QStringList getSetCodesSpecific(const QString &set);
+    static bool codeEqConstant(const QString &code, const QString &codeConstant);
 };
 
 #endif // UTILITY_H

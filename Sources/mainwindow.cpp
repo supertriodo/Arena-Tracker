@@ -4689,7 +4689,7 @@ void MainWindow::testDelay()
 //|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo -- POR ULTIMA VEZ
 //|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
 //|-Revisar codes CORE en constant.h - Quitar antiguo - Incluir nuevo
-//|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo
+//|-Revisar codes secretos CORE en constant.h - Quitar antiguo - Incluir nuevo -- POR ULTIMA VEZ
 
 
 

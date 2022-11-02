@@ -134,7 +134,7 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
             else                            return;
         }
         //Pocion de polimorfia
-        else if(createdByCode == KABAL_CHEMIST)
+        else if(Utility::codeEqConstant(createdByCode, KABAL_CHEMIST))
         {
             knownSecretPlayed(id, hero, POTION_OF_POLIMORPH, loadingScreenState);
         }
@@ -192,12 +192,23 @@ bool SecretsHandler::isFromArenaSets(QString code)
 
 void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
 {
+    QString coreCode = "CORE_" + code;
     if
+    (
+        (inArena && isFromArenaSets(coreCode)) ||
+        (!inArena && (Utility::isFromStandardSet(coreCode) || (showWildSecrets && patreonVersion)))
+    )
+    {
+        emit pDebug("Secret option: " + coreCode);
+        activeSecret.children.append(SecretCard(coreCode, manaText));
+    }
+    else if
     (
         (inArena && isFromArenaSets(code)) ||
         (!inArena && (Utility::isFromStandardSet(code) || (showWildSecrets && patreonVersion)))
     )
     {
+        emit pDebug("Secret option: " + code);
         activeSecret.children.append(SecretCard(code, manaText));
     }
 }
@@ -495,12 +506,12 @@ void SecretsHandler::secretRevealed(int id, QString code)
 
     //NUEVO SECRETO 2 - cartas a mano
     //Reveal cards in Hand
-    if(code == GETAWAY_KODO && !lastMinionDead.isEmpty())       emit revealCreatedByCard(lastMinionDead, code, 1);
-    else if(code == MANA_BIND && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
-    else if(code == FROZEN_CLONE && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
-    else if(code == CHEAT_DEATH && !lastMinionDead.isEmpty())   emit revealCreatedByCard(lastMinionDead, code, 1);
-    else if(code == DDUPLICATE && !lastMinionDead.isEmpty())    emit revealCreatedByCard(lastMinionDead, code, 2);
-    else if(code == ICE_TRAP && !lastSpellPlayed.isEmpty())     emit revealCreatedByCard(lastSpellPlayed, code, 1);
+    if(Utility::codeEqConstant(code, GETAWAY_KODO) && !lastMinionDead.isEmpty())       emit revealCreatedByCard(lastMinionDead, code, 1);
+    else if(Utility::codeEqConstant(code, MANA_BIND) && !lastSpellPlayed.isEmpty())    emit revealCreatedByCard(lastSpellPlayed, code, 1);
+    else if(Utility::codeEqConstant(code, FROZEN_CLONE) && !lastMinionPlayed.isEmpty())emit revealCreatedByCard(lastMinionPlayed, code, 2);
+    else if(Utility::codeEqConstant(code, CHEAT_DEATH) && !lastMinionDead.isEmpty())   emit revealCreatedByCard(lastMinionDead, code, 1);
+    else if(Utility::codeEqConstant(code, DDUPLICATE) && !lastMinionDead.isEmpty())    emit revealCreatedByCard(lastMinionDead, code, 2);
+    else if(Utility::codeEqConstant(code, ICE_TRAP) && !lastSpellPlayed.isEmpty())     emit revealCreatedByCard(lastSpellPlayed, code, 1);
 }
 
 
@@ -520,6 +531,23 @@ void SecretsHandler::discardSecretOptionDelay()
 
 
 void SecretsHandler::discardSecretOptionNow(QString code)
+{
+    QString coreCode;
+    if(code.startsWith("CORE_"))
+    {
+        coreCode = code;
+        code = code.mid(5);
+    }
+    else
+    {
+        coreCode = "CORE_" + code;
+    }
+    discardSecretOptionNow2(code);
+    discardSecretOptionNow2(coreCode);
+}
+
+
+void SecretsHandler::discardSecretOptionNow2(QString code)
 {
     emit pDebug("Option discarded: " + code);
 

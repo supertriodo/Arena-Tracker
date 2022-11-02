@@ -1252,6 +1252,19 @@ void Utility::timeStamp(QString tag)
 //--------------------------------------------------------
 
 
+bool Utility::codeEqConstant(const QString &code, const QString &codeConstant)
+{
+    QString coreCodeConstant = "CORE_" + codeConstant;
+    if(code == codeConstant || code == coreCodeConstant)    return true;
+    return false;
+}
+
+
+//--------------------------------------------------------
+//----Sets non collectible
+//--------------------------------------------------------
+
+
 bool Utility::needCodesSpecific(const QString &set)
 {
     if(set == "TAVERNS_OF_TIME")    return true;
