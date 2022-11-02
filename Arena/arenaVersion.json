@@ -2,8 +2,6 @@
   "arenaVersion": 25,
   "arenaSets": ["LEGACY", "EXPERT1", "NAXX", "GVG", "BRM", "TGT", "LOE"],
   "multiclassArena": true,
-  "redownloadCards": false,
-  "redownloadHeroes": false,
   "resetCards": 24,
   "resetHeroes": 0
 }
