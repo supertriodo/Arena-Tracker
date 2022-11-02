@@ -196,7 +196,7 @@ void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, Ac
     if
     (
         (inArena && isFromArenaSets(coreCode)) ||
-        (!inArena && (Utility::isFromStandardSet(coreCode) || (showWildSecrets && patreonVersion)))
+        (!inArena && Utility::isFromStandardSet(coreCode))
     )
     {
         emit pDebug("Secret option: " + coreCode);
