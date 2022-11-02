@@ -1915,6 +1915,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //isDrawGen(code, text) || containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 //containsAll(text, "draw cop")
+///Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
+//isAoeGen(code, text)
                 )
             {
 //                qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;

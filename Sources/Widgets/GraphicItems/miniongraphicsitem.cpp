@@ -858,7 +858,8 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
 bool MinionGraphicsItem::isAoeWithTarget(const QString &code)
 {
-    QStringList candidates = { SWIPE, EXPLOSIVE_SHOT, POWERSHOT
+    QStringList candidates = { SWIPE, EXPLOSIVE_SHOT, SHADOWFLAME, SHADOW_WORD_DEVOUR, GRIMOIRE_OF_SACRIFICE, MAN_THE_CANNONS,
+        DUNK_TANK, ROLLING_FIREBALL, COMBUSTION, WHISPERS_OF_THE_DEEP, GRIEVOUS_BITE, METEOR, HYSTERIA, BOLA_SHOT
     };
     QString otherCode = Utility::otherCodeConstant(code);
     return candidates.contains(code) || candidates.contains(otherCode);
