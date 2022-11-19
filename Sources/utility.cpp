@@ -81,7 +81,7 @@ QString Utility::classEnum2classUName(CardClass cardClass)
 }
 
 
-CardClass Utility::classLogNumber2classEnum(QString hero)
+CardClass Utility::classLogNumber2classEnum(const QString &hero)
 {
     if(hero == QString("06"))       return DRUID;
     else if(hero == QString("05"))  return HUNTER;
@@ -97,7 +97,7 @@ CardClass Utility::classLogNumber2classEnum(QString hero)
 }
 
 
-QString Utility::classLogNumber2classUL_ULName(QString hero)
+QString Utility::classLogNumber2classUL_ULName(const QString &hero)
 {
     if(hero == QString("06"))       return "Druid";
     else if(hero == QString("05"))  return "Hunter";
@@ -113,7 +113,7 @@ QString Utility::classLogNumber2classUL_ULName(QString hero)
 }
 
 
-QString Utility::classLogNumber2classULName(QString hero)
+QString Utility::classLogNumber2classULName(const QString &hero)
 {
     if(hero == QString("06"))       return "Druid";
     else if(hero == QString("05"))  return "Hunter";
@@ -129,13 +129,13 @@ QString Utility::classLogNumber2classULName(QString hero)
 }
 
 
-QString Utility::classLogNumber2classUName(QString hero)
+QString Utility::classLogNumber2classUName(const QString &hero)
 {
     return Utility::classLogNumber2classULName(hero).toUpper();
 }
 
 
-QString Utility::classLogNumber2classLName(QString hero)
+QString Utility::classLogNumber2classLName(const QString &hero)
 {
     return Utility::classLogNumber2classULName(hero).toLower();
 }
@@ -177,7 +177,7 @@ QString Utility::classOrder2classLogNumber(int order)
 }
 
 
-int Utility::classLogNumber2classOrder(QString heroLog)
+int Utility::classLogNumber2classOrder(const QString &heroLog)
 {
     int heroeOrder[NUM_HEROS] = {9, 7, 6, 4, 2, 1, 8, 3, 5, 0};
     int heroLogInt = heroLog.toInt() - 1;
@@ -186,7 +186,7 @@ int Utility::classLogNumber2classOrder(QString heroLog)
 }
 
 
-int Utility::className2classOrder(QString className)
+int Utility::className2classOrder(const QString &className)
 {
     QString logNumber = Utility::className2classLogNumber(className);
     return classLogNumber2classOrder(logNumber);
@@ -216,7 +216,7 @@ QString Utility::getLoadingScreenToString(LoadingScreenState loadingScreen)
 }
 
 
-LoadingScreenState Utility::getLoadingScreenFromString(QString loadingScreenString)
+LoadingScreenState Utility::getLoadingScreenFromString(const QString &loadingScreenString)
 {
     if(loadingScreenString == "ARENA")          return arena;
     else if(loadingScreenString == "RANKED")    return ranked;
@@ -227,13 +227,13 @@ LoadingScreenState Utility::getLoadingScreenFromString(QString loadingScreenStri
 }
 
 
-QString Utility::cardEnNameFromCode(QString code)
+QString Utility::cardEnNameFromCode(const QString &code)
 {
     return (*cardsJson)[code].value("name").toObject().value("enUS").toString();
 }
 
 
-QString Utility::cardEnTextFromCode(QString code)
+QString Utility::cardEnTextFromCode(const QString &code)
 {
     QString text = (*cardsJson)[code].value("text").toObject().value("enUS").toString();
     text.replace('\n',' ');
@@ -242,7 +242,7 @@ QString Utility::cardEnTextFromCode(QString code)
 }
 
 
-QString Utility::cardEnCodeFromName(QString name, bool onlyCollectible)
+QString Utility::cardEnCodeFromName(const QString &name, bool onlyCollectible)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
@@ -259,7 +259,7 @@ QString Utility::cardEnCodeFromName(QString name, bool onlyCollectible)
 }
 
 
-QString Utility::cardLocalCodeFromName(QString name)
+QString Utility::cardLocalCodeFromName(const QString &name)
 {
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
@@ -273,13 +273,13 @@ QString Utility::cardLocalCodeFromName(QString name)
 }
 
 
-bool Utility::cardsJsonContains(QString code, QString attribute)
+bool Utility::cardsJsonContains(const QString &code, const QString &attribute)
 {
     return (*cardsJson)[code].contains(attribute);
 }
 
 
-QJsonValue Utility::getCardAttribute(QString code, QString attribute)
+QJsonValue Utility::getCardAttribute(const QString &code, const QString &attribute)
 {
     if(attribute == "text" || attribute == "name")
     {
@@ -292,7 +292,7 @@ QJsonValue Utility::getCardAttribute(QString code, QString attribute)
 }
 
 
-QString Utility::getCodeFromCardAttribute(QString attribute, QJsonValue value)
+QString Utility::getCodeFromCardAttribute(const QString &attribute, QJsonValue value)
 {
     if(attribute == "text" || attribute == "name")
     {
@@ -319,7 +319,7 @@ QString Utility::getCodeFromCardAttribute(QString attribute, QJsonValue value)
 }
 
 
-CardType Utility::getTypeFromCode(QString code)
+CardType Utility::getTypeFromCode(const QString &code)
 {
     QString value = Utility::getCardAttribute(code, "type").toString();
     if(value == "MINION")           return MINION;
@@ -332,7 +332,7 @@ CardType Utility::getTypeFromCode(QString code)
 }
 
 
-CardRarity Utility::getRarityFromCode(QString code)
+CardRarity Utility::getRarityFromCode(const QString &code)
 {
     QString value = Utility::getCardAttribute(code, "rarity").toString();
     if(value == "FREE")             return COMMON;
@@ -344,7 +344,7 @@ CardRarity Utility::getRarityFromCode(QString code)
 }
 
 
-QList<CardRace> Utility::getRaceFromCode(QString code)
+QList<CardRace> Utility::getRaceFromCode(const QString &code)
 {
 //    QString value = Utility::getCardAttribute(code, "race").toString();// OLD delete
     //TODO check race/races tag on json
@@ -411,7 +411,7 @@ CardRace Utility::raceString2cardRace(const QString &value)
 }
 
 
-CardSchool Utility::getSchoolFromCode(QString code)
+CardSchool Utility::getSchoolFromCode(const QString &code)
 {
     QString value = Utility::getCardAttribute(code, "spellSchool").toString();
     if(value == "NONE")                 return NONE;
@@ -430,7 +430,7 @@ CardSchool Utility::getSchoolFromCode(QString code)
 //--------------------------------------------------------
 //----NEW HERO CLASS
 //--------------------------------------------------------
-QList<CardClass> Utility::getClassFromCode(QString code)
+QList<CardClass> Utility::getClassFromCode(const QString &code)
 {
     QJsonValue jsonVclasses = Utility::getCardAttribute(code, "classes");
     if(jsonVclasses.isUndefined() || !jsonVclasses.isArray())
@@ -503,7 +503,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  */
 
 
-bool Utility::isFromStandardSet(QString code)
+bool Utility::isFromStandardSet(const QString &code)
 {
     QString cardSet = getCardAttribute(code, "set").toString();
 
@@ -529,7 +529,7 @@ bool Utility::isFromStandardSet(QString code)
 }
 
 
-bool Utility::isASecret(QString code)
+bool Utility::isASecret(const QString &code)
 {
     const QJsonArray mechanics = getCardAttribute(code, "mechanics").toArray();
 
@@ -687,13 +687,13 @@ void Utility::setCardsJson(QMap<QString, QJsonObject> *cardsJson)
 }
 
 
-void Utility::setLocalLang(QString localLang)
+void Utility::setLocalLang(const QString &localLang)
 {
     Utility::localLang = localLang;
 }
 
 
-QString Utility::removeAccents(QString s)
+QString Utility::removeAccents(const QString &s)
 {
     if (diacriticLetters.isEmpty())
     {
@@ -721,7 +721,7 @@ QString Utility::removeAccents(QString s)
 }
 
 
-std::vector<Point2f> Utility::findTemplateOnScreen(QString templateImage, QScreen *screen, std::vector<Point2f> templatePoints,
+std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen, std::vector<Point2f> templatePoints,
                                                    QPointF &screenScale, int &screenHeight)
 {
     std::vector<Point2f> screenPoints;
@@ -913,7 +913,7 @@ bool Utility::isLeftOfScreen(QPoint center)
 }
 
 
-void Utility::dumpOnFile(const QByteArray &data, QString path)
+void Utility::dumpOnFile(const QByteArray &data, const QString &path)
 {
     QFile file(path);
     if(!file.open(QIODevice::WriteOnly))
@@ -1011,7 +1011,7 @@ void Utility::fadeLayout(QLayout* layout, bool in)
 }
 
 
-bool Utility::createDir(QString pathDir)
+bool Utility::createDir(const QString &pathDir)
 {
     QFileInfo dirInfo(pathDir);
     if(!dirInfo.exists())
@@ -1024,7 +1024,7 @@ bool Utility::createDir(QString pathDir)
 }
 
 
-void Utility::unZip(QString zipName, QString targetPath)
+void Utility::unZip(const QString &zipName, const QString &targetPath)
 {
     ZipArchive zf(zipName.toStdString());
     zf.open(ZipArchive::READ_ONLY);
@@ -1197,7 +1197,7 @@ QStringList Utility::getArenaSets(const QStringList &codeList)
 }
 
 
-bool Utility::checkHeroPortrait(QString code)
+bool Utility::checkHeroPortrait(const QString &code)
 {
     if(code.isEmpty())  return false;
 
@@ -1261,7 +1261,7 @@ QStringList Utility::getThemeList()
 }
 
 
-void Utility::timeStamp(QString tag)
+void Utility::timeStamp(const QString &tag)
 {
     static qint64 start;
     qint64 end = QDateTime::currentMSecsSinceEpoch();
