@@ -45,7 +45,7 @@ protected:
     CardRarity rarity;
     CardType type;
     QList<CardClass> cardClass;
-    CardRace cardRace;
+    QList<CardRace> cardRace;
     CardSchool cardSchool;
     int cost;
     QString createdByCode;
@@ -72,7 +72,7 @@ public:
     QString getName();
     CardRarity getRarity();
     QList<CardClass> getCardClass();
-    CardRace getRace();
+    QList<CardRace> getRace();
     CardSchool getSchool();
     int getCost();
     void setCode(QString code);

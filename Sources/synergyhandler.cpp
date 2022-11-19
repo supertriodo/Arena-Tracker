@@ -641,58 +641,58 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardRace cardRace = deckCard.getRace();
+    QList<CardRace> cardRace = deckCard.getRace();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
 
-    if(cardRace == MURLOC || cardRace == ALL)
+    if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
     {
         raceCounters[V_MURLOC]->increase(code);
         raceCounters[V_MURLOC_ALL]->increase(code);
     }
     else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->increase(code);
-    if(cardRace == DEMON || cardRace == ALL)
+    if(cardRace.contains(DEMON) || cardRace.contains(ALL))
     {
         raceCounters[V_DEMON]->increase(code);
         raceCounters[V_DEMON_ALL]->increase(code);
     }
     else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->increase(code);
-    if(cardRace == MECHANICAL || cardRace == ALL)
+    if(cardRace.contains(MECHANICAL) || cardRace.contains(ALL))
     {
         raceCounters[V_MECHANICAL]->increase(code);
         raceCounters[V_MECHANICAL_ALL]->increase(code);
     }
     else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->increase(code);
-    if(cardRace == ELEMENTAL || cardRace == ALL)
+    if(cardRace.contains(ELEMENTAL) || cardRace.contains(ALL))
     {
         raceCounters[V_ELEMENTAL]->increase(code);
         raceCounters[V_ELEMENTAL_ALL]->increase(code);
     }
     else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->increase(code);
-    if(cardRace == BEAST || cardRace == ALL)
+    if(cardRace.contains(BEAST) || cardRace.contains(ALL))
     {
         raceCounters[V_BEAST]->increase(code);
         raceCounters[V_BEAST_ALL]->increase(code);
     }
     else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->increase(code);
-    if(cardRace == TOTEM || cardRace == ALL)
+    if(cardRace.contains(TOTEM) || cardRace.contains(ALL))
     {
         raceCounters[V_TOTEM]->increase(code);
         raceCounters[V_TOTEM_ALL]->increase(code);
     }
     else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->increase(code);
-    if(cardRace == PIRATE || cardRace == ALL)
+    if(cardRace.contains(PIRATE) || cardRace.contains(ALL))
     {
         raceCounters[V_PIRATE]->increase(code);
         raceCounters[V_PIRATE_ALL]->increase(code);
     }
     else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->increase(code);
-    if(cardRace == DRAGON || cardRace == ALL)
+    if(cardRace.contains(DRAGON) || cardRace.contains(ALL))
     {
         raceCounters[V_DRAGON]->increase(code);
         raceCounters[V_DRAGON_ALL]->increase(code);
     }
     else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->increase(code);
-    if(cardRace == NAGA || cardRace == ALL)
+    if(cardRace.contains(NAGA) || cardRace.contains(ALL))
     {
         raceCounters[V_NAGA]->increase(code);
         raceCounters[V_NAGA_ALL]->increase(code);
@@ -1317,58 +1317,58 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
 {
     QString code = deckCard.getCode();
     QString text = Utility::cardEnTextFromCode(code).toLower();
-    CardRace cardRace = deckCard.getRace();
+    QList<CardRace> cardRace = deckCard.getRace();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
 
-    if(cardRace == MURLOC || cardRace == ALL)
+    if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
     {
         raceCounters[V_MURLOC]->insertSynCards(synergyTagMap);
         raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isMurlocGen(code))      raceCounters[V_MURLOC_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == DEMON || cardRace == ALL)
+    if(cardRace.contains(DEMON) || cardRace.contains(ALL))
     {
         raceCounters[V_DEMON]->insertSynCards(synergyTagMap);
         raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isDemonGen(code))       raceCounters[V_DEMON_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == MECHANICAL || cardRace == ALL)
+    if(cardRace.contains(MECHANICAL) || cardRace.contains(ALL))
     {
         raceCounters[V_MECHANICAL]->insertSynCards(synergyTagMap);
         raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isMechGen(code))        raceCounters[V_MECHANICAL_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == ELEMENTAL || cardRace == ALL)
+    if(cardRace.contains(ELEMENTAL) || cardRace.contains(ALL))
     {
         raceCounters[V_ELEMENTAL]->insertSynCards(synergyTagMap);
         raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isElementalGen(code))   raceCounters[V_ELEMENTAL_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == BEAST || cardRace == ALL)
+    if(cardRace.contains(BEAST) || cardRace.contains(ALL))
     {
         raceCounters[V_BEAST]->insertSynCards(synergyTagMap);
         raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isBeastGen(code))       raceCounters[V_BEAST_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == TOTEM || cardRace == ALL)
+    if(cardRace.contains(TOTEM) || cardRace.contains(ALL))
     {
         raceCounters[V_TOTEM]->insertSynCards(synergyTagMap);
         raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isTotemGen(code))       raceCounters[V_TOTEM_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == PIRATE || cardRace == ALL)
+    if(cardRace.contains(PIRATE) || cardRace.contains(ALL))
     {
         raceCounters[V_PIRATE]->insertSynCards(synergyTagMap);
         raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isPirateGen(code))      raceCounters[V_PIRATE_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == DRAGON || cardRace == ALL)
+    if(cardRace.contains(DRAGON) || cardRace.contains(ALL))
     {
         raceCounters[V_DRAGON]->insertSynCards(synergyTagMap);
         raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isDragonGen(code))      raceCounters[V_DRAGON_ALL]->insertSynCards(synergyTagMap);
-    if(cardRace == NAGA || cardRace == ALL)
+    if(cardRace.contains(NAGA) || cardRace.contains(ALL))
     {
         raceCounters[V_NAGA]->insertSynCards(synergyTagMap);
         raceCounters[V_NAGA_ALL]->insertSynCards(synergyTagMap);

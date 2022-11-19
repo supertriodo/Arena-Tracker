@@ -2875,7 +2875,7 @@ int PlanHandler::numRaceOnBoard(CardRace cardRace)
     int numRace = 0;
     for(MinionGraphicsItem *minion: (const QList<MinionGraphicsItem *>)*getMinionList(true))
     {
-        if(Utility::getRaceFromCode(minion->getCode()) == cardRace) numRace++;
+        if(Utility::getRaceFromCode(minion->getCode()).contains(cardRace))  numRace++;
     }
     return numRace;
 }

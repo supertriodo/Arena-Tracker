@@ -86,7 +86,8 @@ private:
 
 //Metodos
 private:
-    static CardClass classString2cardClass(QString value);
+    static CardClass classString2cardClass(const QString &value);
+    static CardRace raceString2cardRace(const QString &value);
     static void fadeLayout(QLayout *layout, bool in);
 
 public:
@@ -125,7 +126,7 @@ public:
     static CardType getTypeFromCode(QString code);
     static CardRarity getRarityFromCode(QString code);
     static QList<CardClass> getClassFromCode(QString code);
-    static CardRace getRaceFromCode(QString code);
+    static QList<CardRace> getRaceFromCode(QString code);
     static CardSchool getSchoolFromCode(QString code);
     static bool isFromStandardSet(QString code);
     static bool isASecret(QString code);

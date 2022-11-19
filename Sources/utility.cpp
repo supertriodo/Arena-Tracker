@@ -344,9 +344,32 @@ CardRarity Utility::getRarityFromCode(QString code)
 }
 
 
-CardRace Utility::getRaceFromCode(QString code)
+QList<CardRace> Utility::getRaceFromCode(QString code)
 {
-    QString value = Utility::getCardAttribute(code, "race").toString();
+//    QString value = Utility::getCardAttribute(code, "race").toString();// OLD delete
+    //TODO check race/races tag on json
+    //TODO check new races (undead)
+
+    QJsonValue jsonVraces = Utility::getCardAttribute(code, "races");
+    if(jsonVraces.isUndefined() || !jsonVraces.isArray())
+    {
+        QString stringCardRace = Utility::getCardAttribute(code, "race").toString();
+        return {raceString2cardRace(stringCardRace)};
+    }
+    else
+    {
+        QList<CardRace> cardRaceList;
+        for(const QJsonValue &jsonVrace: (const QJsonArray)jsonVraces.toArray())
+        {
+            cardRaceList << raceString2cardRace(jsonVrace.toString());
+        }
+        return cardRaceList;
+    }
+}
+
+
+CardRace Utility::raceString2cardRace(const QString &value)
+{
     if(value == "BLOODELF")         return BLOODELF;
     else if(value == "DRAENEI")     return DRAENEI;
     else if(value == "DWARF")       return DWARF;
@@ -427,7 +450,7 @@ QList<CardClass> Utility::getClassFromCode(QString code)
 }
 
 
-CardClass Utility::classString2cardClass(QString value)
+CardClass Utility::classString2cardClass(const QString &value)
 {
     if(value == "")             return NEUTRAL;
     else if(value == "NEUTRAL") return NEUTRAL;

@@ -84,7 +84,7 @@ void DeckCard::setCode(QString code)
         name = "unknown";
         rarity = INVALID_RARITY;
         cardClass = {INVALID_CLASS};
-        cardRace = INVALID_RACE;
+        cardRace = {INVALID_RACE};
         cardSchool = INVALID_SCHOOL;
     }
 }
@@ -114,7 +114,7 @@ void DeckCard::setCreatedByCode(QString code)
         name = "unknown";
         rarity = INVALID_RARITY;
         cardClass = {INVALID_CLASS};
-        cardRace = INVALID_RACE;
+        cardRace = {INVALID_RACE};
         cardSchool = INVALID_SCHOOL;
     }
 }
@@ -562,7 +562,7 @@ QList<CardClass> DeckCard::getCardClass()
 }
 
 
-CardRace DeckCard::getRace()
+QList<CardRace> DeckCard::getRace()
 {
     return cardRace;
 }
