@@ -2662,3 +2662,5 @@ void DraftHandler::buildHeroCodesList()
 //07) Warlock
 //08) Mage
 //09) Priest
+//10) Demon Hunter
+//11) Death Knight

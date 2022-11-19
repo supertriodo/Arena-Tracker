@@ -920,29 +920,33 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     //--------------------------------------------------------
     //----NEW HERO CLASS - orden alfabetico
     //--------------------------------------------------------
+    int i=0;
     bgCard1Files_[NUM_HEROS] = loadThemeFile(themePath, jsonObject, "bgCard1File");
-    bgCard1Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard1DemonhunterFile");
-    bgCard1Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
-    bgCard1Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard1HunterFile");
-    bgCard1Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard1MageFile");
-    bgCard1Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard1PaladinFile");
-    bgCard1Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard1PriestFile");
-    bgCard1Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard1RogueFile");
-    bgCard1Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard1ShamanFile");
-    bgCard1Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard1WarlockFile");
-    bgCard1Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard1WarriorFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1DeathknightFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1DemonhunterFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1DruidFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1HunterFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1MageFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1PaladinFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1PriestFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1RogueFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1ShamanFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1WarlockFile");
+    bgCard1Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard1WarriorFile");
 
+    i=0;
     bgCard2Files_[NUM_HEROS] = loadThemeFile(themePath, jsonObject, "bgCard2File");
-    bgCard2Files_[0] = loadThemeFile(themePath, jsonObject, "bgCard2DemonhunterFile");
-    bgCard2Files_[1] = loadThemeFile(themePath, jsonObject, "bgCard2DruidFile");
-    bgCard2Files_[2] = loadThemeFile(themePath, jsonObject, "bgCard2HunterFile");
-    bgCard2Files_[3] = loadThemeFile(themePath, jsonObject, "bgCard2MageFile");
-    bgCard2Files_[4] = loadThemeFile(themePath, jsonObject, "bgCard2PaladinFile");
-    bgCard2Files_[5] = loadThemeFile(themePath, jsonObject, "bgCard2PriestFile");
-    bgCard2Files_[6] = loadThemeFile(themePath, jsonObject, "bgCard2RogueFile");
-    bgCard2Files_[7] = loadThemeFile(themePath, jsonObject, "bgCard2ShamanFile");
-    bgCard2Files_[8] = loadThemeFile(themePath, jsonObject, "bgCard2WarlockFile");
-    bgCard2Files_[9] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2DeathknightFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2DemonhunterFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2DruidFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2HunterFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2MageFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2PaladinFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2PriestFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2RogueFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2ShamanFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2WarlockFile");
+    bgCard2Files_[i++] = loadThemeFile(themePath, jsonObject, "bgCard2WarriorFile");
 
     //"-----GAMES TAB-----": 0,
     buttonGamesReplayFile_ = loadThemeFile(themePath, jsonObject, "buttonGamesReplayFile");
@@ -963,16 +967,18 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     //--------------------------------------------------------
     //----NEW HERO CLASS - orden alfabetico
     //--------------------------------------------------------
-    heroFiles_[0] = loadThemeFile(themePath, jsonObject, "heroDemonhunterFile");
-    heroFiles_[1] = loadThemeFile(themePath, jsonObject, "heroDruidFile");
-    heroFiles_[2] = loadThemeFile(themePath, jsonObject, "heroHunterFile");
-    heroFiles_[3] = loadThemeFile(themePath, jsonObject, "heroMageFile");
-    heroFiles_[4] = loadThemeFile(themePath, jsonObject, "heroPaladinFile");
-    heroFiles_[5] = loadThemeFile(themePath, jsonObject, "heroPriestFile");
-    heroFiles_[6] = loadThemeFile(themePath, jsonObject, "heroRogueFile");
-    heroFiles_[7] = loadThemeFile(themePath, jsonObject, "heroShamanFile");
-    heroFiles_[8] = loadThemeFile(themePath, jsonObject, "heroWarlockFile");
-    heroFiles_[9] = loadThemeFile(themePath, jsonObject, "heroWarriorFile");
+    i=0;
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroDeathknightFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroDemonhunterFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroDruidFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroHunterFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroMageFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroPaladinFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroPriestFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroRogueFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroShamanFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroWarlockFile");
+    heroFiles_[i++] = loadThemeFile(themePath, jsonObject, "heroWarriorFile");
 
     //"-----ENEMY HAND TAB-----": 0,
     handCardFile_ = loadThemeFile(themePath, jsonObject, "handCardFile");

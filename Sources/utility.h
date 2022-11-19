@@ -26,7 +26,6 @@ using namespace cv;
 #define ANIMATION_TIME 750
 #define SHOW_EASING_CURVE QEasingCurve::OutCubic
 #define HIDE_EASING_CURVE QEasingCurve::InCubic
-#define NUM_HEROS 10
 
 enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };

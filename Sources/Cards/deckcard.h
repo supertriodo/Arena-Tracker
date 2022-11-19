@@ -21,7 +21,7 @@ enum CardSchool {INVALID_SCHOOL, NONE, ARCANE, FEL, FIRE, FROST, HOLY, SHADOW, N
 //--------------------------------------------------------
 //----NEW HERO CLASS
 //--------------------------------------------------------
-enum CardClass {DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, INVALID_CLASS, NEUTRAL};
+enum CardClass {DEATHKNIGHT, DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR, NUM_HEROS, INVALID_CLASS, NEUTRAL};
 
 
 class DeckCard

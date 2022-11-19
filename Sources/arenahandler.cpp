@@ -1177,7 +1177,8 @@ void ArenaHandler::itemChangedHero(QTreeWidgetItem *item, int column)
         else if(hero.startsWith("sh"))  heroLog = "02";
         else if(hero.startsWith("warl"))heroLog = "07";
         else if(hero.startsWith("warr"))heroLog = "01";
-        else if(hero.startsWith("de"))  heroLog = "10";
+        else if(hero.startsWith("dem"))  heroLog = "10";
+        else if(hero.startsWith("dea"))  heroLog = "11";
 
         if(!heroLog.isEmpty())
         {

@@ -632,6 +632,7 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
         //--------------------------------------------------------
         //----NEW HERO CLASS
         //--------------------------------------------------------
+        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "included_popularity", map[DEATHKNIGHT]);
         processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "included_popularity", map[DEMONHUNTER]);
         processHSRCardClassDouble(data.value("DRUID").toArray(), "included_popularity", map[DRUID]);
         processHSRCardClassDouble(data.value("HUNTER").toArray(), "included_popularity", map[HUNTER]);
@@ -649,6 +650,7 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
     QFuture<QMap<QString, float> *> future2 = QtConcurrent::run([this,data]()->QMap<QString, float> *
     {
         QMap<QString, float> * map = new QMap<QString, float>[NUM_HEROS];
+        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "included_winrate", map[DEATHKNIGHT], true);
         processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "included_winrate", map[DEMONHUNTER], true);
         processHSRCardClassDouble(data.value("DRUID").toArray(), "included_winrate", map[DRUID], true);
         processHSRCardClassDouble(data.value("HUNTER").toArray(), "included_winrate", map[HUNTER], true);
@@ -665,6 +667,7 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
     QFuture<QMap<QString, int> *> future3 = QtConcurrent::run([this,data]()->QMap<QString, int> *
     {
         QMap<QString, int> * map = new QMap<QString, int>[NUM_HEROS];
+        processHSRCardClassInt(data.value("DEATHKNIGHT").toArray(), "times_played", map[DEATHKNIGHT]);
         processHSRCardClassInt(data.value("DEMONHUNTER").toArray(), "times_played", map[DEMONHUNTER]);
         processHSRCardClassInt(data.value("DRUID").toArray(), "times_played", map[DRUID]);
         processHSRCardClassInt(data.value("HUNTER").toArray(), "times_played", map[HUNTER]);
@@ -680,6 +683,7 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
     futureProcessHSRCardsIncludedDecks.setFuture(future3);
     QFuture<QMap<QString, float> *> future4 = QtConcurrent::run([this,data]()->QMap<QString, float> *{
         QMap<QString, float> * map = new QMap<QString, float>[NUM_HEROS];
+        processHSRCardClassDouble(data.value("DEATHKNIGHT").toArray(), "winrate_when_played", map[DEATHKNIGHT], true);
         processHSRCardClassDouble(data.value("DEMONHUNTER").toArray(), "winrate_when_played", map[DEMONHUNTER], true);
         processHSRCardClassDouble(data.value("DRUID").toArray(), "winrate_when_played", map[DRUID], true);
         processHSRCardClassDouble(data.value("HUNTER").toArray(), "winrate_when_played", map[HUNTER], true);

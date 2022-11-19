@@ -166,5 +166,8 @@
         <file>Images/bgCard2Demonhunter.png</file>
         <file>Images/bgHeroPower1.png</file>
         <file>Images/bgMinionDormant.png</file>
+        <file>Images/bgCard1Deathknight.png</file>
+        <file>Images/bgCard2Deathknight.png</file>
+        <file>Images/hero11.png</file>
     </qresource>
 </RCC>
