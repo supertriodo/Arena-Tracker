@@ -80,6 +80,7 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_DEMON] = new DraftItemCounter(this, "Demon");
     raceCounters[V_TOTEM] = new DraftItemCounter(this, "Totem");
     raceCounters[V_NAGA] = new DraftItemCounter(this, "Naga");
+    raceCounters[V_UNDEAD] = new DraftItemCounter(this, "Undead");
 
     raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this, "Elemental");
     raceCounters[V_BEAST_ALL] = new DraftItemCounter(this, "Beast");
@@ -90,6 +91,7 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_DEMON_ALL] = new DraftItemCounter(this, "Demon");
     raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this, "Totem");
     raceCounters[V_NAGA_ALL] = new DraftItemCounter(this, "Naga");
+    raceCounters[V_UNDEAD_ALL] = new DraftItemCounter(this, "Undead");
 
     schoolCounters = new DraftItemCounter *[V_NUM_SCHOOLS];
     schoolCounters[V_ARCANE] = new DraftItemCounter(this, "Arcane");
@@ -698,6 +700,12 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
         raceCounters[V_NAGA_ALL]->increase(code);
     }
     else if(isNagaGen(code))        raceCounters[V_NAGA_ALL]->increase(code);
+    if(cardRace.contains(UNDEAD) || cardRace.contains(ALL))
+    {
+        raceCounters[V_UNDEAD]->increase(code);
+        raceCounters[V_UNDEAD_ALL]->increase(code);
+    }
+    else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->increase(code);
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->increaseSyn(code);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->increaseSyn(code);
@@ -717,6 +725,8 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
     else if(isDragonAllSyn(code, text))             raceCounters[V_DRAGON_ALL]->increaseSyn(code);
     if(isNagaSyn(code))                             raceCounters[V_NAGA]->increaseSyn(code);
     else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->increaseSyn(code);
+    if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->increaseSyn(code);
+    else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->increaseSyn(code);
 }
 
 
@@ -1374,6 +1384,12 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
         raceCounters[V_NAGA_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isNagaGen(code))        raceCounters[V_NAGA_ALL]->insertSynCards(synergyTagMap);
+    if(cardRace.contains(UNDEAD) || cardRace.contains(ALL))
+    {
+        raceCounters[V_UNDEAD]->insertSynCards(synergyTagMap);
+        raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergyTagMap);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergyTagMap);
@@ -1393,6 +1409,8 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
     else if(isDragonAllSyn(code, text))             raceCounters[V_DRAGON_ALL]->insertCards(synergyTagMap);
     if(isNagaSyn(code))                             raceCounters[V_NAGA]->insertCards(synergyTagMap);
     else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->insertCards(synergyTagMap);
+    if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->insertCards(synergyTagMap);
+    else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1804,10 +1822,10 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "spellSyn", "weaponSyn",
         "spellAllSyn", "weaponAllSyn",
 
-        "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen", "dragonGen", "nagaGen",
-        "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn",
+        "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen", "dragonGen", "nagaGen", "undeadGen",
+        "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn",
         "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn",
-        "totemAllSyn", "pirateAllSyn", "dragonAllSyn", "nagaAllSyn",
+        "totemAllSyn", "pirateAllSyn", "dragonAllSyn", "nagaAllSyn", "undeadAllSyn",
 
         "arcaneGen", "felGen", "fireGen", "frostGen", "holyGen", "shadowGen", "natureGen",
         "arcaneSyn", "felSyn", "fireSyn", "frostSyn", "holySyn", "shadowSyn", "natureSyn",
@@ -2099,6 +2117,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isPirateAllSyn(code, text))          mec<<"pirateAllSyn";
     if(isDragonAllSyn(code, text))          mec<<"dragonAllSyn";
     if(isNagaAllSyn(code, text))            mec<<"nagaAllSyn";
+    if(isUndeadAllSyn(code, text))          mec<<"undeadAllSyn";
 
     if(isArcaneAllSyn(code, text))          mec<<"arcaneAllSyn";
     if(isFelAllSyn(code, text))             mec<<"felAllSyn";
@@ -2276,6 +2295,11 @@ bool SynergyHandler::isDragonGen(const QString &code)
 bool SynergyHandler::isNagaGen(const QString &code)
 {
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("nagaGen");
+    return false;
+}
+bool SynergyHandler::isUndeadGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("undeadGen");
     return false;
 }
 bool SynergyHandler::isArcaneGen(const QString &code)
@@ -3590,6 +3614,25 @@ bool SynergyHandler::isNagaAllSyn(const QString &code, const QString &text)
         return text.contains("naga");
     }
 }
+bool SynergyHandler::isUndeadSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("undeadSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isUndeadAllSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("undeadAllSyn");
+    }
+    else
+    {
+        return text.contains("undead");
+    }
+}
 bool SynergyHandler::isArcaneSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -4013,6 +4056,10 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QJsonArray &mechanics
         return true;
     }
     else if(text.contains("control") && text.contains("least") && text.contains("minions"))
+    {
+        return true;
+    }
+    else if(containsAll(text, "spend corpse"))
     {
         return true;
     }
@@ -4634,6 +4681,7 @@ REGLAS
     Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
     Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
     Synergias INFUSE si.
+    Synergias CORPSES si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
