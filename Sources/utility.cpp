@@ -413,6 +413,8 @@ CardRace Utility::raceString2cardRace(const QString &value)
     else if(value == "LOCK")        return LOCK;
     else if(value == "NAGA")        return NAGA;
     else if(value == "OLDGOD")      return OLDGOD;
+    else if(value == "PANDAREN")    return PANDAREN;
+    else if(value == "GRONN")       return GRONN;
     else                            return INVALID_RACE;
 }
 

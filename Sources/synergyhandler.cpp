@@ -988,7 +988,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increase(code);
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
-    if(isTokenGen(code, text))                                              mechanicCounters[V_TOKEN]->increase(code);
+    if(isTokenGen(code, mechanics, text))                                   mechanicCounters[V_TOKEN]->increase(code);
     if(isTokenCardGen(code, cost, mechanics, referencedTags , text))        mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
@@ -1542,7 +1542,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType)) mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertSynCards(synergyTagMap);
     if(isSilenceOwnGen(code, mechanics, referencedTags))        mechanicCounters[V_SILENCE]->insertSynCards(synergyTagMap);
     if(isTauntGiverGen(code))                                   mechanicCounters[V_TAUNT_GIVER]->insertSynCards(synergyTagMap);
-    if(isTokenGen(code, text))                                  mechanicCounters[V_TOKEN]->insertSynCards(synergyTagMap);
+    if(isTokenGen(code, mechanics, text))                       mechanicCounters[V_TOKEN]->insertSynCards(synergyTagMap);
     if(isTokenCardGen(code, cost, mechanics, referencedTags, text)) mechanicCounters[V_TOKEN_CARD]->insertSynCards(synergyTagMap);
     if(isWindfuryMinion(code, mechanics, cardType))             mechanicCounters[V_WINDFURY_MINION]->insertSynCards(synergyTagMap);
     if(isAttackBuffGen(code, text))                             mechanicCounters[V_ATTACK_BUFF]->insertSynCards(synergyTagMap);
@@ -1895,11 +1895,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             if(
                     containsAll(text, "infuse")
 //                    text.contains("can't attack heroes")
-//                    mechanics.contains(QJsonValue("COMBO"))
+//                    mechanics.contains(QJsonValue("DEATHRATTLE"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
 //                    && cardType == MINION
 //                    mechanics.contains(QJsonValue("CORRUPT"))
-//                    attack>1 && health>1 && (attack + health)>8 && cost==4
+//                    && attack<4 && health<4
+//                    && (attack + health)<7
+//                    && !isTokenGen(code, mechanics, text)
 //                    && !isDrop2(code, cost, attack, health)
 //                    && !isDrop3(code, cost, attack, health)
 //                    && !isDrop4(code, cost, attack, health)
@@ -2138,7 +2140,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isDeathrattleGoodAll(code, mechanics, referencedTags, cardType))     mec<<"deathrattle o deathrattleGen";
     if(isBattlecry(code, mechanics))                                        mec<<"battlecry";
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mec<<"silenceOwnGen";
-    if(isTokenGen(code, text))                                              mec<<"tokenGen";
+    if(isTokenGen(code, mechanics, text))                                   mec<<"tokenGen";
     if(isTokenCardGen(code, cost, mechanics, referencedTags, text))         mec<<"tokenCardGen";
     if(isWindfuryMinion(code, mechanics, cardType))                         mec<<"windfury";
     if(isAttackBuffGen(code, text))                                         mec<<"attackBuffGen";
@@ -2824,7 +2826,7 @@ bool SynergyHandler::isTauntGiverGen(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
+bool SynergyHandler::isTokenGen(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     //TEST
     //(text.contains("1/1") || text.contains("2/1") || text.contains("1/2") || text.contains("2/2")) && !text.contains("opponent")
@@ -2832,7 +2834,12 @@ bool SynergyHandler::isTokenGen(const QString &code, const QString &text)
     {
         return synergyCodes[code].contains("tokenGen");
     }
-    else if((text.contains("1/1") || text.contains("2/1") || text.contains("1/2") || text.contains("0/2") || text.contains("0/1"))
+    else if(mechanics.contains(QJsonValue("REBORN")))   return true;
+    else if((
+                text.contains("1/1") || text.contains("1/2") || text.contains("1/3") ||
+                text.contains("2/1") || text.contains("2/2") || text.contains("2/3") ||
+                text.contains("3/1") || text.contains("3/2") || text.contains("3/3")
+             )
             && text.contains("summon") && !text.contains("opponent"))
     {
         return true;
@@ -4645,7 +4652,7 @@ REGLAS
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
-+tokenGen son 2 small minions (max 3/3), somos mas restrictivos si summon en deathrattle (harvest golum no es, ni 2/2 con deathrattle),
++tokenGen son 2 small minions (max 3/3), reborn y deathrattle son tokenGen (max 3/3)
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
 +freezeEnemyGen deben poder usarse sobre enemigos
