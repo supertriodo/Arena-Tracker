@@ -1991,7 +1991,7 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
         {
             debugSynergiesCode(code, ++num);
 
-            if(num>=openFrom && num<=openTo)
+            if(num>openFrom && num<=openTo)
             {
                 QDesktopServices::openUrl(QUrl(
                     "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -2023,7 +2023,18 @@ void SynergyHandler::debugMissingSynergiesAllSets()
         //Missing synergy
         if(!synergyCodes.contains(code))
         {
-            if(shouldBeInSynergies(code))   debugSynergiesCode(code, ++num);
+            if(shouldBeInSynergies(code))
+            {
+                debugSynergiesCode(code, ++num);
+
+//                if(num>150 && num<=170)
+//                {
+//                    QDesktopServices::openUrl(QUrl(
+//                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+//                        ));
+//                    QThread::msleep(100);
+//                }
+            }
         }
         else
         {
@@ -2061,29 +2072,6 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     else
     {
         qDebug()<<"DEBUG SYNERGIES: Those synergies to be removed.";
-    }
-
-
-    num = 0;
-    for(const QString &code: (const QStringList)synergyCodesKeys)
-    {
-        const QString coreCode = "CORE_" + code;
-        if(synergyCodes.contains(coreCode))
-        {
-            if(synergyCodes[code].toSet() != synergyCodes[coreCode].toSet())
-            {
-                debugSynergiesCode(code, ++num);
-                debugSynergiesCode(coreCode, num);
-            }
-        }
-    }
-    if(num == 0)
-    {
-        qDebug()<<"DEBUG SYNERGIES: OK - All dup CORE synergies are twins.";
-    }
-    else
-    {
-        qDebug()<<"DEBUG SYNERGIES: Those dup CORE synergies differ.";
     }
 
     clearSynergyLists();
@@ -4676,12 +4664,15 @@ REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen,
     pq necesitariamos 3 cartas, la que genera 1/1s, el dragon y el que tiene tokenSyn, con hechizos tampoco.
 +Cartas con tags/synergias condicionales, solo las ponemos si son muy faciles de satisfacer, (Nesting roc si, servant of kalimos no).
-    Synergias con todo tu mazo son faciles, como robar 2 murlocs. Synergias JOUST son faciles.
+    Synergias con todo tu mazo son faciles, como robar 2 murlocs.
+    Synergias JOUST son faciles.
     Synergias SPELLBURST/(con hechizos) no pero tags si, suponemos 1 hechizo. Synergias con schools of magic no.
-    Synergias CORRUPT si. Synergias OUTCAST si. Synergias con arma en rogue/warrior si.
+    Synergias CORRUPT si. Synergias OUTCAST si.
+    Synergias con arma en rogue/warrior si.
     Synergias HONORABLE KILL no en minions sin rush, si en hechizos/armas/minion rush.
     Synergias INFUSE si.
     Synergias CORPSES si.
+    Synergias con undead en deathknight si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
