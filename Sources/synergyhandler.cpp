@@ -1901,10 +1901,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-//    for(const QString &code: (const QStringList)Utility::getSetCodes("REVENDRETH", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("RETURN_OF_THE_LICH_KING", true, true))
 //    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
-    for(const QString &code: (const QStringList)Utility::getWildCodes())
+//    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1916,11 +1916,11 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "corpse")
+                    containsAll(text, "give deathrattle")
 //                    text.contains("can't attack heroes")
 //                    mechanics.contains(QJsonValue("DEATHRATTLE"))
 //                    referencedTags.contains(QJsonValue("COMBO"))
-//                    && cardType == MINION
+//                    cardType == MINION
 //                    mechanics.contains(QJsonValue("CORRUPT"))
 //                    && attack<4 && health<4
 //                    && (attack + health)<7
@@ -1933,7 +1933,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
 //containsAll(text, "damage random")
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-//containsAll(text, "gain mana this turn only")
+//containsAll(text, "gain mana this turn only") || containsAll(text, "refresh mana")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
 //containsAll(text, "spend all your mana") || text.contains("cost")
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
@@ -4471,111 +4471,100 @@ bool SynergyHandler::isCorpseSyn(const QString &code, const QString &text)
 int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 {
     QString code = deckCard.getCode();
-    //Tavern of time cards
-    if(Utility::codeEqConstant(code, GRASP_THE_FUTURE))     return 0;
-    if(Utility::codeEqConstant(code, TIMEBOUND_GIANT))      return 6;
-    if(Utility::codeEqConstant(code, TIMEWAY_WANDERER))     return 0;
+    QString otherCode = Utility::otherCodeConstant(code);
 
     //Evitar draw/discover cost 0/1/2 -> no draw y mantenemos coste original
     //Descuento minions on board -> suponemos 2 aliados y 2 enemigos (4 total)
     //Descuento spells cast this game -> 3
-    if(Utility::codeEqConstant(code, BLOODBLOOM))           return 0;
-    if(Utility::codeEqConstant(code, PRIMORDIAL_GLYPH))     return 0;
-    if(Utility::codeEqConstant(code, FAR_SIGHT))            return 0;
-    if(Utility::codeEqConstant(code, CHEAT_DEATH))          return 0;
-    if(Utility::codeEqConstant(code, LUNAS_POCKET_GALAXY))  return 0;
-    if(Utility::codeEqConstant(code, ACADEMIC_ESPIONAGE))   return 0;
-    if(Utility::codeEqConstant(code, HAUNTING_VISIONS))     return 0;
-    if(Utility::codeEqConstant(code, WAXMANCY))             return 0;
-    if(Utility::codeEqConstant(code, IMPRISONED_SATYR))     return 0;
-    if(Utility::codeEqConstant(code, SKULL_OF_GULDAN))      return 0;
-    if(Utility::codeEqConstant(code, DEMONIC_STUDIES))      return 0;
-    if(Utility::codeEqConstant(code, DRACONIC_STUDIES))     return 0;
-    if(Utility::codeEqConstant(code, ATHLETIC_STUDIES))     return 0;
-    if(Utility::codeEqConstant(code, PRIMORDIAL_STUDIES))   return 0;
-    if(Utility::codeEqConstant(code, CARRION_STUDIES))      return 0;
-    if(Utility::codeEqConstant(code, NATURE_STUDIES))       return 0;
-    if(Utility::codeEqConstant(code, ILLIDARI_STUDIES))     return 0;
-    if(Utility::codeEqConstant(code, INSIGHT))              return 0;
-    if(Utility::codeEqConstant(code, FLOODSAIL_DECKHAND))   return 0;
-    if(Utility::codeEqConstant(code, EFFICIENT_OCTOBOT))    return 0;
-    if(Utility::codeEqConstant(code, LIVING_SEED))          return 0;
-    if(Utility::codeEqConstant(code, SCABBS_CUTTERBUTTER))  return 0;
-    if(Utility::codeEqConstant(code, KINDLING_ELEMENTAL))   return 0;
-    if(Utility::codeEqConstant(code, CELESTIAL_INK_SET))    return 0;
-    if(Utility::codeEqConstant(code, RUNED_MITHRIL_ROD))    return 0;
-    if(Utility::codeEqConstant(code, SIGIL_OF_ALACRITY))    return 0;
-    if(Utility::codeEqConstant(code, TO_THE_FRONT))         return 0;
-    if(Utility::codeEqConstant(code, CERATHINE_FLEETRUNNER))return 0;
-    if(Utility::codeEqConstant(code, RECONNAISSANCE))       return 0;
-    if(Utility::codeEqConstant(code, SHIVERING_SORCERESS))  return 0;
-    if(Utility::codeEqConstant(code, BRACING_COLD))         return 0;
-    if(Utility::codeEqConstant(code, WAYWARD_SAGE))         return 0;
-    if(Utility::codeEqConstant(code, SWIFTSCALE_TRICKSTER)) return 0;
-    if(Utility::codeEqConstant(code, PLANTED_EVIDENCE))     return 0;
-    if(Utility::codeEqConstant(code, SERRATED_BONE_SPIKE))  return 0;
-    if(Utility::codeEqConstant(code, MURLOCULA))            return 0;
-    if(Utility::codeEqConstant(code, FROM_THE_DEPTHS))      return 1;
-    if(Utility::codeEqConstant(code, EYE_BEAM))             return 1;
-    if(Utility::codeEqConstant(code, AUCTIONHOUSE_GAVEL))   return 1;
-    if(Utility::codeEqConstant(code, SI7_SKULKER))          return 1;
-    if(Utility::codeEqConstant(code, PRIDE_SEEKER))         return 1;
-    if(Utility::codeEqConstant(code, STORMPIKE_MARSHAL))    return 1;
-    if(Utility::codeEqConstant(code, MURKWATER_SCRIBE))     return 1;
-    if(Utility::codeEqConstant(code, FRENZIED_FELWING))     return 2;
-    if(Utility::codeEqConstant(code, PALM_READING))         return 2;
-    if(Utility::codeEqConstant(code, FELGORGER))            return 2;
-    if(Utility::codeEqConstant(code, FROSTWOLF_WARMASTER))  return 2;
-    if(Utility::codeEqConstant(code, STORMPIKE_BATTLE_RAM)) return 2;
-    if(Utility::codeEqConstant(code, SEAFLOOR_GATEWAY))     return 2;
-    if(Utility::codeEqConstant(code, GREENTHUMB_GARDENER))  return 2;
-    if(Utility::codeEqConstant(code, NERUBIAN_PROPHET))     return 3;
-    if(Utility::codeEqConstant(code, CORRIDOR_CREEPER))     return 3;
-    if(Utility::codeEqConstant(code, SECOND_RATE_BRUISER))  return 3;
-    if(Utility::codeEqConstant(code, DREAMPETAL_FLORIST))   return 3;
-    if(Utility::codeEqConstant(code, FEL_GUARDIANS))        return 3;
-    if(Utility::codeEqConstant(code, CUTTING_CLASS))        return 3;
-    if(Utility::codeEqConstant(code, GRANITE_FORGEBORN))    return 3;
-    if(Utility::codeEqConstant(code, CLUMSY_COURIER))       return 3;
-    if(Utility::codeEqConstant(code, EXCAVATION_SPECIALIST))return 3;
-    if(Utility::codeEqConstant(code, RELIC_OF_DIMENSIONS))  return 3;
-    if(Utility::codeEqConstant(code, MOLTEN_BLADE))         return 4;
-    if(Utility::codeEqConstant(code, SHIFTER_ZERUS))        return 4;
-    if(Utility::codeEqConstant(code, SHIFTING_SCROLL))      return 4;
-    if(Utility::codeEqConstant(code, CHAMELEOS))            return 4;
-    if(Utility::codeEqConstant(code, UMBRAL_OWL))           return 4;
-    if(Utility::codeEqConstant(code, TENT_TRASHER))         return 4;
-    if(Utility::codeEqConstant(code, FROSTSABER_MATRIARCH)) return 4;
-    if(Utility::codeEqConstant(code, WILDPAW_GNOLL))        return 4;
-    if(Utility::codeEqConstant(code, SCRIBBLING_STENOGRAPHER))  return 4;
-    if(Utility::codeEqConstant(code, FORBIDDEN_SHAPING))    return 5;
-    if(Utility::codeEqConstant(code, FORBIDDEN_FLAME))      return 5;
-    if(Utility::codeEqConstant(code, FORBIDDEN_HEALING))    return 5;
-    if(Utility::codeEqConstant(code, FORBIDDEN_RITUAL))     return 5;
-    if(Utility::codeEqConstant(code, FORBIDDEN_ANCIENT))    return 5;
-    if(Utility::codeEqConstant(code, FORBIDDEN_WORDS))      return 5;
-    if(Utility::codeEqConstant(code, MOGU_FLESHSHAPER))     return 5;
-    if(Utility::codeEqConstant(code, RABBLE_BOUNCER))       return 5;
-    if(Utility::codeEqConstant(code, DEVOUT_PUPIL))         return 5;
-    if(Utility::codeEqConstant(code, EMBIGGEN))             return 5;
-    if(Utility::codeEqConstant(code, POWER_WORD_FORTITUDE)) return 5;
-    if(Utility::codeEqConstant(code, SHIELD_SHATTER))       return 5;
-    if(Utility::codeEqConstant(code, LOKHOLAR_THE_ICE_LORD))return 5;
-    if(Utility::codeEqConstant(code, LIGHTRAY))             return 5;
-    if(Utility::codeEqConstant(code, DEMONBOLT))            return 6;
-    if(Utility::codeEqConstant(code, SEA_GIANT))            return 6;
-    if(Utility::codeEqConstant(code, BLOODBOIL_BRUTE))      return 6;
-    if(Utility::codeEqConstant(code, FLESH_GIANT))          return 6;
-    if(Utility::codeEqConstant(code, IREBOUND_BRUTE))       return 6;
-    if(Utility::codeEqConstant(code, GOLDSHIRE_GNOLL))      return 6;
-    if(Utility::codeEqConstant(code, THE_GARDENS_GRACE))    return 6;
-    if(Utility::codeEqConstant(code, GIGANTOTEM))           return 6;
-    if(Utility::codeEqConstant(code, URZUL_GIANT))          return 7;
-    if(Utility::codeEqConstant(code, CLOCKWORK_GIANT))      return 8;
-    if(Utility::codeEqConstant(code, MULCHMUNCHER))         return 8;
-    if(Utility::codeEqConstant(code, GRAVE_HORROR))         return 9;
-    if(Utility::codeEqConstant(code, LIVING_MANA))          return 10;
-    if(Utility::codeEqConstant(code, NAGA_GIANT))           return 10;
+    {
+    QStringList candidates = {
+        GRASP_THE_FUTURE, TIMEWAY_WANDERER, BLOODBLOOM, PRIMORDIAL_GLYPH, FAR_SIGHT, CHEAT_DEATH,
+        LUNAS_POCKET_GALAXY, ACADEMIC_ESPIONAGE, HAUNTING_VISIONS, WAXMANCY, IMPRISONED_SATYR, SKULL_OF_GULDAN, DEMONIC_STUDIES,
+        DRACONIC_STUDIES, ATHLETIC_STUDIES, PRIMORDIAL_STUDIES, CARRION_STUDIES, NATURE_STUDIES, ILLIDARI_STUDIES, INSIGHT,
+        FLOODSAIL_DECKHAND, EFFICIENT_OCTOBOT, LIVING_SEED, SCABBS_CUTTERBUTTER, KINDLING_ELEMENTAL, CELESTIAL_INK_SET,
+        RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
+        BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
+        ROTTEN_RODENT
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
+    }
+
+    {
+    QStringList candidates = {
+        FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
+        ANUBREKHAN
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
+    }
+
+    {
+    QStringList candidates = {
+        FRENZIED_FELWING, PALM_READING, FELGORGER, FROSTWOLF_WARMASTER, STORMPIKE_BATTLE_RAM, SEAFLOOR_GATEWAY, GREENTHUMB_GARDENER,
+        LIGHT_OF_THE_PHOENIX
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 2;
+    }
+
+    {
+    QStringList candidates = {
+        NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
+        CLUMSY_COURIER, EXCAVATION_SPECIALIST, RELIC_OF_DIMENSIONS
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
+    }
+
+    {
+    QStringList candidates = {
+        MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
+        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
+    }
+
+    {
+    QStringList candidates = {
+        FORBIDDEN_SHAPING, FORBIDDEN_FLAME, FORBIDDEN_HEALING, FORBIDDEN_RITUAL, FORBIDDEN_ANCIENT, FORBIDDEN_WORDS, MOGU_FLESHSHAPER,
+        RABBLE_BOUNCER, DEVOUT_PUPIL, EMBIGGEN, POWER_WORD_FORTITUDE, SHIELD_SHATTER, LOKHOLAR_THE_ICE_LORD, LIGHTRAY, CRYPT_KEEPER,
+        VENGEFUL_WALLOPER
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 5;
+    }
+
+    {
+    QStringList candidates = {
+        TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, GOLDSHIRE_GNOLL, THE_GARDENS_GRACE,
+        GIGANTOTEM, STITCHED_GIANT
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
+    }
+
+    {
+    QStringList candidates = {
+        URZUL_GIANT
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
+    }
+
+    {
+    QStringList candidates = {
+        CLOCKWORK_GIANT, MULCHMUNCHER
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 8;
+    }
+
+    {
+    QStringList candidates = {
+        GRAVE_HORROR
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 9;
+    }
+
+    {
+    QStringList candidates = {
+        LIVING_MANA, NAGA_GIANT
+    };
+    if(candidates.contains(code) || candidates.contains(otherCode)) return 10;
+    }
 
     int overload = Utility::getCardAttribute(code, "overload").toInt();
     return std::min(10, deckCard.getCost()) + overload;

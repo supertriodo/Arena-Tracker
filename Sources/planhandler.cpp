@@ -2956,7 +2956,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = 5;
     }
-    else if(Utility::codeEqConstant(code, PRIESTESS_OF_FURY))
+    else if(Utility::codeEqConstant(code, PRIESTESS_OF_FURY) || Utility::codeEqConstant(code, SOUL_BARRAGE))
     {
         missiles = 6;
     }
