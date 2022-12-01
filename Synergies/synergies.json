@@ -2779,7 +2779,7 @@
 "RLK_214" : [ "damageMinionsGen", "reachGen", "drop4" ],
 "RLK_215" : [ "toYourHandGen", "battlecry", "returnSyn", "outcastGen" ],
 "RLK_216" : [ "deathrattleSyn", "battlecry", "returnSyn" ],
-"RLK_217" : [ "drop4", "toYourHandGen", "deathrattle", "deathrattleSyn" ],
+"RLK_217" : [ "drop4", "tokenCardGen", "deathrattle", "deathrattleSyn" ],
 "RLK_218" : [ "battlecry", "spellDamageGen" ],
 "RLK_219" : [ "drop3", "battlecry", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen", "returnSyn" ],
 "RLK_220" : [ "reachGen", "lifesteal" ],
