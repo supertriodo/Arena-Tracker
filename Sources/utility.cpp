@@ -509,6 +509,8 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Fractured in Alterac Valley "ALTERAC_VALLEY"
  * Voyage to the Sunken City "THE_SUNKEN_CITY"
  * Murder at Castle Nathria "REVENDRETH"
+ * Path of Arthas "PATH_OF_ARTHAS"
+ * March of the Lick King "RETURN_OF_THE_LICH_KING"
  */
 
 
@@ -527,7 +529,7 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
         cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
-        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH")
+        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING")
     {
         return true;
     }
