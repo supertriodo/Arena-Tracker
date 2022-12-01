@@ -4097,6 +4097,17 @@
     "REV_601 Frozen Touch", "REV_835 Imp King Rafaam", "REV_843 Sinfueled Golem",
     "REV_906 Sire Denathrius", "REV_920 Convincing Disguise", "REV_933 Imbued Axe",
     "REV_935 Party Favor Totem", "REV_937 Artificer Xy'mox", "REV_938 Door of Shadows",
-    "REV_956 Priest of the Deceased", "REV_957 Murlocula", "REV_958 Buffet Biggun"]
+    "REV_956 Priest of the Deceased", "REV_957 Murlocula", "REV_958 Buffet Biggun"],
+
+  "-----GIVE DEATHRATTLE-----": "",
+  "RLK_912 Scourge Troll": ["RLK_550 Rotgill", "RLK_653 Infectious Ghoul", "RLK_867 Vrykul Necrolyte",
+    "RLK_909 Deathweaver Aura", "RLK_910 Shadow Suffusion", "RLK_970 Hawkstrider Rancher"],
+
+  "-----CONCOCTION-----": "",
+  "RLK_570 Ghoulish Alchemist": ["RLK_568 Concoctor", "RLK_569 Potion Belt",
+    "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
+  "RLK_568 Concoctor": ["RLK_569 Potion Belt", "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
+  "RLK_569 Potion Belt": ["RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
+  "RLK_571 Vile Apothecary": ["RLK_572 Potionmaster Putricide"]
 }
 }
