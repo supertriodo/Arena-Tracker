@@ -955,15 +955,10 @@ void MainWindow::createDraftHandler()
     connect(draftHandler, SIGNAL(calculateMinimumWidth()),
             this, SLOT(calculateMinimumWidth()));
 
-    connect(draftHandler, SIGNAL(downloadStarted()),
-            cardDownloader, SLOT(setFastMode()));
-    connect(draftHandler, SIGNAL(downloadEnded()),
-            cardDownloader, SLOT(setSlowMode()));
-
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             arenaHandler, SLOT(newArena(QString)));
-    connect(draftHandler, SIGNAL(scoreAvg(int, float, QString)),
-            arenaHandler, SLOT(setCurrentAvgScore(int, float, QString)));
+    connect(draftHandler, SIGNAL(scoreAvg(int,float,QString)),
+            arenaHandler, SLOT(setCurrentAvgScore(int,float,QString)));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),

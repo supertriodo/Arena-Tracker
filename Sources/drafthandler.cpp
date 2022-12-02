@@ -545,7 +545,6 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
         else
         {
             emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
-            emit downloadStarted();
         }
     }
 }
@@ -566,7 +565,6 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
     {
         if(needSaveCardHist)    saveCardHist(multiclassArena);
         emit showMessageProgressBar("All cards downloaded");
-        emit downloadEnded();
         newCaptureDraftLoop();
     }
 }

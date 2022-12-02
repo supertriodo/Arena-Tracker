@@ -11,8 +11,7 @@
 #define AT_CARDS_URL QString("https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthstoneCards/")
 #define HEARTHPWN_CARDS_GOLDEN_URL QString("https://cards.hearthpwn.com/enUS/anims/")
 #define HEARTHPWN_CARDS_PLAIN_URL QString("https://cards.hearthpwn.com/enUS/")
-#define MAX_DOWNLOADS 10
-#define FORCE_NEXT_DOWNLOAD 100
+#define MAX_DOWNLOADS 50
 
 
 class DownloadingCard
@@ -37,7 +36,6 @@ private:
     QMap<QNetworkReply *, DownloadingCard> gettingWebCards;
     QString lang;
     QList<DownloadingCard> pendingDownloads;
-    bool fastMode;
 
 
 //Metodos
@@ -57,8 +55,6 @@ signals:
 
 public slots:
     void saveWebImage(QNetworkReply * reply);
-    void setFastMode(bool fastMode=true);
-    void setSlowMode();
 
 private slots:
     void forceNextDownload();

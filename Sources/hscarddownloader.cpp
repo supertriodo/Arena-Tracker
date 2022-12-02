@@ -6,7 +6,6 @@ HSCardDownloader::HSCardDownloader(QObject *parent) : QObject(parent)
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(saveWebImage(QNetworkReply*)));
-    this->fastMode = false;
 }
 
 HSCardDownloader::~HSCardDownloader()
@@ -15,24 +14,11 @@ HSCardDownloader::~HSCardDownloader()
 }
 
 
-void HSCardDownloader::setFastMode(bool fastMode)
-{
-    this->fastMode = fastMode;
-}
-
-
-void HSCardDownloader::setSlowMode()
-{
-    this->fastMode = false;
-}
-
-
 void HSCardDownloader::forceNextDownload()
 {
-    if(!pendingDownloads.isEmpty())
+    if(!pendingDownloads.isEmpty() && gettingWebCards.count() < MAX_DOWNLOADS)
     {
         downloadWebImage(pendingDownloads.takeFirst(), true);
-        QTimer::singleShot(FORCE_NEXT_DOWNLOAD, this, SLOT(forceNextDownload()));
     }
 }
 
@@ -75,7 +61,6 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
 
     if(!force && (gettingWebCards.count() >= MAX_DOWNLOADS))
     {
-        if(pendingDownloads.isEmpty())      QTimer::singleShot(FORCE_NEXT_DOWNLOAD, this, SLOT(forceNextDownload()));
         pendingDownloads.prepend(downCard);
         return;
     }
@@ -192,10 +177,7 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
     }
 
     //Next download
-    if(fastMode && !pendingDownloads.isEmpty() && gettingWebCards.count() < MAX_DOWNLOADS)
-    {
-        downloadWebImage(pendingDownloads.takeFirst());
-    }
+    forceNextDownload();
 
     //All cards downloaded
     if(pendingDownloads.isEmpty() && gettingWebCards.isEmpty())
