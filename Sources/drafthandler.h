@@ -64,7 +64,7 @@ private:
     //Se crea al final de la iteracion para ordenar los candidatos por match score
     QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
-    CardClass arenaHero;
+    CardClass arenaHero, arenaHeroMulticlassPower;
     int deckRatingHA, deckRatingLF;
     float deckRatingHSR;
     cv::Rect screenRects[3];

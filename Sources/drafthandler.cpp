@@ -719,6 +719,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     clearLists(true);
 
     this->arenaHero = Utility::classLogNumber2classEnum(hero);
+    this->arenaHeroMulticlassPower = INVALID_CLASS;
     this->drafting = true;
     this->justPickedCard = "";
 
@@ -1307,8 +1308,14 @@ void DraftHandler::pickCard(QString code)
 
     //Avoid the pick of hero powers in dual class arena
     bool pickHeroPower = (Utility::getTypeFromCode(code) == HERO_POWER);
+    if(pickHeroPower)
+    {
+        QList<CardClass> cardClass = Utility::getClassFromCode(code);
+        this->arenaHeroMulticlassPower = cardClass.first();
+        return;
+    }
 
-    if(patreonVersion && !pickHeroPower)
+    if(patreonVersion)
     {
         if(!lavaButton->isEnabled())
         {
@@ -1378,11 +1385,9 @@ void DraftHandler::pickCard(QString code)
     this->resetTwitchScores = true;
     if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores();
 
-    if(!pickHeroPower)
-    {
-        emit pDebug("Pick card: " + code);
-        emit newDeckCard(code);
-    }
+    emit pDebug("Pick card: " + code);
+    emit newDeckCard(code);
+
     this->justPickedCard = code;
 
     newCaptureDraftLoop(delayCapture);
@@ -1697,8 +1702,16 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         QMap<double, QString> bestMatchesMap;
         for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
         {
-            double match = compareHist(screenCardsHist[i], it.value(), 3);
             QString code = it.key();
+
+            if(multiclassArena && arenaHeroMulticlassPower != INVALID_CLASS)
+            {
+                QList<CardClass> cardClass = Utility::getClassFromCode(code);
+                if(!(cardClass.contains(NEUTRAL) || cardClass.contains(arenaHero) ||
+                     cardClass.contains(arenaHeroMulticlassPower))) continue;
+            }
+
+            double match = compareHist(screenCardsHist[i], it.value(), 3);
             bestMatchesMap.insertMulti(match, code);
 
             //Actualizamos DraftCardMaps con los nuevos resultados

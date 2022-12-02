@@ -207,11 +207,8 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     else if(line.contains(QRegularExpression("Client chooses: .* \\((\\w+)\\)"), match))
     {
         QString code = match->captured(1);
-        if(!code.contains("HERO"))
-        {
-            emit pDebug("Pick card: " + code, numLine);
-            emit pickCard(code);
-        }
+        emit pDebug("Pick card: " + code, numLine);
+        emit pickCard(code);
     }
     //START READING DECK
     //[Arena] DraftManager.OnChoicesAndContents - Draft Deck ID: 472720132, Hero Card = HERO_02
