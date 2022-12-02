@@ -4628,10 +4628,10 @@ void MainWindow::testDownloadRotation(bool fromHearth)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
-//    testSynergies();
+    testHeroPortraits();
+    testSynergies();
 //    testTierlists();
-    testDownloadRotation(true);//Force hearthpwn true
+//    testDownloadRotation(true);//Force hearthpwn true
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
