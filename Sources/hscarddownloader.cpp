@@ -73,7 +73,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
     downCard.isHero = isHero;
     downCard.fromHearth = fromHearth;
 
-    if(!force && gettingWebCards.count() >= MAX_DOWNLOADS)
+    if(!force && (gettingWebCards.count() >= MAX_DOWNLOADS))
     {
         if(pendingDownloads.isEmpty())      QTimer::singleShot(FORCE_NEXT_DOWNLOAD, this, SLOT(forceNextDownload()));
         pendingDownloads.prepend(downCard);
@@ -105,7 +105,8 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
 
     QNetworkReply * reply = networkManager->get(QNetworkRequest(QUrl(urlString)));
     gettingWebCards[reply] = downCard;
-    emit pDebug("Downloading (" + QString(fromHearth?"Hearthpwn":"GitHub") + "): " + code + " - (" + QString::number(gettingWebCards.count()) +
+    emit pDebug("Downloading (" + QString(fromHearth?"Hearthpwn":"GitHub") + "): " + code +
+                " - (" + QString::number(gettingWebCards.count()) +
                 ") - " + QString::number(pendingDownloads.count()));
 }
 

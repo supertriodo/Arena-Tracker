@@ -4566,9 +4566,9 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
 
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("REVENDRETH", 1, 20, "MAW_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 0, 20);//, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies();//"MAW_");
+//    draftHandler->getSynergyHandler()->testSynergies("RLK_");
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4580,7 +4580,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "LEGACY" << "EXPERT1" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
+    arenaSets << "CORE" <<  "NAXX" << "GANGS" << "ICECROWN" << "GILNEAS" <<
+                 "STORMWIND" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4588,20 +4589,22 @@ void MainWindow::testTierlists()
 }
 
 /*
- * Legacy "LEGACY" // Old Basic
- * Expert "EXPERT1"// Old Classic
- * Curse of Naxxramas "NAXX"
- * Goblins vs Gnomes "GVG"
- * Blackrock Mountain "BRM"
- * The Grand Tournament "TGT"
- * League of Explorer "LOE"
+ *  Core "CORE"
+ *  Curse of Naxxramas "NAXX"
+ *  Mean Streets of Gadgetzan "GANGS"
+ *  Knights of the Frozen Throne "ICECROWN"
+ *  The Witchwood "GILNEAS"
+ *  United in Stormwind "STORMWIND"
+ *  Path of Arthas "PATH_OF_ARTHAS"
+ *  March of the Lick King "RETURN_OF_THE_LICH_KING"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "LEGACY" << "EXPERT1" << "NAXX" << "GVG" << "BRM" << "TGT" << "LOE";
+    arenaSets << "CORE" <<  "NAXX" << "GANGS" << "ICECROWN" << "GILNEAS" <<
+                 "STORMWIND" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
     if(fromHearth)
     {
@@ -4630,10 +4633,10 @@ void MainWindow::testDownloadRotation(bool fromHearth)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+//    testHeroPortraits();
+//    testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true);//Force hearthpwn true
+    testDownloadRotation(true);//Force hearthpwn true
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
@@ -4665,7 +4668,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> REVENDRETH
+//Update Utility::isFromStandardSet(QString code) --> RETURN_OF_THE_LICH_KING
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4688,10 +4691,9 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation()
-//|-Synergy / Code  --> 24.4 Patch (2022-09-26)
+//|-Synergy / Code  --> 25.0 Patch (2022-11-28)
 
 //Rotacion CORE
-//|-Revisar synergies.json CORE - Quitar antiguo - Incluir nuevo -- POR ULTIMA VEZ
 //|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
 
 
