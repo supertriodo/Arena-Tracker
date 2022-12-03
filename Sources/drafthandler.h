@@ -158,6 +158,7 @@ private:
     bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
     void loadCardHist(QString classUName);
     void saveCardHist(const bool multiClassDraft);
+    CardClass findMulticlassPower(QList<DeckCard> &deckCardList);
 
 public:
     void buildHeroCodesList();

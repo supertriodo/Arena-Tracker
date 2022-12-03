@@ -691,6 +691,24 @@ void DraftHandler::leaveArena()
 }
 
 
+CardClass DraftHandler::findMulticlassPower(QList<DeckCard> &deckCardList)
+{
+    for(DeckCard &deckCard: deckCardList)
+    {
+        QList<CardClass> cardClassL = Utility::getClassFromCode(deckCard.getCode());
+        if(cardClassL.count() != 1)  continue;
+        CardClass cardClass = cardClassL.first();
+        if(cardClass < NUM_HEROS && cardClass != this->arenaHero)
+        {
+            emit pDebug("Found MultiClassPower: " + Utility::classEnum2classUName(cardClass));
+            return cardClass;
+        }
+    }
+    emit pDebug("No MultiClassPower found");
+    return INVALID_CLASS;
+}
+
+
 void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool skipScreenSettings)
 {
     deleteDraftMechanicsWindow();
@@ -710,7 +728,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     }
     else
     {
-        emit pDebug("Begin draft. Heroe: " + hero);
+        emit pDebug("Begin draft. Hero: " + hero);
+        emit pDebug("Arena Hero: " + Utility::classEnum2classUName(arenaHero));
     }
 
     //Set updateTime in log / Hide card Window
@@ -719,7 +738,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     clearLists(true);
 
     this->arenaHero = Utility::classLogNumber2classEnum(hero);
-    this->arenaHeroMulticlassPower = INVALID_CLASS;
+    if(multiclassArena) this->arenaHeroMulticlassPower = findMulticlassPower(deckCardList);
+    else                this->arenaHeroMulticlassPower = INVALID_CLASS;
     this->drafting = true;
     this->justPickedCard = "";
 
@@ -1122,6 +1142,7 @@ bool DraftHandler::isRepeatHero()
     QString heroClass[3];
     for(int i=0; i<3; i++)
     {
+        if(bestMatchesMaps[i].isEmpty())    return true;
         QString code = bestMatchesMaps[i].first();
         heroClass[i] = Utility::getCardAttribute(code, "cardClass").toString();
     }
@@ -1293,9 +1314,29 @@ void DraftHandler::getBestCards(DraftCard bestCards[3])
 
 void DraftHandler::pickCard(QString code)
 {
-    if(!drafting || justPickedCard==code)
+    if(!drafting)
+    {
+        emit pDebug("Pick hero: " + code);
+        return;
+    }
+    if(justPickedCard==code)
     {
         emit pDebug("WARNING: Duplicate pick code detected: " + code);
+        return;
+    }
+
+    //Completa 2nd class en mutiClassArena (pick hero power)
+    CardType cardType = Utility::getTypeFromCode(code);
+    if(cardType == HERO_POWER)
+    {
+        emit pDebug("Pick hero power: " + code);
+        QList<CardClass> cardClassL = Utility::getClassFromCode(code);
+        CardClass cardClass = cardClassL.first();
+        if(cardClass < NUM_HEROS && cardClass != this->arenaHero)
+        {
+            this->arenaHeroMulticlassPower = cardClass;
+            emit pDebug("Found MultiClassPower: " + Utility::classEnum2classUName(arenaHeroMulticlassPower));
+        }
         return;
     }
 
@@ -1306,13 +1347,19 @@ void DraftHandler::pickCard(QString code)
         delayCapture = false;
     }
 
-    //Avoid the pick of hero powers in dual class arena
-    bool pickHeroPower = (Utility::getTypeFromCode(code) == HERO_POWER);
-    if(pickHeroPower)
+    //Completa 2nd class en mutiClassArena (pick class card)
+    if(multiclassArena && arenaHeroMulticlassPower==INVALID_CLASS)
     {
-        QList<CardClass> cardClass = Utility::getClassFromCode(code);
-        this->arenaHeroMulticlassPower = cardClass.first();
-        return;
+        QList<CardClass> cardClassL = Utility::getClassFromCode(code);
+        if(cardClassL.count() == 1)
+        {
+            CardClass cardClass = cardClassL.first();
+            if(cardClass < NUM_HEROS && cardClass != this->arenaHero)
+            {
+                this->arenaHeroMulticlassPower = cardClass;
+                emit pDebug("Found MultiClassPower: " + Utility::classEnum2classUName(arenaHeroMulticlassPower));
+            }
+        }
     }
 
     if(patreonVersion)
@@ -1704,9 +1751,9 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
         {
             QString code = it.key();
 
-            if(multiclassArena && arenaHeroMulticlassPower != INVALID_CLASS)
+            if(drafting && multiclassArena && arenaHeroMulticlassPower != INVALID_CLASS)
             {
-                QList<CardClass> cardClass = Utility::getClassFromCode(code);
+                QList<CardClass> cardClass = Utility::getClassFromCode(degoldCode(code));
                 if(!(cardClass.contains(NEUTRAL) || cardClass.contains(arenaHero) ||
                      cardClass.contains(arenaHeroMulticlassPower))) continue;
             }
