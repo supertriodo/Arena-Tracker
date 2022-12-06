@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 25,
-  "arenaSets": ["LEGACY", "EXPERT1", "NAXX", "GVG", "BRM", "TGT", "LOE"],
-  "multiclassArena": true,
-  "resetCards": 24,
+  "arenaVersion": 26,
+  "arenaSets": ["CORE", "NAXX", "GANGS", "ICECROWN", "GILNEAS", "STORMWIND", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
+  "multiclassArena": false,
+  "resetCards": 26,
   "resetHeroes": 0
 }
