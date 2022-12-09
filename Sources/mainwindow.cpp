@@ -857,6 +857,10 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         removeHistograms();
         Utility::createDir(Utility::histogramsPath());
 
+        //Remove cards.json
+        QFile::remove(Utility::extraPath() + "/cards.json");
+        pDebug("cards.json removed.");
+
         allCardsDownloadNeeded = true;
         settings.setValue("arenaVersion", version);
     }
@@ -4644,6 +4648,11 @@ void MainWindow::testDelay()
 
 //    testArenaGames();
 //    testPlan();
+
+    for(CardRace race: DeckCard("RLK_216").getRace())
+    {
+        qDebug()<<race;
+    }
 }
 
 
