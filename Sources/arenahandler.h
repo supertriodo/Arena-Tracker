@@ -37,7 +37,6 @@ private:
     QTreeWidgetItem *best30TreeItem;
     QTreeWidgetItem *best30RegionTreeItem[NUM_REGIONS];
     QString arenaCurrentHero;
-    QString arenaCurrentDraftFile;
     bool mouseInApp;
     bool premium;
     Transparency transparency;
@@ -105,8 +104,6 @@ public:
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme();
-    void linkDraftLogToArenaCurrent(QString logFileName);
-    QString getArenaCurrentDraftLog();
     void loadStatsJsonFile(QString statsFile="ArenaTrackerStats.json");
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
 

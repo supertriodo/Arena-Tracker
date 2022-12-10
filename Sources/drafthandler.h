@@ -188,12 +188,14 @@ public:
     SynergyHandler *getSynergyHandler();
     void setArenaSets(QStringList arenaSets);
     void closeFindScreenRects();
+    CardClass getArenaHero();
 
 signals:
     void checkCardImage(QString code, bool isHero=false);
     void newDeckCard(QString code);
     void draftStarted();
     void draftEnded(QString heroLog);
+    void saveDraftDeck(QString heroLog);
     void scoreAvg(int deckScoreHA, float deckScoreHSR, QString heroLog);
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();

@@ -221,6 +221,12 @@ QStringList DraftHandler::getAllHeroCodes()
 }
 
 
+CardClass DraftHandler::getArenaHero()
+{
+    return arenaHero;
+}
+
+
 void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool multiClassDraft)
 {
     hearthArenaTiers.clear();
@@ -960,6 +966,8 @@ void DraftHandler::endDraftShowMechanicsWindow()
         //Build mechanics window and init mechanics.
         if(buildDraftMechanicsWindow())
         {
+            emit saveDraftDeck(Utility::classEnum2classLogNumber(arenaHero));
+
             //Send Deck Score
             if(patreonVersion)
             {

@@ -1418,7 +1418,80 @@ void DeckHandler::hideManageDecksButtons()
 }
 
 
-void DeckHandler::completeArenaDeck(QString draftLog)
+/*
+ * ObjectDrafts
+ * {
+ * hero1 -> ObjectDrafts
+ * hero2 -> ObjectDrafts
+ * }
+ *
+ * ObjectDrafts
+ * {
+ * id1 -> nCards
+ * id2 -> nCards
+ * }
+ */
+void DeckHandler::loadDraftsJson(QJsonObject &draftsJson)
+{
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerDrafts.json");
+    if(jsonFile.exists())
+    {
+        if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            emit pDebug("Failed to load ArenaTrackerDrafts.json from disk.", DebugLevel::Error);
+            return;
+        }
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+        jsonFile.close();
+
+        draftsJson = jsonDoc.object();
+    }
+}
+
+
+void DeckHandler::saveDraftsJson(QJsonObject &draftsJson)
+{
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(draftsJson);
+
+    QFile jsonFile(Utility::dataPath() + "/ArenaTrackerDrafts.json");
+    if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to create ArenaTrackerDrafts.json on disk.", DebugLevel::Error);
+        return;
+    }
+    jsonFile.write(jsonDoc.toJson());
+    jsonFile.close();
+}
+
+
+void DeckHandler::saveDraftDeck(QString hero)
+{
+    if(Utility::classLogNumber2classEnum(hero) == INVALID_CLASS || deckCardList[0].total != 0)
+    {
+        emit pDebug("Save draft deck FAIL: Hero " + hero + " - " +
+                    QString::number(deckCardList[0].total) + " unknown cards.", DebugLevel::Warning);
+        return;
+    }
+
+    emit pDebug("Save draft deck: Hero " + hero);
+
+    QJsonObject draftsJson;
+    loadDraftsJson(draftsJson);
+
+    QJsonObject draftObject;
+    for(DeckCard &deckCard: deckCardList)
+    {
+        QString code = deckCard.getCode();
+        if(!code.isEmpty()) draftObject[code] = deckCard.total;
+    }
+
+    draftsJson[hero] = draftObject;
+    saveDraftsJson(draftsJson);
+}
+
+
+void DeckHandler::completeArenaDeck(QString hero)
 {
     if(deckCardList[0].total == 0)
     {
@@ -1439,18 +1512,19 @@ void DeckHandler::completeArenaDeck(QString draftLog)
     }
 
     //Create cardsToAdd list
-    QFile logFile(Utility::gameslogPath() + "/" + draftLog);
-    if(!logFile.open(QIODevice::ReadOnly))
+    QJsonObject draftsJson;
+    loadDraftsJson(draftsJson);
+
+    if(!draftsJson.contains(hero))
     {
-        emit pDebug("Cannot open draft log " + Utility::gameslogPath() + "/" + draftLog, DebugLevel::Error);
+        emit pDebug("Completing Arena Deck: Hero " + hero + " draft not found.");
         return;
     }
-
-    char line[2048];
-    while(logFile.readLine(line, sizeof(line)) > 0)
+    QJsonObject draftObject = draftsJson[hero].toObject();
+    const QList<QString> codeList = draftObject.keys();
+    for(const QString &code: codeList)
     {
-        QString code = getCodeFromDraftLogLine(line);
-        if(!code.isEmpty())
+        for(int i=0; i<draftObject[code].toInt(); i++)
         {
             if(cardsInDeck.contains(code))
             {
@@ -1462,22 +1536,20 @@ void DeckHandler::completeArenaDeck(QString draftLog)
             }
         }
     }
-    logFile.close();
 
     //Check lists make sense
     if(deckCardList[0].total != cardsToAdd.count())
     {
-        emit pDebug("Completing Arena Deck: Cards to add != unknown cards.");
+        emit pDebug("Completing Arena Deck: Hero " + hero + " - Cards to add != unknown cards.");
         return;
     }
 
     //Complete deck
+    emit pDebug("Completing Arena Deck: Hero " + hero + " - Add " + QString::number(cardsToAdd.count()) + " cards.");
     for(const QString &code: cardsToAdd)
     {
         newDeckCardDraft(code);
     }
-
-    emit pDebug("Completing Arena Deck: " + QString::number(cardsToAdd.count()) + " cards added.");
 }
 
 

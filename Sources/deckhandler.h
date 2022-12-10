@@ -68,6 +68,8 @@ private:
     void updateManaLimits();
     bool isLastCreatedByCodeValid(const QString &code);
     void removeFromDeck(int index);
+    void loadDraftsJson(QJsonObject &draftsJson);
+    void saveDraftsJson(QJsonObject &draftsJson);
 
 public:
     void reset();
@@ -85,7 +87,7 @@ public:
     void setCardHeight(int value);
     void loadDecks();
     bool askSaveDeck();
-    void completeArenaDeck(QString draftLog);
+    void completeArenaDeck(QString hero);
     void setShowManaLimits(bool value);
     QList<DeckCard> getDeckCardList();
 
@@ -114,6 +116,7 @@ public slots:
     void returnToDeck(QString code, int id);
     void setLastCreatedByCode(QString code, QString blockType);
     void setFirstOutsiderId(int id);
+    void saveDraftDeck(QString hero);
 
 private slots:
     void findDeckCardEntered(QListWidgetItem *item);

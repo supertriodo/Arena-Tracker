@@ -14,7 +14,7 @@
 
 
 #define REMOVE_CARDS_ON_VERSION_UPDATE false
-#define REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE true
+#define REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE false
 
 #define DEBUG_REPLAY_AUTO_ADVANCE false
 #define DEBUG_OVERLAYS_LEFT false
@@ -106,7 +106,6 @@ public:
     static QJsonValue getCardAttribute(const QString &code, const QString &attribute);
     static QString appPath();
     static QString dataPath();
-    static QString gameslogPath();
     static QString hscardsPath();
     static QString extraPath();
     static QString cardEnNameFromCode(const QString &code);

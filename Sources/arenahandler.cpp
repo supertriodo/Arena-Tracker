@@ -16,7 +16,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->ui = ui;
     this->transparency = Opaque;
     this->mouseInApp = false;
-    this->arenaCurrentDraftFile = "";
     this->match = new QRegularExpressionMatch();
     this->editingColumnText = false;
     this->lastRegion = 0;
@@ -412,12 +411,6 @@ void ArenaHandler::finishShowArenaTreeWidget()
     ui->arenaStatsButton->setEnabled(true);
     ui->arenaNewButton->setHidden(false);
     ui->arenaStatsJsonComboBox->setHidden(false);
-}
-
-
-void ArenaHandler::linkDraftLogToArenaCurrent(QString logFileName)
-{
-    arenaCurrentDraftFile = logFileName;
 }
 
 
@@ -819,12 +812,6 @@ void ArenaHandler::setTheme()
 
     setRowColor(winrateTreeItem, QColor(ThemeHandler::themeColor2()));
     setRowColor(best30TreeItem, QColor(ThemeHandler::themeColor2()));
-}
-
-
-QString ArenaHandler::getArenaCurrentDraftLog()
-{
-    return arenaCurrentDraftFile;
 }
 
 

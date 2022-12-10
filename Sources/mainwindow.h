@@ -95,7 +95,6 @@ private:
     DetachWindow *deckWindow, *arenaWindow, *enemyWindow, *enemyDeckWindow, *graveyardWindow, *planWindow;
     int cardHeight;
     int drawDisappear;
-    QString draftLogFile;
     QNetworkAccessManager *networkManager;
     QStringList allCardsDownloadList;
     TwitchHandler *twitchTester;
@@ -171,9 +170,6 @@ private:
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
-    void checkGamesLogDir();
-    void checkDraftLogLine(QString logLine, QString file);
-    void removeNonCompleteDraft();
     void spreadTamCard(int value);
     int getTamCard();
     int getAutoTamCard();

@@ -228,9 +228,6 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
         endReadingDeck();//completeArenaDeck with draft file
         emit activeDraftDeck(); //(connect)End draft/Show mechanics, debe estar detras de endReadingDeck
         //para primero completar el deck y luego mostrar la mechanics window del deck completo
-        emit arenaDeckRead();   //completeArenaDeck with draft file, debemos repetirlo para el caso de end draft
-        //para primero completar el fichero del draft deck (se hace en endDraft) y luego rellenar el deck con lo que le falte
-        //por si hemos salido de la arena y vuelto a entrar durante el draft.
     }
     //READ DECK CARD
     //[Arena] DraftManager.OnChoicesAndContents - Draft deck contains card FP1_012

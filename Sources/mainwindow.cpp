@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     enemyDeckWindow = nullptr;
     graveyardWindow = nullptr;
     planWindow = nullptr;
-    draftLogFile = "";
     cardHeight = -1;
     patreonVersion = false;
     transparency = AutoTransparent;
@@ -93,7 +92,6 @@ MainWindow::MainWindow(QWidget *parent) :
     initHSRCards();//-->DraftHandler -->SecretHandler
 
     readSettings();
-    checkGamesLogDir();
     checkFirstRunNewVersion();
     createVersionChecker();//Despues de createDataDir (removeHSDir) y checkFirstRunNewVersion() ya que reescribe el settings "runVersion"
 
@@ -954,10 +952,15 @@ void MainWindow::createDraftHandler()
             this, SLOT(checkCardImage(QString,bool)));
     connect(draftHandler, SIGNAL(showPremiumDialog()),
             this, SLOT(showPremiumDialog()));
-    connect(draftHandler, SIGNAL(newDeckCard(QString)),
-            deckHandler, SLOT(newDeckCardDraft(QString)));
     connect(draftHandler, SIGNAL(calculateMinimumWidth()),
             this, SLOT(calculateMinimumWidth()));
+
+    connect(draftHandler, SIGNAL(newDeckCard(QString)),
+            deckHandler, SLOT(newDeckCardDraft(QString)));
+    connect(draftHandler, SIGNAL(draftEnded(QString)),
+            deckHandler, SLOT(saveDraftDeck(QString)));
+    connect(draftHandler, SIGNAL(saveDraftDeck(QString)),
+            deckHandler, SLOT(saveDraftDeck(QString)));
 
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             arenaHandler, SLOT(newArena(QString)));
@@ -1624,7 +1627,6 @@ void MainWindow::closeApp()
 {
     //Check unsaved decks
     if(ui->deckButtonSave->isEnabled() && !deckHandler->askSaveDeck())   return;
-    removeNonCompleteDraft();
     resetSizePlan();
     draftHandler->endDraftHideMechanicsWindow();
     draftHandler->deleteDraftMechanicsWindow();
@@ -2430,109 +2432,6 @@ void MainWindow::calculateCardWindowMinimumWidth(DetachWindow *detachWindow, boo
 }
 
 
-void MainWindow::removeNonCompleteDraft()
-{
-    //Remove old not-complete draft
-    if(!draftLogFile.isEmpty())
-    {
-        //Check dir
-        QFileInfo dirInfo(Utility::gameslogPath());
-        if(!dirInfo.exists())
-        {
-            pDebug("Cannot remove non-complete draft Log. GamesLog dir doesn't exist.");
-            return;
-        }
-
-        QDir dir(Utility::gameslogPath());
-        dir.remove(draftLogFile);
-        pDebug("Remove non-complete draft: " + draftLogFile);
-        draftLogFile = "";
-    }
-}
-
-
-void MainWindow::checkDraftLogLine(QString logLine, QString file)
-{
-    //New Draft
-    if(file == "DraftHandler")
-    {
-        QRegularExpressionMatch match;
-        if(logLine.contains(QRegularExpression("DraftHandler: Begin draft\\. Heroe: (\\d+)"), &match))
-        {
-            //Check dir
-            QFileInfo dir(Utility::gameslogPath());
-            if(!dir.exists())
-            {
-                pDebug("Cannot create draft Log. GamesLog dir doesn't exist.");
-                return;
-            }
-
-            //Remove old not-complete draft
-            removeNonCompleteDraft();
-
-            QString timeStamp = QDateTime::currentDateTime().toString("MMMM-d hh-mm");
-            QString playerHero = Utility::classLogNumber2classUName(match.captured(1));
-            QString fileName = "DRAFT " + timeStamp + " " + playerHero + ".arenatracker";
-
-            QFile logDraft(Utility::gameslogPath() + "/" + fileName);
-            if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                pDebug("Cannot create draft log file...", DebugLevel::Error);
-                return;
-            }
-
-            QTextStream stream(&logDraft);
-            stream << logLine << endl;
-            logDraft.close();
-
-            pDebug("Start DraftLog: " + fileName);
-            draftLogFile = fileName;
-            return;
-        }
-    }
-
-    //Continue Draft
-    bool copyLogLine = false;
-    bool endDraftLog = false;
-
-    if(!draftLogFile.isEmpty())
-    {
-        if(file == "DraftHandler")
-        {
-            if(logLine.contains("New codes") || logLine.contains("Pick card"))
-            {
-                copyLogLine = true;
-            }
-            else if(logLine.contains("End draft"))
-            {
-                copyLogLine = true;
-                endDraftLog = true;
-            }
-        }
-
-        if(copyLogLine)
-        {
-            QFile logDraft(Utility::gameslogPath() + "/" + draftLogFile);
-            if(!logDraft.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
-            {
-                pDebug("Cannot open draft log file...", DebugLevel::Error);
-                return;
-            }
-
-            QTextStream stream(&logDraft);
-            stream << logLine << endl;
-            logDraft.close();
-        }
-        if(endDraftLog)
-        {
-            pDebug("End DraftLog: " + draftLogFile);
-            if(arenaHandler != nullptr)    arenaHandler->linkDraftLogToArenaCurrent(draftLogFile);
-            draftLogFile = "";
-        }
-    }
-}
-
-
 void MainWindow::pDebug(QString line, DebugLevel debugLevel, QString file)
 {
     pDebug(line, 0, debugLevel, file);
@@ -2565,8 +2464,6 @@ void MainWindow::pDebug(QString line, qint64 numLine, DebugLevel debugLevel, QSt
         QTextStream stream(atLogFile);
         stream << logLine << endl;
     }
-
-    checkDraftLogLine(logLine, file);
 }
 
 
@@ -2689,7 +2586,6 @@ void MainWindow::createDataDir()
     if(REMOVE_CARDS_ON_VERSION_UPDATE)  removeHSCards();//Redownload HSCards en esta version
     if(REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE)  removeExtraAndHistograms();//Redownload Extra en esta version y recrea histogramas
     if(Utility::createDir(Utility::hscardsPath()))  allCardsDownloadNeeded = true;
-    Utility::createDir(Utility::gameslogPath());
     Utility::createDir(Utility::extraPath());
     Utility::createDir(Utility::themesPath());
     Utility::createDir(Utility::histogramsPath());
@@ -2946,58 +2842,11 @@ void MainWindow::createLinuxShortcut()
 }
 
 
-void MainWindow::checkGamesLogDir()
-{
-    QFileInfo dirInfo(Utility::gameslogPath());
-    if(!dirInfo.exists())
-    {
-        pDebug("Cannot check GamesLog dir. Dir doesn't exist.");
-        return;
-    }
-
-    QDir dir(Utility::gameslogPath());
-    dir.setFilter(QDir::Files);
-    dir.setSorting(QDir::Time);
-    QStringList filterName;
-    filterName << "*.arenatracker";
-    dir.setNameFilters(filterName);
-
-    QStringList files = dir.entryList();
-    int indexDraft = files.indexOf(QRegularExpression("DRAFT.*"));
-    pDebug("Last arena DRAFT: " + (indexDraft==-1?QString("Not Found"):files[indexDraft]));
-
-    for(int i=files.length()-1; i>=0; i--)
-    {
-        QString file = files[i];
-        //Current arena draft
-        if(i == indexDraft)
-        {
-            arenaHandler->linkDraftLogToArenaCurrent(file);
-        }
-        else
-        {
-            dir.remove(file);
-            pDebug(file + " removed.");
-        }
-    }
-}
-
-
 void MainWindow::completeArenaDeck()
 {
-    if(arenaHandler == nullptr)    return;
+    if(draftHandler == nullptr || deckHandler == nullptr)   return;
 
-    QString arenaCurrentGameLog = arenaHandler->getArenaCurrentDraftLog();
-    if(arenaCurrentGameLog.isEmpty())
-    {
-        pDebug("Completing Arena Deck: No draft log.");
-    }
-    else
-    {
-        pDebug("Completing Arena Deck: " + arenaCurrentGameLog);
-
-        if(deckHandler != nullptr) deckHandler->completeArenaDeck(arenaCurrentGameLog);
-    }
+    deckHandler->completeArenaDeck(Utility::classEnum2classLogNumber(draftHandler->getArenaHero()));
 }
 
 

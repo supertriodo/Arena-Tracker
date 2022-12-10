@@ -656,12 +656,6 @@ QString Utility::dataPath()
 }
 
 
-QString Utility::gameslogPath()
-{
-    return dataPath() + "/Games Drafts Logs";
-}
-
-
 QString Utility::hscardsPath()
 {
     return dataPath() + "/Hearthstone Cards";
