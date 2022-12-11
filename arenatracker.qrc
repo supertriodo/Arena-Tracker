@@ -169,5 +169,6 @@
         <file>Images/bgCard1Deathknight.png</file>
         <file>Images/bgCard2Deathknight.png</file>
         <file>Images/hero11.png</file>
+        <file>Images/bgCorpses.png</file>
     </qresource>
 </RCC>

@@ -4261,6 +4261,7 @@ void MainWindow::testPlan()
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
     planHandler->enemyHeroZonePlayAdd("HERO_09", 12);
     planHandler->playerHeroPowerZonePlayAdd("CS1h_001", 13);
+    planHandler->enemyHeroPowerZonePlayAdd("CS1h_001", 14);
 
     planHandler->newTurn(true, 1);
     planHandler->playerCardDraw(21, MAD_BOMBER,2);
@@ -4305,6 +4306,9 @@ void MainWindow::testPlan()
     planHandler->newTurn(true, 3);
     planHandler->enemyIsolatedSecret(29, "EX1_136");
     planHandler->enemySecretPlayed(30, MAGE);
+    planHandler->playerTagChange("RESOURCES", "3");
+    planHandler->playerWeaponZonePlayAdd("RLK_012", 31);
+    planHandler->playerTagChange("CORPSES", "18");
 }
 
 

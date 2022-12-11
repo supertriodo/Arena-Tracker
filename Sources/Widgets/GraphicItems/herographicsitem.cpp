@@ -13,6 +13,8 @@ HeroGraphicsItem::HeroGraphicsItem(QString code, int id, bool friendly, bool pla
     this->minionsAttack = this->minionsMaxAttack = 0;
     this->resources = 0;
     this->resourcesUsed = 0;
+    this->corpsesUsed = 0;
+    this->corpses = 0;
     this->spellDamage = 0;
     this->showAllInfo = true;
     this->heroWeapon = nullptr;
@@ -36,6 +38,8 @@ HeroGraphicsItem::HeroGraphicsItem(HeroGraphicsItem *copy, bool copySecretCodes)
     this->minionsMaxAttack = copy->minionsMaxAttack;
     this->resources = copy->resources;
     this->resourcesUsed = copy->resourcesUsed;
+    this->corpses = copy->corpses;
+    this->corpsesUsed = copy->corpsesUsed;
     this->spellDamage = copy->spellDamage;
     this->showAllInfo = false;
     this->heroWeapon = nullptr; //Al copiar el weapon en copyBoard se lo asignaremos al heroe a traves de setHeroWeapon()
@@ -143,6 +147,20 @@ void HeroGraphicsItem::setResources(int resources)
 }
 
 
+void HeroGraphicsItem::setCorpses(int corpses)
+{
+    this->corpses = corpses;
+    update();
+}
+
+
+void HeroGraphicsItem::setCorpsesUsed(int corpsesUsed)
+{
+    this->corpsesUsed = corpsesUsed;
+    update();
+}
+
+
 int HeroGraphicsItem::getSpellDamage()
 {
     return this->spellDamage;
@@ -186,7 +204,7 @@ void HeroGraphicsItem::damagePlanningMinion(int damage)
 
 QRectF HeroGraphicsItem::boundingRect() const
 {
-    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 30, HEIGHT + 13);
+    return QRectF( -WIDTH/2 - 30, -HEIGHT/2 - 13, WIDTH + 30 + 30 + 95, HEIGHT + 13);
 }
 
 
@@ -642,6 +660,20 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         else                                    text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
         painter->setBrush(WHITE);
         Utility::drawShadowText(*painter, font, text, -WIDTH/2+18, -HEIGHT/2+46, true);
+    }
+    //Solo pintamos corpses en el turno del heroe, no fuera de su turno en present/future board(showAllInfo).
+    //Fuera de su turno el hero power esta dado la vuelta y al no mostrar su mana la mueca de corpses se ve rara.
+    if(playerTurn == friendly && corpses > 0)
+    {
+        //Corpses
+        painter->drawPixmap(WIDTH/2+16, -HEIGHT/2+13, QPixmap(":Images/bgCorpses.png"));
+
+        text = QString::number(corpses-corpsesUsed);
+        painter->setBrush(WHITE);
+        font.setPixelSize(25);
+        pen.setWidth(1);
+        painter->setPen(pen);
+        Utility::drawShadowText(*painter, font, text, WIDTH/2+63, -HEIGHT/2+36, true);
     }
 }
 

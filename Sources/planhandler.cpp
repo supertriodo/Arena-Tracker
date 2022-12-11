@@ -1044,6 +1044,14 @@ void PlanHandler::addTagChange(bool friendly, QString tag, QString value)
     {
         hero->setSpellDamage(value.toInt());
     }
+    else if(tag == "CORPSES")
+    {
+        hero->setCorpses(value.toInt());
+    }
+    else if(tag == "CORPSES_SPENT_THIS_GAME")
+    {
+        hero->setCorpsesUsed(value.toInt());
+    }
 }
 
 

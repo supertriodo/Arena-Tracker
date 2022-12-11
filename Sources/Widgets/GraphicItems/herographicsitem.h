@@ -24,7 +24,7 @@ public:
 //Variables:
 private:
     QString heroCode;
-    int armor, minionsAttack, minionsMaxAttack, resources, resourcesUsed, spellDamage;
+    int armor, minionsAttack, minionsMaxAttack, resources, resourcesUsed, corpses, corpsesUsed, spellDamage;
     bool showAllInfo;
     QList<SecretIcon> secretsList;
     WeaponGraphicsItem * heroWeapon;
@@ -71,6 +71,8 @@ public:
     void damagePlanningMinion(int damage=1);
     void checkDownloadedCode(QString code);
     QList<CardClass> getCardClass();
+    void setCorpses(int corpses);
+    void setCorpsesUsed(int corpsesUsed);
 };
 
 #endif // HEROGRAPHICSITEM_H
