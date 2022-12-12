@@ -68,7 +68,7 @@ private:
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
     QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
                                         bool isArena=false, bool insertPos1=false);
-    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR);
     QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
                                bool isArenaNewEmpty=false);
     void newArenaStat(QString hero, int wins=0, int losses=0, QTreeWidgetItem *item=nullptr);
@@ -112,8 +112,8 @@ signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="ArenaHandler");
 
 public slots:
-    //GameWatcher
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    //GameWatcher/MainWindow
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA=0, float avgHSR=0);
 
     //DraftHandler
     void newArena(QString hero);

@@ -1270,7 +1270,7 @@ void MainWindow::createGameWatcher()
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
     connect(gameWatcher, SIGNAL(newGameResult(GameResult,LoadingScreenState)),
-            arenaHandler, SLOT(newGameResult(GameResult,LoadingScreenState)));
+            this, SLOT(newGameResult(GameResult,LoadingScreenState)));
 //    connect(gameWatcher, SIGNAL(newArena(QString)),//Arena stat se crea ahora en endDraft - SIGNAL(draftEnded(QString))
 //            arenaHandler, SLOT(newArena(QString)));
     //Rewards input disabled with track-o-bot stats
@@ -1533,6 +1533,47 @@ void MainWindow::createLogLoader()
             logLoader, SLOT(setUpdateTimeMin()));
 
     if(!logLoader->init())  QTimer::singleShot(1, this, SLOT(closeApp()));
+}
+
+
+void MainWindow::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
+{
+    int deckScoreHA = 0;
+    float deckScoreHSR = 0;
+    if(loadingScreen == arena)
+    {
+        int numCards=0;
+        int totalHA=0;
+        float totalHSR=0;
+        CardClass enemyClass = enemyDeckHandler->getEnemyClass();
+        draftHandler->initTierLists(enemyClass);
+        for(DeckCard &deckCard: enemyDeckHandler->getDeckCardList())
+        {
+            if(!deckCard.isOutsider())
+            {
+                QString code = deckCard.getCode();
+                if(!code.isEmpty())
+                {
+                    int ha;
+                    float hsr;
+                    draftHandler->getCodeScores(enemyClass, code, ha, hsr);
+                    if(ha!=0 && hsr!=0)
+                    {
+                        numCards += deckCard.total;
+                        totalHA += ha * deckCard.total;
+                        totalHSR += hsr * deckCard.total;
+                    }
+                }
+            }
+        }
+
+        deckScoreHA = (numCards==0)?0:static_cast<int>(round(totalHA/static_cast<double>(numCards)));
+        deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(totalHSR/numCards * 10))/10.0);
+        draftHandler->clearTierLists();
+        pDebug("Enemy deck: " + QString::number(numCards) + " cards - HA(" + QString::number(deckScoreHA) +
+               ") - HSR(" + QString::number(deckScoreHSR) + ")");
+    }
+    arenaHandler->newGameResult(gameResult, loadingScreen, deckScoreHA, deckScoreHSR);
 }
 
 

@@ -121,7 +121,8 @@ private:
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
     void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
-    void initLightForgeTiers(const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass);
+    void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
+                             QMap<CardClass, QStringList> &codesByClass);
     void createDraftWindows();
     void mapBestMatchingCodes(cv::MatND screenCardsHist[]);
     double getMinMatch(const QMap<QString, DraftCard> &draftCardMaps);
@@ -189,6 +190,9 @@ public:
     void setArenaSets(QStringList arenaSets);
     void closeFindScreenRects();
     CardClass getArenaHero();
+    void initTierLists(const CardClass &heroClass);
+    void clearTierLists();
+    void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

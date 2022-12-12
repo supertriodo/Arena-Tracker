@@ -32,6 +32,7 @@ public:
     void setTransparency(Transparency value);
     void setMouseInApp(bool value);
     QList<DeckCard> getDeckCardList();
+    CardClass getEnemyClass();
 
 private:
     void completeUI();

@@ -466,14 +466,15 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
  * lightForgeTiers no contiene ningun tier, solo la lista de codigos en arena
  * en un futuro podemos usarlo para una nueva tier list
  */
-void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass)
+void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
+                                       QMap<CardClass, QStringList> &codesByClass)
 {
     lightForgeTiers.clear();
 
     for(const QString &code: (const QStringList)getAllArenaCodes())
     {
         const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-        if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(arenaHero))
+        if(multiClassDraft || cardClassList.contains(NEUTRAL) || cardClassList.contains(heroClass))
         {
             if(code.startsWith("CORE_"))
             {
@@ -504,7 +505,7 @@ void DraftHandler::initLightForgeTiers(const bool multiClassDraft, QMap<CardClas
                 }
             }
             else if(cardClassList.contains(NEUTRAL))        codesByClass[NEUTRAL].append(code);
-            else/* if(cardClassList.contains(arenaHero))*/  codesByClass[arenaHero].append(code);
+            else/* if(cardClassList.contains(heroClass))*/  codesByClass[heroClass].append(code);
         }
     }
     emit pDebug("Arena Cards: " + QString::number(lightForgeTiers.count()));
@@ -534,7 +535,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
         QTimer::singleShot(DRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
         QMap<CardClass, QStringList> codesByClass;
-        initLightForgeTiers(multiclassArena, codesByClass);
+        initLightForgeTiers(arenaHero, multiclassArena, codesByClass);
         if(drafting)    needSaveCardHist = initCardHist(codesByClass);
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
         synergyHandler->initSynergyCodes();
@@ -919,8 +920,8 @@ void DraftHandler::endDraft()
     //Show Deck Score
     if(patreonVersion)
     {
-        int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
-        int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
+        int deckScoreHA = (numCards==0)?0:static_cast<int>(round(deckRatingHA/static_cast<double>(numCards)));
+        int deckScoreLF = (numCards==0)?0:static_cast<int>(round(deckRatingLF/static_cast<double>(numCards)));
         float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
         showMessageDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR);
 
@@ -971,8 +972,7 @@ void DraftHandler::endDraftShowMechanicsWindow()
             //Send Deck Score
             if(patreonVersion)
             {
-                int deckScoreHA = static_cast<int>(deckRatingHA/30);
-                //int deckScoreLF = static_cast<int>(deckRatingLF/30);
+                int deckScoreHA = static_cast<int>(round(deckRatingHA/30.0));
                 float deckScoreHSR = static_cast<float>(round(static_cast<double>(deckRatingHSR/30 * 10))/10.0);
                 QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
                 emit scoreAvg(deckScoreHA, deckScoreHSR, heroLog);
@@ -1613,8 +1613,8 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
     deckRatingHA += static_cast<int>(cardRatingHA);
     deckRatingLF += static_cast<int>(cardRatingLF);
     deckRatingHSR += cardRatingHSR;
-    int deckScoreHA = (numCards==0)?0:static_cast<int>(deckRatingHA/numCards);
-    int deckScoreLF = (numCards==0)?0:static_cast<int>(deckRatingLF/numCards);
+    int deckScoreHA = (numCards==0)?0:static_cast<int>(round(deckRatingHA/static_cast<double>(numCards)));
+    int deckScoreLF = (numCards==0)?0:static_cast<int>(round(deckRatingLF/static_cast<double>(numCards)));
     float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
     updateLabelDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR, numCards);
     scoreButtonLF->setScore(deckScoreLF, deckScoreLF);
@@ -2707,16 +2707,29 @@ void DraftHandler::buildHeroCodesList()
 }
 
 
-//Construir json de HearthArena (Ya no lo usamos)
-//1) Copiar line (var cards = ...)
-//EL RESTO LO HACE EL SCRIPT
-//2) Eliminar al principio ("\")
-//3) Eliminar al final (\"";)
-//4) Eliminar (\\\\\\\") Problemas con " en descripciones.
-//(Ancien Spirit - Chaman)
-//(Explorer's Hat - Hunter)
-//(Soul of the forest - Druid)
-//5) Eliminar todas las (\)
+//Funciones para calcular deck scores fuera de draft (enemy decks)
+void DraftHandler::initTierLists(const CardClass &heroClass)
+{
+    QMap<CardClass, QStringList> codesByClass;
+    initLightForgeTiers(heroClass, multiclassArena, codesByClass);
+    QString hero = Utility::classEnum2classLogNumber(heroClass);
+    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
+}
+
+
+void DraftHandler::clearTierLists()
+{
+    hearthArenaTiers.clear();
+    lightForgeTiers.clear();
+}
+
+
+void DraftHandler::getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr)
+{
+    ha = hearthArenaTiers[code];
+    hsr = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[heroClass][code];
+}
+
 
 //Heroes
 //01) Warrior

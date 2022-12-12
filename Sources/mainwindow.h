@@ -327,6 +327,7 @@ private slots:
     void openUserGuide();
     void spreadDraftMethod();
     void spreadDraftAvg(QString draftAvg);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
 };
 
 #endif // MAINWINDOW_H

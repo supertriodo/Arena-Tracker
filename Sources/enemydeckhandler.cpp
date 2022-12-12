@@ -57,6 +57,12 @@ void EnemyDeckHandler::setEnemyClass(QString hero)
 }
 
 
+CardClass EnemyDeckHandler::getEnemyClass()
+{
+    return enemyClass;
+}
+
+
 void EnemyDeckHandler::setFirstOutsiderId(int id)
 {
     this->firstOutsiderId = id;

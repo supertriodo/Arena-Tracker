@@ -422,11 +422,11 @@ void ArenaHandler::setCurrentStatsJson()
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR)
 {
     setCurrentStatsJson();
     hideArenaStatsTreeWidget();
-    showGameResult(gameResult, loadingScreen);
+    showGameResult(gameResult, loadingScreen, avgHA, avgHSR);
     if(loadingScreen == arena)
     {
         newArenaGameStat(gameResult);
@@ -658,7 +658,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 }
 
 
-QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreenState loadingScreen)
+QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR)
 {
     emit pDebug("Show GameResult.");
 
@@ -678,6 +678,11 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
     }
     setColumnIcon(item, 2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
     setColumnIcon(item, 3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
+    float avgScore = (this->draftMethodAvgScore==HearthArena?avgHA:avgHSR);
+    if(premium && avgScore != 0)
+    {
+        setColumnIcon(item, 4, ScoreButton::scoreIcon(scoreSourceFromDraftMethod(this->draftMethodAvgScore), avgScore));
+    }
 
     setRowColor(item, ThemeHandler::fgColor());
 
