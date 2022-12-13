@@ -695,6 +695,17 @@ void MainWindow::startProcessHSRCards(const QJsonObject &jsonObject)
         return map;
     });
     futureProcessHSRCardsPlayedWinrates.setFuture(future4);
+
+    HSRdataThreads = 4;
+    startProgressBar(HSRdataThreads, "Building HSR data...");
+}
+
+
+void MainWindow::showHSRdataProgressBar()
+{
+    HSRdataThreads--;
+    advanceProgressBar(HSRdataThreads);
+    if(HSRdataThreads == 0) showMessageProgressBar("HSR data ready");
 }
 
 
@@ -710,6 +721,7 @@ void MainWindow::initHSRCards()
             secretsHandler->sortSecretsByPickrate(cardsPickratesMap);
             popularCardsHandler->setCardsPickratesMap(cardsPickratesMap);
             processPopularCardsHandlerPickrates();
+            showHSRdataProgressBar();
         }
     );
 
@@ -719,6 +731,7 @@ void MainWindow::initHSRCards()
             pDebug("Extra: HSR cards (IncludedWinrate) --> Thread end.");
             this->cardsIncludedWinratesMap = futureProcessHSRCardsIncludedWinrates.result();
             draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
+            showHSRdataProgressBar();
         }
     );
 
@@ -728,6 +741,7 @@ void MainWindow::initHSRCards()
             pDebug("Extra: HSR cards (TimesPlayed) --> Thread end.");
             this->cardsIncludedDecksMap = futureProcessHSRCardsIncludedDecks.result();
             draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
+            showHSRdataProgressBar();
         }
     );
 
@@ -737,6 +751,7 @@ void MainWindow::initHSRCards()
             pDebug("Extra: HSR cards (PlayedWinrate) --> Thread end.");
             this->cardsPlayedWinratesMap = futureProcessHSRCardsPlayedWinrates.result();
             draftHandler->setCardsPlayedWinratesMap(cardsPlayedWinratesMap);
+            showHSRdataProgressBar();
         }
     );
 

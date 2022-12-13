@@ -110,6 +110,7 @@ private:
     QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsIncludedWinrates;
     QFutureWatcher<QMap<QString, int> *> futureProcessHSRCardsIncludedDecks;
     QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayedWinrates;
+    int HSRdataThreads;
 
 
 
@@ -221,6 +222,7 @@ private:
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html="");
     void initConfigAvgScore(QString draftAvg);
+    void showHSRdataProgressBar();
 
 protected:
     //Override events
