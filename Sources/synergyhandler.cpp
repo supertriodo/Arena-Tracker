@@ -1000,7 +1000,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSilenceOwnGen(code, mechanics, referencedTags))                    mechanicCounters[V_SILENCE]->increase(code);
     if(isTauntGiverGen(code))                                               mechanicCounters[V_TAUNT_GIVER]->increase(code);
     if(isTokenGen(code, mechanics, text))                                   mechanicCounters[V_TOKEN]->increase(code);
-    if(isTokenCardGen(code, cost, mechanics, referencedTags , text))        mechanicCounters[V_TOKEN_CARD]->increase(code);
+    if(isTokenCardGen(code, cost, mechanics, referencedTags, text))         mechanicCounters[V_TOKEN_CARD]->increase(code);
     if(isWindfuryMinion(code, mechanics, cardType))                         mechanicCounters[V_WINDFURY_MINION]->increase(code);
     if(isAttackBuffGen(code, text))                                         mechanicCounters[V_ATTACK_BUFF]->increase(code);
     if(isAttackNerfGen(code, text))                                         mechanicCounters[V_ATTACK_NERF]->increase(code);
@@ -1026,7 +1026,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isEndTurnGen(code, text))                                            mechanicCounters[V_END_TURN]->increase(code);
     if(isRushGiverGen(code, text))                                          mechanicCounters[V_RUSH_GIVER]->increase(code);
     if(isDredge(code, mechanics))                                           mechanicCounters[V_DREDGE]->increase(code);
-    if(isCorpseGen(code))                                                   mechanicCounters[V_CORPSE]->increase(code);
+    if(isCorpseGen(code, mechanics, text))                                  mechanicCounters[V_CORPSE]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1588,7 +1588,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isEndTurnGen(code, text))                                mechanicCounters[V_END_TURN]->insertSynCards(synergyTagMap);
     if(isRushGiverGen(code, text))                              mechanicCounters[V_RUSH_GIVER]->insertSynCards(synergyTagMap);
     if(isDredge(code, mechanics))                               mechanicCounters[V_DREDGE]->insertSynCards(synergyTagMap);
-    if(isCorpseGen(code))                                       mechanicCounters[V_CORPSE]->insertSynCards(synergyTagMap);
+    if(isCorpseGen(code, mechanics, text))                      mechanicCounters[V_CORPSE]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1901,10 +1901,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("RETURN_OF_THE_LICH_KING", true, true))
+//    for(const QString &code: (const QStringList)Utility::getSetCodes("RETURN_OF_THE_LICH_KING", true, true))
 //    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
-//    for(const QString &code: (const QStringList)Utility::getWildCodes())
+    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -1925,6 +1925,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    && attack<4 && health<4
 //                    && (attack + health)<7
 //                    && !isTokenGen(code, mechanics, text)
+//                    isCorpseGen(code, mechanics, text) && text.contains("risen")
+//                    isCorpseSyn(code, text)
 //                    && !isDrop2(code, cost, attack, health)
 //                    && !isDrop3(code, cost, attack, health)
 //                    && !isDrop4(code, cost, attack, health)
@@ -2187,6 +2189,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isEndTurnGen(code, text))                                            mec<<"endTurnGen";
     if(isRushGiverGen(code, text))                                          mec<<"rushGiverGen";
     if(isDredge(code, mechanics))                                           mec<<"dredge";
+    if(isCorpseGen(code, mechanics, text))                                  mec<<"corpseGen";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -3340,11 +3343,15 @@ bool SynergyHandler::isDredge(const QString &code, const QJsonArray &mechanics)
     }
     return false;
 }
-bool SynergyHandler::isCorpseGen(const QString &code)
+bool SynergyHandler::isCorpseGen(const QString &code, const QJsonArray &mechanics, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("corpseGen");
+    }
+    else if(isTokenGen(code, mechanics, text) && !text.contains("risen"))
+    {
+        return true;
     }
     return false;
 }
@@ -4061,10 +4068,6 @@ bool SynergyHandler::isTokenSyn(const QString &code, const QJsonArray &mechanics
     {
         return true;
     }
-    else if(text.contains("corpse"))
-    {
-        return true;
-    }
     return false;
 }
 bool SynergyHandler::isTokenCardSyn(const QString &code, const QString &text)
@@ -4732,6 +4735,8 @@ REGLAS
 +RushGiverSyn/EnrageGen/Frenzy: Solo son rushGiverSyn, los enrage minions de 5+ mana con un enrage significativo. Taunt 2/6 enrage +3 atk no lo es.
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
++CorpseGen para todo tokenGen que no genere risen minions (no dejan corpse)
++CorpseSyn solo si gasta 2+ corpses.
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats (3/3 es 3 mana, 3/4 es 3.5 mana)
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)

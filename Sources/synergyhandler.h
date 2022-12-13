@@ -187,7 +187,7 @@ private:
     bool isEndTurnGen(const QString &code, const QString &text);
     bool isRushGiverGen(const QString &code, const QString &text);
     bool isDredge(const QString &code, const QJsonArray &mechanics);
-    bool isCorpseGen(const QString &code);
+    bool isCorpseGen(const QString &code, const QJsonArray &mechanics, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
