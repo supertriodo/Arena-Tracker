@@ -97,6 +97,11 @@ private:
     bool multiclassArena;
     bool needSaveCardHist;
     QStringList arenaSets;
+    //Usado en busqueda manual (name -> code)
+    QMap<QString, QString> cardsNameMap;
+    int editComboBoxNum;//Numero de combo box que estamos editando
+    QFutureWatcher<QString> futureFindCodeFromText;
+    QString lastThreadText;
 
 
 //Metodos
@@ -160,6 +165,13 @@ private:
     void loadCardHist(QString classUName);
     void saveCardHist(const bool multiClassDraft);
     CardClass findMulticlassPower(QList<DeckCard> &deckCardList);
+    void initCardsNameMap(QMap<CardClass, QStringList> &codesByClass);
+    void reduceCardsNameMapMulticlass();
+    void showLineEditCardName(const QString &name);
+    void hideLineEditCardName();
+    QString findCodeFromText(QString text);
+    void startFindCodeFromText(const QString &text);
+    void showComboBoxesCards(DraftCard bestCards[]);
 
 public:
     void buildHeroCodesList();
@@ -235,12 +247,16 @@ private slots:
     void captureDraft();
     void finishFindScreenRects();
     void startFindScreenRects();
-    void comboBoxChanged();
+    void comboBoxActivated();
     void refreshCapturedCards();
     void twitchHandlerConnectionOk(bool ok);
     void twitchHandlerVoteUpdate(int vote1, int vote2, int vote3, QString username);
     void showHSRwebPicks();
     void newFindScreenLoop(bool skipScreenSettings=false);
+    void comboBoxHighLight(int index);
+    void editCardName(const QString &text);
+    void editCardNameFinish();
+    void finishFindCodeFromText();
 };
 
 #endif // DRAFTHANDLER_H

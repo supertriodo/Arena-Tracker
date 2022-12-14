@@ -239,6 +239,12 @@ QString Utility::cardEnNameFromCode(const QString &code)
 }
 
 
+QString Utility::cardLocalNameFromCode(const QString &code)
+{
+    return (*cardsJson)[code].value("name").toObject().value(localLang).toString();
+}
+
+
 QString Utility::cardEnTextFromCode(const QString &code)
 {
     QString text = (*cardsJson)[code].value("text").toObject().value("enUS").toString();

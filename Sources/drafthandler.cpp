@@ -141,8 +141,15 @@ void DraftHandler::completeUI()
         comboBoxCard[i]->setFocusPolicy(Qt::NoFocus);
     }
 
+    ui->lineEditCardName->hide();
+
     connect(ui->refreshDraftButton, SIGNAL(clicked(bool)),
                 this, SLOT(refreshCapturedCards()));
+    connect(ui->lineEditCardName, SIGNAL(textEdited(QString)),
+                this, SLOT(editCardName(QString)));
+    connect(ui->lineEditCardName, SIGNAL(editingFinished()),
+                this, SLOT(editCardNameFinish()));
+    connect(&futureFindCodeFromText, SIGNAL(finished()), this, SLOT(finishFindCodeFromText()));
 
     setPremium(false);
 }
@@ -176,8 +183,10 @@ void DraftHandler::connectAllComboBox()
 {
     for(int i=0; i<3; i++)
     {
-        connect(comboBoxCard[i], SIGNAL(currentIndexChanged(int)),
-                this, SLOT(comboBoxChanged()));
+        connect(comboBoxCard[i], SIGNAL(activated(int)),
+                this, SLOT(comboBoxActivated()));
+        connect(comboBoxCard[i], SIGNAL(highlighted(int)),
+                this, SLOT(comboBoxHighLight(int)));
         comboBoxCard[i]->setEnabled(true);
     }
     ui->refreshDraftButton->setEnabled(true);
@@ -186,12 +195,14 @@ void DraftHandler::connectAllComboBox()
 
 void DraftHandler::clearAndDisconnectAllComboBox()
 {
+    editComboBoxNum = -1;
     for(int i=0; i<3; i++)
     {
         comboBoxCard[i]->setEnabled(false);
         clearAndDisconnectComboBox(i);
     }
     ui->refreshDraftButton->setEnabled(false);
+    hideLineEditCardName();
 }
 
 
@@ -462,6 +473,41 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
 }
 
 
+void DraftHandler::initCardsNameMap(QMap<CardClass, QStringList> &codesByClass)
+{
+    const QList<CardClass> cardClassList = codesByClass.keys();
+    for(const CardClass &cardClass: cardClassList)
+    {
+        for(const QString &code: (const QStringList)codesByClass[cardClass])
+        {
+            QString name = Utility::cardLocalNameFromCode(code);
+            name = Utility::removeAccents(name).toLower().simplified().replace(" ", "");
+            cardsNameMap[name] = code;
+        }
+    }
+
+    reduceCardsNameMapMulticlass();
+    emit pDebug("cardNamesMap created with " + QString::number(cardsNameMap.count()) + " names.");
+}
+
+
+void DraftHandler::reduceCardsNameMapMulticlass()
+{
+    if(!multiclassArena || this->arenaHeroMulticlassPower == INVALID_CLASS) return;
+
+    const QList<QString> nameList = cardsNameMap.keys();
+    for(const QString &name: nameList)
+    {
+        QList<CardClass> cardClass = Utility::getClassFromCode(cardsNameMap[name]);
+        if(!(cardClass.contains(NEUTRAL) || cardClass.contains(arenaHero) ||
+             cardClass.contains(arenaHeroMulticlassPower)))
+        {
+            cardsNameMap.remove(name);
+        }
+    }
+}
+
+
 /*
  * lightForgeTiers no contiene ningun tier, solo la lista de codigos en arena
  * en un futuro podemos usarlo para una nueva tier list
@@ -522,6 +568,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 {
     cardsDownloading.clear();
     cardsHist.clear();
+    cardsNameMap.clear();
     needSaveCardHist = false;
 
     if(heroDrafting)
@@ -536,7 +583,11 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 
         QMap<CardClass, QStringList> codesByClass;
         initLightForgeTiers(arenaHero, multiclassArena, codesByClass);
-        if(drafting)    needSaveCardHist = initCardHist(codesByClass);
+        if(drafting)
+        {
+            needSaveCardHist = initCardHist(codesByClass);
+            initCardsNameMap(codesByClass);
+        }
         initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
         synergyHandler->initSynergyCodes();
     }
@@ -629,6 +680,7 @@ void DraftHandler::clearLists(bool keepCounters)
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
     cardsHist.clear();
+    cardsNameMap.clear();
     needSaveCardHist = false;
 
     if(!keepCounters)//endDraft
@@ -1343,6 +1395,7 @@ void DraftHandler::pickCard(QString code)
         if(cardClass < NUM_HEROS && cardClass != this->arenaHero)
         {
             this->arenaHeroMulticlassPower = cardClass;
+            reduceCardsNameMapMulticlass();
             emit pDebug("Found MultiClassPower: " + Utility::classEnum2classUName(arenaHeroMulticlassPower));
         }
         return;
@@ -1365,6 +1418,7 @@ void DraftHandler::pickCard(QString code)
             if(cardClass < NUM_HEROS && cardClass != this->arenaHero)
             {
                 this->arenaHeroMulticlassPower = cardClass;
+                reduceCardsNameMapMulticlass();
                 emit pDebug("Found MultiClassPower: " + Utility::classEnum2classUName(arenaHeroMulticlassPower));
             }
         }
@@ -1582,26 +1636,6 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
             }
         }
     }
-}
-
-
-void DraftHandler::comboBoxChanged()
-{
-    DraftCard bestCards[3];
-
-    for(int i=0; i<3; i++)
-    {
-        int comboBoxIndex = comboBoxCard[i]->currentIndex();
-        QList<QString> bestCodes = bestMatchesMaps[i].values();
-        int count = bestCodes.count();
-        if(comboBoxIndex >= count || comboBoxIndex < 0) return;
-        QString code = bestCodes[comboBoxIndex];
-        bestCards[i] = draftCardMaps[i][code];
-    }
-
-    if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
-    this->resetTwitchScores = false;
-    showNewCards(bestCards);
 }
 
 
@@ -2728,6 +2762,141 @@ void DraftHandler::getCodeScores(const CardClass &heroClass, const QString &code
 {
     ha = hearthArenaTiers[code];
     hsr = (cardsIncludedWinratesMap == nullptr) ? 0 : cardsIncludedWinratesMap[heroClass][code];
+}
+
+
+//Funciones para busqueda manual de cartas
+void DraftHandler::editCardName(const QString &text)
+{
+    comboBoxCard[editComboBoxNum]->setEnabled(false);
+    startFindCodeFromText(text);
+}
+
+
+void DraftHandler::editCardNameFinish()
+{
+    if(editComboBoxNum == -1 || comboBoxCard[editComboBoxNum]->isEnabled())
+    {
+        return;
+    }
+
+    DraftCard bestCards[3];
+    showComboBoxesCards(bestCards);
+    comboBoxCard[editComboBoxNum]->setEnabled(true);
+    hideLineEditCardName();
+}
+
+
+void DraftHandler::startFindCodeFromText(const QString &text)
+{
+    if(!futureFindCodeFromText.isRunning())
+    {
+        lastThreadText = text;
+        futureFindCodeFromText.setFuture(QtConcurrent::run(this, &DraftHandler::findCodeFromText, text));
+    }
+}
+void DraftHandler::finishFindCodeFromText()
+{
+    QString code = futureFindCodeFromText.result();
+    if(!code.isEmpty())
+    {
+        bestMatchesMaps[editComboBoxNum].clear();
+        bestMatchesMaps[editComboBoxNum][0] = code;
+        draftCardMaps[editComboBoxNum].clear();
+        draftCardMaps[editComboBoxNum][code] = DraftCard(code);
+        comboBoxCard[editComboBoxNum]->clear();
+        draftCardMaps[editComboBoxNum][code].draw(comboBoxCard[editComboBoxNum]);
+    }
+
+    QString text = ui->lineEditCardName->text();
+    if(!text.isEmpty() && text!=lastThreadText) startFindCodeFromText(text);
+}
+QString DraftHandler::findCodeFromText(QString text)
+{
+    QStringList patterns = Utility::removeAccents(text).toLower().simplified().split(" ");
+    QStringList names = cardsNameMap.keys();
+
+    for(const QString &name: qAsConst(names))
+    {
+        bool found=true;
+        for(const QString &pat: qAsConst(patterns))
+        {
+            if(!name.contains(pat))
+            {
+                found = false;
+                break;
+            }
+        }
+        if(found)   return cardsNameMap[name];
+    }
+    return "";
+}
+
+
+void DraftHandler::showLineEditCardName(const QString &name)
+{
+    ui->lineEditCardName->setText(name);
+    ui->labelDeckScore->hide();
+    ui->lineEditCardName->show();
+    ui->lineEditCardName->setFocus();
+    ui->lineEditCardName->selectAll();
+}
+
+
+void DraftHandler::hideLineEditCardName()
+{
+    ui->lineEditCardName->hide();
+    ui->lineEditCardName->clear();
+    ui->labelDeckScore->show();
+}
+
+
+void DraftHandler::comboBoxHighLight(int index)
+{
+    editCardNameFinish();
+
+    QComboBox* comboBoxCard = (QComboBox*)sender();
+    editComboBoxNum = -1;
+    for(int i=0; i<3; i++)
+        if(comboBoxCard == this->comboBoxCard[i])   editComboBoxNum=i;
+
+    QList<QString> bestCodes = bestMatchesMaps[editComboBoxNum].values();
+    int count = bestCodes.count();
+    if(index >= count || index < 0) return;
+    QString code = bestCodes[index];
+    showLineEditCardName(draftCardMaps[editComboBoxNum][code].getName());
+}
+
+
+void DraftHandler::showComboBoxesCards(DraftCard bestCards[3])
+{
+    for(int i=0; i<3; i++)
+    {
+        int comboBoxIndex = comboBoxCard[i]->currentIndex();
+        QList<QString> bestCodes = bestMatchesMaps[i].values();
+        int count = bestCodes.count();
+        if(comboBoxIndex >= count || comboBoxIndex < 0) return;
+        QString code = bestCodes[comboBoxIndex];
+        bestCards[i] = draftCardMaps[i][code];
+    }
+
+    if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
+    this->resetTwitchScores = false;
+    showNewCards(bestCards);
+}
+
+
+void DraftHandler::comboBoxActivated()
+{
+    DraftCard bestCards[3];
+    showComboBoxesCards(bestCards);
+
+    QComboBox* comboBoxCard = (QComboBox*)sender();
+    editComboBoxNum = -1;
+    for(int i=0; i<3; i++)
+        if(comboBoxCard == this->comboBoxCard[i])   editComboBoxNum=i;
+
+    showLineEditCardName(bestCards[editComboBoxNum].getName());
 }
 
 

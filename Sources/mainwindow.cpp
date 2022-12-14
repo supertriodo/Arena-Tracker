@@ -4553,7 +4553,7 @@ void MainWindow::testDelay()
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
-//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(SHAMAN), deckHandler->getDeckCardList());});
+//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEMONHUNTER), deckHandler->getDeckCardList());});
 
 //    testArenaGames();
 //    testPlan();
@@ -4657,7 +4657,6 @@ void MainWindow::testDelay()
 //Warning allocating an unneeded temporary container [clazy-container-anti-pattern]
 //const QList<QString> codeList = map->keys();
 //for(const QString &code: codeList)
-//for(const auto &elem: map)
 
 //Sin const
 //QList<SecretIcon> secretIconList = copy->secretsList;
