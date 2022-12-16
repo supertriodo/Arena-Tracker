@@ -4567,7 +4567,7 @@ void MainWindow::testDelay()
 //    Utility::resizeGoldenCards();
 
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
-    draftHandler->beginHeroDraft();
+//    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEMONHUNTER), deckHandler->getDeckCardList());});
 
