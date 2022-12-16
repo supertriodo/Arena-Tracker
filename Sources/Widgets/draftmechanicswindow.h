@@ -17,7 +17,7 @@ class DraftMechanicsWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion);
+    DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, bool patreonVersion, int classOrder);
     ~DraftMechanicsWindow();
 
 

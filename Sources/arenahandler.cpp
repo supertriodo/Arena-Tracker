@@ -529,9 +529,10 @@ void ArenaHandler::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
 
 ScoreSource ArenaHandler::scoreSourceFromDraftMethod(DraftMethod draftMethod)
 {
-    if(draftMethod == HSReplay)          return Score_HSReplay;
-    else if(draftMethod == HearthArena)  return Score_HearthArena;
-    else if(draftMethod == LightForge)   return Score_LightForge;
+    if(draftMethod == HearthArena)      return Score_HearthArena;
+    //Usamos Heroes para que el rango de colores del icono sea mas amplio en lugar de ir de 50 a 60
+    //Evitamos mostrar los avg wr todos verdes or rojos
+    else if(draftMethod == HSReplay)    return Score_Heroes;
     return Score_None;
 }
 

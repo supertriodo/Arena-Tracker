@@ -71,21 +71,21 @@ void DraftHandler::createScoreItems()
     lavaButton->setToolTip("Deck weight");
     lavaButton->hide();
 
-    scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge);
+    scoreButtonLF = new ScoreButton(ui->tabDraft, Score_LightForge, -1);
     scoreButtonLF->setFixedHeight(width);
     scoreButtonLF->setFixedWidth(width);
     scoreButtonLF->setScore(0, 0);
     scoreButtonLF->setToolTip("LightForge deck average");
     scoreButtonLF->hide();
 
-    scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena);
+    scoreButtonHA = new ScoreButton(ui->tabDraft, Score_HearthArena, -1);
     scoreButtonHA->setFixedHeight(width);
     scoreButtonHA->setFixedWidth(width);
     scoreButtonHA->setScore(0, 0);
     scoreButtonHA->setToolTip("HearthArena deck average");
     scoreButtonHA->hide();
 
-    scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay);
+    scoreButtonHSR = new ScoreButton(ui->tabDraft, Score_HSReplay, -1);
     scoreButtonHSR->setFixedHeight(width);
     scoreButtonHSR->setFixedWidth(width);
     scoreButtonHSR->setScore(0, 0);
@@ -801,6 +801,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     else                this->arenaHeroMulticlassPower = INVALID_CLASS;
     this->drafting = true;
     this->justPickedCard = "";
+    scoreButtonHSR->setClassOrder(arenaHero);
 
     initCodesAndHistMaps(hero, skipScreenSettings);
     resetTab(alreadyDrafting);
@@ -2317,7 +2318,8 @@ void DraftHandler::createDraftWindows()
     if(drafting)
     {
         emit pDebug("Create drafting windows.");
-        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
+        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
+                                                arenaHero);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -2330,10 +2332,13 @@ void DraftHandler::createDraftWindows()
 
         draftScoreWindow->setLearningMode(this->learningMode);
         draftScoreWindow->setDraftMethod(this->draftMethodHA, this->draftMethodLF, this->draftMethodHSR);
-        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftScoreWindow->showTwitchScores();
+        if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())
+        {
+            draftScoreWindow->showTwitchScores();
+        }
 
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                        patreonVersion);
+                                                        patreonVersion, arenaHero);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();
@@ -2348,7 +2353,7 @@ void DraftHandler::createDraftWindows()
     else if(heroDrafting)
     {
         emit pDebug("Create heroDrafting windows.");
-        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
+        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, arenaHero);
 
         connect(draftHeroWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
@@ -2359,7 +2364,7 @@ void DraftHandler::createDraftWindows()
     {
         emit pDebug("Create mechanic window.");
         draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                        patreonVersion);
+                                                        patreonVersion, arenaHero);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
         initDraftMechanicsWindowCounters();

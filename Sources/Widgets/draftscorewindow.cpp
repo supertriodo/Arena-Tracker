@@ -3,7 +3,7 @@
 #include <QtWidgets>
 
 
-DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
+DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, int classOrder) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
 #ifdef QT_DEBUG
@@ -38,21 +38,21 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
     for(int i=0; i<3; i++)
     {
         //Scores
-        scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge);
+        scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, -1);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         scoresPushButton[i]->hide();
         connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
-        scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena);
+        scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena, -1);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
         scoresPushButton2[i]->hide();
         connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
                 this, SLOT(spreadLearningShow(bool)));
 
-        scoresPushButton3[i] = new ScoreButton(centralWidget, Score_HSReplay);
+        scoresPushButton3[i] = new ScoreButton(centralWidget, Score_HSReplay, classOrder);
         scoresPushButton3[i]->setFixedHeight(scoreWidth);
         scoresPushButton3[i]->setFixedWidth(scoreWidth);
         scoresPushButton3[i]->hide();

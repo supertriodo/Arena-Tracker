@@ -4,7 +4,7 @@
 
 
 DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex,
-                                           bool patreonVersion) :
+                                           bool patreonVersion, int classOrder) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
 #ifdef QT_DEBUG
@@ -84,19 +84,19 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     lavaButton->setFixedWidth(scoreWidth);
     lavaButton->setToolTip("Deck weight");
 
-    scoreButtonLF = new ScoreButton(centralWidget, Score_LightForge);
+    scoreButtonLF = new ScoreButton(centralWidget, Score_LightForge, -1);
     scoreButtonLF->setFixedHeight(scoreWidth);
     scoreButtonLF->setFixedWidth(scoreWidth);
     scoreButtonLF->setScore(0, 0);
     scoreButtonLF->setToolTip("LightForge deck average");
 
-    scoreButtonHA = new ScoreButton(centralWidget, Score_HearthArena);
+    scoreButtonHA = new ScoreButton(centralWidget, Score_HearthArena, -1);
     scoreButtonHA->setFixedHeight(scoreWidth);
     scoreButtonHA->setFixedWidth(scoreWidth);
     scoreButtonHA->setScore(0, 0);
     scoreButtonHA->setToolTip("HearthArena deck average");
 
-    scoreButtonHSR = new ScoreButton(centralWidget, Score_HSReplay);
+    scoreButtonHSR = new ScoreButton(centralWidget, Score_HSReplay, classOrder);
     scoreButtonHSR->setFixedHeight(scoreWidth);
     scoreButtonHSR->setFixedWidth(scoreWidth);
     scoreButtonHSR->setScore(0, 0);

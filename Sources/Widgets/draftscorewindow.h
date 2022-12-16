@@ -28,7 +28,7 @@ class DraftScoreWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex);
+    DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, int classOrder);
     ~DraftScoreWindow();
 
 //Variables

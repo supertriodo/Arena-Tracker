@@ -4,8 +4,9 @@
 
 float ScoreButton::heroScores[NUM_HEROS] = {0};
 int ScoreButton::playerRuns[NUM_HEROS] = {0}, ScoreButton::playerWins[NUM_HEROS] = {0}, ScoreButton::playerLost[NUM_HEROS] = {0};
+float ScoreButton::minHeroScore, ScoreButton::maxHeroScore;
 
-ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource) : QLabel(parent)
+ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, int classOrder) : QLabel(parent)
 {
     this->learningMode = false;
     this->learningShow = false;
@@ -13,7 +14,7 @@ ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource) : QLabel(pare
     this->scoreSource = scoreSource;
     this->score = 0;
     this->includedDecks = -1;
-    this->classOrder = -1;
+    setClassOrder(classOrder);
 }
 
 
@@ -56,7 +57,14 @@ void ScoreButton::enterEvent(QEvent * e)
 
 void ScoreButton::setHeroScores(float heroScores[NUM_HEROS])
 {
-    for(int i=0; i<NUM_HEROS; i++)  ScoreButton::heroScores[i] = heroScores[i];
+    minHeroScore = 100;
+    maxHeroScore = 0;
+    for(int i=0; i<NUM_HEROS; i++)
+    {
+        ScoreButton::heroScores[i] = heroScores[i];
+        minHeroScore = std::min(heroScores[i], minHeroScore);
+        maxHeroScore = std::max(heroScores[i], maxHeroScore);
+    }
 }
 void ScoreButton::setPlayerRuns(int playerRuns[NUM_HEROS])
 {
@@ -97,6 +105,13 @@ float ScoreButton::getPlayerWinrate(int classOrder)
 }
 
 
+void ScoreButton::setClassOrder(int classOrder)
+{
+    if(classOrder>=0 && classOrder<NUM_HEROS)   this->classOrder = classOrder;
+    else                                        this->classOrder = -1;
+}
+
+
 void ScoreButton::setLearningShow(bool value)
 {
     learningShow = value;
@@ -114,20 +129,37 @@ void ScoreButton::setLearningMode(bool value)
 void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 {
     int rating255 = 0;
-    if(scoreSource == Score_HearthArena)        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);//0<-->100
-    else if(scoreSource == Score_HSReplay)      rating255 = std::max(std::min(static_cast<int>((score-50)/10*255), 255), 0);//50<-->60
-    else if(scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player)
-    {
-        rating255 = std::max(std::min(static_cast<int>((score-45)/10*255), 255), 0);//45<-->55
+    if(scoreSource == Score_HearthArena)
+    {//0<-->100
+        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
     }
-    else                                        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
+    else if(scoreSource == Score_HSReplay)
+    {
+        if(classOrder == -1)
+        {//50<-->60
+            rating255 = std::max(std::min(static_cast<int>((score-50)/10*255), 255), 0);
+        }
+        else
+        {//heroWR*9+50/10<-->+10
+            rating255 = std::max(std::min(static_cast<int>((score-((getHeroScore(classOrder)*9+50)/10))/10*255), 255), 0);
+        }
+    }
+    else if(scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player)
+    {//minHeroScore<-->maxHeroScore
+        rating255 = std::max(std::min(static_cast<int>((score-minHeroScore)/(maxHeroScore-minHeroScore)*255), 255), 0);
+    }
+    else
+    {//0<-->100
+        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
+    }
+
     r = std::min(255, (255 - rating255)*2);
     g = std::min(255, rating255*2);
     b = 0;
 }
 
 
-void ScoreButton::setScore(float score, float bestScore, int includedDecks, int classOrder)
+void ScoreButton::setScore(float score, float bestScore, int includedDecks)
 {
     this->score = score;
 
@@ -140,7 +172,6 @@ void ScoreButton::setScore(float score, float bestScore, int includedDecks, int 
     if(bestScoreOpacity>0)              bestScoreOpacity = 0.5 + (bestScoreOpacity/2.0);
 
     this->includedDecks = includedDecks;
-    this->classOrder = classOrder;
     if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " played");
     else    this->setToolTip("");
     draw();
@@ -331,7 +362,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
 
 QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
 {
-    ScoreButton scoreButton(nullptr, scoreSource);
+    ScoreButton scoreButton(nullptr, scoreSource, -1);
     scoreButton.setFixedSize(size, size);
     scoreButton.score = score;
 

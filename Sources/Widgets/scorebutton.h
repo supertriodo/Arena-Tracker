@@ -13,7 +13,7 @@ class ScoreButton : public QLabel
 
 //Constructor
 public:
-    ScoreButton(QWidget * parent, ScoreSource scoreSource);
+    ScoreButton(QWidget * parent, ScoreSource scoreSource, int classOrder);
 
 //Variables
 private:
@@ -25,6 +25,7 @@ private:
 
     static float heroScores[NUM_HEROS];
     static int playerRuns[NUM_HEROS], playerWins[NUM_HEROS], playerLost[NUM_HEROS];
+    static float minHeroScore, maxHeroScore;
 
 //Metodos
 private:
@@ -38,7 +39,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    void setScore(float score, float bestScore, int includedDecks=-1, int classOrder=-1);
+    void setScore(float score, float bestScore, int includedDecks=-1);
+    void setClassOrder(int classOrder);
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void draw();
