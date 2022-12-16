@@ -16,7 +16,7 @@ class DraftHeroWindow : public QMainWindow
 
 //Constructor
 public:
-    DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, int classOrder);
+    DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex);
     ~DraftHeroWindow();
 
 //Variables

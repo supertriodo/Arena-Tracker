@@ -82,6 +82,7 @@ void ScoreButton::setPlayerLost(int playerLost[NUM_HEROS])
 
 void ScoreButton::addRun(int classOrder, int wins, int lost)
 {
+    if(classOrder == -1)    return;
     ScoreButton::playerWins[classOrder] += wins;
     ScoreButton::playerLost[classOrder] += lost;
     ScoreButton::playerRuns[classOrder]++;
@@ -90,14 +91,17 @@ void ScoreButton::addRun(int classOrder, int wins, int lost)
 
 float ScoreButton::getHeroScore(int classOrder)
 {
+    if(classOrder == -1)    return 0;
     return ScoreButton::heroScores[classOrder];
 }
 float ScoreButton::getPlayerRun(int classOrder)
 {
+    if(classOrder == -1)    return 0;
     return ScoreButton::playerRuns[classOrder];
 }
 float ScoreButton::getPlayerWinrate(int classOrder)
 {
+    if(classOrder == -1)    return 0;
     int wins = ScoreButton::playerWins[classOrder];
     int lost = ScoreButton::playerLost[classOrder];
     if((wins+lost) > 0) return (wins*100/static_cast<float>(wins+lost));
@@ -320,9 +324,10 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     #endif
             painter.drawPath(path);
 
-            if(scoreSource == Score_Heroes_Player)
+            //Runs
+            if(scoreSource == Score_Heroes_Player && classOrder != -1)
             {
-                QString text = QString::number(playerRuns[classOrder]);
+                QString text = QString::number(getPlayerRun(classOrder));
                 int textWide = fm.width(text);
                 QPainterPath path;
         #ifdef Q_OS_WIN
@@ -349,7 +354,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         }
 
         //Class icon
-        if((scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player) && classOrder >= 0)
+        if((scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player) && classOrder != -1)
         {
             int iconWidth = width()*0.30;
 

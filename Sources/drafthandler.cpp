@@ -2353,7 +2353,7 @@ void DraftHandler::createDraftWindows()
     else if(heroDrafting)
     {
         emit pDebug("Create heroDrafting windows.");
-        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex, arenaHero);
+        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
 
         connect(draftHeroWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));

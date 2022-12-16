@@ -2,7 +2,7 @@
 #include <QtWidgets>
 
 
-DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex, int classOrder) :
+DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, int screenIndex) :
     QMainWindow(parent, Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint)
 {
     scoreWidth = static_cast<int>(sizeCard.width()*0.65);
@@ -27,11 +27,11 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
 
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i] = new ScoreButton(centralWidget, Score_Heroes, classOrder);
+        scoresPushButton[i] = new ScoreButton(centralWidget, Score_Heroes, -1);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
 
-        scoresPlayerPushButton[i] = new ScoreButton(centralWidget, Score_Heroes_Player, classOrder);
+        scoresPlayerPushButton[i] = new ScoreButton(centralWidget, Score_Heroes_Player, -1);
         scoresPlayerPushButton[i]->setFixedHeight(scoreWidth);
         scoresPlayerPushButton[i]->setFixedWidth(scoreWidth);
 
@@ -151,9 +151,11 @@ void DraftHeroWindow::setScores(int classOrder[3])
 
     for(int i=0; i<3; i++)
     {
+        scoresPushButton[i]->setClassOrder(classOrder[i]);
         scoresPushButton[i]->setScore(ratings[i], bestRating);
         Utility::fadeInWidget(scoresPushButton[i]);
 
+        scoresPlayerPushButton[i]->setClassOrder(classOrder[i]);
         scoresPlayerPushButton[i]->setScore(ratingsPlayer[i], bestRatingPlayer);
         Utility::fadeInWidget(scoresPlayerPushButton[i]);
     }
