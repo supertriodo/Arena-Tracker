@@ -574,7 +574,7 @@ void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
 {
     if(draftHandler == nullptr)    return;
 
-    QMap<QString, float> heroWinratesMap;
+    float heroScores[NUM_HEROS];
     QJsonObject data = jsonObject.value("series").toObject().value("data").toObject();
 
     for(const QString &key: (const QStringList)data.keys())
@@ -584,12 +584,16 @@ void MainWindow::processHSRHeroesWinrate(const QJsonObject &jsonObject)
             QJsonObject gameWinrateObject = gameWinrate.toObject();
             if(gameWinrateObject.value("game_type").toInt() == 3)
             {
-                heroWinratesMap[key] = static_cast<float>(round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0);
+                int classOrder = Utility::className2classOrder(key);
+                if(classOrder!=-1)
+                {
+                    heroScores[classOrder] = round(gameWinrateObject.value("win_rate").toDouble() * 10)/10.0;
+                }
             }
         }
     }
 
-    draftHandler->setHeroWinratesMap(heroWinratesMap);
+    ScoreButton::setHeroScores(heroScores);
 }
 
 
@@ -861,10 +865,21 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         const QJsonArray jsonArray = jsonObject.value("arenaSets").toArray();
         for(const QJsonValue &jsonValue: jsonArray) arenaSets.append(jsonValue.toString());
 
-        settings.setValue("arenaSets", arenaSets);
-        if(secretsHandler != nullptr)   secretsHandler->setArenaSets(arenaSets);
-        if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
-        pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
+        if(settings.value("arenaSets", QStringList()).toStringList() != arenaSets)
+        {
+            settings.setValue("arenaSets", arenaSets);
+            if(secretsHandler != nullptr)   secretsHandler->setArenaSets(arenaSets);
+            if(draftHandler != nullptr)     draftHandler->setArenaSets(arenaSets);
+            pDebug("CheckArenaVersion: New arena sets: " + arenaSets.join(" "));
+
+            //New rotation date
+            settings.setValue("rotationDate", QDate::currentDate());
+        }
+        else
+        {
+            pDebug("CheckArenaVersion: Unchanged arena sets: " +
+                        settings.value("arenaSets", QStringList()).toStringList().join(" "));
+        }
 
         //Remove histograms
         removeHistograms();
@@ -885,6 +900,7 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
 
     arenaSetsLoaded = true;
     checkArenaCards();
+    if(arenaHandler != nullptr) arenaHandler->processPlayerWinrates();
 }
 
 
@@ -4551,7 +4567,7 @@ void MainWindow::testDelay()
 //    Utility::resizeGoldenCards();
 
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
-//    draftHandler->beginHeroDraft();
+    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
 //        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEMONHUNTER), deckHandler->getDeckCardList());});
 

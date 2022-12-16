@@ -170,5 +170,6 @@
         <file>Images/bgCard2Deathknight.png</file>
         <file>Images/hero11.png</file>
         <file>Images/bgCorpses.png</file>
+        <file>Images/youText.png</file>
     </qresource>
 </RCC>

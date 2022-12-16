@@ -45,6 +45,7 @@ QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
 QString ThemeHandler::haBestFile_, ThemeHandler::haCloseFile_, ThemeHandler::haOpenFile_, ThemeHandler::haTextFile_;
 QString ThemeHandler::lfBestFile_, ThemeHandler::lfCloseFile_, ThemeHandler::lfOpenFile_, ThemeHandler::lfTextFile_;
 QString ThemeHandler::hsrBestFile_, ThemeHandler::hsrCloseFile_, ThemeHandler::hsrOpenFile_, ThemeHandler::hsrTextFile_;
+QString ThemeHandler::youTextFile_;
 QString ThemeHandler::speedLavaFile_, ThemeHandler::speedCloseFile_, ThemeHandler::speedOpenFile_;
 QString ThemeHandler::speedDWTextFile_, ThemeHandler::speedTwitchTextFile_;
 QString ThemeHandler::handCardFile_, ThemeHandler::handCardBYFile_, ThemeHandler::handCardBYFile2_, ThemeHandler::handCardBYUnknownFile_;
@@ -625,6 +626,12 @@ QString ThemeHandler::hsrTextFile()
 }
 
 
+QString ThemeHandler::youTextFile()
+{
+    return youTextFile_;
+}
+
+
 QString ThemeHandler::speedLavaFile()
 {
     return speedLavaFile_;
@@ -1015,6 +1022,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     hsrCloseFile_ = loadThemeFile(themePath, jsonObject, "hsrCloseFile");
     hsrOpenFile_ = loadThemeFile(themePath, jsonObject, "hsrOpenFile");
     hsrTextFile_ = loadThemeFile(themePath, jsonObject, "hsrTextFile");
+    youTextFile_ = loadThemeFile(themePath, jsonObject, "youTextFile");
     speedLavaFile_ = loadThemeFile(themePath, jsonObject, "speedLavaFile");
     speedCloseFile_ = loadThemeFile(themePath, jsonObject, "speedCloseFile");
     speedOpenFile_ = loadThemeFile(themePath, jsonObject, "speedOpenFile");
@@ -1292,6 +1300,7 @@ void ThemeHandler::defaultEmptyValues()
     if(hsrCloseFile_.isEmpty())         hsrCloseFile_ = ":/Images/hsrClose.png";
     if(hsrOpenFile_.isEmpty())          hsrOpenFile_ = ":/Images/hsrOpen.png";
     if(hsrTextFile_.isEmpty())          hsrTextFile_ = ":/Images/hsrText.png";
+    if(youTextFile_.isEmpty())          youTextFile_ = ":/Images/youText.png";
     if(speedLavaFile_.isEmpty())        speedLavaFile_ = ":/Images/speedLava.png";
     if(speedCloseFile_.isEmpty())       speedCloseFile_ = ":/Images/speedClose.png";
     if(speedOpenFile_.isEmpty())        speedOpenFile_ = ":/Images/speedOpen.png";

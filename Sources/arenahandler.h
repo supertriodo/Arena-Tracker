@@ -8,6 +8,7 @@
 #include <QObject>
 #include <QTreeWidgetItem>
 #include <QJsonObject>
+#include <QDate>
 
 #define ARENA_YELLOW            QColor(255, 255, 61)
 #define ARENA_GREEN             QColor(61, 255, 61)
@@ -99,13 +100,17 @@ private:
     void setNullTreeItems();
     ScoreSource scoreSourceFromDraftMethod(DraftMethod draftMethod);
     void loadSelectedStatsJsonFile();
+    bool processWinratesFromFile(int classRuns[], int classWins[], int classLost[], QJsonObject &jsonObject, const QDate &rotationDate);
+    bool jsonObjectFromFile(QJsonObject &jsonObject, const QString &statsFile);
+    void processWinratesFromDir(const QDate &rotationDate);
+    void loadStatsJsonFile(const QString &statsFile="ArenaTrackerStats.json");
 
 public:
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme();
-    void loadStatsJsonFile(QString statsFile="ArenaTrackerStats.json");
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
+    void processPlayerWinrates();
 
 signals:
     void showPremiumDialog();

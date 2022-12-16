@@ -972,9 +972,9 @@ void DraftHandler::endDraft()
     //Show Deck Score
     if(patreonVersion)
     {
-        int deckScoreHA = (numCards==0)?0:static_cast<int>(round(deckRatingHA/static_cast<double>(numCards)));
-        int deckScoreLF = (numCards==0)?0:static_cast<int>(round(deckRatingLF/static_cast<double>(numCards)));
-        float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
+        int deckScoreHA = (numCards==0)?0:round(deckRatingHA/static_cast<double>(numCards));
+        int deckScoreLF = (numCards==0)?0:round(deckRatingLF/static_cast<double>(numCards));
+        float deckScoreHSR = (numCards==0)?0:round(deckRatingHSR/numCards * 10)/10.0;
         showMessageDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR);
 
         if(numCards==30)    emit scoreAvg(deckScoreHA, deckScoreHSR, heroLog);
@@ -1025,7 +1025,7 @@ void DraftHandler::endDraftShowMechanicsWindow()
             if(patreonVersion)
             {
                 int deckScoreHA = static_cast<int>(round(deckRatingHA/30.0));
-                float deckScoreHSR = static_cast<float>(round(static_cast<double>(deckRatingHSR/30 * 10))/10.0);
+                float deckScoreHSR = round(deckRatingHSR/30 * 10)/10.0;
                 QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
                 emit scoreAvg(deckScoreHA, deckScoreHSR, heroLog);
             }
@@ -1647,9 +1647,9 @@ void DraftHandler::updateDeckScore(float cardRatingHA, float cardRatingLF, float
     deckRatingHA += static_cast<int>(cardRatingHA);
     deckRatingLF += static_cast<int>(cardRatingLF);
     deckRatingHSR += cardRatingHSR;
-    int deckScoreHA = (numCards==0)?0:static_cast<int>(round(deckRatingHA/static_cast<double>(numCards)));
-    int deckScoreLF = (numCards==0)?0:static_cast<int>(round(deckRatingLF/static_cast<double>(numCards)));
-    float deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(deckRatingHSR/numCards * 10))/10.0);
+    int deckScoreHA = (numCards==0)?0:round(deckRatingHA/static_cast<double>(numCards));
+    int deckScoreLF = (numCards==0)?0:round(deckRatingLF/static_cast<double>(numCards));
+    float deckScoreHSR = (numCards==0)?0:round(deckRatingHSR/numCards * 10)/10.0;
     updateLabelDeckScore(deckScoreLF, deckScoreHA, deckScoreHSR, numCards);
     scoreButtonLF->setScore(deckScoreLF, deckScoreLF);
     scoreButtonHA->setScore(deckScoreHA, deckScoreHA);
@@ -2238,7 +2238,6 @@ void DraftHandler::endHeroDraft()
 
 void DraftHandler::showNewHeroes()
 {
-    float scores[3];
     int classOrder[3];
     for(int i=0; i<3; i++)
     {
@@ -2250,10 +2249,9 @@ void DraftHandler::showNewHeroes()
         emit pDebug("Choose: " + cardInfo);
 
         QString HSRkey = Utility::getCardAttribute(code, "cardClass").toString();
-        scores[i] = heroWinratesMap[HSRkey];
         classOrder[i] = Utility::className2classOrder(HSRkey);
     }
-    if(draftHeroWindow != nullptr)     draftHeroWindow->setScores(scores, classOrder);
+    if(draftHeroWindow != nullptr)     draftHeroWindow->setScores(classOrder);
 
     //Twitch Handler
     if(this->twitchHandler != nullptr)
@@ -2351,6 +2349,10 @@ void DraftHandler::createDraftWindows()
     {
         emit pDebug("Create heroDrafting windows.");
         draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
+
+        connect(draftHeroWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
+                this, SIGNAL(pDebug(QString,DebugLevel,QString)));
+
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
     }
     else//buildMechanicsWindow
@@ -2695,12 +2697,6 @@ void DraftHandler::deMinimizeScoreWindow()
     if(this->draftHeroWindow != nullptr)                                                       draftHeroWindow->setWindowState(Qt::WindowActive);
     if(this->draftScoreWindow != nullptr && showDraftScoresOverlay)                            draftScoreWindow->setWindowState(Qt::WindowActive);
     if(this->draftMechanicsWindow != nullptr && showDraftMechanicsOverlay && patreonVersion)   draftMechanicsWindow->setWindowState(Qt::WindowActive);
-}
-
-
-void DraftHandler::setHeroWinratesMap(QMap<QString, float> &heroWinratesMap)
-{
-    this->heroWinratesMap = heroWinratesMap;
 }
 
 

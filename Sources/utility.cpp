@@ -360,7 +360,6 @@ QList<CardRace> Utility::getRaceFromCode(const QString &code)
 {
 //    QString value = Utility::getCardAttribute(code, "race").toString();// OLD delete
     //TODO check race/races tag on json
-    //TODO check new races (undead)
 
     QJsonValue jsonVraces = Utility::getCardAttribute(code, "races");
     if(jsonVraces.isUndefined() || !jsonVraces.isArray())

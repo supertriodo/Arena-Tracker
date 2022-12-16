@@ -23,6 +23,9 @@ private:
     int includedDecks, classOrder;
     ScoreSource scoreSource;
 
+    static float heroScores[NUM_HEROS];
+    static int playerRuns[NUM_HEROS], playerWins[NUM_HEROS], playerLost[NUM_HEROS];
+
 //Metodos
 private:
     void getScoreColor(int &r, int &g, int &b, float score);
@@ -39,7 +42,16 @@ public:
     void setLearningMode(bool value);
     void setLearningShow(bool value);
     void draw();
+
     static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80);
+    static void setHeroScores(float heroScores[]);
+    static void setPlayerRuns(int playerRuns[]);
+    static void setPlayerWins(int playerWins[]);
+    static void setPlayerLost(int playerLost[]);
+    static float getHeroScore(int classOrder);
+    static float getPlayerRun(int classOrder);
+    static float getPlayerWinrate(int classOrder);
+    static void addRun(int classOrder, int wins, int lost);
 
 signals:
     void spreadLearningShow(bool value);

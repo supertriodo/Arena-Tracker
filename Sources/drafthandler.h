@@ -89,7 +89,6 @@ private:
     QComboBox *comboBoxCard[3];
     bool extendedCapture, resetTwitchScores;
     QStringList heroCodesList;
-    QMap<QString, float> heroWinratesMap;
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
@@ -191,7 +190,6 @@ public:
     void deMinimizeScoreWindow();
     QStringList getAllArenaCodes();
     QStringList getAllHeroCodes();
-    void setHeroWinratesMap(QMap<QString, float> &heroWinratesMap);
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[]);

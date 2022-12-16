@@ -547,7 +547,7 @@ void ArenaHandler::setCurrentAvgScore(int avgHA, float avgHSR, QString heroLog)
             if(objArena["avgHA"].toInt(0) == 0 || objArena["avgHSR"].toDouble(0) == 0)
             {
                 objArena["avgHA"] = avgHA;
-                objArena["avgHSR"] = avgHSR;
+                objArena["avgHSR"] = round(avgHSR * 10)/10.0;
                 statsJson["current"] = objArena;
                 saveStatsJsonFile();
 
@@ -839,7 +839,7 @@ void ArenaHandler::setTheme()
  * "lastGame" -> date ("1234")
  * }
  */
-void ArenaHandler::loadStatsJsonFile(QString statsFile)
+void ArenaHandler::loadStatsJsonFile(const QString &statsFile)
 {
     //Clear arenas data
     ui->arenaTreeWidget->clear();
@@ -850,23 +850,11 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     setNullTreeItems();
 
     //Load stats from file
-    QFile jsonFile(Utility::arenaStatsPath() + "/" + statsFile);
-    if(!jsonFile.exists())
+    if(!jsonObjectFromFile(statsJson, statsFile))
     {
-        emit pDebug(statsFile + " doesn't exists.");
-        return;
-    }
-
-    if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        emit pDebug("Failed to load " + statsFile + " from disk.", DebugLevel::Error);
         statsJsonFile = "";
         return;
     }
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
-    jsonFile.close();
-
-    statsJson = jsonDoc.object();
 
     emit pDebug("Loaded " + QString::number(statsJson.count()) + " entries from " + statsFile + ".");
 
@@ -908,6 +896,26 @@ void ArenaHandler::loadStatsJsonFile(QString statsFile)
     }
 
     loadRegionNames();
+}
+bool ArenaHandler::jsonObjectFromFile(QJsonObject &jsonObject, const QString &statsFile)
+{
+    QFile jsonFile(Utility::arenaStatsPath() + "/" + statsFile);
+    if(!jsonFile.exists())
+    {
+        emit pDebug(statsFile + " doesn't exists.");
+        return false;
+    }
+
+    if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to load " + statsFile + " from disk.", DebugLevel::Error);
+        return false;
+    }
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+
+    jsonObject = jsonDoc.object();
+    return true;
 }
 
 
@@ -1055,6 +1063,20 @@ void ArenaHandler::newArenaGameStat(GameResult gameResult)
 
         QString date = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm");
         setJsonExtra("lastGame", date);
+
+        int wins = objArena["wins"].toInt();
+        int losses = objArena["losses"].toInt();
+        if(isCompleteArena(wins, losses))
+        {
+            QString heroLog = objArena["hero"].toString();
+            int classOrder = Utility::classLogNumber2classOrder(heroLog);
+            if(classOrder != -1)
+            {
+                ScoreButton::addRun(classOrder, wins, losses);
+                emit pDebug("New run for PlayerWinrates - Hero: " + heroLog + " - Wins: " +
+                            QString::number(wins) + " - Losses: " + QString::number(losses));
+            }
+        }
     }
     else
     {
@@ -1484,3 +1506,89 @@ void ArenaHandler::showArenas2StatsBest30(int best30Runs[NUM_REGIONS], int best3
         else    item->setHidden(true);
     }
 }
+
+
+void ArenaHandler::processPlayerWinrates()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QDate rotationDate = settings.value("rotationDate", QDate(2022,12,6)).toDate();//TODO cambiar a QDate::currentDate()
+    emit pDebug("Buiding player winrates.");
+    QtConcurrent::run([this,rotationDate]() {
+        processWinratesFromDir(rotationDate);
+    });
+}
+
+
+void ArenaHandler::processWinratesFromDir(const QDate &rotationDate)
+{
+    QFileInfo dirInfo(Utility::arenaStatsPath());
+    if(!dirInfo.exists())   return;
+
+    QDir dir(Utility::arenaStatsPath());
+    dir.setFilter(QDir::Files);
+    dir.setSorting(QDir::Name|QDir::Reversed);
+    QStringList filterName;
+    filterName << "*.json";
+    dir.setNameFilters(filterName);
+
+    int classRuns[NUM_HEROS] = {0};
+    int classWins[NUM_HEROS] = {0};
+    int classLost[NUM_HEROS] = {0};
+    QJsonObject jsonObject;
+
+    if(!jsonObjectFromFile(jsonObject, "ArenaTrackerStats.json"))   return;
+    bool gamesInRotation = processWinratesFromFile(classRuns, classWins, classLost, jsonObject, rotationDate);
+
+    QStringList files = dir.entryList();
+    for(int i=0; i<files.length() && gamesInRotation; i++)
+    {
+        const QString file = files[i];
+        if(file == "ArenaTrackerStats.json")    continue;
+
+        if(!jsonObjectFromFile(jsonObject, file))   continue;
+        gamesInRotation = processWinratesFromFile(classRuns, classWins, classLost, jsonObject, rotationDate);
+    }
+
+    ScoreButton::setPlayerRuns(classRuns);
+    ScoreButton::setPlayerWins(classWins);
+    ScoreButton::setPlayerLost(classLost);
+}
+
+
+bool ArenaHandler::processWinratesFromFile(int classRuns[NUM_HEROS], int classWins[NUM_HEROS], int classLost[NUM_HEROS],
+                                               QJsonObject &jsonObject, const QDate &rotationDate)
+{
+    bool gamesInRotation = true;
+    for(const QString &date: (const QStringList)jsonObject.keys())
+    {
+        if(date == "extra")  continue;
+
+        QJsonObject objArena = jsonObject[date].toObject();
+        int wins = objArena["wins"].toInt();
+        int losses = objArena["losses"].toInt();
+        if(!isCompleteArena(wins, losses))  continue;
+
+        QString dateS;
+        if(date == "current")   dateS = jsonObject["extra"].toObject()["lastGame"].toString();
+        else                    dateS = date;
+        QDate dateD = QDate::fromString(dateS.left(10), "yyyy.MM.dd");
+
+        if(rotationDate<=dateD)
+        {
+            QString heroLog = objArena["hero"].toString();
+            int heroInt = Utility::classLogNumber2classOrder(heroLog);
+            if(heroInt != -1)
+            {
+                classRuns[heroInt]++;
+                classWins[heroInt] += wins;
+                classLost[heroInt] += losses;
+            }
+        }
+        else    gamesInRotation = false;
+    }
+
+    return gamesInRotation;
+}
+
+
+

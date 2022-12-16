@@ -22,13 +22,18 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
          static_cast<int>(rectScreen.y() + rect.y() - MARGIN + 1.5*sizeCard.height()));
 
     QWidget *centralWidget = new QWidget(this);
-    QHBoxLayout *horLayoutScores = new QHBoxLayout(centralWidget);
+    QHBoxLayout *horLayout = new QHBoxLayout(centralWidget);
+    QVBoxLayout *verLayout[3];
 
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i] = new ScoreButton(centralWidget, Score_Heroes);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
+
+        scoresPlayerPushButton[i] = new ScoreButton(centralWidget, Score_Heroes_Player);
+        scoresPlayerPushButton[i]->setFixedHeight(scoreWidth);
+        scoresPlayerPushButton[i]->setFixedWidth(scoreWidth);
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
         twitchButton[i]->setFixedHeight(scoreWidth);
@@ -40,16 +45,44 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
         effect = new QGraphicsOpacityEffect(scoresPushButton[i]);
         effect->setOpacity(0);
         scoresPushButton[i]->setGraphicsEffect(effect);
+        effect = new QGraphicsOpacityEffect(scoresPlayerPushButton[i]);
+        effect->setOpacity(0);
+        scoresPlayerPushButton[i]->setGraphicsEffect(effect);
         effect = new QGraphicsOpacityEffect(twitchButton[i]);
         effect->setOpacity(0);
         twitchButton[i]->setGraphicsEffect(effect);
 
-        horLayoutScores->addStretch();
-        horLayoutScores->addWidget(scoresPushButton[i]);
-        horLayoutScores->addWidget(twitchButton[i]);
-        horLayoutScores->addStretch();
+        //LAYOUTS scores
+        horLayoutScores[i] = new QHBoxLayout();
+        horLayoutScores[i]->addWidget(scoresPushButton[i]);
+        horLayoutScores[i]->addWidget(scoresPlayerPushButton[i]);
+
+        QHBoxLayout *horLayoutScoresG = new QHBoxLayout();
+        horLayoutScoresG->addStretch();
+        horLayoutScoresG->addLayout(horLayoutScores[i]);
+        horLayoutScoresG->addStretch();
+
+        verLayout[i] = new QVBoxLayout();
+        verLayout[i]->addLayout(horLayoutScoresG);
+
+        horLayoutScores2[i] = new QHBoxLayout();
+        horLayoutScores2[i]->addWidget(twitchButton[i]);
+
+        QHBoxLayout *horLayoutScores2G = new QHBoxLayout();
+        horLayoutScores2G->addStretch();
+        horLayoutScores2G->addLayout(horLayoutScores2[i]);
+        horLayoutScores2G->addStretch();
+
+        verLayout[i]->addLayout(horLayoutScores2G);
+        verLayout[i]->addStretch();
+
+        horLayout->addStretch();
+        horLayout->addLayout(verLayout[i]);
+        horLayout->addStretch();
     }
 
+    scores2Rows = true;
+    showTwitch = false;
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Heroes");
@@ -61,24 +94,68 @@ DraftHeroWindow::~DraftHeroWindow()
 }
 
 
-void DraftHeroWindow::showTwitchScores(bool show)
+void DraftHeroWindow::checkScoresSpace()
 {
-    for(int i=0; i<3; i++)
+    bool oldScores2Rows = scores2Rows;
+    scores2Rows = showTwitch;
+    if(oldScores2Rows == scores2Rows)   return;
+
+    if(scores2Rows)
     {
-        if(show)    twitchButton[i]->show();
-        else        twitchButton[i]->hide();
+        emit pDebug("Scores Heroes - 2 rows");
+
+        for(int i=0; i<3; i++)
+        {
+            Utility::clearLayout(horLayoutScores[i], false, false);
+            Utility::clearLayout(horLayoutScores2[i], false, false);
+
+            horLayoutScores[i]->addWidget(scoresPushButton[i]);
+            horLayoutScores[i]->addWidget(scoresPlayerPushButton[i]);
+            horLayoutScores2[i]->addWidget(twitchButton[i]);
+        }
+    }
+    else
+    {
+        emit pDebug("Scores Heroes - 1 row");
+
+        for(int i=0; i<3; i++)
+        {
+            Utility::clearLayout(horLayoutScores[i], false, false);
+            Utility::clearLayout(horLayoutScores2[i], false, false);
+
+            horLayoutScores[i]->addWidget(scoresPushButton[i]);
+            horLayoutScores[i]->addWidget(twitchButton[i]);
+            horLayoutScores[i]->addWidget(scoresPlayerPushButton[i]);
+        }
     }
 }
 
 
-void DraftHeroWindow::setScores(float ratings[3], int classOrder[3])
+void DraftHeroWindow::showTwitchScores(bool show)
 {
+    showTwitch = show;
+    checkScoresSpace();
+
+    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(showTwitch);
+}
+
+
+void DraftHeroWindow::setScores(int classOrder[3])
+{
+    float ratings[3] = {ScoreButton::getHeroScore(classOrder[0]), ScoreButton::getHeroScore(classOrder[1]),
+                        ScoreButton::getHeroScore(classOrder[2])};
+    float ratingsPlayer[3] = {ScoreButton::getPlayerWinrate(classOrder[0]), ScoreButton::getPlayerWinrate(classOrder[1]),
+                              ScoreButton::getPlayerWinrate(classOrder[2])};
     float bestRating = std::max(std::max(ratings[0], ratings[1]), ratings[2]);
+    float bestRatingPlayer = std::max(std::max(ratingsPlayer[0], ratingsPlayer[1]), ratingsPlayer[2]);
 
     for(int i=0; i<3; i++)
     {
         scoresPushButton[i]->setScore(ratings[i], bestRating, -1, classOrder[i]);
         Utility::fadeInWidget(scoresPushButton[i]);
+
+        scoresPlayerPushButton[i]->setScore(ratingsPlayer[i], bestRatingPlayer, -1, classOrder[i]);
+        Utility::fadeInWidget(scoresPlayerPushButton[i]);
     }
 
     resetTwitchScore();
@@ -113,12 +190,15 @@ void DraftHeroWindow::hideScores(bool quick)
         {
             QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(scoresPushButton[i]->graphicsEffect());
             eff->setOpacity(0);
+            eff = static_cast<QGraphicsOpacityEffect *>(scoresPlayerPushButton[i]->graphicsEffect());
+            eff->setOpacity(0);
             eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
         }
         else
         {
             QPropertyAnimation *animation = Utility::fadeOutWidget(scoresPushButton[i]);
+            Utility::fadeOutWidget(scoresPlayerPushButton[i]);
             Utility::fadeOutWidget(twitchButton[i]);
 
             if(i==0 && animation != nullptr)     connect(animation, SIGNAL(finished()), this, SLOT(update()));
