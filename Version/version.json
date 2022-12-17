@@ -4,5 +4,5 @@
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "For draft wrong detections you can now manually look for a specific card by typing. Show your personal winrates when picking arena heroes along with HSReplay global ones. Show deck average score of your arena opponent after the match.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "For draft wrong detections you can now manually look for a specific card by typing.<br>Show your personal winrates when picking arena heroes along with HSReplay global ones.<br>Show deck average score of your arena opponent after the match.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
