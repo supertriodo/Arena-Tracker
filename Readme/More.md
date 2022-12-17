@@ -54,7 +54,7 @@ Next you can check a brief explanation of its features divided in free and premi
 ![StatsAdvanced](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsAdvanced.png)
 * Show your personal winrates and arena runs for each hero, along with HSReplay global ones.
 
-![DraftHeroesWR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/draftHeroesWR.gif)
+![DraftHeroesWR](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroesWR.png)
 * Replay your matches after or during the game. AT unique replay system let you see each turn in one simple window so you can go quickly through different turns and review the whole game in a matter of seconds. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/replay-tab)
 
 ![Replay](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/replay.png)
