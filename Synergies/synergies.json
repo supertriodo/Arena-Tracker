@@ -2861,7 +2861,7 @@
 "RLK_822" : [ "drop3", "deathrattle", "tokenGen", "corpseGen" ],
 "RLK_823" : [ "undeadAllSyn", "tokenCardGen" ],
 "RLK_824" : [ "undeadAllSyn" ],
-"RLK_825" : [ "drop2", "battlecry", "returnSyn", "pingGen", "enrageSyn", "weaponAllSyn", "heroAttackSyn" ],
+"RLK_825" : [ "battlecry", "returnSyn", "pingGen", "enrageSyn", "weaponAllSyn", "heroAttackSyn" ],
 "RLK_826" : [ "arcaneAllSyn", "drop2", "battlecry", "returnSyn" ],
 "RLK_827" : [ "drop3", "weaponAllSyn", "heroAttackSyn" ],
 "RLK_828" : [ "damageMinionsGen", "reachGen", "attackBuffGen", "healthBuffGen", "handBuffGen", "tokenSyn" ],

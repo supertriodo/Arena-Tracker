@@ -4637,7 +4637,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation()
-//|-Synergy / Code  --> 25.0 Patch (2022-11-28)
+//|-Synergy / Code  --> 25.0.3 Patch (2022-12-09)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
