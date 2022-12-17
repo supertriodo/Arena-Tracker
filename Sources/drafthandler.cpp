@@ -31,6 +31,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->multiclassArena = false;
     this->learningMode = false;
     this->showDrops = true;
+    this->showMyWR = true;
     this->cardsIncludedWinratesMap = nullptr;
     this->cardsIncludedDecksMap = nullptr;
     this->cardsPlayedWinratesMap = nullptr;
@@ -166,16 +167,9 @@ void DraftHandler::setPremium(bool premium)
     if(drafting)    return;
     this->patreonVersion = premium;
 
-    if(premium)
-    {
-        ui->labelDeckScore->show();
-    }
-    else
-    {
-        ui->labelDeckScore->hide();
-    }
+    ui->labelDeckScore->setVisible(patreonVersion);
 
-    updateScoresVisibility();
+    if(draftHeroWindow != nullptr)  draftHeroWindow->showPlayerScores(this->showMyWR && patreonVersion);
 }
 
 
@@ -2359,6 +2353,7 @@ void DraftHandler::createDraftWindows()
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
         if(twitchHandler != nullptr && twitchHandler->isConnectionOk() && TwitchHandler::isActive())   draftHeroWindow->showTwitchScores();
+        if(draftHeroWindow != nullptr)  draftHeroWindow->showPlayerScores(this->showMyWR && patreonVersion);
     }
     else//buildMechanicsWindow
     {
@@ -2547,6 +2542,13 @@ void DraftHandler::setShowDrops(bool value)
 {
     this->showDrops = value;
     if(this->draftMechanicsWindow != nullptr)   draftMechanicsWindow->setShowDrops(value);
+}
+
+
+void DraftHandler::setShowMyWR(bool value)
+{
+    this->showMyWR = value;
+    if(draftHeroWindow != nullptr)  draftHeroWindow->showPlayerScores(this->showMyWR && patreonVersion);
 }
 
 

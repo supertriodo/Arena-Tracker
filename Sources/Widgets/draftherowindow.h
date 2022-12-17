@@ -27,7 +27,7 @@ private:
     ScoreButton *scoresPlayerPushButton[3];
     TwitchButton *twitchButton[3];
     int scoreWidth;
-    bool scores2Rows, showTwitch;
+    bool scores2Rows, showTwitch, showPlayerWR;
 
 
 //Metodos
@@ -39,6 +39,7 @@ public:
     void setScores(int classOrder[3]);
     void hideScores(bool quick=false);
     void showTwitchScores(bool show=true);
+    void showPlayerScores(bool show=true);
     void setTwitchScores(int vote1, int vote2, int vote3, QString username);
 
 signals:

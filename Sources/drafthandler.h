@@ -78,7 +78,7 @@ private:
     DraftScoreWindow *draftScoreWindow;
     DraftMechanicsWindow * draftMechanicsWindow;
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
-    bool learningMode, showDrops;
+    bool learningMode, showDrops, showMyWR;
     QString justPickedCard; //Evita doble pick card en Arena.log
     bool draftMethodHA, draftMethodLF, draftMethodHSR;
     DraftMethod draftMethodAvgScore;
@@ -203,6 +203,7 @@ public:
     void initTierLists(const CardClass &heroClass);
     void clearTierLists();
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr);
+    void setShowMyWR(bool value);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

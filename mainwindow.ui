@@ -1945,73 +1945,88 @@ when the opponent plays a secret.</string>
                   <number>9</number>
                  </property>
                  <item>
-                  <widget class="QGroupBox" name="configBoxDraftMethod">
-                   <property name="title">
-                    <string>Assistant</string>
-                   </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_16">
-                    <item>
-                     <widget class="QCheckBox" name="configCheckLF">
-                      <property name="toolTip">
-                       <string>LightForge Tier Score</string>
-                      </property>
-                      <property name="text">
-                       <string>LightForge</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckHSR">
-                      <property name="toolTip">
-                       <string>HSReplay Winrates</string>
-                      </property>
-                      <property name="text">
-                       <string>HSReplay</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="configCheckHA">
-                      <property name="toolTip">
-                       <string>HearthArena Tier Score</string>
-                      </property>
-                      <property name="text">
-                       <string>HearthArena</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="configBoxDraftAvg">
+                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                   <item>
+                    <widget class="QGroupBox" name="configBoxDraftMethod">
+                     <property name="title">
+                      <string>Assistant</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_16">
                       <item>
-                       <widget class="QLabel" name="configLabelDraftAvg">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
+                       <widget class="QCheckBox" name="configCheckLF">
                         <property name="toolTip">
-                         <string>AVG: Draft assistant chosen to show the average of your deck.</string>
+                         <string>LightForge Tier Score</string>
                         </property>
                         <property name="text">
-                         <string>AVG</string>
+                         <string>LightForge</string>
                         </property>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="configComboDraftAvg">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
+                       <widget class="QCheckBox" name="configCheckHSR">
+                        <property name="toolTip">
+                         <string>HSReplay Winrates</string>
+                        </property>
+                        <property name="text">
+                         <string>HSReplay</string>
                         </property>
                        </widget>
                       </item>
+                      <item>
+                       <widget class="QCheckBox" name="configCheckHA">
+                        <property name="toolTip">
+                         <string>HearthArena Tier Score</string>
+                        </property>
+                        <property name="text">
+                         <string>HearthArena</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="configBoxDraftAvg">
+                        <item>
+                         <widget class="QLabel" name="configLabelDraftAvg">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="toolTip">
+                           <string>AVG: Draft assistant chosen to show the average of your deck.</string>
+                          </property>
+                          <property name="text">
+                           <string>AVG</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="configComboDraftAvg">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
                      </layout>
-                    </item>
-                   </layout>
-                  </widget>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="configCheckWR">
+                     <property name="toolTip">
+                      <string>Show my class winrate when choosing hero
+at the start of an arena run.</string>
+                     </property>
+                     <property name="text">
+                      <string>Show My WR</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_4">

@@ -163,11 +163,12 @@ private:
     void closeLogFile();
     void createDataDir();
     void calculateCardWindowMinimumWidth(DetachWindow *detachWindow, bool hasBorders);
-    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor, bool showManaLimits,
-                       bool showTotalAttack, bool showRngList, bool twitchChatVotes, QString theme,
+    void initConfigTab(int tooltipScale, int cardHeight, bool autoSize, bool showClassColor, bool showSpellColor,
+                       bool showManaLimits, bool showTotalAttack, bool showRngList, bool twitchChatVotes, QString theme,
                        bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, QString draftAvg,
                        int popularCardsShown, bool showSecrets, bool showWildSecrets,
-                       bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops);
+                       bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops,
+                       bool showMyWR);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -330,6 +331,7 @@ private slots:
     void spreadDraftMethod();
     void spreadDraftAvg(QString draftAvg);
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
+    void updateShowMyWR(bool checked);
 };
 
 #endif // MAINWINDOW_H

@@ -1916,10 +1916,12 @@ void MainWindow::readSettings()
     bool showSecrets = settings.value("showSecrets", true).toBool();
     bool showWildSecrets = settings.value("showWildSecrets", false).toBool();
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
+    bool showMyWR = settings.value("showMyWR", true).toBool();
 
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
                   twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, draftAvg, popularCardsShown,
-                  showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode, draftShowDrops);
+                  showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode,
+                  draftShowDrops, showMyWR);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
 
@@ -1973,6 +1975,7 @@ void MainWindow::writeSettings()
     settings.setValue("showSecrets", ui->configCheckSecrets->isChecked());
     settings.setValue("showWildSecrets", ui->configCheckWildSecrets->isChecked());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
+    settings.setValue("showMyWR", ui->configCheckWR->isChecked());
     settings.setValue("deckWindow", deckWindow != nullptr);
     settings.setValue("arenaWindow", arenaWindow != nullptr);
     settings.setValue("enemyWindow", enemyWindow != nullptr);
@@ -1987,7 +1990,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
                                QString draftAvg,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
-                               bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops)
+                               bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops, bool showMyWR)
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -2080,6 +2083,9 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
 
     if(draftShowDrops)              ui->configCheckShowDrops->setChecked(true);
     updateDraftShowDrops(draftShowDrops);
+
+    if(showMyWR)                    ui->configCheckWR->setChecked(true);
+    updateShowMyWR(showMyWR);
 
     ui->configCheckHA->setChecked(draftMethodHA);
     ui->configCheckLF->setChecked(draftMethodLF);
@@ -3117,6 +3123,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSecrets->setStyleSheet(checkCSS);
         ui->configCheckWildSecrets->setStyleSheet(checkCSS);
         ui->configCheckVotes->setStyleSheet(checkCSS);
+        ui->configCheckWR->setStyleSheet(checkCSS);
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
         ui->configCheckHSR->setStyleSheet(checkCSS);
@@ -3167,6 +3174,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckSecrets->setStyleSheet("");
         ui->configCheckWildSecrets->setStyleSheet("");
         ui->configCheckVotes->setStyleSheet("");
+        ui->configCheckWR->setStyleSheet("");
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
         ui->configCheckHSR->setStyleSheet("");
@@ -3729,6 +3737,12 @@ void MainWindow::updateDraftShowDrops(bool checked)
 }
 
 
+void MainWindow::updateShowMyWR(bool checked)
+{
+    draftHandler->setShowMyWR(checked);
+}
+
+
 void MainWindow::spreadDraftMethod()
 {
     spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked(), ui->configCheckHSR->isChecked());
@@ -3810,6 +3824,7 @@ void MainWindow::setPremium(bool premium)
     ui->configCheckWildSecrets->setHidden(!patreonVersion);
     ui->configLabelDraftAvg->setHidden(!patreonVersion);
     ui->configComboDraftAvg->setHidden(!patreonVersion);
+    ui->configCheckWR->setHidden(!patreonVersion);
 
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
@@ -3872,10 +3887,12 @@ void MainWindow::completeConfigTab()
     ui->configCheckLF->hide();//Disable lightforge
     ui->configLabelDraftAvg->hide();
     ui->configComboDraftAvg->hide();
+    ui->configCheckWR->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
     connect(ui->configCheckShowDrops, SIGNAL(clicked(bool)), this, SLOT(updateDraftShowDrops(bool)));
+    connect(ui->configCheckWR, SIGNAL(clicked(bool)), this, SLOT(updateShowMyWR(bool)));
     connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
     connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
     connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));

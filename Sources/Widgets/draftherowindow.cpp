@@ -34,6 +34,7 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
         scoresPlayerPushButton[i] = new ScoreButton(centralWidget, Score_Heroes_Player, -1);
         scoresPlayerPushButton[i]->setFixedHeight(scoreWidth);
         scoresPlayerPushButton[i]->setFixedWidth(scoreWidth);
+        scoresPlayerPushButton[i]->hide();
 
         twitchButton[i] = new TwitchButton(centralWidget, 0, 1);
         twitchButton[i]->setFixedHeight(scoreWidth);
@@ -82,7 +83,7 @@ DraftHeroWindow::DraftHeroWindow(QWidget *parent, QRect rect, QSize sizeCard, in
     }
 
     scores2Rows = true;
-    showTwitch = false;
+    showTwitch = showPlayerWR = false;
     setCentralWidget(centralWidget);
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowTitle("AT Heroes");
@@ -97,7 +98,7 @@ DraftHeroWindow::~DraftHeroWindow()
 void DraftHeroWindow::checkScoresSpace()
 {
     bool oldScores2Rows = scores2Rows;
-    scores2Rows = showTwitch;
+    scores2Rows = showTwitch && showPlayerWR;
     if(oldScores2Rows == scores2Rows)   return;
 
     if(scores2Rows)
@@ -136,7 +137,16 @@ void DraftHeroWindow::showTwitchScores(bool show)
     showTwitch = show;
     checkScoresSpace();
 
-    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(showTwitch);
+    for(int i=0; i<3; i++)  twitchButton[i]->setVisible(show);
+}
+
+
+void DraftHeroWindow::showPlayerScores(bool show)
+{
+    showPlayerWR = show;
+    checkScoresSpace();
+
+    for(int i=0; i<3; i++)  scoresPlayerPushButton[i]->setVisible(show);
 }
 
 
