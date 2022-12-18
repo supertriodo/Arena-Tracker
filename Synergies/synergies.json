@@ -3123,7 +3123,7 @@
 "SW_075" : [ "deathrattle" ],
 "SW_076" : [ "battlecry", "tauntGen", "returnSyn" ],
 "SW_077" : [ "drop2", "tokenCardSyn" ],
-"SW_078" : [ "dragonGen", "battlecry" ],
+"SW_078" : [ "battlecry" ],
 "SW_079" : [ "drop3", "battlecry", "returnSyn" ],
 "SW_080" : [ "drawGen3", "endTurnGen" ],
 "SW_081" : [ "drawGen2", "rushGen", "rushSyn", "battlecry", "tauntGen", "tauntSyn", "divineShieldGen", "divineShieldSyn", "returnSyn" ],
