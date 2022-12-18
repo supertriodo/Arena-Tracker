@@ -47,28 +47,36 @@ private:
     int maxSynergyHeight, maxSynergyHeight1Row, maxSynergyHeight2Row;
     bool scores2Rows;
     bool showHA, showLF, showHSR, showTwitch;
+    bool wantedMechanics[M_NUM_MECHANICS];
 
 
 //Metodos
 private:
     void resizeSynergyList();
-    QString getMechanicTooltip(QString iconName);
-    QPixmap createMechanicIconPixmap(const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
+    QString getMechanicTooltip(MechanicIcons mechanicIcon);
+    QPixmap createMechanicIconPixmap(MechanicIcons mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
     void checkScoresSpace();
-    bool paintDropBorder(QPainter &painter, const QString &mechanicIcon, const MechanicBorderColor dropBorderColor);
+    bool paintDropBorder(QPainter &painter, MechanicIcons mechanicIcon, const MechanicBorderColor dropBorderColor);
     void reorderMechanics();
-    void createMechanicIcon(int posCard, int posMech, const QString &mechanicIcon, int count, const MechanicBorderColor dropBorderColor);
+    void createMechanicIcon(int posCard, int posMech, MechanicIcons mechanicIcon, int count,
+                            const MechanicBorderColor dropBorderColor);
     void groupSynergyTags(QMap<QString, QMap<QString, int> > &synergyTagMap);
+    QString getMechanicFile(MechanicIcons mechanicIcon);
+    bool isWantedMechanic(uint mechanicIcon);
 
 public:
-    void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod, int includedDecks1, int includedDecks2, int includedDecks3);
+    void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod,
+                   int includedDecks1, int includedDecks2, int includedDecks3);
     void hideScores(bool quick=false);
     void setLearningMode(bool value);
     void showTwitchScores(bool show=true);
     void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
     void redrawSynergyCards();
-    void setSynergies(int posCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor);
+    void setSynergies(int posCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<MechanicIcons, int> &mechanicIcons,
+                      const MechanicBorderColor dropBorderColor);
     void setTwitchScores(int vote1, int vote2, int vote3, QString username);
+    void setWantedMechanic(uint mechanicIcon, bool value);
+    void setWantedMechanics(bool wantedMechanics[]);
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

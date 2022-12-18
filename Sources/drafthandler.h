@@ -101,6 +101,7 @@ private:
     int editComboBoxNum;//Numero de combo box que estamos editando
     QFutureWatcher<QString> futureFindCodeFromText;
     QString lastThreadText;
+    bool wantedMechanics[M_NUM_MECHANICS];
 
 
 //Metodos
@@ -171,6 +172,7 @@ private:
     QString findCodeFromText(QString text);
     void startFindCodeFromText(const QString &text);
     void showComboBoxesCards(DraftCard bestCards[]);
+    void showSynergies();
 
 public:
     void buildHeroCodesList();
@@ -204,6 +206,7 @@ public:
     void clearTierLists();
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr);
     void setShowMyWR(bool value);
+    void setWantedMechanic(uint mechanicIcon, bool value);
 
 signals:
     void checkCardImage(QString code, bool isHero=false);

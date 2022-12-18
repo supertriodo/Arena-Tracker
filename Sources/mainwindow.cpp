@@ -1726,6 +1726,27 @@ void MainWindow::initConfigAvgScore(QString draftAvg)
 }
 
 
+void MainWindow::initWantedMechanics(bool wantedMechanics[M_NUM_MECHANICS])
+{
+    ui->iconDrop2->setChecked(wantedMechanics[M_DROP2]);
+    ui->iconDrop3->setChecked(wantedMechanics[M_DROP3]);
+    ui->iconDrop4->setChecked(wantedMechanics[M_DROP4]);
+    ui->iconDraw->setChecked(wantedMechanics[M_DISCOVER_DRAW]);
+    ui->iconPing->setChecked(wantedMechanics[M_PING]);
+    ui->iconDamage->setChecked(wantedMechanics[M_DAMAGE]);
+    ui->iconDestroy->setChecked(wantedMechanics[M_DESTROY]);
+    ui->iconAoe->setChecked(wantedMechanics[M_AOE]);
+    ui->iconReach->setChecked(wantedMechanics[M_REACH]);
+    ui->iconTaunt->setChecked(wantedMechanics[M_TAUNT_ALL]);
+    ui->iconSurvival->setChecked(wantedMechanics[M_SURVIVABILITY]);
+
+    for(uint i=0; i<M_NUM_MECHANICS; i++)
+    {
+        setWantedMechanic(i, wantedMechanics[i]);
+    }
+}
+
+
 void MainWindow::moveInScreen(QPoint pos, QSize size)
 {
     QRect appRect(pos, size);
@@ -1918,10 +1939,16 @@ void MainWindow::readSettings()
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
     bool showMyWR = settings.value("showMyWR", true).toBool();
 
+    bool wantedMechanics[M_NUM_MECHANICS];
+    for(int i=0; i<M_NUM_MECHANICS; i++)
+    {
+        wantedMechanics[i] = settings.value("icon" + QString::number(i), true).toBool();
+    }
+
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
                   twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, draftAvg, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode,
-                  draftShowDrops, showMyWR);
+                  draftShowDrops, showMyWR, wantedMechanics);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
 
@@ -1982,6 +2009,18 @@ void MainWindow::writeSettings()
     settings.setValue("enemyDeckWindow", enemyDeckWindow != nullptr);
     settings.setValue("graveyardWindow", graveyardWindow != nullptr);
     settings.setValue("planWindow", planWindow != nullptr);
+
+    settings.setValue("icon" + QString::number(M_DROP2), ui->iconDrop2->isChecked());
+    settings.setValue("icon" + QString::number(M_DROP3), ui->iconDrop3->isChecked());
+    settings.setValue("icon" + QString::number(M_DROP4), ui->iconDrop4->isChecked());
+    settings.setValue("icon" + QString::number(M_DISCOVER_DRAW), ui->iconDraw->isChecked());
+    settings.setValue("icon" + QString::number(M_PING), ui->iconPing->isChecked());
+    settings.setValue("icon" + QString::number(M_DAMAGE), ui->iconDamage->isChecked());
+    settings.setValue("icon" + QString::number(M_DESTROY), ui->iconDestroy->isChecked());
+    settings.setValue("icon" + QString::number(M_AOE), ui->iconAoe->isChecked());
+    settings.setValue("icon" + QString::number(M_REACH), ui->iconReach->isChecked());
+    settings.setValue("icon" + QString::number(M_TAUNT_ALL), ui->iconTaunt->isChecked());
+    settings.setValue("icon" + QString::number(M_SURVIVABILITY), ui->iconSurvival->isChecked());
 }
 
 
@@ -1990,7 +2029,8 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
                                bool twitchChatVotes, QString theme, bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR,
                                QString draftAvg,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
-                               bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops, bool showMyWR)
+                               bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops, bool showMyWR,
+                               bool wantedMechanics[M_NUM_MECHANICS])
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -2093,6 +2133,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
     spreadDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
 
     initConfigAvgScore(draftAvg);
+    initWantedMechanics(wantedMechanics);
 
     //Twitch
     ui->configCheckVotes->setChecked(twitchChatVotes);
@@ -3088,6 +3129,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraftMethod->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftMechanics->setStyleSheet(groupBoxCSS);
         ui->configBoxDraftScores->setStyleSheet(groupBoxCSS);
+        ui->configBoxDraftIcons->setStyleSheet(groupBoxCSS);
         ui->configBoxTwitch->setStyleSheet(groupBoxCSS);
 
         QString labelCSS = "QLabel {background-color: transparent; color: white;}";
@@ -3127,6 +3169,17 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
         ui->configCheckHSR->setStyleSheet(checkCSS);
+        ui->iconDrop2->setStyleSheet(checkCSS);
+        ui->iconDrop3->setStyleSheet(checkCSS);
+        ui->iconDrop4->setStyleSheet(checkCSS);
+        ui->iconDraw->setStyleSheet(checkCSS);
+        ui->iconPing->setStyleSheet(checkCSS);
+        ui->iconDamage->setStyleSheet(checkCSS);
+        ui->iconDestroy->setStyleSheet(checkCSS);
+        ui->iconAoe->setStyleSheet(checkCSS);
+        ui->iconReach->setStyleSheet(checkCSS);
+        ui->iconTaunt->setStyleSheet(checkCSS);
+        ui->iconSurvival->setStyleSheet(checkCSS);
     }
     else
     {
@@ -3141,6 +3194,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configBoxDraftMethod->setStyleSheet("");
         ui->configBoxDraftMechanics->setStyleSheet("");
         ui->configBoxDraftScores->setStyleSheet("");
+        ui->configBoxDraftIcons->setStyleSheet("");
         ui->configBoxTwitch->setStyleSheet("");
 
 
@@ -3178,6 +3232,17 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
         ui->configCheckHSR->setStyleSheet("");
+        ui->iconDrop2->setStyleSheet("");
+        ui->iconDrop3->setStyleSheet("");
+        ui->iconDrop4->setStyleSheet("");
+        ui->iconDraw->setStyleSheet("");
+        ui->iconPing->setStyleSheet("");
+        ui->iconDamage->setStyleSheet("");
+        ui->iconDestroy->setStyleSheet("");
+        ui->iconAoe->setStyleSheet("");
+        ui->iconReach->setStyleSheet("");
+        ui->iconTaunt->setStyleSheet("");
+        ui->iconSurvival->setStyleSheet("");
     }
 }
 
@@ -3491,6 +3556,18 @@ void MainWindow::updateButtonsTheme()
 
     ui->guideButton->setIcon(QIcon(ThemeHandler::buttonGamesGuideFile()));
     ui->resizeButton->setIcon(QIcon(ThemeHandler::buttonResizeFile()));
+
+    ui->iconDrop2->setIcon(QIcon(ThemeHandler::drop2CounterFile()));
+    ui->iconDrop3->setIcon(QIcon(ThemeHandler::drop3CounterFile()));
+    ui->iconDrop4->setIcon(QIcon(ThemeHandler::drop4CounterFile()));
+    ui->iconDraw->setIcon(QIcon(ThemeHandler::drawMechanicFile()));
+    ui->iconPing->setIcon(QIcon(ThemeHandler::pingMechanicFile()));
+    ui->iconDamage->setIcon(QIcon(ThemeHandler::damageMechanicFile()));
+    ui->iconDestroy->setIcon(QIcon(ThemeHandler::destroyMechanicFile()));
+    ui->iconAoe->setIcon(QIcon(ThemeHandler::aoeMechanicFile()));
+    ui->iconReach->setIcon(QIcon(ThemeHandler::reachMechanicFile()));
+    ui->iconTaunt->setIcon(QIcon(ThemeHandler::tauntMechanicFile()));
+    ui->iconSurvival->setIcon(QIcon(ThemeHandler::survivalMechanicFile()));
 }
 
 
@@ -3743,6 +3820,56 @@ void MainWindow::updateShowMyWR(bool checked)
 }
 
 
+void MainWindow::updateDrop2(bool checked)
+{
+    setWantedMechanic(M_DROP2, checked);
+}
+void MainWindow::updateDrop3(bool checked)
+{
+    setWantedMechanic(M_DROP3, checked);
+}
+void MainWindow::updateDrop4(bool checked)
+{
+    setWantedMechanic(M_DROP4, checked);
+}
+void MainWindow::updateReach(bool checked)
+{
+    setWantedMechanic(M_REACH, checked);
+}
+void MainWindow::updateTaunt(bool checked)
+{
+    setWantedMechanic(M_TAUNT_ALL, checked);
+}
+void MainWindow::updateSurvival(bool checked)
+{
+    setWantedMechanic(M_SURVIVABILITY, checked);
+}
+void MainWindow::updateDraw(bool checked)
+{
+    setWantedMechanic(M_DISCOVER_DRAW, checked);
+}
+void MainWindow::updatePing(bool checked)
+{
+    setWantedMechanic(M_PING, checked);
+}
+void MainWindow::updateDamage(bool checked)
+{
+    setWantedMechanic(M_DAMAGE, checked);
+}
+void MainWindow::updateDestroy(bool checked)
+{
+    setWantedMechanic(M_DESTROY, checked);
+}
+void MainWindow::updateAoe(bool checked)
+{
+    setWantedMechanic(M_AOE, checked);
+}
+void MainWindow::setWantedMechanic(uint mechanicIcon, bool value)
+{
+    draftHandler->setWantedMechanic(mechanicIcon, value);
+}
+
+
 void MainWindow::spreadDraftMethod()
 {
     spreadDraftMethod(ui->configCheckHA->isChecked(), ui->configCheckLF->isChecked(), ui->configCheckHSR->isChecked());
@@ -3826,6 +3953,19 @@ void MainWindow::setPremium(bool premium)
     ui->configComboDraftAvg->setHidden(!patreonVersion);
     ui->configCheckWR->setHidden(!patreonVersion);
 
+    ui->configBoxDraftIcons->setHidden(!patreonVersion);
+    ui->iconDrop2->setHidden(!patreonVersion);
+    ui->iconDrop3->setHidden(!patreonVersion);
+    ui->iconDrop4->setHidden(!patreonVersion);
+    ui->iconDraw->setHidden(!patreonVersion);
+    ui->iconPing->setHidden(!patreonVersion);
+    ui->iconDamage->setHidden(!patreonVersion);
+    ui->iconDestroy->setHidden(!patreonVersion);
+    ui->iconAoe->setHidden(!patreonVersion);
+    ui->iconReach->setHidden(!patreonVersion);
+    ui->iconTaunt->setHidden(!patreonVersion);
+    ui->iconSurvival->setHidden(!patreonVersion);
+
     updateTabIcons();
     resizeChecks();//Recoloca botones -X y reajusta tabBar size
     calculateMinimumWidth();//Recalcula minimumWidth de mainWindow
@@ -3888,6 +4028,18 @@ void MainWindow::completeConfigTab()
     ui->configLabelDraftAvg->hide();
     ui->configComboDraftAvg->hide();
     ui->configCheckWR->hide();
+    ui->configBoxDraftIcons->hide();
+    ui->iconDrop2->hide();
+    ui->iconDrop3->hide();
+    ui->iconDrop4->hide();
+    ui->iconDraw->hide();
+    ui->iconPing->hide();
+    ui->iconDamage->hide();
+    ui->iconDestroy->hide();
+    ui->iconAoe->hide();
+    ui->iconReach->hide();
+    ui->iconTaunt->hide();
+    ui->iconSurvival->hide();
     connect(ui->configCheckScoresOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftScoresOverlay(bool)));
     connect(ui->configCheckMechanicsOverlay, SIGNAL(clicked(bool)), this, SLOT(updateShowDraftMechanicsOverlay(bool)));
     connect(ui->configCheckLearning, SIGNAL(clicked(bool)), this, SLOT(updateDraftLearningMode(bool)));
@@ -3896,6 +4048,17 @@ void MainWindow::completeConfigTab()
     connect(ui->configCheckHA, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
     connect(ui->configCheckLF, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
     connect(ui->configCheckHSR, SIGNAL(clicked(bool)), this, SLOT(spreadDraftMethod()));
+    connect(ui->iconDrop2, SIGNAL(clicked(bool)), this, SLOT(updateDrop2(bool)));
+    connect(ui->iconDrop3, SIGNAL(clicked(bool)), this, SLOT(updateDrop3(bool)));
+    connect(ui->iconDrop4, SIGNAL(clicked(bool)), this, SLOT(updateDrop4(bool)));
+    connect(ui->iconDraw, SIGNAL(clicked(bool)), this, SLOT(updateDraw(bool)));
+    connect(ui->iconPing, SIGNAL(clicked(bool)), this, SLOT(updatePing(bool)));
+    connect(ui->iconDamage, SIGNAL(clicked(bool)), this, SLOT(updateDamage(bool)));
+    connect(ui->iconDestroy, SIGNAL(clicked(bool)), this, SLOT(updateDestroy(bool)));
+    connect(ui->iconAoe, SIGNAL(clicked(bool)), this, SLOT(updateAoe(bool)));
+    connect(ui->iconReach, SIGNAL(clicked(bool)), this, SLOT(updateReach(bool)));
+    connect(ui->iconTaunt, SIGNAL(clicked(bool)), this, SLOT(updateTaunt(bool)));
+    connect(ui->iconSurvival, SIGNAL(clicked(bool)), this, SLOT(updateSurvival(bool)));
 
     completeConfigComboAvg();
 

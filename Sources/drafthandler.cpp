@@ -1616,7 +1616,12 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         }
     }
 
+    showSynergies();
+}
 
+
+void DraftHandler::showSynergies()
+{
     if(patreonVersion)
     {
         if(draftScoreWindow != nullptr)
@@ -1624,9 +1629,9 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
             for(int i=0; i<3; i++)
             {
                 QMap<QString, QMap<QString, int>> synergyTagMap;
-                QMap<QString, int> mechanicIcons;
+                QMap<MechanicIcons, int> mechanicIcons;
                 MechanicBorderColor dropBorderColor;
-                synergyHandler->getSynergies(bestCards[i], synergyTagMap, mechanicIcons, dropBorderColor);
+                synergyHandler->getSynergies(draftCards[i], synergyTagMap, mechanicIcons, dropBorderColor);
                 draftScoreWindow->setSynergies(i, synergyTagMap, mechanicIcons, dropBorderColor);
             }
         }
@@ -2309,11 +2314,13 @@ void DraftHandler::createDraftWindows()
     QRect draftRect(topLeft, bottomRight);
     QSize sizeCard(static_cast<int>(screenRects[0].width * screenScale.x()), static_cast<int>(screenRects[0].height * screenScale.y()));
 
+    QMainWindow *mainWindow = static_cast<QMainWindow *>(this->parent());
+
     if(drafting)
     {
         emit pDebug("Create drafting windows.");
-        draftScoreWindow = new DraftScoreWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
-                                                arenaHero);
+        draftScoreWindow = new DraftScoreWindow(mainWindow, draftRect, sizeCard, screenIndex, arenaHero);
+        draftScoreWindow->setWantedMechanics(wantedMechanics);
 
         connect(draftScoreWindow, SIGNAL(cardEntered(QString,QRect,int,int)),
                 this, SIGNAL(overlayCardEntered(QString,QRect,int,int)));
@@ -2331,7 +2338,7 @@ void DraftHandler::createDraftWindows()
             draftScoreWindow->showTwitchScores();
         }
 
-        draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
+        draftMechanicsWindow = new DraftMechanicsWindow(mainWindow, draftRect, sizeCard, screenIndex,
                                                         patreonVersion, arenaHero);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
@@ -2347,7 +2354,7 @@ void DraftHandler::createDraftWindows()
     else if(heroDrafting)
     {
         emit pDebug("Create heroDrafting windows.");
-        draftHeroWindow = new DraftHeroWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex);
+        draftHeroWindow = new DraftHeroWindow(mainWindow, draftRect, sizeCard, screenIndex);
 
         connect(draftHeroWindow, SIGNAL(pDebug(QString,DebugLevel,QString)),
                 this, SIGNAL(pDebug(QString,DebugLevel,QString)));
@@ -2358,7 +2365,7 @@ void DraftHandler::createDraftWindows()
     else//buildMechanicsWindow
     {
         emit pDebug("Create mechanic window.");
-        draftMechanicsWindow = new DraftMechanicsWindow(static_cast<QMainWindow *>(this->parent()), draftRect, sizeCard, screenIndex,
+        draftMechanicsWindow = new DraftMechanicsWindow(mainWindow, draftRect, sizeCard, screenIndex,
                                                         patreonVersion, arenaHero);
         draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
         draftMechanicsWindow->setShowDrops(this->showDrops);
@@ -2549,6 +2556,17 @@ void DraftHandler::setShowMyWR(bool value)
 {
     this->showMyWR = value;
     if(draftHeroWindow != nullptr)  draftHeroWindow->showPlayerScores(this->showMyWR && patreonVersion);
+}
+
+
+void DraftHandler::setWantedMechanic(uint mechanicIcon, bool value)
+{
+    wantedMechanics[mechanicIcon] = value;
+    if(this->draftScoreWindow != nullptr)
+    {
+        draftScoreWindow->setWantedMechanic(mechanicIcon, value);
+        showSynergies();
+    }
 }
 
 

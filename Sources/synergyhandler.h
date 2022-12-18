@@ -49,7 +49,8 @@ public:
                         QMap<QString, QString> &pingMap, QMap<QString, QString> &damageMap,
                         QMap<QString, QString> &destroyMap, QMap<QString, QString> &reachMap,
                         int &draw, int &toYourHand, int &discover);
-    void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
+    void getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergies,
+                      QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     bool initSynergyCodes(bool all=false);
     void clearCounters();
     int draftedCardsCount();
@@ -65,12 +66,14 @@ public:
     bool isDrop3(const QString &code, int cost, int attack, int health);
     bool isDrop4(const QString &code, int cost, int attack, int health);
     bool isAoeGen(const QString &code, const QString &text);
-    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
+    bool isDamageMinionsGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags,
+                            const QString &text, const CardType &cardType, int attack);
     bool isDestroyGen(const QString &code, const QJsonArray &mechanics, const QString &text);
 
 private:
     void initSynergyCode(const QString &code, const QJsonArray &synergies);
-    void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes, const QStringList &arenaCodes, bool all);
+    void initDirectLink(const QString &code, const QString &code2, const QStringList &coreCodes,
+                        const QStringList &arenaCodes, bool all);
     void clearSynergyLists();
     bool shouldBeInSynergies(const QString &code);
     void createDraftItemCounters();
@@ -93,10 +96,10 @@ private:
     void updateStatsCards(DeckCard &deckCard);
 
     void getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
-    void getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
+    void getDropMechanicIcons(DeckCard &deckCard, QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor);
     void getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
     void getSchoolSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
-    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<QString, int> &mechanicIcons);
+    void getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap, QMap<MechanicIcons, int> &mechanicIcons);
     void getDirectLinkSynergies(DeckCard &deckCard, QMap<QString, int> &synergies);
     void getStatsCardsSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int> > &synergyTagMap);
 

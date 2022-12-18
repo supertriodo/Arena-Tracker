@@ -1256,7 +1256,7 @@ void SynergyHandler::updateStatsCards(DeckCard &deckCard)
 
 
 void SynergyHandler::getSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                  QMap<QString, int> &mechanicIcons, MechanicBorderColor &dropBorderColor)
+                                  QMap<MechanicIcons, int> &mechanicIcons, MechanicBorderColor &dropBorderColor)
 {
     getCardTypeSynergies(deckCard, synergyTagMap);
     getDropMechanicIcons(deckCard, mechanicIcons, dropBorderColor);
@@ -1296,7 +1296,7 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap
 }
 
 
-void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int> &mechanicIcons,
+void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<MechanicIcons, int> &mechanicIcons,
                                           MechanicBorderColor &dropBorderColor)
 {
     QString code = deckCard.getCode();
@@ -1306,17 +1306,17 @@ void SynergyHandler::getDropMechanicIcons(DeckCard &deckCard, QMap<QString, int>
 
     if(isDrop2(code, cost, attack, health))
     {
-        mechanicIcons[ThemeHandler::drop2CounterFile()] = dropCounters[V_DROP2]->count() + 1;
+        mechanicIcons[M_DROP2] = dropCounters[V_DROP2]->count() + 1;
         dropBorderColor = dropCounters[V_DROP2]->getMechanicBorderColor();
     }
     else if(isDrop3(code, cost, attack, health))
     {
-        mechanicIcons[ThemeHandler::drop3CounterFile()] = dropCounters[V_DROP3]->count() + 1;
+        mechanicIcons[M_DROP3] = dropCounters[V_DROP3]->count() + 1;
         dropBorderColor = dropCounters[V_DROP3]->getMechanicBorderColor();
     }
     else if(isDrop4(code, cost, attack, health))
     {
-        mechanicIcons[ThemeHandler::drop4CounterFile()] = dropCounters[V_DROP4]->count() + 1;
+        mechanicIcons[M_DROP4] = dropCounters[V_DROP4]->count() + 1;
         dropBorderColor = dropCounters[V_DROP4]->getMechanicBorderColor();
     }
     else
@@ -1484,7 +1484,7 @@ void SynergyHandler::getSchoolSynergies(DeckCard &deckCard, QMap<QString, QMap<Q
 
 
 void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                          QMap<QString, int> &mechanicIcons)
+                                          QMap<MechanicIcons, int> &mechanicIcons)
 {
     QString code = deckCard.getCode();
     QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
@@ -1498,40 +1498,40 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     //GEN
     if(isDiscoverDrawGen(code, cost, mechanics, referencedTags, text))
     {
-        mechanicIcons[ThemeHandler::drawMechanicFile()] = mechanicCounters[V_DISCOVER_DRAW]->count() + 1;
+        mechanicIcons[M_DISCOVER_DRAW] = mechanicCounters[V_DISCOVER_DRAW]->count() + 1;
     }
     if(isTaunt(code, mechanics))
     {
         mechanicCounters[V_TAUNT]->insertSynCards(synergyTagMap);
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
-        mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
+        mechanicIcons[M_TAUNT_ALL] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     else if(isTauntGen(code, referencedTags))
     {
         mechanicCounters[V_TAUNT_ALL]->insertSynCards(synergyTagMap);
-        mechanicIcons[ThemeHandler::tauntMechanicFile()] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
+        mechanicIcons[M_TAUNT_ALL] = mechanicCounters[V_TAUNT_ALL]->count() + 1;
     }
     if(isAoeGen(code, text))
     {
         mechanicCounters[V_AOE]->insertSynCards(synergyTagMap);
-        mechanicIcons[ThemeHandler::aoeMechanicFile()] = mechanicCounters[V_AOE]->count() + 1;
+        mechanicIcons[M_AOE] = mechanicCounters[V_AOE]->count() + 1;
     }
     if(isPingGen(code, mechanics, referencedTags, text, cardType, attack))
     {
         mechanicCounters[V_PING]->insertSynCards(synergyTagMap);
-        mechanicIcons[ThemeHandler::pingMechanicFile()] = mechanicCounters[V_PING]->count() + 1;
+        mechanicIcons[M_PING] = mechanicCounters[V_PING]->count() + 1;
     }
     if(isDamageMinionsGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons[ThemeHandler::damageMechanicFile()] = mechanicCounters[V_DAMAGE]->count() + 1;
+        mechanicIcons[M_DAMAGE] = mechanicCounters[V_DAMAGE]->count() + 1;
     }
     if(isDestroyGen(code, mechanics, text))
     {
-        mechanicIcons[ThemeHandler::destroyMechanicFile()] = mechanicCounters[V_DESTROY]->count() + 1;
+        mechanicIcons[M_DESTROY] = mechanicCounters[V_DESTROY]->count() + 1;
     }
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack))
     {
-        mechanicIcons[ThemeHandler::reachMechanicFile()] = mechanicCounters[V_REACH]->count() + 1;
+        mechanicIcons[M_REACH] = mechanicCounters[V_REACH]->count() + 1;
     }
     if(isArmorGen(code, text))
     {
@@ -1545,7 +1545,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     }
     if(addRestoreIcon)
     {
-        mechanicIcons[ThemeHandler::survivalMechanicFile()] = mechanicCounters[V_SURVIVABILITY]->count() + 1;
+        mechanicIcons[M_SURVIVABILITY] = mechanicCounters[V_SURVIVABILITY]->count() + 1;
     }
     if(isRestoreTargetMinionGen(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertSynCards(synergyTagMap);
     if(isRestoreFriendlyMinionGen(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertSynCards(synergyTagMap);

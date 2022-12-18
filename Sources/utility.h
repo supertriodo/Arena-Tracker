@@ -57,6 +57,9 @@ enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
                        V_OTHER_CLASS, V_SILVER_HAND, V_TREANT, V_LACKEY, V_OUTCAST, V_OUTCAST_ALL, V_END_TURN,
                        V_RUSH_GIVER, V_DREDGE, V_CORPSE,
                        V_NUM_MECHANICS};
+enum MechanicIcons {M_DROP2, M_DROP3, M_DROP4,
+                    M_REACH, M_TAUNT_ALL, M_SURVIVABILITY, M_DISCOVER_DRAW,
+                    M_PING, M_DAMAGE, M_DESTROY, M_AOE, M_NUM_MECHANICS};
 //New Synergy Step 1
 
 

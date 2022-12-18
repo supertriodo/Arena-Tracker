@@ -168,7 +168,7 @@ private:
                        bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, QString draftAvg,
                        int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops,
-                       bool showMyWR);
+                       bool showMyWR, bool wantedMechanics[]);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -224,6 +224,8 @@ private:
     void saveHearthArenaTierlistOriginal(const QByteArray &html="");
     void initConfigAvgScore(QString draftAvg);
     void showHSRdataProgressBar();
+    void setWantedMechanic(uint mechanicIcon, bool value);
+    void initWantedMechanics(bool wantedMechanics[]);
 
 protected:
     //Override events
@@ -332,6 +334,17 @@ private slots:
     void spreadDraftAvg(QString draftAvg);
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void updateShowMyWR(bool checked);
+    void updateDrop2(bool checked);
+    void updateDrop3(bool checked);
+    void updateDrop4(bool checked);
+    void updateReach(bool checked);
+    void updateTaunt(bool checked);
+    void updateSurvival(bool checked);
+    void updateDraw(bool checked);
+    void updatePing(bool checked);
+    void updateDamage(bool checked);
+    void updateDestroy(bool checked);
+    void updateAoe(bool checked);
 };
 
 #endif // MAINWINDOW_H

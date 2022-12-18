@@ -277,6 +277,24 @@ void DraftScoreWindow::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bo
 }
 
 
+void DraftScoreWindow::setWantedMechanics(bool wantedMechanics[M_NUM_MECHANICS])
+{
+    for(int i=0; i<M_NUM_MECHANICS; i++)    this->wantedMechanics[i] = wantedMechanics[i];
+}
+
+
+void DraftScoreWindow::setWantedMechanic(uint mechanicIcon, bool value)
+{
+    wantedMechanics[mechanicIcon] = value;
+}
+
+
+bool DraftScoreWindow::isWantedMechanic(uint mechanicIcon)
+{
+    return wantedMechanics[mechanicIcon];
+}
+
+
 void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
                                  DraftMethod draftMethod,
                                  int includedDecks1, int includedDecks2, int includedDecks3)
@@ -384,7 +402,7 @@ void DraftScoreWindow::groupSynergyTags(QMap<QString, QMap<QString, int>> &syner
 
 
 void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int>> &synergyTagMap,
-                                    QMap<QString, int> &mechanicIcons, const MechanicBorderColor dropBorderColor)
+                                    QMap<MechanicIcons, int> &mechanicIcons, const MechanicBorderColor dropBorderColor)
 {
     if(posCard < 0 || posCard > 2)  return;
 
@@ -440,12 +458,14 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
 
     //Drop mechanic first
     int posMech=0;
-    const QList<QString> iconList = mechanicIcons.keys();
-    for(const QString &mechanicIcon: iconList)
+    const QList<MechanicIcons> iconList = mechanicIcons.keys();
+    for(const MechanicIcons &mechanicIcon: iconList)
     {
-        if(     mechanicIcon == ThemeHandler::drop2CounterFile() ||
-                mechanicIcon == ThemeHandler::drop3CounterFile() ||
-                mechanicIcon == ThemeHandler::drop4CounterFile())
+        if(!isWantedMechanic(mechanicIcon))
+        {
+            mechanicIcons.remove(mechanicIcon);
+        }
+        else if(mechanicIcon == M_DROP2 || mechanicIcon == M_DROP3 || mechanicIcon == M_DROP4)
         {
             createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
             posMech++;
@@ -453,8 +473,8 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         }
     }
     //Other mechanics
-    const QList<QString> iconList2 = mechanicIcons.keys();
-    for(const QString &mechanicIcon: iconList2)
+    const QList<MechanicIcons> iconList2 = mechanicIcons.keys();
+    for(const MechanicIcons &mechanicIcon: iconList2)
     {
         createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
         posMech++;
@@ -462,7 +482,7 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
 }
 
 
-void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, const QString &mechanicIcon, int count,
+void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, MechanicIcons mechanicIcon, int count,
                                           const MechanicBorderColor dropBorderColor)
 {
     QLabel *label = new QLabel();
@@ -481,12 +501,27 @@ void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, const QStrin
 }
 
 
-bool DraftScoreWindow::paintDropBorder(QPainter &painter, const QString &mechanicIcon,
+QString DraftScoreWindow::getMechanicFile(MechanicIcons mechanicIcon)
+{
+    if(mechanicIcon == M_DROP2)         return ThemeHandler::drop2CounterFile();
+    else if(mechanicIcon == M_DROP3)    return ThemeHandler::drop3CounterFile();
+    else if(mechanicIcon == M_DROP4)    return ThemeHandler::drop4CounterFile();
+    else if(mechanicIcon == M_REACH)    return ThemeHandler::reachMechanicFile();
+    else if(mechanicIcon == M_TAUNT_ALL)return ThemeHandler::tauntMechanicFile();
+    else if(mechanicIcon == M_SURVIVABILITY)return ThemeHandler::survivalMechanicFile();
+    else if(mechanicIcon == M_DISCOVER_DRAW)return ThemeHandler::drawMechanicFile();
+    else if(mechanicIcon == M_PING)     return ThemeHandler::pingMechanicFile();
+    else if(mechanicIcon == M_DAMAGE)   return ThemeHandler::damageMechanicFile();
+    else if(mechanicIcon == M_DESTROY)  return ThemeHandler::destroyMechanicFile();
+    else if(mechanicIcon == M_AOE)      return ThemeHandler::aoeMechanicFile();
+    else                                return "";
+}
+
+
+bool DraftScoreWindow::paintDropBorder(QPainter &painter, MechanicIcons mechanicIcon,
                                        const MechanicBorderColor dropBorderColor)
 {
-    if(     mechanicIcon == ThemeHandler::drop2CounterFile() ||
-            mechanicIcon == ThemeHandler::drop3CounterFile() ||
-            mechanicIcon == ThemeHandler::drop4CounterFile())
+    if(mechanicIcon == M_DROP2 || mechanicIcon == M_DROP3 || mechanicIcon == M_DROP4)
     {
         if(dropBorderColor == MechanicBorderRed)
         {
@@ -505,10 +540,11 @@ bool DraftScoreWindow::paintDropBorder(QPainter &painter, const QString &mechani
 }
 
 
-QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, int count,
+QPixmap DraftScoreWindow::createMechanicIconPixmap(MechanicIcons mechanicIcon, int count,
                                                    const MechanicBorderColor dropBorderColor)
 {
-    QPixmap pixmap(mechanicIcon);
+    QString mechanicFile = getMechanicFile(mechanicIcon);
+    QPixmap pixmap(mechanicFile);
     QString text = count<10?QString::number(count):"+";
 
     QPainter painter;
@@ -549,20 +585,20 @@ QPixmap DraftScoreWindow::createMechanicIconPixmap(const QString &mechanicIcon, 
 }
 
 
-QString DraftScoreWindow::getMechanicTooltip(QString iconName)
+QString DraftScoreWindow::getMechanicTooltip(MechanicIcons mechanicIcon)
 {
-    if(iconName == ThemeHandler::aoeMechanicFile())             return "AOE";
-    else if(iconName == ThemeHandler::tauntMechanicFile())      return "Taunt";
-    else if(iconName == ThemeHandler::survivalMechanicFile())   return "Survival";
-    else if(iconName == ThemeHandler::drawMechanicFile())       return "Draw";
-    else if(iconName == ThemeHandler::pingMechanicFile())       return "Ping";
-    else if(iconName == ThemeHandler::damageMechanicFile())     return "Removal";
-    else if(iconName == ThemeHandler::destroyMechanicFile())    return "Hard\nRemoval";
-    else if(iconName == ThemeHandler::reachMechanicFile())      return "Reach";
-    else if(iconName == ThemeHandler::drop2CounterFile())       return "2 Drop";
-    else if(iconName == ThemeHandler::drop3CounterFile())       return "3 Drop";
-    else if(iconName == ThemeHandler::drop4CounterFile())       return "4 Drop";
-    else    return "";
+    if(mechanicIcon == M_DROP2)         return "2 Drop";
+    else if(mechanicIcon == M_DROP3)    return "3 Drop";
+    else if(mechanicIcon == M_DROP4)    return "4 Drop";
+    else if(mechanicIcon == M_REACH)    return "Reach";
+    else if(mechanicIcon == M_TAUNT_ALL)return "Taunt";
+    else if(mechanicIcon == M_SURVIVABILITY)return "Survival";
+    else if(mechanicIcon == M_DISCOVER_DRAW)return "Draw";
+    else if(mechanicIcon == M_PING)     return "Ping";
+    else if(mechanicIcon == M_DAMAGE)   return "Removal";
+    else if(mechanicIcon == M_DESTROY)  return "Hard\nRemoval";
+    else if(mechanicIcon == M_AOE)      return "AOE";
+    else                                return "";
 }
 
 
