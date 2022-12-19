@@ -1,7 +1,7 @@
 {
-  "arenaVersion": 26,
+  "arenaVersion": 27,
   "arenaSets": ["CORE", "NAXX", "GANGS", "ICECROWN", "GILNEAS", "STORMWIND", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
   "multiclassArena": false,
-  "resetCards": 26,
+  "resetCards": 27,
   "resetHeroes": 0
 }
