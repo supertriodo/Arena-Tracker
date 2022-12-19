@@ -4487,7 +4487,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
         FLOODSAIL_DECKHAND, EFFICIENT_OCTOBOT, LIVING_SEED, SCABBS_CUTTERBUTTER, KINDLING_ELEMENTAL, CELESTIAL_INK_SET,
         RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
         BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
-        ROTTEN_RODENT
+        ROTTEN_RODENT, PRIESTESS_VALISHJ
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
     }
@@ -4511,7 +4511,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
-        CLUMSY_COURIER, EXCAVATION_SPECIALIST, RELIC_OF_DIMENSIONS
+        CLUMSY_COURIER, EXCAVATION_SPECIALIST
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
     }
@@ -4519,7 +4519,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
-        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE
+        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }
@@ -4536,7 +4536,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, GOLDSHIRE_GNOLL, THE_GARDENS_GRACE,
-        GIGANTOTEM, STITCHED_GIANT
+        GIGANTOTEM
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
     }

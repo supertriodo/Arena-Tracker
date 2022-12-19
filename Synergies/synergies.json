@@ -3491,7 +3491,7 @@
 "TSC_823" : [ "spellAllSyn", "drop2", "battlecry" ],
 "TSC_826" : [ "spellAllSyn", "drop3", "drawGen", "nagaSyn", "battlecry", "returnSyn" ],
 "TSC_827" : [ "spellAllSyn" ],
-"TSC_828" : [ "battlecry", "tokenCardGen", "returnSyn", "spellAllSyn" ],
+"TSC_828" : [ "battlecry", "returnSyn", "spellAllSyn" ],
 "TSC_829" : [ "spellAllSyn" ],
 "TSC_908" : [ "battlecry", "returnSyn", "dredge" ],
 "TSC_909" : [ "drop2", "battlecry", "returnSyn", "dredge" ],
