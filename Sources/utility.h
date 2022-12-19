@@ -149,7 +149,7 @@ public:
     static bool createDir(const QString &pathDir);
     static void unZip(const QString &zipName, const QString &targetPath);
     static void checkTierlistsCount(QStringList &arenaSets);
-    static void resizeGoldenCards();
+    static void resizeSignatureCards();
     static bool checkHeroPortrait(const QString &code);
     static void checkMissingGoldenCards();
     static QStringList getArenaSets(const QStringList &codeList);

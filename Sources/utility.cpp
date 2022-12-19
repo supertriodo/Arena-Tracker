@@ -1067,7 +1067,8 @@ void Utility::unZip(const QString &zipName, const QString &targetPath)
 }
 
 
-void Utility::resizeGoldenCards()
+//Resize Out of Cards signature cards
+void Utility::resizeSignatureCards()
 {
     QString goldenDir = QDir::homePath() + "/Documentos/ArenaTracker/HearthstoneGoldenCards";
     QDir dir(goldenDir);
@@ -1080,8 +1081,8 @@ void Utility::resizeGoldenCards()
     for(const QString &file: (const QStringList)dir.entryList())
     {
         QImage webImage(goldenDir + "/" + file);
-        webImage = webImage.scaledToWidth(205, Qt::SmoothTransformation);
-        webImage = webImage.copy(4, -10, 200, 303);
+        webImage = webImage.scaledToWidth(206, Qt::SmoothTransformation);
+        webImage = webImage.copy(4, -12, 200, 304);
 
         if(!webImage.save(goldenDir + "/Resized/" + file, "png"))
         {

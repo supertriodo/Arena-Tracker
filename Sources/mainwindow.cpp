@@ -4741,11 +4741,10 @@ void MainWindow::testDelay()
     testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//Force hearthpwn true
+//    Utility::resizeSignatureCards();
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
-//    Utility::resizeGoldenCards();
-
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
@@ -4784,6 +4783,7 @@ void MainWindow::testDelay()
     ///-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
+//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
@@ -4799,7 +4799,7 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation()
+//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards
 //|-Synergy / Code  --> 25.0.3 Patch (2022-12-09)
 
 //Rotacion CORE
