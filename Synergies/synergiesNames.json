@@ -3923,16 +3923,16 @@
   "-----------------------------------------ROGUE--------------------------------------------------": "",
   "SW_052 Find the Imposter": [
     "SW_411 SI:7 Informant", "SW_412 SI:7 Extortion", "SW_413 SI:7 Operative", "SW_417 SI:7 Assassin",
-    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler"],
+    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler", "EX1_186 SI:7 Infiltrator", "EX1_134 SI:7 Agent"],
   "SW_411 SI:7 Informant": [
     "SW_411 SI:7 Informant", "SW_412 SI:7 Extortion", "SW_413 SI:7 Operative", "SW_417 SI:7 Assassin",
-    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler"],
+    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler", "EX1_186 SI:7 Infiltrator", "EX1_134 SI:7 Agent"],
   "SW_417 SI:7 Assassin": [
     "SW_411 SI:7 Informant", "SW_412 SI:7 Extortion", "SW_413 SI:7 Operative", "SW_417 SI:7 Assassin",
-    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler"],
+    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler", "EX1_186 SI:7 Infiltrator", "EX1_134 SI:7 Agent"],
   "ONY_030 SI:7 Smuggler": [
     "SW_411 SI:7 Informant", "SW_412 SI:7 Extortion", "SW_413 SI:7 Operative", "SW_417 SI:7 Assassin",
-    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler"],
+    "SW_418 SI:7 Skulker", "ONY_030 SI:7 Smuggler", "EX1_186 SI:7 Infiltrator", "EX1_134 SI:7 Agent"],
 
   "-----------------------------------------PALADIN------------------------------------------------": "",
 
