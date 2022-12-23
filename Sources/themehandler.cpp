@@ -1255,26 +1255,12 @@ void ThemeHandler::defaultEmptyValues()
     {
         if(bgCard1Files_[i].isEmpty())
         {
-            if(bgCard1Files_[NUM_HEROS].isEmpty())
-            {
-                bgCard1Files_[i] = ":/Images/bgCard1" + Utility::classOrder2classULName(i) + ".png";
-            }
-            else
-            {
-                bgCard1Files_[i] = bgCard1Files_[NUM_HEROS];
-            }
+            bgCard1Files_[i] = ":/Images/bgCard1" + Utility::classOrder2classULName(i) + ".png";
         }
 
         if(bgCard2Files_[i].isEmpty())
         {
-            if(bgCard2Files_[NUM_HEROS].isEmpty())
-            {
-                bgCard2Files_[i] = ":/Images/bgCard2" + Utility::classOrder2classULName(i) + ".png";
-            }
-            else
-            {
-                bgCard2Files_[i] = bgCard2Files_[NUM_HEROS];
-            }
+            bgCard2Files_[i] = ":/Images/bgCard2" + Utility::classOrder2classULName(i) + ".png";
         }
 
         if(heroFiles_[i].isEmpty())     heroFiles_[i] = ":/Images/hero" + Utility::classOrder2classLogNumber(i) + ".png";

@@ -153,7 +153,7 @@ QString Utility::classLogNumber2classLName(const QString &hero)
 //--------------------------------------------------------
 QString Utility::classOrder2classColor(int order)
 {
-    QString heroesColors[NUM_HEROS+1] = {"#2f5b70", "#1e5b3d", "#7f4f29", "#347c2c", "#699cd5", "#de9a3e", "#a4a4a4", "#4c4e54", "#0070DE", "#6c4177", "#912a21", "#A9A9A9"};
+    QString heroesColors[NUM_HEROS+1] = {"#2c566a", "#1e5b3d", "#7f4f29", "#347c2c", "#699cd5", "#de9a3e", "#a4a4a4", "#4c4e54", "#0070DE", "#6c4177", "#912a21", "#A9A9A9"};
     if(order < 0 || order > NUM_HEROS)    return "";
     return heroesColors[order];
 }
