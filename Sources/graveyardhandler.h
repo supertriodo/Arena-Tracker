@@ -42,6 +42,7 @@ private:
     void reset();
     void onlyShow(CardType cardType);
 
+    void showAll();
 signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
@@ -65,6 +66,7 @@ private slots:
     void buttonMinionsClicked();
     void buttonWeaponsClicked();
     void buttonSpellsClicked();
+    void buttonAllClicked();
 };
 
 #endif // GRAVEYARDHANDLER_H

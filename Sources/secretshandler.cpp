@@ -596,6 +596,8 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
 //NUEVO SECRETO 3 condicion trigger
 void SecretsHandler::playerSpellPlayed(int id, QString code)
 {
+    Q_UNUSED(id);
+
     if(lastSpellPlayed.isEmpty())    lastSpellPlayed = code;
 
     discardSecretOptionNow(COUNTERSPELL);

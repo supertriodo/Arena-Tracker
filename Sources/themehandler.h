@@ -42,7 +42,7 @@ private:
     static QString buttonPlanFirstFile_, buttonPlanLastFile_, buttonPlanRefreshFile_;
     static QString buttonPlanPrevFile_, buttonPlanNextFile_, buttonPlanResizeFile_;
     static QString buttonGraveyardPlayerFile_, buttonGraveyardEnemyFile_;
-    static QString buttonGraveyardMinionsFile_, buttonGraveyardWeaponsFile_, buttonGraveyardSpellsFile_;
+    static QString buttonGraveyardAllFile_, buttonGraveyardMinionsFile_, buttonGraveyardWeaponsFile_, buttonGraveyardSpellsFile_;
     static QString bgCard1Files_[NUM_HEROS+1], bgCard2Files_[NUM_HEROS+1], heroFiles_[NUM_HEROS];
     static QString bgTotalAttackFile_;
     static QString branchClosedFile_, branchOpenFile_;
@@ -170,6 +170,7 @@ public:
     static QString buttonPlanResizeFile();
     static QString buttonGraveyardPlayerFile();
     static QString buttonGraveyardEnemyFile();
+    static QString buttonGraveyardAllFile();
     static QString buttonGraveyardMinionsFile();
     static QString buttonGraveyardWeaponsFile();
     static QString buttonGraveyardSpellsFile();

@@ -36,7 +36,8 @@ QString ThemeHandler::buttonGamesReplayFile_, ThemeHandler::buttonGamesWebFile_,
 QString ThemeHandler::buttonPlanFirstFile_, ThemeHandler::buttonPlanLastFile_, ThemeHandler::buttonPlanRefreshFile_;
 QString ThemeHandler::buttonPlanPrevFile_, ThemeHandler::buttonPlanNextFile_, ThemeHandler::buttonPlanResizeFile_;
 QString ThemeHandler::buttonGraveyardPlayerFile_, ThemeHandler::buttonGraveyardEnemyFile_;
-QString ThemeHandler::buttonGraveyardMinionsFile_, ThemeHandler::buttonGraveyardWeaponsFile_, ThemeHandler::buttonGraveyardSpellsFile_;
+QString ThemeHandler::buttonGraveyardAllFile_, ThemeHandler::buttonGraveyardMinionsFile_;
+QString ThemeHandler::buttonGraveyardWeaponsFile_, ThemeHandler::buttonGraveyardSpellsFile_;
 QString ThemeHandler::bgCard1Files_[NUM_HEROS+1], ThemeHandler::bgCard2Files_[NUM_HEROS+1], ThemeHandler::heroFiles_[NUM_HEROS];
 QString ThemeHandler::bgTotalAttackFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
@@ -470,6 +471,12 @@ QString ThemeHandler::buttonGraveyardPlayerFile()
 QString ThemeHandler::buttonGraveyardEnemyFile()
 {
     return buttonGraveyardEnemyFile_;
+}
+
+
+QString ThemeHandler::buttonGraveyardAllFile()
+{
+    return buttonGraveyardAllFile_;
 }
 
 
@@ -1003,6 +1010,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     //"-----GRAVEYARD TAB-----": 0,
     buttonGraveyardPlayerFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardPlayerFile");
     buttonGraveyardEnemyFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardEnemyFile");
+    buttonGraveyardAllFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardAllFile");
     buttonGraveyardMinionsFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardMinionsFile");
     buttonGraveyardWeaponsFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardWeaponsFile");
     buttonGraveyardSpellsFile_ = loadThemeFile(themePath, jsonObject, "buttonGraveyardSpellsFile");
@@ -1255,6 +1263,7 @@ void ThemeHandler::defaultEmptyValues()
     if(buttonPlanResizeFile_.isEmpty())     buttonPlanResizeFile_ = ":/Images/planResize.png";
     if(buttonGraveyardPlayerFile_.isEmpty())    buttonGraveyardPlayerFile_ = ":/Images/graveyardPlayer.png";
     if(buttonGraveyardEnemyFile_.isEmpty())     buttonGraveyardEnemyFile_ = ":/Images/graveyardEnemy.png";
+    if(buttonGraveyardAllFile_.isEmpty())       buttonGraveyardAllFile_ = ":/Images/weaponsMinionsSpells.png";
     if(buttonGraveyardMinionsFile_.isEmpty())   buttonGraveyardMinionsFile_ = ":/Images/minionsCounter.png";
     if(buttonGraveyardWeaponsFile_.isEmpty())   buttonGraveyardWeaponsFile_ = ":/Images/weaponsCounter.png";
     if(buttonGraveyardSpellsFile_.isEmpty())    buttonGraveyardSpellsFile_ = ":/Images/spellsCounter.png";

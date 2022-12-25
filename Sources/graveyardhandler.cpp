@@ -26,6 +26,7 @@ GraveyardHandler::~GraveyardHandler()
 
 void GraveyardHandler::completeUI()
 {
+    //Lists
     ui->graveyardListWidgetPlayer->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graveyardListWidgetPlayer->setMouseTracking(true);
 
@@ -49,10 +50,13 @@ void GraveyardHandler::completeUI()
             this, SLOT(buttonEnemyClicked()));
 
     QButtonGroup *minionsWeaponsGroup = new QButtonGroup(ui->tabGraveyard);
+    minionsWeaponsGroup->addButton(ui->graveyardButtonAll);
     minionsWeaponsGroup->addButton(ui->graveyardButtonMinions);
     minionsWeaponsGroup->addButton(ui->graveyardButtonWeapons);
     minionsWeaponsGroup->addButton(ui->graveyardButtonSpells);
 
+    connect(ui->graveyardButtonAll, SIGNAL(clicked(bool)),
+            this, SLOT(buttonAllClicked()));
     connect(ui->graveyardButtonMinions, SIGNAL(clicked(bool)),
             this, SLOT(buttonMinionsClicked()));
     connect(ui->graveyardButtonWeapons, SIGNAL(clicked(bool)),
@@ -84,6 +88,7 @@ void GraveyardHandler::setPremium(bool premium)
         ui->graveyardListWidgetPlayer->show();
         ui->graveyardButtonPlayer->show();
         ui->graveyardButtonEnemy->show();
+        ui->graveyardButtonAll->show();
         ui->graveyardButtonMinions->show();
         ui->graveyardButtonWeapons->show();
         ui->graveyardButtonSpells->show();
@@ -96,6 +101,7 @@ void GraveyardHandler::setPremium(bool premium)
         ui->graveyardListWidgetPlayer->hide();
         ui->graveyardButtonPlayer->hide();
         ui->graveyardButtonEnemy->hide();
+        ui->graveyardButtonAll->hide();
         ui->graveyardButtonMinions->hide();
         ui->graveyardButtonWeapons->hide();
         ui->graveyardButtonSpells->hide();
@@ -116,6 +122,12 @@ void GraveyardHandler::buttonEnemyClicked()
 {
     ui->graveyardListWidgetPlayer->hide();
     ui->graveyardListWidgetEnemy->show();
+}
+
+
+void GraveyardHandler::buttonAllClicked()
+{
+    showAll();
 }
 
 
@@ -151,10 +163,25 @@ void GraveyardHandler::onlyShow(CardType cardType)
 }
 
 
+void GraveyardHandler::showAll()
+{
+    for(DeckCard &deckCard: deckCardListPlayer)
+    {
+        deckCard.listItem->setHidden(false);
+    }
+
+    for(DeckCard &deckCard: deckCardListEnemy)
+    {
+        deckCard.listItem->setHidden(false);
+    }
+}
+
+
 void GraveyardHandler::setTheme()
 {
     ui->graveyardButtonPlayer->setIcon(QIcon(ThemeHandler::buttonGraveyardPlayerFile()));
     ui->graveyardButtonEnemy->setIcon(QIcon(ThemeHandler::buttonGraveyardEnemyFile()));
+    ui->graveyardButtonAll->setIcon(QIcon(ThemeHandler::buttonGraveyardAllFile()));
     ui->graveyardButtonMinions->setIcon(QIcon(ThemeHandler::buttonGraveyardMinionsFile()));
     ui->graveyardButtonWeapons->setIcon(QIcon(ThemeHandler::buttonGraveyardWeaponsFile()));
     ui->graveyardButtonSpells->setIcon(QIcon(ThemeHandler::buttonGraveyardSpellsFile()));
@@ -226,7 +253,7 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
     {
         DeckCard deckCard(code);
 
-        //Allow only weapon/minion
+        //Allow only weapon/minion/spell
         CardType cardType = deckCard.getType();
         if(cardType != MINION && cardType != WEAPON && cardType != SPELL)
         {
@@ -239,9 +266,10 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
         insertDeckCard(friendly, deckCard);
 
         //Show/hide
-        if( (cardType == MINION && !ui->graveyardButtonMinions->isChecked()) ||
+        if(!ui->graveyardButtonAll->isChecked() &&
+           ((cardType == MINION && !ui->graveyardButtonMinions->isChecked()) ||
             (cardType == WEAPON && !ui->graveyardButtonWeapons->isChecked()) ||
-            (cardType == SPELL && !ui->graveyardButtonSpells->isChecked()))
+            (cardType == SPELL && !ui->graveyardButtonSpells->isChecked())))
         {
             deckCard.listItem->setHidden(true);
         }

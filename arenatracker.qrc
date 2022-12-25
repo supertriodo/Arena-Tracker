@@ -171,5 +171,6 @@
         <file>Images/hero11.png</file>
         <file>Images/bgCorpses.png</file>
         <file>Images/youText.png</file>
+        <file>Images/weaponsMinionsSpells.png</file>
     </qresource>
 </RCC>
