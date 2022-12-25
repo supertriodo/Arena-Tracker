@@ -1209,6 +1209,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneTo.isEmpty() || zoneTo == "OPPOSING SECRET")
             {
                 emit pDebug("Enemy: Spell played: " + name + " ID: " + id, numLine);
+                if(!isPlayerTurn)    emit enemySpellPlayed(id.toInt(), cardId);
             }
             //Enemigo juega esbirro
             else if(zoneTo == "OPPOSING PLAY")
@@ -1289,7 +1290,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             if(zoneTo.isEmpty() || zoneTo == "FRIENDLY SECRET")//En spectator mode los secretos van FRIENDLY HAND --> FRIENDLY SECRET
             {
                 emit pDebug("Player: Spell played: " + name + " ID: " + id, numLine);
-                if(isPlayerTurn)    emit playerSpellPlayed(cardId);
+                if(isPlayerTurn)    emit playerSpellPlayed(id.toInt(), cardId);
             }
             //Jugador juega esbirro
             else if(zoneTo == "FRIENDLY PLAY")

@@ -64,6 +64,7 @@ private slots:
     void buttonEnemyClicked();
     void buttonMinionsClicked();
     void buttonWeaponsClicked();
+    void buttonSpellsClicked();
 };
 
 #endif // GRAVEYARDHANDLER_H

@@ -1512,7 +1512,7 @@ void ArenaHandler::showArenas2StatsBest30(int best30Runs[NUM_REGIONS], int best3
 void ArenaHandler::processPlayerWinrates()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QDate rotationDate = settings.value("rotationDate", QDate(2022,12,6)).toDate();//TODO cambiar a QDate::currentDate()
+    QDate rotationDate = settings.value("rotationDate", QDate(2022,12,6)).toDate();
     emit pDebug("Buiding player winrates.");
     QtConcurrent::run([this,rotationDate]() {
         processWinratesFromDir(rotationDate);

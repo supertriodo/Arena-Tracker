@@ -1342,8 +1342,8 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
             enemyDeckHandler, SLOT(setFirstOutsiderId(int)));
 
-//    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
-//            graveyardHandler, SLOT(enemySecretRevealed(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySecretRevealed(int,QString)),
+            graveyardHandler, SLOT(enemySecretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerMinionGraveyard(int,QString)),
             graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
     connect(gameWatcher, SIGNAL(enemyMinionGraveyard(int,QString,bool,int)),
@@ -1351,6 +1351,10 @@ void MainWindow::createGameWatcher()
     connect(gameWatcher, SIGNAL(playerWeaponGraveyard(int,QString)),
             graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
     connect(gameWatcher, SIGNAL(enemyWeaponGraveyard(int,QString)),
+            graveyardHandler, SLOT(enemyCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(playerSpellPlayed(int,QString)),
+            graveyardHandler, SLOT(playerCardGraveyard(int,QString)));
+    connect(gameWatcher, SIGNAL(enemySpellPlayed(int,QString)),
             graveyardHandler, SLOT(enemyCardGraveyard(int,QString)));
     connect(gameWatcher, SIGNAL(startGame()),
             graveyardHandler, SLOT(lockGraveyardInterface()));
@@ -1468,8 +1472,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(secretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSecretStolen(int,QString)),
             secretsHandler, SLOT(secretRevealed(int,QString)));
-    connect(gameWatcher, SIGNAL(playerSpellPlayed(QString)),
-            secretsHandler, SLOT(playerSpellPlayed(QString)));
+    connect(gameWatcher, SIGNAL(playerSpellPlayed(int,QString)),
+            secretsHandler, SLOT(playerSpellPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSpellObjMinionPlayed()),
             secretsHandler, SLOT(playerSpellObjMinionPlayed()));
     connect(gameWatcher, SIGNAL(playerSpellObjHeroPlayed()),

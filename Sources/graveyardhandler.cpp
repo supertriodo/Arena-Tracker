@@ -51,11 +51,14 @@ void GraveyardHandler::completeUI()
     QButtonGroup *minionsWeaponsGroup = new QButtonGroup(ui->tabGraveyard);
     minionsWeaponsGroup->addButton(ui->graveyardButtonMinions);
     minionsWeaponsGroup->addButton(ui->graveyardButtonWeapons);
+    minionsWeaponsGroup->addButton(ui->graveyardButtonSpells);
 
     connect(ui->graveyardButtonMinions, SIGNAL(clicked(bool)),
             this, SLOT(buttonMinionsClicked()));
     connect(ui->graveyardButtonWeapons, SIGNAL(clicked(bool)),
             this, SLOT(buttonWeaponsClicked()));
+    connect(ui->graveyardButtonSpells, SIGNAL(clicked(bool)),
+            this, SLOT(buttonSpellsClicked()));
 
     //Patreon button
     planPatreonButton = new QPushButton(ui->tabGraveyard);
@@ -83,6 +86,7 @@ void GraveyardHandler::setPremium(bool premium)
         ui->graveyardButtonEnemy->show();
         ui->graveyardButtonMinions->show();
         ui->graveyardButtonWeapons->show();
+        ui->graveyardButtonSpells->show();
 
         this->planPatreonButton->hide();
     }
@@ -94,6 +98,7 @@ void GraveyardHandler::setPremium(bool premium)
         ui->graveyardButtonEnemy->hide();
         ui->graveyardButtonMinions->hide();
         ui->graveyardButtonWeapons->hide();
+        ui->graveyardButtonSpells->hide();
 
         this->planPatreonButton->show();
     }
@@ -126,6 +131,12 @@ void GraveyardHandler::buttonWeaponsClicked()
 }
 
 
+void GraveyardHandler::buttonSpellsClicked()
+{
+    onlyShow(SPELL);
+}
+
+
 void GraveyardHandler::onlyShow(CardType cardType)
 {
     for(DeckCard &deckCard: deckCardListPlayer)
@@ -146,6 +157,7 @@ void GraveyardHandler::setTheme()
     ui->graveyardButtonEnemy->setIcon(QIcon(ThemeHandler::buttonGraveyardEnemyFile()));
     ui->graveyardButtonMinions->setIcon(QIcon(ThemeHandler::buttonGraveyardMinionsFile()));
     ui->graveyardButtonWeapons->setIcon(QIcon(ThemeHandler::buttonGraveyardWeaponsFile()));
+    ui->graveyardButtonSpells->setIcon(QIcon(ThemeHandler::buttonGraveyardSpellsFile()));
 }
 
 
@@ -216,9 +228,9 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
 
         //Allow only weapon/minion
         CardType cardType = deckCard.getType();
-        if(cardType != MINION && cardType != WEAPON)
+        if(cardType != MINION && cardType != WEAPON && cardType != SPELL)
         {
-            emit pDebug("Avoid adding non weapon/minion to graveyard: " + deckCard.getName());
+            emit pDebug("Avoid adding non weapon/minion/spell to graveyard: " + deckCard.getName());
             return;
         }
 
@@ -227,8 +239,9 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
         insertDeckCard(friendly, deckCard);
 
         //Show/hide
-        if((cardType == MINION && !ui->graveyardButtonMinions->isChecked()) ||
-                (cardType == WEAPON && !ui->graveyardButtonWeapons->isChecked()))
+        if( (cardType == MINION && !ui->graveyardButtonMinions->isChecked()) ||
+            (cardType == WEAPON && !ui->graveyardButtonWeapons->isChecked()) ||
+            (cardType == SPELL && !ui->graveyardButtonSpells->isChecked()))
         {
             deckCard.listItem->setHidden(true);
         }
