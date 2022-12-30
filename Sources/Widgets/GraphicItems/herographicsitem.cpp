@@ -660,20 +660,19 @@ void HeroGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         else                                    text = QString::number(totalAttack) + "/" + QString::number(totalMaxAttack);
         painter->setBrush(WHITE);
         Utility::drawShadowText(*painter, font, text, -WIDTH/2+18, -HEIGHT/2+46, true);
-    }
-    //Solo pintamos corpses en el turno del heroe, no fuera de su turno en present/future board(showAllInfo).
-    //Fuera de su turno el hero power esta dado la vuelta y al no mostrar su mana la mueca de corpses se ve rara.
-    if(playerTurn == friendly && corpses > 0)
-    {
-        //Corpses
-        painter->drawPixmap(WIDTH/2+16, -HEIGHT/2+13, QPixmap(":Images/bgCorpses.png"));
 
-        text = QString::number(corpses-corpsesUsed);
-        painter->setBrush(WHITE);
-        font.setPixelSize(25);
-        pen.setWidth(1);
-        painter->setPen(pen);
-        Utility::drawShadowText(*painter, font, text, WIDTH/2+63, -HEIGHT/2+36, true);
+        if(corpses > 0)
+        {
+            //Corpses
+            painter->drawPixmap(WIDTH/2+16, -HEIGHT/2+13, QPixmap(":Images/bgCorpses.png"));
+
+            text = QString::number(corpses-corpsesUsed);
+            painter->setBrush(WHITE);
+            font.setPixelSize(25);
+            pen.setWidth(1);
+            painter->setPen(pen);
+            Utility::drawShadowText(*painter, font, text, WIDTH/2+63, -HEIGHT/2+36, true);
+        }
     }
 }
 

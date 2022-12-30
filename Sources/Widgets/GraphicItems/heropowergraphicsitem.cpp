@@ -20,7 +20,7 @@ HeroPowerGraphicsItem::HeroPowerGraphicsItem(QString code, int id, bool friendly
     int y = friendly?hMinion + hHero/2 + 20:-hMinion - hHero/2 + 20;
     this->showTransparent = false;
     this->setPos(x, y);
-    this->setZValue(-40);
+    this->setZValue(-15);
 }
 
 

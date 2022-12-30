@@ -260,11 +260,11 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
         if(mechanics.count() > 0)
         {
-            painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+55, 30, 30,
+            painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+65, 30, 30,
                                 QPixmap(":/Images/" + mechanics[0]));
             if(mechanics.count() > 1)
             {
-                painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+90, 30, 30,
+                painter->drawPixmap(-WIDTH/2+11, -heightShow/2+(cardLifted?-CARD_LIFT:0)+96, 30, 30,
                                     QPixmap(":/Images/" + mechanics[1]));
             }
         }
