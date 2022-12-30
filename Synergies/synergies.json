@@ -2890,7 +2890,7 @@
 "RLK_922" : [ "damageFriendlyHeroGen", "attackBuffGen", "healthBuffGen", "divineShieldGen", "spellBuffGen" ],
 "RLK_923" : [ "damageMinionsGen", "reachGen", "lifestealGen", "heroAttackGen" ],
 "RLK_924" : [ "drop2", "=SynMinionAttack1", "=SynMinionAttack2", "attackBuffSyn" ],
-"RLK_926" : [ "drop3", "damageFriendlyHeroGen" ],
+"RLK_926" : [ "drop3" ],
 "RLK_927" : [ "battlecry", "returnSyn" ],
 "RLK_950" : [ "battlecry", "returnSyn" ],
 "RLK_951" : [ "drop2", "freezeEnemyGen", "battlecry", "returnSyn" ],
