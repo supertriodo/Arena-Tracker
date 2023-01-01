@@ -4503,6 +4503,8 @@ void MainWindow::testEnemyHand()
 
 void MainWindow::testPlan()
 {
+    draftHandler->getSynergyHandler()->initSynergyCodes(true);
+
     planHandler->playerMinionZonePlayAdd("AT_003", 1, 1);
     planHandler->enemyMinionZonePlayAdd("AT_042t2", 2, 1);
     planHandler->playerMinionZonePlayAdd("CS1_042", 3, 1);
@@ -4520,14 +4522,15 @@ void MainWindow::testPlan()
     planHandler->enemyHeroPowerZonePlayAdd("CS1h_001", 14);
 
     planHandler->newTurn(true, 1);
-    planHandler->playerCardDraw(21, MAD_BOMBER,2);
+//    planHandler->playerCardDraw(21, MAD_BOMBER,2);
     planHandler->playerCardDraw(24, VOLCANO,2);
-    planHandler->playerCardDraw(41, MASK_OF_CTHUN,2);
-    planHandler->playerCardDraw(22, GREATER_ARCANE_MISSILES,2);
+//    planHandler->playerCardDraw(41, MASK_OF_CTHUN,2);
+//    planHandler->playerCardDraw(22, GREATER_ARCANE_MISSILES,2);
     planHandler->playerCardDraw(21, RENO_THE_RELICOLOGIST,2);
-    planHandler->playerCardDraw(23, GOBLIN_BLASTMAGE,2);
-    planHandler->playerCardDraw(44, CANNON_BARRAGE,2);
-    planHandler->playerCardDraw(45, DARK_SKIES,2);
+//    planHandler->playerCardDraw(23, GOBLIN_BLASTMAGE,2);
+//    planHandler->playerCardDraw(44, CANNON_BARRAGE,2);
+//    planHandler->playerCardDraw(45, DARK_SKIES,2);
+    planHandler->playerCardDraw(46, "RLK_015",2);
     planHandler->zonePlayAttack("AT_003",1,2);
     planHandler->zonePlayAttack("AT_003",3,2);
     planHandler->zonePlayAttack("AT_003",11,4);
@@ -4562,7 +4565,7 @@ void MainWindow::testPlan()
     planHandler->newTurn(true, 3);
     planHandler->enemyIsolatedSecret(29, "EX1_136");
     planHandler->enemySecretPlayed(30, MAGE);
-    planHandler->playerTagChange("RESOURCES", "3");
+    planHandler->playerTagChange("RESOURCES", "10");
     planHandler->playerWeaponZonePlayAdd("RLK_012", 31);
     planHandler->playerTagChange("CORPSES", "18");
 }
