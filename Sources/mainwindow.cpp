@@ -4745,7 +4745,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     testHeroPortraits();
-    testSynergies();
+//    testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//Force hearthpwn true
 //    Utility::resizeSignatureCards();
