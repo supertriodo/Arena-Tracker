@@ -89,7 +89,9 @@ MainWindow::MainWindow(QWidget *parent) :
     createCardListWindow();//-->PlanHandler -->SecretsHandler -->DraftHandler
     createPremiumHandler();//-->ArenaHandler -->PlanHandler -->DraftHandler -->TrackobotUploader
 
-    initHSRCards();//-->DraftHandler -->SecretHandler
+    //Se hace despues de descargar el nuevo cards json o cuando se sabe que no hay
+    //uno nuevo que descargar.
+    //initHSRCards();//-->DraftHandler -->SecretHandler -->PopularCardsHandler
 
     readSettings();
     checkFirstRunNewVersion();
@@ -394,6 +396,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 QByteArray jsonData = reply->readAll();
                 Utility::dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
                 createCardsJsonMap(jsonData);
+                initHSRCards();
             }
         }
         //HSR Heroes Winrate
@@ -512,6 +515,7 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     else
     {
         pDebug("Extra: Json Cards --> Use local cards.json");
+        initHSRCards();
     }
 }
 
@@ -889,10 +893,6 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
         //Remove histograms
         removeHistograms();
         Utility::createDir(Utility::histogramsPath());
-
-        //Remove cards.json
-        QFile::remove(Utility::extraPath() + "/cards.json");
-        pDebug("cards.json removed.");
 
         allCardsDownloadNeeded = true;
         settings.setValue("arenaVersion", version);
@@ -2839,16 +2839,13 @@ void MainWindow::downloadCardsJson(int version)
 
     if(needDownload)
     {
-        if(fileInfo.exists())
-        {
-            QFile file(Utility::extraPath() + "/cards.json");
-            file.remove();
-            pDebug("Extra: Json Cards removed.");
-        }
-
         settings.setValue("cardsVersion", version);
         networkManager->get(QNetworkRequest(QUrl(CARDS_URL + QString("/cards.json"))));
         pDebug("Extra: Json Cards --> Download from: " + QString(CARDS_URL) + QString("/cards.json"));
+    }
+    else
+    {
+        initHSRCards();
     }
 }
 
