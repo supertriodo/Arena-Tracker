@@ -853,6 +853,9 @@ void ArenaHandler::loadStatsJsonFile(const QString &statsFile)
     //Load stats from file
     if(!jsonObjectFromFile(statsJson, statsFile))
     {
+        //Failed to read but the file exists
+        //statsJsonFile empty evitara que el archivo se sobreescriba con las nuevas arenas jugadas en esta sesion
+        statsJsonFile = "";
         return;
     }
 
@@ -903,7 +906,7 @@ bool ArenaHandler::jsonObjectFromFile(QJsonObject &jsonObject, const QString &st
     if(!jsonFile.exists())
     {
         emit pDebug(statsFile + " doesn't exists.");
-        return false;
+        return true;
     }
 
     if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
