@@ -373,8 +373,14 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     }
     else
     {
+        //Cards version
+        if(endUrl == "cardsVersion.json")
+        {
+            int cardsVersion = QJsonDocument::fromJson(reply->readAll()).object().value("cardsVersion").toInt();
+            downloadCardsJson(cardsVersion);
+        }
         //Cards json
-        if(endUrl == "cards.json")
+        else if(endUrl == "cards.json")
         {
             if(reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 302)
             {
@@ -520,8 +526,7 @@ void MainWindow::setLocalLang()
 void MainWindow::initCardsJson()
 {
     Utility::setCardsJson(&cardsJson);
-    networkManager->get(QNetworkRequest(QUrl(JSON_CARDS_URL)));
-    pDebug("Extra: Json Cards --> Trying: " + QString(JSON_CARDS_URL));
+    downloadCardsJsonVersion();
 
     //Load local cards.json (Incluso aunque haya una version nueva para bajar)
     QFile cardsJsonFile(Utility::extraPath() + "/cards.json");
@@ -2802,6 +2807,48 @@ void MainWindow::downloadSynergiesJson(int version)
         settings.setValue("synergiesVersion", version);
         networkManager->get(QNetworkRequest(QUrl(SYNERGIES_URL + QString("/synergies.json"))));
         pDebug("Extra: Json Synergies --> Download from: " + QString(SYNERGIES_URL) + QString("/synergies.json"));
+    }
+}
+
+
+void MainWindow::downloadCardsJsonVersion()
+{
+    networkManager->get(QNetworkRequest(QUrl(CARDS_URL + QString("/cardsVersion.json"))));
+}
+
+
+void MainWindow::downloadCardsJson(int version)
+{
+    if(version < 1)
+    {
+        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_URL)));
+        pDebug("Extra: Json Cards --> Trying: " + QString(HSR_CARDS_URL));
+        return;
+    }
+
+    bool needDownload = false;
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    int storedVersion = settings.value("cardsVersion", 0).toInt();
+
+    QFileInfo fileInfo(Utility::extraPath() + "/cards.json");
+    if(!fileInfo.exists())          needDownload = true;
+    if(version != storedVersion)    needDownload = true;
+
+    pDebug("Extra: Json Cards: Local(" + QString::number(storedVersion) + ") - "
+                        "Web(" + QString::number(version) + ")" + (!needDownload?" up-to-date":""));
+
+    if(needDownload)
+    {
+        if(fileInfo.exists())
+        {
+            QFile file(Utility::extraPath() + "/cards.json");
+            file.remove();
+            pDebug("Extra: Json Cards removed.");
+        }
+
+        settings.setValue("cardsVersion", version);
+        networkManager->get(QNetworkRequest(QUrl(CARDS_URL + QString("/cards.json"))));
+        pDebug("Extra: Json Cards --> Download from: " + QString(CARDS_URL) + QString("/cards.json"));
     }
 }
 

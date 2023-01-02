@@ -2408,7 +2408,7 @@
 "NEW1_017" : [ "battlecry", "returnSyn" ],
 "NEW1_018" : [ "weaponAllSyn", "battlecry", "drop2" ],
 "NEW1_019" : [ "tokenSyn", "drop2" ],
-"NEW1_020" : [ "spellAllSyn", "drop2", "pingGen", "enrageSyn", "aoeGen" ],
+"NEW1_020" : [ "spellAllSyn", "drop2" ],
 "NEW1_021" : [ "freezeEnemySyn", "drop2" ],
 "NEW1_022" : [ "weaponAllSyn", "taunt" ],
 "NEW1_023" : [ "drop2" ],

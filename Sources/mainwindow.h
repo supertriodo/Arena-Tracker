@@ -30,7 +30,7 @@
 #define BIG_BUTTONS_H 48
 #define SMALL_BUTTONS_H 19
 #define DEFAULT_THEME "Random"
-#define JSON_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
+#define HSR_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 //#define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist/preview" //Problematico, mejor evitar
 #define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
@@ -43,7 +43,8 @@
 #define HA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/HearthArena"
 #define ARENA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Arena"
 #define SYNERGIES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Synergies"
-#define USER_GUIDE_URL          "https://triodo.gitbook.io/arena-tracker-documentation/en"
+#define CARDS_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/CardsJson"
+#define USER_GUIDE_URL "https://triodo.gitbook.io/arena-tracker-documentation/en"
 
 
 namespace Ui {
@@ -226,6 +227,8 @@ private:
     void showHSRdataProgressBar();
     void setWantedMechanic(uint mechanicIcon, bool value);
     void initWantedMechanics(bool wantedMechanics[]);
+    void downloadCardsJsonVersion();
+    void downloadCardsJson(int version);
 
 protected:
     //Override events
