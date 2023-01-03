@@ -162,6 +162,7 @@ public:
     static QStringList getSetCodesSpecific(const QString &set);
     static bool codeEqConstant(const QString &code, const QString &codeConstant);
     static QString otherCodeConstant(const QString &code);
+    static void mergeHSRwithFireCards();
 };
 
 #endif // UTILITY_H

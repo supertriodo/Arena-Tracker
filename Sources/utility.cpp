@@ -398,6 +398,7 @@ CardRace Utility::raceString2cardRace(const QString &value)
     else if(value == "DEMON")       return DEMON;
     else if(value == "SCOURGE")     return SCOURGE;
     else if(value == "MECHANICAL")  return MECHANICAL;
+    else if(value == "MECH")        return MECHANICAL;
     else if(value == "ELEMENTAL")   return ELEMENTAL;
     else if(value == "OGRE")        return OGRE;
     else if(value == "BEAST")       return BEAST;
@@ -1278,6 +1279,59 @@ void Utility::timeStamp(const QString &tag)
     qint64 end = QDateTime::currentMSecsSinceEpoch();
     qDebug()<<tag<<end-start;
     start = end;
+}
+
+
+void Utility::mergeHSRwithFireCards()
+{
+    QFile hsrJsonFile("/home/triodo/Documentos/ArenaTracker/CardsJson/cards.json");
+    hsrJsonFile.open(QIODevice::ReadOnly);
+    QByteArray hsrData = hsrJsonFile.readAll();
+    hsrJsonFile.close();
+
+    QFile backup("/home/triodo/Documentos/ArenaTracker/CardsJson/cardsOld.json");
+    backup.open(QIODevice::WriteOnly | QIODevice::Text);
+    backup.write(hsrData);
+    backup.close();
+
+    QFile fireJsonFile("/home/triodo/Documentos/ArenaTracker/CardsJson/cards_enUS.gz.json");
+    fireJsonFile.open(QIODevice::ReadOnly);
+    QByteArray fireData = fireJsonFile.readAll();
+    fireJsonFile.close();
+
+    QMap<QString, QJsonObject> fireMap;
+    const QJsonArray fireArray = QJsonDocument::fromJson(fireData).array();
+    for(const QJsonValue &fireCard: fireArray)
+    {
+        QJsonObject fireObject = fireCard.toObject();
+        fireMap[fireObject.value("id").toString()] = fireObject;
+    }
+
+    QJsonArray hsrArray = QJsonDocument::fromJson(hsrData).array();
+    qDebug()<<"Before HSR cards:" << hsrArray.count();
+    for(QJsonArray::iterator it = hsrArray.begin(); it != hsrArray.end(); it++)
+    {
+        QJsonObject hsrObject = it->toObject();
+        QString id = hsrObject.value("id").toString();
+        QJsonValue races = fireMap[id].value("races");
+        if(!races.isUndefined())
+        {
+            hsrObject["races"] = races;
+            it.a->replace(it.i, hsrObject);
+            qDebug()<<"Replace item" << it.i << "id =" << id << "with races =" << races;
+        }
+        else
+        {
+            qDebug()<<"Item" << it.i << "id =" << id << "no races";
+        }
+    }
+    qDebug()<<"After HSR cards:" << hsrArray.count();
+
+    QJsonDocument jsonDoc;
+    jsonDoc.setArray(hsrArray);
+    hsrJsonFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    hsrJsonFile.write(jsonDoc.toJson());
+    hsrJsonFile.close();
 }
 
 

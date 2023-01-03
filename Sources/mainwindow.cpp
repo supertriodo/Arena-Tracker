@@ -4793,21 +4793,17 @@ void MainWindow::testDelay()
 //    testTierlists();
 //    testDownloadRotation(true);//Force hearthpwn true
 //    Utility::resizeSignatureCards();
+//    Utility::mergeHSRwithFireCards();
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
 //    QTimer::singleShot(1000, this, [=] () {
-//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEMONHUNTER), deckHandler->getDeckCardList());});
+//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEATHKNIGHT), deckHandler->getDeckCardList());});
 
 //    testArenaGames();
 //    testPlan();
-
-    for(CardRace race: DeckCard("RLK_216").getRace())
-    {
-        qDebug()<<race;
-    }
 }
 
 
