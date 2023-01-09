@@ -122,7 +122,10 @@ public:
     static QPropertyAnimation *fadeOutWidget(QWidget *widget);
     static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
     static LoadingScreenState getLoadingScreenFromString(const QString &loadingScreenString);
-    static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, std::vector<Point2f> templatePoints, QPointF &screenScale, int &screenHeight);
+    static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, const std::vector<Point2f> &templatePoints, QPointF &screenScale, int &screenHeight);
+    static ulong findTemplateOnMat(const QString &templateImage, cv::Mat &mat, bool showMatches=false);
+    static ulong findTemplateOnMat(const QString &templateImage, Mat &mat, const std::vector<Point2f> &templatePoints,
+                                   std::vector<Point2f> &targetPoints, ulong minGoodMatches, bool showMatches=false);
     static QPixmap getTransformedImage(QPixmap image, QPointF pos, QPointF anchor, qreal rot, QPointF &origin);
     static bool isLeftOfScreen(QPoint center);
     static CardType getTypeFromCode(const QString &code);

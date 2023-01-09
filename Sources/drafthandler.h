@@ -27,6 +27,9 @@
 #define CAPTURE_MIN_CANDIDATES                 7
 #define CAPTURE_EXTENDED_CANDIDATES            15
 
+#define MANA_L2_THRESHOLD       4.5
+#define RARITY_L2_THRESHOLD     9
+
 #define HISTOGRAM_EXT                   ".dat"
 
 
@@ -34,6 +37,8 @@ class ScreenDetection
 {
 public:
     cv::Rect screenRects[3];
+    cv::Rect manaRects[3];
+    cv::Rect rarityRects[3];
     int screenIndex = -1;
     int screenHeight = 1;
     QPointF screenScale = QPointF(0,0);
@@ -68,6 +73,8 @@ private:
     int deckRatingHA, deckRatingLF;
     float deckRatingHSR;
     cv::Rect screenRects[3];
+    cv::Rect manaRects[3];
+    cv::Rect rarityRects[3];
     QPointF screenScale;
     int screenIndex;
     int numCaptured;
@@ -174,6 +181,15 @@ private:
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
 
+    void reviewBestCards();
+    void getBestNManaRarity(int manaN[], CardRarity cardRarity[]);
+    double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
+    void getBestNOnRect(const cv::Rect &rect, const int xOff, const int yOff, const cv::Mat &screenCapture,
+                                const Mat matTemplates[], const int numTemplates, double &best, int &bestX, int &bestY, int &bestN);
+    void setStartEndLoop(int &startX, int &startY, int &endX, int &endY, const int centerX, const int centerY, const int jump);
+    void initManaTemplates(cv::Mat manaTemplates[], const int numTemplates);
+    void initRarityTemplates(cv::Mat rarityTemplates[], const int numTemplates);
+    void getBestN(int bestNs[], double bestL2s[], const Rect rectSmall[], const cv::Mat &screenCapture, const Mat matTemplates[], const int numTemplates);
 public:
     void buildHeroCodesList();
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

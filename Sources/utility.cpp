@@ -358,9 +358,6 @@ CardRarity Utility::getRarityFromCode(const QString &code)
 
 QList<CardRace> Utility::getRaceFromCode(const QString &code)
 {
-//    QString value = Utility::getCardAttribute(code, "race").toString();// OLD delete
-    //TODO check race/races tag on json
-
     QJsonValue jsonVraces = Utility::getCardAttribute(code, "races");
     if(jsonVraces.isUndefined() || !jsonVraces.isArray())
     {
@@ -732,10 +729,10 @@ QString Utility::removeAccents(const QString &s)
 }
 
 
-std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen, std::vector<Point2f> templatePoints,
+std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage, QScreen *screen,
+                                                   const std::vector<Point2f> &templatePoints,
                                                    QPointF &screenScale, int &screenHeight)
 {
-    std::vector<Point2f> screenPoints;
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
 
@@ -746,13 +743,30 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
     screenHeight = image.height();
 
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
+
+    std::vector<Point2f> screenPoints;
+    findTemplateOnMat(templateImage, mat, templatePoints, screenPoints, 10);
+    return screenPoints;
+}
+
+
+ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, bool showMatches)
+{
+    std::vector<Point2f> templatePoints, targetPoints;
+    return findTemplateOnMat(templateImage, mat, templatePoints, targetPoints, 5, showMatches);
+}
+
+
+ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, const std::vector<Point2f> &templatePoints,
+                                std::vector<Point2f> &targetPoints, ulong minGoodMatches, bool showMatches)
+{
     cv::Mat screenCapture = mat.clone();
 
     Mat img_object = imread((Utility::extraPath() + "/" + templateImage).toStdString(), CV_LOAD_IMAGE_GRAYSCALE );
     if(!img_object.data)
     {
         qDebug() << "Utility: Cannot find" << templateImage;
-        return screenPoints;
+        return 0;
     }
     Mat img_scene;
     cv::cvtColor(screenCapture, img_scene, CV_BGR2GRAY);
@@ -798,8 +812,8 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
        { good_matches.push_back( matches[static_cast<ulong>(i)]); }
     }
     qDebug()<< "Utility: FLANN Keypoints buenos:" <<good_matches.size();
-    if(good_matches.size() < 10)    return screenPoints;
-
+    ulong goodMatches = good_matches.size();
+    if((goodMatches < minGoodMatches) || templatePoints.empty())    return goodMatches;
 
     //-- Localize the object (find homography)
     std::vector<Point2f> obj;
@@ -815,10 +829,10 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
     Mat H = findHomography( obj, scene, CV_RANSAC );
 
     //-- Get the corners from the image_1 ( the object to be "detected" )
-    perspectiveTransform(templatePoints, screenPoints, H);
+    perspectiveTransform(templatePoints, targetPoints, H);
 
     //Show matches
-    if(false)
+    if(showMatches)
     {
         Mat img_matches;
         drawMatches( img_object, keypoints_object, img_scene, keypoints_scene,
@@ -827,7 +841,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
         imshow( "Good Matches & Object detection", img_matches );
     }
 
-    return screenPoints;
+    return goodMatches;
 }
 
 

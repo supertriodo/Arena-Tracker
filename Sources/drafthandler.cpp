@@ -42,6 +42,8 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     for(int i=0; i<3; i++)
     {
         screenRects[i] = cv::Rect(0,0,0,0);
+        manaRects[i] = cv::Rect(0,0,0,0);
+        rarityRects[i] = cv::Rect(0,0,0,0);
         cardDetected[i] = false;
     }
 
@@ -686,7 +688,9 @@ void DraftHandler::clearLists(bool keepCounters)
 
     for(int i=0; i<3; i++)
     {
-        screenRects[i]=cv::Rect(0,0,0,0);
+        screenRects[i] = cv::Rect(0,0,0,0);
+        manaRects[i] = cv::Rect(0,0,0,0);
+        rarityRects[i] = cv::Rect(0,0,0,0);
         cardDetected[i] = false;
         draftCardMaps[i].clear();
         bestMatchesMaps[i].clear();
@@ -1172,6 +1176,7 @@ void DraftHandler::captureDraft()
             DraftCard bestCards[3];
             getBestCards(bestCards);
             showNewCards(bestCards);
+            reviewBestCards();
         }
         else if(heroDrafting)
         {
@@ -2136,7 +2141,13 @@ void DraftHandler::finishFindScreenRects()
         findingFrame = false;
         this->screenIndex = screenDetection.screenIndex;
         this->screenScale = screenDetection.screenScale;
-        for(int i=0; i<3; i++)  this->screenRects[i] = screenDetection.screenRects[i];
+
+        for(int i=0; i<3; i++)
+        {
+            this->screenRects[i] = screenDetection.screenRects[i];
+            this->manaRects[i] = screenDetection.manaRects[i];
+            this->rarityRects[i] = screenDetection.rarityRects[i];
+        }
         emit pDebug("Hearthstone arena screen detected on screen " + QString::number(screenIndex) +
                     ". " + (isSame?QString("It's"):QString("Not")) + " the same.");
 
@@ -2147,7 +2158,11 @@ void DraftHandler::finishFindScreenRects()
         }
         else
         {
-            if(isSame)  showOverlay();
+            if(isSame)
+            {
+                showOverlay();
+                reviewBestCards();
+            }
             else
             {
                 createDraftWindows();
@@ -2165,18 +2180,28 @@ ScreenDetection DraftHandler::findScreenRects()
 {
     ScreenDetection screenDetection;
 
-    std::vector<Point2f> templatePoints(6);
+    std::vector<Point2f> templatePoints;
     if(heroDrafting)
     {
+        templatePoints.resize(6);
         templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
         templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
         templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
     }
     else// if(drafting) || buildMechanicsWindow
     {
+        templatePoints.resize(18);
         templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
         templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
         templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+
+        templatePoints[6] = cvPoint(146,240); templatePoints[7] = cvPoint(146+34,240+45);
+        templatePoints[8] = cvPoint(425,240); templatePoints[9] = cvPoint(425+34,240+45);
+        templatePoints[10] = cvPoint(705,240); templatePoints[11] = cvPoint(705+34,240+45);
+
+        templatePoints[12] = cvPoint(262,438); templatePoints[13] = cvPoint(262+12,438+18);
+        templatePoints[14] = cvPoint(540,438); templatePoints[15] = cvPoint(540+12,438+18);
+        templatePoints[16] = cvPoint(819,438); templatePoints[17] = cvPoint(819+12,438+18);
     }
 
 
@@ -2194,10 +2219,12 @@ ScreenDetection DraftHandler::findScreenRects()
                                                 screenDetection.screenScale, screenDetection.screenHeight);
         if(screenPoints.empty())    continue;
 
-        //Calculamos screenRect
+        //Calculamos screenRects, manaRects y rarityRects
         for(int i=0; i<3; i++)
         {
             screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
+            screenDetection.manaRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+3)*2)], screenPoints[static_cast<ulong>((i+3)*2+1)]);
+            screenDetection.rarityRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+6)*2)], screenPoints[static_cast<ulong>((i+6)*2+1)]);
         }
 
         screenDetection.screenIndex = screenIndex;
@@ -2918,6 +2945,211 @@ void DraftHandler::comboBoxActivated()
         if(comboBoxCard == this->comboBoxCard[i])   editComboBoxNum=i;
 
     showLineEditCardName(bestCards[editComboBoxNum].getName());
+}
+
+
+void DraftHandler::reviewBestCards()
+{
+    //manaRect no iniciado, estamos leyendo screenRects de settings
+    if(manaRects[1].width<1 || manaRects[1].height<1)
+    {
+        emit pDebug("reviewBestCards: manaRects is not ready.");
+        return;
+    }
+
+    int manaN[3];
+    CardRarity cardRarity[3];
+    getBestNManaRarity(manaN, cardRarity);
+}
+
+
+void DraftHandler::getBestNManaRarity(int manaN[3], CardRarity cardRarity[3])
+{
+    QList<QScreen *> screens = QGuiApplication::screens();
+    if(screenIndex >= screens.count() || screenIndex < 0)  return;
+    QScreen *screen = screens[screenIndex];
+    if (!screen) return;
+
+    QRect rect = screen->geometry();
+    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
+
+    cv::Mat screenBig = mat.clone();
+
+    double fx = 24.0/manaRects[1].width;
+    double fy = 32.0/manaRects[1].height;
+    cv::Mat screenCapture;
+    resize(screenBig, screenCapture, Size(), fx, fy, CV_INTER_AREA);
+
+    cv::Rect manaRectSmall[3], rarityRectSmall[3];
+    for(int i=0; i<3; i++)
+    {
+        manaRectSmall[i] = cv::Rect(manaRects[i].x*fx, manaRects[i].y*fy, 24, 32);
+        rarityRectSmall[i] = cv::Rect(rarityRects[i].x*fx, rarityRects[i].y*fy, 8, 12);
+    }
+
+    int numTemplates = 10;
+    cv::Mat manaTemplates[numTemplates];
+    initManaTemplates(manaTemplates, numTemplates);
+    int bestNsMana[3];
+    double bestL2sMana[3];
+    getBestN(bestNsMana, bestL2sMana, manaRectSmall, screenCapture, manaTemplates, numTemplates);
+
+    numTemplates = 4;
+    cv::Mat rarityTemplates[numTemplates];
+    initRarityTemplates(rarityTemplates, numTemplates);
+    int bestNsRarity[3];
+    double bestL2sRarity[3];
+    getBestN(bestNsRarity, bestL2sRarity, rarityRectSmall, screenCapture, rarityTemplates, numTemplates);
+
+    for(int i=0; i<3; i++)
+    {
+        if(bestL2sMana[i]<MANA_L2_THRESHOLD)    manaN[i] = bestNsMana[i];
+        else                                    manaN[i] = bestNsMana[i];
+        if(bestL2sRarity[i]<RARITY_L2_THRESHOLD)cardRarity[i] = static_cast<CardRarity>(bestNsRarity[i]);
+        else                                    cardRarity[i] = INVALID_RARITY;
+    }
+}
+
+
+void DraftHandler::getBestN(int bestNs[3], double bestL2s[3], const cv::Rect rectSmall[3],
+                                const cv::Mat &screenCapture, const cv::Mat matTemplates[], const int numTemplates)
+{
+    for(int i=0; i<3; i++)
+    {
+        const float l2valid = 3.5;//4<->5 - 3.9 falla //final 2.5 bien 3.9 mal
+        //3.8 bien - 5.3 mal mana
+        //6.6 bien - 10 mal rarity
+        bool maxJumpReached = false;
+        double centerBest, best = 10;
+        const int initJump = 1;
+        int bestX, bestY, bestN = -1, jump = 1;
+        int centerX = 0, centerY = 0;
+        int startX, startY, endX, endY;
+        int prevX = centerX+2*jump+1, prevY = centerY+2*jump+1;
+        setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
+        getBestNOnRect(rectSmall[i], centerX, centerY, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
+        centerBest = best;
+
+        while(jump>0 && abs(centerX)<initJump*16 && abs(centerY)<initJump*16)
+        {
+            for(int x=startX; x<=endX; x+=jump)
+            {
+                for(int y=startY; y<=endY; y+=jump)
+                {
+                    if(x==centerX && y==centerY)    continue;
+                    if(abs(prevX-x)<=jump && abs(prevY-y)<=jump)    continue;
+                    getBestNOnRect(rectSmall[i], x, y, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
+                }
+            }
+
+            if(!maxJumpReached && best>l2valid && (jump == initJump*4))
+            {
+                jump/=2;
+                prevX = centerX;
+                prevY = centerY;
+                best = centerBest;
+                bestX = centerX;
+                bestY = centerY;
+                setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump*4);
+                maxJumpReached = true;
+            }
+            else
+            {
+                if(!maxJumpReached && best>l2valid)
+                {
+                    jump*=2;
+                    prevX = centerX+2*jump+1;
+                    prevY = centerY+2*jump+1;
+                    best = centerBest;
+                    bestX = centerX;
+                    bestY = centerY;
+                }
+                else if(centerBest == best)
+                {
+                    jump/=2;
+                    prevX = centerX+2*jump+1;
+                    prevY = centerY+2*jump+1;
+                }
+                else
+                {
+                    prevX = centerX;
+                    prevY = centerY;
+                    centerX = bestX;
+                    centerY = bestY;
+                    centerBest = best;
+
+                    //Despues de hacer AREA pasamos a jump 1
+                    if(maxJumpReached && (jump == initJump*2))  jump/=2;
+                }
+                setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
+            }
+        }
+        qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;
+        bestNs[i] = bestN;
+        bestL2s[i] = best;
+
+        //Muestra la mejor coincidencia
+//        cv::Mat orig = screenCapture(cv::Rect(rectSmall[i].x + bestX, rectSmall[i].y + bestY, rectSmall[i].width, rectSmall[i].height));
+//        imshow(QString::number(i).toStdString() + "orig", orig);
+    }
+    qDebug()<<endl;
+}
+
+
+void DraftHandler::setStartEndLoop(int &startX, int &startY, int &endX, int &endY,
+                                   const int centerX, const int centerY, const int jump)
+{
+    startX = centerX-jump;
+    endX = centerX+jump;
+    startY = centerY-jump;
+    endY = centerY+jump;
+}
+
+
+void DraftHandler::getBestNOnRect(const cv::Rect &rect, const int xOff, const int yOff, const cv::Mat &screenCapture,
+                                    const cv::Mat matTemplates[], const int numTemplates,
+                                    double &best, int &bestX, int &bestY, int &bestN)
+{
+    cv::Mat mat = screenCapture(cv::Rect(rect.x + xOff, rect.y + yOff, rect.width, rect.height));
+
+    for(int i=0; i<numTemplates; i++)
+    {
+        double l2 = getL2Mat(mat, matTemplates[i]);
+        if(l2 < best)
+        {
+            best = l2;
+            bestX = xOff;
+            bestY = yOff;
+            bestN = i;
+        }
+    }
+}
+
+
+double DraftHandler::getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate)
+{
+    return (norm(matSample, matTemplate, CV_L2) / (matSample.rows * matSample.cols));
+}
+
+
+void DraftHandler::initManaTemplates(cv::Mat manaTemplates[], const int numTemplates)
+{
+    for(int i=0; i<numTemplates; i++)
+    {
+        manaTemplates[i] = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/mana" +
+                            QString::number(i) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
+    }
+}
+
+
+void DraftHandler::initRarityTemplates(cv::Mat rarityTemplates[], const int numTemplates)
+{
+    for(int i=0; i<numTemplates; i++)
+    {
+        rarityTemplates[i] = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/rarity" +
+                            QString::number(i) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
+    }
 }
 
 
