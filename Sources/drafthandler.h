@@ -115,7 +115,7 @@ private:
 private:
     void completeUI();
     cv::MatND getHist(const QString &code);
-    cv::MatND getHist(cv::Mat &srcBase);
+    cv::MatND getHist(const Mat &srcBase);
     void initCodesAndHistMaps(QString hero="", bool skipScreenSettings=false);
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
@@ -180,16 +180,20 @@ private:
     void startFindCodeFromText(const QString &text);
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
-
     void reviewBestCards();
-    void getBestNManaRarity(int manaN[], CardRarity cardRarity[]);
+    void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const cv::Mat manaTemplates[10], const cv::Mat rarityTemplates[4],
+                            const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall);
     double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
     void getBestNOnRect(const cv::Rect &rect, const int xOff, const int yOff, const cv::Mat &screenCapture,
                                 const Mat matTemplates[], const int numTemplates, double &best, int &bestX, int &bestY, int &bestN);
     void setStartEndLoop(int &startX, int &startY, int &endX, int &endY, const int centerX, const int centerY, const int jump);
     void initManaTemplates(cv::Mat manaTemplates[], const int numTemplates);
     void initRarityTemplates(cv::Mat rarityTemplates[], const int numTemplates);
-    void getBestN(int bestNs[], double bestL2s[], const Rect rectSmall[], const cv::Mat &screenCapture, const Mat matTemplates[], const int numTemplates);
+    void getBestN(int &bestNs, double &bestL2s, const Rect &rectSmall, const cv::Mat &screenCapture, const Mat matTemplates[], const int numTemplates);
+    cv::Mat getScreenMat();
+    DraftCard getBestMatchManaRarity(const int pos, const Mat &screenBig, const int imgMana, const CardRarity imgRarity);
+    DraftCard getBestAllMatchManaRarity(const MatND &screenCardHist, const int imgMana, const CardRarity imgRarity);
+
 public:
     void buildHeroCodesList();
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);

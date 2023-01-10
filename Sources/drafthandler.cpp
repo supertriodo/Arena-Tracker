@@ -1744,16 +1744,8 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
 
 bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 {
-    QList<QScreen *> screens = QGuiApplication::screens();
-    if(screenIndex >= screens.count() || screenIndex < 0)  return false;
-    QScreen *screen = screens[screenIndex];
-    if (!screen) return false;
-
-    QRect rect = screen->geometry();
-    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
-
-    cv::Mat screenCapture = mat.clone();
+    cv::Mat screenCapture = getScreenMat();
+    if(screenCapture.empty())   return false;
 
     cv::Mat bigCards[3];
     bigCards[0] = screenCapture(screenRects[0]);
@@ -1904,7 +1896,7 @@ cv::MatND DraftHandler::getHist(const QString &code)
 }
 
 
-cv::MatND DraftHandler::getHist(cv::Mat &srcBase)
+cv::MatND DraftHandler::getHist(const cv::Mat &srcBase)
 {
     cv::Mat hsvBase;
 
@@ -2951,149 +2943,200 @@ void DraftHandler::comboBoxActivated()
 void DraftHandler::reviewBestCards()
 {
     //manaRect no iniciado, estamos leyendo screenRects de settings
-    if(manaRects[1].width<1 || manaRects[1].height<1)
+    if(manaRects[1].width<1 || manaRects[1].height<1 || draftCards[0].getCode().isEmpty())
     {
-        emit pDebug("reviewBestCards: manaRects is not ready.");
+        emit pDebug("reviewBestCards: manaRects/draftCards not ready.");
         return;
     }
 
-    int manaN[3];
-    CardRarity cardRarity[3];
-    getBestNManaRarity(manaN, cardRarity);
-}
-
-
-void DraftHandler::getBestNManaRarity(int manaN[3], CardRarity cardRarity[3])
-{
-    QList<QScreen *> screens = QGuiApplication::screens();
-    if(screenIndex >= screens.count() || screenIndex < 0)  return;
-    QScreen *screen = screens[screenIndex];
-    if (!screen) return;
-
-    QRect rect = screen->geometry();
-    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
-
-    cv::Mat screenBig = mat.clone();
+    const cv::Mat screenBig = getScreenMat();
+    if(screenBig.empty())   return;
 
     double fx = 24.0/manaRects[1].width;
     double fy = 32.0/manaRects[1].height;
-    cv::Mat screenCapture;
-    resize(screenBig, screenCapture, Size(), fx, fy, CV_INTER_AREA);
+    cv::Mat screenSmall;
+    resize(screenBig, screenSmall, Size(), fx, fy, CV_INTER_AREA);
 
-    cv::Rect manaRectSmall[3], rarityRectSmall[3];
+    cv::Mat manaTemplates[10];
+    initManaTemplates(manaTemplates, 10);
+    cv::Mat rarityTemplates[4];
+    initRarityTemplates(rarityTemplates, 4);
+
+    DraftCard bestCards[3];
+    bool needShowCards = false;
     for(int i=0; i<3; i++)
     {
-        manaRectSmall[i] = cv::Rect(manaRects[i].x*fx, manaRects[i].y*fy, 24, 32);
-        rarityRectSmall[i] = cv::Rect(rarityRects[i].x*fx, rarityRects[i].y*fy, 8, 12);
+        int imgMana;
+        CardRarity imgRarity;
+        const cv::Rect manaRectSmall = cv::Rect(manaRects[i].x*fx, manaRects[i].y*fy, 24, 32);
+        const cv::Rect rarityRectSmall = cv::Rect(rarityRects[i].x*fx, rarityRects[i].y*fy, 8, 12);
+        getBestNManaRarity(imgMana, imgRarity, screenSmall, manaTemplates, rarityTemplates, manaRectSmall, rarityRectSmall);
+
+        int cardMana = draftCards[i].getCost();
+        CardRarity cardRarity = draftCards[i].getRarity();
+        if(cardMana<10 && imgMana != -1 && imgRarity != INVALID_RARITY &&
+                (imgMana != cardMana || imgRarity != cardRarity))
+        {
+            bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
+            needShowCards = true;
+            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
+        }
+        else    bestCards[i] = draftCards[i];
     }
-
-    int numTemplates = 10;
-    cv::Mat manaTemplates[numTemplates];
-    initManaTemplates(manaTemplates, numTemplates);
-    int bestNsMana[3];
-    double bestL2sMana[3];
-    getBestN(bestNsMana, bestL2sMana, manaRectSmall, screenCapture, manaTemplates, numTemplates);
-
-    numTemplates = 4;
-    cv::Mat rarityTemplates[numTemplates];
-    initRarityTemplates(rarityTemplates, numTemplates);
-    int bestNsRarity[3];
-    double bestL2sRarity[3];
-    getBestN(bestNsRarity, bestL2sRarity, rarityRectSmall, screenCapture, rarityTemplates, numTemplates);
-
-    for(int i=0; i<3; i++)
-    {
-        if(bestL2sMana[i]<MANA_L2_THRESHOLD)    manaN[i] = bestNsMana[i];
-        else                                    manaN[i] = bestNsMana[i];
-        if(bestL2sRarity[i]<RARITY_L2_THRESHOLD)cardRarity[i] = static_cast<CardRarity>(bestNsRarity[i]);
-        else                                    cardRarity[i] = INVALID_RARITY;
-    }
+    if(needShowCards)  showNewCards(bestCards);
 }
 
 
-void DraftHandler::getBestN(int bestNs[3], double bestL2s[3], const cv::Rect rectSmall[3],
+DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &screenBig, const int imgMana, const CardRarity imgRarity)
+{
+    int i=0;
+    const QList<QString> codeList = bestMatchesMaps[pos].values();
+    for(const QString &code: codeList)
+    {
+        if(draftCardMaps[pos][code].getCost() == imgMana && draftCardMaps[pos][code].getRarity() == imgRarity)
+        {
+            comboBoxCard[pos]->setCurrentIndex(i);
+            return draftCardMaps[pos][code];
+        }
+        i++;
+    }
+
+    const cv::MatND screenCardHist = getHist(screenBig(screenRects[pos]));
+    DraftCard draftCard = getBestAllMatchManaRarity(screenCardHist, imgMana, imgRarity);
+    QString code = draftCard.getCode();
+    draftCard.setBestQualityMatch(1, true);
+    bestMatchesMaps[pos].insertMulti(1, code);
+    draftCardMaps[pos].insert(code, draftCard);
+    draftCard.draw(comboBoxCard[pos]);
+    comboBoxCard[pos]->setCurrentIndex(i);
+    return draftCard;
+}
+
+
+DraftCard DraftHandler::getBestAllMatchManaRarity(const cv::MatND &screenCardHist, const int imgMana, const CardRarity imgRarity)
+{
+    double bestMatch = 1;
+    QString bestCode;
+
+    for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
+    {
+        QString code = degoldCode(it.key());
+
+        if(multiclassArena && arenaHeroMulticlassPower != INVALID_CLASS)
+        {
+            QList<CardClass> cardClass = Utility::getClassFromCode(code);
+            if(!(cardClass.contains(NEUTRAL) || cardClass.contains(arenaHero) ||
+                 cardClass.contains(arenaHeroMulticlassPower))) continue;
+        }
+
+        int cost = Utility::getCardAttribute(code, "cost").toInt();
+        CardRarity rarity = Utility::getRarityFromCode(code);
+
+        if(cost == imgMana && rarity == imgRarity)
+        {
+            double match = compareHist(screenCardHist, it.value(), 3);
+            if(match < bestMatch)
+            {
+                bestMatch = match;
+                bestCode = code;
+            }
+        }
+    }
+    return DraftCard(bestCode);
+}
+
+
+void DraftHandler::getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall,
+    const cv::Mat manaTemplates[10], const cv::Mat rarityTemplates[4], const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall)
+{
+    int bestNMana, bestNRarity;
+    double bestL2Mana, bestL2Rarity;
+    getBestN(bestNMana, bestL2Mana, manaRectSmall, screenSmall, manaTemplates, 10);
+    getBestN(bestNRarity, bestL2Rarity, rarityRectSmall, screenSmall, rarityTemplates, 4);
+
+    if(bestL2Mana<MANA_L2_THRESHOLD)        manaN = bestNMana;
+    else                                    manaN = -1;
+    if(bestL2Rarity<RARITY_L2_THRESHOLD)    cardRarity = static_cast<CardRarity>(bestNRarity);
+    else                                    cardRarity = INVALID_RARITY;
+}
+
+
+void DraftHandler::getBestN(int &bestNs, double &bestL2s, const cv::Rect &rectSmall,
                                 const cv::Mat &screenCapture, const cv::Mat matTemplates[], const int numTemplates)
 {
-    for(int i=0; i<3; i++)
+    const float l2valid = 3.5;
+    bool maxJumpReached = false;
+    double centerBest, best = 10;
+    const int initJump = 1;
+    int bestX, bestY, bestN = -1, jump = 1;
+    int centerX = 0, centerY = 0;
+    int startX, startY, endX, endY;
+    int prevX = centerX+2*jump+1, prevY = centerY+2*jump+1;
+    setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
+    getBestNOnRect(rectSmall, centerX, centerY, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
+    centerBest = best;
+
+    while(jump>0 && abs(centerX)<initJump*16 && abs(centerY)<initJump*16)
     {
-        const float l2valid = 3.5;//4<->5 - 3.9 falla //final 2.5 bien 3.9 mal
-        //3.8 bien - 5.3 mal mana
-        //6.6 bien - 10 mal rarity
-        bool maxJumpReached = false;
-        double centerBest, best = 10;
-        const int initJump = 1;
-        int bestX, bestY, bestN = -1, jump = 1;
-        int centerX = 0, centerY = 0;
-        int startX, startY, endX, endY;
-        int prevX = centerX+2*jump+1, prevY = centerY+2*jump+1;
-        setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
-        getBestNOnRect(rectSmall[i], centerX, centerY, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
-        centerBest = best;
-
-        while(jump>0 && abs(centerX)<initJump*16 && abs(centerY)<initJump*16)
+        for(int x=startX; x<=endX; x+=jump)
         {
-            for(int x=startX; x<=endX; x+=jump)
+            for(int y=startY; y<=endY; y+=jump)
             {
-                for(int y=startY; y<=endY; y+=jump)
-                {
-                    if(x==centerX && y==centerY)    continue;
-                    if(abs(prevX-x)<=jump && abs(prevY-y)<=jump)    continue;
-                    getBestNOnRect(rectSmall[i], x, y, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
-                }
+                if(x==centerX && y==centerY)    continue;
+                if(abs(prevX-x)<=jump && abs(prevY-y)<=jump)    continue;
+                getBestNOnRect(rectSmall, x, y, screenCapture, matTemplates, numTemplates, best, bestX, bestY, bestN);
             }
+        }
 
-            if(!maxJumpReached && best>l2valid && (jump == initJump*4))
+        if(!maxJumpReached && best>l2valid && (jump == initJump*4))
+        {
+            jump/=2;
+            prevX = centerX;
+            prevY = centerY;
+            best = centerBest;
+            bestX = centerX;
+            bestY = centerY;
+            setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump*4);
+            maxJumpReached = true;
+        }
+        else
+        {
+            if(!maxJumpReached && best>l2valid)
             {
-                jump/=2;
-                prevX = centerX;
-                prevY = centerY;
+                jump*=2;
+                prevX = centerX+2*jump+1;
+                prevY = centerY+2*jump+1;
                 best = centerBest;
                 bestX = centerX;
                 bestY = centerY;
-                setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump*4);
-                maxJumpReached = true;
+            }
+            else if(centerBest == best)
+            {
+                jump/=2;
+                prevX = centerX+2*jump+1;
+                prevY = centerY+2*jump+1;
             }
             else
             {
-                if(!maxJumpReached && best>l2valid)
-                {
-                    jump*=2;
-                    prevX = centerX+2*jump+1;
-                    prevY = centerY+2*jump+1;
-                    best = centerBest;
-                    bestX = centerX;
-                    bestY = centerY;
-                }
-                else if(centerBest == best)
-                {
-                    jump/=2;
-                    prevX = centerX+2*jump+1;
-                    prevY = centerY+2*jump+1;
-                }
-                else
-                {
-                    prevX = centerX;
-                    prevY = centerY;
-                    centerX = bestX;
-                    centerY = bestY;
-                    centerBest = best;
+                prevX = centerX;
+                prevY = centerY;
+                centerX = bestX;
+                centerY = bestY;
+                centerBest = best;
 
-                    //Despues de hacer AREA pasamos a jump 1
-                    if(maxJumpReached && (jump == initJump*2))  jump/=2;
-                }
-                setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
+                //Despues de hacer AREA pasamos a jump 1
+                if(maxJumpReached && (jump == initJump*2))  jump/=2;
             }
+            setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
         }
-        qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;
-        bestNs[i] = bestN;
-        bestL2s[i] = best;
+    }
+    qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;
+    bestNs = bestN;
+    bestL2s = best;
 
-        //Muestra la mejor coincidencia
+    //Muestra la mejor coincidencia
 //        cv::Mat orig = screenCapture(cv::Rect(rectSmall[i].x + bestX, rectSmall[i].y + bestY, rectSmall[i].width, rectSmall[i].height));
 //        imshow(QString::number(i).toStdString() + "orig", orig);
-    }
-    qDebug()<<endl;
 }
 
 
@@ -3150,6 +3193,20 @@ void DraftHandler::initRarityTemplates(cv::Mat rarityTemplates[], const int numT
         rarityTemplates[i] = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/rarity" +
                             QString::number(i) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
     }
+}
+
+
+cv::Mat DraftHandler::getScreenMat()
+{
+    QList<QScreen *> screens = QGuiApplication::screens();
+    if(screenIndex >= screens.count() || screenIndex < 0)  return cv::Mat();
+    QScreen *screen = screens[screenIndex];
+    if (!screen) return cv::Mat();
+
+    QRect rect = screen->geometry();
+    QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+    cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
+    return mat.clone();
 }
 
 
