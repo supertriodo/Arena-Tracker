@@ -845,7 +845,7 @@ ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, con
 }
 
 
-QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
+QPropertyAnimation * Utility::fadeInWidget(QWidget * widget, bool force)
 {
     QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(widget->graphicsEffect());
     if(eff == nullptr)
@@ -855,7 +855,7 @@ QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() < 1)
+    if(eff->opacity() < 1 || force)
     {
         QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
         a->setDuration(ANIMATION_TIME);
@@ -869,7 +869,7 @@ QPropertyAnimation * Utility::fadeInWidget(QWidget * widget)
 }
 
 
-QPropertyAnimation * Utility::fadeOutWidget(QWidget * widget)
+QPropertyAnimation * Utility::fadeOutWidget(QWidget * widget, bool force)
 {
     QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(widget->graphicsEffect());
     if(eff == nullptr)
@@ -879,7 +879,7 @@ QPropertyAnimation * Utility::fadeOutWidget(QWidget * widget)
         eff->setOpacity(1);
     }
 
-    if(eff->opacity() > 0)
+    if(eff->opacity() > 0 || force)
     {
         QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
         a->setDuration(ANIMATION_TIME);

@@ -153,6 +153,8 @@ void DraftHandler::completeUI()
     connect(ui->lineEditCardName, SIGNAL(editingFinished()),
                 this, SLOT(editCardNameFinish()));
     connect(&futureFindCodeFromText, SIGNAL(finished()), this, SLOT(finishFindCodeFromText()));
+    connect(&futureReviewBestCards, SIGNAL(finished()), this, SLOT(finishReviewBestCards()));
+
 
     setPremium(false);
 }
@@ -299,7 +301,7 @@ void DraftHandler::loadCardHist(QString classUName)
     QFile file(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
     if(!file.open(QIODevice::ReadOnly))
     {
-        emit pDebug("ERROR: Cannot open " + file.fileName(), DebugLevel::Error);
+        emit pDebug("ERROR: Cannot open " + file.fileName());
         return;
     }
     QDataStream in(&file);
@@ -364,7 +366,7 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
             QFile file(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
             if(!file.open(QIODevice::WriteOnly))
             {
-                emit pDebug("ERROR: Cannot open " + file.fileName(), DebugLevel::Error);
+                emit pDebug("ERROR: Cannot open " + file.fileName());
                 return;
             }
             QDataStream out(&file);
@@ -780,7 +782,7 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     int heroInt = hero.toInt();
     if(heroInt<1 || heroInt>NUM_HEROS)
     {
-        emit pDebug("Begin draft of unknown hero: " + hero, DebugLevel::Error);
+        emit pDebug("Begin draft of unknown hero: " + hero);
         return;
     }
     else
@@ -817,7 +819,7 @@ void DraftHandler::continueDraft()
     }
     else
     {
-        emit pDebug("No continue draft because already drafting or no hero.", DebugLevel::Warning);
+        emit pDebug("No continue draft because already drafting or no hero.");
     }
 }
 
@@ -996,7 +998,7 @@ void DraftHandler::heroDraftDeck(QString hero)
     //Cierra mechanics si el heroe de la arena es diferente, permite cambiar de servidor
     if(draftMechanicsWindow != nullptr && this->arenaHero != newArenaHero)
     {
-        emit pDebug("Delete draft mechanic window of different hero.", DebugLevel::Warning);
+        emit pDebug("Delete draft mechanic window of different hero.");
         deleteDraftMechanicsWindow();
     }
 
@@ -1047,7 +1049,7 @@ void DraftHandler::endDraftHideMechanicsWindow()
         //Cierra mechanics si esta incompleto asi se volvera a crear una vez la decklist este completa
         if(draftMechanicsWindow->draftedCardsCount() != 30)
         {
-            emit pDebug("Delete draft mechanic window of incomplete deck.", DebugLevel::Warning);
+            emit pDebug("Delete draft mechanic window of incomplete deck.");
             deleteDraftMechanicsWindow();
         }
     }
@@ -1072,12 +1074,12 @@ bool DraftHandler::buildDraftMechanicsWindow()
     int heroInt = hero.toInt();
     if(deckCardList == nullptr)
     {
-        emit pDebug("Build draft mechanic window of incomplete deck.", DebugLevel::Warning);
+        emit pDebug("Build draft mechanic window of incomplete deck.");
         return false;
     }
     else if(heroInt<1 || heroInt>NUM_HEROS)
     {
-        emit pDebug("Build draft mechanic window of unknown hero: " + hero, DebugLevel::Error);
+        emit pDebug("Build draft mechanic window of unknown hero: " + hero);
         return false;
     }
     else
@@ -1176,7 +1178,7 @@ void DraftHandler::captureDraft()
             DraftCard bestCards[3];
             getBestCards(bestCards);
             showNewCards(bestCards);
-            reviewBestCards();
+            startReviewBestCards();
         }
         else if(heroDrafting)
         {
@@ -2153,7 +2155,7 @@ void DraftHandler::finishFindScreenRects()
             if(isSame)
             {
                 showOverlay();
-                reviewBestCards();
+                startReviewBestCards();
             }
             else
             {
@@ -2449,7 +2451,8 @@ void DraftHandler::highlightScore(QLabel *label, DraftMethod draftMethod)
 
 void DraftHandler::setTheme()
 {
-    if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setTheme();
+    if(draftMechanicsWindow != nullptr) draftMechanicsWindow->setTheme();
+    if(draftScoreWindow != nullptr)     draftScoreWindow->setTheme();
     synergyHandler->setTheme();
 
     ui->refreshDraftButton->setIcon(QIcon(ThemeHandler::buttonDraftRefreshFile()));
@@ -2940,17 +2943,62 @@ void DraftHandler::comboBoxActivated()
 }
 
 
-void DraftHandler::reviewBestCards()
+//Review Best Cards hebra
+void DraftHandler::startReviewBestCards()
 {
-    //manaRect no iniciado, estamos leyendo screenRects de settings
-    if(manaRects[1].width<1 || manaRects[1].height<1 || draftCards[0].getCode().isEmpty())
+    if(!futureReviewBestCards.isRunning()) futureReviewBestCards.setFuture(QtConcurrent::run(this, &DraftHandler::reviewBestCards));
+    else    emit pDebug("reviewBestCards: Avoid new run, already running.");
+}
+void DraftHandler::finishReviewBestCards()
+{
+    QString *bestCodes = futureReviewBestCards.result();
+    if(bestCodes == nullptr)
     {
         emit pDebug("reviewBestCards: manaRects/draftCards not ready.");
         return;
     }
 
+    bool needShowCards = false;
+
+    for(int i=0; i<3; i++)
+    {
+        if(bestCodes[i] != draftCards[i].getCode())
+        {
+            needShowCards = true;
+        }
+    }
+
+    if(needShowCards)
+    {
+        DraftCard bestCards[3];
+        if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
+        for(int i=0; i<3; i++)
+        {
+            if(bestCodes[i] != draftCards[i].getCode())
+            {
+                if(draftScoreWindow != nullptr) draftScoreWindow->setWarningCard(i, bestCodes[i]);
+                bestCards[i] = DraftCard(bestCodes[i]);
+            }
+            else    bestCards[i] = draftCards[i];
+        }
+
+        this->resetTwitchScores = false;
+        showNewCards(bestCards);
+    }
+    delete [] bestCodes;
+}
+
+
+QString * DraftHandler::reviewBestCards()
+{
+    //manaRect no iniciado, estamos leyendo screenRects de settings
+    if(manaRects[1].width<1 || manaRects[1].height<1 || draftCards[0].getCode().isEmpty())
+    {
+        return nullptr;
+    }
+
     const cv::Mat screenBig = getScreenMat();
-    if(screenBig.empty())   return;
+    if(screenBig.empty())   return nullptr;
 
     double fx = 24.0/manaRects[1].width;
     double fy = 32.0/manaRects[1].height;
@@ -2963,7 +3011,6 @@ void DraftHandler::reviewBestCards()
     initRarityTemplates(rarityTemplates, 4);
 
     DraftCard bestCards[3];
-    bool needShowCards = false;
     for(int i=0; i<3; i++)
     {
         int imgMana;
@@ -2974,16 +3021,16 @@ void DraftHandler::reviewBestCards()
 
         int cardMana = draftCards[i].getCost();
         CardRarity cardRarity = draftCards[i].getRarity();
+
         if(cardMana<10 && imgMana != -1 && imgRarity != INVALID_RARITY &&
                 (imgMana != cardMana || imgRarity != cardRarity))
         {
             bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
-            needShowCards = true;
             qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
         }
         else    bestCards[i] = draftCards[i];
     }
-    if(needShowCards)  showNewCards(bestCards);
+    return new QString[3]{bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
 }
 
 

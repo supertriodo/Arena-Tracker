@@ -7,6 +7,7 @@
 #include "movelistwidget.h"
 #include "scorebutton.h"
 #include "twitchbutton.h"
+#include "hoverlabel.h"
 #include "../utility.h"
 #include "../Cards/synergycard.h"
 
@@ -18,7 +19,7 @@
 class SynergyMotion
 {
 public:
-    bool moveDown, moving;
+    bool moveDown, moving, running;
     int value, maximum, stepValue;
 };
 
@@ -48,6 +49,10 @@ private:
     bool scores2Rows;
     bool showHA, showLF, showHSR, showTwitch;
     bool wantedMechanics[M_NUM_MECHANICS];
+    SynergyCard *warningCard[3];
+    HoverLabel *warningCardLabel[3];
+    QLabel *warningOkLabel[3];
+    bool onWarnMode[3];
 
 
 //Metodos
@@ -63,6 +68,8 @@ private:
     void groupSynergyTags(QMap<QString, QMap<QString, int> > &synergyTagMap);
     QString getMechanicFile(MechanicIcons mechanicIcon);
     bool isWantedMechanic(uint mechanicIcon);
+    void hideWarnings();
+    void showScores(int i);
 
 public:
     void setScores(float rating1, float rating2, float rating3, DraftMethod draftMethod,
@@ -77,6 +84,8 @@ public:
     void setTwitchScores(int vote1, int vote2, int vote3, QString username);
     void setWantedMechanic(uint mechanicIcon, bool value);
     void setWantedMechanics(bool wantedMechanics[]);
+    void setWarningCard(const int posCard, const QString &code);
+    void setTheme();
 
 signals:
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);
@@ -92,6 +101,7 @@ private slots:
     void stepScrollSynergies(int indexList);
     void resumeSynergyMotion();
     void clearMechanics();
+    void findWarningCardLabelEntered(HoverLabel *hoverLabel);
 };
 
 #endif // DRAFTSCOREWINDOW_H

@@ -46,7 +46,7 @@ void DraftItemCounter::init(QHBoxLayout *hLayout, bool iconHover)
 
     if(iconHover)
     {
-        connect(labelIcon, SIGNAL(enter()),
+        connect(labelIcon, SIGNAL(enter(HoverLabel*)),
                 this, SLOT(sendIconEnter()));
         connect(labelIcon, SIGNAL(leave()),
                 this, SIGNAL(iconLeave()));

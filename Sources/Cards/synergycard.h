@@ -1,6 +1,7 @@
 #ifndef SYNERGYCARD_H
 #define SYNERGYCARD_H
 
+#include <qlabel.h>
 #include "deckcard.h"
 
 
@@ -24,6 +25,7 @@ public:
     QString getSynergyTag();
     void setSynergyTag(QString synergyTag);
     void draw();
+    void draw(QLabel *label);
 
     static void setSynergyWidth(int value);
 };

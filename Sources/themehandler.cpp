@@ -55,7 +55,7 @@ QString ThemeHandler::minionsCounterFile_, ThemeHandler::spellsCounterFile_, The
 QString ThemeHandler::drop2CounterFile_, ThemeHandler::drop3CounterFile_, ThemeHandler::drop4CounterFile_;
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
 QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
-QString ThemeHandler::goldenMechanicFile_, ThemeHandler::greenMechanicFile_, ThemeHandler::redMechanicFile_;
+QString ThemeHandler::checkCardOkFile_, ThemeHandler::goldenMechanicFile_, ThemeHandler::greenMechanicFile_, ThemeHandler::redMechanicFile_;
 QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::bgDraftMechanicsHelpDropsFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
@@ -795,6 +795,12 @@ QString ThemeHandler::reachMechanicFile()
 }
 
 
+QString ThemeHandler::checkCardOkFile()
+{
+    return checkCardOkFile_;
+}
+
+
 QString ThemeHandler::goldenMechanicFile()
 {
     return goldenMechanicFile_;
@@ -1064,6 +1070,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     damageMechanicFile_ = loadThemeFile(themePath, jsonObject, "damageMechanicFile");
     destroyMechanicFile_ = loadThemeFile(themePath, jsonObject, "destroyMechanicFile");
     reachMechanicFile_ = loadThemeFile(themePath, jsonObject, "reachMechanicFile");
+    checkCardOkFile_ = loadThemeFile(themePath, jsonObject, "checkCardOkFile");
     goldenMechanicFile_ = loadThemeFile(themePath, jsonObject, "goldenMechanicFile");
     greenMechanicFile_ = loadThemeFile(themePath, jsonObject, "greenMechanicFile");
     redMechanicFile_ = loadThemeFile(themePath, jsonObject, "redMechanicFile");
@@ -1334,6 +1341,7 @@ void ThemeHandler::defaultEmptyValues()
     if(damageMechanicFile_.isEmpty())   damageMechanicFile_ = ":/Images/damageMechanic.png";
     if(destroyMechanicFile_.isEmpty())  destroyMechanicFile_ = ":/Images/destroyMechanic.png";
     if(reachMechanicFile_.isEmpty())    reachMechanicFile_ = ":/Images/reachMechanic.png";
+    if(checkCardOkFile_.isEmpty())      checkCardOkFile_ = ":/Images/checkCardOk.png";
     if(bgDraftMechanicsFile_.isEmpty()) bgDraftMechanicsFile_ = ":/Images/bgDraftMechanics.png";
     if(bgDraftMechanicsHelpFile_.isEmpty())         bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
     if(bgDraftMechanicsHelpDropsFile_.isEmpty())    bgDraftMechanicsHelpDropsFile_ = ":/Images/bgDraftMechanicsHelpDrops.png";

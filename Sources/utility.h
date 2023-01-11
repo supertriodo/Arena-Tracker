@@ -118,8 +118,8 @@ public:
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setLocalLang(const QString &localLang);
     static QString removeAccents(const QString &s);
-    static QPropertyAnimation *fadeInWidget(QWidget *widget);
-    static QPropertyAnimation *fadeOutWidget(QWidget *widget);
+    static QPropertyAnimation *fadeInWidget(QWidget *widget, bool force=false);
+    static QPropertyAnimation *fadeOutWidget(QWidget *widget, bool force=false);
     static QString getLoadingScreenToString(LoadingScreenState loadingScreen);
     static LoadingScreenState getLoadingScreenFromString(const QString &loadingScreenString);
     static std::vector<Point2f> findTemplateOnScreen(const QString &templateImage, QScreen *screen, const std::vector<Point2f> &templatePoints, QPointF &screenScale, int &screenHeight);

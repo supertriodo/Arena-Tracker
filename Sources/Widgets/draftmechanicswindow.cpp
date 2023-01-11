@@ -44,7 +44,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     helpMark->move(width() - static_cast<int>(scoreWidth*0.775), static_cast<int>(scoreWidth*0.235));
     helpMark->resize(scoreWidth/2, scoreWidth/2);
     helpMark->hide();
-    connect(helpMark, SIGNAL(enter()),
+    connect(helpMark, SIGNAL(enter(HoverLabel*)),
             this, SLOT(showHelp()));
     connect(helpMark, SIGNAL(leave()),
             this, SLOT(hideHelp()));

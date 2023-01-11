@@ -10,7 +10,7 @@ bool HoverLabel::event(QEvent *e)
 {
     if(e->type() == QEvent::HoverEnter)
     {
-        emit enter();
+        emit enter(this);
         return true;
     }
     else if(e->type() == QEvent::HoverLeave)

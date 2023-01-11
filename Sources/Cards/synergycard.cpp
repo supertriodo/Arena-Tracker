@@ -37,6 +37,16 @@ void SynergyCard::draw()
 }
 
 
+void SynergyCard::draw(QLabel *label)
+{
+    QPixmap canvas = DeckCard::draw(total, false, BLACK, "", synergyWidth);
+    if(remaining == 0)          disablePixmap(canvas);
+    if(!synergyTag.isEmpty())   drawSynergyTag(canvas);
+
+    label->setPixmap(canvas);
+}
+
+
 void SynergyCard::drawSynergyTag(QPixmap &canvas)
 {
     //Scale

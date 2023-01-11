@@ -109,6 +109,7 @@ private:
     QFutureWatcher<QString> futureFindCodeFromText;
     QString lastThreadText;
     bool wantedMechanics[M_NUM_MECHANICS];
+    QFutureWatcher<QString *> futureReviewBestCards;
 
 
 //Metodos
@@ -180,7 +181,6 @@ private:
     void startFindCodeFromText(const QString &text);
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
-    void reviewBestCards();
     void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const cv::Mat manaTemplates[10], const cv::Mat rarityTemplates[4],
                             const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall);
     double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
@@ -193,6 +193,8 @@ private:
     cv::Mat getScreenMat();
     DraftCard getBestMatchManaRarity(const int pos, const Mat &screenBig, const int imgMana, const CardRarity imgRarity);
     DraftCard getBestAllMatchManaRarity(const MatND &screenCardHist, const int imgMana, const CardRarity imgRarity);
+    void startReviewBestCards();
+    QString *reviewBestCards();
 
 public:
     void buildHeroCodesList();
@@ -279,6 +281,7 @@ private slots:
     void editCardName(const QString &text);
     void editCardNameFinish();
     void finishFindCodeFromText();
+    void finishReviewBestCards();
 };
 
 #endif // DRAFTHANDLER_H

@@ -37,6 +37,50 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
     for(int i=0; i<3; i++)
     {
+        //Warning Card
+        warningCard[i] = new SynergyCard("");
+        warningCard[i]->total = warningCard[i]->remaining = 1;
+        warningCard[i]->setSynergyTag("Is this your card?");
+        warningCardLabel[i] = new HoverLabel(centralWidget);
+        warningCardLabel[i]->setToolTip("Click ok or look for your card in the combobox.");
+        warningCardLabel[i]->hide();
+
+        connect(warningCardLabel[i], SIGNAL(enter(HoverLabel*)),
+                this, SLOT(findWarningCardLabelEntered(HoverLabel*)));
+        connect(warningCardLabel[i], SIGNAL(leave()),
+                this, SIGNAL(cardLeave()));
+
+        //Warning Ok
+        warningOkLabel[i] = new QLabel(centralWidget);
+        QPixmap pixmap(ThemeHandler::checkCardOkFile());
+        warningOkLabel[i]->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
+        warningOkLabel[i]->hide();
+        onWarnMode[i] = false;
+
+        //Opacity effects
+        QGraphicsOpacityEffect *effect;
+        effect = new QGraphicsOpacityEffect(warningCardLabel[i]);
+        effect->setOpacity(0);
+        warningCardLabel[i]->setGraphicsEffect(effect);
+        effect = new QGraphicsOpacityEffect(warningOkLabel[i]);
+        effect->setOpacity(0);
+        warningOkLabel[i]->setGraphicsEffect(effect);
+
+        //LAYOUTS warning ok
+        QHBoxLayout *horLayoutWarn1 = new QHBoxLayout();
+        horLayoutWarn1->addStretch();
+        horLayoutWarn1->addWidget(warningCardLabel[i]);
+        horLayoutWarn1->addStretch();
+
+        QHBoxLayout *horLayoutWarn2 = new QHBoxLayout();
+        horLayoutWarn2->addStretch();
+        horLayoutWarn2->addWidget(warningOkLabel[i]);
+        horLayoutWarn2->addStretch();
+
+        verLayout[i] = new QVBoxLayout();
+        verLayout[i]->addLayout(horLayoutWarn1);
+        verLayout[i]->addLayout(horLayoutWarn2);
+
         //Scores
         scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, -1);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
@@ -67,7 +111,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         twitchButton[i]->hide();
 
         //Opacity effects
-        QGraphicsOpacityEffect *effect;
         effect = new QGraphicsOpacityEffect(scoresPushButton[i]);
         effect->setOpacity(0);
         scoresPushButton[i]->setGraphicsEffect(effect);
@@ -92,7 +135,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         horLayoutScoresG->addLayout(horLayoutScores[i]);
         horLayoutScoresG->addStretch();
 
-        verLayout[i] = new QVBoxLayout();
         verLayout[i]->addLayout(horLayoutScoresG);
 
         gridLayoutMechanics[i] = new QGridLayout();
@@ -121,6 +163,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
                 this, SIGNAL(cardLeave()));
         connect(synergiesListWidget[i], SIGNAL(leave()),
                 this, SLOT(resumeSynergyMotion()));
+
+        synergyMotions[i].running = false;
 
         //LAYOUTS synergies
         QVBoxLayout *verLayoutSynergy = new QVBoxLayout();
@@ -157,6 +201,7 @@ DraftScoreWindow::~DraftScoreWindow()
     {
         synergiesListWidget[i]->clear();
         synergyCardLists[i].clear();
+        delete warningCard[i];
     }
 }
 
@@ -307,31 +352,49 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
     {
         if(draftMethod == LightForge)
         {
-            scoresPushButton[i]->setScore(ratings[i], bestRating);
-            Utility::fadeInWidget(scoresPushButton[i]);
+            if(!onWarnMode[i])
+            {
+                scoresPushButton[i]->setScore(ratings[i], bestRating);
+                Utility::fadeInWidget(scoresPushButton[i]);
+            }
         }
         else if(draftMethod == HSReplay)
         {
-            scoresPushButton3[i]->setScore(ratings[i], bestRating, includedDecks[i]);
-            Utility::fadeInWidget(scoresPushButton3[i]);
+            if(!onWarnMode[i])
+            {
+                scoresPushButton3[i]->setScore(ratings[i], bestRating, includedDecks[i]);
+                Utility::fadeInWidget(scoresPushButton3[i]);
+            }
         }
         else if(draftMethod == HearthArena)
         {
-            scoresPushButton2[i]->setScore(ratings[i], bestRating);
-            QPropertyAnimation *animation = Utility::fadeInWidget(scoresPushButton2[i]);
-
-            if(i==0)
+            if(!onWarnMode[i])
             {
-                if(animation != nullptr)    connect(animation, SIGNAL(finished()), this, SLOT(showSynergies()));
-                else                        showSynergies();
+                scoresPushButton2[i]->setScore(ratings[i], bestRating);
+                Utility::fadeInWidget(scoresPushButton2[i]);
             }
         }
     }
 
-    //Fade-in twitch scores
     if(draftMethod == HearthArena)
     {
-        for(int i=0; i<3; i++)  Utility::fadeInWidget(twitchButton[i]);
+        for(int i=0; i<3; i++)
+        {
+            //Fade-in warn mode
+            if(onWarnMode[i])
+            {
+                Utility::fadeInWidget(warningCardLabel[i]);
+                Utility::fadeInWidget(warningOkLabel[i]);
+                warningCardLabel[i]->show();
+                warningOkLabel[i]->show();
+            }
+            //Fade-in twitch scores
+            else
+            {
+                showScores(i);
+                Utility::fadeInWidget(twitchButton[i]);
+            }
+        }
     }
 }
 
@@ -479,6 +542,7 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
         posMech++;
     }
+    if(posCard==2)  showSynergies();
 }
 
 
@@ -494,10 +558,18 @@ void DraftScoreWindow::createMechanicIcon(int posCard, int posMech, MechanicIcon
     effect->setOpacity(0);
     label->setGraphicsEffect(effect);
 
-    Utility::fadeInWidget(label);
+    if(!onWarnMode[posCard])    Utility::fadeInWidget(label);
     label->show();
     if(scores2Rows) gridLayoutMechanics[posCard]->addWidget(label, posMech%2, posMech/2);
     else            gridLayoutMechanics[posCard]->addWidget(label, 0, posMech);
+}
+
+
+void DraftScoreWindow::setWarningCard(const int posCard, const QString &code)
+{
+    warningCard[posCard]->setCode(code);
+    warningCard[posCard]->draw(warningCardLabel[posCard]);
+    onWarnMode[posCard] = true;
 }
 
 
@@ -602,6 +674,15 @@ QString DraftScoreWindow::getMechanicTooltip(MechanicIcons mechanicIcon)
 }
 
 
+void DraftScoreWindow::showScores(int i)
+{
+    scoresPushButton[i]->setVisible(showLF);
+    scoresPushButton2[i]->setVisible(showHA);
+    scoresPushButton3[i]->setVisible(showHSR);
+    twitchButton[i]->setVisible(showTwitch);
+}
+
+
 void DraftScoreWindow::hideScores(bool quick)
 {
     if(quick)
@@ -616,6 +697,11 @@ void DraftScoreWindow::hideScores(bool quick)
             eff->setOpacity(0);
             eff = static_cast<QGraphicsOpacityEffect *>(twitchButton[i]->graphicsEffect());
             eff->setOpacity(0);
+
+            scoresPushButton[i]->hide();
+            scoresPushButton2[i]->hide();
+            scoresPushButton3[i]->hide();
+            twitchButton[i]->hide();
         }
         clearMechanics();
     }
@@ -639,8 +725,24 @@ void DraftScoreWindow::hideScores(bool quick)
         }
     }
 
+    hideWarnings();
     hideSynergies();
     this->update();
+}
+
+
+void DraftScoreWindow::hideWarnings()
+{
+    for(int i=0; i<3; i++)
+    {
+        QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(warningCardLabel[i]->graphicsEffect());
+        eff->setOpacity(0);
+        eff = static_cast<QGraphicsOpacityEffect *>(warningOkLabel[i]->graphicsEffect());
+        eff->setOpacity(0);
+        warningCardLabel[i]->hide();
+        warningOkLabel[i]->hide();
+        onWarnMode[i]=false;
+    }
 }
 
 
@@ -657,11 +759,13 @@ void DraftScoreWindow::clearMechanics()
 void DraftScoreWindow::showSynergies()
 {
     resizeSynergyList();
-
     for(int i=0; i<3; i++)
     {
-        synergiesListWidget[i]->show();
-        stepScrollSynergies(i);
+        if(!onWarnMode[i])
+        {
+            synergiesListWidget[i]->show();
+            if(!synergyMotions[i].running)  stepScrollSynergies(i);
+        }
     }
     this->update();
 }
@@ -685,6 +789,11 @@ void DraftScoreWindow::redrawSynergyCards()
         for(SynergyCard &synergyCard: synergyCardLists[i])
         {
             synergyCard.draw();
+        }
+
+        if(onWarnMode[i] && !warningCard[i]->getCode().isEmpty())
+        {
+            warningCard[i]->draw(warningCardLabel[i]);
         }
     }
 }
@@ -732,9 +841,13 @@ void DraftScoreWindow::resizeSynergyList()
 void DraftScoreWindow::stepScrollSynergies(int indexList)
 {
     SynergyMotion &sm = synergyMotions[indexList];
+    sm.running = true;
     MoveListWidget *lw = synergiesListWidget[indexList];
     if(sm.maximum <= 0 || lw->count()==0)
+    {
+        sm.running = false;
         return;
+    }
 
     QTimer::singleShot(SYNERGY_MOTION_UPDATE_TIME, this, [=]() {stepScrollSynergies(indexList);});
     if(sm.moving)
@@ -792,5 +905,41 @@ void DraftScoreWindow::resumeSynergyMotion()
     {
         synergyMotions[i].moving = true;
         synergyMotions[i].value = synergiesListWidget[i]->verticalScrollBar()->value();
+    }
+}
+
+
+void DraftScoreWindow::findWarningCardLabelEntered(HoverLabel* hoverLabel)
+{
+    //Detect synergy list
+    int indexList = -1;
+
+    for(int i=0; i<3; i++)
+    {
+        if(warningCardLabel[i] == hoverLabel)
+        {
+            indexList = i;
+            break;
+        }
+    }
+    if(indexList == -1) return;
+
+    QString code = warningCard[indexList]->getCode();
+
+    QRect rectCard = hoverLabel->rect();
+    QPoint posCard = hoverLabel->mapToGlobal(rectCard.topLeft());
+    QRect globalRectCard = QRect(posCard, rectCard.size());
+
+    int synergyListTop = hoverLabel->mapToGlobal(QPoint(0,0)).y();
+    emit cardEntered(code, globalRectCard, synergyListTop, synergyListTop);
+}
+
+
+void DraftScoreWindow::setTheme()
+{
+    QPixmap pixmap(ThemeHandler::checkCardOkFile());
+    for(int i=0; i<3; i++)
+    {
+        warningOkLabel[i]->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
     }
 }
