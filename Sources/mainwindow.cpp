@@ -2736,6 +2736,12 @@ void MainWindow::downloadExtraFiles()
     file = QFileInfo(Utility::extraPath() + "/mechanicsTemplate.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/mechanicsTemplate.png"))));
 
+    file = QFileInfo(Utility::extraPath() + "/MANA.dat");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/MANA.dat"))));
+
+    file = QFileInfo(Utility::extraPath() + "/RARITY.dat");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/RARITY.dat"))));
+
     file = QFileInfo(Utility::extraPath() + "/icon.png");
     if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
 }

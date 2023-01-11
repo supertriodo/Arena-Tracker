@@ -110,6 +110,8 @@ private:
     QString lastThreadText;
     bool wantedMechanics[M_NUM_MECHANICS];
     QFutureWatcher<QString *> futureReviewBestCards;
+    QList<cv::Mat> manaTemplates;
+    QList<cv::Mat> rarityTemplates;
 
 
 //Metodos
@@ -181,20 +183,19 @@ private:
     void startFindCodeFromText(const QString &text);
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
-    void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const cv::Mat manaTemplates[10], const cv::Mat rarityTemplates[4],
+    void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const QList<Mat> &manaTemplates, const QList<Mat> &rarityTemplates,
                             const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall);
     double getL2Mat(const cv::Mat &matSample, const cv::Mat &matTemplate);
     void getBestNOnRect(const cv::Rect &rect, const int xOff, const int yOff, const cv::Mat &screenCapture,
-                                const Mat matTemplates[], const int numTemplates, double &best, int &bestX, int &bestY, int &bestN);
+                                const QList<Mat> &matTemplates, const int numTemplates, double &best, int &bestX, int &bestY, int &bestN);
     void setStartEndLoop(int &startX, int &startY, int &endX, int &endY, const int centerX, const int centerY, const int jump);
-    void initManaTemplates(cv::Mat manaTemplates[], const int numTemplates);
-    void initRarityTemplates(cv::Mat rarityTemplates[], const int numTemplates);
-    void getBestN(int &bestNs, double &bestL2s, const Rect &rectSmall, const cv::Mat &screenCapture, const Mat matTemplates[], const int numTemplates);
+    void getBestN(int &bestNs, double &bestL2s, const Rect &rectSmall, const cv::Mat &screenCapture, const QList<Mat> &matTemplates, const int numTemplates);
     cv::Mat getScreenMat();
     DraftCard getBestMatchManaRarity(const int pos, const Mat &screenBig, const int imgMana, const CardRarity imgRarity);
     DraftCard getBestAllMatchManaRarity(const MatND &screenCardHist, const int imgMana, const CardRarity imgRarity);
     void startReviewBestCards();
     QString *reviewBestCards();
+    void loadImgTemplates(QList<Mat> &imgTemplates, const QString &filename);
 
 public:
     void buildHeroCodesList();

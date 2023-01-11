@@ -51,7 +51,7 @@ private:
     bool wantedMechanics[M_NUM_MECHANICS];
     SynergyCard *warningCard[3];
     HoverLabel *warningCardLabel[3];
-    QLabel *warningOkLabel[3];
+    HoverLabel *warningOkLabel[3];
     bool onWarnMode[3];
 
 
@@ -69,6 +69,7 @@ private:
     QString getMechanicFile(MechanicIcons mechanicIcon);
     bool isWantedMechanic(uint mechanicIcon);
     void hideWarnings();
+    void hideWarning(int i);
     void showScores(int i);
 
 public:
@@ -102,6 +103,7 @@ private slots:
     void resumeSynergyMotion();
     void clearMechanics();
     void findWarningCardLabelEntered(HoverLabel *hoverLabel);
+    void warningOkClick(HoverLabel *hoverLabel);
 };
 
 #endif // DRAFTSCOREWINDOW_H

@@ -679,6 +679,8 @@ void DraftHandler::clearLists(bool keepCounters)
     lightForgeTiers.clear();
     cardsHist.clear();
     cardsNameMap.clear();
+    manaTemplates.clear();
+    rarityTemplates.clear();
     needSaveCardHist = false;
 
     if(!keepCounters)//endDraft
@@ -807,6 +809,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
     createTwitchHandler();
+    loadImgTemplates(manaTemplates, "MANA.dat");
+    loadImgTemplates(rarityTemplates, "RARITY.dat");
 }
 
 
@@ -3005,11 +3009,6 @@ QString * DraftHandler::reviewBestCards()
     cv::Mat screenSmall;
     resize(screenBig, screenSmall, Size(), fx, fy, CV_INTER_AREA);
 
-    cv::Mat manaTemplates[10];
-    initManaTemplates(manaTemplates, 10);
-    cv::Mat rarityTemplates[4];
-    initRarityTemplates(rarityTemplates, 4);
-
     DraftCard bestCards[3];
     for(int i=0; i<3; i++)
     {
@@ -3094,12 +3093,13 @@ DraftCard DraftHandler::getBestAllMatchManaRarity(const cv::MatND &screenCardHis
 
 
 void DraftHandler::getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall,
-    const cv::Mat manaTemplates[10], const cv::Mat rarityTemplates[4], const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall)
+                                      const QList<cv::Mat> &manaTemplates, const QList<cv::Mat> &rarityTemplates,
+                                      const cv::Rect &manaRectSmall, const cv::Rect &rarityRectSmall)
 {
     int bestNMana, bestNRarity;
     double bestL2Mana, bestL2Rarity;
-    getBestN(bestNMana, bestL2Mana, manaRectSmall, screenSmall, manaTemplates, 10);
-    getBestN(bestNRarity, bestL2Rarity, rarityRectSmall, screenSmall, rarityTemplates, 4);
+    getBestN(bestNMana, bestL2Mana, manaRectSmall, screenSmall, manaTemplates, manaTemplates.count());
+    getBestN(bestNRarity, bestL2Rarity, rarityRectSmall, screenSmall, rarityTemplates, rarityTemplates.count());
 
     if(bestL2Mana<MANA_L2_THRESHOLD)        manaN = bestNMana;
     else                                    manaN = -1;
@@ -3109,7 +3109,7 @@ void DraftHandler::getBestNManaRarity(int &manaN, CardRarity &cardRarity, const 
 
 
 void DraftHandler::getBestN(int &bestNs, double &bestL2s, const cv::Rect &rectSmall,
-                                const cv::Mat &screenCapture, const cv::Mat matTemplates[], const int numTemplates)
+                                const cv::Mat &screenCapture, const QList<cv::Mat> &matTemplates, const int numTemplates)
 {
     const float l2valid = 3.5;
     bool maxJumpReached = false;
@@ -3198,7 +3198,7 @@ void DraftHandler::setStartEndLoop(int &startX, int &startY, int &endX, int &end
 
 
 void DraftHandler::getBestNOnRect(const cv::Rect &rect, const int xOff, const int yOff, const cv::Mat &screenCapture,
-                                    const cv::Mat matTemplates[], const int numTemplates,
+                                    const QList<cv::Mat> &matTemplates, const int numTemplates,
                                     double &best, int &bestX, int &bestY, int &bestN)
 {
     cv::Mat mat = screenCapture(cv::Rect(rect.x + xOff, rect.y + yOff, rect.width, rect.height));
@@ -3223,26 +3223,6 @@ double DraftHandler::getL2Mat(const cv::Mat &matSample, const cv::Mat &matTempla
 }
 
 
-void DraftHandler::initManaTemplates(cv::Mat manaTemplates[], const int numTemplates)
-{
-    for(int i=0; i<numTemplates; i++)
-    {
-        manaTemplates[i] = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/mana" +
-                            QString::number(i) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
-    }
-}
-
-
-void DraftHandler::initRarityTemplates(cv::Mat rarityTemplates[], const int numTemplates)
-{
-    for(int i=0; i<numTemplates; i++)
-    {
-        rarityTemplates[i] = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/rarity" +
-                            QString::number(i) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
-    }
-}
-
-
 cv::Mat DraftHandler::getScreenMat()
 {
     QList<QScreen *> screens = QGuiApplication::screens();
@@ -3255,6 +3235,86 @@ cv::Mat DraftHandler::getScreenMat()
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<ulong>(image.bytesPerLine()));
     return mat.clone();
 }
+
+
+void DraftHandler::loadImgTemplates(QList<cv::Mat> &imgTemplates, const QString &filename)
+{
+    int num;
+    int type, rows, cols;
+    bool continuous;
+
+    QFile file(Utility::extraPath() + "/" + filename);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        emit pDebug("ERROR: Cannot open " + file.fileName());
+        return;
+    }
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_5_5);
+
+    while(!in.atEnd())
+    {
+        in >> num >> type >> rows >> cols >> continuous;
+        cv::Mat mat = cv::Mat(rows, cols, type);
+
+        if(continuous)
+        {
+            size_t const dataSize = rows * cols * mat.elemSize();
+            in.readRawData(reinterpret_cast<char*>(mat.ptr()), dataSize);
+        }
+        else
+        {
+            size_t const rowSize(cols * mat.elemSize());
+            for(int i=0; i<rows; i++)   in.readRawData(reinterpret_cast<char*>(mat.ptr(i)), rowSize);
+        }
+        imgTemplates += mat;
+        qDebug()<<"READ:" << num << type << rows << cols << continuous;
+    }
+    file.close();
+}
+
+
+/*
+void DraftHandler::testSave()
+{
+    //Save
+    int type, rows, cols;
+    bool continuous;
+
+    QFile file(Utility::extraPath() + "/MANA" + HISTOGRAM_EXT);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        emit pDebug("ERROR: Cannot open " + file.fileName());
+        return;
+    }
+    QDataStream out(&file);
+    out.setVersion(QDataStream::Qt_5_5);
+
+    for(int num=0; num<10; num++)
+    {
+        cv::Mat mat = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/mana" +
+                                   QString::number(num) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
+        type = mat.type();
+        rows = mat.rows;
+        cols = mat.cols;
+        continuous = mat.isContinuous();
+        out << num << type << rows << cols << continuous;
+
+        if(continuous)
+        {
+            size_t const dataSize = rows * cols * mat.elemSize();
+            out.writeRawData(reinterpret_cast<char const*>(mat.ptr()), dataSize);
+        }
+        else
+        {
+            size_t const rowSize(cols * mat.elemSize());
+            for(int i=0; i<rows; i++)   out.writeRawData(reinterpret_cast<char const*>(mat.ptr(i)), rowSize);
+        }
+        qDebug()<<"WRITE:" << num << type << rows << cols << continuous;
+    }
+    file.close();
+}
+*/
 
 
 //Heroes

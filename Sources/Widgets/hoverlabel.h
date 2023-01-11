@@ -15,9 +15,9 @@ protected:
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
 signals:
-    void enter();
     void enter(HoverLabel *hoverLabel);
     void leave();
+    void click(HoverLabel *hoverLabel);
 };
 
 #endif // HOVERLABEL_H

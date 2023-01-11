@@ -42,7 +42,6 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         warningCard[i]->total = warningCard[i]->remaining = 1;
         warningCard[i]->setSynergyTag("Is this your card?");
         warningCardLabel[i] = new HoverLabel(centralWidget);
-        warningCardLabel[i]->setToolTip("Click ok or look for your card in the combobox.");
         warningCardLabel[i]->hide();
 
         connect(warningCardLabel[i], SIGNAL(enter(HoverLabel*)),
@@ -51,11 +50,15 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
                 this, SIGNAL(cardLeave()));
 
         //Warning Ok
-        warningOkLabel[i] = new QLabel(centralWidget);
+        warningOkLabel[i] = new HoverLabel(centralWidget);
         QPixmap pixmap(ThemeHandler::checkCardOkFile());
         warningOkLabel[i]->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
+        warningOkLabel[i]->setToolTip("Click ok or look for your card in the combobox.");
         warningOkLabel[i]->hide();
         onWarnMode[i] = false;
+
+        connect(warningOkLabel[i], SIGNAL(click(HoverLabel*)),
+                this, SLOT(warningOkClick(HoverLabel*)));
 
         //Opacity effects
         QGraphicsOpacityEffect *effect;
@@ -352,27 +355,18 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
     {
         if(draftMethod == LightForge)
         {
-            if(!onWarnMode[i])
-            {
-                scoresPushButton[i]->setScore(ratings[i], bestRating);
-                Utility::fadeInWidget(scoresPushButton[i]);
-            }
+            scoresPushButton[i]->setScore(ratings[i], bestRating);
+            if(!onWarnMode[i])  Utility::fadeInWidget(scoresPushButton[i]);
         }
         else if(draftMethod == HSReplay)
         {
-            if(!onWarnMode[i])
-            {
-                scoresPushButton3[i]->setScore(ratings[i], bestRating, includedDecks[i]);
-                Utility::fadeInWidget(scoresPushButton3[i]);
-            }
+            scoresPushButton3[i]->setScore(ratings[i], bestRating, includedDecks[i]);
+            if(!onWarnMode[i])  Utility::fadeInWidget(scoresPushButton3[i]);
         }
         else if(draftMethod == HearthArena)
         {
-            if(!onWarnMode[i])
-            {
-                scoresPushButton2[i]->setScore(ratings[i], bestRating);
-                Utility::fadeInWidget(scoresPushButton2[i]);
-            }
+            scoresPushButton2[i]->setScore(ratings[i], bestRating);
+            if(!onWarnMode[i])  Utility::fadeInWidget(scoresPushButton2[i]);
         }
     }
 
@@ -733,16 +727,19 @@ void DraftScoreWindow::hideScores(bool quick)
 
 void DraftScoreWindow::hideWarnings()
 {
-    for(int i=0; i<3; i++)
-    {
-        QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(warningCardLabel[i]->graphicsEffect());
-        eff->setOpacity(0);
-        eff = static_cast<QGraphicsOpacityEffect *>(warningOkLabel[i]->graphicsEffect());
-        eff->setOpacity(0);
-        warningCardLabel[i]->hide();
-        warningOkLabel[i]->hide();
-        onWarnMode[i]=false;
-    }
+    for(int i=0; i<3; i++)  hideWarning(i);
+}
+
+
+void DraftScoreWindow::hideWarning(int i)
+{
+    QGraphicsOpacityEffect *eff = static_cast<QGraphicsOpacityEffect *>(warningCardLabel[i]->graphicsEffect());
+    eff->setOpacity(0);
+    eff = static_cast<QGraphicsOpacityEffect *>(warningOkLabel[i]->graphicsEffect());
+    eff->setOpacity(0);
+    warningCardLabel[i]->hide();
+    warningOkLabel[i]->hide();
+    onWarnMode[i]=false;
 }
 
 
@@ -912,19 +909,19 @@ void DraftScoreWindow::resumeSynergyMotion()
 void DraftScoreWindow::findWarningCardLabelEntered(HoverLabel* hoverLabel)
 {
     //Detect synergy list
-    int indexList = -1;
+    int index = -1;
 
     for(int i=0; i<3; i++)
     {
         if(warningCardLabel[i] == hoverLabel)
         {
-            indexList = i;
+            index = i;
             break;
         }
     }
-    if(indexList == -1) return;
+    if(index == -1) return;
 
-    QString code = warningCard[indexList]->getCode();
+    QString code = warningCard[index]->getCode();
 
     QRect rectCard = hoverLabel->rect();
     QPoint posCard = hoverLabel->mapToGlobal(rectCard.topLeft());
@@ -942,4 +939,30 @@ void DraftScoreWindow::setTheme()
     {
         warningOkLabel[i]->setPixmap(pixmap.scaledToWidth(scoreWidth/2,Qt::SmoothTransformation));
     }
+}
+
+
+void DraftScoreWindow::warningOkClick(HoverLabel *hoverLabel)
+{
+    //Detect okLabel
+    int index = -1;
+
+    for(int i=0; i<3; i++)
+    {
+        if(warningOkLabel[i] == hoverLabel)
+        {
+            index = i;
+            break;
+        }
+    }
+    if(index == -1) return;
+
+    hideWarning(index);
+    Utility::fadeInWidget(scoresPushButton[index], true);
+    Utility::fadeInWidget(scoresPushButton2[index], true);
+    Utility::fadeInWidget(scoresPushButton3[index], true);
+    Utility::fadeInWidget(twitchButton[index], true);
+    showScores(index);
+    synergiesListWidget[index]->show();
+    Utility::fadeInLayout(gridLayoutMechanics[index]);
 }
