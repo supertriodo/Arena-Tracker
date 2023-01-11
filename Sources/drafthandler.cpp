@@ -3045,7 +3045,7 @@ QString * DraftHandler::reviewBestCards()
                 (imgMana != cardMana || imgRarity != cardRarity))
         {
             bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
-            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();//TODO
+//            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
         }
         else    bestCards[i] = draftCards[i];
     }
@@ -3198,7 +3198,7 @@ void DraftHandler::getBestN(int &bestNs, double &bestL2s, const cv::Rect &rectSm
             setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
         }
     }
-    qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;//TODO
+//    qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;
     bestNs = bestN;
     bestL2s = best;
 
@@ -3313,7 +3313,7 @@ void DraftHandler::testSave()
     for(int num=0; num<10; num++)
     {
         cv::Mat mat = cv::imread(("/home/triodo/Documentos/ArenaTracker/Extra/mana" +
-                                   QString::number(num) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);//TODO
+                                   QString::number(num) + ".png").toStdString(), CV_LOAD_IMAGE_UNCHANGED);
         type = mat.type();
         rows = mat.rows;
         cols = mat.cols;
