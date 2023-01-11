@@ -48,6 +48,8 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
                 this, SLOT(findWarningCardLabelEntered(HoverLabel*)));
         connect(warningCardLabel[i], SIGNAL(leave()),
                 this, SIGNAL(cardLeave()));
+        connect(warningCardLabel[i], SIGNAL(click(HoverLabel*)),
+                this, SLOT(warningOkClick(HoverLabel*)));
 
         //Warning Ok
         warningOkLabel[i] = new HoverLabel(centralWidget);
@@ -949,7 +951,7 @@ void DraftScoreWindow::warningOkClick(HoverLabel *hoverLabel)
 
     for(int i=0; i<3; i++)
     {
-        if(warningOkLabel[i] == hoverLabel)
+        if(warningOkLabel[i] == hoverLabel || warningCardLabel[i] == hoverLabel)
         {
             index = i;
             break;

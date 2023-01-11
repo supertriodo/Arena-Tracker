@@ -38,6 +38,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->screenIndex = -1;
     this->screenScale = QPointF(1,1);
     this->needSaveCardHist = false;
+    this->prevCodesTime = 0;
 
     for(int i=0; i<3; i++)
     {
@@ -805,6 +806,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     this->justPickedCard = "";
     scoreButtonHSR->setClassOrder(arenaHero);
 
+    for(int i=0; i<3; i++)  prevCodes[i] = "";
+
     initCodesAndHistMaps(hero, skipScreenSettings);
     resetTab(alreadyDrafting);
     initSynergyCounters(deckCardList);
@@ -1487,6 +1490,7 @@ void DraftHandler::pickCard(QString code)
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
         clearScore(labelHSRscore[i], HSReplay);
+        prevCodes[i] = draftCards[i].getCode();
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
@@ -1495,6 +1499,7 @@ void DraftHandler::pickCard(QString code)
         bestMatchesMaps[i].clear();
     }
 
+    prevCodesTime = QDateTime::currentSecsSinceEpoch();
     this->numCaptured = 0;
     this->extendedCapture = false;
     this->resetTwitchScores = true;
@@ -1520,6 +1525,7 @@ void DraftHandler::refreshCapturedCards()
         clearScore(labelLFscore[i], LightForge);
         clearScore(labelHAscore[i], HearthArena);
         clearScore(labelHSRscore[i], HSReplay);
+        prevCodes[i] = "";
         draftCards[i].setCode("");
         draftCards[i].draw(comboBoxCard[i]);
         comboBoxCard[i]->setCurrentIndex(0);
@@ -1555,6 +1561,8 @@ void DraftHandler::refreshHeroes()
 
 void DraftHandler::showNewCards(DraftCard bestCards[3])
 {
+    for(int i=0; i<3; i++)  prevCodes[i] = "";
+
     //Load cards
     for(int i=0; i<3; i++)
     {
@@ -1787,6 +1795,7 @@ QString DraftHandler::degoldCode(QString fileName)
 void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
 {
     bool newCardsFound = false;
+    bool codesSameAsPrev = ((QDateTime::currentSecsSinceEpoch() - prevCodesTime)<PREV_CODES_TIME);
     const int numCandidates = (extendedCapture?CAPTURE_EXTENDED_CANDIDATES:CAPTURE_MIN_CANDIDATES);
 
     for(int i=0; i<3; i++)
@@ -1826,12 +1835,23 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
                 draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
                 if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match, true);
             }
+
+            if(codesSameAsPrev && j==0)
+            {
+                QString codeS = degoldCode(code);
+                if(codeS != prevCodes[i])   codesSameAsPrev = false;
+            }
         }
     }
 
-
+    //No empezamos a contar si siguen apareciendo las mismas 3 cartas despues del ultimo pick
+    if(codesSameAsPrev)
+    {
+        for(int i=0; i<3; i++)  draftCardMaps[i].clear();
+        numCaptured = 0;
+    }
     //No empezamos a contar mientras sigan apareciendo nuevas cartas en las 7 mejores posiciones
-    if(numCaptured != 0 || !newCardsFound)
+    else if(numCaptured != 0 || !newCardsFound)
     {
         if(numCaptured == 0)
         {
@@ -3025,7 +3045,7 @@ QString * DraftHandler::reviewBestCards()
                 (imgMana != cardMana || imgRarity != cardRarity))
         {
             bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
-            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
+            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();//TODO
         }
         else    bestCards[i] = draftCards[i];
     }
@@ -3033,7 +3053,8 @@ QString * DraftHandler::reviewBestCards()
 }
 
 
-DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &screenBig, const int imgMana, const CardRarity imgRarity)
+DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &screenBig,
+                                               const int imgMana, const CardRarity imgRarity)
 {
     int i=0;
     const QList<QString> codeList = bestMatchesMaps[pos].values();
@@ -3177,7 +3198,7 @@ void DraftHandler::getBestN(int &bestNs, double &bestL2s, const cv::Rect &rectSm
             setStartEndLoop(startX, startY, endX, endY, centerX, centerY, jump);
         }
     }
-    qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;
+    qDebug()<<"("<<bestX<<bestY<<") M:"<<bestN<<"L2:"<<best;//TODO
     bestNs = bestN;
     bestL2s = best;
 
@@ -3268,7 +3289,6 @@ void DraftHandler::loadImgTemplates(QList<cv::Mat> &imgTemplates, const QString 
             for(int i=0; i<rows; i++)   in.readRawData(reinterpret_cast<char*>(mat.ptr(i)), rowSize);
         }
         imgTemplates += mat;
-        qDebug()<<"READ:" << num << type << rows << cols << continuous;
     }
     file.close();
 }

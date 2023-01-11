@@ -30,6 +30,8 @@
 #define MANA_L2_THRESHOLD       4.5
 #define RARITY_L2_THRESHOLD     9
 
+#define PREV_CODES_TIME         15
+
 #define HISTOGRAM_EXT                   ".dat"
 
 
@@ -112,6 +114,8 @@ private:
     QFutureWatcher<QString *> futureReviewBestCards;
     QList<cv::Mat> manaTemplates;
     QList<cv::Mat> rarityTemplates;
+    QString prevCodes[3];
+    qint64 prevCodesTime;
 
 
 //Metodos
