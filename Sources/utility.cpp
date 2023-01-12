@@ -347,7 +347,7 @@ CardType Utility::getTypeFromCode(const QString &code)
 CardRarity Utility::getRarityFromCode(const QString &code)
 {
     QString value = Utility::getCardAttribute(code, "rarity").toString();
-    if(value == "FREE")             return COMMON;
+    if(value == "FREE")             return FREE;
     else if(value == "COMMON")      return COMMON;
     else if(value == "RARE")        return RARE;
     else if(value == "EPIC")        return EPIC;

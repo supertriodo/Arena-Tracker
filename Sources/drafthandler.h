@@ -30,7 +30,7 @@
 #define MANA_L2_THRESHOLD       4.5
 #define RARITY_L2_THRESHOLD     9
 
-#define PREV_CODES_TIME         15
+#define PREV_CODES_TIME         10
 
 #define HISTOGRAM_EXT                   ".dat"
 

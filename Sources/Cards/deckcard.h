@@ -11,7 +11,8 @@
 #define DISABLE_OPACITY 150
 
 
-enum CardRarity {COMMON, RARE, EPIC, LEGENDARY, NUM_RARITIES, INVALID_RARITY};
+//Usamos sus numeros para comparacion con rarity template en DraftHandler::reviewBestCards()
+enum CardRarity {COMMON=0, RARE=1, EPIC=2, LEGENDARY=3, FREE, INVALID_RARITY};
 //Nuevos CardType revisar SynergyHandler::updateCardTypeCounters
 enum CardType {INVALID_TYPE, HERO, MINION, SPELL, WEAPON, HERO_POWER, LOCATION};
 enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,

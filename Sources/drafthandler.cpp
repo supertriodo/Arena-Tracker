@@ -2986,7 +2986,7 @@ void DraftHandler::finishReviewBestCards()
 
     for(int i=0; i<3; i++)
     {
-        if(bestCodes[i] != draftCards[i].getCode())
+        if(!bestCodes[i].isEmpty())
         {
             needShowCards = true;
         }
@@ -2998,7 +2998,7 @@ void DraftHandler::finishReviewBestCards()
         if(draftScoreWindow != nullptr)    draftScoreWindow->hideScores(true);
         for(int i=0; i<3; i++)
         {
-            if(bestCodes[i] != draftCards[i].getCode())
+            if(!bestCodes[i].isEmpty())
             {
                 if(draftScoreWindow != nullptr) draftScoreWindow->setWarningCard(i, bestCodes[i]);
                 bestCards[i] = DraftCard(bestCodes[i]);
@@ -3041,13 +3041,23 @@ QString * DraftHandler::reviewBestCards()
         int cardMana = draftCards[i].getCost();
         CardRarity cardRarity = draftCards[i].getRarity();
 
-        if(cardMana<10 && imgMana != -1 && imgRarity != INVALID_RARITY &&
-                (imgMana != cardMana || imgRarity != cardRarity))
+        if(cardMana<10 && cardRarity != FREE && (imgMana != cardMana || imgRarity != cardRarity))
         {
-            bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
-//            qDebug()<<"Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
+            //Warning - Nueva carta
+            if(imgMana != -1 && imgRarity != INVALID_RARITY)
+            {
+                bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
+//                qDebug()<<"Warning Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
+            }
+            //Warning - Misma carta
+            else
+            {
+                bestCards[i] = draftCards[i];
+//                qDebug()<<"Warning Original:"<<bestCards[i].getName();
+            }
         }
-        else    bestCards[i] = draftCards[i];
+        //No Warning - Misma carta (code = "")
+
     }
     return new QString[3]{bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
 }

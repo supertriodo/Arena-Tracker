@@ -519,7 +519,8 @@ QPixmap DeckCard::resizeCardHeight(QPixmap &canvas)
 
 QColor DeckCard::getRarityColor()
 {
-    if(rarity == COMMON)            return WHITE;
+    if(rarity == FREE)              return WHITE;
+    else if(rarity == COMMON)       return WHITE;
     else if(rarity == RARE)         return BLUE;
     else if(rarity == EPIC)         return VIOLET;
     else if(rarity == LEGENDARY)    return ORANGE;

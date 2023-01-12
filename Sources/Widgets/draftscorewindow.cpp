@@ -391,6 +391,10 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
                 Utility::fadeInWidget(twitchButton[i]);
             }
         }
+        //Lo mostramos aqui y no en setSynergies pq setSynergies no se llama en la free version
+        //y show synergies contiene un resize necesario para que todas las columnas se vean cuadradas
+        //tanto en premium como en free
+        showSynergies();
     }
 }
 
@@ -538,7 +542,6 @@ void DraftScoreWindow::setSynergies(int posCard, QMap<QString, QMap<QString, int
         createMechanicIcon(posCard, posMech, mechanicIcon, mechanicIcons[mechanicIcon], dropBorderColor);
         posMech++;
     }
-    if(posCard==2)  showSynergies();
 }
 
 
