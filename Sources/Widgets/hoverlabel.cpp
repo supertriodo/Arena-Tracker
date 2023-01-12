@@ -15,7 +15,7 @@ bool HoverLabel::event(QEvent *e)
     }
     else if(e->type() == QEvent::HoverLeave)
     {
-        emit leave();
+        emit leave(this);
         return true;
     }
     else if(e->type() == QEvent::MouseButtonPress)

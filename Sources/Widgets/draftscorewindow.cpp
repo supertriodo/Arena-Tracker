@@ -46,8 +46,10 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
 
         connect(warningCardLabel[i], SIGNAL(enter(HoverLabel*)),
                 this, SLOT(findWarningCardLabelEntered(HoverLabel*)));
-        connect(warningCardLabel[i], SIGNAL(leave()),
+        connect(warningCardLabel[i], SIGNAL(leave(HoverLabel*)),
                 this, SIGNAL(cardLeave()));
+        connect(warningCardLabel[i], SIGNAL(leave(HoverLabel*)),
+                this, SLOT(warningOkClick(HoverLabel*)));
         connect(warningCardLabel[i], SIGNAL(click(HoverLabel*)),
                 this, SLOT(warningOkClick(HoverLabel*)));
 

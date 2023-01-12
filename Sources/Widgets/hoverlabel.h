@@ -16,7 +16,7 @@ protected:
 
 signals:
     void enter(HoverLabel *hoverLabel);
-    void leave();
+    void leave(HoverLabel *hoverLabel);
     void click(HoverLabel *hoverLabel);
 };
 

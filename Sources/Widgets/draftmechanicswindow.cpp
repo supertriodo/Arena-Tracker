@@ -46,7 +46,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     helpMark->hide();
     connect(helpMark, SIGNAL(enter(HoverLabel*)),
             this, SLOT(showHelp()));
-    connect(helpMark, SIGNAL(leave()),
+    connect(helpMark, SIGNAL(leave(HoverLabel*)),
             this, SLOT(hideHelp()));
 
 
