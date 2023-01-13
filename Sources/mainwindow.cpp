@@ -4729,7 +4729,7 @@ void MainWindow::testSynergies()
 
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 0, 20);//, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies("RLK_");
+//    draftHandler->getSynergyHandler()->testSynergies();
 
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4795,7 +4795,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     testHeroPortraits();
-//    testSynergies();
+    testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//Force hearthpwn true
 //    Utility::resizeSignatureCards();

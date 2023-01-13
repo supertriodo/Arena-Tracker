@@ -1925,7 +1925,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                    && attack<4 && health<4
 //                    && (attack + health)<7
 //                    && !isTokenGen(code, mechanics, text)
-//                    isCorpseGen(code, mechanics, text) && text.contains("risen")
+//                    isPingGen(code, mechanics, referencedTags, text, cardType, attack)
 //                    isCorpseSyn(code, text)
 //                    && !isDrop2(code, cost, attack, health)
 //                    && !isDrop3(code, cost, attack, health)
@@ -2016,7 +2016,8 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
 bool SynergyHandler::shouldBeInSynergies(const QString &code)
 {
     const QString &set = Utility::getCardAttribute(code, "set").toString();
-    return (!code.startsWith("HERO_") && set != "WILD_EVENT" && set != "VANILLA") && !set.startsWith("PLACEHOLDER");
+    return (!code.startsWith("HERO_") && !set.isEmpty() &&
+            set != "WILD_EVENT" && set != "VANILLA") && !set.startsWith("PLACEHOLDER");
 }
 
 

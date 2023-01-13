@@ -2014,7 +2014,7 @@
 "ICC_034" : [ "deathrattleOpponent", "drop4" ],
 "ICC_038" : [ "taunt", "divineShield" ],
 "ICC_039" : [ "destroyGen", "spellBuffGen", "eggSyn" ],
-"ICC_041" : [ "aoeGen", "pingGen", "spellDamageSyn", "enrageSyn", "eggSyn" ],
+"ICC_041" : [ "aoeGen", "spellDamageSyn", "enrageSyn", "eggSyn" ],
 "ICC_047" : [ "aoeGen", "deathrattleGen", "attackBuffGen", "healthBuffGen", "tokenSyn" ],
 "ICC_049" : [ "damageMinionsGen", "spellBuffGen", "destroyGen" ],
 "ICC_050" : [ "beastGen", "rushGiverSyn" ],
