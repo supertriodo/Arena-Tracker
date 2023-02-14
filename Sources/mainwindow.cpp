@@ -4750,22 +4750,22 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Core "CORE"
- *  Curse of Naxxramas "NAXX"
- *  Mean Streets of Gadgetzan "GANGS"
- *  Knights of the Frozen Throne "ICECROWN"
- *  The Witchwood "GILNEAS"
- *  United in Stormwind "STORMWIND"
- *  Path of Arthas "PATH_OF_ARTHAS"
- *  March of the Lick King "RETURN_OF_THE_LICH_KING"
+ * Core "CORE"
+ * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ * Murder at Castle Nathria "REVENDRETH"
+ * Path of Arthas "PATH_OF_ARTHAS"
+ * March of the Lick King "RETURN_OF_THE_LICH_KING"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" <<  "NAXX" << "GANGS" << "ICECROWN" << "GILNEAS" <<
-                 "STORMWIND" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
+    arenaSets << "CORE" <<  "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
+                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
     if(fromHearth)
     {
