@@ -4743,7 +4743,7 @@ REGLAS
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
     o minions que suelen hacer rush sin morir y pierden atributos.
 +drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
-+Un drop debe ser eficiente jugado en su turno suponiendo que el enemigo tenga en juego un minion del turno anterior y
+    Un drop debe ser eficiente jugado en su turno suponiendo que el enemigo tenga en juego un minion del turno anterior y
         el jugador no tiene ningun minion.
     Un drop debe poner algo en la mesa, aunque sea un secreto. Si solo elimina cosas, roba cartas o buffa no es un drop.
     Si dan cristales de mana son drops.

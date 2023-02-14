@@ -4741,8 +4741,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" <<  "NAXX" << "GANGS" << "ICECROWN" << "GILNEAS" <<
-                 "STORMWIND" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
+    arenaSets << "CORE" <<  "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
+                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
