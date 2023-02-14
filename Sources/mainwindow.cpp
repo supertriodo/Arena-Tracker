@@ -4853,7 +4853,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards
-//|-Synergy / Code  --> 25.0.4 Patch (2022-12-19)
+//|-Synergy / Code  --> 25.4 Patch (2023-02-13)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo
