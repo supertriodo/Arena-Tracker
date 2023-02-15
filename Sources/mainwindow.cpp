@@ -4726,11 +4726,10 @@ void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
 //    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
-
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 0, 20);//, "MAW_");//PLACEHOLDER_202204
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-//    draftHandler->getSynergyHandler()->testSynergies();
 
+//    draftHandler->getSynergyHandler()->testSynergies();
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 20, 40, "NX2_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4760,12 +4759,12 @@ void MainWindow::testTierlists()
  * March of the Lick King "RETURN_OF_THE_LICH_KING"
  */
 
-void MainWindow::testDownloadRotation(bool fromHearth)
+void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" <<  "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
-                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
+    arenaSets << /*"CORE" <<  "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
+                 "REVENDRETH" << "PATH_OF_ARTHAS" << */"RETURN_OF_THE_LICH_KING";
 
     if(fromHearth)
     {
@@ -4777,8 +4776,11 @@ void MainWindow::testDownloadRotation(bool fromHearth)
         }
         for(const QString &code: qAsConst(codes))
         {
-            cardDownloader->downloadWebImage(code, false, false, true);
-            cardDownloader->downloadWebImage(code + "_premium", false, false, true);
+            if(miniSet.isEmpty() || code.startsWith(miniSet))
+            {
+                cardDownloader->downloadWebImage(code, false, false, true);
+                cardDownloader->downloadWebImage(code + "_premium", false, false, true);
+            }
         }
     }
     else
@@ -4797,7 +4799,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true);//Force hearthpwn true
+//    testDownloadRotation(true, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
