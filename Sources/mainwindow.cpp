@@ -4728,7 +4728,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
-//    draftHandler->getSynergyHandler()->testSynergies();
+//    draftHandler->getSynergyHandler()->testSynergies("NX2_");
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 20, 40, "NX2_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4816,7 +4816,7 @@ void MainWindow::testDelay()
 
 
 /*
- * Para mini-sets actualizar a las 19:00 arenaVersion.json y HATL con los nuevos sets, esto detectara todo menos las 35 nuevas cartas.
+ * Para mini-sets actualizar a las 19:00 arenaVersion.json y HATL con los nuevos sets, esto detectara todo menos las 38 nuevas cartas.
  * No esperes a la actualizacion de cards.json pq puede llevar horas, mejor hacer las sinergias al dia siguiente y volver a cambiar
  * la version de arenaVersion.json para forzar rehacer los histogramas incluyendo las nuevas 35 cartas que apareceran cuando cards.json
  * se actualice.

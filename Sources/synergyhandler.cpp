@@ -1901,10 +1901,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-//    for(const QString &code: (const QStringList)Utility::getSetCodes("RETURN_OF_THE_LICH_KING", true, true))
+    for(const QString &code: (const QStringList)Utility::getSetCodes("RETURN_OF_THE_LICH_KING", true, true))
 //    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(const QString &code: (const QStringList)Utility::getStandardCodes())
-    for(const QString &code: (const QStringList)Utility::getWildCodes())
+//    for(const QString &code: (const QStringList)Utility::getWildCodes())
     {
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
@@ -4496,7 +4496,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
-        ANUBREKHAN
+        ANUBREKHAN, LIFE_FROM_DEATH
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
     }
@@ -4544,7 +4544,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 
     {
     QStringList candidates = {
-        URZUL_GIANT
+        URZUL_GIANT, LOST_EXARCH
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
     }

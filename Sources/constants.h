@@ -57,6 +57,7 @@
 #define ICE_TRAP QString("AV_226")
 #define EMERGENCY_MANEUVERS QString("TSC_929")
 #define MOTION_DENIED QString("MAW_010")
+#define ZOMBEEEES QString("NX2_013")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
@@ -493,6 +494,10 @@
 #define MARK_OF_SCORN "RLK_206"
 #define HOWLING_BLAST "RLK_015"
 #define PRIESTESS_VALISHJ "TSC_828"
+#define LIFE_FROM_DEATH "NX2_011"
+#define LOST_EXARCH "NX2_032"
+#define THE_PURATOR "NX2_023"
+#define TRINKET_TRACKER "NX2_014"
 
 
 

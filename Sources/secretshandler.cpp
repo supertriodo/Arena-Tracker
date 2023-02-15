@@ -272,6 +272,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(ZOMBEEEES, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OPEN_THE_CAGES, inArena, activeSecret);
@@ -722,8 +723,9 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     discardSecretOption(EXPLOSIVE_RUNES);//Ocultado por OBJECTION
     discardSecretOption(OBJECTION);//Ocultado por EXPLOSIVE_RUNES
 
-    discardSecretOptionNow(SNIPE);
-    discardSecretOptionNow(HIDDEN_CACHE);
+    discardSecretOption(SNIPE);//Ocultado por ZOMBEEEES
+    discardSecretOption(ZOMBEEEES);//Ocultado por SNIPE
+    discardSecretOptionNow(HIDDEN_CACHE);//No necesita objetivo
 
     if(playerMinions>3)
     {
@@ -990,7 +992,8 @@ void SecretsHandler::createSecretsByPickrate()
 
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
-                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED;
+                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
+                              << ZOMBEEEES;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND

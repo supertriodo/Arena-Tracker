@@ -2453,7 +2453,7 @@
 "NX2_027" : [ "battlecry", "armorSyn", "taunt", "returnSyn" ],
 "NX2_028" : [ "drop3", "drawGen", "armorGen", "heroAttackSyn", "weaponAllSyn" ],
 "NX2_029" : [ "discover3", "tokenCardGen", "tauntGen" ],
-"NX2_032" : [ "drop4", "rushGen", "deathrattle", "tokenGen", "corpseGen" ],
+"NX2_032" : [ "drop4", "rushGen", "deathrattle", "tokenGen", "corpseGen", "rushGiverSyn" ],
 "NX2_033" : [ "taunt" ],
 "NX2_034" : [ "deathrattle" ],
 "NX2_035" : [ "battlecry", "returnSyn", "spellAllSyn" ],
