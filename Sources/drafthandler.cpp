@@ -1756,10 +1756,32 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
 }
 
 
+bool DraftHandler::areScreenRectsValid()
+{
+    QList<QScreen *> screens = QGuiApplication::screens();
+    if(screenIndex >= screens.count() || screenIndex < 0)  return false;
+    QScreen *screen = screens[screenIndex];
+    if(!screen) return false;
+
+    QRect screenRect = screen->geometry();
+    QRect fullRect(0, 0, screenRect.width(), screenRect.height());
+    for(int i=0; i<3; i++)
+    {
+        QRect rect(screenRects[i].x, screenRects[i].y, screenRects[i].width, screenRects[i].height);
+        if(!fullRect.contains(rect))
+        {
+            emit pDebug("ScreenRects out of bounds.", Warning);
+            return false;
+        }
+    }
+    return true;
+}
+
+
 bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
 {
     cv::Mat screenCapture = getScreenMat();
-    if(screenCapture.empty())   return false;
+    if(screenCapture.empty() || !areScreenRectsValid()) return false;
 
     cv::Mat bigCards[3];
     bigCards[0] = screenCapture(screenRects[0]);
@@ -1963,7 +1985,12 @@ bool DraftHandler::loadTemplateSettings()
     if(heroDrafting)
     {
         screenIndex = settings.value("heroDraftingScreenIndex", -1).toInt();
-        if(screenIndex == -1)   return false;
+        QList<QScreen *> screens = QGuiApplication::screens();
+        if(screenIndex >= screens.count() || screenIndex < 0)
+        {
+            screenIndex = -1;
+            return false;
+        }
 
         QRect rect;
         rect = settings.value("heroDraftingScreenRect0", QRect()).value<QRect>();
@@ -1972,13 +1999,23 @@ bool DraftHandler::loadTemplateSettings()
         screenRects[1]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
         rect = settings.value("heroDraftingScreenRect2", QRect()).value<QRect>();
         screenRects[2]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        if(!areScreenRectsValid())
+        {
+            screenIndex = -1;
+            return false;
+        }
 
         screenScale = settings.value("heroDraftingScreenScale", QPointF(1,1)).value<QPointF>();
     }
     else// if(drafting) || buildMechanicsWindow
     {
         screenIndex = settings.value("draftingScreenIndex", -1).toInt();
-        if(screenIndex == -1)   return false;
+        QList<QScreen *> screens = QGuiApplication::screens();
+        if(screenIndex >= screens.count() || screenIndex < 0)
+        {
+            screenIndex = -1;
+            return false;
+        }
 
         QRect rect;
         rect = settings.value("draftingScreenRect0", QRect()).value<QRect>();
@@ -1987,6 +2024,11 @@ bool DraftHandler::loadTemplateSettings()
         screenRects[1]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
         rect = settings.value("draftingScreenRect2", QRect()).value<QRect>();
         screenRects[2]=cv::Rect(rect.x(), rect.y(), rect.width(), rect.height());
+        if(!areScreenRectsValid())
+        {
+            screenIndex = -1;
+            return false;
+        }
 
         screenScale = settings.value("draftingScreenScale", QPointF(1,1)).value<QPointF>();
     }
@@ -2347,9 +2389,9 @@ void DraftHandler::createDraftWindows()
     deleteDraftMechanicsWindow();
 
     //Screen out of index
-    if(screenIndex >= QGuiApplication::screens().count())
+    if(screenIndex >= QGuiApplication::screens().count() || screenIndex < 0 || !areScreenRectsValid())
     {
-        emit pDebug("ScreenIndex out of bounds while creating drafting windows. ScreenIndex: " + QString::number(screenIndex), Warning);
+        emit pDebug("ScreenIndex/ScreenRects out of bounds while creating drafting windows.", Warning);
         return;
     }
 
