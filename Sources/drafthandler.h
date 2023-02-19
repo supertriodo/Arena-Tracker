@@ -200,7 +200,7 @@ private:
     void startReviewBestCards();
     QString *reviewBestCards();
     void loadImgTemplates(QList<Mat> &imgTemplates, const QString &filename);
-    bool areScreenRectsValid();
+    bool areScreenRectsValid(Mat &screenCapture);
 
 public:
     void buildHeroCodesList();
