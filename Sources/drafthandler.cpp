@@ -1770,7 +1770,13 @@ bool DraftHandler::areScreenRectsValid()
         QRect rect(screenRects[i].x, screenRects[i].y, screenRects[i].width, screenRects[i].height);
         if(!fullRect.contains(rect))
         {
-            emit pDebug("ScreenRects out of bounds.", Warning);
+            emit pDebug("ScreenRects out of bounds:", Warning);
+            emit pDebug("[screenIndex: " + QString::number(screenIndex) + "](" +
+                    QString::number(fullRect.x()) + "," + QString::number(fullRect.y()) + "," +
+                    QString::number(fullRect.width()) + "," + QString::number(fullRect.height()) + ")");
+            emit pDebug("[" + QString::number(i) + "](" +
+                    QString::number(rect.x()) + "," + QString::number(rect.y()) + "," +
+                    QString::number(rect.width()) + "," + QString::number(rect.height()) + ")");
             return false;
         }
     }
@@ -3301,7 +3307,7 @@ cv::Mat DraftHandler::getScreenMat()
     QList<QScreen *> screens = QGuiApplication::screens();
     if(screenIndex >= screens.count() || screenIndex < 0)  return cv::Mat();
     QScreen *screen = screens[screenIndex];
-    if (!screen) return cv::Mat();
+    if(!screen) return cv::Mat();
 
     QRect rect = screen->geometry();
     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
