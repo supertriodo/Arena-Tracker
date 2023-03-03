@@ -4536,7 +4536,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 
     {
     QStringList candidates = {
-        TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, GOLDSHIRE_GNOLL, THE_GARDENS_GRACE,
+        TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, THE_GARDENS_GRACE,
         GIGANTOTEM
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
@@ -4544,7 +4544,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 
     {
     QStringList candidates = {
-        URZUL_GIANT, LOST_EXARCH
+        URZUL_GIANT, LOST_EXARCH, GOLDSHIRE_GNOLL
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
     }
