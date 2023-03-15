@@ -1463,6 +1463,7 @@
 "DS1_185" : [ "damageMinionsGen", "reachGen" ],
 "DS1_188" : [ "damageMinionsGen", "reachGen" ],
 "DS1_233" : [ "reachGen" ],
+"ETC_080" : [ "drop4", "battlecry" ],
 "EX1_001" : [ "restoreTargetMinionSyn", "restoreFriendlyMinionSyn", "restoreFriendlyHeroSyn" ],
 "EX1_002" : [ "battlecry", "returnSyn", "destroyGen" ],
 "EX1_004" : [ "healthBuffGen", "endTurnGen" ],
