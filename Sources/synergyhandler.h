@@ -269,9 +269,9 @@ private:
     bool isStealthSyn(const QString &code);
     bool isDivineShieldSyn(const QString &code);
     bool isDivineShieldAllSyn(const QString &code);
-    bool isRestoreTargetMinionSyn(const QString &code);
+    bool isRestoreTargetMinionSyn(const QString &code, const QString &text);
     bool isRestoreFriendlyHeroSyn(const QString &code);
-    bool isRestoreFriendlyMinionSyn(const QString &code);
+    bool isRestoreFriendlyMinionSyn(const QString &code, const QString &text);
     bool isArmorSyn(const QString &code);
     bool isLifestealMinionSyn(const QString &code);
     bool isLifestealAllSyn(const QString &code);

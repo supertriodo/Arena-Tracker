@@ -1117,9 +1117,9 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mechanicCounters[V_SPELL_DAMAGE]->increaseSyn(code);
     if(isEvolveSyn(code))                                                   mechanicCounters[V_EVOLVE]->increaseSyn(code);
     if(isSpawnEnemySyn(code))                                               mechanicCounters[V_SPAWN_ENEMY]->increaseSyn(code);
-    if(isRestoreTargetMinionSyn(code))                                      mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
+    if(isRestoreTargetMinionSyn(code, text))                                mechanicCounters[V_RESTORE_TARGET_MINION]->increaseSyn(code);
     if(isRestoreFriendlyHeroSyn(code))                                      mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->increaseSyn(code);
-    if(isRestoreFriendlyMinionSyn(code))                                    mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
+    if(isRestoreFriendlyMinionSyn(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increaseSyn(code);
     if(isArmorSyn(code))                                                    mechanicCounters[V_ARMOR]->increaseSyn(code);
     if(isEnrageSyn(code, text))                                             mechanicCounters[V_ENRAGED]->increaseSyn(code);
     if(isEggSyn(code, text))                                                mechanicCounters[V_EGG]->increaseSyn(code);
@@ -1670,9 +1670,9 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isSpellDamageSyn(code, mechanics, cardType, text))       mechanicCounters[V_SPELL_DAMAGE]->insertCards(synergyTagMap);
     if(isEvolveSyn(code))                                       mechanicCounters[V_EVOLVE]->insertCards(synergyTagMap);
     if(isSpawnEnemySyn(code))                                   mechanicCounters[V_SPAWN_ENEMY]->insertCards(synergyTagMap);
-    if(isRestoreTargetMinionSyn(code))                          mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergyTagMap);
+    if(isRestoreTargetMinionSyn(code, text))                    mechanicCounters[V_RESTORE_TARGET_MINION]->insertCards(synergyTagMap);
     if(isRestoreFriendlyHeroSyn(code))                          mechanicCounters[V_RESTORE_FRIENDLY_HEROE]->insertCards(synergyTagMap);
-    if(isRestoreFriendlyMinionSyn(code))                        mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergyTagMap);
+    if(isRestoreFriendlyMinionSyn(code, text))                  mechanicCounters[V_RESTORE_FRIENDLY_MINION]->insertCards(synergyTagMap);
     if(isArmorSyn(code))                                        mechanicCounters[V_ARMOR]->insertCards(synergyTagMap);
     if(isEnrageSyn(code, text))                                 mechanicCounters[V_ENRAGED]->insertCards(synergyTagMap);
     if(isEggSyn(code, text))                                    mechanicCounters[V_EGG]->insertCards(synergyTagMap);
@@ -2207,6 +2207,8 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isTokenSyn(code, mechanics, text))                                   mec<<"tokenSyn";
     if(isReturnSyn(code, mechanics, cardType, text))                        mec<<"returnSyn";
     if(isSpellDamageSyn(code, mechanics, cardType, text))                   mec<<"spellDamageSyn";
+    if(isRestoreTargetMinionSyn(code, text))                                mec<<"restoreTargetMinionSyn";
+    if(isRestoreFriendlyMinionSyn(code, text))                              mec<<"restoreFriendlyMinionSyn";
     if(isEnrageSyn(code, text))                                             mec<<"enrageSyn";
     if(isComboAllSyn(code, referencedTags))                                 mec<<"comboAllSyn";
     if(isTokenCardSyn(code, text))                                          mec<<"tokenCardSyn";
@@ -4213,11 +4215,15 @@ bool SynergyHandler::isDivineShieldAllSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isRestoreTargetMinionSyn(const QString &code)
+bool SynergyHandler::isRestoreTargetMinionSyn(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("restoreTargetMinionSyn");
+    }
+    else if(text.contains("overheal"))
+    {
+        return true;
     }
     return false;
 }
@@ -4229,11 +4235,15 @@ bool SynergyHandler::isRestoreFriendlyHeroSyn(const QString &code)
     }
     return false;
 }
-bool SynergyHandler::isRestoreFriendlyMinionSyn(const QString &code)
+bool SynergyHandler::isRestoreFriendlyMinionSyn(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("restoreFriendlyMinionSyn");
+    }
+    else if(text.contains("overheal"))
+    {
+        return true;
     }
     return false;
 }
@@ -4537,14 +4547,14 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, THE_GARDENS_GRACE,
-        GIGANTOTEM
+        GIGANTOTEM, GOLDSHIRE_GNOLL
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
     }
 
     {
     QStringList candidates = {
-        URZUL_GIANT, LOST_EXARCH, GOLDSHIRE_GNOLL
+        URZUL_GIANT, LOST_EXARCH
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
     }
