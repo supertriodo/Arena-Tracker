@@ -4749,22 +4749,21 @@ void MainWindow::testTierlists()
 }
 
 /*
- * Core "CORE"
- * Forged in the Barrens "THE_BARRENS"
- * United in Stormwind "STORMWIND"
- * Fractured in Alterac Valley "ALTERAC_VALLEY"
- * Voyage to the Sunken City "THE_SUNKEN_CITY"
- * Murder at Castle Nathria "REVENDRETH"
- * Path of Arthas "PATH_OF_ARTHAS"
- * March of the Lick King "RETURN_OF_THE_LICH_KING"
+ *  Core "CORE"
+ *  Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  Murder at Castle Nathria "REVENDRETH"
+ *  Path of Arthas "PATH_OF_ARTHAS"
+ *  March of the Lick King "RETURN_OF_THE_LICH_KING"
+ *  Festival of Legends "BATTLE_OF_THE_BANDS"
  */
 
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << /*"CORE" <<  "THE_BARRENS" << "STORMWIND" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
-                 "REVENDRETH" << "PATH_OF_ARTHAS" << */"RETURN_OF_THE_LICH_KING";
+    arenaSets << "CORE";// <<
+//                 "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
+                 //"BATTLE_OF_THE_BANDS";
 
     if(fromHearth)
     {
@@ -4796,10 +4795,10 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+//    testHeroPortraits();
+//    testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true, "NX2_");//Force hearthpwn true
+    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
