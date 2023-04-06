@@ -514,6 +514,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Murder at Castle Nathria "REVENDRETH"
  * Path of Arthas "PATH_OF_ARTHAS"
  * March of the Lick King "RETURN_OF_THE_LICH_KING"
+ * Festival of Legends "BATTLE_OF_THE_BANDS"
  */
 
 
@@ -531,8 +532,9 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "GILNEAS" || cardSet == "BOOMSDAY" || cardSet == "TROLL" ||
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
-        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
-        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING")
+//        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
+        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
+        cardSet == "BATTLE_OF_THE_BANDS")
     {
         return true;
     }

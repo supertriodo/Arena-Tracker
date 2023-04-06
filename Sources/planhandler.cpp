@@ -2955,6 +2955,10 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 3;
         missileDamage = 3;
     }
+    else if(Utility::codeEqConstant(code, BEATBOXER))
+    {
+        missiles = 4;
+    }
     else if(Utility::codeEqConstant(code, NAGRAND_SLAM))
     {
         missiles = 4;

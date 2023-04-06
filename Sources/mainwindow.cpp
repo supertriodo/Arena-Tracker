@@ -4725,10 +4725,10 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("TOT_112", "set").toString();
+//    qDebug()<<Utility::getCardAttribute("ETC_099", "set").toString();
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
-//    draftHandler->getSynergyHandler()->testSynergies("NX2_");
+//    draftHandler->getSynergyHandler()->testSynergies();//"NX2_");
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("BATTLE_OF_THE_BANDS", 0, 20);//, "NX2_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4831,7 +4831,7 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> RETURN_OF_THE_LICH_KING
+//Update Utility::isFromStandardSet(QString code) --> BATTLE_OF_THE_BANDS
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
