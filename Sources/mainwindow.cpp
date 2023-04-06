@@ -4729,7 +4729,7 @@ void MainWindow::testSynergies()
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
 //    draftHandler->getSynergyHandler()->testSynergies("NX2_");
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("RETURN_OF_THE_LICH_KING", 20, 40, "NX2_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("BATTLE_OF_THE_BANDS", 0, 20);//, "NX2_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
