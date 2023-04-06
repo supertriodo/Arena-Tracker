@@ -2037,7 +2037,7 @@ bool SynergyHandler::shouldBeInSynergies(const QString &code)
 {
     const QString &set = Utility::getCardAttribute(code, "set").toString();
     return (!code.startsWith("HERO_") && !set.isEmpty() &&
-            set != "WILD_EVENT" && set != "VANILLA") && !set.startsWith("PLACEHOLDER");
+            set != "WILD_EVENT" && set != "VANILLA");
 }
 
 
@@ -2049,9 +2049,17 @@ void SynergyHandler::debugMissingSynergiesAllSets()
     for(const QString &code: (const QStringList)wildCodes)
     {
         //Missing synergy
-        if(!synergyCodes.contains(code))
+        bool codeMissing = !synergyCodes.contains(code);
+        if(codeMissing)
         {
-            if(shouldBeInSynergies(code))
+            bool subCodeMissing = true;
+            if(code.startsWith("CORE_"))
+            {
+                QString subCode = code.mid(5);
+                if(synergyCodes.contains(subCode))  subCodeMissing = false;
+            }
+
+            if(subCodeMissing && shouldBeInSynergies(code))
             {
                 debugSynergiesCode(code, ++num);
 
