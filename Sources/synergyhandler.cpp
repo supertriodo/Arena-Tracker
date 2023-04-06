@@ -81,6 +81,7 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM] = new DraftItemCounter(this, "Totem");
     raceCounters[V_NAGA] = new DraftItemCounter(this, "Naga");
     raceCounters[V_UNDEAD] = new DraftItemCounter(this, "Undead");
+    raceCounters[V_QUILBOAR] = new DraftItemCounter(this, "Quilboar");
 
     raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this, "Elemental");
     raceCounters[V_BEAST_ALL] = new DraftItemCounter(this, "Beast");
@@ -92,6 +93,7 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_TOTEM_ALL] = new DraftItemCounter(this, "Totem");
     raceCounters[V_NAGA_ALL] = new DraftItemCounter(this, "Naga");
     raceCounters[V_UNDEAD_ALL] = new DraftItemCounter(this, "Undead");
+    raceCounters[V_QUILBOAR_ALL] = new DraftItemCounter(this, "Quilboar");
 
     schoolCounters = new DraftItemCounter *[V_NUM_SCHOOLS];
     schoolCounters[V_ARCANE] = new DraftItemCounter(this, "Arcane");
@@ -707,6 +709,12 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
         raceCounters[V_UNDEAD_ALL]->increase(code);
     }
     else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->increase(code);
+    if(cardRace.contains(QUILBOAR) || cardRace.contains(ALL))
+    {
+        raceCounters[V_QUILBOAR]->increase(code);
+        raceCounters[V_QUILBOAR_ALL]->increase(code);
+    }
+    else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->increase(code);
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->increaseSyn(code);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->increaseSyn(code);
@@ -728,6 +736,8 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
     else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->increaseSyn(code);
     if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->increaseSyn(code);
     else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->increaseSyn(code);
+    if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->increaseSyn(code);
+    else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->increaseSyn(code);
 }
 
 
@@ -1393,6 +1403,12 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
         raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isUndeadGen(code))      raceCounters[V_UNDEAD_ALL]->insertSynCards(synergyTagMap);
+    if(cardRace.contains(QUILBOAR) || cardRace.contains(ALL))
+    {
+        raceCounters[V_QUILBOAR]->insertSynCards(synergyTagMap);
+        raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergyTagMap);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergyTagMap);
@@ -1414,6 +1430,8 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
     else if(isNagaAllSyn(code, text))               raceCounters[V_NAGA_ALL]->insertCards(synergyTagMap);
     if(isUndeadSyn(code))                           raceCounters[V_UNDEAD]->insertCards(synergyTagMap);
     else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->insertCards(synergyTagMap);
+    if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->insertCards(synergyTagMap);
+    else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1827,10 +1845,12 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "spellSyn", "weaponSyn",
         "spellAllSyn", "weaponAllSyn",
 
-        "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen", "dragonGen", "nagaGen", "undeadGen",
-        "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn",
-        "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn",
-        "totemAllSyn", "pirateAllSyn", "dragonAllSyn", "nagaAllSyn", "undeadAllSyn",
+        "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen",
+        "dragonGen", "nagaGen", "undeadGen", "quilboarGen",
+        "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn",
+        "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn",
+        "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn",
+        "dragonAllSyn", "nagaAllSyn", "undeadAllSyn", "quilboarAllSyn",
 
         "arcaneGen", "felGen", "fireGen", "frostGen", "holyGen", "shadowGen", "natureGen",
         "arcaneSyn", "felSyn", "fireSyn", "frostSyn", "holySyn", "shadowSyn", "natureSyn",
@@ -2001,8 +2021,8 @@ void SynergyHandler::debugSynergiesSet(const QString &set, int openFrom, int ope
             if(num>openFrom && num<=openTo)
             {
                 QDesktopServices::openUrl(QUrl(
-                    "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-//                    "https://cards.hearthpwn.com/enUS/" + code + ".png"
+//                    "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+                    "https://cards.hearthpwn.com/enUS/" + code + ".png"
                     ));
                 QThread::msleep(100);
             }
@@ -2114,6 +2134,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isDragonAllSyn(code, text))          mec<<"dragonAllSyn";
     if(isNagaAllSyn(code, text))            mec<<"nagaAllSyn";
     if(isUndeadAllSyn(code, text))          mec<<"undeadAllSyn";
+    if(isQuilboarAllSyn(code, text))        mec<<"quilboarAllSyn";
 
     if(isArcaneAllSyn(code, text))          mec<<"arcaneAllSyn";
     if(isFelAllSyn(code, text))             mec<<"felAllSyn";
@@ -2300,6 +2321,11 @@ bool SynergyHandler::isNagaGen(const QString &code)
 bool SynergyHandler::isUndeadGen(const QString &code)
 {
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("undeadGen");
+    return false;
+}
+bool SynergyHandler::isQuilboarGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("quilboarGen");
     return false;
 }
 bool SynergyHandler::isArcaneGen(const QString &code)
@@ -3645,6 +3671,25 @@ bool SynergyHandler::isUndeadAllSyn(const QString &code, const QString &text)
         return text.contains("undead");
     }
 }
+bool SynergyHandler::isQuilboarSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("quilboarSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isQuilboarAllSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("quilboarAllSyn");
+    }
+    else
+    {
+        return text.contains("quilboar");
+    }
+}
 bool SynergyHandler::isArcaneSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -4629,7 +4674,7 @@ eggGen/eggSyn
 Mechanics list:
 spellGen, weaponGen,
 drop2, drop3, drop4,
-murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen, nagaGen
+murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen, nagaGen, undeadGen, quilboarGen
 arcaneGen, felGen, fireGen, frostGen, holyGen, shadowGen, natureGen
 discover, drawGen, toYourHandGen, enemyDrawGen
 taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
@@ -4752,7 +4797,7 @@ REGLAS
     Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats (3/3 es 3 mana, 3/4 es 3.5 mana)
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
     o minions que suelen hacer rush sin morir y pierden atributos.
-+drop234: Inicialmente se asignan solo por su coste, si no son basta con no poner la key, no existen keys nodrop234 ya que no son necesarias.
++drop234: Inicialmente se asignan solo por su coste.
     Un drop debe ser eficiente jugado en su turno suponiendo que el enemigo tenga en juego un minion del turno anterior y
         el jugador no tiene ningun minion.
     Un drop debe poner algo en la mesa, aunque sea un secreto. Si solo elimina cosas, roba cartas o buffa no es un drop.

@@ -35,9 +35,9 @@ enum DraftMethod { HearthArena, LightForge, HSReplay, None };
 enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes, Score_HSReplay, Score_Heroes_Player, Score_None };
 enum MechanicBorderColor { MechanicBorderRed, MechanicBorderGrey, MechanicBorderGreen };
 
-enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NAGA, V_UNDEAD,
-                  V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL, V_BEAST_ALL,
-                  V_TOTEM_ALL, V_PIRATE_ALL, V_DRAGON_ALL, V_NAGA_ALL, V_UNDEAD_ALL, V_NUM_RACES};
+enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NAGA, V_UNDEAD, V_QUILBOAR,
+                  V_MURLOC_ALL, V_DEMON_ALL, V_MECHANICAL_ALL, V_ELEMENTAL_ALL, V_BEAST_ALL, V_TOTEM_ALL,
+                  V_PIRATE_ALL, V_DRAGON_ALL, V_NAGA_ALL, V_UNDEAD_ALL, V_QUILBOAR_ALL, V_NUM_RACES};
 enum VisibleSchool {V_ARCANE, V_FEL, V_FIRE, V_FROST, V_HOLY, V_SHADOW, V_NATURE,
                     V_ARCANE_ALL, V_FEL_ALL, V_FIRE_ALL, V_FROST_ALL, V_HOLY_ALL,
                     V_SHADOW_ALL, V_NATURE_ALL, V_NUM_SCHOOLS};
