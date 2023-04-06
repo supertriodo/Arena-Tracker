@@ -4099,6 +4099,8 @@
 "DIRECT_LINKS":
 {
   "-----------------------------------------WARRIOR------------------------------------------------": "",
+  "ETC_363 Verse Riff": ["ETC_364 Chorus Riff", "ETC_365 Bridge Riff"],
+  "ETC_364 Chorus Riff": ["ETC_365 Bridge Riff"],
 
   "-----------------------------------------SHAMAN-------------------------------------------------": "",
 	"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans"],
@@ -4172,7 +4174,13 @@
     "GIL_191 Fiendish Circle", "GIL_608 Witchwood Imp", "BOT_224 Doubling Imp",
     "DAL_561 Jumbo Imp", "DAL_007 Rafaam's Scheme", "REV_244 Mischievous Imp"],
 
+  "-----FATIGUE-----": "",
+  "ETC_068 Baritone Imp": ["ETC_069 Crescendo", "ETC_070 Crazed Conductor"],
+  "ETC_069 Crescendo": ["ETC_070 Crazed Conductor"],
+
   "-----------------------------------------MAGE---------------------------------------------------": "",
+  "-----SELF-----": "",
+  "ETC_528 Lightshow": ["ETC_528 Lightshow"],
 
   "-----VOLATILE SKELETON-----": "",
   "REV_514 Kel'Thuzad, the Inevitable": ["REV_845 Volatile Skeleton", "REV_505 Cold Case",
@@ -4192,6 +4200,9 @@
   "REV_834 Relic of Extinction": ["REV_943 Relic of Phantasms"],
 
   "--------------------------------------------ALL---------------------------------------------------": "",
+  "-----SELF-----": "",
+  "ETC_336 Freebird": ["ETC_336 Freebird"],
+
   "BOT_550 Electrowright": ["BOT_539 Arcane Dynamo"],
 
   "-----SOUL FRAGMENTS-----": "",

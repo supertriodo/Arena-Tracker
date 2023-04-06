@@ -1511,7 +1511,7 @@
 "ETC_206" : [ "discover3", "toYourHandGen2" ],
 "ETC_207" : [ "drop2", "tauntGen", "toYourHandGen", "tokenCardGen" ],
 "ETC_208" : [ "beastAllSyn" ],
-"ETC_209" : [ "aoeGen", "reachGen", "battlecry", "returnSyn" ],
+"ETC_209" : [ "aoeGen", "reachGen", "battlecry", "returnSyn", "evolveSyn" ],
 "ETC_210" : [ "damageMinionsGen", "reachGen", "lifesteal", "corpseGen" ],
 "ETC_305" : [ "damageMinionsGen", "attackNerfGen" ],
 "ETC_312" : [ "heroPowerGen" ],
@@ -1530,7 +1530,7 @@
 "ETC_332" : [ "battlecry", "restoreFriendlyMinionGen", "returnSyn" ],
 "ETC_334" : [ "drop4", "battlecry", "restoreTargetMinionSyn", "restoreFriendlyMinionSyn" ],
 "ETC_335" : [ "spellAllSyn" ],
-"ETC_336" : [ "damageMinionsGen", "reachGen", "battlecry", "returnSyn" ],
+"ETC_336" : [ "damageMinionsGen", "reachGen", "battlecry", "returnSyn", "evolveSyn" ],
 "ETC_337" : [ "drop3", "divineShield", "divineShieldAllSyn" ],
 "ETC_338" : [ "toYourHandGen", "attackBuffGen", "healthBuffGen", "spellBuffGen", "handBuffGen" ],
 "ETC_339" : [ "drop3", "restoreTargetMinionSyn", "restoreFriendlyMinionSyn" ],
@@ -4098,6 +4098,9 @@
 "tt_010" : [ "secret" ],
 "DIRECT_LINKS":
 {
+  "ETC_363": ["ETC_364", "ETC_365"],
+  "ETC_364": ["ETC_365"],
+
   "LOOT_518": ["LOOT_062","LOOT_344"],
 
   "SW_052": ["SW_411", "SW_412", "SW_413", "SW_417",
@@ -4113,7 +4116,6 @@
   "BT_026": ["BT_011", "BT_024", "BT_025", "YOP_011"],
 
   "REV_361": ["REV_363", "REV_360", "REV_364"],
-
   "UNG_078": ["UNG_086", "UNG_109"],
 
   "REV_245": ["BRM_006", "ONY_033", "AV_277", "DED_504", "SW_084", "BAR_919",
@@ -4136,7 +4138,10 @@
     "EX1_319", "GIL_191", "BAR_914", "DMF_533", "BT_305", "ULD_324",
     "CS2_059", "GVG_045", "KAR_089", "GIL_191", "GIL_608", "BOT_224",
     "DAL_561", "DAL_007", "REV_244"],
+  "ETC_068": ["ETC_069", "ETC_070"],
+    "ETC_069": ["ETC_070"],
 
+  "ETC_528": ["ETC_528"],
   "REV_514": ["REV_845", "REV_505", "REV_840", "REV_602"],
 
   "SW_042": ["SW_042"],
@@ -4145,6 +4150,7 @@
   "REV_508": ["REV_834", "REV_943"],
   "REV_834": ["REV_943"],
 
+  "ETC_336": ["ETC_336"],
   "BOT_550": ["BOT_539"],
   "SCH_700": ["SCH_517", "SCH_355", "SCH_704", "SCH_343", "SCH_703"],
   "SCH_701": ["SCH_517", "SCH_355", "SCH_704", "SCH_343", "SCH_703"],
