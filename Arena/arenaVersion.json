@@ -1,6 +1,6 @@
 {
-  "arenaVersion": 29,
-  "arenaSets": ["CORE", "THE_BARRENS", "STORMWIND", "ALTERAC_VALLEY", "THE_SUNKEN_CITY", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
+  "arenaVersion": 30,
+  "arenaSets": ["CORE", "THE_SUNKEN_CITY", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING", "BATTLE_OF_THE_BANDS"],
   "multiclassArena": false,
   "resetCards": 28,
   "resetHeroes": 29

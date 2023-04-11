@@ -4740,7 +4740,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "PLACEHOLDER_202204" <<
+    arenaSets << "CORE" <<
                  "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
                  "BATTLE_OF_THE_BANDS";
 
@@ -4762,9 +4762,9 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE";// <<
-//                 "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-                 //"BATTLE_OF_THE_BANDS";
+    arenaSets << "CORE" <<
+                 "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
+                 "BATTLE_OF_THE_BANDS";
 
     if(fromHearth)
     {
@@ -4799,7 +4799,7 @@ void MainWindow::testDelay()
 //    testHeroPortraits();
 //    testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
+//    testDownloadRotation(false);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
@@ -4858,7 +4858,7 @@ void MainWindow::testDelay()
 //|-Synergy / Code  --> 26.0 Patch (2023-04-03)
 
 //Rotacion CORE
-//|-Revisar cartas github CORE - Quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
+//|-Revisar cartas github CORE - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
 
 
 
