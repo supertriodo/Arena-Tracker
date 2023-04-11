@@ -4796,8 +4796,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
-//    testSynergies();
+    testHeroPortraits();
+    testSynergies();
 //    testTierlists();
 //    testDownloadRotation(false);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
