@@ -4799,7 +4799,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-//    testDownloadRotation(false);//, "NX2_");//Force hearthpwn true
+//    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
@@ -4822,10 +4822,10 @@ void MainWindow::testDelay()
  * se actualice.
  */
 
-/* Para rotaciones de CORE, en el pre patch el json tendra las nuevas cartas que se incluiran en el CORE en "set":1810
- * Al lanzarse la exp el json sera actualizado y las cartas eliminadas de CORE estan en "set":"PLACEHOLDER_202204"
+/* Para rotaciones de CORE, en el pre patch el json tendra las nuevas cartas que se incluiran en el CORE en "set":"PLACEHOLDER_202204"
  * Aunque el json cambia el dia de la expansion los de Hearthsim no han cambiado su version, por lo que para forzar que se vuelva
- * a descargar usamos la nueva version de AT (REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE true).
+ * a descargar usamos la nueva version de AT (REMOVE_EXTRA_AND_HISTOGRAMS_ON_VERSION_UPDATE true) y tambien reset de cards en update
+ * (REMOVE_CARDS_ON_VERSION_UPDATE true) estan en utility.h
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
@@ -4858,8 +4858,9 @@ void MainWindow::testDelay()
 //|-Synergy / Code  --> 26.0 Patch (2023-04-03)
 
 //Rotacion CORE
-//|-Revisar cartas github CORE - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
-
+//|-Revisar cartas github CORE
+    //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
+    //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 
 //NUEVA SYNERGY
