@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v22.10","v22.11","v22.12","v22.12.01","v22.12.02","v22.12.03","v23.01","v23.01.01","v23.02"],
+	"versionFree": ["v22.10","v22.11","v22.12","v22.12.01","v22.12.02","v22.12.03","v23.01","v23.01.01","v23.02","v23.04"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "AT updates for Return to Naxxramas.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "AT updates for Festival of Legends.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
