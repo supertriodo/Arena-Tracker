@@ -2879,10 +2879,10 @@ void DraftHandler::editCardNameFinish()
         return;
     }
 
-    DraftCard bestCards[3];
-    showComboBoxesCards(bestCards);
     comboBoxCard[editComboBoxNum]->setEnabled(true);
+    editComboBoxNum = -1;
     hideLineEditCardName();
+    showComboBoxesCards();
 }
 
 
@@ -2966,6 +2966,12 @@ void DraftHandler::comboBoxHighLight(int index)
     showLineEditCardName(draftCardMaps[editComboBoxNum][code].getName());
 }
 
+
+void DraftHandler::showComboBoxesCards()
+{
+    DraftCard bestCards[3];
+    showComboBoxesCards(bestCards);
+}
 
 void DraftHandler::showComboBoxesCards(DraftCard bestCards[3])
 {

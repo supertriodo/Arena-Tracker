@@ -185,6 +185,7 @@ private:
     void hideLineEditCardName();
     QString findCodeFromText(QString text);
     void startFindCodeFromText(const QString &text);
+    void showComboBoxesCards();
     void showComboBoxesCards(DraftCard bestCards[]);
     void showSynergies();
     void getBestNManaRarity(int &manaN, CardRarity &cardRarity, const cv::Mat &screenSmall, const QList<Mat> &manaTemplates, const QList<Mat> &rarityTemplates,
