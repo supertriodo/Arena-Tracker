@@ -4839,6 +4839,7 @@ void MainWindow::testDelay()
     ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards
+    //Update DraftHandler::isSignatureCard
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)

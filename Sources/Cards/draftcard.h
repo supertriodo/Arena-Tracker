@@ -12,11 +12,13 @@ class DraftCard : public DeckCard
 public:
     DraftCard();
     DraftCard(QString code);
+    DraftCard(QString code, bool gold);
     ~DraftCard();
 
 //Variables
 private:
     double bestQualityMatches;
+    bool gold;
 
 //Metodos
 public:
@@ -24,6 +26,7 @@ public:
     double getBestQualityMatches();
     void setBestQualityMatch(double matchScore, bool force);
     void draw(QComboBox *comboBox);
+    bool isGold();
 };
 
 #endif // DRAFTCARD_H

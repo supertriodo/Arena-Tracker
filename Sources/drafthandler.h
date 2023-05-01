@@ -202,6 +202,7 @@ private:
     QString *reviewBestCards();
     void loadImgTemplates(QList<Mat> &imgTemplates, const QString &filename);
     bool areScreenRectsValid(Mat &screenCapture);
+    bool isSignatureCard(const QString &code);
 
 public:
     void buildHeroCodesList();

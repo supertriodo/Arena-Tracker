@@ -1854,7 +1854,7 @@ void DraftHandler::mapBestMatchingCodes(cv::MatND screenCardsHist[3])
             if(!draftCardMaps[i].contains(code))
             {
                 newCardsFound = true;
-                draftCardMaps[i].insert(code, DraftCard(degoldCode(code)));
+                draftCardMaps[i].insert(code, DraftCard(degoldCode(code), isGoldCode(code)));
                 if(numCaptured != 0)    draftCardMaps[i][code].setBestQualityMatch(match, true);
             }
 
@@ -3078,11 +3078,13 @@ QString * DraftHandler::reviewBestCards()
 
         int cardMana = draftCards[i].getCost();
         CardRarity cardRarity = draftCards[i].getRarity();
+        bool signatureImage = draftCards[i].isGold() && isSignatureCard(draftCards[i].getCode());
+        if(cardRarity == FREE || signatureImage)    imgRarity = INVALID_RARITY;
 
-        if(cardMana<10 && cardRarity != FREE && (imgMana != cardMana || imgRarity != cardRarity))
+        if(cardMana<10 && (imgMana != cardMana || imgRarity != cardRarity))
         {
             //Warning - Nueva carta
-            if(imgMana != -1 && imgRarity != INVALID_RARITY)
+            if(imgMana != -1)
             {
                 bestCards[i] = getBestMatchManaRarity(i, screenBig, imgMana, imgRarity);
 //                qDebug()<<"Warning Changed:"<<draftCards[i].getName()<<"->"<<bestCards[i].getName();
@@ -3108,10 +3110,12 @@ DraftCard DraftHandler::getBestMatchManaRarity(const int pos, const cv::Mat &scr
     const QList<QString> codeList = bestMatchesMaps[pos].values();
     for(const QString &code: codeList)
     {
-        if(draftCardMaps[pos][code].getCost() == imgMana && draftCardMaps[pos][code].getRarity() == imgRarity)
+        if(draftCardMaps[pos][code].getCost() == imgMana &&
+                (imgRarity == INVALID_RARITY || draftCardMaps[pos][code].getRarity() == imgRarity))
         {
             comboBoxCard[pos]->setCurrentIndex(i);
-            return draftCardMaps[pos][code];
+            if(i == 0)  return DraftCard();//Es la primera opcion, no mostramos warning
+            else        return draftCardMaps[pos][code];
         }
         i++;
     }
@@ -3132,10 +3136,12 @@ DraftCard DraftHandler::getBestAllMatchManaRarity(const cv::MatND &screenCardHis
 {
     double bestMatch = 1;
     QString bestCode;
+    bool bestGold;
 
     for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
     {
         QString code = degoldCode(it.key());
+        bool gold = isGoldCode(it.key());
 
         if(multiclassArena && arenaHeroMulticlassPower != INVALID_CLASS)
         {
@@ -3147,17 +3153,19 @@ DraftCard DraftHandler::getBestAllMatchManaRarity(const cv::MatND &screenCardHis
         int cost = Utility::getCardAttribute(code, "cost").toInt();
         CardRarity rarity = Utility::getRarityFromCode(code);
 
-        if(cost == imgMana && rarity == imgRarity)
+        if(cost == imgMana &&
+                (imgRarity == INVALID_RARITY || rarity == imgRarity))
         {
             double match = compareHist(screenCardHist, it.value(), 3);
             if(match < bestMatch)
             {
                 bestMatch = match;
                 bestCode = code;
+                bestGold = gold;
             }
         }
     }
-    return DraftCard(bestCode);
+    return DraftCard(bestCode, bestGold);
 }
 
 
@@ -3339,6 +3347,17 @@ void DraftHandler::loadImgTemplates(QList<cv::Mat> &imgTemplates, const QString 
         imgTemplates += mat;
     }
     file.close();
+}
+
+
+bool DraftHandler::isSignatureCard(const QString &code)
+{
+    QStringList candidates = {
+        MC_BLINGTRON, VOID_VIRTUOSO, COWBELL_SOLOIST, HIPSTER, ROCK_MASTER_BOONE, KANGOR_DANCING_KING, HEARTTHROB, INZAH,
+        ZOK_FOGSNOUT, DJ_MANASTORM, THE_ONE_AMALGAM_BAND, SNAKEBITE, CAGE_HEAD, TONY_KING_OF_PIRACY, MISTER_MUKLA
+    };
+    if(candidates.contains(code))   return true;
+    return false;
 }
 
 
