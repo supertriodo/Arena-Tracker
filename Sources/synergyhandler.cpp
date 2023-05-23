@@ -4559,7 +4559,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
-        ANUBREKHAN, LIFE_FROM_DEATH, RUSH_THE_STAGE
+        LIFE_FROM_DEATH, RUSH_THE_STAGE
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
     }
@@ -4575,7 +4575,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
-        CLUMSY_COURIER, EXCAVATION_SPECIALIST, INZAH
+        CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
     }
