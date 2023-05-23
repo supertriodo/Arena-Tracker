@@ -1921,11 +1921,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(const QString &code: (const QStringList)Utility::getSetCodes("BATTLE_OF_THE_BANDS", true, true))
-//    for(const QString &code: (const QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
-//    for(const QString &code: (const QStringList)Utility::getStandardCodes())
-//    for(const QString &code: (const QStringList)Utility::getWildCodes())
+    for(QString &code: (QStringList)Utility::getSetCodes("BATTLE_OF_THE_BANDS", true, true))
+//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
+//    for(QString &code: (QStringList)Utility::getStandardCodes())
+//    for(QString &code: (QStringList)Utility::getWildCodes())
     {
+        if(code.startsWith("CORE_"))    code = code.mid(5);
+
         if(miniSet.isEmpty() || code.startsWith(miniSet))
         {
             CardType cardType = Utility::getTypeFromCode(code);
@@ -4776,7 +4778,7 @@ REGLAS
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
 +tokenGen son 2 small minions (max 3/3), reborn y deathrattle son tokenGen (max 3/3)
     tambien cuentan las cartas generadas a mano (tokenCardGen).
-+No son tokenSyn las cartas "Destroy friendly minion", synergia muy debil.
++No son tokenSyn las cartas "Destroy friendly minion", solo cartas que necesiten 3+ minions.
 +freezeEnemyGen deben poder usarse sobre enemigos
 +pingGen (NO RANDOM/NO DEATHRATTLE): tienen como proposito eliminar divineShield y rematar, deben ser proactivos, no random ni deathrattle.
 +damageMinionsGen y destroyGen (SI RANDOM/NO DEATHRATTLE): deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
