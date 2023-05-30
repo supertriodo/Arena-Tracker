@@ -4099,8 +4099,9 @@
 "DIRECT_LINKS":
 {
   "-----------------------------------------WARRIOR------------------------------------------------": "",
-  "ETC_363 Verse Riff": ["ETC_364 Chorus Riff", "ETC_365 Bridge Riff"],
-  "ETC_364 Chorus Riff": ["ETC_365 Bridge Riff"],
+  "ETC_363 Verse Riff": ["ETC_363 Verse Riff", "ETC_364 Chorus Riff", "ETC_365 Bridge Riff"],
+  "ETC_364 Chorus Riff": ["ETC_364 Chorus Riff", "ETC_365 Bridge Riff"],
+  "ETC_365 Bridge Riff": ["ETC_365 Bridge Riff"],
 
   "-----------------------------------------SHAMAN-------------------------------------------------": "",
 	"LOOT_518 Windshear Stormcaller": ["LOOT_062 Kobold Hermit","LOOT_344 Primal Talismans"],
@@ -4175,8 +4176,9 @@
     "DAL_561 Jumbo Imp", "DAL_007 Rafaam's Scheme", "REV_244 Mischievous Imp"],
 
   "-----FATIGUE-----": "",
-  "ETC_068 Baritone Imp": ["ETC_069 Crescendo", "ETC_070 Crazed Conductor"],
-  "ETC_069 Crescendo": ["ETC_070 Crazed Conductor"],
+  "ETC_068 Baritone Imp": ["ETC_068 Baritone Imp", "ETC_069 Crescendo", "ETC_070 Crazed Conductor"],
+  "ETC_069 Crescendo": ["ETC_069 Crescendo", "ETC_070 Crazed Conductor"],
+  "ETC_070 Crazed Conductor": ["ETC_070 Crazed Conductor"],
 
   "-----------------------------------------MAGE---------------------------------------------------": "",
   "-----SELF-----": "",
@@ -4196,8 +4198,10 @@
     "REV_943 Relic of Phantasms"],
   "REV_937 Artificer Xy'mox": ["REV_508 Relic of Dimensions", "REV_834 Relic of Extinction",
     "REV_943 Relic of Phantasms"],
-  "REV_508 Relic of Dimensions": ["REV_834 Relic of Extinction", "REV_943 Relic of Phantasms"],
-  "REV_834 Relic of Extinction": ["REV_943 Relic of Phantasms"],
+  "REV_508 Relic of Dimensions": ["REV_508 Relic of Dimensions", "REV_834 Relic of Extinction",
+    "REV_943 Relic of Phantasms"],
+  "REV_834 Relic of Extinction": ["REV_834 Relic of Extinction", "REV_943 Relic of Phantasms"],
+  "REV_943 Relic of Phantasms": ["REV_943 Relic of Phantasms"],
 
   "--------------------------------------------ALL---------------------------------------------------": "",
   "-----SELF-----": "",
@@ -4264,14 +4268,19 @@
     "DED_512 Amulet of Undying", "DED_004 Blackwater Cutlass", "DED_504 Wicked Shipment"],
 
   "-----PIRANHA WARMER all-all-----": "",
-  "TSC_640 Reefwalker": ["TSC_633 Piranha Poacher", "TSC_638 Piranha Swarmer", "TSC_631 Schooling"],
-  "TSC_633 Piranha Poacher": ["TSC_638 Piranha Swarmer", "TSC_631 Schooling"],
-  "TSC_638 Piranha Swarmer": ["TSC_631 Schooling"],
+  "TSC_640 Reefwalker": ["TSC_640 Reefwalker", "TSC_633 Piranha Poacher", "TSC_638 Piranha Swarmer",
+    "TSC_631 Schooling"],
+  "TSC_633 Piranha Poacher": ["TSC_633 Piranha Poacher", "TSC_638 Piranha Swarmer",
+    "TSC_631 Schooling"],
+  "TSC_638 Piranha Swarmer": ["TSC_638 Piranha Swarmer", "TSC_631 Schooling"],
+  "TSC_631 Schooling": ["TSC_631 Schooling"],
 
   "-----ABYSSAL CURSE all-all-----": "",
-  "TSC_956 Dragged Below": ["TSC_955 Sira'kess Cultist", "TSC_959 Za'qul", "TSC_924 Abyssal Wave"],
-  "TSC_955 Sira'kess Cultist": ["TSC_959 Za'qul", "TSC_924 Abyssal Wave"],
-  "TSC_959 Za'qul": ["TSC_924 Abyssal Wave"],
+  "TSC_956 Dragged Below": ["TSC_956 Dragged Below", "TSC_955 Sira'kess Cultist", "TSC_959 Za'qul",
+    "TSC_924 Abyssal Wave"],
+  "TSC_955 Sira'kess Cultist": ["TSC_955 Sira'kess Cultist", "TSC_959 Za'qul", "TSC_924 Abyssal Wave"],
+  "TSC_959 Za'qul": ["TSC_959 Za'qul", "TSC_924 Abyssal Wave"],
+  "TSC_924 Abyssal Wave": ["TSC_924 Abyssal Wave"],
 
   "-----LOCATIONS-----": "",
   "REV_901 Dispossessed Soul": ["REV_371 Vile Library", "REV_750 Sinstone Graveyard",
@@ -4300,8 +4309,7 @@
   "-----CONCOCTION-----": "",
   "RLK_570 Ghoulish Alchemist": ["RLK_568 Concoctor", "RLK_569 Potion Belt",
     "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
-  "RLK_568 Concoctor": ["RLK_569 Potion Belt", "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
-  "RLK_569 Potion Belt": ["RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
-  "RLK_571 Vile Apothecary": ["RLK_572 Potionmaster Putricide"]
+  "RLK_568 Concoctor": ["RLK_568 Concoctor", "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
+  "RLK_571 Vile Apothecary": ["RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"]
 }
 }
