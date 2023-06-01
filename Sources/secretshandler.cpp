@@ -284,6 +284,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(CAT_TRICK, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MISDIRECTION, inArena, activeSecret);
                 unknownSecretPlayedAddOption(HIDDEN_CACHE, inArena, activeSecret);
+                unknownSecretPlayedAddOption(HIDDEN_MEANING, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(EMERGENCY_MANEUVERS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SNAKE_TRAP, inArena, activeSecret);
@@ -665,6 +666,7 @@ void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
 void SecretsHandler::playerAllManaSpent()
 {
     discardSecretOptionNow(DOUBLE_CROSS);
+    discardSecretOptionNow(HIDDEN_MEANING);
 }
 
 
@@ -993,7 +995,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
                               << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
-                              << ZOMBEEEES;
+                              << ZOMBEEEES << HIDDEN_MEANING;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND

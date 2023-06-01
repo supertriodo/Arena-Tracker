@@ -58,6 +58,7 @@
 #define EMERGENCY_MANEUVERS QString("TSC_929")
 #define MOTION_DENIED QString("MAW_010")
 #define ZOMBEEEES QString("NX2_013")
+#define HIDDEN_MEANING QString("JAM_003")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
