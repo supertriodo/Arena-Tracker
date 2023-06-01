@@ -3,6 +3,7 @@
 
 LogLoader::LogLoader(QObject *parent) : QObject(parent)
 {
+    synchronized = false;
     updateTime = MIN_UPDATE_TIME;
     setUpdateTimeMax();
 
@@ -23,31 +24,36 @@ bool LogLoader::init()
     emit pDebug("Log found.");
 
     updateTime = 1000;
+    recentLogDir = "";
 
-    createLogWorkers();
+    QTimer::singleShot(1, this, SLOT(checkLogDir()));
 
-    QTimer::singleShot(1, this, SLOT(sendLogWorkerFirstRun())); //Retraso para dejar que la aplicacion se pinte.
     return true;
 }
 
 
 void LogLoader::createLogWorkers()
 {
+    deleteLogWorkers();
     for(const QString &component: qAsConst(logComponentList))
     {
         createLogWorker(component);
     }
+
+    //Retraso para dejar que la aplicacion se pinte.
+    if(synchronized)    QTimer::singleShot(1, this, SLOT(sendLogWorker()));
+    else                QTimer::singleShot(1, this, SLOT(sendLogWorkerFirstRun()));
 }
 
 
 void LogLoader::createLogWorker(QString logComponent)
 {
     LogWorker *logWorker;
-    logWorker = new LogWorker(this, logsDirPath, logComponent);
+    logWorker = new LogWorker(this, logsDirPath + '/' + recentLogDir, logComponent);
     connect(logWorker, SIGNAL(pDebug(QString,DebugLevel,QString)),
             this, SIGNAL(pDebug(QString,DebugLevel,QString)));
 
-    if(logComponent == "LoadingScreen")
+    if(logComponent == "LoadingScreen" || synchronized)
     {
         connect(logWorker, SIGNAL(logReset()),
                 this, SIGNAL(logReset()));
@@ -56,6 +62,64 @@ void LogLoader::createLogWorker(QString logComponent)
     }
 
     logWorkerMap[logComponent] = logWorker;
+}
+
+
+void LogLoader::deleteLogWorkers()
+{
+    const QList<LogWorker *> workerList = logWorkerMap.values();
+    for(const LogWorker *worker: workerList)   delete worker;
+    logWorkerMap.clear();
+}
+
+
+LogLoader::~LogLoader()
+{
+    deleteLogWorkers();
+    delete match;
+}
+
+
+void LogLoader::checkLogDir()
+{
+    QString logDir = getRecentLogDir();
+    if(logDir != recentLogDir && !logDir.isEmpty())
+    {
+        recentLogDir = logDir;
+        emit pDebug("New RecentLogDir: " + recentLogDir);
+        createLogWorkers();
+    }
+    else
+    {
+        //Si no hay ningun log dir en /Logs queremos que el primero que se cree se lea al completo
+        synchronized = true;
+    }
+    QTimer::singleShot(LOG_DIR_TIME_CHECK, this, SLOT(checkLogDir()));
+}
+
+
+QString LogLoader::getRecentLogDir()
+{
+    if(!QFileInfo::exists(logsDirPath)) return recentLogDir;
+
+    QDir dir(logsDirPath);
+    dir.setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+    dir.setSorting(QDir::Time);
+    QStringList logs = dir.entryList();
+    removeOldLogDirs(logs);
+    return logs.isEmpty()?recentLogDir:logs.first();
+}
+
+
+void LogLoader::removeOldLogDirs(QStringList logs)
+{
+    while(logs.count() > 2)
+    {
+        QString log = logs.takeLast();
+        emit pDebug("Remove log dir: " + log);
+        QDir path(logsDirPath + '/' + log);
+        path.removeRecursively();
+    }
 }
 
 
@@ -96,25 +160,23 @@ bool LogLoader::readLogsDirPath()
         initPath = findLinuxLogs("*/Program Files*/Hearthstone");
 #endif
 
-        if(!initPath.isEmpty())
+        if(!QFileInfo::exists(initPath))
         {
-            if(QFileInfo::exists(initPath))
-            {
-                logsDirPath = initPath + "/Logs";
-                if(!QFileInfo::exists(logsDirPath))
-                {
-                    QDir().mkdir(logsDirPath);
-                    emit pDebug(logsDirPath + " created.");
-                }
-            }
+            emit pDebug("Show Find HS dir dialog.");
+            initPath = QFileDialog::getExistingDirectory(nullptr,
+                "Find Hearthstone dir",
+                QDir::homePath());
         }
 
-        if(logsDirPath.isEmpty())
+        //Create /Logs subdir
+        if(QFileInfo::exists(initPath))
         {
-            emit pDebug("Show Find Logs dir dialog.");
-            logsDirPath = QFileDialog::getExistingDirectory(nullptr,
-                "Find Hearthstone Logs dir",
-                QDir::homePath());
+            logsDirPath = initPath + "/Logs";
+            if(!QFileInfo::exists(logsDirPath))
+            {
+                QDir().mkdir(logsDirPath);
+                emit pDebug(logsDirPath + " created.");
+            }
         }
 
         settings.setValue("logsDirPath", logsDirPath);
@@ -122,12 +184,42 @@ bool LogLoader::readLogsDirPath()
 
     emit pDebug("Path Logs Dir: " + logsDirPath + " - " + QString::number(logsDirPath.length()));
 
+    //Wrong logsDirPath
     if(!QFileInfo::exists(logsDirPath))
     {
         settings.setValue("logsDirPath", "");
         emit pDebug("Logs dir not found.");
-        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Logs dir not found"), tr("Logs dir not found. Restart Arena Tracker and set the path again."));
+        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Hearthstone dir not found"),
+                                 tr("Hearthstone dir not found. Restart Arena Tracker and set the path again."));
         return false;
+    }
+    //Check client.config (Logs > 10mb)
+    else
+    {
+        QString initPath = logsDirPath;
+        initPath.chop(5);
+        QString logClient = initPath + "/client.config";
+
+        if(!QFileInfo::exists(logClient))
+        {
+            QFile file(logClient);
+            if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                emit pDebug("Cannot access client.config");
+                QSettings settings("Arena Tracker", "Arena Tracker");
+                settings.setValue("logsDirPath", "");
+                QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("client.config problem"),
+                                         tr("Can't create client.config. Restart Arena Tracker and try again."));
+                return false;
+            }
+
+            QTextStream stream(&file);
+            stream << "[Log]" << endl;
+            stream << "FileSizeLimit.Int=-1" << endl;
+
+            QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Hearthstone restart"),
+                                     tr("Restart Hearthstone if it's already running."));
+        }
     }
     return true;
 }
@@ -222,7 +314,7 @@ bool LogLoader::checkLogConfig()
     QFile file(logConfig);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        emit pDebug("Cannot access log.config", DebugLevel::Error);
+        emit pDebug("Cannot access log.config");
         QSettings settings("Arena Tracker", "Arena Tracker");
         settings.setValue("logConfig", "");
         QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("log.config not found"), tr("log.config not found. Restart Arena Tracker and set the path again."));
@@ -242,7 +334,8 @@ bool LogLoader::checkLogConfig()
 
     if(logConfigChanged)
     {
-        emit showMessageProgressBar("Restart Hearthstone");
+        QMessageBox::information(static_cast<QWidget*>(this->parent()), tr("Hearthstone restart"),
+                                 tr("Restart Hearthstone if it's already running."));
     }
 
     return true;
@@ -265,15 +358,6 @@ bool LogLoader::checkLogConfigOption(QString option, QString &data, QTextStream 
 }
 
 
-LogLoader::~LogLoader()
-{
-    const QList<LogWorker *> workerList = logWorkerMap.values();
-    for(const LogWorker *worker: workerList)   delete worker;
-    logWorkerMap.clear();
-    delete match;
-}
-
-
 void LogLoader::sendLogWorkerFirstRun()
 {
     for(const QString &logComponent: qAsConst(logComponentList))
@@ -281,7 +365,7 @@ void LogLoader::sendLogWorkerFirstRun()
         LogWorker *logWorker = logWorkerMap[logComponent];
         logWorker->readLog();
 
-        if(logComponent != "LoadingScreen")
+        if(logComponent != "LoadingScreen" && !synchronized)
         {
             connect(logWorker, SIGNAL(newLogLineRead(LogComponent,QString,qint64,qint64)),
                     this, SLOT(emitNewLogLineRead(LogComponent,QString,qint64,qint64)));
@@ -289,7 +373,7 @@ void LogLoader::sendLogWorkerFirstRun()
     }
 
     QTimer::singleShot(updateTime, this, SLOT(sendLogWorker()));
-    emit synchronized();
+    synchronized = true;
 }
 
 
@@ -366,7 +450,7 @@ void LogLoader::addToDataLogs(LogComponent logComponent, QString line, qint64 nu
     }
     else
     {
-        emit pDebug("Log timestamp invalid: " + line, DebugLevel::Error);
+        emit pDebug("Log timestamp invalid: " + line);
         emit newLogLineRead(logComponent, line, numLine, logSeek);
     }
 }

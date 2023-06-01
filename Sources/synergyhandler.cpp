@@ -4758,6 +4758,8 @@ REGLAS
     Synergias INFUSE si.
     Synergias CORPSES si.
     Synergias con undead en deathknight si.
+    Synergias FINALE si.
+    Synergias OVERHEAL en priest si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.

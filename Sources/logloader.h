@@ -9,6 +9,7 @@
 #define MIN_UPDATE_TIME 500
 #define MAX_UPDATE_TIME 2000
 #define UPDATE_TIME_STEP 500
+#define LOG_DIR_TIME_CHECK 15000
 
 
 class DataLog
@@ -32,11 +33,11 @@ public:
 
 //Variables
 private:
-    QString logsDirPath, logConfig;
+    QString logsDirPath, logConfig, recentLogDir;
     QMap<QString, LogWorker *>logWorkerMap;
     QList<QString> logComponentList;
     int updateTime, maxUpdateTime;
-    bool sortLogs;
+    bool sortLogs, synchronized;
     QMap<qint64,DataLog> dataLogs;
     QRegularExpressionMatch *match;
 
@@ -55,6 +56,9 @@ private:
     void addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
     void processDataLogs();
     QString findLinuxLogs(QString pattern);
+    QString getRecentLogDir();
+    void deleteLogWorkers();
+    void removeOldLogDirs(QStringList logs);
 
 public:
     bool init();
@@ -63,7 +67,6 @@ public:
 
 //Signals
 signals:
-    void synchronized();
     void logReset();
     void logConfigSet();
     void showMessageProgressBar(QString text);
@@ -77,9 +80,9 @@ signals:
 private slots:
     //LogWorker signal reemit
     void emitNewLogLineRead(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
-
     void sendLogWorker();
     void sendLogWorkerFirstRun();
+    void checkLogDir();
 
 public slots:
     void setUpdateTimeMax();
