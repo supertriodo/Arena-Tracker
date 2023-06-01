@@ -4728,8 +4728,8 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("ETC_099", "set").toString();
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
-//    draftHandler->getSynergyHandler()->testSynergies();//"NX2_");
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("BATTLE_OF_THE_BANDS", 0, 20);//, "NX2_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->testSynergies();//"JAM_");
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("BATTLE_OF_THE_BANDS", 20, 50, "JAM_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
