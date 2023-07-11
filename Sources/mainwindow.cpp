@@ -2345,8 +2345,7 @@ void MainWindow::dropEvent(QDropEvent *e)
 bool MainWindow::askImportAccount()
 {
     QString text =  "Do you want to use this new track-o-bot account"
-                    "<br>as your default account?"
-                    "<br><a href='https://www.youtube.com/watch?v=DfIat7UR7Tc'>VIDEO</a>";
+                    "<br>as your default account?";
 
     QMessageBox msgBox(this);
     msgBox.setText(text);
