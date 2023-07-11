@@ -113,8 +113,8 @@ void ArenaHandler::createArenaStatsTreeWidget()
     treeWidget->setColumnWidth(0, 130);
     treeWidget->setColumnWidth(1, 60);
     treeWidget->setColumnWidth(2, 60);
-    treeWidget->setColumnWidth(3, 90);
-    treeWidget->setColumnWidth(4, 90);
+    treeWidget->setColumnWidth(3, 60);
+    treeWidget->setColumnWidth(4, 60);
     treeWidget->setColumnWidth(5, 0);
 
     //WINRATES
@@ -142,11 +142,10 @@ void ArenaHandler::createArenaStatsTreeWidget()
     new QTreeWidgetItem(treeWidget);//Blank space
     best30TreeItem = new QTreeWidgetItem(treeWidget);
     best30TreeItem->setExpanded(true);
-    best30TreeItem->setText(0, "Best 30");
+    best30TreeItem->setText(0, "Region");
     best30TreeItem->setText(1, "Avg");
-    best30TreeItem->setText(2, "Runs");
-    best30TreeItem->setText(3, "Start");
-    best30TreeItem->setText(4, "End");
+    best30TreeItem->setText(2, "LB");
+    best30TreeItem->setText(3, "Runs");
     for(int j=1; j<5; j++)  best30TreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
     setRowColor(best30TreeItem, QColor(ThemeHandler::fgColor()));
 
@@ -1389,13 +1388,9 @@ void ArenaHandler::processArenas2Stats()
     int classLost[NUM_HEROS] = {0};
 
     //Best 30
-    int best30Runs[NUM_REGIONS] = {0};
-    int best30BestWins[NUM_REGIONS] = {0};
-    int best30CurrentWins[NUM_REGIONS] = {0};
-    QList<int> best30ListWins[NUM_REGIONS];
-    QStringList best30ListDates[NUM_REGIONS];
-    QString best30Start[NUM_REGIONS] = {""};
-    QString best30End[NUM_REGIONS] = {""};
+    int regionRuns[NUM_REGIONS] = {0};
+    int regionWins[NUM_REGIONS] = {0};
+    float regionLBWins[NUM_REGIONS] = {0};
 
     //Load arenas
     for(const QString &date: (const QStringList)statsJson.keys())
@@ -1424,41 +1419,23 @@ void ArenaHandler::processArenas2Stats()
         //Best 30
         if(region>-1 && region<NUM_REGIONS)
         {
-            if(best30Runs[region] < NUM_BEST_ARENAS)
+            regionRuns[region]++;
+            regionWins[region] += wins;
+
+            if(regionRuns[region] == NUM_BEST_ARENAS)
             {
-                best30Runs[region]++;
-                best30CurrentWins[region] += wins;
-                best30BestWins[region] = best30CurrentWins[region];
-                if(best30Start[region].isEmpty())   best30Start[region] = dateTitle;
-                best30End[region] = dateTitle;
-
-                best30ListWins[region].append(wins);
-                best30ListDates[region].append(dateTitle);
+                regionLBWins[region] = regionWins[region];
             }
-            else
+            else if(regionRuns[region] > NUM_BEST_ARENAS)
             {
-                int prevWins = best30ListWins[region].takeFirst();
-                best30ListDates[region].removeFirst();
-
-                best30CurrentWins[region] = best30CurrentWins[region] - prevWins + wins;
-                if(best30CurrentWins[region] >= best30BestWins[region])
-                {
-                    best30BestWins[region] = best30CurrentWins[region];
-                    best30Start[region] = best30ListDates[region].first();
-                    best30End[region] = dateTitle;
-                }
-
-                best30ListWins[region].append(wins);
-                best30ListDates[region].append(dateTitle);
+                regionLBWins[region] = regionLBWins[region]*(NUM_BEST_ARENAS-1)/NUM_BEST_ARENAS;
+                regionLBWins[region] += wins;
             }
-
-//            qDebug()<<ArenaHandler::getJsonExtraRegion(region)<<best30ListWins[region]<<best30ListDates[region]<<
-//                      best30CurrentWins[region]<<best30BestWins[region]<<best30Start[region]<<best30End[region];
         }
     }
 
     showArenas2StatsClass(classRuns, classWins, classLost);
-    showArenas2StatsBest30(best30Runs, best30BestWins, best30Start, best30End);
+    showArenas2StatsBest30(regionRuns, regionWins, regionLBWins);
 }
 
 
@@ -1487,23 +1464,23 @@ void ArenaHandler::showArenas2StatsClass(int classRuns[NUM_HEROS], int classWins
 }
 
 
-void ArenaHandler::showArenas2StatsBest30(int best30Runs[NUM_REGIONS], int best30BestWins[NUM_REGIONS],
-                                          QString best30Start[NUM_REGIONS], QString best30End[NUM_REGIONS])
+void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regionWins[NUM_REGIONS], float regionLBWins[NUM_REGIONS])
 {
     for(int i=0; i<NUM_REGIONS; i++)
     {
         QTreeWidgetItem *item = best30RegionTreeItem[i];
-        int runs = best30Runs[i];
+        int runs = regionRuns[i];
         if(runs > 0)
         {
-            int wins = best30BestWins[i];
-            QString start = best30Start[i];
-            QString end = best30End[i];
-
+            int wins = regionWins[i];
             setColumnText(item, 1, QString::number(static_cast<float>(wins)/runs, 'g', 3));
-            setColumnText(item, 2, QString::number(runs));
-            setColumnText(item, 3, start);
-            setColumnText(item, 4, end);
+            if(runs >= NUM_BEST_ARENAS)
+            {
+                float lbWins = regionLBWins[i];
+                setColumnText(item, 2, QString::number(static_cast<float>(lbWins)/NUM_BEST_ARENAS, 'g', 3));
+            }
+            else    setColumnText(item, 2, "--");
+            setColumnText(item, 3, QString::number(runs));
             item->setHidden(false);
         }
         else    item->setHidden(true);

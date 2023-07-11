@@ -92,7 +92,7 @@ private:
     void loadRegionNames();
     void processArenas2Stats();
     void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
-    void showArenas2StatsBest30(int best30Runs[], int best30BestWins[], QString best30Start[], QString best30End[]);
+    void showArenas2StatsBest30(int regionRuns[], int regionWins[], float regionLBWins[]);
     void startProcessArenas2Stats();
     void checkNewPeriod();
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);

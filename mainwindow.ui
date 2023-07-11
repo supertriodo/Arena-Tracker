@@ -75,8 +75,8 @@
             <item>
              <widget class="QPushButton" name="arenaStatsButton">
               <property name="toolTip">
-               <string>Show advanced arena stats: class winrates and
-best 30 arenas win average (leaderboard).</string>
+               <string>Show advanced arena stats: class winrates,
+region scores and online leaderboard rank.</string>
               </property>
               <property name="text">
                <string/>
@@ -1408,7 +1408,7 @@ draft mechanics becoming a patron (3€).</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>995</height>
+               <height>960</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
