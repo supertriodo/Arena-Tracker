@@ -20,6 +20,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->editingColumnText = false;
     this->lastRegion = 0;
     this->statsJsonFile = "";
+    this->networkManager = new QNetworkAccessManager();
 
     completeUI();
 }
@@ -27,6 +28,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
 ArenaHandler::~ArenaHandler()
 {
     delete match;
+    delete networkManager;
 }
 
 
@@ -117,7 +119,28 @@ void ArenaHandler::createArenaStatsTreeWidget()
     treeWidget->setColumnWidth(4, 60);
     treeWidget->setColumnWidth(5, 0);
 
+    //LEADERBOARD
+    lbTreeItem = new QTreeWidgetItem(treeWidget);
+    lbTreeItem->setExpanded(true);
+    lbTreeItem->setText(0, "Leaderb.");
+    lbTreeItem->setText(1, "Avg");
+    lbTreeItem->setText(2, "#");
+    lbTreeItem->setText(3, "Page");
+    lbTreeItem->setText(4, "Reg");
+    for(int j=1; j<5; j++)  lbTreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+    setRowColor(lbTreeItem, QColor(ThemeHandler::fgColor()));
+    lbTreeItem->setHidden(true);
+
+    for(int i=0; i<3; i++)
+    {
+        QTreeWidgetItem *item = lbRegionTreeItem[i] = new QTreeWidgetItem(lbTreeItem);
+        for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
+        setRowColor(item, 0);
+        item->setHidden(true);
+    }
+
     //WINRATES
+    new QTreeWidgetItem(treeWidget);//Blank space
     winrateTreeItem = new QTreeWidgetItem(treeWidget);
     winrateTreeItem->setExpanded(true);
     winrateTreeItem->setText(0, "Winrate");
@@ -284,6 +307,14 @@ void ArenaHandler::setPremium(bool premium, bool load)
     ui->donateButton->setHidden(premium);
     ui->arenaStatsButton->setHidden(!premium);
     if(load)    loadSelectedStatsJsonFile();
+
+    //Create Leaderboard map
+    if(premium)
+    {
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        seasonId = settings.value("seasonId", 0).toInt();
+        mapLeaderboard();
+    }
 }
 
 
@@ -440,10 +471,28 @@ QString ArenaHandler::getColumnText(QTreeWidgetItem *item, int col)
 }
 
 
-void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &text)
+void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &text, int maxNameLong)
 {
     editingColumnText = false;
     item->setText(col, text);
+    if(maxNameLong > 0)
+    {
+        QFont font(ThemeHandler::defaultFont());
+        int fontSize = 22;//Default en movetreewidget.cpp
+        font.setPixelSize(fontSize);
+        QFontMetrics fm(font);
+        int textWide = fm.width(text);
+
+        while(textWide>maxNameLong)
+        {
+            fontSize--;
+            font.setPixelSize(fontSize);
+            fm = QFontMetrics(font);
+            textWide = fm.width(text);
+            qDebug()<<text<<fontSize;
+        }
+        item->setFont(col, font);
+    }
 }
 
 
@@ -815,6 +864,7 @@ void ArenaHandler::setTheme()
     ui->arenaTreeWidget->setTheme(false);
     ui->arenaStatsTreeWidget->setTheme(true);
 
+    setRowColor(lbTreeItem, QColor(ThemeHandler::themeColor2()));
     setRowColor(winrateTreeItem, QColor(ThemeHandler::themeColor2()));
     setRowColor(best30TreeItem, QColor(ThemeHandler::themeColor2()));
 }
@@ -1436,6 +1486,7 @@ void ArenaHandler::processArenas2Stats()
 
     showArenas2StatsClass(classRuns, classWins, classLost);
     showArenas2StatsBest30(regionRuns, regionWins, regionLBWins);
+    showLeaderboardStats();
 }
 
 
@@ -1485,6 +1536,46 @@ void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regio
         }
         else    item->setHidden(true);
     }
+}
+
+
+void ArenaHandler::showLeaderboardStats()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    QString tag = settings.value("playerName", "").toString();
+    bool empty = true;
+
+    if(tag.isEmpty())
+    {
+        for(int i=0; i<3; i++)  lbRegionTreeItem[i]->setHidden(true);
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            QTreeWidgetItem *item = lbRegionTreeItem[i];
+            if(leaderboardMap[i].contains(tag))
+            {
+                float avg = leaderboardMap[i][tag].rating;
+                int rank = leaderboardMap[i][tag].rank;
+                int page = qCeil(rank/25.0);
+                setColumnText(item, 0, tag, 100);//Aunque la columna tiene 130, si pongo mas de 100 no cabe
+                setColumnText(item, 1, QString::number(avg, 'g', 3));
+                setColumnText(item, 2, (rank>999)?QString::number(rank/1000)+"k":QString::number(rank));
+                setColumnText(item, 3, QString::number(page));
+                setColumnText(item, 4, number2LbRegion(i));
+                item->setHidden(false);
+                empty = false;
+            }
+            else    item->setHidden(true);
+        }
+    }
+
+    if(!empty)
+    {
+        lbTreeItem->sortChildren(0, Qt::DescendingOrder);
+    }
+    lbTreeItem->setHidden(empty);
 }
 
 
@@ -1571,4 +1662,215 @@ bool ArenaHandler::processWinratesFromFile(int classRuns[NUM_HEROS], int classWi
 }
 
 
+//***********************************************
+//              Leaderboard load
+//***********************************************
+void ArenaHandler::mapLeaderboard()
+{
+    loadMapLeaderboard();
+
+    connect(networkManager, &QNetworkAccessManager::finished,
+        [=](QNetworkReply *reply)
+            {
+                reply->deleteLater();
+                replyMapLeaderboard(reply);
+            });
+
+    for(int i=0; i<3; i++)
+    {
+        getLeaderboardPage(networkManager, number2LbRegion(i), leaderboardPage[i]+1);
+    }
+}
+
+
+void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
+{
+    QString fullUrl = reply->url().toString();
+    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=arena&page=([0-9]+)&seasonId=([0-9]+)"), match))
+    {
+        QString region = match->captured(1);
+        int page = match->captured(2).toInt();
+        int season = match->captured(3).toInt();
+        int regionNum = lbRegion2Number(region);
+        emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
+
+        //Se ha registrado el cambio de season en medio de descarga de leaderboard, paramos para no guardar informacion de la season pasada que no se borrara
+        if(season != seasonId)
+        {
+            emit pDebug("Leaderboard: Season changed while downloading leaderboard. Abort download.");
+            return;
+        }
+
+        QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
+        if(rows.isEmpty())
+        {
+            leaderboardPage[regionNum] = 0;//All pages read
+            saveMapLeaderboard();
+        }
+        else
+        {
+            leaderboardPage[regionNum] = page;
+            getLeaderboardPage(networkManager, region, page+1);
+
+            for(const QJsonValue &row: rows)
+            {
+                QJsonObject object = row.toObject();
+                QString tag = object["accountid"].toString();
+                LeaderboardItem item;
+                item.rank = object["rank"].toInt();
+                item.rating = object["rating"].toDouble();
+                leaderboardMap[regionNum][tag] = item;
+            }
+        }
+    }
+}
+
+
+/*
+ * {
+ * "EU" -> ObjectPlayers
+ * "US" -> ObjectPlayers
+ * "AP" -> ObjectPlayers
+ * "pageEU" -> int
+ * "pageUS" -> int
+ * "pageAP" -> int
+ * }
+ *
+ * ObjectPlayers
+ * {
+ * "tag1" -> ObjectItem
+ * "tag2" -> ObjectItem
+ * ...
+ * }
+ *
+ * ObjectItem
+ * {
+ * "rank" -> int (1)
+ * "rating" -> int (725) -> (7.25)
+ * }
+ */
+bool ArenaHandler::loadMapLeaderboard()
+{
+    for(int i=0; i<3; i++)  leaderboardPage[i] = 0;
+
+    QFile jsonFile(Utility::extraPath() + "/leaderboard.json");
+    if(!jsonFile.exists())
+    {
+        emit pDebug("leaderboard.json doesn't exists.");
+        return true;
+    }
+
+    if(!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to load leaderboard.json from disk.", DebugLevel::Error);
+        return false;
+    }
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+    jsonFile.close();
+
+    QJsonObject jsonObject = jsonDoc.object();
+    for(int i=0; i<3; i++)
+    {
+        json2RegionLeaderboard(jsonObject, number2LbRegion(i));
+    }
+    return true;
+}
+
+
+void ArenaHandler::json2RegionLeaderboard(const QJsonObject &jsonObject, const QString &region)
+{
+    int regionNum = lbRegion2Number(region);
+    leaderboardPage[regionNum] = jsonObject["page"+region].toInt();
+    QJsonObject objectPlayers = jsonObject[region].toObject();
+
+    for(const QString &tag: objectPlayers.keys())
+    {
+        QJsonObject objectItem = objectPlayers[tag].toObject();
+        LeaderboardItem item;
+        item.rank = objectItem["rank"].toInt();
+        item.rating = objectItem["rating"].toInt()/100.0;
+        leaderboardMap[regionNum][tag] = item;
+    }
+}
+
+
+void ArenaHandler::saveMapLeaderboard()
+{
+    QJsonObject regions;
+
+    for(int i=0; i<3; i++)
+    {
+        QString region = number2LbRegion(i);
+        regions[region] = regionLeaderboard2Json(i);
+        regions["page"+region] = leaderboardPage[i];
+    }
+
+    //Build json data from statsJson
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(regions);
+
+    //Save to disk
+    QFile jsonFile(Utility::extraPath() + "/leaderboard.json");
+    if(jsonFile.exists())   jsonFile.remove();
+
+    if(!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        emit pDebug("Failed to create leaderboard.json on disk.", DebugLevel::Error);
+        return;
+    }
+    jsonFile.write(jsonDoc.toJson());
+    jsonFile.close();
+
+    emit pDebug("leaderboard.json updated.");
+}
+
+QJsonObject ArenaHandler::regionLeaderboard2Json(int numMap)
+{
+    QJsonObject region;
+    for(const QString &key: (const QStringList)leaderboardMap[numMap].keys())
+    {
+        int rank = leaderboardMap[numMap][key].rank;
+        int rating = static_cast<int>(leaderboardMap[numMap][key].rating*100);
+        QJsonObject item;
+        item["rank"] = rank;
+        item["rating"] = rating;
+        region[key] = item;
+    }
+    return region;
+}
+
+
+void ArenaHandler::getLeaderboardPage(QNetworkAccessManager *nm, QString region, int page)
+{
+    nm->get(QNetworkRequest(QUrl(QString(LEADERBOARD_URL) + "?region=" + region + "&"
+            "leaderboardId=arena&page=" + QString::number(page) + "&seasonId=" + QString::number(seasonId))));
+}
+
+
+int ArenaHandler::lbRegion2Number(QString region)
+{
+    if(region == "EU")      return 0;
+    else if(region == "US") return 1;
+    else/*(region == "AP")*/ return 2;
+}
+
+
+QString ArenaHandler::number2LbRegion(int regionNum)
+{
+    if(regionNum == 0)      return "EU";
+    else if(regionNum == 1) return "US";
+    else/*(regionNum == 2)*/return "AP";
+}
+
+
+void ArenaHandler::changeSeasonId(int season)
+{
+    this->seasonId = season;//Por si ya estamos descargando el leaderboard
+    for(int i=0; i<3; i++)
+    {
+        leaderboardMap[i].clear();
+        leaderboardPage[i] = 0;
+    }
+    saveMapLeaderboard();//Clear the map on disk
+}
 

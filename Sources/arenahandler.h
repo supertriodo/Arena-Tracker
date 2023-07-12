@@ -5,6 +5,7 @@
 #include "gamewatcher.h"
 #include "deckhandler.h"
 #include "planhandler.h"
+#include "qnetworkaccessmanager.h"
 #include <QObject>
 #include <QTreeWidgetItem>
 #include <QJsonObject>
@@ -17,6 +18,16 @@
 #define ARENA_WRONG             Qt::darkGray
 #define NUM_REGIONS             5
 #define NUM_BEST_ARENAS         30
+#define LEADERBOARD_URL         "https://hearthstone.blizzard.com/en-us/api/community/leaderboardsData"
+
+
+class LeaderboardItem
+{
+public:
+    int rank;
+    float rating;
+};
+
 
 class ArenaHandler : public QObject
 {
@@ -33,6 +44,8 @@ private:
     QTreeWidgetItem *arenaCurrent;
     QTreeWidgetItem *rankedTreeItem[NUM_HEROS];
     QTreeWidgetItem *adventureTreeItem, *tavernBrawlTreeItem, *friendlyTreeItem, *casualTreeItem;
+    QTreeWidgetItem *lbTreeItem;
+    QTreeWidgetItem *lbRegionTreeItem[3];
     QTreeWidgetItem *winrateTreeItem;
     QTreeWidgetItem *winrateClassTreeItem[NUM_HEROS];
     QTreeWidgetItem *best30TreeItem;
@@ -51,6 +64,11 @@ private:
     int lastRegion;
     DraftMethod draftMethodAvgScore;
     QFutureWatcher<void> futureProcessArenas2Stats;
+    QMap<QString, LeaderboardItem> leaderboardMap[3];
+    QNetworkAccessManager *networkManager;
+    int leaderboardPage[3];
+    int seasonId;
+
 
 
 
@@ -76,7 +94,7 @@ private:
     void newArenaGameStat(GameResult gameResult);
     void saveStatsJsonFile();
     QString getColumnText(QTreeWidgetItem *item, int col);
-    void setColumnText(QTreeWidgetItem *item, int col, const QString &text);
+    void setColumnText(QTreeWidgetItem *item, int col, const QString &text, int maxNameLong=0);
     void setColumnIcon(QTreeWidgetItem *item, int col, const QIcon &aicon);
     void itemChangedDate(QTreeWidgetItem *item, int column);
     void itemChangedHero(QTreeWidgetItem *item, int column);
@@ -93,6 +111,7 @@ private:
     void processArenas2Stats();
     void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
     void showArenas2StatsBest30(int regionRuns[], int regionWins[], float regionLBWins[]);
+    void showLeaderboardStats();
     void startProcessArenas2Stats();
     void checkNewPeriod();
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
@@ -104,13 +123,23 @@ private:
     bool jsonObjectFromFile(QJsonObject &jsonObject, const QString &statsFile);
     void processWinratesFromDir(const QDate &rotationDate);
     void loadStatsJsonFile(const QString &statsFile="ArenaTrackerStats.json");
+    void mapLeaderboard();
+    void getLeaderboardPage(QNetworkAccessManager *nm, QString region, int page);
+    int lbRegion2Number(QString region);
+    void replyMapLeaderboard(QNetworkReply *reply);
+    QJsonObject regionLeaderboard2Json(int numMap);
+    void json2RegionLeaderboard(const QJsonObject &jsonObject, const QString &region);
+    bool loadMapLeaderboard();
+    QString number2LbRegion(int regionNum);
 
 public:
+    void saveMapLeaderboard();
     void setMouseInApp(bool value);
     void setTransparency(Transparency value);
     void setTheme();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void processPlayerWinrates();
+    void changeSeasonId(int season);
 
 signals:
     void showPremiumDialog();

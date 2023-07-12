@@ -1428,18 +1428,21 @@ bool GameWatcher::isHeroPower(QString code)
 void GameWatcher::createGameResult()
 {
     GameResult gameResult;
+    QString playerName;
 
     if(playerID == 1)
     {
         gameResult.playerHero = hero1;
         gameResult.enemyHero = hero2;
         gameResult.enemyName = name2;
+        playerName = name1;
     }
     else if(playerID == 2)
     {
         gameResult.playerHero = hero2;
         gameResult.enemyHero = hero1;
         gameResult.enemyName = name1;
+        playerName = name2;
     }
     else
     {
@@ -1451,6 +1454,10 @@ void GameWatcher::createGameResult()
     gameResult.isWinner = (winnerPlayer == playerTag);
 
     emit newGameResult(gameResult, loadingScreenState);
+
+    //Save player tag
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    settings.setValue("playerName", playerName);
 }
 
 

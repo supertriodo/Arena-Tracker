@@ -896,6 +896,16 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
 
         allCardsDownloadNeeded = true;
         settings.setValue("arenaVersion", version);
+
+        //SeasonId
+        int oldSeasonId = settings.value("seasonId", 0).toInt();
+        int newSeasonId = jsonObject.value("seasonId").toInt();
+        if(oldSeasonId != newSeasonId)
+        {
+            pDebug("CheckArenaVersion: New SeasonId S" + QString::number(newSeasonId) + ", reset leaderboard.json");
+            settings.setValue("seasonId", newSeasonId);
+            arenaHandler->changeSeasonId(newSeasonId);
+        }
     }
     else
     {
@@ -1713,6 +1723,7 @@ void MainWindow::closeApp()
     draftHandler->deleteDraftMechanicsWindow();
     hide();
     draftHandler->closeFindScreenRects();
+    arenaHandler->saveMapLeaderboard();
     if(futureProcessHSRCardsPickrates.isRunning())          futureProcessHSRCardsPickrates.waitForFinished();
     if(futureProcessHSRCardsIncludedWinrates.isRunning())   futureProcessHSRCardsIncludedWinrates.waitForFinished();
     if(futureProcessHSRCardsIncludedDecks.isRunning())      futureProcessHSRCardsIncludedDecks.waitForFinished();
@@ -4927,7 +4938,7 @@ void MainWindow::testDelay()
 //QTimer::singleShot(100, this, [] () {MySlot(0); });
 //connect(nm, &QNetworkAccessManager::finished,
 //    [=](QNetworkReply *reply)
-//    {}
+//    {})
 //QtConcurrent::run([=]() {
 //    // Code in this block will run in another thread
 //});
