@@ -1673,7 +1673,15 @@ void ArenaHandler::mapLeaderboard()
         [=](QNetworkReply *reply)
             {
                 reply->deleteLater();
-                replyMapLeaderboard(reply);
+                if(reply->error() != QNetworkReply::NoError)
+                {
+                    pDebug(reply->url().toString() + " --> Failed. Retrying...");
+                    networkManager->get(QNetworkRequest(reply->url()));
+                }
+                else
+                {
+                    replyMapLeaderboard(reply);
+                }
             });
 
     for(int i=0; i<3; i++)
