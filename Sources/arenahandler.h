@@ -181,6 +181,7 @@ private slots:
     void arenaStatsJsonChanged(int index);
     void nmLbGlobalFinished(QNetworkReply *reply);
     void nmLbSearchFinished(QNetworkReply *reply);
+    void lbTagPulsing(int index);
 };
 
 #endif // ARENAHANDLER_H

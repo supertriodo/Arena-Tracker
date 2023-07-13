@@ -1459,7 +1459,7 @@ void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
     else if(isLbRegionTreeItem(item))
     {
         QString tag = getColumnText(item, column);
-        if(tag != searchTag)
+        if(!tag.isEmpty() && tag != searchTag)
         {
             searchLeaderboard(tag);
             showLeaderboardStats(tag);
@@ -1804,6 +1804,7 @@ void ArenaHandler::searchLeaderboard(const QString &searchTag)
             if(searchPage[i] > 1)   getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]-1);
             getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]);
             getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]+1);
+            lbTagPulsing(i);
             found = true;
         }
     }
@@ -2034,4 +2035,15 @@ QString ArenaHandler::getPlayerName()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     return settings.value("playerName", "").toString();
+}
+
+
+void ArenaHandler::lbTagPulsing(int index)
+{
+    static int r = 0;
+    r = (r+4)%256;//0-254
+    int pr = qAbs(r-127)+128;//127-0-127//255-128-255
+    lbRegionTreeItem[index]->setForeground(0, QColor(pr, pr, pr));
+    if(searchPage[index] > 0)   QTimer::singleShot(40, this, [=] () {lbTagPulsing(index); });
+    else    setRowColor(lbRegionTreeItem[index], 0);
 }
