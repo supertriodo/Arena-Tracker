@@ -129,11 +129,11 @@ void ArenaHandler::createArenaStatsTreeWidget()
     lbTreeItem->setText(4, "Reg");
     for(int j=1; j<5; j++)  lbTreeItem->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
     setRowColor(lbTreeItem, QColor(ThemeHandler::fgColor()));
-    lbTreeItem->setHidden(true);
 
     for(int i=0; i<3; i++)
     {
         QTreeWidgetItem *item = lbRegionTreeItem[i] = new QTreeWidgetItem(lbTreeItem);
+        item->setFlags(item->flags() | Qt::ItemIsEditable);
         for(int j=1; j<5; j++)  item->setTextAlignment(j, Qt::AlignHCenter|Qt::AlignVCenter);
         setRowColor(item, 0);
         item->setHidden(true);
@@ -477,19 +477,18 @@ void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &
     item->setText(col, text);
     if(maxNameLong > 0)
     {
-        QFont font(ThemeHandler::defaultFont());
-        int fontSize = 22;//Default en movetreewidget.cpp
+        QFont font(ThemeHandler::bigFont());
+        int fontSize = 22;//Default en movetreewidget.cpp es 22
         font.setPixelSize(fontSize);
         QFontMetrics fm(font);
-        int textWide = fm.width(text);
+        int textWide = fm.horizontalAdvance(text);
 
         while(textWide>maxNameLong)
         {
             fontSize--;
             font.setPixelSize(fontSize);
             fm = QFontMetrics(font);
-            textWide = fm.width(text);
-            qDebug()<<text<<fontSize;
+            textWide = fm.horizontalAdvance(text);
         }
         item->setFont(col, font);
     }
@@ -1397,26 +1396,55 @@ int ArenaHandler::getRegionTreeItemIndex(QTreeWidgetItem *item)
 }
 
 
+bool ArenaHandler::isLbRegionTreeItem(QTreeWidgetItem *item)
+{
+    for(int i=0; i<3; i++)
+    {
+        if(item == lbRegionTreeItem[i]) return true;
+    }
+    return false;
+}
+
+
 void ArenaHandler::statItemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     int regionIndex = getRegionTreeItemIndex(item);
-    if(column != 0 || regionIndex == -1)    return;
-
-    ui->arenaStatsTreeWidget->editItem(item, column);
+    if(column == 0 && (regionIndex != -1 || isLbRegionTreeItem(item)))
+    {
+        ui->arenaStatsTreeWidget->editItem(item, column);
+    }
+    else if(column > 0 && isLbRegionTreeItem(item))
+    {
+        QString page = getColumnText(item, 3);
+        QString region = getColumnText(item, 4);
+        if(page != "--")
+        {
+            QDesktopServices::openUrl(QUrl(QString(LEADERBOARD_URL2) + "?region=" + region + "&leaderboardId=arena&page=" +
+                                           page + "&seasonId=" + QString::number(seasonId)));
+        }
+    }
 }
 
 
 void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
 {
     int regionIndex = getRegionTreeItemIndex(item);
-    if(column != 0 || regionIndex == -1)    return;
+    if(column != 0) return;
 
-    QString text = getColumnText(item, column);
-    QString region = getJsonExtraRegion(regionIndex);
-    if(text != region)
+    if(regionIndex != -1)
     {
-        setJsonExtra("region" + QString::number(regionIndex), text);
-        saveStatsJsonFile();
+        QString text = getColumnText(item, column);
+        QString region = getJsonExtraRegion(regionIndex);
+        if(text != region)
+        {
+            setJsonExtra("region" + QString::number(regionIndex), text);
+            saveStatsJsonFile();
+        }
+    }
+    else if(isLbRegionTreeItem(item))
+    {
+        QString tag = getColumnText(item, column);
+        showLeaderboardStats(tag);
     }
 }
 
@@ -1539,43 +1567,48 @@ void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regio
 }
 
 
-void ArenaHandler::showLeaderboardStats()
+void ArenaHandler::showLeaderboardStats(QString tag)
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
-    QString tag = settings.value("playerName", "").toString();
+    if(tag.isEmpty())   tag = settings.value("playerName", "").toString();
     bool empty = true;
 
-    if(tag.isEmpty())
+    for(int i=0; i<3; i++)
     {
-        for(int i=0; i<3; i++)  lbRegionTreeItem[i]->setHidden(true);
+        QTreeWidgetItem *item = lbRegionTreeItem[i];
+        if(leaderboardMap[i].contains(tag))
+        {
+            float avg = leaderboardMap[i][tag].rating;
+            int rank = leaderboardMap[i][tag].rank;
+            int page = qCeil(rank/25.0);
+            setColumnText(item, 0, tag, 100);//Aunque la columna tiene 130, si pongo mas de 100 no cabe
+            setColumnText(item, 1, QString::number(avg, 'g', 3));
+            setColumnText(item, 2, (rank>999)?QString::number(rank/1000)+"k":QString::number(rank));
+            setColumnText(item, 3, QString::number(page));
+            setColumnText(item, 4, number2LbRegion(i));
+            item->setHidden(false);
+            empty = false;
+        }
+        else    item->setHidden(true);
+    }
+
+    if(empty)
+    {
+        lbRegionTreeItem[0]->setHidden(false);
+        lbRegionTreeItem[1]->setHidden(true);
+        lbRegionTreeItem[2]->setHidden(true);
+
+        QTreeWidgetItem *item = lbRegionTreeItem[0];
+        setColumnText(item, 0, tag, 100);//Aunque la columna tiene 130, si pongo mas de 100 no cabe
+        setColumnText(item, 1, "--");
+        setColumnText(item, 2, "--");
+        setColumnText(item, 3, "--");
+        setColumnText(item, 4, "--");
     }
     else
     {
-        for(int i=0; i<3; i++)
-        {
-            QTreeWidgetItem *item = lbRegionTreeItem[i];
-            if(leaderboardMap[i].contains(tag))
-            {
-                float avg = leaderboardMap[i][tag].rating;
-                int rank = leaderboardMap[i][tag].rank;
-                int page = qCeil(rank/25.0);
-                setColumnText(item, 0, tag, 100);//Aunque la columna tiene 130, si pongo mas de 100 no cabe
-                setColumnText(item, 1, QString::number(avg, 'g', 3));
-                setColumnText(item, 2, (rank>999)?QString::number(rank/1000)+"k":QString::number(rank));
-                setColumnText(item, 3, QString::number(page));
-                setColumnText(item, 4, number2LbRegion(i));
-                item->setHidden(false);
-                empty = false;
-            }
-            else    item->setHidden(true);
-        }
-    }
-
-    if(!empty)
-    {
         lbTreeItem->sortChildren(0, Qt::DescendingOrder);
     }
-    lbTreeItem->setHidden(empty);
 }
 
 
@@ -1686,7 +1719,7 @@ void ArenaHandler::mapLeaderboard()
 
     for(int i=0; i<3; i++)
     {
-        getLeaderboardPage(networkManager, number2LbRegion(i), leaderboardPage[i]+1);
+        getLeaderboardPage(networkManager, number2LbRegion(i), leaderboardPage[i]+1);//TODO
     }
 }
 

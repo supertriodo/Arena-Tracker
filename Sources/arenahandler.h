@@ -19,6 +19,7 @@
 #define NUM_REGIONS             5
 #define NUM_BEST_ARENAS         30
 #define LEADERBOARD_URL         "https://hearthstone.blizzard.com/en-us/api/community/leaderboardsData"
+#define LEADERBOARD_URL2        "https://hearthstone.blizzard.com/en-us/community/leaderboards"
 
 
 class LeaderboardItem
@@ -111,7 +112,7 @@ private:
     void processArenas2Stats();
     void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
     void showArenas2StatsBest30(int regionRuns[], int regionWins[], float regionLBWins[]);
-    void showLeaderboardStats();
+    void showLeaderboardStats(QString tag="");
     void startProcessArenas2Stats();
     void checkNewPeriod();
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
@@ -131,6 +132,7 @@ private:
     void json2RegionLeaderboard(const QJsonObject &jsonObject, const QString &region);
     bool loadMapLeaderboard();
     QString number2LbRegion(int regionNum);
+    bool isLbRegionTreeItem(QTreeWidgetItem *item);
 
 public:
     void saveMapLeaderboard();
