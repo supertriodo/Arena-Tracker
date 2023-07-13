@@ -20,15 +20,27 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->editingColumnText = false;
     this->lastRegion = 0;
     this->statsJsonFile = "";
-    this->networkManager = new QNetworkAccessManager();
 
+    createNetworkManager();
     completeUI();
 }
 
 ArenaHandler::~ArenaHandler()
 {
     delete match;
-    delete networkManager;
+    delete nmLbGlobal;
+    delete nmLbSearch;
+}
+
+
+void ArenaHandler::createNetworkManager()
+{
+    this->nmLbGlobal = new QNetworkAccessManager();
+    this->nmLbSearch = new QNetworkAccessManager();
+    connect(nmLbGlobal, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(nmLbGlobalFinished(QNetworkReply*)));
+    connect(nmLbSearch, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(nmLbSearchFinished(QNetworkReply*)));
 }
 
 
@@ -327,6 +339,9 @@ void ArenaHandler::toggleArenaStatsTreeWidget()
 
 void ArenaHandler::showArenaStatsTreeWidget()
 {
+    //Search lb to update player stats
+    searchLeaderboard(getPlayerName());
+
     startProcessArenas2Stats();
 
     ui->arenaStatsButton->setEnabled(false);
@@ -1444,7 +1459,11 @@ void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
     else if(isLbRegionTreeItem(item))
     {
         QString tag = getColumnText(item, column);
-        showLeaderboardStats(tag);
+        if(tag != searchTag)
+        {
+            searchLeaderboard(tag);
+            showLeaderboardStats(tag);
+        }
     }
 }
 
@@ -1569,8 +1588,7 @@ void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regio
 
 void ArenaHandler::showLeaderboardStats(QString tag)
 {
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    if(tag.isEmpty())   tag = settings.value("playerName", "").toString();
+    if(tag.isEmpty())   tag = getPlayerName();
     bool empty = true;
 
     for(int i=0; i<3; i++)
@@ -1702,24 +1720,24 @@ void ArenaHandler::mapLeaderboard()
 {
     loadMapLeaderboard();
 
-    connect(networkManager, &QNetworkAccessManager::finished,
-        [=](QNetworkReply *reply)
-            {
-                reply->deleteLater();
-                if(reply->error() != QNetworkReply::NoError)
-                {
-                    pDebug(reply->url().toString() + " --> Failed. Retrying...");
-                    networkManager->get(QNetworkRequest(reply->url()));
-                }
-                else
-                {
-                    replyMapLeaderboard(reply);
-                }
-            });
-
     for(int i=0; i<3; i++)
     {
-        getLeaderboardPage(networkManager, number2LbRegion(i), leaderboardPage[i]+1);//TODO
+        getLeaderboardPage(nmLbGlobal, number2LbRegion(i), leaderboardPage[i]+1);//TODO
+    }
+}
+
+
+void ArenaHandler::nmLbGlobalFinished(QNetworkReply* reply)
+{
+    reply->deleteLater();
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        pDebug(reply->url().toString() + " --> Failed. Retrying...");
+        nmLbGlobal->get(QNetworkRequest(reply->url()));
+    }
+    else
+    {
+        replyMapLeaderboard(reply);
     }
 }
 
@@ -1751,7 +1769,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
         else
         {
             leaderboardPage[regionNum] = page;
-            getLeaderboardPage(networkManager, region, page+1);
+            getLeaderboardPage(nmLbGlobal, region, page+1);
 
             for(const QJsonValue &row: rows)
             {
@@ -1762,6 +1780,102 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
                 item.rating = object["rating"].toDouble();
                 leaderboardMap[regionNum][tag] = item;
             }
+        }
+    }
+}
+
+
+void ArenaHandler::searchLeaderboard(const QString &searchTag)
+{
+    QString searchRegion;
+    this->searchTag = searchTag;
+
+    int found = false;
+
+    for(int i=0; i<3; i++)
+    {
+        searchPage[i] = 0;
+        if(leaderboardMap[i].contains(searchTag))
+        {
+            int rank = leaderboardMap[i][searchTag].rank;
+            searchPage[i] = qCeil(rank/25.0);
+            searchRegion = number2LbRegion(i);
+            emit pDebug("Leaderboard Search START: " + searchTag + " --> " + searchRegion + " --> P" + QString::number(searchPage[i]) + " --> S" + QString::number(seasonId));
+            if(searchPage[i] > 1)   getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]-1);
+            getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]);
+            getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]+1);
+            found = true;
+        }
+    }
+    if(!found)  emit pDebug("Leaderboard Search: " + searchTag + " --> Not found.");
+}
+
+
+void ArenaHandler::nmLbSearchFinished(QNetworkReply* reply)
+{
+    reply->deleteLater();
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        pDebug(reply->url().toString() + " --> Failed. Retrying...");
+        nmLbSearch->get(QNetworkRequest(reply->url()));
+    }
+    else
+    {
+        replySearchLeaderboard(reply);
+    }
+}
+
+
+void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
+{
+    QString fullUrl = reply->url().toString();
+    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=arena&page=([0-9]+)&seasonId=([0-9]+)"), match))
+    {
+        QString region = match->captured(1);
+        int page = match->captured(2).toInt();
+        int season = match->captured(3).toInt();
+        int regionNum = lbRegion2Number(region);
+        emit pDebug("Leaderboard Search: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
+
+        //Se ha registrado el cambio de season en medio de descarga de leaderboard, paramos para no guardar informacion de la season pasada que no se borrara
+        if(season != seasonId)
+        {
+            emit pDebug("Leaderboard Search: Season changed while downloading leaderboard. Abort download.");
+            return;
+        }
+
+        QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
+        if(rows.isEmpty())  emit pDebug("Leaderboard Search STOP LIMIT - RIGHT");
+        else
+        {
+            bool found = false;
+            for(const QJsonValue &row: rows)
+            {
+                QJsonObject object = row.toObject();
+                QString tag = object["accountid"].toString();
+                LeaderboardItem item;
+                item.rank = object["rank"].toInt();
+                item.rating = object["rating"].toDouble();
+                leaderboardMap[regionNum][tag] = item;
+                if(tag == searchTag)  found = true;
+            }
+            if(found)
+            {
+                emit pDebug("Leaderboard Search FOUND");
+                searchPage[regionNum] = 0;
+                showLeaderboardStats(searchTag);
+            }
+            if(searchPage[regionNum] > 0)
+            {
+                int nextPage;
+                if(page == searchPage[regionNum])       nextPage = 0;
+                else if(page > searchPage[regionNum])   nextPage = page + 1;
+                else                                    nextPage = page - 1;
+
+                if(nextPage > 0)    getLeaderboardPage(nmLbSearch, region, nextPage);
+                else                emit pDebug("Leaderboard Search STOP LIMIT - MIDDLE/LEFT");
+            }
+            else    emit pDebug("Leaderboard Search STOP FOUND");
         }
     }
 }
@@ -1915,3 +2029,9 @@ void ArenaHandler::changeSeasonId(int season)
     saveMapLeaderboard();//Clear the map on disk
 }
 
+
+QString ArenaHandler::getPlayerName()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    return settings.value("playerName", "").toString();
+}

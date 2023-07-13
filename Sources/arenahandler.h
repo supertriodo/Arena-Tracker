@@ -66,10 +66,11 @@ private:
     DraftMethod draftMethodAvgScore;
     QFutureWatcher<void> futureProcessArenas2Stats;
     QMap<QString, LeaderboardItem> leaderboardMap[3];
-    QNetworkAccessManager *networkManager;
+    QNetworkAccessManager *nmLbGlobal, *nmLbSearch;
     int leaderboardPage[3];
     int seasonId;
-
+    QString searchTag;
+    int searchPage[3];
 
 
 
@@ -133,6 +134,10 @@ private:
     bool loadMapLeaderboard();
     QString number2LbRegion(int regionNum);
     bool isLbRegionTreeItem(QTreeWidgetItem *item);
+    void searchLeaderboard(const QString &searchTag);
+    void replySearchLeaderboard(QNetworkReply *reply);
+    void createNetworkManager();
+    QString getPlayerName();
 
 public:
     void saveMapLeaderboard();
@@ -174,6 +179,8 @@ private slots:
     void statItemChanged(QTreeWidgetItem *item, int column);
     void deselectRow();
     void arenaStatsJsonChanged(int index);
+    void nmLbGlobalFinished(QNetworkReply *reply);
+    void nmLbSearchFinished(QNetworkReply *reply);
 };
 
 #endif // ARENAHANDLER_H
