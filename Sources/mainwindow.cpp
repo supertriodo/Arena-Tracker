@@ -1962,6 +1962,7 @@ void MainWindow::readSettings()
     bool showWildSecrets = settings.value("showWildSecrets", false).toBool();
     bool twitchChatVotes = settings.value("twitchChatVotes", false).toBool();
     bool showMyWR = settings.value("showMyWR", true).toBool();
+    bool downloadLB = settings.value("downloadLB", true).toBool();
 
     bool wantedMechanics[M_NUM_MECHANICS];
     for(int i=0; i<M_NUM_MECHANICS; i++)
@@ -1972,7 +1973,7 @@ void MainWindow::readSettings()
     initConfigTab(tooltipScale, cardHeight, autoSize, showClassColor, showSpellColor, showManaLimits, showTotalAttack, showRngList,
                   twitchChatVotes, theme, draftMethodHA, draftMethodLF, draftMethodHSR, draftAvg, popularCardsShown,
                   showSecrets, showWildSecrets, showDraftScoresOverlay, showDraftMechanicsOverlay, draftLearningMode,
-                  draftShowDrops, showMyWR, wantedMechanics);
+                  draftShowDrops, showMyWR, downloadLB, wantedMechanics);
 
     if(TwitchHandler::loadSettings())   twitchTesterConnectionOk(TwitchHandler::isWellConfigured(), false);
 
@@ -2027,6 +2028,7 @@ void MainWindow::writeSettings()
     settings.setValue("showWildSecrets", ui->configCheckWildSecrets->isChecked());
     settings.setValue("twitchChatVotes", ui->configCheckVotes->isChecked());
     settings.setValue("showMyWR", ui->configCheckWR->isChecked());
+    settings.setValue("downloadLB", ui->configCheckLB->isChecked());
     settings.setValue("deckWindow", deckWindow != nullptr);
     settings.setValue("arenaWindow", arenaWindow != nullptr);
     settings.setValue("enemyWindow", enemyWindow != nullptr);
@@ -2054,7 +2056,7 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
                                QString draftAvg,
                                int popularCardsShown, bool showSecrets, bool showWildSecrets, bool showDraftScoresOverlay,
                                bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops, bool showMyWR,
-                               bool wantedMechanics[M_NUM_MECHANICS])
+                               bool downloadLB, bool wantedMechanics[M_NUM_MECHANICS])
 {
     //New Config Step 3 - Actualizar UI con valores cargados
 
@@ -2080,6 +2082,10 @@ void MainWindow::initConfigTab(int tooltipScale, int cardHeight, bool autoSize, 
     }
 
     initConfigTheme(theme);
+
+    //Games
+    if(downloadLB)                  ui->configCheckLB->setChecked(true);
+    updateDownloadLB(downloadLB);
 
     //Deck
     if(cardHeight<ui->configSliderCardSize->minimum() || cardHeight>ui->configSliderCardSize->maximum())  cardHeight = 35;
@@ -3191,6 +3197,7 @@ void MainWindow::updateOtherTabsTransparency()
                 "QGroupBox::title {subcontrol-origin: margin; subcontrol-position: top center;}";
         ui->configBoxActions->setStyleSheet(groupBoxCSS);
         ui->configBoxUI->setStyleSheet(groupBoxCSS);
+        ui->configBoxGames->setStyleSheet(groupBoxCSS);
         ui->configBoxDeck->setStyleSheet(groupBoxCSS);
         ui->configBoxHand->setStyleSheet(groupBoxCSS);
         ui->configBoxDraft->setStyleSheet(groupBoxCSS);
@@ -3234,6 +3241,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckWildSecrets->setStyleSheet(checkCSS);
         ui->configCheckVotes->setStyleSheet(checkCSS);
         ui->configCheckWR->setStyleSheet(checkCSS);
+        ui->configCheckLB->setStyleSheet(checkCSS);
         ui->configCheckHA->setStyleSheet(checkCSS);
         ui->configCheckLF->setStyleSheet(checkCSS);
         ui->configCheckHSR->setStyleSheet(checkCSS);
@@ -3256,6 +3264,7 @@ void MainWindow::updateOtherTabsTransparency()
 
         ui->configBoxActions->setStyleSheet("");
         ui->configBoxUI->setStyleSheet("");
+        ui->configBoxGames->setStyleSheet("");
         ui->configBoxDeck->setStyleSheet("");
         ui->configBoxHand->setStyleSheet("");
         ui->configBoxDraft->setStyleSheet("");
@@ -3297,6 +3306,7 @@ void MainWindow::updateOtherTabsTransparency()
         ui->configCheckWildSecrets->setStyleSheet("");
         ui->configCheckVotes->setStyleSheet("");
         ui->configCheckWR->setStyleSheet("");
+        ui->configCheckLB->setStyleSheet("");
         ui->configCheckHA->setStyleSheet("");
         ui->configCheckLF->setStyleSheet("");
         ui->configCheckHSR->setStyleSheet("");
@@ -3888,6 +3898,12 @@ void MainWindow::updateShowMyWR(bool checked)
 }
 
 
+void MainWindow::updateDownloadLB(bool checked)
+{
+    arenaHandler->setDownloadLB(checked);
+}
+
+
 void MainWindow::updateDrop2(bool checked)
 {
     setWantedMechanic(M_DROP2, checked);
@@ -4020,6 +4036,8 @@ void MainWindow::setPremium(bool premium)
     ui->configLabelDraftAvg->setHidden(!patreonVersion);
     ui->configComboDraftAvg->setHidden(!patreonVersion);
     ui->configCheckWR->setHidden(!patreonVersion);
+    ui->configBoxGames->setHidden(!patreonVersion);
+    ui->configCheckLB->setHidden(!patreonVersion);
 
     ui->configBoxDraftIcons->setHidden(!patreonVersion);
     ui->iconDrop2->setHidden(!patreonVersion);
@@ -4065,6 +4083,11 @@ void MainWindow::completeConfigTab()
     connect(ui->configRadioFramed, SIGNAL(clicked()), this, SLOT(transparentFramed()));
 
     completeConfigComboTheme();
+
+    //Games
+    ui->configBoxGames->hide();
+    ui->configCheckLB->hide();
+    connect(ui->configCheckLB, SIGNAL(clicked(bool)), this, SLOT(updateDownloadLB(bool)));
 
     //Deck
     ui->configCheckAutoSize->hide();//Disable autoSize

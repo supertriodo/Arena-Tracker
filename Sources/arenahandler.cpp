@@ -20,6 +20,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->editingColumnText = false;
     this->lastRegion = 0;
     this->statsJsonFile = "";
+    this->downloadLB = true;
 
     createNetworkManager();
     completeUI();
@@ -324,10 +325,8 @@ void ArenaHandler::setPremium(bool premium, bool load)
     if(load)    loadSelectedStatsJsonFile();
 
     //Create Leaderboard map
-    if(premium)
+    if(premium && downloadLB)
     {
-        QSettings settings("Arena Tracker", "Arena Tracker");
-        seasonId = settings.value("seasonId", 0).toInt();
         mapLeaderboard();
     }
 }
@@ -1599,6 +1598,14 @@ void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regio
 
 void ArenaHandler::showLeaderboardStats(QString tag, bool allowTagChange)
 {
+    if(!downloadLB)
+    {
+        for(int i=0; i<3; i++)  lbRegionTreeItem[i]->setHidden(true);
+        lbTreeItem->setHidden(true);
+        return;
+    }
+
+    lbTreeItem->setHidden(false);
     if(tag.isEmpty())   tag = getPlayerName();
     bool empty = true;
 
@@ -1743,11 +1750,14 @@ bool ArenaHandler::processWinratesFromFile(int classRuns[NUM_HEROS], int classWi
 //***********************************************
 void ArenaHandler::mapLeaderboard()
 {
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    seasonId = settings.value("seasonId", 0).toInt();
+
     loadMapLeaderboard();
 
     for(int i=0; i<3; i++)
     {
-        getLeaderboardPage(nmLbGlobal, number2LbRegion(i), leaderboardPage[i]+1);//TODO
+        getLeaderboardPage(nmLbGlobal, number2LbRegion(i), leaderboardPage[i]+1);
     }
 }
 
@@ -1784,6 +1794,18 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
             emit pDebug("Leaderboard: Season changed while downloading leaderboard. Abort download.");
             return;
         }
+        //Hay varios get repetidos running, puede ocurrir si se desactiva y activa rapido el checkbox ui->configCheckLB
+        if(leaderboardPage[regionNum] == page)
+        {
+            emit pDebug("Leaderboard: Remove duplicate download reply on page: " + QString::number(page));
+            return;
+        }
+        //Download leaderboard disabled
+        if(!downloadLB)
+        {
+            saveMapLeaderboard();
+            return;
+        }
 
         QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
         if(rows.isEmpty())
@@ -1813,6 +1835,8 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
 //Compartido por leaderboard stat search y enemy rank search lo que la hace algo problematica
 bool ArenaHandler::searchLeaderboard(const QString &searchTag)
 {
+    if(!downloadLB) return false;
+
     for(int i=0; i<3; i++)
     {
         if(searchPage[i] != 0)
@@ -1941,7 +1965,11 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
  */
 bool ArenaHandler::loadMapLeaderboard()
 {
-    for(int i=0; i<3; i++)  leaderboardPage[i] = 0;
+    for(int i=0; i<3; i++)
+    {
+        leaderboardPage[i] = 0;
+        leaderboardMap[i].clear();
+    }
 
     QFile jsonFile(Utility::extraPath() + "/leaderboard.json");
     if(!jsonFile.exists())
@@ -2085,7 +2113,7 @@ void ArenaHandler::lbTagPulsing(int index)
 
 void ArenaHandler::showEnemyRanking(QString tag)
 {
-    if(!premium)    return;
+    if(!premium || !downloadLB)     return;
     bool searchOk = searchLeaderboard(tag);
     QList<EnemyRankingItem> enemyRankingItems;
 
@@ -2106,10 +2134,25 @@ void ArenaHandler::showEnemyRanking(QString tag)
 
 void ArenaHandler::hideEnemyRanking()
 {
-    if(!premium)    return;
     ui->enemyRankingLabel->hideEnemyRanking();
     if(searchTag == ui->enemyRankingLabel->getTag())
     {
+        for(int i=0; i<3; i++)  searchPage[i] = 0;
+    }
+}
+
+
+void ArenaHandler::setDownloadLB(bool value)
+{
+    this->downloadLB = value;
+
+    if(downloadLB)
+    {
+        if(premium) mapLeaderboard();
+    }
+    else
+    {
+        hideEnemyRanking();
         for(int i=0; i<3; i++)  searchPage[i] = 0;
     }
 }

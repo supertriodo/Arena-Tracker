@@ -71,6 +71,7 @@ private:
     int seasonId;
     QString searchTag;
     int searchPage[3];
+    bool downloadLB;
 
 
 
@@ -148,6 +149,7 @@ public:
     void processPlayerWinrates();
     void changeSeasonId(int season);
 
+    void setDownloadLB(bool value);
 signals:
     void showPremiumDialog();
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="ArenaHandler");

@@ -169,7 +169,7 @@ private:
                        bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR, QString draftAvg,
                        int popularCardsShown, bool showSecrets, bool showWildSecrets,
                        bool showDraftScoresOverlay, bool showDraftMechanicsOverlay, bool draftLearningMode, bool draftShowDrops,
-                       bool showMyWR, bool wantedMechanics[]);
+                       bool showMyWR, bool downloadLB, bool wantedMechanics[]);
     void moveInScreen(QPoint pos, QSize size);
     int getScreenHighest();
     void completeHighResConfigTab();
@@ -337,6 +337,7 @@ private slots:
     void spreadDraftAvg(QString draftAvg);
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void updateShowMyWR(bool checked);
+    void updateDownloadLB(bool checked);
     void updateDrop2(bool checked);
     void updateDrop3(bool checked);
     void updateDrop4(bool checked);
