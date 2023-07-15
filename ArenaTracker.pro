@@ -19,6 +19,7 @@ SOURCES += Sources/main.cpp\
     Sources/Cards/popularcard.cpp \
     Sources/Cards/synergycard.cpp \
     Sources/Synergies/draftdropcounter.cpp \
+    Sources/Widgets/enemyranking.cpp \
     Sources/drawcardhandler.cpp \
     Sources/mainwindow.cpp \
     Sources/logloader.cpp \
@@ -84,6 +85,7 @@ HEADERS  += Sources/mainwindow.h \
     Sources/Cards/popularcard.h \
     Sources/Cards/synergycard.h \
     Sources/Synergies/draftdropcounter.h \
+    Sources/Widgets/enemyranking.h \
     Sources/drawcardhandler.h \
     Sources/logloader.h \
     Sources/logworker.h \

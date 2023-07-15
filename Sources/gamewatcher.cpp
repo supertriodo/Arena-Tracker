@@ -440,11 +440,13 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
         {
             name1 = playerName;
             emit pDebug("Found player 1: " + name1, numLine);
+            if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName((playerID == 1)?name2:name1);
         }
         else if(player.toInt() == 2)
         {
             name2 = playerName;
             emit pDebug("Found player 2: " + name2, numLine);
+            if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName((playerID == 1)?name2:name1);
         }
         else    emit pDebug("Read invalid PlayerID value: " + player, numLine, DebugLevel::Error);
 
@@ -1124,6 +1126,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             {
                 playerID = player.toInt();
                 emit enemyHero((playerID == 1)?hero2:hero1);
+                if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName((playerID == 1)?name2:name1);
                 emit pDebug("Found playerID: " + player, numLine);
 
                 secretHero = Utility::classLogNumber2classEnum((playerID == 1)?hero1:hero2);

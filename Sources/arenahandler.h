@@ -113,7 +113,7 @@ private:
     void processArenas2Stats();
     void showArenas2StatsClass(int classRuns[], int classWins[], int classLost[]);
     void showArenas2StatsBest30(int regionRuns[], int regionWins[], float regionLBWins[]);
-    void showLeaderboardStats(QString tag="");
+    void showLeaderboardStats(QString tag, bool allowTagChange);
     void startProcessArenas2Stats();
     void checkNewPeriod();
     QString isNewPeriod(const QDateTime &leftD, const QDateTime &rightD);
@@ -134,7 +134,7 @@ private:
     bool loadMapLeaderboard();
     QString number2LbRegion(int regionNum);
     bool isLbRegionTreeItem(QTreeWidgetItem *item);
-    void searchLeaderboard(const QString &searchTag);
+    bool searchLeaderboard(const QString &searchTag);
     void replySearchLeaderboard(QNetworkReply *reply);
     void createNetworkManager();
     QString getPlayerName();
@@ -155,6 +155,10 @@ signals:
 public slots:
     //GameWatcher/MainWindow
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA=0, float avgHSR=0);
+
+    //GameWatcher
+    void showEnemyRanking(QString tag);
+    void hideEnemyRanking();
 
     //DraftHandler
     void newArena(QString hero);

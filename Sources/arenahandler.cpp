@@ -52,6 +52,9 @@ void ArenaHandler::completeUI()
     createComboBoxArenaStatsJson();
     completeButtons();
 
+    ui->enemyRankingLabel->setFixedHeight(0);
+    ui->enemyRankingLabel->hide();
+
     setPremium(false, false);
 }
 
@@ -340,7 +343,14 @@ void ArenaHandler::toggleArenaStatsTreeWidget()
 void ArenaHandler::showArenaStatsTreeWidget()
 {
     //Search lb to update player stats
-    searchLeaderboard(getPlayerName());
+    bool searchOk = searchLeaderboard(getPlayerName());
+    if(searchOk)
+    {
+        for(int i=0; i<3; i++)
+        {
+            if(searchPage[i] > 0)   lbTagPulsing(i);
+        }
+    }
 
     startProcessArenas2Stats();
 
@@ -493,18 +503,7 @@ void ArenaHandler::setColumnText(QTreeWidgetItem *item, int col, const QString &
     if(maxNameLong > 0)
     {
         QFont font(ThemeHandler::bigFont());
-        int fontSize = 22;//Default en movetreewidget.cpp es 22
-        font.setPixelSize(fontSize);
-        QFontMetrics fm(font);
-        int textWide = fm.horizontalAdvance(text);
-
-        while(textWide>maxNameLong)
-        {
-            fontSize--;
-            font.setPixelSize(fontSize);
-            fm = QFontMetrics(font);
-            textWide = fm.horizontalAdvance(text);
-        }
+        Utility::shrinkText(font, text, 22, maxNameLong);//Default pixeSize en movetreewidget.cpp es 22
         item->setFont(col, font);
     }
 }
@@ -1426,6 +1425,7 @@ void ArenaHandler::statItemDoubleClicked(QTreeWidgetItem *item, int column)
     int regionIndex = getRegionTreeItemIndex(item);
     if(column == 0 && (regionIndex != -1 || isLbRegionTreeItem(item)))
     {
+        editingColumnText = true;
         ui->arenaStatsTreeWidget->editItem(item, column);
     }
     else if(column > 0 && isLbRegionTreeItem(item))
@@ -1443,6 +1443,8 @@ void ArenaHandler::statItemDoubleClicked(QTreeWidgetItem *item, int column)
 
 void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
 {
+    if(!editingColumnText)  return;
+
     int regionIndex = getRegionTreeItemIndex(item);
     if(column != 0) return;
 
@@ -1461,10 +1463,19 @@ void ArenaHandler::statItemChanged(QTreeWidgetItem *item, int column)
         QString tag = getColumnText(item, column);
         if(!tag.isEmpty() && tag != searchTag)
         {
-            searchLeaderboard(tag);
-            showLeaderboardStats(tag);
+            bool searchOk = searchLeaderboard(tag);
+            if(searchOk)
+            {
+                for(int i=0; i<3; i++)
+                {
+                    if(searchPage[i] > 0)   lbTagPulsing(i);
+                }
+            }
+
+            showLeaderboardStats(tag, true);
         }
     }
+    editingColumnText = true;
 }
 
 
@@ -1533,7 +1544,7 @@ void ArenaHandler::processArenas2Stats()
 
     showArenas2StatsClass(classRuns, classWins, classLost);
     showArenas2StatsBest30(regionRuns, regionWins, regionLBWins);
-    showLeaderboardStats();
+    showLeaderboardStats("", true);
 }
 
 
@@ -1586,10 +1597,24 @@ void ArenaHandler::showArenas2StatsBest30(int regionRuns[NUM_REGIONS], int regio
 }
 
 
-void ArenaHandler::showLeaderboardStats(QString tag)
+void ArenaHandler::showLeaderboardStats(QString tag, bool allowTagChange)
 {
     if(tag.isEmpty())   tag = getPlayerName();
     bool empty = true;
+
+    if(!allowTagChange)
+    {
+        bool sameTag = false;
+        for(int i=0; i<3; i++)
+        {
+            QTreeWidgetItem *item = lbRegionTreeItem[i];
+            if(!item->isHidden() && getColumnText(item, 0) == tag)
+            {
+                sameTag = true;
+            }
+        }
+        if(!sameTag)    return;
+    }
 
     for(int i=0; i<3; i++)
     {
@@ -1785,8 +1810,18 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
 }
 
 
-void ArenaHandler::searchLeaderboard(const QString &searchTag)
+//Compartido por leaderboard stat search y enemy rank search lo que la hace algo problematica
+bool ArenaHandler::searchLeaderboard(const QString &searchTag)
 {
+    for(int i=0; i<3; i++)
+    {
+        if(searchPage[i] != 0)
+        {
+            emit pDebug("Leaderboard Search ++ BUSY WITH ++: " + this->searchTag + ". Abort new search: " + searchTag);
+            return false;
+        }
+    }
+
     QString searchRegion;
     this->searchTag = searchTag;
 
@@ -1800,15 +1835,15 @@ void ArenaHandler::searchLeaderboard(const QString &searchTag)
             int rank = leaderboardMap[i][searchTag].rank;
             searchPage[i] = qCeil(rank/25.0);
             searchRegion = number2LbRegion(i);
-            emit pDebug("Leaderboard Search START: " + searchTag + " --> " + searchRegion + " --> P" + QString::number(searchPage[i]) + " --> S" + QString::number(seasonId));
+            emit pDebug("Leaderboard Search ++ START ++: " + searchTag + " --> " + searchRegion + " --> P" + QString::number(searchPage[i]) + " --> S" + QString::number(seasonId));
             if(searchPage[i] > 1)   getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]-1);
             getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]);
             getLeaderboardPage(nmLbSearch, searchRegion, searchPage[i]+1);
-            lbTagPulsing(i);
             found = true;
         }
     }
-    if(!found)  emit pDebug("Leaderboard Search: " + searchTag + " --> Not found.");
+    if(!found)  emit pDebug("Leaderboard Search ++ NOT IN MAP ++: " + searchTag);
+    return true;
 }
 
 
@@ -1849,7 +1884,6 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
         if(rows.isEmpty())  emit pDebug("Leaderboard Search STOP LIMIT - RIGHT");
         else
         {
-            bool found = false;
             for(const QJsonValue &row: rows)
             {
                 QJsonObject object = row.toObject();
@@ -1858,13 +1892,13 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
                 item.rank = object["rank"].toInt();
                 item.rating = object["rating"].toDouble();
                 leaderboardMap[regionNum][tag] = item;
-                if(tag == searchTag)  found = true;
-            }
-            if(found)
-            {
-                emit pDebug("Leaderboard Search FOUND");
-                searchPage[regionNum] = 0;
-                showLeaderboardStats(searchTag);
+                if(tag == searchTag)
+                {
+                    emit pDebug("Leaderboard Search FOUND");
+                    searchPage[regionNum] = 0;
+                    showLeaderboardStats(searchTag, false);//Update leaderboard treewidget
+                    ui->enemyRankingLabel->updateRankingItem(searchTag, {item.rank,item.rating,region});//Update EnemyRanking
+                }
             }
             if(searchPage[regionNum] > 0)
             {
@@ -2046,4 +2080,36 @@ void ArenaHandler::lbTagPulsing(int index)
     lbRegionTreeItem[index]->setForeground(0, QColor(pr, pr, pr));
     if(searchPage[index] > 0)   QTimer::singleShot(40, this, [=] () {lbTagPulsing(index); });
     else    setRowColor(lbRegionTreeItem[index], 0);
+}
+
+
+void ArenaHandler::showEnemyRanking(QString tag)
+{
+    if(!premium)    return;
+    bool searchOk = searchLeaderboard(tag);
+    QList<EnemyRankingItem> enemyRankingItems;
+
+    for(int i=0; i<3; i++)
+    {
+        if(leaderboardMap[i].contains(tag))
+        {
+            float rating = leaderboardMap[i][tag].rating;
+            int rank = leaderboardMap[i][tag].rank;
+            QString region = number2LbRegion(i);
+            enemyRankingItems << EnemyRankingItem{rank, rating, region, searchOk};
+        }
+    }
+
+    ui->enemyRankingLabel->setEnemyRanking(tag, enemyRankingItems);
+}
+
+
+void ArenaHandler::hideEnemyRanking()
+{
+    if(!premium)    return;
+    ui->enemyRankingLabel->hideEnemyRanking();
+    if(searchTag == ui->enemyRankingLabel->getTag())
+    {
+        for(int i=0; i<3; i++)  searchPage[i] = 0;
+    }
 }

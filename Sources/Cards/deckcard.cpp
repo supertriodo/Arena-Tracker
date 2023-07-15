@@ -335,6 +335,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
                 fm = QFontMetrics(font);
                 textWide = fm.width(name);
             }
+            //Utility::shrinkText(font, name, 15*scale, maxNameLong);//Equivale a lo de arriba
 
             Utility::drawShadowText(painter, font, name, 34*scale, (20*scale) - offsetY, false);
 
@@ -474,6 +475,7 @@ QPixmap DeckCard::drawCustomCard(QString customCode, QString customText)
             fm = QFontMetrics(font);
             nameWide = fm.width(name);
         }
+        //Utility::shrinkText(font, name, 15*scale, ((total==1?194:175)*scale) - customTextWide);//Equivale a lo de arriba
 
         painter.setPen(QPen(BLACK));
         if(outsider)                                    painter.setBrush(VIOLET);

@@ -1322,6 +1322,10 @@ void MainWindow::createGameWatcher()
     //Rewards input disabled with track-o-bot stats
 //    connect(gameWatcher, SIGNAL(inRewards()),
 //            arenaHandler, SLOT(showRewards()));
+    connect(gameWatcher, SIGNAL(enemyName(QString)),
+            arenaHandler, SLOT(showEnemyRanking(QString)));
+    connect(gameWatcher, SIGNAL(endGame()),
+            arenaHandler, SLOT(hideEnemyRanking()));
 
     connect(gameWatcher, SIGNAL(newDeckCard(QString)),
             deckHandler, SLOT(newDeckCardAsset(QString)));

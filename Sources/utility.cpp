@@ -1038,6 +1038,23 @@ void Utility::fadeLayout(QLayout* layout, bool in)
 }
 
 
+void Utility::shrinkText(QFont &font, const QString &text, int startFontSize, int maxLong)
+{
+    int fontSize = startFontSize;
+    font.setPixelSize(fontSize);
+
+    QFontMetrics fm(font);
+    int textWide = fm.width(text);
+    while(textWide > maxLong)
+    {
+        fontSize--;
+        font.setPixelSize(fontSize);
+        fm = QFontMetrics(font);
+        textWide = fm.width(text);
+    }
+}
+
+
 bool Utility::createDir(const QString &pathDir)
 {
     QFileInfo dirInfo(pathDir);

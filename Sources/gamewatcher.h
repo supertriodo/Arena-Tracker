@@ -107,6 +107,7 @@ signals:
     void startGame();
     void endGame(bool playerWon=false, bool playerUnknown=true);
     void enemyHero(QString hero);
+    void enemyName(QString name);
     void enterArena();
     void leaveArena();
     void playerCardDraw(QString code, int id);

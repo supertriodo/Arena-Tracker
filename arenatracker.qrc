@@ -173,5 +173,6 @@
         <file>Images/youText.png</file>
         <file>Images/weaponsMinionsSpells.png</file>
         <file>Images/checkCardOk.png</file>
+        <file>Images/bgLeaderboard.png</file>
     </qresource>
 </RCC>

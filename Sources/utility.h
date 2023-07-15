@@ -166,6 +166,7 @@ public:
     static bool codeEqConstant(const QString &code, const QString &codeConstant);
     static QString otherCodeConstant(const QString &code);
     static void mergeHSRwithFireCards();
+    static void shrinkText(QFont &font, const QString &text, int startFontSize, int maxLong);
 };
 
 #endif // UTILITY_H
