@@ -139,6 +139,7 @@ private:
     void replySearchLeaderboard(QNetworkReply *reply);
     void createNetworkManager();
     QString getPlayerName();
+    void clearLeaderboardMap();
 
 public:
     void saveMapLeaderboard();

@@ -23,6 +23,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->downloadLB = true;
 
     createNetworkManager();
+    clearLeaderboardMap();
     completeUI();
 }
 
@@ -1965,11 +1966,7 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
  */
 bool ArenaHandler::loadMapLeaderboard()
 {
-    for(int i=0; i<3; i++)
-    {
-        leaderboardPage[i] = 0;
-        leaderboardMap[i].clear();
-    }
+    clearLeaderboardMap();
 
     QFile jsonFile(Utility::extraPath() + "/leaderboard.json");
     if(!jsonFile.exists())
@@ -1992,6 +1989,16 @@ bool ArenaHandler::loadMapLeaderboard()
         json2RegionLeaderboard(jsonObject, number2LbRegion(i));
     }
     return true;
+}
+
+
+void ArenaHandler::clearLeaderboardMap()
+{
+    for(int i=0; i<3; i++)
+    {
+        leaderboardPage[i] = 0;
+        leaderboardMap[i].clear();
+    }
 }
 
 
@@ -2084,11 +2091,7 @@ QString ArenaHandler::number2LbRegion(int regionNum)
 void ArenaHandler::changeSeasonId(int season)
 {
     this->seasonId = season;//Por si ya estamos descargando el leaderboard
-    for(int i=0; i<3; i++)
-    {
-        leaderboardMap[i].clear();
-        leaderboardPage[i] = 0;
-    }
+    clearLeaderboardMap();
     saveMapLeaderboard();//Clear the map on disk
 }
 

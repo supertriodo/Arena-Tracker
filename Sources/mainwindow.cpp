@@ -1727,7 +1727,7 @@ void MainWindow::closeApp()
     draftHandler->deleteDraftMechanicsWindow();
     hide();
     draftHandler->closeFindScreenRects();
-    arenaHandler->saveMapLeaderboard();
+    if(patreonVersion)  arenaHandler->saveMapLeaderboard();
     if(futureProcessHSRCardsPickrates.isRunning())          futureProcessHSRCardsPickrates.waitForFinished();
     if(futureProcessHSRCardsIncludedWinrates.isRunning())   futureProcessHSRCardsIncludedWinrates.waitForFinished();
     if(futureProcessHSRCardsIncludedDecks.isRunning())      futureProcessHSRCardsIncludedDecks.waitForFinished();
