@@ -44,7 +44,7 @@ private:
     static QString buttonGraveyardPlayerFile_, buttonGraveyardEnemyFile_;
     static QString buttonGraveyardAllFile_, buttonGraveyardMinionsFile_, buttonGraveyardWeaponsFile_, buttonGraveyardSpellsFile_;
     static QString bgCard1Files_[NUM_HEROS+1], bgCard2Files_[NUM_HEROS+1], heroFiles_[NUM_HEROS];
-    static QString bgTotalAttackFile_;
+    static QString bgTotalAttackFile_, bgLeaderboardFile_;
     static QString branchClosedFile_, branchOpenFile_;
     static QString coinFile_, firstFile_;
     static QString loseFile_, winFile_;
@@ -184,6 +184,7 @@ public:
     static QString buttonGamesGuideFile();
     static QString winFile();
     static QString bgTotalAttackFile();
+    static QString bgLeaderboardFile();
     static bool manaLimitBehind();
     static QString themeLoaded();
     static QString minionsCounterFile();

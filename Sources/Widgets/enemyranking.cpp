@@ -128,7 +128,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
 
     //Background
     painter.setOpacity(0.5);
-    painter.drawPixmap(targetAll, QPixmap(":/Images/bgLeaderboard.png"));
+    painter.drawPixmap(targetAll, QPixmap(ThemeHandler::bgLeaderboardFile()));
     painter.setOpacity(1.0);
 
     //Draw Tag

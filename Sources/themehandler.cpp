@@ -39,7 +39,7 @@ QString ThemeHandler::buttonGraveyardPlayerFile_, ThemeHandler::buttonGraveyardE
 QString ThemeHandler::buttonGraveyardAllFile_, ThemeHandler::buttonGraveyardMinionsFile_;
 QString ThemeHandler::buttonGraveyardWeaponsFile_, ThemeHandler::buttonGraveyardSpellsFile_;
 QString ThemeHandler::bgCard1Files_[NUM_HEROS+1], ThemeHandler::bgCard2Files_[NUM_HEROS+1], ThemeHandler::heroFiles_[NUM_HEROS];
-QString ThemeHandler::bgTotalAttackFile_;
+QString ThemeHandler::bgTotalAttackFile_, ThemeHandler::bgLeaderboardFile_;
 QString ThemeHandler::branchClosedFile_, ThemeHandler::branchOpenFile_;
 QString ThemeHandler::coinFile_, ThemeHandler::firstFile_;
 QString ThemeHandler::loseFile_, ThemeHandler::winFile_;
@@ -531,6 +531,12 @@ QString ThemeHandler::bgTotalAttackFile()
 }
 
 
+QString ThemeHandler::bgLeaderboardFile()
+{
+    return bgLeaderboardFile_;
+}
+
+
 QString ThemeHandler::branchClosedFile()
 {
     return branchClosedFile_;
@@ -990,6 +996,8 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     loseFile_ = loadThemeFile(themePath, jsonObject, "loseFile");
     winFile_ = loadThemeFile(themePath, jsonObject, "winFile");
 
+    bgLeaderboardFile_ = loadThemeFile(themePath, jsonObject, "bgLeaderboardFile");
+
     //--------------------------------------------------------
     //----NEW HERO CLASS - orden alfabetico
     //--------------------------------------------------------
@@ -1292,6 +1300,7 @@ void ThemeHandler::defaultEmptyValues()
     if(bgCard1Files_[NUM_HEROS].isEmpty())  bgCard1Files_[NUM_HEROS] = ":/Images/bgCard1.png";
     if(bgCard2Files_[NUM_HEROS].isEmpty())  bgCard2Files_[NUM_HEROS] = ":/Images/bgCard2.png";
     if(bgTotalAttackFile_.isEmpty())    bgTotalAttackFile_ = ":/Images/bgTotalAttack.png";
+    if(bgLeaderboardFile_.isEmpty())    bgLeaderboardFile_ = ":/Images/bgLeaderboard.png";
     if(branchClosedFile_.isEmpty())     branchClosedFile_ = ":/Images/branchClosed.png";
     if(branchOpenFile_.isEmpty())       branchOpenFile_ = ":/Images/branchOpen.png";
     if(coinFile_.isEmpty())             coinFile_ = ":/Images/coin.png";
