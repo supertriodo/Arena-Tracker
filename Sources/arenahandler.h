@@ -140,7 +140,7 @@ private:
     void createNetworkManager();
     QString getPlayerName();
     void clearLeaderboardMap();
-    QString loadSeasonId();
+    void loadSeasonId();
 
 public:
     void saveMapLeaderboard();

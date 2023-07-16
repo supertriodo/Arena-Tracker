@@ -2105,7 +2105,7 @@ QString ArenaHandler::getPlayerName()
 }
 
 
-QString ArenaHandler::loadSeasonId()
+void ArenaHandler::loadSeasonId()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     seasonId = settings.value("seasonId", 38).toInt();
