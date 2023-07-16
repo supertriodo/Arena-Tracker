@@ -22,7 +22,6 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->statsJsonFile = "";
     this->downloadLB = true;
 
-    loadSeasonId();
     createNetworkManager();
     clearLeaderboardMap();
     completeUI();
