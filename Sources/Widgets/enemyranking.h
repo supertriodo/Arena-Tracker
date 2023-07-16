@@ -8,6 +8,14 @@
 class EnemyRankingItem
 {
 public:
+    EnemyRankingItem(int rank, float rating, QString region, bool searchingTag = true)
+    {
+        this->rank = rank;
+        this->rating = rating;
+        this->region = region;
+        this->searchingTag = searchingTag;
+    }
+
     int rank;
     float rating;
     QString region;

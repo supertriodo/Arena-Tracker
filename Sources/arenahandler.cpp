@@ -1926,7 +1926,7 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
                     emit pDebug("Leaderboard Search FOUND");
                     searchPage[regionNum] = 0;
                     showLeaderboardStats(searchTag, false);//Update leaderboard treewidget
-                    ui->enemyRankingLabel->updateRankingItem(searchTag, {item.rank,item.rating,region});//Update EnemyRanking
+                    ui->enemyRankingLabel->updateRankingItem(searchTag, EnemyRankingItem(item.rank,item.rating,region));//Update EnemyRanking
                 }
             }
             if(searchPage[regionNum] > 0)
@@ -2131,7 +2131,7 @@ void ArenaHandler::showEnemyRanking(QString tag)
             float rating = leaderboardMap[i][tag].rating;
             int rank = leaderboardMap[i][tag].rank;
             QString region = number2LbRegion(i);
-            enemyRankingItems << EnemyRankingItem{rank, rating, region, searchOk};
+            enemyRankingItems << EnemyRankingItem(rank, rating, region, searchOk);
         }
     }
 
