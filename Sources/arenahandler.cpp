@@ -1758,7 +1758,10 @@ void ArenaHandler::mapLeaderboard()
 
     for(int i=0; i<3; i++)
     {
-        getLeaderboardPage(nmLbGlobal, number2LbRegion(i), leaderboardPage[i]+1);
+        QString region = number2LbRegion(i);
+        int page = leaderboardPage[i]+1;
+        emit pDebug("Leaderboard ++ START ++: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(seasonId));
+        getLeaderboardPage(nmLbGlobal, region, page);
     }
 }
 
@@ -1811,6 +1814,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
         QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
         if(rows.isEmpty())
         {
+            emit pDebug("Leaderboard: END");
             leaderboardPage[regionNum] = 0;//All pages read
             saveMapLeaderboard();
         }
