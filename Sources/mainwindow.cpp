@@ -4900,6 +4900,9 @@ void MainWindow::testDelay()
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
+//New leaderboard season
+//En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+
 
 //NUEVA SYNERGY
 //Ejemplo a copiar V_SPAWN_ENEMY/spawnEnemyGen/spawnEnemySyn
