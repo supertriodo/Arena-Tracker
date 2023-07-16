@@ -22,6 +22,7 @@ ArenaHandler::ArenaHandler(QObject *parent, DeckHandler *deckHandler, PlanHandle
     this->statsJsonFile = "";
     this->downloadLB = true;
 
+    loadSeasonId();
     createNetworkManager();
     clearLeaderboardMap();
     completeUI();
@@ -1751,9 +1752,7 @@ bool ArenaHandler::processWinratesFromFile(int classRuns[NUM_HEROS], int classWi
 //***********************************************
 void ArenaHandler::mapLeaderboard()
 {
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    seasonId = settings.value("seasonId", 0).toInt();
-
+    loadSeasonId();
     loadMapLeaderboard();
 
     for(int i=0; i<3; i++)
@@ -2104,6 +2103,13 @@ QString ArenaHandler::getPlayerName()
 {
     QSettings settings("Arena Tracker", "Arena Tracker");
     return settings.value("playerName", "").toString();
+}
+
+
+QString ArenaHandler::loadSeasonId()
+{
+    QSettings settings("Arena Tracker", "Arena Tracker");
+    seasonId = settings.value("seasonId", 38).toInt();
 }
 
 
