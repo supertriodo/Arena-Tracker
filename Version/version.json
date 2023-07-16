@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v22.10","v22.11","v22.12","v22.12.01","v22.12.02","v22.12.03","v23.01","v23.01.01","v23.02","v23.04","v23.04.01","v23.05","v23.06"],
+	"versionFree": ["v22.10","v22.11","v22.12","v22.12.01","v22.12.02","v22.12.03","v23.01","v23.01.01","v23.02","v23.04","v23.04.01","v23.05","v23.06","v23.07"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "AT updates for the Audiopocalypse Mini-Set. Fixed read of HS logs following new dir structure.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "AT now incorporates Hearthstone arena leaderboard. Keep up your position inside the APP.<br>Look up any name with a search feature (the technology is here!).<br>In every game you will be shown your enemy rank automatically.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }

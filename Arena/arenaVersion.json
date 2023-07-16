@@ -1,5 +1,5 @@
 {
-  "arenaVersion": 35,
+  "arenaVersion": 36,
   "arenaSets": ["CORE", "THE_SUNKEN_CITY", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING", "BATTLE_OF_THE_BANDS"],
   "multiclassArena": false,
   "resetCards": 33,
