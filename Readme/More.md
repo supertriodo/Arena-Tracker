@@ -52,7 +52,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Show your enemy's rank on the leaderboard on each game.
 
 ![EnemyRank](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyRank.png)
-* Show your class winrates and how are you doing in the leaderboard.
+* Show your class winrates and your rank in the leaderboard.
 
 ![StatsAdvanced](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsAdvanced.png)
 * When picking hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
