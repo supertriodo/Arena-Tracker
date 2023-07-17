@@ -70,7 +70,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Check the most popular cards played by your enemy on his next turn. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#popularlist)
 
 ![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
-* Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
+* Check the cards (minions, spells and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
