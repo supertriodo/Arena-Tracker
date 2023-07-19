@@ -98,7 +98,7 @@ void ArenaHandler::createArenaTreeWidget()
     treeWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    treeWidget->setColumnWidth(0, 110);
+    treeWidget->setColumnWidth(0, 120);
     treeWidget->setColumnWidth(1, 50);
     treeWidget->setColumnWidth(2, 40);
     treeWidget->setColumnWidth(3, 40);
