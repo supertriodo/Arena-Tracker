@@ -49,7 +49,10 @@ Next you can check a brief explanation of its features divided in free and premi
 * Show your deck average score for each run (HA/HSR). And the deck average score of your arena opponent, taken from their played cards.
 
 ![StatsScoreAVG](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsScoreAVG.png)
-* Show your class winrates and how are you doing in your best 30 arenas for the leaderboard.
+* Show your enemy's rank on the leaderboard on each game.
+
+![EnemyRank](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/enemyRank.png)
+* Show your class winrates and your rank in the leaderboard.
 
 ![StatsAdvanced](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsAdvanced.png)
 * When picking hero, show your personal winrates and arena runs for each hero, along with HSReplay global ones.
@@ -67,7 +70,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Check the most popular cards played by your enemy on his next turn. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/enemy-hand-tab#popularlist)
 
 ![PopularList](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/popularList.png)
-* Check the cards (minions and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
+* Check the cards (minions, spells and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
 
