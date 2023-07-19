@@ -92,6 +92,7 @@ private:
     void endReadingDeck();
     bool isHeroPower(QString code);
     bool isCheatingCard(const QString &zoneFrom);
+    QString getNamePreSharp(QString name);
 
 public:
     void reset();
