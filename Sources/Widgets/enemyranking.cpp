@@ -14,10 +14,6 @@ void EnemyRanking::setEnemyRanking(const QString &tag, QList<EnemyRankingItem> e
     this->tag = tag;
     this->enemyRankingItems = enemyRankingItems;
     showEnemyRanking(40 + 30*enemyRankingItems.count());
-    if(enemyRankingItems.isEmpty())
-    {
-        QTimer::singleShot(10000, this, [this] () {hideEnemyRanking();});
-    }
 }
 
 
