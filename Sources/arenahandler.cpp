@@ -1788,17 +1788,18 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
         int page = match->captured(2).toInt();
         int season = match->captured(3).toInt();
         int regionNum = lbRegion2Number(region);
-        emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
 
         //Se ha registrado el cambio de season en medio de descarga de leaderboard, paramos para no guardar informacion de la season pasada que no se borrara
         if(season != seasonId)
         {
+            emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
             emit pDebug("Leaderboard: Season changed while downloading leaderboard. Abort download.");
             return;
         }
         //Hay varios get repetidos running, puede ocurrir si se desactiva y activa rapido el checkbox ui->configCheckLB
         if(leaderboardPage[regionNum] == page)
         {
+            emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
             emit pDebug("Leaderboard: Remove duplicate download reply on page: " + QString::number(page));
             return;
         }
@@ -1812,6 +1813,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
         QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
         if(rows.isEmpty())
         {
+            emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
             emit pDebug("Leaderboard: END");
             leaderboardPage[regionNum] = 0;//All pages read
             saveMapLeaderboard();

@@ -438,15 +438,21 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 
         if(player.toInt() == 1)
         {
-            name1 = playerName;
-            emit pDebug("Found player 1: " + name1, numLine);
-            if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName(getNamePreSharp((playerID == 1)?name2:name1));
+            emit pDebug("Found player 1: " + playerName, numLine);
+            if(playerName != "UNKNOWN HUMAN PLAYER")
+            {
+                name1 = playerName;
+                emitEnemyName();
+            }
         }
         else if(player.toInt() == 2)
         {
-            name2 = playerName;
-            emit pDebug("Found player 2: " + name2, numLine);
-            if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName(getNamePreSharp((playerID == 1)?name2:name1));
+            emit pDebug("Found player 2: " + playerName, numLine);
+            if(playerName != "UNKNOWN HUMAN PLAYER")
+            {
+                name2 = playerName;
+                emitEnemyName();
+            }
         }
         else    emit pDebug("Read invalid PlayerID value: " + player, numLine, DebugLevel::Error);
 
@@ -471,8 +477,9 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
     else if(line.contains(QRegularExpression("Entity=(.+) tag=MULLIGAN_STATE value=DONE"
             ), match))
     {
+        QString entityName = match->captured(1);
         //Player mulligan
-        if(match->captured(1) == playerTag)
+        if(entityName == playerTag)
         {
             if(!mulliganPlayerDone)
             {
@@ -503,6 +510,15 @@ void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
                 emit pDebug("Enemy mulligan end.", numLine);
                 mulliganEnemyDone = true;
                 turn = 1;
+
+                //Revisamos Enemy name, por si cogio "UNKNOWN HUMAN PLAYER" al inicio, en cuyo caso name1/name2 = ""
+                QString enemyName = (playerID == 1)?name2:name1;
+                if(enemyName.isEmpty() && !entityName.isEmpty())
+                {
+                    if(playerID == 1)   name2 = entityName;
+                    else                name1 = entityName;
+                    emitEnemyName();
+                }
 
                 if(mulliganPlayerDone)
                 {
@@ -1124,18 +1140,19 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit pDebug("Player: Hero moved to FRIENDLY PLAY (Hero): " + name + " ID: " + id, numLine);
             if(playerID == 0)
             {
-                playerID = player.toInt();
-                emit enemyHero((playerID == 1)?hero2:hero1);
-                if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName(getNamePreSharp((playerID == 1)?name2:name1));
                 emit pDebug("Found playerID: " + player, numLine);
-
-                secretHero = Utility::classLogNumber2classEnum((playerID == 1)?hero1:hero2);
+                playerID = player.toInt();
 
                 if(playerTag.isEmpty())
                 {
                     playerTag = (playerID == 1)?name1:name2;
                     if(!playerTag.isEmpty())    emit pDebug("Found playerTag: " + playerTag, numLine);
                 }
+
+                emit enemyHero((playerID == 1)?hero2:hero1);
+                emitEnemyName();
+
+                secretHero = Utility::classLogNumber2classEnum((playerID == 1)?hero1:hero2);
             }
             emit playerHeroZonePlayAdd(cardId, id.toInt());
         }
@@ -1469,6 +1486,12 @@ void GameWatcher::createGameResult()
 QString GameWatcher::getNamePreSharp(QString name)
 {
     return name.split("#").first();
+}
+
+
+void GameWatcher::emitEnemyName()
+{
+    if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName(getNamePreSharp((playerID == 1)?name2:name1));
 }
 
 
