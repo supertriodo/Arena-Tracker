@@ -1448,21 +1448,18 @@ bool GameWatcher::isHeroPower(QString code)
 void GameWatcher::createGameResult()
 {
     GameResult gameResult;
-    QString playerName;
 
     if(playerID == 1)
     {
         gameResult.playerHero = hero1;
         gameResult.enemyHero = hero2;
         gameResult.enemyName = name2;
-        playerName = name1;
     }
     else if(playerID == 2)
     {
         gameResult.playerHero = hero2;
         gameResult.enemyHero = hero1;
         gameResult.enemyName = name1;
-        playerName = name2;
     }
     else
     {
@@ -1476,10 +1473,10 @@ void GameWatcher::createGameResult()
     emit newGameResult(gameResult, loadingScreenState);
 
     //Save player tag
-    QString playerNamePreSharp = getNamePreSharp(playerName);
+    QString playerTagPreSharp = getNamePreSharp(playerTag);
+    emit pDebug("Save playerName: " + playerTagPreSharp + "(" + playerTag + ")", 0);
     QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("playerName", playerNamePreSharp);
-    emit pDebug("Save playerName: " + playerNamePreSharp + "(" + playerName + ")", 0);
+    settings.setValue("playerName", playerTagPreSharp);
 }
 
 
@@ -1491,7 +1488,12 @@ QString GameWatcher::getNamePreSharp(QString name)
 
 void GameWatcher::emitEnemyName()
 {
-    if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())   emit enemyName(getNamePreSharp((playerID == 1)?name2:name1));
+    if(playerID != 0 && !name1.isEmpty() && !name2.isEmpty())
+    {
+        QString enemyTag = (playerID == 1)?name2:name1;
+        emit pDebug("Found enemyTag: " + enemyTag, 0);
+        emit enemyName(getNamePreSharp(enemyTag));
+    }
 }
 
 
