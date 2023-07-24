@@ -1939,10 +1939,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("BATTLE_OF_THE_BANDS", true, true))
+//    for(QString &code: (QStringList)Utility::getSetCodes("BATTLE_OF_THE_BANDS", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
-//    for(QString &code: (QStringList)Utility::getWildCodes())
+    for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("CORE_"))    code = code.mid(5);
 
@@ -1956,15 +1956,15 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "give deathrattle")
+                    containsAll(text, "choose one")
 //                    text.contains("can't attack heroes")
-//                    mechanics.contains(QJsonValue("DEATHRATTLE"))
-//                    referencedTags.contains(QJsonValue("COMBO"))
+//                    mechanics.contains(QJsonValue("CHOOSE_ONE"))
+//                    referencedTags.contains(QJsonValue("CHOOSE_ONE"))
 //                    cardType == MINION
 //                    mechanics.contains(QJsonValue("CORRUPT"))
 //                    && attack<4 && health<4
 //                    && (attack + health)<7
-//                    && !isTokenGen(code, mechanics, text)
+//                    && !isChooseOne(code, mechanics)
 //                    isPingGen(code, mechanics, referencedTags, text, cardType, attack)
 //                    isCorpseSyn(code, text)
 //                    && !isDrop2(code, cost, attack, health)
