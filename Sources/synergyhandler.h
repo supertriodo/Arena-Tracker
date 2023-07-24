@@ -188,6 +188,8 @@ private:
     bool isLackeyGen(const QString &code, const QString &text);    
     bool isOutcast(const QString &code, const QJsonArray &mechanics);
     bool isOutcastGen(const QString &code);
+    bool isChooseOne(const QString &code, const QJsonArray &mechanics);
+    bool isChooseOneGen(const QString &code);
     bool isEndTurnGen(const QString &code, const QString &text);
     bool isRushGiverGen(const QString &code, const QString &text);
     bool isDredge(const QString &code, const QJsonArray &mechanics);
@@ -291,6 +293,8 @@ private:
     bool isLackeySyn(const QString &code);
     bool isOutcastSyn(const QString &code);
     bool isOutcastAllSyn(const QString &code, const QJsonArray &referencedTags);
+    bool isChooseOneSyn(const QString &code);
+    bool isChooseOneAllSyn(const QString &code, const QJsonArray &referencedTags);
     bool isEndTurnSyn(const QString &code, const QString &text);
     bool isRushGiverSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isDredgeSyn(const QString &code, const QString &text);

@@ -222,6 +222,8 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_LACKEY] = new DraftItemCounter(this, "Lackey");
     mechanicCounters[V_OUTCAST] = new DraftItemCounter(this, "Outcast");
     mechanicCounters[V_OUTCAST_ALL] = new DraftItemCounter(this, "Outcast");
+    mechanicCounters[V_CHOOSEONE] = new DraftItemCounter(this, "Choose One");
+    mechanicCounters[V_CHOOSEONE_ALL] = new DraftItemCounter(this, "Choose One");
     mechanicCounters[V_END_TURN] = new DraftItemCounter(this, "Each Turn");
     mechanicCounters[V_RUSH_GIVER] = new DraftItemCounter(this, "Rush");
     mechanicCounters[V_DREDGE] = new DraftItemCounter(this, "Dredge");
@@ -1097,6 +1099,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_OUTCAST_ALL]->increase(code);
     }
     else if(isOutcastGen(code))                                             mechanicCounters[V_OUTCAST_ALL]->increase(code);
+    if(isChooseOne(code, mechanics))
+    {
+        mechanicCounters[V_CHOOSEONE]->increase(code);
+        mechanicCounters[V_CHOOSEONE_ALL]->increase(code);
+    }
+    else if(isChooseOneGen(code))                                           mechanicCounters[V_CHOOSEONE_ALL]->increase(code);
     if(isCombo(code, mechanics))
     {
         mechanicCounters[V_COMBO]->increase(code);
@@ -1167,6 +1175,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isBattlecryAllSyn(code, referencedTags))                        mechanicCounters[V_BATTLECRY_ALL]->increaseSyn(code);
     if(isOutcastSyn(code))                                                  mechanicCounters[V_OUTCAST]->increaseSyn(code);
     else if(isOutcastAllSyn(code, referencedTags))                          mechanicCounters[V_OUTCAST_ALL]->increaseSyn(code);
+    if(isChooseOneSyn(code))                                                mechanicCounters[V_CHOOSEONE]->increaseSyn(code);
+    else if(isChooseOneAllSyn(code, referencedTags))                        mechanicCounters[V_CHOOSEONE_ALL]->increaseSyn(code);
     if(isComboSyn(code))                                                    mechanicCounters[V_COMBO]->increaseSyn(code);
     else if(isComboAllSyn(code, referencedTags))                            mechanicCounters[V_COMBO_ALL]->increaseSyn(code);
 }
@@ -1657,6 +1667,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
         mechanicCounters[V_OUTCAST_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isOutcastGen(code))                                 mechanicCounters[V_OUTCAST_ALL]->insertSynCards(synergyTagMap);
+    if(isChooseOne(code, mechanics))
+    {
+        mechanicCounters[V_CHOOSEONE]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_CHOOSEONE_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isChooseOneGen(code))                               mechanicCounters[V_CHOOSEONE_ALL]->insertSynCards(synergyTagMap);
     if(isCombo(code, mechanics))
     {
         mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
@@ -1728,6 +1744,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     else if(isBattlecryAllSyn(code, referencedTags))            mechanicCounters[V_BATTLECRY_ALL]->insertCards(synergyTagMap);
     if(isOutcastSyn(code))                                      mechanicCounters[V_OUTCAST]->insertCards(synergyTagMap);
     else if(isOutcastAllSyn(code, referencedTags))              mechanicCounters[V_OUTCAST_ALL]->insertCards(synergyTagMap);
+    if(isChooseOneSyn(code))                                    mechanicCounters[V_CHOOSEONE]->insertCards(synergyTagMap);
+    else if(isChooseOneAllSyn(code, referencedTags))            mechanicCounters[V_CHOOSEONE_ALL]->insertCards(synergyTagMap);
     if(isComboSyn(code))                                        mechanicCounters[V_COMBO]->insertCards(synergyTagMap);
     else if(isComboAllSyn(code, referencedTags))                mechanicCounters[V_COMBO_ALL]->insertCards(synergyTagMap);
 }
@@ -1891,8 +1909,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcast", "outcastGen", "endTurnGen", "rushGiverGen",
         "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn",
 
-        "dredge", "corpseGen",
-        "dredgeSyn", "corpseSyn"
+        "dredge", "corpseGen", "chooseOne", "chooseOneGen",
+        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn"
         //New Synergy Step 7
     };
     if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
@@ -2218,6 +2236,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isTreantGen(code, text))                                             mec<<"treantGen";
     if(isLackeyGen(code, text))                                             mec<<"lackeyGen";
     if(isOutcast(code, mechanics))                                          mec<<"outcast";
+    if(isChooseOne(code, mechanics))                                        mec<<"chooseOne";
     if(isEndTurnGen(code, text))                                            mec<<"endTurnGen";
     if(isRushGiverGen(code, text))                                          mec<<"rushGiverGen";
     if(isDredge(code, mechanics))                                           mec<<"dredge";
@@ -2249,6 +2268,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isSpellBuffSyn(code, text))                                          mec<<"spellBuffSyn";
     if(isOtherClassSyn(code, text))                                         mec<<"otherClassSyn";
     if(isOutcastAllSyn(code, referencedTags))                               mec<<"outcastAllSyn";
+    if(isChooseOneAllSyn(code, referencedTags))                             mec<<"chooseOneAllSyn";
     if(isEndTurnSyn(code, text))                                            mec<<"endTurnSyn";
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     if(isDredgeSyn(code, text))                                             mec<<"dredgeSyn";
@@ -3339,6 +3359,26 @@ bool SynergyHandler::isOutcastGen(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("outcastGen");
+    }
+    return false;
+}
+bool SynergyHandler::isChooseOne(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("chooseOne");
+    }
+    else if(mechanics.contains(QJsonValue("CHOOSE_ONE")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isChooseOneGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("chooseOneGen");
     }
     return false;
 }
@@ -4472,6 +4512,26 @@ bool SynergyHandler::isOutcastAllSyn(const QString &code, const QJsonArray &refe
     }
     return false;
 }
+bool SynergyHandler::isChooseOneSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("chooseOneSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isChooseOneAllSyn(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("chooseOneAllSyn");
+    }
+    else if(referencedTags.contains(QJsonValue("CHOOSE_ONE")))
+    {
+        return true;
+    }
+    return false;
+}
 bool SynergyHandler::isEndTurnSyn(const QString &code, const QString &text)
 {
     //TEST
@@ -4696,7 +4756,7 @@ enrageGen, rushGiverGen, tauntGiverGen, evolveGen, spawnEnemyGen, spellDamageGen
 tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuffGen, heroAttackGen
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen, otherClassGen,
-silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge, corpse
+silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge, corpse, chooseOne, chooseOneGen
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12

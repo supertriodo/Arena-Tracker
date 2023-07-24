@@ -55,7 +55,7 @@ enum VisibleMechanics {V_AOE, V_TAUNT, V_TAUNT_ALL,
                        V_EGG, V_RUSH, V_RUSH_ALL, V_ECHO, V_ECHO_ALL, V_DAMAGE_FRIENDLY_HERO, V_SPELL_BUFF,
                        V_MAGNETIC, V_MAGNETIC_ALL, V_HAND_BUFF, V_ENEMY_DRAW, V_HERO_ATTACK, V_HERO_POWER,
                        V_OTHER_CLASS, V_SILVER_HAND, V_TREANT, V_LACKEY, V_OUTCAST, V_OUTCAST_ALL, V_END_TURN,
-                       V_RUSH_GIVER, V_DREDGE, V_CORPSE,
+                       V_RUSH_GIVER, V_DREDGE, V_CORPSE, V_CHOOSEONE, V_CHOOSEONE_ALL,
                        V_NUM_MECHANICS};
 enum MechanicIcons {M_DROP2, M_DROP3, M_DROP4,
                     M_REACH, M_TAUNT_ALL, M_SURVIVABILITY, M_DISCOVER_DRAW,
