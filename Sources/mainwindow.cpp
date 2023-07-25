@@ -4786,22 +4786,22 @@ void MainWindow::testTierlists()
 //    Utility::checkTierlistsCount(arenaSets);
 }
 
+
 /*
  *  Core "CORE"
- *  Voyage to the Sunken City "THE_SUNKEN_CITY"
- *  Murder at Castle Nathria "REVENDRETH"
+ *  Saviors of Uldum "ULDUM"
+ *  Ashes of Outland "BLACK_TEMPLE"
+ *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
  *  Path of Arthas "PATH_OF_ARTHAS"
  *  March of the Lick King "RETURN_OF_THE_LICH_KING"
  *  Festival of Legends "BATTLE_OF_THE_BANDS"
  */
-
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" <<
-                 "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-                 "BATTLE_OF_THE_BANDS";
+    arenaSets << "CORE" << "ULDUM" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
+        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS";
 
     if(fromHearth)
     {
@@ -4893,7 +4893,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 26.4.3 Patch Notes (2023-06-15)
+//|-Synergy / Code  --> 27.0 Patch Notes (2023-07-24)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
