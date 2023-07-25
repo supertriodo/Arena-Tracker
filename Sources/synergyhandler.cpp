@@ -4775,7 +4775,6 @@ BUFF ALL: tokenSyn(beneficio masa), handBuffGen
 CANT ATTACK: silenceOwnSyn, tauntGiverSyn
 COPY ITSELF: handBuffSyn
 5/5 COPY: deathrattleGoodAllSyn, endTurnSyn
-DESTROY TARDIO: freezeEnemySyn
 DESTROY PROPIO/SWAP/copia 1-1: eggSyn
 
 RESTORE: restoreTargetMinionGen o restoreFriendlyMinionGen <--> restoreFriendlyHeroGen
@@ -4832,7 +4831,7 @@ REGLAS
     Murlocs cuestan %2 en mana.
     Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
-    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y ese sera el numero the toYourHandGen.
+    sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y ese sera el numero de toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
 +discover from your deck (no copy) es drawGen ya que la carta viene de tu mazo. (BAR_545)
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
@@ -4841,10 +4840,10 @@ REGLAS
 +tokenGen son 2 small minions (max 3/3), reborn y deathrattle son tokenGen (max 3/3)
     tambien cuentan las cartas generadas a mano (tokenCardGen).
 +No son tokenSyn las cartas "Destroy friendly minion", solo cartas que necesiten 3+ minions.
-+freezeEnemyGen deben poder usarse sobre enemigos
++freezeEnemyGen deben poder usarse sobre enemigos, combo con destroy tardio (freezeEnemySyn).
 +pingGen (NO RANDOM/NO DEATHRATTLE): tienen como proposito eliminar divineShield y rematar, deben ser proactivos, no random ni deathrattle.
 +damageMinionsGen y destroyGen (SI RANDOM/NO DEATHRATTLE): deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
-+aoeGen (SI RANDOM/SI DEATHRATTLE): puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul.
++aoeGen (SI RANDOM/SI DEATHRATTLE): puede ser deathrattle random (>= 2dmg), quitaremos manualmente excepciones como el tentaculo de n'zoth o unstable ghoul (1 dmg).
 +aoeGen: los aoe tienen que afectar al menos 3 objetivos
 +aoeGen: no son destroyGen ni damageMinionsGen (ni siquiera token rush),
     a no ser que haga mucho dano a uno y poco a los demas, o que tenga 2 modos.
