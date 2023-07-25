@@ -270,6 +270,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 //COMMON
                 unknownSecretPlayedAddOption(FREEZING_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
+                unknownSecretPlayedAddOption(BAIT_AND_SWITCH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(ZOMBEEEES, inArena, activeSecret);
@@ -854,6 +855,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
             discardSecretOptionNow(PACK_TACTICS);
+            discardSecretOptionNow(BAIT_AND_SWITCH);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(AUTODEFENSE_MATRIX);
@@ -896,6 +898,7 @@ void SecretsHandler::playerAttack(bool isHeroFrom, bool isHeroTo, int playerMini
             discardSecretOptionNow(VENOMSTRIKE_TRAP);
             discardSecretOptionNow(SNAKE_TRAP);
             discardSecretOptionNow(PACK_TACTICS);
+            discardSecretOptionNow(BAIT_AND_SWITCH);
 
             discardSecretOptionNow(NOBLE_SACRIFICE);
             discardSecretOptionNow(JUDGMENT_OF_JUSTICE);
@@ -995,7 +998,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
                               << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
-                              << ZOMBEEEES << HIDDEN_MEANING;
+                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND

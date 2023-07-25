@@ -3150,7 +3150,7 @@
 "RLK_715" : [ "weaponSyn", "weaponGen", "drawGen", "tokenCardGen" ],
 "RLK_720" : [ "lifesteal", "taunt", "endTurnGen" ],
 "RLK_744" : [ "corpseGen" ],
-"RLK_752" : [ "elementalGen", "deathrattleGen", "battlecry", "tokenGen", "corpseGen", "returnSyn" ],
+"RLK_752" : [ "deathrattleGen", "battlecry", "tokenGen", "corpseGen", "returnSyn" ],
 "RLK_753" : [ "drop2", "battlecry" ],
 "RLK_958" : [ "undeadAllSyn", "battlecry", "returnSyn" ],
 "SCH_120" : [ "spellAllSyn", "taunt", "damageMinionsGen", "attackNerfSyn" ],
