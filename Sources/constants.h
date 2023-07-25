@@ -59,7 +59,7 @@
 #define MOTION_DENIED QString("MAW_010")
 #define ZOMBEEEES QString("NX2_013")
 #define HIDDEN_MEANING QString("JAM_003")
-#define BAIT_AND_SWITCH QString();
+#define BAIT_AND_SWITCH QString()
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
