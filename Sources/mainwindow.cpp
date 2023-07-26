@@ -4777,9 +4777,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" <<
-                 "THE_SUNKEN_CITY" << "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-                 "BATTLE_OF_THE_BANDS";
+    arenaSets << "CORE" << "ULDUM" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
+        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS" << "TITANS";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4833,8 +4832,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+//    testHeroPortraits();
+//    testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
