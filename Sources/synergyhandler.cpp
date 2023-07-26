@@ -2768,7 +2768,7 @@ bool SynergyHandler::isMagnetic(const QString &code, const QJsonArray &mechanics
     {
         return synergyCodes[code].contains("magnetic");
     }
-    else if(mechanics.contains(QJsonValue("MODULAR")))
+    else if(mechanics.contains(QJsonValue("MAGNETIC")))
     {
         return true;
     }

@@ -4766,7 +4766,7 @@ void MainWindow::testSynergies()
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
 //    draftHandler->getSynergyHandler()->testSynergies();
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("BATTLE_OF_THE_BANDS", 20, 50, "JAM_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("TITANS", 130, 150/*, "JAM_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4800,7 +4800,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     //Download new set cards
     QStringList arenaSets;
     arenaSets << "CORE" << "ULDUM" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
-        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS";
+        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS" << "TITANS";
 
     if(fromHearth)
     {
@@ -4832,8 +4832,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
-//    testSynergies();
+    testHeroPortraits();
+    testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
 //    Utility::resizeSignatureCards();
