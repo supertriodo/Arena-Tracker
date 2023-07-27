@@ -515,6 +515,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Path of Arthas "PATH_OF_ARTHAS"
  * March of the Lick King "RETURN_OF_THE_LICH_KING"
  * Festival of Legends "BATTLE_OF_THE_BANDS"
+ * TITANS "TITANS"
  */
 
 
@@ -534,7 +535,7 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
 //        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
         cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
-        cardSet == "BATTLE_OF_THE_BANDS")
+        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS")
     {
         return true;
     }

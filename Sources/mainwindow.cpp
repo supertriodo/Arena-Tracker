@@ -4832,7 +4832,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
+    testHeroPortraits();
     testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true);//, "NX2_");//Force hearthpwn true
@@ -4901,6 +4901,9 @@ void MainWindow::testDelay()
 
 //New leaderboard season
 //En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+
+
+
 
 
 //NUEVA SYNERGY

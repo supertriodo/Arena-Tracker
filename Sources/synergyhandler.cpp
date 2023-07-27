@@ -1944,6 +1944,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
     {
+        if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
 
         if(miniSet.isEmpty() || code.startsWith(miniSet))
@@ -1957,7 +1958,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
                 containsAll(text, "choose one")
-//                text.contains("can't attack heroes")
+//                text.contains("deathrattle")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
 //                cardType == MINION
@@ -4835,9 +4836,10 @@ REGLAS
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
-+tokenGen son 2 small minions (max 3/3), reborn y deathrattle son tokenGen (max 3/3)
-    tambien cuentan las cartas generadas a mano (tokenCardGen).
++tokenGen son 2 small minions (max 3/3), tambien cuentan las cartas generadas a mano (tokenCardGen), reborn y deathrattle no son tokenGen.
 +No son tokenSyn las cartas "Destroy friendly minion", solo cartas que necesiten 3+ minions.
++CorpseGen para todo tokenGen que no genere risen minions (no dejan corpse) y para reborn y deathrattle.
++CorpseSyn solo si gasta 2+ corpses.
 +freezeEnemyGen deben poder usarse sobre enemigos, combo con destroy tardio (freezeEnemySyn).
 +pingGen (NO RANDOM/NO DEATHRATTLE): tienen como proposito eliminar divineShield y rematar, deben ser proactivos, no random ni deathrattle.
 +damageMinionsGen y destroyGen (SI RANDOM/NO DEATHRATTLE): deben ser proactivos, permitimos que sean random pero no deathrattle ni secretos (random o no)
@@ -4860,8 +4862,6 @@ REGLAS
 +RushGiverSyn/EnrageGen/Frenzy: Solo son rushGiverSyn, los enrage minions de 5+ mana con un enrage significativo. Taunt 2/6 enrage +3 atk no lo es.
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
-+CorpseGen para todo tokenGen que no genere risen minions (no dejan corpse)
-+CorpseSyn solo si gasta 2+ corpses.
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats (3/3 es 3 mana, 3/4 es 3.5 mana)
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
