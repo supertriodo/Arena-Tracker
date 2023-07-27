@@ -1939,10 +1939,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-//    for(QString &code: (QStringList)Utility::getSetCodes("BATTLE_OF_THE_BANDS", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
-    for(QString &code: (QStringList)Utility::getWildCodes())
+//    for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("CORE_"))    code = code.mid(5);
 
@@ -1956,24 +1956,22 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                    containsAll(text, "choose one")
-//                    text.contains("can't attack heroes")
-//                    mechanics.contains(QJsonValue("CHOOSE_ONE"))
-//                    referencedTags.contains(QJsonValue("CHOOSE_ONE"))
-//                    cardType == MINION
-//                    mechanics.contains(QJsonValue("CORRUPT"))
-//                    && attack<4 && health<4
-//                    && (attack + health)<7
-//                    && !isChooseOne(code, mechanics)
-//                    isPingGen(code, mechanics, referencedTags, text, cardType, attack)
-//                    isCorpseSyn(code, text)
-//                    && !isDrop2(code, cost, attack, health)
-//                    && !isDrop3(code, cost, attack, health)
-//                    && !isDrop4(code, cost, attack, health)
+                containsAll(text, "choose one")
+//                text.contains("can't attack heroes")
+//                mechanics.contains(QJsonValue("MAGNETIC"))
+//                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
+//                cardType == MINION
+//                mechanics.contains(QJsonValue("CORRUPT"))
+//                && attack<4 && health<4
+//                (attack + health)>6
+//                && isTokenGen(code, mechanics, text)
+//                && !isDrop2(code, cost, attack, health)
+//                && !isDrop3(code, cost, attack, health)
+//                && !isDrop4(code, cost, attack, health)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
-//containsAll(text, "damage random")
+//containsAll(text, "damage random") || containsAll(text, "damage split")
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 //containsAll(text, "gain mana this turn only") || containsAll(text, "refresh mana")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
@@ -4613,7 +4611,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
         FLOODSAIL_DECKHAND, EFFICIENT_OCTOBOT, LIVING_SEED, SCABBS_CUTTERBUTTER, KINDLING_ELEMENTAL, CELESTIAL_INK_SET,
         RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
         BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
-        ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT
+        ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
     }
@@ -4637,7 +4635,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
-        CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH
+        CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH, WISDOM_OF_NORGANNON, TRAM_OPERATOR
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
     }
@@ -4645,7 +4643,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
-        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM
+        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }
@@ -4654,7 +4652,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QStringList candidates = {
         FORBIDDEN_SHAPING, FORBIDDEN_FLAME, FORBIDDEN_HEALING, FORBIDDEN_RITUAL, FORBIDDEN_ANCIENT, FORBIDDEN_WORDS, MOGU_FLESHSHAPER,
         RABBLE_BOUNCER, DEVOUT_PUPIL, EMBIGGEN, POWER_WORD_FORTITUDE, SHIELD_SHATTER, LOKHOLAR_THE_ICE_LORD, LIGHTRAY, CRYPT_KEEPER,
-        VENGEFUL_WALLOPER, ABYSSAL_BASSIST
+        VENGEFUL_WALLOPER, ABYSSAL_BASSIST, IMPRISONED_HORROR, CULTIVATION
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 5;
     }
