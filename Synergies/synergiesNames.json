@@ -4495,6 +4495,45 @@
   "RLK_570 Ghoulish Alchemist": ["RLK_568 Concoctor", "RLK_569 Potion Belt",
     "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
   "RLK_568 Concoctor": ["RLK_568 Concoctor", "RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
-  "RLK_571 Vile Apothecary": ["RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"]
+  "RLK_571 Vile Apothecary": ["RLK_571 Vile Apothecary", "RLK_572 Potionmaster Putricide"],
+
+  "-----PLAGUES-----": "",
+  "TTN_850 Helya": ["TTN_736 Staff of the Primus", "TTN_450 Distressed Kvaldir",
+    "TTN_454 Down with the Ship", "TTN_850 Helya"],
+  "TTN_455 Tomb Traitor": ["TTN_736 Staff of the Primus", "TTN_450 Distressed Kvaldir",
+    "TTN_454 Down with the Ship", "TTN_850 Helya"],
+  "TTN_459 Chained Guardian": ["TTN_736 Staff of the Primus", "TTN_450 Distressed Kvaldir",
+    "TTN_454 Down with the Ship", "TTN_850 Helya"],
+
+  "-----DISCOVERY OF MAGIC-----": "",
+  "TTN_476 Discovery of Magic": ["TTN_478 Inquisitive Creation", "TTN_085 Wisdom of Norgannon",
+    "TTN_071 Sif", "TTN_480 Elemental Inspiration"],
+
+  "-----EARTHEN-----": "",
+  "TTN_900 Stoneheart King": ["TTN_900 Stoneheart King", "TTN_856 Disciple of Amitus"],
+  "TTN_856 Disciple of Amitus": ["TTN_856 Disciple of Amitus"],
+
+  "-----ASTRAL AUTOMATON-----": "",
+  "TTN_401 Astral Automaton": ["TTN_401 Astral Automaton"],
+
+  "-----TRIAL BY FIRE-----": "",
+  "TTN_470 Trial by Fire": ["TTN_470 Trial by Fire"],
+
+  "-----SHUFFLE-----": "",
+  "TTN_712 Sharp-Eyed Seeker": ["TTN_845 Runic Adornment", "TTN_482 Student of the Stars",
+    "TTN_083 Son of Hodir"],
+
+  "-----FORGE-----": "",
+  "TTN_729 Melted Maker": ["TTN_457 Eulogizer", "TTN_865 Weight of the World", "TTN_951 Embrace of Nature",
+    "TTN_302 Titanforged Traps", "TTN_477 Molten Rune", "TTN_855t Tyr's Tears", "TTN_430 Creation Protocol",
+    "TTN_730 Lab Constructor", "TTN_801 Champion of Storms", "TTN_490 Disciple of Sargeras",
+    "TTN_753 Bellowing Flames", "TTN_039 Watcher of the Sun", "TTN_042 Cyclopian Crusher",
+    "TTN_076 Mechagnome Guide", "TTN_458 XB-488 Disposalbot", "TTN_724 Storm Giant"],
+  "TTN_751 Ignis, the Eternal Flame": ["TTN_457 Eulogizer", "TTN_865 Weight of the World",
+    "TTN_951 Embrace of Nature", "TTN_302 Titanforged Traps", "TTN_477 Molten Rune",
+    "TTN_855t Tyr's Tears", "TTN_430 Creation Protocol", "TTN_730 Lab Constructor",
+    "TTN_801 Champion of Storms", "TTN_490 Disciple of Sargeras", "TTN_753 Bellowing Flames",
+    "TTN_039 Watcher of the Sun", "TTN_042 Cyclopian Crusher", "TTN_076 Mechagnome Guide",
+    "TTN_458 XB-488 Disposalbot", "TTN_724 Storm Giant"]
 }
 }
