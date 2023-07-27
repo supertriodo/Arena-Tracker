@@ -782,6 +782,11 @@ ulong Utility::findTemplateOnMat(const QString &templateImage, cv::Mat &mat, con
 
     detector.detect( img_object, keypoints_object );
     detector.detect( img_scene, keypoints_scene );
+    if(keypoints_scene.empty())
+    {
+        qDebug() << "Utility: Bad screen for opencv flan.";
+        return 0;
+    }
 
     //-- Step 2: Calculate descriptors (feature vectors)
     SurfDescriptorExtractor extractor;
