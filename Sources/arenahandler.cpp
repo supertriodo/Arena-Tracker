@@ -1797,7 +1797,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
             return;
         }
         //Hay varios get repetidos running, puede ocurrir si se desactiva y activa rapido el checkbox ui->configCheckLB
-        if(leaderboardPage[regionNum] == page)
+        if(leaderboardPage[regionNum] >= page)
         {
             emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
             emit pDebug("Leaderboard: Remove duplicate download reply on page: " + QString::number(page));
@@ -1810,18 +1810,34 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
             return;
         }
 
-        QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
+//        emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
+
+        QByteArray data = reply->readAll();
+        QJsonObject lbObject = QJsonDocument::fromJson(data).object().value("leaderboard").toObject();
+        QJsonArray rows = lbObject.value("rows").toArray();
         if(rows.isEmpty())
         {
-            emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
-            emit pDebug("Leaderboard: END");
-            leaderboardPage[regionNum] = 0;//All pages read
-            saveMapLeaderboard();
+            pDebug(reply->url().toString() + " --> Empty. Retrying...");
+            nmLbGlobal->get(QNetworkRequest(reply->url()));
         }
         else
         {
+            if(leaderboardMaxPage[regionNum] == 0)
+            {
+                leaderboardMaxPage[regionNum] = lbObject.value("pagination").toObject().value("totalPages").toInt();
+                emit pDebug("Leaderboard: " + region + " --> MAXP" + QString::number(leaderboardMaxPage[regionNum]));
+            }
             leaderboardPage[regionNum] = page;
-            getLeaderboardPage(nmLbGlobal, region, page+1);
+            if(page < leaderboardMaxPage[regionNum])
+            {
+                getLeaderboardPage(nmLbGlobal, region, page+1);
+            }
+            else
+            {
+                emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season) + " --> END");
+                leaderboardPage[regionNum] = 0;//All pages read
+                saveMapLeaderboard();
+            }
 
             for(const QJsonValue &row: rows)
             {
@@ -1909,8 +1925,14 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
             return;
         }
 
-        QJsonArray rows = QJsonDocument::fromJson(reply->readAll()).object().value("leaderboard").toObject().value("rows").toArray();
-        if(rows.isEmpty())  emit pDebug("Leaderboard Search STOP LIMIT - RIGHT");
+        QByteArray data = reply->readAll();
+        QJsonObject lbObject = QJsonDocument::fromJson(data).object().value("leaderboard").toObject();
+        QJsonArray rows = lbObject.value("rows").toArray();
+        if(rows.isEmpty())
+        {
+            pDebug(reply->url().toString() + " --> Empty. Retrying...");
+            nmLbSearch->get(QNetworkRequest(reply->url()));
+        }
         else
         {
             for(const QJsonValue &row: rows)
@@ -1936,8 +1958,9 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
                 else if(page > searchPage[regionNum])   nextPage = page + 1;
                 else                                    nextPage = page - 1;
 
-                if(nextPage > 0)    getLeaderboardPage(nmLbSearch, region, nextPage);
-                else                emit pDebug("Leaderboard Search STOP LIMIT - MIDDLE/LEFT");
+                if(nextPage > leaderboardMaxPage[regionNum])    emit pDebug("Leaderboard Search STOP LIMIT - RIGHT");
+                else if(nextPage > 0)                           getLeaderboardPage(nmLbSearch, region, nextPage);
+                else                                            emit pDebug("Leaderboard Search STOP LIMIT - MIDDLE/LEFT");
             }
             else    emit pDebug("Leaderboard Search STOP FOUND");
         }
@@ -2001,7 +2024,9 @@ void ArenaHandler::clearLeaderboardMap()
     for(int i=0; i<3; i++)
     {
         leaderboardPage[i] = 0;
+        leaderboardMaxPage[i] = 0;
         leaderboardMap[i].clear();
+        searchPage[i] = 0;
     }
 }
 
@@ -2031,7 +2056,9 @@ void ArenaHandler::saveMapLeaderboard()
     {
         QString region = number2LbRegion(i);
         regions[region] = regionLeaderboard2Json(i);
-        regions["page"+region] = leaderboardPage[i];
+        //Empezaremos por la ultima pagina que ya leimos la ultima vez, la repetimos para asegurarnos de que obtenemos un leaderboardMaxPage de una pagina
+        //que seguro que existe, sino podria darse la casualidad de terminar en la ultima pagina y en el reinicio empezar en una que no existiera.
+        regions["page"+region] = std::max(0, leaderboardPage[i]-1);
     }
 
     //Build json data from statsJson

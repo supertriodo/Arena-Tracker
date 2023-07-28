@@ -68,6 +68,7 @@ private:
     QMap<QString, LeaderboardItem> leaderboardMap[3];
     QNetworkAccessManager *nmLbGlobal, *nmLbSearch;
     int leaderboardPage[3];
+    int leaderboardMaxPage[3];
     int seasonId;
     QString searchTag;
     int searchPage[3];
