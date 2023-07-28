@@ -1294,12 +1294,12 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap
     QString text = Utility::cardEnTextFromCode(code).toLower();
     CardType cardType = deckCard.getType();
 
-    //Evita mostrar spellAllSyn cards en cada hechizo que veamos, es sinergia debil
-    if(cardType == SPELL)
-    {
-        cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
+    //Evita mostrar spellSyn/spellAllSyn cards en cada hechizo que veamos, es sinergia debil
+//    if(cardType == SPELL)
+//    {
+//        cardTypeCounters[V_SPELL]->insertSynCards(synergyTagMap);
 //        cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
-    }
+//    }
 //    else if(isSpellGen(code))                   cardTypeCounters[V_SPELL_ALL]->insertSynCards(synergyTagMap);
     if(cardType == WEAPON)
     {
@@ -4819,7 +4819,7 @@ REGLAS
     Synergias FINALE si.
     Synergias OVERHEAL en priest si.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
-+returnGen/spellAllSyn es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
++returnGen/spellSyn/spellAllSyn es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
 +eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
