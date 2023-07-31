@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 38,
+  "arenaVersion": 39,
   "arenaSets": ["CORE", "ULDUM", "BLACK_TEMPLE", "DARKMOON_FAIRE", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING", "BATTLE_OF_THE_BANDS", "TITANS"],
   "multiclassArena": false,
   "resetCards": 38,
-  "resetHeroes": 35,
-  "seasonId": 38
+  "resetHeroes": 39,
+  "seasonId": 39
 }
