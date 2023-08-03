@@ -863,7 +863,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                         }
                         else */if(isPlayer && isPlayerTurn)
                         {
-                            if(cardId2.startsWith("HERO"))  emit playerSpellObjHeroPlayed();
+                            if(Utility::isAHero(cardId2))   emit playerSpellObjHeroPlayed();
                             else                            emit playerSpellObjMinionPlayed();
                         }
                     }
@@ -873,7 +873,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                                     name1 + " target " + name2, numLine);
                         if(isPlayer && isPlayerTurn)
                         {
-                            if(cardId2.startsWith("HERO"))  emit playerBattlecryObjHeroPlayed();//Secreto Evasion
+                            if(Utility::isAHero(cardId2))   emit playerBattlecryObjHeroPlayed();//Secreto Evasion
 //                            else                            emit playerBattlecryObjMinionPlayed();//No se usa aun
                         }
                     }
@@ -891,9 +891,9 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 {
                     emit zonePlayAttack(cardId1, id1.toInt(), id2.toInt());
 
-                    if(cardId1.contains("HERO"))
+                    if(Utility::isAHero(cardId1))
                     {
-                        if(cardId2.contains("HERO"))
+                        if(Utility::isAHero(cardId2))
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (heroe)vs(heroe) " + name2, numLine);
@@ -912,7 +912,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     }
                     else
                     {
-                        if(cardId2.contains("HERO"))
+                        if(Utility::isAHero(cardId2))
                         {
                             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": Attack: " +
                                         name1 + " (minion)vs(heroe) " + name2, numLine);

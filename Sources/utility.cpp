@@ -558,6 +558,12 @@ bool Utility::isASecret(const QString &code)
 }
 
 
+bool Utility::isAHero(const QString &code)
+{
+    return (Utility::getTypeFromCode(code) == HERO);
+}
+
+
 QStringList Utility::getSetCodes(const QString &set, bool excludeHeroes, bool onlyCollectible)
 {
     QStringList setCodes;

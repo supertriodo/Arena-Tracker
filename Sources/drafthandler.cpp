@@ -2828,15 +2828,11 @@ void DraftHandler::buildHeroCodesList()
     //--------------------------------------------------------
     //----NEW HERO CLASS
     //--------------------------------------------------------
-    for(const QString &code: (const QStringList)Utility::getSetCodes("CORE", false, true))
-    {
-        if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
-    }
     for(const QString &code: (const QStringList)Utility::getSetCodes("HERO_SKINS", false, true))
     {
-        if(code.startsWith("HERO_0") || code.startsWith("HERO_1"))   heroCodesList.append(code);
+        heroCodesList.append(code);
     }
-//    qDebug()<<endl<<"HERO CODES!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
+//    qDebug()<<endl<<"HERO CODES"<<heroCodesList.count()<<"!!!!!!!!!!!!!!!!!!!!!!!!"<<endl<<heroCodesList<<endl;
 }
 
 

@@ -135,6 +135,7 @@ public:
     static CardSchool getSchoolFromCode(const QString &code);
     static bool isFromStandardSet(const QString &code);
     static bool isASecret(const QString &code);
+    static bool isAHero(const QString &code);
     static void dumpOnFile(const QByteArray &data, const QString &path);
     static QString getCodeFromCardAttribute(const QString &attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
