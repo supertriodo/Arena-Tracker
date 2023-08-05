@@ -1174,10 +1174,9 @@ void DraftHandler::captureDraft()
     }
     mapBestMatchingCodes(screenCardsHist);
 
-    bool cardsFound = false;
     if(areCardsDetected())
     {
-        cardsFound = true;
+        capturing = false;
         buildBestMatchesMaps();
 
         if(drafting)
@@ -1189,16 +1188,12 @@ void DraftHandler::captureDraft()
         }
         else if(heroDrafting)
         {
-            if(isRepeatHero())  cardsFound = false;
+            if(isRepeatHero())  capturing = true;
             else                showNewHeroes();
         }
     }
 
-    if(cardsFound)
-    {
-        capturing = false;
-    }
-    else
+    if(capturing)
     {
         if(numCaptured == 0)    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_FADING, this, SLOT(captureDraft()));
         else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
@@ -2991,7 +2986,7 @@ void DraftHandler::finishReviewBestCards()
     QString *bestCodes = futureReviewBestCards.result();
     if(bestCodes == nullptr)
     {
-        emit pDebug("reviewBestCards: manaRects/draftCards not ready.");
+        emit pDebug("reviewBestCards: manaRects/draftCards not ready or picked a card.");
         return;
     }
 
@@ -3073,6 +3068,8 @@ QString * DraftHandler::reviewBestCards()
         }
         //No Warning - Misma carta (code = "")
 
+        //Card picked while review
+        if(capturing)   return nullptr;
     }
     return new QString[3]{bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
 }
