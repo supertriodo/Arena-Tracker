@@ -1341,37 +1341,16 @@ CardRarity DraftHandler::getBestRarity()
 
 void DraftHandler::getBestCards(DraftCard bestCards[3])
 {
-    CardRarity bestRarity = getBestRarity();
-
     for(int i=0; i<3; i++)
     {
-        QList<double> bestMatchesList = bestMatchesMaps[i].keys();
-        QList<QString> bestCodesList = bestMatchesMaps[i].values();
-        for(int j=0; j<bestMatchesList.count(); j++)
-        {
-            double match = bestMatchesList[j];
-            QString code = bestCodesList[j];
-            QString name = draftCardMaps[i][code].getName();
-            QString cardInfo = code + " " + name + " " +
-                    QString::number(static_cast<int>(match*1000)/1000.0);
-            if( (bestRarity == INVALID_RARITY) ||
-                (bestRarity != LEGENDARY && draftCardMaps[i][code].getRarity() != LEGENDARY) ||
-                (bestRarity == LEGENDARY && draftCardMaps[i][code].getRarity() == LEGENDARY))
-            {
-                bestCards[i] = draftCardMaps[i][code];
-                comboBoxCard[i]->setCurrentIndex(j);
-                emit pDebug("Choose: " + cardInfo);
-                break;
-            }
-            else
-            {
-                emit pDebug("Skip: " + cardInfo + " (Wrong rarity)");
-            }
-        }
-        if(bestCards[i].getCode().isEmpty() && !bestCodesList.isEmpty())
-        {
-            bestCards[i] = draftCardMaps[i][bestCodesList.first()];
-        }
+        double match = bestMatchesMaps[i].keys().first();
+        QString code = bestMatchesMaps[i].values().first();
+        QString name = draftCardMaps[i][code].getName();
+        QString cardInfo = code + " " + name + " " + QString::number(static_cast<int>(match*1000)/1000.0);
+
+        bestCards[i] = draftCardMaps[i][code];
+        comboBoxCard[i]->setCurrentIndex(0);
+        emit pDebug("Choose: " + cardInfo);
     }
 
     connectAllComboBox();
