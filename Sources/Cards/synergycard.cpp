@@ -98,57 +98,61 @@ void SynergyCard::setRaceTag()
 {
     QString synergyTagJoin = "";
 
-    if(cardRace.contains(MURLOC) || cardRace.contains(ALL))
+    if(cardRace.contains(ALL))
+    {
+        synergyTagJoin.append("All");
+    }
+    if(cardRace.contains(MURLOC))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Murloc");
         else                            synergyTagJoin.append(" - Murloc");
     }
-    if(cardRace.contains(DEMON) || cardRace.contains(ALL))
+    if(cardRace.contains(DEMON))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Demon");
         else                            synergyTagJoin.append(" - Demon");
     }
-    if(cardRace.contains(MECHANICAL) || cardRace.contains(ALL))
+    if(cardRace.contains(MECHANICAL))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Mech");
         else                            synergyTagJoin.append(" - Mech");
     }
-    if(cardRace.contains(ELEMENTAL) || cardRace.contains(ALL))
+    if(cardRace.contains(ELEMENTAL))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Elemental");
         else                            synergyTagJoin.append(" - Elemental");
     }
-    if(cardRace.contains(BEAST) || cardRace.contains(ALL))
+    if(cardRace.contains(BEAST))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Beast");
         else                            synergyTagJoin.append(" - Beast");
     }
-    if(cardRace.contains(TOTEM) || cardRace.contains(ALL))
+    if(cardRace.contains(TOTEM))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Totem");
         else                            synergyTagJoin.append(" - Totem");
     }
-    if(cardRace.contains(PIRATE) || cardRace.contains(ALL))
+    if(cardRace.contains(PIRATE))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Pirate");
         else                            synergyTagJoin.append(" - Pirate");
     }
-    if(cardRace.contains(DRAGON) || cardRace.contains(ALL))
+    if(cardRace.contains(DRAGON))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Dragon");
         else                            synergyTagJoin.append(" - Dragon");
     }
-    if(cardRace.contains(NAGA) || cardRace.contains(ALL))
+    if(cardRace.contains(NAGA))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Naga");
         else                            synergyTagJoin.append(" - Naga");
     }
-    if(cardRace.contains(UNDEAD) || cardRace.contains(ALL))
+    if(cardRace.contains(UNDEAD))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Undead");
         else                            synergyTagJoin.append(" - Undead");
     }
-    if(cardRace.contains(QUILBOAR) || cardRace.contains(ALL))
+    if(cardRace.contains(QUILBOAR))
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Quilboar");
         else                            synergyTagJoin.append(" - Quilboar");

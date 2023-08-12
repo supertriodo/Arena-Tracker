@@ -270,6 +270,7 @@ public slots:
 private slots:
     void test();
     void testEnemyHand();
+    void testGraveyard();
     void testPlan();
     void testArenaGames();
     void testDelay();

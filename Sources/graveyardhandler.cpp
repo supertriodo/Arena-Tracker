@@ -187,7 +187,8 @@ void GraveyardHandler::setTheme()
 
 void GraveyardHandler::redrawMinionSpellIcons()
 {
-    ui->graveyardButtonMinions->setIcon(QIcon(drawNumberedIcon(ThemeHandler::buttonGraveyardMinionsFile(), racesPlayer.count(), racesEnemy.count())));
+    ui->graveyardButtonMinions->setIcon(QIcon(drawNumberedIcon(ThemeHandler::buttonGraveyardMinionsFile(),
+                                                               racesPlayer.count() + racesPlayer[ALL], racesEnemy.count() + racesEnemy[ALL])));
     ui->graveyardButtonSpells->setIcon(QIcon(drawNumberedIcon(ThemeHandler::buttonGraveyardSpellsFile(), schoolsPlayer.count(), schoolsEnemy.count())));
 }
 
@@ -200,9 +201,12 @@ void GraveyardHandler::reset()
     deckCardListPlayer.clear();
     deckCardListEnemy.clear();
     racesPlayer.clear();
+    racesPlayer[ALL]=-1;
     racesEnemy.clear();
+    racesEnemy[ALL]=-1;
     schoolsPlayer.clear();
     schoolsEnemy.clear();
+    redrawMinionSpellIcons();
 
     emit pDebug("Graveyard deck lists cleared.");
 }
@@ -472,7 +476,7 @@ void GraveyardHandler::findDeckCardEntered(bool friendly, QListWidgetItem * item
 
 void GraveyardHandler::updateRacesSchools(bool friendly, SynergyCard &deckCard)
 {
-    QMap<CardRace, bool> &races = (friendly?racesPlayer:racesEnemy);
+    QMap<CardRace, int> &races = (friendly?racesPlayer:racesEnemy);
     QMap<CardSchool, bool> &schools = (friendly?schoolsPlayer:schoolsEnemy);
 
     CardType type = deckCard.getType();
@@ -481,17 +485,17 @@ void GraveyardHandler::updateRacesSchools(bool friendly, SynergyCard &deckCard)
         QList<CardRace> cardRaces = deckCard.getRace();
         for(const CardRace &cardRace: cardRaces)
         {
-            if(cardRace == ALL) races[MURLOC] = races[DEMON] = races[MECHANICAL] = races[ELEMENTAL] = races[BEAST] =
-                    races[TOTEM] = races[PIRATE] = races[DRAGON] = races[NAGA] = races[UNDEAD] = races[QUILBOAR] = true;
+            if(cardRace == ALL) races[ALL]++;
             else if(cardRace == MURLOC || cardRace == DEMON || cardRace == MECHANICAL || cardRace == ELEMENTAL || cardRace == BEAST || cardRace == TOTEM ||
                     cardRace == PIRATE || cardRace == DRAGON || cardRace == NAGA || cardRace == UNDEAD || cardRace == QUILBOAR)
-                races[cardRace] = true;
+                races[cardRace] = 1;
         }
     }
     else if(type == SPELL)
     {
         CardSchool cardSchool = deckCard.getSchool();
-        schools[cardSchool] = true;
+        if(cardSchool == ARCANE || cardSchool == FEL || cardSchool == FIRE || cardSchool == FROST || cardSchool == HOLY || cardSchool == SHADOW || cardSchool == NATURE)
+            schools[cardSchool] = true;
     }
 
     redrawMinionSpellIcons();

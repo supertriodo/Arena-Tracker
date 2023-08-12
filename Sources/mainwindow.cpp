@@ -4581,6 +4581,15 @@ void MainWindow::saveHearthArenaTierlistOriginal(const QByteArray &html)
 }
 
 
+void MainWindow::testGraveyard()
+{
+    graveyardHandler->playerCardGraveyard(1, "RLK_503");
+    graveyardHandler->playerCardGraveyard(2, "RLK_038");
+    graveyardHandler->enemyCardGraveyard(1, "RLK_503");
+    graveyardHandler->enemyCardGraveyard(2, "RLK_038");
+}
+
+
 void MainWindow::testEnemyHand()
 {
     enemyHandHandler->setLastCreatedByCode("KAR_076");

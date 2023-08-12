@@ -23,7 +23,10 @@ private:
     bool inGame, mouseInApp;
     int lastSecretIdAdded;
     QPushButton *planPatreonButton;
-    QMap<CardRace, bool> racesPlayer, racesEnemy;
+    //Iniciamos racesPlayer[ALL]=-1; y cada amalgama hace racesPlayer[ALL]++;
+    //De este modo el numero de razas sera racesPlayer.count()+racesPlayer[ALL]
+    //Ya que cada amalgama es como incluir una raza distinta
+    QMap<CardRace, int> racesPlayer, racesEnemy;
     QMap<CardSchool, bool> schoolsPlayer, schoolsEnemy;
 
 //Metodos
