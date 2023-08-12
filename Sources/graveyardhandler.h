@@ -3,6 +3,7 @@
 
 
 #include "Widgets/ui_extended.h"
+#include "Cards/synergycard.h"
 #include <QObject>
 #include <QMap>
 
@@ -16,7 +17,7 @@ public:
 
 //Variables
 private:
-    QList<DeckCard> deckCardListPlayer, deckCardListEnemy;
+    QList<SynergyCard> deckCardListPlayer, deckCardListEnemy;
     Ui::Extended *ui;
     Transparency transparency;
     bool inGame, mouseInApp;
@@ -35,7 +36,7 @@ public:
 
 private:
     void completeUI();
-    void insertDeckCard(bool friendly, DeckCard &deckCard);
+    void insertDeckCard(bool friendly, SynergyCard &deckCard);
     void newDeckCard(bool friendly, QString card, int id);
     void updateTransparency();
     void findDeckCardEntered(bool friendly, QListWidgetItem *item);

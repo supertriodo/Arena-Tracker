@@ -19,12 +19,15 @@ private:
 
 //Metodos
 private:
-    void drawSynergyTag(QPixmap &canvas);
+    void drawSynergyTag(QPixmap &canvas, bool useSynergyWidth=true);
+    void setRaceTag();
+    void setSchoolTag();
 
 public:
     QString getSynergyTag();
     void setSynergyTag(QString synergyTag);
-    void draw();
+    void setRaceSchoolTag();
+    void draw(bool useSynergyWidth=true);
     void draw(QLabel *label);
 
     static void setSynergyWidth(int value);

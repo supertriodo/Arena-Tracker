@@ -151,12 +151,12 @@ void GraveyardHandler::buttonSpellsClicked()
 
 void GraveyardHandler::onlyShow(CardType cardType)
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
         deckCard.listItem->setHidden(deckCard.getType() != cardType);
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
         deckCard.listItem->setHidden(deckCard.getType() != cardType);
     }
@@ -165,12 +165,12 @@ void GraveyardHandler::onlyShow(CardType cardType)
 
 void GraveyardHandler::showAll()
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
         deckCard.listItem->setHidden(false);
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
         deckCard.listItem->setHidden(false);
     }
@@ -230,7 +230,7 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
 
     //Ya existe en el mazo
     bool found = false;
-    QList<DeckCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
+    QList<SynergyCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
     for(int i=0; i<deckCardList.length(); i++)
     {
         if(deckCardList[i].getCode() == code)
@@ -244,14 +244,14 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
             found = true;
             deckCardList[i].total++;
             deckCardList[i].remaining++;
-            deckCardList[i].draw();
+            deckCardList[i].draw(false);
             break;
         }
     }
 
     if(!found)
     {
-        DeckCard deckCard(code);
+        SynergyCard deckCard(code);
 
         //Allow only weapon/minion/spell
         CardType cardType = deckCard.getType();
@@ -263,6 +263,7 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
 
         deckCard.id = id;
         deckCard.listItem = new QListWidgetItem();
+        deckCard.setRaceSchoolTag();
         insertDeckCard(friendly, deckCard);
 
         //Show/hide
@@ -275,7 +276,7 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
         }
 
         //Draw
-        deckCard.draw();
+        deckCard.draw(false);
         emit checkCardImage(code);
     }
 
@@ -284,9 +285,9 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
 }
 
 
-void GraveyardHandler::insertDeckCard(bool friendly, DeckCard &deckCard)
+void GraveyardHandler::insertDeckCard(bool friendly, SynergyCard &deckCard)
 {
-    QList<DeckCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
+    QList<SynergyCard> &deckCardList = (friendly?deckCardListPlayer:deckCardListEnemy);
     MoveListWidget *listWidget = (friendly?ui->graveyardListWidgetPlayer:ui->graveyardListWidgetEnemy);
 
     for(int i=0; i<deckCardList.length(); i++)
@@ -369,35 +370,35 @@ void GraveyardHandler::unlockGraveyardInterface()
 
 void GraveyardHandler::redrawClassCards()
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
-        deckCard.draw();
+        deckCard.draw(false);
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
-        deckCard.draw();
+        deckCard.draw(false);
     }
 }
 
 
 void GraveyardHandler::redrawSpellWeaponCards()
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
         {
-            deckCard.draw();
+            deckCard.draw(false);
         }
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
         CardType cardType = deckCard.getType();
         if(cardType == SPELL || cardType == WEAPON)
         {
-            deckCard.draw();
+            deckCard.draw(false);
         }
     }
 }
@@ -405,28 +406,28 @@ void GraveyardHandler::redrawSpellWeaponCards()
 
 void GraveyardHandler::redrawAllCards()
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
-        deckCard.draw();
+        deckCard.draw(false);
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
-        deckCard.draw();
+        deckCard.draw(false);
     }
 }
 
 
 void GraveyardHandler::redrawDownloadedCardImage(QString code)
 {
-    for(DeckCard &deckCard: deckCardListPlayer)
+    for(SynergyCard &deckCard: deckCardListPlayer)
     {
-        if(deckCard.getCode() == code)  deckCard.draw();
+        if(deckCard.getCode() == code)  deckCard.draw(false);
     }
 
-    for(DeckCard &deckCard: deckCardListEnemy)
+    for(SynergyCard &deckCard: deckCardListEnemy)
     {
-        if(deckCard.getCode() == code)  deckCard.draw();
+        if(deckCard.getCode() == code)  deckCard.draw(false);
     }
 }
 
