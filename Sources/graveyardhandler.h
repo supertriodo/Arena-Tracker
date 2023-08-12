@@ -23,6 +23,8 @@ private:
     bool inGame, mouseInApp;
     int lastSecretIdAdded;
     QPushButton *planPatreonButton;
+    QMap<CardRace, bool> racesPlayer, racesEnemy;
+    QMap<CardSchool, bool> schoolsPlayer, schoolsEnemy;
 
 //Metodos
 public:
@@ -42,8 +44,11 @@ private:
     void findDeckCardEntered(bool friendly, QListWidgetItem *item);
     void reset();
     void onlyShow(CardType cardType);
-
     void showAll();
+    QPixmap drawNumberedIcon(QString iconFile, int numberPlayer, int numberEnemy);
+    void updateRacesSchools(bool friendly, SynergyCard &deckCard);
+    void redrawMinionSpellIcons();
+
 signals:
     void checkCardImage(QString code);
     void cardEntered(QString code, QRect rectCard, int maxTop, int maxBottom);

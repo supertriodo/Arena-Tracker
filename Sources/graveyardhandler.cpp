@@ -17,10 +17,7 @@ GraveyardHandler::GraveyardHandler(QObject *parent, Ui::Extended *ui) : QObject(
 
 GraveyardHandler::~GraveyardHandler()
 {
-    ui->graveyardListWidgetPlayer->clear();
-    ui->graveyardListWidgetEnemy->clear();
-    deckCardListPlayer.clear();
-    deckCardListEnemy.clear();
+    reset();
 }
 
 
@@ -182,9 +179,16 @@ void GraveyardHandler::setTheme()
     ui->graveyardButtonPlayer->setIcon(QIcon(ThemeHandler::buttonGraveyardPlayerFile()));
     ui->graveyardButtonEnemy->setIcon(QIcon(ThemeHandler::buttonGraveyardEnemyFile()));
     ui->graveyardButtonAll->setIcon(QIcon(ThemeHandler::buttonGraveyardAllFile()));
-    ui->graveyardButtonMinions->setIcon(QIcon(ThemeHandler::buttonGraveyardMinionsFile()));
     ui->graveyardButtonWeapons->setIcon(QIcon(ThemeHandler::buttonGraveyardWeaponsFile()));
-    ui->graveyardButtonSpells->setIcon(QIcon(ThemeHandler::buttonGraveyardSpellsFile()));
+
+    redrawMinionSpellIcons();
+}
+
+
+void GraveyardHandler::redrawMinionSpellIcons()
+{
+    ui->graveyardButtonMinions->setIcon(QIcon(drawNumberedIcon(ThemeHandler::buttonGraveyardMinionsFile(), racesPlayer.count(), racesEnemy.count())));
+    ui->graveyardButtonSpells->setIcon(QIcon(drawNumberedIcon(ThemeHandler::buttonGraveyardSpellsFile(), schoolsPlayer.count(), schoolsEnemy.count())));
 }
 
 
@@ -195,6 +199,10 @@ void GraveyardHandler::reset()
     ui->graveyardListWidgetEnemy->clear();
     deckCardListPlayer.clear();
     deckCardListEnemy.clear();
+    racesPlayer.clear();
+    racesEnemy.clear();
+    schoolsPlayer.clear();
+    schoolsEnemy.clear();
 
     emit pDebug("Graveyard deck lists cleared.");
 }
@@ -278,6 +286,9 @@ void GraveyardHandler::newDeckCard(bool friendly, QString code, int id)
         //Draw
         deckCard.draw(false);
         emit checkCardImage(code);
+
+        //schools/races
+        updateRacesSchools(friendly, deckCard);
     }
 
     emit pDebug("Add to " + (friendly?QString("Player"):QString("Enemy")) + " Graveyard: " +
@@ -457,3 +468,100 @@ void GraveyardHandler::findDeckCardEntered(bool friendly, QListWidgetItem * item
     int deckListBottom = listWidget->mapToGlobal(QPoint(0,listWidget->height())).y();
     emit cardEntered(code, globalRectCard, deckListTop, deckListBottom);
 }
+
+
+void GraveyardHandler::updateRacesSchools(bool friendly, SynergyCard &deckCard)
+{
+    QMap<CardRace, bool> &races = (friendly?racesPlayer:racesEnemy);
+    QMap<CardSchool, bool> &schools = (friendly?schoolsPlayer:schoolsEnemy);
+
+    CardType type = deckCard.getType();
+    if(type == MINION)
+    {
+        QList<CardRace> cardRaces = deckCard.getRace();
+        for(const CardRace &cardRace: cardRaces)
+        {
+            if(cardRace == ALL) races[MURLOC] = races[DEMON] = races[MECHANICAL] = races[ELEMENTAL] = races[BEAST] =
+                    races[TOTEM] = races[PIRATE] = races[DRAGON] = races[NAGA] = races[UNDEAD] = races[QUILBOAR] = true;
+            else if(cardRace == MURLOC || cardRace == DEMON || cardRace == MECHANICAL || cardRace == ELEMENTAL || cardRace == BEAST || cardRace == TOTEM ||
+                    cardRace == PIRATE || cardRace == DRAGON || cardRace == NAGA || cardRace == UNDEAD || cardRace == QUILBOAR)
+                races[cardRace] = true;
+        }
+    }
+    else if(type == SPELL)
+    {
+        CardSchool cardSchool = deckCard.getSchool();
+        schools[cardSchool] = true;
+    }
+
+    redrawMinionSpellIcons();
+}
+
+
+QPixmap GraveyardHandler::drawNumberedIcon(QString iconFile, int numberPlayer, int numberEnemy)
+{
+    QPixmap canvas(iconFile);
+    float scale = 3;
+
+    QPainter painter;
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Enemy Tag
+        if(numberEnemy > 0)
+        {
+            QString text = QString::number(numberEnemy);
+            QFont font(ThemeHandler::cardsFont());
+            font.setBold(true);
+            font.setKerning(true);
+    #ifdef Q_OS_WIN
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+    #else
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+    #endif
+            font.setPixelSize(12*scale);
+            QFontMetrics fm(font);
+            int textWide = fm.width(text);
+
+            painter.setPen(QPen(BLACK));
+            painter.setBrush(SOFT_RED);
+            painter.drawRoundRect(canvas.width() - textWide - 3*scale, 0, 3*scale + textWide, 11*scale, 50, 50);
+
+            painter.setPen(QPen(BLACK));
+            painter.setBrush(WHITE);
+            Utility::drawShadowText(painter, font, text, canvas.width() - textWide - 2*scale, 6*scale, false);
+        }
+
+        //Player Tag
+        if(numberPlayer > 0)
+        {
+            QString text = QString::number(numberPlayer);
+            QFont font(ThemeHandler::cardsFont());
+            font.setBold(true);
+            font.setKerning(true);
+    #ifdef Q_OS_WIN
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -2);
+    #else
+            font.setLetterSpacing(QFont::AbsoluteSpacing, -1);
+    #endif
+            font.setPixelSize(12*scale);
+            QFontMetrics fm(font);
+            int textWide = fm.width(text);
+
+            QColor synergyTagColor = QColor(ThemeHandler::synergyTagColor());
+            painter.setPen(QPen(BLACK));
+            painter.setBrush(synergyTagColor.isValid()?synergyTagColor:BLACK);
+            painter.drawRoundRect(0, canvas.height() - 11*scale, 3*scale + textWide, 11*scale, 50, 50);
+
+            painter.setPen(QPen(BLACK));
+            painter.setBrush(WHITE);
+            Utility::drawShadowText(painter, font, text, 1*scale, canvas.height() - 5*scale, false);
+        }
+    painter.end();
+
+    return canvas;
+}
+
