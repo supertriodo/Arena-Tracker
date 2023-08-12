@@ -3565,7 +3565,7 @@
 "TTN_727" : [ "damageMinionsGen", "rush", "corpseGen" ],
 "TTN_728" : [ "mechSyn", "mechGen", "drop2", "drawGen" ],
 "TTN_729" : [ "drop3", "toYourHandGen" ],
-"TTN_730" : [ "endTurnGen", "drop4", "magneticGen", "mechAllSyn", "handBuffSyn", "attackBuffSyn", "healthBuffSyn" ],
+"TTN_730" : [ "endTurnGen", "magneticGen", "mechAllSyn", "handBuffSyn", "attackBuffSyn", "healthBuffSyn" ],
 "TTN_731" : [ "drop3" ],
 "TTN_732" : [ "drop2", "magneticAllSyn" ],
 "TTN_733" : [ "drop3", "damageMinionsGen", "rush", "attackBuffSyn", "healthBuffSyn", "handBuffSyn" ],
