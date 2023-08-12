@@ -139,6 +139,7 @@ public:
     static void dumpOnFile(const QByteArray &data, const QString &path);
     static QString getCodeFromCardAttribute(const QString &attribute, QJsonValue value);
     static void drawShadowText(QPainter &painter, const QFont &font, const QString &text, int x, int y, bool alignCenter, bool isCardText=true);
+    static void drawTagText(QPainter &painter, const QFont &font, const QString &text, int x, int y, int xBorder, int yBorder, float scale=1, bool alignCenter=false);
     static QString themesPath();
     static QString histogramsPath();
     static QString arenaStatsPath();

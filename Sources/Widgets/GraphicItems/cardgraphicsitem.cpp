@@ -15,6 +15,7 @@ CardGraphicsItem::CardGraphicsItem( int id, QString code, QString createdByCode,
     this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->buffAttack = this->buffHealth = 0;
+    this->forged = false;
     this->played = this->discard = this->draw = false;
     this->heightShow = HEIGHT;
     this->turn = turn;
@@ -40,6 +41,7 @@ CardGraphicsItem::CardGraphicsItem(CardGraphicsItem *copy, bool showMechanics)
     this->origHealth = copy->origHealth;
     this->buffAttack = copy->buffAttack;
     this->buffHealth = copy->buffHealth;
+    this->forged = copy->forged;
     this->played = copy->played;
     this->discard = copy->discard;
     this->draw = copy->draw;
@@ -62,6 +64,7 @@ void CardGraphicsItem::changeCode(QString newCode)
     this->attack = this->origAttack = Utility::getCardAttribute(code, "attack").toInt();
     this->health = this->origHealth = Utility::getCardAttribute(code, "health").toInt();
     this->buffAttack = this->buffHealth = 0;
+    this->forged = false;
     update();
 }
 
@@ -143,6 +146,13 @@ void CardGraphicsItem::addBuff(int addAttack, int addHealth)
 {
     buffAttack += addAttack;
     buffHealth += addHealth;
+    update();
+}
+
+
+void CardGraphicsItem::forge()
+{
+    forged = true;
     update();
 }
 
@@ -379,17 +389,13 @@ void CardGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         QString text = "T"+QString::number((this->turn+1)/2);
         Utility::drawShadowText(*painter, font, text, -35, -heightShow/2 + 71 + (cardLifted?-CARD_LIFT:0), true);
 
-        //Buff
-        if(buffAttack > 0 || buffHealth > 0)
+        //Buff/Forged
+        if(buffAttack > 0 || buffHealth > 0 || forged)
         {
-            font.setPixelSize(40);
-            text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
-            painter->setFont(font);
-            painter->setBrush(BLACK);
-            pen = QPen(GREEN);
-            pen.setWidth(2);
-            painter->setPen(pen);
-            Utility::drawShadowText(*painter, font, text, -5, -heightShow/2 + 133 + (cardLifted?-CARD_LIFT:0), true);
+            if(forged)  text = "Forged";
+            else        text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
+            font.setPixelSize(18);
+            Utility::drawTagText(*painter, font, text, -60, -heightShow/2 + 35 + (cardLifted?-CARD_LIFT:0), 8, 10);
         }
     }
 }

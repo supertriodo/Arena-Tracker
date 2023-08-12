@@ -991,6 +991,22 @@ void Utility::drawShadowText(QPainter &painter, const QFont &font, const QString
 }
 
 
+void Utility::drawTagText(QPainter &painter, const QFont &font, const QString &text, int x, int y, int xBorder, int yBorder, float scale, bool alignCenter)
+{
+    QFontMetrics fm(font);
+    int textWide = fm.width(text);
+
+    QColor synergyTagColor = QColor(ThemeHandler::synergyTagColor());
+    painter.setPen(QPen(BLACK));
+    painter.setBrush(synergyTagColor.isValid()?synergyTagColor:BLACK);
+    painter.drawRoundRect((x-xBorder)*scale - (alignCenter?textWide/2:0), (y-yBorder)*scale, ((xBorder*2)*scale)+textWide, ((yBorder*2)-1)*scale, 15, 80);
+
+    painter.setPen(QPen(BLACK));
+    painter.setBrush(WHITE);
+    Utility::drawShadowText(painter, font, text, x*scale, y*scale, alignCenter);
+}
+
+
 void Utility::clearLayout(QLayout* layout, bool deleteWidgets, bool recursive)
 {
     while(QLayoutItem* item = layout->takeAt(0))

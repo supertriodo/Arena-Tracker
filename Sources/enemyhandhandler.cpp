@@ -530,6 +530,21 @@ void EnemyHandHandler::buffHandCard(int id)
 }
 
 
+void EnemyHandHandler::forgeHandCard(int id)
+{
+    HandCard * handCard = getHandCard(id);
+
+    if(handCard == nullptr)
+    {
+        emit pDebug("ERROR: HandCard not found for forge. Id: " + QString::number(id));
+        return;
+    }
+
+    handCard->forge();
+    emit enemyCardForge(id);
+}
+
+
 //Card exceptions
 bool EnemyHandHandler::isLastCreatedByCodeValid(const QString &code)
 {

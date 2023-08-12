@@ -70,6 +70,7 @@ signals:
     void revealEnemyCard(int id, QString code);
     void enemyCardDraw(int id, QString code, QString createdByCode, int turn);
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
+    void enemyCardForge(int id);
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="EnemyHandHandler");
 
 public slots:
@@ -82,6 +83,7 @@ public slots:
     void setLastCreatedByCode(QString code);
     void drawHeroTotalAttack(bool friendly, int totalAttack, int totalMaxAttack);
     void buffHandCard(int id);
+    void forgeHandCard(int id);
 
 private slots:
     void findHandCardEntered(QListWidgetItem *item);

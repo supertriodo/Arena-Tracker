@@ -1641,6 +1641,20 @@ void PlanHandler::enemyCardBuff(int id, int buffAttack, int buffHealth)
 }
 
 
+void PlanHandler::enemyCardForge(int id)
+{
+    CardGraphicsItem * card = findCard(false, id);
+
+    if(card == nullptr)
+    {
+        emit pDebug("ERROR: CardGraphicsItem not found for forge. Id: " + QString::number(id));
+        return;
+    }
+
+    card->forge();
+}
+
+
 void PlanHandler::playerCardPlayed(int id, QString code, bool discard)
 {
     cardPlayed(true, id, code, discard);

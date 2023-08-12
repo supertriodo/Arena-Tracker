@@ -267,6 +267,7 @@ public slots:
     void checkBomb(QString code);
     void showLastTurn();
     void enemyCardBuff(int id, int buffAttack, int buffHealth);
+    void enemyCardForge(int id);
     void enemyIsolatedSecret(int id, QString code);
     void playerCardCodeChange(int id, QString newCode);
     void revealEnemyCard(int id, QString code);

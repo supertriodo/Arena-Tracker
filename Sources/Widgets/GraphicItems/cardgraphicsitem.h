@@ -27,6 +27,7 @@ private:
     int attack, health;
     int origCost, cost;
     int buffAttack, buffHealth;
+    bool forged;
     int heightShow;
     bool friendly;
     bool showTransparent;
@@ -58,6 +59,7 @@ public:
     void togglePlayed();
     void processTagChange(QString tag, QString value);
     void addBuff(int addAttack, int addHealth);
+    void forge();
     QString getCode();
     QString getCreatedByCode();
     void showManaPlayable(int mana);

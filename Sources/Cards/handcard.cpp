@@ -7,6 +7,7 @@ HandCard::HandCard(QString code) : DeckCard(code)
 {
     turn = 0;
     buffAttack = buffHealth = 0;
+    forged = false;
     linkIdsList.clear();
 }
 
@@ -21,6 +22,13 @@ void HandCard::addBuff(int addAttack, int addHealth)
 {
     buffAttack += addAttack;
     buffHealth += addHealth;
+    draw();
+}
+
+
+void HandCard::forge()
+{
+    forged = true;
     draw();
 }
 
@@ -95,14 +103,13 @@ void HandCard::drawDefaultHandCard()
         painter.setPen(QPen(BLACK));
         Utility::drawShadowText(painter, font, text, 172*scale, (20*scale) - offsetY, true);
 
-        //Buff
-        if(buffAttack > 0 || buffHealth > 0)
+        //Buff/Forged
+        if(buffAttack > 0 || buffHealth > 0 || forged)
         {
-            font.setPixelSize(20*scale);
-            text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
-            painter.setBrush(BLACK);
-            painter.setPen(QPen(GREEN));
-            Utility::drawShadowText(painter, font, text, 42*scale, (19*scale) - offsetY, true);
+            if(forged)  text = "Forged";
+            else        text = "+" + QString::number(buffAttack) + "/+" + QString::number(buffHealth);
+            font.setPixelSize(14*scale);
+            Utility::drawTagText(painter, font, text, 20, 8, 5, 8, scale);
         }
     painter.end();
 

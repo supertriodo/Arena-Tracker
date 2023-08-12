@@ -176,6 +176,7 @@ signals:
     void specialCardTrigger(QString code, QString blockType, int id1, int id2);
     void arenaDeckRead();
     void buffHandCard(int id);
+    void forgeHandCard(int id);
     void coinIdFound(int id);
     void pDebug(QString line, qint64 numLine, DebugLevel debugLevel=Normal, QString file="GameWatcher");
 

@@ -1159,6 +1159,8 @@ void MainWindow::createEnemyHandHandler()
             planHandler, SLOT(enemyCardDraw(int,QString,QString,int)));
     connect(enemyHandHandler, SIGNAL(enemyCardBuff(int,int,int)),
             planHandler, SLOT(enemyCardBuff(int,int,int)));
+    connect(enemyHandHandler, SIGNAL(enemyCardForge(int)),
+            planHandler, SLOT(enemyCardForge(int)));
     connect(enemyHandHandler, SIGNAL(revealEnemyCard(int,QString)),
             planHandler, SLOT(revealEnemyCard(int,QString)));
     connect(planHandler, SIGNAL(heroTotalAttackChange(bool,int,int)),
@@ -1390,6 +1392,8 @@ void MainWindow::createGameWatcher()
             enemyHandHandler, SLOT(setLastCreatedByCode(QString)));
     connect(gameWatcher, SIGNAL(buffHandCard(int)),
             enemyHandHandler, SLOT(buffHandCard(int)));
+    connect(gameWatcher, SIGNAL(forgeHandCard(int)),
+            enemyHandHandler, SLOT(forgeHandCard(int)));
     connect(gameWatcher, SIGNAL(startGame()),
             enemyHandHandler, SLOT(lockEnemyInterface()));
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
@@ -4585,6 +4589,7 @@ void MainWindow::testEnemyHand()
     enemyHandHandler->showEnemyCardDraw(3, 3, false, "");
     enemyHandHandler->showEnemyCardDraw(4, 4, true, "");
     enemyHandHandler->buffHandCard(3);
+    enemyHandHandler->forgeHandCard(2);
 }
 
 
@@ -4848,6 +4853,7 @@ void MainWindow::testDelay()
 
 //    testArenaGames();
 //    testPlan();
+//    testEnemyHand();
 }
 
 

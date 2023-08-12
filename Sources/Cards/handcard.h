@@ -13,9 +13,11 @@ public:
 //Variables
 public:
     int turn;
-    int buffAttack, buffHealth;
     QList<int> linkIdsList;
 
+private:
+    int buffAttack, buffHealth;
+    bool forged;
 
 //Metodos
 private:
@@ -24,5 +26,6 @@ private:
 public:
     void draw();
     void addBuff(int addAttack, int addHealth);
+    void forge();
 };
 #endif // HANDCARD_H

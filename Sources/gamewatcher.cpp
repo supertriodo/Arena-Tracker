@@ -613,7 +613,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
 
         //TAG_CHANGE desconocido
         //TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=49 zone=HAND zonePos=3 cardId= player=2] tag=CLASS value=MAGE
-        //TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=37 zone=HAND zonePos=2 cardId= player=2] tag=CLASS value=MAGE
+        //TAG_CHANGE Entity=[entityName=UNKNOWN ENTITY [cardType=INVALID] id=37 zone=HAND zonePos=6 cardId= player=2] tag=FORGE_REVEALED value=1
         if(line.contains(QRegularExpression(
             "PowerTaskList\\.DebugPrintPower\\(\\) - *TAG_CHANGE "
             "Entity=\\[entityName=UNKNOWN ENTITY \\[cardType=INVALID\\] id=(\\d+) zone=\\w+ zonePos=\\d+ cardId= player=(\\d+)\\] "
@@ -642,6 +642,12 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
                 emit buffHandCard(id.toInt());
+            }
+            else if(tag == "FORGE_REVEALED" && value.toInt() == 1)
+            {
+                emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": TAG_CHANGE(" + tag + ")= " + value +
+                                " -- Id: " + id, numLine);
+                emit forgeHandCard(id.toInt());
             }
             else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
                     tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
