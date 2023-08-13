@@ -73,6 +73,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Check the cards (minions, spells and weapons) that died during the game on each side of the board. [Learn more...](https://triodo.gitbook.io/arena-tracker-documentation/en/graveyard-tab)
 
 ![Graveyard](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample.png)
+![Graveyard2](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/graveyardExample2.png)
 
 
 If you like the app, consider supporting me.
