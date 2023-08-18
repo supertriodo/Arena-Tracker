@@ -57,7 +57,7 @@ void ArenaHandler::completeUI()
     ui->enemyRankingLabel->setFixedHeight(0);
     ui->enemyRankingLabel->hide();
 
-    setPremium(false, false);
+    setPremium(false, true);
 }
 
 
