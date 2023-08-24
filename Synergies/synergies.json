@@ -3526,7 +3526,7 @@
 "TTN_466" : [ "damageMinionsGen", "rush", "armorGen" ],
 "TTN_467" : [ "damageMinionsGen", "reachGen", "armorGen", "drop4" ],
 "TTN_468" : [ "fireAllSyn", "spellSyn", "drop3", "drawGen", "spellGen", "battlecry", "returnSyn" ],
-"TTN_469" : [ "drop3", "drawGen2", "battlecry", "armorSyn", "returnSyn" ],
+"TTN_469" : [ "drop2", "drawGen2", "battlecry", "armorSyn", "returnSyn" ],
 "TTN_470" : [ "aoeGen", "rushGen", "tokenGen", "corpseGen" ],
 "TTN_471" : [ "mechAllSyn", "magnetic" ],
 "TTN_475" : [ "elementalAllSyn", "drop4", "drawGen2", "battlecry", "returnSyn" ],
