@@ -1939,10 +1939,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
+//    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
-//    for(QString &code: (QStringList)Utility::getWildCodes())
+    for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
@@ -1964,8 +1964,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                cardType == MINION
 //                mechanics.contains(QJsonValue("CORRUPT"))
 //                && attack<4 && health<4
-//                (attack + health)>6
-//                && isTokenGen(code, mechanics, text)
+//                cost > 5
+//                && isCorpseGen(code, mechanics, text)
+//                && !isTokenGen(code, mechanics, text)
 //                && !isDrop2(code, cost, attack, health)
 //                && !isDrop3(code, cost, attack, health)
 //                && !isDrop4(code, cost, attack, health)
@@ -4849,7 +4850,6 @@ REGLAS
     a no ser que haga mucho dano a uno y poco a los demas, o que tenga 2 modos.
 +aoeGen: Los bombing/missiles no son pingGen, si tienen los suficientes misiles/bombs (3) aoeGen pero nunca reachGen ya que no son fiables.
 +spellDamageSyn es para aoe o damage a 2 objetivos
-+No incluir sinergias que no sean explicitas, por ejemplo aoe freeze no deberian tener sinergias con otros aoe.
 +lifesteal y windfury los ponemos en minion/hechizos/armas pero las synergias solo son con minions
 +Si una carta mejora cuando mayor sea nuestra mano no tengo en cuenta como sinergias otras cartas que hagan nuestra mano mayor,
     es una sinergia muy debil.
