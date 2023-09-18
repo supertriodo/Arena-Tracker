@@ -43,6 +43,7 @@
 #define EXPLOSIVE_TRAP QString("EX1_610")
 #define BEAR_TRAP QString("AT_060")
 #define SNIPE QString("EX1_609")
+#define SNIPE2 QString("WON_018")
 #define DART_TRAP QString("LOE_021")
 #define VENOMSTRIKE_TRAP QString("ICC_200")
 #define CAT_TRICK QString("KAR_004")

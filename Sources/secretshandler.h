@@ -83,7 +83,7 @@ private:
     void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
     void knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState);
     bool isFromArenaSets(QString code);
-    void unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");
+    bool unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");
     void playerMinionPlayedNow(QString code, int playerMinions);
     ActiveSecret *getActiveSecret(CardClass hero, bool inArena);
     void updateShowSecrets();

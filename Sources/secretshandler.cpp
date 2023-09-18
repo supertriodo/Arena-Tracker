@@ -190,7 +190,7 @@ bool SecretsHandler::isFromArenaSets(QString code)
 }
 
 
-void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
+bool SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText)
 {
     QString coreCode = "CORE_" + code;
     if
@@ -201,6 +201,7 @@ void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, Ac
     {
         emit pDebug("Secret option: " + coreCode);
         activeSecret.children.append(SecretCard(coreCode, manaText));
+        return true;
     }
     else if
     (
@@ -210,7 +211,9 @@ void SecretsHandler::unknownSecretPlayedAddOption(QString code, bool inArena, Ac
     {
         emit pDebug("Secret option: " + code);
         activeSecret.children.append(SecretCard(code, manaText));
+        return true;
     }
+    return false;
 }
 
 
@@ -272,7 +275,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(EXPLOSIVE_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BAIT_AND_SWITCH, inArena, activeSecret);
                 unknownSecretPlayedAddOption(BEAR_TRAP, inArena, activeSecret);
-                unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret);
+                if(!unknownSecretPlayedAddOption(SNIPE, inArena, activeSecret)) unknownSecretPlayedAddOption(SNIPE2, inArena, activeSecret);
                 unknownSecretPlayedAddOption(ZOMBEEEES, inArena, activeSecret);
                 unknownSecretPlayedAddOption(PRESSURE_PLATE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
@@ -727,6 +730,7 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     discardSecretOption(OBJECTION);//Ocultado por EXPLOSIVE_RUNES
 
     discardSecretOption(SNIPE);//Ocultado por ZOMBEEEES
+    discardSecretOption(SNIPE2);
     discardSecretOption(ZOMBEEEES);//Ocultado por SNIPE
     discardSecretOptionNow(HIDDEN_CACHE);//No necesita objetivo
 
@@ -995,7 +999,7 @@ void SecretsHandler::createSecretsByPickrate()
                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM
                               << OH_MY_YOGG << RECKONING << GALLOPING_SAVIOR << JUDGMENT_OF_JUSTICE;
 
-    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << PRESSURE_PLATE << DART_TRAP
+    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << SNIPE2 << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
                               << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
                               << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH;
