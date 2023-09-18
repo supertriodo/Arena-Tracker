@@ -4780,7 +4780,7 @@ void MainWindow::testSynergies()
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
 //    draftHandler->getSynergyHandler()->testSynergies();
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("TITANS", 130, 150/*, "JAM_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WONDERS", 135, 150/*, "JAM_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 

@@ -2275,10 +2275,21 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isCorpseSyn(code, text))                                             mec<<"corpseSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
+    QString name = Utility::cardEnNameFromCode(origCode);
     qDebug()<<num<<origCode+(origCode==code?"":" COPY of "+code)<<Utility::getCardAttribute(origCode, "set").toString()<<text;
-    qDebug()<<origCode<<": ["<<Utility::cardEnNameFromCode(origCode)<<"],";
+    qDebug()<<origCode<<": ["<<name<<"],";
     if(synergyCodes.contains(code)) qDebug()<<"--MANUAL-- :"<<origCode<<": ["<<synergyCodes[code]<<"],";
-    else                            qDebug()<<origCode<<": ["<<mec<<"],";
+    else
+    {
+        qDebug()<<origCode<<": ["<<mec<<"],";
+
+        //Para revisiones de cartas
+//        for(const QString &icode: synergyCodes.keys())
+//        {
+//            QString iname = Utility::cardEnNameFromCode(icode);
+//            if(name == iname)   qDebug()<<"--REV NAME-- :"<<icode<<"-"<<origCode<<": ["<<synergyCodes[icode]<<"],";
+//        }
+    }
 
     Q_UNUSED(health);
 }
