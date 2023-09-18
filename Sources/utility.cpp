@@ -486,6 +486,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Expert "EXPERT1"// Old Classic
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
  * Taverns of Time "TAVERNS_OF_TIME"
+ * Caverns of Time "WONDERS"
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
  * Blackrock Mountain "BRM"
