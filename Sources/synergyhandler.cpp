@@ -1939,10 +1939,10 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-//    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("WONDERS", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
-    for(QString &code: (QStringList)Utility::getWildCodes())
+//    for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);

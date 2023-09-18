@@ -2930,9 +2930,9 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = 6;
         playerIn = true;
     }
-    else if(Utility::codeEqConstant(code, SPREADING_MADNESS))
+    else if(Utility::codeEqConstant(code, SPREADING_MADNESS) || Utility::codeEqConstant(code, SPREADING_MADNESS2))
     {
-        missiles = 9;
+        missiles = 13;
         playerIn = true;
     }
     else if(Utility::codeEqConstant(code, MADDEST_BOMBER))
@@ -3031,11 +3031,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         onlyMinions = true;
     }
     //Extra
-    else if(Utility::codeEqConstant(code, GOBLIN_BLASTMAGE))
+    else if(Utility::codeEqConstant(code, GOBLIN_BLASTMAGE) || Utility::codeEqConstant(code, GOBLIN_BLASTMAGE2))
     {
         if(numRaceOnBoard(MECHANICAL)>0)
         {
-            missiles = 4;
+            missiles = 6;
         }
     }
     else if(Utility::codeEqConstant(code, CANNON_BARRAGE))
