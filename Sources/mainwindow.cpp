@@ -4791,8 +4791,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "ULDUM" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
-        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS" << "TITANS";
+    arenaSets << "CORE" << "DALARAN" << "DARKMOON_FAIRE" << "THE_BARRENS" <<
+        "PATH_OF_ARTHAS" << "BATTLE_OF_THE_BANDS" << "TITANS";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4802,19 +4802,19 @@ void MainWindow::testTierlists()
 
 /*
  *  Core "CORE"
- *  Saviors of Uldum "ULDUM"
- *  Ashes of Outland "BLACK_TEMPLE"
+ *  Rise of Shadows "DALARAN"
  *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ *  Forged in the Barrens "THE_BARRENS"
  *  Path of Arthas "PATH_OF_ARTHAS"
- *  March of the Lick King "RETURN_OF_THE_LICH_KING"
  *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  TITANS "TITANS"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "ULDUM" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
-        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" << "BATTLE_OF_THE_BANDS" << "TITANS";
+    arenaSets << "CORE" << "DALARAN" << "DARKMOON_FAIRE" << "THE_BARRENS" <<
+        "PATH_OF_ARTHAS" << "BATTLE_OF_THE_BANDS" << "TITANS";
 
     if(fromHearth)
     {
@@ -4907,7 +4907,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 27.2.2 Patch Note (2023-08-30)
+//|-Synergy / Code  --> 27.4 Patch Notes (2023-09-18)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
