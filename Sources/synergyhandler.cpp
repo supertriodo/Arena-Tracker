@@ -1951,7 +1951,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("WONDERS", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -1969,7 +1969,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                containsAll(text, "choose one")
+                containsAll(text, "overload")
 //                text.contains("deathrattle")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
@@ -4692,7 +4692,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QStringList candidates = {
         FORBIDDEN_SHAPING, FORBIDDEN_FLAME, FORBIDDEN_HEALING, FORBIDDEN_RITUAL, FORBIDDEN_ANCIENT, FORBIDDEN_WORDS, MOGU_FLESHSHAPER,
         RABBLE_BOUNCER, DEVOUT_PUPIL, EMBIGGEN, POWER_WORD_FORTITUDE, SHIELD_SHATTER, LOKHOLAR_THE_ICE_LORD, LIGHTRAY, CRYPT_KEEPER,
-        VENGEFUL_WALLOPER, ABYSSAL_BASSIST, IMPRISONED_HORROR, CULTIVATION
+        VENGEFUL_WALLOPER, ABYSSAL_BASSIST, IMPRISONED_HORROR, CULTIVATION, FORBIDDEN_FRUIT
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 5;
     }
@@ -4728,7 +4728,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 
     {
     QStringList candidates = {
-        LIVING_MANA, NAGA_GIANT, FANOTTEM_LORD_OF_THE_OPERA
+        LIVING_MANA, NAGA_GIANT, FANOTTEM_LORD_OF_THE_OPERA, YOGG_SARON_UNLEASHED
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 10;
     }

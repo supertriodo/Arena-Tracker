@@ -4779,7 +4779,7 @@ void MainWindow::testSynergies()
 //    qDebug()<<Utility::getCardAttribute("ETC_099", "set").toString();
 //    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
 
-//    draftHandler->getSynergyHandler()->testSynergies();
+//    draftHandler->getSynergyHandler()->testSynergies("YOG_");
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("TITANS", 0, 40, "YOG_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }

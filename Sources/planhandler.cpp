@@ -2986,6 +2986,10 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = 6;
     }
+    else if(Utility::codeEqConstant(code, TAINTED_REMNANT))
+    {
+        missiles = 7;
+    }
     else if(Utility::codeEqConstant(code, AVENGING_WRATH))
     {
         missiles = 8;
