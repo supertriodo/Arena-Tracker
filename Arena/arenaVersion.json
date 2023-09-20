@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 40,
+  "arenaVersion": 41,
   "arenaSets": ["CORE", "DALARAN", "DARKMOON_FAIRE", "THE_BARRENS", "PATH_OF_ARTHAS", "BATTLE_OF_THE_BANDS", "TITANS"],
   "multiclassArena": false,
   "resetCards": 40,
-  "resetHeroes": 39,
+  "resetHeroes": 41,
   "seasonId": 39
 }
