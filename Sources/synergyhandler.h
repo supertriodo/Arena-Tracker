@@ -137,6 +137,7 @@ private:
     bool isReachGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text, const CardType &cardType, int attack);
     bool isEnrageGen(const QString &code, const QJsonArray &mechanics);
     bool isOverload(const QString &code);
+    bool isOverloadGen(const QString &code, const QJsonArray &referencedTags);
     bool isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags);
     bool isHeroPowerGen(const QString &code, const QString &text);
     bool isSecret(const QString &code, const QJsonArray &mechanics);
@@ -239,7 +240,8 @@ private:
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
     bool isEnrageSyn(const QString &code, const QString &text);
-    bool isOverloadSyn(const QString &code, const QString &text);
+    bool isOverloadSyn(const QString &code);
+    bool isOverloadAllSyn(const QString &code);
     bool isPingSyn(const QString &code);
     bool isAoeSyn(const QString &code);
     bool isTauntSyn(const QString &code);

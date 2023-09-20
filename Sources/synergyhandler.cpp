@@ -170,6 +170,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_TOYOURHAND] = new DraftItemCounter(this, "Gen Cards");
     mechanicCounters[V_TAUNT] = new DraftItemCounter(this, "Taunt");
     mechanicCounters[V_OVERLOAD] = new DraftItemCounter(this, "Overload");
+    mechanicCounters[V_OVERLOAD_ALL] = new DraftItemCounter(this, "Overload");
     mechanicCounters[V_JADE_GOLEM] = new DraftItemCounter(this, "Jade Golem");
     mechanicCounters[V_HERO_POWER] = new DraftItemCounter(this, "Hero Power");
     mechanicCounters[V_SECRET] = new DraftItemCounter(this, "Secret");
@@ -1002,7 +1003,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(discover > 0)                                                        mechanicCounters[V_DISCOVER]->increase(code);
     if(draw > 0)                                                            mechanicCounters[V_DRAW]->increase(code);
     if(toYourHand > 0)                                                      mechanicCounters[V_TOYOURHAND]->increase(code);
-    if(isOverload(code))                                                    mechanicCounters[V_OVERLOAD]->increase(code);
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mechanicCounters[V_JADE_GOLEM]->increase(code);
     if(isHeroPowerGen(code, text))                                          mechanicCounters[V_HERO_POWER]->increase(code);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text))             mechanicCounters[V_FREEZE_ENEMY]->increase(code);
@@ -1057,6 +1057,12 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
     }
     else if(isDivineShieldGen(code, referencedTags))                        mechanicCounters[V_DIVINE_SHIELD_ALL]->increase(code);
+    if(isOverload(code))
+    {
+        mechanicCounters[V_OVERLOAD]->increase(code);
+        mechanicCounters[V_OVERLOAD_ALL]->increase(code);
+    }
+    else if(isOverloadGen(code, referencedTags))                            mechanicCounters[V_OVERLOAD_ALL]->increase(code);
     if(isSecret(code, mechanics))
     {
         mechanicCounters[V_SECRET]->increase(code);
@@ -1119,7 +1125,6 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDiscoverSyn(code))                                                 mechanicCounters[V_DISCOVER]->increaseSyn(code);
     if(isDrawSyn(code))                                                     mechanicCounters[V_DRAW]->increaseSyn(code);
     if(isToYourHandSyn(code))                                               mechanicCounters[V_TOYOURHAND]->increaseSyn(code);
-    if(isOverloadSyn(code, text))                                           mechanicCounters[V_OVERLOAD]->increaseSyn(code);
     if(isFreezeEnemySyn(code, referencedTags, text))                        mechanicCounters[V_FREEZE_ENEMY]->increaseSyn(code);
     if(isDiscardSyn(code, text))                                            mechanicCounters[V_DISCARD]->increaseSyn(code);
     if(isSilenceOwnSyn(code, mechanics))                                    mechanicCounters[V_SILENCE]->increaseSyn(code);
@@ -1161,6 +1166,8 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isDeathrattleGoodAllSyn(code, text))                            mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->increaseSyn(code);
     if(isDivineShieldSyn(code))                                             mechanicCounters[V_DIVINE_SHIELD]->increaseSyn(code);
     else if(isDivineShieldAllSyn(code))                                     mechanicCounters[V_DIVINE_SHIELD_ALL]->increaseSyn(code);
+    if(isOverloadSyn(code))                                                 mechanicCounters[V_OVERLOAD]->increaseSyn(code);
+    else if(isOverloadAllSyn(code))                                         mechanicCounters[V_OVERLOAD_ALL]->increaseSyn(code);
     if(isSecretSyn(code))                                                   mechanicCounters[V_SECRET]->increaseSyn(code);
     else if(isSecretAllSyn(code, referencedTags))                           mechanicCounters[V_SECRET_ALL]->increaseSyn(code);
     if(isEchoSyn(code))                                                     mechanicCounters[V_ECHO]->increaseSyn(code);
@@ -1584,7 +1591,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDiscoverGen(code, mechanics, referencedTags))          mechanicCounters[V_DISCOVER]->insertSynCards(synergyTagMap);
     if(isDrawGen(code, text))                                   mechanicCounters[V_DRAW]->insertSynCards(synergyTagMap);
     if(isToYourHandGen(code, cost, mechanics, text))            mechanicCounters[V_TOYOURHAND]->insertSynCards(synergyTagMap);
-    if(isOverload(code))                                        mechanicCounters[V_OVERLOAD]->insertSynCards(synergyTagMap);
     if(isFreezeEnemyGen(code, mechanics, referencedTags, text)) mechanicCounters[V_FREEZE_ENEMY]->insertSynCards(synergyTagMap);
     if(isDiscardGen(code, text))                                mechanicCounters[V_DISCARD]->insertSynCards(synergyTagMap);
     if(isDeathrattleMinion(code, mechanics, cardType))          mechanicCounters[V_DEATHRATTLE]->insertSynCards(synergyTagMap);
@@ -1624,7 +1630,12 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isDivineShieldGen(code, referencedTags))            mechanicCounters[V_DIVINE_SHIELD_ALL]->insertSynCards(synergyTagMap);
-
+    if(isOverload(code))
+    {
+        mechanicCounters[V_OVERLOAD]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_OVERLOAD_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isOverloadGen(code, referencedTags))                mechanicCounters[V_OVERLOAD_ALL]->insertSynCards(synergyTagMap);
     if(isSecret(code, mechanics))
     {
         mechanicCounters[V_SECRET]->insertSynCards(synergyTagMap);
@@ -1687,7 +1698,6 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDiscoverSyn(code))                                     mechanicCounters[V_DISCOVER]->insertCards(synergyTagMap);
     if(isDrawSyn(code))                                         mechanicCounters[V_DRAW]->insertCards(synergyTagMap);
     if(isToYourHandSyn(code))                                   mechanicCounters[V_TOYOURHAND]->insertCards(synergyTagMap);
-    if(isOverloadSyn(code, text))                               mechanicCounters[V_OVERLOAD]->insertCards(synergyTagMap);
     if(isFreezeEnemySyn(code, referencedTags, text))            mechanicCounters[V_FREEZE_ENEMY]->insertCards(synergyTagMap);
     if(isDiscardSyn(code, text))                                mechanicCounters[V_DISCARD]->insertCards(synergyTagMap);
     if(isSilenceOwnSyn(code, mechanics))                        mechanicCounters[V_SILENCE]->insertCards(synergyTagMap);
@@ -1730,6 +1740,8 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     else if(isDeathrattleGoodAllSyn(code, text))                mechanicCounters[V_DEATHRATTLE_GOOD_ALL]->insertCards(synergyTagMap);
     if(isDivineShieldSyn(code))                                 mechanicCounters[V_DIVINE_SHIELD]->insertCards(synergyTagMap);
     else if(isDivineShieldAllSyn(code))                         mechanicCounters[V_DIVINE_SHIELD_ALL]->insertCards(synergyTagMap);
+    if(isOverloadSyn(code))                                     mechanicCounters[V_OVERLOAD]->insertCards(synergyTagMap);
+    else if(isOverloadAllSyn(code))                             mechanicCounters[V_OVERLOAD_ALL]->insertCards(synergyTagMap);
     if(isSecretSyn(code))                                       mechanicCounters[V_SECRET]->insertCards(synergyTagMap);
     else if(isSecretAllSyn(code, referencedTags))               mechanicCounters[V_SECRET_ALL]->insertCards(synergyTagMap);
     if(isEchoSyn(code))                                         mechanicCounters[V_ECHO]->insertCards(synergyTagMap);
@@ -1879,8 +1891,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "discover", "drawGen", "toYourHandGen", "enemyDrawGen",
         "discoverSyn", "drawSyn", "toYourHandSyn", "enemyDrawSyn",
 
-        "taunt", "tauntGen", "divineShield", "divineShieldGen", "windfury", "overload",
-        "tauntSyn", "tauntAllSyn", "divineShieldSyn", "divineShieldAllSyn", "windfuryMinionSyn", "overloadSyn",
+        "taunt", "tauntGen", "divineShield", "divineShieldGen", "windfury", "overload", "overloadGen",
+        "tauntSyn", "tauntAllSyn", "divineShieldSyn", "divineShieldAllSyn", "windfuryMinionSyn", "overloadSyn", "overloadAllSyn",
 
         "jadeGolemGen", "secret", "secretGen", "freezeEnemyGen", "discardGen", "stealthGen",
         "heroPowerGen", "secretSyn", "secretAllSyn", "freezeEnemySyn", "discardSyn", "stealthSyn",
@@ -2189,6 +2201,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isDestroyGen(code, mechanics, text))                                 mec<<"destroyGen";
     if(isReachGen(code, mechanics, referencedTags, text, cardType, attack)) mec<<"reachGen";
     if(isOverload(code))                                                    mec<<"overload";
+    else if(isOverloadGen(code, referencedTags))                            mec<<"overloadGen";
     if(isJadeGolemGen(code, mechanics, referencedTags))                     mec<<"jadeGolemGen";
     if(isHeroPowerGen(code, text))                                          mec<<"heroPowerGen";
     if(isSecret(code, mechanics))                                           mec<<"secret";
@@ -2244,7 +2257,6 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
-    if(isOverloadSyn(code, text))                                           mec<<"overloadSyn";
     if(isSecretAllSyn(code, referencedTags))                                mec<<"secretAllSyn";
     if(isFreezeEnemySyn(code, referencedTags, text))                        mec<<"freezeEnemySyn";
     if(isDiscardSyn(code, text))                                            mec<<"discardSyn";
@@ -2678,6 +2690,18 @@ bool SynergyHandler::isOverload(const QString &code)
         int overload = Utility::getCardAttribute(code, "overload").toInt();
         return overload > 0;
     }
+}
+bool SynergyHandler::isOverloadGen(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("overloadGen");
+    }
+    else if(referencedTags.contains(QJsonValue("OVERLOAD")))
+    {
+        return true;
+    }
+    return false;
 }
 bool SynergyHandler::isJadeGolemGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
 {
@@ -3921,16 +3945,19 @@ bool SynergyHandler::isEnrageSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isOverloadSyn(const QString &code, const QString &text)
+bool SynergyHandler::isOverloadSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("overloadSyn");
     }
-    else if(text.contains("overload"))
+    return false;
+}
+bool SynergyHandler::isOverloadAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
     {
-        int overload = Utility::getCardAttribute(code, "overload").toInt();
-        return overload == 0;
+        return synergyCodes[code].contains("overloadAllSyn");
     }
     return false;
 }
