@@ -90,7 +90,7 @@ private:
     void createSecretsByPickrate();
     void checkHandOfSalvation();
     void checkAvenge(int enemyMinions);
-    QString fixHSRcode(QString code, CardClass cardClass);
+    QString update2HSRcode(QString code, CardClass cardClass);
 
 public:
     void redrawDownloadedCardImage(QString code);

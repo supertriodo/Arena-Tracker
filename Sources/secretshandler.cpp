@@ -21,6 +21,7 @@ SecretsHandler::SecretsHandler(QObject *parent, Ui::Extended *ui, EnemyHandHandl
     this->cardsPickratesMap = nullptr;
 
     completeUI();
+    createSecretsByPickrate();
 }
 
 SecretsHandler::~SecretsHandler()
@@ -235,9 +236,16 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
     {
         for(const QString &code: qAsConst(secretsByPickrate[hero]))
         {
-            unknownSecretPlayedAddOption(code, inArena, activeSecret,
-                                         (cardsPickratesMap == nullptr) ? "-" :
-                                            QString::number((int)round(cardsPickratesMap[hero][code]))+"%");
+            QString text;
+            if(cardsPickratesMap == nullptr)
+            {
+                text = "-";
+            }
+            else
+            {
+                text = QString::number((int)round(cardsPickratesMap[hero][update2HSRcode(code, hero)]))+"%";
+            }
+            unknownSecretPlayedAddOption(code, inArena, activeSecret, text);
         }
     }
     //Opciones ordenadas por rareza
@@ -994,32 +1002,26 @@ void SecretsHandler::setCardsPickratesMap(QMap<QString, float> cardsPickratesMap
 //NUEVO SECRETO 4 arena - ponlo al final
 void SecretsHandler::createSecretsByPickrate()
 {
-    secretsByPickrate[PALADIN] << fixHSRcode(NOBLE_SACRIFICE, PALADIN) << fixHSRcode(AUTODEFENSE_MATRIX, PALADIN) << fixHSRcode(AVENGE, PALADIN) <<
-        fixHSRcode(REDEMPTION, PALADIN) << fixHSRcode(REPENTANCE, PALADIN) << fixHSRcode(NEVER_SURRENDER, PALADIN) << fixHSRcode(SACRED_TRIAL, PALADIN) <<
-        fixHSRcode(EYE_FOR_AN_EYE, PALADIN) << fixHSRcode(GETAWAY_KODO, PALADIN) << fixHSRcode(COMPETITIVE_SPIRIT, PALADIN) << fixHSRcode(HIDDEN_WISDOM, PALADIN) <<
-        fixHSRcode(OH_MY_YOGG, PALADIN) << fixHSRcode(RECKONING, PALADIN) << fixHSRcode(GALLOPING_SAVIOR, PALADIN) << fixHSRcode(JUDGMENT_OF_JUSTICE, PALADIN);
+    secretsByPickrate[PALADIN] << NOBLE_SACRIFICE << AUTODEFENSE_MATRIX << AVENGE << REDEMPTION << REPENTANCE << NEVER_SURRENDER
+                               << SACRED_TRIAL << EYE_FOR_AN_EYE << GETAWAY_KODO << COMPETITIVE_SPIRIT << HIDDEN_WISDOM
+                               << OH_MY_YOGG << RECKONING << GALLOPING_SAVIOR << JUDGMENT_OF_JUSTICE;
 
-    secretsByPickrate[HUNTER] << fixHSRcode(FREEZING_TRAP, HUNTER) << fixHSRcode(EXPLOSIVE_TRAP, HUNTER) << fixHSRcode(BEAR_TRAP, HUNTER) <<
-        fixHSRcode(SNIPE, HUNTER) << fixHSRcode(SNIPE2, HUNTER) << fixHSRcode(PRESSURE_PLATE, HUNTER) << fixHSRcode(DART_TRAP, HUNTER) <<
-        fixHSRcode(PACK_TACTICS, HUNTER) << fixHSRcode(WANDERING_MONSTER, HUNTER) << fixHSRcode(VENOMSTRIKE_TRAP, HUNTER) << fixHSRcode(CAT_TRICK, HUNTER) <<
-        fixHSRcode(MISDIRECTION, HUNTER) << fixHSRcode(HIDDEN_CACHE, HUNTER) << fixHSRcode(SNAKE_TRAP, HUNTER) << fixHSRcode(RAT_TRAP, HUNTER) <<
-        fixHSRcode(OPEN_THE_CAGES, HUNTER) << fixHSRcode(ICE_TRAP, HUNTER) << fixHSRcode(EMERGENCY_MANEUVERS, HUNTER) << fixHSRcode(MOTION_DENIED, HUNTER) <<
-        fixHSRcode(ZOMBEEEES, HUNTER) << fixHSRcode(HIDDEN_MEANING, HUNTER) << fixHSRcode(BAIT_AND_SWITCH, HUNTER);
+    secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << SNIPE2 << PRESSURE_PLATE << DART_TRAP
+                              << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
+                              << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
+                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH;
 
-    secretsByPickrate[MAGE] << fixHSRcode(NETHERWIND_PORTAL, MAGE) << fixHSRcode(MIRROR_ENTITY, MAGE) << fixHSRcode(FROZEN_CLONE, MAGE) <<
-        fixHSRcode(DDUPLICATE, MAGE) << fixHSRcode(FLAME_WARD, MAGE) << fixHSRcode(ICE_BARRIER, MAGE) << fixHSRcode(EXPLOSIVE_RUNES, MAGE) <<
-        fixHSRcode(POTION_OF_POLIMORPH, MAGE) << fixHSRcode(EFFIGY, MAGE) << fixHSRcode(VAPORIZE, MAGE) << fixHSRcode(COUNTERSPELL, MAGE) <<
-        fixHSRcode(MANA_BIND, MAGE) << fixHSRcode(SPLITTING_IMAGE, MAGE) << fixHSRcode(SPELLBENDER, MAGE) << fixHSRcode(ICE_BLOCK, MAGE) <<
-        fixHSRcode(RIGGED_FAIRE_GAME, MAGE) << fixHSRcode(OASIS_ALLY, MAGE) << fixHSRcode(VENGEFUL_VISAGE, MAGE) << fixHSRcode(OBJECTION, MAGE);
+    secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
+                            << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
+                            << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE
+                            << OBJECTION;
 
-    secretsByPickrate[ROGUE] << fixHSRcode(DIRTY_TRICKS, ROGUE) << fixHSRcode(SUDDEN_BETRAYAL, ROGUE) << fixHSRcode(CHEAT_DEATH, ROGUE) <<
-        fixHSRcode(AMBUSH, ROGUE) << fixHSRcode(BAMBOOZLE, ROGUE) << fixHSRcode(EVASION, ROGUE) << fixHSRcode(PLAGIARIZE, ROGUE) << fixHSRcode(SHADOW_CLONE, ROGUE) <<
-        fixHSRcode(SHENANIGANS, ROGUE) << fixHSRcode(KIDNAP, ROGUE) << fixHSRcode(STICKY_SITUATION, ROGUE) << fixHSRcode(DOUBLE_CROSS, ROGUE) <<
-        fixHSRcode(PERJURY, ROGUE);
+    secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
+                             << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS << PERJURY;
 }
 
 
-QString SecretsHandler::fixHSRcode(QString code, CardClass cardClass)
+QString SecretsHandler::update2HSRcode(QString code, CardClass cardClass)
 {
     if(!cardsPickratesMap[cardClass].contains(code))
     {
@@ -1033,26 +1035,32 @@ QString SecretsHandler::fixHSRcode(QString code, CardClass cardClass)
 
 void SecretsHandler::sortSecretsByPickrate(const QMap<QString, float> cardsPickratesMap[])
 {
-    createSecretsByPickrate();
-
     qSort(secretsByPickrate[PALADIN].begin(), secretsByPickrate[PALADIN].end(), [=](const QString &code1, const QString &code2)
     {
-        return cardsPickratesMap[PALADIN][code1] > cardsPickratesMap[PALADIN][code2];
+        QString code1m = update2HSRcode(code1, PALADIN);
+        QString code2m = update2HSRcode(code2, PALADIN);
+        return cardsPickratesMap[PALADIN][code1m] > cardsPickratesMap[PALADIN][code2m];
     });
 
     qSort(secretsByPickrate[HUNTER].begin(), secretsByPickrate[HUNTER].end(), [=](const QString &code1, const QString &code2)
     {
-        return cardsPickratesMap[HUNTER][code1] > cardsPickratesMap[HUNTER][code2];
+        QString code1m = update2HSRcode(code1, HUNTER);
+        QString code2m = update2HSRcode(code2, HUNTER);
+        return cardsPickratesMap[HUNTER][code1m] > cardsPickratesMap[HUNTER][code2m];
     });
 
     qSort(secretsByPickrate[MAGE].begin(), secretsByPickrate[MAGE].end(), [=](const QString &code1, const QString &code2)
     {
-        return cardsPickratesMap[MAGE][code1] > cardsPickratesMap[MAGE][code2];
+        QString code1m = update2HSRcode(code1, MAGE);
+        QString code2m = update2HSRcode(code2, MAGE);
+        return cardsPickratesMap[MAGE][code1m] > cardsPickratesMap[MAGE][code2m];
     });
 
     qSort(secretsByPickrate[ROGUE].begin(), secretsByPickrate[ROGUE].end(), [=](const QString &code1, const QString &code2)
     {
-        return cardsPickratesMap[ROGUE][code1] > cardsPickratesMap[ROGUE][code2];
+        QString code1m = update2HSRcode(code1, ROGUE);
+        QString code2m = update2HSRcode(code2, ROGUE);
+        return cardsPickratesMap[ROGUE][code1m] > cardsPickratesMap[ROGUE][code2m];
     });
 }
 
