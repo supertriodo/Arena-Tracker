@@ -317,6 +317,7 @@ QString MainWindow::getHSLanguage()
     }
 
     cardDownloader->setLang(lang);
+//    lang = "enUS";//Test secrets
     return lang;
 }
 
