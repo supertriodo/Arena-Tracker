@@ -4083,7 +4083,7 @@
 "UNG_083" : [ "eggGen", "deathrattle", "tauntGiverSyn", "attackBuffSyn" ],
 "UNG_084" : [ "damageMinionsGen", "reachGen", "battlecry", "returnSyn", "drop4" ],
 "UNG_085" : [  ],
-"UNG_086" : [ "deathrattle", "=>SynMinionAttack5" ],
+"UNG_086" : [ "deathrattle", "=>SynMinionAttack5", "taunt" ],
 "UNG_087" : [ "silenceOwnSyn", "damageFriendlyHeroGen" ],
 "UNG_088" : [ "battlecry", "returnSyn", "evolveSyn" ],
 "UNG_089" : [ "battlecry", "returnSyn", "murlocAllSyn", "drop4" ],
