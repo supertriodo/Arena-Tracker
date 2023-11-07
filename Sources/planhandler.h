@@ -191,6 +191,7 @@ public:
     //SecretsHandler
     bool isReckoningTested(bool isHeroTo, int id1, int id2);
     bool isEnemyHeroHealthChanged();
+    bool isRecentCard(int id);
 
 signals:
     void checkCardImage(QString code, bool isHero);

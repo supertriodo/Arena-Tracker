@@ -1542,6 +1542,16 @@ CardGraphicsItem * PlanHandler::findCard(bool friendly, int id, Board *board)
 }
 
 
+bool PlanHandler::isRecentCard(int id)
+{
+    if(turnBoards.isEmpty())    return false;
+    Board *board = turnBoards.last();
+    CardGraphicsItem *card = findCard(true, id, board);
+    if(card == nullptr)         return false;
+    return (card->numTurn() == board->numTurn);
+}
+
+
 void PlanHandler::revealEnemyCard(int id, QString code)
 {
     CardGraphicsItem *card = findCard(false, id);

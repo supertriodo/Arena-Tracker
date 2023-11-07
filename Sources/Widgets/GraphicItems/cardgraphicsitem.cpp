@@ -105,6 +105,12 @@ bool CardGraphicsItem::isDraw()
 }
 
 
+int CardGraphicsItem::numTurn()
+{
+    return this->turn;
+}
+
+
 void CardGraphicsItem::setPlayed(bool played)
 {
     this->played = played;

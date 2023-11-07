@@ -321,6 +321,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OBJECTION, inArena, activeSecret);
                 //EPIC
+                unknownSecretPlayedAddOption(AZERITE_VEIN, inArena, activeSecret);
                 unknownSecretPlayedAddOption(VENGEFUL_VISAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPLITTING_IMAGE, inArena, activeSecret);
                 unknownSecretPlayedAddOption(SPELLBENDER, inArena, activeSecret);
@@ -824,6 +825,9 @@ void SecretsHandler::playerCardPlayed(int id, QString code, bool discard, bool i
             discardSecretOptionNow(RAT_TRAP);
             discardSecretOptionNow(MOTION_DENIED);
         }
+
+        //Play card just draw
+        if(planHandler->isRecentCard(id))   discardSecretOptionNow(AZERITE_VEIN);
     }
 
     Q_UNUSED(id);
@@ -1014,7 +1018,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
                             << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE
-                            << OBJECTION;
+                            << OBJECTION << AZERITE_VEIN;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
                              << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS << PERJURY;

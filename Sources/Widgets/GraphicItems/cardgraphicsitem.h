@@ -55,6 +55,7 @@ public:
     bool isDiscard();
     bool isPlayed();
     bool isDraw();
+    int numTurn();
     void reduceCost(int cost);
     void togglePlayed();
     void processTagChange(QString tag, QString value);
