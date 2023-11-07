@@ -229,6 +229,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_RUSH_GIVER] = new DraftItemCounter(this, "Rush");
     mechanicCounters[V_DREDGE] = new DraftItemCounter(this, "Dredge");
     mechanicCounters[V_CORPSE] = new DraftItemCounter(this, "Corpses");
+    mechanicCounters[V_EXCAVATE] = new DraftItemCounter(this, "Excavate");
     //New Synergy Step 2
 
 
@@ -1039,6 +1040,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRushGiverGen(code, text))                                          mechanicCounters[V_RUSH_GIVER]->increase(code);
     if(isDredge(code, mechanics))                                           mechanicCounters[V_DREDGE]->increase(code);
     if(isCorpseGen(code, mechanics, text))                                  mechanicCounters[V_CORPSE]->increase(code);
+    if(isExcavate(code, mechanics))                                         mechanicCounters[V_EXCAVATE]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1159,6 +1161,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRushGiverSyn(code, mechanics, text))                               mechanicCounters[V_RUSH_GIVER]->increaseSyn(code);
     if(isDredgeSyn(code, text))                                             mechanicCounters[V_DREDGE]->increaseSyn(code);
     if(isCorpseSyn(code, text))                                             mechanicCounters[V_CORPSE]->increaseSyn(code);
+    if(isExcavateSyn(code, mechanics, referencedTags))                      mechanicCounters[V_EXCAVATE]->increaseSyn(code);
     //New Synergy Step 4
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
@@ -1623,6 +1626,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isRushGiverGen(code, text))                              mechanicCounters[V_RUSH_GIVER]->insertSynCards(synergyTagMap);
     if(isDredge(code, mechanics))                               mechanicCounters[V_DREDGE]->insertSynCards(synergyTagMap);
     if(isCorpseGen(code, mechanics, text))                      mechanicCounters[V_CORPSE]->insertSynCards(synergyTagMap);
+    if(isExcavate(code, mechanics))                             mechanicCounters[V_EXCAVATE]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1733,6 +1737,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isRushGiverSyn(code, mechanics, text))                   mechanicCounters[V_RUSH_GIVER]->insertCards(synergyTagMap);
     if(isDredgeSyn(code, text))                                 mechanicCounters[V_DREDGE]->insertCards(synergyTagMap);
     if(isCorpseSyn(code, text))                                 mechanicCounters[V_CORPSE]->insertCards(synergyTagMap);
+    if(isExcavateSyn(code, mechanics, referencedTags))          mechanicCounters[V_EXCAVATE]->insertCards(synergyTagMap);
     //New Synergy Step 6
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
@@ -1921,8 +1926,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcast", "outcastGen", "endTurnGen", "rushGiverGen",
         "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn",
 
-        "dredge", "corpseGen", "chooseOne", "chooseOneGen",
-        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn"
+        "dredge", "corpseGen", "chooseOne", "chooseOneGen", "excavate",
+        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn", "excavateSyn"
         //New Synergy Step 7
     };
     if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
@@ -2254,6 +2259,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isRushGiverGen(code, text))                                          mec<<"rushGiverGen";
     if(isDredge(code, mechanics))                                           mec<<"dredge";
     if(isCorpseGen(code, mechanics, text))                                  mec<<"corpseGen";
+    if(isExcavate(code, mechanics))                                         mec<<"excavate";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -2285,6 +2291,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     if(isDredgeSyn(code, text))                                             mec<<"dredgeSyn";
     if(isCorpseSyn(code, text))                                             mec<<"corpseSyn";
+    if(isExcavateSyn(code, mechanics, referencedTags))                      mec<<"excavateSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     QString name = Utility::cardEnNameFromCode(origCode);
@@ -3469,6 +3476,18 @@ bool SynergyHandler::isCorpseGen(const QString &code, const QJsonArray &mechanic
     }
     return false;
 }
+bool SynergyHandler::isExcavate(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("excavate");
+    }
+    else if(mechanics.contains(QJsonValue("EXCAVATE")))
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 10
 bool SynergyHandler::isDrop2(const QString &code, int cost, int attack, int health)
 {
@@ -4632,6 +4651,22 @@ bool SynergyHandler::isCorpseSyn(const QString &code, const QString &text)
     }
     return false;
 }
+bool SynergyHandler::isExcavateSyn(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("excavateSyn");
+    }
+    else if(mechanics.contains(QJsonValue("EXCAVATE")))
+    {
+        return true;
+    }
+    else if(referencedTags.contains(QJsonValue("EXCAVATE")))
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 11
 
 
@@ -4795,6 +4830,7 @@ tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuf
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen, otherClassGen,
 silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge, corpse, chooseOne, chooseOneGen
+excavate
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12

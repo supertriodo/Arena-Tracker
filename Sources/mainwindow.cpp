@@ -4908,7 +4908,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 27.6 Patch Notes (2023-10-17)
+//|-Synergy / Code  --> 28.0 Patch Notes (2023-11-06)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
