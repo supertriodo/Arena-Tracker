@@ -4792,8 +4792,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "DALARAN" << "DARKMOON_FAIRE" << "THE_BARRENS" <<
-        "PATH_OF_ARTHAS" << "BATTLE_OF_THE_BANDS" << "TITANS";
+    arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
+        "PATH_OF_ARTHAS" << "TITANS";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4803,19 +4803,19 @@ void MainWindow::testTierlists()
 
 /*
  *  Core "CORE"
- *  Rise of Shadows "DALARAN"
- *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
- *  Forged in the Barrens "THE_BARRENS"
+ *  Caverns of Time "WONDERS"
+ *  Saviors of Uldum "ULDUM"
+ *  Descent of Dragons "DRAGONS"
  *  Path of Arthas "PATH_OF_ARTHAS"
- *  Festival of Legends "BATTLE_OF_THE_BANDS"
  *  TITANS "TITANS"
+ *  Showdown in the Badlands
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "DALARAN" << "DARKMOON_FAIRE" << "THE_BARRENS" <<
-        "PATH_OF_ARTHAS" << "BATTLE_OF_THE_BANDS" << "TITANS";
+    arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
+        "PATH_OF_ARTHAS" << "TITANS";
 
     if(fromHearth)
     {

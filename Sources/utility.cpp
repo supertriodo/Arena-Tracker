@@ -517,6 +517,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * March of the Lick King "RETURN_OF_THE_LICH_KING"
  * Festival of Legends "BATTLE_OF_THE_BANDS"
  * TITANS "TITANS"
+ * Showdown in the Badlands ""
  */
 
 
