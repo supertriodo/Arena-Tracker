@@ -1956,7 +1956,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("TITANS", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("WILD_WEST", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -4690,7 +4690,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
-        LIFE_FROM_DEATH, RUSH_THE_STAGE
+        LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
     }
@@ -4698,7 +4698,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FRENZIED_FELWING, PALM_READING, FELGORGER, FROSTWOLF_WARMASTER, STORMPIKE_BATTLE_RAM, SEAFLOOR_GATEWAY, GREENTHUMB_GARDENER,
-        LIGHT_OF_THE_PHOENIX, SPREAD_THE_WORD, JAZZ_BASS, ALTERED_CHORD
+        LIGHT_OF_THE_PHOENIX, SPREAD_THE_WORD, JAZZ_BASS, ALTERED_CHORD, CATTLE_RUSTLER
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 2;
     }
@@ -4714,7 +4714,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
-        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW
+        SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW, PRISMATIC_BEAM,
+        THRISTY_DRIFTER
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }
@@ -4731,21 +4732,21 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, THE_GARDENS_GRACE,
-        GIGANTOTEM, GOLDSHIRE_GNOLL
+        GIGANTOTEM, GOLDSHIRE_GNOLL, LIVING_HORIZON
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
     }
 
     {
     QStringList candidates = {
-        URZUL_GIANT, LOST_EXARCH
+        URZUL_GIANT, LOST_EXARCH, FYE_THE_SETTING_SUN
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 7;
     }
 
     {
     QStringList candidates = {
-        CLOCKWORK_GIANT, MULCHMUNCHER
+        CLOCKWORK_GIANT, MULCHMUNCHER, RESKA_THE_PIT_BOSS
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 8;
     }

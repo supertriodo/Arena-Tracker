@@ -4776,7 +4776,7 @@ void MainWindow::testPopularList(int i)
 
 void MainWindow::testSynergies()
 {
-//    draftHandler->getSynergyHandler()->testSynergies("YOG_");
+//    draftHandler->getSynergyHandler()->testSynergies(/*"YOG_"*/);
 //    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 10/*, "YOG_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
@@ -4878,15 +4878,15 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
-//Update Json arenaVersion --> Update arenaSets/arenaVersion
+///Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> WILD_WEST
-//Subir cartas al github.
+///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards
+///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards
     //Update DraftHandler::isSignatureCard
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
@@ -4903,7 +4903,7 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
 //|-Synergy / Code  --> 28.0 Patch Notes (2023-11-06)
 
 //Rotacion CORE
@@ -4912,7 +4912,7 @@ void MainWindow::testDelay()
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 //New leaderboard season
-//En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+///En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
 

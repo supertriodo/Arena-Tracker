@@ -3004,11 +3004,17 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = 8;
     }
-    else if(Utility::codeEqConstant(code, MASK_OF_CTHUN))
+    else if(Utility::codeEqConstant(code, MASK_OF_CTHUN) || Utility::codeEqConstant(code, SUNSET_VOLLEY))
     {
         missiles = 10;
     }
     //Enemy minions
+    else if(Utility::codeEqConstant(code, DART_THROW))
+    {
+        missiles = 2;
+        missileDamage = 2;
+        onlyMinions = true;
+    }
     else if(Utility::codeEqConstant(code, FIREBRAND) || Utility::codeEqConstant(code, DEVOURING_PLAGUE))
     {
         missiles = 4;
@@ -3062,7 +3068,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missiles = numRaceOnBoard(BEAST) + 1;
         missileDamage = 2;
     }
-    else if(Utility::codeEqConstant(code, METEOROLOGIST))
+    else if(Utility::codeEqConstant(code, METEOROLOGIST) || Utility::codeEqConstant(code, BLASTMAGE_MINER))
     {
         missiles = getHandList(true)->count() - 1;
     }
