@@ -1040,7 +1040,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRushGiverGen(code, text))                                          mechanicCounters[V_RUSH_GIVER]->increase(code);
     if(isDredge(code, mechanics))                                           mechanicCounters[V_DREDGE]->increase(code);
     if(isCorpseGen(code, mechanics, text))                                  mechanicCounters[V_CORPSE]->increase(code);
-    if(isExcavate(code, mechanics))                                         mechanicCounters[V_EXCAVATE]->increase(code);
+    if(isExcavate(code, text))                                              mechanicCounters[V_EXCAVATE]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1161,7 +1161,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRushGiverSyn(code, mechanics, text))                               mechanicCounters[V_RUSH_GIVER]->increaseSyn(code);
     if(isDredgeSyn(code, text))                                             mechanicCounters[V_DREDGE]->increaseSyn(code);
     if(isCorpseSyn(code, text))                                             mechanicCounters[V_CORPSE]->increaseSyn(code);
-    if(isExcavateSyn(code, mechanics, referencedTags))                      mechanicCounters[V_EXCAVATE]->increaseSyn(code);
+    if(isExcavateSyn(code, text))                                           mechanicCounters[V_EXCAVATE]->increaseSyn(code);
     //New Synergy Step 4
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
@@ -1626,7 +1626,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isRushGiverGen(code, text))                              mechanicCounters[V_RUSH_GIVER]->insertSynCards(synergyTagMap);
     if(isDredge(code, mechanics))                               mechanicCounters[V_DREDGE]->insertSynCards(synergyTagMap);
     if(isCorpseGen(code, mechanics, text))                      mechanicCounters[V_CORPSE]->insertSynCards(synergyTagMap);
-    if(isExcavate(code, mechanics))                             mechanicCounters[V_EXCAVATE]->insertSynCards(synergyTagMap);
+    if(isExcavate(code, text))                                  mechanicCounters[V_EXCAVATE]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1737,7 +1737,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isRushGiverSyn(code, mechanics, text))                   mechanicCounters[V_RUSH_GIVER]->insertCards(synergyTagMap);
     if(isDredgeSyn(code, text))                                 mechanicCounters[V_DREDGE]->insertCards(synergyTagMap);
     if(isCorpseSyn(code, text))                                 mechanicCounters[V_CORPSE]->insertCards(synergyTagMap);
-    if(isExcavateSyn(code, mechanics, referencedTags))          mechanicCounters[V_EXCAVATE]->insertCards(synergyTagMap);
+    if(isExcavateSyn(code, text))                               mechanicCounters[V_EXCAVATE]->insertCards(synergyTagMap);
     //New Synergy Step 6
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
@@ -2259,7 +2259,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isRushGiverGen(code, text))                                          mec<<"rushGiverGen";
     if(isDredge(code, mechanics))                                           mec<<"dredge";
     if(isCorpseGen(code, mechanics, text))                                  mec<<"corpseGen";
-    if(isExcavate(code, mechanics))                                         mec<<"excavate";
+    if(isExcavate(code, text))                                              mec<<"excavate";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -2291,7 +2291,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isRushGiverSyn(code, mechanics, text))                               mec<<"rushGiverSyn";
     if(isDredgeSyn(code, text))                                             mec<<"dredgeSyn";
     if(isCorpseSyn(code, text))                                             mec<<"corpseSyn";
-    if(isExcavateSyn(code, mechanics, referencedTags))                      mec<<"excavateSyn";
+    if(isExcavateSyn(code, text))                                           mec<<"excavateSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     QString name = Utility::cardEnNameFromCode(origCode);
@@ -3476,13 +3476,13 @@ bool SynergyHandler::isCorpseGen(const QString &code, const QJsonArray &mechanic
     }
     return false;
 }
-bool SynergyHandler::isExcavate(const QString &code, const QJsonArray &mechanics)
+bool SynergyHandler::isExcavate(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("excavate");
     }
-    else if(mechanics.contains(QJsonValue("EXCAVATE")))
+    else if(text.contains("excavate"))
     {
         return true;
     }
@@ -4651,17 +4651,13 @@ bool SynergyHandler::isCorpseSyn(const QString &code, const QString &text)
     }
     return false;
 }
-bool SynergyHandler::isExcavateSyn(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags)
+bool SynergyHandler::isExcavateSyn(const QString &code, const QString &text)
 {
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("excavateSyn");
     }
-    else if(mechanics.contains(QJsonValue("EXCAVATE")))
-    {
-        return true;
-    }
-    else if(referencedTags.contains(QJsonValue("EXCAVATE")))
+    else if(text.contains("excavate"))
     {
         return true;
     }
@@ -4893,6 +4889,7 @@ REGLAS
     Synergias con undead en deathknight si.
     Synergias FINALE si.
     Synergias OVERHEAL en priest si.
+    Synergias QUICKDRAW no.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen/spellSyn/spellAllSyn es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
@@ -4901,7 +4898,7 @@ REGLAS
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
     Resumen: 3+3+3(echo), 2+2, 1+X, 0
 +drawGen/toYourHandGen: Costes 3-6 son toYourHandGen(1).
-    Dragones cuentan x2 en mana.
+    Dragones cuentan x1.5 o x2 en mana.
     Murlocs cuestan %2 en mana.
     Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)

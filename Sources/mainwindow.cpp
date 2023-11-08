@@ -4776,12 +4776,8 @@ void MainWindow::testPopularList(int i)
 
 void MainWindow::testSynergies()
 {
-//    qDebug()<<Utility::cardEnCodeFromName("Blur");
-//    qDebug()<<Utility::getCardAttribute("ETC_099", "set").toString();
-//    draftHandler->getSynergyHandler()->debugSynergiesCode("DAL_400");
-
 //    draftHandler->getSynergyHandler()->testSynergies("YOG_");
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("TITANS", 0, 40, "YOG_");//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 10/*, "YOG_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4793,7 +4789,7 @@ void MainWindow::testTierlists()
 
     QStringList arenaSets;
     arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
-        "PATH_OF_ARTHAS" << "TITANS";
+        "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4808,14 +4804,14 @@ void MainWindow::testTierlists()
  *  Descent of Dragons "DRAGONS"
  *  Path of Arthas "PATH_OF_ARTHAS"
  *  TITANS "TITANS"
- *  Showdown in the Badlands
+ *  Showdown in the Badlands "WILD_WEST"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
     arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
-        "PATH_OF_ARTHAS" << "TITANS";
+        "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
 
     if(fromHearth)
     {
@@ -4847,7 +4843,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
+//    testHeroPortraits();
     testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true/*, "YOG_"*/);//Force hearthpwn true
@@ -4883,13 +4879,13 @@ void MainWindow::testDelay()
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> WONDERS
+//Update Utility::isFromStandardSet(QString code) --> WILD_WEST
 //Subir cartas al github.
-    ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
+    //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
-    ///-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
-    ///-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
-    ///-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
+    //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
+    //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
+    //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards
     //Update DraftHandler::isSignatureCard
 //Update secrets

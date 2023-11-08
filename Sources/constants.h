@@ -82,7 +82,7 @@
 #define OASIS_ALLY QString("BAR_812")
 #define VENGEFUL_VISAGE QString("REV_516")
 #define OBJECTION QString("MAW_006")
-#define AZERITE_VEIN QString("")//TODO
+#define AZERITE_VEIN QString("WW_422")
 
 //ROGUE
 #define CHEAT_DEATH QString("LOOT_204")
