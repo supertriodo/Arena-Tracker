@@ -1,5 +1,4 @@
 #include "secretcard.h"
-#include "../utility.h"
 #include "../themehandler.h"
 #include <QtWidgets>
 
@@ -29,9 +28,13 @@ void SecretCard::draw()
     QPixmap canvas;
     QPainter painter;
 
-    if(this->code != "")
+    if(!this->code.isEmpty())
     {
         canvas = DeckCard::draw(1, true, BLACK, manaText);
+    }
+    else if(!this->createdByCode.isEmpty())
+    {
+        canvas = drawCustomCard(this->createdByCode, "BY:");
     }
     else
     {

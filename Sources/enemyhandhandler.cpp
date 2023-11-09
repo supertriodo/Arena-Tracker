@@ -53,6 +53,12 @@ void EnemyHandHandler::setLastCreatedByCode(QString code)
 }
 
 
+QString EnemyHandHandler::getLastCreatedByCode()
+{
+    return this->lastCreatedByCode;
+}
+
+
 void EnemyHandHandler::revealCreatedByCard(QString code, QString createdByCode, int quantity)
 {
     emit pDebug("Revealing next " + QString::number(quantity) + " card/s. CreatedBy: " + createdByCode + " as " + code);

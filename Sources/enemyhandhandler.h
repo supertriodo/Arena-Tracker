@@ -62,6 +62,7 @@ public:
     void setTheme();
     void redrawTotalAttack();
     bool isCoinInHand();
+    QString getLastCreatedByCode();
 
 signals:
     void checkCardImage(QString code);

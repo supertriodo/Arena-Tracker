@@ -27,14 +27,17 @@ public:
 };
 
 
+//Uno por secreto jugado
 class ActiveSecretId
 {
 public:
     int id;
     QList<QString> codes;
+    SecretCard parent;
 };
 
 
+//Grupo de secretos de un heroe
 class ActiveSecret
 {
 public:
@@ -80,7 +83,7 @@ private:
     void discardSecretOption(QString code, int delay=8000);
     void discardSecretOptionNow(const QString &code);
     void discardSecretOptionNow2(const QString &code);
-    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState);
+    void unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, QString createdByCode="");
     void knownSecretPlayed(int id, CardClass hero, QString code, LoadingScreenState loadingScreenState);
     bool isFromArenaSets(QString code);
     bool unknownSecretPlayedAddOption(QString code, bool inArena, ActiveSecret &activeSecret, QString manaText="");

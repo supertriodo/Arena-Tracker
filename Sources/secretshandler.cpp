@@ -73,14 +73,7 @@ void SecretsHandler::adjustSize()
     }
 
     int rowHeight = ui->secretsListWidget->sizeHintForRow(0);
-    int rows = 0;
-
-    for(int i=0; i<activeSecretList.count(); i++)
-    {
-        rows += activeSecretList[i].children.count();
-    }
-
-    int height = rows*rowHeight + 2*ui->secretsListWidget->frameWidth();
+    int height = ui->secretsListWidget->count()*rowHeight + 2*ui->secretsListWidget->frameWidth();
     int maxHeight = (ui->secretsListWidget->height()+ui->enemyHandListWidget->height())*4/5;
     if(height>maxHeight)    height = maxHeight;
 
@@ -141,12 +134,13 @@ void SecretsHandler::secretPlayed(int id, CardClass hero, LoadingScreenState loa
         //Deck Card
         else
         {
-            unknownSecretPlayed(id, hero, loadingScreenState);
+            unknownSecretPlayed(id, hero, loadingScreenState, createdByCode);
         }
     }
+    //Created by some TRIGGER
     else
     {
-        unknownSecretPlayed(id, hero, loadingScreenState);
+        unknownSecretPlayed(id, hero, loadingScreenState, enemyHandHandler->getLastCreatedByCode());
     }
 }
 
@@ -366,7 +360,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
 }
 
 
-void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState)
+void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenState loadingScreenState, QString createdByCode)
 {
     emit pDebug("Secret unknown played. Hero: " + QString::number(hero));
 
@@ -383,6 +377,16 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
         it->draw();
     }
 
+    //Mostramos secretos generados por otras cartas
+    if(!createdByCode.isEmpty())
+    {
+        activeSecretId.parent.setCreatedByCode(createdByCode);
+        activeSecretId.parent.listItem = new QListWidgetItem();
+        ui->secretsListWidget->insertItem(0, activeSecretId.parent.listItem);
+        activeSecretId.parent.draw();
+        emit checkCardImage(createdByCode);
+    }
+
     activeSecret->activeSecretIds.append(activeSecretId);
 
     updateShowSecrets();
@@ -392,11 +396,15 @@ void SecretsHandler::unknownSecretPlayed(int id, CardClass hero, LoadingScreenSt
 
 void SecretsHandler::redrawDownloadedCardImage(QString code)
 {
-    for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)
+    for(ActiveSecret &activeSecret: activeSecretList)
     {
-        for(QList<SecretCard>::iterator it2 = it->children.begin(); it2 != it->children.end(); it2++)
+        for(SecretCard &secretCard: activeSecret.children)
         {
-            if(it2->getCode() == code)    it2->draw();
+            if(secretCard.getCode() == code)    secretCard.draw();
+        }
+        for(ActiveSecretId &activeSecretId: activeSecret.activeSecretIds)
+        {
+            if(activeSecretId.parent.getCreatedByCode() == code)     activeSecretId.parent.draw();
         }
     }
 }
@@ -409,6 +417,10 @@ void SecretsHandler::redrawClassCards()
         for(SecretCard &secretCard: activeSecret.children)
         {
             secretCard.draw();
+        }
+        for(ActiveSecretId &activeSecretId: activeSecret.activeSecretIds)
+        {
+            activeSecretId.parent.draw();
         }
     }
 }
@@ -423,6 +435,10 @@ void SecretsHandler::redrawSpellWeaponCards()
             CardType cardType = secretCard.getType();
             if(cardType == SPELL || cardType == WEAPON)   secretCard.draw();
         }
+        for(ActiveSecretId &activeSecretId: activeSecret.activeSecretIds)
+        {
+            activeSecretId.parent.draw();
+        }
     }
 }
 
@@ -434,6 +450,10 @@ void SecretsHandler::redrawAllCards()
         for(SecretCard &secretCard: activeSecret.children)
         {
             secretCard.draw();
+        }
+        for(ActiveSecretId &activeSecretId: activeSecret.activeSecretIds)
+        {
+            activeSecretId.parent.draw();
         }
     }
 }
@@ -464,6 +484,11 @@ void SecretsHandler::secretRevealed(int id, QString code)
             {
                 if(activeSecretList[i].activeSecretIds[j].id == id)
                 {
+                    if(activeSecretList[i].activeSecretIds[j].parent.listItem != nullptr)
+                    {
+                        delete activeSecretList[i].activeSecretIds[j].parent.listItem;
+                        activeSecretList[i].activeSecretIds[j].parent.listItem = nullptr;
+                    }
                     activeSecretList[i].activeSecretIds.removeAt(j);
                     break;
                 }
@@ -940,6 +965,15 @@ void SecretsHandler::findSecretCardEntered(QListWidgetItem * item)
             if(secretCard.listItem == item)
             {
                 code = secretCard.getCode();
+                break;
+            }
+        }
+        for(ActiveSecretId &activeSecretId: it->activeSecretIds)
+        {
+            if(activeSecretId.parent.listItem == item)
+            {
+                code = activeSecretId.parent.getCode();
+                if(code.isEmpty())  code = activeSecretId.parent.getCreatedByCode();
                 break;
             }
         }

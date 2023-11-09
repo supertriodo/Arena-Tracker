@@ -2,7 +2,6 @@
 #define HANDCARD_H
 
 #include "deckcard.h"
-#include "../utility.h"
 
 class HandCard : public DeckCard
 {
