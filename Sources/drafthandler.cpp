@@ -1547,12 +1547,14 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     }
 
     QString codes[3] = {bestCards[0].getCode(), bestCards[1].getCode(), bestCards[2].getCode()};
+    QString cardNames[3] = {Utility::cardLocalNameFromCode(codes[0]), Utility::cardLocalNameFromCode(codes[1]), Utility::cardLocalNameFromCode(codes[2])};
 
     //LightForge
     int rating1 = lightForgeTiers[codes[0]];
     int rating2 = lightForgeTiers[codes[1]];
     int rating3 = lightForgeTiers[codes[2]];
-    showNewRatings(rating1, rating2, rating3,
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    LightForge);
 
@@ -1561,7 +1563,8 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
     rating1 = hearthArenaTiers[codes[0]];
     rating2 = hearthArenaTiers[codes[1]];
     rating3 = hearthArenaTiers[codes[2]];
-    showNewRatings(rating1, rating2, rating3,
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   rating1, rating2, rating3,
                    rating1, rating2, rating3,
                    HearthArena);
 
@@ -1587,7 +1590,8 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         }
     }
 
-    showNewRatings(ratingIncluded[0], ratingIncluded[1], ratingIncluded[2],
+    showNewRatings(cardNames[0], cardNames[1], cardNames[2],
+                   ratingIncluded[0], ratingIncluded[1], ratingIncluded[2],
                    ratingPlayed[0], ratingPlayed[1], ratingPlayed[2],
                    HSReplay,
                    includedDecks[0], includedDecks[1], includedDecks[2]);
@@ -1685,11 +1689,13 @@ void DraftHandler::showMessageDeckScore(int deckScoreLF, int deckScoreHA, float 
 }
 
 
-void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
-                                  float tierScore1, float tierScore2, float tierScore3,
-                                  DraftMethod draftMethod,
-                                  int includedDecks1, int includedDecks2, int includedDecks3)
+void DraftHandler::showNewRatings(const QString &cardName1, const QString &cardName2, const QString &cardName3,
+                                    float rating1, float rating2, float rating3,
+                                    float tierScore1, float tierScore2, float tierScore3,
+                                    DraftMethod draftMethod,
+                                    int includedDecks1, int includedDecks2, int includedDecks3)
 {
+    QString cardNames[3] = {cardName1, cardName2, cardName3};
     float ratings[3] = {rating1,rating2,rating3};
     float tierScore[3] = {tierScore1, tierScore2, tierScore3};
     float maxRating = std::max(std::max(rating1,rating2),rating3);
@@ -1701,6 +1707,7 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
         if(draftMethod == LightForge)
         {
             labelLFscore[i]->setText(QString::number(static_cast<int>(ratings[i])));
+            labelLFscore[i]->setToolTip(cardNames[i] + " - Lightforge");
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelLFscore[i], draftMethod);
         }
         else if(draftMethod == HSReplay)
@@ -1713,11 +1720,13 @@ void DraftHandler::showNewRatings(float rating1, float rating2, float rating3,
             }
 
             labelHSRscore[i]->setText(text);
+            labelHSRscore[i]->setToolTip(cardNames[i] + " - HSReplay");
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHSRscore[i], draftMethod);
         }
         else if(draftMethod == HearthArena)
         {
             labelHAscore[i]->setText(QString::number(static_cast<int>(ratings[i])));
+            labelHAscore[i]->setToolTip(cardNames[i] + " - Heartharena");
             if(FLOATEQ(maxRating, ratings[i]))  highlightScore(labelHAscore[i], draftMethod);
         }
     }

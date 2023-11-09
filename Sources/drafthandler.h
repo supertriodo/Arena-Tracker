@@ -265,7 +265,7 @@ public slots:
     void endDraftShowMechanicsWindow();
     void endDraftHideMechanicsWindow();
     void deleteDraftMechanicsWindow();
-    void showNewRatings(float rating1, float rating2, float rating3,
+    void showNewRatings(const QString &cardName1, const QString &cardName2, const QString &cardName3, float rating1, float rating2, float rating3,
                         float tierScore1, float tierScore2, float tierScore3, DraftMethod draftMethod,
                         int includedDecks1=-1, int includedDecks2=-1, int includedDecks3=-1);
     void pickCard(QString code);
