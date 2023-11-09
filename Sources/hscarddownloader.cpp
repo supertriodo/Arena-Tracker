@@ -85,6 +85,7 @@ void HSCardDownloader::downloadWebImage(QString code, bool isHero, bool force, b
         else
         {
             urlString = HEARTHPWN_CARDS_PLAIN_URL + code + ".png";
+//            urlString = HEARTHSIM_CARDS_URL + code + ".png";
         }
     }
 
@@ -155,11 +156,12 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             else
             {
                 CardType cardType = Utility::getTypeFromCode(code);
+                //New cut for hearthpwn plain cards
                 if(cardType == MINION)      webImage = webImage.copy(-4, -30, 295, 447);
                 else if(cardType == WEAPON) webImage = webImage.copy(-1, -32, 295, 447);
                 else /*SPELL - HERO*/       webImage = webImage.copy(-4, -31, 295, 447);
                 //Old cut for all hearthsim plain cards (minion/spell/weapon)
-                //webImage = webImage.copy(4, -8, 246, 372);
+//                webImage = webImage.copy(4, -8, 246, 372);
             }
             webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);
         }
@@ -174,6 +176,8 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             emit pDebug("Card downloaded: " + code);
             emit downloaded(code);
         }
+        //Copy plain for golden card
+//        webImage.save(Utility::hscardsPath() + "/" + code + "_premium.png", "png");
     }
 
     //Next download

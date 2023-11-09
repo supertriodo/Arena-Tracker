@@ -4813,8 +4813,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
-        "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
+    arenaSets << /*"CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
+        "PATH_OF_ARTHAS" << "TITANS" << */"WILD_WEST";
 
     if(fromHearth)
     {
