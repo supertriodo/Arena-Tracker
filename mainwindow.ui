@@ -335,6 +335,34 @@ draft mechanics becoming a patron (3€).</string>
                </widget>
               </item>
               <item>
+               <widget class="QLabel" name="labelAccessibility">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="toolTip">
+                 <string>Accessibility cards and scores</string>
+                </property>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <property name="text">
+                 <string>Card A 87 Card B 88 Card C 100</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="draftHorizontalSpacer2">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>

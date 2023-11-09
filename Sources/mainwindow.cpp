@@ -1705,6 +1705,7 @@ void MainWindow::completeUIButtons()
     ui->closeButton = new QPushButton("", this);
     ui->closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     ui->closeButton->setFlat(true);
+    ui->closeButton->setToolTip("Close");
     connect(ui->closeButton, SIGNAL(clicked()),
             this, SLOT(closeApp()));
 
@@ -1712,6 +1713,7 @@ void MainWindow::completeUIButtons()
     ui->minimizeButton = new QPushButton("", this);
     ui->minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     ui->minimizeButton->setFlat(true);
+    ui->minimizeButton->setToolTip("Minimize");
     connect(ui->minimizeButton, SIGNAL(clicked()),
             this, SLOT(showMinimized()));
 
@@ -1720,6 +1722,7 @@ void MainWindow::completeUIButtons()
     ui->resizeButton->resize(24, 24);
     ui->resizeButton->setIconSize(QSize(24, 24));
     ui->resizeButton->setFlat(true);
+    ui->resizeButton->setToolTip("Resize");
     connect(ui->resizeButton, SIGNAL(newSize(QSize)),
             this, SLOT(resizeSlot(QSize)));
 }
@@ -4777,7 +4780,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    draftHandler->getSynergyHandler()->testSynergies(/*"YOG_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 10/*, "YOG_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 40/*, "YOG_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
