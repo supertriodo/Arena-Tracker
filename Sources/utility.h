@@ -113,7 +113,7 @@ public:
     static QString extraPath();
     static QString cardEnNameFromCode(const QString &code);
     static QString cardLocalNameFromCode(const QString &code);
-    static QString cardEnCodeFromName(const QString &name, bool onlyCollectible=true);
+    static QStringList cardEnCodesFromName(const QString &name, bool onlyCollectible=true);
     static QString cardLocalCodeFromName(const QString &name);
     static void setCardsJson(QMap<QString, QJsonObject> *cardsJson);
     static void setLocalLang(const QString &localLang);

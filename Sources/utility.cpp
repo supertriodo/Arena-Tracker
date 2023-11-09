@@ -254,20 +254,21 @@ QString Utility::cardEnTextFromCode(const QString &code)
 }
 
 
-QString Utility::cardEnCodeFromName(const QString &name, bool onlyCollectible)
+QStringList Utility::cardEnCodesFromName(const QString &name, bool onlyCollectible)
 {
+    QStringList codes;
     for (QMap<QString, QJsonObject>::const_iterator it = cardsJson->cbegin(); it != cardsJson->cend(); it++)
     {
         if(it->value("name").toObject().value("enUS").toString() == name)
         {
             if(!onlyCollectible || ((it->value("collectible").toBool()) && (!it.key().startsWith("HERO_"))))
             {
-                return it.key();
+                codes << it.key();
             }
         }
     }
 
-    return "";
+    return codes;
 }
 
 
@@ -1233,16 +1234,15 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
         {
             if(!arenaNames.contains(name))
             {
-                QString code = Utility::cardEnCodeFromName(name);
-                if(code.isEmpty())  code = Utility::cardEnCodeFromName(name, false);
-                if(code.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
+                QStringList codes = Utility::cardEnCodesFromName(name);
+                if(codes.isEmpty())  codes = Utility::cardEnCodesFromName(name, false);
+                if(codes.isEmpty())  qDebug()<<"HearthArena WRONG NAME!!!"<<name;
                 else
                 {
-                    qDebug()<<"Arena missing:"<<code<<name;
+                    qDebug()<<"Arena missing:"<<codes<<name;
                     missing = true;
-
-                    QString set = getCardAttribute(code, "set").toString();
-                    if(!haSets.contains(set))   haSets << set;
+//                    QString set = getCardAttribute(codes, "set").toString();
+//                    if(!haSets.contains(set))   haSets << set;
                 }
             }
         }

@@ -1579,9 +1579,26 @@ void DraftHandler::showNewCards(DraftCard bestCards[3])
         {
             if(!cardsPlayedWinratesMap[this->arenaHero].contains(codes[i]))
             {
-                if(codes[i].startsWith("CORE_") &&
-                        cardsPlayedWinratesMap[this->arenaHero].contains(codes[i].mid(5)))      codes[i] = codes[i].mid(5);
-                else if(cardsPlayedWinratesMap[this->arenaHero].contains("CORE_" + codes[i]))   codes[i] = "CORE_" + codes[i];
+                if(codes[i].startsWith("CORE_") && cardsPlayedWinratesMap[this->arenaHero].contains(codes[i].mid(5)))
+                    codes[i] = codes[i].mid(5);
+                else if(cardsPlayedWinratesMap[this->arenaHero].contains("CORE_" + codes[i]))
+                    codes[i] = "CORE_" + codes[i];
+                else
+                {
+                    QString name = Utility::cardEnNameFromCode(codes[i]);
+                    QStringList altCodes = Utility::cardEnCodesFromName(name);
+                    int maxIncluded = 0;
+                    for(const QString &altCode: altCodes)
+                    {
+                        if(cardsIncludedDecksMap[this->arenaHero].contains(altCode) && cardsIncludedDecksMap[this->arenaHero][altCode]>maxIncluded)
+                        {
+                            emit pDebug(codes[i] + " - " + name + " - not found on HSR data. Swap to " + altCode + " - " + name);
+
+                            maxIncluded = cardsIncludedDecksMap[this->arenaHero][altCode];
+                            codes[i] = altCode;
+                        }
+                    }
+                }
             }
 
             ratingPlayed[i] = cardsPlayedWinratesMap[this->arenaHero][codes[i]];
