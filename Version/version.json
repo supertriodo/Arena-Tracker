@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v23.01","v23.01.01","v23.02","v23.04","v23.04.01","v23.05","v23.06","v23.07","v23.07.01","v23.07.02","v23.08","v23.08.01", "v23.09", "v23.09.01"],
+	"versionFree": ["v23.01","v23.01.01","v23.02","v23.04","v23.04.01","v23.05","v23.06","v23.07","v23.07.01","v23.07.02","v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "Bug Fix: When the opponent plays a secret and AT shows the possible options, HSR data % in decks might be 0%.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "AT updates for Showdown in the Badlands. AT now shows the source of generated secrets. Better accessibility drafting for blind people.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
