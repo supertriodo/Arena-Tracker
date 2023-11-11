@@ -4713,11 +4713,43 @@ void MainWindow::testHeroPortraits()
     {
         if(!Utility::checkHeroPortrait(code))
         {
-            qDebug()<<"DEBUG HEROES:" << code << "-" << Utility::cardEnNameFromCode(code) << "built.";
+            qDebug() << "DEBUG HEROES: Built" << code << "-" << Utility::cardEnNameFromCode(code);
             downloadHeroPortrait(code);
             everythingOk = false;
         }
     }
+
+    for(const QString &code: (const QStringList)Utility::getWildCodes())
+    {
+        if(Utility::getTypeFromCode(code) == HERO)
+        {
+            if(code.startsWith("HERO_"))
+            {
+                if(!Utility::checkHeroPortrait(code))
+                {
+                    qDebug() << "DEBUG HEROES: Should be built" << code << "-" << Utility::cardEnNameFromCode(code);
+                    everythingOk = false;
+                }
+            }
+            else
+            {
+                if(!Utility::checkHeroPortrait("HERO_" + code))
+                {
+                    qDebug() << "DEBUG HEROES: Manual build" << code << "-" << Utility::cardEnNameFromCode(code);
+                    if(code.startsWith("CORE_"))
+                    {
+                        QString noCoreCode = code.mid(5);
+                        if(Utility::checkHeroPortrait("HERO_" + noCoreCode))
+                        {
+                            qDebug() << "DEBUG HEROES: Duplicate code" << code << "of" << noCoreCode << "-" << Utility::cardEnNameFromCode(code);
+                        }
+                    }
+                    everythingOk = false;
+                }
+            }
+        }
+    }
+
     if(everythingOk)    qDebug()<<"DEBUG HEROES: OK - All portraits in place.";
 }
 
@@ -4846,7 +4878,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-//    testHeroPortraits();
+    testHeroPortraits();
     testSynergies();
 //    testTierlists();
 //    testDownloadRotation(true/*, "YOG_"*/);//Force hearthpwn true
@@ -4883,9 +4915,9 @@ void MainWindow::testDelay()
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 ///Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> WILD_WEST
-///Subir cartas al github.
+//Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
@@ -4906,7 +4938,7 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
 //|-Synergy / Code  --> 28.0 Patch Notes (2023-11-06)
 
 //Rotacion CORE
