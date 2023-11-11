@@ -4913,7 +4913,7 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
-///Update Json arenaVersion --> Update arenaSets/arenaVersion
+//Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> WILD_WEST
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
@@ -4947,7 +4947,7 @@ void MainWindow::testDelay()
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 //New leaderboard season
-///En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+//En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
 
