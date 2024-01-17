@@ -4735,7 +4735,7 @@ void MainWindow::testHeroPortraits()
             {
                 if(!Utility::checkHeroPortrait("HERO_" + code))
                 {
-                    qDebug() << "DEBUG HEROES: Manual build" << code << "-" << Utility::cardEnNameFromCode(code);
+                    qDebug() << "DEBUG HEROES: Manual build" << "HERO_" + code << "-" << Utility::cardEnNameFromCode(code);
                     if(code.startsWith("CORE_"))
                     {
                         QString noCoreCode = code.mid(5);
