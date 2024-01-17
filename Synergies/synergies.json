@@ -2558,7 +2558,7 @@
 "MAW_013" : [ "destroyGen" ],
 "MAW_014" : [ "drop4", "battlecry", "returnSyn" ],
 "MAW_015" : [ "drop3", "silverHandGen", "silverHandSyn" ],
-"MAW_016" : [ "drawGen2" ],
+"MAW_016" : [  ],
 "MAW_017" : [ "drop2", "battlecry" ],
 "MAW_018" : [ "secret" ],
 "MAW_019" : [ "destroyGen" ],
