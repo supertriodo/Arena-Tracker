@@ -4823,7 +4823,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
+    arenaSets << "CORE" << "WONDERS" << "SCHOLOMANCE" << "ALTERAC_VALLEY" <<
         "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4835,8 +4835,8 @@ void MainWindow::testTierlists()
 /*
  *  Core "CORE"
  *  Caverns of Time "WONDERS"
- *  Saviors of Uldum "ULDUM"
- *  Descent of Dragons "DRAGONS"
+ *  Scholomance Academy "SCHOLOMANCE"
+ *  Fractured in Alterac Valley "ALTERAC_VALLEY"
  *  Path of Arthas "PATH_OF_ARTHAS"
  *  TITANS "TITANS"
  *  Showdown in the Badlands "WILD_WEST"
@@ -4845,7 +4845,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "WONDERS" << "ULDUM" << "DRAGONS" <<
+    arenaSets << "CORE" << "WONDERS" << "SCHOLOMANCE" << "ALTERAC_VALLEY" <<
         "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
 
     if(fromHearth)
@@ -4939,7 +4939,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 28.0 Patch Notes (2023-11-06)
+//|-Synergy / Code  --> 28.2.3 Patch Notes (2023-12-19)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
