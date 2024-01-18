@@ -83,6 +83,7 @@
 #define VENGEFUL_VISAGE QString("REV_516")
 #define OBJECTION QString("MAW_006")
 #define AZERITE_VEIN QString("WW_422")
+#define SUMMONING_WARD QString("")//TODO
 
 //ROGUE
 #define CHEAT_DEATH QString("LOOT_204")

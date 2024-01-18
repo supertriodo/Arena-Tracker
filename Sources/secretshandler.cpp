@@ -314,6 +314,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(COUNTERSPELL, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MANA_BIND, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OBJECTION, inArena, activeSecret);
+                unknownSecretPlayedAddOption(SUMMONING_WARD, inArena, activeSecret);
                 //EPIC
                 unknownSecretPlayedAddOption(AZERITE_VEIN, inArena, activeSecret);
                 unknownSecretPlayedAddOption(VENGEFUL_VISAGE, inArena, activeSecret);
@@ -690,7 +691,11 @@ void SecretsHandler::newTurn(bool isPlayerTurn, int numTurn, int enemyMinions)
         discardSecretOptionNow(PLAGIARIZE);
         discardSecretOptionNow(PERJURY);
 
-        if(enemyMinions > 0)    discardSecretOptionNow(COMPETITIVE_SPIRIT);
+        if(enemyMinions > 0)
+        {
+            discardSecretOptionNow(COMPETITIVE_SPIRIT);
+            discardSecretOptionNow(SUMMONING_WARD);
+        }
         if(enemyMinions > 1)    discardSecretOptionNow(OPEN_THE_CAGES);
 
         if(planHandler->isEnemyHeroHealthChanged()) discardSecretOptionNow(RIGGED_FAIRE_GAME);
@@ -1052,7 +1057,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND
                             << SPLITTING_IMAGE << SPELLBENDER << ICE_BLOCK << RIGGED_FAIRE_GAME << OASIS_ALLY << VENGEFUL_VISAGE
-                            << OBJECTION << AZERITE_VEIN;
+                            << OBJECTION << AZERITE_VEIN << SUMMONING_WARD;
 
     secretsByPickrate[ROGUE] << DIRTY_TRICKS << SUDDEN_BETRAYAL << CHEAT_DEATH << AMBUSH << BAMBOOZLE << EVASION << PLAGIARIZE
                              << SHADOW_CLONE << SHENANIGANS << KIDNAP << STICKY_SITUATION << DOUBLE_CROSS << PERJURY;
