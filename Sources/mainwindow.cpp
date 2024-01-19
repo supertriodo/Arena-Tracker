@@ -4812,7 +4812,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    draftHandler->getSynergyHandler()->testSynergies(/*"YOG_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 40/*, "DEEP_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("TB", 0, 40/*, "DEEP_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 

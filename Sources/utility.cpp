@@ -488,6 +488,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
  * Taverns of Time "TAVERNS_OF_TIME"
  * Caverns of Time "WONDERS"
+ * Duel Treasures "TB"
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
  * Blackrock Mountain "BRM"
@@ -1435,6 +1436,7 @@ QString Utility::otherCodeConstant(const QString &code)
 bool Utility::needCodesSpecific(const QString &set)
 {
     if(set == "TAVERNS_OF_TIME")    return true;
+    else if(set == "TB")            return true;
     return false;
 }
 
@@ -1473,6 +1475,25 @@ QStringList Utility::getSetCodesSpecific(const QString &set)
         "TOT_342",
         "TOT_343",
         "TOT_345"
+        };
+    }
+    //Tesoros de duelos
+    else if(set == "TB")
+    {
+        return
+        {
+        "PVPDR_SCH_Active44", "PVPDR_SCH_Active58", "PVPDR_SCH_Active60",
+        "GILA_825", "PVPDR_SCH_Active17", "PVPDR_SCH_Active08",
+        "PVPDR_SCH_Active03", "PVPDR_SCH_Active38", "PVPDR_SCH_Active50",
+        "PVPDR_SCH_Active57", "PVPDR_SCH_Active30", "PVPDR_SCH_Active48",
+        "PVPDR_SCH_Active31", "PVPDR_SCH_Active28", "PVPDR_SCH_Active34",
+        "NAX12_04", "LOOT_998k", "LOEA_01",
+        "PVPDR_YOP_Active02", "NAX11_04", "PVPDR_SCH_Active35",
+        "PVPDR_SCH_Active02", "PVPDR_SCH_Active39", "PVPDR_SCH_Active42",
+        "PVPDR_GUEST_Diablot7", "GILA_BOSS_35t", "NAX2_05H",
+        "PVPDR_YOP_Active01", "PVPDR_SCH_Active27", "PVPDR_SCH_Active29",
+        "PVPDR_SCH_Active45", "PVPDR_SCH_Active52", "PVPDR_SCH_Active61",
+        "PVPDR_SCH_Active47", "PVPDR_SCH_Active46", "PVPDR_SCH_Active43"
         };
     }
     return {};
