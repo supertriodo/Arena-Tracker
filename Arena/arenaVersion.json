@@ -1,6 +1,6 @@
 {
   "arenaVersion": 47,
-  "arenaSets": ["CORE", "WONDERS", "SCHOLOMANCE", "ALTERAC_VALLEY", "PATH_OF_ARTHAS", "TITANS", "WILD_WEST"],
+  "arenaSets": ["CORE", "WONDERS", "SCHOLOMANCE", "ALTERAC_VALLEY", "PATH_OF_ARTHAS", "TITANS", "WILD_WEST", "TREASURES"],
   "multiclassArena": false,
   "resetCards": 46,
   "resetHeroes": 43,

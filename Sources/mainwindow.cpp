@@ -4812,7 +4812,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    draftHandler->getSynergyHandler()->testSynergies(/*"DEEP_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("TB", 0, 40/*, "DEEP_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WILD_WEST", 0, 40/*, "DEEP_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4921,7 +4921,7 @@ void MainWindow::testDelay()
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
@@ -4946,7 +4946,7 @@ void MainWindow::testDelay()
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
-//New leaderboard season
+///New leaderboard season
 //En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 

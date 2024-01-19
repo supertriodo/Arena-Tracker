@@ -1957,7 +1957,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     for(QString &code: (QStringList)Utility::getSetCodes("WILD_WEST", true, true))
-//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TB"))
+//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
     {

@@ -488,7 +488,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
  * Taverns of Time "TAVERNS_OF_TIME"
  * Caverns of Time "WONDERS"
- * Duel Treasures "TB"
+ * Duel Treasures "TREASURES"
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
  * Blackrock Mountain "BRM"
@@ -1436,7 +1436,7 @@ QString Utility::otherCodeConstant(const QString &code)
 bool Utility::needCodesSpecific(const QString &set)
 {
     if(set == "TAVERNS_OF_TIME")    return true;
-    else if(set == "TB")            return true;
+    else if(set == "TREASURES")            return true;
     return false;
 }
 
@@ -1478,7 +1478,7 @@ QStringList Utility::getSetCodesSpecific(const QString &set)
         };
     }
     //Tesoros de duelos
-    else if(set == "TB")
+    else if(set == "TREASURES")
     {
         return
         {
