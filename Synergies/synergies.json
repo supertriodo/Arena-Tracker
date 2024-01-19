@@ -1199,7 +1199,7 @@
 "DEEP_017" : [ "drop2", "tokenGen", "silverHandGen", "corpseGen", "deathrattleGen", "undeadGen" ],
 "DEEP_018" : [ "divineShieldGen", "spellBuffGen", "excavate" ],
 "DEEP_019" : [ "drop4", "pingSyn" ],
-"DEEP_020" : [ "battlecry", "battlecryAllSyn" ],
+"DEEP_020" : [ "battlecry", "battlecryAllSyn", "evolveSyn" ],
 "DEEP_021" : [ "destroyGen", "toYourHandGen" ],
 "DEEP_022" : [ "elementalGen", "pirateGen", "toYourHandGen2", "otherClassGen" ],
 "DEEP_023" : [ "drop2", "reachGen", "stealthGen", "restoreFriendlyHeroGen", "restoreFriendlyMinionGen", "endTurnGen" ],

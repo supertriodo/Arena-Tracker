@@ -1957,7 +1957,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     for(QString &code: (QStringList)Utility::getSetCodes("WILD_WEST", true, true))
-//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TAVERNS_OF_TIME"))
+//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TB"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
     {
@@ -4682,7 +4682,8 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
         FLOODSAIL_DECKHAND, EFFICIENT_OCTOBOT, LIVING_SEED, SCABBS_CUTTERBUTTER, KINDLING_ELEMENTAL, CELESTIAL_INK_SET,
         RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
         BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
-        ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST
+        ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST,
+        HUNTERS_INSIGHT
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
     }
@@ -4715,7 +4716,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
         SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW, PRISMATIC_BEAM,
-        THRISTY_DRIFTER
+        THRISTY_DRIFTER, MANTLE_SHAPER
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }

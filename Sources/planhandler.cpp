@@ -3072,6 +3072,10 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = getHandList(true)->count() - 1;
     }
+    else if(Utility::codeEqConstant(code, TROGG_GEMTOSSER))
+    {
+        missiles = nowBoard->playerHero->getResources();
+    }
     else if(Utility::codeEqConstant(code, DARK_SKIES))
     {
         missiles = getHandList(true)->count();
