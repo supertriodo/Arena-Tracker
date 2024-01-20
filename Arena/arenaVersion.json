@@ -1,5 +1,5 @@
 {
-  "arenaVersion": 47,
+  "arenaVersion": 48,
   "arenaSets": ["CORE", "WONDERS", "SCHOLOMANCE", "ALTERAC_VALLEY", "PATH_OF_ARTHAS", "TITANS", "WILD_WEST", "TREASURES"],
   "multiclassArena": false,
   "resetCards": 46,

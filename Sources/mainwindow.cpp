@@ -5098,4 +5098,4 @@ void MainWindow::testDelay()
 
 
 //TODO
-//otherclassGen - toyourhandgen
+//otherclassGen/discover - toyourhandgen
