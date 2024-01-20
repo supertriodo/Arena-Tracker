@@ -158,7 +158,8 @@ void PlanHandler::addMinion(bool friendly, QString code, int id, int pos)
 {
     qDebug()<<"NEW MINION --> id"<<id<<"pos"<<pos;
 
-    if(getMinionList(friendly)->count() >= 7)
+    //We can have 8 minions during a magnetize for some seconds
+    if(getMinionList(friendly)->count() > 7)
     {
         qDebug()<<"AVOID - NUM MINIONS = " << getMinionList(friendly)->count();
         return;
@@ -196,6 +197,8 @@ void PlanHandler::addMinion(bool friendly, MinionGraphicsItem *minion, int pos)
     this->lastMinionAddedTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
     QList<MinionGraphicsItem *> * minionsList = getMinionList(friendly);
+    if(pos < 0)                     pos = 0;
+    if(pos > minionsList->size())   pos = minionsList->size();
     minionsList->insert(pos, minion);
     updateMinionZoneSpots(friendly);
     updateMinionsAttack(friendly);

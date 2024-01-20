@@ -1038,6 +1038,22 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             emit pDebug("Player: Unknown card removed from deck. ID: " + id, numLine);
             emit playerCardDraw("", id.toInt());
         }
+
+        //Enemigo esbirro muere
+        else if(zoneFrom == "OPPOSING PLAY" && zoneTo != "OPPOSING PLAY")
+        {
+            if(enemyMinions>0)  enemyMinions--;
+            emit pDebug("Enemy: Minion unknown removed from OPPOSING PLAY. ID: " + id + " Minions: " + QString::number(enemyMinions), numLine);
+            if(zoneTo != "FRIENDLY PLAY")   emit enemyMinionZonePlayRemove(id.toInt());
+        }
+
+        //Jugador esbirro muere
+        else if(zoneFrom == "FRIENDLY PLAY" && zoneTo != "FRIENDLY PLAY")
+        {
+            if(playerMinions>0) playerMinions--;
+            emit pDebug("Player: Minion unknown removed from FRIENDLY PLAY. ID: " + id + " Minions: " + QString::number(playerMinions), numLine);
+            if(zoneTo != "OPPOSING PLAY")   emit playerMinionZonePlayRemove(id.toInt());
+        }
     }
 
 
@@ -1439,15 +1455,15 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             //Jugador esbirro cambia pos
             if(player.toInt() == playerID)
             {
-    //            emit pDebug("Player: New minion pos: " +
-    //                        name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
+                emit pDebug("Player: New minion pos: " +
+                            name + " >> " + zonePos + " Minions: " + QString::number(playerMinions), numLine);
                 emit playerMinionPosChange(id.toInt(), zonePosInt);
             }
             //Enemigo esbirro cambia pos
             else
             {
-    //            emit pDebug("Enemy: New minion pos: " +
-    //                        name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
+                emit pDebug("Enemy: New minion pos: " +
+                            name + " >> " + zonePos + " Minions: " + QString::number(enemyMinions), numLine);
                 emit enemyMinionPosChange(id.toInt(), zonePosInt);
             }
         }
