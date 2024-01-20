@@ -994,13 +994,24 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             }
         }
 
-        //Jugador, OUTSIDER desconocido a deck
+        //Jugador envia carta desconocida a deck
         else if(zoneTo == "FRIENDLY DECK")
         {
-            if(mulliganPlayerDone)
+            //Carta devuelta al mazo en Mulligan
+            if(zoneFrom == "FRIENDLY HAND")
             {
-                emit pDebug("Player: Outsider unknown card to deck. ID: " + id, numLine);
+                emit pDebug("Player: Starting card returned. ID: " + id, numLine);
                 emit playerReturnToDeck("", id.toInt());
+                emit playerCardPlayed(id.toInt(), "", true, isPlayerTurn);
+            }
+            //Jugador, OUTSIDER desconocido a deck
+            else
+            {
+                if(mulliganPlayerDone)
+                {
+                    emit pDebug("Player: Outsider unknown card to deck. ID: " + id, numLine);
+                    emit playerReturnToDeck("", id.toInt());
+                }
             }
         }
 
