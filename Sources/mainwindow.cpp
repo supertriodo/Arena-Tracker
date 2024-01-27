@@ -4885,7 +4885,7 @@ void MainWindow::testDelay()
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
-//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //321) lang = "enUS";
+//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
