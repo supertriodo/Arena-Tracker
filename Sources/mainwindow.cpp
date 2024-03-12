@@ -4823,8 +4823,20 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "WONDERS" << "SCHOLOMANCE" << "ALTERAC_VALLEY" <<
-        "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
+    arenaSets << "CORE" << "LEGACY" <<
+        "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
+        "TAVERNS_OF_TIME" << "WONDERS" <<
+        "NAXX" << "GVG" << "BRM" << "TGT" <<
+        "LOE" << "OG" << "KARA" << "GANGS" <<
+        "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
+        "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
+        "DRAGONS" << "YEAR_OF_THE_DRAGON" <<
+        "BLACK_TEMPLE" << "SCHOLOMANCE" <<
+        "DARKMOON_FAIRE" << "THE_BARRENS" <<
+        "STORMWIND" << "ALTERAC_VALLEY" <<
+        "THE_SUNKEN_CITY" << "REVENDRETH" <<
+        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
+        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4833,20 +4845,64 @@ void MainWindow::testTierlists()
 
 
 /*
- *  Core "CORE"
- *  Caverns of Time "WONDERS"
- *  Scholomance Academy "SCHOLOMANCE"
- *  Fractured in Alterac Valley "ALTERAC_VALLEY"
- *  Path of Arthas "PATH_OF_ARTHAS"
- *  TITANS "TITANS"
- *  Showdown in the Badlands "WILD_WEST"
+ * Core "CORE"
+ * Legacy "LEGACY" // Old Basic
+ * Expert "EXPERT1"// Old Classic
+ * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
+ * Taverns of Time "TAVERNS_OF_TIME"
+ * Caverns of Time "WONDERS"
+ * Curse of Naxxramas "NAXX"
+ * Goblins vs Gnomes "GVG"
+ * Blackrock Mountain "BRM"
+ * The Grand Tournament "TGT"
+ * League of Explorer "LOE"
+ * Whispers of the Old Gods "OG"
+ * One Night in Karazhan "KARA"
+ * Mean Streets of Gadgetzan "GANGS"
+ * Journey to Un'Goro "UNGORO"
+ * Knights of the Frozen Throne "ICECROWN"
+ * Kobolds and Catacombs "LOOTAPALOOZA"
+ * The Witchwood "GILNEAS"
+ * The boomsday Project "BOOMSDAY"
+ * Rastakhan's Rumble "TROLL"
+ * Rise of Shadows "DALARAN"
+ * Saviors of Uldum "ULDUM"
+ * Descent of Dragons "DRAGONS"
+ * Galakrond's Awakening "YEAR_OF_THE_DRAGON"
+ * Ashes of Outland "BLACK_TEMPLE"
+ * Scholomance Academy "SCHOLOMANCE"
+ * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ * Murder at Castle Nathria "REVENDRETH"
+ * Path of Arthas "PATH_OF_ARTHAS"
+ * March of the Lick King "RETURN_OF_THE_LICH_KING"
+ * Festival of Legends "BATTLE_OF_THE_BANDS"
+ * TITANS "TITANS"
+ * Showdown in the Badlands "WILD_WEST"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
-    arenaSets << "CORE" << "WONDERS" << "SCHOLOMANCE" << "ALTERAC_VALLEY" <<
-        "PATH_OF_ARTHAS" << "TITANS" << "WILD_WEST";
+
+
+    arenaSets << "CORE" << "LEGACY" <<
+        "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
+        "TAVERNS_OF_TIME" << "WONDERS" <<
+        "NAXX" << "GVG" << "BRM" << "TGT" <<
+        "LOE" << "OG" << "KARA" << "GANGS" <<
+        "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
+        "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
+        "DRAGONS" << "YEAR_OF_THE_DRAGON" <<
+        "BLACK_TEMPLE" << "SCHOLOMANCE" <<
+        "DARKMOON_FAIRE" << "THE_BARRENS" <<
+        "STORMWIND" << "ALTERAC_VALLEY" <<
+        "THE_SUNKEN_CITY" << "REVENDRETH" <<
+        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
+        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST";
 
     if(fromHearth)
     {
