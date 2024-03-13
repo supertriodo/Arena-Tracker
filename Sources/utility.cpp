@@ -520,6 +520,8 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Festival of Legends "BATTLE_OF_THE_BANDS"
  * TITANS "TITANS"
  * Showdown in the Badlands "WILD_WEST"
+ * "EVENT"
+ * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  */
 
 
@@ -538,8 +540,9 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "DALARAN" || cardSet == "ULDUM" || cardSet == "DRAGONS" || cardSet == "YEAR_OF_THE_DRAGON" ||
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
 //        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
-        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
-        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST")
+//        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
+        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST" ||
+        cardSet == "WHIZBANGS_WORKSHOP")
     {
         return true;
     }
