@@ -4824,7 +4824,7 @@ void MainWindow::testTierlists()
 
     QStringList arenaSets;
     arenaSets << "CORE" << "LEGACY" <<
-        "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
+        "EXPERT1" << "DEMON_HUNTER_INITIATE" << "EVENT" <<
         "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
         "LOE" << "OG" << "KARA" << "GANGS" <<
         "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
@@ -4888,7 +4888,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
 
     arenaSets << "CORE" << "LEGACY" <<
-        "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
+        "EXPERT1" << "DEMON_HUNTER_INITIATE" << "EVENT" <<
         "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
         "LOE" << "OG" << "KARA" << "GANGS" <<
         "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
@@ -4934,7 +4934,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-//    testDownloadRotation(true/*, "DEEP_"*/);//Force hearthpwn true
+//    testDownloadRotation(false/*, "DEEP_"*/);//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
