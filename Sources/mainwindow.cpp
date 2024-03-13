@@ -4825,8 +4825,7 @@ void MainWindow::testTierlists()
     QStringList arenaSets;
     arenaSets << "CORE" << "LEGACY" <<
         "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
-        "TAVERNS_OF_TIME" << "WONDERS" <<
-        "NAXX" << "GVG" << "BRM" << "TGT" <<
+        "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
         "LOE" << "OG" << "KARA" << "GANGS" <<
         "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
         "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
@@ -4849,7 +4848,6 @@ void MainWindow::testTierlists()
  * Legacy "LEGACY" // Old Basic
  * Expert "EXPERT1"// Old Classic
  * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
- * Taverns of Time "TAVERNS_OF_TIME"
  * Caverns of Time "WONDERS"
  * Curse of Naxxramas "NAXX"
  * Goblins vs Gnomes "GVG"
@@ -4891,8 +4889,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
     arenaSets << "CORE" << "LEGACY" <<
         "EXPERT1" << "DEMON_HUNTER_INITIATE" <<
-        "TAVERNS_OF_TIME" << "WONDERS" <<
-        "NAXX" << "GVG" << "BRM" << "TGT" <<
+        "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
         "LOE" << "OG" << "KARA" << "GANGS" <<
         "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
         "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
