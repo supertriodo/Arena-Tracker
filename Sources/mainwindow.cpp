@@ -4812,7 +4812,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    draftHandler->getSynergyHandler()->testSynergies(/*"DEEP_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("EVENT", 0, 0/*, "DEEP_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20/*, "DEEP_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4836,7 +4836,7 @@ void MainWindow::testTierlists()
         "STORMWIND" << "ALTERAC_VALLEY" <<
         "THE_SUNKEN_CITY" << "REVENDRETH" <<
         "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST";
+        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4902,7 +4902,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
         "STORMWIND" << "ALTERAC_VALLEY" <<
         "THE_SUNKEN_CITY" << "REVENDRETH" <<
         "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST";
+        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP";
 
     if(fromHearth)
     {
