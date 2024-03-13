@@ -1,6 +1,6 @@
 {
-  "arenaVersion": 51,
-  "arenaSets": ["CORE", "LEGACY", 
+  "arenaVersion": 52,
+  "arenaSets": ["CORE", "LEGACY", "EVENT", 
         "EXPERT1", "DEMON_HUNTER_INITIATE", 
         "WONDERS", "NAXX", "GVG", "BRM", "TGT", 
         "LOE", "OG", "KARA", "GANGS", 
