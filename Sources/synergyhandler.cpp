@@ -30,6 +30,8 @@ void SynergyHandler::createDraftItemCounters()
     cardTypeCounters[V_WEAPON] = new DraftItemCounter(this, "Weapon", "Weapon Gen", mechanicsLayout, 0, 2,
                                                       QPixmap(ThemeHandler::weaponsCounterFile()), 32, true, false);
     cardTypeCounters[V_WEAPON_ALL] = new DraftItemCounter(this, "Weapon");
+    cardTypeCounters[V_LOCATION] = new DraftItemCounter(this, "Location");
+    cardTypeCounters[V_LOCATION_ALL] = new DraftItemCounter(this, "Location");
 
     connect(cardTypeCounters[V_MINION], SIGNAL(iconEnter(QList<SynergyCard>&,QRect&)),
             this, SLOT(sendItemEnter(QList<SynergyCard>&,QRect&)));
@@ -847,12 +849,23 @@ void SynergyHandler::updateCardTypeCounters(DeckCard &deckCard, QMap<QString, QS
         cardTypeCounters[V_WEAPON]->increaseExtra(code);
         weaponMap.insertMulti(code, ".");
     }
+    if(cardType == LOCATION)
+    {
+        cardTypeCounters[V_LOCATION]->increase(code);
+        cardTypeCounters[V_LOCATION_ALL]->increase(code);
+    }
+    else if(isLocationGen(code))
+    {
+        cardTypeCounters[V_LOCATION_ALL]->increase(code);
+    }
 
 
     if(isSpellSyn(code))                cardTypeCounters[V_SPELL]->increaseSyn(code);
     else if(isSpellAllSyn(code, text))  cardTypeCounters[V_SPELL_ALL]->increaseSyn(code);
     if(isWeaponSyn(code))               cardTypeCounters[V_WEAPON]->increaseSyn(code);
     else if(isWeaponAllSyn(code, text)) cardTypeCounters[V_WEAPON_ALL]->increaseSyn(code);
+    if(isLocationSyn(code))             cardTypeCounters[V_LOCATION]->increaseSyn(code);
+    else if(isLocationAllSyn(code, text)) cardTypeCounters[V_LOCATION_ALL]->increaseSyn(code);
 }
 
 
@@ -1317,12 +1330,20 @@ void SynergyHandler::getCardTypeSynergies(DeckCard &deckCard, QMap<QString, QMap
         cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isWeaponGen(code, text))            cardTypeCounters[V_WEAPON_ALL]->insertSynCards(synergyTagMap);
+    if(cardType == LOCATION)
+    {
+        cardTypeCounters[V_LOCATION]->insertSynCards(synergyTagMap);
+        cardTypeCounters[V_LOCATION_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isLocationGen(code))                cardTypeCounters[V_LOCATION_ALL]->insertSynCards(synergyTagMap);
 
 
     if(isSpellSyn(code))                        cardTypeCounters[V_SPELL]->insertCards(synergyTagMap);
     else if(isSpellAllSyn(code, text))          cardTypeCounters[V_SPELL_ALL]->insertCards(synergyTagMap);
     if(isWeaponSyn(code))                       cardTypeCounters[V_WEAPON]->insertCards(synergyTagMap);
     else if(isWeaponAllSyn(code, text))         cardTypeCounters[V_WEAPON_ALL]->insertCards(synergyTagMap);
+    if(isLocationSyn(code))                     cardTypeCounters[V_LOCATION]->insertCards(synergyTagMap);
+    else if(isLocationAllSyn(code, text))       cardTypeCounters[V_LOCATION_ALL]->insertCards(synergyTagMap);
 }
 
 
@@ -1876,9 +1897,9 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
 {
     if(mechanic.startsWith('='))    return true;
     QStringList validMecs = {
-        "spellGen", "weaponGen",
-        "spellSyn", "weaponSyn",
-        "spellAllSyn", "weaponAllSyn",
+        "spellGen", "weaponGen", "locationGen",
+        "spellSyn", "weaponSyn", "locationSyn",
+        "spellAllSyn", "weaponAllSyn", "locationAllSyn",
 
         "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen",
         "dragonGen", "nagaGen", "undeadGen", "quilboarGen",
@@ -2192,6 +2213,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isWeaponGen(code, text))             mec<<"weaponGen";
     if(isSpellAllSyn(code, text))           mec<<"spellAllSyn";
     if(isWeaponAllSyn(code, text))          mec<<"weaponAllSyn";
+    if(isLocationAllSyn(code, text))        mec<<"locationAllSyn";
 
     if(isDrop2(code, cost, attack, health)) mec<<"drop2";
     if(isDrop3(code, cost, attack, health)) mec<<"drop3";
@@ -2330,6 +2352,14 @@ bool SynergyHandler::isWeaponGen(const QString &code, const QString &text)
     else if(text.contains("equip "))
     {
         return true;
+    }
+    return false;
+}
+bool SynergyHandler::isLocationGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("locationGen");
     }
     return false;
 }
@@ -3584,6 +3614,25 @@ bool SynergyHandler::isWeaponAllSyn(const QString &code, const QString &text)
         return text.contains("weapon") && !text.contains("opponent's weapon");
     }
 }
+bool SynergyHandler::isLocationSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("locationSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isLocationAllSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("locationAllSyn");
+    }
+    else
+    {
+        return text.contains("location");
+    }
+}
 bool SynergyHandler::isMurlocSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -4783,6 +4832,8 @@ spellGen (no usamos spell, es un cardType)
 spellSyn o spellAllSyn
 weaponGen (no usamos weapon, es un cardType)
 weaponSyn o weaponAllSyn
+locationGen (no usamos location, es un cardType)
+locationSyn o locationAllSyn
 destroyGen o damageMinionsGen
 taunt o tauntGen
 tauntSyn o tauntAllSyn

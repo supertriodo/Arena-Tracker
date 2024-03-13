@@ -105,6 +105,7 @@ private:
 
     bool isSpellGen(const QString &code);
     bool isWeaponGen(const QString &code, const QString &text);
+    bool isLocationGen(const QString &code);
     bool isMurlocGen(const QString &code);
     bool isDemonGen(const QString &code);
     bool isMechGen(const QString &code);
@@ -240,6 +241,8 @@ private:
     bool isSpellAllSyn(const QString &code, const QString &text);
     bool isWeaponSyn(const QString &code);
     bool isWeaponAllSyn(const QString &code, const QString &text);
+    bool isLocationSyn(const QString &code);
+    bool isLocationAllSyn(const QString &code, const QString &text);
     bool isEnrageSyn(const QString &code, const QString &text);
     bool isOverloadSyn(const QString &code);
     bool isOverloadAllSyn(const QString &code);
