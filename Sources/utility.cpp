@@ -520,7 +520,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Festival of Legends "BATTLE_OF_THE_BANDS"
  * TITANS "TITANS"
  * Showdown in the Badlands "WILD_WEST"
- * "EVENT"
+ * 10-year anniversary celebration "EVENT"
  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  */
 
