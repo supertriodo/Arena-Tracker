@@ -1977,7 +1977,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("WILD_WEST", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("WHIZBANGS_WORKSHOP", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -1995,7 +1995,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                containsAll(text, "overload")
+                containsAll(text, "taunt")
 //                text.contains("deathrattle")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
@@ -4732,7 +4732,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
         RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
         BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
         ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST,
-        HUNTERS_INSIGHT
+        HUNTERS_INSIGHT, SANDBOX_SCOUNDREL, ENSMALLEN
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
     }
@@ -4740,7 +4740,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
-        LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER
+        LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER, SPARKLING_PHIAL
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
     }
@@ -4765,7 +4765,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
         SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW, PRISMATIC_BEAM,
-        THRISTY_DRIFTER, MANTLE_SHAPER
+        THRISTY_DRIFTER, MANTLE_SHAPER, TABLE_FLIP
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }
@@ -4810,7 +4810,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
 
     {
     QStringList candidates = {
-        LIVING_MANA, NAGA_GIANT, FANOTTEM_LORD_OF_THE_OPERA, YOGG_SARON_UNLEASHED
+        LIVING_MANA, NAGA_GIANT, FANOTTEM_LORD_OF_THE_OPERA, YOGG_SARON_UNLEASHED, PLAYHOUSE_GIANT
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 10;
     }

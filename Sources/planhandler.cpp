@@ -2966,6 +2966,12 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         playerIn = true;
         onlyMinions = true;
     }
+    else if(Utility::codeEqConstant(code, BAKING_SODA_VOLCANO))
+    {
+        missiles = 10;
+        playerIn = true;
+        onlyMinions = true;
+    }
     else if(Utility::codeEqConstant(code, VOLCANO))
     {
         missiles = 15;
@@ -2976,6 +2982,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     else if(Utility::codeEqConstant(code, ARCANE_MISSILES) || Utility::codeEqConstant(code, KOBOLD_APPRENTICE))
     {
         missiles = 3;
+    }
+    else if(Utility::codeEqConstant(code, TRIPLEWICK_TRICKSTER))
+    {
+        missiles = 3;
+        missileDamage = 2;
     }
     else if(Utility::codeEqConstant(code, GREATER_ARCANE_MISSILES))
     {
@@ -3070,6 +3081,10 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
     {
         missiles = numRaceOnBoard(BEAST) + 1;
         missileDamage = 2;
+    }
+    else if(Utility::codeEqConstant(code, JUNGLE_GYM))
+    {
+        missiles = numRaceOnBoard(BEAST) + 1;
     }
     else if(Utility::codeEqConstant(code, METEOROLOGIST) || Utility::codeEqConstant(code, BLASTMAGE_MINER))
     {

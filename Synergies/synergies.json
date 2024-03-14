@@ -3553,7 +3553,7 @@
 "TOY_340" : [ "spellAllSyn", "tokenCardGen", "corpseGen" ],
 "TOY_341" : [ "battlecry", "returnSyn", "tokenCardGen", "corpseGen", "damageMinionsGen", "reachGen", "=>SynSpellCost6", "=>SynMinionCost6", "=>SynWeaponCost6" ],
 "TOY_350" : [ "beastAllSyn", "drop2", "battlecry", "returnSyn" ],
-"TOY_351" : [ "beastSyn", "eggGen", "deathrattle", "tauntGiverSyn", "attackBuffSyn", "tokenCardGen", "corpseGen", "beastGen", "toYourHandGen2" ],
+"TOY_351" : [ "beastSyn", "eggGen", "deathrattle", "tauntGiverSyn", "attackBuffSyn", "tokenCardGen", "corpseGen", "beastGen" ],
 "TOY_352" : [ "beastSyn", "drawGen" ],
 "TOY_353" : [ "drop2", "toYourHandGen2", "beastGen" ],
 "TOY_354" : [ "drop4", "tokenGen", "corpseGen", "tokenSyn", "beastGen" ],
