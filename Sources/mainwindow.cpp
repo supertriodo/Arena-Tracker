@@ -4934,7 +4934,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-    testDownloadRotation(true/*, "DEEP_"*/);//Force hearthpwn true
+//    testDownloadRotation(true/*, "DEEP_"*/);//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
