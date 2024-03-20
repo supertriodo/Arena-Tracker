@@ -4970,7 +4970,7 @@ void MainWindow::testDelay()
 //Update Utility::isFromStandardSet(QString code) --> WHIZBANGS_WORKSHOP
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
@@ -4994,13 +4994,13 @@ void MainWindow::testDelay()
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
 //|-Synergy / Code  --> 29.0 Patch Notes (11-03-2024)
 
-///Rotacion CORE
+//Rotacion CORE
 //|-Revisar cartas github CORE
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
-///New leaderboard season
-//En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+//New leaderboard season
+//|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
 
