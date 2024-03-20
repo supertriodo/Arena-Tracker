@@ -4887,7 +4887,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "LEGACY" <<
+    arenaSets << "CORE"/* << "LEGACY" <<
         "EXPERT1" << "DEMON_HUNTER_INITIATE" << "EVENT" <<
         "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
         "LOE" << "OG" << "KARA" << "GANGS" <<
@@ -4899,7 +4899,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
         "STORMWIND" << "ALTERAC_VALLEY" <<
         "THE_SUNKEN_CITY" << "REVENDRETH" <<
         "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP";
+        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP"*/;
 
     if(fromHearth)
     {
@@ -4934,7 +4934,7 @@ void MainWindow::testDelay()
     testHeroPortraits();
     testSynergies();
 //    testTierlists();
-//    testDownloadRotation(false/*, "DEEP_"*/);//Force hearthpwn true
+    testDownloadRotation(true/*, "DEEP_"*/);//Force hearthpwn true
 //    Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
