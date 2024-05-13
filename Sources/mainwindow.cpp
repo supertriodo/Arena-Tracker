@@ -1498,6 +1498,8 @@ void MainWindow::createGameWatcher()
             secretsHandler, SLOT(secretRevealed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSpellPlayed(int,QString)),
             secretsHandler, SLOT(playerSpellPlayed(int,QString)));
+    connect(gameWatcher, SIGNAL(playerWeaponPlayed(int,QString)),
+            secretsHandler, SLOT(playerWeaponPlayed(int,QString)));
     connect(gameWatcher, SIGNAL(playerSpellObjMinionPlayed()),
             secretsHandler, SLOT(playerSpellObjMinionPlayed()));
     connect(gameWatcher, SIGNAL(playerSpellObjHeroPlayed()),
@@ -4992,7 +4994,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 29.0 Patch Notes (11-03-2024)
+//|-Synergy / Code  --> 29.2.2 Patch Notes (25-04-2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE

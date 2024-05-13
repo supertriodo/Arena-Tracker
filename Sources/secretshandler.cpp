@@ -282,6 +282,7 @@ ActiveSecret * SecretsHandler::getActiveSecret(CardClass hero, bool inArena)
                 unknownSecretPlayedAddOption(DART_TRAP, inArena, activeSecret);
                 unknownSecretPlayedAddOption(OPEN_THE_CAGES, inArena, activeSecret);
                 unknownSecretPlayedAddOption(MOTION_DENIED, inArena, activeSecret);
+                unknownSecretPlayedAddOption(BARGAIN_BIN, inArena, activeSecret);
                 //RARE
                 unknownSecretPlayedAddOption(PACK_TACTICS, inArena, activeSecret);
                 unknownSecretPlayedAddOption(WANDERING_MONSTER, inArena, activeSecret);
@@ -634,6 +635,14 @@ void SecretsHandler::discardSecretOption(QString code, int delay)
 
 
 //NUEVO SECRETO 3 condicion trigger
+void SecretsHandler::playerWeaponPlayed(int id, QString code)
+{
+    Q_UNUSED(id);
+    Q_UNUSED(code);
+
+    discardSecretOptionNow(BARGAIN_BIN);
+}
+
 void SecretsHandler::playerSpellPlayed(int id, QString code)
 {
     Q_UNUSED(id);
@@ -647,6 +656,7 @@ void SecretsHandler::playerSpellPlayed(int id, QString code)
     discardSecretOptionNow(CAT_TRICK);
     discardSecretOptionNow(PRESSURE_PLATE);
     discardSecretOptionNow(ICE_TRAP);
+    discardSecretOptionNow(BARGAIN_BIN);
 
     discardSecretOptionNow(NEVER_SURRENDER);
     discardSecretOptionNow(OH_MY_YOGG);
@@ -771,6 +781,7 @@ void SecretsHandler::playerMinionPlayedNow(QString code, int playerMinions)
     discardSecretOption(SNIPE2);
     discardSecretOption(ZOMBEEEES);//Ocultado por SNIPE
     discardSecretOptionNow(HIDDEN_CACHE);//No necesita objetivo
+    discardSecretOptionNow(BARGAIN_BIN);//No necesita objetivo
 
     if(playerMinions>3)
     {
@@ -1052,7 +1063,7 @@ void SecretsHandler::createSecretsByPickrate()
     secretsByPickrate[HUNTER] << FREEZING_TRAP << EXPLOSIVE_TRAP << BEAR_TRAP << SNIPE << SNIPE2 << PRESSURE_PLATE << DART_TRAP
                               << PACK_TACTICS << WANDERING_MONSTER << VENOMSTRIKE_TRAP << CAT_TRICK << MISDIRECTION << HIDDEN_CACHE
                               << SNAKE_TRAP << RAT_TRAP << OPEN_THE_CAGES << ICE_TRAP << EMERGENCY_MANEUVERS << MOTION_DENIED
-                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH;
+                              << ZOMBEEEES << HIDDEN_MEANING << BAIT_AND_SWITCH << BARGAIN_BIN;
 
     secretsByPickrate[MAGE] << NETHERWIND_PORTAL << MIRROR_ENTITY << FROZEN_CLONE << DDUPLICATE << FLAME_WARD << ICE_BARRIER
                             << EXPLOSIVE_RUNES << POTION_OF_POLIMORPH << EFFIGY << VAPORIZE << COUNTERSPELL << MANA_BIND

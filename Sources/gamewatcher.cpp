@@ -1345,7 +1345,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
                 emit pDebug("Player: Spell played: " + name + " ID: " + id, numLine);
                 if(isPlayerTurn)    emit playerSpellPlayed(id.toInt(), cardId);
             }
-            //Jugador juega esbirro
+            //Jugador juega esbirro/location
             else if(zoneTo == "FRIENDLY PLAY")
             {
                 if(Utility::getTypeFromCode(cardId) == MINION)//Evita locations
@@ -1362,6 +1362,7 @@ void GameWatcher::processZone(QString &line, qint64 numLine)
             else if(zoneTo == "FRIENDLY PLAY (Weapon)")
             {
                 emit pDebug("Player: Weapon played: " + name + " ID: " + id, numLine);
+                if(isPlayerTurn)    emit playerWeaponPlayed(id.toInt(), cardId);
             }
             //Jugador juega heroe
             else if(zoneTo == "FRIENDLY PLAY (Hero)")

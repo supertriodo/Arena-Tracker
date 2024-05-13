@@ -121,6 +121,7 @@ public slots:
     void secretRevealed(int id, QString code);
     void resetSecretsInterface();
     void playerSpellPlayed(int id, QString code);
+    void playerWeaponPlayed(int id, QString code);
     void playerSpellObjMinionPlayed();
     void playerSpellObjHeroPlayed();
     void playerBattlecryObjHeroPlayed();
