@@ -61,7 +61,7 @@
 #define ZOMBEEEES QString("NX2_013")
 #define HIDDEN_MEANING QString("JAM_003")
 #define BAIT_AND_SWITCH QString("TTN_504")
-#define BARGAIN_BIN QString("")//TODO
+#define BARGAIN_BIN QString("MIS_105")
 
 //MAGE
 #define FROZEN_CLONE QString("ICC_082")
