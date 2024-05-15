@@ -2011,17 +2011,17 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 
 
 ///Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage random)
-//containsAll(text, "damage random") || containsAll(text, "damage split")
+// containsAll(text, "damage random") || containsAll(text, "damage split")
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
-//containsAll(text, "gain mana this turn only") || containsAll(text, "refresh mana")
+// containsAll(text, "gain mana this turn only") || containsAll(text, "refresh mana")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-//containsAll(text, "spend all your mana") || text.contains("cost")
+// containsAll(text, "spend all your mana") || text.contains("cost")
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
-//isDrawGen(code, text) || containsAll(text, "draw")
+// isDrawGen(code, text) || containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
-//containsAll(text, "draw cop")
+// containsAll(text, "draw cop")
 ///Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
-//isAoeGen(code, text)
+// isAoeGen(code, text)
                 )
             {
 //                qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;

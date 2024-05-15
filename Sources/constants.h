@@ -685,7 +685,8 @@
 #define TABLE_FLIP "TOY_883"
 #define CICIGI "TOY_913"
 #define SKETCH_ARTIST "TOY_916"
-
+#define MALFUNCTION "MIS_107"
+#define DOMINO_EFFECT "MIS_027"
 
 
 #endif // CONSTANTS_H

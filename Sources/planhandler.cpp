@@ -3029,37 +3029,25 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         missileDamage = 2;
         onlyMinions = true;
     }
+    else if(Utility::codeEqConstant(code, MALFUNCTION))
+    {
+        missiles = 3;
+        onlyMinions = true;
+    }
     else if(Utility::codeEqConstant(code, FIREBRAND) || Utility::codeEqConstant(code, DEVOURING_PLAGUE))
     {
         missiles = 4;
         onlyMinions = true;
     }
-    else if(Utility::codeEqConstant(code, FULLBLOWN_EVIL))
+    else if(Utility::codeEqConstant(code, FULLBLOWN_EVIL) || Utility::codeEqConstant(code, MORTAL_ERADICATION) ||
+               Utility::codeEqConstant(code, XB488_DISPOSALBOT) || Utility::codeEqConstant(code, XB488_DISPOSALBOT_FORGED) ||
+               Utility::codeEqConstant(code, BELLOWING_FLAMES) || Utility::codeEqConstant(code, BELLOWING_FLAMES_FORGED)
+               )
     {
         missiles = 5;
         onlyMinions = true;
     }
-    else if(Utility::codeEqConstant(code, XB488_DISPOSALBOT) || Utility::codeEqConstant(code, XB488_DISPOSALBOT_FORGED))
-    {
-        missiles = 5;
-        onlyMinions = true;
-    }
-    else if(Utility::codeEqConstant(code, MORTAL_ERADICATION))
-    {
-        missiles = 5;
-        onlyMinions = true;
-    }
-    else if(Utility::codeEqConstant(code, BELLOWING_FLAMES) || Utility::codeEqConstant(code, BELLOWING_FLAMES_FORGED))
-    {
-        missiles = 5;
-        onlyMinions = true;
-    }
-    else if(Utility::codeEqConstant(code, RENO_THE_RELICOLOGIST))
-    {
-        missiles = 10;
-        onlyMinions = true;
-    }
-    else if(Utility::codeEqConstant(code, DONT_STAND_IN_THE_FIRE))
+    else if(Utility::codeEqConstant(code, RENO_THE_RELICOLOGIST) || Utility::codeEqConstant(code, DONT_STAND_IN_THE_FIRE))
     {
         missiles = 10;
         onlyMinions = true;

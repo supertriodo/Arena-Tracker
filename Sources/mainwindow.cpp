@@ -4813,8 +4813,8 @@ void MainWindow::testPopularList(int i)
 
 void MainWindow::testSynergies()
 {
-//    draftHandler->getSynergyHandler()->testSynergies(/*"TOY_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20, "MIS_");//PLACEHOLDER_202204
+   // draftHandler->getSynergyHandler()->testSynergies(/*"MIS_"*/);
+   // draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20, "MIS_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4994,7 +4994,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 29.2.2 Patch Notes (25-04-2024)
+//|-Synergy / Code  --> 29.4 Patch Notes (13-05-2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
