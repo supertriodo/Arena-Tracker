@@ -4841,7 +4841,7 @@ void MainWindow::testTierlists()
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-//    Utility::checkTierlistsCount(arenaSets);
+   // Utility::checkTierlistsCount(arenaSets);
 }
 
 
