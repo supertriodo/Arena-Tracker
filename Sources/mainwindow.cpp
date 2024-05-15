@@ -4814,7 +4814,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
 //    draftHandler->getSynergyHandler()->testSynergies(/*"TOY_"*/);
-//    draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20/*, "DEEP_"*/);//PLACEHOLDER_202204
+//    draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20, "MIS_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
