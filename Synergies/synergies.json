@@ -3818,7 +3818,7 @@
 "TTN_736" : [ "pingGen" ],
 "TTN_737" : [ "discover" ],
 "TTN_741" : [ "otherClassGen" ],
-"TTN_742" : [ "drop2", "toYourHandGen", "battlecry", "returnSyn" ],
+"TTN_742" : [ "drop3", "toYourHandGen", "battlecry", "returnSyn" ],
 "TTN_744" : [ "drawGen2", "enemyDrawGen" ],
 "TTN_745" : [ "discover2", "restoreTargetMinionGen", "restoreFriendlyHeroGen" ],
 "TTN_751" : [ "weaponGen", "battlecry", "returnSyn" ],
