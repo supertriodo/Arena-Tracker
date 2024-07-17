@@ -389,6 +389,12 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             {
                 checkCardsJsonVersion(reply->rawHeader("Location"));
             }
+            else if(fullUrl == HSR_CARDS_URL)
+            {
+                pDebug("Extra: Json Cards --> Redirection failed.");
+                pDebug("Extra: Json Cards --> Use local cards.json");
+                initHSRCards();
+            }
             else
             {
                 pDebug("Extra: Json Cards --> Download Success.");
@@ -4813,8 +4819,8 @@ void MainWindow::testPopularList(int i)
 
 void MainWindow::testSynergies()
 {
-   // draftHandler->getSynergyHandler()->testSynergies(/*"MIS_"*/);
-   // draftHandler->getSynergyHandler()->debugSynergiesSet("WHIZBANGS_WORKSHOP", 0, 20, "MIS_");//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->testSynergies(/*"MIS_"*/);
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("ISLAND_VACATION", 0, 20/*, "MIS_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4933,8 +4939,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
    // testTierlists();
    // testDownloadRotation(true, "MIS_");//Force hearthpwn true
    // Utility::resizeSignatureCards();
