@@ -4926,6 +4926,9 @@ LACKEY: lackeyGen/lackeySyn
     +damageMinionsGen/destroyGen (SI RANDOM/NO DEATHRATTLE)
     +aoeGen (SI RANDOM/SI DEATHRATTLE)
 
+ALL SCHOOLS:"arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn"
+ALL RACES:  "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn"
+
 
 REGLAS
 +No hacemos sinergias si requieren 3 cartas, por ejemplo la carta que crea dos 1/1 si tiene un dragon en la mano no es tokenGen,
@@ -4950,7 +4953,7 @@ REGLAS
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
     Resumen: 3+3+3(echo), 2+2, 1+X, 0
-+drawGen/toYourHandGen: Costes 3-6 son toYourHandGen(1).
++drawGen/toYourHandGen: Costes 3-5 son toYourHandGen(1).
     Dragones cuentan x1.5 o x2 en mana.
     Murlocs cuestan %2 en mana.
     Pueden incluir un numero al final para indicar que roba mas de 1 carta. El maximo es 5 para evitar indicar
@@ -4986,6 +4989,7 @@ REGLAS
 +RushGiverSyn/EnrageGen/Frenzy: Solo son rushGiverSyn, los enrage minions de 5+ mana con un enrage significativo. Taunt 2/6 enrage +3 atk no lo es.
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
++EggGen/EggSyn lo usamos en huevos y criaturas que queremos sacrificar con aoes o destroy a friendly minion spells.
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
     Lo ponemos en minions que cuesten 2.5+ mana de lo que deberian por stats (3/3 es 3 mana, 3/4 es 3.5 mana)
     o 1.5+ si tienen reduccion de coste (nerubian prophet, thing from below) o son baratos (<5)
