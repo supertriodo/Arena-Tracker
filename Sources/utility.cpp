@@ -1151,9 +1151,11 @@ void Utility::resizeSignatureCards()
     for(const QString &file: (const QStringList)dir.entryList())
     {
         QImage webImage(goldenDir + "/" + file);
-        webImage = webImage.scaledToWidth(192, Qt::SmoothTransformation);
-        // webImage = webImage.scaledToHeight(266, Qt::SmoothTransformation);
-        webImage = webImage.copy(-7, -32, 200, 304);
+        // webImage = webImage.scaledToHeight(266, Qt::SmoothTransformation);//OLD
+        webImage = webImage.scaledToWidth(192, Qt::SmoothTransformation);//Minions
+        webImage = webImage.copy(-7, -32, 200, 304);//Minions
+        // webImage = webImage.scaledToWidth(176, Qt::SmoothTransformation);//Spells
+        // webImage = webImage.copy(-13, -32, 200, 304);//Spells
 
         if(!webImage.save(goldenDir + "/Resized/" + file, "png"))
         {
