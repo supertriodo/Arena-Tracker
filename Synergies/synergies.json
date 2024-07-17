@@ -4878,7 +4878,7 @@
 "WW_815" : [ "battlecry", "returnSyn" ],
 "WW_816" : [ "dragonSyn", "dragonGen", "drawGen3" ],
 "WW_818" : [ "discover", "tokenGen", "tokenCardGen", "corpseGen", "drop2" ],
-"WW_819" : [ "dragonAllSyn", "battlecry", "returnSyn", "drop2" ],
+"WW_819" : [ "dragonAllSyn", "battlecry", "returnSyn", "drop3" ],
 "WW_820" : [ "dragonAllSyn", "drop4", "battlecry", "returnSyn" ],
 "WW_821" : [ "toYourHandGen3", "chooseOne" ],
 "WW_822" : [ "dragonAllSyn", "battlecry", "taunt", "returnSyn", "evolveSyn" ],
