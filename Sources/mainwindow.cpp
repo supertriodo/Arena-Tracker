@@ -380,7 +380,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         if(endUrl == "cardsVersion.json")
         {
             int cardsVersion = QJsonDocument::fromJson(reply->readAll()).object().value("cardsVersion").toInt();
-            downloadCardsJson(cardsVersion);
+            downloadCardsJson(cardsVersion);//0 force hearthsim - else force AT github
         }
         //Cards json
         else if(endUrl == "cards.json")
@@ -389,15 +389,10 @@ void MainWindow::replyFinished(QNetworkReply *reply)
             {
                 checkCardsJsonVersion(reply->rawHeader("Location"));
             }
-            else if(fullUrl == HSR_CARDS_URL)
-            {
-                pDebug("Extra: Json Cards --> Redirection failed.");
-                pDebug("Extra: Json Cards --> Use local cards.json");
-                initHSRCards();
-            }
             else
             {
                 pDebug("Extra: Json Cards --> Download Success.");
+                if(fullUrl == HSR_CARDS_URL)    pDebug("Extra: Json Cards --> Redirection failed.");
                 QSettings settings("Arena Tracker", "Arena Tracker");
                 settings.setValue("cardsJsonVersion", fullUrl);
                 QByteArray jsonData = reply->readAll();
@@ -4940,7 +4935,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
-    // testSynergies();
+    testSynergies();
    // testTierlists();
    // testDownloadRotation(true, "MIS_");//Force hearthpwn true
    // Utility::resizeSignatureCards();
