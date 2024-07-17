@@ -522,6 +522,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Showdown in the Badlands "WILD_WEST"
  * 10-year anniversary celebration "EVENT"
  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+ * Perils in Paradise "ISLAND_VACATION"
  */
 
 
@@ -542,7 +543,7 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
 //        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
         cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST" ||
-        cardSet == "WHIZBANGS_WORKSHOP")
+        cardSet == "WHIZBANGS_WORKSHOP" || cardSet == "ISLAND_VACATION")
     {
         return true;
     }

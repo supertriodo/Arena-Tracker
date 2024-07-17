@@ -4847,42 +4847,12 @@ void MainWindow::testTierlists()
 
 
 /*
- * Core "CORE"
- * Legacy "LEGACY" // Old Basic
- * Expert "EXPERT1"// Old Classic
- * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
- * Caverns of Time "WONDERS"
- * Curse of Naxxramas "NAXX"
- * Goblins vs Gnomes "GVG"
- * Blackrock Mountain "BRM"
- * The Grand Tournament "TGT"
- * League of Explorer "LOE"
- * Whispers of the Old Gods "OG"
- * One Night in Karazhan "KARA"
- * Mean Streets of Gadgetzan "GANGS"
- * Journey to Un'Goro "UNGORO"
- * Knights of the Frozen Throne "ICECROWN"
- * Kobolds and Catacombs "LOOTAPALOOZA"
- * The Witchwood "GILNEAS"
- * The boomsday Project "BOOMSDAY"
- * Rastakhan's Rumble "TROLL"
- * Rise of Shadows "DALARAN"
- * Saviors of Uldum "ULDUM"
- * Descent of Dragons "DRAGONS"
- * Galakrond's Awakening "YEAR_OF_THE_DRAGON"
- * Ashes of Outland "BLACK_TEMPLE"
- * Scholomance Academy "SCHOLOMANCE"
- * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
- * Forged in the Barrens "THE_BARRENS"
- * United in Stormwind "STORMWIND"
- * Fractured in Alterac Valley "ALTERAC_VALLEY"
- * Voyage to the Sunken City "THE_SUNKEN_CITY"
- * Murder at Castle Nathria "REVENDRETH"
- * Path of Arthas "PATH_OF_ARTHAS"
- * March of the Lick King "RETURN_OF_THE_LICH_KING"
- * Festival of Legends "BATTLE_OF_THE_BANDS"
- * TITANS "TITANS"
- * Showdown in the Badlands "WILD_WEST"
+ *  Core "CORE"
+ *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  TITANS "TITANS"
+ *  Showdown in the Badlands "WILD_WEST"
+ *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+ *  Perils in Paradise "ISLAND_VACATION"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4890,19 +4860,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << /*"CORE" << "LEGACY" <<
-        "EXPERT1" << "DEMON_HUNTER_INITIATE" << "EVENT" <<
-        "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
-        "LOE" << "OG" << "KARA" << "GANGS" <<
-        "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
-        "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
-        "DRAGONS" << "YEAR_OF_THE_DRAGON" <<
-        "BLACK_TEMPLE" << "SCHOLOMANCE" <<
-        "DARKMOON_FAIRE" << "THE_BARRENS" <<
-        "STORMWIND" << "ALTERAC_VALLEY" <<
-        "THE_SUNKEN_CITY" << "REVENDRETH" <<
-        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << */"WHIZBANGS_WORKSHOP";
+    arenaSets << /*"CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST"
+            "WHIZBANGS_WORKSHOP" << */"ISLAND_VACATION";
 
     if(fromHearth)
     {
@@ -4935,10 +4894,10 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
-    testSynergies();
-   // testTierlists();
-   // testDownloadRotation(true, "MIS_");//Force hearthpwn true
-   // Utility::resizeSignatureCards();
+    // testSynergies();
+    // testTierlists();
+    testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
+    // Utility::resizeSignatureCards();
 //    Utility::mergeHSRwithFireCards();
 
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
@@ -4968,19 +4927,19 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
-//Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> WHIZBANGS_WORKSHOP
-//Subir cartas al github.
+///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+///Update Json arenaVersion --> Update arenaSets/arenaVersion
+//Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
+///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
 //Update secrets
-//Cartas especiales --> SynergyHandler::testSynergies()
+///Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
@@ -4994,8 +4953,8 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 29.6.2 Patch Notes (27-06-2024)
+///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+//|-Synergy / Code  --> 30.0 Patch Notes (15-07-2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
@@ -5003,7 +4962,7 @@ void MainWindow::testDelay()
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 //New leaderboard season
-//|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+///|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
 
