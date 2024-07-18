@@ -4893,13 +4893,13 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
-    // testSynergies();
+    testHeroPortraits();
+    testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
-//    Utility::mergeHSRwithFireCards();
 
+//    Utility::mergeHSRwithFireCards();
 //    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
 //    Utility::checkMissingGoldenCards();
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
@@ -4930,13 +4930,13 @@ void MainWindow::testDelay()
 ///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 ///Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
-///Subir cartas al github.
-    //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
+//Subir cartas al github.
+    ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 ///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
 //Update secrets
 ///Cartas especiales --> SynergyHandler::testSynergies()
@@ -4953,7 +4953,7 @@ void MainWindow::testDelay()
 //|-Check direct links
 
 //Cards changes
-///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
 //|-Synergy / Code  --> 30.0 Patch Notes (15-07-2024)
 
 //Rotacion CORE
