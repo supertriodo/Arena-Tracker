@@ -4822,27 +4822,16 @@ void MainWindow::testSynergies()
 
 void MainWindow::testTierlists()
 {
-    downloadHearthArenaTierlistOriginal();
+    // downloadHearthArenaTierlistOriginal();
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "LEGACY" <<
-        "EXPERT1" << "DEMON_HUNTER_INITIATE" << "EVENT" <<
-        "WONDERS" << "NAXX" << "GVG" << "BRM" << "TGT" <<
-        "LOE" << "OG" << "KARA" << "GANGS" <<
-        "UNGORO" << "ICECROWN" << "LOOTAPALOOZA" << "GILNEAS" <<
-        "BOOMSDAY" << "TROLL" << "DALARAN" << "ULDUM" <<
-        "DRAGONS" << "YEAR_OF_THE_DRAGON" <<
-        "BLACK_TEMPLE" << "SCHOLOMANCE" <<
-        "DARKMOON_FAIRE" << "THE_BARRENS" <<
-        "STORMWIND" << "ALTERAC_VALLEY" <<
-        "THE_SUNKEN_CITY" << "REVENDRETH" <<
-        "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING" <<
-        "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP";
+    arenaSets << "CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" <<
+                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
-   // Utility::checkTierlistsCount(arenaSets);
+   Utility::checkTierlistsCount(arenaSets);
 }
 
 
@@ -4860,8 +4849,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << /*"CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST"
-            "WHIZBANGS_WORKSHOP" << */"ISLAND_VACATION";
+    arenaSets << "CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" <<
+            "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
     if(fromHearth)
     {
@@ -4893,8 +4882,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
@@ -4927,12 +4916,12 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 ///Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
 //Subir cartas al github.
     ///-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
