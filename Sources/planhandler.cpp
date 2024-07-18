@@ -2979,7 +2979,11 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         onlyMinions = true;
     }
     //Enemy
-    else if(Utility::codeEqConstant(code, ARCANE_MISSILES) || Utility::codeEqConstant(code, KOBOLD_APPRENTICE))
+    else if(Utility::codeEqConstant(code, SEABREEZE_CHALICE) || Utility::codeEqConstant(code, SEABREEZE_CHALICE_1) || Utility::codeEqConstant(code, SEABREEZE_CHALICE_2))
+    {
+        missiles = 2;
+    }
+    else if(Utility::codeEqConstant(code, ARCANE_MISSILES) || Utility::codeEqConstant(code, KOBOLD_APPRENTICE) || Utility::codeEqConstant(code, HORIZONS_EDGE))
     {
         missiles = 3;
     }

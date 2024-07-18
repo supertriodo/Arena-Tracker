@@ -4882,8 +4882,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    // testHeroPortraits();
-    // testSynergies();
+    testHeroPortraits();
+    testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
@@ -4928,7 +4928,7 @@ void MainWindow::testDelay()
 //Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
 //Update secrets
-///Cartas especiales --> SynergyHandler::testSynergies()
+//Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)

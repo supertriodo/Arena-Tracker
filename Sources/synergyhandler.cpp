@@ -1977,7 +1977,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("WHIZBANGS_WORKSHOP", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("ISLAND_VACATION", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -2015,7 +2015,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 ///Update cartas que dan mana inmediato (monedas) --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
 // containsAll(text, "gain mana this turn only") || containsAll(text, "refresh mana")
 ///Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
-// containsAll(text, "spend all your mana") || text.contains("cost")
+// containsAll(text, "spend all your mana") || text.contains("cost")//cambio 3+ mana / -+ 1 o 2 no molestarse
 ///Update cartas que roban un tipo especifico de carta (Curator) --> EnemyHandHandler::isDrawSpecificCards (Hearthpwn Search: draw from your deck)
 // isDrawGen(code, text) || containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
@@ -4740,7 +4740,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         FROM_THE_DEPTHS, EYE_BEAM, AUCTIONHOUSE_GAVEL, SI7_SKULKER, PRIDE_SEEKER, STORMPIKE_MARSHAL, MURKWATER_SCRIBE,
-        LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER, SPARKLING_PHIAL
+        LIFE_FROM_DEATH, RUSH_THE_STAGE, HOLY_COWBOY, LOAD_THE_CHAMBER, SPARKLING_PHIAL, BOULDERING_BUDDY, FELFIRE_BONFIRE
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 1;
     }
@@ -4782,7 +4782,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         TIMEBOUND_GIANT, DEMONBOLT, SEA_GIANT, BLOODBOIL_BRUTE, FLESH_GIANT, IREBOUND_BRUTE, THE_GARDENS_GRACE,
-        GIGANTOTEM, GOLDSHIRE_GNOLL, LIVING_HORIZON
+        GIGANTOTEM, GOLDSHIRE_GNOLL, LIVING_HORIZON, SEASIDE_GIANT
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 6;
     }
