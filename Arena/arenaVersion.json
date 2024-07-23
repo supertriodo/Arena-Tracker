@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 58,
+  "arenaVersion": 59,
   "arenaSets": ["CORE", "BATTLE_OF_THE_BANDS", "TITANS", "WILD_WEST", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION"],
   "multiclassArena": true,
   "resetCards": 58,
   "resetHeroes": 55,
-  "seasonId": 46
+  "seasonId": 47
 }
