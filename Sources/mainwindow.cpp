@@ -317,7 +317,7 @@ QString MainWindow::getHSLanguage()
     }
 
     cardDownloader->setLang(lang);
-//    lang = "enUS";//Test secrets
+   // lang = "enUS";//Test secrets
     return lang;
 }
 
@@ -4888,8 +4888,8 @@ void MainWindow::testDelay()
     // testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
-//    Utility::mergeHSRwithFireCards();
-//    QTimer::singleShot(7000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
+    // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
+    // Utility::mergeHSRwithFireCards();
 //    Utility::checkMissingGoldenCards();
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
