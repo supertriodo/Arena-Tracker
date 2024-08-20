@@ -4836,12 +4836,12 @@ void MainWindow::testTierlists()
 
 
 /*
- *  Core "CORE"
- *  Festival of Legends "BATTLE_OF_THE_BANDS"
- *  TITANS "TITANS"
- *  Showdown in the Badlands "WILD_WEST"
- *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
- *  Perils in Paradise "ISLAND_VACATION"
+ *+  Core "CORE"
+ *  Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  March of the Lick King "RETURN_OF_THE_LICH_KING"
+ *+  TITANS "TITANS"
+ *+  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+ *+  Perils in Paradise "ISLAND_VACATION"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4849,8 +4849,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" <<
-            "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
+    arenaSets << "CORE" << "THE_SUNKEN_CITY" << "RETURN_OF_THE_LICH_KING" << "TITANS" <<
+                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
     if(fromHearth)
     {
@@ -4943,7 +4943,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 30.0.3 Patch Notes (08/08/2024)
+//|-Synergy / Code  --> 30.2 Patch Notes (15/08/2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
