@@ -4826,7 +4826,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" <<
+    arenaSets << "CORE" << "THE_SUNKEN_CITY" << "RETURN_OF_THE_LICH_KING" << "TITANS" <<
                  "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
