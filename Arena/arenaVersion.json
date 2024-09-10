@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 60,
+  "arenaVersion": 61,
   "arenaSets": ["CORE", "SCHOLOMANCE", "ALTERAC_VALLEY", "THE_SUNKEN_CITY", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION"],
   "multiclassArena": true,
-  "resetCards": 58,
+  "resetCards": 61,
   "resetHeroes": 55,
   "seasonId": 48
 }
