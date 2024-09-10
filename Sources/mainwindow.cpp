@@ -4836,12 +4836,12 @@ void MainWindow::testTierlists()
 
 
 /*
- *+  Core "CORE"
- *  Voyage to the Sunken City "THE_SUNKEN_CITY"
- *  March of the Lick King "RETURN_OF_THE_LICH_KING"
- *+  TITANS "TITANS"
- *+  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
- *+  Perils in Paradise "ISLAND_VACATION"
+ ** Core "CORE"
+ ** Scholomance Academy "SCHOLOMANCE"
+ ** Fractured in Alterac Valley "ALTERAC_VALLEY"
+ ** Voyage to the Sunken City "THE_SUNKEN_CITY"
+ ** Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+ ** Perils in Paradise "ISLAND_VACATION"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4849,7 +4849,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "THE_SUNKEN_CITY" << "RETURN_OF_THE_LICH_KING" << "TITANS" <<
+    arenaSets << "CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
                  "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
     if(fromHearth)
