@@ -4916,10 +4916,10 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-///Update Json cards --> Update CardsJson/cards.json
-///Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
+//Update Json cards --> Update CardsJson/cards.json
+//Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4928,8 +4928,8 @@ void MainWindow::testDelay()
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
-///Update secrets
-//Cartas especiales --> SynergyHandler::testSynergies()
+//Update secrets
+///Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
     //Update cartas que en la practica tienen un coste diferente --> SynergyHandler::getCorrectedCardMana (Hearthpwn Search: cost / spend all your mana)
@@ -4938,13 +4938,13 @@ void MainWindow::testDelay()
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
 //Update synergies.json
-///|-Check synergies in the new set --> New synergy keys
-///|-Check evolveSyn cards
-///|-Check direct links
+//|-Check synergies in the new set --> New synergy keys
+//|-Check evolveSyn cards
+//|-Check direct links
 
 //Cards changes
-///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-///|-Synergy / Code  --> 30.4 Patch Notes (09/09/2024)
+//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+//|-Synergy / Code  --> 30.4 Patch Notes (09/09/2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
