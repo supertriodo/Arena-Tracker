@@ -150,7 +150,7 @@ private:
     bool isMagnetic(const QString &code, const QJsonArray &mechanics);
     bool isMagneticGen(const QString &code);
     bool isEggGen(const QString &code, const QJsonArray &mechanics, int attack, const CardType &cardType);
-    bool isDamageFriendlyHeroGen(const QString &code);
+    bool isDamageFriendlyHeroGen(const QString &code, int attack, const CardType &cardType);
     bool isFreezeEnemyGen(const QString &code, const QJsonArray &mechanics, const QJsonArray &referencedTags, const QString &text);
     bool isDiscardGen(const QString &code, const QString &text);
     bool isDeathrattleMinion(const QString &code, const QJsonArray &mechanics, const CardType &cardType);

@@ -1040,7 +1040,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isRestoreFriendlyMinionGen(code, text))                              mechanicCounters[V_RESTORE_FRIENDLY_MINION]->increase(code);
     if(isEnrageGen(code, mechanics))                                        mechanicCounters[V_ENRAGED]->increase(code);
     if(isEggGen(code, mechanics, attack, cardType))                         mechanicCounters[V_EGG]->increase(code);
-    if(isDamageFriendlyHeroGen(code))                                       mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->increase(code);
+    if(isDamageFriendlyHeroGen(code, attack, cardType))                     mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->increase(code);
     if(isHandBuffGen(code, text))                                           mechanicCounters[V_HAND_BUFF]->increase(code);
     if(isEnemyDrawGen(code, text))                                          mechanicCounters[V_ENEMY_DRAW]->increase(code);
     if(isHeroAttackGen(code, text))                                         mechanicCounters[V_HERO_ATTACK]->increase(code);
@@ -1634,7 +1634,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isSpawnEnemyGen(code, text))                             mechanicCounters[V_SPAWN_ENEMY]->insertSynCards(synergyTagMap);
     if(isEnrageGen(code, mechanics))                            mechanicCounters[V_ENRAGED]->insertSynCards(synergyTagMap);
     if(isEggGen(code, mechanics, attack, cardType))             mechanicCounters[V_EGG]->insertSynCards(synergyTagMap);
-    if(isDamageFriendlyHeroGen(code))                           mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertSynCards(synergyTagMap);
+    if(isDamageFriendlyHeroGen(code, attack, cardType))         mechanicCounters[V_DAMAGE_FRIENDLY_HERO]->insertSynCards(synergyTagMap);
     if(isHandBuffGen(code, text))                               mechanicCounters[V_HAND_BUFF]->insertSynCards(synergyTagMap);
     if(isEnemyDrawGen(code, text))                              mechanicCounters[V_ENEMY_DRAW]->insertSynCards(synergyTagMap);
     if(isHeroAttackGen(code, text))                             mechanicCounters[V_HERO_ATTACK]->insertSynCards(synergyTagMap);
@@ -2866,11 +2866,15 @@ bool SynergyHandler::isEggGen(const QString &code, const QJsonArray &mechanics, 
     }
     return false;
 }
-bool SynergyHandler::isDamageFriendlyHeroGen(const QString &code)
+bool SynergyHandler::isDamageFriendlyHeroGen(const QString &code, int attack, const CardType &cardType)
 {
-    if(synergyCodes.contains(code))
+    if(cardType == WEAPON && attack > 0)
     {
-        return synergyCodes[code].contains("damageFriendlyHeroGen");
+        return true;
+    }
+    else if(synergyCodes.contains(code))
+    {
+        return (synergyCodes[code].contains("damageFriendlyHeroGen") || synergyCodes[code].contains("weaponGen"));
     }
     return false;
 }
@@ -4894,7 +4898,7 @@ RUSHGIVERSYN: enrageGen/frenzy, poison, damage adjacents
 SUMMON: tokenGen(summon)
 TOYOURHAND: tokenCardGen(small cards to hand) <--> tokenGen(2+) o spellGen
 PLAY CARDS: tokenCardSyn
-BUFF ALL: tokenSyn(beneficio masa), handBuffGen
+BUFF ALL: tokenSyn(buff 3+ minions), handBuffGen
 CANT ATTACK: silenceOwnSyn, tauntGiverSyn
 COPY ITSELF: handBuffSyn
 5/5 COPY: deathrattleGoodAllSyn, endTurnSyn
@@ -4949,7 +4953,8 @@ REGLAS
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen/spellSyn/spellAllSyn es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
 +elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
-+eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen
++eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen,
+    weapon/weaponGen implica damageFriendlyHeroGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o
     1 carta de coste 0/1 y otra de cualquier coste o 1 carta de coste 0 (no hace falta indicarlo si coste 0).
     Resumen: 3+3+3(echo), 2+2, 1+X, 0
@@ -4965,7 +4970,7 @@ REGLAS
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.
 +tokenGen son 2 small minions (max 3/3), tambien cuentan las cartas generadas a mano (tokenCardGen), reborn y deathrattle no son tokenGen.
-+No son tokenSyn las cartas "Destroy friendly minion", solo cartas que necesiten 3+ minions.
++tokenSyn: No son tokenSyn las cartas "Destroy friendly minion", solo cartas que necesiten 3+ minions.
 +CorpseGen para todo tokenGen que no genere risen minions (no dejan corpse) y para reborn y deathrattle.
 +CorpseSyn solo si gasta 2+ corpses.
 +freezeEnemyGen deben poder usarse sobre enemigos, combo con destroy tardio (freezeEnemySyn).
