@@ -4814,8 +4814,8 @@ void MainWindow::testPopularList(int i)
 
 void MainWindow::testSynergies()
 {
-    // draftHandler->getSynergyHandler()->testSynergies(/*"MIS_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("ISLAND_VACATION", 0, 20/*, "MIS_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->testSynergies(/*"WORK_"*/);
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("ISLAND_VACATION", 0, 20, "WORK_");//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4826,7 +4826,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "THE_SUNKEN_CITY" << "RETURN_OF_THE_LICH_KING" << "TITANS" <<
+    arenaSets << "CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
                  "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4849,8 +4849,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
-                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
+    arenaSets << /*"CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
+                 "WHIZBANGS_WORKSHOP" << */"ISLAND_VACATION";
 
     if(fromHearth)
     {
@@ -4882,10 +4882,10 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
+    // testHeroPortraits();
     testSynergies();
     // testTierlists();
-    // testDownloadRotation(true/*, "MIS_"*/);//Force hearthpwn true
+    // testDownloadRotation(true, "WORK_");//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
@@ -4916,9 +4916,10 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
+///Update Json cards --> Update CardsJson/cards.json
+///Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -4927,7 +4928,7 @@ void MainWindow::testDelay()
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 //Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //Update DraftHandler::isSignatureCard
-//Update secrets
+///Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
@@ -4937,13 +4938,13 @@ void MainWindow::testDelay()
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
 //Update synergies.json
-//|-Check synergies in the new set --> New synergy keys
-//|-Check evolveSyn cards
-//|-Check direct links
+///|-Check synergies in the new set --> New synergy keys
+///|-Check evolveSyn cards
+///|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 30.4 Patch Notes (09/09/2024)
+///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+///|-Synergy / Code  --> 30.4 Patch Notes (09/09/2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
@@ -4951,7 +4952,7 @@ void MainWindow::testDelay()
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
 //New leaderboard season
-///|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
+//|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
 
