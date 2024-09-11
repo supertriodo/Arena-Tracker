@@ -4955,7 +4955,7 @@ void MainWindow::testDelay()
 //|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
-
+//VM funciona en 5.15.0-113-generic
 
 
 //NUEVA SYNERGY
