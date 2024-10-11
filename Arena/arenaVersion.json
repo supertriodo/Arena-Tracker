@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 62,
-  "arenaSets": ["CORE", "SCHOLOMANCE", "ALTERAC_VALLEY", "THE_SUNKEN_CITY", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION"],
+  "arenaVersion": 63,
+  "arenaSets": ["CORE", "DALARAN", "BLACK_TEMPLE", "DARKMOON_FAIRE", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
   "multiclassArena": true,
   "resetCards": 61,
-  "resetHeroes": 62,
+  "resetHeroes": 63,
   "seasonId": 49
 }

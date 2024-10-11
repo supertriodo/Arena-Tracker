@@ -1224,10 +1224,16 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
                 {
                     qDebug()<<"Duplicated card in arenaSets:"<<code<<name;
                 }
+                else
+                {
+                    QString set = getCardAttribute(code, "set").toString();
+                    if(!haSets.contains(set))
+                    {
+                        haSets << set;
+                        qDebug()<<"Add SET "<<set<<" for CODE "<<code;
+                    }
+                }
                 arenaMap[code] = name;
-
-                QString set = getCardAttribute(code, "set").toString();
-                if(!haSets.contains(set))   haSets << set;
             }
             else
             {
@@ -1249,8 +1255,12 @@ void Utility::checkTierlistsCount(QStringList &arenaSets)
                 {
                     qDebug()<<"Arena missing:"<<codes<<name;
                     missing = true;
-//                    QString set = getCardAttribute(codes, "set").toString();
-//                    if(!haSets.contains(set))   haSets << set;
+                    QString set = getCardAttribute(codes.first(), "set").toString();
+                    if(!haSets.contains(set))
+                    {
+                        haSets << set;
+                        qDebug()<<"Add SET "<<set<<" for CODE "<<codes;
+                    }
                 }
             }
         }

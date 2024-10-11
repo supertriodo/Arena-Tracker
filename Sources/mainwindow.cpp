@@ -4826,8 +4826,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
-                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
+    arenaSets << "CORE" << "DALARAN" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
+                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4836,12 +4836,13 @@ void MainWindow::testTierlists()
 
 
 /*
- ** Core "CORE"
- ** Scholomance Academy "SCHOLOMANCE"
- ** Fractured in Alterac Valley "ALTERAC_VALLEY"
- ** Voyage to the Sunken City "THE_SUNKEN_CITY"
- ** Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
- ** Perils in Paradise "ISLAND_VACATION"
+ *  Core "CORE"
+ *  Rise of Shadows "DALARAN"
+ *  Ashes of Outland "BLACK_TEMPLE"
+ *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ *  Murder at Castle Nathria "REVENDRETH"
+ *  Path of Arthas "PATH_OF_ARTHAS"
+ *  March of the Lick King "RETURN_OF_THE_LICH_KING"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4849,8 +4850,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "SCHOLOMANCE" << "ALTERAC_VALLEY" << "THE_SUNKEN_CITY" <<
-                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION";
+    arenaSets << "CORE" << "DALARAN" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
+                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
 
     if(fromHearth)
     {
@@ -4882,8 +4883,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
-    testHeroPortraits();
-    testSynergies();
+    // testHeroPortraits();
+    // testSynergies();
     // testTierlists();
     // testDownloadRotation(true, "WORK_");//Force hearthpwn true
     // Utility::resizeSignatureCards();
