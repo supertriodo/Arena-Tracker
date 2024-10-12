@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 63,
+  "arenaVersion": 64,
   "arenaSets": ["CORE", "DALARAN", "BLACK_TEMPLE", "DARKMOON_FAIRE", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
   "multiclassArena": true,
   "resetCards": 61,
   "resetHeroes": 63,
-  "seasonId": 49
+  "seasonId": 50
 }
