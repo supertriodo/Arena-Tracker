@@ -4826,23 +4826,21 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "DALARAN" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
-                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
+    arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
+                 "WILD_WEST" << "ISLAND_VACATION";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
    Utility::checkTierlistsCount(arenaSets);
 }
 
-
 /*
- *  Core "CORE"
- *  Rise of Shadows "DALARAN"
- *  Ashes of Outland "BLACK_TEMPLE"
- *  Madness at the Darkmoon Faire "DARKMOON_FAIRE"
- *  Murder at Castle Nathria "REVENDRETH"
- *  Path of Arthas "PATH_OF_ARTHAS"
- *  March of the Lick King "RETURN_OF_THE_LICH_KING"
+ *  Caverns of Time "WONDERS"
+ *  Scholomance Academy "SCHOLOMANCE"
+ *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  Showdown in the Badlands "WILD_WEST"
+ *  Perils in Paradise "ISLAND_VACATION"
+ *  The Great Dark Beyond ""
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4850,8 +4848,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "DALARAN" << "BLACK_TEMPLE" << "DARKMOON_FAIRE" <<
-                 "REVENDRETH" << "PATH_OF_ARTHAS" << "RETURN_OF_THE_LICH_KING";
+    arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
+                 "WILD_WEST" << "ISLAND_VACATION";
 
     if(fromHearth)
     {
@@ -4886,7 +4884,7 @@ void MainWindow::testDelay()
     // testHeroPortraits();
     // testSynergies();
     // testTierlists();
-    // testDownloadRotation(true, "WORK_");//Force hearthpwn true
+    // testDownloadRotation(true/*, "WORK_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
 
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";

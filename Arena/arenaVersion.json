@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 64,
-  "arenaSets": ["CORE", "DALARAN", "BLACK_TEMPLE", "DARKMOON_FAIRE", "REVENDRETH", "PATH_OF_ARTHAS", "RETURN_OF_THE_LICH_KING"],
-  "multiclassArena": true,
-  "resetCards": 61,
+  "arenaVersion": 65,
+  "arenaSets": ["WONDERS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "WILD_WEST", "ISLAND_VACATION"],
+  "multiclassArena": false,
+  "resetCards": 65,
   "resetHeroes": 63,
   "seasonId": 50
 }

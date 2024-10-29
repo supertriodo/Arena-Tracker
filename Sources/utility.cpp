@@ -523,6 +523,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * 10-year anniversary celebration "EVENT"
  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  * Perils in Paradise "ISLAND_VACATION"
+ * The Great Dark Beyond
  */
 
 
