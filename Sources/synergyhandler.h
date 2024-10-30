@@ -117,6 +117,8 @@ private:
     bool isNagaGen(const QString &code);
     bool isUndeadGen(const QString &code);
     bool isQuilboarGen(const QString &code);
+    bool isDraeneiGen(const QString &code);
+    //New race step
     bool isArcaneGen(const QString &code);
     bool isFelGen(const QString &code);
     bool isFireGen(const QString &code);
@@ -209,6 +211,8 @@ private:
     bool isNagaSyn(const QString &code);
     bool isUndeadSyn(const QString &code);
     bool isQuilboarSyn(const QString &code);
+    bool isDraeneiSyn(const QString &code);
+    //New race step
     bool isMurlocAllSyn(const QString &code, const QString &text);
     bool isDemonAllSyn(const QString &code, const QString &text);
     bool isMechAllSyn(const QString &code, const QJsonArray &mechanics, const QString &text);
@@ -220,6 +224,8 @@ private:
     bool isNagaAllSyn(const QString &code, const QString &text);
     bool isUndeadAllSyn(const QString &code, const QString &text);
     bool isQuilboarAllSyn(const QString &code, const QString &text);
+    bool isDraeneiAllSyn(const QString &code, const QString &text);
+    //New race step
     bool isArcaneSyn(const QString &code);
     bool isFelSyn(const QString &code);
     bool isFireSyn(const QString &code);

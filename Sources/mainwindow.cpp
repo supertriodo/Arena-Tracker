@@ -4815,7 +4815,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"WORK_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("ISLAND_VACATION", 0, 20/*, "WORK_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("SPACE", 0, 20/*, "WORK_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4937,9 +4937,9 @@ void MainWindow::testDelay()
     //Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
 
 //Update synergies.json
-//|-Check synergies in the new set --> New synergy keys
-//|-Check evolveSyn cards
-//|-Check direct links
+///|-Check synergies in the new set --> New synergy keys
+///|-Check evolveSyn cards
+///|-Check direct links
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)

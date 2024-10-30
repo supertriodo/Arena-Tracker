@@ -84,6 +84,8 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_NAGA] = new DraftItemCounter(this, "Naga");
     raceCounters[V_UNDEAD] = new DraftItemCounter(this, "Undead");
     raceCounters[V_QUILBOAR] = new DraftItemCounter(this, "Quilboar");
+    raceCounters[V_DRAENEI] = new DraftItemCounter(this, "Draenei");
+    //New race step
 
     raceCounters[V_ELEMENTAL_ALL] = new DraftItemCounter(this, "Elemental");
     raceCounters[V_BEAST_ALL] = new DraftItemCounter(this, "Beast");
@@ -96,6 +98,8 @@ void SynergyHandler::createDraftItemCounters()
     raceCounters[V_NAGA_ALL] = new DraftItemCounter(this, "Naga");
     raceCounters[V_UNDEAD_ALL] = new DraftItemCounter(this, "Undead");
     raceCounters[V_QUILBOAR_ALL] = new DraftItemCounter(this, "Quilboar");
+    raceCounters[V_DRAENEI_ALL] = new DraftItemCounter(this, "Draenei");
+    //New race step
 
     schoolCounters = new DraftItemCounter *[V_NUM_SCHOOLS];
     schoolCounters[V_ARCANE] = new DraftItemCounter(this, "Arcane");
@@ -721,6 +725,13 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
         raceCounters[V_QUILBOAR_ALL]->increase(code);
     }
     else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->increase(code);
+    if(cardRace.contains(DRAENEI) || cardRace.contains(ALL))
+    {
+        raceCounters[V_DRAENEI]->increase(code);
+        raceCounters[V_DRAENEI_ALL]->increase(code);
+    }
+    else if(isDraeneiGen(code))    raceCounters[V_DRAENEI_ALL]->increase(code);
+    //New race step
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->increaseSyn(code);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->increaseSyn(code);
@@ -744,6 +755,9 @@ void SynergyHandler::updateRaceCounters(DeckCard &deckCard)
     else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->increaseSyn(code);
     if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->increaseSyn(code);
     else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->increaseSyn(code);
+    if(isDraeneiSyn(code))                         raceCounters[V_DRAENEI]->increaseSyn(code);
+    else if(isDraeneiAllSyn(code, text))           raceCounters[V_DRAENEI_ALL]->increaseSyn(code);
+    //New race step
 }
 
 
@@ -1450,6 +1464,13 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
         raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isQuilboarGen(code))    raceCounters[V_QUILBOAR_ALL]->insertSynCards(synergyTagMap);
+    if(cardRace.contains(DRAENEI) || cardRace.contains(ALL))
+    {
+        raceCounters[V_DRAENEI]->insertSynCards(synergyTagMap);
+        raceCounters[V_DRAENEI_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isDraeneiGen(code))    raceCounters[V_DRAENEI_ALL]->insertSynCards(synergyTagMap);
+    //New race step
 
     if(isMurlocSyn(code))                           raceCounters[V_MURLOC]->insertCards(synergyTagMap);
     else if(isMurlocAllSyn(code, text))             raceCounters[V_MURLOC_ALL]->insertCards(synergyTagMap);
@@ -1473,6 +1494,9 @@ void SynergyHandler::getRaceSynergies(DeckCard &deckCard, QMap<QString, QMap<QSt
     else if(isUndeadAllSyn(code, text))             raceCounters[V_UNDEAD_ALL]->insertCards(synergyTagMap);
     if(isQuilboarSyn(code))                         raceCounters[V_QUILBOAR]->insertCards(synergyTagMap);
     else if(isQuilboarAllSyn(code, text))           raceCounters[V_QUILBOAR_ALL]->insertCards(synergyTagMap);
+    if(isDraeneiSyn(code))                          raceCounters[V_DRAENEI]->insertCards(synergyTagMap);
+    else if(isDraeneiAllSyn(code, text))            raceCounters[V_DRAENEI_ALL]->insertCards(synergyTagMap);
+    //New race step
 }
 
 
@@ -1902,12 +1926,12 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "spellAllSyn", "weaponAllSyn", "locationAllSyn",
 
         "murlocGen", "demonGen", "mechGen", "elementalGen", "beastGen", "totemGen", "pirateGen",
-        "dragonGen", "nagaGen", "undeadGen", "quilboarGen",
+        "dragonGen", "nagaGen", "undeadGen", "quilboarGen", "draeneiGen",
         "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn",
-        "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn",
+        "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn", "draeneiSyn",
         "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn",
-        "dragonAllSyn", "nagaAllSyn", "undeadAllSyn", "quilboarAllSyn",
-
+        "dragonAllSyn", "nagaAllSyn", "undeadAllSyn", "quilboarAllSyn", "draeneiAllSyn",
+        //New race step
         "arcaneGen", "felGen", "fireGen", "frostGen", "holyGen", "shadowGen", "natureGen",
         "arcaneSyn", "felSyn", "fireSyn", "frostSyn", "holySyn", "shadowSyn", "natureSyn",
         "arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn",
@@ -2201,6 +2225,8 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isNagaAllSyn(code, text))            mec<<"nagaAllSyn";
     if(isUndeadAllSyn(code, text))          mec<<"undeadAllSyn";
     if(isQuilboarAllSyn(code, text))        mec<<"quilboarAllSyn";
+    if(isDraeneiAllSyn(code, text))         mec<<"draeneiAllSyn";
+    //New race step
 
     if(isArcaneAllSyn(code, text))          mec<<"arcaneAllSyn";
     if(isFelAllSyn(code, text))             mec<<"felAllSyn";
@@ -2418,6 +2444,12 @@ bool SynergyHandler::isQuilboarGen(const QString &code)
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("quilboarGen");
     return false;
 }
+bool SynergyHandler::isDraeneiGen(const QString &code)
+{
+    if(synergyCodes.contains(code)) return synergyCodes[code].contains("draeneiGen");
+    return false;
+}
+//New race step
 bool SynergyHandler::isArcaneGen(const QString &code)
 {
     if(synergyCodes.contains(code)) return synergyCodes[code].contains("arcaneGen");
@@ -3847,6 +3879,26 @@ bool SynergyHandler::isQuilboarAllSyn(const QString &code, const QString &text)
         return text.contains("quilboar");
     }
 }
+bool SynergyHandler::isDraeneiSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("draeneiSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isDraeneiAllSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("draeneiAllSyn");
+    }
+    else
+    {
+        return text.contains("draenei");
+    }
+}
+//New race step
 bool SynergyHandler::isArcaneSyn(const QString &code)
 {
     if(synergyCodes.contains(code))
@@ -4870,7 +4922,8 @@ eggGen/eggSyn
 Mechanics list:
 spellGen, weaponGen,
 drop2, drop3, drop4,
-murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen, nagaGen, undeadGen, quilboarGen
+murlocGen, demonGen, mechGen, elementalGen, beastGen, totemGen, pirateGen, dragonGen, nagaGen, undeadGen, quilboarGen, draeneiGen
+//New race step
 arcaneGen, felGen, fireGen, frostGen, holyGen, shadowGen, natureGen
 discover, drawGen, toYourHandGen, enemyDrawGen
 taunt, tauntGen, divineShield, divineShieldGen, windfury, overload
@@ -4931,7 +4984,8 @@ LACKEY: lackeyGen/lackeySyn
     +aoeGen (SI RANDOM/SI DEATHRATTLE)
 
 ALL SCHOOLS:"arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn"
-ALL RACES:  "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn"
+ALL RACES:  "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn", "draeneiSyn"
+//New race step
 
 
 REGLAS
@@ -4952,7 +5006,7 @@ REGLAS
     Synergias QUICKDRAW no.
 +Una carta no es spellGen si para generarlos requiere otros hechizos.
 +returnGen/spellSyn/spellAllSyn es sinergia debil por eso solo las mostramos en un sentido, para evitar mostrarlas continuamente en todos lados.
-+elementalGen/dragonGen/nagaGen solo para generacion de cartas en mano, no en board.
++elementalGen/dragonGen/nagaGen/draeneiGen solo para generacion de cartas en mano, no en board.
 +eggGen implica (attackBuffSyn y tauntGiverSyn), echo implica toYourHandGen, rush implica pingGen/damageMinionsGen, lackeyGen implica tokenCardGen,
     weapon/weaponGen implica damageFriendlyHeroGen
 +tokenCardGen Incluye cartas que en conjunto permitan jugar 2+ cartas de coste 2 las 2 o

@@ -94,6 +94,7 @@ void SynergyCard::setRaceSchoolTag()
 }
 
 
+//New race step
 void SynergyCard::setRaceTag()
 {
     QString synergyTagJoin = "";
@@ -156,6 +157,11 @@ void SynergyCard::setRaceTag()
     {
         if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Quilboar");
         else                            synergyTagJoin.append(" - Quilboar");
+    }
+    if(cardRace.contains(DRAENEI))
+    {
+        if(synergyTagJoin.isEmpty())    synergyTagJoin.append("Draenei");
+        else                            synergyTagJoin.append(" - Draenei");
     }
 
     setSynergyTag(synergyTagJoin);

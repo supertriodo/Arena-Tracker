@@ -377,6 +377,7 @@ QList<CardRace> Utility::getRaceFromCode(const QString &code)
 }
 
 
+//New race step
 CardRace Utility::raceString2cardRace(const QString &value)
 {
     if(value == "BLOODELF")         return BLOODELF;

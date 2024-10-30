@@ -474,6 +474,7 @@ void GraveyardHandler::findDeckCardEntered(bool friendly, QListWidgetItem * item
 }
 
 
+//New race step
 void GraveyardHandler::updateRacesSchools(bool friendly, SynergyCard &deckCard)
 {
     QMap<CardRace, int> &races = (friendly?racesPlayer:racesEnemy);
@@ -487,7 +488,7 @@ void GraveyardHandler::updateRacesSchools(bool friendly, SynergyCard &deckCard)
         {
             if(cardRace == ALL) races[ALL]++;
             else if(cardRace == MURLOC || cardRace == DEMON || cardRace == MECHANICAL || cardRace == ELEMENTAL || cardRace == BEAST || cardRace == TOTEM ||
-                    cardRace == PIRATE || cardRace == DRAGON || cardRace == NAGA || cardRace == UNDEAD || cardRace == QUILBOAR)
+                    cardRace == PIRATE || cardRace == DRAGON || cardRace == NAGA || cardRace == UNDEAD || cardRace == QUILBOAR || cardRace == DRAENEI)
                 races[cardRace] = 1;
         }
     }
