@@ -4916,8 +4916,8 @@ void MainWindow::testDelay()
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
 ///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
-//Update Json arenaVersion --> Update arenaSets/arenaVersion
-//Update Json cards --> Update CardsJson/cards.json
+///Update Json arenaVersion --> Update arenaSets/arenaVersion
+///Update Json cards --> Update CardsJson/cards.json
 ///Update Utility::isFromStandardSet(QString code) --> SPACE
 ///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true

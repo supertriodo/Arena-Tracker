@@ -1,6 +1,6 @@
 {
-  "arenaVersion": 65,
-  "arenaSets": ["WONDERS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "WILD_WEST", "ISLAND_VACATION"],
+  "arenaVersion": 66,
+  "arenaSets": ["WONDERS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "WILD_WEST", "ISLAND_VACATION", "SPACE"],
   "multiclassArena": false,
   "resetCards": 65,
   "resetHeroes": 63,
