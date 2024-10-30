@@ -1969,7 +1969,7 @@
 "GDB_136" : [ "discover2", "battlecry", "returnSyn", "spellGen" ],
 "GDB_137" : [ "drawGen2", "libram" ],
 "GDB_138" : [ "attackBuffGen", "healthBuffGen", "spellBuffGen", "libram" ],
-"GDB_139" : [ "tokenGen", "divineShieldGen", "corpseGen", "draeneiGen", "libram" ],
+"GDB_139" : [ "tokenGen", "divineShieldGen", "corpseGen", "libram" ],
 "GDB_140" : [  ],
 "GDB_141" : [ "damageMinionsGen", "rush", "deathrattle", "toYourHandGen3", "libramGen" ],
 "GDB_142" : [ "aoeGen", "eggSyn", "battlecry", "returnSyn", "tokenCardSyn", "drawSyn" ],
