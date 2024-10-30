@@ -5251,12 +5251,6 @@
 
   "-----------------------------------------PALADIN------------------------------------------------": "",
 
-  "-----LIBRAM-----": "",
-  "BT_020 Aldor Attendant": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
-    "BT_025 Libram of Wisdom", "YOP_011 Libram of Judgment"],
-  "BT_026 Aldor Truthseeker": ["BT_011 Libram of Justice", "BT_024 Libram of Hope",
-    "BT_025 Libram of Wisdom", "YOP_011 Libram of Judgment"],
-
   "-----------------------------------------HUNTER-------------------------------------------------": "",
 
   "-----DORMANT WILDSEED-----": "",

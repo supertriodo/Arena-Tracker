@@ -199,6 +199,10 @@ private:
     bool isDredge(const QString &code, const QJsonArray &mechanics);
     bool isCorpseGen(const QString &code, const QJsonArray &mechanics, const QString &text);
     bool isExcavate(const QString &code, const QString &text);
+    bool isLibram(const QString &code);
+    bool isLibramGen(const QString &code);
+    bool isStarship(const QString &code, const QJsonArray &mechanics);
+    bool isStarshipGen(const QString &code);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -312,6 +316,10 @@ private:
     bool isDredgeSyn(const QString &code, const QString &text);
     bool isCorpseSyn(const QString &code, const QString &text);
     bool isExcavateSyn(const QString &code, const QString &text);
+    bool isLibramSyn(const QString &code);
+    bool isLibramAllSyn(const QString &code);
+    bool isStarshipSyn(const QString &code);
+    bool isStarshipAllSyn(const QString &code, const QJsonArray &referencedTags);
 
 signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SynergyHandler");

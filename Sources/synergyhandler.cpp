@@ -236,6 +236,10 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_DREDGE] = new DraftItemCounter(this, "Dredge");
     mechanicCounters[V_CORPSE] = new DraftItemCounter(this, "Corpses");
     mechanicCounters[V_EXCAVATE] = new DraftItemCounter(this, "Excavate");
+    mechanicCounters[V_LIBRAM] = new DraftItemCounter(this, "Libram");
+    mechanicCounters[V_LIBRAM_ALL] = new DraftItemCounter(this, "Libram");
+    mechanicCounters[V_STARSHIP] = new DraftItemCounter(this, "Starship");
+    mechanicCounters[V_STARSHIP_ALL] = new DraftItemCounter(this, "Starship");
     //New Synergy Step 2
 
 
@@ -1140,6 +1144,18 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
         mechanicCounters[V_CHOOSEONE_ALL]->increase(code);
     }
     else if(isChooseOneGen(code))                                           mechanicCounters[V_CHOOSEONE_ALL]->increase(code);
+    if(isLibram(code))
+    {
+        mechanicCounters[V_LIBRAM]->increase(code);
+        mechanicCounters[V_LIBRAM_ALL]->increase(code);
+    }
+    else if(isLibramGen(code))                                              mechanicCounters[V_LIBRAM_ALL]->increase(code);
+    if(isStarship(code, mechanics))
+    {
+        mechanicCounters[V_STARSHIP]->increase(code);
+        mechanicCounters[V_STARSHIP_ALL]->increase(code);
+    }
+    else if(isStarshipGen(code))                                            mechanicCounters[V_STARSHIP_ALL]->increase(code);
     if(isCombo(code, mechanics))
     {
         mechanicCounters[V_COMBO]->increase(code);
@@ -1214,6 +1230,10 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     else if(isOutcastAllSyn(code, referencedTags))                          mechanicCounters[V_OUTCAST_ALL]->increaseSyn(code);
     if(isChooseOneSyn(code))                                                mechanicCounters[V_CHOOSEONE]->increaseSyn(code);
     else if(isChooseOneAllSyn(code, referencedTags))                        mechanicCounters[V_CHOOSEONE_ALL]->increaseSyn(code);
+    if(isLibramSyn(code))                                                   mechanicCounters[V_LIBRAM]->increaseSyn(code);
+    else if(isLibramAllSyn(code))                                           mechanicCounters[V_LIBRAM_ALL]->increaseSyn(code);
+    if(isStarshipSyn(code))                                                 mechanicCounters[V_STARSHIP]->increaseSyn(code);
+    else if(isStarshipAllSyn(code, referencedTags))                         mechanicCounters[V_STARSHIP_ALL]->increaseSyn(code);
     if(isComboSyn(code))                                                    mechanicCounters[V_COMBO]->increaseSyn(code);
     else if(isComboAllSyn(code, referencedTags))                            mechanicCounters[V_COMBO_ALL]->increaseSyn(code);
 }
@@ -1733,6 +1753,18 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
         mechanicCounters[V_CHOOSEONE_ALL]->insertSynCards(synergyTagMap);
     }
     else if(isChooseOneGen(code))                               mechanicCounters[V_CHOOSEONE_ALL]->insertSynCards(synergyTagMap);
+    if(isLibram(code))
+    {
+        mechanicCounters[V_LIBRAM]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_LIBRAM_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isLibramGen(code))                                  mechanicCounters[V_LIBRAM_ALL]->insertSynCards(synergyTagMap);
+    if(isStarship(code, mechanics))
+    {
+        mechanicCounters[V_STARSHIP]->insertSynCards(synergyTagMap);
+        mechanicCounters[V_STARSHIP_ALL]->insertSynCards(synergyTagMap);
+    }
+    else if(isStarshipGen(code))                                mechanicCounters[V_STARSHIP_ALL]->insertSynCards(synergyTagMap);
     if(isCombo(code, mechanics))
     {
         mechanicCounters[V_COMBO]->insertSynCards(synergyTagMap);
@@ -1808,6 +1840,10 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     else if(isOutcastAllSyn(code, referencedTags))              mechanicCounters[V_OUTCAST_ALL]->insertCards(synergyTagMap);
     if(isChooseOneSyn(code))                                    mechanicCounters[V_CHOOSEONE]->insertCards(synergyTagMap);
     else if(isChooseOneAllSyn(code, referencedTags))            mechanicCounters[V_CHOOSEONE_ALL]->insertCards(synergyTagMap);
+    if(isLibramSyn(code))                                       mechanicCounters[V_LIBRAM]->insertCards(synergyTagMap);
+    else if(isLibramAllSyn(code))                               mechanicCounters[V_LIBRAM_ALL]->insertCards(synergyTagMap);
+    if(isStarshipSyn(code))                                     mechanicCounters[V_STARSHIP]->insertCards(synergyTagMap);
+    else if(isStarshipAllSyn(code, referencedTags))             mechanicCounters[V_STARSHIP_ALL]->insertCards(synergyTagMap);
     if(isComboSyn(code))                                        mechanicCounters[V_COMBO]->insertCards(synergyTagMap);
     else if(isComboAllSyn(code, referencedTags))                mechanicCounters[V_COMBO_ALL]->insertCards(synergyTagMap);
 }
@@ -1971,8 +2007,8 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "otherClassGen", "silverHandGen", "treantGen", "lackeyGen", "outcast", "outcastGen", "endTurnGen", "rushGiverGen",
         "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn",
 
-        "dredge", "corpseGen", "chooseOne", "chooseOneGen", "excavate",
-        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn", "excavateSyn"
+        "dredge", "corpseGen", "chooseOne", "chooseOneGen", "excavate", "libram", "libramGen", "starship", "starshipGen",
+        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn", "excavateSyn", "libramSyn", "libramAllSyn", "starshipSyn", "starshipAllSyn"
         //New Synergy Step 7
     };
     if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
@@ -2001,7 +2037,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("ISLAND_VACATION", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -2013,6 +2049,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
         {
             CardType cardType = Utility::getTypeFromCode(code);
             QString text = Utility::cardEnTextFromCode(code).toLower();
+            QString name = Utility::cardEnNameFromCode(code).toLower();
             int attack = Utility::getCardAttribute(code, "attack").toInt();
             int health = Utility::getCardAttribute(code, "health").toInt();
             int cost = Utility::getCardAttribute(code, "cost").toInt();
@@ -2308,6 +2345,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isDredge(code, mechanics))                                           mec<<"dredge";
     if(isCorpseGen(code, mechanics, text))                                  mec<<"corpseGen";
     if(isExcavate(code, text))                                              mec<<"excavate";
+    if(isStarship(code, mechanics))                                         mec<<"starship";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -2340,6 +2378,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isDredgeSyn(code, text))                                             mec<<"dredgeSyn";
     if(isCorpseSyn(code, text))                                             mec<<"corpseSyn";
     if(isExcavateSyn(code, text))                                           mec<<"excavateSyn";
+    if(isStarshipAllSyn(code, referencedTags))                              mec<<"starshipAllSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     QString name = Utility::cardEnNameFromCode(origCode);
@@ -3551,6 +3590,42 @@ bool SynergyHandler::isExcavate(const QString &code, const QString &text)
     else if(text.contains("excavate"))
     {
         return true;
+    }
+    return false;
+}
+bool SynergyHandler::isLibram(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("libram");
+    }
+    return false;
+}
+bool SynergyHandler::isLibramGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("libramGen");
+    }
+    return false;
+}
+bool SynergyHandler::isStarship(const QString &code, const QJsonArray &mechanics)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("starship");
+    }
+    else if(mechanics.contains(QJsonValue("STARSHIP_PIECE")))
+    {
+        return true;
+    }
+    return false;
+}
+bool SynergyHandler::isStarshipGen(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("starshipGen");
     }
     return false;
 }
@@ -4768,6 +4843,42 @@ bool SynergyHandler::isExcavateSyn(const QString &code, const QString &text)
     }
     return false;
 }
+bool SynergyHandler::isLibramSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("libramSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isLibramAllSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("libramAllSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isStarshipSyn(const QString &code)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("starshipSyn");
+    }
+    return false;
+}
+bool SynergyHandler::isStarshipAllSyn(const QString &code, const QJsonArray &referencedTags)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("starshipAllSyn");
+    }
+    else if(referencedTags.contains(QJsonValue("STARSHIP")))
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 11
 
 
@@ -4936,7 +5047,7 @@ tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuf
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen, otherClassGen,
 silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge, corpse, chooseOne, chooseOneGen
-excavate
+excavate, libram, libramGen, starship, starshipGen
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12
