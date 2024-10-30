@@ -4827,7 +4827,7 @@ void MainWindow::testTierlists()
 
     QStringList arenaSets;
     arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
-                 "WILD_WEST" << "ISLAND_VACATION";
+                 "WILD_WEST" << "ISLAND_VACATION" << "SPACE";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4840,7 +4840,7 @@ void MainWindow::testTierlists()
  *  Festival of Legends "BATTLE_OF_THE_BANDS"
  *  Showdown in the Badlands "WILD_WEST"
  *  Perils in Paradise "ISLAND_VACATION"
- *  The Great Dark Beyond ""
+ *  The Great Dark Beyond "SPACE"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4849,7 +4849,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 
 
     arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
-                 "WILD_WEST" << "ISLAND_VACATION";
+                 "WILD_WEST" << "ISLAND_VACATION" << "SPACE";
 
     if(fromHearth)
     {
@@ -4915,19 +4915,19 @@ void MainWindow::testDelay()
  */
 
 //NUEVA EXPANSION (All servers 19:00 CEST)
-//Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
+///Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Json cards --> Update CardsJson/cards.json
-//Update Utility::isFromStandardSet(QString code) --> ISLAND_VACATION
-//Subir cartas al github.
+///Update Utility::isFromStandardSet(QString code) --> SPACE
+///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-//Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
-    //Update DraftHandler::isSignatureCard
-//Update secrets
+///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+    ///Update DraftHandler::isSignatureCard
+///Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)
     //Update cartas que dan mana inmediato --> CardGraphicsItem::getManaSpent (Hearthpwn Search: gain mana this turn only)
@@ -4942,8 +4942,8 @@ void MainWindow::testDelay()
 ///|-Check direct links
 
 //Cards changes
-//|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 31.0 Patch Notes (28/10/2024)
+///|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
+///|-Synergy / Code  --> 31.0 Patch Notes (28/10/2024)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
