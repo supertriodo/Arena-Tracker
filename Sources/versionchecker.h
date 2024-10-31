@@ -5,7 +5,7 @@
 #include <QNetworkAccessManager>
 #include <QFutureWatcher>
 
-#define VERSION QString("v24.09")
+#define VERSION QString("v24.10")
 #define VERSION_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Version/version.json"
 
 
