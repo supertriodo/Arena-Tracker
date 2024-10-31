@@ -421,6 +421,7 @@ int CardGraphicsItem::getManaSpent(bool includeRefresh)
         if(Utility::codeEqConstant(code, MANA_BISCUIT))         saveMana = 2;
         else if(Utility::codeEqConstant(code, LIGHTNING_BLOOM)) saveMana = 2;
         else if(Utility::codeEqConstant(code, HORN_OF_WINTER))  saveMana = 2;
+        else if(Utility::codeEqConstant(code, DISTRESS_SIGNAL)) saveMana = 2;
     }
 
     return cost - saveMana;
