@@ -4921,7 +4921,7 @@ void MainWindow::testDelay()
 ///Update Utility::isFromStandardSet(QString code) --> SPACE
 ///Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
@@ -4950,7 +4950,7 @@ void MainWindow::testDelay()
     //Prelanzamiento - No quitar antiguo - Incluir nuevo (set "PLACEHOLDER_202204")
     //Json set CORE actualizado - Eliminar CORE_* - Incluir nuevo (set "CORE)
 
-//New leaderboard season
+///New leaderboard season
 //|-En arenaVersion.json, aumentar ("arenaVersion" y "seasonId")
 
 
