@@ -4826,8 +4826,8 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
-                 "WILD_WEST" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "DRAGONS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
+        "TITANS" << "ISLAND_VACATION" << "SPACE";
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
 //    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
@@ -4835,10 +4835,10 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Caverns of Time "WONDERS"
+ *  Descent of Dragons "DRAGONS"
  *  Scholomance Academy "SCHOLOMANCE"
  *  Festival of Legends "BATTLE_OF_THE_BANDS"
- *  Showdown in the Badlands "WILD_WEST"
+ *  TITANS "TITANS"
  *  Perils in Paradise "ISLAND_VACATION"
  *  The Great Dark Beyond "SPACE"
  */
@@ -4848,8 +4848,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "WONDERS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
-                 "WILD_WEST" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "DRAGONS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
+                 "TITANS" << "ISLAND_VACATION" << "SPACE";
 
     if(fromHearth)
     {

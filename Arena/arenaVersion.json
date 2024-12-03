@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 67,
-  "arenaSets": ["WONDERS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "WILD_WEST", "ISLAND_VACATION", "SPACE"],
+  "arenaVersion": 68,
+  "arenaSets": ["DRAGONS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "TITANS", "ISLAND_VACATION", "SPACE"],
   "multiclassArena": false,
   "resetCards": 65,
   "resetHeroes": 67,
-  "seasonId": 51
+  "seasonId": 52
 }
