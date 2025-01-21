@@ -5175,7 +5175,7 @@ REGLAS
     Los minions can't attack no son drops, a no ser que sea muy facil hacerlos atacar (hero power)
     Los drop ideales son minions con altos stats. Una bola de fuego no es un drop4, el 3/3 que hace 3 de dano al azar si es un drop4
         ya que lo que mata es un drop3 enemigo.
-    No es un drop2 si preferimos crear un 1/1 con heropower ha sacarlo.
+    No es un drop2 si preferimos crear un 1/1 con heropower a sacarlo.
     No poner un drop en un coste diferente de su mana a no ser que haya un razon de peso. El unico "Deadly Poison" y overload 1
         1+1 = drop2 / 2+1 = drop3 / 3+1 = drop4 / Todo lo demas es drop de su coste (4+1 = drop4)
     Stats minimos sin ningun extra en tempo, considerar que las condiciones con cartas especificas no se cumplen,
