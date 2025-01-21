@@ -4835,10 +4835,9 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Descent of Dragons "DRAGONS"
- *  Scholomance Academy "SCHOLOMANCE"
- *  Festival of Legends "BATTLE_OF_THE_BANDS"
- *  TITANS "TITANS"
+ *  Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  Murder at Castle Nathria "REVENDRETH"
+ *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  *  Perils in Paradise "ISLAND_VACATION"
  *  The Great Dark Beyond "SPACE"
  */
@@ -4848,8 +4847,8 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "DRAGONS" << "SCHOLOMANCE" << "BATTLE_OF_THE_BANDS" <<
-                 "TITANS" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "THE_SUNKEN_CITY" << "REVENDRETH" <<
+                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
 
     if(fromHearth)
     {
@@ -4943,7 +4942,7 @@ void MainWindow::testDelay()
 
 //Cards changes
 //|-Imagenes cartas --> testDownloadRotation() --> Sobreescribir con HearthstoneSignatureCards (script moveCards.sh)
-//|-Synergy / Code  --> 31.0 Patch Notes (28/10/2024)
+//|-Synergy / Code  --> 31.4 Patch Notes (17/01/2025)
 
 //Rotacion CORE
 //|-Revisar cartas github CORE
