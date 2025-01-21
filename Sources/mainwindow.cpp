@@ -4847,8 +4847,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "THE_SUNKEN_CITY" << "REVENDRETH" <<
-                 "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "THE_SUNKEN_CITY" << "REVENDRETH" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
 
     if(fromHearth)
     {

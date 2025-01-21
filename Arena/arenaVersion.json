@@ -1,6 +1,6 @@
 {
   "arenaVersion": 68,
-  "arenaSets": ["DRAGONS", "SCHOLOMANCE", "BATTLE_OF_THE_BANDS", "TITANS", "ISLAND_VACATION", "SPACE"],
+  "arenaSets": ["THE_SUNKEN_CITY", "REVENDRETH", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE"],
   "multiclassArena": false,
   "resetCards": 65,
   "resetHeroes": 67,
