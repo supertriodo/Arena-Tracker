@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 68,
+  "arenaVersion": 69,
   "arenaSets": ["THE_SUNKEN_CITY", "REVENDRETH", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE"],
   "multiclassArena": false,
-  "resetCards": 65,
+  "resetCards": 69,
   "resetHeroes": 67,
   "seasonId": 52
 }
