@@ -1454,7 +1454,8 @@ QString Utility::otherCodeConstant(const QString &code)
 bool Utility::needCodesSpecific(const QString &set)
 {
     if(set == "TAVERNS_OF_TIME")    return true;
-    else if(set == "TREASURES")            return true;
+    else if(set == "TREASURES")     return true;
+    else if(set == "SPACE")         return true;
     return false;
 }
 
@@ -1513,6 +1514,12 @@ QStringList Utility::getSetCodesSpecific(const QString &set)
         "PVPDR_SCH_Active45", "PVPDR_SCH_Active52", "PVPDR_SCH_Active61",
         "PVPDR_SCH_Active47", "PVPDR_SCH_Active46", "PVPDR_SCH_Active43"
         };
+    }
+    else if(set == "SPACE")
+    {
+        QStringList codes = Utility::getSetCodes(set, true, true);
+        codes << "SC_500";
+        return codes;
     }
     return {};
 }
