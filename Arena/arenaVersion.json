@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 70,
-  "arenaSets": ["THE_SUNKEN_CITY", "REVENDRETH", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE"],
+  "arenaVersion": 71,
+  "arenaSets": ["BATTLE_OF_THE_BANDS", "TITANS", "WILD_WEST", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE"],
   "multiclassArena": false,
   "resetCards": 69,
   "resetHeroes": 70,
-  "seasonId": 53
+  "seasonId": 54
 }

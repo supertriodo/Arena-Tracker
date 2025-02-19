@@ -4826,7 +4826,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "THE_SUNKEN_CITY" << "REVENDRETH" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
 
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4835,8 +4835,9 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Voyage to the Sunken City "THE_SUNKEN_CITY"
- *  Murder at Castle Nathria "REVENDRETH"
+ *  Festival of Legends "BATTLE_OF_THE_BANDS"
+ *  TITANS "TITANS"
+ *  Showdown in the Badlands "WILD_WEST"
  *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  *  Perils in Paradise "ISLAND_VACATION"
  *  The Great Dark Beyond "SPACE"
@@ -4847,7 +4848,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "THE_SUNKEN_CITY" << "REVENDRETH" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
 
     if(fromHearth)
     {
