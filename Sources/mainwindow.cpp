@@ -4826,7 +4826,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "CORE" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE" << "EMERALD_DREAM";
 
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4835,12 +4835,11 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Festival of Legends "BATTLE_OF_THE_BANDS"
- *  TITANS "TITANS"
- *  Showdown in the Badlands "WILD_WEST"
- *  Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
- *  Perils in Paradise "ISLAND_VACATION"
- *  The Great Dark Beyond "SPACE"
+  * Core "CORE"
+  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+  * Perils in Paradise "ISLAND_VACATION"
+  * The Great Dark Beyond "SPACE"
+  * Into the Emerald Dream "EMERALD_DREAM"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4848,7 +4847,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "BATTLE_OF_THE_BANDS" << "TITANS" << "WILD_WEST" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE";
+    arenaSets << "CORE" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE" << "EMERALD_DREAM";
 
     if(fromHearth)
     {

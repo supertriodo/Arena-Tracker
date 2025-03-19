@@ -1,6 +1,6 @@
 {
-  "arenaVersion": 71,
-  "arenaSets": ["BATTLE_OF_THE_BANDS", "TITANS", "WILD_WEST", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE"],
+  "arenaVersion": 72,
+  "arenaSets": ["CORE", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE", "EMERALD_DREAM"],
   "multiclassArena": false,
   "resetCards": 69,
   "resetHeroes": 70,

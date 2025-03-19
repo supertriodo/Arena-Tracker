@@ -525,6 +525,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
  * Perils in Paradise "ISLAND_VACATION"
  * The Great Dark Beyond "SPACE"
+ * Into the Emerald Dream "EMERALD_DREAM"
  */
 
 
@@ -544,8 +545,9 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "BLACK_TEMPLE" || cardSet == "SCHOLOMANCE" || cardSet == "DARKMOON_FAIRE" ||
 //        cardSet == "THE_BARRENS" || cardSet == "STORMWIND" || cardSet == "ALTERAC_VALLEY" ||
 //        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
-        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST" ||
-        cardSet == "WHIZBANGS_WORKSHOP" || cardSet == "ISLAND_VACATION" || cardSet == "SPACE")
+//        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST" ||
+        cardSet == "WHIZBANGS_WORKSHOP" || cardSet == "ISLAND_VACATION" || cardSet == "SPACE" ||
+        cardSet == "EMERALD_DREAM")
     {
         return true;
     }
