@@ -2,7 +2,7 @@
   "arenaVersion": 73,
   "arenaSets": ["CORE", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE", "EMERALD_DREAM"],
   "multiclassArena": false,
-  "resetCards": 69,
+  "resetCards": 73,
   "resetHeroes": 70,
   "seasonId": 55
 }
