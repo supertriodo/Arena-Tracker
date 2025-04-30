@@ -2,7 +2,7 @@
   "arenaVersion": 74,
   "arenaSets": ["CORE", "SCHOLOMANCE", "THE_BARRENS", "THE_SUNKEN_CITY", "WILD_WEST", "EMERALD_DREAM"],
   "multiclassArena": false,
-  "resetCards": 69,
+  "resetCards": 73,
   "resetHeroes": 70,
   "seasonId": 56
 }
