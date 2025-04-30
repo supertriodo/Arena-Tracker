@@ -380,7 +380,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         if(endUrl == "cardsVersion.json")
         {
             int cardsVersion = QJsonDocument::fromJson(reply->readAll()).object().value("cardsVersion").toInt();
-            downloadCardsJson(cardsVersion);//0 force hearthsim - else force AT github
+            downloadCardsJson(0/*cardsVersion*/);//0 force hearthsim - else force AT github
         }
         //Cards json
         else if(endUrl == "cards.json")
@@ -4826,7 +4826,7 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE" << "EMERALD_DREAM";
+    arenaSets << "CORE" << "SCHOLOMANCE" << "THE_BARRENS" << "THE_SUNKEN_CITY" << "WILD_WEST" << "EMERALD_DREAM";
 
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4835,11 +4835,12 @@ void MainWindow::testTierlists()
 }
 
 /*
-  * Core "CORE"
-  * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
-  * Perils in Paradise "ISLAND_VACATION"
-  * The Great Dark Beyond "SPACE"
-  * Into the Emerald Dream "EMERALD_DREAM"
+ *  Core "CORE"
+ *  Scholomance Academy "SCHOLOMANCE"
+ *  Forged in the Barrens "THE_BARRENS"
+ *  Voyage to the Sunken City "THE_SUNKEN_CITY"
+ *  Showdown in the Badlands "WILD_WEST"
+ *  Into the Emerald Dream "EMERALD_DREAM"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
@@ -4847,7 +4848,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "WHIZBANGS_WORKSHOP" << "ISLAND_VACATION" << "SPACE" << "EMERALD_DREAM";
+    arenaSets << "CORE" << "SCHOLOMANCE" << "THE_BARRENS" << "THE_SUNKEN_CITY" << "WILD_WEST" << "EMERALD_DREAM";
 
     if(fromHearth)
     {

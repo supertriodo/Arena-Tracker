@@ -1,8 +1,8 @@
 {
-  "arenaVersion": 73,
-  "arenaSets": ["CORE", "WHIZBANGS_WORKSHOP", "ISLAND_VACATION", "SPACE", "EMERALD_DREAM"],
+  "arenaVersion": 74,
+  "arenaSets": ["CORE", "SCHOLOMANCE", "THE_BARRENS", "THE_SUNKEN_CITY", "WILD_WEST", "EMERALD_DREAM"],
   "multiclassArena": false,
   "resetCards": 69,
   "resetHeroes": 70,
-  "seasonId": 55
+  "seasonId": 56
 }
