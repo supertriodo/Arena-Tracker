@@ -4826,7 +4826,47 @@ void MainWindow::testTierlists()
 //    saveHearthArenaTierlistOriginal(); //Si se rechaza el download, lo bajamos a mano.
 
     QStringList arenaSets;
-    arenaSets << "CORE" << "SCHOLOMANCE" << "THE_BARRENS" << "THE_SUNKEN_CITY" << "WILD_WEST" << "EMERALD_DREAM";
+    arenaSets <<  "CORE" <<
+        "LEGACY" <<
+        "EXPERT1" <<
+        "DEMON_HUNTER_INITIATE" <<
+        "WONDERS" <<
+        "NAXX" <<
+        "GVG" <<
+        "BRM" <<
+        "TGT" <<
+        "LOE" <<
+        "OG" <<
+        "KARA" <<
+        "GANGS" <<
+        "UNGORO" <<
+        "ICECROWN" <<
+        "LOOTAPALOOZA" <<
+        "GILNEAS" <<
+        "BOOMSDAY" <<
+        "TROLL" <<
+        "DALARAN" <<
+        "ULDUM" <<
+        "DRAGONS" <<
+        "YEAR_OF_THE_DRAGON" <<
+        "BLACK_TEMPLE" <<
+        "SCHOLOMANCE" <<
+        "DARKMOON_FAIRE" <<
+        "THE_BARRENS" <<
+        "STORMWIND" <<
+        "ALTERAC_VALLEY" <<
+        "THE_SUNKEN_CITY" <<
+        "REVENDRETH" <<
+        "PATH_OF_ARTHAS" <<
+        "RETURN_OF_THE_LICH_KING" <<
+        "BATTLE_OF_THE_BANDS" <<
+        "TITANS" <<
+        "WILD_WEST" <<
+        "EVENT" <<
+        "WHIZBANGS_WORKSHOP" <<
+        "ISLAND_VACATION" <<
+        "SPACE" <<
+        "EMERALD_DREAM";
 
 
 //    QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4835,12 +4875,49 @@ void MainWindow::testTierlists()
 }
 
 /*
- *  Core "CORE"
- *  Scholomance Academy "SCHOLOMANCE"
- *  Forged in the Barrens "THE_BARRENS"
- *  Voyage to the Sunken City "THE_SUNKEN_CITY"
- *  Showdown in the Badlands "WILD_WEST"
- *  Into the Emerald Dream "EMERALD_DREAM"
+ * Core "CORE"
+ * Legacy "LEGACY" // Old Basic
+ * Expert "EXPERT1"// Old Classic
+ * Demon Hunter Initiate "DEMON_HUNTER_INITIATE"
+ * Taverns of Time "TAVERNS_OF_TIME"
+ * Caverns of Time "WONDERS"
+ * Duel Treasures "TREASURES"
+ * Curse of Naxxramas "NAXX"
+ * Goblins vs Gnomes "GVG"
+ * Blackrock Mountain "BRM"
+ * The Grand Tournament "TGT"
+ * League of Explorer "LOE"
+ * Whispers of the Old Gods "OG"
+ * One Night in Karazhan "KARA"
+ * Mean Streets of Gadgetzan "GANGS"
+ * Journey to Un'Goro "UNGORO"
+ * Knights of the Frozen Throne "ICECROWN"
+ * Kobolds and Catacombs "LOOTAPALOOZA"
+ * The Witchwood "GILNEAS"
+ * The boomsday Project "BOOMSDAY"
+ * Rastakhan's Rumble "TROLL"
+ * Rise of Shadows "DALARAN"
+ * Saviors of Uldum "ULDUM"
+ * Descent of Dragons "DRAGONS"
+ * Galakrond's Awakening "YEAR_OF_THE_DRAGON"
+ * Ashes of Outland "BLACK_TEMPLE"
+ * Scholomance Academy "SCHOLOMANCE"
+ * Madness at the Darkmoon Faire "DARKMOON_FAIRE"
+ * Forged in the Barrens "THE_BARRENS"
+ * United in Stormwind "STORMWIND"
+ * Fractured in Alterac Valley "ALTERAC_VALLEY"
+ * Voyage to the Sunken City "THE_SUNKEN_CITY"
+ * Murder at Castle Nathria "REVENDRETH"
+ * Path of Arthas "PATH_OF_ARTHAS"
+ * March of the Lick King "RETURN_OF_THE_LICH_KING"
+ * Festival of Legends "BATTLE_OF_THE_BANDS"
+ * TITANS "TITANS"
+ * Showdown in the Badlands "WILD_WEST"
+ * 10-year anniversary celebration "EVENT"
+ * Whizbang’s Workshop "WHIZBANGS_WORKSHOP"
+ * Perils in Paradise "ISLAND_VACATION"
+ * The Great Dark Beyond "SPACE"
+ * Into the Emerald Dream "EMERALD_DREAM"
  */
 void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
