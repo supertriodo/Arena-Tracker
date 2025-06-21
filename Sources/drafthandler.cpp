@@ -1367,6 +1367,11 @@ void DraftHandler::pickCard(QString code)
         emit pDebug("WARNING: Duplicate pick code detected: " + code);
         return;
     }
+    if(Utility::getRarityFromCode(code) == LEGENDARY)
+    {
+        emit pDebug("Skip pick legendary: " + code);
+        return;
+    }
 
     //Completa 2nd class en mutiClassArena (pick hero power)
     CardType cardType = Utility::getTypeFromCode(code);
@@ -2234,24 +2239,41 @@ ScreenDetection DraftHandler::findScreenRects()
     if(heroDrafting)
     {
         templatePoints.resize(6);
-        templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
-        templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
-        templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
+        templatePoints[0] = cvPoint(207,340); templatePoints[1] = cvPoint(207+166,340+166);
+        templatePoints[2] = cvPoint(487,340); templatePoints[3] = cvPoint(487+166,340+166);
+        templatePoints[4] = cvPoint(766,340); templatePoints[5] = cvPoint(766+166,340+166);
+        //Old
+        // templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
+        // templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
+        // templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
     }
     else// if(drafting) || buildMechanicsWindow
     {
         templatePoints.resize(18);
-        templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
-        templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
-        templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+        templatePoints[0] = cvPoint(234,263); templatePoints[1] = cvPoint(234+114,263+114);
+        templatePoints[2] = cvPoint(512,263); templatePoints[3] = cvPoint(512+114,263+114);
+        templatePoints[4] = cvPoint(789,263); templatePoints[5] = cvPoint(789+114,263+114);
 
-        templatePoints[6] = cvPoint(146,240); templatePoints[7] = cvPoint(146+34,240+45);
-        templatePoints[8] = cvPoint(425,240); templatePoints[9] = cvPoint(425+34,240+45);
-        templatePoints[10] = cvPoint(705,240); templatePoints[11] = cvPoint(705+34,240+45);
+        templatePoints[6] = cvPoint(175,227); templatePoints[7] = cvPoint(175+33,227+44);
+        templatePoints[8] = cvPoint(454,227); templatePoints[9] = cvPoint(454+33,227+44);
+        templatePoints[10] = cvPoint(733,227); templatePoints[11] = cvPoint(733+33,227+44);
 
-        templatePoints[12] = cvPoint(262,438); templatePoints[13] = cvPoint(262+12,438+18);
-        templatePoints[14] = cvPoint(540,438); templatePoints[15] = cvPoint(540+12,438+18);
-        templatePoints[16] = cvPoint(819,438); templatePoints[17] = cvPoint(819+12,438+18);
+        templatePoints[12] = cvPoint(288,420); templatePoints[13] = cvPoint(288+11,420+17);
+        templatePoints[14] = cvPoint(566,420); templatePoints[15] = cvPoint(566+11,420+17);
+        templatePoints[16] = cvPoint(844,420); templatePoints[17] = cvPoint(844+11,420+17);
+
+        //Old
+        // templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
+        // templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
+        // templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
+
+        // templatePoints[6] = cvPoint(146,240); templatePoints[7] = cvPoint(146+34,240+45);
+        // templatePoints[8] = cvPoint(425,240); templatePoints[9] = cvPoint(425+34,240+45);
+        // templatePoints[10] = cvPoint(705,240); templatePoints[11] = cvPoint(705+34,240+45);
+
+        // templatePoints[12] = cvPoint(262,438); templatePoints[13] = cvPoint(262+12,438+18);
+        // templatePoints[14] = cvPoint(540,438); templatePoints[15] = cvPoint(540+12,438+18);
+        // templatePoints[16] = cvPoint(819,438); templatePoints[17] = cvPoint(819+12,438+18);
     }
 
 
@@ -2275,6 +2297,14 @@ ScreenDetection DraftHandler::findScreenRects()
             screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
             screenDetection.manaRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+3)*2)], screenPoints[static_cast<ulong>((i+3)*2+1)]);
             screenDetection.rarityRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+6)*2)], screenPoints[static_cast<ulong>((i+6)*2+1)]);
+
+            //DEBUG imshow
+            // QRect rect = screen->geometry();
+            // QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+            // cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
+            // cv::Rect rectSmall = screenDetection.manaRects[i];
+            // cv::Mat orig = mat(cv::Rect(rectSmall.x, rectSmall.y, rectSmall.width, rectSmall.height));
+            // imshow(QString::number(i).toStdString() + "orig", orig);
         }
 
         screenDetection.screenIndex = screenIndex;

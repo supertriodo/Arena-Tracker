@@ -380,7 +380,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
         if(endUrl == "cardsVersion.json")
         {
             int cardsVersion = QJsonDocument::fromJson(reply->readAll()).object().value("cardsVersion").toInt();
-            downloadCardsJson(0/*cardsVersion*/);//0 force hearthsim - else force AT github
+            downloadCardsJson(cardsVersion);//0 force hearthsim - else force AT github
         }
         //Cards json
         else if(endUrl == "cards.json")
@@ -4869,8 +4869,8 @@ void MainWindow::testTierlists()
         "EMERALD_DREAM";
 
 
-//    QSettings settings("Arena Tracker", "Arena Tracker");
-//    QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+   // QSettings settings("Arena Tracker", "Arena Tracker");
+   // QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
    Utility::checkTierlistsCount(arenaSets);
 }
 
@@ -5178,4 +5178,4 @@ void MainWindow::testDelay()
 
 
 //TODO
-//otherclassGen/discover - toyourhandgen
+//Redownload EXTRA
