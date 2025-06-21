@@ -716,7 +716,10 @@ void DraftHandler::enterArena()
 
     if(drafting)
     {
-        if(!screenFound())  QTimer::singleShot(1000, this, SLOT(newFindScreenLoop()));
+        if(!screenFound())
+        {
+            QTimer::singleShot(CONTINUEDRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(true);});
+        }
         else if(draftCards[0].getCode().isEmpty())
         {
             this->extendedCapture = false;
@@ -821,8 +824,9 @@ void DraftHandler::continueDraft()
 {
     if(!drafting && arenaHero != INVALID_CLASS)
     {
+        emit pDebug("Continue draft.");
         QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
-        beginDraft(heroLog, deckHandler->getDeckCardList());
+        beginDraft(heroLog, deckHandler->getDeckCardList(), true);
     }
     else
     {
