@@ -2182,13 +2182,13 @@ void SynergyHandler::debugMissingSynergiesAllSets()
             {
                 debugSynergiesCode(code, ++num);
 
-//                if(num>150 && num<=170)
-//                {
-//                    QDesktopServices::openUrl(QUrl(
-//                        "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
-//                        ));
-//                    QThread::msleep(100);
-//                }
+               // if(num>0 && num<=50)
+               // {
+               //     QDesktopServices::openUrl(QUrl(
+               //         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
+               //         ));
+               //     QThread::msleep(100);
+               // }
             }
         }
         else
@@ -5158,6 +5158,7 @@ REGLAS
 +RushGiverGen/RushGen: Los rushGiverGen solo son rushGen si automaticamente le dan rush al invocarlas.
 +RushGiverSyn/EnrageGen/Frenzy: Solo son rushGiverSyn, los enrage minions de 5+ mana con un enrage significativo. Taunt 2/6 enrage +3 atk no lo es.
 +ReturnSyn lo ponemos tambien battlecry neutros, como ambos jugadores roban 1 carta.
+    No lo ponemos en battlecry condicionales a no ser que sean muy faciles de satisfacer.
 +Sinergias con cartas de alto coste solo las ponemos para coste 6+ ("=>SynMinionCost6", "=>SynSpellCost6", "=>SynWeaponCost6")
 +EggGen/EggSyn lo usamos en huevos y criaturas que queremos sacrificar con aoes o destroy a friendly minion spells.
 +evolveSyn: suele ponerse en minions que pierdan su valor en el battlecry o que tengan un mal deathrattle.
