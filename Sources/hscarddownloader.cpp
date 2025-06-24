@@ -148,7 +148,12 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
                 QString plainCode = code;
                 plainCode.chop(8);
                 CardType cardType = Utility::getTypeFromCode(plainCode);
-                if(cardType == MINION)      webImage = webImage.copy(-9, -30, 295, 447);
+                CardRarity cardRarity = Utility::getRarityFromCode(plainCode);
+                if(cardType == MINION)
+                {
+                    if(cardRarity == LEGENDARY) webImage = webImage.copy(6, -8, 276, 419);
+                    else                        webImage = webImage.copy(-9, -30, 295, 447);
+                }
                 else if(cardType == WEAPON) webImage = webImage.copy(-1, -32, 295, 447);
                 else /*SPELL - HERO*/       webImage = webImage.copy(-4, -31, 295, 447);
             }
@@ -156,8 +161,13 @@ void HSCardDownloader::saveWebImage(QNetworkReply * reply)
             else
             {
                 CardType cardType = Utility::getTypeFromCode(code);
+                CardRarity cardRarity = Utility::getRarityFromCode(code);
                 //New cut for hearthpwn plain cards
-                if(cardType == MINION)      webImage = webImage.copy(-4, -30, 295, 447);
+                if(cardType == MINION)
+                {
+                    if(cardRarity == LEGENDARY) webImage = webImage.copy(6, -15, 283, 431);
+                    else                        webImage = webImage.copy(-4, -30, 295, 447);
+                }
                 else if(cardType == WEAPON) webImage = webImage.copy(-1, -32, 295, 447);
                 else /*SPELL - HERO*/       webImage = webImage.copy(-4, -31, 295, 447);
                 //Old cut for all hearthsim plain cards (minion/spell/weapon)
