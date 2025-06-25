@@ -2754,27 +2754,24 @@ void MainWindow::createDataDir()
 }
 
 
+void MainWindow::downloadExtraFile(QString nameFile)
+{
+    QFileInfo file = QFileInfo(Utility::extraPath() + "/" + nameFile);
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/") + nameFile)));
+}
+
+
 void MainWindow::downloadExtraFiles()
 {
-    QFileInfo file;
-
-    file = QFileInfo(Utility::extraPath() + "/arenaTemplate.png");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/arenaTemplate.png"))));
-
-    file = QFileInfo(Utility::extraPath() + "/heroesTemplate.png");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/heroesTemplate.png"))));
-
-    file = QFileInfo(Utility::extraPath() + "/mechanicsTemplate.png");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/mechanicsTemplate.png"))));
-
-    file = QFileInfo(Utility::extraPath() + "/MANA.dat");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/MANA.dat"))));
-
-    file = QFileInfo(Utility::extraPath() + "/RARITY.dat");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(EXTRA_URL + QString("/RARITY.dat"))));
-
-    file = QFileInfo(Utility::extraPath() + "/icon.png");
-    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
+    downloadExtraFile("arenaTemplate.png");
+    downloadExtraFile("arenaTemplate2.png");
+    downloadExtraFile("heroesTemplate.png");
+    downloadExtraFile("heroesTemplate2.png");
+    downloadExtraFile("mechanicsTemplate.png");
+    downloadExtraFile("mechanicsTemplate2.png");
+    downloadExtraFile("MANA.dat");
+    downloadExtraFile("RARITY.dat");
+    downloadExtraFile("icon.png");
 }
 
 
@@ -5179,3 +5176,4 @@ void MainWindow::testDelay()
 
 //TODO
 // draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
+// Delete mechanics/synergies and recreate on exit main menu

@@ -2139,7 +2139,8 @@ void DraftHandler::newFindScreenLoop(bool skipScreenSettings)
 {
     stopLoops = false;
 
-    //skipScreenSettings = Force Draft
+    //skipScreenSettings = Force Draft / Continue Draft: No mostramos puntuaciones antes de encontrar el template
+    //para asegurarnos que no estamos en la screen intermedia de arena, previo a llegar al draft desde main menu.
     if(!skipScreenSettings && loadTemplateSettings())
     {
         emit pDebug("Hearthstone arena screen loaded from settings.");
@@ -2191,7 +2192,7 @@ void DraftHandler::finishFindScreenRects()
     if(screenDetection.screenIndex == -1)
     {
         emit pDebug("Hearthstone arena screen not found. Retrying...");
-        QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
+        startFindScreenRects();
     }
     else if(isFindScreenOk(screenDetection))
     {
@@ -2231,7 +2232,7 @@ void DraftHandler::finishFindScreenRects()
             }
         }
     }
-    else    QTimer::singleShot(FINDINGFRAME_LOOP_TIME, this, SLOT(startFindScreenRects()));
+    else    startFindScreenRects();
 }
 
 
@@ -2288,11 +2289,13 @@ ScreenDetection DraftHandler::findScreenRects()
         if (!screen)    continue;
 
         QString arenaTemplate;
-        if(drafting)    arenaTemplate = "arenaTemplate.png";
-        else if(heroDrafting)   arenaTemplate = "heroesTemplate.png";
-        else                    arenaTemplate = "mechanicsTemplate.png";
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate, screen, templatePoints,
+        if(drafting)    arenaTemplate = "arenaTemplate";
+        else if(heroDrafting)   arenaTemplate = "heroesTemplate";
+        else                    arenaTemplate = "mechanicsTemplate";
+        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
                                                 screenDetection.screenScale, screenDetection.screenHeight);
+        if(screenPoints.empty())    screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
+                                                    screenDetection.screenScale, screenDetection.screenHeight);
         if(screenPoints.empty())    continue;
 
         //Calculamos screenRects, manaRects y rarityRects

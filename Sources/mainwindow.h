@@ -199,6 +199,7 @@ private:
     void completeConfigComboTheme();
     void completeConfigComboAvg();
     void initConfigTheme(QString theme);
+    void downloadExtraFile(QString nameFile);
     void downloadExtraFiles();
     void downloadThemes();
     void downloadTheme(QString theme, int version);
