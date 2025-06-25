@@ -1679,7 +1679,7 @@
 "FIR_921" : [ "battlecry" ],
 "FIR_922" : [ "pingGen", "battlecry" ],
 "FIR_923" : [ "damageMinionsGen", "=>SynMinionCost8", "=>SynSpellCost8", "=>SynWeaponCost8" ],
-"FIR_924" : [ "demonGen", "drop4", "discover", "battlecry", "returnSyn" ],
+"FIR_924" : [ "demonGen", "drop4", "discover2", "battlecry", "returnSyn" ],
 "FIR_927" : [ "drop3", "discover", "battlecry", "returnSyn" ],
 "FIR_928" : [ "battlecry", "attackBuffGen", "healthBuffGen", "handBuffGen", "returnSyn" ],
 "FIR_929" : [ "fireSyn", "drop2", "drawGen", "deathrattle", "fireGen", "spellGen" ],
