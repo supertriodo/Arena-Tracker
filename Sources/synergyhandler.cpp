@@ -2037,7 +2037,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("EMERALD_DREAM", true, true))
 //    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
 //    for(QString &code: (QStringList)Utility::getStandardCodes())
 //    for(QString &code: (QStringList)Utility::getWildCodes())
@@ -2081,7 +2081,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 // isDrawGen(code, text) || containsAll(text, "draw")
 ///Update cartas que roban una carta y la clonan (Mimic Pod) --> EnemyHandHandler::isClonerCard (Hearthpwn Search: draw cop)
 // containsAll(text, "draw cop")
-///Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget (Hearthpwn Search: draw from your deck)
+///Update AOE que marcan un objetivo principal y le hacen algo diferente que al resto (Swipe) --> MinionGraphicsItem::isAoeWithTarget
 // isAoeGen(code, text)
                 )
             {
@@ -4899,7 +4899,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
         RUNED_MITHRIL_ROD, SIGIL_OF_ALACRITY, TO_THE_FRONT, CERATHINE_FLEETRUNNER, RECONNAISSANCE, SHIVERING_SORCERESS,
         BRACING_COLD, WAYWARD_SAGE, SWIFTSCALE_TRICKSTER, PLANTED_EVIDENCE, SERRATED_BONE_SPIKE, MURLOCULA, BONELORD_FROSTWHISPER,
         ROTTEN_RODENT, PRIESTESS_VALISHJ, FREQUENCY_OSCILLATOR, LOVE_EVERLASTING, BIG_DREAMS, BLOOD_TREANT, AQUA_ARCHIVIST,
-        HUNTERS_INSIGHT, SANDBOX_SCOUNDREL, ENSMALLEN
+        HUNTERS_INSIGHT, SANDBOX_SCOUNDREL, ENSMALLEN, AVIANA_ELUNES_CHOSEN
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 0;
     }
@@ -4923,7 +4923,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     {
     QStringList candidates = {
         NERUBIAN_PROPHET, CORRIDOR_CREEPER, SECOND_RATE_BRUISER, DREAMPETAL_FLORIST, FEL_GUARDIANS, CUTTING_CLASS, GRANITE_FORGEBORN,
-        CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH, WISDOM_OF_NORGANNON, TRAM_OPERATOR, SPIRIT_PEDDLER
+        CLUMSY_COURIER, EXCAVATION_SPECIALIST, ANUBREKHAN, INZAH, WISDOM_OF_NORGANNON, TRAM_OPERATOR, SPIRIT_PEDDLER, URSOL
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 3;
     }
@@ -4932,7 +4932,7 @@ int SynergyHandler::getCorrectedCardMana(DeckCard &deckCard)
     QStringList candidates = {
         MOLTEN_BLADE, SHIFTER_ZERUS, SHIFTING_SCROLL, CHAMELEOS, UMBRAL_OWL, TENT_TRASHER, FROSTSABER_MATRIARCH, WILDPAW_GNOLL,
         SCRIBBLING_STENOGRAPHER, SHADOW_OF_DEMISE, RELIC_OF_DIMENSIONS, STITCHED_GIANT, DJ_MANASTORM, STARSTRUNG_BOW, PRISMATIC_BEAM,
-        THRISTY_DRIFTER, MANTLE_SHAPER, TABLE_FLIP, EREDAR_BRUTE
+        THRISTY_DRIFTER, MANTLE_SHAPER, TABLE_FLIP, EREDAR_BRUTE, AGAMAGGAN
     };
     if(candidates.contains(code) || candidates.contains(otherCode)) return 4;
     }
