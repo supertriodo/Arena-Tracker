@@ -2771,7 +2771,9 @@ void MainWindow::downloadExtraFiles()
     downloadExtraFile("mechanicsTemplate2.png");
     downloadExtraFile("MANA.dat");
     downloadExtraFile("RARITY.dat");
-    downloadExtraFile("icon.png");
+
+    QFileInfo file = QFileInfo(Utility::extraPath() + "/icon.png");
+    if(!file.exists())  networkManager->get(QNetworkRequest(QUrl(IMAGES_URL + QString("/icon.png"))));
 }
 
 
