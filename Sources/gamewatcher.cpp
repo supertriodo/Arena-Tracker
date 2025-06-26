@@ -246,7 +246,7 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     {
         emit pDebug("New arena: choosing heroe.", numLine);
         emit heroDraftDeck();//No hero
-        emit arenaChoosingHeroe();
+        emit arenaChoosingHeroe();  //(connect) beginHeroDraft
     }
     //SetDraftMode - DRAFTING
     else if(line.contains("SetDraftMode - DRAFTING"))

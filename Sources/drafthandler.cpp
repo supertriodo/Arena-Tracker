@@ -739,18 +739,22 @@ void DraftHandler::leaveArena()
 
     if(drafting)
     {
-        if(capturing)
-        {
-            this->numCaptured = 0;
+        endDraft();
+        deleteDraftMechanicsWindow();
+        //OLD Antes manteniamos el draft y ocultabamos los overlays al salir, ya no podemos hacerlo asi ya que quiero que al elegir un legendary bundle
+        //el usuario salga al menu y vuelva para asi recargar el deck y recrear de cero las mecanicas y sinergias.
+        // if(capturing)
+        // {
+        //     this->numCaptured = 0;
 
-            //Clear guessed cards
-            for(int i=0; i<3; i++)
-            {
-                cardDetected[i] = false;
-                draftCardMaps[i].clear();
-                bestMatchesMaps[i].clear();
-            }
-        }
+        //     //Clear guessed cards
+        //     for(int i=0; i<3; i++)
+        //     {
+        //         cardDetected[i] = false;
+        //         draftCardMaps[i].clear();
+        //         bestMatchesMaps[i].clear();
+        //     }
+        // }
     }
     else if(heroDrafting)   endHeroDraft();
 }

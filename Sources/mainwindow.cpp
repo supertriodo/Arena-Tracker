@@ -5177,5 +5177,4 @@ void MainWindow::testDelay()
 
 
 //TODO
-// draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
-// Delete mechanics/synergies and recreate on exit main menu
+//Cartel vuelta main menu
