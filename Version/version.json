@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06"],
+	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06", "v25.06.01"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": " I'm back. I'll be working at full during the next weeks to update Arena Tracker to the new format/sets.<br><br>This is a hotfix to allow basic arena drafts. After picking the first legendary bundle you have to go back to the main menu and enter the arena again, this way your deck list will be loaded correctly with the legendary bundle cards and you can continue the draft with Arena Tracker help.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "Underground arena is detected now and you can draft it with AT help. Sinergies completed for emerald dream and mini-set.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
