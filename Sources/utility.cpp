@@ -766,7 +766,7 @@ std::vector<Point2f> Utility::findTemplateOnScreen(const QString &templateImage,
     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
 
     std::vector<Point2f> screenPoints;
-    findTemplateOnMat(templateImage, mat, templatePoints, screenPoints, 10);
+    findTemplateOnMat(templateImage, mat, templatePoints, screenPoints, 10/*, true*/);//Debug showMatches=true
     return screenPoints;
 }
 

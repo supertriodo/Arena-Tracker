@@ -1009,6 +1009,8 @@ void MainWindow::createDraftHandler()
             deckHandler, SLOT(saveDraftDeck(QString)));
     connect(draftHandler, SIGNAL(saveDraftDeck(QString)),
             deckHandler, SLOT(saveDraftDeck(QString)));
+    connect(draftHandler, SIGNAL(deleteDraftDeck(QString)),
+            deckHandler, SLOT(deleteDraftDeck(QString)));
 
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             arenaHandler, SLOT(newArena(QString)));
@@ -1555,6 +1557,10 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(beginDraft(QString)));
     connect(gameWatcher, SIGNAL(continueDraft()),
             draftHandler, SLOT(continueDraft()));
+    connect(gameWatcher, SIGNAL(redraft()),
+            draftHandler, SLOT(redraft()));
+    connect(gameWatcher, SIGNAL(checkRedraft()),
+            draftHandler, SLOT(checkRedraft()));
     connect(gameWatcher, SIGNAL(arenaChoosingHeroe()),
             draftHandler, SLOT(beginHeroDraft()));
     connect(gameWatcher, SIGNAL(heroDraftDeck(QString)),
@@ -1567,8 +1573,10 @@ void MainWindow::createGameWatcher()
             draftHandler, SLOT(deleteDraftMechanicsWindow()));
     connect(gameWatcher, SIGNAL(pickCard(QString)),
             draftHandler, SLOT(pickCard(QString)));
-    connect(gameWatcher, SIGNAL(enterArena()),
-            draftHandler, SLOT(enterArena()));
+    //Lo usabamos para reanudar el drafting, pero ya no lo pausamos, lo terminamos completamente al salir de arena
+    //y lo iniciamos de cero al entrar otra vez, DraftHandler::continueDraft
+    // connect(gameWatcher, SIGNAL(enterArena()),
+    //         draftHandler, SLOT(enterArena()));
     connect(gameWatcher, SIGNAL(leaveArena()),
             draftHandler, SLOT(leaveArena()));
 }
@@ -2307,7 +2315,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 #ifdef QT_DEBUG
             else if(event->key() == Qt::Key_6)  draftHandler->beginHeroDraft();
             else if(event->key() == Qt::Key_7)
-                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList());
+                draftHandler->beginDraft(Utility::classEnum2classLogNumber(WARLOCK), deckHandler->getDeckCardList(), true);
             else if(event->key() == Qt::Key_D)  createDebugPack();
             else if(event->key() == Qt::Key_Z)
             {
@@ -4814,7 +4822,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("EMERALD_DREAM", 165, 200/*, "SC_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("EMERALD_DREAM", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -5001,7 +5009,8 @@ void MainWindow::testDelay()
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
 ///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
-    //Update DraftHandler::isSignatureCard
+    //-(https://blizzard.gamespress.com/Hearthstone)
+    //-Update DraftHandler::isSignatureCard
 //Update secrets
 //Cartas especiales --> SynergyHandler::testSynergies()
     //Update bombing cards --> PlanHandler::isCardBomb (Hearthpwn Search: damage randomly)

@@ -45,7 +45,7 @@ private:
     void completeUI();
     void insertDeckCard(DeckCard &deckCard);
     void updateTransparency();
-    void newDeckCard(QString code, int total=1, bool outsider=false, int id=0);
+    void newDeckCard(QString code, int total=1, bool outsider=false, int id=0, bool skipDups=false);
     void drawFromDeck(QString code, int id);
     void showDeckButtons();
     void hideDeckButtons();
@@ -117,6 +117,7 @@ public slots:
     void setLastCreatedByCode(QString code, QString blockType);
     void setFirstOutsiderId(int id);
     void saveDraftDeck(QString hero);
+    void deleteDraftDeck(QString hero);
 
 private slots:
     void findDeckCardEntered(QListWidgetItem *item);

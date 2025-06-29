@@ -304,7 +304,7 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
         else                                            painter.setBrush(WHITE);
 
         //Number cards
-        if(total > 1)
+        if(total > 1 || total < 0)
         {
             font.setPixelSize(22*scale);
             Utility::drawShadowText(painter, font, QString::number(total), 202*scale, (19*scale) - offsetY, true);

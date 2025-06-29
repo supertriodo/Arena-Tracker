@@ -103,6 +103,8 @@ signals:
     void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen);
     void newArena(QString hero);
     void continueDraft();
+    void checkRedraft();
+    void redraft();
     void arenaChoosingHeroe();
     void inRewards();
     void newDeckCard(QString card);

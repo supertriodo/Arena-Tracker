@@ -80,7 +80,7 @@ private:
     QPointF screenScale;
     int screenIndex;
     int numCaptured;
-    bool drafting, heroDrafting, capturing, findingFrame, stopLoops;
+    bool drafting, heroDrafting, redrafting, capturing, findingFrame, stopLoops;
     bool mouseInApp;
     Transparency transparency;
     DraftHeroWindow *draftHeroWindow;
@@ -126,7 +126,7 @@ private:
     void initCodesAndHistMaps(QString hero="", bool skipScreenSettings=false);
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
-    void endDraft();
+    void endDraft(bool createNewArena);
     bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
     void showNewCards(DraftCard bestCards[]);
     void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0, float cardRatingHSR=0);
@@ -244,6 +244,7 @@ signals:
     void draftStarted();
     void draftEnded(QString heroLog);
     void saveDraftDeck(QString heroLog);
+    void deleteDraftDeck(QString heroLog);
     void scoreAvg(int deckScoreHA, float deckScoreHSR, QString heroLog);
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();
@@ -269,11 +270,13 @@ public slots:
                         float tierScore1, float tierScore2, float tierScore3, DraftMethod draftMethod,
                         int includedDecks1=-1, int includedDecks2=-1, int includedDecks3=-1);
     void pickCard(QString code);
-    void enterArena();
+    // void enterArena();//OLD
     void leaveArena();
     void minimizeScoreWindow();
     void setPremium(bool premium);
     void updateMinimumHeight();
+    void redraft();
+    void checkRedraft();
 
 private slots:
     void captureDraft();

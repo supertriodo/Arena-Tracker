@@ -13,6 +13,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->extendedCapture = false;
     this->resetTwitchScores = true;
     this->drafting = false;
+    this->redrafting = false;
     this->heroDrafting = false;
     this->capturing = false;
     this->findingFrame = false;
@@ -274,7 +275,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
                 }
             }
 
-            if(hearthArenaTiers[code] == 0)  emit pDebug("HearthArena missing: " + name);
+            // if(hearthArenaTiers[code] == 0)  emit pDebug("HearthArena missing: " + name);//TODO
         }
     }
     else
@@ -286,7 +287,7 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
             QString name = Utility::cardEnNameFromCode(code);
             int score = jsonNamesObject.value(name).toInt();
             hearthArenaTiers[code] = score;
-            if(score == 0)  emit pDebug("HearthArena missing: " + name);
+            // if(score == 0)  emit pDebug("HearthArena missing: " + name);//TODO
         }
         emit pDebug("HearthArena Cards: " + QString::number(jsonNamesObject.count()));
     }
@@ -563,6 +564,8 @@ void DraftHandler::initLightForgeTiers(const CardClass &heroClass, const bool mu
 }
 
 
+//Desde la reforma de arena solo cargamos los screensettings en buildDraftMechanicsWindow() o al elegir heroe y empezar draft.
+//continueDraft y heroDrafts esperan a buscar el template ya que hay una pantalla pasillo.
 void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 {
     cardsDownloading.clear();
@@ -572,7 +575,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
 
     if(heroDrafting)
     {
-        QTimer::singleShot(HERODRAFT_DELAY_TIME, this, SLOT(newFindScreenLoop()));
+        QTimer::singleShot(HERODRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
         for(const QString &code: qAsConst(heroCodesList))     addCardHist(code, false, true);
     }
@@ -710,24 +713,26 @@ void DraftHandler::clearLists(bool keepCounters)
 }
 
 
-void DraftHandler::enterArena()
-{
-    showOverlay();
+//OLD Antes manteniamos el draft y ocultabamos los overlays al salir, ya no podemos hacerlo asi ya que quiero que al elegir un legendary bundle
+//el usuario salga al menu y vuelva para asi recargar el deck y recrear de cero las mecanicas y sinergias.
+// void DraftHandler::enterArena()
+// {
+//     showOverlay();
 
-    if(drafting)
-    {
-        if(!screenFound())
-        {
-            QTimer::singleShot(CONTINUEDRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(true);});
-        }
-        else if(draftCards[0].getCode().isEmpty())
-        {
-            this->extendedCapture = false;
-            this->resetTwitchScores = true;
-            newCaptureDraftLoop(true);
-        }
-    }
-}
+//     if(drafting)
+//     {
+//         if(!screenFound())
+//         {
+//             QTimer::singleShot(CONTINUEDRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(true);});
+//         }
+//         else if(draftCards[0].getCode().isEmpty())
+//         {
+//             this->extendedCapture = false;
+//             this->resetTwitchScores = true;
+//             newCaptureDraftLoop(true);
+//         }
+//     }
+// }
 
 
 void DraftHandler::leaveArena()
@@ -739,7 +744,7 @@ void DraftHandler::leaveArena()
 
     if(drafting)
     {
-        endDraft();
+        endDraft(false);
         deleteDraftMechanicsWindow();
         //OLD Antes manteniamos el draft y ocultabamos los overlays al salir, ya no podemos hacerlo asi ya que quiero que al elegir un legendary bundle
         //el usuario salga al menu y vuelva para asi recargar el deck y recrear de cero las mecanicas y sinergias.
@@ -804,7 +809,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     //Set updateTime in log / Hide card Window
     emit draftStarted();
 
-    clearLists(true);
+    //Reconstruir todas las sinergias permite retocar el deck y force draft con el deck correcto.
+    clearLists(false);
 
     this->arenaHero = Utility::classLogNumber2classEnum(hero);
     if(multiclassArena) this->arenaHeroMulticlassPower = findMulticlassPower(deckCardList);
@@ -824,11 +830,28 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
 }
 
 
+void DraftHandler::redraft()
+{
+    //Guardamos el deck completo antes de un REDRAFTING.
+    //Puede que deje el redraft a medias y al volver a entrar se cargue un deck donde falten los nuevos picks.
+    QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
+    void saveDraftDeck(QString heroLog);
+    // emit deleteDraftDeck(heroLog);//En caso de que queramos borrarlo en lugar de guardarlo
+    this->redrafting = true;
+}
+
+
+void DraftHandler::checkRedraft()
+{
+    if(redrafting)  continueDraft();
+}
+
+
 void DraftHandler::continueDraft()
 {
     if(!drafting && arenaHero != INVALID_CLASS)
     {
-        emit pDebug("Continue draft.");
+        emit pDebug("Continue draft o redraft.");
         QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
         beginDraft(heroLog, deckHandler->getDeckCardList(), true);
     }
@@ -957,7 +980,7 @@ void DraftHandler::initSynergyCounters(QList<DeckCard> &deckCardList)
 }
 
 
-void DraftHandler::endDraft()
+void DraftHandler::endDraft(bool createNewArena)
 {
     if(!drafting)    return;
 
@@ -982,11 +1005,11 @@ void DraftHandler::endDraft()
     int numCards = synergyHandler->draftedCardsCount();
     QString heroLog = "";
     if(numCards==30)    heroLog = Utility::classEnum2classLogNumber(arenaHero);
-    else                emit pDebug("End draft with <30 cards.");
-    emit draftEnded(heroLog);
+    else                emit pDebug("End draft with != 30 cards.");
+    if(createNewArena)  emit draftEnded(heroLog);//(connect) arenaHandler->newArena() / deckHandler->saveDraftDeck()
 
     //Show Deck Score
-    if(patreonVersion)
+    if(patreonVersion && createNewArena)
     {
         int deckScoreHA = (numCards==0)?0:round(deckRatingHA/static_cast<double>(numCards));
         int deckScoreLF = (numCards==0)?0:round(deckRatingLF/static_cast<double>(numCards));
@@ -999,6 +1022,7 @@ void DraftHandler::endDraft()
     clearLists(false);
 
     this->drafting = false;
+    this->redrafting = false;
     this->justPickedCard = "";
 
     deleteDraftScoreWindow();
@@ -1022,12 +1046,13 @@ void DraftHandler::heroDraftDeck(QString hero)
 
 
 //End game or end draft or enter previous arena (create Mechanics Window)
+//ACTIVE_DRAFT_DECK
 void DraftHandler::endDraftShowMechanicsWindow()
 {
     if(drafting)
     {
         saveTemplateSettings();
-        endDraft();
+        endDraft(!redrafting);
     }
     else if(draftMechanicsWindow != nullptr)    showOverlay();
     else
@@ -1055,7 +1080,7 @@ void DraftHandler::endDraftHideMechanicsWindow()
 {
     stopLoops = true;
 
-    if(drafting)            endDraft();
+    if(drafting)            endDraft(false);
     else if(heroDrafting)   endHeroDraft();
     if(draftMechanicsWindow != nullptr)
     {
@@ -1375,7 +1400,8 @@ void DraftHandler::pickCard(QString code)
         emit pDebug("WARNING: Duplicate pick code detected: " + code);
         return;
     }
-    if(Utility::getRarityFromCode(code) == LEGENDARY)
+    //Saltamos legendary bundles
+    if(!redrafting && Utility::getRarityFromCode(code) == LEGENDARY)
     {
         emit pDebug("Skip pick legendary: " + code);
         return;
@@ -2335,7 +2361,7 @@ void DraftHandler::beginHeroDraft()
     clearLists(false);
     this->heroDrafting = true;
 
-    initCodesAndHistMaps();
+    initCodesAndHistMaps("", true);
     createTwitchHandler();
 }
 

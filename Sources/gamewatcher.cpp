@@ -117,6 +117,11 @@ void GameWatcher::processLoadingScreen(QString &line, qint64 numLine)
         {
             loadingScreenState = arena;
             emit pDebug("Entering ARENA (loadingScreenState = arena).", numLine);
+            emit checkRedraft();//checkRedraft drafthandler
+            //Al encontrar SetDraftMode - REDRAFTING marcamos redrafting=true en drafthandler y al entrar en arena hacemos continueDraft()
+            //Si hacemos el draft en SetSetDraftMode - REDRAFTING, despues ocurrira un LoadingScreen: GAMEPLAY -> DRAFT que reiniciara
+            //los contadores de drafthandler para calcular el score del deck enemigo en createGameResult() creando caos. De este modo no
+            //empezamos el nuevo draft hasta que createGameResult() ha terminado.
 
             if(prevMode == "HUB" || prevMode == "FRIENDLY")
             {
@@ -253,6 +258,13 @@ void GameWatcher::processArena(QString &line, qint64 numLine)
     {
         emit pDebug("Found SetDraftMode - DRAFTING.", numLine);
         emit continueDraft();   //(connect) continueDraft
+    }
+    //SetDraftMode - REDRAFTING
+    else if(line.contains("SetDraftMode - REDRAFTING"))
+    {
+        emit pDebug("Found SetDraftMode - REDRAFTING.", numLine);
+        endReadingDeck();//completeArenaDeck with draft file
+        emit redraft();
     }
     //SetDraftMode - IN_REWARDS
     else if(line.contains("SetDraftMode - IN_REWARDS"))
