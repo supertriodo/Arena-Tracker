@@ -1403,8 +1403,12 @@ void DraftHandler::pickCard(QString code)
     //Saltamos legendary bundles
     if(!redrafting && Utility::getRarityFromCode(code) == LEGENDARY)
     {
-        emit pDebug("Skip pick legendary: " + code + ". Show Reenter help.");
-        if(draftMechanicsWindow != nullptr) this->draftMechanicsWindow->showHelpReenter();
+        emit pDebug("Skip pick legendary: " + code);
+        if(draftMechanicsWindow != nullptr)
+        {
+            emit pDebug("Show Reenter help.");
+            this->draftMechanicsWindow->showHelpReenter();
+        }
         return;
     }
 
