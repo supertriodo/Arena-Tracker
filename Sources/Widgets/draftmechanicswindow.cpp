@@ -327,12 +327,28 @@ void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float dec
 }
 
 
-void DraftMechanicsWindow::showHelp()
+void DraftMechanicsWindow::showHelpReenter()
+{
+    showHelp(true);
+}
+
+
+void DraftMechanicsWindow::showHelp(bool reenter)
 {
     showingHelp = true;
-    centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
-                                 (showDrops?ThemeHandler::bgDraftMechanicsHelpDropsFile():ThemeHandler::bgDraftMechanicsHelpFile()) +
-                                 ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+
+    if(reenter)
+    {
+        centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
+                                       ThemeHandler::bgDraftMechanicsReenterFile() +
+                                       ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    }
+    else
+    {
+        centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
+                                     (showDrops?ThemeHandler::bgDraftMechanicsHelpDropsFile():ThemeHandler::bgDraftMechanicsHelpFile()) +
+                                     ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+    }
     scoreButtonLF->hide();
     scoreButtonHA->hide();
     scoreButtonHSR->hide();

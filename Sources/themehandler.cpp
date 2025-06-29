@@ -56,7 +56,7 @@ QString ThemeHandler::drop2CounterFile_, ThemeHandler::drop3CounterFile_, ThemeH
 QString ThemeHandler::aoeMechanicFile_, ThemeHandler::tauntMechanicFile_, ThemeHandler::survivalMechanicFile_, ThemeHandler::drawMechanicFile_;
 QString ThemeHandler::pingMechanicFile_, ThemeHandler::damageMechanicFile_, ThemeHandler::destroyMechanicFile_, ThemeHandler::reachMechanicFile_;
 QString ThemeHandler::checkCardOkFile_, ThemeHandler::goldenMechanicFile_, ThemeHandler::greenMechanicFile_, ThemeHandler::redMechanicFile_;
-QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::bgDraftMechanicsHelpDropsFile_, ThemeHandler::fgDraftMechanicsColor_;
+QString ThemeHandler::bgDraftMechanicsFile_, ThemeHandler::bgDraftMechanicsHelpFile_, ThemeHandler::bgDraftMechanicsHelpDropsFile_, ThemeHandler::bgDraftMechanicsReenterFile_, ThemeHandler::fgDraftMechanicsColor_;
 bool ThemeHandler::manaLimitBehind_;
 QString ThemeHandler::themeLoaded_;
 
@@ -843,6 +843,12 @@ QString ThemeHandler::bgDraftMechanicsHelpDropsFile()
 }
 
 
+QString ThemeHandler::bgDraftMechanicsReenterFile()
+{
+    return bgDraftMechanicsReenterFile_;
+}
+
+
 QString ThemeHandler::fgDraftMechanicsColor()
 {
     return fgDraftMechanicsColor_;
@@ -1061,6 +1067,7 @@ void ThemeHandler::loadThemeValues(const QString &themePath, QByteArray &jsonDat
     bgDraftMechanicsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsFile");
     bgDraftMechanicsHelpFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpFile");
     bgDraftMechanicsHelpDropsFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsHelpDropsFile");
+    bgDraftMechanicsReenterFile_ = loadThemeFile(themePath, jsonObject, "bgDraftMechanicsReenterFile");
     fgDraftMechanicsColor_ = jsonObject.value("fgDraftMechanicsColor").toString("");
     synergyTagColor_ = jsonObject.value("synergyTagColor").toString("");
     minionsCounterFile_ = loadThemeFile(themePath, jsonObject, "minionsCounterFile");
@@ -1354,6 +1361,7 @@ void ThemeHandler::defaultEmptyValues()
     if(bgDraftMechanicsFile_.isEmpty()) bgDraftMechanicsFile_ = ":/Images/bgDraftMechanics.png";
     if(bgDraftMechanicsHelpFile_.isEmpty())         bgDraftMechanicsHelpFile_ = ":/Images/bgDraftMechanicsHelp.png";
     if(bgDraftMechanicsHelpDropsFile_.isEmpty())    bgDraftMechanicsHelpDropsFile_ = ":/Images/bgDraftMechanicsHelpDrops.png";
+    if(bgDraftMechanicsReenterFile_.isEmpty())      bgDraftMechanicsReenterFile_ = ":/Images/bgDraftMechanicsReenter.png";
     if(fgDraftMechanicsColor_.isEmpty())fgDraftMechanicsColor_ = fgColor_;
     if(synergyTagColor_.isEmpty())      synergyTagColor_ = themeColor1_;
 }

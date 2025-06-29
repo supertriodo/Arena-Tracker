@@ -60,7 +60,7 @@ private:
     static QString aoeMechanicFile_, tauntMechanicFile_, survivalMechanicFile_, drawMechanicFile_;
     static QString pingMechanicFile_, damageMechanicFile_, destroyMechanicFile_, reachMechanicFile_;
     static QString checkCardOkFile_, goldenMechanicFile_, greenMechanicFile_, redMechanicFile_;
-    static QString bgDraftMechanicsFile_, bgDraftMechanicsHelpFile_, bgDraftMechanicsHelpDropsFile_, fgDraftMechanicsColor_;
+    static QString bgDraftMechanicsFile_, bgDraftMechanicsHelpFile_, bgDraftMechanicsHelpDropsFile_, bgDraftMechanicsReenterFile_, fgDraftMechanicsColor_;
     static bool manaLimitBehind_;
     static QString themeLoaded_;
 
@@ -210,6 +210,7 @@ public:
     static QString fgDraftMechanicsColor();
     static QString bgDraftMechanicsHelpFile();
     static QString bgDraftMechanicsHelpDropsFile();
+    static QString bgDraftMechanicsReenterFile();
 };
 
 #endif // THEMEHANDLER_H

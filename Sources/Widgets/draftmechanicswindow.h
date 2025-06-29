@@ -56,12 +56,13 @@ public:
     void updateDeckWeight(int numCards, int draw, int toYourHand, int discover);
     void setTheme();
     int draftedCardsCount();
+    void showHelpReenter();
 
 public slots:
     void sendItemEnter(QList<SynergyCard> &synergyCardList, QRect &labelRect);
 
 private slots:
-    void showHelp();
+    void showHelp(bool reenter=false);
     void hideHelp();
 
 signals:

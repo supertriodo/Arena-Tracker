@@ -174,5 +174,6 @@
         <file>Images/weaponsMinionsSpells.png</file>
         <file>Images/checkCardOk.png</file>
         <file>Images/bgLeaderboard.png</file>
+        <file>Images/bgDraftMechanicsReenter.png</file>
     </qresource>
 </RCC>
