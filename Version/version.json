@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06", "v25.06.01"],
+	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06", "v25.06.01", "v25.06.02"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "Underground arena is detected now and you can draft it with AT help. Sinergies completed for emerald dream and mini-set.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "Underground arena is detected now and you can draft it with AT help, including redrafts.<br><br>Deck list is not changed after removing cards in a redraft, for now you have to remove them manually in the deck tab.<br><br>After picking the legendary bundle at the start of a draft you need to reenter arena (from main menu) so the deck list is correctly filled with the bundled cards.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
