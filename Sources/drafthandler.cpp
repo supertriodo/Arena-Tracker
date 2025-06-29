@@ -2282,7 +2282,7 @@ ScreenDetection DraftHandler::findScreenRects()
         // templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
         // templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
     }
-    else// if(drafting) || buildMechanicsWindow
+    else// if(drafting)
     {
         templatePoints.resize(18);
         templatePoints[0] = cvPoint(234,263); templatePoints[1] = cvPoint(234+114,263+114);
@@ -2319,9 +2319,8 @@ ScreenDetection DraftHandler::findScreenRects()
         if (!screen)    continue;
 
         QString arenaTemplate;
-        if(drafting)    arenaTemplate = "arenaTemplate";
-        else if(heroDrafting)   arenaTemplate = "heroesTemplate";
-        else                    arenaTemplate = "mechanicsTemplate";
+        if(heroDrafting)        arenaTemplate = "heroesTemplate";
+        else /*if(drafting)*/   arenaTemplate = "arenaTemplate";
         std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
                                                 screenDetection.screenScale, screenDetection.screenHeight);
         if(screenPoints.empty())    screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,

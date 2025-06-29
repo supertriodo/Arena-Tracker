@@ -2775,8 +2775,6 @@ void MainWindow::downloadExtraFiles()
     downloadExtraFile("arenaTemplate2.png");
     downloadExtraFile("heroesTemplate.png");
     downloadExtraFile("heroesTemplate2.png");
-    downloadExtraFile("mechanicsTemplate.png");
-    downloadExtraFile("mechanicsTemplate2.png");
     downloadExtraFile("MANA.dat");
     downloadExtraFile("RARITY.dat");
 
