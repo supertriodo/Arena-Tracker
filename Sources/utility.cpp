@@ -1157,6 +1157,7 @@ void Utility::resizeSignatureCards()
     for(const QString &file: (const QStringList)dir.entryList())
     {
         if(file.contains(QRegularExpression(".*_([a-zA-Z0-9]+_[a-zA-Z0-9]+)_enUS_.*_SIGNATURE.*\\.png"), &match))
+        // if(file.contains(QRegularExpression("([a-zA-Z0-9]+_[a-zA-Z0-9]+)_premium\\.png"), &match))
         {
             QString code = match.captured(1);
             QString fileName = code + "_premium.png";
