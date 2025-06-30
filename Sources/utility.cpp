@@ -286,9 +286,9 @@ QString Utility::cardLocalCodeFromName(const QString &name)
 }
 
 
-bool Utility::cardsJsonContains(const QString &code, const QString &attribute)
+bool Utility::isCardsJsonCode(const QString &code)
 {
-    return (*cardsJson)[code].contains(attribute);
+    return (*cardsJson).contains(code);
 }
 
 
@@ -1151,25 +1151,55 @@ void Utility::resizeSignatureCards()
     QStringList filterName;
     filterName << "*.png";
     dir.setNameFilters(filterName);
+    QRegularExpressionMatch match;
+    QStringList signatureCodes;
 
     for(const QString &file: (const QStringList)dir.entryList())
     {
-        QImage webImage(goldenDir + "/" + file);
-        // webImage = webImage.scaledToHeight(266, Qt::SmoothTransformation);//OLD
-        webImage = webImage.scaledToWidth(192, Qt::SmoothTransformation);//Minions
-        webImage = webImage.copy(-7, -32, 200, 304);//Minions
-        // webImage = webImage.scaledToWidth(176, Qt::SmoothTransformation);//Spells
-        // webImage = webImage.copy(-13, -32, 200, 304);//Spells
-
-        if(!webImage.save(goldenDir + "/Resized/" + file, "png"))
+        if(file.contains(QRegularExpression(".*_([a-zA-Z0-9]+_[a-zA-Z0-9]+)_enUS_.*_SIGNATURE.*\\.png"), &match))
         {
-            qDebug()<<"Failed to save card image to disk: " + file;
+            QString code = match.captured(1);
+            QString fileName = code + "_premium.png";
+            QString destDir;
+
+            if(isCardsJsonCode(code))
+            {
+                if(getCardAttribute(code, "collectible").toBool())
+                {
+                    destDir = "Collectible";
+                    signatureCodes += code;
+                }
+                else    destDir = "Non-collectible";
+            }
+            else
+            {
+                destDir = "UnknownCode";
+            }
+
+            QImage webImage(goldenDir + "/" + file);
+            if(webImage.width() != 1024 || webImage.height() != 1024)
+            {
+                qDebug()<<"WRONG IMAGE SIZE: " + file;
+                continue;
+            }
+            webImage = webImage.copy(196, 14, 606, 920);//Minions
+            webImage = webImage.scaledToWidth(200, Qt::SmoothTransformation);//Minions
+
+            if(!webImage.save(goldenDir + "/" + destDir + "/" + fileName, "png"))
+            {
+                qDebug()<<"Failed to save card image to disk: " + fileName;
+            }
+            else
+            {
+                qDebug()<<"Card resized: " + destDir + "/" + fileName;
+            }
         }
         else
         {
-            qDebug()<<"Card resized: " + file;
+            qDebug()<<"WRONG NAMEFILE: " + file;
         }
     }
+    qDebug()<<signatureCodes;
 }
 
 

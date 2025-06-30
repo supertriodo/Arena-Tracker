@@ -107,7 +107,7 @@ public:
     static QString classOrder2classULName(int order);
     static QString classOrder2classUL_ULName(int order);
     static QString classOrder2classLogNumber(int order);
-    static bool cardsJsonContains(const QString &code, const QString &attribute);
+    static bool isCardsJsonCode(const QString &code);
     static QJsonValue getCardAttribute(const QString &code, const QString &attribute);
     static QString appPath();
     static QString dataPath();
