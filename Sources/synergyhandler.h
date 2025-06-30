@@ -203,6 +203,7 @@ private:
     bool isLibramGen(const QString &code);
     bool isStarship(const QString &code, const QJsonArray &mechanics);
     bool isStarshipGen(const QString &code);
+    bool isShuffleGen(const QString &code, const QString &text);
 
     bool isMurlocSyn(const QString &code);
     bool isDemonSyn(const QString &code);
@@ -320,6 +321,7 @@ private:
     bool isLibramAllSyn(const QString &code);
     bool isStarshipSyn(const QString &code);
     bool isStarshipAllSyn(const QString &code, const QJsonArray &referencedTags);
+    bool isShuffleSyn(const QString &code, const QString &text);
 
 signals:
     void pDebug(QString line, DebugLevel debugLevel=Normal, QString file="SynergyHandler");

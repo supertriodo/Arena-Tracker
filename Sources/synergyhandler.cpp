@@ -240,6 +240,7 @@ void SynergyHandler::createDraftItemCounters()
     mechanicCounters[V_LIBRAM_ALL] = new DraftItemCounter(this, "Libram");
     mechanicCounters[V_STARSHIP] = new DraftItemCounter(this, "Starship");
     mechanicCounters[V_STARSHIP_ALL] = new DraftItemCounter(this, "Starship");
+    mechanicCounters[V_SHUFFLE] = new DraftItemCounter(this, "Shuffle");
     //New Synergy Step 2
 
 
@@ -1072,6 +1073,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDredge(code, mechanics))                                           mechanicCounters[V_DREDGE]->increase(code);
     if(isCorpseGen(code, mechanics, text))                                  mechanicCounters[V_CORPSE]->increase(code);
     if(isExcavate(code, text))                                              mechanicCounters[V_EXCAVATE]->increase(code);
+    if(isShuffleGen(code, text))                                            mechanicCounters[V_SHUFFLE]->increase(code);
     //New Synergy Step 3
     if(isTaunt(code, mechanics))
     {
@@ -1205,6 +1207,7 @@ void SynergyHandler::updateMechanicCounters(DeckCard &deckCard,
     if(isDredgeSyn(code, text))                                             mechanicCounters[V_DREDGE]->increaseSyn(code);
     if(isCorpseSyn(code, text))                                             mechanicCounters[V_CORPSE]->increaseSyn(code);
     if(isExcavateSyn(code, text))                                           mechanicCounters[V_EXCAVATE]->increaseSyn(code);
+    if(isShuffleSyn(code, text))                                            mechanicCounters[V_SHUFFLE]->increaseSyn(code);
     //New Synergy Step 4
     if(isTauntSyn(code))                                                    mechanicCounters[V_TAUNT]->increaseSyn(code);
     else if(isTauntAllSyn(code))                                            mechanicCounters[V_TAUNT_ALL]->increaseSyn(code);
@@ -1692,6 +1695,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDredge(code, mechanics))                               mechanicCounters[V_DREDGE]->insertSynCards(synergyTagMap);
     if(isCorpseGen(code, mechanics, text))                      mechanicCounters[V_CORPSE]->insertSynCards(synergyTagMap);
     if(isExcavate(code, text))                                  mechanicCounters[V_EXCAVATE]->insertSynCards(synergyTagMap);
+    if(isShuffleGen(code, text))                                mechanicCounters[V_SHUFFLE]->insertSynCards(synergyTagMap);
     //New Synergy Step 5
     if(isDivineShield(code, mechanics))
     {
@@ -1815,6 +1819,7 @@ void SynergyHandler::getMechanicSynergies(DeckCard &deckCard, QMap<QString, QMap
     if(isDredgeSyn(code, text))                                 mechanicCounters[V_DREDGE]->insertCards(synergyTagMap);
     if(isCorpseSyn(code, text))                                 mechanicCounters[V_CORPSE]->insertCards(synergyTagMap);
     if(isExcavateSyn(code, text))                               mechanicCounters[V_EXCAVATE]->insertCards(synergyTagMap);
+    if(isShuffleSyn(code, text))                                mechanicCounters[V_SHUFFLE]->insertCards(synergyTagMap);
     //New Synergy Step 6
     if(isTauntSyn(code))                                        mechanicCounters[V_TAUNT]->insertCards(synergyTagMap);
     else if(isTauntAllSyn(code))                                mechanicCounters[V_TAUNT_ALL]->insertCards(synergyTagMap);
@@ -2008,7 +2013,10 @@ bool SynergyHandler::isValidSynergyCode(const QString &mechanic)
         "otherClassSyn", "silverHandSyn", "treantSyn", "lackeySyn", "outcastSyn", "outcastAllSyn", "endTurnSyn", "rushGiverSyn",
 
         "dredge", "corpseGen", "chooseOne", "chooseOneGen", "excavate", "libram", "libramGen", "starship", "starshipGen",
-        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn", "excavateSyn", "libramSyn", "libramAllSyn", "starshipSyn", "starshipAllSyn"
+        "dredgeSyn", "corpseSyn", "chooseOneSyn", "chooseOneAllSyn", "excavateSyn", "libramSyn", "libramAllSyn", "starshipSyn", "starshipAllSyn",
+
+        "shuffleGen",
+        "shuffleSyn"
         //New Synergy Step 7
     };
     if(mechanic.startsWith("discover") || mechanic.startsWith("drawGen") || mechanic.startsWith("toYourHandGen"))   return true;
@@ -2038,9 +2046,9 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     int num = 0;
 
     for(QString &code: (QStringList)Utility::getSetCodes("EMERALD_DREAM", true, true))
-//    for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
-//    for(QString &code: (QStringList)Utility::getStandardCodes())
-//    for(QString &code: (QStringList)Utility::getWildCodes())
+   // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
+   // for(QString &code: (QStringList)Utility::getStandardCodes())
+   // for(QString &code: (QStringList)Utility::getWildCodes())
     {
         if(code.startsWith("VAN_"))     continue;
         if(code.startsWith("CORE_"))    code = code.mid(5);
@@ -2056,7 +2064,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                containsAll(text, "taunt")
+                containsAll(text, "deck didn't start")
 //                text.contains("deathrattle")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
@@ -2090,7 +2098,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 //                qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
 //                qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<=50)
+                if(num>0 && num<=20)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
@@ -2346,6 +2354,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isCorpseGen(code, mechanics, text))                                  mec<<"corpseGen";
     if(isExcavate(code, text))                                              mec<<"excavate";
     if(isStarship(code, mechanics))                                         mec<<"starship";
+    if(isShuffleGen(code, text))                                            mec<<"shuffleGen";
     //New Synergy Step 8 (Solo si busca patron)
 
     //Solo analizamos los que tienen patrones definidos
@@ -2379,6 +2388,7 @@ void SynergyHandler::debugSynergiesCode(QString code, int num)
     if(isCorpseSyn(code, text))                                             mec<<"corpseSyn";
     if(isExcavateSyn(code, text))                                           mec<<"excavateSyn";
     if(isStarshipAllSyn(code, referencedTags))                              mec<<"starshipAllSyn";
+    if(isShuffleSyn(code, text))                                            mec<<"shuffleSyn";
     //New Synergy Step 9 (Solo si busca patron)
 
     QString name = Utility::cardEnNameFromCode(origCode);
@@ -3626,6 +3636,18 @@ bool SynergyHandler::isStarshipGen(const QString &code)
     if(synergyCodes.contains(code))
     {
         return synergyCodes[code].contains("starshipGen");
+    }
+    return false;
+}
+bool SynergyHandler::isShuffleGen(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("shuffleGen");
+    }
+    else if(text.contains("shuffle"))
+    {
+        return true;
     }
     return false;
 }
@@ -4879,6 +4901,18 @@ bool SynergyHandler::isStarshipAllSyn(const QString &code, const QJsonArray &ref
     }
     return false;
 }
+bool SynergyHandler::isShuffleSyn(const QString &code, const QString &text)
+{
+    if(synergyCodes.contains(code))
+    {
+        return synergyCodes[code].contains("shuffleSyn");
+    }
+    else if(containsAll(text, "deck didn't start"))
+    {
+        return true;
+    }
+    return false;
+}
 //New Synergy Step 11
 
 
@@ -5047,7 +5081,7 @@ tokenGen, tokenCardGen, combo, comboGen, attackBuffGen, attackNerfGen, healthBuf
 restoreTargetMinionGen, restoreFriendlyHeroGen, restoreFriendlyMinionGen, armorGen, lifesteal, lifestealGen
 eggGen, damageFriendlyHeroGen, echo, echoGen, rush, rushGen, magnetic, magneticGen, otherClassGen,
 silverHandGen, treantGen, lackeyGen, outcast, outcastGen, endTurnGen, dredge, corpse, chooseOne, chooseOneGen
-excavate, libram, libramGen, starship, starshipGen
+excavate, libram, libramGen, starship, starshipGen, shuffleGen
 =(>|<)(Syn|Gen)(Minion|Spell|Weapon)(Cost|Attack|Health)(0-15)
 
 //New Synergy Step 12
@@ -5081,6 +5115,7 @@ SPELL BUFF: spellBuffGen/spellBuffSyn
 ATK/HEALTH: attackNerfGen, attackBuffGen, healthBuffGen
 OTHER CLASS: otherClassGen/otherClassSyn
 DREDGE: dredge/dredgeSyn
+SHUFFLE: shuffleGen/shuffleSyn
 CORPSE: corpseGen/corpseSyn
 SILVER HAND: silverHandGen/silverHandSyn
 TREANT: treantGen/treantSyn
