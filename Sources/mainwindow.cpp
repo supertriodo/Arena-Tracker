@@ -4778,9 +4778,13 @@ void MainWindow::downloadHeroPortrait(QString code)
 
             QImage heroImage;
             heroImage.loadFromData(data);
-            heroImage = heroImage.scaledToWidth(300, Qt::SmoothTransformation);
-            heroImage = heroImage.copy(-14, -107, 262, 373);
-            heroImage = heroImage.copy(0, 0, 306, 464);
+            //Normal
+            heroImage = heroImage.copy(-35, -80, 354, 537);
+            heroImage = heroImage.scaledToHeight(464, Qt::SmoothTransformation);
+            //Special
+            // heroImage = heroImage.copy(-22, -15, 329, 449);
+            // heroImage = heroImage.scaled(306, 464, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
             QImage marcoImage(heroDir + "/Marco.png", "png");
 
             QPainter painter;
@@ -5002,11 +5006,11 @@ void MainWindow::testDelay()
 //Update Utility::isFromStandardSet(QString code) --> SPACE
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
-///Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
+//Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
     //-Si son nuevos retratos de heroe: arenaVersion.json --> "redownloadHeroes": true
     //-requiere forzar redownload cartas pq si lo ha necesitado antes habra bajado del github el heroe standard (HERO_02) y
     //-guardado como el especifico (HERO_02c), tenemos que borrarlo para que AT baje el correcto.
-///Crear new signature cards de out of cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
+//Crear new signature cards, subirlas al github como _premium y guardarlas en HearthstoneSignatureCards (referencia ETC_081_premium)
     //-(https://blizzard.gamespress.com/Hearthstone)
     //-Update DraftHandler::isSignatureCard
 //Update secrets
