@@ -1018,7 +1018,7 @@
 "CORE_EDR_001" : [ "drop3", "toYourHandGen2", "battlecry", "returnSyn", "spellGen" ],
 "CORE_EDR_002" : [ "undeadAllSyn" ],
 "CORE_EDR_003" : [ "drop3", "drawGen", "battlecry", "returnSyn", "corpseSyn", "corpseGen" ],
-"CORE_EDR_004" : [ "drop3", "discover", "battlecry", "returnSyn" ],
+"CORE_EDR_004" : [ "drop3", "discover", "battlecry", "returnSyn", "beastSyn" ],
 "CORE_FIX_SW_084" : [ "drop2", "damageFriendlyHeroGen", "silenceOwnSyn", "tauntGiverSyn" ],
 "CORE_VAN_EX1_561" : [ "battlecry", "returnSyn", "reachGen", "restoreFriendlyHeroGen" ],
 "CORE_VAN_EX1_572" : [ "toYourHandGen2", "endTurnGen" ],
