@@ -1434,7 +1434,7 @@ void ArenaHandler::statItemDoubleClicked(QTreeWidgetItem *item, int column)
         QString region = getColumnText(item, 4);
         if(page != "--")
         {
-            QDesktopServices::openUrl(QUrl(QString(LEADERBOARD_URL2) + "?region=" + region + "&leaderboardId=arena&page=" +
+            QDesktopServices::openUrl(QUrl(QString(LEADERBOARD_URL2) + "?region=" + region + "&leaderboardId=undergroundarena&page=" +
                                            page + "&seasonId=" + QString::number(seasonId)));
         }
     }
@@ -1629,11 +1629,11 @@ void ArenaHandler::showLeaderboardStats(QString tag, bool allowTagChange)
         QTreeWidgetItem *item = lbRegionTreeItem[i];
         if(leaderboardMap[i].contains(tag))
         {
-            float avg = leaderboardMap[i][tag].rating;
+            int rating = leaderboardMap[i][tag].rating;
             int rank = leaderboardMap[i][tag].rank;
             int page = qCeil(rank/25.0);
             setColumnText(item, 0, tag, 100);//Aunque la columna tiene 130, si pongo mas de 100 no cabe
-            setColumnText(item, 1, QString::number(avg, 'g', 3));
+            setColumnText(item, 1, QString::number(rating/1000.0, 'g', 2) + 'k');
             setColumnText(item, 2, (rank>999)?QString::number(rank/1000)+"k":QString::number(rank));
             setColumnText(item, 3, QString::number(page));
             setColumnText(item, 4, number2LbRegion(i));
@@ -1782,7 +1782,7 @@ void ArenaHandler::nmLbGlobalFinished(QNetworkReply* reply)
 void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
 {
     QString fullUrl = reply->url().toString();
-    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=arena&page=([0-9]+)&seasonId=([0-9]+)"), match))
+    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=undergroundarena&page=([0-9]+)&seasonId=([0-9]+)"), match))
     {
         QString region = match->captured(1);
         int page = match->captured(2).toInt();
@@ -1810,7 +1810,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
             return;
         }
 
-//        emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
+       emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
 
         QByteArray data = reply->readAll();
         QJsonObject lbObject = QJsonDocument::fromJson(data).object().value("leaderboard").toObject();
@@ -1845,7 +1845,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
                 QString tag = object["accountid"].toString();
                 LeaderboardItem item;
                 item.rank = object["rank"].toInt();
-                item.rating = object["rating"].toDouble();
+                item.rating = object["rating"].toInt();
                 leaderboardMap[regionNum][tag] = item;
             }
         }
@@ -1910,7 +1910,7 @@ void ArenaHandler::nmLbSearchFinished(QNetworkReply* reply)
 void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
 {
     QString fullUrl = reply->url().toString();
-    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=arena&page=([0-9]+)&seasonId=([0-9]+)"), match))
+    if(fullUrl.contains(QRegularExpression("region=(\\w+)&leaderboardId=undergroundarena&page=([0-9]+)&seasonId=([0-9]+)"), match))
     {
         QString region = match->captured(1);
         int page = match->captured(2).toInt();
@@ -1941,7 +1941,7 @@ void ArenaHandler::replySearchLeaderboard(QNetworkReply *reply)
                 QString tag = object["accountid"].toString();
                 LeaderboardItem item;
                 item.rank = object["rank"].toInt();
-                item.rating = object["rating"].toDouble();
+                item.rating = object["rating"].toInt();
                 leaderboardMap[regionNum][tag] = item;
                 if(tag == searchTag)
                 {
@@ -2042,7 +2042,7 @@ void ArenaHandler::json2RegionLeaderboard(const QJsonObject &jsonObject, const Q
         QJsonObject objectItem = objectPlayers[tag].toObject();
         LeaderboardItem item;
         item.rank = objectItem["rank"].toInt();
-        item.rating = objectItem["rating"].toInt()/100.0;
+        item.rating = objectItem["rating"].toInt();
         leaderboardMap[regionNum][tag] = item;
     }
 }
@@ -2086,7 +2086,7 @@ QJsonObject ArenaHandler::regionLeaderboard2Json(int numMap)
     for(const QString &key: (const QStringList)leaderboardMap[numMap].keys())
     {
         int rank = leaderboardMap[numMap][key].rank;
-        int rating = static_cast<int>(leaderboardMap[numMap][key].rating*100);
+        int rating = leaderboardMap[numMap][key].rating;
         QJsonObject item;
         item["rank"] = rank;
         item["rating"] = rating;
@@ -2099,7 +2099,7 @@ QJsonObject ArenaHandler::regionLeaderboard2Json(int numMap)
 void ArenaHandler::getLeaderboardPage(QNetworkAccessManager *nm, QString region, int page)
 {
     nm->get(QNetworkRequest(QUrl(QString(LEADERBOARD_URL) + "?region=" + region + "&"
-            "leaderboardId=arena&page=" + QString::number(page) + "&seasonId=" + QString::number(seasonId))));
+            "leaderboardId=undergroundarena&page=" + QString::number(page) + "&seasonId=" + QString::number(seasonId))));
 }
 
 
@@ -2162,7 +2162,7 @@ void ArenaHandler::showEnemyRanking(QString tag)
     {
         if(leaderboardMap[i].contains(tag))
         {
-            float rating = leaderboardMap[i][tag].rating;
+            int rating = leaderboardMap[i][tag].rating;
             int rank = leaderboardMap[i][tag].rank;
             QString region = number2LbRegion(i);
             enemyRankingItems << EnemyRankingItem(rank, rating, region, searchOk);

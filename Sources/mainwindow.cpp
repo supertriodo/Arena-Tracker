@@ -5188,4 +5188,3 @@ void MainWindow::testDelay()
 
 
 //TODO
-//Cartel vuelta main menu

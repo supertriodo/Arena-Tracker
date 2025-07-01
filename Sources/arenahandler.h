@@ -26,7 +26,7 @@ class LeaderboardItem
 {
 public:
     int rank;
-    float rating;
+    int rating;
 };
 
 

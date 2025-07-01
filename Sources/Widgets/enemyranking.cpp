@@ -152,7 +152,7 @@ void EnemyRanking::drawPixmap(QPixmap &canvas, QRect &targetAll)
         painter.setBrush(item.searchingTag?ThemeHandler::themeColor2():WHITE);
 
         //Draw Rating
-        text = QString::number(item.rating, 'g', 3);
+        text = QString::number(item.rating/1000.0, 'g', 2) + 'k';
         fm = QFontMetrics(font);
         textWide = fm.width(text);
         textHigh = fm.height();

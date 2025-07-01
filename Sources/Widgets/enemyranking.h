@@ -8,7 +8,7 @@
 class EnemyRankingItem
 {
 public:
-    EnemyRankingItem(int rank, float rating, QString region, bool searchingTag = true)
+    EnemyRankingItem(int rank, int rating, QString region, bool searchingTag = true)
     {
         this->rank = rank;
         this->rating = rating;
@@ -17,7 +17,7 @@ public:
     }
 
     int rank;
-    float rating;
+    int rating;
     QString region;
     bool searchingTag = true;
 };

@@ -1520,9 +1520,16 @@ void GameWatcher::createGameResult()
 
     //Save player tag
     QString playerTagPreSharp = getNamePreSharp(playerTag);
-    emit pDebug("Save playerName: " + playerTagPreSharp + "(" + playerTag + ")", 0);
-    QSettings settings("Arena Tracker", "Arena Tracker");
-    settings.setValue("playerName", playerTagPreSharp);
+    if(playerTagPreSharp.isEmpty())
+    {
+        emit pDebug("Avoid save empty playerName: " + playerTagPreSharp + "(" + playerTag + ")", 0);
+    }
+    else
+    {
+        emit pDebug("Save playerName: " + playerTagPreSharp + "(" + playerTag + ")", 0);
+        QSettings settings("Arena Tracker", "Arena Tracker");
+        settings.setValue("playerName", playerTagPreSharp);
+    }
 }
 
 
