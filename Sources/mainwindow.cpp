@@ -4875,7 +4875,8 @@ void MainWindow::testTierlists()
         "WHIZBANGS_WORKSHOP" <<
         "ISLAND_VACATION" <<
         "SPACE" <<
-        "EMERALD_DREAM";
+        "EMERALD_DREAM" <<
+        "THE_LOST_CITY";
 
 
    // QSettings settings("Arena Tracker", "Arena Tracker");
@@ -4934,7 +4935,7 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     QStringList arenaSets;
 
 
-    arenaSets << "CORE" << "SCHOLOMANCE" << "THE_BARRENS" << "THE_SUNKEN_CITY" << "WILD_WEST" << "EMERALD_DREAM";
+    arenaSets << "THE_LOST_CITY";
 
     if(fromHearth)
     {
@@ -4967,7 +4968,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
-    testSynergies();
+    // testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
