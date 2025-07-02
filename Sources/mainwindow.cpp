@@ -4781,7 +4781,7 @@ void MainWindow::downloadHeroPortrait(QString code)
             //Normal
             heroImage = heroImage.copy(-35, -80, 354, 537);
             heroImage = heroImage.scaledToHeight(464, Qt::SmoothTransformation);
-            //Special
+            //Special / Quitar marco
             // heroImage = heroImage.copy(-22, -15, 329, 449);
             // heroImage = heroImage.scaled(306, 464, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
