@@ -1,5 +1,5 @@
 {
-  "arenaVersion": 75,
+  "arenaVersion": 76,
   "arenaSets": ["CORE", 
         "LEGACY", 
         "EXPERT1", 
@@ -40,9 +40,10 @@
         "WHIZBANGS_WORKSHOP", 
         "ISLAND_VACATION", 
         "SPACE", 
-        "EMERALD_DREAM"],
+        "EMERALD_DREAM",
+        "THE_LOST_CITY"],
   "multiclassArena": false,
   "resetCards": 73,
-  "resetHeroes": 70,
+  "resetHeroes": 76,
   "seasonId": 56
 }
