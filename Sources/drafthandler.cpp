@@ -3452,6 +3452,9 @@ bool DraftHandler::isSignatureCard(const QString &code)
         //RLK 18 (Excepcion, gema rareza en sitio correcto)
         //SC 3
         "SC_004", "SC_400", "SC_754",
+        //TLC 21
+        "TLC_401", "TLC_631", "TLC_841", "TLC_239", "TLC_828", "TLC_830", "TLC_226", "TLC_460", "TLC_241", "TLC_426", "TLC_430", "TLC_811", "TLC_817", "TLC_513", "TLC_519",
+        "TLC_522", "TLC_228", "TLC_446", "TLC_602", "TLC_624", "TLC_243",
         //TOY 18
         "TOY_100", "TOY_101", "TOY_102", "TOY_103", "TOY_355", "TOY_356", "TOY_376", "TOY_383", "TOY_504", "TOY_515", "TOY_524", "TOY_531", "TOY_651", "TOY_806", "TOY_812",
         "TOY_821", "TOY_866", "TOY_913",
