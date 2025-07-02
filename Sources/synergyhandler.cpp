@@ -5129,8 +5129,11 @@ LACKEY: lackeyGen/lackeySyn
     +damageMinionsGen/destroyGen (SI RANDOM/NO DEATHRATTLE)
     +aoeGen (SI RANDOM/SI DEATHRATTLE)
 
+GEN MANO: elementalGen/dragonGen/nagaGen/draeneiGen
 ALL SCHOOLS:"arcaneAllSyn", "felAllSyn", "fireAllSyn", "frostAllSyn", "holyAllSyn", "shadowAllSyn", "natureAllSyn"
 ALL RACES:  "murlocSyn", "demonSyn", "mechSyn", "elementalSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonSyn", "nagaSyn", "undeadSyn", "quilboarSyn", "draeneiSyn"
+            "murlocSyn", "demonSyn", "mechSyn", "elementalAllSyn", "beastSyn", "totemSyn", "pirateSyn", "dragonAllSyn", "nagaAllSyn", "undeadSyn", "quilboarSyn", "draeneiAllSyn"
+            "murlocAllSyn", "demonAllSyn", "mechAllSyn", "elementalAllSyn", "beastAllSyn", "totemAllSyn", "pirateAllSyn", "dragonAllSyn", "nagaAllSyn", "undeadAllSyn", "quilboarAllSyn", "draeneiAllSyn"
 //New race step
 
 
@@ -5165,7 +5168,7 @@ REGLAS
     que un mazo es muy pesado solo por una carta. Para toYourHandGen si nos dan varias cartas a lo largo de varios turnos (como Pyros)
     sumamos el mana de todo lo que nos dan, lo dividimos entre 4 y ese sera el numero de toYourHandGen.
     Cartas que se juegan indefinidamente 1 vez/turno suponemos que las jugamos 5 turnos. Ej Headcrack (coste 3) es toYourHandGen3 (3x4/4).
-+discover from your deck (no copy) es drawGen ya que la carta viene de tu mazo. (BAR_545)
++discover from your deck (no copy) es discover aunque falle. (BAR_545)
 +discover cards de minions que no van a la mano sino que se invocan no son marcadas como discover, para que no aumente el deck weight.
 +drawSyn: Somos restrictivos. Solo lo ponemos si cada vez que se roba hay un efecto claro, no la posibilidad de robar algo bueno.
     Shuffle into your deck no son drawSyn. Tiene que funcionar con todo tipo de cartas; minions, weapon o spells.

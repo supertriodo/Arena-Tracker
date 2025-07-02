@@ -526,6 +526,7 @@ CardClass Utility::classString2cardClass(const QString &value)
  * Perils in Paradise "ISLAND_VACATION"
  * The Great Dark Beyond "SPACE"
  * Into the Emerald Dream "EMERALD_DREAM"
+ * The Lost City of Un’Goro "THE_LOST_CITY"
  */
 
 
@@ -547,7 +548,7 @@ bool Utility::isFromStandardSet(const QString &code)
 //        cardSet == "THE_SUNKEN_CITY" || cardSet == "REVENDRETH" || cardSet == "PATH_OF_ARTHAS" || cardSet == "RETURN_OF_THE_LICH_KING" ||
 //        cardSet == "BATTLE_OF_THE_BANDS" || cardSet == "TITANS" || cardSet == "WILD_WEST" ||
         cardSet == "WHIZBANGS_WORKSHOP" || cardSet == "ISLAND_VACATION" || cardSet == "SPACE" ||
-        cardSet == "EMERALD_DREAM")
+        cardSet == "EMERALD_DREAM" || cardSet == "THE_LOST_CITY")
     {
         return true;
     }

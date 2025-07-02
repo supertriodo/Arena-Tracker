@@ -4824,7 +4824,7 @@ void MainWindow::testPopularList(int i)
 void MainWindow::testSynergies()
 {
     // draftHandler->getSynergyHandler()->testSynergies(/*"SC_"*/);
-    // draftHandler->getSynergyHandler()->debugSynergiesSet("EMERALD_DREAM", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
+    // draftHandler->getSynergyHandler()->debugSynergiesSet("THE_LOST_CITY", 0, 0/*, "SC_"*/);//PLACEHOLDER_202204
     draftHandler->getSynergyHandler()->debugMissingSynergiesAllSets();
 }
 
@@ -4967,7 +4967,7 @@ void MainWindow::testDelay()
 {
     qDebug() << endl << "--------------------------" << "DEBUG TESTS" << "--------------------------";
     // testHeroPortraits();
-    // testSynergies();
+    testSynergies();
     // testTierlists();
     // testDownloadRotation(true/*, "SC_"*/);//Force hearthpwn true
     // Utility::resizeSignatureCards();
@@ -5003,7 +5003,7 @@ void MainWindow::testDelay()
 //Update Json HA tierlist --> downloadHearthArenaTierlistOriginal()
 //Update Json arenaVersion --> Update arenaSets/arenaVersion
 //Update Json cards --> Update CardsJson/cards.json
-//Update Utility::isFromStandardSet(QString code) --> SPACE
+//Update Utility::isFromStandardSet(QString code) --> THE_LOST_CITY
 //Subir cartas al github.
     //-Si hay modificaciones en cartas: arenaVersion.json --> "redownloadCards": true
 //Crear imagenes de nuevos heroes en el github (HERO_***) (donde *** es el code de la carta, para hero cards)
@@ -5188,3 +5188,5 @@ void MainWindow::testDelay()
 
 
 //TODO
+//Deathrattle cost sinergy
+//Repasar discover from deck (no drawGen)
