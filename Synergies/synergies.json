@@ -4037,7 +4037,7 @@
 "TLC_447" : [ "destroyGen", "felAllSyn" ],
 "TLC_449" : [ "tokenCardGen" ],
 "TLC_450" : [ "drop2", "battlecry" ],
-"TLC_451" : [ "drawGen", "tokenCardGen" ],
+"TLC_451" : [ "discover", "tokenCardGen" ],
 "TLC_452" : [  ],
 "TLC_454" : [ "damageMinionsGen", "battlecry", "returnSyn", "beastSyn" ],
 "TLC_460" : [ "discoverSyn" ],

@@ -5190,4 +5190,3 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-//Repasar discover from deck (no drawGen)
