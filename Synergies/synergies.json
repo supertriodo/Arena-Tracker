@@ -4098,7 +4098,7 @@
 "TLC_826" : [ "shuffleGen" ],
 "TLC_827" : [ "drop3", "endTurnGen" ],
 "TLC_828" : [ "beastAllSyn" ],
-"TLC_829" : [ "destroyGen", "battlecry", "returnSyn", "beastSyn" ],
+"TLC_829" : [ "destroyGen", "battlecry", "returnSyn", "beastSyn", "evolveSyn" ],
 "TLC_830" : [  ],
 "TLC_831" : [ "eggGen", "deathrattle", "tauntGiverSyn", "attackBuffSyn" ],
 "TLC_833" : [ "drop3", "damageMinionsGen", "reachGen", "rushGen", "tokenGen", "beastGen", "corpseGen" ],
@@ -5827,6 +5827,22 @@
     "EDR_264", "EDR_451", "EDR_449", "EDR_970", "EDR_231", "EDR_518"],
   "EDR_888":["EDR_852", "EDR_800", "EDR_871", "EDR_519", "EDR_845", "EDR_226", "EDR_227",
     "EDR_264", "EDR_451", "EDR_449", "EDR_970", "EDR_231", "EDR_518"],
+
+  "TLC_446":["GIFT_02", "GIFT_03", "GIFT_04", "GIFT_05", "GIFT_06", "GIFT_07", "GIFT_08",
+    "GIFT_09", "GIFT_10", "GIFT_11", "GIFT_12", "BOT_568", "BT_006", "DMF_225", "GDB_723",
+    "REV_938", "TID_707", "TLC_449", "TLC_451", "TLC_469", "TOY_307", "TOY_916",
+    "TTN_742", "WORK_007", "WORK_040"],
+  "TLC_450":["GIFT_02", "GIFT_03", "GIFT_04", "GIFT_05", "GIFT_06", "GIFT_07", "GIFT_08",
+    "GIFT_09", "GIFT_10", "GIFT_11", "GIFT_12", "BOT_568", "BT_006", "DMF_225", "GDB_723",
+    "REV_938", "TID_707", "TLC_449", "TLC_451", "TLC_469", "TOY_307", "TOY_916",
+    "TTN_742", "WORK_007", "WORK_040"],
+
+  "TLC_102":["TLC_107", "TLC_223", "TLC_226", "TLC_236", "TLC_243", "TLC_366", "TLC_428",
+    "TLC_429", "TLC_432", "TLC_440", "TLC_447", "TLC_454", "TLC_463", "TLC_482", "TLC_519",
+    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903"],
+  "TLC_251":["TLC_107", "TLC_223", "TLC_226", "TLC_236", "TLC_243", "TLC_366", "TLC_428",
+    "TLC_429", "TLC_432", "TLC_440", "TLC_447", "TLC_454", "TLC_463", "TLC_482", "TLC_519",
+    "TLC_600", "TLC_815", "TLC_816", "TLC_825", "TLC_829", "TLC_903"],
 
   "ETC_336": ["ETC_336"],
   "TOY_803": ["TOY_803"]

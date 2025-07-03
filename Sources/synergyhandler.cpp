@@ -2045,7 +2045,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("EMERALD_DREAM", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("THE_LOST_CITY", true, true))
    // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
    // for(QString &code: (QStringList)Utility::getStandardCodes())
    // for(QString &code: (QStringList)Utility::getWildCodes())
@@ -2065,7 +2065,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
                 containsAll(text, "deck didn't start")
-//                text.contains("deathrattle")
+                // text.contains("kindred")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
 //                cardType == MINION
@@ -2093,12 +2093,13 @@ void SynergyHandler::testSynergies(const QString &miniSet)
 // isAoeGen(code, text)
                 )
             {
-//                qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
                 debugSynergiesCode(code, ++num);
-//                qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
-//                qDebug()<<mechanics<<endl<<referencedTags;
+                // qDebug()<<++num<<code<<": ["<<Utility::cardEnNameFromCode(code)<<"],"<<"-->"<<text;
+                // qDebug()<<code+" "+Utility::cardEnNameFromCode(code);
+                // qDebug()<<code;
+                // qDebug()<<mechanics<<endl<<referencedTags;
 
-                if(num>0 && num<=20)
+                if(num>0 && num<=50)
                 {
                     QDesktopServices::openUrl(QUrl(
                         "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/" + code + ".png"
