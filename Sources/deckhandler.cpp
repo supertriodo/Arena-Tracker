@@ -325,6 +325,12 @@ QList<DeckCard> DeckHandler::getDeckCardList()
 }
 
 
+QList<DeckCard> * DeckHandler::getDeckCardListRef()
+{
+    return &deckCardList;
+}
+
+
 int DeckHandler::getNumCardRows()
 {
     int numCards = deckCardList.count();

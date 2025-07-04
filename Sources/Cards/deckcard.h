@@ -61,6 +61,11 @@ protected:
 private:
     bool topManaLimit, bottomManaLimit;
     bool outsider;
+    //Usados para pintar los score
+    bool showScores, showHA, showHSR, badScoreHA, badScoreHSR;
+    int scoreHA;
+    float scoreHSR;
+    int classOrder;
 
 //Metodos
 protected:
@@ -86,6 +91,12 @@ public:
     bool isOutsider();
     void setCreatedByCode(QString code);
     QString getCreatedByCode();
+    void setShowHAShowHSRScores(bool showHA, bool showHSR);
+    void hideScores();
+    void setShowScores(bool showScores);
+    void setScores(int haTier, float hsrWR, int classOrder);
+    void setBadScoreHA(bool badScore=true);
+    void setBadScoreHSR(bool badScore=true);
 
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);

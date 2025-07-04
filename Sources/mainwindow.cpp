@@ -987,6 +987,14 @@ void MainWindow::createTrackobotUploader()
 }
 
 
+//Durante un redraft repasamos los scores de todo el deck despues de cada pick, (despues de incluirlo en el deck)
+void MainWindow::newDeckCardDraft(QString code)
+{
+    deckHandler->newDeckCardDraft(code);
+    draftHandler->setDeckScores();
+}
+
+
 void MainWindow::createDraftHandler()
 {
     draftHandler = new DraftHandler(this, ui, deckHandler);
@@ -1004,7 +1012,7 @@ void MainWindow::createDraftHandler()
             this, SLOT(calculateMinimumWidth()));
 
     connect(draftHandler, SIGNAL(newDeckCard(QString)),
-            deckHandler, SLOT(newDeckCardDraft(QString)));
+            this, SLOT(newDeckCardDraft(QString)));
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             deckHandler, SLOT(saveDraftDeck(QString)));
     connect(draftHandler, SIGNAL(saveDraftDeck(QString)),

@@ -134,8 +134,8 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
 {
     int rating255 = 0;
     if(scoreSource == Score_HearthArena)
-    {//0<-->100
-        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
+    {//50<-->100
+        rating255 = std::max(std::min(static_cast<int>((score-50)/50*255), 255), 0);
     }
     else if(scoreSource == Score_HSReplay)
     {
@@ -153,8 +153,8 @@ void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
         rating255 = std::max(std::min(static_cast<int>((score-minHeroScore)/(maxHeroScore-minHeroScore)*255), 255), 0);
     }
     else
-    {//0<-->100
-        rating255 = std::max(std::min(static_cast<int>(score*2.55f), 255), 0);
+    {//50<-->100
+        rating255 = std::max(std::min(static_cast<int>((score-50)/50*255), 255), 0);
     }
 
     r = std::min(255, (255 - rating255)*2);
@@ -246,8 +246,10 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     if(bigFont)
     {
         const float k = 0.85;
-        if(drawScore > 99)                      font.setPixelSize(static_cast<int>(width()/(3.2*k)));
-        else                                    font.setPixelSize(static_cast<int>(width()/(2.7*k)));
+        if( scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player ||
+                scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/(3.5*k)));
+        else if(drawScore > 99)             font.setPixelSize(static_cast<int>(width()/(3.2*k)));
+        else                                font.setPixelSize(static_cast<int>(width()/(2.7*k)));
     }
     else
     {
@@ -258,7 +260,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     }
 
     QPen pen(BLACK);
-    if(bigFont) pen.setWidth(2);
+    if(bigFont) pen.setWidth(font.pixelSize()/15);
     else        pen.setWidth(font.pixelSize()/20);
     painter.setPen(pen);
     painter.setBrush(WHITE);
@@ -363,9 +365,9 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
 }
 
 
-QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
+QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size, int classOrder)
 {
-    ScoreButton scoreButton(nullptr, scoreSource, -1);
+    ScoreButton scoreButton(nullptr, scoreSource, classOrder);
     scoreButton.setFixedSize(size, size);
     scoreButton.score = score;
 
@@ -382,6 +384,12 @@ QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
     QRect targetAll(0, 0, size, size);
     scoreButton.drawPixmap(canvas, targetAll, true);
 
-    QIcon icon(canvas.copy(size/8, size/8, size*0.75, size*0.75));
+    return canvas.copy(size/8, size/8, size*0.75, size*0.75);
+}
+
+
+QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
+{
+    QIcon icon(scorePixmap(scoreSource, score, size));
     return icon;
 }

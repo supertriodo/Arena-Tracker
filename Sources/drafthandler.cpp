@@ -744,6 +744,7 @@ void DraftHandler::leaveArena()
 
     if(drafting)
     {
+        redrafting = false;//endDraft en redrafting iniciara el proceso de review deck template.
         endDraft(false);
         deleteDraftMechanicsWindow();
         //OLD Antes manteniamos el draft y ocultabamos los overlays al salir, ya no podemos hacerlo asi ya que quiero que al elegir un legendary bundle
@@ -780,6 +781,59 @@ CardClass DraftHandler::findMulticlassPower(QList<DeckCard> &deckCardList)
     }
     emit pDebug("No MultiClassPower found");
     return INVALID_CLASS;
+}
+
+
+void DraftHandler::setDeckScores()
+{
+    if(!patreonVersion || !redrafting)  return;
+
+    hideDeckScores();
+
+    QList<DeckCard> *deckCardList = deckHandler->getDeckCardListRef();
+    int classOrder = Utility::classLogNumber2classOrder(Utility::classEnum2classLogNumber(this->arenaHero));
+
+    //Set scores
+    QList<QPair<int, DeckCard *>> listaHA;
+    QList<QPair<float, DeckCard *>> listaHSR;
+
+    for(DeckCard &deckCard: *deckCardList)
+    {
+        QString code = deckCard.getCode();
+        if(code.isEmpty())    continue;
+        int scoreHA = hearthArenaTiers[code];
+        float scoreHSR = cardsIncludedWinratesMap[this->arenaHero][code];
+        deckCard.setScores(scoreHA, scoreHSR, classOrder);
+        if(scoreHA != 0)    listaHA << qMakePair(scoreHA, &deckCard);
+        if(scoreHSR != 0)   listaHSR << qMakePair(scoreHSR, &deckCard);
+    }
+
+    //Bad scores
+    std::sort(listaHA.begin(), listaHA.end(), [](const QPair<int, DeckCard *> &a, const QPair<int, DeckCard *> &b) {
+        return a.first < b.first;
+    });
+    std::sort(listaHSR.begin(), listaHSR.end(), [](const QPair<float, DeckCard *> &a, const QPair<float, DeckCard *> &b) {
+        return a.first < b.first;
+    });
+
+    for(int i=0; i<5; i++)
+    {
+        if(listaHA.count()>i)   listaHA[i].second->setBadScoreHA();
+        if(listaHSR.count()>i)  listaHSR[i].second->setBadScoreHSR();
+    }
+
+    setDraftMethodDeck();
+}
+
+
+void DraftHandler::hideDeckScores()
+{
+    QList<DeckCard> *deckCardList = deckHandler->getDeckCardListRef();
+
+    for(DeckCard &deckCard: *deckCardList)
+    {
+        deckCard.hideScores();
+    }
 }
 
 
@@ -827,6 +881,8 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
     createTwitchHandler();
     loadImgTemplates(manaTemplates, "MANA.dat");
     loadImgTemplates(rarityTemplates, "RARITY.dat");
+
+    if(redrafting)  setDeckScores();
 }
 
 
@@ -986,6 +1042,8 @@ void DraftHandler::endDraft(bool createNewArena)
 
     emit pDebug("End draft.");
 
+    //TODO Iniciar recheck deck
+
     //SizeDraft
     QMainWindow *mainWindow = static_cast<QMainWindow*>(parent());
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -1022,7 +1080,6 @@ void DraftHandler::endDraft(bool createNewArena)
     clearLists(false);
 
     this->drafting = false;
-    this->redrafting = false;
     this->justPickedCard = "";
 
     deleteDraftScoreWindow();
@@ -1093,6 +1150,17 @@ void DraftHandler::endDraftHideMechanicsWindow()
             deleteDraftMechanicsWindow();
         }
     }
+
+    if(redrafting)  endRedraft();
+}
+
+
+void DraftHandler::endRedraft()
+{
+    redrafting = false;
+    hideDeckScores();
+    //TODO tambien si cerramos AT, o manualmente OK, start game, o leave arena.
+    //TODO configurar deck, terminar review deck y guardar deck
 }
 
 
@@ -2737,11 +2805,26 @@ void DraftHandler::setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool d
     this->draftMethodLF = draftMethodLF;
     this->draftMethodHSR = draftMethodHSR;
 
+    if(redrafting)  setDraftMethodDeck();
+
     if(!isDrafting())   return;
     if(draftScoreWindow != nullptr)        draftScoreWindow->setDraftMethod(draftMethodHA, draftMethodLF, draftMethodHSR);
 
     updateDeckScore();//Basicamente para updateLabelDeckScore
     updateScoresVisibility();
+}
+
+
+void DraftHandler::setDraftMethodDeck()
+{
+    if(!patreonVersion) return;
+
+    QList<DeckCard> *deckCardList = deckHandler->getDeckCardListRef();
+
+    for(DeckCard &deckCard: *deckCardList)
+    {
+        deckCard.setShowHAShowHSRScores(draftMethodHA, draftMethodHSR);
+    }
 }
 
 

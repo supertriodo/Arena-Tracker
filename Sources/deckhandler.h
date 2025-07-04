@@ -90,6 +90,7 @@ public:
     void completeArenaDeck(QString hero);
     void setShowManaLimits(bool value);
     QList<DeckCard> getDeckCardList();
+    QList<DeckCard> * getDeckCardListRef();
 
 signals:
     void checkCardImage(QString code);

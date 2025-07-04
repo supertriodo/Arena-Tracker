@@ -1,6 +1,7 @@
 #include "deckcard.h"
 #include "../utility.h"
 #include "../themehandler.h"
+#include "../Widgets/scorebutton.h"
 #include <QtWidgets>
 
 
@@ -18,6 +19,11 @@ DeckCard::DeckCard(QString code, bool outsider)
     special = false;
     createdByCode = "";
     id = 0;
+    scoreHA = 0;
+    scoreHSR = 0;
+    showScores = badScoreHA = badScoreHSR = false;
+    showHA = showHSR = true;
+    classOrder = -1;
     this->outsider = outsider;
 }
 
@@ -31,6 +37,51 @@ DeckCard::~DeckCard()
 bool DeckCard::isOutsider()
 {
     return this->outsider;
+}
+
+
+void DeckCard::setBadScoreHA(bool badScore)
+{
+    this->badScoreHA = badScore;
+}
+
+
+void DeckCard::setBadScoreHSR(bool badScore)
+{
+    this->badScoreHSR = badScore;
+}
+
+
+void DeckCard::hideScores()
+{
+    setShowScores(false);
+    setBadScoreHA(false);
+    setBadScoreHSR(false);
+}
+
+
+void DeckCard::setShowScores(bool showScores)
+{
+    this->showScores = showScores;
+    draw();
+}
+
+
+void DeckCard::setShowHAShowHSRScores(bool showHA, bool showHSR)
+{
+    this->showHA = showHA;
+    this->showHSR = showHSR;
+    if(showScores)  draw();
+}
+
+
+void DeckCard::setScores(int haTier, float hsrWR, int classOrder)
+{
+    this->scoreHA = haTier;
+    this->scoreHSR = hsrWR;
+    this->classOrder = classOrder;
+    this->showScores = true;
+    //No hace falta hacer draw() pq en DraftHandler::setDeckScores() llamamos a DeckCard::setShowHAShowHSRScores despues de DeckCard::setScores
 }
 
 
@@ -355,6 +406,34 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
         }
     painter.end();
 
+
+    //Scores
+    if(showScores && (showHA || showHSR))
+    {
+        int height = canvas.height()*1.3;
+        int width = canvas.width();
+        painter.begin(&canvas);
+            //Antialiasing
+            painter.setRenderHint(QPainter::Antialiasing);
+            painter.setRenderHint(QPainter::SmoothPixmapTransform);
+            painter.setRenderHint(QPainter::TextAntialiasing);
+
+            if((badScoreHA && showHA && scoreHA!=0) || (badScoreHSR && showHSR && scoreHSR!=0))
+            {
+                painter.setBrush(Qt::NoBrush);
+                painter.setPen(QPen(Qt::red, ((badScoreHA && showHA && scoreHA!=0) && (badScoreHSR && showHSR && scoreHSR!=0))?20:10));
+                painter.drawRect(canvas.rect());
+            }
+            if(showHA && scoreHA!=0)
+            {
+                painter.drawPixmap(width - 6*height/8, 0, ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
+            }
+            if(showHSR && scoreHSR!=0)
+            {
+                painter.drawPixmap(width - (showHA?2*6*height/8:6*height/8), 0, ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder));
+            }
+        painter.end();
+    }
     return canvas;
 }
 

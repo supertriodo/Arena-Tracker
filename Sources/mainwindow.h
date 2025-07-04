@@ -351,6 +351,7 @@ private slots:
     void updateDamage(bool checked);
     void updateDestroy(bool checked);
     void updateAoe(bool checked);
+    void newDeckCardDraft(QString code);
 };
 
 #endif // MAINWINDOW_H

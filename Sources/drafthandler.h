@@ -203,8 +203,12 @@ private:
     void loadImgTemplates(QList<Mat> &imgTemplates, const QString &filename);
     bool areScreenRectsValid(Mat &screenCapture);
     bool isSignatureCard(const QString &code);
+    void setDraftMethodDeck();
+    void hideDeckScores();
+    void endRedraft();
 
 public:
+    void setDeckScores();
     void buildHeroCodesList();
     void reHistDownloadedCardImage(const QString &fileNameCode, bool missingOnWeb=false);
     void setMouseInApp(bool value);
