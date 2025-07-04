@@ -418,19 +418,35 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             painter.setRenderHint(QPainter::SmoothPixmapTransform);
             painter.setRenderHint(QPainter::TextAntialiasing);
 
-            if((badScoreHA && showHA && scoreHA!=0) || (badScoreHSR && showHSR && scoreHSR!=0))
+            painter.setBrush(Qt::NoBrush);
+
+            if(badScoreHA && showHA && scoreHA!=0)
             {
-                painter.setBrush(Qt::NoBrush);
-                painter.setPen(QPen(Qt::red, ((badScoreHA && showHA && scoreHA!=0) && (badScoreHSR && showHSR && scoreHSR!=0))?20:10));
+                painter.setPen(QPen(Qt::darkYellow, 8));
+                painter.drawRect(canvas.rect());
+
+                if(badScoreHSR && showHSR && scoreHSR!=0)
+                {
+                    painter.setPen(QPen(Qt::darkRed, 8));
+                    painter.drawLines(QVector<QLine>{
+                        QLine(0, 0, canvas.width(), 0),
+                        QLine(0, 0, 0, canvas.height()/2),
+                        QLine(canvas.width(), 0, canvas.width(), canvas.height()/2)
+                    });
+                }
+            }
+            else if(badScoreHSR && showHSR && scoreHSR!=0)
+            {
+                painter.setPen(QPen(Qt::darkRed, 8));
                 painter.drawRect(canvas.rect());
             }
             if(showHA && scoreHA!=0)
             {
-                painter.drawPixmap(width - 6*height/8, 0, ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
+                painter.drawPixmap(width - (29*width/218) - 6*height/8, 0, ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
             }
             if(showHSR && scoreHSR!=0)
             {
-                painter.drawPixmap(width - (showHA?2*6*height/8:6*height/8), 0, ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder));
+                painter.drawPixmap(width - (29*width/218) - (showHA?2*6*height/8:6*height/8), 0, ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder));
             }
         painter.end();
     }

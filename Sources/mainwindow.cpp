@@ -5198,3 +5198,4 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
+//Replay weapon bug
