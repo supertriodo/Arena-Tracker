@@ -149,7 +149,7 @@
 "AV_123" : [ "drop2", "reachGen", "stealthGen" ],
 "AV_124" : [ "drop3" ],
 "AV_125" : [ "battlecry" ],
-"AV_126" : [ "spawnEnemySyn", "aoeGen", "pingGen", "battlecry", "returnSyn" ],
+"AV_126" : [ "drop3", "spawnEnemySyn", "aoeGen", "pingGen", "battlecry", "returnSyn" ],
 "AV_127" : [ "frostAllSyn", "drop4" ],
 "AV_128" : [ "fireAllSyn", "silenceOwnSyn" ],
 "AV_129" : [ "attackBuffGen", "tokenSyn", "enrageGen" ],

@@ -1193,6 +1193,7 @@ void DraftHandler::endRedraftReview()
     if(redraftingReview)    deckHandler->redraftReviewDeck(bestCodesRedraftingReview);
     deckHandler->saveDraftDeck(Utility::classEnum2classLogNumber(arenaHero));
     hideDeckScores();
+    deleteDraftMechanicsWindow();
     clearLists(false);
     redrafting = false;
     redraftingReview = false;
