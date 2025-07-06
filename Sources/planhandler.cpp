@@ -3044,8 +3044,7 @@ bool PlanHandler::isCardBomb(QString code, bool &playerIn, bool &onlyMinions, in
         onlyMinions = true;
     }
     else if(Utility::codeEqConstant(code, FULLBLOWN_EVIL) || Utility::codeEqConstant(code, MORTAL_ERADICATION) ||
-               Utility::codeEqConstant(code, XB488_DISPOSALBOT) || Utility::codeEqConstant(code, XB488_DISPOSALBOT_FORGED) ||
-               Utility::codeEqConstant(code, BELLOWING_FLAMES) || Utility::codeEqConstant(code, BELLOWING_FLAMES_FORGED)
+               Utility::codeEqConstant(code, XB488_DISPOSALBOT) || Utility::codeEqConstant(code, XB488_DISPOSALBOT_FORGED)
                )
     {
         missiles = 5;
