@@ -1810,7 +1810,7 @@ void ArenaHandler::replyMapLeaderboard(QNetworkReply *reply)
             return;
         }
 
-       emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
+       // emit pDebug("Leaderboard: " + region + " --> P" + QString::number(page) + " --> S" + QString::number(season));
 
         QByteArray data = reply->readAll();
         QJsonObject lbObject = QJsonDocument::fromJson(data).object().value("leaderboard").toObject();
