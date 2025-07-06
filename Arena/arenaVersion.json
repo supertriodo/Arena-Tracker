@@ -1,5 +1,5 @@
 {
-  "arenaVersion": 76,
+  "arenaVersion": 77,
   "arenaSets": ["CORE", 
         "LEGACY", 
         "EXPERT1", 
@@ -45,5 +45,5 @@
   "multiclassArena": false,
   "resetCards": 73,
   "resetHeroes": 76,
-  "seasonId": 56
+  "seasonId": 2
 }
