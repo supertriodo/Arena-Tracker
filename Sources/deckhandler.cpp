@@ -331,6 +331,18 @@ QList<DeckCard> * DeckHandler::getDeckCardListRef()
 }
 
 
+int DeckHandler::getIndexFromCode(const QString &code)
+{
+    if(code.isEmpty())  return -1;
+
+    for(int i=0; i<deckCardList.size(); i++)
+    {
+        if(deckCardList[i].isCode(code))    return i;
+    }
+    return -1;
+}
+
+
 int DeckHandler::getNumCardRows()
 {
     int numCards = deckCardList.count();
@@ -757,9 +769,8 @@ void DeckHandler::deselectRow()
 }
 
 
-void DeckHandler::cardTotalMin()
+void DeckHandler::cardTotalMin(int index)
 {
-    int index = ui->deckListWidget->currentRow();
     deckCardList[index].total--;
     deckCardList[index].remaining = deckCardList[index].total;
     deckCardList[0].total++;
@@ -767,8 +778,15 @@ void DeckHandler::cardTotalMin()
     deckCardList[index].draw();
     hideUnknown(deckCardList[0].total == 0);
     deckCardList[0].draw();
-    enableDeckButtons();
+}
 
+
+void DeckHandler::cardTotalMin()
+{
+    int index = ui->deckListWidget->currentRow();
+    cardTotalMin(index);
+
+    enableDeckButtons();
     enableDeckButtonSave();
 }
 
@@ -789,22 +807,27 @@ void DeckHandler::cardTotalPlus()
 }
 
 
+void DeckHandler::cardRemove(int index)
+{
+    removeFromDeck(index);
+    deckCardList[0].total++;
+    hideUnknown(deckCardList[0].total == 0);
+    deckCardList[0].draw();
+}
+
+
 void DeckHandler::cardRemove()
 {
     int index = ui->deckListWidget->currentRow();
+
     if(deckCardList[index].total!=1 || index==0)
     {
         enableDeckButtons();
         return;
     }
 
-    removeFromDeck(index);
-
-    deckCardList[0].total++;
-    hideUnknown(deckCardList[0].total == 0);
-    deckCardList[0].draw();
+    cardRemove(index);
     enableDeckButtons();
-
     enableDeckButtonSave();
 }
 
@@ -1445,6 +1468,32 @@ void DeckHandler::saveDraftsJson(QJsonObject &draftsJson)
     }
     jsonFile.write(jsonDoc.toJson());
     jsonFile.close();
+}
+
+
+void DeckHandler::redraftReviewDeck(QString bestCodesRedraftingReview[5])
+{
+    for(int i=0; i<5; i++)
+    {
+        int index = getIndexFromCode(bestCodesRedraftingReview[i]);
+        if(index == -1)
+        {
+            emit pDebug("Redraft review deck: Code " + bestCodesRedraftingReview[i] + " NOT FOUND.", DebugLevel::Warning);
+        }
+        else
+        {
+            if(deckCardList[index].total > 1)
+            {
+                emit pDebug("Redraft review deck: Code " + bestCodesRedraftingReview[i] + " sub 1. Remaining: " + QString::number(deckCardList[index].total-1));
+                cardTotalMin(index);
+            }
+            else
+            {
+                emit pDebug("Redraft review deck: Code " + bestCodesRedraftingReview[i] + " removed.");
+                cardRemove(index);
+            }
+        }
+    }
 }
 
 

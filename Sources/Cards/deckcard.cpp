@@ -23,6 +23,7 @@ DeckCard::DeckCard(QString code, bool outsider)
     scoreHSR = 0;
     showScores = badScoreHA = badScoreHSR = false;
     showHA = showHSR = true;
+    redraftingReview = false;
     classOrder = -1;
     this->outsider = outsider;
 }
@@ -37,6 +38,13 @@ DeckCard::~DeckCard()
 bool DeckCard::isOutsider()
 {
     return this->outsider;
+}
+
+
+void DeckCard::setRedraftingReview(bool show)
+{
+    this->redraftingReview = show;
+    draw();
 }
 
 
@@ -57,6 +65,7 @@ void DeckCard::hideScores()
     setShowScores(false);
     setBadScoreHA(false);
     setBadScoreHSR(false);
+    setRedraftingReview(false);
 }
 
 
@@ -407,16 +416,17 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
     painter.end();
 
 
-    //Scores
-    if(showScores && (showHA || showHSR))
-    {
-        int height = canvas.height()*1.3;
-        int width = canvas.width();
-        painter.begin(&canvas);
-            //Antialiasing
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setRenderHint(QPainter::SmoothPixmapTransform);
-            painter.setRenderHint(QPainter::TextAntialiasing);
+    painter.begin(&canvas);
+        //Antialiasing
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+
+        //Scores
+        if(showScores && (showHA || showHSR))
+        {
+            int height = canvas.height()*1.3;
+            int width = canvas.width();
 
             painter.setBrush(Qt::NoBrush);
 
@@ -448,8 +458,16 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             {
                 painter.drawPixmap(width - (29*width/218) - (showHA?2*6*height/8:6*height/8), 0, ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder));
             }
-        painter.end();
-    }
+        }
+
+        //Cards in review redraft
+        if(redraftingReview)
+        {
+            painter.setPen(QPen(Qt::white, 4));
+            painter.drawRect(canvas.rect());
+        }
+    painter.end();
+
     return canvas;
 }
 
@@ -622,6 +640,12 @@ QColor DeckCard::getRarityColor()
     else if(rarity == EPIC)         return VIOLET;
     else if(rarity == LEGENDARY)    return ORANGE;
     else                            return BLACK;
+}
+
+
+bool DeckCard::isCode(const QString &code)
+{
+    return (code == this->code);
 }
 
 

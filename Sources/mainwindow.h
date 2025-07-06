@@ -352,6 +352,7 @@ private slots:
     void updateDestroy(bool checked);
     void updateAoe(bool checked);
     void newDeckCardDraft(QString code);
+    void leaveArena();
 };
 
 #endif // MAINWINDOW_H

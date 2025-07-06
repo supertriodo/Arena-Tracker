@@ -14,6 +14,7 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
     this->resetTwitchScores = true;
     this->drafting = false;
     this->redrafting = false;
+    this->redraftingReview = false;
     this->heroDrafting = false;
     this->capturing = false;
     this->findingFrame = false;
@@ -43,10 +44,13 @@ DraftHandler::DraftHandler(QObject *parent, Ui::Extended *ui, DeckHandler *deckH
 
     for(int i=0; i<3; i++)
     {
+        cardDetected[i] = false;
+    }
+    for(int i=0; i<5; i++)
+    {
         screenRects[i] = cv::Rect(0,0,0,0);
         manaRects[i] = cv::Rect(0,0,0,0);
         rarityRects[i] = cv::Rect(0,0,0,0);
-        cardDetected[i] = false;
     }
 
     createScoreItems();
@@ -696,12 +700,16 @@ void DraftHandler::clearLists(bool keepCounters)
 
     for(int i=0; i<3; i++)
     {
-        screenRects[i] = cv::Rect(0,0,0,0);
-        manaRects[i] = cv::Rect(0,0,0,0);
-        rarityRects[i] = cv::Rect(0,0,0,0);
         cardDetected[i] = false;
         draftCardMaps[i].clear();
         bestMatchesMaps[i].clear();
+    }
+    for(int i=0; i<5; i++)
+    {
+        screenRects[i] = cv::Rect(0,0,0,0);
+        manaRects[i] = cv::Rect(0,0,0,0);
+        rarityRects[i] = cv::Rect(0,0,0,0);
+        bestCodesRedraftingReview[i] = "";
     }
 
     screenIndex = -1;
@@ -742,6 +750,7 @@ void DraftHandler::leaveArena()
     if(draftScoreWindow != nullptr)        draftScoreWindow->hide();
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->hide();
 
+    if(redrafting)  endRedraftReview();
     if(drafting)
     {
         redrafting = false;//endDraft en redrafting iniciara el proceso de review deck template.
@@ -791,7 +800,6 @@ void DraftHandler::setDeckScores()
     hideDeckScores();
 
     QList<DeckCard> *deckCardList = deckHandler->getDeckCardListRef();
-    int classOrder = Utility::classLogNumber2classOrder(Utility::classEnum2classLogNumber(this->arenaHero));
 
     //Set scores
     QList<QPair<int, DeckCard *>> listaHA;
@@ -803,7 +811,7 @@ void DraftHandler::setDeckScores()
         if(code.isEmpty())    continue;
         int scoreHA = hearthArenaTiers[code];
         float scoreHSR = cardsIncludedWinratesMap[this->arenaHero][code];
-        deckCard.setScores(scoreHA, scoreHSR, classOrder);
+        deckCard.setScores(scoreHA, scoreHSR, arenaHero);
         if(scoreHA != 0)    listaHA << qMakePair(scoreHA, &deckCard);
         if(scoreHSR != 0)   listaHSR << qMakePair(scoreHSR, &deckCard);
     }
@@ -888,11 +896,6 @@ void DraftHandler::beginDraft(QString hero, QList<DeckCard> deckCardList, bool s
 
 void DraftHandler::redraft()
 {
-    //Guardamos el deck completo antes de un REDRAFTING.
-    //Puede que deje el redraft a medias y al volver a entrar se cargue un deck donde falten los nuevos picks.
-    QString heroLog = Utility::classEnum2classLogNumber(arenaHero);
-    void saveDraftDeck(QString heroLog);
-    // emit deleteDraftDeck(heroLog);//En caso de que queramos borrarlo en lugar de guardarlo
     this->redrafting = true;
 }
 
@@ -1042,8 +1045,6 @@ void DraftHandler::endDraft(bool createNewArena)
 
     emit pDebug("End draft.");
 
-    //TODO Iniciar recheck deck
-
     //SizeDraft
     QMainWindow *mainWindow = static_cast<QMainWindow*>(parent());
     QSettings settings("Arena Tracker", "Arena Tracker");
@@ -1084,6 +1085,36 @@ void DraftHandler::endDraft(bool createNewArena)
 
     deleteDraftScoreWindow();
     deleteTwitchHandler();
+
+    if(redrafting)  beginRedraftReview();
+}
+
+
+void DraftHandler::beginRedraftReview()
+{
+    redrafting = true;
+    redraftingReview = true;
+    cardsDownloading.clear();
+    cardsHist.clear();
+
+    QTimer::singleShot(REDRAFT_REVIEW_DELAY_TIME, this, [=] () {newFindScreenLoop(true);});
+
+    //Por ahora no hacemos comprobacion mana/rarity
+    // loadImgTemplates(manaTemplates, "MANA.dat");
+    // loadImgTemplates(rarityTemplates, "RARITY.dat");
+
+    QStringList codes;
+    for(DeckCard &deckCard: *deckHandler->getDeckCardListRef())
+    {
+        QString code = deckCard.getCode();
+        if(code.isEmpty())    continue;
+        codes << code;
+    }
+    processCardHist(codes);
+
+    //Wait for cards
+    if(cardsDownloading.isEmpty())  newCaptureDraftLoop();
+    else                            emit startProgressBar(cardsDownloading.count(), "Downloading cards...");
 }
 
 
@@ -1151,16 +1182,20 @@ void DraftHandler::endDraftHideMechanicsWindow()
         }
     }
 
-    if(redrafting)  endRedraft();
+    if(redrafting)  endRedraftReview();
 }
 
 
-void DraftHandler::endRedraft()
+void DraftHandler::endRedraftReview()
 {
-    redrafting = false;
+    //Se llama si cerramos AT, start game o leave arena.
+    //Debemos llamar directamente, no usar connects, ya que esto se llama desde MainWindow::leaveArena() que tambien borra el deck en DeckHandler.
+    if(redraftingReview)    deckHandler->redraftReviewDeck(bestCodesRedraftingReview);
+    deckHandler->saveDraftDeck(Utility::classEnum2classLogNumber(arenaHero));
     hideDeckScores();
-    //TODO tambien si cerramos AT, o manualmente OK, start game, o leave arena.
-    //TODO configurar deck, terminar review deck y guardar deck
+    clearLists(false);
+    redrafting = false;
+    redraftingReview = false;
 }
 
 
@@ -1244,7 +1279,7 @@ void DraftHandler::newCaptureDraftLoop(bool delayed)
     stopLoops = false;
 
     if(!capturing && screenFound() && cardsDownloading.isEmpty() &&
-        ((drafting && !lightForgeTiers.empty() && !hearthArenaTiers.empty()) || heroDrafting))
+        ((drafting && !lightForgeTiers.empty() && !hearthArenaTiers.empty()) || heroDrafting || redraftingReview))
     {
         capturing = true;
 
@@ -1260,45 +1295,107 @@ void DraftHandler::captureDraft()
     justPickedCard = "";
 
     bool missingTierLists = drafting && (lightForgeTiers.empty() || hearthArenaTiers.empty());
-    if((!drafting && !heroDrafting) || missingTierLists ||
+    if((!drafting && !heroDrafting && !redraftingReview) || missingTierLists ||
         stopLoops || !screenFound() || !cardsDownloading.isEmpty())
     {
         capturing = false;
         return;
     }
 
-    cv::MatND screenCardsHist[3];
-    if(!getScreenCardsHist(screenCardsHist))
+    if(redraftingReview)
+    {
+        captureDraftRedraftingReview();
+    }
+    else
+    {
+        cv::MatND screenCardsHist[3];
+        if(!getScreenCardsHist(screenCardsHist, 3))
+        {
+            capturing = false;
+            return;
+        }
+        mapBestMatchingCodes(screenCardsHist);
+
+        if(areCardsDetected())
+        {
+            capturing = false;
+            buildBestMatchesMaps();
+
+            if(drafting)
+            {
+                DraftCard bestCards[3];
+                getBestCards(bestCards);
+                showNewCards(bestCards);
+                startReviewBestCards();
+            }
+            else if(heroDrafting)
+            {
+                if(isRepeatHero())  capturing = true;
+                else                showNewHeroes();
+            }
+        }
+
+        if(capturing)
+        {
+            if(numCaptured == 0)    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_FADING, this, SLOT(captureDraft()));
+            else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        }
+    }
+}
+
+
+void DraftHandler::captureDraftRedraftingReview()
+{
+    cv::MatND screenCardsHist[5];
+    if(!getScreenCardsHist(screenCardsHist, 5))
     {
         capturing = false;
         return;
     }
-    mapBestMatchingCodes(screenCardsHist);
 
-    if(areCardsDetected())
+    double bestMatches[5];
+    for(int i=0; i<5; i++)
     {
-        capturing = false;
-        buildBestMatchesMaps();
+        bestMatches[i] = CARD_ACCEPTED_THRESHOLD_REDRAFT;
 
-        if(drafting)
+        for(QMap<QString, cv::MatND>::const_iterator it=cardsHist.constBegin(); it!=cardsHist.constEnd(); it++)
         {
-            DraftCard bestCards[3];
-            getBestCards(bestCards);
-            showNewCards(bestCards);
-            startReviewBestCards();
-        }
-        else if(heroDrafting)
-        {
-            if(isRepeatHero())  capturing = true;
-            else                showNewHeroes();
+            QString code = it.key();
+            double match = compareHist(screenCardsHist[i], it.value(), 3);
+            if(match < bestMatches[i])
+            {
+                bestMatches[i] = match;
+                bestCodesRedraftingReview[i] = degoldCode(code);
+            }
         }
     }
 
-    if(capturing)
+    //Show deck card selected
+    for(DeckCard &deckCard: *deckHandler->getDeckCardListRef())
     {
-        if(numCaptured == 0)    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_FADING, this, SLOT(captureDraft()));
-        else                    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME, this, SLOT(captureDraft()));
+        bool showRedraft = false;
+        QString code = deckCard.getCode();
+        if(code.isEmpty())    continue;
+        for(int i=0; i<5; i++)
+        {
+            if(code == bestCodesRedraftingReview[i])
+            {
+                showRedraft = true;
+                deckCard.setRedraftingReview();
+                break;
+            }
+        }
+        if(!showRedraft)    deckCard.setRedraftingReview(false);
     }
+
+    // qDebug()<<cardsHist.keys();
+    // qDebug()<<endl;
+    // for(int i=0; i<5; i++)
+    // {
+    //     qDebug()<<"BEST: "<<bestCodesRedraftingReview[i]<<bestMatches[i];
+    // }
+
+    QTimer::singleShot(CAPTUREDRAFT_LOOP_TIME_REDRAFT, this, SLOT(captureDraft()));
 }
 
 
@@ -1868,10 +1965,10 @@ void DraftHandler::showNewRatings(const QString &cardName1, const QString &cardN
 }
 
 
-bool DraftHandler::areScreenRectsValid(cv::Mat &screenCapture)
+bool DraftHandler::areScreenRectsValid(cv::Mat &screenCapture, int length)
 {
     QRect fullRect2(0, 0, screenCapture.cols, screenCapture.rows);
-    for(int i=0; i<3; i++)
+    for(int i=0; i<length; i++)
     {
         QRect rect(screenRects[i].x, screenRects[i].y, screenRects[i].width, screenRects[i].height);
         if(!fullRect2.contains(rect))
@@ -1890,24 +1987,19 @@ bool DraftHandler::areScreenRectsValid(cv::Mat &screenCapture)
 }
 
 
-bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[3])
+bool DraftHandler::getScreenCardsHist(cv::MatND screenCardsHist[], int length)
 {
     cv::Mat screenCapture = getScreenMat();
-    if(screenCapture.empty() || !areScreenRectsValid(screenCapture))    return false;
+    if(screenCapture.empty() || !areScreenRectsValid(screenCapture, length))    return false;
 
-    cv::Mat bigCards[3];
-    bigCards[0] = screenCapture(screenRects[0]);
-    bigCards[1] = screenCapture(screenRects[1]);
-    bigCards[2] = screenCapture(screenRects[2]);
+    cv::Mat bigCards[5];
+    for(int i=0; i<length; i++)     bigCards[i] = screenCapture(screenRects[i]);
 
+// #ifdef QT_DEBUG
+//     for(int i=0; i<length; i++)     cv::imshow("Card" + QString::number(i).toStdString(), bigCards[i]);
+// #endif
 
-//#ifdef QT_DEBUG
-//    cv::imshow("Card1", bigCards[0]);
-//    cv::imshow("Card2", bigCards[1]);
-//    cv::imshow("Card3", bigCards[2]);
-//#endif
-
-    for(int i=0; i<3; i++)  screenCardsHist[i] = getHist(bigCards[i]);
+    for(int i=0; i<length; i++)     screenCardsHist[i] = getHist(bigCards[i]);
     return true;
 }
 
@@ -2016,7 +2108,7 @@ cv::MatND DraftHandler::getHist(const QString &code)
 {
     cv::Mat fullCard = cv::imread((Utility::hscardsPath() + "/" + code + ".png").toStdString(), CV_LOAD_IMAGE_COLOR);
     cv::Mat srcBase;
-    if(drafting)
+    if(drafting || redraftingReview)
     {
         if(code.endsWith("_premium"))
         {
@@ -2189,9 +2281,10 @@ bool DraftHandler::isFindScreenOk(ScreenDetection &screenDetection)
 //        "[2]" 982 344 159 158
 //        DRAFT -> 0.146296 MAL
     float maxDistortion;
-    if(heroDrafting)    maxDistortion = 0.156;
-    else                maxDistortion = 0.119;// if(drafting) || buildMechanicsWindow
-    for(int i=0; i<3; i++)
+    if(heroDrafting)            maxDistortion = 0.156;
+    else if(redraftingReview)   maxDistortion = 0.119;
+    else                        maxDistortion = 0.119;// if(drafting) || buildMechanicsWindow
+    for(int i=0; i<(redraftingReview?5:3); i++)
     {
         if(((screenDetection.screenRects[i].width/static_cast<float>(screenDetection.screenHeight)) > maxDistortion) ||
                 ((screenDetection.screenRects[i].height/static_cast<float>(screenDetection.screenHeight)) > maxDistortion))
@@ -2215,6 +2308,7 @@ bool DraftHandler::isFindScreenAsSettings(ScreenDetection &screenDetection)
 {
     int maxDiff = screenRects[0].width/20;
 
+    //Nunca se usa en redraftingReview asi que comparar los 3 primeros es suficiente
     emit pDebug("Screen Settings: I(" + QString::number(screenIndex) + ")");
     for(int i=0; i<3; i++)
         emit pDebug("[" + QString::number(i) + "](" +
@@ -2260,7 +2354,7 @@ void DraftHandler::newFindScreenLoop(bool skipScreenSettings)
         emit pDebug("Hearthstone arena screen NOT loaded from settings.");
     }
 
-    if(!findingFrame && (drafting || heroDrafting))//buildMechanicsWindow no busca frame
+    if(!findingFrame && (drafting || heroDrafting || redraftingReview))//buildMechanicsWindow no busca frame
     {
         findingFrame = true;
         startFindScreenRects();
@@ -2305,7 +2399,7 @@ void DraftHandler::finishFindScreenRects()
         this->screenIndex = screenDetection.screenIndex;
         this->screenScale = screenDetection.screenScale;
 
-        for(int i=0; i<3; i++)
+        for(int i=0; i<5; i++)
         {
             this->screenRects[i] = screenDetection.screenRects[i];
             this->manaRects[i] = screenDetection.manaRects[i];
@@ -2316,8 +2410,8 @@ void DraftHandler::finishFindScreenRects()
 
         if(needCreate)
         {
-            createDraftWindows();
-            if(drafting || heroDrafting)    newCaptureDraftLoop();
+            if(!redraftingReview)   createDraftWindows();
+            if(drafting || heroDrafting || redraftingReview)    newCaptureDraftLoop();
         }
         else
         {
@@ -2350,10 +2444,31 @@ ScreenDetection DraftHandler::findScreenRects()
         templatePoints[0] = cvPoint(207,340); templatePoints[1] = cvPoint(207+166,340+166);
         templatePoints[2] = cvPoint(487,340); templatePoints[3] = cvPoint(487+166,340+166);
         templatePoints[4] = cvPoint(766,340); templatePoints[5] = cvPoint(766+166,340+166);
-        //Old
-        // templatePoints[0] = cvPoint(182,332); templatePoints[1] = cvPoint(182+152,332+152);
-        // templatePoints[2] = cvPoint(453,332); templatePoints[3] = cvPoint(453+152,332+152);
-        // templatePoints[4] = cvPoint(724,332); templatePoints[5] = cvPoint(724+152,332+152);
+    }
+    else if(redraftingReview)
+    {
+        //1     4
+        //  3
+        //2     5
+        templatePoints.resize(10);
+        templatePoints[0] = cvPoint(142,241); templatePoints[1] = cvPoint(142+117,241+117);
+        templatePoints[2] = cvPoint(146,671); templatePoints[3] = cvPoint(146+117,671+117);
+        templatePoints[4] = cvPoint(480,378); templatePoints[5] = cvPoint(480+117,378+117);
+        templatePoints[6] = cvPoint(819,241); templatePoints[7] = cvPoint(819+117,241+117);
+        templatePoints[8] = cvPoint(819,671); templatePoints[9] = cvPoint(819+117,671+117);
+
+        //Por ahora no hacemos comprobacion mana/rarity
+        // templatePoints[10] = cvPoint(80,204); templatePoints[11] = cvPoint(80+34,204+45);
+        // templatePoints[12] = cvPoint(83,637); templatePoints[13] = cvPoint(83+34,637+45);
+        // templatePoints[14] = cvPoint(420,341); templatePoints[15] = cvPoint(420+34,341+45);
+        // templatePoints[16] = cvPoint(762,204); templatePoints[17] = cvPoint(762+34,204+45);
+        // templatePoints[18] = cvPoint(762,637); templatePoints[19] = cvPoint(762+34,637+45);
+
+        // templatePoints[20] = cvPoint(197,403); templatePoints[21] = cvPoint(197+11,403+17);
+        // templatePoints[22] = cvPoint(201,834); templatePoints[23] = cvPoint(201+11,834+17);
+        // templatePoints[24] = cvPoint(537,540); templatePoints[25] = cvPoint(537+11,540+17);
+        // templatePoints[26] = cvPoint(877,403); templatePoints[27] = cvPoint(877+11,403+17);
+        // templatePoints[28] = cvPoint(877,834); templatePoints[29] = cvPoint(877+11,834+17);
     }
     else// if(drafting)
     {
@@ -2369,19 +2484,6 @@ ScreenDetection DraftHandler::findScreenRects()
         templatePoints[12] = cvPoint(288,420); templatePoints[13] = cvPoint(288+11,420+17);
         templatePoints[14] = cvPoint(566,420); templatePoints[15] = cvPoint(566+11,420+17);
         templatePoints[16] = cvPoint(844,420); templatePoints[17] = cvPoint(844+11,420+17);
-
-        //Old
-        // templatePoints[0] = cvPoint(205,276); templatePoints[1] = cvPoint(205+118,276+118);
-        // templatePoints[2] = cvPoint(484,276); templatePoints[3] = cvPoint(484+118,276+118);
-        // templatePoints[4] = cvPoint(762,276); templatePoints[5] = cvPoint(762+118,276+118);
-
-        // templatePoints[6] = cvPoint(146,240); templatePoints[7] = cvPoint(146+34,240+45);
-        // templatePoints[8] = cvPoint(425,240); templatePoints[9] = cvPoint(425+34,240+45);
-        // templatePoints[10] = cvPoint(705,240); templatePoints[11] = cvPoint(705+34,240+45);
-
-        // templatePoints[12] = cvPoint(262,438); templatePoints[13] = cvPoint(262+12,438+18);
-        // templatePoints[14] = cvPoint(540,438); templatePoints[15] = cvPoint(540+12,438+18);
-        // templatePoints[16] = cvPoint(819,438); templatePoints[17] = cvPoint(819+12,438+18);
     }
 
 
@@ -2391,30 +2493,65 @@ ScreenDetection DraftHandler::findScreenRects()
         QScreen *screen = screens[screenIndex];
         if (!screen)    continue;
 
-        QString arenaTemplate;
-        if(heroDrafting)        arenaTemplate = "heroesTemplate";
-        else /*if(drafting)*/   arenaTemplate = "arenaTemplate";
-        std::vector<Point2f> screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
-                                                screenDetection.screenScale, screenDetection.screenHeight);
-        if(screenPoints.empty())    screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
+        std::vector<Point2f> screenPoints;
+        if(redraftingReview)
+        {
+            screenPoints = Utility::findTemplateOnScreen("redraftTemplate.png", screen, templatePoints,
+                                                        screenDetection.screenScale, screenDetection.screenHeight);
+            if(screenPoints.empty())    continue;
+        }
+        else
+        {
+            QString arenaTemplate;
+            if(heroDrafting)            arenaTemplate = "heroesTemplate";
+            else /*if(drafting)*/       arenaTemplate = "arenaTemplate";
+
+            screenPoints = Utility::findTemplateOnScreen(arenaTemplate+".png", screen, templatePoints,
                                                     screenDetection.screenScale, screenDetection.screenHeight);
-        if(screenPoints.empty())    continue;
+            if(screenPoints.empty())    screenPoints = Utility::findTemplateOnScreen(arenaTemplate+"2.png", screen, templatePoints,
+                                                        screenDetection.screenScale, screenDetection.screenHeight);
+            if(screenPoints.empty())    continue;
+        }
 
         //Calculamos screenRects, manaRects y rarityRects
-        for(int i=0; i<3; i++)
+        if(heroDrafting)
         {
-            screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
-            screenDetection.manaRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+3)*2)], screenPoints[static_cast<ulong>((i+3)*2+1)]);
-            screenDetection.rarityRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+6)*2)], screenPoints[static_cast<ulong>((i+6)*2+1)]);
-
-            //DEBUG imshow
-            // QRect rect = screen->geometry();
-            // QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-            // cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
-            // cv::Rect rectSmall = screenDetection.manaRects[i];
-            // cv::Mat orig = mat(cv::Rect(rectSmall.x, rectSmall.y, rectSmall.width, rectSmall.height));
-            // imshow(QString::number(i).toStdString() + "orig", orig);
+            for(int i=0; i<3; i++)
+            {
+                screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
+            }
         }
+        else if(redraftingReview)
+        {
+            for(int i=0; i<5; i++)
+            {
+                screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
+                //Por ahora no hacemos comprobacion mana/rarity
+                // screenDetection.manaRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+5)*2)], screenPoints[static_cast<ulong>((i+5)*2+1)]);
+                // screenDetection.rarityRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+10)*2)], screenPoints[static_cast<ulong>((i+10)*2+1)]);
+            }
+        }
+        else// if(drafting)
+        {
+            for(int i=0; i<3; i++)
+            {
+                screenDetection.screenRects[i]=cv::Rect(screenPoints[static_cast<ulong>(i*2)], screenPoints[static_cast<ulong>(i*2+1)]);
+                screenDetection.manaRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+3)*2)], screenPoints[static_cast<ulong>((i+3)*2+1)]);
+                screenDetection.rarityRects[i]=cv::Rect(screenPoints[static_cast<ulong>((i+6)*2)], screenPoints[static_cast<ulong>((i+6)*2+1)]);
+            }
+        }
+
+
+        // DEBUG imshow
+        // for(int i=0; i<5; i++)
+        // {
+        //     QRect rect = screen->geometry();
+        //     QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
+        //     cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
+        //     cv::Rect rectSmall = screenDetection.screenRects[i];
+        //     cv::Mat orig = mat(cv::Rect(rectSmall.x, rectSmall.y, rectSmall.width, rectSmall.height));
+        //     imshow(QString::number(i).toStdString() + "orig", orig);
+        // }
 
         screenDetection.screenIndex = screenIndex;
         return screenDetection;
@@ -2792,7 +2929,7 @@ void DraftHandler::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
     this->draftMethodAvgScore = draftMethodAvgScore;
 
     //Comentado para poder cambiar fuera de draft
-//    if(!isDrafting())   return;
+    // if(!isDrafting())   return;
     if(draftMechanicsWindow != nullptr)    draftMechanicsWindow->setDraftMethodAvgScore(draftMethodAvgScore);
 
     updateAvgScoresVisibility();

@@ -70,6 +70,8 @@ private:
     void removeFromDeck(int index);
     void loadDraftsJson(QJsonObject &draftsJson);
     void saveDraftsJson(QJsonObject &draftsJson);
+    void cardTotalMin(int index);
+    void cardRemove(int index);
 
 public:
     void reset();
@@ -91,6 +93,8 @@ public:
     void setShowManaLimits(bool value);
     QList<DeckCard> getDeckCardList();
     QList<DeckCard> * getDeckCardListRef();
+    int getIndexFromCode(const QString &code);
+    void redraftReviewDeck(QString bestCodesRedraftingReview[5]);
 
 signals:
     void checkCardImage(QString code);

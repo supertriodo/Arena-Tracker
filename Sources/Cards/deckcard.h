@@ -62,7 +62,8 @@ private:
     bool topManaLimit, bottomManaLimit;
     bool outsider;
     //Usados para pintar los score
-    bool showScores, showHA, showHSR, badScoreHA, badScoreHSR;
+    bool showScores, showHA, showHSR;
+    bool badScoreHA, badScoreHSR, redraftingReview;
     int scoreHA;
     float scoreHSR;
     int classOrder;
@@ -77,6 +78,7 @@ protected:
 
 public:
     void draw();
+    bool isCode(const QString &code);
     QString getCode();
     CardType getType();
     QString getName();
@@ -97,6 +99,7 @@ public:
     void setScores(int haTier, float hsrWR, int classOrder);
     void setBadScoreHA(bool badScore=true);
     void setBadScoreHSR(bool badScore=true);
+    void setRedraftingReview(bool show=true);
 
     static void setDrawClassColor(bool value);
     static void setDrawSpellWeaponColor(bool value);

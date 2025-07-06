@@ -17,12 +17,15 @@
 #define DRAFT_DELAY_TIME        1500
 #define HERODRAFT_DELAY_TIME    3000
 #define CONTINUEDRAFT_DELAY_TIME    3000
+#define REDRAFT_REVIEW_DELAY_TIME   1500
 
 #define CAPTUREDRAFT_DELAY_TIME         1500
 #define CAPTUREDRAFT_LOOP_TIME          100
 #define CAPTUREDRAFT_LOOP_TIME_FADING   200
+#define CAPTUREDRAFT_LOOP_TIME_REDRAFT  500
 
 #define CARD_ACCEPTED_THRESHOLD             0.35
+#define CARD_ACCEPTED_THRESHOLD_REDRAFT     0.4
 #define CARD_ACCEPTED_THRESHOLD_INCREASE    0.02
 #define CAPTURE_MIN_CANDIDATES                 7
 #define CAPTURE_EXTENDED_CANDIDATES            15
@@ -38,9 +41,9 @@
 class ScreenDetection
 {
 public:
-    cv::Rect screenRects[3];
-    cv::Rect manaRects[3];
-    cv::Rect rarityRects[3];
+    cv::Rect screenRects[5];
+    cv::Rect manaRects[5];
+    cv::Rect rarityRects[5];
     int screenIndex = -1;
     int screenHeight = 1;
     QPointF screenScale = QPointF(0,0);
@@ -74,13 +77,13 @@ private:
     CardClass arenaHero, arenaHeroMulticlassPower;
     int deckRatingHA, deckRatingLF;
     float deckRatingHSR;
-    cv::Rect screenRects[3];
-    cv::Rect manaRects[3];
-    cv::Rect rarityRects[3];
+    cv::Rect screenRects[5];
+    cv::Rect manaRects[5];
+    cv::Rect rarityRects[5];
     QPointF screenScale;
     int screenIndex;
     int numCaptured;
-    bool drafting, heroDrafting, redrafting, capturing, findingFrame, stopLoops;
+    bool drafting, heroDrafting, redrafting, redraftingReview, capturing, findingFrame, stopLoops;
     bool mouseInApp;
     Transparency transparency;
     DraftHeroWindow *draftHeroWindow;
@@ -116,6 +119,7 @@ private:
     QList<cv::Mat> rarityTemplates;
     QString prevCodes[3];
     qint64 prevCodesTime;
+    QString bestCodesRedraftingReview[5];
 
 
 //Metodos
@@ -127,7 +131,7 @@ private:
     void resetTab(bool alreadyDrafting);
     void clearLists(bool keepCounters);
     void endDraft(bool createNewArena);
-    bool getScreenCardsHist(cv::MatND screenCardsHist[3]);
+    bool getScreenCardsHist(cv::MatND screenCardsHist[], int length);
     void showNewCards(DraftCard bestCards[]);
     void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0, float cardRatingHSR=0);
     bool screenFound();
@@ -201,11 +205,13 @@ private:
     void startReviewBestCards();
     QString *reviewBestCards();
     void loadImgTemplates(QList<Mat> &imgTemplates, const QString &filename);
-    bool areScreenRectsValid(Mat &screenCapture);
+    bool areScreenRectsValid(Mat &screenCapture, int length);
     bool isSignatureCard(const QString &code);
     void setDraftMethodDeck();
     void hideDeckScores();
-    void endRedraft();
+    void endRedraftReview();
+    void captureDraftRedraftingReview();
+    void beginRedraftReview();
 
 public:
     void setDeckScores();

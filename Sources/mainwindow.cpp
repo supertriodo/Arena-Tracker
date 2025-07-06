@@ -1316,6 +1316,15 @@ void MainWindow::createCardDownloader()
 }
 
 
+//Al salir de arena queremos guardar el deck de arena antes de que se reinicie (por deckHandler)
+void MainWindow::leaveArena()
+{
+    draftHandler->leaveArena();
+    deckHandler->leaveArena();
+    popularCardsHandler->leaveArena();
+}
+
+
 void MainWindow::createGameWatcher()
 {
     gameWatcher = new GameWatcher(this);
@@ -1326,6 +1335,8 @@ void MainWindow::createGameWatcher()
             this, SLOT(resetDeck()));
     connect(gameWatcher, SIGNAL(arenaDeckRead()),
             this, SLOT(completeArenaDeck()));
+    connect(gameWatcher, SIGNAL(leaveArena()),
+            this, SLOT(leaveArena()));
     connect(gameWatcher, SIGNAL(pDebug(QString,qint64,DebugLevel,QString)),
             this, SLOT(pDebug(QString,qint64,DebugLevel,QString)));
 
@@ -1353,8 +1364,8 @@ void MainWindow::createGameWatcher()
             deckHandler, SLOT(unlockDeckInterface()));
     connect(gameWatcher, SIGNAL(enterArena()),
             deckHandler, SLOT(enterArena()));
-    connect(gameWatcher, SIGNAL(leaveArena()),
-            deckHandler, SLOT(leaveArena()));
+    // connect(gameWatcher, SIGNAL(leaveArena()),//MainWindow::leaveArena()
+    //         deckHandler, SLOT(leaveArena()));
     connect(gameWatcher, SIGNAL(specialCardTrigger(QString,QString,int,int)),
             deckHandler, SLOT(setLastCreatedByCode(QString,QString)));
     connect(gameWatcher, SIGNAL(coinIdFound(int)),
@@ -1544,8 +1555,8 @@ void MainWindow::createGameWatcher()
             popularCardsHandler, SLOT(enemyTagChange(QString,QString)));
     connect(gameWatcher, SIGNAL(enterArena()),
             popularCardsHandler, SLOT(enterArena()));
-    connect(gameWatcher, SIGNAL(leaveArena()),
-            popularCardsHandler, SLOT(leaveArena()));
+    // connect(gameWatcher, SIGNAL(leaveArena()),//MainWindow::leaveArena()
+    //         popularCardsHandler, SLOT(leaveArena()));
 
     connect(gameWatcher, SIGNAL(endGame(bool,bool)),
             rngCardHandler, SLOT(clearRngList()));
@@ -1585,8 +1596,8 @@ void MainWindow::createGameWatcher()
     //y lo iniciamos de cero al entrar otra vez, DraftHandler::continueDraft
     // connect(gameWatcher, SIGNAL(enterArena()),
     //         draftHandler, SLOT(enterArena()));
-    connect(gameWatcher, SIGNAL(leaveArena()),
-            draftHandler, SLOT(leaveArena()));
+    // connect(gameWatcher, SIGNAL(leaveArena()),//MainWindow::leaveArena()
+    //         draftHandler, SLOT(leaveArena()));
 }
 
 
@@ -2783,6 +2794,7 @@ void MainWindow::downloadExtraFiles()
     downloadExtraFile("arenaTemplate2.png");
     downloadExtraFile("heroesTemplate.png");
     downloadExtraFile("heroesTemplate2.png");
+    downloadExtraFile("redraftTemplate.png");
     downloadExtraFile("MANA.dat");
     downloadExtraFile("RARITY.dat");
 
