@@ -56,13 +56,13 @@ private:
     void addToDataLogs(LogComponent logComponent, QString line, qint64 numLine, qint64 logSeek);
     void processDataLogs();
     QString findLinuxLogs(QString pattern);
-    QString getRecentLogDir();
     void deleteLogWorkers();
     void removeOldLogDirs(QStringList logs);
 
 public:
     bool init();
     QString getLogConfigPath();
+    QString getRecentLogDir();
     QString getLogsDirPath();
 
 //Signals

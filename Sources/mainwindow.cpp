@@ -2339,15 +2339,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             else if(event->key() == Qt::Key_Z)
             {
                 if(this->planWindow == nullptr)    createDetachWindow(ui->tabPlan);
-                planWindow->resize(QSize(960, 1040));
+                planWindow->resize(QSize(1080, 1080));
                 planWindow->move(1920, 0);
 
                 if(this->deckWindow == nullptr)    createDetachWindow(ui->tabDeck);
-                deckWindow->resize(QSize(deckWindow->width(), 1030));
-                deckWindow->move(0, 0);
+                deckWindow->resize(QSize(deckWindow->width(), 1000));
+                deckWindow->move(1920-deckWindow->width(), 0);
 
-                this->resize(QSize(270, 1030));
-                this->move(1920-270, 0);
+                if(this->enemyWindow == nullptr)    createDetachWindow(ui->tabEnemy);
+                enemyWindow->resize(QSize(enemyWindow->width(), 800));
+                enemyWindow->move(0, 0);
+
+                if(this->graveyardWindow == nullptr)    createDetachWindow(ui->tabGraveyard);
+                graveyardWindow->resize(QSize(graveyardWindow->width(), 680));
+                graveyardWindow->move(1920+1080, 400);
+
+                this->resize(QSize(300, 400));
+                this->move(1920+1080, 0);
             }
 #endif
         }
@@ -4251,17 +4259,17 @@ void MainWindow::createDebugPack()
 
         QRect rect = screen->geometry();
         QImage image = screen->grabWindow(0,rect.x(),rect.y(),rect.width(),rect.height()).toImage();
-        image.save(dirPath + "/screenshot.png");
+        image.save(dirPath + "/screenshot" + QString::number(screenIndex) + ".png");
 
-        cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
-        cv::resize(mat, mat, cv::Size(1280, 720));
-        cv::imshow("Screenshot", mat);
+        // cv::Mat mat(image.height(),image.width(),CV_8UC4,image.bits(), static_cast<size_t>(image.bytesPerLine()));
+        // cv::resize(mat, mat, cv::Size(1280, 720));
+        // cv::imshow("Screenshot", mat);
     }
 
     QFile atLog(Utility::dataPath() + "/ArenaTrackerLog.txt");
     atLog.copy(dirPath + "/ArenaTrackerLog.txt");
 
-    QString hsLogsPath = logLoader->getLogsDirPath();
+    QString hsLogsPath = logLoader->getLogsDirPath() + "/" + logLoader->getRecentLogDir();
     QFile arenaLog(hsLogsPath + "/Arena.log");
     arenaLog.copy(dirPath + "/Arena.log");
     QFile loadingScreenLog(hsLogsPath + "/LoadingScreen.log");
