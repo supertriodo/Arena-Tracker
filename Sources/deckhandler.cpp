@@ -610,10 +610,20 @@ void DeckHandler::drawFromDeck(QString code, int id)
             }
         }
 
-        emit pDebug("New card: " +
-                          Utility::getCardAttribute(code, "name").toString());
-        newDeckCard(code);
-        drawFromDeck(code, id);
+        //Mazo completo
+        if(deckCardList[0].total < 1)
+        {
+            emit pDebug("WARNING: Deck is full: Not adding: (1) " +
+                            Utility::getCardAttribute(code, "name").toString(), Warning);
+            return;
+        }
+        else
+        {
+            emit pDebug("New card: " +
+                        Utility::getCardAttribute(code, "name").toString());
+            newDeckCard(code);
+            drawFromDeck(code, id);
+        }
     }
     else
     {
