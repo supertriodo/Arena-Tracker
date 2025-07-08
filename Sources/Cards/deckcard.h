@@ -66,6 +66,7 @@ private:
     bool badScoreHA, badScoreHSR, redraftingReview;
     int scoreHA;
     float scoreHSR;
+    int includedDecks;
     int classOrder;
 
 //Metodos
@@ -96,7 +97,7 @@ public:
     void setShowHAShowHSRScores(bool showHA, bool showHSR);
     void hideScores();
     void setShowScores(bool showScores);
-    void setScores(int haTier, float hsrWR, int classOrder);
+    void setScores(int haTier, float hsrWR, int classOrder, int includedDecks);
     void setBadScoreHA(bool badScore=true);
     void setBadScoreHSR(bool badScore=true);
     void setRedraftingReview(bool show=true);

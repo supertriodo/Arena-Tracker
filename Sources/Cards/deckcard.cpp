@@ -21,6 +21,7 @@ DeckCard::DeckCard(QString code, bool outsider)
     id = 0;
     scoreHA = 0;
     scoreHSR = 0;
+    includedDecks = 0;
     showScores = badScoreHA = badScoreHSR = false;
     showHA = showHSR = true;
     redraftingReview = false;
@@ -84,10 +85,11 @@ void DeckCard::setShowHAShowHSRScores(bool showHA, bool showHSR)
 }
 
 
-void DeckCard::setScores(int haTier, float hsrWR, int classOrder)
+void DeckCard::setScores(int haTier, float hsrWR, int classOrder, int includedDecks)
 {
     this->scoreHA = haTier;
     this->scoreHSR = hsrWR;
+    this->includedDecks = includedDecks;
     this->classOrder = classOrder;
     this->showScores = true;
     //No hace falta hacer draw() pq en DraftHandler::setDeckScores() llamamos a DeckCard::setShowHAShowHSRScores despues de DeckCard::setScores
@@ -452,11 +454,13 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
             }
             if(showHA && scoreHA!=0)
             {
-                painter.drawPixmap(width - (29*width/218) - 6*height/8, 0, ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
+                painter.drawPixmap(width - (29*width/218) - 6*height/8, 0,
+                                   ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
             }
             if(showHSR && scoreHSR!=0)
             {
-                painter.drawPixmap(width - (29*width/218) - (showHA?2*6*height/8:6*height/8), 0, ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder));
+                painter.drawPixmap(width - (29*width/218) - (showHA?2*6*height/8:6*height/8), 0,
+                                   ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder, includedDecks));
             }
         }
 

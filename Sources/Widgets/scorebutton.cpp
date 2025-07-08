@@ -365,11 +365,12 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
 }
 
 
-QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size, int classOrder)
+QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size, int classOrder, int includedDecks)
 {
     ScoreButton scoreButton(nullptr, scoreSource, classOrder);
     scoreButton.setFixedSize(size, size);
     scoreButton.score = score;
+    scoreButton.includedDecks = includedDecks;
 
     int r, g, b;
     scoreButton.getScoreColor(r, g, b, score);

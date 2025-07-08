@@ -811,7 +811,8 @@ void DraftHandler::setDeckScores()
         if(code.isEmpty())    continue;
         int scoreHA = hearthArenaTiers[code];
         float scoreHSR = cardsIncludedWinratesMap[this->arenaHero][code];
-        deckCard.setScores(scoreHA, scoreHSR, arenaHero);
+        int includedDecks = cardsIncludedDecksMap[this->arenaHero][code];
+        deckCard.setScores(scoreHA, scoreHSR, arenaHero, includedDecks);
         if(scoreHA != 0)    listaHA << qMakePair(scoreHA, &deckCard);
         if(scoreHSR != 0)   listaHSR << qMakePair(scoreHSR, &deckCard);
     }

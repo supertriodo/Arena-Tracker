@@ -45,7 +45,7 @@ public:
     void setLearningShow(bool value);
     void draw();
 
-    static QPixmap scorePixmap(ScoreSource scoreSource, float score, int size=80, int classOrder=-1);
+    static QPixmap scorePixmap(ScoreSource scoreSource, float score, int size=80, int classOrder=-1, int includedDecks=0);
     static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80);
     static void setHeroScores(float heroScores[]);
     static void setPlayerRuns(int playerRuns[]);
