@@ -1,5 +1,5 @@
 {
-  "arenaVersion": 77,
+  "arenaVersion": 78,
   "arenaSets": ["CORE", 
         "LEGACY", 
         "EXPERT1", 
@@ -43,6 +43,7 @@
         "EMERALD_DREAM",
         "THE_LOST_CITY"],
   "multiclassArena": false,
+  "trustHA": true,
   "resetCards": 73,
   "resetHeroes": 76,
   "seasonId": 2
