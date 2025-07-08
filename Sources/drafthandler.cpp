@@ -172,6 +172,12 @@ void DraftHandler::setMulticlassArena(bool multiclassArena)
 }
 
 
+void DraftHandler::setTrustHA(bool trustHA)
+{
+    this->trustHA = trustHA;
+}
+
+
 void DraftHandler::setPremium(bool premium)
 {
     if(drafting)    return;
@@ -242,7 +248,7 @@ CardClass DraftHandler::getArenaHero()
 }
 
 
-void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool multiClassDraft)
+void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass, bool trustHA)
 {
     hearthArenaTiers.clear();
 
@@ -279,7 +285,18 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
                 }
             }
 
-            // if(hearthArenaTiers[code] == 0)  emit pDebug("HearthArena missing: " + name);//TODO
+            if(hearthArenaTiers[code] == 0)
+            {
+                // emit pDebug("HearthArena missing: " + name);//TODO
+                if(trustHA)
+                {
+                    const QList<CardClass> cardClassList = codesByClass.keys();
+                    for(const CardClass &cardClass: cardClassList)
+                    {
+                        codesByClass[cardClass].removeAll(code);
+                    }
+                }
+            }
         }
     }
     else
@@ -291,7 +308,19 @@ void DraftHandler::initHearthArenaTiers(const QString &heroString, const bool mu
             QString name = Utility::cardEnNameFromCode(code);
             int score = jsonNamesObject.value(name).toInt();
             hearthArenaTiers[code] = score;
-            // if(score == 0)  emit pDebug("HearthArena missing: " + name);//TODO
+
+            if(score == 0)
+            {
+                // emit pDebug("HearthArena missing: " + name);//TODO
+                if(trustHA)
+                {
+                    const QList<CardClass> cardClassList = codesByClass.keys();
+                    for(const CardClass &cardClass: cardClassList)
+                    {
+                        codesByClass[cardClass].removeAll(code);
+                    }
+                }
+            }
         }
         emit pDebug("HearthArena Cards: " + QString::number(jsonNamesObject.count()));
     }
@@ -334,26 +363,8 @@ void DraftHandler::loadCardHist(QString classUName)
 }
 
 
-void DraftHandler::saveCardHist(const bool multiClassDraft)
+void DraftHandler::saveCardHist(QMap<CardClass, QStringList> &codesByClass)
 {
-    //Build codesByClass
-    QMap<CardClass, QStringList> codesByClass;
-    const QList<QString> codeList = lightForgeTiers.keys();
-    for(const QString &code: codeList)
-    {
-        const QList<CardClass> cardClassList = Utility::getClassFromCode(code);
-        if(multiClassDraft)
-        {
-            for(const CardClass &cardClass: cardClassList)
-            {
-                if(cardClass == INVALID_CLASS)  emit pDebug("WARNING: saveCardHist found INVALID_CLASS: " + code);
-                else                            codesByClass[cardClass].append(code);
-            }
-        }
-        else if(cardClassList.contains(NEUTRAL))    codesByClass[NEUTRAL].append(code);
-        else if(cardClassList.contains(arenaHero))  codesByClass[arenaHero].append(code);
-    }
-
     //Save
     const QList<CardClass> cardClassList = codesByClass.keys();
     for(const CardClass &cardClass: cardClassList)
@@ -419,8 +430,8 @@ void DraftHandler::saveCardHist(const bool multiClassDraft)
 
 void DraftHandler::addCardHist(QString code, bool premium, bool isHero)
 {
-    //Evitamos golden cards de cartas no colleccionables
-    if(premium && !Utility::getCardAttribute(code, "collectible").toBool()) return;
+    //FALSO: Evitamos golden cards de cartas no coleccionables
+    // if(premium && !Utility::getCardAttribute(code, "collectible").toBool()) return;
 
     QString fileNameCode = premium?(code + "_premium"): code;
     //Puede ocurrir con dual class cards en multiclassArena.
@@ -462,13 +473,15 @@ bool DraftHandler::initCardHist(QMap<CardClass, QStringList> &codesByClass)
         QFileInfo fi(Utility::histogramsPath() + "/" + classUName + HISTOGRAM_EXT);
         if(fi.exists())
         {
+            int beforeHists = cardsHist.count();
             loadCardHist(classUName);
-            emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()) + " hists.");
+            emit pDebug("Load Arena Hists (" + classUName + "): " + QString::number(cardsHist.count() - beforeHists) + " hists.");
         }
         else
         {
+            int beforeHists = cardsHist.count();
             processCardHist(codesByClass[cardClass]);
-            emit pDebug("Process Arena Hists (" + classUName + "): " + QString::number(cardsHist.count()) + " hists.");
+            emit pDebug("Process Arena Hists (" + classUName + "): " + QString::number(cardsHist.count() - beforeHists) + " hists.");
             processed = true;
         }
     }
@@ -587,14 +600,13 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         QTimer::singleShot(DRAFT_DELAY_TIME, this, [=] () {newFindScreenLoop(skipScreenSettings);});
 
-        QMap<CardClass, QStringList> codesByClass;
         initLightForgeTiers(arenaHero, multiclassArena, codesByClass);
+        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena, codesByClass, trustHA);
         if(drafting)
         {
             needSaveCardHist = initCardHist(codesByClass);
             initCardsNameMap(codesByClass);
         }
-        initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
         synergyHandler->initSynergyCodes();
     }
 
@@ -603,7 +615,7 @@ void DraftHandler::initCodesAndHistMaps(QString hero, bool skipScreenSettings)
     {
         if(cardsDownloading.isEmpty())
         {
-            if(needSaveCardHist)    saveCardHist(multiclassArena);
+            if(needSaveCardHist)    saveCardHist(codesByClass);
             newCaptureDraftLoop();
         }
         else
@@ -627,7 +639,7 @@ void DraftHandler::reHistDownloadedCardImage(const QString &fileNameCode, bool m
     emit advanceProgressBar(cardsDownloading.count(), fileNameCode.split("_premium").first() + " downloaded");
     if(cardsDownloading.isEmpty())
     {
-        if(needSaveCardHist)    saveCardHist(multiclassArena);
+        if(needSaveCardHist)    saveCardHist(codesByClass);
         emit showMessageProgressBar("All cards downloaded");
         newCaptureDraftLoop();
     }
@@ -685,6 +697,7 @@ void DraftHandler::clearLists(bool keepCounters)
     clearAndDisconnectAllComboBox();
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
+    codesByClass.clear();
     cardsHist.clear();
     cardsNameMap.clear();
     manaTemplates.clear();
@@ -3135,7 +3148,26 @@ void DraftHandler::initTierLists(const CardClass &heroClass)
     QMap<CardClass, QStringList> codesByClass;
     initLightForgeTiers(heroClass, multiclassArena, codesByClass);
     QString hero = Utility::classEnum2classLogNumber(heroClass);
-    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena);
+    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), multiclassArena, codesByClass, false);
+}
+
+
+//All arena codes, present in HATL if trustHA
+QStringList DraftHandler::getAllArenaCodesTrimmed()
+{
+    QMap<CardClass, QStringList> codesByClass;
+    initLightForgeTiers(WARRIOR, true, codesByClass);
+    QString hero = Utility::classEnum2classLogNumber(WARRIOR);
+    initHearthArenaTiers(Utility::classLogNumber2classUL_ULName(hero), true, codesByClass, trustHA);
+
+    QStringList codes;
+    for(const CardClass &cardClass: codesByClass.keys())
+    {
+        codes << codesByClass[cardClass];
+    }
+    codes.removeDuplicates();
+    clearTierLists();
+    return codes;
 }
 
 
@@ -3143,6 +3175,7 @@ void DraftHandler::clearTierLists()
 {
     hearthArenaTiers.clear();
     lightForgeTiers.clear();
+    codesByClass.clear();
 }
 
 

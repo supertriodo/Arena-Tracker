@@ -908,6 +908,12 @@ void MainWindow::checkArenaVersionJson(const QJsonObject &jsonObject)
             settings.setValue("seasonId", newSeasonId);
             arenaHandler->changeSeasonId(newSeasonId);
         }
+
+        //TrustHA
+        bool trustHA = jsonObject.value("trustHA").toBool(false);
+        if(draftHandler != nullptr) draftHandler->setTrustHA(trustHA);
+        settings.setValue("trustHA", trustHA);
+        pDebug("CheckArenaVersion: trustHA: " + QString(trustHA?"true":"false"));
     }
     else
     {
@@ -1041,10 +1047,14 @@ void MainWindow::createDraftHandler()
     if(cardsJsonLoaded) draftHandler->buildHeroCodesList();
 
     QSettings settings("Arena Tracker", "Arena Tracker");
+    bool trustHA = settings.value("trustHA", true).toBool();
     bool multiclassArena = settings.value("multiclassArena", false).toBool();
     QStringList arenaSets = settings.value("arenaSets", QStringList()).toStringList();
+    draftHandler->setTrustHA(trustHA);
     draftHandler->setMulticlassArena(multiclassArena);
     draftHandler->setArenaSets(arenaSets);
+    pDebug("trustHA = " + QString(trustHA?"true":"false"));
+    pDebug("multiclassArena = " + QString(multiclassArena?"true":"false"));
 
     //SynergyHandler
     SynergyHandler *synergyHandler = draftHandler->getSynergyHandler();
@@ -4445,7 +4455,7 @@ void MainWindow::checkArenaCards()
     if(allCardsDownloadNeeded)
     {
         settings.setValue("allCardsDownloaded", false);
-        QStringList codeList = draftHandler->getAllArenaCodes();
+        QStringList codeList = draftHandler->getAllArenaCodesTrimmed();
         downloadAllArenaCodes(codeList);
     }
     else
@@ -4466,8 +4476,8 @@ void MainWindow::downloadAllArenaCodes(const QStringList &codeList)
         {
             allCardsDownloadList.append(code);
         }
-        //Solo bajamos golden cards de cartas colleccionables
-        if( Utility::getCardAttribute(code, "collectible").toBool() &&
+        //FALSO: Solo bajamos golden cards de cartas colleccionables
+        if(/*Utility::getCardAttribute(code, "collectible").toBool() &&*/
             !checkCardImage(code + "_premium"))
         {
             allCardsDownloadList.append(code + "_premium");
@@ -4961,19 +4971,55 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
 {
     //Download new set cards
     QStringList arenaSets;
+    arenaSets <<  "CORE" <<
+        "LEGACY" <<
+        "EXPERT1" <<
+        "DEMON_HUNTER_INITIATE" <<
+        "WONDERS" <<
+        "NAXX" <<
+        "GVG" <<
+        "BRM" <<
+        "TGT" <<
+        "LOE" <<
+        "OG" <<
+        "KARA" <<
+        "GANGS" <<
+        "UNGORO" <<
+        "ICECROWN" <<
+        "LOOTAPALOOZA" <<
+        "GILNEAS" <<
+        "BOOMSDAY" <<
+        "TROLL" <<
+        "DALARAN" <<
+        "ULDUM" <<
+        "DRAGONS" <<
+        "YEAR_OF_THE_DRAGON" <<
+        "BLACK_TEMPLE" <<
+        "SCHOLOMANCE" <<
+        "DARKMOON_FAIRE" <<
+        "THE_BARRENS" <<
+        "STORMWIND" <<
+        "ALTERAC_VALLEY" <<
+        "THE_SUNKEN_CITY" <<
+        "REVENDRETH" <<
+        "PATH_OF_ARTHAS" <<
+        "RETURN_OF_THE_LICH_KING" <<
+        "BATTLE_OF_THE_BANDS" <<
+        "TITANS" <<
+        "WILD_WEST" <<
+        "EVENT" <<
+        "WHIZBANGS_WORKSHOP" <<
+        "ISLAND_VACATION" <<
+        "SPACE" <<
+        "EMERALD_DREAM" <<
+        "THE_LOST_CITY";
 
-
-    arenaSets << "THE_LOST_CITY";
+    draftHandler->setArenaSets(arenaSets);
 
     if(fromHearth)
     {
-        QStringList codes;
-        for(const QString &set: qAsConst(arenaSets))
-        {
-            if(Utility::needCodesSpecific(set)) codes.append(Utility::getSetCodesSpecific(set));
-            else                                codes.append(Utility::getSetCodes(set, true, true));
-        }
-        for(const QString &code: qAsConst(codes))
+        QStringList codeList = draftHandler->getAllArenaCodesTrimmed();
+        for(const QString &code: qAsConst(codeList))
         {
             if(miniSet.isEmpty() || code.startsWith(miniSet))
             {
@@ -4984,7 +5030,6 @@ void MainWindow::testDownloadRotation(bool fromHearth, const QString &miniSet)
     }
     else
     {
-        draftHandler->setArenaSets(arenaSets);
         allCardsDownloadNeeded = true;
         checkArenaCards();
     }
@@ -5189,30 +5234,6 @@ void MainWindow::testDelay()
 //Cartas a mano sin code, arreglado obteniendo el code del nombre:
 //id=10 local=False [name=Clériga de Villanorte id=55 zone=HAND zonePos=1 cardId= player=2] zone from OPPOSING PLAY -> OPPOSING HAND
 //Comadreja aprece como OUTSIDER y OUTSIDER BY en tu deck, se debe a que va a tu deck 2 veces una como conocida y otra como desconocida.
-
-
-
-//Missing golden cards
-//DEBUG MISSING GOLDEN: "EX1_033" - "Windfury Harpy"
-//DEBUG MISSING GOLDEN: "EX1_080" - "Secretkeeper"
-//DEBUG MISSING GOLDEN: "EX1_137" - "Headcrack"
-//DEBUG MISSING GOLDEN: "EX1_179" - "Icicle"
-//DEBUG MISSING GOLDEN: "EX1_180" - "Tome of Intellect"
-//DEBUG MISSING GOLDEN: "EX1_181" - "Call of the Void"
-//DEBUG MISSING GOLDEN: "EX1_182" - "Pilfer"
-//DEBUG MISSING GOLDEN: "EX1_183" - "Gift of the Wild"
-//DEBUG MISSING GOLDEN: "EX1_184" - "Righteousness"
-//DEBUG MISSING GOLDEN: "EX1_185" - "Siegebreaker"
-//DEBUG MISSING GOLDEN: "EX1_186" - "SI:7 Infiltrator"
-//DEBUG MISSING GOLDEN: "EX1_187" - "Arcane Devourer"
-//DEBUG MISSING GOLDEN: "EX1_188" - "Barrens Stablehand"
-//DEBUG MISSING GOLDEN: "EX1_189" - "Brightwing"
-//DEBUG MISSING GOLDEN: "EX1_190" - "High Inquisitor Whitemane"
-//DEBUG MISSING GOLDEN: "EX1_306" - "Felstalker"
-//DEBUG MISSING GOLDEN: "EX1_570" - "Bite"
-//DEBUG MISSING GOLDEN: "EX1_617" - "Deadly Shot"
-//DEBUG MISSING GOLDEN: "GIL_623" - "Witchwood Grizzly"
-//DEBUG MISSING GOLDEN: "GVG_018" - "Queen of Pain"
 
 
 

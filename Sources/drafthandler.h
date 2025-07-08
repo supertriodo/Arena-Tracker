@@ -66,6 +66,9 @@ private:
     ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
     QMap<QString, int> hearthArenaTiers;
     QMap<QString, int> lightForgeTiers;
+    //Guarda los codes en la rotacion. Parte de todos los sets y se limita a la tier list de HA (si trustHA)
+    QMap<CardClass, QStringList> codesByClass;
+    bool trustHA;
     QMap<QString, cv::MatND> cardsHist;
     QStringList cardsDownloading;
     DraftCard draftCards[3];
@@ -143,7 +146,7 @@ private:
     void showOverlay();
     void newCaptureDraftLoop(bool delayed=false);
     void updateScoresVisibility();
-    void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft);
+    void initHearthArenaTiers(const QString &heroString, const bool multiClassDraft, QMap<CardClass, QStringList> &codesByClass, bool trustHA);
     void initLightForgeTiers(const CardClass &heroClass, const bool multiClassDraft,
                              QMap<CardClass, QStringList> &codesByClass);
     void createDraftWindows();
@@ -181,7 +184,7 @@ private:
     void processCardHist(QStringList &codes);
     bool initCardHist(QMap<CardClass, QStringList> &codesByClass);
     void loadCardHist(QString classUName);
-    void saveCardHist(const bool multiClassDraft);
+    void saveCardHist(QMap<CardClass, QStringList> &codesByClass);
     CardClass findMulticlassPower(QList<DeckCard> &deckCardList);
     void initCardsNameMap(QMap<CardClass, QStringList> &codesByClass);
     void reduceCardsNameMapMulticlass();
@@ -238,6 +241,7 @@ public:
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
+    void setTrustHA(bool trustHA);
     SynergyHandler *getSynergyHandler();
     void setArenaSets(QStringList arenaSets);
     void closeFindScreenRects();
@@ -247,6 +251,7 @@ public:
     void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr);
     void setShowMyWR(bool value);
     void setWantedMechanic(uint mechanicIcon, bool value);
+    QStringList getAllArenaCodesTrimmed();
 
 signals:
     void checkCardImage(QString code, bool isHero=false);
