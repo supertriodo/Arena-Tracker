@@ -2361,11 +2361,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 enemyWindow->move(0, 0);
 
                 if(this->graveyardWindow == nullptr)    createDetachWindow(ui->tabGraveyard);
-                graveyardWindow->resize(QSize(graveyardWindow->width(), 680));
-                graveyardWindow->move(1920+1080, 400);
+                graveyardWindow->resize(QSize(graveyardWindow->width(), 800));
+                graveyardWindow->move(1920+1080, 0);
 
                 this->resize(QSize(300, 400));
-                this->move(1920+1080, 0);
+                this->move(1920+1080+graveyardWindow->width(), 0);
             }
 #endif
         }

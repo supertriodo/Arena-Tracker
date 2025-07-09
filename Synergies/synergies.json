@@ -1546,7 +1546,7 @@
 "EDR_262" : [ "damageMinionsGen", "rushGen", "beastGen", "undeadGen" ],
 "EDR_263" : [ "drop4", "reachGen", "rushGen", "damageMinionsGen", "tokenGen", "chooseOne", "corpseGen", "undeadGen", "beastGen" ],
 "EDR_264" : [ "heroPowerGen", "tauntGen" ],
-"EDR_270" : [ "discover" ],
+"EDR_270" : [ "discover", "drop2" ],
 "EDR_271" : [ "natureAllSyn" ],
 "EDR_272" : [ "lifesteal", "taunt" ],
 "EDR_273" : [ "discover", "otherClassGen", "chooseOneGen" ],
