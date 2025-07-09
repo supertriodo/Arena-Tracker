@@ -8,8 +8,7 @@ WeaponGraphicsItem::WeaponGraphicsItem(QString code, int id, bool friendly, Grap
     :MinionGraphicsItem(code, id, friendly, false, graphicsItemSender)
 {
     this->durability = this->origDurability =
-            this->health = this->origHealth =
-            Utility::getCardAttribute(code, "durability").toInt();
+        this->health = this->origHealth;
 
     const int hMinion = MinionGraphicsItem::HEIGHT-5;
     const int hHero = HeroGraphicsItem::HEIGHT;
@@ -35,10 +34,17 @@ QRectF WeaponGraphicsItem::boundingRect() const
 }
 
 
+void WeaponGraphicsItem::updateStatsFromCard(CardGraphicsItem * card)
+{
+    MinionGraphicsItem::updateStatsFromCard(card);
+    this->durability = this->health;
+}
+
+
 bool WeaponGraphicsItem::processTagChange(QString tag, QString value)
 {
     bool healing = false;
-    if(tag == "DURABILITY")
+    if(tag == "DURABILITY" || tag == "HEALTH")//HS/cardsjson ahora usan HEALTH para weapons
     {
         int newDurability = value.toInt();
         if(newDurability > this->durability)  healing = true;

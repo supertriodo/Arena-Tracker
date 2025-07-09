@@ -23,6 +23,7 @@ public:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
     bool processTagChange(QString tag, QString value);
+    void updateStatsFromCard(CardGraphicsItem *card);
 };
 
 #endif // WEAPONGRAPHICSITEM_H

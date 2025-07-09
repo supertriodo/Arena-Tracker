@@ -1180,6 +1180,7 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
     }
 
     weapon = new WeaponGraphicsItem(code, id, friendly, graphicsItemSender);
+    updateWeaponFromCard(weapon);
     HeroGraphicsItem * heroNow = getHero(friendly);
     if(heroNow != nullptr)    heroNow->setHeroWeapon(weapon);
 
@@ -1202,6 +1203,17 @@ void PlanHandler::addWeapon(bool friendly, QString code, int id)
         addWeaponTagChange(tagChange);
     }
     pendingTagChanges.remove(id);
+}
+
+
+void PlanHandler::updateWeaponFromCard(WeaponGraphicsItem * weapon)
+{
+    CardGraphicsItem * card = findCard(weapon->isFriendly(), weapon->getId());
+    if(card == nullptr)    emit pDebug("Weapon not found in hand when ckecking its stats. Id: " + QString::number(weapon->getId()), Warning);
+    else
+    {
+        weapon->updateStatsFromCard(card);
+    }
 }
 
 

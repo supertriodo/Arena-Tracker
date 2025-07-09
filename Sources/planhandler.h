@@ -172,6 +172,7 @@ private:
     int getPotentialManaNextTurn();
     void showManaPlayableCardsNextTurn();
     void showManaPlayableCardsAuto();
+    void updateWeaponFromCard(WeaponGraphicsItem *weapon);
 
 public:
     void setTransparency(Transparency value);
