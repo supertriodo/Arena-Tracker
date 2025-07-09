@@ -1490,7 +1490,7 @@
 "DRG_314" : [ "drawGen2", "treantSyn" ],
 "DRG_315" : [ "tokenCardGen", "attackBuffGen", "healthBuffGen" ],
 "DRG_317" : [ "heroAttackSyn", "heroPowerGen", "weaponAllSyn", "heroAttackGen", "armorGen", "tokenCardGen", "damageMinionsGen", "reachGen", "toYourHandGen" ],
-"DRG_318" : [ "dragonAllSyn", "drawGen" ],
+"DRG_318" : [ "dragonAllSyn", "drawGen", "drop2" ],
 "DRG_319" : [ "battlecry", "returnSyn", "taunt", "treantSyn" ],
 "DRG_320" : [ "battlecry", "returnSyn", "shuffleGen" ],
 "DRG_321" : [ "aoeGen", "destroyGen" ],
