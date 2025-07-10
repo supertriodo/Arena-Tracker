@@ -140,7 +140,7 @@ void ArenaHandler::createArenaStatsTreeWidget()
     lbTreeItem = new QTreeWidgetItem(treeWidget);
     lbTreeItem->setExpanded(true);
     lbTreeItem->setText(0, "Leaderb.");
-    lbTreeItem->setText(1, "Avg");
+    lbTreeItem->setText(1, "Rat");
     lbTreeItem->setText(2, "#");
     lbTreeItem->setText(3, "Page");
     lbTreeItem->setText(4, "Reg");
