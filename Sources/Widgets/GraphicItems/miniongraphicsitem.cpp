@@ -33,6 +33,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->taunt = copy->taunt;
     this->stealth = copy->stealth;
     this->dormant = copy->dormant;
+    this->launchpad = copy->launchpad;
     this->frozen = copy->frozen;
     this->windfury = copy->windfury;
     this->charge = copy->charge;
@@ -82,6 +83,7 @@ void MinionGraphicsItem::initCode(QString code)
     this->taunt = false;
     this->stealth = false;
     this->dormant = false;
+    this->launchpad = false;
     this->frozen = false;
     this->windfury = false;
     this->charge = false;
@@ -141,7 +143,7 @@ int MinionGraphicsItem::getHealth()
 
 int MinionGraphicsItem::getHitsToDie(int missileDamage)
 {
-    if(location || dormant) return 0;
+    if(location || dormant || launchpad) return 0;
     if(shield)  return getRemainingHealth() + missileDamage;
     else        return getRemainingHealth();
 }
@@ -641,6 +643,11 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
     {
         this->dormant = (value=="1");
     }
+    else if(tag == "LAUNCHPAD")
+    {
+        this->launchpad = (value=="1");
+        this->exausted = launchpad;
+    }
     else if(tag == "FROZEN")
     {
         this->frozen = (value=="1");
@@ -689,6 +696,13 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(this->dormant)
     {
         painter->drawPixmap(-60, -73, QPixmap(":Images/bgMinionDormant.png"));
+        return;
+    }
+
+    //Starship
+    if(this->launchpad)
+    {
+        painter->drawPixmap(-61, -73, QPixmap(":Images/bgMinionStarship.png"));
         return;
     }
 
@@ -844,7 +858,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     }
 
     //Dead Prob
-    if(!this->dormant && !this->location && !FLOATEQ(deadProb, 0))
+    if(!this->dormant && !this->launchpad && !this->location && !FLOATEQ(deadProb, 0))
     {
         painter->drawPixmap(-87/2, -94/2, QPixmap(":Images/bgHeroDead.png"));
 

@@ -570,7 +570,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(2);
 
         if  (tag == "ATK" || tag == "HEALTH" ||
-            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT"))
+            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT" || tag == "LAUNCHPAD"))
             )
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
@@ -666,8 +666,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                    tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
-                    tag == "COST" || tag == "REBORN" || tag == "DORMANT")
+                    tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
+                    tag == "DORMANT" || tag == "LAUNCHPAD")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
@@ -702,8 +702,8 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                    tag == "LINKED_ENTITY" || tag == "DURABILITY" ||
-                    tag == "COST" || tag == "REBORN" || tag == "DORMANT")
+                    tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
+                    tag == "DORMANT" || tag == "LAUNCHPAD")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);

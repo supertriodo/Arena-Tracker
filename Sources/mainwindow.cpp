@@ -5239,4 +5239,4 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-//Replay weapon bug
+//Remove cards on new version
