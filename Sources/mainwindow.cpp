@@ -5051,8 +5051,8 @@ void MainWindow::testDelay()
 //    Utility::checkMissingGoldenCards();
 //    QTimer::singleShot(15000, this, SLOT(testPopularList()));
 //    draftHandler->beginHeroDraft();
-//    QTimer::singleShot(1000, this, [=] () {
-//        draftHandler->beginDraft(Utility::classEnum2classLogNumber(DEATHKNIGHT), deckHandler->getDeckCardList());});
+   // QTimer::singleShot(10000, this, [=] () {
+   //     draftHandler->beginDraft(Utility::classEnum2classLogNumber(DRUID), deckHandler->getDeckCardList());});
 
 //    testArenaGames();
 //    testPlan();
