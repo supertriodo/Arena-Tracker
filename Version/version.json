@@ -1,8 +1,8 @@
 {
-	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06", "v25.06.01", "v25.06.02", "v25.07"],
+	"versionFree": ["v23.08","v23.08.01", "v23.09", "v23.09.01", "v23.11", "v24.01", "v24.03", "v24.05", "v24.07", "v24.09", "v24.10", "v25.01", "v25.06", "v25.06.01", "v25.06.02", "v25.07", "v25.07.01"],
 	"linuxStaticUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Linux.zip",
 	"linuxAppUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/ArenaTracker.Linux.AppImage",
 	"macUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Mac.zip",
 	"windowsUrl": "https://github.com/supertriodo/Arena-Tracker/releases/download/vx.x/Arena.Tracker.vx.x.Windows.zip",
-	"log": "AT updates for The Lost City of Un’Goro.<br><br>After readapting your deck in Underground Arena, AT will detect the removed cards — outlined in white in your deck tab — and remove them from your deck automatically.<br><br>Premium: When redrafting after a loss in Underground Arena, AT will display card scores in the deck tab for each card currently in your deck. It will also highlight the 5 weakest cards (per draft assistant HA/HSR), so you know which ones are the weakest links.<br><br>Premium: Leaderboard searches are working again for the new underground arena.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
+	"log": "Small changes and bug fixes.<br><br>More details on the <a href='https://github.com/supertriodo/Arena-Tracker/releases/tag/vx.x'>github</a>"
 }
