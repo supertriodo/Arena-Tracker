@@ -717,6 +717,7 @@ void PlanHandler::addMinionTagChange(const TagChange &tagChange, MinionGraphicsI
     {
         if(tagChange.value == "0")
         {
+            emit pDebug("REBORN lastTriggerId = " + QString::number(tagChange.id));
             this->lastTriggerId = tagChange.id;
         }
         return;
@@ -726,7 +727,8 @@ void PlanHandler::addMinionTagChange(const TagChange &tagChange, MinionGraphicsI
     bool healing = minion->processTagChange(tagChange.tag, tagChange.value);
     bool isDead = minion->isDead();
     bool isHero = false;
-    if(tagChange.tag == "ATK" || tagChange.tag == "EXHAUSTED" || tagChange.tag == "WINDFURY" || tagChange.tag == "FROZEN")
+    if(tagChange.tag == "ATK" || tagChange.tag == "EXHAUSTED" || tagChange.tag == "WINDFURY" || tagChange.tag == "FROZEN" ||
+        tagChange.tag == "RUSH" || tagChange.tag == "DORMANT" || tagChange.tag == "LAUNCHPAD")
     {
         updateMinionsAttack(tagChange.friendly);
     }
@@ -1969,7 +1971,11 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
 {
     if(blockType == "TRIGGER" || blockType == "JOUST")
     {
-        if(isLastTriggerValid(code))    this->lastTriggerId = id;
+        if(isLastTriggerValid(code))
+        {
+            emit pDebug("lastTriggerId = " + QString::number(id));
+            this->lastTriggerId = id;
+        }
         else
         {
             emit pDebug("Trigger creator code is in the forbidden list: " + code, Warning);
@@ -1989,7 +1995,8 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     }
     else if(blockType == "POWER")
     {
-        this->lastTriggerId = idTarget;
+        this->lastTriggerId = (idTarget!=-1?idTarget:id);
+        emit pDebug("lastTriggerId = " + QString::number(this->lastTriggerId));
 
         if(code.isEmpty())
         {
@@ -2004,6 +2011,7 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     }
     else if(blockType == "FATIGUE")
     {
+        emit pDebug("lastTriggerId reset.");
         this->lastTriggerId = -1;
         this->lastPowerAddon.code = "FATIGUE";
         this->lastPowerAddon.id = id;
@@ -2011,6 +2019,7 @@ void PlanHandler::setLastTriggerId(QString code, QString blockType, int id, int 
     }
     else
     {
+        emit pDebug("lastTriggerId reset.");
         this->lastTriggerId = -1;
         this->lastPowerAddon.id = -1;
     }

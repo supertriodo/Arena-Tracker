@@ -129,7 +129,8 @@ int MinionGraphicsItem::getAttack()
 
 int MinionGraphicsItem::getPotencialDamage(bool ignoreExausted)
 {
-    if(!ignoreExausted && (exausted || frozen))     return 0;
+    if(dormant || launchpad)                        return 0;
+    else if(!ignoreExausted && (exausted || frozen))return 0;
     else if(windfury)                               return attack*2;
     else                                            return attack;
 }
