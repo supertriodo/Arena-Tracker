@@ -581,7 +581,7 @@ void SecretsHandler::discardSecretOptionNow(const QString &code)
 
 void SecretsHandler::discardSecretOptionNow2(const QString &code)
 {
-    emit pDebug("Option discarded: " + code);
+    // emit pDebug("Option discarded: " + code);
 
     QList<CardClass> cardClass = Utility::getClassFromCode(code);
     for(QList<ActiveSecret>::iterator it = activeSecretList.begin(); it != activeSecretList.end(); it++)

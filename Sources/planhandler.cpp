@@ -1889,7 +1889,8 @@ void PlanHandler::newTurn(bool playerTurn, int numTurn)
             if(nowBoard->enemyHero != nullptr)  nowBoard->enemyHero->setResources(10);
         }
     }
-    pendingTagChanges.clear();
+    //Mantenemos todos los tag changes entre turnos, asi las mecanicas anadidas a cartas como dark gifts, se pueden poner en los minions al invocarlos turnos despues.
+    // pendingTagChanges.clear();
 
     //Store nowBoard
     turnBoards.append(copyBoard(nowBoard, numTurn));

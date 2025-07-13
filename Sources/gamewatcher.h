@@ -94,6 +94,7 @@ private:
     bool isCheatingCard(const QString &zoneFrom);
     QString getNamePreSharp(QString name);
     void emitEnemyName();
+    bool isTrackedTag(QString tag);
 
 public:
     void reset();

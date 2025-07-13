@@ -404,6 +404,7 @@ void GameWatcher::processPower(QString &line, qint64 numLine)
     }
 }
 
+
 void GameWatcher::processPowerHero(QString &line, qint64 numLine)
 {
     if(powerState == heroPower1State)
@@ -434,6 +435,7 @@ void GameWatcher::processPowerHero(QString &line, qint64 numLine)
         }
     }
 }
+
 
 void GameWatcher::processPowerMulligan(QString &line, qint64 numLine)
 {
@@ -570,7 +572,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(2);
 
         if  (tag == "ATK" || tag == "HEALTH" ||
-            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN"))
+            (lastShowEntity.trackAllTags && isTrackedTag(tag))
             )
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
@@ -662,13 +664,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                                 " -- Id: " + id, numLine);
                 emit forgeHandCard(id.toInt());
             }
-            else if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
-                    tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                    tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                    tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                    tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
-                    tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN")
+            else if(isTrackedTag(tag))
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
@@ -698,13 +694,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             Q_UNUSED(zone);
 
 
-            if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
-                    tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
-                    tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
-                    tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
-                    tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
-                    tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
-                    tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN")
+            if(isTrackedTag(tag))
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);
@@ -747,7 +737,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
-            lastShowEntity.trackAllTags = false;
+            lastShowEntity.trackAllTags = true;
         }
 
 
@@ -766,7 +756,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
             emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_ENTITY -- Id: " + id, numLine);
             lastShowEntity.id = id.toInt();
             lastShowEntity.isPlayer = isPlayer;
-            lastShowEntity.trackAllTags = false;
+            lastShowEntity.trackAllTags = true;
         }
 
 
@@ -951,6 +941,25 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                 }
             }
         }
+    }
+}
+
+
+bool GameWatcher::isTrackedTag(QString tag)
+{
+    if(tag == "DAMAGE" || tag == "ATK" || tag == "HEALTH" || tag == "EXHAUSTED" ||
+        tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
+        tag == "ARMOR" || tag == "FROZEN" || tag == "WINDFURY" || tag == "SILENCED" ||
+        tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
+        tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
+        tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
+        tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
