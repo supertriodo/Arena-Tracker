@@ -39,6 +39,7 @@ protected:
     bool addonsStacked;
     bool triggerMinion;
     bool aura;
+    bool locationClosed;
     QString zone;
     ValueChange changeAttack, changeHealth;
     GraphicsItemSender *graphicsItemSender;

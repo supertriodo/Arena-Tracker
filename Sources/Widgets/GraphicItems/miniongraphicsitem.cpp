@@ -34,6 +34,7 @@ MinionGraphicsItem::MinionGraphicsItem(MinionGraphicsItem *copy, bool triggerMin
     this->stealth = copy->stealth;
     this->dormant = copy->dormant;
     this->launchpad = copy->launchpad;
+    this->locationClosed = copy->locationClosed;
     this->frozen = copy->frozen;
     this->windfury = copy->windfury;
     this->charge = copy->charge;
@@ -84,11 +85,12 @@ void MinionGraphicsItem::initCode(QString code)
     this->stealth = false;
     this->dormant = false;
     this->launchpad = false;
+    this->locationClosed = false;
     this->frozen = false;
     this->windfury = false;
     this->charge = false;
     this->rush = false;
-    this->exausted = true;
+    this->exausted = !location;
     this->dead = false;
     this->toBeDestroyed = false;
     this->addonsStacked = false;
@@ -649,6 +651,10 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
         this->launchpad = (value=="1");
         this->exausted = launchpad;
     }
+    else if(tag == "LOCATION_ACTION_COOLDOWN")
+    {
+        this->locationClosed = (value=="1");
+    }
     else if(tag == "FROZEN")
     {
         this->frozen = (value=="1");
@@ -662,7 +668,7 @@ bool MinionGraphicsItem::processTagChange(QString tag, QString value)
         this->aura = (value=="1");
         return healing;
     }
-    else if (tag == "ZONE")
+    else if(tag == "ZONE")
     {
         this->zone = value;
         return healing;
@@ -685,7 +691,12 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     //Card background
     painter->setBrush(QBrush(QPixmap(Utility::hscardsPath() + "/" + this->code + ".png")));
     painter->setBrushOrigin(QPointF(100,191));
-    painter->drawEllipse(QPointF(0,0), 50, 68);
+
+    if(this->location)
+    {
+        if(!locationClosed) painter->drawEllipse(QPointF(0,0), 54, 64);
+    }
+    else                    painter->drawEllipse(QPointF(0,0), 50, 68);
 
     //Stealth
     if(this->stealth)
@@ -707,14 +718,21 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
         return;
     }
 
-    //Taunt/Frozen/Minion template
-    bool glow = (!exausted && !frozen && (playerTurn==friendly) && attack>0);
+    //Taunt/Frozen/Location/Minion template
+    bool glow = (!exausted && !frozen && (playerTurn==friendly) && (attack>0 || location));
     if(this->taunt)
     {
         painter->drawPixmap(-70, -96, QPixmap(":Images/bgMinionTaunt" + QString(glow?"Glow":"Simple") + ".png"));
 
         if(this->frozen)        painter->drawPixmap(-76, -82, QPixmap(":Images/bgMinionFrozen.png"));
         else                    painter->drawPixmap(-70, -80, QPixmap(":Images/bgMinionSimple.png"));
+    }
+    else if(this->location)
+    {
+        if(locationClosed)  painter->drawPixmap(-74, -84, QPixmap(":Images/bgLocationClosed.png"));
+        else if(glow)       painter->drawPixmap(-74, -84, QPixmap(":Images/bgLocationGlow.png"));
+        else if(exausted)   painter->drawPixmap(-74, -84, QPixmap(":Images/bgLocationOpening.png"));
+        else                painter->drawPixmap(-74, -84, QPixmap(":Images/bgLocationSimple.png"));//Ready on opponent turn
     }
     else
     {
@@ -742,7 +760,7 @@ void MinionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if(attack>origAttack)   painter->setBrush(GREEN);
     else                    painter->setBrush(WHITE);
     QString text = QString::number(attack);
-    Utility::drawShadowText(*painter, font, text, -35, 46, true);
+    if(!location)   Utility::drawShadowText(*painter, font, text, -35, 46, true);
 
     if(damage>0)                painter->setBrush(RED);
     else if(health>origHealth)  painter->setBrush(GREEN);

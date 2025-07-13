@@ -4664,7 +4664,8 @@ void MainWindow::testPlan()
     planHandler->playerMinionZonePlayAdd("CFM_325", 7, 1);
     planHandler->playerMinionZonePlayAdd("TSC_007", 8, 1);
     planHandler->playerBoardTagChange(8, "TSC_007", "DORMANT", "1");
-    planHandler->enemyMinionZonePlayAdd("REV_333", 9, 1);
+    planHandler->playerMinionZonePlayAdd("REV_333", 9, 1);
+    // planHandler->playerBoardTagChange(8, "TSC_007", "DORMANT", "1");
     planHandler->enemyMinionZonePlayAdd("EX1_020", 4, 1);
     planHandler->enemyMinionZonePlayAdd(FLAMEWAKER, 7, 1);
     planHandler->playerHeroZonePlayAdd("HERO_08", 11);
@@ -5048,15 +5049,15 @@ void MainWindow::testDelay()
 
     // QTimer::singleShot(20000, this, [=] () {testSecretsHSR(arena); }); //320) lang = "enUS";
     // Utility::mergeHSRwithFireCards();
-//    Utility::checkMissingGoldenCards();
-//    QTimer::singleShot(15000, this, SLOT(testPopularList()));
-//    draftHandler->beginHeroDraft();
-   // QTimer::singleShot(10000, this, [=] () {
-   //     draftHandler->beginDraft(Utility::classEnum2classLogNumber(DRUID), deckHandler->getDeckCardList());});
+    // Utility::checkMissingGoldenCards();
+    // QTimer::singleShot(15000, this, SLOT(testPopularList()));
+    // draftHandler->beginHeroDraft();
+    // QTimer::singleShot(10000, this, [=] () {
+    //    draftHandler->beginDraft(Utility::classEnum2classLogNumber(DRUID), deckHandler->getDeckCardList());});
 
-//    testArenaGames();
-//    testPlan();
-//    testEnemyHand();
+    // testArenaGames();
+    // testPlan();
+    // testEnemyHand();
 }
 
 
@@ -5239,4 +5240,4 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
-//Replay bugs
+

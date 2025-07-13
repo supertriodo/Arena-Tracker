@@ -176,5 +176,9 @@
         <file>Images/bgLeaderboard.png</file>
         <file>Images/bgDraftMechanicsReenter.png</file>
         <file>Images/bgMinionStarship.png</file>
+        <file>Images/bgLocationGlow.png</file>
+        <file>Images/bgLocationSimple.png</file>
+        <file>Images/bgLocationOpening.png</file>
+        <file>Images/bgLocationClosed.png</file>
     </qresource>
 </RCC>

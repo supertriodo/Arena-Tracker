@@ -728,7 +728,7 @@ void PlanHandler::addMinionTagChange(const TagChange &tagChange, MinionGraphicsI
     bool isDead = minion->isDead();
     bool isHero = false;
     if(tagChange.tag == "ATK" || tagChange.tag == "EXHAUSTED" || tagChange.tag == "WINDFURY" || tagChange.tag == "FROZEN" ||
-        tagChange.tag == "RUSH" || tagChange.tag == "DORMANT" || tagChange.tag == "LAUNCHPAD")
+        tagChange.tag == "RUSH" || tagChange.tag == "DORMANT" || tagChange.tag == "LAUNCHPAD" || tagChange.tag == "LOCATION_ACTION_COOLDOWN")
     {
         updateMinionsAttack(tagChange.friendly);
     }

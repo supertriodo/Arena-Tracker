@@ -570,7 +570,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         QString value = match->captured(2);
 
         if  (tag == "ATK" || tag == "HEALTH" ||
-            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT" || tag == "LAUNCHPAD"))
+            (lastShowEntity.trackAllTags && (tag == "DAMAGE" || tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN"))
             )
         {
             emit pDebug((lastShowEntity.isPlayer?QString("Player"):QString("Enemy")) + ": SHOW_TAG(" + tag + ")= " + value, numLine);
@@ -583,6 +583,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
         //Tag avanzados para CHANGE_ENTITY - Updating Entity=
         //No son necesarios ya que al hacer el update entity emit minionCodeChange que cambiara
         //el codigo del minion leyendo del json todos sus atributos correctos.
+        //Si ponemos tags que no aparezcan en mechanics en el json como DORMANT, LAUNCHPAD, LOCATION_ACTION_COOLDOWN
 //                    || (lastShowEntity.trackAllTags && (tag == "DAMAGE" || /*tag == "EXHAUSTED" ||*/
 //                     tag == "DIVINE_SHIELD" || tag == "STEALTH" || tag == "TAUNT" || tag == "CHARGE" || tag == "RUSH" ||
 //                     tag == "FROZEN" || tag == "WINDFURY" || tag == "AURA"))
@@ -667,7 +668,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
                     tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
-                    tag == "DORMANT" || tag == "LAUNCHPAD")
+                    tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")= " + value +
                             " -- Id: " + id, numLine);
@@ -703,7 +704,7 @@ void GameWatcher::processPowerInGame(QString &line, qint64 numLine)
                     tag == "CONTROLLER" || tag == "TO_BE_DESTROYED" || tag == "AURA" ||
                     tag == "CANT_BE_DAMAGED" || tag == "SHOULDEXITCOMBAT" || tag == "ZONE" ||
                     tag == "LINKED_ENTITY" || tag == "DURABILITY" || tag == "COST" || tag == "REBORN" ||
-                    tag == "DORMANT" || tag == "LAUNCHPAD")
+                    tag == "DORMANT" || tag == "LAUNCHPAD" || tag == "LOCATION_ACTION_COOLDOWN")
             {
                 emit pDebug((isPlayer?QString("Player"):QString("Enemy")) + ": MINION/CARD TAG_CHANGE(" + tag + ")=" + value +
                             " -- " + name + " -- Id: " + id, numLine);
