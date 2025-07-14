@@ -34,6 +34,8 @@ private:
     bool showingHelp, showDrops;
     DraftMethod draftMethodAvgScore;
     QGridLayout *mechanicsLayout;
+    //Track el estado hidden/shown antes de mostrar ayuda reenter para dejarla igual al llamar a hideHelp()
+    bool hiddenBeforeReenter;
 
 //Metodos
 private:

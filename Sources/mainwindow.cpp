@@ -2364,7 +2364,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
                 graveyardWindow->resize(QSize(graveyardWindow->width(), 800));
                 graveyardWindow->move(1920+1080, 0);
 
-                this->resize(QSize(300, 400));
+                this->resize(QSize(300, 800));
                 this->move(1920+1080+graveyardWindow->width(), 0);
             }
 #endif
@@ -5240,4 +5240,18 @@ void MainWindow::testDelay()
 
 //TODO
 //Deathrattle cost sinergy
+//TEST
+//TESTED No prem - Pick bundle and 1 - dissapear
+//Prem - Hidden - Pick bundle and 1 - dissapear
+//Prem - Shown - Pick bundle and 1 - show
+
+
+
+
+
+
+
+
+
+
 

@@ -108,19 +108,19 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     scoresLayout->addWidget(scoreButtonHA);
     scoresLayout->addWidget(scoreButtonHSR);
 
-    //Patreon
-    if(!patreonVersion)
-    {
-        QPushButton *patreonButton = new QPushButton(centralWidget);
-        patreonButton->setFlat(true);
-        patreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
-        patreonButton->setIconSize(QSize(217, 51));
-        patreonButton->setToolTip("Unlock Synergies and draft mechanics becoming a patron (3€)");
-        scoresLayout->addWidget(patreonButton);
+    //Patreon - Desactivado para mostrar reenter message para no premiums
+    // if(!patreonVersion)
+    // {
+    //     QPushButton *patreonButton = new QPushButton(centralWidget);
+    //     patreonButton->setFlat(true);
+    //     patreonButton->setIcon(QIcon(":/Images/becomePatreon.png"));
+    //     patreonButton->setIconSize(QSize(217, 51));
+    //     patreonButton->setToolTip("Unlock Synergies and draft mechanics becoming a patron (3€)");
+    //     scoresLayout->addWidget(patreonButton);
 
-        connect(patreonButton, SIGNAL(clicked()),
-                this, SIGNAL(showPremiumDialog()));
-    }
+    //     connect(patreonButton, SIGNAL(clicked()),
+    //             this, SIGNAL(showPremiumDialog()));
+    // }
 
     //Mechanics & drops
     mechanicsLayout = new QGridLayout();
@@ -336,12 +336,19 @@ void DraftMechanicsWindow::showHelpReenter()
 void DraftMechanicsWindow::showHelp(bool reenter)
 {
     showingHelp = true;
+    hiddenBeforeReenter = false;
 
     if(reenter)
     {
         centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
                                        ThemeHandler::bgDraftMechanicsReenterFile() +
                                        ") 0 0 0 0 stretch stretch;border-width: 0px;}");
+        //Mostramos reenter message para TODOS: no premium y si mechanics overlay esta desactivado en config tab
+        if(isHidden())
+        {
+            this->hiddenBeforeReenter = true;
+            this->show();
+        }
     }
     else
     {
@@ -377,6 +384,13 @@ void DraftMechanicsWindow::showHelp(bool reenter)
 
 void DraftMechanicsWindow::hideHelp()
 {
+    if(!patreonVersion || hiddenBeforeReenter)
+    {
+        this->hiddenBeforeReenter = false;
+        this->hide();
+        return;
+    }
+
     showingHelp = false;
     centralWidget()->setStyleSheet(".QWidget{border-image: url(" +
                                    ThemeHandler::bgDraftMechanicsFile() +
