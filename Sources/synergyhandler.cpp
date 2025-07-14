@@ -2045,7 +2045,7 @@ void SynergyHandler::testSynergies(const QString &miniSet)
     initSynergyCodes(true);
     int num = 0;
 
-    for(QString &code: (QStringList)Utility::getSetCodes("THE_LOST_CITY", true, true))
+    for(QString &code: (QStringList)Utility::getSetCodes("SPACE", true, false))
    // for(QString &code: (QStringList)Utility::getSetCodesSpecific("TREASURES"))
    // for(QString &code: (QStringList)Utility::getStandardCodes())
    // for(QString &code: (QStringList)Utility::getWildCodes())
@@ -2064,7 +2064,8 @@ void SynergyHandler::testSynergies(const QString &miniSet)
             QJsonArray mechanics = Utility::getCardAttribute(code, "mechanics").toArray();
             QJsonArray referencedTags = Utility::getCardAttribute(code, "referencedTags").toArray();
             if(
-                containsAll(text, "deck didn't start")
+                    isStarshipGen(code)// && !isStarship(code, mechanics)&&
+                // containsAll(text, "starship")
                 // text.contains("kindred")
 //                mechanics.contains(QJsonValue("MAGNETIC"))
 //                referencedTags.contains(QJsonValue("CHOOSE_ONE"))
