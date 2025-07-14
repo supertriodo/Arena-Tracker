@@ -351,17 +351,17 @@ void MainWindow::replyFinished(QNetworkReply *reply)
     {
         pDebug(reply->url().toString() + " --> Failed. Retrying...");
 
-        if(fullUrl == HSR_CARDS_PATCH)
+        if(fullUrl == HSR_CARDS_14DAYS)
         {
             pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_EXP));
             networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_EXP)));
         }
         else if(fullUrl == HSR_CARDS_EXP)
         {
-            pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
-            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
+            pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
+            networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
         }
-        else if(fullUrl == HSR_CARDS_14DAYS)
+        else if(fullUrl == HSR_CARDS_PATCH)
         {
             localHSRCards();
         }
@@ -777,8 +777,8 @@ void MainWindow::initHSRCards()
     }
     else
     {
-        pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_PATCH));
-        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_PATCH)));
+        pDebug("Extra: HSR cards --> Download from: " + QString(HSR_CARDS_14DAYS));
+        networkManager->get(QNetworkRequest(QUrl(HSR_CARDS_14DAYS)));
     }
 }
 
