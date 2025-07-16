@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "Sources/winratesdownloader.h"
 #include "detachwindow.h"
 #include "logloader.h"
 #include "gamewatcher.h"
-#include "Cards/deckcard.h"
 #include "hscarddownloader.h"
 #include "enemydeckhandler.h"
 #include "graveyardhandler.h"
@@ -33,10 +33,6 @@
 #define HSR_CARDS_URL "https://api.hearthstonejson.com/v1/latest/all/cards.json"
 #define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist"
 //#define HEARTHARENA_TIERLIST_URL "https://www.heartharena.com/tierlist/preview" //Problematico, mejor evitar
-#define HSR_HEROES_WINRATE "https://hsreplay.net/api/v1/analytics/query/player_class_performance_summary/"
-#define HSR_CARDS_PATCH "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_PATCH"
-#define HSR_CARDS_EXP "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_EXPANSION"
-#define HSR_CARDS_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=ARENA&TimeRange=LAST_14_DAYS"
 #define EXTRA_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Extra"
 #define IMAGES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Images"
 #define THEMES_URL "https://raw.githubusercontent.com/supertriodo/Arena-Tracker/master/Themes"
@@ -72,6 +68,7 @@ private:
     LogLoader *logLoader;
     GameWatcher *gameWatcher;
     HSCardDownloader *cardDownloader;
+    WinratesDownloader *winratesDownloader;
     EnemyDeckHandler *enemyDeckHandler;
     GraveyardHandler *graveyardHandler;
     DrawCardHandler *drawCardHandler;
@@ -103,15 +100,6 @@ private:
     //o haya una nueva version de tier list (rotacion sets)
     //Si es necesario tambien se reconstruira el string de sets activos en arena "arenaSets" que se usa para saber que secretos mostrar
     bool cardsJsonLoaded, arenaSetsLoaded, allCardsDownloadNeeded;
-    QMap<QString, float> *cardsPickratesMap;
-    QMap<QString, float> *cardsIncludedWinratesMap;
-    QMap<QString, int> *cardsIncludedDecksMap;
-    QMap<QString, float> *cardsPlayedWinratesMap;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPickrates;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsIncludedWinrates;
-    QFutureWatcher<QMap<QString, int> *> futureProcessHSRCardsIncludedDecks;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayedWinrates;
-    int HSRdataThreads;
 
 
 
@@ -126,6 +114,7 @@ private:
     void createCardWindow();
     void createCardListWindow();
     void createCardDownloader();
+    void createWinratesDownloader();
     void createEnemyDeckHandler();
     void createGraveyardHandler();
     void createDrawCardHandler();
@@ -211,21 +200,14 @@ private:
     void downloadSynergiesJson(int version);
     void updateTabIcons();
     void initHSRHeroesWinrate();
-    void localHSRHeroesWinrate();
-    void processHSRHeroesWinrate(const QJsonObject &jsonObject);
     void deleteTwitchTester();
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
-    void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap, bool trunk=false);
-    void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
     void initHSRCards();
-    void localHSRCards();
-    void startProcessHSRCards(const QJsonObject &jsonObject);
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html="");
     void initConfigAvgScore(QString draftAvg);
-    void showHSRdataProgressBar();
     void setWantedMechanic(uint mechanicIcon, bool value);
     void initWantedMechanics(bool wantedMechanics[]);
     void downloadCardsJsonVersion();
@@ -333,7 +315,7 @@ private slots:
     void twitchTesterConnectionOk(bool ok, bool setup = true);
     void updateTwitchChatVotes(bool checked);
     void configureTwitchDialogs();
-    void processPopularCardsHandlerPickrates();
+    void processPopularCardsHandlerPickrates(QMap<QString, float> *hsrPickratesMap);
     void openUserGuide();
     void spreadDraftMethod();
     void spreadDraftAvg(QString draftAvg);
@@ -353,6 +335,10 @@ private slots:
     void updateAoe(bool checked);
     void newDeckCardDraft(QString code);
     void leaveArena();
+    void readyHSRPickratesMap(QMap<QString, float> *hsrPickratesMap);
+    void readyHSRWRMap(QMap<QString, float> *hsrWRMap);
+    void readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap);
+    void readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap);
 };
 
 #endif // MAINWINDOW_H
