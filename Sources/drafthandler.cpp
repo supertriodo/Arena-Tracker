@@ -2828,7 +2828,7 @@ void DraftHandler::showHSRwebPicks()
 {
     QString url = "https://hsreplay.net/cards/#playerClass=";
     url += Utility::classEnum2classUName(this->arenaHero);
-    url += "&gameType=ARENA&text=";
+    url += "&gameType=UNDERGROUND_ARENA&timeRange=LAST_14_DAYS&text=";
     url += draftCards[0].getName() + ',' + draftCards[1].getName() + ',' + draftCards[2].getName();
 
     QDesktopServices::openUrl(QUrl(url));
