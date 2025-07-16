@@ -1,6 +1,7 @@
 #ifndef ENEMYDECKHANDLER_H
 #define ENEMYDECKHANDLER_H
 
+#include "Sources/Cards/deckcard.h"
 #include "Widgets/ui_extended.h"
 #include <QObject>
 #include <QMap>

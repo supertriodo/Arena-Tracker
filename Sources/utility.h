@@ -1,10 +1,10 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include "Cards/deckcard.h"
 #include "opencv2/opencv.hpp"
 #include "Utils/libzippp.h"
 #include <QString>
+#include <QLayout>
 #include <QMap>
 #include <QJsonObject>
 #include <QUrlQuery>
@@ -31,9 +31,29 @@ enum DebugLevel { Normal, Warning, Error };
 enum Transparency { Transparent, AutoTransparent, Opaque, Framed };
 enum LoadingScreenState { menu, arena, ranked, adventure, tavernBrawl, friendly, gameMode, unknown };
 enum LogComponent { logLoadingScreen, logArena, logPower, logZone, logAsset, logInvalid };
-enum DraftMethod { HearthArena, LightForge, HSReplay, None };
-enum ScoreSource { Score_HearthArena, Score_LightForge, Score_Heroes, Score_HSReplay, Score_Heroes_Player, Score_None };
+enum DraftMethod { HearthArena, FireStone, HSReplay, None };
+enum ScoreSource { Score_HearthArena, Score_Fire, Score_Heroes, Score_HSReplay, Score_Heroes_Player, Score_None };
 enum MechanicBorderColor { MechanicBorderRed, MechanicBorderGrey, MechanicBorderGreen };
+
+
+//DeckCard
+//Usamos sus numeros para comparacion con rarity template en DraftHandler::reviewBestCards()
+enum CardRarity {COMMON=0, RARE=1, EPIC=2, LEGENDARY=3, FREE, INVALID_RARITY};
+//Nuevos CardType revisar SynergyHandler::updateCardTypeCounters
+enum CardType {INVALID_TYPE, HERO, MINION, SPELL, WEAPON, HERO_POWER, LOCATION};
+//New race step
+enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,
+                WORGEN, GOBLIN2, MURLOC, DEMON, SCOURGE, MECHANICAL, ELEMENTAL, OGRE, BEAST, TOTEM, NERUBIAN, PIRATE,
+                DRAGON, BLANK, ALL, EGG, QUILBOAR, CENTAUR, FURBOLG, HIGHELF, TREANT, OWLKIN, HALFORC, LOCK, NAGA, OLDGOD,
+                PANDAREN, GRONN};
+//Nuevos CardSchool revisar SynergyCard::setSchoolTag()
+enum CardSchool {INVALID_SCHOOL, NONE, ARCANE, FEL, FIRE, FROST, HOLY, SHADOW, NATURE, PHYSICAL_COMBAT};
+//--------------------------------------------------------
+//----NEW HERO CLASS
+//--------------------------------------------------------
+enum CardClass {DEATHKNIGHT, DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
+                 NUM_HEROS, INVALID_CLASS, NEUTRAL};
+
 
 //New race step
 enum VisibleRace {V_MURLOC, V_DEMON, V_MECHANICAL, V_ELEMENTAL, V_BEAST, V_TOTEM, V_PIRATE, V_DRAGON, V_NAGA, V_UNDEAD, V_QUILBOAR, V_DRAENEI,

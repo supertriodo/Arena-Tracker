@@ -1,6 +1,7 @@
 #include "miniongraphicsitem.h"
 #include "../../utility.h"
 #include "../../themehandler.h"
+#include "Sources/constants.h"
 #include <QtWidgets>
 
 MinionGraphicsItem::MinionGraphicsItem(QString code, int id, bool friendly, bool playerTurn, GraphicsItemSender *graphicsItemSender)

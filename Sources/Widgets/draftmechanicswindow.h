@@ -25,7 +25,7 @@ public:
 private:
     bool patreonVersion;
     LavaButton *lavaButton;
-    ScoreButton *scoreButtonLF, *scoreButtonHA, *scoreButtonHSR;
+    ScoreButton *scoreButtonFire, *scoreButtonHA, *scoreButtonHSR;
     HoverLabel *helpMark;
     DraftItemCounter **cardTypeCounters, **mechanicCounters;
     DraftItemCounter *manaCounter;
@@ -47,7 +47,7 @@ private:
 public:
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setShowDrops(bool value);
-    void setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR);
+    void setScores(int deckScoreHA, float deckScoreFire, float deckScoreHSR);
     void updateCounters(QMap<QString, QString> &spellMap, QMap<QString, QString> &minionMap, QMap<QString, QString> &weaponMap,
                         QMap<QString, QString> &drop2Map, QMap<QString, QString> &drop3Map, QMap<QString, QString> &drop4Map,
                         QMap<QString, QString> &aoeMap, QMap<QString, QString> &tauntMap,

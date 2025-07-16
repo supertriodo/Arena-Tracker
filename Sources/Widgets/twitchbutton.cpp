@@ -1,5 +1,6 @@
 #include "twitchbutton.h"
 #include "../themehandler.h"
+#include "Sources/constants.h"
 #include <QtWidgets>
 
 TwitchButton::TwitchButton(QWidget *parent, float min, float max) : QLabel(parent)

@@ -1,4 +1,5 @@
 #include "utility.h"
+#include "constants.h"
 #include "themehandler.h"
 #include <QtWidgets>
 #include "opencv2/opencv.hpp"

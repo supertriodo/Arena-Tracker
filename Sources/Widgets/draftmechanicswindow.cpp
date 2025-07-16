@@ -84,11 +84,11 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
     lavaButton->setFixedWidth(scoreWidth);
     lavaButton->setToolTip("Deck weight");
 
-    scoreButtonLF = new ScoreButton(centralWidget, Score_LightForge, -1);
-    scoreButtonLF->setFixedHeight(scoreWidth);
-    scoreButtonLF->setFixedWidth(scoreWidth);
-    scoreButtonLF->setScore(0, 0);
-    scoreButtonLF->setToolTip("LightForge deck average");
+    scoreButtonFire = new ScoreButton(centralWidget, Score_Fire, classOrder);
+    scoreButtonFire->setFixedHeight(scoreWidth);
+    scoreButtonFire->setFixedWidth(scoreWidth);
+    scoreButtonFire->setScore(0, 0);
+    scoreButtonFire->setToolTip("Firestone winrate deck average");
 
     scoreButtonHA = new ScoreButton(centralWidget, Score_HearthArena, -1);
     scoreButtonHA->setFixedHeight(scoreWidth);
@@ -104,7 +104,7 @@ DraftMechanicsWindow::DraftMechanicsWindow(QWidget *parent, QRect rect, QSize si
 
     QHBoxLayout *scoresLayout = new QHBoxLayout();
     scoresLayout->addWidget(lavaButton);
-    scoresLayout->addWidget(scoreButtonLF);
+    scoresLayout->addWidget(scoreButtonFire);
     scoresLayout->addWidget(scoreButtonHA);
     scoresLayout->addWidget(scoreButtonHSR);
 
@@ -226,7 +226,7 @@ DraftMechanicsWindow::~DraftMechanicsWindow()
     deleteDraftItemCounters();
     delete lavaButton;
     delete scoreButtonHA;
-    delete scoreButtonLF;
+    delete scoreButtonFire;
     delete scoreButtonHSR;
     delete helpMark;
 }
@@ -290,14 +290,14 @@ void DraftMechanicsWindow::setDraftMethodAvgScore(DraftMethod draftMethodAvgScor
     this->draftMethodAvgScore = draftMethodAvgScore;
     if(showingHelp) return;
 
-    scoreButtonLF->hide();
+    scoreButtonFire->hide();
     scoreButtonHA->hide();
     scoreButtonHSR->hide();
 
     switch(draftMethodAvgScore)
     {
-        case LightForge:
-            scoreButtonLF->show();
+        case FireStone:
+            scoreButtonFire->show();
         break;
         case HearthArena:
             scoreButtonHA->show();
@@ -319,9 +319,9 @@ void DraftMechanicsWindow::setShowDrops(bool value)
 }
 
 
-void DraftMechanicsWindow::setScores(int deckScoreHA, int deckScoreLF, float deckScoreHSR)
+void DraftMechanicsWindow::setScores(int deckScoreHA, float deckScoreFire, float deckScoreHSR)
 {
-    scoreButtonLF->setScore(deckScoreLF, deckScoreLF);
+    scoreButtonFire->setScore(deckScoreFire, deckScoreFire);
     scoreButtonHA->setScore(deckScoreHA, deckScoreHA);
     scoreButtonHSR->setScore(deckScoreHSR, deckScoreHSR);
 }
@@ -356,7 +356,7 @@ void DraftMechanicsWindow::showHelp(bool reenter)
                                      (showDrops?ThemeHandler::bgDraftMechanicsHelpDropsFile():ThemeHandler::bgDraftMechanicsHelpFile()) +
                                      ") 0 0 0 0 stretch stretch;border-width: 0px;}");
     }
-    scoreButtonLF->hide();
+    scoreButtonFire->hide();
     scoreButtonHA->hide();
     scoreButtonHSR->hide();
     lavaButton->hide();

@@ -5,7 +5,7 @@
 #include <QLabel>
 #include "../utility.h"
 
-#define MIN_HSR_DECKS 1000
+#define MIN_HSR_DECKS 2000
 
 class ScoreButton : public QLabel
 {
@@ -29,7 +29,7 @@ private:
 
 //Metodos
 private:
-    void getScoreColor(int &r, int &g, int &b, float score);
+    void getScoreColor(int &r, int &g, int &b, float score, ScoreSource scoreSource);
     void drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont=false);
 
 protected:
@@ -45,8 +45,8 @@ public:
     void setLearningShow(bool value);
     void draw();
 
-    static QPixmap scorePixmap(ScoreSource scoreSource, float score, int size=80, int classOrder=-1, int includedDecks=0);
-    static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80);
+    static QPixmap scorePixmap(ScoreSource scoreSource, float score, bool useWideHeroesColor, int size=80, int classOrder=-1, int includedDecks=-1);
+    static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80, bool useWideHeroesColor=true);
     static void setHeroScores(float heroScores[]);
     static void setPlayerRuns(int playerRuns[]);
     static void setPlayerWins(int playerWins[]);

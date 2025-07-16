@@ -1445,7 +1445,7 @@ draft mechanics becoming a patron (3€).</string>
                <x>0</x>
                <y>0</y>
                <width>435</width>
-               <height>1028</height>
+               <height>993</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2070,10 +2070,10 @@ when the opponent plays a secret.</string>
                         <item>
                          <widget class="QCheckBox" name="configCheckLF">
                           <property name="toolTip">
-                           <string>LightForge Tier Score</string>
+                           <string>Firestone Winrates</string>
                           </property>
                           <property name="text">
-                           <string>LightForge</string>
+                           <string>Firestone</string>
                           </property>
                          </widget>
                         </item>

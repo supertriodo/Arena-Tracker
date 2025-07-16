@@ -89,7 +89,7 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         verLayout[i]->addLayout(horLayoutWarn2);
 
         //Scores
-        scoresPushButton[i] = new ScoreButton(centralWidget, Score_LightForge, -1);
+        scoresPushButton[i] = new ScoreButton(centralWidget, Score_Fire, classOrder);
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         scoresPushButton[i]->hide();
@@ -357,9 +357,9 @@ void DraftScoreWindow::setScores(float rating1, float rating2, float rating3,
 
     for(int i=0; i<3; i++)
     {
-        if(draftMethod == LightForge)
+        if(draftMethod == FireStone)
         {
-            scoresPushButton[i]->setScore(ratings[i], bestRating);
+            scoresPushButton[i]->setScore(ratings[i], bestRating, includedDecks[i]);
             if(!onWarnMode[i])  Utility::fadeInWidget(scoresPushButton[i]);
         }
         else if(draftMethod == HSReplay)

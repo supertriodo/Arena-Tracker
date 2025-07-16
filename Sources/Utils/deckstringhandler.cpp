@@ -1,5 +1,6 @@
 #include "deckstringhandler.h"
 #include "../utility.h"
+#include "Sources/Cards/deckcard.h"
 #include <QtWidgets>
 
 

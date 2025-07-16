@@ -13,6 +13,7 @@
 #define BLUE QColor(0,191,255)
 #define VIOLET QColor(186,85,211)
 #define ORANGE QColor(255,165,0)
+#define DARK_ORANGE QColor(180,85,0)
 
 //Fuentes
 #define HS_FONT "Belwe Bd BT"

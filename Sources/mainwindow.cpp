@@ -746,6 +746,7 @@ void MainWindow::initHSRCards()
             pDebug("Extra: HSR cards (IncludedWinrate) --> Thread end.");
             this->cardsIncludedWinratesMap = futureProcessHSRCardsIncludedWinrates.result();
             draftHandler->setCardsIncludedWinratesMap(cardsIncludedWinratesMap);
+            draftHandler->setFireWRMap(cardsIncludedWinratesMap);//TODO remove
             showHSRdataProgressBar();
         }
     );
@@ -756,6 +757,7 @@ void MainWindow::initHSRCards()
             pDebug("Extra: HSR cards (TimesPlayed) --> Thread end.");
             this->cardsIncludedDecksMap = futureProcessHSRCardsIncludedDecks.result();
             draftHandler->setCardsIncludedDecksMap(cardsIncludedDecksMap);
+            draftHandler->setFireSamplesMap(cardsIncludedDecksMap);//TODO remove
             showHSRdataProgressBar();
         }
     );
@@ -1028,8 +1030,8 @@ void MainWindow::createDraftHandler()
 
     connect(draftHandler, SIGNAL(draftEnded(QString)),
             arenaHandler, SLOT(newArena(QString)));
-    connect(draftHandler, SIGNAL(scoreAvg(int,float,QString)),
-            arenaHandler, SLOT(setCurrentAvgScore(int,float,QString)));
+    connect(draftHandler, SIGNAL(scoreAvg(int,float,float,QString)),
+            arenaHandler, SLOT(setCurrentAvgScore(int,float,float,QString)));
 
     //Connect en logLoader
 //    connect(draftHandler, SIGNAL(draftEnded()),
@@ -1639,11 +1641,13 @@ void MainWindow::newGameResult(GameResult gameResult, LoadingScreenState loading
 {
     int deckScoreHA = 0;
     float deckScoreHSR = 0;
+    float deckScoreFire = 0;
     if(loadingScreen == arena)
     {
         int numCards=0;
         int totalHA=0;
         float totalHSR=0;
+        float totalFire=0;
         CardClass enemyClass = enemyDeckHandler->getEnemyClass();
         draftHandler->initTierLists(enemyClass);
         for(DeckCard &deckCard: enemyDeckHandler->getDeckCardList())
@@ -1654,13 +1658,14 @@ void MainWindow::newGameResult(GameResult gameResult, LoadingScreenState loading
                 if(!code.isEmpty())
                 {
                     int ha;
-                    float hsr;
-                    draftHandler->getCodeScores(enemyClass, code, ha, hsr);
-                    if(ha!=0 && hsr!=0)
+                    float hsr, fire;
+                    draftHandler->getCodeScores(enemyClass, code, ha, hsr, fire);
+                    if(ha!=0 && hsr!=0 && fire!=0)
                     {
                         numCards += deckCard.total;
                         totalHA += ha * deckCard.total;
                         totalHSR += hsr * deckCard.total;
+                        totalFire += fire * deckCard.total;
                     }
                 }
             }
@@ -1668,11 +1673,12 @@ void MainWindow::newGameResult(GameResult gameResult, LoadingScreenState loading
 
         deckScoreHA = (numCards==0)?0:static_cast<int>(round(totalHA/static_cast<double>(numCards)));
         deckScoreHSR = (numCards==0)?0:static_cast<float>(round(static_cast<double>(totalHSR/numCards * 10))/10.0);
+        deckScoreFire = (numCards==0)?0:static_cast<float>(round(static_cast<double>(totalFire/numCards * 10))/10.0);
         draftHandler->clearTierLists();
         pDebug("Enemy deck: " + QString::number(numCards) + " cards - HA(" + QString::number(deckScoreHA) +
-               ") - HSR(" + QString::number(deckScoreHSR) + ")");
+               ") - HSR(" + QString::number(deckScoreHSR) + ") - Fire(" + QString::number(deckScoreFire) + ")");
     }
-    arenaHandler->newGameResult(gameResult, loadingScreen, deckScoreHA, deckScoreHSR);
+    arenaHandler->newGameResult(gameResult, loadingScreen, deckScoreHA, deckScoreHSR, deckScoreFire);
 }
 
 
@@ -1999,7 +2005,7 @@ void MainWindow::readSettings()
     bool draftShowDrops = settings.value("draftShowDrops", true).toBool();
     QString draftAvg = settings.value("draftAvg", "HSReplay").toString();
     bool draftMethodHA = settings.value("draftMethodHA", true).toBool();
-    bool draftMethodLF = false;//settings.value("draftMethodLF", true).toBool();
+    bool draftMethodLF = settings.value("draftMethodLF", true).toBool();
     bool draftMethodHSR = settings.value("draftMethodHSR", true).toBool();
     int tooltipScale = settings.value("tooltipScale", 10).toInt();
     bool autoSize = false;//settings.value("autoSize", false).toBool();//Disable autoSize
@@ -4024,7 +4030,7 @@ DraftMethod MainWindow::draftMethodFromString(QString draftAvg)
 {
     if(draftAvg == "HSReplay")          return HSReplay;
     else if(draftAvg == "HearthArena")  return HearthArena;
-    else if(draftAvg == "LightForge")   return LightForge;
+    else if(draftAvg == "FireStone")    return FireStone;
     return None;
 }
 
@@ -4063,7 +4069,7 @@ void MainWindow::completeConfigComboTheme()
 
 void MainWindow::completeConfigComboAvg()
 {
-//    ui->configComboDraftAvg->addItem("LightForge");
+    ui->configComboDraftAvg->addItem("FireStone");
     ui->configComboDraftAvg->addItem("HSReplay");
     ui->configComboDraftAvg->addItem("HearthArena");
 
@@ -4169,7 +4175,6 @@ void MainWindow::completeConfigTab()
     ui->configBoxDraftMechanics->hide();
     ui->configCheckMechanicsOverlay->hide();
     ui->configCheckShowDrops->hide();
-    ui->configCheckLF->hide();//Disable lightforge
     ui->configLabelDraftAvg->hide();
     ui->configComboDraftAvg->hide();
     ui->configCheckWR->hide();

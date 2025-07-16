@@ -1,5 +1,6 @@
 #include "scorebutton.h"
 #include "../themehandler.h"
+#include "Sources/constants.h"
 #include <QtWidgets>
 
 float ScoreButton::heroScores[NUM_HEROS] = {0};
@@ -130,14 +131,14 @@ void ScoreButton::setLearningMode(bool value)
 }
 
 
-void ScoreButton::getScoreColor(int &r, int &g, int &b, float score)
+void ScoreButton::getScoreColor(int &r, int &g, int &b, float score, ScoreSource scoreSource)
 {
     int rating255 = 0;
     if(scoreSource == Score_HearthArena)
     {//50<-->100
         rating255 = std::max(std::min(static_cast<int>((score-50)/50*255), 255), 0);
     }
-    else if(scoreSource == Score_HSReplay)
+    else if(scoreSource == Score_HSReplay || scoreSource == Score_Fire)
     {
         if(classOrder == -1)
         {//50<-->60
@@ -167,7 +168,7 @@ void ScoreButton::setScore(float score, float bestScore, int includedDecks)
 {
     this->score = score;
 
-    if(scoreSource == Score_HSReplay || scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player)
+    if(scoreSource == Score_HSReplay || scoreSource == Score_Fire || scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player)
     {
             bestScoreOpacity = (1 - (bestScore - score));
     }
@@ -176,7 +177,7 @@ void ScoreButton::setScore(float score, float bestScore, int includedDecks)
     if(bestScoreOpacity>0)              bestScoreOpacity = 0.5 + (bestScoreOpacity/2.0);
 
     this->includedDecks = includedDecks;
-    if(scoreSource == Score_HSReplay && includedDecks >= 0) this->setToolTip(QString::number(includedDecks) + " played");
+    if((scoreSource == Score_HSReplay || scoreSource == Score_Fire) && includedDecks >= 0)  this->setToolTip(QString::number(includedDecks) + " played");
     else    this->setToolTip("");
     draw();
 }
@@ -187,7 +188,7 @@ void ScoreButton::draw()
     bool hideScore = learningMode && !learningShow;
 
     int r, g, b;
-    getScoreColor(r, g, b, score);
+    getScoreColor(r, g, b, score, scoreSource);
 
     QString rgb = "rgb("+ QString::number(r) +","+ QString::number(g) +","+ QString::number(b) +")";
     QString rgbMid = "rgb("+ QString::number(r/4) +","+ QString::number(g/4) +","+ QString::number(0) +")";
@@ -239,7 +240,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     painter.setRenderHint(QPainter::TextAntialiasing);
 
     float drawScore = 0;
-    if(scoreSource == Score_HearthArena || bigFont) drawScore = static_cast<int>(score);
+    if(scoreSource == Score_HearthArena || bigFont) drawScore = round(score);
     else                                            drawScore = score;
 
     QFont font(LG_FONT);
@@ -251,8 +252,8 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     }
     else
     {
-        if( scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player ||
-                scoreSource == Score_HSReplay)  font.setPixelSize(static_cast<int>(width()/3.5));
+        if(scoreSource == Score_Heroes || scoreSource == Score_Heroes_Player ||
+                scoreSource == Score_HSReplay || scoreSource == Score_Fire) font.setPixelSize(static_cast<int>(width()/3.5));
         else if(drawScore > 99)                 font.setPixelSize(static_cast<int>(width()/3.2));
         else                                    font.setPixelSize(static_cast<int>(width()/2.7));
     }
@@ -267,7 +268,8 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     if(hideScore)
     {
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
-        else if(scoreSource == Score_Heroes_Player) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
+        else if(scoreSource == Score_Heroes_Player ||
+                 scoreSource == Score_Fire)         painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfCloseFile()));
         else/* if(scoreSource == Score_HSReplay)*/  painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrCloseFile()));
     }
     else
@@ -276,12 +278,13 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         if(bestScoreOpacity==1)
         {
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haBestFile()));
-            else if(scoreSource == Score_Heroes_Player) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
+            else if(scoreSource == Score_Heroes_Player ||
+                     scoreSource == Score_Fire)         painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfBestFile()));
             else/* if(scoreSource == Score_HSReplay)*/  painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrBestFile()));
         }
 
         //Not enough HSR decks
-        if(scoreSource == Score_HSReplay && includedDecks >= 0 && includedDecks < MIN_HSR_DECKS)
+        if((scoreSource == Score_HSReplay || scoreSource == Score_Fire) && includedDecks >= 0 && includedDecks < MIN_HSR_DECKS)
         {
             float closeHeight = (1 - includedDecks/static_cast<float>(MIN_HSR_DECKS)) * 72 + 28;
             QRect source(0, 0, 128, closeHeight);
@@ -306,7 +309,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         painter.drawPath(path);
 
         //Draw heroe winrate %
-        if(!bigFont && (scoreSource == Score_Heroes || scoreSource == Score_HSReplay || scoreSource == Score_Heroes_Player))
+        if(!bigFont && (scoreSource == Score_Heroes || scoreSource == Score_HSReplay || scoreSource == Score_Fire || scoreSource == Score_Heroes_Player))
         {
             font.setPixelSize(static_cast<int>(width()/5.0));
             QString text = "%";
@@ -338,7 +341,8 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         }
 
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haOpenFile()));
-        else if(scoreSource == Score_Heroes_Player) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
+        else if(scoreSource == Score_Heroes_Player ||
+                 scoreSource == Score_Fire)         painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfOpenFile()));
         else/* if(scoreSource == Score_HSReplay)*/  painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrOpenFile()));
 
         //Best Score text
@@ -346,6 +350,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         {
             painter.setOpacity(bestScoreOpacity);
             if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haTextFile()));
+            else if(scoreSource == Score_Fire)          painter.drawPixmap(targetAll, QPixmap(ThemeHandler::lfTextFile()));
             else if(scoreSource == Score_Heroes_Player) painter.drawPixmap(targetAll, QPixmap(ThemeHandler::youTextFile()));
             else/* if(scoreSource == Score_HSReplay)*/  painter.drawPixmap(targetAll, QPixmap(ThemeHandler::hsrTextFile()));
             painter.setOpacity(1.0);
@@ -363,7 +368,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
 }
 
 
-QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size, int classOrder, int includedDecks)
+QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, bool useWideHeroesColor, int size, int classOrder, int includedDecks)
 {
     ScoreButton scoreButton(nullptr, scoreSource, classOrder);
     scoreButton.setFixedSize(size, size);
@@ -371,7 +376,9 @@ QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size,
     scoreButton.includedDecks = includedDecks;
 
     int r, g, b;
-    scoreButton.getScoreColor(r, g, b, score);
+    if((scoreSource == Score_HSReplay || scoreSource == Score_Fire)
+        && useWideHeroesColor)  scoreButton.getScoreColor(r, g, b, score, Score_Heroes);
+    else                        scoreButton.getScoreColor(r, g, b, score, scoreSource);
 
     QPixmap canvas(size, size);
     canvas.fill(Qt::transparent);
@@ -387,8 +394,8 @@ QPixmap ScoreButton::scorePixmap(ScoreSource scoreSource, float score, int size,
 }
 
 
-QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size)
+QIcon ScoreButton::scoreIcon(ScoreSource scoreSource, float score, int size, bool useWideHeroesColor)
 {
-    QIcon icon(scorePixmap(scoreSource, score, size));
+    QIcon icon(scorePixmap(scoreSource, score, useWideHeroesColor, size));
     return icon;
 }

@@ -78,8 +78,8 @@ private:
     QMap<double, QString> bestMatchesMaps[3];   //[Match] --> Code(_premium)
     bool cardDetected[3];
     CardClass arenaHero, arenaHeroMulticlassPower;
-    int deckRatingHA, deckRatingLF;
-    float deckRatingHSR;
+    int deckRatingHA;
+    float deckRatingHSR, deckRatingFire;
     cv::Rect screenRects[5];
     cv::Rect manaRects[5];
     cv::Rect rarityRects[5];
@@ -95,7 +95,7 @@ private:
     bool showDraftScoresOverlay, showDraftMechanicsOverlay;
     bool learningMode, showDrops, showMyWR;
     QString justPickedCard; //Evita doble pick card en Arena.log
-    bool draftMethodHA, draftMethodLF, draftMethodHSR;
+    bool draftMethodHA, draftMethodFire, draftMethodHSR;
     DraftMethod draftMethodAvgScore;
     QFutureWatcher<ScreenDetection> futureFindScreenRects;
     QLabel *labelLFscore[3];
@@ -107,6 +107,8 @@ private:
     QMap<QString, float> *cardsIncludedWinratesMap;
     QMap<QString, int> *cardsIncludedDecksMap;
     QMap<QString, float> *cardsPlayedWinratesMap;
+    QMap<QString, float> *fireWRMap;
+    QMap<QString, int> *fireSamplesMap;
     TwitchHandler *twitchHandler;
     bool multiclassArena;
     bool needSaveCardHist;
@@ -136,7 +138,7 @@ private:
     void endDraft(bool createNewArena);
     bool getScreenCardsHist(cv::MatND screenCardsHist[], int length);
     void showNewCards(DraftCard bestCards[]);
-    void updateDeckScore(float cardRatingHA=0, float cardRatingLF=0, float cardRatingHSR=0);
+    void updateDeckScore(float cardRatingHA=0, float cardRatingFire=0, float cardRatingHSR=0);
     bool screenFound();
     ScreenDetection findScreenRects();
     void clearScore(QLabel *label, DraftMethod draftMethod, bool clearText=true);
@@ -167,14 +169,14 @@ private:
     void clearAndDisconnectComboBox(int index);
     void initDraftMechanicsWindowCounters();
     void initSynergyCounters(QList<DeckCard> &deckCardList);
-    void updateLabelDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR, int numCards);
-    void showMessageDeckScore(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
+    void updateLabelDeckScore(float deckScoreFire, int deckScoreHA, float deckScoreHSR, int numCards);
+    void showMessageDeckScore(float deckScoreFire, int deckScoreHA, float deckScoreHSR);
     void updateAvgScoresVisibility();
     void endHeroDraft();
     void showNewHeroes();
     void createTwitchHandler();
     void deleteTwitchHandler();
-    QString getDeckAvgString(int deckScoreLF, int deckScoreHA, float deckScoreHSR);
+    QString getDeckAvgString(float deckScoreFire, int deckScoreHA, float deckScoreHSR);
     bool buildDraftMechanicsWindow();
     bool loadTemplateSettings();
     bool saveTemplateSettings();
@@ -228,7 +230,7 @@ public:
     void setShowDrops(bool value);
     void redrawAllCards();
     void updateTamCard();
-    void setDraftMethod(bool draftMethodHA, bool draftMethodLF, bool draftMethodHSR);
+    void setDraftMethod(bool draftMethodHA, bool draftMethodFire, bool draftMethodHSR);
     void setTheme();
     void craftGoldenCopy(int cardIndex);
     bool isDrafting();
@@ -238,6 +240,8 @@ public:
     void setCardsIncludedWinratesMap(QMap<QString, float> cardsIncludedWinratesMap[]);
     void setCardsIncludedDecksMap(QMap<QString, int> cardsIncludedDecksMap[]);
     void setCardsPlayedWinratesMap(QMap<QString, float> cardsPlayedWinratesMap[]);
+    void setFireWRMap(QMap<QString, float> fireWRMap[]);
+    void setFireSamplesMap(QMap<QString, int> fireSamplesMap[]);
     void updateTwitchChatVotes();
     void setDraftMethodAvgScore(DraftMethod draftMethodAvgScore);
     void setMulticlassArena(bool multiclassArena);
@@ -248,7 +252,7 @@ public:
     CardClass getArenaHero();
     void initTierLists(const CardClass &heroClass);
     void clearTierLists();
-    void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr);
+    void getCodeScores(const CardClass &heroClass, const QString &code, int &ha, float &hsr, float &fire);
     void setShowMyWR(bool value);
     void setWantedMechanic(uint mechanicIcon, bool value);
     QStringList getAllArenaCodesTrimmed();
@@ -260,7 +264,7 @@ signals:
     void draftEnded(QString heroLog);
     void saveDraftDeck(QString heroLog);
     void deleteDraftDeck(QString heroLog);
-    void scoreAvg(int deckScoreHA, float deckScoreHSR, QString heroLog);
+    void scoreAvg(int deckScoreHA, float deckScoreHSR, float deckScoreFire, QString heroLog);
     void overlayCardEntered(QString code, QRect rectCard, int maxTop, int maxBottom, bool alignReverse=true);
     void overlayCardLeave();
     void advanceProgressBar(int remaining, QString text);

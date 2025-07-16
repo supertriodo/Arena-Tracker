@@ -89,10 +89,10 @@ private:
     bool isCompleteArena(int wins, int losses);
     QTreeWidgetItem *createGameInCategory(GameResult &gameResult, LoadingScreenState loadingScreen);
     void updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem);
-    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
+    QTreeWidgetItem *createTopLevelItem(QString title, QString hero, int wins=0, int losses=0, int avgHA=0, float avgHSR=0, float avgFire=0,
                                         bool isArena=false, bool insertPos1=false);
-    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR);
-    QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, int avgHA=0, float avgHSR=0,
+    QTreeWidgetItem *showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR, float avgFire);
+    QTreeWidgetItem *showArena(QString hero, QString title="", int wins=0, int losses=0, int avgHA=0, float avgHSR=0, float avgFire=0,
                                bool isArenaNewEmpty=false);
     void newArenaStat(QString hero, int wins=0, int losses=0, QTreeWidgetItem *item=nullptr);
     void newArenaGameStat(GameResult gameResult);
@@ -142,6 +142,7 @@ private:
     QString getPlayerName();
     void clearLeaderboardMap();
     void loadSeasonId();
+    float getSelectedAvgScore(int avgHA, float avgHSR, float avgFire);
 
 public:
     void saveMapLeaderboard();
@@ -159,7 +160,7 @@ signals:
 
 public slots:
     //GameWatcher/MainWindow
-    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA=0, float avgHSR=0);
+    void newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA=0, float avgHSR=0, float avgFire=0);
 
     //GameWatcher
     void showEnemyRanking(QString tag);
@@ -167,7 +168,7 @@ public slots:
 
     //DraftHandler
     void newArena(QString hero);
-    void setCurrentAvgScore(int avgHA, float avgHSR, QString heroLog);
+    void setCurrentAvgScore(int avgHA, float avgHSR, float avgFire, QString heroLog);
 
     //MainWindow
     void setPremium(bool premium, bool load=true);

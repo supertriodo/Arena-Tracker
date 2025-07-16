@@ -477,11 +477,11 @@ void ArenaHandler::setCurrentStatsJson()
 }
 
 
-void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR)
+void ArenaHandler::newGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR, float avgFire)
 {
     setCurrentStatsJson();
     hideArenaStatsTreeWidget();
-    showGameResult(gameResult, loadingScreen, avgHA, avgHSR);
+    showGameResult(gameResult, loadingScreen, avgHA, avgHSR, avgFire);
     if(loadingScreen == arena)
     {
         newArenaGameStat(gameResult);
@@ -532,7 +532,7 @@ void ArenaHandler::updateWinLose(bool isWinner, QTreeWidgetItem *topLevelItem)
 }
 
 
-QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, int wins, int losses, int avgHA, float avgHSR,
+QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, int wins, int losses, int avgHA, float avgHSR, float avgFire,
                                                   bool isArena, bool insertPos1)
 {
     QTreeWidgetItem *item;
@@ -555,7 +555,8 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, i
     item->setTextAlignment(2, Qt::AlignHCenter|Qt::AlignVCenter);
     setColumnText(item, 3, QString::number(losses));
     item->setTextAlignment(3, Qt::AlignHCenter|Qt::AlignVCenter);
-    float avgScore = (this->draftMethodAvgScore==HearthArena?avgHA:avgHSR);
+    float avgScore = getSelectedAvgScore(avgHA, avgHSR, avgFire);
+
     if(premium && avgScore != 0)
     {
         setColumnIcon(item, 4, ScoreButton::scoreIcon(scoreSourceFromDraftMethod(this->draftMethodAvgScore), avgScore));
@@ -565,6 +566,27 @@ QTreeWidgetItem *ArenaHandler::createTopLevelItem(QString title, QString hero, i
     else        setRowColor(item, ThemeHandler::fgColor());
 
     return item;
+}
+
+
+float ArenaHandler::getSelectedAvgScore(int avgHA, float avgHSR, float avgFire)
+{
+    float avgScore = 0;
+    switch(this->draftMethodAvgScore)
+    {
+    case HearthArena:
+        avgScore = avgHA;
+        break;
+    case FireStone:
+        avgScore = avgFire;
+        break;
+    case HSReplay:
+        avgScore = avgHSR;
+        break;
+    case None:
+        break;
+    }
+    return avgScore;
 }
 
 
@@ -591,14 +613,13 @@ void ArenaHandler::setDraftMethodAvgScore(DraftMethod draftMethodAvgScore)
 ScoreSource ArenaHandler::scoreSourceFromDraftMethod(DraftMethod draftMethod)
 {
     if(draftMethod == HearthArena)      return Score_HearthArena;
-    //Usamos Heroes para que el rango de colores del icono sea mas amplio en lugar de ir de 50 a 60
-    //Evitamos mostrar los avg wr todos verdes o rojos
-    else if(draftMethod == HSReplay)    return Score_Heroes;
+    else if(draftMethod == HSReplay)    return Score_HSReplay;
+    else if(draftMethod == FireStone)   return Score_Fire;
     return Score_None;
 }
 
 
-void ArenaHandler::setCurrentAvgScore(int avgHA, float avgHSR, QString heroLog)
+void ArenaHandler::setCurrentAvgScore(int avgHA, float avgHSR, float avgFire, QString heroLog)
 {
     if(arenaCurrent != nullptr && statsJson.contains("current"))
     {
@@ -606,20 +627,21 @@ void ArenaHandler::setCurrentAvgScore(int avgHA, float avgHSR, QString heroLog)
 
         if(objArena["hero"].toString() == heroLog)
         {
-            if(objArena["avgHA"].toInt(0) == 0 || objArena["avgHSR"].toDouble(0) == 0)
+            if(objArena["avgHA"].toInt(0) == 0 || objArena["avgHSR"].toDouble(0) == 0 || objArena["avgFire"].toDouble(0) == 0)
             {
                 objArena["avgHA"] = avgHA;
                 objArena["avgHSR"] = round(avgHSR * 10)/10.0;
+                objArena["avgFire"] = round(avgFire * 10)/10.0;
                 statsJson["current"] = objArena;
                 saveStatsJsonFile();
 
-                float avgScore = (this->draftMethodAvgScore==HearthArena?avgHA:avgHSR);
+                float avgScore = getSelectedAvgScore(avgHA, avgHSR, avgFire);
                 if(premium && avgScore != 0)
                 {
                     setColumnIcon(arenaCurrent, 4, ScoreButton::scoreIcon(scoreSourceFromDraftMethod(this->draftMethodAvgScore),
                                                                           avgScore));
                 }
-                emit pDebug("Set AvgScore: " + QString::number(avgHA) + " - " + QString::number(avgHSR));
+                emit pDebug("Set AvgScore: HA:" + QString::number(avgHA) + " - HSR:" + QString::number(avgHSR) + " - Fire:" + QString::number(avgFire));
             }
             else    emit pDebug("Avoid Set AvgScore: AvgScore present on arenaCurrent.");
         }
@@ -720,7 +742,7 @@ QTreeWidgetItem *ArenaHandler::createGameInCategory(GameResult &gameResult, Load
 }
 
 
-QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR)
+QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScreenState loadingScreen, int avgHA, float avgHSR, float avgFire)
 {
     emit pDebug("Show GameResult.");
 
@@ -740,7 +762,7 @@ QTreeWidgetItem *ArenaHandler::showGameResult(GameResult gameResult, LoadingScre
     }
     setColumnIcon(item, 2, QIcon(gameResult.isFirst?ThemeHandler::firstFile():ThemeHandler::coinFile()));
     setColumnIcon(item, 3, QIcon(gameResult.isWinner?ThemeHandler::winFile():ThemeHandler::loseFile()));
-    float avgScore = (this->draftMethodAvgScore==HearthArena?avgHA:avgHSR);
+    float avgScore = getSelectedAvgScore(avgHA, avgHSR, avgFire);
     if(premium && avgScore != 0)
     {
         setColumnIcon(item, 4, ScoreButton::scoreIcon(scoreSourceFromDraftMethod(this->draftMethodAvgScore), avgScore));
@@ -768,14 +790,14 @@ void ArenaHandler::newArena(QString hero)
 }
 
 
-QTreeWidgetItem *ArenaHandler::showArena(QString hero, QString title, int wins, int losses, int avgHA, float avgHSR,
+QTreeWidgetItem *ArenaHandler::showArena(QString hero, QString title, int wins, int losses, int avgHA, float avgHSR, float avgFire,
                                          bool isArenaNewEmpty)
 {
     emit pDebug("Show Arena" + QString(isArenaNewEmpty?" new empty.":"."));
 
     if(title.isEmpty()) title = QDateTime::currentDateTime().toString("d MMM");
 
-    QTreeWidgetItem *item = createTopLevelItem(title, hero, wins, losses, avgHA, avgHSR,
+    QTreeWidgetItem *item = createTopLevelItem(title, hero, wins, losses, avgHA, avgHSR, avgFire,
                                                true, isArenaNewEmpty);
     item->setFlags(item->flags() | Qt::ItemIsEditable);
 
@@ -935,10 +957,11 @@ void ArenaHandler::loadStatsJsonFile(const QString &statsFile)
         this->lastRegion = objArena["region"].toInt();
         int avgHA = objArena["avgHA"].toInt(0);
         float avgHSR = objArena["avgHSR"].toDouble(0);
+        float avgFire = objArena["avgFire"].toDouble(0);
 
         QString title = (date == "current")?getJsonExtra("lastGame"):date;
         title = QDateTime::fromString(title, "yyyy.MM.dd hh:mm").toString("d MMM");
-        showArena(hero, title, wins, losses, avgHA, avgHSR);
+        showArena(hero, title, wins, losses, avgHA, avgHSR, avgFire);
         arenaStatLink[arenaCurrent] = date;
 
         //Set date of last arena if complete

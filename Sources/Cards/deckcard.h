@@ -5,28 +5,11 @@
 #include <QString>
 #include <QMap>
 #include "../constants.h"
+#include "../utility.h"
 
 
 #define CARD_SIZE QSize(218,35)
 #define DISABLE_OPACITY 150
-
-
-//Usamos sus numeros para comparacion con rarity template en DraftHandler::reviewBestCards()
-enum CardRarity {COMMON=0, RARE=1, EPIC=2, LEGENDARY=3, FREE, INVALID_RARITY};
-//Nuevos CardType revisar SynergyHandler::updateCardTypeCounters
-enum CardType {INVALID_TYPE, HERO, MINION, SPELL, WEAPON, HERO_POWER, LOCATION};
-//New race step
-enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIGHTELF, ORC, TAUREN, TROLL, UNDEAD,
-               WORGEN, GOBLIN2, MURLOC, DEMON, SCOURGE, MECHANICAL, ELEMENTAL, OGRE, BEAST, TOTEM, NERUBIAN, PIRATE,
-               DRAGON, BLANK, ALL, EGG, QUILBOAR, CENTAUR, FURBOLG, HIGHELF, TREANT, OWLKIN, HALFORC, LOCK, NAGA, OLDGOD,
-               PANDAREN, GRONN};
-//Nuevos CardSchool revisar SynergyCard::setSchoolTag()
-enum CardSchool {INVALID_SCHOOL, NONE, ARCANE, FEL, FIRE, FROST, HOLY, SHADOW, NATURE, PHYSICAL_COMBAT};
-//--------------------------------------------------------
-//----NEW HERO CLASS
-//--------------------------------------------------------
-enum CardClass {DEATHKNIGHT, DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
-                NUM_HEROS, INVALID_CLASS, NEUTRAL};
 
 
 class DeckCard
@@ -62,14 +45,18 @@ private:
     bool topManaLimit, bottomManaLimit;
     bool outsider;
     //Usados para pintar los score
-    bool showScores, showHA, showHSR;
-    bool badScoreHA, badScoreHSR, redraftingReview;
+    bool showScores, showHA, showHSR, showFire;
+    bool badScoreHA, badScoreHSR, badScoreFire;
+    bool redraftingReview;
     int scoreHA;
-    float scoreHSR;
-    int includedDecks;
+    float scoreHSR, scoreFire;
+    int includedDecks, samplesFire;
     int classOrder;
 
 //Metodos
+private:
+    void drawBadScore(QPainter &painter, QPixmap &canvas, ScoreSource scoreSource, int num);
+
 protected:
     QPixmap draw(int total, bool drawRarity, QColor nameColor=BLACK, QString manaText="", int cardWidth=0, QStringList mechanics={});
     QPixmap drawCustomCard(QString customCode, QString customText);
@@ -94,12 +81,13 @@ public:
     bool isOutsider();
     void setCreatedByCode(QString code);
     QString getCreatedByCode();
-    void setShowHAShowHSRScores(bool showHA, bool showHSR);
+    void setEachShowScores(bool showHA, bool showHSR, bool showFire);
     void hideScores();
     void setShowScores(bool showScores);
-    void setScores(int haTier, float hsrWR, int classOrder, int includedDecks);
+    void setScores(int haTier, float hsrWR, float fireWR, int classOrder, int includedDecks, int samplesFire);
     void setBadScoreHA(bool badScore=true);
     void setBadScoreHSR(bool badScore=true);
+    void setBadScoreFire(bool badScore=true);
     void setRedraftingReview(bool show=true);
 
     static void setDrawClassColor(bool value);

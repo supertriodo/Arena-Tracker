@@ -1,5 +1,4 @@
 #include "deckcard.h"
-#include "../utility.h"
 #include "../themehandler.h"
 #include "../Widgets/scorebutton.h"
 #include <QtWidgets>
@@ -20,10 +19,10 @@ DeckCard::DeckCard(QString code, bool outsider)
     createdByCode = "";
     id = 0;
     scoreHA = 0;
-    scoreHSR = 0;
-    includedDecks = 0;
-    showScores = badScoreHA = badScoreHSR = false;
-    showHA = showHSR = true;
+    scoreHSR = scoreFire = 0;
+    includedDecks = samplesFire = 0;
+    showScores = badScoreHA = badScoreHSR = badScoreFire = false;
+    showHA = showHSR = showFire = true;
     redraftingReview = false;
     classOrder = -1;
     this->outsider = outsider;
@@ -61,11 +60,18 @@ void DeckCard::setBadScoreHSR(bool badScore)
 }
 
 
+void DeckCard::setBadScoreFire(bool badScore)
+{
+    this->badScoreFire = badScore;
+}
+
+
 void DeckCard::hideScores()
 {
     setShowScores(false);
     setBadScoreHA(false);
     setBadScoreHSR(false);
+    setBadScoreFire(false);
     setRedraftingReview(false);
 }
 
@@ -77,19 +83,22 @@ void DeckCard::setShowScores(bool showScores)
 }
 
 
-void DeckCard::setShowHAShowHSRScores(bool showHA, bool showHSR)
+void DeckCard::setEachShowScores(bool showHA, bool showHSR, bool showFire)
 {
     this->showHA = showHA;
     this->showHSR = showHSR;
+    this->showFire = showFire;
     if(showScores)  draw();
 }
 
 
-void DeckCard::setScores(int haTier, float hsrWR, int classOrder, int includedDecks)
+void DeckCard::setScores(int haTier, float hsrWR, float fireWR, int classOrder, int includedDecks, int samplesFire)
 {
     this->scoreHA = haTier;
     this->scoreHSR = hsrWR;
+    this->scoreFire = fireWR;
     this->includedDecks = includedDecks;
+    this->samplesFire = samplesFire;
     this->classOrder = classOrder;
     this->showScores = true;
     //No hace falta hacer draw() pq en DraftHandler::setDeckScores() llamamos a DeckCard::setShowHAShowHSRScores despues de DeckCard::setScores
@@ -425,42 +434,50 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
         painter.setRenderHint(QPainter::TextAntialiasing);
 
         //Scores
-        if(showScores && (showHA || showHSR))
+        if(showScores && (showHA || showHSR || showFire))
         {
             int height = canvas.height()*1.3;
             int width = canvas.width();
 
             painter.setBrush(Qt::NoBrush);
 
+            int numBads = 0;
             if(badScoreHA && showHA && scoreHA!=0)
             {
-                painter.setPen(QPen(Qt::darkYellow, 8));
-                painter.drawRect(canvas.rect());
-
-                if(badScoreHSR && showHSR && scoreHSR!=0)
-                {
-                    painter.setPen(QPen(Qt::darkRed, 8));
-                    painter.drawLines(QVector<QLine>{
-                        QLine(0, 0, canvas.width(), 0),
-                        QLine(0, 0, 0, canvas.height()/2),
-                        QLine(canvas.width(), 0, canvas.width(), canvas.height()/2)
-                    });
-                }
+                numBads++;
+                drawBadScore(painter, canvas, Score_HearthArena, numBads);
             }
-            else if(badScoreHSR && showHSR && scoreHSR!=0)
+            if(badScoreHSR && showHSR && scoreHSR!=0)
             {
-                painter.setPen(QPen(Qt::darkRed, 8));
-                painter.drawRect(canvas.rect());
+                numBads++;
+                drawBadScore(painter, canvas, Score_HSReplay, numBads);
             }
+            if(badScoreFire && showFire && scoreFire!=0)
+            {
+                numBads++;
+                drawBadScore(painter, canvas, Score_Fire, numBads);
+            }
+
+            int numScores = 0;
+            const int offsetScore = 6*height/8;
+            const int offsetLegendary = 29*width/218;
             if(showHA && scoreHA!=0)
             {
-                painter.drawPixmap(width - (29*width/218) - 6*height/8, 0,
-                                   ScoreButton::scorePixmap(Score_HearthArena, scoreHA, height, classOrder));
+                numScores++;
+                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                   ScoreButton::scorePixmap(Score_HearthArena, scoreHA, false, height, classOrder));
             }
             if(showHSR && scoreHSR!=0)
             {
-                painter.drawPixmap(width - (29*width/218) - (showHA?2*6*height/8:6*height/8), 0,
-                                   ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, height, classOrder, includedDecks));
+                numScores++;
+                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                   ScoreButton::scorePixmap(Score_HSReplay, scoreHSR, false, height, classOrder, includedDecks));
+            }
+            if(showFire && scoreFire!=0)
+            {
+                numScores++;
+                painter.drawPixmap(width - offsetLegendary - (numScores*offsetScore), 0,
+                                   ScoreButton::scorePixmap(Score_Fire, scoreFire, false, height, classOrder, samplesFire));
             }
         }
 
@@ -473,6 +490,43 @@ QPixmap DeckCard::draw(int total, bool drawRarity, QColor nameColor, QString man
     painter.end();
 
     return canvas;
+}
+
+
+void DeckCard::drawBadScore(QPainter &painter, QPixmap &canvas, ScoreSource scoreSource, int num)
+{
+    QColor color = Qt::blue;
+    if(scoreSource == Score_HearthArena)        color = Qt::darkYellow;
+    else if(scoreSource == Score_HSReplay)      color = Qt::darkRed;
+    else if(scoreSource == Score_Fire)          color = DARK_ORANGE;
+
+    painter.setPen(QPen(color, 8));
+
+    switch(num)
+    {
+    case 1:
+        painter.drawRect(canvas.rect());
+        break;
+    case 2:
+        painter.drawLines(QVector<QLine>{
+            QLine(0, 0, canvas.width(), 0),
+            QLine(0, 0, 0, canvas.height()/2),
+            QLine(canvas.width(), 0, canvas.width(), canvas.height()/2)
+        });
+        break;
+    case 3:
+        painter.drawLines(QVector<QLine>{
+            QLine(0, 0, 0, canvas.height()),
+            QLine(canvas.width(), 0, canvas.width(), canvas.height()),
+
+            QLine(0, 0, canvas.width()/9, 0),
+            QLine(canvas.width()*8/9, 0, canvas.width(), 0),
+
+            QLine(0, canvas.height(), canvas.width()/9, canvas.height()),
+            QLine(canvas.width()*8/9, canvas.height(), canvas.width(), canvas.height()),
+        });
+        break;
+    }
 }
 
 

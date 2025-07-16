@@ -1,5 +1,6 @@
 #include "lavabutton.h"
 #include "../themehandler.h"
+#include "Sources/constants.h"
 #include <QtWidgets>
 
 LavaButton::LavaButton(QWidget *parent, float min, float max) : QLabel(parent)
