@@ -27,7 +27,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Check hsreplay.net hero winrates when choosing your arena class.
 
 ![DraftHeroes](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftHeroes.png)
-* Draft your arena with HSReplay winrates and HearthArena scores.
+* Draft your arena with Firestone/HSReplay/Heartharena scores.
 
 ![Draft](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DraftCombined.png)
 * Do you stream Hearthstone? Let your viewers vote during drafts.
