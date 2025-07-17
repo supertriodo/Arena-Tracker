@@ -10,7 +10,7 @@ float ScoreButton::minHeroScore, ScoreButton::maxHeroScore;
 ScoreButton::ScoreButton(QWidget *parent, ScoreSource scoreSource, int classOrder) : QLabel(parent)
 {
     this->learningMode = false;
-    this->learningShow = false;
+    this->hoverScore = false;
     this->bestScoreOpacity = 0;
     this->scoreSource = scoreSource;
     this->score = 0;
@@ -44,20 +44,14 @@ void ScoreButton::mousePressEvent(QMouseEvent *event)
 
 void ScoreButton::leaveEvent(QEvent * e)
 {
-    if(learningMode)
-    {
-        emit spreadLearningShow(false);
-    }
+    emit spreadHoverScore(false);
     QLabel::leaveEvent(e);
 }
 
 
 void ScoreButton::enterEvent(QEvent * e)
 {
-    if(learningMode)
-    {
-        emit spreadLearningShow(true);
-    }
+    emit spreadHoverScore(true);
     QLabel::enterEvent(e);
 }
 
@@ -123,9 +117,9 @@ void ScoreButton::setClassOrder(int classOrder)
 }
 
 
-void ScoreButton::setLearningShow(bool value)
+void ScoreButton::setHoverScore(bool value)
 {
-    learningShow = value;
+    hoverScore = value;
     draw();
 }
 
@@ -191,7 +185,7 @@ void ScoreButton::setScore(float score, float bestScore, int includedDecks)
 
 void ScoreButton::draw()
 {
-    bool hideScore = learningMode && !learningShow;
+    bool hideScore = learningMode && !hoverScore;
 
     int r, g, b;
     getScoreColor(r, g, b, score, scoreSource);
@@ -270,7 +264,7 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
     painter.setPen(pen);
     painter.setBrush(WHITE);
 
-    bool hideScore = learningMode && !learningShow;
+    bool hideScore = learningMode && !hoverScore;
     if(hideScore)
     {
         if(scoreSource == Score_HearthArena)        painter.drawPixmap(targetAll, QPixmap(ThemeHandler::haCloseFile()));
@@ -302,47 +296,31 @@ void ScoreButton::drawPixmap(QPixmap &canvas, QRect &targetAll, bool bigFont)
         QString text;
         if(scoreSource == Score_Heroes_Player && drawScore == 0)    text = "--";
         else                                                        text = QString::number(drawScore, 'g', 3);
-        QFontMetrics fm = QFontMetrics(font);
-        int textWide = fm.width(text);
-        int textHigh = fm.height();
+        Utility::drawShadowText(painter, font, text, this->width()/2, this->height()/2, true);
 
-        QPainterPath path;
-    #ifdef Q_OS_WIN
-        path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.3, font, text);
-    #else
-        path.addText(this->width()/2 - textWide/2, this->height()/2 + textHigh*0.4, font, text);
-    #endif
-        painter.drawPath(path);
+        //Samples
+        if(hoverScore && (scoreSource == Score_HSReplay || scoreSource == Score_Fire))
+        {
+            font.setPixelSize(static_cast<int>(width()/5.0));
+            QString text;
+            if(includedDecks < 1000)        text = QString::number(includedDecks);//364
+            else if(includedDecks < 10000)  text = QString::number(round(includedDecks/100.0)/10.0) + "K";//9.4K
+            else                            text = QString::number(round(includedDecks/1000.0)) + "K";//23K
 
+            Utility::drawShadowText(painter, font, text, this->width()/2, this->height()*0.68, true);
+        }
         //Draw heroe winrate %
-        if(!bigFont && (scoreSource == Score_Heroes || scoreSource == Score_HSReplay || scoreSource == Score_Fire || scoreSource == Score_Heroes_Player))
+        else if(!bigFont && (scoreSource == Score_Heroes || scoreSource == Score_HSReplay || scoreSource == Score_Fire || scoreSource == Score_Heroes_Player))
         {
             font.setPixelSize(static_cast<int>(width()/5.0));
             QString text = "%";
-            QFontMetrics fm = QFontMetrics(font);
-            int textWide = fm.width(text);
-            int textHigh = fm.height();
-
-            QPainterPath path;
-    #ifdef Q_OS_WIN
-            path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.3, font, text);
-    #else
-            path.addText(this->width()/2 - textWide/2, this->height()*0.68 + textHigh*0.4, font, text);
-    #endif
-            painter.drawPath(path);
+            Utility::drawShadowText(painter, font, text, this->width()/2, this->height()*0.68, true);
 
             //Runs
             if(scoreSource == Score_Heroes_Player && classOrder != -1)
             {
                 QString text = QString::number(getPlayerRun(classOrder));
-                int textWide = fm.width(text);
-                QPainterPath path;
-        #ifdef Q_OS_WIN
-                path.addText(this->width()/2 - textWide/2, this->height()*0.3 + textHigh*0.3, font, text);
-        #else
-                path.addText(this->width()/2 - textWide/2, this->height()*0.3 + textHigh*0.4, font, text);
-        #endif
-                painter.drawPath(path);
+                Utility::drawShadowText(painter, font, text, this->width()/2, this->height()*0.3, true);
             }
         }
 

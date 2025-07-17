@@ -93,22 +93,22 @@ DraftScoreWindow::DraftScoreWindow(QWidget *parent, QRect rect, QSize sizeCard, 
         scoresPushButton[i]->setFixedHeight(scoreWidth);
         scoresPushButton[i]->setFixedWidth(scoreWidth);
         scoresPushButton[i]->hide();
-        connect(scoresPushButton[i], SIGNAL(spreadLearningShow(bool)),
-                this, SLOT(spreadLearningShow(bool)));
+        connect(scoresPushButton[i], SIGNAL(spreadHoverScore(bool)),
+                this, SLOT(spreadHoverScore(bool)));
 
         scoresPushButton2[i] = new ScoreButton(centralWidget, Score_HearthArena, -1);
         scoresPushButton2[i]->setFixedHeight(scoreWidth);
         scoresPushButton2[i]->setFixedWidth(scoreWidth);
         scoresPushButton2[i]->hide();
-        connect(scoresPushButton2[i], SIGNAL(spreadLearningShow(bool)),
-                this, SLOT(spreadLearningShow(bool)));
+        connect(scoresPushButton2[i], SIGNAL(spreadHoverScore(bool)),
+                this, SLOT(spreadHoverScore(bool)));
 
         scoresPushButton3[i] = new ScoreButton(centralWidget, Score_HSReplay, classOrder);
         scoresPushButton3[i]->setFixedHeight(scoreWidth);
         scoresPushButton3[i]->setFixedWidth(scoreWidth);
         scoresPushButton3[i]->hide();
-        connect(scoresPushButton3[i], SIGNAL(spreadLearningShow(bool)),
-                this, SLOT(spreadLearningShow(bool)));
+        connect(scoresPushButton3[i], SIGNAL(spreadHoverScore(bool)),
+                this, SLOT(spreadHoverScore(bool)));
         connect(scoresPushButton3[i], SIGNAL(showHSRwebPicks()),
                 this, SIGNAL(showHSRwebPicks()));
 
@@ -224,13 +224,13 @@ void DraftScoreWindow::setLearningMode(bool value)
 }
 
 
-void DraftScoreWindow::spreadLearningShow(bool value)
+void DraftScoreWindow::spreadHoverScore(bool value)
 {
     for(int i=0; i<3; i++)
     {
-        scoresPushButton[i]->setLearningShow(value);
-        scoresPushButton2[i]->setLearningShow(value);
-        scoresPushButton3[i]->setLearningShow(value);
+        scoresPushButton[i]->setHoverScore(value);
+        scoresPushButton2[i]->setHoverScore(value);
+        scoresPushButton3[i]->setHoverScore(value);
     }
 }
 

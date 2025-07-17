@@ -98,7 +98,7 @@ private slots:
     void hideSynergies();
     void showSynergies();
     void findSynergyCardEntered(QListWidgetItem *item);
-    void spreadLearningShow(bool value);
+    void spreadHoverScore(bool value);
     void stepScrollSynergies(int indexList);
     void resumeSynergyMotion();
     void clearMechanics();

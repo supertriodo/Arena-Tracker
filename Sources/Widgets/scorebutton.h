@@ -18,7 +18,7 @@ public:
 //Variables
 private:
     float score;
-    bool learningMode, learningShow;
+    bool learningMode, hoverScore;
     float bestScoreOpacity;
     int includedDecks, classOrder;
     ScoreSource scoreSource;
@@ -42,22 +42,22 @@ public:
     void setScore(float score, float bestScore, int includedDecks=-1);
     void setClassOrder(int classOrder);
     void setLearningMode(bool value);
-    void setLearningShow(bool value);
+    void setHoverScore(bool value);
     void draw();
 
     static QPixmap scorePixmap(ScoreSource scoreSource, float score, bool useWideHeroesColor, int size=80, int classOrder=-1, int includedDecks=-1);
     static QIcon scoreIcon(ScoreSource scoreSource, float score, int size=80, bool useWideHeroesColor=true);
-    static void setHeroScores(float heroScores[]);
-    static void setPlayerRuns(int playerRuns[]);
-    static void setPlayerWins(int playerWins[]);
-    static void setPlayerLost(int playerLost[]);
+    static void setHeroScores(float heroScores[NUM_HEROS]);
+    static void setPlayerRuns(int playerRuns[NUM_HEROS]);
+    static void setPlayerWins(int playerWins[NUM_HEROS]);
+    static void setPlayerLost(int playerLost[NUM_HEROS]);
     static float getHeroScore(int classOrder);
     static float getPlayerRun(int classOrder);
     static float getPlayerWinrate(int classOrder);
     static void addRun(int classOrder, int wins, int lost);
 
 signals:
-    void spreadLearningShow(bool value);
+    void spreadHoverScore(bool value);
     void showHSRwebPicks();
 };
 

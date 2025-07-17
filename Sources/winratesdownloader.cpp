@@ -229,7 +229,7 @@ void WinratesDownloader::initHSRCards()
     {
         connect(&futureHSRPickrates[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
         {
-            emit pDebug("HSR cards (Pickrates: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            // emit pDebug("HSR cards (Pickrates: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
             this->hsrPickratesMap[i] = futureHSRPickrates[i].result();
 
             hsrdataPickratesThreads--;
@@ -243,7 +243,7 @@ void WinratesDownloader::initHSRCards()
 
         connect(&futureHSRWR[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
         {
-            emit pDebug("HSR cards (IncludedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            // emit pDebug("HSR cards (IncludedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
             this->hsrWRMap[i] = futureHSRWR[i].result();
 
             hsrdataWRThreads--;
@@ -257,7 +257,7 @@ void WinratesDownloader::initHSRCards()
 
         connect(&futureHSRSamples[i], &QFutureWatcher<QMap<QString, int>>::finished, this,[this,i]()
         {
-            emit pDebug("HSR cards (TimesPlayed: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            // emit pDebug("HSR cards (TimesPlayed: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
             this->hsrSamplesMap[i] = futureHSRSamples[i].result();
 
             hsrdataSamplesThreads--;
@@ -271,7 +271,7 @@ void WinratesDownloader::initHSRCards()
 
         connect(&futureHSRPlayedWR[i], &QFutureWatcher<QMap<QString, float>>::finished, this,[this,i]()
         {
-            emit pDebug("HSR cards (PlayedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            // emit pDebug("HSR cards (PlayedWinrate: " + Utility::classOrder2classLName(i) + ") --> Thread end.");
             this->hsrPlayedWRMap[i] = futureHSRPlayedWR[i].result();
 
             hsrdataPlayedThreads--;
@@ -383,14 +383,14 @@ void WinratesDownloader::initFireCards()
     {
         connect(&futureFire[i], &QFutureWatcher<FireData>::finished, this,[this,i]()
         {
-            emit pDebug("Fire cards (" + Utility::classOrder2classLName(i) + ") --> Thread end.");
+            // emit pDebug("Fire cards (" + Utility::classOrder2classLName(i) + ") --> Thread end.");
             FireData fireData = futureFire[i].result();
             this->fireWRMap[i] = fireData.fireWRMap;
             this->fireSamplesMap[i] = fireData.fireSamplesMap;
             fireDataThreads--;
             if(fireDataThreads == 0)
             {
-                emit pDebug("Fire maps ready.");
+                emit pDebug("Fire cards (WR/Samples) ready.");
                 emit readyFireWRMap(fireWRMap);
                 emit readyFireSamplesMap(fireSamplesMap);
             }
