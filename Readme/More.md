@@ -21,7 +21,7 @@ Next you can check a brief explanation of its features divided in free and premi
 * Import/export your deck with Hearthstone.
 
 ![Decks](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/DecksCollection.png)
-* Keep your arena stats locally, divided by leaderboard 2-month periods.
+* Keep your arena stats locally, divided by 2-month periods.
 
 ![StatsPeriod](https://github.com/supertriodo/Arena-Tracker/blob/master/Readme/statsPeriod.png)
 * Check hsreplay.net hero winrates when choosing your arena class.
