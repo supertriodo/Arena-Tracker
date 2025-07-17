@@ -168,6 +168,12 @@ QString Utility::classOrder2classULName(int order)
 }
 
 
+QString Utility::classOrder2classLName(int order)
+{
+    return Utility::classOrder2classULName(order).toLower();
+}
+
+
 QString Utility::classOrder2classUL_ULName(int order)
 {
     QString heroes[NUM_HEROS] = {"Death Knight", "Demon Hunter", "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior"};

@@ -368,7 +368,7 @@ void MainWindow::replyFinished(QNetworkReply *reply)
                 QByteArray jsonData = reply->readAll();
                 Utility::dumpOnFile(jsonData, Utility::extraPath() + "/cards.json");
                 createCardsJsonMap(jsonData);
-                initHSRCards();
+                initWRCards();
             }
         }
 #ifdef QT_DEBUG
@@ -471,7 +471,7 @@ void MainWindow::checkCardsJsonVersion(QString cardsJsonVersion)
     else
     {
         pDebug("Extra: Json Cards --> Use local cards.json");
-        initHSRCards();
+        initWRCards();
     }
 }
 
@@ -520,16 +520,22 @@ void MainWindow::readyHSRPickratesMap(QMap<QString, float> *hsrPickratesMap)
 void MainWindow::readyHSRWRMap(QMap<QString, float> *hsrWRMap)
 {
     draftHandler->setCardsIncludedWinratesMap(hsrWRMap);
-    draftHandler->setFireWRMap(hsrWRMap);//TODO remove
 }
 void MainWindow::readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap)
 {
     draftHandler->setCardsIncludedDecksMap(hsrSamplesMap);
-    draftHandler->setFireSamplesMap(hsrSamplesMap);//TODO remove
 }
 void MainWindow::readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap)
 {
     draftHandler->setCardsPlayedWinratesMap(hsrPlayedWRMap);
+}
+void MainWindow::readyFireWRMap(QMap<QString, float> *fireWRMap)
+{
+    draftHandler->setFireWRMap(fireWRMap);
+}
+void MainWindow::readyFireSamplesMap(QMap<QString, int> *fireSamplesMap)
+{
+    draftHandler->setFireSamplesMap(fireSamplesMap);
 }
 
 
@@ -548,9 +554,9 @@ void MainWindow::processPopularCardsHandlerPickrates(QMap<QString, float> *hsrPi
 }
 
 
-void MainWindow::initHSRCards()
+void MainWindow::initWRCards()
 {
-    winratesDownloader->initHSRCards();
+    winratesDownloader->initWRCards();
 }
 
 
@@ -1078,6 +1084,10 @@ void MainWindow::createWinratesDownloader()
             this, SLOT(readyHSRSamplesMap(QMap<QString,int>*)));
     connect(winratesDownloader, SIGNAL(readyHSRPlayedWRMap(QMap<QString,float>*)),
             this, SLOT(readyHSRPlayedWRMap(QMap<QString,float>*)));
+    connect(winratesDownloader, SIGNAL(readyFireWRMap(QMap<QString,float>*)),
+            this, SLOT(readyFireWRMap(QMap<QString,float>*)));
+    connect(winratesDownloader, SIGNAL(readyFireSamplesMap(QMap<QString,int>*)),
+            this, SLOT(readyFireSamplesMap(QMap<QString,int>*)));
     connect(winratesDownloader, SIGNAL(startProgressBar(int,QString)),
             this, SLOT(startProgressBar(int,QString)));
     connect(winratesDownloader, SIGNAL(advanceProgressBar(int,QString)),
@@ -2689,7 +2699,7 @@ void MainWindow::downloadCardsJson(int version)
     }
     else
     {
-        initHSRCards();
+        initWRCards();
     }
 }
 

@@ -204,7 +204,7 @@ private:
     void checkTwitchConnection();
     void checkArenaCards();
     void downloadAllArenaCodes(const QStringList &codeList);
-    void initHSRCards();
+    void initWRCards();
     void downloadHearthArenaTierlistOriginal();
     void saveHearthArenaTierlistOriginal(const QByteArray &html="");
     void initConfigAvgScore(QString draftAvg);
@@ -339,6 +339,8 @@ private slots:
     void readyHSRWRMap(QMap<QString, float> *hsrWRMap);
     void readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap);
     void readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap);
+    void readyFireWRMap(QMap<QString, float> *fireWRMap);
+    void readyFireSamplesMap(QMap<QString, int> *fireSamplesMap);
 };
 
 #endif // MAINWINDOW_H

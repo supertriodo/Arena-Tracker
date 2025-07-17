@@ -10,6 +10,15 @@
 #define HSR_CARDS_PATCH "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_PATCH"
 #define HSR_CARDS_EXP "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=CURRENT_EXPANSION"
 #define HSR_CARDS_14DAYS "https://hsreplay.net/api/v1/analytics/query/card_list_free/?GameType=UNDERGROUND_ARENA&TimeRange=LAST_14_DAYS"
+#define FIRE_CARDS "https://static.zerotoheroes.com/api/arena/stats/cards/arena-underground/last-patch/"
+
+
+class FireData
+{
+public:
+    QMap<QString, float> fireWRMap;
+    QMap<QString, int> fireSamplesMap;
+};
 
 
 class WinratesDownloader : public QObject
@@ -22,30 +31,39 @@ public:
 //Variables
 private:
     QNetworkAccessManager *networkManager;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPickrates;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsIncludedWinrates;
-    QFutureWatcher<QMap<QString, int> *> futureProcessHSRCardsIncludedDecks;
-    QFutureWatcher<QMap<QString, float> *> futureProcessHSRCardsPlayedWinrates;
-    int HSRdataThreads;
+    QRegularExpressionMatch *match;
+    QFutureWatcher<QMap<QString, float> *> futureHSRPickrates;
+    QFutureWatcher<QMap<QString, float> *> futureHSRWR;
+    QFutureWatcher<QMap<QString, int> *> futureHSRSamples;
+    QFutureWatcher<QMap<QString, float> *> futureHSRPlayedWR;
+    QFutureWatcher<FireData> futureFire[NUM_HEROS];
+    int HSRdataThreads, fireDataThreads;
     QMap<QString, float> *hsrPickratesMap;
     QMap<QString, float> *hsrWRMap;
     QMap<QString, int> *hsrSamplesMap;
     QMap<QString, float> *hsrPlayedWRMap;
+    QMap<QString, float> *fireWRMap;
+    QMap<QString, int> *fireSamplesMap;
 
 
 //Metodos
 private:
+    void initHSRCards();
+    void initFireCards();
     void localHSRHeroesWinrate();
-    void processHSRHeroesWinrate(const QJsonObject &jsonObject);
     void localHSRCards();
+    void localFireCards(const int classOrder);
     void startProcessHSRCards(const QJsonObject &jsonObject);
+    void startProcessFireCards(const QJsonObject &jsonObject, const int classOrder);
     void processHSRCardClassDouble(const QJsonArray &jsonArray, const QString &tag, QMap<QString, float> &cardsMap, bool trunk=false);
     void processHSRCardClassInt(const QJsonArray &jsonArray, const QString &tag, QMap<QString, int> &cardsMap);
-    void showHSRdataProgressBar();
+    void processHSRHeroesWinrate(const QJsonObject &jsonObject);
+    void showDataProgressBar();
+    int url2classOrder(QString url);
 
 public:
+    void initWRCards();
     void initHSRHeroesWinrate();
-    void initHSRCards();
     void waitFinishThreads();
 
 signals:
@@ -57,6 +75,8 @@ signals:
     void readyHSRWRMap(QMap<QString, float> *hsrWRMap);
     void readyHSRSamplesMap(QMap<QString, int> *hsrSamplesMap);
     void readyHSRPlayedWRMap(QMap<QString, float> *hsrPlayedWRMap);
+    void readyFireWRMap(QMap<QString, float> *fireWRMap);
+    void readyFireSamplesMap(QMap<QString, int> *fireSamplesMap);
 
 private slots:
     void replyFinished(QNetworkReply *reply);

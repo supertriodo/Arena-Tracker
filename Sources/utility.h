@@ -49,7 +49,7 @@ enum CardRace {INVALID_RACE, BLOODELF, DRAENEI, DWARF, GNOME, GOBLIN, HUMAN, NIG
 //Nuevos CardSchool revisar SynergyCard::setSchoolTag()
 enum CardSchool {INVALID_SCHOOL, NONE, ARCANE, FEL, FIRE, FROST, HOLY, SHADOW, NATURE, PHYSICAL_COMBAT};
 //--------------------------------------------------------
-//----NEW HERO CLASS
+//----NEW HERO CLASS - Orden alfabetico
 //--------------------------------------------------------
 enum CardClass {DEATHKNIGHT, DEMONHUNTER, DRUID, HUNTER, MAGE, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
                  NUM_HEROS, INVALID_CLASS, NEUTRAL};
@@ -125,6 +125,7 @@ public:
     static QString classLogNumber2classLName(const QString &hero);
     static QString classOrder2classColor(int order);
     static QString classOrder2classULName(int order);
+    static QString classOrder2classLName(int order);
     static QString classOrder2classUL_ULName(int order);
     static QString classOrder2classLogNumber(int order);
     static bool isCardsJsonCode(const QString &code);
